@@ -3,6 +3,10 @@ foam.CLASS({
   refines: 'foam.nanos.auth.User',
   properties: [
     {
+      class: 'String',
+      name: 'type'
+    },
+    {
       class: 'FObjectArray',
       of:    'net.nanopay.common.model.Phone',
       name:  'phone'
