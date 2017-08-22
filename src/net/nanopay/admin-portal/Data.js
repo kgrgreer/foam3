@@ -89,7 +89,7 @@ foam.CLASS({
         // Transaction Sub-Menu
         {
           parent: 'transactionSubMenu',
-          id: 'all',
+          id: 'allTransactions',
           label: 'All',
           handler: {
             class: 'foam.nanos.menu.ViewMenu',
@@ -107,7 +107,7 @@ foam.CLASS({
         },
         {
           parent: 'transactionSubMenu',
-          id: 'shoppers',
+          id: 'transactionShoppers',
           label: 'Shoppers',
           handler: {
             class: 'foam.nanos.menu.ViewMenu',
@@ -116,7 +116,7 @@ foam.CLASS({
         },
         {
           parent: 'transactionSubMenu',
-          id: 'merchants',
+          id: 'transactionMerchants',
           label: 'Merchants',
           handler: {
             class: 'foam.nanos.menu.ViewMenu',
@@ -127,7 +127,7 @@ foam.CLASS({
         // User Sub-Menu
         {
           parent: 'userSubMenu',
-          id: 'all',
+          id: 'allUsers',
           label: 'All',
           handler: {
             class: 'foam.nanos.menu.ViewMenu',
@@ -136,7 +136,7 @@ foam.CLASS({
         },
         {
           parent: 'userSubMenu',
-          id: 'shoppers',
+          id: 'userShoppers',
           label: 'Shoppers',
           handler: {
             class: 'foam.nanos.menu.ViewMenu',
@@ -145,7 +145,7 @@ foam.CLASS({
         },
         {
           parent: 'userSubMenu',
-          id: 'merchants',
+          id: 'userMerchants',
           label: 'Merchants',
           handler: {
             class: 'foam.nanos.menu.ViewMenu',

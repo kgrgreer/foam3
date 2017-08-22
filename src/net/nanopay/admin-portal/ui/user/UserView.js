@@ -86,6 +86,21 @@ foam.CLASS({
         padding: 30px;
       }
 
+      ^send-money {
+        float: right;
+        width: 135px;
+        height: 40px;
+        border-radius: 2px;
+        background-color: #5E91CB;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+        color: #ffffff;
+        margin: auto;
+        display: block;
+        margin-top: 5px;
+      }
+
       .profile-photo {
         width: 35px;
         height: 35px;
@@ -100,6 +115,10 @@ foam.CLASS({
     {
       name: 'noUsers',
       message: 'You don\'t have any registered users yet.'
+    },
+    {
+      name: 'sendMoneyText',
+      message: 'Send Money'
     }
   ],
 
@@ -112,8 +131,10 @@ foam.CLASS({
         .tag({class: 'net.nanopay.admin.ui.shared.topNavigation.SubMenu', menuName: 'userSubMenu' })
         .start('div')
           .addClass(view.myClass('container'))
-          .start('div')
-            // TODO Search, Send Money
+          .start()
+            .addClass(view.myClass('send-money'))
+            .add(view.sendMoneyText)
+            .on('click', this.sendMoney)
           .end()
           .tag(this.UserTableView)
           .start('span')
@@ -126,28 +147,123 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    function sendMoney() {
+
+    }
+  ],
+
   classes: [
     {
       name: 'UserTableView',
       extends: 'foam.u2.View',
       
-      requires: [ 'net.nanopay.admin.model.Transaction' ],
+      requires: [
+        'foam.nanos.auth.User',
+        'foam.mlang.predicate.False',
+        'foam.mlang.predicate.True',
+        'foam.parse.QueryParser',
+        'foam.u2.view.TextField',
+        'foam.u2.search.GroupAutocompleteSearchView'
+      ],
+
       imports: [ 'userDAO' ],
 
       properties: [ 
         'selection', 
-        { name: 'data', factory: function() { return this.userDAO; }}
+        {
+          class: 'foam.dao.DAOProperty',
+          name: 'data',
+          factory: function() { return this.userDAO; }
+        },
+
+        {
+          name: 'textFieldView',
+        },
+
+        {
+          name: 'queryParser',
+          expression: function(data$of) {
+            return this.QueryParser.create({ of: data$of });
+          }
+        },
+        {
+          name: 'predicate',
+          expression: function(queryParser, textFieldView$data) {
+            var str = textFieldView$data;
+            return str ?
+              queryParser.parseString(str) || this.False.create() :
+              this.True.create();
+          },
+        },
+
+        {
+          class: 'foam.dao.DAOProperty',
+          name: 'filteredDAO',
+          expression: function(data, predicate) {
+            return data.where(predicate)
+          },
+        },
       ],
+
+      axioms: [
+        foam.u2.CSS.create({
+          code:
+          `
+            ^filter-search .foam-u2-tag-Input {
+              width: 40%;
+              height: 40px;
+              border: solid 1px #FFF;
+              border-radius: 2px;
+              margin: 5px 0px 30px 0px;
+              outline: none;
+              padding: 0px 15px;
+              font-family: Roboto;
+              font-size: 12px;
+              text-align: left;
+              color: #093649;
+              font-weight: 300;
+              letter-spacing: 0.2px;
+              float: left;
+            }
+
+            ^ic-search {
+              margin-left: -62px;
+              display: inline;
+              width: 24px;
+              height: 24px;
+              background-color: #ffffff;
+              position: relative;
+              top: 12px;
+              padding: 10px 24px 5px 10px;
+            }
+      `})],
 
       methods: [
         function initE() {
           this.SUPER();
+          var view = this;
 
           this
+            .start('div')
+              .start('div')
+                .addClass(view.myClass('filter-search'))
+                .tag(this.TextField, { onKey: true }, this.textFieldView$)
+              .end()
+              .start('div')
+                .addClass(view.myClass('ic-search'))
+                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
+              .end()
+            .end()
+            .tag({
+              class: 'foam.u2.search.GroupAutocompleteSearchView',
+              property: foam.nanos.auth.User.EMAIL,
+              dao: this.filteredDAO$proxy,
+            })
             .start({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
-              data: this.data,
+              data: this.filteredDAO$proxy,
               columns: [
                 'fullName', 'email', 'phone', 'type'
               ],

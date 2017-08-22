@@ -554,18 +554,30 @@ foam.CLASS({
 
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
+
+  searchColumns: [
+    'search', 'fullName', 'email', 'phone', 'type'
+  ],
+  
   properties: [
     {
+      name: 'search',
+      transient: true,
+      searchView: { class: "foam.u2.search.TextSearchView", of: 'foam.nanos.auth.User', richSearch: true }
+    },
+    {
       name: 'phone',
+      aliases: [ 'p' ],
       tableCellFormatter: function(phone) {
         var p = phone.number;
         if ( p )
-          this.start().add(p.slice(0, 3), '-', p.slice(3, 7), '-', p.slice(7)).end();
+          this.start().add(p.slice(0, 3), '-', p.slice(3, 6), '-', p.slice(6)).end();
       }
     },
     {
       name: 'fullName',
-      getter: function() { return this.firstName + ( this.lastName ? ' ' + this.lastName : '' ); },
+      expression: function() { return this.firstName + ( this.lastName ? ' ' + this.lastName : '' ); },
+      aliases: [ 'name' ],
       tableCellFormatter: function(obj) {
         return this.start()
                   .start({ class: 'foam.u2.tag.Image', data: './images/business-placeholder.png' }) // TODO: fetch from obj
@@ -597,7 +609,6 @@ foam.CLASS({
   properties: [
     {
       name: 'search',
-      class: 'String',
       transient: true,
       searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.admin.model.Transaction', richSearch: true }
     },
@@ -622,7 +633,7 @@ foam.CLASS({
                   .start({ class: 'foam.u2.tag.Image', data: obj.profilePicture })
                     .addClass('profile-photo')
                   .end()
-                  .add(obj.firstName + ( obj.lastName ? ' ' + obj.lastName : '' )).end()
+                  .add(obj.firstName + ( obj.lastName ? ' ' + obj.lastName : '' )).end();
       }
     },
     {
@@ -635,7 +646,7 @@ foam.CLASS({
                   .start({ class: 'foam.u2.tag.Image', data: obj.profilePicture })
                     .addClass('profile-photo')
                   .end()
-                  .add(obj.firstName + ( obj.lastName ? ' ' + obj.lastName : '' )).end()
+                  .add(obj.firstName + ( obj.lastName ? ' ' + obj.lastName : '' )).end();
       }
     },
     {
