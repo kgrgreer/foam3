@@ -1,0 +1,19 @@
+body {
+  font-family: 'Roboto';
+  color: #FFFFFF;
+  background-color: #2c4389;
+  margin: 0;
+  height: 480px;
+  width: 320px;
+}
+
+button {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: Roboto;
+  font-size: 16px;
+  line-height: 1.88;
+  text-align: center;
+  color: #ffffff;
+}
