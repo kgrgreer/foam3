@@ -232,14 +232,8 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('settingsBar')
-          .start('div').addClass('settingsBarContainer')
-            .add(this.PERSONAL_PROFILE)
-            .add(this.BUSINESS_PROFILE)
-            .add(this.BANK_ACCOUNT)
-            .add(this.CASH_OUT)
-          .end()
-        .end()
+
+        .tag({class: 'net.nanopay.retail.ui.settings.SettingsNavigator'})
         .start('div').addClass('businessSettingsContainer')
           .start('div').addClass('firstContainer')
             .start().add('Business Profile').addClass('boxTitle').end()
@@ -304,51 +298,6 @@ foam.CLASS({
             .start().addClass('close-BTN').add("Close").end()
           .end()
         .end()
-    }
-  ],
-
-  actions: [
-    {
-      name: 'personalProfile',
-      label: 'Personal Profile',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.personal.PersonalSettingsView' });
-      }
-    },
-    {
-      name: 'businessProfile',
-      label: 'Business Profile',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.business.BusinessSettingsView' });
-      }
-    },
-    {
-      name: 'bankAccount',
-      label: 'Bank Account',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountSettingsView' });
-      }
-    },
-    {
-      name: 'addBank',
-      label: 'Add Bank Account',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountSettingsView' });
-      }
-    },
-    {
-      name: 'cashOut',
-      label: 'Cash Out',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.autoCashout.AutoCashoutSettingsView' });
-      }
-    },
-    {
-      name: 'editProfile',
-      label: 'Edit Profile',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.business.EditBusinessView' });
-      }
     }
   ]
 });

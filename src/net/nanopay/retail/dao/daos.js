@@ -62,19 +62,19 @@ foam.CLASS({
           seqNo: true,
           testData: [
               {
-                name: 'Scotiabank Chequing', institutionNumber: '002', transitNumber: 40193, accountNumber: '****1234', status: 'Verified'
+                accountName: 'Scotiabank Chequing', bankNumber: '002', transitNumber: 40193, accountNumber: '****1234', status: 'Verified'
               },
               {
-                name: 'Scotiabank Savings', institutionNumber: '002', transitNumber: 19087, accountNumber: '****0463', status: 'Unverified'
+                accountName: 'Scotiabank Savings', bankNumber: '002', transitNumber: 19087, accountNumber: '****0463', status: 'Unverified'
               },
               {
-                name: 'TD Savings', institutionNumber: '004', transitNumber: 32142, accountNumber: '****3925', status: 'Verified' 
+                accountName: 'TD Savings', bankNumber: '004', transitNumber: 32142, accountNumber: '****3925', status: 'Verified'
               }
-              
+
           ]
         })
-        .addPropertyIndex(this.BankAccount.NAME)
-        .addPropertyIndex(this.BankAccount.INSTITUTION_NUMBER)
+        .addPropertyIndex(this.BankAccount.ACCOUNT_NAME)
+        .addPropertyIndex(this.BankAccount.BANK_NUMBER)
         .addPropertyIndex(this.BankAccount.TRANSIT_NUMBER)
         .addPropertyIndex(this.BankAccount.ACCOUNT_NUMBER)
         .addPropertyIndex(this.BankAccount.STATUS)

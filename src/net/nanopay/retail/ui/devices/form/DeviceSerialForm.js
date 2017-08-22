@@ -68,10 +68,9 @@ foam.CLASS({
           .start('p')
             .addClass('pDefault')
             .addClass('inputErrorLabel')
-            .addClass(this.errors_$.map(function(e) { return e ? 'active' : ''; }))
-            .add(this.Error).end()
+            .add(this.slot(this.SERIAL_NUMBER.validateObj))
         .end()
-        .tag(this.SERIAL_NUMBER, {onKey: true})
+        .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 15})
     }
   ],
 

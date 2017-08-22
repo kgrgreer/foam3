@@ -221,37 +221,20 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.retail.model',
+  extends: 'net.nanopay.common.model.BankAccountInfo',
   name: 'BankAccount',
 
-  ids: ['name'],
+  ids: ['accountName'],
 
   documentation: 'Bank Account Information',
 
-  tableColumns: ['name', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'bankNumber', 'transitNumber', 'accountNumber', 'status'],
 
   properties: [
     {
       class: 'String',
-      name: 'name'
-    },
-    {
-      class: 'String',
-      name: 'institutionNumber',
-      label: 'Institution No.'
-    },
-    {
-      class: 'Long',
-      name: 'transitNumber',
-      label: 'Transit No.'
-    },
-    {
-      class: 'String',
-      name: 'accountNumber',
-      label: 'Account No.'
-    },
-    {
-      class: 'String',
-      name: 'status'
+      name: 'status',
+      value: 'Unverified'
     }
   ]
 });

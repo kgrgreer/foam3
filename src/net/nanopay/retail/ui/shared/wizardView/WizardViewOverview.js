@@ -25,11 +25,11 @@ foam.CLASS({
         }
 
         ^ .positionCircle {
-          width: 10px;
-          height: 10px;
+          width: 12px;
+          height: 12px;
           box-sizing: border-box;
           border: solid 1px rgba(164, 179, 184, 0.5);
-          border-radius: 5px;
+          border-radius: 6px;
           background-color: #FFFFFF;
           margin: auto;
         }
@@ -59,7 +59,7 @@ foam.CLASS({
           margin: 0;
           height: 20px;
           line-height: 20px;
-          margin-bottom: 28px;
+          margin-bottom: 30px;
 
           font-size: 12px;
           letter-spacing: 0.3px;
@@ -68,7 +68,7 @@ foam.CLASS({
         }
 
         ^ .positionTitle:first-child {
-          margin-top: 10px;
+          margin-top: 11px;
         }
       */}
     })

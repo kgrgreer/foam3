@@ -127,8 +127,7 @@ foam.CLASS({
           .start('p')
             .addClass('pDefault')
             .addClass('inputErrorLabel')
-            .addClass(self.errors_$.map(function(e) { return e ? 'active' : ''; }))
-            .add(this.Error).end()
+            .add(this.slot(this.SELECTED_OPTION.validateObj))
         .end()
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')

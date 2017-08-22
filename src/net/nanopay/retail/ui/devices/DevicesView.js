@@ -270,7 +270,7 @@ foam.CLASS({
       label: 'Add a new device',
       icon: 'ui/images/ic-plus.svg',
       code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.devices.form.DeviceForm', title: this.ActionAdd, views: this.addDeviceForm }));
+        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.devices.form.DeviceForm', title: this.ActionAdd }));
       }
     }
   ]

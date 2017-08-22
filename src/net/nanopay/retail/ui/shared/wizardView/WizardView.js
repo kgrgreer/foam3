@@ -125,9 +125,16 @@ foam.CLASS({
           line-height: 1.33;
         }
 
+        ^ .foam-u2-ActionView-unavailable {
+          width: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
         ^ .foam-u2-ActionView-goBack {
           display: inline-block;
           box-sizing: border-box;
+          margin-right: 30px;
           background: none;
           outline: none;
           border:none;
@@ -155,7 +162,6 @@ foam.CLASS({
 
         ^ .foam-u2-ActionView-goNext {
           display: inline-block;
-          margin-left: 30px;
           background: none;
           outline: none;
           border:none;
@@ -295,7 +301,7 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isEnabled: function(position) { return position == 0 ? false : true; },
+      isAvailable: function(position) { return position == 0 ? false : true; },
       code: function() {
         this.subStack.back();
       }

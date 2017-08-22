@@ -7,18 +7,26 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a device',
 
   axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {
-        net.nanopay.retail.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code;
-      }
-    })
+    foam.u2.CSS.create({code: net.nanopay.retail.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+  ],
+
+  methods: [
+    function init() {
+      this.views = [
+        { parent: 'addDevice', id: 'form-addDevice-name',     label: 'Name',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceNameForm' } },
+        { parent: 'addDevice', id: 'form-addDevice-type',     label: 'Type',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceTypeForm' } },
+        { parent: 'addDevice', id: 'form-addDevice-serial',   label: 'Serial #',  view: { class: 'net.nanopay.retail.ui.devices.form.DeviceSerialForm' } },
+        { parent: 'addDevice', id: 'form-addDevice-password', label: 'Password',  view: { class: 'net.nanopay.retail.ui.devices.form.DevicePasswordForm' } }
+      ];
+      this.SUPER();
+    }
   ],
 
   actions: [
     {
       name: 'goBack',
       label: 'Back',
-      isEnabled: function(position) {
+      isAvailable: function(position) {
         return position == this.viewTitles.length - 1 || position == 0 ? false : true;
       },
       code: function() {
@@ -29,7 +37,6 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        console.log(errors);
         if ( errors ) return false; // Error present
         if ( position < this.views.length - 1 ) return true; // Valid next
         if ( position == this.views.length - 1 && this.inDialog) return true; // Last Page & in dialog

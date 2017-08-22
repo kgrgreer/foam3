@@ -67,8 +67,7 @@ foam.CLASS({
           .start('p')
             .addClass('pDefault')
             .addClass('inputErrorLabel')
-            .addClass(this.errors_$.map(function(e) { return e ? 'active' : ''; }))
-            .add(this.Error).end()
+            .add(this.slot(this.DEVICE_NAME.validateObj))
         .end()
         .tag(this.DEVICE_NAME, {onKey: true})
 

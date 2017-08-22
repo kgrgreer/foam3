@@ -1,9 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.settings.bankAccount',
   name: 'BankAccountSettingsView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.retail.model.BankAccount' ],
+  requires: [
+    'net.nanopay.retail.model.BankAccount',
+    'foam.u2.dialog.Popup'
+  ],
 
   imports: [ 'bankAccountDAO', 'stack' ],
 
@@ -35,41 +38,6 @@ foam.CLASS({
         ^ .bankAccountContainer {
           width: 992px;
           margin: auto;
-        }
-        ^ .settingsBar {
-          width: 100%;
-          height: 40px;
-          line-height: 40px;
-          background-color: #FFFFFF;
-          margin-bottom: 20px;
-        }
-        ^ .settingsBarContainer {
-          width: 992px;
-          margin: auto;
-        }
-        ^ .foam-u2-ActionView {
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.3px;
-          color: #093649;
-          padding: 0;
-          padding-left: 30px;
-          display: inline-block;
-          cursor: pointer;
-          margin: 0;
-          border: none;
-          background: transparent;
-          outline: none;
-          line-height: 40px;
-        }
-        ^ .foam-u2-ActionView:first-child {
-          padding-left: 0;
-        }
-        ^ .foam-u2-ActionView:hover {
-          background: white;
-          opacity: 1;
         }
         ^ .bankContentCard {
           width: 218px;
@@ -135,6 +103,48 @@ foam.CLASS({
         ^ tbody > tr:nth-child(odd) {
           background: #f6f9f9;
         }
+
+        ^ .foam-u2-ActionView-addBank {
+          background: none;
+          outline: none;
+          border: none;
+
+          width: 218px;
+          height: 100px;
+          float: right;
+
+          background-color: #23C2b7;
+          letter-spacing: 0.3px;
+          color: #FFFFFF;
+          border-radius: 2px;
+          opacity: 1;
+          font-weight: normal;
+        }
+
+        ^ .foam-u2-ActionView-addBank span {
+          display: block;
+          margin-top: 8px;
+
+          font-size: 12px;
+          line-height: 1.33;
+          letter-spacing: 0.2px;
+        }
+
+        ^ .foam-u2-ActionView-addBank:hover {
+          background: none;
+          cursor: pointer;
+          background-color: #20B1A7;
+        }
+
+        ^ .foam-u2-dialog-Popup-background {
+          pointer-events: none;
+          background-color: #edf0f5;
+          opacity: 1;
+        }
+
+        ^ .foam-u2-dialog-Popup-inner {
+          background-color: transparent !important;
+        }
       */}
     })
   ],
@@ -151,17 +161,10 @@ foam.CLASS({
       var self = this;
       this.dao.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
-      
+
       this
         .addClass(this.myClass())
-        .start('div').addClass('settingsBar')
-          .start('div').addClass('settingsBarContainer')
-            .add(this.PERSONAL_PROFILE)
-            .add(this.BUSINESS_PROFILE)
-            .add(this.BANK_ACCOUNT)
-            .add(this.CASH_OUT)
-          .end()
-        .end()
+        .tag({class: 'net.nanopay.retail.ui.settings.SettingsNavigator'})
         .start('div').addClass('bankAccountContainer')
           .start('div').addClass('row')
             .start('div').addClass('spacer')
@@ -174,7 +177,8 @@ foam.CLASS({
               .tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCard', data: { title: this.TitleUnverified}, contents$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCardActionButton', data: { title: this.ActionAdd , image: 'ui/images/ic-plus.svg'} }).addClass('actionButton')
+              //.tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCardActionButton', data: { title: this.ActionAdd , image: 'ui/images/ic-plus.svg'} }).addClass('actionButton')
+              .tag(this.ADD_BANK, { showLabel: true })
             .end()
           .end()
           .start()
@@ -185,8 +189,8 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.BankAccount.NAME,
-                    this.BankAccount.INSTITUTION_NUMBER,
+                    this.BankAccount.ACCOUNT_NAME,
+                    this.BankAccount.BANK_NUMBER,
                     this.BankAccount.TRANSIT_NUMBER,
                     this.BankAccount.ACCOUNT_NUMBER,
                     this.BankAccount.STATUS
@@ -209,7 +213,7 @@ foam.CLASS({
       imports: [ 'bankAccountDAO' ],
       properties: [
         'selection',
-        { name: 'data', factory: function() {return this.bankAccountDAO}}
+        { name: 'data', factory: function() { return this.bankAccountDAO; } }
       ],
 
       methods: [
@@ -220,14 +224,14 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               config: {
-                status: { 
+                status: {
                   tableCellView: function(obj, e) {
                     return e.E().style({color: '#2cab70'})
                   }
                 }
               },
               columns: [
-                'name', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
+                'accountName', 'bankNumber', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         }
@@ -237,31 +241,11 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'personalProfile',
-      label: 'Personal Profile',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.personal.PersonalSettingsView' });
-      }
-    },
-    {
-      name: 'businessProfile',
-      label: 'Business Profile',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.business.BusinessSettingsView' });
-      }
-    },
-    {
-      name: 'bankAccount',
-      label: 'Bank Account',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountSettingsView' });
-      }
-    },
-    {
-      name: 'cashOut',
-      label: 'Cash Out',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.autoCashout.AutoCashoutSettingsView' });
+      name: 'addBank',
+      label: 'Add a bank account',
+      icon: 'ui/images/ic-plus.svg',
+      code: function() {
+        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.settings.bankAccount.form.BankForm', title: this.ActionAdd }));
       }
     }
   ],
