@@ -33,19 +33,19 @@ foam.CLASS({
   ]
 })
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.common.model.User',
+  sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.common.model.Address',
   forwardName: 'address',
   inverseName: 'resident'
 });
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.common.model.User',
+  sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.common.model.Account',
   forwardName: 'accounts',
   inverseName: 'owner'
 });
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.common.model.User',
+  sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.common.model.Phone',
   forwardName: 'phones',
   inverseName: 'owner'
