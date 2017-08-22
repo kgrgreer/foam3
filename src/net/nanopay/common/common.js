@@ -1,13 +1,13 @@
 FOAM_FILES([
-  { name: 'model/Account' },
-  { name: 'model/AccountInfo' },
-  { name: 'model/AccountLimit' },
-  { name: 'model/Address' },
-  { name: 'model/BankAccount' },
-  { name: 'model/BankAccountInfo' },
-  { name: 'model/PadAccount' },
-  { name: 'model/Phone' },
-  { name: 'model/User' },
-  { name: 'model/UserAccountInfo' },
-  { name: 'ui/SignIn' }
+  { name: 'net/nanopay/common/model/Account' },
+  { name: 'net/nanopay/common/model/AccountInfo' },
+  { name: 'net/nanopay/common/model/AccountLimit' },
+  { name: 'net/nanopay/common/model/Address' },
+  { name: 'net/nanopay/common/model/BankAccount' },
+  { name: 'net/nanopay/common/model/BankAccountInfo' },
+  { name: 'net/nanopay/common/model/PadAccount' },
+  { name: 'net/nanopay/common/model/Phone' },
+  { name: 'net/nanopay/common/model/User' },
+  { name: 'net/nanopay/common/model/UserAccountInfo' },
+  { name: 'net/nanopay/common/ui/SignIn' }
 ]);
