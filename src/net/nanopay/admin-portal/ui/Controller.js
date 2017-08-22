@@ -98,7 +98,7 @@ foam.CLASS({
 
       // Injecting Sample Business
       this.businessDAO.limit(1).select().then(function(a) {
-        self.business.copyFrom(a.a[0]);
+        self.business.copyFrom(a.array[0]);
       });
 
       // Injecting Sample Partner
@@ -110,7 +110,7 @@ foam.CLASS({
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
-        self.user.copyFrom(a.a[0]);
+        self.user.copyFrom(a.array[0]);
       });
 
       this.business.sub(function() {
