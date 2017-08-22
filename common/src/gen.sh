@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Delete old build files
+rm -r ../build/
+mkdir ../build/
+
+# Copy over directories from src
+for d in * ; do
+    if [ "$d" = 'target/' ]; then
+        continue
+    fi
+    if [ "$d" = 'gen.sh' ]; then
+        continue
+    fi
+    cp -r $d ../build
+done
+
+# Generate java files to build dir
+cwd=$(pwd)
+node ../../../foam2/tools/genjava.js $cwd/../classes.js $cwd/../build $cwd

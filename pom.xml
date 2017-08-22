@@ -1,0 +1,50 @@
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  <version>0.0.1</version>
+
+  <groupId>net.nanopay</groupId>
+  <artifactId>parent</artifactId>
+  <name>nanoPay parent project</name>
+
+  <modules>
+    <module>common</module>
+    <module>b2b</module>
+  </modules>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>nanopay.local</id>
+      <name>nanopay</name>
+      <url>file:${project.basedir}/repo</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>bintray-plugins</name>
+      <url>http://jcenter.bintray.com</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google</groupId>
+      <artifactId>foam</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+</project>
