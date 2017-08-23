@@ -20,7 +20,6 @@ foam.CLASS({
 
   properties: [ 
      {
-       class: 'foam.dao.DAOProperty',
        name: 'data',
        factory: function() { return this.userDAO; }
      },
