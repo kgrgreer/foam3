@@ -47,4 +47,4 @@ cd ..
 
 6. Load a project
 
-Visit [http://localhost:8080/static/NANOPAY]() and go into any of the submodules to view that project
+Visit [http://localhost:8080/static/NANOPAY](http://localhost:8080/static/NANOPAY) and go into any of the submodules to view that project
