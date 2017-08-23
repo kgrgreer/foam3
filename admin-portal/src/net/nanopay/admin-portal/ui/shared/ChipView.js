@@ -71,7 +71,9 @@ foam.CLASS({
           .start('p')
             .addClass('label')
             .add(this.data)
-            .add(this.REMOVE_SELF)
+            .startContext({ data: this })
+              .add(this.REMOVE_SELF)
+            .endContext()
           .end()
         .end();
     }
@@ -81,8 +83,8 @@ foam.CLASS({
     {
       name: 'removeSelf',
       icon: 'images/ic-cancelwhite.svg',
-      code: function(X) {
-        X.removeChip(X.data);
+      code: function() {
+        this.removeChip(this.data);
       }
     }
   ]
