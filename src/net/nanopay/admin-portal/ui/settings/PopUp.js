@@ -3,7 +3,9 @@ foam.CLASS({
   name: 'PopUp',
   extends: 'foam.u2.View',
 
-  requires: ['foam.u2.dialog.Popup'],
+  requires: [
+    'foam.u2.dialog.Popup'
+  ],
 
   imports: [
     'stack'
