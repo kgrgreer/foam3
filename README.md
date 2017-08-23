@@ -4,9 +4,8 @@ Repository containing b2b, retail, common, admin-portal, ingenico
 ## Running locally
 
 ### Prerequisites
-1. [Homebrew](https://brew.sh)
-2. Maven (`brew install maven`)
-3. Git (`brew install git`)
+1. Maven (`brew install maven`)
+2. Git (`brew install git`)
 
 ### Setup
 1. Checkout `foam2` and `NANOPAY` repositories into the same directory
@@ -27,6 +26,7 @@ cd foam2/src
 ./gen.sh
 cd ../build
 mvn compile package
+mvn install:install-file -Dfile="target/foam-1.0-SNAPSHOT.jar" -DgroupId=com.google -DartifcatId=foam -Dversion=1.0 -Dname=foam -Dpackaging=jar
 cd ../..
 ```
 
