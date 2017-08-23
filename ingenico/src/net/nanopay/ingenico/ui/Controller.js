@@ -152,13 +152,12 @@ foam.CLASS({
         return;
       }
 
-      // remove selected class
+      // remove selected class from current and add to new
       var selected = document.getElementsByClassName('mdc-list-item selected')[0];
       if ( selected ) {
         selected.classList.remove('selected');
+        e.target.classList.add('selected')
       }
-      // add selected class
-      e.target.classList.add('selected')
 
       title.innerHTML = clicked;
       switch ( clicked ) {
