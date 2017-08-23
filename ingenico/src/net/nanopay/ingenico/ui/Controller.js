@@ -34,7 +34,7 @@ foam.CLASS({
           box-shadow: none;
         }
         ^ .mdc-list-item {
-          height: 90px;
+          min-height: 90px;
           background-color: #ffffff;
           font-family: Roboto;
           font-size: 16px;
@@ -44,6 +44,15 @@ foam.CLASS({
           color: #595959;
           padding: 0px;
           margin: 0px;
+        }
+        ^ .mdc-list-item.back {
+          min-height: 56px;
+          background-color: #26a96c;
+          font-family: Roboto;
+          font-size: 16px;
+          line-height: 1.88;
+          text-align: center;
+          color: #ffffff;
         }
         ^ .mdc-list-item.selected {
           background-color: #f1f1f1;
@@ -56,6 +65,17 @@ foam.CLASS({
         ^ .mdc-list-item__start-detail img {
           width: 40px;
           height: 40px;
+          object-fit: contain;
+        }
+        ^ .mdc-list-item__start-detail.back {
+          height: 90px;
+          margin-left: 27px;
+          margin-top: 70px;
+          margin-right: 25px;
+        }
+        ^ .mdc-list-item__start-detail.back img {
+          width: 20px;
+          height: 20px;
           object-fit: contain;
         }
       */}
@@ -101,6 +121,16 @@ foam.CLASS({
           .start('nav').addClass('mdc-temporary-drawer__drawer')
             .start('nav').addClass('mdc-temporary-drawer__content mdc-list-group')
               .start('div').addClass('mdc-list')
+                .start('a').addClass('mdc-list-item back')
+                  .attrs({ href: '#' })
+                  .start('i').addClass('mdc-list-item__start-detail back')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
+                  .end()
+                  .add('Back')
+                  .on('click', this.onMenuItemClicked)
+                .end()
+
                 .start('a').addClass('mdc-list-item selected')
                   .attrs({ href: '#' })
                   .start('i').addClass('mdc-list-item__start-detail')
