@@ -33,9 +33,29 @@ foam.CLASS({
           -webkit-box-shadow: none;
           box-shadow: none;
         }
+        ^ .mdc-list-item {
+          height: 90px;
+          background-color: #ffffff;
+          font-family: Roboto;
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 1.88;
+          text-align: left;
+          color: #595959;
+          padding: 0px;
+          margin: 0px;
+        }
+        ^ .mdc-list-item.selected {
+          background-color: #f1f1f1;
+        }
+        ^ .mdc-list-item__start-detail {
+          height: 90px;
+          margin-left: 20px;
+          margin-top: 50px;
+        }
         ^ .mdc-list-item__start-detail img {
-          width: 25px;
-          height: 25px;
+          width: 40px;
+          height: 40px;
           object-fit: contain;
         }
       */}
@@ -43,8 +63,9 @@ foam.CLASS({
   ],
 
   properties: [
-    'drawer',
     'title',
+    'drawer',
+    'drawerList',
     {
       name: 'stack',
       factory: function () {
@@ -80,7 +101,7 @@ foam.CLASS({
           .start('nav').addClass('mdc-temporary-drawer__drawer')
             .start('nav').addClass('mdc-temporary-drawer__content mdc-list-group')
               .start('div').addClass('mdc-list')
-                .start('a').addClass('mdc-list-item')
+                .start('a').addClass('mdc-list-item selected')
                   .attrs({ href: '#' })
                   .start('i').addClass('mdc-list-item__start-detail')
                     .attrs({ 'aria-hidden': true })
@@ -114,6 +135,7 @@ foam.CLASS({
         var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;
         this.drawer = new MDCTemporaryDrawer(drawerEl);
         this.title = document.getElementsByClassName('mdc-toolbar__title')[0];
+        this.drawerList = document.getElementsByClassName('mdc-list')[0];
       });
     }
   ],
@@ -125,10 +147,18 @@ foam.CLASS({
 
     function onMenuItemClicked (e) {
       var clicked = e.target.text;
-      if ( title === clicked ) {
+      if ( title === clicked || clicked === 'Back' ) {
         drawer.open = false;
         return;
       }
+
+      // remove selected class
+      var selected = document.getElementsByClassName('mdc-list-item selected')[0];
+      if ( selected ) {
+        selected.classList.remove('selected');
+      }
+      // add selected class
+      e.target.classList.add('selected')
 
       title.innerHTML = clicked;
       switch ( clicked ) {
