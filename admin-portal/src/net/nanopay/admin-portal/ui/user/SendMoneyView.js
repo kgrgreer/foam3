@@ -25,7 +25,7 @@ foam.CLASS({
      },
      {
        name: 'labels',
-       expression: function() { return [ ] }
+       value: []
      },
      'autocompleteView'
    ],
@@ -241,18 +241,13 @@ foam.CLASS({
 
       for ( var i = 0 ; i < dataOptions.length ; i++ ) {
         if ( dataOptions[i].value == this.autocompleteView.data ) {
-          var labels = [];
-
-          // Must create a new array to ensure slot is updated
-          this.labels.forEach( e => {
-            labels.push(e);
-          });
-
-          // Adds new element and sets self.labels to new array
+          console.log(foam.Array.clone(this.labels))
+          var labels = foam.Array.clone(this.labels);
           labels.push(this.autocompleteView.data);
           this.labels = labels;
 
           this.autocompleteView.data = '';
+          break;
         }
       }
     }
