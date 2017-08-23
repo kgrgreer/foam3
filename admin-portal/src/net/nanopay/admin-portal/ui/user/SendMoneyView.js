@@ -212,7 +212,7 @@ foam.CLASS({
               .addClass('tag-container')
               .forEach(labels, function(label) {
                   this.tag({
-                    class: 'net.nanopay.admin.ui.shared.TagView',
+                    class: 'net.nanopay.admin.ui.shared.ChipView',
                     label: label
                   })
               });
@@ -241,7 +241,6 @@ foam.CLASS({
 
       for ( var i = 0 ; i < dataOptions.length ; i++ ) {
         if ( dataOptions[i].value == this.autocompleteView.data ) {
-          console.log(foam.Array.clone(this.labels))
           var labels = foam.Array.clone(this.labels);
           labels.push(this.autocompleteView.data);
           this.labels = labels;

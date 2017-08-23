@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui.shared',
-  name: 'TagView',
+  name: 'ChipView',
   extends: 'foam.u2.View',
 
   documentation: 'View to display tags with labels',
@@ -36,7 +36,7 @@ foam.CLASS({
           display: table-cell;
         }
 
-        ^ .close-tag {
+        ^ .close-chip {
           width: 15px;
           height: 15px;
           object-fit: contain;
@@ -58,7 +58,7 @@ foam.CLASS({
           .start('p')
             .addClass('label')
             .add(this.label)
-            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-tag').end()
+            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-chip').end()
           .end()
         .end();
     }
