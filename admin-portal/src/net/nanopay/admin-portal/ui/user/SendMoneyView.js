@@ -222,26 +222,7 @@ foam.CLASS({
             property: foam.nanos.auth.User.EMAIL,
             dao: self.data,
             view$: self.autocompleteView$
-          }).on('input', function(elem) {
-            var dataOptions = elem.target.list.options;
-
-            for ( var i = 0 ; i < dataOptions.length ; i++ ) {
-              if ( dataOptions[i].value == self.autocompleteView.data ) {
-                var labels = [];
-
-                // Must create a new array to ensure slot is updated
-                self.labels.forEach( e => {
-                  labels.push(e);
-                });
-
-                // Adds new element and sets self.labels to new array
-                labels.push(self.autocompleteView.data);
-                self.labels = labels;
-
-                self.autocompleteView.data = '';
-              }
-            }
-          })
+          }).on('input', elem => self.verifyTag(elem))
           .start().addClass('input-container')
             .start('p').addClass('pDefault').add('Amount').end()
             .start('input').addClass('input-Box').end()
@@ -251,6 +232,29 @@ foam.CLASS({
           .end()
         .end()
       .end()
+    }
+  ],
+
+  listeners: [
+    function verifyTag(elem) {
+      var dataOptions = elem.target.list.options;
+
+      for ( var i = 0 ; i < dataOptions.length ; i++ ) {
+        if ( dataOptions[i].value == this.autocompleteView.data ) {
+          var labels = [];
+
+          // Must create a new array to ensure slot is updated
+          this.labels.forEach( e => {
+            labels.push(e);
+          });
+
+          // Adds new element and sets self.labels to new array
+          labels.push(this.autocompleteView.data);
+          this.labels = labels;
+
+          this.autocompleteView.data = '';
+        }
+      }
     }
   ]
 })
