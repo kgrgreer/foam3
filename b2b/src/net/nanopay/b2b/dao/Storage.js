@@ -7,10 +7,12 @@ foam.CLASS({
   requires: [
     'foam.dao.ContextualizingDAO',
     'foam.dao.DecoratedDAO',
+    'foam.dao.ClientDAO',
     'foam.dao.EasyDAO',
     'foam.dao.history.HistoryRecord',
     'net.nanopay.b2b.model.Business',
-    'net.nanopay.b2b.model.Invoice'
+    'net.nanopay.b2b.model.Invoice',
+    'foam.box.HTTPBox',
   ],
 
   exports: [
@@ -18,9 +20,11 @@ foam.CLASS({
     'invoiceDAO',
     'historyDAO',
     'addressDAO',
+    'businessBusinessJunctionDAO',		
     'businessSectorDAO',
     'businessTypeDAO',
-    'invoiceResolutionDAO'
+    'invoiceResolutionDAO',
+    'countryDAO'
   ],
 
 //   classes: [
@@ -331,6 +335,14 @@ foam.CLASS({
       }
     },
     {
+      name: 'businessBusinessJunctionDAO',		
+      factory: function() {		
+        return this.createDAO({		
+          of: 'net.nanopay.b2b.model.BusinessBusinessJunction'		
+        })		
+      }		
+    },
+    {
       name: 'businessSectorDAO',
       factory: function() {
         return this.createDAO({
@@ -511,9 +523,9 @@ foam.CLASS({
     {
       name: 'countryDAO',
       factory: function() {
-        return this.createDAO({
-          of: 'foam.nanos.auth.Country',
-          seqNo: true,
+        return this.clientDAO({
+          of: foam.nanos.auth.Country,
+          url: 'countryDAO',
           testData: [
             {
               name: 'Canada',
@@ -662,6 +674,29 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
+    },
+
+    function clientDAO(config) {
+
+      var dao = this.ClientDAO.create({
+        of: config.of,
+        delegate: this.HTTPBox.create({
+          method: 'POST',
+          url: 'http://localhost:8080/' + config.url
+        })
+      });
+
+      if ( config.testData ) {
+        dao.select(this.COUNT()).then(function (c) {
+          if ( c.value == 0 ) {
+            for ( var i = 0 ; i < config.testData.length ; i ++ ) {
+              dao.put(config.of.create(config.testData[i]));
+            }
+          }
+        });
+      }
+
+      return dao;
     }
   ]
 });
