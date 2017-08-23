@@ -15,6 +15,8 @@
     <module>common</module>
     <module>b2b</module>
     <module>retail</module>
+    <module>ingenico</module>
+    <module>admin-portal</module>
   </modules>
 
   <properties>
