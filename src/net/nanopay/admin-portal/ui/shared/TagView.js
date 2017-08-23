@@ -17,8 +17,8 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           height: 30px;
-	        border-radius: 100px;
-	        background-color: #a4b3b8;
+          border-radius: 100px;
+          background-color: #a4b3b8;
           margin: auto;
           position: relative;
           float: left;
@@ -60,7 +60,7 @@ foam.CLASS({
             .add(this.label)
             .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-tag').end()
           .end()
-        .end()
+        .end();
     }
   ]
 });

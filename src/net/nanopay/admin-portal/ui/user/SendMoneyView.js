@@ -34,7 +34,7 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-      ^{
+      ^ {
         width: 448px;
         margin: auto;
       }
@@ -192,13 +192,13 @@ foam.CLASS({
     var self = this;
 
     this
-    .addClass(this.myClass())
+      .addClass(this.myClass())
       .start()
         .start().addClass('Message-Container')
           .start().addClass('Change-Container')
             .start().addClass('Change-Text').add("Send Money").end()
             .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-Button')
-              .on('click', function(){self.closeDialog()})
+              .on('click', self.closeDialog())
             .end()
           .end()
           .start('div')
@@ -209,7 +209,6 @@ foam.CLASS({
             .start('p').addClass('pDefault').add('Send To').end()
           .end()
           .add(this.slot(function(labels) {
-            console.log('labels called')
             return this.E('div')
               .addClass('tag-container')
               .forEach(labels, function(label) {
