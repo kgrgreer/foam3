@@ -685,6 +685,19 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id'
+    },
+    {
+      name: 'status',
+      tableCellFormatter: function(a) {
+        var colour = ( a == 'verified' ) ? '#2cab70' : '#f33d3d';
+        this.start()
+          .add(a)
+          .style({
+            'color': colour,
+            'text-transform': 'capitalize'
+          })
+        .end();
+      }
     }
   ],
 
