@@ -24,14 +24,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>nanopay.local</id>
-      <name>nanopay</name>
-      <url>file:${project.basedir}/repo</url>
-    </repository>
-  </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <snapshots>
