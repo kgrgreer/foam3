@@ -5,11 +5,8 @@ foam.CLASS({
 
   documentation: 'View to display tags with labels',
 
-  properties: [
-    {
-      class: 'String',
-      name: 'label'
-    }
+  imports: [
+    'removeChip'
   ],
 
   axioms: [
@@ -36,13 +33,29 @@ foam.CLASS({
           display: table-cell;
         }
 
-        ^ .close-chip {
+        ^ .foam-u2-ActionView-removeSelf {
+          width: 10px;
+          height: 10px;
+          object-fit: contain;
+          margin: 0;
+          margin-top: -11;
+          float: right;
+          cursor: pointer;
+          display: inline-block;
+          outline: 0;
+          border: none;
+          background: transparent;
+          padding-right: 15x;
+        }
+
+        ^ .foam-u2-ActionView-removeSelf img {
           width: 15px;
           height: 15px;
-          object-fit: contain;
-          margin-left: 10px;
-          float: right;
-          margin-top: -2;
+        }
+
+        ^ .foam-u2-ActionView-removeSelf:hover {
+          background: transparent;
+          background-color: transparent;
         }
       */}
     })
@@ -57,10 +70,22 @@ foam.CLASS({
         .start()
           .start('p')
             .addClass('label')
-            .add(this.label)
-            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-chip').end()
+            .add(this.data)
+            .startContext({ data: this })
+              .add(this.REMOVE_SELF)
+            .endContext()
           .end()
         .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'removeSelf',
+      icon: 'images/ic-cancelwhite.svg',
+      code: function() {
+        this.removeChip(this.data);
+      }
     }
   ]
 });
