@@ -4,6 +4,7 @@
     <output url="file://$MODULE_DIR$/target/admin-portal-0.0.1/WEB-INF/classes" />
     <output-test url="file://$MODULE_DIR$/target/admin-portal-0.0.1/WEB-INF/test-classes" />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/build" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
