@@ -16,6 +16,10 @@ foam.CLASS({
     'userDAO'
   ],
 
+  exports: [
+    'removeChip'
+  ],
+
   documentation: 'Send Money View',
 
   properties: [ 
@@ -206,7 +210,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function initE() {
     this.SUPER();
     var self = this;
 
@@ -234,7 +238,7 @@ foam.CLASS({
               .forEach(labels, function(label) {
                   this.tag({
                     class: 'net.nanopay.admin.ui.shared.ChipView',
-                    label: label
+                    data: label
                   })
               });
           }))
@@ -253,6 +257,11 @@ foam.CLASS({
           .end()
         .end()
       .end()
+    },
+
+    function removeChip(data) {
+      var labels = this.labels.filter(l => l != data);
+      this.labels = labels;
     }
   ],
 
