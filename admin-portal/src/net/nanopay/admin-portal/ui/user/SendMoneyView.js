@@ -181,6 +181,26 @@ foam.CLASS({
         margin: 5px 0px 20px 15px;
         display: inline-block;
       }
+
+      ^ .foam-u2-ActionView-closeButton {
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        margin-top: -10px;
+        margin-right: 20px;
+        cursor: pointer;
+        display: inline-block;
+        float: right;
+        border: none;
+        background: transparent;
+        outline: none;
+      }
+
+      ^ .foam-u2-ActionView-closeButton:hover {
+        outline: none;
+        border: none;
+        background: transparent;
+      }
     */}
     })
   ],
@@ -196,8 +216,9 @@ foam.CLASS({
         .start().addClass('Message-Container')
           .start().addClass('Change-Container')
             .start().addClass('Change-Text').add("Send Money").end()
-            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-Button')
-              .on('click', self.closeDialog())
+            .start()
+              .add(self.CLOSE_BUTTON)
+              .addClass('close-Button')
             .end()
           .end()
           .start('div')
@@ -232,6 +253,16 @@ foam.CLASS({
           .end()
         .end()
       .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'closeButton',
+      icon: 'images/ic-cancelwhite.svg',
+      code: function (X) {
+        X.closeDialog();
+      }
     }
   ],
 
