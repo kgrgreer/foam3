@@ -48,3 +48,18 @@ cd ..
 6. Load a project
 
 Visit [http://localhost:8080/static/NANOPAY](http://localhost:8080/static/NANOPAY) and go into any of the submodules to view that project
+
+### Compiling a single module
+
+To compile a single module run the following command:
+
+```
+cd ./{project}/src
+./gen.sh
+cd ../..
+mvn -pl {project} {command}
+```
+
+where:
+ - project is the project name (i.e common, b2b, etc)
+ - command is the command you which to run (i.e. clean, compile, package, etc)
