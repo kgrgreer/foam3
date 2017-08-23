@@ -26,10 +26,12 @@ foam.CLASS({
           margin: auto;
           background-color: #EDF0F5;
         }
+
         ^ .container {
           width: 992px;
           margin: auto;
         }
+
         ^ .deviceBar {
           width: 100%;
           height: 40px;
@@ -37,10 +39,12 @@ foam.CLASS({
           background-color: #FFFFFF;
           margin-bottom: 20px;
         }
+
         ^ .deviceBarContainer {
           width: 992px;
           margin: auto;
         }
+
         ^ .foam-u2-ActionView {
           opacity: 0.6;
           font-family: Roboto;
@@ -58,44 +62,55 @@ foam.CLASS({
           outline: none;
           line-height: 40px;
         }
+
         ^ .foam-u2-ActionView:first-child {
           padding-left: 0;
         }
+
         ^ .foam-u2-ActionView:hover {
           background: white;
           opacity: 1;
         }
+
         ^ .rowTopMarginOverride {
           margin-top: 56px !important;
         }
+
         ^ .deviceContentCard {
           width: 413px;
           height: 100px;
         }
+
         ^ .actionButton {
           width: 150px;
           height: 100px;
         }
+
         ^ .buttonFloat {
           float: right;
           margin-left: 5px;
         }
+
         ^ .actionSpacer {
           display: inline-block;
         }
+
         ^ .totalDiv {
           display: inline-block;
           float: right;
           margin-bottom: 20px;
         }
+
         ^ .foam-u2-ActionView-create {
           visibility: hidden;
         }
+
         ^ table {
           border-collapse: collapse;
           margin: auto;
           width: 992px;
         }
+
         ^ thead > tr > th {
           font-family: 'Roboto';
           font-size: 14px;
@@ -108,6 +123,7 @@ foam.CLASS({
           padding-left: 15px;
           height: 40px;
         }
+
         ^ tbody > tr > th > td {
           font-size: 12px;
           letter-spacing: 0.2px;
@@ -116,6 +132,7 @@ foam.CLASS({
           padding-left: 15px;
           height: 60px;
         }
+
         ^ .foam-u2-view-TableView th {
           font-family: 'Roboto';
           padding-left: 15px;
@@ -125,6 +142,7 @@ foam.CLASS({
           color: #093649;
           font-style: normal;
         }
+
         ^ .foam-u2-view-TableView td {
           font-family: Roboto;
           font-size: 12px;
@@ -134,10 +152,12 @@ foam.CLASS({
           font-size: 12px;
           color: #093649;
         }
+
         ^ tbody > tr {
           height: 60px;
           background: white;
         }
+
         ^ tbody > tr:nth-child(odd) {
           background: #f6f9f9;
         }
@@ -161,18 +181,31 @@ foam.CLASS({
       var self = this;
       self.deviceName = "All";
       self.totalBalance = "$0.00";
-      
+
       this
         .addClass(this.myClass())
-        .start('div').addClass('deviceBar')
-          .start('div').addClass('deviceBarContainer')
-            .add(this.ALL)
-            .add(this.INGENICO)
-            .add(this.IPAD)
-            .add(this.IPHONE)
-            .add(this.ANDROID)
+
+        .start('div').addClass('container')
+          .start('div').addClass('row')
+            .tag({class: 'net.nanopay.retail.ui.devices.DeviceCTACard'})
+          .end()
+          .start('div').addClass('row')
+            .tag({class: 'net.nanopay.retail.ui.settings.bankAccount.BankCTACard'})
           .end()
         .end()
+
+        .start('div').addClass('row')
+          .start('div').addClass('deviceBar')
+            .start('div').addClass('deviceBarContainer')
+              .add(this.ALL)
+              .add(this.INGENICO)
+              .add(this.IPAD)
+              .add(this.IPHONE)
+              .add(this.ANDROID)
+            .end()
+          .end()
+        .end()
+        
         .start('div').addClass('container')
           .start('div').addClass('row')
             .start('div').addClass('spacer')

@@ -70,10 +70,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.BankAccount',
+      of: 'net.nanopay.common.model.BankAccountInfo',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.common.model.BankAccount.create(); }
+      factory: function() { return net.nanopay.common.model.BankAccountInfo.create(); }
     },
     {
       class: 'String',
@@ -224,8 +224,6 @@ foam.CLASS({
   extends: 'net.nanopay.common.model.BankAccountInfo',
   name: 'BankAccount',
 
-  ids: ['accountName'],
-
   documentation: 'Bank Account Information',
 
   tableColumns: ['accountName', 'bankNumber', 'transitNumber', 'accountNumber', 'status'],
@@ -301,7 +299,7 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      of: 'net.nanopay.common.BankAccount',
+      of: 'net.nanopay.common.BankAccountInfo',
       name: 'bankAccounts'
     },
     {

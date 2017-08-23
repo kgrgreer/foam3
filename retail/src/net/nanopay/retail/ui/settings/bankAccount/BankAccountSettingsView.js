@@ -177,7 +177,6 @@ foam.CLASS({
               .tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCard', data: { title: this.TitleUnverified}, contents$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              //.tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCardActionButton', data: { title: this.ActionAdd , image: 'ui/images/ic-plus.svg'} }).addClass('actionButton')
               .tag(this.ADD_BANK, { showLabel: true })
             .end()
           .end()
