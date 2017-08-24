@@ -53,16 +53,6 @@ foam.CLASS({
         foam.u2.CSS.create({
           code:
           `
-          ^ .balance {
-            padding: 10px 74px 0px 20px;
-            font-family: Roboto;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 0.2px;
-            text-align: left;
-            color: #093649;
-          }
-
           ^ .tag-container {
             margin: 5px 0px 20px 15px;
             display: inline-block;
@@ -97,7 +87,7 @@ foam.CLASS({
           this
             .addClass(this.myClass())
             .start('div')
-              .start('p').addClass('balance').add('Balance').end()
+              .start('p').addClass('summary-heading').add('Balance').end()
               .start('p').addClass('pDefault').add('$ 30000.22').end()
             .end()
             .start().addClass('input-container')

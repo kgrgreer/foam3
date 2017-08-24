@@ -175,6 +175,16 @@ foam.CLASS({
         border: none;
         background: transparent;
       }
+
+      ^ .summary-heading {
+        padding: 10px 74px 0px 20px;
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+        text-align: left;
+        color: #093649;
+      }
     */}
     })
   ],
@@ -195,7 +205,9 @@ foam.CLASS({
               .addClass('close-Button')
             .end()
           .end()
-          .tag(self.messageView)
+          .add(self.messageView$.map(function(f) {
+            return foam.u2.ViewSpec.createView(f);
+          }))
         .end()
       .end()
     }
