@@ -1,37 +1,22 @@
 
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.user',
-  name: 'SendMoneyView',
+  package: 'net.nanopay.common.ui',
+  name: 'PopUpView',
   extends: 'foam.u2.View',
-
-  requires: [ 
-    'foam.nanos.auth.User',
-    'foam.u2.search.GroupAutocompleteSearchView',
-    'foam.u2.view.TextField'
-  ],
 
   imports: [
     'stack',
-    'closeDialog',
-    'userDAO'
+    'closeDialog'
   ],
 
-  exports: [
-    'removeChip'
-  ],
-
-  documentation: 'Send Money View',
+  documentation: 'Pop Up View',
 
   properties: [ 
      {
-       name: 'data',
-       factory: function() { return this.userDAO; }
+       class: 'String',
+       name: 'title'
      },
-     {
-       name: 'labels',
-       value: []
-     },
-     'autocompleteView'
+     'messageView'
    ],
 
   axioms: [
@@ -42,19 +27,19 @@ foam.CLASS({
         margin: auto;
       }
 
-      ^ .Message-Container{
+      ^ .Message-Container {
         width: 448px;
         border-radius: 2px;
         background-color: #ffffff;
       }
 
-      ^ .Change-Container{
+      ^ .Change-Container {
         width: 448px;
         height: 40.5px;
         background-color: #14375d;
       }
 
-      ^ .Change-Text{
+      ^ .Change-Text {
         width: 100;
         height: 40px;
         font-family: Roboto;
@@ -67,7 +52,7 @@ foam.CLASS({
         display: inline-block;
       }
 
-      ^ .mainMessage-Text{
+      ^ .mainMessage-Text {
         height: 16px;
         font-family: Roboto;
         font-size: 14px;
@@ -81,7 +66,7 @@ foam.CLASS({
         margin-bottom: 10px;
       }
 
-      ^ .close-Button{
+      ^ .close-Button {
         width: 24px;
         height: 24px;
         margin-top: 8.5px;
@@ -111,7 +96,7 @@ foam.CLASS({
         width: 408px;
       }
 
-      ^ .Button{
+      ^ .Button {
         width: 135px;
         height: 40px;
         border-radius: 2px;
@@ -130,14 +115,14 @@ foam.CLASS({
         float: left;
       }
 
-      ^ .Button-Container{
+      ^ .Button-Container {
         margin: 0;
         margin-top: 20px;
         padding: 0;
         overflow: hidden;
       }
 
-      ^ .cancel-Button{
+      ^ .cancel-Button {
         width: 135px;
         height: 40px;
         border-radius: 2px;
@@ -155,7 +140,7 @@ foam.CLASS({
         position: fixed;
       }
 
-      ^ .input-container{
+      ^ .input-container {
         margin-top: 20px;
       }
 
@@ -169,21 +154,6 @@ foam.CLASS({
         letter-spacing: 0.2px;
         text-align: left;
         color: #093649;
-      }
-
-      ^ .balance {
-        padding: 10px 74px 0px 20px;
-        font-family: Roboto;
-        font-size: 14px;
-        font-weight: bold;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #093649;
-      }
-
-      ^ .tag-container {
-        margin: 5px 0px 20px 15px;
-        display: inline-block;
       }
 
       ^ .foam-u2-ActionView-closeButton {
@@ -219,49 +189,15 @@ foam.CLASS({
       .start()
         .start().addClass('Message-Container')
           .start().addClass('Change-Container')
-            .start().addClass('Change-Text').add("Send Money").end()
+            .start().addClass('Change-Text').add(self.title).end()
             .start()
               .add(self.CLOSE_BUTTON)
               .addClass('close-Button')
             .end()
           .end()
-          .start('div')
-            .start('p').addClass('balance').add('Balance').end()
-            .start('p').addClass('pDefault').add('$ 30000.22').end()
-          .end()
-          .start().addClass('input-container')
-            .start('p').addClass('pDefault').add('Send To').end()
-          .end()
-          .add(this.slot(function(labels) {
-            return this.E('div')
-              .addClass('tag-container')
-              .forEach(labels, function(label) {
-                  this.tag({
-                    class: 'net.nanopay.admin.ui.shared.ChipView',
-                    data: label
-                  })
-              });
-          }))
-          .tag({
-            class: 'foam.u2.search.GroupAutocompleteSearchView',
-            property: foam.nanos.auth.User.EMAIL,
-            dao: self.data,
-            view$: self.autocompleteView$
-          }).on('input', elem => self.verifyTag(elem))
-          .start().addClass('input-container')
-            .start('p').addClass('pDefault').add('Amount').end()
-            .start('input').addClass('input-Box').end()
-          .end()
-          .start().addClass('Button-Container')
-            .start().addClass('Button').add('Next').end()
-          .end()
+          .tag(self.messageView)
         .end()
       .end()
-    },
-
-    function removeChip(data) {
-      var labels = this.labels.filter(l => l != data);
-      this.labels = labels;
     }
   ],
 
@@ -271,23 +207,6 @@ foam.CLASS({
       icon: 'images/ic-cancelwhite.svg',
       code: function (X) {
         X.closeDialog();
-      }
-    }
-  ],
-
-  listeners: [
-    function verifyTag(elem) {
-      var dataOptions = elem.target.list.options;
-
-      for ( var i = 0 ; i < dataOptions.length ; i++ ) {
-        if ( dataOptions[i].value == this.autocompleteView.data ) {
-          var labels = foam.Array.clone(this.labels);
-          labels.push(this.autocompleteView.data);
-          this.labels = labels;
-
-          this.autocompleteView.data = '';
-          break;
-        }
       }
     }
   ]
