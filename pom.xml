@@ -17,6 +17,7 @@
     <module>retail</module>
     <module>ingenico</module>
     <module>admin-portal</module>
+    <module>interac</module>
   </modules>
 
   <properties>
