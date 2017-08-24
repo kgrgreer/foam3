@@ -537,9 +537,9 @@ foam.CLASS({
     {
       name: 'businessTypeDAO',
       factory: function() {
-        return this.createDAO({
-          of: 'net.nanopay.b2b.model.BusinessType',
-          seqNo: true,
+        return this.clientDAO({
+          of: net.nanopay.b2b.model.BusinessType,
+          url: 'businessTypeDAO',
           testData: [
             {
               name: 'Sole Proprietorship'
