@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.admin.ui.topup',
   name: 'NewTopUp',
