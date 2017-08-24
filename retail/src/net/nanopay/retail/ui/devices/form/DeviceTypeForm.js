@@ -95,7 +95,17 @@ foam.CLASS({
       name: 'selectedOption',
       value: -1,
       postSet: function(oldValue, newValue) {
-        this.viewData.selectedOption = newValue;
+        switch( newValue ) {
+          case 1 :
+            this.viewData.type = 'iOS';
+            break;
+          case 2 :
+            this.viewData.type = 'Android';
+            break;
+          case 3 :
+            this.viewData.type = 'Ingenico';
+            break;
+        }
       },
       validateObj: function(selectedOption) {
         if ( selectedOption == -1 ) return this.Error;
