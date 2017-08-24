@@ -59,7 +59,6 @@ foam.CLASS({
             serialNumber: this.viewData.serialNumber
           });
           this.deviceDAO.put(newDevice).then(function(response) {
-            console.log(response);
             self.subStack.push(self.views[self.subStack.pos + 1].view);
           });
           return;
