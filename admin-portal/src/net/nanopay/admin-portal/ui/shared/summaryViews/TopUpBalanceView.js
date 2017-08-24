@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui.shared.summaryViews',
   name: 'TopUpBalanceView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'View displaying top up balance',
 
@@ -11,7 +11,8 @@ foam.CLASS({
   ],
   
   requires: [
-    'net.nanopay.admin.model.TopUp'
+    'net.nanopay.admin.model.TopUp',
+    'foam.u2.dialog.Popup'
   ],
 
   imports: [ 'topUpDAO', 'currencyFormatter' ],
@@ -70,13 +71,23 @@ foam.CLASS({
           margin-left: -10px;
         }
 
-        ^top-up-title {
+        ^ .foam-u2-ActionView-topUp {
           font-family: Roboto;
           font-size: 14px;
           line-height: 1.33;
           letter-spacing: 0.2px;
           text-align: center;
           color: #ffffff;
+          background-color: transparent;
+          border: none;
+          outline: none;
+        }
+
+        ^ .foam-u2-ActionView-topUp:hover {
+          background-color: transparent;
+          background: transparent;
+          border: none;
+          outline: none;
         }
 
         ^ic-cashout {
@@ -113,9 +124,21 @@ foam.CLASS({
             .addClass(view.myClass('ic-cashout'))
             .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-cashout.svg' })
           .end()
-          .start('span').addClass(view.myClass('top-up-title')).add('Top Up').end()
+          .add(view.TOP_UP)
         .end()
     },
+  ],
+
+  actions: [
+    {
+      name: 'topUp',
+      label: 'Top Up',
+      code: function() {
+        this.add(foam.u2.dialog.Popup.create().tag({
+          class: 'net.nanopay.admin.ui.topup.NewTopUp'
+        }))
+      }
+    }
   ],
 
   listeners:[
