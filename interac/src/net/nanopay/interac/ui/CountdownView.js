@@ -3,14 +3,16 @@ foam.CLASS({
   name: 'CountdownView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'onExpiry'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
           width: 78px;
           height: 20px;
-        }
-        ^ .countdown {
           font-family: Roboto;
           font-size: 20px;
           font-weight: 300;
@@ -30,19 +32,12 @@ foam.CLASS({
       value: 30 * 60 * 1000
     },
     {
-      class: 'String',
-      name: 'timestamp'
-    },
-    {
       class: 'DateTime',
       name: 'time',
       factory: function () {
         var date = new Date(null);
         date.setMilliseconds(this.duration);
         return date;
-      },
-      postSet: function (_, value) {
-        this.timestamp = value.toISOString().substr(11, 8);
       }
     }
   ],
@@ -54,9 +49,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('countdown')
-          .add(this.timestamp$)
-        .end();
+        .add(this.time$.map(function (value) {
+          return value.toISOString().substr(11, 8);
+        }))
 
       this.onload.sub(function () {
         self.tick();
@@ -70,9 +65,10 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 1000,
       code: function () {
-        // TODO: notify of countdown finished
-        if ( this.duration <= 0 )
+        if ( this.duration <= 0 ) {
+          this.onExpiry();
           return;
+        }
         this.duration -= 1000;
         this.time -= 1000;
         this.tick();
