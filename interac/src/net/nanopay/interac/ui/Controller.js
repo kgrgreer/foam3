@@ -79,6 +79,8 @@ foam.CLASS({
         .start('div').addClass('stack-wrapper')
           .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
         .end()
+        .br()
+        .tag({class: 'net.nanopay.interac.ui.shared.FooterView'})
     }
   ]
 
