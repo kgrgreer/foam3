@@ -42,7 +42,7 @@ cd ..
 5. Run NANOS
 
 ```
-./foam2/tools/nanos.sh
+./NANOPAY/tools/nanos.sh
 ```
 
 6. Load a project

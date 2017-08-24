@@ -10,8 +10,6 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^{
-        }
         ^ .settingsBar {
           width: 100%;
           height: 40px;
