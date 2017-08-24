@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <version>1.0-PROJECT</version>
+    <name>nanopay transaction service</name>
+    <groupId>net.nanopay</groupId>
+    <artifactId>transaction-service</artifactId>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google</groupId>
+            <artifactId>foam</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.nanopay</groupId>
+            <artifactId>nanopay-common</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache-extras.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b6</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>build</sourceDirectory>
+        <outputDirectory>
+            build/${project.build.directory}/${project.build.finalName}/classes
+        </outputDirectory>
+    </build>
+
+</project>
