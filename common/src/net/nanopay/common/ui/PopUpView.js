@@ -75,9 +75,9 @@ foam.CLASS({
         cursor: pointer;
       }
 
-      ^ .input-Box, .foam-u2-tag-Input {
+      ^ .input-Box, .foam-u2-tag-Input, .foam-u2-tag-Select {
         height: 40px;
-        width: 275px;
+        width: 408px;
         background-color: #ffffff;
         border: solid 1px rgba(!64, 179, 184, 0.5);
         margin-left: 20px;
@@ -92,11 +92,7 @@ foam.CLASS({
         text-align: left;
       }
 
-      ^ .input-Box {
-        width: 408px;
-      }
-
-      ^ .Button {
+      ^ .Button, .foam-u2-ActionView {
         width: 135px;
         height: 40px;
         border-radius: 2px;
@@ -115,6 +111,15 @@ foam.CLASS({
         float: left;
       }
 
+      ^ .foam-u2-ActionView {
+        line-height: 0px;
+      }
+
+      ^ .foam-u2-ActionView:hover {
+        background-color: #5e91cb;
+        background: #5e91cb;
+      }
+
       ^ .Button-Container {
         margin: 0;
         margin-top: 20px;
@@ -122,7 +127,7 @@ foam.CLASS({
         overflow: hidden;
       }
 
-      ^ .cancel-Button {
+      ^ .cancel-Button, .foam-u2-ActionView-back {
         width: 135px;
         height: 40px;
         border-radius: 2px;
@@ -138,6 +143,12 @@ foam.CLASS({
         margin-left: 20px;
         margin-bottom: 20px;
         position: fixed;
+        color: #093649;
+      }
+
+      ^ .foam-u2-ActionView-back:hover {
+        background-color: rgba(164, 179, 184, 0.1);
+        background: rgba(164, 179, 184, 0.1);
       }
 
       ^ .input-container {
