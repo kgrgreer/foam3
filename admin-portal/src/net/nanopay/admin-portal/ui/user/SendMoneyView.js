@@ -53,16 +53,6 @@ foam.CLASS({
         foam.u2.CSS.create({
           code:
           `
-          ^ .balance {
-            padding: 10px 74px 0px 20px;
-            font-family: Roboto;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 0.2px;
-            text-align: left;
-            color: #093649;
-          }
-
           ^ .tag-container {
             margin: 5px 0px 20px 15px;
             display: inline-block;
@@ -87,6 +77,10 @@ foam.CLASS({
             border: none;
             background: transparent;
           }
+
+          ^ .short-box > .foam-u2-tag-Input {
+            width: 275px;
+          }
       `})],
 
       methods: [
@@ -97,7 +91,7 @@ foam.CLASS({
           this
             .addClass(this.myClass())
             .start('div')
-              .start('p').addClass('balance').add('Balance').end()
+              .start('p').addClass('summary-heading').add('Balance').end()
               .start('p').addClass('pDefault').add('$ 30000.22').end()
             .end()
             .start().addClass('input-container')
@@ -113,12 +107,15 @@ foam.CLASS({
                     })
                 });
             }))
-            .tag({
-              class: 'foam.u2.search.GroupAutocompleteSearchView',
-              property: foam.nanos.auth.User.EMAIL,
-              dao: self.data,
-              view$: self.autocompleteView$
-            }).on('input', elem => self.verifyTag(elem))
+            .start()
+              .addClass('short-box')
+              .tag({
+                class: 'foam.u2.search.GroupAutocompleteSearchView',
+                property: foam.nanos.auth.User.EMAIL,
+                dao: self.data,
+                view$: self.autocompleteView$
+              }).on('input', elem => self.verifyTag(elem))
+            .end()
             .start().addClass('input-container')
               .start('p').addClass('pDefault').add('Amount').end()
               .start('input').addClass('input-Box').end()
