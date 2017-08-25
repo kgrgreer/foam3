@@ -58,6 +58,7 @@ foam.CLASS({
             type: this.viewData.type,
             serialNumber: this.viewData.serialNumber
           });
+          // Adds device into DAO and moves to the next screen on the list.
           this.deviceDAO.put(newDevice).then(function(response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
           });
