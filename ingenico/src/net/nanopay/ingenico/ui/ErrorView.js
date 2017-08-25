@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'ErrorView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'toolbar'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -10,6 +14,7 @@ foam.CLASS({
           background-color: #f55a5a;
           height: 480px;
           width: 320px;
+          margin-top: -56px;
         }
         ^ .error-view-div {
           padding-top: 70px;
@@ -99,6 +104,10 @@ foam.CLASS({
             .start().addClass('error-profile-name').add(this.data.name).end()
           .end()
         .end()
+
+      this.onload.sub(function () {
+        this.toolbar.classList.add('hidden');
+      });
     }
   ]
 })

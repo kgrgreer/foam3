@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'stack'
+    'stack',
+    'toolbar',
   ],
 
   axioms: [
@@ -23,7 +24,6 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 320px;
-          height: 480px;
           background-color: #2c4389;
         }
         ^ .stack-wrapper {
@@ -84,6 +84,7 @@ foam.CLASS({
 
   properties: [
     'title',
+    'toolbar',
     'drawer',
     'drawerList',
     {
@@ -166,6 +167,7 @@ foam.CLASS({
         this.drawer = new MDCTemporaryDrawer(drawerEl);
         this.title = document.getElementsByClassName('mdc-toolbar__title')[0];
         this.drawerList = document.getElementsByClassName('mdc-list')[0];
+        this.toolbar = document.getElementsByClassName('mdc-toolbar')[0];
       });
     }
   ],

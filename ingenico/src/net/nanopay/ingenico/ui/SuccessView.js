@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'SuccessView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'toolbar'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -10,6 +14,7 @@ foam.CLASS({
           height: 480px;
           width: 320px;
           background-color: #35c38d;
+          margin-top: -56px;
         }
         ^ .success-view-div {
           padding-top: 70px;
@@ -99,6 +104,10 @@ foam.CLASS({
             .start().addClass('success-profile-name').add(this.data.name).end()
           .end()
         .end();
+
+      this.onload.sub(function () {
+        this.toolbar.classList.add('hidden');
+      });
     }
   ]
 })
