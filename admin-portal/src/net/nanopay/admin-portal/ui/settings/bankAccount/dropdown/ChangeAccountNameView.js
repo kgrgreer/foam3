@@ -9,7 +9,7 @@ foam.CLASS({
 
       this
         .tag({
-          class: 'net.nanopay.common.ui.PopUpView',
+          class: 'foam.u2.view.PopUpTitledView',
           title: 'Change Name',
           messageView: this.ChangeAccountNameMessageView
         });

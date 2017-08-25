@@ -34,7 +34,7 @@ foam.CLASS({
 
       this
         .tag({
-          class: 'net.nanopay.common.ui.PopUpView',
+          class: 'foam.u2.view.PopUpTitledView',
           title: 'Topup',
           messageView$: this.newTopUpActiveView$
         });
