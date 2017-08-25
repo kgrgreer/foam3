@@ -166,7 +166,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status'
+      name: 'status',
+      value: 'Pending'
     }
   ]
 });
