@@ -2,8 +2,8 @@ package net.nanopay.transactionservice;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.AbstractDAO;
 import foam.dao.DAO;
+import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
@@ -11,10 +11,13 @@ import net.nanopay.common.model.Account;
 import net.nanopay.common.model.User;
 import net.nanopay.common.model.UserAccountInfo;
 import net.nanopay.transactionservice.model.Transaction;
-
+/*
+ * TransactionDAO Processes processes a transaction, updating users balances if
+ * the transaction is valid, and then delegates the transaction
+ */
 
 public class TransactionDAO
-  extends AbstractDAO
+  extends ProxyDAO
 {
   protected DAO userDAO_;
 
@@ -88,6 +91,7 @@ public class TransactionDAO
 
               getUserDAO().put(payer);
               getUserDAO().put(payee);
+              getDelegate().put(fObject);
             } else {
               throw new RuntimeException("Payer doesn't have enough balance");
             }

@@ -2,7 +2,10 @@ package net.nanopay.transactionservice;
 
 import foam.core.Detachable;
 import foam.core.FObject;
+import foam.core.X;
 import foam.dao.*;
+import foam.mlang.order.Comparator;
+import foam.mlang.predicate.Predicate;
 import foam.nanos.boot.Boot;
 import net.nanopay.common.model.*;
 import net.nanopay.transactionservice.model.Transaction;
@@ -55,14 +58,37 @@ public class UserTransactionsTest {
       user.setAccounts(accounts);
       user.setAddress(new Address[0]);
       user.setPhones(new Phone[0]);
-//      userDao.cmd(new ActionCommand(user, "put"));
       userDao.put(user);
     }
 
     System.out.println("Creating transactions");
 
-    TransactionDAO transactionDAO = new TransactionDAO();
-    transactionDAO.setX(boot.getX());
+    DAO transactionDAO = new AbstractDAO() {
+      @Override
+      public FObject put_(X x, FObject fObject) {
+        return null;
+      }
+
+      @Override
+      public FObject remove_(X x, FObject fObject) {
+        return null;
+      }
+
+      @Override
+      public FObject find_(X x, Object o) {
+        return null;
+      }
+
+      @Override
+      public Sink select_(X x, Sink sink, long l, long l1, Comparator comparator, Predicate predicate) {
+        return null;
+      }
+    };
+    transactionDAO.setOf(Transaction.getOwnClassInfo());
+    TransactionDAO transactionProcessDAO = new TransactionDAO();
+    transactionProcessDAO.setX(boot.getX());
+    transactionProcessDAO.setOf(Transaction.getOwnClassInfo());
+    transactionProcessDAO.setDelegate(transactionDAO);
 
     // Random number generator to generate a random UserID for payer and payee
     Random rand = new Random();
