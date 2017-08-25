@@ -53,9 +53,7 @@ foam.CLASS({
           return value.toISOString().substr(11, 8);
         }))
 
-      this.onload.sub(function () {
-        self.tick();
-      })
+      this.tick();
     }
   ],
 
