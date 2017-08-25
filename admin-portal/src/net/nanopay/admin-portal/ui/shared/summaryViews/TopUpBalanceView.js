@@ -81,6 +81,7 @@ foam.CLASS({
           background-color: transparent;
           border: none;
           outline: none;
+          margin: auto;
         }
 
         ^ .foam-u2-ActionView-topUp:hover {
