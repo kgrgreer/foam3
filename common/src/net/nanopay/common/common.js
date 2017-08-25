@@ -13,5 +13,4 @@ FOAM_FILES([
 
   // Views
   { name: 'net/nanopay/common/ui/SignIn' },
-  { name: 'net/nanopay/common/ui/PopUpView' }
 ]);
