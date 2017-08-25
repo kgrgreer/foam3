@@ -77,6 +77,10 @@ foam.CLASS({
             border: none;
             background: transparent;
           }
+
+          ^ .short-box > .foam-u2-tag-Input {
+            width: 275px;
+          }
       `})],
 
       methods: [
@@ -103,12 +107,15 @@ foam.CLASS({
                     })
                 });
             }))
-            .tag({
-              class: 'foam.u2.search.GroupAutocompleteSearchView',
-              property: foam.nanos.auth.User.EMAIL,
-              dao: self.data,
-              view$: self.autocompleteView$
-            }).on('input', elem => self.verifyTag(elem))
+            .start()
+              .addClass('short-box')
+              .tag({
+                class: 'foam.u2.search.GroupAutocompleteSearchView',
+                property: foam.nanos.auth.User.EMAIL,
+                dao: self.data,
+                view$: self.autocompleteView$
+              }).on('input', elem => self.verifyTag(elem))
+            .end()
             .start().addClass('input-container')
               .start('p').addClass('pDefault').add('Amount').end()
               .start('input').addClass('input-Box').end()
