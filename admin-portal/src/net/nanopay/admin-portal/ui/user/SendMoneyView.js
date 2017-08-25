@@ -102,7 +102,7 @@ foam.CLASS({
                 .addClass('tag-container')
                 .forEach(labels, function(label) {
                     this.tag({
-                      class: 'net.nanopay.admin.ui.shared.ChipView',
+                      class: 'foam.u2.view.ChipView',
                       data: label
                     })
                 });
