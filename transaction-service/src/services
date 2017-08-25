@@ -1,0 +1,1 @@
+p({"class":"foam.nanos.boot.NSpec","name":"nSpecDAO",   "lazy":true,"serve":true,"serviceClass":"foam.dao.ProxyDAO"})
