@@ -1,6 +1,6 @@
 #!/bin/sh
 cd ..
-cp foam2/src/services .
+find foam2/src NANOPAY/**/src -type f -name services -exec cat {} \; > services
 cd foam2/src
 ./gen.sh
 cd ../build
