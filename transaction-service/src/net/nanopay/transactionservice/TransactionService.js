@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.INTERFACE({
   package: 'net.nanopay.transactionservice',
   name: 'TransactionService',
@@ -10,11 +16,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'payerId',
-          javaType: 'String'
+          javaType: 'long'
         },
         {
           name: 'payeeId',
-          javaType: 'String'
+          javaType: 'long'
         },
         {
           name: 'amount',
@@ -48,11 +54,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'payerId',
-          javaType: 'String'
+          javaType: 'long'
         },
         {
           name: 'payeeId',
-          javaType: 'String'
+          javaType: 'long'
         },
         {
           name: 'amount',
@@ -76,6 +82,28 @@ foam.INTERFACE({
         {
           name: 'amount',
           javaType: 'Integer'
+        }
+      ]
+    },
+    {
+      name: 'getTransactionsById',
+      javaReturns: 'foam.dao.DAO',
+      javaThrows: [ 'java.lang.RuntimeException' ],
+      args: [
+        {
+          name: 'userId',
+          javaType: 'long'
+        }
+      ]
+    },
+    {
+      name: 'getTransactionsByEmail',
+      javaReturns: 'foam.dao.DAO',
+      javaThrows: [ 'java.lang.RuntimeException' ],
+      args: [
+        {
+          name: 'userEmail',
+          javaType: 'String'
         }
       ]
     }

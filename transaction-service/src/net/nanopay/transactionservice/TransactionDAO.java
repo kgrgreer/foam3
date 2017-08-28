@@ -2,8 +2,8 @@ package net.nanopay.transactionservice;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.AbstractDAO;
 import foam.dao.DAO;
-import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
@@ -11,13 +11,10 @@ import net.nanopay.common.model.Account;
 import net.nanopay.common.model.User;
 import net.nanopay.common.model.UserAccountInfo;
 import net.nanopay.transactionservice.model.Transaction;
-/*
- * TransactionDAO Processes processes a transaction, updating users balances if
- * the transaction is valid, and then delegates the transaction
- */
+
 
 public class TransactionDAO
-  extends ProxyDAO
+  extends AbstractDAO
 {
   protected DAO userDAO_;
 
@@ -42,20 +39,20 @@ public class TransactionDAO
     if ( fObject instanceof Transaction ) {
       Transaction transaction = (Transaction) fObject;
 
-      Integer payeeId = Integer.valueOf(transaction.getPayeeId());
-      Integer payerId = Integer.valueOf(transaction.getPayerId());
+      long payeeId = transaction.getPayeeId();
+      long payerId = transaction.getPayerId();
 
 
       if ( transaction.getAmount() <= 0 ) {
         throw new RuntimeException("Transaction amount must be greater than 0");
       }
 
-      if ( payeeId.equals(payerId) ) {
+      if ( payeeId == payerId ) {
         throw new RuntimeException("PayeeID and PayerID cannot be the same");
       }
 
-      String firstLock = (payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId() ).intern();
-      String secondLock = (payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId() ).intern();
+      Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
+      Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
       synchronized ( firstLock ) {
 
@@ -91,7 +88,6 @@ public class TransactionDAO
 
               getUserDAO().put(payer);
               getUserDAO().put(payee);
-              getDelegate().put(fObject);
             } else {
               throw new RuntimeException("Payer doesn't have enough balance");
             }

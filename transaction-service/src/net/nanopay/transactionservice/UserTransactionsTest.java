@@ -2,10 +2,7 @@ package net.nanopay.transactionservice;
 
 import foam.core.Detachable;
 import foam.core.FObject;
-import foam.core.X;
 import foam.dao.*;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
 import foam.nanos.boot.Boot;
 import net.nanopay.common.model.*;
 import net.nanopay.transactionservice.model.Transaction;
@@ -44,7 +41,7 @@ public class UserTransactionsTest {
     // Generate USER_COUNT users
     for ( int i = 0; i < USER_COUNT; i++ ) {
       User user = new User();
-      user.setId(String.valueOf(i));
+      user.setId(i);
       Account[] accounts = new Account[ACCOUNT_COUNT];
       for ( int j = 0; j < ACCOUNT_COUNT; j++ ) {
         accounts[j] = new Account();
@@ -58,37 +55,14 @@ public class UserTransactionsTest {
       user.setAccounts(accounts);
       user.setAddress(new Address[0]);
       user.setPhones(new Phone[0]);
+//      userDao.cmd(new ActionCommand(user, "put"));
       userDao.put(user);
     }
 
     System.out.println("Creating transactions");
 
-    DAO transactionDAO = new AbstractDAO() {
-      @Override
-      public FObject put_(X x, FObject fObject) {
-        return null;
-      }
-
-      @Override
-      public FObject remove_(X x, FObject fObject) {
-        return null;
-      }
-
-      @Override
-      public FObject find_(X x, Object o) {
-        return null;
-      }
-
-      @Override
-      public Sink select_(X x, Sink sink, long l, long l1, Comparator comparator, Predicate predicate) {
-        return null;
-      }
-    };
-    transactionDAO.setOf(Transaction.getOwnClassInfo());
-    TransactionDAO transactionProcessDAO = new TransactionDAO();
-    transactionProcessDAO.setX(boot.getX());
-    transactionProcessDAO.setOf(Transaction.getOwnClassInfo());
-    transactionProcessDAO.setDelegate(transactionDAO);
+    TransactionDAO transactionDAO = new TransactionDAO();
+    transactionDAO.setX(boot.getX());
 
     // Random number generator to generate a random UserID for payer and payee
     Random rand = new Random();
@@ -104,8 +78,8 @@ public class UserTransactionsTest {
         payerId = rand.nextInt(USER_COUNT);
       } while ( payerId == payeeId );
 
-      transaction.setPayeeId(String.valueOf(payeeId));
-      transaction.setPayerId(String.valueOf(payerId));
+      transaction.setPayeeId(payeeId);
+      transaction.setPayerId(payerId);
       transaction.setAmount(rand.nextInt(10)+1);
 
       transactionList.add(transaction);

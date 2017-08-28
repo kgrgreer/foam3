@@ -23,17 +23,6 @@ public class SingleCurrencyTransactionService
   protected DAO requestDAO_;
   protected DAO userDAO_;
 
-  private String getIDFromEmail(String email) {
-    final String[] id = new String[1];
-    userDAO_.where(MLang.EQ(User.EMAIL, email)).limit(1).select(new AbstractSink() {
-      @Override
-      public void put(FObject obj, Detachable sub) {
-        id[0] = ((User) obj).getId();
-      }
-    });
-    return id[0];
-  }
-
   private String getISODate() {
     TimeZone timeZone     = TimeZone.getTimeZone("UTC");
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
@@ -42,11 +31,11 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void transferValueById(String payerId, String payeeId, Integer amount)
+  public void transferValueById(long payerId, long payeeId, Integer amount)
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
-    transaction.setDate(getISODate());
+    transaction.setDate(new Date());
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
@@ -58,19 +47,30 @@ public class SingleCurrencyTransactionService
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
-    transaction.setPayeeId(getIDFromEmail(payeeEmail));
-    transaction.setPayerId(getIDFromEmail(payerEmail));
-    transaction.setDate(getISODate());
+    userDAO_.where(MLang.EQ(User.EMAIL, payerEmail)).select(new AbstractSink() {
+      @Override
+      public void put(FObject obj, Detachable sub) {
+        transaction.setPayerId(((User) obj).getId());
+      }
+    });
+
+    userDAO_.where(MLang.EQ(User.EMAIL, payeeEmail)).select(new AbstractSink() {
+      @Override
+      public void put(FObject obj, Detachable sub) {
+        transaction.setPayeeId(((User) obj).getId());
+      }
+    });
+    transaction.setDate(new Date());
     transaction.setAmount(amount);
     transactionDAO_.put(transaction);
   }
 
   @Override
-  public void requestValueById(String payerId, String payeeId, Integer amount)
+  public void requestValueById(long payerId, long payeeId, Integer amount)
       throws RuntimeException
   {
     Transaction transaction = new Transaction();
-    transaction.setDate(getISODate());
+    transaction.setDate(new Date());
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
@@ -82,17 +82,67 @@ public class SingleCurrencyTransactionService
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
-    transaction.setPayerId(getIDFromEmail(payerEmail));
-    transaction.setPayeeId(getIDFromEmail(payeeEmail));
-    transaction.setDate(getISODate());
+    userDAO_.where(MLang.EQ(User.EMAIL, payerEmail)).select(new AbstractSink() {
+      @Override
+      public void put(FObject obj, Detachable sub) {
+        transaction.setPayerId(((User) obj).getId());
+      }
+    });
+
+    userDAO_.where(MLang.EQ(User.EMAIL, payeeEmail)).select(new AbstractSink() {
+      @Override
+      public void put(FObject obj, Detachable sub) {
+        transaction.setPayeeId(((User) obj).getId());
+      }
+    });
+
+    transaction.setDate(new Date());
     transaction.setAmount(amount);
     requestDAO_.put(transaction);
   }
 
   @Override
+  public DAO getTransactionsById(long userId)
+    throws RuntimeException
+  {
+    return transactionDAO_.where(MLang.OR(MLang.EQ(Transaction.PAYER_ID, userId), MLang.EQ(Transaction.PAYEE_ID, userId)));
+  }
+
+  @Override
+  public DAO getTransactionsByEmail(String userEmail)
+    throws RuntimeException
+  {
+    ListSink users  = (ListSink) userDAO_.where(MLang.EQ(User.EMAIL, userEmail)).select(new ListSink());
+    List userList   = users.getData();
+
+    if ( userList.size() > 0 ) {
+      User user = (User) userList.get(0);
+      return transactionDAO_.where(MLang.OR(MLang.EQ(Transaction.PAYER_ID, user.getId()), MLang.EQ(Transaction.PAYEE_ID, user.getId())));
+    } else {
+      return null;
+    }
+  }
+
+  @Override
   public void start() {
-    transactionDAO_ = (DAO) getX().get("transactionDAO");
-    requestDAO_ = (DAO) getX().get("requestDAO");
+    TransactionDAO transactionDAO = new TransactionDAO();
+    transactionDAO.setOf(Transaction.getOwnClassInfo());
+    transactionDAO.setX(this.getX());
+
+    MapDAO requestDAO = new MapDAO();
+    requestDAO.setOf(Transaction.getOwnClassInfo());
+    requestDAO.setX(this.getX());
+
+    try {
+      transactionDAO_ = new JDAO(transactionDAO, "transactions");
+      requestDAO_     = new JDAO(requestDAO, "requests");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    this.getX().put("transactionDAO", transactionDAO_);
+    this.getX().put("requestDAO", requestDAO_);
+
     userDAO_ = (DAO) getX().get("userDAO");
   }
 }
