@@ -17,7 +17,7 @@ foam.CLASS({
           height: 180px;
           position: absolute;
           left: 70px;
-          top: 76px;
+          top: 20px;
         }
         ^ .qr-code-div {
           padding: 10px;
@@ -27,7 +27,7 @@ foam.CLASS({
           font-weight: 500;
           text-align: center;
           position: absolute;
-          top: 276px;
+          top: 220px;
           width: 320px;
         }
         ^ .instructions-div {
@@ -35,7 +35,7 @@ foam.CLASS({
           line-height: 1.88;
           text-align: center;
           position: absolute;
-          top: 335px;
+          top: 279px;
           width: 320px;
         }
       */}
