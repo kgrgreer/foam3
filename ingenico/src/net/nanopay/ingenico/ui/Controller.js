@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Top-level Ingenico application controller.',
 
   implements: [
-    'net.nanopay.ingenico.dao.Storage'
+    'net.nanopay.ingenico.client.Client'
   ],
 
   requires: [

@@ -15,6 +15,14 @@
   <artifactId>ingenico</artifactId>
   <name>nanoPay ingenico</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>net.nanopay</groupId>
+      <artifactId>transaction-service</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <directory>target</directory>
     <sourceDirectory>./build</sourceDirectory>
