@@ -31,7 +31,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void transferValueById(long payerId, long payeeId, Integer amount)
+  public void transferValueById(Long payerId, Long payeeId, Integer amount)
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
@@ -66,7 +66,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void requestValueById(long payerId, long payeeId, Integer amount)
+  public void requestValueById(Long payerId, Long payeeId, Integer amount)
       throws RuntimeException
   {
     Transaction transaction = new Transaction();
@@ -102,7 +102,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public DAO getTransactionsById(long userId)
+  public DAO getTransactionsById(Long userId)
     throws RuntimeException
   {
     return transactionDAO_.where(MLang.OR(MLang.EQ(Transaction.PAYER_ID, userId), MLang.EQ(Transaction.PAYEE_ID, userId)));

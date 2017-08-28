@@ -5,6 +5,10 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
+      name: 'id'
+    },
+    {
+      class: 'Long',
       name: 'payerId'
     },
     {
@@ -12,7 +16,7 @@ foam.CLASS({
       name: 'payeeId'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'amount'
     },
     {

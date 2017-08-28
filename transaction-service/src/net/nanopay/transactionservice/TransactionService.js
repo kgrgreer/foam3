@@ -16,11 +16,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'payerId',
-          javaType: 'long'
+          javaType: 'Long'
         },
         {
           name: 'payeeId',
-          javaType: 'long'
+          javaType: 'Long'
         },
         {
           name: 'amount',
@@ -54,11 +54,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'payerId',
-          javaType: 'long'
+          javaType: 'Long'
         },
         {
           name: 'payeeId',
-          javaType: 'long'
+          javaType: 'Long'
         },
         {
           name: 'amount',
@@ -92,7 +92,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'userId',
-          javaType: 'long'
+          javaType: 'Long'
         }
       ]
     },
