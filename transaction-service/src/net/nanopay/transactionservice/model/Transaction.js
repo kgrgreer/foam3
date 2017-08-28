@@ -9,7 +9,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status' // TODO: default value?
+      name: 'status'
     },
     {
       class: 'Long',
