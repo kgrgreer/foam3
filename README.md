@@ -8,18 +8,28 @@ Repository containing b2b, retail, common, admin-portal, ingenico
 2. Git (`brew install git`)
 
 ### Setup
-1. Checkout `foam2` and `NANOPAY` repositories into the same directory
+Checkout `foam2` and `NANOPAY` repositories into the same directory
 
 ```
 git clone https://github.com/foam-framework/foam2.git
 git clone https://github.com/nanopayinc/NANOPAY.git
 ```
 
-2. Copy the services file from foam2 to the current directory
+### Build all projects and run Nanos at once
+You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
+
+`sh generateAll.sh`
+OR
+`./generateAll.sh`
+
+
+### Build manual procedures
+
+1. Copy the services file from foam2 to the current directory
 
 `cp foam2/src/services .`
 
-3. Build foam2
+2. Build foam2
 
 ```
 cd foam2/src
@@ -30,7 +40,7 @@ mvn install:install-file -Dfile="target/foam-1.0-SNAPSHOT.jar" -DgroupId=com.goo
 cd ../..
 ```
 
-4. Build NANOPAY
+3. Build NANOPAY
 
 ```
 cd NANOPAY
@@ -39,13 +49,13 @@ mvn compile package
 cd ..
 ```
 
-5. Run NANOS
+4. Run NANOS
 
 ```
 ./NANOPAY/tools/nanos.sh
 ```
 
-6. Load a project
+### Loading a project
 
 Visit [http://localhost:8080/static/NANOPAY](http://localhost:8080/static/NANOPAY) and go into any of the submodules to view that project
 
