@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.ingenico.client',
   name: 'Client',
 
+  implements: [ 'foam.box.Context' ],
+
   requires: [
     'foam.box.HTTPBox',
     'foam.dao.RequestResponseClientDAO as ClientDAO',
