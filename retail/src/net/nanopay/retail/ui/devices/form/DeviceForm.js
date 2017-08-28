@@ -6,14 +6,6 @@ foam.CLASS({
 
   documentation: 'Pop up that extends WizardView for adding a device',
 
-  imports: [
-    'deviceDAO'
-  ],
-
-  requires: [
-    'net.nanopay.retail.model.Device'
-  ],
-
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.retail.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
@@ -51,18 +43,13 @@ foam.CLASS({
         return false; // Not in dialog
       },
       code: function() {
-        var self = this;
         if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
-          var newDevice = this.Device.create({
-            name: this.viewData.name,
-            type: this.viewData.type,
-            serialNumber: this.viewData.serialNumber
-          });
-          // Adds device into DAO and moves to the next screen on the list.
-          this.deviceDAO.put(newDevice).then(function(response) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-          });
-          return;
+          //TODO: MAKE API CALL TO ADD DEVICE
+            // TODO: CHECK IF SUCCESS OR FAILURE
+            if ( true ) {
+              this.subStack.push(this.views[this.subStack.pos + 1].view);
+              return;
+            }
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page

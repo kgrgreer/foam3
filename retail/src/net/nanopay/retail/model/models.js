@@ -11,7 +11,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
+      name: 'businessName',
       required: true
     },
     {
@@ -78,6 +78,19 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessContact'
+    },
+    {
+      class: 'Array',
+      of: 'net.nanopay.common.Address',
+      name: 'address'
+    },
+    {
+      class: 'String',
+      name: 'city'
+    },
+    {
+      class: 'String',
+      name: 'postalCode'
     }
   ]
 });
@@ -104,7 +117,7 @@ foam.CLASS({
   package: 'net.nanopay.retail.model',
   name: 'BusinessSector',
 
-  documentation: 'Unknown, TODO.',
+  documentation: 'What sector the business is involved with',
 
   properties: [
     {
@@ -166,8 +179,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status',
-      value: 'Pending'
+      name: 'status'
     }
   ]
 });
@@ -240,7 +252,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.retail.model',
-  name: 'Merchant',
+  name: 'User',
   properties: [
     {
       class: 'Long',
@@ -282,16 +294,12 @@ foam.CLASS({
       name: 'autoCashout'
     },
     {
+      of: 'net.nanopay.retail.model.BusinessInformation',
       name: 'businessInformation'
     },
     {
       class: 'Boolean',
       name: 'emailVerified'
-    },
-    {
-      class: 'Array',
-      of: 'net.nanopay.common.Address',
-      name: 'addresses'
     },
     {
       class: 'Array',
