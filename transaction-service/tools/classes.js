@@ -14,7 +14,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
-
+  'net.nanopay.transactionservice.TransactionService'
 ];
 
 var proxies = [

@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ingenico.model.Transaction',
+    'net.nanopay.transactionservice.model.Transaction',
     'net.nanopay.ingenico.ui.transaction.TransactionRowView'
   ],
 
