@@ -18,9 +18,9 @@ git clone https://github.com/nanopayinc/NANOPAY.git
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
 
-`sh generateAll.sh`
+`sh run.sh`
 OR
-`./generateAll.sh`
+`./run.sh`
 
 
 ### Build manual procedures
