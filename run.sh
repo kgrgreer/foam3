@@ -8,6 +8,6 @@ mvn compile package
 mvn install:install-file -Dfile="target/foam-1.0-SNAPSHOT.jar" -DgroupId=com.google -DartifactId=foam -Dversion=1.0 -Dname=foam -Dpackaging=jar
 cd ../../NANOPAY
 ./gen.sh
-mvn compile package
+mvn clean install
 cd ..
 ./NANOPAY/tools/nanos.sh
