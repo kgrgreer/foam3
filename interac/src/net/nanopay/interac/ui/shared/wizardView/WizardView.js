@@ -85,7 +85,7 @@ foam.CLASS({
           width: 75%;
           height: 40px;
           float: right;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
 
         ^ .pDefault {
@@ -102,6 +102,7 @@ foam.CLASS({
 
         ^ .foam-u2-ActionView-goBack {
           display: inline-block;
+          margin: 0;
           box-sizing: border-box;
           margin-right: 30px;
           background: none;
@@ -131,6 +132,7 @@ foam.CLASS({
 
         ^ .foam-u2-ActionView-goNext {
           display: inline-block;
+          margin: 0;
           background: none;
           outline: none;
           border:none;
