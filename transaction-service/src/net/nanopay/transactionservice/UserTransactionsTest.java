@@ -10,7 +10,7 @@ import net.nanopay.transactionservice.model.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class UserTransactionsTest {
 
@@ -119,7 +119,7 @@ public class UserTransactionsTest {
     System.out.println("[Multi-Thread] Completed " + TRANSACTION_COUNT + " transactions with user pool size of "
         + USER_COUNT + " in " + endTime / Math.pow(10.0, 9.0) + "s");
 
-    AtomicInteger ai = new AtomicInteger(0);
+    AtomicLong ai = new AtomicLong(0);
     userDao.select(new AbstractSink() {
        @Override
        public void put(FObject obj, Detachable sub) {
@@ -138,7 +138,7 @@ public class UserTransactionsTest {
 
     ListSink userSink = (ListSink) userDao.select(new ListSink());
     List userList = userSink.getData();
-    int[] userBalances = new int[USER_COUNT];
+    long[] userBalances = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
       UserAccountInfo uai = (UserAccountInfo) ((User)userList.get(i)).getAccounts()[0].getAccountInfo();
@@ -159,7 +159,7 @@ public class UserTransactionsTest {
 
     userSink = (ListSink) userDao.select(new ListSink());
     userList = userSink.getData();
-    int[] userBalances2 = new int[USER_COUNT];
+    long[] userBalances2 = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
       UserAccountInfo uai = (UserAccountInfo) ((User)userList.get(i)).getAccounts()[0].getAccountInfo();

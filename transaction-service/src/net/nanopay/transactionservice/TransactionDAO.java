@@ -80,7 +80,7 @@ public class TransactionDAO
               throw new RuntimeException("Payer missing UserAccountInfo");
             }
 
-            int amount = transaction.getAmount();
+            long amount = transaction.getAmount();
 
             if (payerAccountInfo.getBalance() >= amount) {
               payerAccountInfo.setBalance(payerAccountInfo.getBalance() - amount);
