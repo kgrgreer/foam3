@@ -126,7 +126,7 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      this.stack.push(this.ErrorView.create({ refund: true, data: this.data }));
+      this.stack.push(this.SuccessView.create({ refund: true, data: this.data }));
     }
   ]
 });

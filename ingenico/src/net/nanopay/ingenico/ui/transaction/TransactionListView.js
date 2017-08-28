@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ingenico.model.Transaction',
+    'net.nanopay.transactionservice.model.Transaction',
     'net.nanopay.ingenico.ui.transaction.TransactionRowView'
   ],
 
@@ -21,8 +21,9 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 320px;
-          height: 480px;
+          height: 100%;
           background-color: #ffffff;
+          position: relative;
         }
         ^ .foam-u2-Tabs-tabRow {
           height: 55px;

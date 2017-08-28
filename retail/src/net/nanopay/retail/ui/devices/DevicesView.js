@@ -256,7 +256,7 @@ foam.CLASS({
           self.activeDevicesCount = count.value;
         });
 
-        var disabledDevicesDAO = this.dao.where(this.NEQ(this.Device.STATUS, "Active"));
+        var disabledDevicesDAO = this.dao.where(this.EQ(this.Device.STATUS, "Disabled"));
         disabledDevicesDAO.select(this.COUNT()).then(function(count) {
           self.disabledDevicesCount = count.value;
         });

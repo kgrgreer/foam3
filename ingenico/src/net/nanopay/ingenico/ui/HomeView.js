@@ -8,8 +8,8 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 320px;
-          height: 480px;
           background-color: #2c4389;
+          position: relative;
         }
         ^ .amount-label {
           height: 30px;
