@@ -1,183 +1,317 @@
-
 foam.CLASS({
   package: 'net.nanopay.admin.ui.topup',
   name: 'NewTopUp',
   extends: 'foam.u2.View',
 
-  imports: [
-    'stack',
-    'closeDialog'
+  properties: [
+    {
+      name: 'newTopUpActiveView'
+    },
+    {
+      class: 'String',
+      name: 'newTopUpBankAccount'
+    },
+    {
+      class: 'Currency',
+      name: 'newTopUpAmount'
+    }
   ],
 
-  documentation: 'Pop Up Demo',
-
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-
-      ^{
-        width: 448px;
-        margin: auto;
-      }
-
-      ^ .Message-Container{
-        width: 448px;
-        height: 288px;
-        border-radius: 2px;
-        background-color: #ffffff;
-      }
-
-      ^ .Change-Container{
-        width: 448px;
-        height: 40.5px;
-        background-color: #14375d;
-      }
-
-      ^ .Change-Text{
-        width: 100;
-        height: 40px;
-        font-family: Roboto;
-        font-size: 14px;
-        line-height: 2.86;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #ffffff;
-        margin-left: 19px;
-        display: inline-block;
-      }
-
-      ^ .mainMessage-Text{
-        height: 16px;
-        font-family: Roboto;
-        font-size: 14px;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        text-algin: left;
-        color: #093649;
-        margin-left: 20px;
-        margin-top: 19.5px;
-        margin-right: 64px;
-        margin-bottom: 10px;
-      }
-
-      ^ .close-Button{
-        width: 24px;
-        height: 24px;
-        margin-top: 8.5px;
-        margin-right: 16px;
-        float: right;
-        cursor: pointer;
-      }
-
-      ^ .input-Box{
-        width: 408px;
-        height: 40px;
-        background-color: #ffffff;
-        border: solid 1px rgba(!64, 179, 184, 0.5);
-        margin-left: 20px;
-        margin-right: 20px;
-        padding-left: 5px;
-        padding-right: 5px;
-        font-size: 12px;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        font-family: Roboto;
-        color: #093649;
-        text-align: left;
-      }
-
-      ^ .Update-Button{
-        width: 135px;
-        height: 40px;
-        border-radius: 2px;
-        background-color: #5e91cb;
-        cursor: pointer;
-        text-align: center;
-        color: #ffffff;
-        font-family: Roboto;
-        font-size: 14px;
-        line-height: 2.86;
-        letter-spacing: 0.2px;
-        margin-top: 5px;
-        margin-left: 293px;
-        margin-right: 20px;
-        margin-bottom: 20px;
-        float: left;
-      }
-
-      ^ .Button-Container{
-        margin: 0;
-        margin-top: 20px;
-        padding: 0;
-        overflow: hidden;
-      }
-
-      ^ .cancel-Button{
-        width: 135px;
-        height: 40px;
-        border-radius: 2px;
-        background-color: rgba(164, 179, 184, 0.1);
-        box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-        cursor: pointer;
-        text-align: center;
-        font-family: Roboto;
-        font-size: 14px;
-        line-height: 2.86;
-        letter-spacing: 0.2px;
-        margin-top: 5px;
-        margin-left: 20px;
-        margin-bottom: 20px;
-        position: fixed;
-      }
-
-      ^ .input-container{
-        margin-top: 20px;
-      }
-
-      ^ .pDefault {
-        margin-bottom: 8px;
-        margin-top: 0;
-        margin-left: 20px;
-        font-family: Roboto;
-        font-size: 14px;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #093649;
-      }
-    */}
-    })
+  exports: [
+    'TopUpFormMessageView',
+    'TopUpConfirmMessageView',
+    'TopUpSuccessMessageView',
+    'newTopUpActiveView',
+    'newTopUpBankAccount',
+    'newTopUpAmount'
   ],
 
   methods: [
-    function initE(){
-    this.SUPER();
-    var self = this;
+    function initE() {
+      this.SUPER();
 
-    this
-    .addClass(this.myClass())
-      .start()
-        .start().addClass('Message-Container')
-          .start().addClass('Change-Container')
-            .start().addClass('Change-Text').add("Topup").end()
-            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close-Button')
-              .on('click', function(){self.closeDialog()})
-            .end()
-          .end()
+      this.newTopUpActiveView = this.TopUpFormMessageView;
+
+      this
+        .tag({
+          class: 'foam.u2.view.PopUpTitledView',
+          title: 'Topup',
+          messageView$: this.newTopUpActiveView$
+        });
+    }
+  ],
+
+  classes: [
+    {
+      name: 'TopUpFormMessageView',
+      extends: 'foam.u2.Controller',
+
+      requires: [
+        'foam.u2.view.TextField'
+      ],
+
+      imports: [
+        'TopUpConfirmMessageView',
+        'newTopUpActiveView',
+        'newTopUpBankAccount',
+        'newTopUpAmount'
+      ],
+
+      axioms: [
+        foam.u2.CSS.create({
+          code: `
+          ^ {
+            display: inline-block;
+          }
+
+          ^ .foam-u2-ActionView-next {
+            margin-top: -35px;
+          }
+
+          ^ .foam-u2-ActionView-goToBankAccount {
+            display: inline-block;
+            float: left;
+            padding-left: 20px;
+            margin-top: 20;
+            background: transparent;
+            color: #5e91cb;
+            width: auto;
+            float: left;
+            margin: 0;
+            position: relative;
+            top: 15;
+            left: 5;
+          }
+
+          ^ .foam-u2-ActionView-goToBankAccount:hover {
+            background: transparent;
+            color: #5e91cb;
+            outline: none;
+          }
+
+          ^ input[type=number] {
+            margin-left: -3px;
+          }
+        `
+        })
+      ],
+
+      methods: [
+        function initE(){
+        this.SUPER();
+        var self = this;
+
+        this
+          .addClass(this.myClass())
           .start().addClass('input-container')
             .start('p').addClass('pDefault').add('Bank Account').end()
-            .start('input').addClass('input-Box').end()
-          .end()
+            .tag({
+              class: 'foam.u2.view.ChoiceView',
+
+              // TODO Remove below, populate verified bank accounts from DAO
+              // Will need to set 'dao' and 'objToChoice' 
+              choices: [
+                '',
+                'TD Investing',
+                'BMO Investing'
+              ],
+
+              data$: self.newTopUpBankAccount$
+            })
           .start().addClass('input-container')
             .start('p').addClass('pDefault').add('Amount').end()
-            .start('input').addClass('input-Box').end()
+            .start(this.TextField, { data$: self.newTopUpAmount$, 'type': 'number' }).addClass('input-Box').end()
           .end()
           .start().addClass('Button-Container')
-            .start().add('Go to Bank Account').end()
-            .start().addClass('Update-Button').add('Update').end()
+            .add(self.GO_TO_BANK_ACCOUNT)
+            .add(self.NEXT)
+          .end();
+        }
+      ],
+
+      actions: [
+        {
+          name: 'goToBankAccount',
+          label: 'Go to Bank Account',
+          code: function() {
+            // TODO: Go to bank account logic
+          }
+        },
+        {
+          name: 'next',
+          label: 'Next',
+          code: function() {
+            if ( this.newTopUpBankAccount != '' && this.newTopUpAmount ) {
+              this.newTopUpActiveView = this.TopUpConfirmMessageView;
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      name: 'TopUpConfirmMessageView',
+      extends: 'foam.u2.Controller',
+
+      imports: [
+        'TopUpFormMessageView',
+        'TopUpSuccessMessageView',
+        'newTopUpActiveView',
+        'newTopUpBankAccount',
+        'newTopUpAmount'
+      ],
+
+      axioms: [
+        foam.u2.CSS.create({
+          code: `
+          ^ .pDefault {
+            display: inline-block;
+          }
+
+          ^ .summary-heading {
+            display: inline-block;
+          }
+        `
+        })
+      ],
+
+      methods: [
+        function initE(){
+        this.SUPER();
+        var self = this;
+
+        this
+          .addClass(this.myClass())
+          .start('div')
+            .start('p').addClass('summary-heading').add('Bank Account').end()
+            .start('p').addClass('pDefault').add(self.newTopUpBankAccount).end()
           .end()
-        .end()
-      .end()
+          .start('div')
+            .start('p').addClass('summary-heading').add('Amount').end()
+            .start('p')
+              .addClass('pDefault')
+              .style({ 'padding-left': '39px' })
+              .add('$ ', self.newTopUpAmount)
+            .end()
+          .end()
+          .start().addClass('Button-Container')
+            .add(self.BACK)
+            .add(self.TOP_UP_BUTTON)
+          .end()
+        }
+      ],
+
+      actions: [
+        {
+          name: 'back',
+          label: 'Back',
+          code: function() {
+            this.newTopUpActiveView = this.TopUpFormMessageView;
+          }
+        },
+        {
+          name: 'topUpButton',
+          label: 'Top Up',
+          code: function() {
+            this.newTopUpActiveView = this.TopUpSuccessMessageView;
+          }
+        }
+      ]
+    },
+
+    {
+      name: 'TopUpSuccessMessageView',
+      extends: 'foam.u2.Controller',
+
+      imports: [
+        'closeDialog',
+        'newTopUpAmount'
+      ],
+
+      properties: [
+        // TODO: Hookup with DAO
+        {
+          name: 'advisorNumber',
+          value: '416-900-1111'
+        }
+      ],
+
+      axioms: [
+        foam.u2.CSS.create({
+          code: `
+          ^ {
+            height: 250px;
+          }
+
+          ^ .foam-u2-ActionView-ok {
+            margin-top: 225;
+            margin-left: 65;
+          }
+
+          ^ .success-Image {
+            margin-left: 35px;
+            margin-top: 15px;
+            float: left;
+          }
+
+          ^ .mainMessage-Text {
+            position: absolute;
+            margin-top: 40;
+            margin-left: 120;
+            width: 300;
+          }
+        `
+        })
+      ],
+
+      messages: [
+        {
+          name: 'TopUpAmount',
+          message: `You have successfully topped up $`
+        },
+        {
+          name: 'ProcessTime',
+          message: 'Please be advised that it will take around 2 business days for you to see the balance in the portal.'
+        },
+        {
+          name: 'AdvisorContact',
+          message: `If you don\'t see your balance after 5 business days, please contact our advisor at `
+        }
+      ],
+
+      methods: [
+        function initE(){
+        this.SUPER();
+        var self = this;
+
+        this
+          .addClass(this.myClass())
+          .start()
+            .start({class:'foam.u2.tag.Image', data: 'images/done-30.svg'})
+              .addClass('success-Image')
+            .end()
+            .start()
+              .addClass('mainMessage-Text')
+              .add(self.TopUpAmount, self.newTopUpAmount, '.')
+              .tag('br').tag('br').tag('br')
+              .add(self.ProcessTime)
+              .tag('br').tag('br')
+              .add(self.AdvisorContact, self.advisorNumber, '.')
+            .end()
+          .end()
+          .add(self.OK)
+        }
+      ],
+
+      actions: [
+        {
+          name: 'ok',
+          label: 'OK',
+          code: function (X) {
+            X.closeDialog();
+          }
+        }
+      ]
     }
   ]
 })

@@ -10,7 +10,7 @@ foam.CLASS({
       name: 'tag'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'balance'
     },
   ]

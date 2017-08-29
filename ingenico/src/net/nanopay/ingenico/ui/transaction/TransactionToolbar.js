@@ -34,24 +34,8 @@ foam.CLASS({
           height: 23px;
           object-fit: contain;
         }
-        ^ .transaction-toolbar-title {
-          height: 30px;
-          font-family: Roboto;
-          font-size: 16px;
-          line-height: 1.88;
-          text-align: center;
-          color: #ffffff;
-          padding-left: 71px;
-          padding-top: 12px;
-          padding-bottom: 13px;
-          float: left;
-        }
       */}
     })
-  ],
-
-  properties: [
-    { name: 'title', class: 'String' }
   ],
 
   methods: [
@@ -65,9 +49,6 @@ foam.CLASS({
             .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png '})
           .end()
           .on('click', this.onBackClicked)
-        .end()
-        .start('div').addClass('transaction-toolbar-title')
-          .add(this.title)
         .end()
     }
   ],

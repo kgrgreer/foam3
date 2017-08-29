@@ -4,6 +4,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'type'
+    },
+    {
       class: 'FObjectArray',
       of:    'net.nanopay.common.model.Phone',
       name:  'phones'

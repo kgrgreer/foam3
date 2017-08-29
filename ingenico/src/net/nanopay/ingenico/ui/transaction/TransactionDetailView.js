@@ -111,7 +111,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .add(this.TransactionToolbar.create({ title: ! this.data.pending ? 'Completed' : 'Pending' }))
+        .add(this.TransactionToolbar.create())
         .start('div').addClass('transaction-profile')
           .start().addClass('transaction-profile-icon')
             .tag({ class: 'foam.u2.tag.Image', data: this.data.image })
@@ -151,16 +151,12 @@ foam.CLASS({
             .end()
           .end()
         .end()
-
-      if ( ! this.data.pending ) {
-        this
-          .start('div').addClass('transaction-refund')
-            .start('button').addClass('transaction-refund-button')
-              .add('Refund')
-              .on('click', this.onRefundClicked)
-            .end()
+        .start('div').addClass('transaction-refund')
+          .start('button').addClass('transaction-refund-button')
+            .add('Refund')
+            .on('click', this.onRefundClicked)
           .end()
-      }
+        .end()
     }
   ],
 

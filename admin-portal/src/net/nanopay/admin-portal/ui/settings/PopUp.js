@@ -3,7 +3,9 @@ foam.CLASS({
   name: 'PopUp',
   extends: 'foam.u2.View',
 
-  requires: ['foam.u2.dialog.Popup'],
+  requires: [
+    'foam.u2.dialog.Popup'
+  ],
 
   imports: [
     'stack'
@@ -65,11 +67,6 @@ foam.CLASS({
           .on('click', this.deleteBankAccountPopup)
         .end()
 
-        .start('button')
-          .add('New Top Up')
-          .on('click', this.newTopUp)
-        .end()
-
       .end()
     }
   ],
@@ -85,10 +82,6 @@ foam.CLASS({
 
     function deleteBankAccountPopup() {
       this.add(this.Popup.create().tag({class: 'net.nanopay.admin.ui.settings.bankAccount.dropdown.DeleteBankAccountView'}));
-    },
-
-    function newTopUp() {
-      this.add(this.Popup.create().tag({class: 'net.nanopay.admin.ui.topup.NewTopUp'}));
     }
   ]
 })

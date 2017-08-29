@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'User View',
 
+  requires: [
+    'foam.u2.dialog.Popup'
+  ],
+
   implements: [
     'foam.mlang.Expressions', 
   ],
@@ -149,7 +153,9 @@ foam.CLASS({
 
   listeners: [
     function sendMoney() {
-
+      this.add(this.Popup.create().tag({
+        class: 'net.nanopay.admin.ui.user.SendMoneyView'
+      }));
     }
   ],
 
@@ -163,8 +169,7 @@ foam.CLASS({
         'foam.mlang.predicate.False',
         'foam.mlang.predicate.True',
         'foam.parse.QueryParser',
-        'foam.u2.view.TextField',
-        'foam.u2.search.GroupAutocompleteSearchView'
+        'foam.u2.view.TextField'
       ],
 
       imports: [ 'userDAO' ],
@@ -255,11 +260,6 @@ foam.CLASS({
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
               .end()
             .end()
-            .tag({
-              class: 'foam.u2.search.GroupAutocompleteSearchView',
-              property: foam.nanos.auth.User.EMAIL,
-              dao: this.filteredDAO$proxy,
-            })
             .start({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,

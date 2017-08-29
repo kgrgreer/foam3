@@ -13,12 +13,11 @@ foam.CLASS({
   requires: [
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.retail.model.Merchant',
+    'net.nanopay.retail.model.User',
     'net.nanopay.retail.model.Device'
   ],
 
   exports: [
-    'merchant',
     'user',
     'stack'
   ],
@@ -38,12 +37,6 @@ foam.CLASS({
       factory: function() { return this.User.create(); }
     },
     {
-      class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.retail.model.Merchant',
-      name: 'merchant',
-      factory: function() { return this.Merchant.create(); }
-    },
-    {
       name: 'stack',
       factory: function() { return this.Stack.create(); }
     }
@@ -51,6 +44,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.stack.push({ class: 'net.nanopay.retail.ui.onboarding.SignInView' });
     },
 
     function initE() {
@@ -58,7 +52,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .tag({class: 'net.nanopay.retail.ui.shared.topNavigation.TopNav', data: this.merchant })
+        .tag({class: 'net.nanopay.retail.ui.shared.topNavigation.TopNav', data: this.user })
         .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
     }
   ],

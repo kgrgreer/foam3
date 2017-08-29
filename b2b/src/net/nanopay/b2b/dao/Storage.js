@@ -513,10 +513,9 @@ foam.CLASS({
     {
       name: 'invoiceResolutionDAO',
       factory: function() {
-        return this.createDAO({
-          of: 'net.nanopay.b2b.model.InvoiceResolution',
-          seqNo: true,
-          contextualize: true
+        return this.clientDAO({
+          of: net.nanopay.b2b.model.InvoiceResolution,
+          url: 'invoiceResolutionDAO'
         });
       }
     },
