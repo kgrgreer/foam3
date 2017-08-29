@@ -48,11 +48,9 @@ transaction.abstractClasses = transaction.abstractClasses.map(function(element) 
 transaction.skeletons = transaction.skeletons.map(function(element) { return [ 'transaction-service/src/', element ]; })
 transaction.proxies = transaction.proxies.map(function(element) { return [ 'transaction-service/src/', element ]; })
 
-
-
-
 var classes = [];
 classes = classes.concat(foam.classes, common.classes, b2b.classes, retail.classes, admin.classes, ingenico.classes, interac.classes, transaction.classes)
+
 var abstractClasses = [];
 abstractClasses = abstractClasses.concat(foam.abstractClasses, common.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, ingenico.abstractClasses, interac.abstractClasses, transaction.abstractClasses)
 
