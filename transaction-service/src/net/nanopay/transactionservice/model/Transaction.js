@@ -12,6 +12,10 @@ foam.CLASS({
       name: 'status'
     },
     {
+      class: 'String',
+      name: 'referenceNumber'
+    },
+    {
       class: 'Long',
       name: 'payerId'
     },
@@ -21,7 +25,11 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'amount'
+      name: 'sendingAmount'
+    },
+    {
+      class: 'Long',
+      name: 'receivingAmount'
     },
     {
       class: 'DateTime',
@@ -30,6 +38,14 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'tip'
+    },
+    {
+      class: 'Long',
+      name: 'rate'
+    },
+    {
+      class: 'Long',
+      name: 'fees'
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
