@@ -1,7 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.common.model',
   name: 'User',
-  extends: 'foam.nanos.auth.User',
+  refines: 'foam.nanos.auth.User',
 
   properties: [
     {
