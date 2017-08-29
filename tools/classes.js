@@ -53,7 +53,6 @@ transaction.proxies = transaction.proxies.map(function(element) { return [ 'tran
 
 var classes = [];
 classes = classes.concat(foam.classes, common.classes, b2b.classes, retail.classes, admin.classes, ingenico.classes, interac.classes, transaction.classes)
-classes.forEach(function(element) { console.log(element) })
 var abstractClasses = [];
 abstractClasses = abstractClasses.concat(foam.abstractClasses, common.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, ingenico.abstractClasses, interac.abstractClasses, transaction.abstractClasses)
 
