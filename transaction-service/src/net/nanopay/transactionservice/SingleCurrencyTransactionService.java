@@ -31,7 +31,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void transferValueById(Long payerId, Long payeeId, Integer amount)
+  public void transferValueById(Long payerId, Long payeeId, Long amount)
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
@@ -43,7 +43,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void transferValueByEmail(String payerEmail, String payeeEmail, Integer amount)
+  public void transferValueByEmail(String payerEmail, String payeeEmail, Long amount)
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
@@ -66,7 +66,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void requestValueById(Long payerId, Long payeeId, Integer amount)
+  public void requestValueById(Long payerId, Long payeeId, Long amount)
       throws RuntimeException
   {
     Transaction transaction = new Transaction();
@@ -78,7 +78,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void requestValueByEmail(String payerEmail, String payeeEmail, Integer amount)
+  public void requestValueByEmail(String payerEmail, String payeeEmail, Long amount)
     throws RuntimeException
   {
     Transaction transaction = new Transaction();
