@@ -29,8 +29,33 @@ foam.CLASS({
           height: 40px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
-          padding: 8px;
           margin-bottom: 13px;
+        }
+
+        ^ .currencyDenominationContainer {
+          display: inline-block;
+          width: 85px;
+          height: 100%;
+          padding: 8px;
+          box-sizing: border-box;
+        }
+
+        ^ .currencyFlag {
+          display: inline-block;
+          width: 24px;
+          height: 14px;
+          margin: 4px 0;
+        }
+
+        ^ .currencyName {
+          display: inline-block;
+          font-size: 12px;
+          letter-spacing: 0.2px;
+          color: #093649;
+
+          vertical-align: top;
+          margin: 5px 0;
+          margin-left: 15px;
         }
 
         ^ .currencyContainer:last-child {
@@ -51,11 +76,49 @@ foam.CLASS({
           top: 0;
           left: 86px;
         }
+
+        ^ .property-fromAmount {
+          display: inline-block;
+          box-sizing: border-box;
+          vertical-align: top;
+          margin-left: 2px;
+          width: 231px;
+          height: 38px;
+          padding: 0 20px;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          border: none;
+          outline: none;
+        }
+
+        ^ .property-fromAmount:focus {
+          border: solid 1px #59A5D5;
+          padding: 0 19px;
+        }
+
+        ^ input[type=number]::-webkit-inner-spin-button,
+        ^ input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        ^ .toAmountStyle {
+          display: inline-block;
+          box-sizing: border-box;
+          margin: 0;
+          vertical-align: top;
+          padding: 13px 20px;
+          width: 146px;
+          height: 100%;
+          font-size: 12px;
+        }
       */}
     })
   ],
 
   messages: [
+    { name: 'AmountError', message: 'Amount needs to be greater than $0.00' },
     { name: 'SendingFeeLabel', message: 'Sending Fee:' },
     { name: 'ReceivingFeeLabel', message: 'Receiving Fee:' },
     { name: 'TotalLabel', message: 'Total Amount:' },
@@ -64,10 +127,53 @@ foam.CLASS({
     { name: 'ToLabel', message: 'To' }
   ],
 
+  properties: [
+    {
+      class: 'Double',
+      name: 'fromAmount',
+      min: 0,
+      value: 0,
+      precision: 2,
+      view: 'net.nanopay.interac.ui.shared.FixedFloatView',
+      postSet: function(oldValue, newValue) {
+        var value = parseFloat(newValue).toFixed(2);
+        this.viewData.fromAmount = value;
+
+        // TODO: Get FX rates and multiply
+        // NOTE: This rounds up.
+        this.toAmount = (value * this.fxRate).toFixed(2);
+        return value;
+      },
+      validateObj: function(fromAmount) {
+        if ( fromAmount <= 0 ) {
+          return this.AmountError;
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'toAmount',
+      value: '0.00',
+      postSet: function(oldValue, newValue) {
+        this.viewData.toAmount = newValue;
+      }
+    },
+    {
+      // TODO: Pull FX rate from somewhere
+      class: 'Double',
+      name: 'fxRate',
+      value: 52.01
+    }
+  ],
+
   methods: [
     function init() {
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
+
+      if ( this.viewData.fromAmount ) {
+        this.fromAmount = this.viewData.fromAmount;
+      }
     },
 
     function initE() {
@@ -86,23 +192,33 @@ foam.CLASS({
           .start('div').addClass('transferRateContainer')
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
+              .start('div').addClass('currencyDenominationContainer')
+                .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
+                .start('p').addClass('currencyName').add('CAD').end() // TODO: Make it dyamic.
+              .end()
+              .start(this.FROM_AMOUNT, {onKey: true})
+                .attrs({
+                  step: 0.01,
+                  onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
+                })
+              .end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: #.##').end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 5.00 (included)').end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
+              .start('div').addClass('currencyDenominationContainer')
+                .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
+                .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
+              .end()
+              .start('div').addClass('toAmountStyle').add(this.toAmount$).end()
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
           .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add(this.SendingFeeLabel).end()
-            .start('p').addClass('pPricing').add(this.ReceivingFeeLabel).end()
-            .start('p').addClass('bold').add(this.TotalLabel).end()
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
           .end()
           .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add('CAD #.##').end()
-            .start('p').addClass('pPricing').add('CAD #.##').end()
-            .start('p').addClass('bold').add('CAD #.##').end()
             .start('p').addClass('pPricing').add('Near Real Time (IMPS)').end()
           .end()
         .end()

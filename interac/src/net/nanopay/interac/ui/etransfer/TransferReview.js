@@ -47,10 +47,11 @@ foam.CLASS({
         ^ .currencyFlag {
           display: inline-block;
           width: 24px;
-          height: 24px;
+          height: 14px;
           object-fit: contain;
+          margin: 1px 0;
           margin-right: 8px;
-          vertical-align: middle;
+          vertical-align: top;
         }
 
         ^ .currencyAmount {
@@ -59,15 +60,15 @@ foam.CLASS({
 
         ^ .rateLabelMargin {
           margin-left: 37px;
-          margin-bottom: 8px;
+          margin-bottom: 13px;
         }
 
         ^ .rateDivider {
           position: absolute;
-          top: 18px;
+          top: 15px;
           left: 11px;
           width: 2px;
-          height: 41px;
+          height: 72px;
           opacity: 0.3;
           background-color: #a4b3b8;
         }
@@ -85,6 +86,15 @@ foam.CLASS({
     { name: 'EstimatedDeliveryLabel', message: 'Estimated Delivery Date:' },
     { name: 'PurposeLabel', message: 'Purpose of Transfer' },
     { name: 'NotesLabel', message: 'Notes' }
+  ],
+
+  properties: [
+    {
+      // TODO: Pull FX rate from somewhere
+      class: 'Double',
+      name: 'fxRate',
+      value: 52.01
+    }
   ],
 
   methods: [
@@ -110,26 +120,21 @@ foam.CLASS({
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
             .start('div').addClass('currencyContainer')
-              .start({class: 'foam.u2.tag.Image', data: 'images/cad.svg'}).addClass('currencyFlag').end()
-              .start('p').addClass('currencyAmount').add('CAD ###.##').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
+              .start('p').addClass('currencyAmount').add('CAD ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: #.##').end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 5.00').end()
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
             .start('div').addClass('currencyContainer')
-              .start({class: 'foam.u2.tag.Image', data: 'images/inr.svg'}).addClass('currencyFlag').end()
-              .start('p').addClass('currencyAmount').add('INR ##########.##').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
+              .start('p').addClass('currencyAmount').add('INR ', parseFloat(this.viewData.toAmount).toFixed(2)).end()
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
           .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add(this.SendingFeeLabel).end()
-            .start('p').addClass('pPricing').add(this.ReceivingFeeLabel).end()
-            .start('p').addClass('bold').add(this.TotalLabel).end()
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
           .end()
           .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add('CAD #.##').end()
-            .start('p').addClass('pPricing').add('CAD #.##').end()
-            .start('p').addClass('bold').add('CAD #.##').end()
             .start('p').addClass('pPricing').add('Near Real Time (IMPS)').end()
           .end()
         .end()

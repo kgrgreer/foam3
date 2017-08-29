@@ -17,7 +17,7 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ .property-note {
+        ^ .property-notes {
           box-sizing: border-box;
           width: 320px;
           height: 66px;
@@ -30,7 +30,7 @@ foam.CLASS({
           outline: none;
         }
 
-        ^ .property-note:focus {
+        ^ .property-notes:focus {
           border: solid 1px #59A5D5;
         }
 
@@ -127,7 +127,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'note',
+      name: 'notes',
       postSet: function(oldValue, newValue) {
         this.viewData.notes = newValue;
       },
@@ -139,6 +139,14 @@ foam.CLASS({
     function init() {
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
+
+      if ( this.viewData.purpose ) {
+        this.purpose = this.viewData.purpose;
+      }
+
+      if ( this.viewData.notes ) {
+        this.notes = this.viewData.notes;
+      }
     },
 
     function initE() {
@@ -163,7 +171,7 @@ foam.CLASS({
             .start('div').addClass('caret').end()
           .end()
           .start('p').add(this.NoteLabel).end()
-          .tag(this.NOTE, { onKey: true })
+          .tag(this.NOTES, { onKey: true })
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
