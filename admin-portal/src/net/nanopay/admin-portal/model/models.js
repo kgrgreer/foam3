@@ -72,10 +72,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.BankAccount',
+      of: 'net.nanopay.common.model.BankAccountInfo',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.common.model.BankAccount.create(); }
+      factory: function() { return net.nanopay.common.model.BankAccountInfo.create(); }
     },
     {
       class: 'Reference',
