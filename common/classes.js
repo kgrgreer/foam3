@@ -8,7 +8,6 @@ var classes = [
   'net.nanopay.common.model.Phone',
   'net.nanopay.common.model.UserAccountInfo',
   'net.nanopay.common.model.AccountLimit',
-  'net.nanopay.common.model.User',
 ];
 
 var abstractClasses = [
