@@ -24,7 +24,7 @@ foam.INTERFACE({
         },
         {
           name: 'amount',
-          javaType: 'Integer'
+          javaType: 'Long'
         }
       ]
     },
@@ -43,7 +43,7 @@ foam.INTERFACE({
         },
         {
           name: 'amount',
-          javaType: 'Integer'
+          javaType: 'Long'
         }
       ]
     },
@@ -62,7 +62,7 @@ foam.INTERFACE({
         },
         {
           name: 'amount',
-          javaType: 'Integer'
+          javaType: 'Long'
         }
       ]
     },
@@ -81,7 +81,7 @@ foam.INTERFACE({
         },
         {
           name: 'amount',
-          javaType: 'Integer'
+          javaType: 'Long'
         }
       ]
     },

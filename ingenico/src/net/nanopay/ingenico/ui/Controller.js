@@ -98,7 +98,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.stack.push({ class: 'net.nanopay.ingenico.ui.QRCodeView' });
+      this.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
     },
 
     function initE() {

@@ -21,12 +21,21 @@ foam.CLASS({
           padding-top: 58px;
         }
         ^ .amount-field {
+          border: none;
+          background-color: #2c4389;
           height: 88px;
+          width: 320px;
+          max-width: 100%;
+          overflow-x: hidden;
           font-family: Roboto;
           font-size: 75px;
           text-align: center;
           color: #ffffff;
-          padding-top: 14px;
+          margin-top: 14px;
+        }
+
+        ^ .amount-field:focus {
+          outline: none;
         }
       */}
     })
@@ -43,7 +52,12 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('amount-label').add('Amount')
-        .start().addClass('amount-field').add(this.amount)
+        .start('input')
+          .attrs({
+            value: this.amount
+          })
+          .addClass('amount-field')
+        .end()
     }
   ]
 })
