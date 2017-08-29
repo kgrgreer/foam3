@@ -1,4 +1,4 @@
-require('../common/src//net/nanopay/common/files.js')
+require('../common/src/net/nanopay/common/files.js')
 
 var foam = require('../../foam2/tools/classes.js')
 foam.classes = foam.classes.map(function(element) { return [ '../foam2/src/', element ]; })
