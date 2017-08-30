@@ -72,6 +72,10 @@ foam.CLASS({
           opacity: 0.3;
           background-color: #a4b3b8;
         }
+
+        ^ .invoiceLink {
+          height: 42px;
+        }
       */}
     })
   ],
@@ -85,7 +89,10 @@ foam.CLASS({
     { name: 'TotalLabel', message: 'Total Amount:' },
     { name: 'EstimatedDeliveryLabel', message: 'Estimated Delivery Date:' },
     { name: 'PurposeLabel', message: 'Purpose of Transfer' },
-    { name: 'NotesLabel', message: 'Notes' }
+    { name: 'NotesLabel', message: 'Notes' },
+    { name: 'InvoiceNoLabel', message: 'Invoice No.' },
+    { name: 'PONoLabel', message: 'PO No.' },
+    { name: 'PDFLabel', message: 'View Invoice PDF' }
   ],
 
   properties: [
@@ -115,6 +122,12 @@ foam.CLASS({
           .end()
         .end()
         .start('div').addClass('col')
+          .start('div').addClass('invoiceDetailContainer')
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
+            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
+            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+          .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
           .start('p').addClass('bold').add(this.AmountLabel).end()
@@ -140,7 +153,10 @@ foam.CLASS({
         .end()
         .start('div').addClass('col')
           // TODO: Make card based on from and to information
-
+          .start('a').addClass('invoiceLink')
+            .attrs({href: ''})
+            .add(this.PDFLabel)
+          .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
           .start('p').addClass('bold').add(this.PurposeLabel).end()
           .start('p').add(this.viewData.purpose).end()

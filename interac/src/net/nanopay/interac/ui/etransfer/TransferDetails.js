@@ -96,7 +96,10 @@ foam.CLASS({
     { name: 'FromLabel', message: 'From' },
     { name: 'PayeeLabel', message: 'Payee' },
     { name: 'PurposeLabel', message: 'Purpose of Transfer' },
-    { name: 'NoteLabel', message: 'Notes (Optional)' }
+    { name: 'NoteLabel', message: 'Notes (Optional)' },
+    { name: 'InvoiceNoLabel', message: 'Invoice No.' },
+    { name: 'PONoLabel', message: 'PO No.' },
+    { name: 'PDFLabel', message: 'View Invoice PDF' }
   ],
 
   properties: [
@@ -175,6 +178,16 @@ foam.CLASS({
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
+          .start('div').addClass('invoiceDetailContainer')
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
+            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
+            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+          .end()
+          .start('a').addClass('invoiceLink')
+            .attrs({href: ''})
+            .add(this.PDFLabel)
+          .end()
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
           .start('p').add(this.ToLabel).addClass('bold').end()

@@ -45,7 +45,6 @@ foam.CLASS({
         font-weight: bold;
         margin-bottom: 20px;
         letter-spacing: 0.4px;
-        text-align: left;
       }
 
       ^ .detailsCol {
@@ -92,6 +91,44 @@ foam.CLASS({
         font-size: 12px;
         margin-bottom: 10px;
       }
+
+      ^ .invoiceDetailContainer {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      ^ .invoiceLabel {
+        display: inline-block;
+        vertical-align: top;
+        box-sizing: border-box;
+        width: 100px;
+        margin: 0;
+        margin-right: 35px;
+      }
+
+      ^ .invoiceLabel:first-child {
+        margin-bottom: 10px;
+      }
+
+      ^ .invoiceDetail {
+        display: inline-block;
+        vertical-align: top;
+
+        font-size: 12px;
+        letter-spacing: 0.2px;
+        color: #093649;
+        margin: 0;
+      }
+
+      ^ .invoiceLink {
+        display: block;
+        font-size: 12px;
+        line-height: 1.33;
+        letter-spacing: 0.2px;
+        text-align: left;
+        color: #59a5d5;
+        margin-bottom: 20px;
+      }
     */}})
   ],
 
@@ -100,7 +137,8 @@ foam.CLASS({
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',     label: 'Account & Payee',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-amount',      label: 'Amount',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
-        { parent: 'etransfer', id: 'etransfer-transfer-review',      label: 'Review',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } }
+        { parent: 'etransfer', id: 'etransfer-transfer-review',      label: 'Review',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-complete',    label: 'Successful',           view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
       ];
       this.SUPER();
     }
@@ -122,13 +160,14 @@ foam.CLASS({
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < 2 ) return true; // Valid next
+        if ( position < 3 ) return true; // Valid next
         return false; // Not in dialog
       },
       code: function() {
         var self = this;
         if ( this.position == 2 ) { // On Review Transfer page.
-
+          // TODO: Run the transfer
+          this.subStack.push(this.views[this.subStack.pos + 1].view);
           return;
         }
 

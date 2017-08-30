@@ -124,7 +124,10 @@ foam.CLASS({
     { name: 'TotalLabel', message: 'Total Amount:' },
     { name: 'EstimatedDeliveryLabel', message: 'Estimated Delivery Date:' },
     { name: 'FromLabel', message: 'From' },
-    { name: 'ToLabel', message: 'To' }
+    { name: 'ToLabel', message: 'To' },
+    { name: 'InvoiceNoLabel', message: 'Invoice No.' },
+    { name: 'PONoLabel', message: 'PO No.' },
+    { name: 'PDFLabel', message: 'View Invoice PDF' }
   ],
 
   properties: [
@@ -137,7 +140,7 @@ foam.CLASS({
       // TODO: Pull FX rate from somewhere
       class: 'Double',
       name: 'fxRate',
-      value: 52.01
+      value: 50.72973
     },
     {
       class: 'Boolean',
@@ -147,21 +150,19 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'fromAmount',
-      min: 0,
-      value: 0,
+      value: 5,
       precision: 2,
       view: 'net.nanopay.interac.ui.shared.FixedFloatView',
       postSet: function(oldValue, newValue) {
-        var value = parseFloat(newValue).toFixed(2);
-        this.viewData.fromAmount = value;
+        this.viewData.fromAmount = newValue;
 
         if ( this.feedback ) return;
         this.feedback = true;
-        this.toAmount = ((value - this.fees) * this.fxRate).toFixed(2);
+        this.toAmount = ((newValue - this.fees) * this.fxRate).toFixed(2);
         this.feedback = false;
       },
       validateObj: function(fromAmount) {
-        if ( fromAmount <= 0 ) {
+        if ( fromAmount <= this.fees ) {
           return this.AmountError;
         }
       }
@@ -174,12 +175,11 @@ foam.CLASS({
       precision: 2,
       view: 'net.nanopay.interac.ui.shared.FixedFloatView',
       postSet: function(oldValue, newValue) {
-        var value = parseFloat(newValue).toFixed(2);
-        this.viewData.toAmount = value;
+        this.viewData.toAmount = newValue;
 
         if ( this.feedback ) return;
         this.feedback = true;
-        this.fromAmount = ((value / this.fxRate) + this.fees).toFixed(2);
+        this.fromAmount = ((newValue / this.fxRate) + this.fees).toFixed(2);
         this.feedback = false;
       },
       validateObj: function(toAmount) {
@@ -253,6 +253,16 @@ foam.CLASS({
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
+          .start('div').addClass('invoiceDetailContainer')
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
+            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
+            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+          .end()
+          .start('a').addClass('invoiceLink')
+            .attrs({href: ''})
+            .add(this.PDFLabel)
+          .end()
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
           .start('p').add(this.ToLabel).addClass('bold').end()
