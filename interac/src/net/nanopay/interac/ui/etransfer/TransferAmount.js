@@ -77,7 +77,7 @@ foam.CLASS({
           left: 86px;
         }
 
-        ^ .property-fromAmount {
+        ^ .net-nanopay-interac-ui-shared-FixedFloatView {
           display: inline-block;
           box-sizing: border-box;
           vertical-align: top;
@@ -92,13 +92,13 @@ foam.CLASS({
           outline: none;
         }
 
-        ^ .property-fromAmount:focus {
+        ^ .net-nanopay-interac-ui-shared-FixedFloatView:focus {
           border: solid 1px #59A5D5;
           padding: 0 19px;
         }
 
         ^ input[type=number]::-webkit-inner-spin-button,
-        ^ input[type=number]::-webkit-outer-spin-button { 
+        ^ input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
@@ -130,6 +130,22 @@ foam.CLASS({
   properties: [
     {
       class: 'Double',
+      name: 'fees',
+      value: 5 // TODO: Make this dynamic eventually
+    },
+    {
+      // TODO: Pull FX rate from somewhere
+      class: 'Double',
+      name: 'fxRate',
+      value: 52.01
+    },
+    {
+      class: 'Boolean',
+      name: 'feedback_',
+      value: false
+    },
+    {
+      class: 'Double',
       name: 'fromAmount',
       min: 0,
       value: 0,
@@ -139,10 +155,10 @@ foam.CLASS({
         var value = parseFloat(newValue).toFixed(2);
         this.viewData.fromAmount = value;
 
-        // TODO: Get FX rates and multiply
-        // NOTE: This rounds up.
-        this.toAmount = (value * this.fxRate).toFixed(2);
-        return value;
+        if ( this.feedback ) return;
+        this.feedback = true;
+        this.toAmount = ((value - this.fees) * this.fxRate).toFixed(2);
+        this.feedback = false;
       },
       validateObj: function(fromAmount) {
         if ( fromAmount <= 0 ) {
@@ -151,18 +167,26 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'toAmount',
-      value: '0.00',
-      postSet: function(oldValue, newValue) {
-        this.viewData.toAmount = newValue;
-      }
-    },
-    {
-      // TODO: Pull FX rate from somewhere
       class: 'Double',
-      name: 'fxRate',
-      value: 52.01
+      name: 'toAmount',
+      min: 0,
+      value: 0,
+      precision: 2,
+      view: 'net.nanopay.interac.ui.shared.FixedFloatView',
+      postSet: function(oldValue, newValue) {
+        var value = parseFloat(newValue).toFixed(2);
+        this.viewData.toAmount = value;
+
+        if ( this.feedback ) return;
+        this.feedback = true;
+        this.fromAmount = ((value / this.fxRate) + this.fees).toFixed(2);
+        this.feedback = false;
+      },
+      validateObj: function(toAmount) {
+        if ( toAmount <= 0 ) {
+          return this.AmountError;
+        }
+      }
     }
   ],
 
@@ -203,7 +227,7 @@ foam.CLASS({
                 })
               .end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 5.00 (included)').end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.fees.toFixed(2) , ' (included)').end() // TODO: Get FX rates
             .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
@@ -211,7 +235,12 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
               .end()
-              .start('div').addClass('toAmountStyle').add(this.toAmount$).end()
+              .start(this.TO_AMOUNT, {onKey: true})
+                .attrs({
+                  step: 0.01,
+                  onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
+                })
+              .end()
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
