@@ -24,15 +24,17 @@ foam.CLASS({
           seqNo: true,
           testData: [
               {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payeeId: 420, sendingAmount: 2300.00, receivingAmount: 117422.26, rate: 51.12, fees: 20.00
+                referenceNumber: 'CAxxxJZ7', dateAndTime: '2017 Aug 22', payeeId: 23, amount: 2300.00, rate: 51.12, fees: 20.00
+              },
+              {
+                referenceNumber: 'CAxxxJZ7', dateAndTime: '2017 Aug 22', payeeId: 32, amount: 3200.00, rate: 51.12, fees: 20.00
               }
           ]
         })
         .addPropertyIndex(this.Transaction.REFERENCE_NUMBER)
-        .addPropertyIndex(this.Transaction.DATE)
+        .addPropertyIndex(this.Transaction.DATE_AND_TIME)
         .addPropertyIndex(this.Transaction.PAYEE_ID)
-        .addPropertyIndex(this.Transaction.SENDING_AMOUNT)
-        .addPropertyIndex(this.Transaction.RECEIVING_AMOUNT)
+        .addPropertyIndex(this.Transaction.AMOUNT)
         .addPropertyIndex(this.Transaction.RATE)
         .addPropertyIndex(this.Transaction.FEES)
       }

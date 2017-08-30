@@ -44,6 +44,7 @@ foam.CLASS({
           color: #59a5d5;
           text-decoration: underline;
           display: inline-block;
+          cursor: pointer;
         }
         ^ .accountBalance {
           font-family: Roboto;
@@ -56,6 +57,7 @@ foam.CLASS({
         }
         ^ .tableBarDiv {
           margin-top: 25px;
+          margin-bottom: 10px;
         }
         ^ .interacLogo {
           width: 90px;
@@ -88,7 +90,7 @@ foam.CLASS({
         ^ table {
           border-collapse: collapse;
           margin: auto;
-          width: 992px;
+          width: 962px;
         }
         ^ thead > tr > th {
           font-family: 'Roboto';
@@ -117,7 +119,6 @@ foam.CLASS({
           line-height: 1;
           letter-spacing: 0.4px;
           color: #093649;
-          font-style: normal;
         }
         ^ .foam-u2-view-TableView td {
           font-family: Roboto;
@@ -134,6 +135,9 @@ foam.CLASS({
         }
         ^ tbody > tr:nth-child(odd) {
           background: #f6f9f9;
+        }
+        ^ .foam-u2-ActionView-create {
+          visibility: hidden;
         }
       */}
     })
@@ -165,25 +169,24 @@ foam.CLASS({
             .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).addClass('interacLogo').end()
           .end()
           .start()
-          .tag({
-              class: 'foam.u2.ListCreateController',
-              dao: this.transactionDAO,
-              factory: function() { return self.Transaction.create(); },
-              detailView: {
-                class: 'foam.u2.DetailView',
-                properties: [
-                  this.Transaction.REFERENCE_NUMBER,
-                  this.Transaction.DATE,
-                  this.Transaction.PAYEE_ID,
-                  this.Transaction.SENDING_AMOUNT,
-                  this.Transaction.RECEIVING_AMOUNT,
-                  this.Transaction.RATE,
-                  this.Transaction.FEES
-                ]
-              },
-            summaryView: this.HomeTableView.create()
-          })
-        .end()
+            .tag({
+                class: 'foam.u2.ListCreateController',
+                dao: this.transactionDAO,
+                factory: function() { return self.Transaction.create(); },
+                detailView: {
+                  class: 'foam.u2.DetailView',
+                  properties: [
+                    this.Transaction.REFERENCE_NUMBER,
+                    this.Transaction.DATE_AND_TIME,
+                    this.Transaction.PAYEE_ID,
+                    this.Transaction.AMOUNT,
+                    this.Transaction.RATE,
+                    this.Transaction.FEES
+                  ]
+                },
+              summaryView: this.HomeTableView.create()
+            })
+          .end()
         .end();
     }
   ],
@@ -225,7 +228,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payeeId', 'sendingAmount', 'receivingAmount', 'rate', 'fees'
+                'referenceNumber', 'dateAndTime', 'payeeId', 'amount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }

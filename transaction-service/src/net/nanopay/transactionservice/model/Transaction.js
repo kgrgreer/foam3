@@ -24,35 +24,32 @@ foam.CLASS({
       name: 'payeeId'
     },
     {
-      class: 'Long',
-      name: 'sendingAmount'
-    },
-    {
-      class: 'Long',
-      name: 'receivingAmount'
+      class: 'Currency',
+      name: 'amount'
     },
     {
       class: 'DateTime',
-      name: 'date'
+      name: 'dateAndTime',
+      label: 'Date & Time'
     },
     {
-      class: 'Long',
+      class: 'Currency',
       name: 'tip'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'rate'
     },
     {
-      class: 'Long',
+      class: 'Currency',
       name: 'fees'
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
-      class: 'Long',
+      class: 'Currency',
       name: 'total',
-      expression: function (amount, tip) {
-        return amount + tip;
+      expression: function (amount, tip, fees) {
+        return amount + tip + fees;
       }
     }
   ]
