@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui',
-  name: 'HomeView',
+  name: 'TransactionsView',
   extends: 'foam.u2.View',
 
   documentation: 'View displaying interac home page with list of accounts and transactions',
