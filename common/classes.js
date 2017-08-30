@@ -5,6 +5,7 @@ var classes = [
   'net.nanopay.common.model.BankAccountInfo',
   'net.nanopay.common.model.PadAccount',
   'net.nanopay.common.model.Phone',
+  'net.nanopay.common.model.User',
   'net.nanopay.common.model.UserAccountInfo',
   'net.nanopay.common.model.AccountLimit',
 ];
