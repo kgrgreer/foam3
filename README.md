@@ -4,9 +4,10 @@ Repository containing b2b, retail, common, admin-portal, ingenico
 ## Running locally
 
 ### Prerequisites
-0. Brew (`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`)
-1. Maven (`brew install maven`)
-2. Git (`brew install git`)
+1. Brew (`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`)
+2. Realpath from Coreutils (`brew install coreutils`)
+3. Maven (`brew install maven`)
+4. Git (`brew install git`)
 
 ### Setup
 Checkout `foam2` and `NANOPAY` repositories into the same directory
