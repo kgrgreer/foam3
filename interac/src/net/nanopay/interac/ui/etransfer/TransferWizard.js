@@ -231,6 +231,15 @@ foam.CLASS({
 
         if ( this.position == 3 ) {
           // TODO: Reset params and restart flow
+          this.viewData.purpose = 'General';
+          this.viewData.notes = '';
+          this.viewData.fromAmount = 5;
+          this.viewData.toAmount = 0;
+          while ( this.position != 0 ) {
+            this.subStack.back();
+          }
+          this.backLabel = 'Back';
+          this.nextLabel = 'Next';
           return;
         }
 
