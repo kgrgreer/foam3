@@ -184,7 +184,7 @@ foam.CLASS({
                     this.Transaction.FEES
                   ]
                 },
-              summaryView: this.HomeTableView.create()
+              summaryView: this.TransactionTableView.create()
             })
           .end()
         .end();
@@ -208,7 +208,7 @@ foam.CLASS({
 
   classes: [
     {
-      name: 'HomeTableView',
+      name: 'TransactionTableView',
       extends: 'foam.u2.View',
 
       requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
