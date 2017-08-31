@@ -45,9 +45,4 @@ foam.RELATIONSHIP({
   forwardName: 'phones',
   inverseName: 'owner'
 });
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.common.model.User',
-  targetModel: 'net.nanopay.common.model.User',
-  forwardName: 'payees',
-  inverseName: 'payer'
-});
+
