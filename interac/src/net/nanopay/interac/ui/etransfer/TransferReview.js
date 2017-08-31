@@ -76,6 +76,10 @@ foam.CLASS({
         ^ .invoiceLink {
           height: 42px;
         }
+
+        ^ .purposeMargin {
+          margin-bottom: 20px
+        }
       */}
     })
   ],
@@ -179,7 +183,7 @@ foam.CLASS({
           // TODO: Make card based on from and to information
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
           .start('p').addClass('bold').add(this.PurposeLabel).end()
-          .start('p').add(this.viewData.purpose).end()
+          .start('p').addClass('purposeMargin').add(this.viewData.purpose).end()
           .start('p').addClass('bold').add(this.NotesLabel).end()
           .start('p').add(this.viewData.notes ? this.viewData.notes : 'None').end()
         .end();
