@@ -202,6 +202,7 @@ foam.CLASS({
       label: 'Send e-Transfer',
       code: function(X) {
         // send e-Transfer functionality
+        X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
       }
     }
   ],
@@ -214,7 +215,7 @@ foam.CLASS({
       requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
 
       imports: [ 'transactionDAO' ],
-      
+
       properties: [
         'selection',
         { name: 'data', factory: function() {return this.transactionDAO}}

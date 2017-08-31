@@ -171,6 +171,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.title = 'Send e-Transfer';
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',     label: 'Account & Payee',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-amount',      label: 'Amount',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
@@ -216,9 +217,13 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       isAvailable: function(position) {
-        return position == 3 || position == 0 ? false : true;
+        return position == 3 ? false : true;
       },
-      code: function() {
+      code: function(X) {
+        if ( this.position == 0 ) {
+          X.stack.back();
+          return;
+        }
         this.subStack.back();
       }
     },
