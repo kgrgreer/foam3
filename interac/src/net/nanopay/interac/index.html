@@ -4,12 +4,14 @@
     <script language="javascript" src="../../../../../../foam2/src/foam/nanos/nanos.js"></script>
     <script language="javascript" src="../../../../../../foam2/src/foam/u2/ListCreateController.js"></script>
     <script language="javascript" src="../../../../../common/src/net/nanopay/common/files.js"></script>
+    <script language="javascript" src="../../../../../common/src/net/nanopay/common/dao/Storage.js"></script>
     <script language="javascript" src="../../../../../b2b/src/net/nanopay/b2b/files.js"></script>
+    <script language="javascript" src="../../../../../transaction-service/src/net/nanopay/transactionservice/model/Transaction.js"></script>
 
     <script language="javascript" src="model/models.js"></script>
     <script language="javascript" src="dao/Storage.js"></script>
     <script language="javascript" src="ui/Controller.js"></script>
-    <script language="javascript" src="ui/HomeView.js"></script>
+    <script language="javascript" src="ui/TransactionsView.js"></script>
     <script language="javascript" src="ui/ManagePayeeView.js"></script>
     <script language="javascript" src="ui/CountdownView.js"></script>
     <script language="javascript" src="ui/shared/FooterView.js"></script>
@@ -267,7 +269,7 @@
       .foam-u2-view-TableView-th-fromBusinessId { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-toBusinessId   { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
-      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; text-align: right !important; }
+      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px;}
       .foam-u2-view-TableView-th-status         { width: 200px; min-width: 200px; }
     </style>
   </head>

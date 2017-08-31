@@ -22,11 +22,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'bankNumber',
-      label: 'Inst. No.'
-    },
-    {
-      class: 'String',
       name: 'accountNumber',
       label: 'Account No.',
       tableCellFormatter: function(str) {
@@ -47,4 +42,13 @@ foam.CLASS({
       name: 'currencyCode'
     },
   ]
+});
+
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.common.model.Bank',
+  targetModel: 'net.nanopay.common.model.BankAccountInfo',
+  forwardName: 'bankNumber',
+  inverseName: 'bankAccount'
 });
