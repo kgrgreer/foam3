@@ -101,6 +101,30 @@ foam.CLASS({
       class: 'Double',
       name: 'fxRate',
       value: 52.01
+    },
+    {
+      // TODO: Pull an actual user/business from a DAO
+      name: 'fromUser',
+      value: {
+        name : 'Mark Woods',
+        email : 'smitham.cristina@beahan.ca',
+        tel : '+1 (907) 787-2493',
+        address : '123 Avenue, Toronto, Ontario, Canada M2G 1K9',
+        nationality: 'Canada',
+        flag: 'images/canada.svg'
+      }
+    },
+    {
+      // TODO: Pull an actual user/business from a DAO
+      name: 'toUser',
+      value: {
+        name : 'Mary Lindsey',
+        email : 'haylee_kautzer@gmail.com',
+        tel : '+91 11 2588 8257',
+        address : '3/1, West Patel Nagar, New Delhi, Delhi 110008, India',
+        nationality: 'India',
+        flag: 'images/india.svg'
+      }
     }
   ],
 
@@ -124,6 +148,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
             .start('div').addClass('currencyContainer')
@@ -146,12 +171,13 @@ foam.CLASS({
           .end()
         .end()
         .start('div').addClass('col')
-          // TODO: Make card based on from and to information
           .start('a').addClass('invoiceLink')
             .attrs({href: ''})
             .add(this.PDFLabel)
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
+          // TODO: Make card based on from and to information
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
           .start('p').addClass('bold').add(this.PurposeLabel).end()
           .start('p').add(this.viewData.purpose).end()
           .start('p').addClass('bold').add(this.NotesLabel).end()

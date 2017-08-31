@@ -143,25 +143,7 @@ foam.CLASS({
         margin-bottom: 20px;
       }
 
-      ^ .userContainer {
-        box-sizing: border-box;
-        border-radius: 2px;
-        background-color: #ffffff;
-        border: solid 1px rgba(164, 179, 184, 0.5);
-        margin-bottom: 20px;
 
-        width: 300px;
-        padding: 20px;
-      }
-
-      ^ .userRow {
-        margin-bottom: 20px;
-      }
-
-      ^ .userName {
-        display: inline-block;
-        margin-bottom: 0 !important;
-      }
     */}})
   ],
 
@@ -205,8 +187,8 @@ foam.CLASS({
         .end()
         .start('div').addClass('row')
           .start('div').addClass('navigationContainer')
-            .add(this.GO_BACK)
-            .add(this.GO_NEXT)
+            .tag(this.GO_BACK, {label$: this.backLabel$})
+            .tag(this.GO_NEXT, {label$: this.nextLabel$})
           .end()
         .end();
     }
@@ -216,14 +198,17 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position) {
-        return position == 3 ? false : true;
-      },
       code: function(X) {
         if ( this.position == 0 ) {
           X.stack.back();
           return;
         }
+
+        if ( this.position == 3 ) {
+          X.stack.back();
+          return;
+        }
+
         this.subStack.back();
       }
     },
@@ -232,14 +217,20 @@ foam.CLASS({
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < 3 ) return true; // Valid next
-        return false; // Not in dialog
+        return true; // Not in dialog
       },
       code: function() {
         var self = this;
         if ( this.position == 2 ) { // On Review Transfer page.
           // TODO: Run the transfer
           this.subStack.push(this.views[this.subStack.pos + 1].view);
+          this.backLabel = 'Back to Home';
+          this.nextLabel = 'Make Another Transfer';
+          return;
+        }
+
+        if ( this.position == 3 ) {
+          // TODO: Reset params and restart flow
           return;
         }
 
