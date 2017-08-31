@@ -8,8 +8,7 @@ foam.CLASS({
       this.SUPER();
 
       this
-        .addClass(this.myClass())
-        .tag({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', title: 'Send e-Transfer' });
+        .addClass(this.myClass());
     }
   ]
 });

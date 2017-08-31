@@ -33,20 +33,14 @@ foam.CLASS({
   methods: [
     function init() {
       this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();      
+      this.errorsUpdate();
     },
 
     function initE() {
       this.SUPER();
 
       this
-        .addClass(this.myClass())
-        .start('div').addClass('topRow')
-          .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-            .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-            .addClass('interacImage')
-          .end()
-        .end();
+        .addClass(this.myClass());
     }
   ],
 

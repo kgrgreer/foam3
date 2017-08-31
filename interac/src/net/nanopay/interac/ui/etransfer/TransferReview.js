@@ -115,12 +115,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('topRow')
-          .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-            .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-            .addClass('interacImage')
-          .end()
-        .end()
         .start('div').addClass('col')
           .start('div').addClass('invoiceDetailContainer')
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()

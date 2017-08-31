@@ -17,6 +17,19 @@ foam.CLASS({
         margin-bottom: 20px;
       }
 
+      ^ .timer {
+        display: inline-block;
+        margin-top: 3px;
+      }
+
+      ^ .timerText {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 20px;
+        margin-top: 6px;
+        opacity: 1 !important;
+      }
+
       ^ .interacImage {
         width: 90px;
         height: 40px;
@@ -129,7 +142,31 @@ foam.CLASS({
         color: #59a5d5;
         margin-bottom: 20px;
       }
+
+      ^ .userContainer {
+        box-sizing: border-box;
+        border-radius: 2px;
+        background-color: #ffffff;
+        border: solid 1px rgba(164, 179, 184, 0.5);
+        margin-bottom: 20px;
+
+        width: 300px;
+        padding: 20px;
+      }
+
+      ^ .userRow {
+        margin-bottom: 20px;
+      }
+
+      ^ .userName {
+        display: inline-block;
+        margin-bottom: 0 !important;
+      }
     */}})
+  ],
+
+  messages: [
+    { name: 'TimerText', message: 'before exchange rate expires.' }
   ],
 
   methods: [
@@ -141,6 +178,36 @@ foam.CLASS({
         { parent: 'etransfer', id: 'etransfer-transfer-complete',    label: 'Successful',           view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
       ];
       this.SUPER();
+    },
+
+    function initE(){
+      var self = this;
+
+      this.addClass(this.myClass())
+        .start('div').addClass('row')
+          .start('div').addClass('positionColumn')
+            .start('p').add(this.title || '').addClass('title').end()
+            .tag({ class: 'net.nanopay.interac.ui.shared.wizardView.WizardViewOverview', titles: this.viewTitles, position$: this.position$ })
+          .end()
+          .start('div').addClass('stackColumn')
+            .start('div').addClass('topRow')
+              // TODO: 30 minute timer
+              .start({class: 'net.nanopay.interac.ui.CountdownView'}).addClass('timer').end()
+              .start('p').addClass('pDetails').addClass('timerText').add(this.TimerText).end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
+                .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
+                .addClass('interacImage')
+              .end()
+            .end()
+            .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
+          .end()
+        .end()
+        .start('div').addClass('row')
+          .start('div').addClass('navigationContainer')
+            .add(this.GO_BACK)
+            .add(this.GO_NEXT)
+          .end()
+        .end();
     }
   ],
 

@@ -158,7 +158,7 @@ foam.CLASS({
 
         if ( this.feedback ) return;
         this.feedback = true;
-        this.toAmount = ((newValue - this.fees) * this.fxRate).toFixed(2);
+        this.toAmount = (newValue - this.fees) * this.fxRate;
         this.feedback = false;
       },
       validateObj: function(fromAmount) {
@@ -179,7 +179,8 @@ foam.CLASS({
 
         if ( this.feedback ) return;
         this.feedback = true;
-        this.fromAmount = ((newValue / this.fxRate) + this.fees).toFixed(2);
+        this.fromAmount = (newValue / this.fxRate) + this.fees;
+        console.log(this.fromAmount);
         this.feedback = false;
       },
       validateObj: function(toAmount) {
@@ -205,13 +206,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('topRow')
-          // TODO: 30 minute timer
-          .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-            .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-            .addClass('interacImage')
-          .end()
-        .end()
         .start('div').addClass('detailsCol')
           .start('div').addClass('transferRateContainer')
             .start('div').addClass('currencyContainer')

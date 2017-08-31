@@ -135,6 +135,16 @@ foam.CLASS({
         this.viewData.notes = newValue;
       },
       view: { class: 'foam.u2.tag.TextArea' }
+    },
+    {
+      // TODO: Pull an actual user/business from a DAO
+      name: 'fromUser',
+      value: {
+        name : 'Mach Engineering',
+        email : 'smitham.cristina@beahan.ca',
+        tel : '+1 (907) 787-2493',
+        address : '123 Avenue, Toronto, Ontario, Canada M2G 1K9'
+      }
     }
   ],
 
@@ -157,12 +167,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('topRow')
-          .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-            .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-            .addClass('interacImage')
-          .end()
-        .end()
         .start('div').addClass('detailsCol')
           .start('p').add(this.TransferFromLabel).addClass('bold').end()
           .start('p').add(this.AccountLabel).end()
@@ -190,6 +194,13 @@ foam.CLASS({
           .end()
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
+
+          .start('div').addClass('userContainer')
+            .start('div').addClass('userRow')
+              .start('p').addClass('bold').addClass('userName').add(this.fromUser.name).end()
+            .end()
+          .end()
+
           .start('p').add(this.ToLabel).addClass('bold').end()
         .end();
     }
