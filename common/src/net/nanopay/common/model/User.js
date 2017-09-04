@@ -1,16 +1,12 @@
 foam.CLASS({
+  package: 'net.nanopay.common.model',
   name: 'User',
-  refines: 'foam.nanos.auth.User',
+  extends: 'foam.nanos.auth.User',
 
   properties: [
     {
       class: 'String',
       name: 'type'
-    },
-    {
-      class: 'FObjectArray',
-      of:    'net.nanopay.common.model.Phone',
-      name:  'phones'
     },
     {
       class: 'Date',
@@ -19,16 +15,6 @@ foam.CLASS({
     {
       class: 'String',
       name:  'profilePicture'
-    },
-    {
-      class: 'FObjectArray',
-      of:    'net.nanopay.common.model.Address',
-      name:  'address'
-    },
-    {
-      class: 'FObjectArray',
-      of:    'net.nanopay.common.model.Account',
-      name:  'accounts'
     },
     {
       class: 'FObjectProperty',
@@ -59,3 +45,4 @@ foam.RELATIONSHIP({
   forwardName: 'phones',
   inverseName: 'owner'
 });
+
