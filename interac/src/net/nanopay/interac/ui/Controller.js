@@ -12,7 +12,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.interac.Iso20022'
   ],
 
   exports: [
@@ -50,6 +51,12 @@ foam.CLASS({
       factory: function () {
         return this.Stack.create();
       }
+    },
+    {
+      name: 'iso20022',
+      factory: function () {
+        return this.Iso20022.create();
+      }
     }
   ],
 
@@ -57,6 +64,9 @@ foam.CLASS({
     function init () {
       this.SUPER();
       var self = this;
+
+      var message = this.iso20022.GENERATE_PACS008_MESSAGE();
+      console.log(message);
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
