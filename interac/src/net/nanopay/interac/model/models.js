@@ -30,6 +30,10 @@ foam.CLASS({
       name:  'Phone'
     },
     {
+      class: 'String',
+      name:  'nationalId'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.common.model.Phone',
       name:  'phone'
