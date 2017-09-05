@@ -27,10 +27,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name:  'Phone'
-    },
-    {
-      class: 'String',
       name:  'nationalId'
     },
     {
