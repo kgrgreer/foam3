@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'countdownView'
+    'countdownView',
+    'invoice'
   ],
 
   axioms: [
@@ -38,8 +39,8 @@ foam.CLASS({
         opacity: 1 !important;
       }
 
-      ^ .timerText.hidden {
-        display: none;
+      ^ .hidden {
+        display: none !important;
       }
 
       ^ .interacImage {
@@ -154,8 +155,6 @@ foam.CLASS({
         color: #59a5d5;
         margin-bottom: 20px;
       }
-
-
     */}})
   ],
 
@@ -169,7 +168,8 @@ foam.CLASS({
       factory: function() {
         return this.CountdownView.create();
       }
-    }
+    },
+    'invoice'
   ],
 
   methods: [

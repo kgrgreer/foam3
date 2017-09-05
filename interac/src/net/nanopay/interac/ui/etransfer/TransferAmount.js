@@ -1,17 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferAmount',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext',
-    'countdownView'
-  ],
-
-  exports: [ 'as data' ],
+  extends: 'net.nanopay.interac.ui.etransfer.TransferView',
 
   documentation: 'Transfer amount details',
 
@@ -217,8 +207,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
+      this.SUPER();
       this.startTimer();
       if ( this.viewData.fromAmount ) {
         this.fromAmount = this.viewData.fromAmount;
@@ -271,13 +260,13 @@ foam.CLASS({
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
-          .start('div').addClass('invoiceDetailContainer')
+          .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
             .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
           .end()
-          .start('a').addClass('invoiceLink')
+          .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
             .attrs({href: ''})
             .add(this.PDFLabel)
           .end()
@@ -296,15 +285,6 @@ foam.CLASS({
     function startTimer() {
       this.countdownView.show();
       this.countdownView.start();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });

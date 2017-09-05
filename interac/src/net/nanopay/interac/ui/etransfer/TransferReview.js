@@ -1,16 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferReview',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
-
-  exports: [ 'as data' ],
+  extends: 'net.nanopay.interac.ui.etransfer.TransferView',
 
   documentation: 'Interac transfer review',
 
@@ -133,18 +124,13 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
-    },
-
     function initE() {
       this.SUPER();
 
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
-          .start('div').addClass('invoiceDetailContainer')
+          .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
             .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
@@ -175,7 +161,7 @@ foam.CLASS({
           .end()
         .end()
         .start('div').addClass('col')
-          .start('a').addClass('invoiceLink')
+          .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
             .attrs({href: ''})
             .add(this.PDFLabel)
           .end()
@@ -187,15 +173,6 @@ foam.CLASS({
           .start('p').addClass('bold').add(this.NotesLabel).end()
           .start('p').add(this.viewData.notes ? this.viewData.notes : 'None').end()
         .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });
