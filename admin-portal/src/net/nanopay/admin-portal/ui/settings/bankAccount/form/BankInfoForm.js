@@ -13,22 +13,23 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-        }
+      code: `
         ^ .col {
           display: inline-block;
           width: 250px;
           vertical-align: top;
         }
+
         ^ .colSpacer {
           margin-left: 30px;
         }
+
         ^ input[type=number]::-webkit-inner-spin-button,
           input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
+
         ^ .foam-u2-tag-Select {
           width: 218px;
           height: 44px;
@@ -41,24 +42,30 @@ foam.CLASS({
           background-color: white;
           outline: none;
         }
+
         ^ input {
           width: 218px;
           height: 40px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
         }
+
         ^ .guideRow {
           margin-top: 48px;
         }
+
         ^ .foam-u2-tag-Select:hover {
           cursor: pointer;
         }
+
         ^ .foam-u2-tag-Select:focus {
           border: solid 1px #59A5D5;
         }
+
         ^ .caret {
           position: relative;
         }
+
         .caret:before {
           content: '';
           position: absolute;
@@ -68,6 +75,7 @@ foam.CLASS({
           border-left: 7px solid transparent;
           border-right: 7px solid transparent;
         }
+
         .caret:after {
           content: '';
           position: absolute;
@@ -77,10 +85,14 @@ foam.CLASS({
           border-left: 0px solid transparent;
           border-right: 0px solid transparent;
         }
+
         ^ .institutionContainerHidden {
           display: none;
         }
-      */}
+        
+        ^ .inputErrorLabel {
+          color: #d81e05;
+        }`
     })
   ],
 

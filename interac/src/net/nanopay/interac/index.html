@@ -3,22 +3,35 @@
     <script language="javascript" src="../../../../../../foam2/src/foam.js"></script>
     <script language="javascript" src="../../../../../../foam2/src/foam/nanos/nanos.js"></script>
     <script language="javascript" src="../../../../../../foam2/src/foam/u2/ListCreateController.js"></script>
-    <script language="javascript" src="../../../../../common/src/net/nanopay/common/common.js"></script>
-    <script language="javascript" src="../../../../../b2b/src/net/nanopay/b2b/b2b.js"></script>
+    <script language="javascript" src="../../../../../common/src/net/nanopay/common/files.js"></script>
+    <script language="javascript" src="../../../../../common/src/net/nanopay/common/dao/Storage.js"></script>
+    <script language="javascript" src="../../../../../b2b/src/net/nanopay/b2b/files.js"></script>
+    <script language="javascript" src="../../../../../transaction-service/src/net/nanopay/transactionservice/model/Transaction.js"></script>
 
     <script language="javascript" src="model/models.js"></script>
     <script language="javascript" src="dao/Storage.js"></script>
     <script language="javascript" src="ui/Controller.js"></script>
-    <script language="javascript" src="ui/HomeView.js"></script>
+    <script language="javascript" src="ui/TransactionsView.js"></script>
     <script language="javascript" src="ui/ManagePayeeView.js"></script>
+    <script language="javascript" src="ui/CountdownView.js"></script>
     <script language="javascript" src="ui/shared/FooterView.js"></script>
+    <script language="javascript" src="ui/shared/FixedFloatView.js"></script>
     <script language="javascript" src="ui/shared/topNavigation/SubMenuBar.js"></script>
     <script language="javascript" src="ui/shared/topNavigation/TopNav.js"></script>
     <script language="javascript" src="ui/shared/topNavigation/NoMenuTopNav.js"></script>
     <script language="javascript" src="ui/shared/topNavigation/UserTopNavView.js"></script>
+    <script language="javascript" src="ui/shared/wizardView/WizardView.js"></script>
+    <script language="javascript" src="ui/shared/wizardView/WizardViewOverview.js"></script>
+
+    <script language="javascript" src="ui/etransfer/TransferWizard.js"></script>
+    <script language="javascript" src="ui/etransfer/TransferDetails.js"></script>
+    <script language="javascript" src="ui/etransfer/TransferAmount.js"></script>
+    <script language="javascript" src="ui/etransfer/TransferReview.js"></script>
+    <script language="javascript" src="ui/etransfer/TransferComplete.js"></script>
+
     <script language="javascript" src="Data.js"></script>
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
     <style>
       body {
         font-family: 'Roboto', sans-serif;
@@ -128,11 +141,11 @@
       .foam-u2-view-TableView-net-nanopay-b2b-Invoice > tbody > tr {
         height: 40px;
       }
-      .foam-u2-view-RecipricalSearch-filter-header {
+      .foam-u2-view-ReciprocalSearch-filter-header {
         font-size: 20px;
         color: gray;
       }
-      .foam-u2-view-RecipricalSearch-filter {
+      .foam-u2-view-ReciprocalSearch-filter {
         margin-bottom: 8px;
       }
       .Invoice-Status-Disputed  {
@@ -256,7 +269,7 @@
       .foam-u2-view-TableView-th-fromBusinessId { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-toBusinessId   { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
-      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; text-align: right !important; }
+      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px;}
       .foam-u2-view-TableView-th-status         { width: 200px; min-width: 200px; }
     </style>
   </head>

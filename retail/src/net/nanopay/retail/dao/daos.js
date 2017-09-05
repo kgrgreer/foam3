@@ -7,25 +7,29 @@ foam.CLASS({
   requires: [
     'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'net.nanopay.retail.model.Merchant',
+    'net.nanopay.retail.model.User',
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.BankAccount',
-    'net.nanopay.retail.model.Transaction'
+    'net.nanopay.retail.model.Transaction',
+    'net.nanopay.retail.model.BusinessType',
+    'net.nanopay.retail.model.BusinessSector'
   ],
 
   exports: [
-    'merchantDAO',
+    'userDAO',
     'deviceDAO',
     'bankAccountDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'businessTypeDAO',
+    'businessSectorDAO'
   ],
 
   properties: [
     {
-      name: 'merchantDAO',
+      name: 'userDAO',
       factory: function() {
         return this.createDAO({
-          of: this.Merchant,
+          of: this.User,
           seqNo: true
         })
       }
@@ -110,8 +114,128 @@ foam.CLASS({
         .addPropertyIndex(this.Transaction.TOTAL)
         .addPropertyIndex(this.Transaction.DEVICE)
       }
+    },
+    {
+      name: 'businessTypeDAO',
+      factory: function() {
+        return this.createDAO({
+          of: this.BusinessType,
+          seqNo: true,
+          testData: [
+            {
+              name: 'Sole Proprietorship'
+            },
+            {
+              name: 'General Partnership'
+            },
+            {
+              name: 'Limited Partnership'
+            },
+            {
+              name: 'Corporation'
+            },
+            {
+              name: 'Joint Venture'
+            }
+          ]
+        })
+      }
+    },
+    {
+      name: 'businessSectorDAO',
+      factory: function() {
+        return this.createDAO({
+          of: this.BusinessSector,
+          seqNo: true,
+          testData: [
+            {
+              'name'    : 'Art dealing'
+            },
+            {
+              'name'    : 'Audio & Video'
+            },
+            {
+              'name'    : 'Automotive'
+            },
+            {
+              'name'    : 'Charity & not-for-profit'
+            },
+            {
+              'name'    : 'Consulting services'
+            },
+            {
+              'name'    : 'Design'
+            },
+            {
+              'name'    : 'Education & learning'
+            },
+            {
+              'name'    : 'Entertainment - Adult'
+            },
+            {
+              'name'    : 'Events & entertainment'
+            },
+            {
+              'name'    : 'Financial Services'
+            },
+            {
+              'name'    : 'Gambling, betting & online gaming'
+            },
+            {
+              'name'    : 'Health & beauty'
+            },
+            {
+              'name'    : 'IT services'
+            },
+            {
+              'name'    : 'Jewellery, precious metals & stones'
+            },
+            {
+              'name'    : 'Legal services'
+            },
+            {
+              'name'    : 'Manufacturing'
+            },
+            {
+              'name'    : 'Media & communication'
+            },
+            {
+              'name'    : 'Military & semi-military goods & services'
+            },
+            {
+              'name'    : 'Pharmaceuticals, medical & dietary supplements'
+            },
+            {
+              'name'    : 'Public services'
+            },
+            {
+              'name'    : 'Real estate & construction'
+            },
+            {
+              'name'    : 'Restaurants & catering'
+            },
+            {
+              'name'    : 'Retail & trade'
+            },
+            {
+              'name'    : 'Sports'
+            },
+            {
+              'name'    : 'Tobacco & alcohol'
+            },
+            {
+              'name'    : 'Transport services'
+            },
+            {
+              'name'    : 'Travel'
+            }
+          ]
+        })
+      }
     }
   ],
+
+
 
   methods: [
     function createDAO(config) {

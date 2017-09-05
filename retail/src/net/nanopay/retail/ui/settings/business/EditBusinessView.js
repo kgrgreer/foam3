@@ -7,13 +7,13 @@ foam.CLASS({
 
   requires:[
     'net.nanopay.common.model.Address',
-    'net.nanopay.b2b.model.Business'
+    'net.nanopay.retail.model.Business'
   ],
 
   imports: [
-    'merchantDAO',
+    'userDAO',
     'addressDAO',
-    'merchant',
+    'user',
     'stack',
     'countryDAO',
     'regionDAO'
@@ -298,7 +298,7 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        this.merchantDAO.put(
+        this.userDAO.put(
           {
             name: self.businessName,
             businessTypeId: self.businessTypeList,

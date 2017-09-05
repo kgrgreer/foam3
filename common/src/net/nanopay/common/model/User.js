@@ -5,9 +5,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectArray',
-      of:    'net.nanopay.common.model.Phone',
-      name:  'phones'
+      class: 'String',
+      name: 'type'
     },
     {
       class: 'Date',
@@ -16,16 +15,6 @@ foam.CLASS({
     {
       class: 'String',
       name:  'profilePicture'
-    },
-    {
-      class: 'FObjectArray',
-      of:    'net.nanopay.common.model.Address',
-      name:  'address'
-    },
-    {
-      class: 'FObjectArray',
-      of:    'net.nanopay.common.model.Account',
-      name:  'accounts'
     },
     {
       class: 'FObjectProperty',
@@ -56,3 +45,4 @@ foam.RELATIONSHIP({
   forwardName: 'phones',
   inverseName: 'owner'
 });
+

@@ -231,7 +231,7 @@ foam.CLASS({
           });
 
           this.userDAO.put(payer);
-          this.userDAO.put(payer);
+          this.userDAO.put(payee);
 
           // Transaction
           var transaction = net.nanopay.admin.model.Transaction.create({
