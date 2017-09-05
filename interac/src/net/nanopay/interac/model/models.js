@@ -27,7 +27,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name:  'Phone'
+      name:  'nationalId'
     },
     {
       class: 'FObjectProperty',
