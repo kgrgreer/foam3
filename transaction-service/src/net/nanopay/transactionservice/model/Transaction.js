@@ -25,7 +25,17 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'amount'
+      name: 'amount',
+      label: 'Sending Amount'
+    },
+    {
+      class: 'Currency',
+      name: 'receivingAmount',
+      label: 'Receiving Amount',
+      transient: true,
+      expression: function(amount, fees, rate) {
+        return (amount - fees) * rate;
+      }
     },
     {
       class: 'DateTime',
