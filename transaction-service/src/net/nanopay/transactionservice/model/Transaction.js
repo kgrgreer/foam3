@@ -24,7 +24,7 @@ foam.CLASS({
       name: 'payeeId'
     },
     {
-      class: 'Currency',
+      class: 'Long',
       name: 'amount'
     },
     {
@@ -33,7 +33,7 @@ foam.CLASS({
       label: 'Date & Time'
     },
     {
-      class: 'Currency',
+      class: 'Long',
       name: 'tip'
     },
     {
@@ -41,12 +41,12 @@ foam.CLASS({
       name: 'rate'
     },
     {
-      class: 'Currency',
+      class: 'Long',
       name: 'fees'
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
-      class: 'Currency',
+      class: 'Long',
       name: 'total',
       expression: function (amount, tip, fees) {
         return amount + tip + fees;

@@ -13,7 +13,8 @@ foam.CLASS({
   requires: [
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.interac.Iso20022'
+    'net.nanopay.interac.Iso20022',
+    'net.nanopay.iso20022.ISO20022Driver'
   ],
 
   exports: [
@@ -57,6 +58,12 @@ foam.CLASS({
       factory: function () {
         return this.Iso20022.create();
       }
+    },
+    {
+      name: 'iso20022Driver',
+      factory: function () {
+        return this.ISO20022Driver.create();
+      }
     }
   ],
 
@@ -67,6 +74,7 @@ foam.CLASS({
 
       var message = this.iso20022.GENERATE_PACS008_MESSAGE();
       console.log(message);
+      console.log(this.iso20022Driver.exportFObject(null, message));
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
