@@ -29,7 +29,7 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'dateAndTime',
+      name: 'date',
       label: 'Date & Time'
     },
     {
