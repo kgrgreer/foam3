@@ -51,7 +51,13 @@ public class AuthenticatedTransactionDAO
       return null;
     }
 
-    return getDelegate().where(MLang.EQ(user.getId(), Transaction.PAYER_ID)).select_(x, sink, skip, limit, order, predicate);
+    return getDelegate()
+    .where(
+      MLang.OR(
+        MLang.EQ(Transaction.PAYER_ID, user.getId()),
+        MLang.EQ(Transaction.PAYEE_ID, user.getId())
+      )
+    ).select_(x, sink, skip, limit, order, predicate);
   }
 
   @Override
