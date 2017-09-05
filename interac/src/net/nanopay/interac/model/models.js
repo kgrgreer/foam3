@@ -1,91 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.interac.model',
-  name: 'User',
+  name: 'Payee',
 
-  documentation: 'User information.',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'postalAddress'
-    },
-    {
-      class: 'String',
-      name: 'addressType'
-    },
-    {
-      class: 'String',
-      name: 'streetName'
-    },
-    {
-      class: 'String',
-      name: 'buildingNumber'
-    },
-    {
-      class: 'String',
-      name: 'postCode'
-    },
-    {
-      class: 'String',
-      name: 'townName'
-    },
-    {
-      class: 'String',
-      name: 'countrySubdivision'
-    },
-    {
-      class: 'String',
-      name: 'Country'
-    },
-    {
-      class: 'String',
-      name: 'addressLine'
-    },
-    {
-      class: 'String',
-      name: 'Identification'
-    },
-    {
-      class: 'String',
-      name: 'privateIdentification'
-    },
-    {
-      class: 'String',
-      name: 'dateAndPlaceOfBirth'
-    },
-    {
-      class: 'Date',
-      name: 'BirthDate'
-    },
-    {
-      class: 'String',
-      name: 'provinceOfBirth'
-    },
-    {
-      class: 'String',
-      name: 'cityOfBirth'
-    },
-    {
-      class: 'String',
-      name: 'countryOfBirth'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.interac.model',
-  name: 'Agent',
-
-  documentation: 'Financial Institution acting as Agent.',
+  documentation: 'Transaction recipient',
 
   properties: [
     {
@@ -94,76 +11,42 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'financialInstitutionIdentification'
+      name: 'firstName'
     },
     {
       class: 'String',
-      name: 'BICFI'
+      name: 'middleName'
     },
     {
       class: 'String',
-      name: 'clearingSystemMemberIdentification'
+      name: 'lastName'
     },
     {
       class: 'String',
-      name: 'clearingSystemIdentification'
+      name: 'email'
     },
     {
       class: 'String',
-      name: 'code'
+      name:  'Phone'
     },
     {
       class: 'String',
-      name: 'memberIdentification'
+      name:  'nationalId'
     },
     {
-      class: 'String',
-      name: 'name',
-      required: true
+      class: 'FObjectProperty',
+      of: 'net.nanopay.common.model.Phone',
+      name:  'phone'
     },
     {
-      class: 'String',
-      name: 'postalAddress'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.common.model.Address',
+      name:  'address'
     },
     {
-      class: 'String',
-      name: 'addressType'
-    },
-    {
-      class: 'String',
-      name: 'streetName'
-    },
-    {
-      class: 'String',
-      name: 'buildingNumber'
-    },
-    {
-      class: 'String',
-      name: 'postCode'
-    },
-    {
-      class: 'String',
-      name: 'townName'
-    },
-    {
-      class: 'String',
-      name: 'countrySubdivision'
-    },
-    {
-      class: 'String',
-      name: 'country'
-    },
-    {
-      class: 'String',
-      name: 'addressLine'
-    },
-    {
-      class: 'String',
-      name: 'branchIdentification'
-    },
-    {
-      class: 'String',
-      name: 'identification'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.common.model.Account',
+      name:  'account'
     }
   ]
 });
@@ -233,22 +116,9 @@ foam.CLASS({
   ]
 });
 
-/* foam.Relationship examples...
-
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.interac.model.Business',
-  targetModel: 'net.nanopay.interac.model.Business',
-  forwardName: 'partners',
-  inverseName: 'partnered',
-  cardinality: '*:*'
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.interac.model.Payee',
+  forwardName: 'payees',
+  inverseName: 'payer'
 });
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.interac.model.Business',
-  targetModel: 'net.nanopay.common.model.Address',
-  forwardName: 'addresses',
-  inverseName: 'businessId',
-  sourceProperty: {
-    hidden: true
-  }
-}); */

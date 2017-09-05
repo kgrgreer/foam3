@@ -177,7 +177,7 @@ foam.CLASS({
                   class: 'foam.u2.DetailView',
                   properties: [
                     this.Transaction.REFERENCE_NUMBER,
-                    this.Transaction.DATE_AND_TIME,
+                    this.Transaction.DATE,
                     this.Transaction.PAYEE_ID,
                     this.Transaction.AMOUNT,
                     this.Transaction.RATE,
@@ -229,7 +229,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'referenceNumber', 'dateAndTime', 'payeeId', 'amount', 'rate', 'fees'
+                'referenceNumber', 'date', 'payeeId', 'amount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }
