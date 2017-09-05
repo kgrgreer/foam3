@@ -37,7 +37,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.common.model.Address',
-      name:  'adress'
+      name:  'address'
     },
     {
       class: 'FObjectProperty',
