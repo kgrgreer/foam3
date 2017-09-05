@@ -168,6 +168,36 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'net.nanopay.interac.model',
+  name: 'Pacs008Purpose',
+
+  documentation: 'Pacs.008 Purpose Codes',
+
+  properties: [
+    {
+      class: 'Long',
+      name: 'grNo',
+      required: true
+    },
+    {
+      class: 'String',
+      name: 'groupName',
+      required: true
+    },
+    {
+      class: 'String',
+      name: 'code',
+      required: true
+    },
+    {
+      class: 'String',
+      name: 'description',
+      required: true
+    }
+  ]
+});
+
 /* foam.Relationship examples...
 
 foam.RELATIONSHIP({

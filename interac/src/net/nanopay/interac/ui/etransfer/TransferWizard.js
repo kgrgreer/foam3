@@ -6,6 +6,14 @@ foam.CLASS({
 
   documentation: 'Pop up that extends WizardView for e-transfer',
 
+  requires: [
+    'net.nanopay.interac.ui.CountdownView'
+  ],
+
+  exports: [
+    'countdownView'
+  ],
+
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.interac.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
@@ -17,7 +25,7 @@ foam.CLASS({
         margin-bottom: 20px;
       }
 
-      ^ .timer {
+      ^ .net-nanopay-interac-ui-CountdownView {
         display: inline-block;
         margin-top: 3px;
       }
@@ -28,6 +36,10 @@ foam.CLASS({
         margin-left: 20px;
         margin-top: 6px;
         opacity: 1 !important;
+      }
+
+      ^ .timerText.hidden {
+        display: none;
       }
 
       ^ .interacImage {
@@ -151,6 +163,15 @@ foam.CLASS({
     { name: 'TimerText', message: 'before exchange rate expires.' }
   ],
 
+  properties: [
+    {
+      name: 'countdownView',
+      factory: function() {
+        return this.CountdownView.create();
+      }
+    }
+  ],
+
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
@@ -160,6 +181,7 @@ foam.CLASS({
         { parent: 'etransfer', id: 'etransfer-transfer-review',      label: 'Review',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete',    label: 'Successful',           view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
       ];
+      this.countdownView.hide();
       this.SUPER();
     },
 
@@ -175,8 +197,8 @@ foam.CLASS({
           .start('div').addClass('stackColumn')
             .start('div').addClass('topRow')
               // TODO: 30 minute timer
-              .start({class: 'net.nanopay.interac.ui.CountdownView'}).addClass('timer').end()
-              .start('p').addClass('pDetails').addClass('timerText').add(this.TimerText).end()
+              .add(this.countdownView)
+              .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
               .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
                 .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
                 .addClass('interacImage')
@@ -222,6 +244,10 @@ foam.CLASS({
       code: function() {
         var self = this;
         if ( this.position == 2 ) { // On Review Transfer page.
+          this.countdownView.stop();
+          this.countdownView.hide();
+          this.countdownView.reset();
+
           // TODO: Run the transfer
           this.subStack.push(this.views[this.subStack.pos + 1].view);
           this.backLabel = 'Back to Home';

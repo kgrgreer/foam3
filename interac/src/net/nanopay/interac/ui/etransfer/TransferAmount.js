@@ -7,7 +7,8 @@ foam.CLASS({
     'viewData',
     'errors',
     'goBack',
-    'goNext'
+    'goNext',
+    'countdownView'
   ],
 
   exports: [ 'as data' ],
@@ -180,7 +181,6 @@ foam.CLASS({
         if ( this.feedback ) return;
         this.feedback = true;
         this.fromAmount = (newValue / this.fxRate) + this.fees;
-        console.log(this.fromAmount);
         this.feedback = false;
       },
       validateObj: function(toAmount) {
@@ -219,7 +219,7 @@ foam.CLASS({
     function init() {
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
-
+      this.startTimer();
       if ( this.viewData.fromAmount ) {
         this.fromAmount = this.viewData.fromAmount;
       }
@@ -291,6 +291,11 @@ foam.CLASS({
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
 
         .end();
+    },
+
+    function startTimer() {
+      this.countdownView.show();
+      this.countdownView.start();
     }
   ],
 
