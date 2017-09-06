@@ -136,7 +136,7 @@ foam.CLASS({
           background: none;
           outline: none;
           border:none;
-          width: 136px;
+          min-width: 136px;
           height: 40px;
           border-radius: 2px;
 
@@ -191,7 +191,17 @@ foam.CLASS({
       factory: function() { return {}; }
     },
     'errors',
-    'startAt'
+    'startAt',
+    {
+      class: 'String',
+      name: 'backLabel',
+      value: 'Back'
+    },
+    {
+      class: 'String',
+      name: 'nextLabel',
+      value: 'Next'
+    }
   ],
 
   methods: [
@@ -232,8 +242,8 @@ foam.CLASS({
         .end()
         .start('div').addClass('row')
           .start('div').addClass('navigationContainer')
-            .add(this.GO_BACK)
-            .add(this.GO_NEXT)
+            .tag(this.GO_BACK, {label$: this.backLabel$})
+            .tag(this.GO_NEXT, {label$: this.nextLabel$})
           .end()
         .end()
     }
@@ -252,7 +262,6 @@ foam.CLASS({
   actions: [
     {
       name: 'goBack',
-      label: 'Back',
       isAvailable: function(position) { return position == 0 ? false : true; },
       code: function() {
         this.subStack.back();
@@ -260,7 +269,6 @@ foam.CLASS({
     },
     {
       name: 'goNext',
-      label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
         if ( position < this.views.length - 1 ) return true; // Valid next
