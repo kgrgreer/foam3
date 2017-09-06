@@ -19,7 +19,8 @@ foam.CLASS({
 
   exports: [
     'stack',
-    'user'
+    'user',
+    'as ctrl'
   ],
 
   axioms: [
