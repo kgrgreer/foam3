@@ -5,6 +5,13 @@ foam.CLASS({
 
   documentation: 'Interac transfer completion and loading screen.',
 
+  properties: [
+    {
+      name: 'time',
+      value: 0
+    }
+  ], 
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -41,15 +48,29 @@ foam.CLASS({
           margin-left: 10px;
           font-size: 12px;
           letter-spacing: 0.2px;
-          color: #2cab70;
+          color: grey;
+          margin-top: 5px;
         }
         ^status-check img {
           position: relative;
           top: 5;
+          display: none;
         }
         ^status-check-container{
           margin-top: 35px;
           margin-bottom: 35px;
+        }
+        ^ .show-yes{
+          display: inline-block;
+        }
+        ^ .show-green{
+          color: #2cab70;
+        }
+        ^status-check-container{
+          height: 170px;
+        }
+        ^status-check{
+          height: 32px;
         }
       */}
     })
@@ -57,9 +78,9 @@ foam.CLASS({
 
   methods: [
     function init() {
-      
-      this.SUPER();
+      this.tick()
 
+      this.SUPER();
       this
         .addClass(this.myClass())
         .start().style({ display: 'inline-block'})
@@ -76,24 +97,24 @@ foam.CLASS({
         .end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
-            .start('p').add('Sending Bank Compliance Checks').end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 0 }))
+            .start('p').add('Sending Bank Compliance Checks...').enableClass('show-green', this.time$.map(function (value) { return value > 0 })).end()
           .end()
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
-            .start('p').add('Receiving Bank Compliance Checks').end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value >  2}))
+            .start('p').add('Receiving Bank Compliance Checks...').enableClass('show-green', this.time$.map(function (value) { return value > 2 })).end().end()
           .end()
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
-            .start('p').add('Booking FX Rate').end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 3 }))
+            .start('p').add('Booking FX Rate...').enableClass('show-green', this.time$.map(function (value) { return value > 3 })).end().end()
           .end()
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
-            .start('p').add('Generating IMPS Transaction').end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 4 }))
+            .start('p').add('Generating IMPS Transaction...').enableClass('show-green', this.time$.map(function (value) { return value > 4 })).end().end()
           .end()
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
-            .start('p').add('Payment Successful').end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }))
+            .start('p').add('Payment Successful...').enableClass('show-green', this.time$.map(function (value) { return value > 5 })).end().end()
           .end()
         .end()
     }
@@ -106,5 +127,17 @@ foam.CLASS({
         X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.interac.ui.modals.ExportModal'}));
       }
     },
+  ],
+
+  listeners: [
+    {
+      name: 'tick',
+      isMerged: true,
+      mergeDelay: 200,
+      code: function () {
+        this.time += 1;
+        this.tick();
+      }
+    }
   ]
 });
