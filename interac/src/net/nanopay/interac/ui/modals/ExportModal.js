@@ -7,12 +7,13 @@ foam.CLASS({
   documentation: 'Export Modal',
 
   requires: [
-    'net.nanopay.b2b.ui.modals.ModalHeader'
+    'net.nanopay.b2b.ui.modals.ModalHeader',
+    'net.nanopay.transactionservice.model.Transaction'
   ],
 
   properties: [
     {
-      name: 'purpose',
+      name: 'dataType',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
@@ -21,21 +22,9 @@ foam.CLASS({
           'PACS 008'
         ],
       },
-      // factory: function() {
-      //   this.viewData.purpose = 'General';
-      //   return 'General';
-      // },
-      // postSet: function(oldValue, newValue) {
-      //   switch(newValue) {
-      //     case 'General' :
-      //       this.viewData.purpose = 'General';
-      //       break;
-      //     case 'Other' :
-      //       this.viewData.purpose = 'Other';
-      //       break;
-      //   }
-      // }
+      value: 'JSON'
     },
+    'note'
   ],
 
   axioms: [
@@ -99,7 +88,6 @@ foam.CLASS({
 
       ^ .note-Text{
         width: 31px;
-        height: 16px;
         font-family: Roboto;
         font-size: 14px;
         font-weight: 300;
@@ -107,7 +95,6 @@ foam.CLASS({
         text-align: left;
         color: #093649;
         margin-bottom: 8px;
-        margin-left: 20px;
       }
 
       ^ .Input-Box{
@@ -220,15 +207,23 @@ foam.CLASS({
         title: 'Export'
       }))
       .addClass(this.myClass())
-        .start()
-          .start().addClass('paymentMethod-Text').add("Data Type").end()
-          .start('div').addClass('purposeContainer')
-            .tag(this.PURPOSE)
-            .start('div').addClass('caret').end()
+        .startContext({ data: this})
+          .start()
+            .start().addClass('paymentMethod-Text').add("Data Type").end()
+            .start('div').addClass('purposeContainer')
+              .tag(this.DATA_TYPE)
+              .start('div').addClass('caret').end()
+            .end()
+            .start().addClass('note-Text')
+              .start().addClass('paymentMethod-Text').add("Response").end()
+              .start(this.NOTE).addClass('Input-Box').end()
+            .end()
+            .start().addClass('payNow-Button')
+              .add('Export')
+                .add(this.CONVERT_INVOICE)
+              .end()
+            .end()
           .end()
-          .start().addClass('note-Text').add("Note").end()
-          .start('input').addClass('Input-Box').end()
-          .start().addClass('payNow-Button').add('Export').add(this.CONVERT_INVOICE).end()
         .end()
       .end()
     } 
@@ -236,6 +231,16 @@ foam.CLASS({
 
   actions: [
     function convertInvoice(){
+      var transaction = this.Transaction.create({
+        status: 'pending',
+        referenceNumber: 'ds1l2s',
+        payerId: 1,
+        payeeId: 2,
+        amount: 124.02,
+        tip: 10,
+        fee: 1
+      })
+      this.note = JSON.stringify(transaction)
       //CALL CONVERSION
     }
   ]

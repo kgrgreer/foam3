@@ -66,7 +66,6 @@ foam.CLASS({
     {
       name: 'exportModal',
       code: function(X){
-        console.log('hit')
         X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.interac.ui.modals.ExportModal'}));
       }
     },
