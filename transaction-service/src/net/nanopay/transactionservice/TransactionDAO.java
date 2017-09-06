@@ -19,7 +19,7 @@ public class TransactionDAO
   protected DAO userDAO_;
 
   protected UserAccountInfo getUserAccountInfo(User user) {
-    for ( Account account : user.getAccounts() ) {
+    for ( Account account : ((Account []) user.getAccounts() )) {
       if ( account.getAccountInfo() instanceof UserAccountInfo ) {
         return (UserAccountInfo) account.getAccountInfo();
       }
