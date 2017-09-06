@@ -1,58 +1,5 @@
 foam.CLASS({
   package: 'net.nanopay.interac.model',
-  name: 'Payee',
-
-  documentation: 'Transaction recipient',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'firstName'
-    },
-    {
-      class: 'String',
-      name: 'middleName'
-    },
-    {
-      class: 'String',
-      name: 'lastName'
-    },
-    {
-      class: 'String',
-      name: 'email'
-    },
-    {
-      class: 'String',
-      name:  'Phone'
-    },
-    {
-      class: 'String',
-      name:  'nationalId'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.Phone',
-      name:  'phone'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.Address',
-      name:  'address'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.Account',
-      name:  'account'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.interac.model',
   name: 'Pacs008IndiaPurpose',
 
   documentation: 'Pacs.008 India Purpose Codes',
@@ -123,11 +70,4 @@ foam.CLASS({
       required: true
     }
   ]
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.interac.model.Payee',
-  forwardName: 'payees',
-  inverseName: 'payer'
 });
