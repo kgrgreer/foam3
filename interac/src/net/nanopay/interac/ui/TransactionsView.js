@@ -139,6 +139,12 @@ foam.CLASS({
         ^ .foam-u2-ActionView-create {
           visibility: hidden;
         }
+        ^ .foam-u2-view-TableView-noselect {
+          cursor: pointer;
+        }
+        ^ .foam-u2-md-OverlayDropdown {
+          width: 175px;
+        }
       */}
     })
   ],
@@ -230,6 +236,7 @@ foam.CLASS({
             .start({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
+              editColumnsEnabled: true,
               data: this.data,
               columns: [
                 'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
