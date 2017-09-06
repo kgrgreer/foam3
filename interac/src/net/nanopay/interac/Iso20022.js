@@ -151,14 +151,13 @@ foam.CLASS({
                 IntrBkSttlmAmt: {
                   // TODO: remove hardcoded INR
                   Ccy: 'INR',
-                  // TODO: populate IntrBkSttlmAmt with real value
-                  xmlValue: transaction.total
+                  xmlValue: transaction.receivingAmount
                 },
                 IntrBkSttlmDt: transaction.date,
                 InstdAmt: {
                   // TODO: remove hardcoded CAD
                   Ccy: 'CAD',
-                  xmlValue: transaction.total
+                  xmlValue: transaction.amount
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
