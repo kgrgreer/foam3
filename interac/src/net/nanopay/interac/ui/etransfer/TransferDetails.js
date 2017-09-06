@@ -5,6 +5,20 @@ foam.CLASS({
 
   documentation: 'Interac transfer details',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'net.nanopay.interac.model.Pacs008ISOPurpose',
+    'net.nanopay.interac.model.Pacs008IndiaPurpose'
+  ],
+
+  imports: [
+    'pacs008ISOPurposeDAO',
+    'pacs008IndiaPurposeDAO'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -97,27 +111,15 @@ foam.CLASS({
     {
       // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'purpose',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'General',
-          'Other'
-        ],
+      view: function() {
+        return foam.u2.view.ChoiceView.create({
+          dao: this.purposes$,
+          objToChoice: function(a){
+            return [a.code, a.code];
+          }
+        })
       },
-      factory: function() {
-        this.viewData.purpose = 'General';
-        return 'General';
-      },
-      postSet: function(oldValue, newValue) {
-        switch(newValue) {
-          case 'General' :
-            this.viewData.purpose = 'General';
-            break;
-          case 'Other' :
-            this.viewData.purpose = 'Other';
-            break;
-        }
-      }
+
     },
     {
       class: 'String',
@@ -126,36 +128,14 @@ foam.CLASS({
         this.viewData.notes = newValue;
       },
       view: { class: 'foam.u2.tag.TextArea' }
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'fromUser',
-      value: {
-        name : 'Mark Woods',
-        email : 'smitham.cristina@beahan.ca',
-        tel : '+1 (907) 787-2493',
-        address : '123 Avenue, Toronto, Ontario, Canada M2G 1K9',
-        nationality: 'Canada',
-        flag: 'images/canada.svg'
-      }
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'toUser',
-      value: {
-        name : 'Mary Lindsey',
-        email : 'haylee_kautzer@gmail.com',
-        tel : '+91 11 2588 8257',
-        address : '3/1, West Patel Nagar, New Delhi, Delhi 110008, India',
-        nationality: 'India',
-        flag: 'images/india.svg'
-      }
     }
   ],
 
   methods: [
     function init() {
       this.SUPER()
+
+      this.getPurposes();
 
       if ( this.viewData.purpose ) {
         this.purpose = this.viewData.purpose;
@@ -202,6 +182,15 @@ foam.CLASS({
           .start('p').add(this.ToLabel).addClass('bold').end()
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
         .end();
+    },
+
+    function getPurposes() {
+      var type = 'Individual';
+      if ( this.invoice ) type = 'Organization';
+
+      this.pacs008IndiaPurposeDAO.where(this.EQ(this.Pacs008IndiaPurpose.TYPE, type)).select().then(function(purpose){
+        this.purposes = purpose;
+      });
     }
   ]
 });

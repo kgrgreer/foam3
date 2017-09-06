@@ -57,7 +57,14 @@ foam.CLASS({
 
   documentation: 'Pacs.008 India Purpose Codes',
 
+  ids: [ 'code' ],
+
   properties: [
+    {
+      class: 'String',
+      name: 'type',
+      required: true
+    },
     {
       class: 'Long',
       name: 'grNo',
@@ -87,6 +94,8 @@ foam.CLASS({
 
   documentation: 'Pacs.008 ISO Purpose Codes',
 
+  ids: [ 'code' ],
+
   properties: [
     {
       class: 'String',
@@ -100,7 +109,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'classification1',
+      name: 'classification',
       required: true
     },
     {

@@ -226,6 +226,12 @@ foam.CLASS({
           return;
         }
 
+        if ( this.position == 1 ) {
+          this.countdownView.stop();
+          this.countdownView.hide();
+          this.countdownView.reset();
+        }
+
         if ( this.position == 3 ) {
           X.stack.back();
           return;
