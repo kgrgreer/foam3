@@ -49,6 +49,7 @@ foam.CLASS({
           appearance: none;
 
           padding: 12px 20px;
+          padding-right: 35px;
           border: solid 1px rgba(164, 179, 184, 0.5);
           background-color: white;
           outline: none;
@@ -111,11 +112,12 @@ foam.CLASS({
     {
       // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'purpose',
-      view: function() {
+      view: function(_,X) {
+        var type = this.invoice ? 'Organization' : 'Individual';
         return foam.u2.view.ChoiceView.create({
-          dao: this.purposes$,
-          objToChoice: function(a){
-            return [a.code, a.code];
+          dao: X.data.pacs008IndiaPurposeDAO.where(X.data.EQ(X.data.Pacs008IndiaPurpose.TYPE, type)),
+          objToChoice: function(purpose) {
+            return [purpose.code, purpose.code + ' - ' + purpose.description];
           }
         })
       },
@@ -134,8 +136,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER()
-
-      this.getPurposes();
 
       if ( this.viewData.purpose ) {
         this.purpose = this.viewData.purpose;
@@ -183,15 +183,6 @@ foam.CLASS({
           .start('p').add(this.ToLabel).addClass('bold').end()
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
         .end();
-    },
-
-    function getPurposes() {
-      var type = 'Individual';
-      if ( this.invoice ) type = 'Organization';
-
-      this.pacs008IndiaPurposeDAO.where(this.EQ(this.Pacs008IndiaPurpose.TYPE, type)).select().then(function(purpose){
-        this.purposes = purpose;
-      });
     }
   ]
 });
