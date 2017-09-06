@@ -5,6 +5,20 @@ foam.CLASS({
 
   documentation: 'Interac transfer details',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'net.nanopay.interac.model.Pacs008ISOPurpose',
+    'net.nanopay.interac.model.Pacs008IndiaPurpose'
+  ],
+
+  imports: [
+    'pacs008ISOPurposeDAO',
+    'pacs008IndiaPurposeDAO'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -35,6 +49,7 @@ foam.CLASS({
           appearance: none;
 
           padding: 12px 20px;
+          padding-right: 35px;
           border: solid 1px rgba(164, 179, 184, 0.5);
           background-color: white;
           outline: none;
@@ -97,26 +112,17 @@ foam.CLASS({
     {
       // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'purpose',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'General',
-          'Other'
-        ],
-      },
-      factory: function() {
-        this.viewData.purpose = 'General';
-        return 'General';
-      },
       postSet: function(oldValue, newValue) {
-        switch(newValue) {
-          case 'General' :
-            this.viewData.purpose = 'General';
-            break;
-          case 'Other' :
-            this.viewData.purpose = 'Other';
-            break;
-        }
+        this.viewData.purpose = newValue;
+      },
+      view: function(_,X) {
+        var type = this.invoice ? 'Organization' : 'Individual';
+        return foam.u2.view.ChoiceView.create({
+          dao: X.data.pacs008IndiaPurposeDAO.where(X.data.EQ(X.data.Pacs008IndiaPurpose.TYPE, type)),
+          objToChoice: function(purpose) {
+            return [purpose.code, purpose.code + ' - ' + purpose.description];
+          }
+        })
       }
     },
     {
@@ -126,30 +132,6 @@ foam.CLASS({
         this.viewData.notes = newValue;
       },
       view: { class: 'foam.u2.tag.TextArea' }
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'fromUser',
-      value: {
-        name : 'Mark Woods',
-        email : 'smitham.cristina@beahan.ca',
-        tel : '+1 (907) 787-2493',
-        address : '123 Avenue, Toronto, Ontario, Canada M2G 1K9',
-        nationality: 'Canada',
-        flag: 'images/canada.svg'
-      }
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'toUser',
-      value: {
-        name : 'Mary Lindsey',
-        email : 'haylee_kautzer@gmail.com',
-        tel : '+91 11 2588 8257',
-        address : '3/1, West Patel Nagar, New Delhi, Delhi 110008, India',
-        nationality: 'India',
-        flag: 'images/india.svg'
-      }
     }
   ],
 
@@ -188,12 +170,13 @@ foam.CLASS({
         .start('div').addClass('fromToCol')
           .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNo).end()
+            .br()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
           .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
-            .attrs({href: ''})
+            .attrs({href: this.viewData.invoiceFileUrl})
             .add(this.PDFLabel)
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()

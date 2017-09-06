@@ -7,13 +7,401 @@ foam.CLASS({
   requires: [
     'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'foam.dao.history.HistoryRecord'
+    'foam.dao.history.HistoryRecord',
+    'net.nanopay.interac.model.Pacs008ISOPurpose',
+    'net.nanopay.interac.model.Pacs008IndiaPurpose'
   ],
 
   exports: [
+    'pacs008ISOPurposeDAO',
+    'pacs008IndiaPurposeDAO'
   ],
 
   properties: [
+    {
+      name: 'pacs008ISOPurposeDAO',
+      factory: function() {
+        return this.createDAO({
+          of: this.Pacs008ISOPurpose,
+          seqNo: true,
+          testData: [
+            {
+              type: 'Organization',
+              code: 'AGRT',
+              classification: 'Commercial',
+              name: 'Agricultural Transfer',
+              definition: 'Transaction is related to the agricultural domain.'
+            },
+            {
+              type: 'Organization',
+              code: 'AREN',
+              classification: 'Commercial',
+              name: 'Accounts Receivable Entry',
+              definition: 'Transaction is related to a payment associated with an Account Receivable Entry.'
+            },
+            {
+              type: 'Organization',
+              code: 'BEXP',
+              classification: 'Commercial',
+              name: 'Business Expenses',
+              definition: 'Transaction is related to a payment of business expenses.'
+            },
+            {
+              type: 'Organization',
+              code: 'BOCE',
+              classification: 'Commercial',
+              name: 'Back Office Conversion Entry',
+              definition: 'Transaction is related to a payment associated with a Back Office Conversion Entry.'
+            },
+            {
+              type: 'Organization',
+              code: 'COMC',
+              classification: 'Commercial',
+              name: 'Commercial Payment',
+              definition: 'Transaction is related to a payment of commercial credit or debit. (formerly Commercial Credit).'
+            },
+            {
+              type: 'Organization',
+              code: 'CPYR',
+              classification: 'Commercial',
+              name: 'Copyright',
+              definition: 'Transaction is payment of copyright.'
+            },
+            {
+              type: 'Organization',
+              code: 'GDDS',
+              classification: 'Commercial',
+              name: 'Purchase Sale Of Goods',
+              definition: 'Transaction is related to purchase and sale of goods.'
+            },
+            {
+              type: 'Organization',
+              code: 'GDSV',
+              classification: 'Commercial',
+              name: 'Purchase Sale Of Goods And Services',
+              definition: 'Transaction is related to purchase and sale of goods and services.'
+            },
+            {
+              type: 'Organization',
+              code: 'GSCB',
+              classification: 'Commercial',
+              name: 'Purchase Sale Of Goods And Services With Cash Back',
+              definition: 'Transaction is related to purchase and sale of goods and services.'
+            },
+            {
+              type: 'Organization',
+              code: 'GSCB',
+              classification: 'Commercial',
+              name: 'Purchase Sale Of Goods And Services With Cash Back',
+              definition: 'Transaction is related to purchase and sale of goods and services with cash back.'
+            },
+            {
+              type: 'Organization',
+              code: 'LICF',
+              classification: 'Commercial',
+              name: 'Licence Fee',
+              definition: 'Transaction is payment of a license fee.'
+            },
+            {
+              type: 'Organization',
+              code: 'POPE',
+              classification: 'Commercial',
+              name: 'Point Of Purchase Entry',
+              definition: 'Transaction is related to a payment associated with a Point of Purchase Entry.'
+            },
+            {
+              type: 'Organization',
+              code: 'ROYA',
+              classification: 'Commercial',
+              name: 'Royalties',
+              definition: 'Transaction is the payment of royalties.'
+            },
+            {
+              type: 'Organization',
+              code: 'SCVE',
+              classification: 'Commercial',
+              name: 'Purchase Sale Of Services',
+              definition: 'Transaction is related to purchase and sale of services.'
+            },
+            {
+              type: 'Organization',
+              code: 'SUBS',
+              classification: 'Commercial',
+              name: 'Subscription',
+              definition: 'Transaction is related to a payment of information or entertainment services either in printed or electronic form.'
+            },
+            {
+              type: 'Organization',
+              code: 'SUPP',
+              classification: 'Commercial',
+              name: 'Supplier Payment',
+              definition: 'Transaction is related to a payment to a supplier.'
+            },
+            {
+              type: 'Organization',
+              code: 'TRAD',
+              classification: 'Commercial',
+              name: 'Trade Services',
+              definition: 'Transaction is related to a trade services operation.'
+            },
+            {
+              type: 'Organization',
+              code: 'IVPT',
+              classification: 'General',
+              name: 'Invoice Payment',
+              definition: 'Transaction is the payment for invoices.'
+            },
+            {
+              type: 'Organization',
+              code: 'ADCS',
+              classification: 'Salary & Benefits',
+              name: 'Advisory Donation Copyright Services',
+              definition: 'Payments for donation, sponsorship, advisory, intellectual and other copyright services.'
+            },
+            {
+              type: 'Organization',
+              code: 'AEMP',
+              classification: 'Salary & Benefits',
+              name: 'Active Employment Policy',
+              definition: 'Payment concerning active employment policy.'
+            },
+            {
+              type: 'Organization',
+              code: 'ALLW',
+              classification: 'Salary & Benefits',
+              name: 'Allowance',
+              definition: 'Transaction is the payment of allowances.'
+            },
+            {
+              type: 'Individual',
+              code: 'CHAR',
+              classification: 'Consumer',
+              name: 'Charity Payment',
+              definition: 'Transaction is a payment for charity reasons.'
+            },
+            {
+              type: 'Individual',
+              code: 'CLPR',
+              classification: 'Finance',
+              name: 'Car Loan Principle Repayment',
+              definition: 'Transaction is a payment of car loan principal payment.'
+            },
+            {
+              type: 'Individual',
+              code: 'DBTC',
+              classification: 'Finance',
+              name: 'Debit Collection Payment',
+              definition: 'Collection of funds initiated via a debit transfer.'
+            },
+            {
+              type: 'Individual',
+              code: 'GOVI',
+              classification: 'Finance',
+              name: 'Government Insurance',
+              definition: 'Transaction is related to a payment of government insurance.'
+            },
+            {
+              type: 'Individual',
+              code: 'HLRP',
+              classification: 'Finance',
+              name: 'Housing Loan Repayment',
+              definition: 'Transaction is related to a payment of housing loan.'
+            },
+            {
+              type: 'Individual',
+              code: 'INPC',
+              classification: 'Finance',
+              name: 'Insurance Premium Car',
+              definition: 'Transaction is a payment of car insurance premium.'
+            },
+            {
+              type: 'Individual',
+              code: 'INSU',
+              classification: 'Finance',
+              name: 'Insurance Premium',
+              definition: 'Transaction is payment of an insurance premium.'
+            },
+            {
+              type: 'Individual',
+              code: 'INTE',
+              classification: 'Finance',
+              name: 'Interest',
+              definition: 'Transaction is payment of interest.'
+            },
+            {
+              type: 'Individual',
+              code: 'LBRI',
+              classification: 'Finance',
+              name: 'Labor Insurance',
+              definition: 'Transaction is a payment of labor insurance.'
+            },
+            {
+              type: 'Individual',
+              code: 'LIFI',
+              classification: 'Finance',
+              name: 'Life Insurance',
+              definition: 'Transaction is a payment of life insurance.'
+            },
+            {
+              type: 'Individual',
+              code: 'LOAN',
+              classification: 'Finance',
+              name: 'Loan',
+              definition: 'Transaction is related to transfer of loan to borrower.'
+            },
+            {
+              type: 'Individual',
+              code: 'LOAR',
+              classification: 'Finance',
+              name: 'Loan Repayment',
+              definition: 'Transaction is related to repayment of loan to lender.'
+            },
+            {
+              type: 'Individual',
+              code: 'PENO',
+              classification: 'Finance',
+              name: 'Payment Based On Enforcement Order',
+              definition: 'Payment based on enforcement orders except those arising from judicial alimony decrees.'
+            },
+            {
+              type: 'Individual',
+              code: 'PPTI',
+              classification: 'Finance',
+              name: 'Property Insurance',
+              definition: 'Transaction is a payment of property insurance.'
+            },
+            {
+              type: 'Individual',
+              code: 'RELG',
+              classification: 'Finance',
+              name: 'Rental Lease General',
+              definition: 'Transaction is for general rental/lease.'
+            },
+            {
+              type: 'Individual',
+              code: 'RINP',
+              classification: 'Finance',
+              name: 'Recurring Installment Payment',
+              definition: 'Transaction is related to a payment of a recurring installment made at regular intervals.'
+            },
+            {
+              type: 'Individual',
+              code: 'OTHR',
+              classification: 'General',
+              name: 'Other',
+              definition: 'Other payment purpose.'
+            },
+            {
+              type: 'Individual',
+              code: 'RENT',
+              classification: 'General',
+              name: 'Rent',
+              definition: 'Transaction is the payment of rent.'
+            },
+            {
+              type: 'Individual',
+              code: 'ALMY',
+              classification: 'Salary & Benefits',
+              name: 'Alimony Payment',
+              definition: 'Transaction is the payment of alimony.'
+            }
+          ]
+        })
+        .addPropertyIndex(this.Pacs008ISOPurpose.TYPE)
+        .addPropertyIndex(this.Pacs008ISOPurpose.CODE)
+        .addPropertyIndex(this.Pacs008ISOPurpose.CLASSIFICATION)
+        .addPropertyIndex(this.Pacs008ISOPurpose.NAME)
+        .addPropertyIndex(this.Pacs008ISOPurpose.DEFINITION)
+      }
+    },
+    {
+      name: 'pacs008IndiaPurposeDAO',
+      factory: function() {
+        return this.createDAO({
+          of: this.Pacs008IndiaPurpose,
+          seqNo: true,
+          testData: [
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0801',
+              description: 'Hardware consultancy/implementation'
+            },
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0802',
+              description: 'Software consultancy/implementation (other than those covered in SOFTEX form)'
+            },
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0803',
+              description: 'Data base, data processing charges'
+            },
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0804',
+              description: 'Repair and maintenance of computer and software'
+            },
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0805',
+              description: 'News agency services'
+            },
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0806',
+              description: 'Other information services - Subscription to newspapers, periodicals, etc.'
+            },
+            {
+              type: 'Organization',
+              grNo: 8,
+              groupName: 'Computer & Information Services',
+              code: 'P0807',
+              description: 'Off site Software Exports'
+            },
+            {
+              type: 'Individual',
+              grNo: 13,
+              groupName: 'Transfers',
+              code: 'P1301',
+              description: 'Inward remittance from Indian non-residents towards family maintenance and savings'
+            },
+            {
+              type: 'Individual',
+              grNo: 13,
+              groupName: 'Transfers',
+              code: 'P1302',
+              description: 'Personal gifts and donations'
+            },
+            {
+              type: 'Individual',
+              grNo: 13,
+              groupName: 'Transfers',
+              code: 'P1303',
+              description: 'Donations to religious and charitable institutions in India'
+            },
+            {
+              type: 'Individual',
+              grNo: 13,
+              groupName: 'Transfers',
+              code: 'P1304',
+              description: 'Grants and donations to governments and charitable institutions established by the governments'
+            }
+          ]
+        });
+      }
+    }
   ],
 
   methods: [

@@ -155,6 +155,10 @@ foam.CLASS({
         color: #59a5d5;
         margin-bottom: 20px;
       }
+
+      ^ .invoiceLink:hover {
+        cursor: pointer;
+      }
     */}})
   ],
 
@@ -175,6 +179,15 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
+      if ( this.invoice ) {
+        this.viewData.invoiceNo = this.invoice.invoiceNo;
+        this.viewData.purchaseOrder = this.invoice.purchaseOrder;
+        this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
+        this.viewData.fromAmount = this.invoice.amount;
+      } else {
+        this.viewData.invoiceNo = 'N/A';
+        this.viewData.purchaseOrder = 'N/A';
+      }
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',     label: 'Account & Payee',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-amount',      label: 'Amount',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
@@ -226,6 +239,15 @@ foam.CLASS({
           return;
         }
 
+        if ( this.position == 1 ) {
+          this.countdownView.stop();
+          this.countdownView.hide();
+          this.countdownView.reset();
+          this.viewData.fromAmount = 1.5;
+          this.viewData.toAmount = 0;
+          this.viewData.rateLocked = false;
+        }
+
         if ( this.position == 3 ) {
           X.stack.back();
           return;
@@ -259,8 +281,9 @@ foam.CLASS({
           // TODO: Reset params and restart flow
           this.viewData.purpose = 'General';
           this.viewData.notes = '';
-          this.viewData.fromAmount = 5;
+          this.viewData.fromAmount = 1.5;
           this.viewData.toAmount = 0;
+          this.viewData.rateLocked = false;
           while ( this.position != 0 ) {
             this.subStack.back();
           }

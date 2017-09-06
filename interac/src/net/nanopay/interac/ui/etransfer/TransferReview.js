@@ -90,39 +90,6 @@ foam.CLASS({
     { name: 'PDFLabel', message: 'View Invoice PDF' }
   ],
 
-  properties: [
-    {
-      // TODO: Pull FX rate from somewhere
-      class: 'Double',
-      name: 'fxRate',
-      value: 52.01
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'fromUser',
-      value: {
-        name : 'Mark Woods',
-        email : 'smitham.cristina@beahan.ca',
-        tel : '+1 (907) 787-2493',
-        address : '123 Avenue, Toronto, Ontario, Canada M2G 1K9',
-        nationality: 'Canada',
-        flag: 'images/canada.svg'
-      }
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'toUser',
-      value: {
-        name : 'Mary Lindsey',
-        email : 'haylee_kautzer@gmail.com',
-        tel : '+91 11 2588 8257',
-        address : '3/1, West Patel Nagar, New Delhi, Delhi 110008, India',
-        nationality: 'India',
-        flag: 'images/india.svg'
-      }
-    }
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
@@ -132,9 +99,10 @@ foam.CLASS({
         .start('div').addClass('col')
           .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNo).end()
+            .br()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
@@ -145,8 +113,8 @@ foam.CLASS({
               .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('CAD ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 5.00').end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.viewData.fees.toFixed(2)).end() // TODO: Get from viewData
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.viewData.rate).end() // TODO: Get FX rates
             .start('div').addClass('currencyContainer')
               .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('INR ', parseFloat(this.viewData.toAmount).toFixed(2)).end()
@@ -162,7 +130,7 @@ foam.CLASS({
         .end()
         .start('div').addClass('col')
           .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
-            .attrs({href: ''})
+            .attrs({href: this.viewData.invoiceFileUrl})
             .add(this.PDFLabel)
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
