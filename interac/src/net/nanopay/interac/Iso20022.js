@@ -29,7 +29,7 @@ foam.CLASS({
           }
         },
         Ccy: 'CAD',
-        Nm: 'Mac Engineering'
+        Nm: user.firstName + ' ' + user.lastName
       });
     },
 
@@ -48,14 +48,6 @@ foam.CLASS({
           EmailAdr: user.email
         }
       });
-
-      if ( user.type === 'Business' ) {
-        entityDetails.Id.OrgId = {
-
-        }
-      } else {
-
-      }
 
       return entityDetails;
     },
@@ -125,11 +117,12 @@ foam.CLASS({
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
                 ChrgsInf: [], // TODO populate fees
                 // TODO: populate IntrmyAgt1 & 2
-                Dbtr: this.GENERATE_ENTITY_DETAILS(payer),
-                // TODO: populate DbtrAcct and DbtrAgt
+                Dbtr: self.GENERATE_ENTITY_DETAILS(payer),
+                DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer),
+                DbtrAgt: self.GENERATE_AGENT_DETAILS(null),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee),
-                // TODO: populate CdtrAcct and CdtrAgt
-
+                CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee),
+                CdtrAgt: self.GENERATE_AGENT_DETAILS(null)
               }
             ]
           }
