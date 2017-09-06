@@ -25,7 +25,26 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'amount'
+      name: 'amount',
+      label: 'Sending Amount',
+      tableCellFormatter: function(amount) {
+        this.start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
+            .add(' CAD ', amount.toFixed(2))
+      },
+    },
+    {
+      class: 'Currency',
+      name: 'receivingAmount',
+      label: 'Receiving Amount',
+      transient: true,
+      expression: function(amount, fees, rate) {
+        var receivingAmount = (amount - fees) * rate;
+        return receivingAmount;
+      },
+      tableCellFormatter: function(receivingAmount) {
+        this.start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
+            .add(' INR ', receivingAmount.toFixed(2))
+      }
     },
     {
       class: 'DateTime',
