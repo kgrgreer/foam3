@@ -42,10 +42,10 @@ public class UserTransactionsTest {
     for ( int i = 0; i < USER_COUNT; i++ ) {
       User user = new User();
       user.setId(i);
-      Account[] accounts = new Account[ACCOUNT_COUNT];
-      for ( int j = 0; j < ACCOUNT_COUNT; j++ ) {
-        accounts[j] = new Account();
-        accounts[j].setOwner(user.getId());
+      Account accounts = new Account();
+
+        accounts = new Account();
+        accounts.setOwner(user.getId());
         UserAccountInfo uai = new UserAccountInfo();
         uai.setBalance(STARTING_BALANCE);
         accounts[j].setAccountInfo(uai);
