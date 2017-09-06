@@ -10,6 +10,34 @@ foam.CLASS({
     'net.nanopay.b2b.ui.modals.ModalHeader'
   ],
 
+  properties: [
+    {
+      name: 'purpose',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          'XML',
+          'JSON',
+          'PACS 008'
+        ],
+      },
+      // factory: function() {
+      //   this.viewData.purpose = 'General';
+      //   return 'General';
+      // },
+      // postSet: function(oldValue, newValue) {
+      //   switch(newValue) {
+      //     case 'General' :
+      //       this.viewData.purpose = 'General';
+      //       break;
+      //     case 'Other' :
+      //       this.viewData.purpose = 'Other';
+      //       break;
+      //   }
+      // }
+    },
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -69,15 +97,6 @@ foam.CLASS({
         margin-top: 15px;
       }
 
-      ^ .dropdown-Menu{
-        width: 150px;
-        height: 40px;
-        background-color: #ffffff;
-        border: solid 1px rgba(!64, 179, 184, 0.5);
-        margin-left: 20px;
-        margin-bottom: 20px;
-      }
-
       ^ .note-Text{
         width: 31px;
         height: 16px;
@@ -127,6 +146,66 @@ foam.CLASS({
         margin-right: 20px;
         margin-bottom: 20px;
       }
+
+      ^ .purposeContainer {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      ^ .foam-u2-tag-Select {
+        width: 125px;
+        height: 40px;
+        border-radius: 0;
+        margin-left: 20px;
+
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+
+        padding: 12px 20px;
+        border: solid 1px rgba(164, 179, 184, 0.5);
+        background-color: white;
+        outline: none;
+      }
+
+      ^ .foam-u2-tag-Select:hover {
+        cursor: pointer;
+      }
+
+      ^ .foam-u2-tag-Select:focus {
+        border: solid 1px #59A5D5;
+      }
+
+      ^ .caret {
+        position: relative;
+      }
+
+      ^ .caret:before {
+        content: '';
+        position: absolute;
+        top: -22px;
+        left: 125px;
+        border-top: 7px solid #a4b3b8;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+      }
+
+      ^ .caret:after {
+        content: '';
+        position: absolute;
+        left: 12px;
+        top: 0;
+        border-top: 0px solid #ffffff;
+        border-left: 0px solid transparent;
+        border-right: 0px solid transparent;
+      }
+      ^ .foam-u2-ActionView-convertInvoice{
+        position: relative;
+        top: -40px;
+        width: 125px;
+        cursor: pointer;
+        opacity: 0.01;
+      }
     */}
     })
   ],
@@ -143,12 +222,21 @@ foam.CLASS({
       .addClass(this.myClass())
         .start()
           .start().addClass('paymentMethod-Text').add("Data Type").end()
-          .start('select').addClass('dropdown-Menu').end()
+          .start('div').addClass('purposeContainer')
+            .tag(this.PURPOSE)
+            .start('div').addClass('caret').end()
+          .end()
           .start().addClass('note-Text').add("Note").end()
           .start('input').addClass('Input-Box').end()
-          .start().addClass('payNow-Button').add('Pay Now').end()
+          .start().addClass('payNow-Button').add('Export').add(this.CONVERT_INVOICE).end()
         .end()
       .end()
     } 
+  ],
+
+  actions: [
+    function convertInvoice(){
+      //CALL CONVERSION
+    }
   ]
 })

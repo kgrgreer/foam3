@@ -57,7 +57,7 @@ foam.CLASS({
           position: relative;
         }
 
-        .caret:before {
+        ^ .caret:before {
           content: '';
           position: absolute;
           top: -23px;
@@ -67,7 +67,7 @@ foam.CLASS({
           border-right: 7px solid transparent;
         }
 
-        .caret:after {
+        ^ .caret:after {
           content: '';
           position: absolute;
           left: 12px;
