@@ -78,21 +78,25 @@ foam.CLASS({
             Cd: id.type
           },
           Issr: id.issuer
-        i}
+        }
       });
 
       if ( user.type === 'Business' ) {
         // TODO: model organisation identification
-        entityDetails.Id.OrgId: {
-          Othr: identification
+        entityDetails.Id = {
+          OrgId: {
+            Othr: identification
+          }
         }
       } else {
         // TODO: model private identification for Canada & India
-        entityDetails.Id.PrvId: {
-          DtAndPlcOfBirth: {
+        entityDetails.Id = {
+          PrvId: {
+            DtAndPlcOfBirth: {
 
-          },
-          Othr: identification
+            },
+            Othr: identification
+          }
         }
       }
 
