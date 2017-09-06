@@ -84,28 +84,6 @@ foam.INTERFACE({
           javaType: 'Long'
         }
       ]
-    },
-    {
-      name: 'getTransactionsById',
-      javaReturns: 'foam.dao.DAO',
-      javaThrows: [ 'java.lang.RuntimeException' ],
-      args: [
-        {
-          name: 'userId',
-          javaType: 'Long'
-        }
-      ]
-    },
-    {
-      name: 'getTransactionsByEmail',
-      javaReturns: 'foam.dao.DAO',
-      javaThrows: [ 'java.lang.RuntimeException' ],
-      args: [
-        {
-          name: 'userEmail',
-          javaType: 'String'
-        }
-      ]
     }
   ]
 });
