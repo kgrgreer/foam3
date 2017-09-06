@@ -72,11 +72,12 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .add(this.user$.dot('id').map(function (id) {
+        /*.add(this.user$.dot('id').map(function (id) {
           return id ?
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business }) :
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.NoMenuTopNav' });
-        }))
+        }))*/
+        .add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business}))
         .br()
         .start('div').addClass('stack-wrapper')
           .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })

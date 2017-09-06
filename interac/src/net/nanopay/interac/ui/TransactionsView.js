@@ -44,7 +44,6 @@ foam.CLASS({
           color: #59a5d5;
           text-decoration: underline;
           display: inline-block;
-          cursor: pointer;
         }
         ^ .accountBalance {
           font-family: Roboto;
