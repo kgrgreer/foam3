@@ -1,16 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferReview',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
-
-  exports: [ 'as data' ],
+  extends: 'net.nanopay.interac.ui.etransfer.TransferView',
 
   documentation: 'Interac transfer review',
 
@@ -76,6 +67,10 @@ foam.CLASS({
         ^ .invoiceLink {
           height: 42px;
         }
+
+        ^ .purposeMargin {
+          margin-bottom: 20px
+        }
       */}
     })
   ],
@@ -95,43 +90,31 @@ foam.CLASS({
     { name: 'PDFLabel', message: 'View Invoice PDF' }
   ],
 
-  properties: [
-    {
-      // TODO: Pull FX rate from somewhere
-      class: 'Double',
-      name: 'fxRate',
-      value: 52.01
-    }
-  ],
-
   methods: [
-    function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
-    },
-
     function initE() {
       this.SUPER();
 
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
-          .start('div').addClass('invoiceDetailContainer')
+          .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNo).end()
+            .br()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
             .start('div').addClass('currencyContainer')
               .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('CAD ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 5.00').end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.viewData.fees.toFixed(2)).end() // TODO: Get from viewData
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.viewData.rate).end() // TODO: Get FX rates
             .start('div').addClass('currencyContainer')
               .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('INR ', parseFloat(this.viewData.toAmount).toFixed(2)).end()
@@ -146,26 +129,18 @@ foam.CLASS({
           .end()
         .end()
         .start('div').addClass('col')
-          // TODO: Make card based on from and to information
-          .start('a').addClass('invoiceLink')
-            .attrs({href: ''})
+          .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
+            .attrs({href: this.viewData.invoiceFileUrl})
             .add(this.PDFLabel)
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
+          // TODO: Make card based on from and to information
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
           .start('p').addClass('bold').add(this.PurposeLabel).end()
-          .start('p').add(this.viewData.purpose).end()
+          .start('p').addClass('purposeMargin').add(this.viewData.purpose).end()
           .start('p').addClass('bold').add(this.NotesLabel).end()
           .start('p').add(this.viewData.notes ? this.viewData.notes : 'None').end()
         .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });

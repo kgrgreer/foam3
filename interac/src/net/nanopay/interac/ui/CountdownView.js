@@ -21,6 +21,10 @@ foam.CLASS({
           text-align: left;
           color: #2cab70;
         }
+
+        ^.hidden {
+          display: none;
+        }
       */}
     })
   ],
@@ -39,21 +43,51 @@ foam.CLASS({
         date.setMilliseconds(this.duration);
         return date;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isStopped',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isHidden',
+      value: false
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
 
       this
-        .addClass(this.myClass())
+        .addClass(this.myClass()).enableClass('hidden', this.isHidden$)
         .add(this.time$.map(function (value) {
           return value.toISOString().substr(11, 8);
-        }))
+        }));
+    },
 
+    function start() {
+      this.isStopped = false;
       this.tick();
+    },
+
+    function stop() {
+      this.isStopped = true;
+    },
+
+    function reset() {
+      this.stop();
+      this.duration = 30 * 60 * 1000;
+      this.time = new Date(null).setMilliseconds(this.duration);
+    },
+
+    function hide() {
+      this.isHidden = true;
+    },
+
+    function show() {
+      this.isHidden = false;
     }
   ],
 
@@ -63,6 +97,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 1000,
       code: function () {
+        if ( this.isStopped ) return;
         if ( this.duration <= 0 ) {
           this.onExpiry();
           return;
