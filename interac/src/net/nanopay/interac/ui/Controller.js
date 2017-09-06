@@ -6,11 +6,12 @@ foam.CLASS({
   implements: [
     'foam.nanos.client.Client',
     'net.nanopay.interac.dao.Storage',
+    'net.nanopay.common.dao.Storage',
     'foam.mlang.Expressions'
   ],
 
   requires: [
-  'foam.u2.stack.Stack',
+    'foam.u2.stack.Stack',
     'foam.u2.stack.StackView'
   ],
 
@@ -59,10 +60,11 @@ foam.CLASS({
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
+        console.log(a);
         self.user.copyFrom(a.array[0]);
       });
 
-      this.stack.push({ class: 'net.nanopay.interac.ui.HomeView' })
+      this.stack.push({ class: 'net.nanopay.interac.ui.TransactionsView' })
     },
 
     function initE() {
