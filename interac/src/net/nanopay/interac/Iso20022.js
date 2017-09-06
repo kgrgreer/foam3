@@ -3,7 +3,8 @@ foam.CLASS({
   name: 'Iso20022',
 
   requires: [
-    'net.nanopay.iso20022.Pacs00800106'
+    'net.nanopay.iso20022.Pacs00800106',
+    'net.nanopay.iso20022.PartyIdentification43'
   ],
 
   imports: [
@@ -12,6 +13,23 @@ foam.CLASS({
   ],
 
   constants: {
+    GENERATE_ENTITY_DETAILS: function (user) {
+      return this.PartyIdentification43.create({
+        Nm: user.firstName + ' ' + user.lastName,
+        PstlAdr: {
+          AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
+          // TODO: fill in address information
+        },
+        Id: {
+          // TODO: fill in identification based on user type (user vs business)
+        },
+        CtctDtls: {
+          PhneNb: user.phone,
+          EmailAdr: user.email
+        }
+      });
+    },
+
     GENERATE_PACS008_MESSAGE: function (transactionId) {
       var self = this;
 
@@ -22,7 +40,6 @@ foam.CLASS({
       var transactionInfo = {};
       var transactions = [];
 
-      var msgId = foam.uuid.randomGUID().replace(/-/g, '');
       var message = this.Pacs00800106.create({
         FIToFICstmrCdtTrf: {
           GrpHdr: {
@@ -55,91 +72,67 @@ foam.CLASS({
           }
         }
 
-        transactionInfo = {
-          PmtId: {
-            EndToEndId: transaction.referenceNumber,
-            TxId: msgId,
-            ClrSysRef: '123'
-          },
-          IntrBkSttlmAmt: {
-            Ccy: 'INR',
-            xmlValue: transaction.total
-          },
-          IntrBkSttlmDt: transaction.date,
-          InstdAmt: {
-            Ccy: 'CAD',
-            xmlValue: transaction.total
-          },
-          XchgRate: transaction.rate,
-          ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-          ChrgsInf: [
-            {
-              Amt: {
-                Ccy: 'CAD',
-                xmlValue: 0.80
+        return self.userDAO.find(transaction.payerId);
+      })
+      .then(function (result) {
+        if ( ! result ) throw new Error('Payer not found');
+        payer = null;
+        return self.userDAO.find(transaction.payeeId);
+      })
+      .then(function (result) {
+        if ( ! result ) throw new Error('Payee not found');
+        payee = null;
+
+        var msgId = foam.uuid.randomGUID().replace(/-/g, '');
+        return this.Pacs00800106.create({
+          FIToFICstmrCdtTrf: {
+            GrpHdr: {
+              MsgId: msgId,
+              CreDtTm: transaction.date,
+              NbOfTxs: 1,
+              CtrlSum: transaction.total,
+              SttlmInf: {
+                SttlmMtd: net.nanopay.iso20022.SettlementMethod1Code.CLRG,
+                ClrSys: {
+                  Prtry: 'NPAY'
+                }
               },
-              Agt: {
-                FinInstnId: {
-                  Nm: 'ICICI Bank Canada',
-                  ClrSysMmbId: {
-                    ClrSysId: {
-                      Cd: 'CACPA'
-                    },
-                    MmbId: '340'
-                  },
-                  PstlAdr: {
-                    AdrTp: 'ADDR',
-                    StrtNm: 'King St W, Suite 2130',
-                    BldgNb: '130',
-                    PstCd: 'M5X1B1',
-                    TwnNm: 'Toronto',
-                    CtrySubDvsn: 'Ontario',
-                    Ctry: 'CA'
-                  }
-                },
-                BrnchId: {
-                  Id: '10002'
+              PmtTpInf: {
+                InstrPrty: net.nanopay.iso20022.Priority2Code.NORM,
+                LclInstrm: {
+                  Prtry: 'IMPS'
                 }
               }
             },
-            {
-              Amt: {
-                Ccy: 'CAD',
-                xmlValue: 0.70
-              },
-              Agt: {
-                FinInstnId: {
-                  Nm: 'TD Bank',
-                  ClrSysMmbId: {
-                    ClrSysId: {
-                      Cd: 'CACPA'
-                    },
-                    MmbId: '004'
-                  },
-                  PstlAdr: {
-                    AdrTp: 'ADDR',
-                    StrtNm: 'King St W',
-                    BldgNb: '55',
-                    PstCd: 'M5K1A2',
-                    TwnNm: 'Toronto',
-                    CtrySubDvsn: 'Ontario',
-                    Ctry: 'CA'
-                  }
+            CdtTrfTxInf: [
+              {
+                PmtId: {
+                  EndToEndId: transaction.referenceNumber,
+                  TxId: msgId
+                  // TODO: populate ClrSysRef
                 },
-                BrnchId: {
-                  Id: '10202'
-                }
+                IntrBkSttlmAmt: {
+                  // TODO: populate IntrBkSttlmAmt with real values and remove hard coded INR
+                  Ccy: 'INR',
+                  xmlValue: transaction.total
+                },
+                IntrBkSttlmDt: transaction.date,
+                InstdAmt: {
+                  // TODO: remove hardcoded CAD
+                  Ccy: 'CAD',
+                  xmlValue: transaction.total
+                },
+                XchgRate: transaction.rate,
+                ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
+                ChrgsInf: [], // TODO populate fees
+                // TODO: populate IntrmyAgt1 & 2
+                Dbtr: this.GENERATE_ENTITY_DETAILS(payer),
+                // TODO: populate DbtrAcct and DbtrAgt
+                Cdtr: self.GENERATE_ENTITY_DETAILS(payee),
+                // TODO: populate CdtrAcct and CdtrAgt
+
               }
-            }
-          ]
-        }
-
-        transactions.push(transactionInfo);
-
-        return self.Pacs00800106.create({
-          FIToFICstmrCdtTrf: {
-            GrpHdr: groupHeader,
-            CdtTrfTxInf: transactions
+            ]
           }
         });
       })
