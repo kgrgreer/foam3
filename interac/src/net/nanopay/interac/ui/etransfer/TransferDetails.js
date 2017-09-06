@@ -112,6 +112,9 @@ foam.CLASS({
     {
       // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'purpose',
+      postSet: function(oldValue, newValue) {
+        this.viewData.purpose = newValue;
+      },
       view: function(_,X) {
         var type = this.invoice ? 'Organization' : 'Individual';
         return foam.u2.view.ChoiceView.create({
@@ -120,8 +123,7 @@ foam.CLASS({
             return [purpose.code, purpose.code + ' - ' + purpose.description];
           }
         })
-      },
-
+      }
     },
     {
       class: 'String',
