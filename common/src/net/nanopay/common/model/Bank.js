@@ -38,7 +38,7 @@ foam.CLASS({
 foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceModel: 'net.nanopay.common.model.Bank',
-  targetModel: 'net.nanopay.common.model.Address',
+  targetModel: 'foam.nanos.auth.Address',
   forwardName: 'address',
   inverseName: 'resident'
 });
