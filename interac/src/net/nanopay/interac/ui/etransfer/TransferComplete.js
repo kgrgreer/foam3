@@ -36,6 +36,21 @@ foam.CLASS({
           cursor: pointer;
           z-index: 100;
         }
+        ^status-check p {
+          display: inline-block;
+          margin-left: 10px;
+          font-size: 12px;
+          letter-spacing: 0.2px;
+          color: #2cab70;
+        }
+        ^status-check img {
+          position: relative;
+          top: 5;
+        }
+        ^status-check-container{
+          margin-top: 35px;
+          margin-bottom: 35px;
+        }
       */}
     })
   ],
@@ -58,6 +73,28 @@ foam.CLASS({
         .end()
         .start().style({ float: 'right'})
           .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').add(this.EXPORT_MODAL).end()
+        .end()
+        .start().addClass(this.myClass('status-check-container'))
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
+            .start('p').add('Sending Bank Compliance Checks').end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
+            .start('p').add('Receiving Bank Compliance Checks').end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
+            .start('p').add('Booking FX Rate').end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
+            .start('p').add('Generating IMPS Transaction').end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'})
+            .start('p').add('Payment Successful').end()
+          .end()
         .end()
     }
   ],
