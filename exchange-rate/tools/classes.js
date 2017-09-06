@@ -6,7 +6,8 @@
 
 var classes = [
   'net.nanopay.exchangerate.ExchangeRateService',
-  'net.nanopay.exchangerate.model.Rate',
+  'net.nanopay.exchangerate.model.ExchangeRate',
+  'net.nanopay.exchangerate.model.ExchangeRateQuote',
 ];
 
 var abstractClasses = [

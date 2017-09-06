@@ -7,7 +7,6 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import net.nanopay.exchangerate.model.Rate;
 
 
 public class ExchangeRateDAO

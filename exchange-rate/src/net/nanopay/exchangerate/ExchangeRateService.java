@@ -3,8 +3,9 @@ package net.nanopay.exchangerate;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.dao.*;
-import foam.mlang.MLang;
-import net.nanopay.exchangerate.model.Rate;
+import foam.mlang.MLang.*;
+import net.nanopay.exchangerate.model.ExchangeRate;
+import net.nanopay.exchangerate.model.ExchangeRateQuote;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,17 +20,36 @@ public class ExchangeRateService
 
 
   @Override
-  public DAO getRate(String from, String to, Long amount)
+  public ExchangeRateQuote getRate(String from, String to, Long amount)
     throws RuntimeException
   {
-    // Rate rate = exchangeRateDAO_.where(
-    //   MLang.AND(
-    //     MLang.EQ(Rate.FROM, from),
-    //     MLang.EQ(Rate.TO, to)
-    //   )
-    // );
+    ArraySink a = (ArraySink) exchangeRateDAO_.where(
+      AND(
+        EQ(ExchangeRate.FROM, from),
+        EQ(ExchangeRate.TO, to)
+      )
+    ).limit(1).select();
 
-    URLConnection connection = new URL("http://api.fixer.io/latest?base=" + from).openStream();
+
+    ExchangeRateQuote quote = new ExchangeRateQuote();
+
+    quote.setExchangeRateId(a.id);
+    quote.setFromCurrency(from);
+    quote.setToCurrency(to);
+    quote.setFromAmount(amount);
+    quote.setToAmount(amount * a.rate);
+    quote.setRate(a.rate);
+    quote.setFeesAmount(1);
+    quote.setFeesPercentage(1);
+    quote.setExpirationDate(a.expirationDate);
+
+    return quote;
+  }
+
+  public void fetchRates()
+      throws RuntimeException
+  {
+    URLConnection connection = new URL("http://api.fixer.io/latest?base=CAD").openStream();
     connection.setRequestProperty("Accept-Charset", "UTF-8");
     InputStream response = connection.getInputStream();
 
@@ -39,20 +59,7 @@ public class ExchangeRateService
       new InputStreamReader(response, "UTF-8")
     );
 
-    JSONObject result = new JSONObject();
-
-    String rate = parsedResponse.getJSONObject("rates").getString(to);
-
-    result.put("rate", rate);
-
-    JSONObject input = new JSONObject();
-    input.put("from", from);
-    input.put("to", to);
-    input.put("amount", amount);
-    result.put("input", input);
-
-
-    return result;
+    System.out.println(parsedResponse.toString());
   }
 
   @Override

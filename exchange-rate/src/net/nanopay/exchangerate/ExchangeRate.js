@@ -11,7 +11,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRate',
-      javaReturns: 'foam.core.FObject',
+      javaReturns: 'net.nanopay.exchangerate.model.ExchangeRateQuote',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
@@ -27,6 +27,11 @@ foam.INTERFACE({
           javaType: 'Long'
         }
       ]
+    }, {
+      name: 'fetchRates',
+      javaReturns: 'void',
+      javaThrows: [ 'java.lang.RuntimeException' ],
+      args: []
     }
   ]
 });

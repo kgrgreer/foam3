@@ -1,6 +1,12 @@
+/**
+ * @license
+ * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'net.nanopay.exchangerate.model',
-  name: 'Rate',
+  name: 'ExchangeRate',
 
   properties: [
     {
@@ -9,11 +15,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'from'
+      name: 'fromCurrency'
     },
     {
       class: 'String',
-      name: 'to'
+      name: 'toCurrency'
     },
     {
       class: 'Long',
