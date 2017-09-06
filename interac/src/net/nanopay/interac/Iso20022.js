@@ -62,7 +62,8 @@ foam.CLASS({
             ClrSysRef: '123'
           },
           IntrBkSttlmAmt: {
-            // TODO: populate with value & currency on receiving end
+            Ccy: 'INR',
+            xmlValue: transaction.total
           },
           IntrBkSttlmDt: transaction.date,
           InstdAmt: {
@@ -70,7 +71,67 @@ foam.CLASS({
             xmlValue: transaction.total
           },
           XchgRate: transaction.rate,
-          ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR
+          ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
+          ChrgsInf: [
+            {
+              Amt: {
+                Ccy: 'CAD',
+                xmlValue: 0.80
+              },
+              Agt: {
+                FinInstnId: {
+                  Nm: 'ICICI Bank Canada',
+                  ClrSysMmbId: {
+                    ClrSysId: {
+                      Cd: 'CACPA'
+                    },
+                    MmbId: '340'
+                  },
+                  PstlAdr: {
+                    AdrTp: 'ADDR',
+                    StrtNm: 'King St W, Suite 2130',
+                    BldgNb: '130',
+                    PstCd: 'M5X1B1',
+                    TwnNm: 'Toronto',
+                    CtrySubDvsn: 'Ontario',
+                    Ctry: 'CA'
+                  }
+                },
+                BrnchId: {
+                  Id: '10002'
+                }
+              }
+            },
+            {
+              Amt: {
+                Ccy: 'CAD',
+                xmlValue: 0.70
+              },
+              Agt: {
+                FinInstnId: {
+                  Nm: 'TD Bank',
+                  ClrSysMmbId: {
+                    ClrSysId: {
+                      Cd: 'CACPA'
+                    },
+                    MmbId: '004'
+                  },
+                  PstlAdr: {
+                    AdrTp: 'ADDR',
+                    StrtNm: 'King St W',
+                    BldgNb: '55',
+                    PstCd: 'M5K1A2',
+                    TwnNm: 'Toronto',
+                    CtrySubDvsn: 'Ontario',
+                    Ctry: 'CA'
+                  }
+                },
+                BrnchId: {
+                  Id: '10202'
+                }
+              }
+            }
+          ]
         }
 
         transactions.push(transactionInfo);
