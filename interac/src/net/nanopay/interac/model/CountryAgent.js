@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.interac.model',
   name: 'CountryAgent',
 
-  documentation: 'Transaction recipient',
+  documentation: 'Model to detail the Agents responsible for sending and receiving money between the specified countries',
 
   properties: [
     {
