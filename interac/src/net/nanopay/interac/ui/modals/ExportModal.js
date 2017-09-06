@@ -8,10 +8,24 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.b2b.ui.modals.ModalHeader',
-    'net.nanopay.transactionservice.model.Transaction'
+    'net.nanopay.transactionservice.model.Transaction',
+    'net.nanopay.interac.Iso20022',
+    'net.nanopay.iso20022.ISO20022Driver'
   ],
 
   properties: [
+    {
+      name: 'iso20022',
+      factory: function () {
+        return this.Iso20022.create();
+      }
+    },
+    {
+      name: 'iso20022Driver',
+      factory: function () {
+        return this.ISO20022Driver.create();
+      }
+    },
     {
       name: 'dataType',
       view: {
@@ -232,6 +246,7 @@ foam.CLASS({
   actions: [
     function convertInvoice(){
       var transaction = this.Transaction.create({
+        id: 1,
         status: 'pending',
         referenceNumber: 'ds1l2s',
         payerId: 1,
@@ -240,8 +255,20 @@ foam.CLASS({
         tip: 10,
         fee: 1
       })
-      this.note = JSON.stringify(transaction)
-      //CALL CONVERSION
+
+      if (this.dataType == 'JSON'){
+        this.note = JSON.stringify(transaction);
+      } else if (this.dataType == 'XML'){
+        this.iso20022.GENERATE_PACS008_MESSAGE(transaction.id).then(function (message) {
+          this.note = message;
+          this.note = self.iso20022Driver.exportFObject(null, message)
+          debugger;
+        })
+      } else if (this.dataType == 'PACS 008'){
+        this.iso20022.GENERATE_PACS008_MESSAGE(transaction.id).then(function (message) {
+          this.note = message;
+        })
+      }
     }
   ]
 })
