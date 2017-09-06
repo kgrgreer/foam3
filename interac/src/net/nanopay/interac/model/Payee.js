@@ -36,7 +36,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.Address',
+      of: 'foam.nanos.auth.Address',
       name:  'address'
     },
     {
@@ -46,12 +46,3 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.interac.model.Payee',
-  forwardName: 'payees',
-  inverseName: 'payer'
-});
-
