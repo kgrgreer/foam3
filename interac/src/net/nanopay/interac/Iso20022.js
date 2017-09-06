@@ -4,7 +4,9 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.iso20022.Pacs00800106',
-    'net.nanopay.iso20022.PartyIdentification43'
+    'net.nanopay.iso20022.CashAccount24',
+    'net.nanopay.iso20022.PartyIdentification43',
+    'net.nanopay.iso20022.BranchAndFinancialInstitutionIdentification5'
   ],
 
   imports: [
@@ -13,21 +15,49 @@ foam.CLASS({
   ],
 
   constants: {
+    GENERATE_AGENT_DETAILS: function (agent) {
+      return this.BranchAndFinancialInstitutionIdentification5.create({
+
+      });
+    },
+
+    GENERATE_ENTITY_ACCOUNT: function (user) {
+      return this.CashAccount24.create({
+        Id: {
+          Othr: {
+            Id: '123123'
+          }
+        },
+        Ccy: 'CAD',
+        Nm: 'Mac Engineering'
+      });
+    },
+
     GENERATE_ENTITY_DETAILS: function (user) {
-      return this.PartyIdentification43.create({
+      var entityDetails = this.PartyIdentification43.create({
         Nm: user.firstName + ' ' + user.lastName,
         PstlAdr: {
           AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
+          StrtNm: user.address.address,
+          TwnNm: user.address.city,
+
           // TODO: fill in address information
-        },
-        Id: {
-          // TODO: fill in identification based on user type (user vs business)
         },
         CtctDtls: {
           PhneNb: user.phone,
           EmailAdr: user.email
         }
       });
+
+      if ( user.type === 'Business' ) {
+        entityDetails.Id.OrgId = {
+
+        }
+      } else {
+
+      }
+
+      return entityDetails;
     },
 
     GENERATE_PACS008_MESSAGE: function (transactionId) {
@@ -76,8 +106,8 @@ foam.CLASS({
               {
                 PmtId: {
                   EndToEndId: transaction.referenceNumber,
-                  TxId: msgId
-                  // TODO: populate ClrSysRef
+                  TxId: msgId,
+                  ClrSysRef: Math.floor(Math.random() * (999999 - 1 + 1)) + 1
                 },
                 IntrBkSttlmAmt: {
                   // TODO: remove hardcoded INR
