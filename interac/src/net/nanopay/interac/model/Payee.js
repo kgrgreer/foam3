@@ -27,7 +27,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name:  'Phone'
+      name:  'nationalId'
     },
     {
       class: 'FObjectProperty',
@@ -36,8 +36,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.Address',
-      name:  'adress'
+      of: 'foam.nanos.auth.Address',
+      name:  'address'
     },
     {
       class: 'FObjectProperty',
@@ -46,12 +46,3 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.interac.model.Payee',
-  forwardName: 'payees',
-  inverseName: 'payer'
-});
-
