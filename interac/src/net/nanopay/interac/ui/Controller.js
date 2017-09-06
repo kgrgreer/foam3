@@ -61,6 +61,7 @@ foam.CLASS({
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
+        console.log(a);
         self.user.copyFrom(a.array[0]);
       });
 

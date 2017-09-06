@@ -18,7 +18,7 @@ foam.CLASS({
     'net.nanopay.b2b.model.Business',
     'net.nanopay.b2b.model.Invoice',
     'net.nanopay.b2b.ui.shared.CurrencyFormatter',
-    'net.nanopay.common.model.Address'
+    'foam.nanos.auth.Address'
   ],
 
   exports: [

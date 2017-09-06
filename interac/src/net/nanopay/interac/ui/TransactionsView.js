@@ -139,6 +139,12 @@ foam.CLASS({
         ^ .foam-u2-ActionView-create {
           visibility: hidden;
         }
+        ^ .foam-u2-view-TableView-noselect {
+          cursor: pointer;
+        }
+        ^ .foam-u2-md-OverlayDropdown {
+          width: 175px;
+        }
       */}
     })
   ],
@@ -159,14 +165,13 @@ foam.CLASS({
             .start().add('Chequing Account xxxxxxxxxxxx5555').addClass('account').end()
             .start().add('CAD $5000.00').addClass('accountBalance').end()
           .end()
-          .start('div').addClass('accountDiv')
-            .start().add('Savings Account xxxxxxxxxxxx5556').addClass('account').end()
-            .start().add('CAD $25000.00').addClass('accountBalance').end()
-          .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
             .add(this.SEND_TRANSFER)
-            .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).addClass('interacLogo').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
+              .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
+              .addClass('interacLogo')
+            .end()
           .end()
           .start()
             .tag({
@@ -180,6 +185,7 @@ foam.CLASS({
                     this.Transaction.DATE,
                     this.Transaction.PAYEE_ID,
                     this.Transaction.AMOUNT,
+                    this.Transaction.RECEIVING_AMOUNT,
                     this.Transaction.RATE,
                     this.Transaction.FEES
                   ]
@@ -227,9 +233,10 @@ foam.CLASS({
             .start({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
+              editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payeeId', 'amount', 'rate', 'fees'
+                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }
