@@ -28,7 +28,14 @@ foam.CLASS({
           letter-spacing: 0.4px;
           color: #093649;
         }
-        ^ 
+        ^ .foam-u2-ActionView-exportModal{
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          opacity: 0.01;
+          cursor: pointer;
+          z-index: 100;
+        }
       */}
     })
   ],
@@ -50,8 +57,18 @@ foam.CLASS({
           .end()
         .end()
         .start().style({ float: 'right'})
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').add(this.EXPORT_MODAL).end()
         .end()
     }
+  ],
+
+  actions: [
+    {
+      name: 'exportModal',
+      code: function(X){
+        console.log('hit')
+        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.interac.ui.modals.ExportModal'}));
+      }
+    },
   ]
 });
