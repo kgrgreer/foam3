@@ -121,7 +121,7 @@ foam.CLASS({
               .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('CAD ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 5.00').end()
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD 1.50').end() // TODO: Get from viewData
             .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
             .start('div').addClass('currencyContainer')
               .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()

@@ -141,7 +141,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'fromAmount',
-      value: 5,
+      value: 1.5,
       precision: 2,
       view: 'net.nanopay.interac.ui.shared.FixedFloatView',
       postSet: function(oldValue, newValue) {
