@@ -155,6 +155,10 @@ foam.CLASS({
         color: #59a5d5;
         margin-bottom: 20px;
       }
+
+      ^ .invoiceLink:hover {
+        cursor: pointer;
+      }
     */}})
   ],
 
@@ -175,6 +179,15 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
+      if ( this.invoice ) {
+        this.viewData.invoiceNo = this.invoice.invoiceNo;
+        this.viewData.purchaseOrder = this.invoice.purchaseOrder;
+        this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
+        this.viewData.fromAmount = this.invoice.amount;
+      } else {
+        this.viewData.invoiceNo = 'N/A';
+        this.viewData.purchaseOrder = 'N/A';
+      }
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',     label: 'Account & Payee',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-amount',      label: 'Amount',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
