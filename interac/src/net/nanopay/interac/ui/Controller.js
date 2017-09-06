@@ -72,12 +72,14 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      var message = this.iso20022.GENERATE_PACS008_MESSAGE();
-      console.log(message);
-      console.log(this.iso20022Driver.exportFObject(null, message));
+      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+        console.log('message = ', message);
+        console.log(self.iso20022Driver.exportFObject(null, message));
+      });
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
+        console.log(a);
         self.user.copyFrom(a.array[0]);
       });
 
