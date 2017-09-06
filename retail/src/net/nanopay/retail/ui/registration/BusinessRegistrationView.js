@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Business registration view.',
 
   requires:[
-    'net.nanopay.common.model.Address',
+    'foam.nanos.auth.Address',
     'net.nanopay.retail.model.Business',
     'net.nanopay.retail.model.BusinessInformation'
   ],
