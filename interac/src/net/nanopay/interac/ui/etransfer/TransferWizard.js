@@ -230,6 +230,9 @@ foam.CLASS({
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
+          this.viewData.fromAmount = 1.5;
+          this.viewData.toAmount = 0;
+          this.viewData.rateLocked = false;
         }
 
         if ( this.position == 3 ) {
@@ -265,8 +268,9 @@ foam.CLASS({
           // TODO: Reset params and restart flow
           this.viewData.purpose = 'General';
           this.viewData.notes = '';
-          this.viewData.fromAmount = 5;
+          this.viewData.fromAmount = 1.5;
           this.viewData.toAmount = 0;
+          this.viewData.rateLocked = false;
           while ( this.position != 0 ) {
             this.subStack.back();
           }

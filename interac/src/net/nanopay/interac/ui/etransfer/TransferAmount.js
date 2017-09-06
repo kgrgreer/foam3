@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Transfer amount details',
 
+  requires: [
+    'net.nanopay.interac.ui.shared.LoadingSpinner'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -104,6 +108,11 @@ foam.CLASS({
           height: 100%;
           font-size: 12px;
         }
+
+        ^ .net-nanopay-interac-ui-shared-LoadingSpinner {
+          margin-left: 100px;
+          margin-bottom: 13px;
+        }
       */}
     })
   ],
@@ -125,13 +134,26 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'fees',
-      value: 1.5 // TODO: Make this dynamic eventually
+      factory: function() {
+        this.viewData.fees = 1.5; // TODO: Make this dynamic eventually
+        return 1.5;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.fees = newValue;
+      }
     },
     {
       // TODO: Pull FX rate from somewhere
       class: 'Double',
-      name: 'fxRate',
-      value: 50.72973
+      name: 'rate',
+      factory: function() {
+        this.viewData.rate = 50.72973; // TODO: Make this dynamic eventually
+        return 50.72973;
+      },
+      postSet: function(oldValue, newValue) {
+        // TODO: enable input
+        this.viewData.rate = newValue;
+      }
     },
     {
       class: 'Boolean',
@@ -139,9 +161,12 @@ foam.CLASS({
       value: false
     },
     {
+      // TODO: Disable until rate has been given
+      // TODO: Disable if paying through Invoice
       class: 'Double',
       name: 'fromAmount',
       value: 1.5,
+      min: 1.5,
       precision: 2,
       view: 'net.nanopay.interac.ui.shared.FixedFloatView',
       postSet: function(oldValue, newValue) {
@@ -149,7 +174,7 @@ foam.CLASS({
 
         if ( this.feedback ) return;
         this.feedback = true;
-        this.toAmount = (newValue - this.fees) * this.fxRate;
+        this.toAmount = (newValue - this.fees) * this.rate;
         this.feedback = false;
       },
       validateObj: function(fromAmount) {
@@ -159,6 +184,8 @@ foam.CLASS({
       }
     },
     {
+      // TODO: Disable until rate has been given
+      // TODO: Disable if paying through Invoice
       class: 'Double',
       name: 'toAmount',
       min: 0,
@@ -170,7 +197,7 @@ foam.CLASS({
 
         if ( this.feedback ) return;
         this.feedback = true;
-        this.fromAmount = (newValue / this.fxRate) + this.fees;
+        this.fromAmount = (newValue / this.rate) + this.fees;
         this.feedback = false;
       },
       validateObj: function(toAmount) {
@@ -178,13 +205,30 @@ foam.CLASS({
           return this.AmountError;
         }
       }
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.startTimer();
+      var self = this;
+
+      if ( ! this.viewData.rateLocked ) {
+        setTimeout(function(){
+          self.loadingSpinner.hide();
+          self.startTimer();
+          self.viewData.rateLocked = true;
+        }, 2000);
+      } else {
+        this.loadingSpinner.hide();
+      }
+
       if ( this.viewData.fromAmount ) {
         this.fromAmount = this.viewData.fromAmount;
       }
@@ -211,7 +255,8 @@ foam.CLASS({
               .end()
             .end()
             .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.fees.toFixed(2) , ' (included)').end() // TODO: Get FX rates
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', this.fxRate$).end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabelMargin').enableClass('hidden', this.loadingSpinner.isHidden$, true).add('Rate: ', this.rate$).end() // TODO: Get FX rates
+            .add(this.loadingSpinner)
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
               .start('div').addClass('currencyDenominationContainer')
