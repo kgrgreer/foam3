@@ -19,7 +19,7 @@ public class TransactionDAO
   protected DAO userDAO_;
 
   protected UserAccountInfo getUserAccountInfo(User user) {
-    for ( Account account : user.getAccounts() ) {
+    for ( Account account : ((Account []) user.getAccounts() )) {
       if ( account.getAccountInfo() instanceof UserAccountInfo ) {
         return (UserAccountInfo) account.getAccountInfo();
       }
@@ -62,11 +62,11 @@ public class TransactionDAO
             User payee = (User) getUserDAO().find(transaction.getPayeeId());
             User payer = (User) getUserDAO().find(transaction.getPayerId());
 
-            if (payee.getAccounts().length == 0) {
+            if (payee.getAccounts() == null) {
              throw new RuntimeException("Payee doesn't have any accounts");
             }
 
-            if (payer.getAccounts().length == 0) {
+            if (payer.getAccounts() == null) {
               throw new RuntimeException("Payer doesn't have any accounts");
             }
 

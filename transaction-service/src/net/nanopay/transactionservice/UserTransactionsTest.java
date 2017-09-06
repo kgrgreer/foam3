@@ -42,10 +42,10 @@ public class UserTransactionsTest {
     for ( int i = 0; i < USER_COUNT; i++ ) {
       User user = new User();
       user.setId(i);
-      Account[] accounts = new Account[ACCOUNT_COUNT];
-      for ( int j = 0; j < ACCOUNT_COUNT; j++ ) {
-        accounts[j] = new Account();
-        accounts[j].setOwner(user.getId());
+      Account accounts = new Account();
+
+        accounts = new Account();
+        accounts.setOwner(user.getId());
         UserAccountInfo uai = new UserAccountInfo();
         uai.setBalance(STARTING_BALANCE);
         accounts[j].setAccountInfo(uai);
@@ -53,8 +53,8 @@ public class UserTransactionsTest {
         accountDao.put(accounts[j]);
       }
       user.setAccounts(accounts);
-      user.setAddress(new Address[0]);
-      user.setPhones(new Phone[0]);
+      //user.setAddress(new Address[0]);
+      //user.setPhones(new Phone[0]);
 //      userDao.cmd(new ActionCommand(user, "put"));
       userDao.put(user);
     }
@@ -124,7 +124,7 @@ public class UserTransactionsTest {
        @Override
        public void put(FObject obj, Detachable sub) {
          User user = (User) obj;
-         UserAccountInfo uai = (UserAccountInfo) user.getAccounts()[0].getAccountInfo();
+         UserAccountInfo uai = (UserAccountInfo) ((Account)user.getAccounts()[0]).getAccountInfo();
          if (PRINT_USER_BALANCES) {
            System.out.println(user.getId() + " : " + uai.getBalance());
          }
@@ -141,7 +141,7 @@ public class UserTransactionsTest {
     long[] userBalances = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
-      UserAccountInfo uai = (UserAccountInfo) ((User)userList.get(i)).getAccounts()[0].getAccountInfo();
+      UserAccountInfo uai = (UserAccountInfo) ((Account)((User)userList.get(i)).getAccounts()[0]).getAccountInfo();
       userBalances[i] = uai.getBalance();
       uai.setBalance(STARTING_BALANCE);
     }
@@ -162,7 +162,7 @@ public class UserTransactionsTest {
     long[] userBalances2 = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
-      UserAccountInfo uai = (UserAccountInfo) ((User)userList.get(i)).getAccounts()[0].getAccountInfo();
+      UserAccountInfo uai = (UserAccountInfo) ((Account)((User)userList.get(i)).getAccounts()[0]).getAccountInfo();
       userBalances2[i] = uai.getBalance();
     }
 
@@ -171,7 +171,7 @@ public class UserTransactionsTest {
       @Override
       public void put(FObject obj, Detachable sub) {
         User user = (User) obj;
-        UserAccountInfo uai = (UserAccountInfo) user.getAccounts()[0].getAccountInfo();
+        UserAccountInfo uai = (UserAccountInfo) ((Account)user.getAccounts()[0]).getAccountInfo();
         if (PRINT_USER_BALANCES) {
           System.out.println(user.getId() + " : " + uai.getBalance());
         }
