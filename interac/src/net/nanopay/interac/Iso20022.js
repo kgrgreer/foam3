@@ -5,6 +5,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.CashAccount24',
+    'net.nanopay.iso20022.PostalAddress6',
     'net.nanopay.iso20022.PartyIdentification43',
     'net.nanopay.iso20022.BranchAndFinancialInstitutionIdentification5'
   ],
@@ -15,10 +16,33 @@ foam.CLASS({
   ],
 
   constants: {
-    GENERATE_AGENT_DETAILS: function (agent) {
-      return this.BranchAndFinancialInstitutionIdentification5.create({
-
+    GENERATE_POSTAL_ADDRESS: function (address) {
+      return this.PostalAddress6.create({
+        AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
+        StrtNm: address.address,
+        TwnNm: address.city,
       });
+    },
+
+    GENERATE_AGENT_DETAILS: function (agent) {
+      var agentDetails = this.BranchAndFinancialInstitutionIdentification5.create({
+        FinInstnId: {
+          ClrSysMmbId: {
+            ClrSysId: {
+              // TODO: determine code based on country
+              Cd: ''
+            },
+            // TODO: determine whether to use FI ID or IFSC Code
+            MbmId: ''
+          },
+          Nm: '',
+          PstlAdr: this.GENERATE_POSTAL_ADDRESS(null)
+        }
+      });
+
+      // TODO: add BranchIdentification if Canadian agent
+
+      return agentDetails;
     },
 
     GENERATE_ENTITY_ACCOUNT: function (user) {
@@ -29,6 +53,7 @@ foam.CLASS({
           }
         },
         Ccy: 'CAD',
+        // TODO: change to business name if not a business
         Nm: user.firstName + ' ' + user.lastName
       });
     },
@@ -36,18 +61,43 @@ foam.CLASS({
     GENERATE_ENTITY_DETAILS: function (user) {
       var entityDetails = this.PartyIdentification43.create({
         Nm: user.firstName + ' ' + user.lastName,
-        PstlAdr: {
-          AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
-          StrtNm: user.address.address,
-          TwnNm: user.address.city,
-
-          // TODO: fill in address information
-        },
+        PstlAdr: this.GENERATE_POSTAL_ADDRESS(user.address),
+        Id: {},
         CtctDtls: {
           PhneNb: user.phone,
           EmailAdr: user.email
         }
       });
+
+      if ( user.type === 'Business' ) {
+        // TODO: model organisation identification
+        entityDetails.Id.OrgId: {
+          Othr: [
+            Id: '',
+            SchmeNm: {
+              Cd:
+            },
+            Issr: ''
+          ]
+        }
+
+      } else {
+        // TODO: model private identification for Canada & India
+        entityDetails.Id.PrvId: {
+          DtAndPlcOfBirth: {
+
+          },
+          Othr: [
+            {
+              Id: '',
+              SchmeNm: {
+                Cd: ''
+              },
+              Issr: ''
+            }
+          ]
+        }
+      }
 
       return entityDetails;
     },
