@@ -7,6 +7,8 @@ foam.CLASS({
     'net.nanopay.iso20022.CashAccount24',
     'net.nanopay.iso20022.PostalAddress6',
     'net.nanopay.iso20022.PartyIdentification43',
+    'net.nanopay.iso20022.PersonIdentification5',
+    'net.nanopay.iso20022.OrganisationIdentification8',
     'net.nanopay.iso20022.BranchAndFinancialInstitutionIdentification5'
   ],
 
@@ -69,33 +71,28 @@ foam.CLASS({
         }
       });
 
+      var identification = user.identification.map(function (id) {
+        return {
+          Id: id.id,
+          SchmeNm: {
+            Cd: id.type
+          },
+          Issr: id.issuer
+        i}
+      });
+
       if ( user.type === 'Business' ) {
         // TODO: model organisation identification
         entityDetails.Id.OrgId: {
-          Othr: [
-            Id: '',
-            SchmeNm: {
-              Cd:
-            },
-            Issr: ''
-          ]
+          Othr: identification
         }
-
       } else {
         // TODO: model private identification for Canada & India
         entityDetails.Id.PrvId: {
           DtAndPlcOfBirth: {
 
           },
-          Othr: [
-            {
-              Id: '',
-              SchmeNm: {
-                Cd: ''
-              },
-              Issr: ''
-            }
-          ]
+          Othr: identification
         }
       }
 
