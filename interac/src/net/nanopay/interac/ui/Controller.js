@@ -75,6 +75,7 @@ foam.CLASS({
       var self = this;
 
       var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+        if ( ! message ) return;
         console.log(message);
         console.log(self.iso20022Driver.exportFObject(null, message));
       });

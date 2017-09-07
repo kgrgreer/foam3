@@ -116,7 +116,7 @@ foam.CLASS({
         this.viewData.purpose = newValue;
       },
       view: function(_,X) {
-        var type = this.invoice ? 'Organization' : 'Individual';
+        var type = X.data.invoice ? 'Organization' : 'Individual';
         return foam.u2.view.ChoiceView.create({
           dao: X.data.pacs008IndiaPurposeDAO.where(X.data.EQ(X.data.Pacs008IndiaPurpose.TYPE, type)),
           objToChoice: function(purpose) {
