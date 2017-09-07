@@ -52,7 +52,11 @@ foam.CLASS({
       },
       value: 'JSON'
     },
-    'note'
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    }
   ],
 
   axioms: [
@@ -127,7 +131,7 @@ foam.CLASS({
 
       ^ .Input-Box{
         width: 408px;
-        height: 60px;
+        height: 160px;
         background-color: #ffffff;
         border: solid 1px rgba(164, 179, 184, 0.5);
         margin-left: 20px;
