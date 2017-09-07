@@ -21,6 +21,7 @@ foam.CLASS({
 
   imports: [
     'userDAO',
+    'accountDAO',
     'transactionDAO',
     'identificationDAO',
     'dateAndPlaceOfBirthDAO',
@@ -58,14 +59,14 @@ foam.CLASS({
       return agentDetails;
     },
 
-    GENERATE_ENTITY_ACCOUNT: function (user) {
+    GENERATE_ENTITY_ACCOUNT: function (user, account) {
       return this.CashAccount24.create({
         Id: {
           Othr: {
-            Id: '123123'
+            Id: account.accountInfo.accountNumber
           }
         },
-        Ccy: 'CAD',
+        Ccy: account.accountInfo.currencyCode,
         // TODO: change to business name if not a business
         Nm: user.firstName + ' ' + user.lastName
       });
@@ -123,10 +124,12 @@ foam.CLASS({
       var transaction = null;
 
       var payer = null;
+      var payerAccount = null;
       var payerIdentification = null;
       var payerBirthPlace = null;
 
       var payee = null;
+      var payeeAccount = null;
       var payeeIdentification = null;
       var payeeBirthPlace = null;
 
@@ -139,6 +142,7 @@ foam.CLASS({
         // get payer information
         return Promise.all([
           self.userDAO.find(transaction.payerId),
+          self.accountDAO.find(transaction.payerId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payerId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payerId)).limit(1).select()
         ]);
@@ -148,22 +152,26 @@ foam.CLASS({
           throw new Error('Payer not found');
 
         payer = result[0];
-        payerIdentification = result[1].array;
-        payerBirthPlace = result[2].array[0];
+        payerAccount = result[1];
+        payerIdentification = result[2].array;
+        payerBirthPlace = result[3].array[0];
 
         // get payee information
         return Promise.all([
           self.userDAO.find(transaction.payeeId),
+          self.accountDAO.find(transaction.payeeId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payeeId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payeeId)).limit(1).select()
         ])
       })
       .then(function (result) {
-        if ( ! result ) throw new Error('Payee not found');
+        if ( ! result )
+          throw new Error('Payee not found');
 
         payee = result[0];
-        payeeIdentification = result[1].array;
-        payeeBirthPlace = result[2].array[0];
+        payeeAccount = result[1];
+        payeeIdentification = result[2].array;
+        payeeBirthPlace = result[3].array[0];
 
         var msgId = foam.uuid.randomGUID().replace(/-/g, '');
         return self.Pacs00800106.create({
@@ -209,10 +217,10 @@ foam.CLASS({
                 ChrgsInf: [], // TODO populate fees
                 // TODO: populate IntrmyAgt1 & 2
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
-                DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer),
+                DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer, payerAccount),
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(null),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
-                CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee),
+                CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
                 CdtrAgt: self.GENERATE_AGENT_DETAILS(null)
               }
             ]
