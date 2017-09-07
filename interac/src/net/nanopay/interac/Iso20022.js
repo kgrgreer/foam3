@@ -105,7 +105,7 @@ foam.CLASS({
         entityDetails.Id = {
           PrvtId: {
             DtAndPlcOfBirth: {
-              // BirthDt: new Date(birthplace.birthday),
+              BirthDt: new Date(birthplace.birthday),
               CityOfBirth: birthplace.birthplace.city,
               CtryOfBirth: birthplace.birthplace.countryId
             },
