@@ -5,19 +5,58 @@ foam.CLASS({
   documentation: 'Creates all common DAO\'s.',
 
   requires: [
-    'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'foam.dao.history.HistoryRecord',
-    'net.nanopay.transactionservice.model.Transaction',
-    'net.nanopay.b2b.model.Invoice'
+    'net.nanopay.b2b.model.Invoice',
+    'net.nanopay.common.model.Bank',
+    'net.nanopay.transactionservice.model.Transaction'
   ],
 
   exports: [
-    'transactionDAO',
-    'invoiceDAO'
+    'bankDAO',
+    'invoiceDAO',
+    'transactionDAO'
   ],
 
   properties: [
+    {
+      name: 'bankDAO',
+      factory: function() {
+        return this.clientDAO({
+          of: net.nanopay.common.model.Bank,
+          url: 'bankDAO',
+          testData: [
+            {
+              name: 'Bank of Montreal',
+              financialId: '001'
+            },
+            {
+              name: 'Scotiabank',
+              financialId: '002'
+            },
+            {
+              name: 'Royal Bank of Canada',
+              financialId: '003'
+            },
+            {
+              name: 'TD Canada',
+              financialId: '004'
+            },
+            {
+              name: 'CIBC',
+              financialId: '010'
+            },
+            {
+              name: 'Canadian Bank',
+              financialId: '998'
+            },
+            {
+              name: 'Indian Bank',
+              financialId: '999'
+            }
+          ]
+        })
+      }
+    },
     {
       name: 'transactionDAO',
       factory: function() {
