@@ -15,6 +15,8 @@ foam.CLASS({
     'foam.nanos.export.XMLDriver'
   ],
 
+  exports: [ 'as data' ],
+
   properties: [
     {
       name: 'iso20022',
