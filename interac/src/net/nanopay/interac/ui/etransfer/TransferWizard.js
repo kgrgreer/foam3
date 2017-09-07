@@ -292,7 +292,7 @@ foam.CLASS({
           return;
         }
 
-        this.subStack.push(this.views[this.subStack.pos + 3].view); // otherwise
+        this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
       }
     }
   ]
