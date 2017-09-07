@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'identificationDAO',
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO'
   ],
@@ -400,6 +401,29 @@ foam.CLASS({
             }
           ]
         });
+      }
+    },
+    {
+      name: 'identificationDAO',
+      factory: function () {
+        return this.createDAO({
+          of: this.Identification,
+          seqNo: true,
+          testData: [
+            {
+              identifier: 'A0179129',
+              owner: 0,
+              type: 'CCPT',
+              issuer: 'Govt of Canada'
+            },
+            {
+              identifier: '548556788923',
+              owner: 1,
+              type: 'NDIN',
+              issuer: 'Govt of India'
+            }
+          ]
+        })
       }
     }
   ],
