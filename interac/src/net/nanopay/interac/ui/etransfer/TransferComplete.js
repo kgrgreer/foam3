@@ -15,6 +15,9 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
+        ^ {
+          height: 355px;
+        }
         ^ p{
           width: 464px;
           font-family: Roboto;
