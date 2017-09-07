@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.shared.topNavigation',
-  name: 'TopNav',
+  name: 'CanadaTopNav',
   extends: 'foam.u2.View',
 
   documentation: 'Top navigation bar',
@@ -18,7 +18,7 @@ foam.CLASS({
           padding-top: 5px;
         }
         ^ .topNavContainer {
-          width: 100%;
+          width: 962px;
           margin: auto;
         }
         .menuBar > div > ul {
@@ -56,6 +56,8 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('topNavContainer')
+          .start({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaLogoView', data: this.data})
+          .end()
           .start({class: 'foam.nanos.menu.MenuBar'}).addClass('menuBar')
           .end()
           .start({class: 'net.nanopay.interac.ui.shared.topNavigation.UserTopNavView'})

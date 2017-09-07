@@ -146,13 +146,16 @@ foam.CLASS({
       // TODO: Pull FX rate from somewhere
       class: 'Double',
       name: 'rate',
-      factory: function() {
-        this.viewData.rate = 50.72973; // TODO: Make this dynamic eventually
-        return 50.72973;
-      },
       postSet: function(oldValue, newValue) {
         // TODO: enable input
         this.viewData.rate = newValue;
+        // NOTE: This is a one way conversion. It is very lossy on certain fx rates.
+        if ( newValue ) this.toAmount = (this.fromAmount - this.fees) * newValue;
+      },
+      validateObj: function(rate) {
+        if ( ! rate ) {
+          return 'Rate expired';
+        }
       }
     },
     {
@@ -161,14 +164,17 @@ foam.CLASS({
       value: false
     },
     {
-      // TODO: Disable until rate has been given
-      // TODO: Disable if paying through Invoice
       class: 'Double',
       name: 'fromAmount',
       value: 1.5,
       min: 1.5,
       precision: 2,
       view: 'net.nanopay.interac.ui.shared.FixedFloatView',
+      preSet: function(oldValue, newValue) {
+        // TODO: Use mode of the view later on.
+        if ( this.invoice ) return this.invoice.amount + this.fees;
+        return newValue;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.fromAmount = newValue;
 
@@ -184,8 +190,6 @@ foam.CLASS({
       }
     },
     {
-      // TODO: Disable until rate has been given
-      // TODO: Disable if paying through Invoice
       class: 'Double',
       name: 'toAmount',
       min: 0,
@@ -219,18 +223,26 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      // TODO: Get FX Rate
+      this.countdownView.onExpiry = function() {
+        self.refreshRate();
+      };
+
+      // TODO: Get FX Rate
       if ( ! this.viewData.rateLocked ) {
-        setTimeout(function(){
-          self.loadingSpinner.hide();
-          self.startTimer();
-          self.viewData.rateLocked = true;
-        }, 2000);
+        this.refreshRate();
       } else {
         this.loadingSpinner.hide();
       }
 
+      // NOTE: This order is important. If we pull rate first, it will break
+      //       the fromAmount value
       if ( this.viewData.fromAmount ) {
         this.fromAmount = this.viewData.fromAmount;
+      }
+
+      if ( this.viewData.rate ) {
+        this.rate = this.viewData.rate;
       }
     },
 
@@ -247,7 +259,7 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('CAD').end() // TODO: Make it dyamic.
               .end()
-              .start(this.FROM_AMOUNT, {onKey: true})
+              .start(this.FROM_AMOUNT, {onKey: true, mode: this.invoice ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
                   onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
@@ -263,7 +275,7 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
               .end()
-              .start(this.TO_AMOUNT, {onKey: true})
+              .start(this.TO_AMOUNT, {onKey: true, mode: this.invoice ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
                   onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
@@ -302,6 +314,23 @@ foam.CLASS({
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
 
         .end();
+    },
+
+    function refreshRate() {
+      var self = this;
+      this.rate = 0;
+      this.loadingSpinner.show();
+      this.countdownView.hide();
+      this.countdownView.reset();
+      this.viewData.rateLocked = false;
+
+      // TODO: Grab actual fxRate
+      setTimeout(function(){
+        self.rate = 50.72973;
+        self.loadingSpinner.hide();
+        self.startTimer();
+        self.viewData.rateLocked = true;
+      }, 2000);
     },
 
     function startTimer() {
