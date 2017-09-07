@@ -12,6 +12,7 @@ foam.CLASS({
     'net.nanopay.interac.model.Pacs008ISOPurpose',
     'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.interac.model.DateAndPlaceOfBirth',
+    'net.nanopay.common.model.Account'
   ],
 
   exports: [
@@ -19,7 +20,8 @@ foam.CLASS({
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
     'dateAndPlaceOfBirthDAO',
-    'payeeDAO'
+    'payeeDAO',
+    'accountsDAO'
   ],
 
   properties: [
@@ -535,6 +537,43 @@ foam.CLASS({
             }
           ]
         })
+      }
+    },
+    {
+      name: 'accountsDAO',
+      factory: function() {
+        return this.createDAO({
+          of: this.Account,
+          seqNo: true,
+          testData: [
+            {
+              "id":1,
+              "accountInfo":{
+                "class":"net.nanopay.common.model.BankAccountInfo",
+                "id":"",
+                "accountName":"",
+                "transitNumber":"",
+                "accountNumber":"490932681376",
+                "status":"",
+                "xeroId":"",
+                "currencyCode":"CAD"
+              }
+            },
+            {
+              "id":2,
+              "accountInfo":{
+                "class":"net.nanopay.common.model.BankAccountInfo",
+                "id":"",
+                "accountName":"",
+                "transitNumber":"",
+                "accountNumber":"923000000008465748932",
+                "status":"",
+                "xeroId":"",
+                "currencyCode":"INR"
+              }
+            }
+          ]
+        });
       }
     }
   ],

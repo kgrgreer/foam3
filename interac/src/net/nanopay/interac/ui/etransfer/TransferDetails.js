@@ -13,12 +13,14 @@ foam.CLASS({
     'net.nanopay.interac.model.Pacs008ISOPurpose',
     'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.interac.ui.shared.TransferUserCard',
+    'net.nanopay.common.model.Account',
     'foam.nanos.auth.User'
   ],
 
   imports: [
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
+    'accountsDAO',
     'payeeDAO',
   ],
 
@@ -113,6 +115,27 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'accounts',
+      postSet: function(oldValue, newValue) {
+        var self = this;
+        this.accountsDAO.where(this.EQ(this.Account.ID, newValue)).select().then(function(a){
+          var account = a.array[0];
+          self.viewData.account = account;
+        });
+      },
+      view: function(_,X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.data.accountsDAO.where(X.data.EQ(X.data.Account.ID, 1)),
+          objToChoice: function(account) {
+            return [account.id, 'Account No. ' +
+                                '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length) +
+                                ' - ' + account.accountInfo.currencyCode +
+                                ' ']; // TODO: Grab amount
+          }
+        });
+      }
+    },
+    {
       name: 'payees',
       postSet: function(oldValue, newValue) {
         var self = this;
@@ -124,7 +147,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.payeeDAO,
+          dao: X.data.payeeDAO.where(X.data.NEQ(X.data.User.ID, 1)),
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
             if ( X.data.mode == 'Organization' ) {
@@ -133,7 +156,7 @@ foam.CLASS({
             }
             return [payee.id, username + ' - (' + payee.email + ')'];
           }
-        })
+        });
       }
     },
     'payee',
@@ -194,10 +217,14 @@ foam.CLASS({
         .start('div').addClass('detailsCol')
           .start('p').add(this.TransferFromLabel).addClass('bold').end()
           .start('p').add(this.AccountLabel).end()
+          .start('div').addClass('dropdownContainer')
+            .add(this.ACCOUNTS)
+            .start('div').addClass('caret').end()
+          .end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
           .start('div').addClass('dropdownContainer')
-            .tag(this.PAYEES)
+            .add(this.PAYEES)
             .start('div').addClass('caret').end()
           .end()
           .start('p').add(this.PurposeLabel).end()
