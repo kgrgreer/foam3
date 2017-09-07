@@ -9,7 +9,7 @@ foam.CLASS({
       name: 'type'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name:  'birthday'
     },
     {
