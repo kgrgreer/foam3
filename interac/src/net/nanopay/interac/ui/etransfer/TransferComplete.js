@@ -5,6 +5,13 @@ foam.CLASS({
 
   documentation: 'Interac transfer completion and loading screen.',
 
+  properties: [
+    {
+      name: 'time',
+      value: 0
+    }
+  ], 
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -23,7 +30,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ h2{
-          width: 300px;
+          width: 600px;
           font-size: 14px;
           letter-spacing: 0.4px;
           color: #093649;
@@ -36,18 +43,54 @@ foam.CLASS({
           cursor: pointer;
           z-index: 100;
         }
+        ^status-check p {
+          display: inline-block;
+          margin-left: 10px;
+          font-size: 12px;
+          letter-spacing: 0.2px;
+          color: grey;
+          margin-top: 5px;
+        }
+        ^status-check img {
+          position: relative;
+          top: 5;
+          display: none;
+        }
+        ^status-check-container{
+          margin-top: 35px;
+          margin-bottom: 35px;
+        }
+        ^ .show-green{
+          color: #2cab70;
+        }
+        ^status-check-container{
+          height: 170px;
+        }
+        ^status-check{
+          height: 32px;
+        }
+        ^ .show{
+          display: inline-block;
+        }
+        ^ .hide{
+          display: none;
+        }
+        ^ .show-yes{
+          display: inline-block;
+        }
       */}
     })
   ],
 
   methods: [
     function init() {
-      
-      this.SUPER();
+      this.tick()
 
+      this.SUPER();
       this
         .addClass(this.myClass())
-        .start().style({ display: 'inline-block'})
+        .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
+        .start().addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) )
           .start('h2').add('360 Design has received CAD 200.00.').end()
           .start('h3').add('Reference No. CAxxx723').end()
           .start()
@@ -57,7 +100,29 @@ foam.CLASS({
           .end()
         .end()
         .start().style({ float: 'right'})
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').add(this.EXPORT_MODAL).end()
+          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button hide').add(this.EXPORT_MODAL).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
+        .end()
+        .start().addClass(this.myClass('status-check-container'))
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 0 }))
+            .start('p').add('Sending Bank Compliance Checks...').enableClass('show-green', this.time$.map(function (value) { return value > 0 })).end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value >  2}))
+            .start('p').add('Receiving Bank Compliance Checks...').enableClass('show-green', this.time$.map(function (value) { return value > 2 })).end().end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 3 }))
+            .start('p').add('Booking FX Rate...').enableClass('show-green', this.time$.map(function (value) { return value > 3 })).end().end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 4 }))
+            .start('p').add('Generating IMPS Transaction...').enableClass('show-green', this.time$.map(function (value) { return value > 4 })).end().end()
+          .end()
+          .start().addClass(this.myClass('status-check'))
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }))
+            .start('p').add('Payment Successful...').enableClass('show-green', this.time$.map(function (value) { return value > 5 })).end().end()
+          .end()
         .end()
     }
   ],
@@ -69,5 +134,17 @@ foam.CLASS({
         X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.interac.ui.modals.ExportModal'}));
       }
     },
+  ],
+
+  listeners: [
+    {
+      name: 'tick',
+      isMerged: true,
+      mergeDelay: 400,
+      code: function () {
+        this.time += 1;
+        this.tick();
+      }
+    }
   ]
 });
