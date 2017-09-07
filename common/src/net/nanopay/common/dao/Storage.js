@@ -5,14 +5,15 @@ foam.CLASS({
   documentation: 'Creates all common DAO\'s.',
 
   requires: [
-    'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
+    'net.nanopay.b2b.model.Invoice',
     'net.nanopay.common.model.Bank',
     'net.nanopay.transactionservice.model.Transaction'
   ],
 
   exports: [
     'bankDAO',
+    'invoiceDAO',
     'transactionDAO'
   ],
 
@@ -78,6 +79,23 @@ foam.CLASS({
         .addPropertyIndex(this.Transaction.RATE)
         .addPropertyIndex(this.Transaction.FEES)
       }
+    },
+    {
+      name: 'invoiceDAO',
+      factory: function() {
+        /*this.DecoratedDAO.create({
+          decorator: this.InvoiceDecorator.create(),
+          delegate: */
+        return this.createDAO({
+            of: this.Invoice,
+            seqNo: true
+          })
+          .addPropertyIndex(this.Invoice.STATUS)
+          .addPropertyIndex(this.Invoice.TO_BUSINESS_NAME)
+          .addPropertyIndex(this.Invoice.FROM_BUSINESS_NAME)
+          .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
+          .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
+      }
     }
   ],
 
@@ -87,6 +105,29 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
+    },
+
+    function clientDAO(config) {
+
+      var dao = this.ClientDAO.create({
+        of: config.of,
+        delegate: this.HTTPBox.create({
+          method: 'POST',
+          url: 'http://localhost:8080/' + config.url
+        })
+      });
+
+      if ( config.testData ) {
+        dao.select(this.COUNT()).then(function (c) {
+          if ( c.value == 0 ) {
+            for ( var i = 0 ; i < config.testData.length ; i ++ ) {
+              dao.put(config.of.create(config.testData[i]));
+            }
+          }
+        });
+      }
+
+      return dao;
     }
   ]
 });

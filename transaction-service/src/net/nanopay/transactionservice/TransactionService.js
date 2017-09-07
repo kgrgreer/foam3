@@ -12,6 +12,7 @@ foam.INTERFACE({
     {
       name: 'transferValueById',
       javaReturns: 'void',
+      returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
@@ -31,6 +32,7 @@ foam.INTERFACE({
     {
       name: 'transferValueByEmail',
       javaReturns: 'void',
+      returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
@@ -50,6 +52,7 @@ foam.INTERFACE({
     {
       name: 'requestValueById',
       javaReturns: 'void',
+      returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
@@ -69,6 +72,7 @@ foam.INTERFACE({
     {
       name: 'requestValueByEmail',
       javaReturns: 'void',
+      returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {

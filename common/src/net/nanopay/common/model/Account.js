@@ -1,11 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.common.model',
   name: 'Account',
-  ids: [ 'accountId' ],
   properties: [
     {
-      class: 'String',
-      name: 'accountId'
+      class: 'Long',
+      name: 'id'
     },
     {
       class: 'FObjectProperty',
