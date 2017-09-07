@@ -10,6 +10,11 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'Reference',
+      name: 'owner',
+      of: 'foam.nanos.auth.User'
+    },
+    {
       class: 'String',
       name: 'type'
     },
