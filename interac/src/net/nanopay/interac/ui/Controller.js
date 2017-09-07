@@ -66,6 +66,10 @@ foam.CLASS({
       factory: function () {
         return this.ISO20022Driver.create();
       }
+    },
+    {
+      class: 'String',
+      name: 'country'
     }
   ],
 
@@ -74,6 +78,12 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      net.nanopay.interac.Data.create(undefined, this);
+      
+      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+        console.log(message);
+        console.log(self.iso20022Driver.exportFObject(null, message));
+      });
 //      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
 //        if ( ! message ) return;
 //        console.log(message);
@@ -87,21 +97,33 @@ foam.CLASS({
       this.userDAO.limit(1).select().then(function(a) {
         self.user.copyFrom(a.array[0]);
       });
-
-      this.stack.push({ class: 'net.nanopay.interac.ui.TransactionsView' })
+      
     },
 
     function initE() {
       var self = this;
 
+      if(this.country == 'Canada') {
+        this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
+      } else if(this.country == 'India') {
+        this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
+      }
+
       this
-        .addClass(this.myClass())
-        .add(this.user$.dot('id').map(function (id) {
+        .addClass(this.myClass());
+        /*.add(this.user$.dot('id').map(function (id) {
           return id ?
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business }) :
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.NoMenuTopNav' });
-        }))
-        .br()
+        }))*/
+        
+        if(this.country == 'Canada') {
+          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav', data: self.business}))
+        } else if(this.country == 'India') {
+          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}))
+        }
+        
+        this.br()
         .start('div').addClass('stack-wrapper')
           .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
         .end()

@@ -16,7 +16,7 @@ foam.CLASS({
         ^ {
           display: inline-block;
           float: right;
-          margin: 10px 50px 0 0;
+          margin-top: 10px;
         }
         ^ h1 {
           margin: 0;
