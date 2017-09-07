@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'net.nanopay.interac.model.Payee'
+    'net.nanopay.interac.model.Payee',
+    'net.nanopay.exchangerate.model.ExchangeRate'
   ],
 
   exports: [
@@ -16,6 +17,16 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'exchangeRateDAO',
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.ExchangeRate,
+          serviceName: 'exchangeRateDAO'
+        })
+      }
+    },
     {
       name: 'payeeDAO',
       factory: function() {
