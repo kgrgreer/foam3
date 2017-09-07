@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.common.model',
   name: 'User',
   extends: 'foam.nanos.auth.User',
-
+/*
   properties: [
     {
       class: 'String',
@@ -26,7 +26,8 @@ foam.CLASS({
       name: 'xeroId'
     }
   ]
-})
+  */
+});
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.common.model.Account',
@@ -39,4 +40,3 @@ foam.RELATIONSHIP({
   forwardName: 'phones',
   inverseName: 'owner'
 });
-
