@@ -8,9 +8,12 @@ foam.CLASS({
   properties: [
     {
       name: 'time',
-      value: 0
+      value: 0,
+      validateObj: function(time) {
+        if ( time <= 5 ) return 'Transaction sending...';
+      }
     }
-  ], 
+  ],
 
   axioms: [
     foam.u2.CSS.create({

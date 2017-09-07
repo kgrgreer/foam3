@@ -57,6 +57,11 @@ foam.CLASS({
           margin-bottom: 0;
         }
 
+        ^ .rateLabel {
+          line-height: 20px;
+          height: 20px;
+        }
+
         ^ .rateLabelMargin {
           margin-left: 100px;
           margin-bottom: 13px;
@@ -266,8 +271,14 @@ foam.CLASS({
                 })
               .end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.fees.toFixed(2) , ' (included)').end() // TODO: Get FX rates
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').enableClass('hidden', this.loadingSpinner.isHidden$, true).add('Rate: ', this.rate$).end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin')
+              // TODO: Get Fees rates
+              .add('Fees: CAD ', this.fees.toFixed(2) , ' (included)')
+            .end()
+            .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin').enableClass('hidden', this.loadingSpinner.isHidden$, true)
+              // TODO: Get FX rates
+              .add('Rate: ', this.rate$)
+            .end()
             .add(this.loadingSpinner)
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total

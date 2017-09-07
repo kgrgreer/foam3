@@ -196,10 +196,10 @@ foam.CLASS({
         this.viewData.purchaseOrder = 'N/A';
       }
       this.views = [
-        { parent: 'etransfer', id: 'etransfer-transfer-details',     label: 'Account & Payee',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
-        { parent: 'etransfer', id: 'etransfer-transfer-amount',      label: 'Amount',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
-        { parent: 'etransfer', id: 'etransfer-transfer-review',      label: 'Review',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
-        { parent: 'etransfer', id: 'etransfer-transfer-complete',    label: 'Successful',           view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
+        { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
+        { parent: 'etransfer', id: 'etransfer-transfer-amount',   label: 'Amount',          view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
       ];
       this.countdownView.hide();
       this.SUPER();
@@ -216,7 +216,6 @@ foam.CLASS({
           .end()
           .start('div').addClass('stackColumn')
             .start('div').addClass('topRow')
-              // TODO: 30 minute timer
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
               .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
@@ -240,6 +239,12 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
+      isAvailable: function(position, errors) {
+        if ( position == 3 ) {
+          if ( errors ) return false;
+        }
+        return true;
+      },
       code: function(X) {
         if ( this.position == 0 ) {
           X.stack.back();
@@ -286,7 +291,7 @@ foam.CLASS({
 
         if ( this.position == 3 ) {
           // TODO: Reset params and restart flow
-          this.viewData.purpose = 'General';
+          this.viewData.purpose = '';
           this.viewData.notes = '';
           this.viewData.fromAmount = 1.5;
           this.viewData.toAmount = 0;
