@@ -29,13 +29,27 @@ foam.CLASS({
 
   constants: {
     GENERATE_POSTAL_ADDRESS: function (address) {
-      return this.PostalAddress6.create({
+      var postalAddress = this.PostalAddress6.create({
         AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
-        StrtNm: address.address,
         TwnNm: address.city,
         CtrySubDvsn: address.regionId,
         Ctry: address.countryId
       });
+
+      if ( ! address.buildingNumber && ! address.postalCode ) {
+        // assume address field is unstructured address information
+        // split address into chunks of 70 chars
+        postalAddress.AdrLine = address.address.match(/.{1,70}/g).map(function (chunk) {
+          return chunk;
+        })
+      } else {
+        postalAddress.StrtNm = address.address;
+        postalAddress.PstCd = address.postalCode;
+        postalAddress.BldgNb = address.buildingNumber;
+      }
+
+
+      return postalAddress;
     },
 
     GENERATE_AGENT_DETAILS: function (agent) {
