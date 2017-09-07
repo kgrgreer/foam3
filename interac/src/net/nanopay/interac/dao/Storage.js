@@ -412,13 +412,13 @@ foam.CLASS({
           testData: [
             {
               identifier: 'A0179129',
-              owner: 0,
+              owner: 1,
               type: 'CCPT',
               issuer: 'Govt of Canada'
             },
             {
               identifier: '548556788923',
-              owner: 1,
+              owner: 2,
               type: 'NDIN',
               issuer: 'Govt of India'
             }
