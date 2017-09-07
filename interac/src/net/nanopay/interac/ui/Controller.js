@@ -5,6 +5,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.client.Client',
+    'net.nanopay.transactionservice.client.Client',
     'net.nanopay.interac.dao.Storage',
     'net.nanopay.common.dao.Storage',
     'foam.mlang.Expressions'

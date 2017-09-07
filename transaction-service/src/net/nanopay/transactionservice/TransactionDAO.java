@@ -22,14 +22,14 @@ public class TransactionDAO
 
   protected DAO getUserDAO() {
     if ( userDAO_ == null ) {
-      userDAO_ = (DAO) getX().get("userDAO");
+      userDAO_ = (DAO) getX().get("localUserDAO");
     }
     return userDAO_;
   }
 
   protected DAO getAccountDAO() {
     if ( accountDAO_ == null ) {
-      accountDAO_ = (DAO) getX().get("accountDAO");
+      accountDAO_ = (DAO) getX().get("localAccountDAO");
     }
     return accountDAO_;
   }
