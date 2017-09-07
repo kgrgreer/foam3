@@ -8,13 +8,13 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of:    'AccountLimit',
-      name:  'limit'
+      of: 'net.nanopay.common.model.AccountLimit',
+      name: 'limit'
     },
     {
       class: 'FObjectProperty',
-      of: 'AccountInfo',
+      of: 'net.nanopay.common.model.AccountInfo',
       name: 'accountInfo'
-    },
+    }
   ]
 });
