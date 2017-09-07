@@ -171,6 +171,7 @@ foam.CLASS({
       precision: 2,
       view: 'net.nanopay.interac.ui.shared.FixedFloatView',
       preSet: function(oldValue, newValue) {
+        // TODO: Use mode of the view later on.
         if ( this.invoice ) return this.invoice.amount + this.fees;
         return newValue;
       },
