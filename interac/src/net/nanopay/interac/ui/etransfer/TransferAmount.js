@@ -164,8 +164,6 @@ foam.CLASS({
       value: false
     },
     {
-      // TODO: Disable until rate has been given
-      // TODO: Disable if paying through Invoice
       class: 'Double',
       name: 'fromAmount',
       value: 1.5,
@@ -187,8 +185,6 @@ foam.CLASS({
       }
     },
     {
-      // TODO: Disable until rate has been given
-      // TODO: Disable if paying through Invoice
       class: 'Double',
       name: 'toAmount',
       min: 0,
@@ -234,8 +230,14 @@ foam.CLASS({
         this.loadingSpinner.hide();
       }
 
+      // NOTE: This order is important. If we pull rate first, it will break
+      //       the fromAmount value
       if ( this.viewData.fromAmount ) {
         this.fromAmount = this.viewData.fromAmount;
+      }
+
+      if ( this.viewData.rate ) {
+        this.rate = this.viewData.rate;
       }
     },
 
@@ -252,7 +254,7 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('CAD').end() // TODO: Make it dyamic.
               .end()
-              .start(this.FROM_AMOUNT, {onKey: true})
+              .start(this.FROM_AMOUNT, {onKey: true, mode: this.invoice ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
                   onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
@@ -268,7 +270,7 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
               .end()
-              .start(this.TO_AMOUNT, {onKey: true})
+              .start(this.TO_AMOUNT, {onKey: true, mode: this.invoice ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
                   onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'

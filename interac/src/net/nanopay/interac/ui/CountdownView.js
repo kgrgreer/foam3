@@ -98,7 +98,9 @@ foam.CLASS({
       mergeDelay: 1000,
       code: function () {
         if ( this.isStopped ) return;
-        if ( this.duration <= 0 ) {
+        if ( this.duration <= 1000 ) {
+          this.duration = 0;
+          this.time = 0;
           this.onExpiry();
           return;
         }
