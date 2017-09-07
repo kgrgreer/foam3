@@ -36,7 +36,12 @@ public class SingleCurrencyTransactionService
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
-    transactionDAO_.put(transaction);
+
+    try {
+      transactionDAO_.put(transaction);
+    } catch (RuntimeException e) {
+      throw e;
+    }
   }
 
   @Override
@@ -59,7 +64,12 @@ public class SingleCurrencyTransactionService
     });
     transaction.setDate(new Date());
     transaction.setAmount(amount);
-    transactionDAO_.put(transaction);
+
+    try {
+      transactionDAO_.put(transaction);
+    } catch (RuntimeException e) {
+      throw e;
+    }
   }
 
   @Override
