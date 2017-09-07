@@ -2,19 +2,28 @@ foam.CLASS({
   package: 'net.nanopay.interac',
   name: 'Iso20022',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
+    'net.nanopay.interac.model.Identification',
+    'net.nanopay.interac.model.DateAndPlaceOfBirth',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.CashAccount24',
     'net.nanopay.iso20022.PostalAddress6',
     'net.nanopay.iso20022.PartyIdentification43',
     'net.nanopay.iso20022.PersonIdentification5',
     'net.nanopay.iso20022.OrganisationIdentification8',
+    'net.nanopay.iso20022.GenericOrganisationIdentification1',
     'net.nanopay.iso20022.BranchAndFinancialInstitutionIdentification5'
   ],
 
   imports: [
     'userDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'identificationDAO',
+    'dateAndPlaceOfBirthDAO',
   ],
 
   constants: {
@@ -23,6 +32,8 @@ foam.CLASS({
         AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
         StrtNm: address.address,
         TwnNm: address.city,
+        CtrySubDvsn: address.regionId,
+        Ctry: address.countryId
       });
     },
 
@@ -38,7 +49,7 @@ foam.CLASS({
             MbmId: ''
           },
           Nm: '',
-          PstlAdr: this.GENERATE_POSTAL_ADDRESS(null)
+          // PstlAdr: this.GENERATE_POSTAL_ADDRESS(null)
         }
       });
 
@@ -60,26 +71,28 @@ foam.CLASS({
       });
     },
 
-    GENERATE_ENTITY_DETAILS: function (user) {
+    GENERATE_ENTITY_DETAILS: function (user, identification, birthplace) {
+      var self = this;
+
       var entityDetails = this.PartyIdentification43.create({
         Nm: user.firstName + ' ' + user.lastName,
         PstlAdr: this.GENERATE_POSTAL_ADDRESS(user.address),
-        Id: {},
         CtctDtls: {
           PhneNb: user.phone,
           EmailAdr: user.email
         }
       });
 
-      var identification = user.identification.map(function (id) {
+      // transform identification variable into pacs008 format
+      identification = identification.map(function (id) {
         return {
-          Id: id.id,
+          Id: id.identifier,
           SchmeNm: {
-            Cd: id.type
+            Cd: id.code
           },
           Issr: id.issuer
         }
-      });
+      })
 
       if ( user.type === 'Business' ) {
         // TODO: model organisation identification
@@ -87,17 +100,18 @@ foam.CLASS({
           OrgId: {
             Othr: identification
           }
-        }
+        };
       } else {
-        // TODO: model private identification for Canada & India
         entityDetails.Id = {
-          PrvId: {
+          PrvtId: {
             DtAndPlcOfBirth: {
-
+              // BirthDt: new Date(birthplace.birthday),
+              CityOfBirth: birthplace.birthplace.city,
+              CtryOfBirth: birthplace.birthplace.countryId
             },
             Othr: identification
           }
-        }
+        };
       }
 
       return entityDetails;
@@ -107,25 +121,52 @@ foam.CLASS({
       var self = this;
 
       var transaction = null;
+
       var payer = null;
+      var payerIdentification = null;
+      var payerBirthPlace = null;
+
       var payee = null;
+      var payeeIdentification = null;
+      var payeeBirthPlace = null;
 
       return self.transactionDAO.find(transactionId).then(function (result) {
-        if ( ! result ) throw new Error('Transaction not found');
+        if ( ! result )
+          throw new Error('Transaction not found');
+
         transaction = result;
-        return self.userDAO.find(transaction.payerId);
+
+        // get payer information
+        return Promise.all([
+          self.userDAO.find(transaction.payerId),
+          self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payerId)).select(),
+          self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payerId)).limit(1).select()
+        ]);
       })
       .then(function (result) {
-        if ( ! result ) throw new Error('Payer not found');
-        payer = result;
-        return self.userDAO.find(transaction.payeeId);
+        if ( ! result )
+          throw new Error('Payer not found');
+
+        payer = result[0];
+        payerIdentification = result[1].array;
+        payerBirthPlace = result[2].array[0];
+
+        // get payee information
+        return Promise.all([
+          self.userDAO.find(transaction.payeeId),
+          self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payeeId)).select(),
+          self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payeeId)).limit(1).select()
+        ])
       })
       .then(function (result) {
         if ( ! result ) throw new Error('Payee not found');
-        payee = result;
+
+        payee = result[0];
+        payeeIdentification = result[1].array;
+        payeeBirthPlace = result[2].array[0];
 
         var msgId = foam.uuid.randomGUID().replace(/-/g, '');
-        return this.Pacs00800106.create({
+        return self.Pacs00800106.create({
           FIToFICstmrCdtTrf: {
             GrpHdr: {
               MsgId: msgId,
@@ -167,19 +208,16 @@ foam.CLASS({
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
                 ChrgsInf: [], // TODO populate fees
                 // TODO: populate IntrmyAgt1 & 2
-                Dbtr: self.GENERATE_ENTITY_DETAILS(payer),
+                Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
                 DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer),
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(null),
-                Cdtr: self.GENERATE_ENTITY_DETAILS(payee),
+                Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee),
                 CdtrAgt: self.GENERATE_AGENT_DETAILS(null)
               }
             ]
           }
         });
-      })
-      .catch(function (err) {
-        return null;
       });
     }
   }

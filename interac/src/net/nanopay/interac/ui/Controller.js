@@ -78,7 +78,10 @@ foam.CLASS({
         if ( ! message ) return;
         console.log(message);
         console.log(self.iso20022Driver.exportFObject(null, message));
-      });
+      })
+      .catch(function (err) {
+        console.log('err = ', err);
+      })
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
