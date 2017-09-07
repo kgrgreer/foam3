@@ -48,17 +48,23 @@ transaction.abstractClasses = transaction.abstractClasses.map(function(element) 
 transaction.skeletons = transaction.skeletons.map(function(element) { return [ 'transaction-service/src/', element ]; })
 transaction.proxies = transaction.proxies.map(function(element) { return [ 'transaction-service/src/', element ]; })
 
+var exchangeRate = require('../exchange-rate/tools/classes.js')
+exchangeRate.classes = exchangeRate.classes.map(function(element) { return [ 'exchange-rate/src/', element ]; })
+exchangeRate.abstractClasses = exchangeRate.abstractClasses.map(function(element) { return [ 'exchange-rate/src/', element ]; })
+exchangeRate.skeletons = exchangeRate.skeletons.map(function(element) { return [ 'exchange-rate/src/', element ]; })
+exchangeRate.proxies = exchangeRate.proxies.map(function(element) { return [ 'exchange-rate/src/', element ]; })
+
 var classes = [];
-classes = classes.concat(foam.classes, common.classes, b2b.classes, retail.classes, admin.classes, ingenico.classes, interac.classes, transaction.classes)
+classes = classes.concat(foam.classes, common.classes, b2b.classes, retail.classes, admin.classes, ingenico.classes, interac.classes, transaction.classes, exchangeRate.classes)
 
 var abstractClasses = [];
-abstractClasses = abstractClasses.concat(foam.abstractClasses, common.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, ingenico.abstractClasses, interac.abstractClasses, transaction.abstractClasses)
+abstractClasses = abstractClasses.concat(foam.abstractClasses, common.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, ingenico.abstractClasses, interac.abstractClasses, transaction.abstractClasses, exchangeRate.abstractClasses)
 
 var skeletons = [];
-skeletons = skeletons.concat(foam.skeletons, common.skeletons, b2b.skeletons, retail.skeletons, admin.skeletons, ingenico.skeletons, interac.skeletons, transaction.skeletons)
+skeletons = skeletons.concat(foam.skeletons, common.skeletons, b2b.skeletons, retail.skeletons, admin.skeletons, ingenico.skeletons, interac.skeletons, transaction.skeletons, exchangeRate.skeletons)
 
 var proxies = [];
-proxies = proxies.concat(foam.proxies, common.proxies, b2b.proxies, retail.proxies, admin.proxies, ingenico.proxies, interac.proxies, transaction.proxies)
+proxies = proxies.concat(foam.proxies, common.proxies, b2b.proxies, retail.proxies, admin.proxies, ingenico.proxies, interac.proxies, transaction.proxies, exchangeRate.proxies)
 
 
 module.exports = {

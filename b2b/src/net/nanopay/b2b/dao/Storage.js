@@ -329,7 +329,7 @@ foam.CLASS({
       name: 'addressDAO',
       factory: function() {
         return this.createDAO({
-          of: 'net.nanopay.common.model.Address',
+          of: 'foam.nanos.auth.Address',
           seqNo: true
         })
       }

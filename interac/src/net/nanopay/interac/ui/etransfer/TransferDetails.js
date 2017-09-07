@@ -1,18 +1,23 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferDetails',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
-
-  exports: [ 'as data' ],
+  extends: 'net.nanopay.interac.ui.etransfer.TransferView',
 
   documentation: 'Interac transfer details',
+
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'net.nanopay.interac.model.Pacs008ISOPurpose',
+    'net.nanopay.interac.model.Pacs008IndiaPurpose'
+  ],
+
+  imports: [
+    'pacs008ISOPurposeDAO',
+    'pacs008IndiaPurposeDAO'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -44,6 +49,7 @@ foam.CLASS({
           appearance: none;
 
           padding: 12px 20px;
+          padding-right: 35px;
           border: solid 1px rgba(164, 179, 184, 0.5);
           background-color: white;
           outline: none;
@@ -66,7 +72,7 @@ foam.CLASS({
           position: relative;
         }
 
-        .caret:before {
+        ^ .caret:before {
           content: '';
           position: absolute;
           top: -23px;
@@ -76,7 +82,7 @@ foam.CLASS({
           border-right: 7px solid transparent;
         }
 
-        .caret:after {
+        ^ .caret:after {
           content: '';
           position: absolute;
           left: 12px;
@@ -106,26 +112,17 @@ foam.CLASS({
     {
       // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'purpose',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'General',
-          'Other'
-        ],
-      },
-      factory: function() {
-        this.viewData.purpose = 'General';
-        return 'General';
-      },
       postSet: function(oldValue, newValue) {
-        switch(newValue) {
-          case 'General' :
-            this.viewData.purpose = 'General';
-            break;
-          case 'Other' :
-            this.viewData.purpose = 'Other';
-            break;
-        }
+        this.viewData.purpose = newValue;
+      },
+      view: function(_,X) {
+        var type = this.invoice ? 'Organization' : 'Individual';
+        return foam.u2.view.ChoiceView.create({
+          dao: X.data.pacs008IndiaPurposeDAO.where(X.data.EQ(X.data.Pacs008IndiaPurpose.TYPE, type)),
+          objToChoice: function(purpose) {
+            return [purpose.code, purpose.code + ' - ' + purpose.description];
+          }
+        })
       }
     },
     {
@@ -135,23 +132,12 @@ foam.CLASS({
         this.viewData.notes = newValue;
       },
       view: { class: 'foam.u2.tag.TextArea' }
-    },
-    {
-      // TODO: Pull an actual user/business from a DAO
-      name: 'fromUser',
-      value: {
-        name : 'Mach Engineering',
-        email : 'smitham.cristina@beahan.ca',
-        tel : '+1 (907) 787-2493',
-        address : '123 Avenue, Toronto, Ontario, Canada M2G 1K9'
-      }
     }
   ],
 
   methods: [
     function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
+      this.SUPER()
 
       if ( this.viewData.purpose ) {
         this.purpose = this.viewData.purpose;
@@ -182,36 +168,23 @@ foam.CLASS({
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
-          .start('div').addClass('invoiceDetailContainer')
+          .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNo).end()
+            .br()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
-            .start('p').addClass('invoiceDetail').add('PLACEHOLDER').end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
-          .start('a').addClass('invoiceLink')
-            .attrs({href: ''})
+          .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
+            .attrs({href: this.viewData.invoiceFileUrl})
             .add(this.PDFLabel)
           .end()
-          // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
-
-          .start('div').addClass('userContainer')
-            .start('div').addClass('userRow')
-              .start('p').addClass('bold').addClass('userName').add(this.fromUser.name).end()
-            .end()
-          .end()
-
+          // TODO: Make card based on from and to information
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
           .start('p').add(this.ToLabel).addClass('bold').end()
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
         .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });
