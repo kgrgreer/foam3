@@ -117,9 +117,9 @@ foam.CLASS({
       // });
 
       // Injecting Sample Partner
-      this.userDAO.limit(1).select().then(function(a) {
-        self.user.copyFrom(a.array[0]);
-      });
+      // this.userDAO.limit(1).select().then(function(a) {
+      //   self.user.copyFrom(a.array[0]);
+      // });
 
       this.business.sub(function() {
         self.salesDAO.pub('on', 'change');
@@ -136,11 +136,12 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .add(this.user$.dot('id').map(function (id) {
-          return id ?
-            self.E().tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.TopNav', data: self.business }) :
-            self.E().tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.NoMenuTopNav' });
-        }))
+          .tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.TopNav', data: self.business })
+        // .add(this.user$.dot('id').map(function (id) {
+        //   return id ?
+        //     self.E().tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.TopNav', data: self.business }) :
+        //     self.E().tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.NoMenuTopNav' });
+        // }))
         .br()
         .start('div').addClass('stack-wrapper')
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})

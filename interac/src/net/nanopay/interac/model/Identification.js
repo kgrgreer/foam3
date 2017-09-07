@@ -6,12 +6,21 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Long',
       name: 'id'
     },
     {
       class: 'String',
-      name: 'type'
+      name: 'identifier'
+    },
+    {
+      class: 'Reference',
+      name: 'owner',
+      of: 'foam.nanos.auth.User'
+    },
+    {
+      class: 'String',
+      name: 'code'
     },
     {
       class: 'String',
