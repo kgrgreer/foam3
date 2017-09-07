@@ -30,7 +30,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ h2{
-          width: 300px;
+          width: 600px;
           font-size: 14px;
           letter-spacing: 0.4px;
           color: #093649;
@@ -60,9 +60,6 @@ foam.CLASS({
           margin-top: 35px;
           margin-bottom: 35px;
         }
-        ^ .show-yes{
-          display: inline-block;
-        }
         ^ .show-green{
           color: #2cab70;
         }
@@ -71,6 +68,15 @@ foam.CLASS({
         }
         ^status-check{
           height: 32px;
+        }
+        ^ .show{
+          display: inline-block;
+        }
+        ^ .hide{
+          display: none;
+        }
+        ^ .show-yes{
+          display: inline-block;
         }
       */}
     })
@@ -83,7 +89,8 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start().style({ display: 'inline-block'})
+        .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
+        .start().addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) )
           .start('h2').add('360 Design has received CAD 200.00.').end()
           .start('h3').add('Reference No. CAxxx723').end()
           .start()
@@ -93,7 +100,7 @@ foam.CLASS({
           .end()
         .end()
         .start().style({ float: 'right'})
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').add(this.EXPORT_MODAL).end()
+          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button hide').add(this.EXPORT_MODAL).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
         .end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))
@@ -133,7 +140,7 @@ foam.CLASS({
     {
       name: 'tick',
       isMerged: true,
-      mergeDelay: 200,
+      mergeDelay: 400,
       code: function () {
         this.time += 1;
         this.tick();
