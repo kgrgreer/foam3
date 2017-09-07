@@ -97,7 +97,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
         .start().addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) )
-          .start('h2').add('360 Design has received CAD 200.00.').end()
+          .start('h2').add('360 Design has received CAD ', this.viewData.fromAmount.toFixed(2), '.').end()
           .start('h3').add('Reference No. CAxxx723').end()
           .start()
             .start('p')
