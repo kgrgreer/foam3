@@ -4,9 +4,11 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   documentation: 'Top-level Ingenico application controller.',
-
+  
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   implements: [
-    'net.nanopay.ingenico.client.Client'
+    'net.nanopay.ingenico.client.Client',
+    'net.nanopay.ingenico.client.Client2'
   ],
 
   requires: [
