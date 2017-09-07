@@ -146,13 +146,16 @@ foam.CLASS({
       // TODO: Pull FX rate from somewhere
       class: 'Double',
       name: 'rate',
-      factory: function() {
-        this.viewData.rate = 50.72973; // TODO: Make this dynamic eventually
-        return 50.72973;
-      },
       postSet: function(oldValue, newValue) {
         // TODO: enable input
         this.viewData.rate = newValue;
+        // NOTE: This is a one way conversion. It is very lossy on certain fx rates.
+        if ( newValue ) this.toAmount = (this.fromAmount - this.fees) * newValue;
+      },
+      validateObj: function(rate) {
+        if ( ! rate ) {
+          return 'Rate expired';
+        }
       }
     },
     {
@@ -219,12 +222,14 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      // TODO: Get FX Rate
+      this.countdownView.onExpiry = function() {
+        self.refreshRate();
+      };
+
+      // TODO: Get FX Rate
       if ( ! this.viewData.rateLocked ) {
-        setTimeout(function(){
-          self.loadingSpinner.hide();
-          self.startTimer();
-          self.viewData.rateLocked = true;
-        }, 2000);
+        this.refreshRate();
       } else {
         this.loadingSpinner.hide();
       }
@@ -302,6 +307,23 @@ foam.CLASS({
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
 
         .end();
+    },
+
+    function refreshRate() {
+      var self = this;
+      this.rate = 0;
+      this.loadingSpinner.show();
+      this.countdownView.hide();
+      this.countdownView.reset();
+      this.viewData.rateLocked = false;
+
+      // TODO: Grab actual fxRate
+      setTimeout(function(){
+        self.rate = 50.72973;
+        self.loadingSpinner.hide();
+        self.startTimer();
+        self.viewData.rateLocked = true;
+      }, 2000);
     },
 
     function startTimer() {
