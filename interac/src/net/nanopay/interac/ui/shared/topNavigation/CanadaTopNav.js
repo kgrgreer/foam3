@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.shared.topNavigation',
-  name: 'TopNav',
+  name: 'CanadaTopNav',
   extends: 'foam.u2.View',
 
   documentation: 'Top navigation bar',
@@ -18,7 +18,7 @@ foam.CLASS({
           padding-top: 5px;
         }
         ^ .topNavContainer {
-          width: 962px;;
+          width: 962px;
           margin: auto;
         }
         .menuBar > div > ul {

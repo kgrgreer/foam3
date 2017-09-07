@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.shared.topNavigation',
-  name: 'CanadaLogoView',
+  name: 'IndiaLogoView',
   extends: 'foam.u2.View',
 
   documentation: 'View to display business logo and name.',
@@ -49,9 +49,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('alignLeft')
-          .tag({class: 'foam.u2.tag.Image', data: 'images/cad.svg'})
+          .tag({class: 'foam.u2.tag.Image', data: 'images/inr.svg'})
           .start('div').addClass(this.myClass('business-name'))
-            .add('Canada Bank')
+            .add('India Bank')
           .end()
         .end();
     }

@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui',
-  name: 'TransactionsView',
+  name: 'IndiaTransactionsView',
   extends: 'foam.u2.View',
 
   documentation: 'View displaying interac home page with list of accounts and transactions',
@@ -72,7 +72,7 @@ foam.CLASS({
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #59a5d5;
+          background-color: #e68e43;
           display: inline-block;
           line-height: 40px;
           color: white;
@@ -84,7 +84,7 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .foam-u2-ActionView-sendTransfer:hover {
-          background: #3783b3;
+          background: #CD752A;
         }
         ^ table {
           border-collapse: collapse;
@@ -162,7 +162,7 @@ foam.CLASS({
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
             .start().add('Chequing Account xxxxxxxxxxxx5555').addClass('account').end()
-            .start().add('CAD $5000.00').addClass('accountBalance').end()
+            .start().add('INR 5000.00').addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
