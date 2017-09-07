@@ -11,7 +11,8 @@ foam.CLASS({
     'net.nanopay.transactionservice.model.Transaction',
     'net.nanopay.interac.Iso20022',
     'net.nanopay.iso20022.ISO20022Driver',
-    'foam.nanos.export.JSONDriver'
+    'foam.nanos.export.JSONDriver',
+    'foam.nanos.export.XMLDriver'
   ],
 
   properties: [
@@ -29,8 +30,14 @@ foam.CLASS({
     },
     {
       name: 'jsonDriver',
-      factory: function(){
+      factory: function (){
         return this.JSONDriver.create();
+      }
+    },
+    {
+      name: 'xmlDriver',
+      factory: function () {
+        return this.XMLDriver.create();
       }
     },
     {
@@ -265,17 +272,12 @@ foam.CLASS({
 
       if (this.dataType == 'JSON'){
         this.note = this.jsonDriver.exportFObject(null, transaction);
-
-      } else if (this.dataType == 'XML'){
+      } else if (this.dataType == 'XML') {
+        this.note = this.xmlDriver.exportFObject(null, transaction);
+      } else if (this.dataType == 'PACS 008') {
         this.iso20022.GENERATE_PACS008_MESSAGE(transaction.id).then(function (message) {
           this.note = self.iso20022Driver.exportFObject(null, message)
         })
-
-      } else if (this.dataType == 'PACS 008'){
-        this.iso20022.GENERATE_PACS008_MESSAGE(transaction.id).then(function (message) {
-          this.note = message;
-        })
-        
       }
     }
   ]
