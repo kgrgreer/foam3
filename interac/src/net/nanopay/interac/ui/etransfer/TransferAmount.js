@@ -322,7 +322,7 @@ foam.CLASS({
 
           .start('p').add(this.ToLabel).addClass('bold').end()
 
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.viewData.payee })
 
         .end();
     },

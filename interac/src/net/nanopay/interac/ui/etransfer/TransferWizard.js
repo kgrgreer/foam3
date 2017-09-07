@@ -12,7 +12,8 @@ foam.CLASS({
 
   exports: [
     'countdownView',
-    'invoice'
+    'invoice',
+    'mode'
   ],
 
   axioms: [
@@ -173,27 +174,30 @@ foam.CLASS({
         return this.CountdownView.create();
       }
     },
-    'invoice'
+    'invoice',
+    'mode'
   ],
 
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
       // NOTE: Test Invoice
-      // this.invoice = {
-      //   invoiceNo: '123456',
-      //   purchaseOrder: '123456',
-      //   invoiceFileUrl: '',
-      //   amount: 123.45,
-      // };
+      this.invoice = {
+        invoiceNo: '123456',
+        purchaseOrder: '123456',
+        invoiceFileUrl: '',
+        amount: 123.45,
+      };
       if ( this.invoice ) {
         this.viewData.invoiceNo = this.invoice.invoiceNo;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
         this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
         this.viewData.fromAmount = this.invoice.amount;
+        this.mode = 'Organization';
       } else {
         this.viewData.invoiceNo = 'N/A';
         this.viewData.purchaseOrder = 'N/A';
+        this.mode = 'Individual';
       }
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },

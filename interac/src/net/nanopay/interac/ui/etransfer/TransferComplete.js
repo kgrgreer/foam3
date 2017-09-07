@@ -12,7 +12,8 @@ foam.CLASS({
       validateObj: function(time) {
         if ( time <= 5 ) return 'Transaction sending...';
       }
-    }
+    },
+    'name'
   ],
 
   axioms: [
@@ -93,11 +94,18 @@ foam.CLASS({
       this.tick()
 
       this.SUPER();
+
+      this.name = this.viewData.payee.firstName + ' ' + this.viewData.payee.lastName;
+      if ( this.mode == 'Organization' ) {
+        // if organization exists, change name to organization name.
+        if ( this.viewData.payee.organization ) this.name = this.viewData.payee.organization;
+      }
+
       this
         .addClass(this.myClass())
         .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
         .start().addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) )
-          .start('h2').add('360 Design has received CAD ', this.viewData.fromAmount.toFixed(2), '.').end()
+          .start('h2').add(this.name, ' has received CAD ', this.viewData.fromAmount.toFixed(2), '.').end()
           .start('h3').add('Reference No. CAxxx723').end()
           .start()
             .start('p')

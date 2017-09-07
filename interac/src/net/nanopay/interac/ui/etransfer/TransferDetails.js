@@ -11,12 +11,15 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.interac.model.Pacs008ISOPurpose',
-    'net.nanopay.interac.model.Pacs008IndiaPurpose'
+    'net.nanopay.interac.model.Pacs008IndiaPurpose',
+    'net.nanopay.interac.ui.shared.TransferUserCard',
+    'foam.nanos.auth.User'
   ],
 
   imports: [
     'pacs008ISOPurposeDAO',
-    'pacs008IndiaPurposeDAO'
+    'pacs008IndiaPurposeDAO',
+    'payeeDAO',
   ],
 
   axioms: [
@@ -55,7 +58,7 @@ foam.CLASS({
           outline: none;
         }
 
-        ^ .purposeContainer {
+        ^ .dropdownContainer {
           position: relative;
           margin-bottom: 20px;
         }
@@ -110,6 +113,37 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'payees',
+      postSet: function(oldValue, newValue) {
+        var self = this;
+        this.payeeDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
+          var payee = a.array[0];
+          self.viewData.payee = payee;
+          self.payeeCard.user = payee;
+        });
+      },
+      view: function(_,X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.data.payeeDAO,
+          objToChoice: function(payee) {
+            var username = payee.firstName + ' ' + payee.lastName;
+            if ( X.data.mode == 'Organization' ) {
+              // if organization exists, change name to organization name.
+              if ( payee.organization ) username = payee.organization;
+            }
+            return [payee.id, username + ' - (' + payee.email + ')'];
+          }
+        })
+      }
+    },
+    'payee',
+    {
+      name: 'payeeCard',
+      factory: function() {
+        return this.TransferUserCard.create();
+      }
+    },
+    {
       // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'purpose',
       postSet: function(oldValue, newValue) {
@@ -139,6 +173,10 @@ foam.CLASS({
     function init() {
       this.SUPER()
 
+      if ( this.viewData.payee ) {
+        this.payees = this.viewData.payee.id;
+      }
+
       if ( this.viewData.purpose ) {
         this.purpose = this.viewData.purpose;
       }
@@ -158,9 +196,13 @@ foam.CLASS({
           .start('p').add(this.AccountLabel).end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
+          .start('div').addClass('dropdownContainer')
+            .tag(this.PAYEES)
+            .start('div').addClass('caret').end()
+          .end()
           .start('p').add(this.PurposeLabel).end()
-          .start('div').addClass('purposeContainer')
-            .tag(this.PURPOSE)
+          .start('div').addClass('dropdownContainer')
+            .add(this.PURPOSE)
             .start('div').addClass('caret').end()
           .end()
           .start('p').add(this.NoteLabel).end()
@@ -183,7 +225,7 @@ foam.CLASS({
           // TODO: Make card based on from and to information
           .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
           .start('p').add(this.ToLabel).addClass('bold').end()
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
+          .add(this.payeeCard)
         .end();
     }
   ]

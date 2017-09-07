@@ -1,9 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.shared',
   name: 'TransferUserCard',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'User card used in transfers',
+
+  imports: [
+    'mode'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -59,27 +63,80 @@ foam.CLASS({
   ],
 
   properties: [
-    'user'
+    'user',
+    'name',
+    'email',
+    'phone',
+    'flagURL',
+    'address',
+    'nationality',
+    {
+      name: 'created_',
+      value: false
+    }
   ],
 
   methods: [
-    function initE() {
+    function init() {
       this.SUPER();
+      this.user$.sub(this.userUpdate);
+      this.userUpdate();
+    },
 
+    function createView() {
+      if ( this.created_ ) return;
       this
         .addClass(this.myClass())
         .start('div').addClass('userContainer')
           .start('div').addClass('userRow')
-            .start('p').addClass('bold').addClass('userName').add(this.user.name).end()
+            .start('p').addClass('bold').addClass('userName').add(this.name$).end()
             .start('div').addClass('nationalityContainer')
-              .start({class: 'foam.u2.tag.Image', data: this.user.flag}).end() // TODO: Make it dynamic
-              .start('p').addClass('pDetails').addClass('nationalityLabel').add(this.user.nationality).end() // TODO: Make it dyamic.
+              .start({class: 'foam.u2.tag.Image', data: this.flagURL$}).end() // TODO: Make it dynamic
+              .start('p').addClass('pDetails').addClass('nationalityLabel').add(this.nationality$).end() // TODO: Make it dyamic.
             .end()
           .end()
-          .start('p').addClass('pDetails').add(this.user.email).end()
-          .start('p').addClass('pDetails').add(this.user.tel).end()
-          .start('p').addClass('pDetails').add(this.user.address).end()
+          .start('p').addClass('pDetails').add(this.email$).end()
+          .start('p').addClass('pDetails').add(this.phone$).end()
+          .start('p').addClass('pDetails').add(this.address$).end()
         .end();
+      this.created_ = true;
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'userUpdate',
+      code: function() {
+        if ( ! this.user ) return;
+        this.name = this.user.firstName + ' ' + this.user.lastName;
+        if ( this.mode == 'Organization' ) {
+          // if organization exists, change name to organization name.
+          if ( this.user.organization ) this.name = this.user.organization;
+        }
+
+        this.email = this.user.email;
+        this.phone = this.user.phone;
+
+        switch( this.user.address.countryId ) {
+          case 'CA' :
+            this.flagURL = 'images/canada.svg';
+            this.nationality = 'Canada';
+            break;
+          case 'IN' :
+            this.flagURL = 'images/india.svg';
+            this.nationality = 'India';
+            break;
+        }
+
+        this.address = this.user.address.address;
+        if ( this.user.address.suite ) this.address += ', Suite/Unit ' + this.user.address.suite;
+        if ( this.user.address.city ) this.address += ', ' + this.user.address.city;
+        if ( this.user.address.postalCode ) this.address += ', ' + this.user.address.postalCode;
+        if ( this.user.address.regionId ) this.address += ', ' + this.user.address.regionId;
+        this.address += ', ' + this.nationality;
+
+        this.createView();
+      }
     }
   ]
 });

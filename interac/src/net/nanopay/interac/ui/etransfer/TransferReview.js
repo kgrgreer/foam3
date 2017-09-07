@@ -158,7 +158,7 @@ foam.CLASS({
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.viewData.payee })
           .start('p').addClass('bold').add(this.PurposeLabel).end()
           .start('p').addClass('purposeMargin').add(this.viewData.purpose).end()
           .start('p').addClass('bold').add(this.NotesLabel).end()
