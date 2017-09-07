@@ -1,100 +1,103 @@
 package net.nanopay.transactionservice;
 
+import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.AbstractDAO;
 import foam.dao.DAO;
-import foam.dao.Sink;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
+import foam.dao.MapDAO;
 import net.nanopay.common.model.Account;
 import net.nanopay.common.model.User;
 import net.nanopay.common.model.UserAccountInfo;
 import net.nanopay.transactionservice.model.Transaction;
 
-
 public class TransactionDAO
-  extends AbstractDAO
+  extends MapDAO
 {
   protected DAO userDAO_;
+  protected DAO accountDAO_;
 
-  protected UserAccountInfo getUserAccountInfo(User user) {
-    for ( Account account : ((Account []) user.getAccounts() )) {
-      if ( account.getAccountInfo() instanceof UserAccountInfo ) {
-        return (UserAccountInfo) account.getAccountInfo();
-      }
-    }
-    return null;
+  public TransactionDAO(ClassInfo of) {
+    this.setOf(of);
   }
 
   protected DAO getUserDAO() {
     if ( userDAO_ == null ) {
-      userDAO_ = (DAO) getX().get("userTestDAO");
+      userDAO_ = (DAO) getX().get("userDAO");
     }
     return userDAO_;
   }
 
+  protected DAO getAccountDAO() {
+    if ( accountDAO_ == null ) {
+      accountDAO_ = (DAO) getX().get("accountDAO");
+    }
+    return accountDAO_;
+  }
+
+  protected Account createNewAccount(long id) {
+    Account account = new Account();
+    account.setId(id);
+    UserAccountInfo userAccountInfo = new UserAccountInfo();
+    userAccountInfo.setBalance(0);
+    account.setAccountInfo(userAccountInfo);
+    return account;
+  }
+
   @Override
   public FObject put_(X x, FObject fObject) throws RuntimeException {
-    if ( fObject instanceof Transaction ) {
-      Transaction transaction = (Transaction) fObject;
+    Transaction transaction = (Transaction) fObject;
+    long payeeId            = transaction.getPayeeId();
+    long payerId            = transaction.getPayerId();
 
-      long payeeId = transaction.getPayeeId();
-      long payerId = transaction.getPayerId();
+    if ( transaction.getAmount() <= 0 ) {
+      throw new RuntimeException("Transaction amount must be greater than 0");
+    }
 
+    if ( payeeId == payerId ) {
+      throw new RuntimeException("PayeeID and PayerID cannot be the same");
+    }
 
-      if ( transaction.getAmount() <= 0 ) {
-        throw new RuntimeException("Transaction amount must be greater than 0");
-      }
+    Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
+    Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
-      if ( payeeId == payerId ) {
-        throw new RuntimeException("PayeeID and PayerID cannot be the same");
-      }
+    synchronized ( firstLock ) {
+      synchronized ( secondLock ) {
+        try {
+          User payee = (User) getUserDAO().find(transaction.getPayeeId());
+          User payer = (User) getUserDAO().find(transaction.getPayerId());
 
-      Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-      Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-
-      synchronized ( firstLock ) {
-
-        synchronized ( secondLock ) {
-
-          try {
-            User payee = (User) getUserDAO().find(transaction.getPayeeId());
-            User payer = (User) getUserDAO().find(transaction.getPayerId());
-
-            if (payee.getAccounts() == null) {
-             throw new RuntimeException("Payee doesn't have any accounts");
-            }
-
-            if (payer.getAccounts() == null) {
-              throw new RuntimeException("Payer doesn't have any accounts");
-            }
-
-            UserAccountInfo payeeAccountInfo = getUserAccountInfo(payee);
-            if (payeeAccountInfo == null) {
-              throw new RuntimeException("Payee missing UserAccountInfo");
-            }
-
-            UserAccountInfo payerAccountInfo = getUserAccountInfo(payer);
-            if (payerAccountInfo == null) {
-              throw new RuntimeException("Payer missing UserAccountInfo");
-            }
-
-            long amount = transaction.getAmount();
-
-            if (payerAccountInfo.getBalance() >= amount) {
-              payerAccountInfo.setBalance(payerAccountInfo.getBalance() - amount);
-              payeeAccountInfo.setBalance(payeeAccountInfo.getBalance() + amount);
-
-              getUserDAO().put(payer);
-              getUserDAO().put(payee);
-            } else {
-              throw new RuntimeException("Payer doesn't have enough balance");
-            }
-          } catch (Exception err) {
-            err.printStackTrace();
+          if ( payee == null || payer == null ) {
+            throw new RuntimeException("Users not found");
           }
 
+          Account payeeAccount = (Account) getAccountDAO().find(payee.getId());
+          if ( payeeAccount == null ) {
+            payeeAccount = createNewAccount(payee.getId());
+          }
+
+          Account payerAccount = (Account) getAccountDAO().find(payer.getId());
+          if ( payerAccount == null ) {
+            payerAccount = createNewAccount(payer.getId());
+          }
+
+          long amount = transaction.getAmount();
+          UserAccountInfo payerAccountInfo = (UserAccountInfo) payerAccount.getAccountInfo();
+          UserAccountInfo payeeAccountInfo = (UserAccountInfo) payeeAccount.getAccountInfo();
+
+          if ( payerAccountInfo.getBalance() >= amount ) {
+            payerAccountInfo.setBalance(payerAccountInfo.getBalance() - amount);
+            payeeAccountInfo.setBalance(payeeAccountInfo.getBalance() + amount);
+
+            payerAccount.setAccountInfo(payerAccountInfo);
+            payeeAccount.setAccountInfo(payeeAccountInfo);
+
+            getAccountDAO().put(payerAccount);
+            getAccountDAO().put(payeeAccount);
+          } else {
+            throw new RuntimeException("Payer doesn't have enough balance");
+          }
+        } catch (Exception err) {
+          err.printStackTrace();
         }
       }
     }
@@ -110,10 +113,4 @@ public class TransactionDAO
   public FObject find_(X x, Object o) {
     return null;
   }
-
-  @Override
-  public Sink select_(X x, Sink sink, long l, long l1, Comparator comparator, Predicate predicate) {
-    return null;
-  }
-
 }

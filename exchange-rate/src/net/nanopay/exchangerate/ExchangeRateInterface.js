@@ -6,7 +6,7 @@
 
 foam.INTERFACE({
   package: 'net.nanopay.exchangerate',
-  name: 'ExchangeRate',
+  name: 'ExchangeRateInterface',
   extends: 'foam.nanos.NanoService',
   methods: [
     {

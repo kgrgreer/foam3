@@ -13,6 +13,7 @@
 
   <modules>
     <module>transaction-service</module>
+    <module>exchange-rate</module>
     <module>common</module>
     <module>b2b</module>
     <module>retail</module>

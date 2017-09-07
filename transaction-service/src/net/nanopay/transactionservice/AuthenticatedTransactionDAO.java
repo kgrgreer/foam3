@@ -11,7 +11,6 @@ import foam.mlang.MLang;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 
-//TODO:Change print statements to throw exceptions when they are ready
 public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
@@ -20,18 +19,16 @@ public class AuthenticatedTransactionDAO
   }
 
   @Override
-  public FObject put_(X x, FObject obj) {
+  public FObject put_(X x, FObject obj) throws RuntimeException {
     User user               = (User) x.get("user");
     Transaction transaction = (Transaction) obj;
 
     if ( user == null ) {
-      System.out.println("User is not logged in");
-      return null;
+      throw new RuntimeException("User is not logged in");
     }
 
     if ( transaction.getPayerId() != user.getId() ) {
-      System.out.println("User is not allowed");
-      return null;
+      throw new RuntimeException("User is not allowed");
     }
 
     return getDelegate().put(obj);
@@ -43,12 +40,13 @@ public class AuthenticatedTransactionDAO
   }
 
   @Override
-  public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
+  public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate)
+    throws RuntimeException
+  {
     User user = (User) x.get("user");
 
     if ( user == null ) {
-      System.out.println("User is not logged in");
-      return null;
+      throw new RuntimeException("User is not logged in");
     }
 
     return getDelegate()
@@ -61,12 +59,8 @@ public class AuthenticatedTransactionDAO
   }
 
   @Override
-  public FObject remove(FObject obj) {
-    return null;
-  }
+  public FObject remove(FObject obj) { return null; }
 
   @Override
-  public void removeAll() {
-    return;
-  }
+  public void removeAll() { return; }
 }

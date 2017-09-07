@@ -5,7 +5,7 @@
  */
 
 var classes = [
-  'net.nanopay.exchangerate.ExchangeRateService',
+  'net.nanopay.exchangerate.ExchangeRateInterface',
   'net.nanopay.exchangerate.model.ExchangeRate',
   'net.nanopay.exchangerate.model.ExchangeRateQuote',
 ];
@@ -15,7 +15,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.exchangerate.ExchangeRateService'
+  'net.nanopay.exchangerate.ExchangeRateInterface'
 ];
 
 var proxies = [
