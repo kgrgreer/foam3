@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.transactionservice',
+  package: 'net.nanopay.transactionservice.client',
   name: 'ClientTransactionService',
 
   properties: [
