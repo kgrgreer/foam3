@@ -184,7 +184,7 @@ foam.CLASS({
       //   invoiceNo: '123456',
       //   purchaseOrder: '123456',
       //   invoiceFileUrl: '',
-      //   amount: '123.45',
+      //   amount: 123.45,
       // };
       if ( this.invoice ) {
         this.viewData.invoiceNo = this.invoice.invoiceNo;
