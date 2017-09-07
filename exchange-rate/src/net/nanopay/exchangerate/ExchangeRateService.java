@@ -17,15 +17,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ExchangeRateService
-  extends ContextAwareSupport
-  implements ExchangeRateInterface
+    extends ContextAwareSupport
+    implements ExchangeRateInterface
 {
   protected DAO exchangeRateDAO_;
   protected Integer feeAmount = 150;
 
   @Override
   public ExchangeRateQuote getRate(String from, String to, Long amount)
-    throws RuntimeException
+      throws RuntimeException
   {
     ExchangeRateQuote quote = new ExchangeRateQuote();
 
@@ -34,10 +34,10 @@ public class ExchangeRateService
     quote.setFromAmount(amount);
 
     exchangeRateDAO_.where(
-      MLang.AND(
-        MLang.EQ(ExchangeRate.FROM_CURRENCY, from),
-        MLang.EQ(ExchangeRate.TO_CURRENCY, to)
-      )
+        MLang.AND(
+            MLang.EQ(ExchangeRate.FROM_CURRENCY, from),
+            MLang.EQ(ExchangeRate.TO_CURRENCY, to)
+        )
     ).select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {
@@ -56,17 +56,21 @@ public class ExchangeRateService
   public void fetchRates()
       throws RuntimeException
   {
-    // URLConnection connection = new URL("http://api.fixer.io/latest?base=CAD").openStream();
-    // connection.setRequestProperty("Accept-Charset", "UTF-8");
-    // InputStream response = connection.getInputStream();
+    try {
+      URLConnection connection = new URL("http://api.fixer.io/latest?base=CAD").openConnection();
+      connection.setRequestProperty("Accept-Charset", "UTF-8");
+      InputStream response = connection.getInputStream();
 
-    // JSONParser jsonParser = new JSONParser();
+      JSONParser jsonParser = new JSONParser();
 
-    // JSONObject parsedResponse = (JSONObject)jsonParser.parse(
-    //   new InputStreamReader(response, "UTF-8")
-    // );
+      JSONObject parsedResponse = (JSONObject) jsonParser.parse(
+          new InputStreamReader(response, "UTF-8")
+      );
 
-    // System.out.println(parsedResponse.toString());
+      System.out.println(parsedResponse.toString());
+    } catch (IOException | ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
