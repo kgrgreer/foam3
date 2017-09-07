@@ -11,6 +11,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.interac.Iso20022',
@@ -83,6 +84,14 @@ foam.CLASS({
         console.log(message);
         console.log(self.iso20022Driver.exportFObject(null, message));
       });
+//      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+//        if ( ! message ) return;
+//        console.log(message);
+//        console.log(self.iso20022Driver.exportFObject(null, message));
+//      })
+//      .catch(function (err) {
+//        console.log('err = ', err);
+//      })
 
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {

@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'CountdownView',
   extends: 'foam.u2.View',
 
-  imports: [
-    'onExpiry'
-  ],
-
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -33,7 +29,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'duration',
-      value: 30 * 60 * 1000
+      value: 30 * 1000
     },
     {
       class: 'DateTime',
@@ -53,6 +49,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isHidden',
       value: false
+    },
+    {
+      class: 'Function',
+      name: 'onExpiry'
     }
   ],
 
@@ -78,7 +78,7 @@ foam.CLASS({
 
     function reset() {
       this.stop();
-      this.duration = 30 * 60 * 1000;
+      this.duration = 30 * 1000;
       this.time = new Date(null).setMilliseconds(this.duration);
     },
 
@@ -98,7 +98,9 @@ foam.CLASS({
       mergeDelay: 1000,
       code: function () {
         if ( this.isStopped ) return;
-        if ( this.duration <= 0 ) {
+        if ( this.duration <= 1000 ) {
+          this.duration = 0;
+          this.time = 0;
           this.onExpiry();
           return;
         }

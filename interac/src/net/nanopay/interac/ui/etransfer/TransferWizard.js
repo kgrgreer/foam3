@@ -179,6 +179,13 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
+      // NOTE: Test Invoice
+      // this.invoice = {
+      //   invoiceNo: '123456',
+      //   purchaseOrder: '123456',
+      //   invoiceFileUrl: '',
+      //   amount: 123.45,
+      // };
       if ( this.invoice ) {
         this.viewData.invoiceNo = this.invoice.invoiceNo;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -239,7 +246,7 @@ foam.CLASS({
           return;
         }
 
-        if ( this.position == 1 ) {
+        if ( this.position == 1 ) { // Going back on Amount Screen
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -291,8 +298,7 @@ foam.CLASS({
           this.nextLabel = 'Next';
           return;
         }
-
-        this.subStack.push(this.views[this.subStack.pos + 3].view); // otherwise
+        this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
       }
     }
   ]

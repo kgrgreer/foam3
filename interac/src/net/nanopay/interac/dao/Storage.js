@@ -7,14 +7,17 @@ foam.CLASS({
   requires: [
     'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'foam.dao.history.HistoryRecord',
+    'net.nanopay.interac.model.Identification',
     'net.nanopay.interac.model.Pacs008ISOPurpose',
-    'net.nanopay.interac.model.Pacs008IndiaPurpose'
+    'net.nanopay.interac.model.Pacs008IndiaPurpose',
+    'net.nanopay.interac.model.DateAndPlaceOfBirth',
   ],
 
   exports: [
+    'identificationDAO',
     'pacs008ISOPurposeDAO',
-    'pacs008IndiaPurposeDAO'
+    'pacs008IndiaPurposeDAO',
+    'dateAndPlaceOfBirthDAO'
   ],
 
   properties: [
@@ -400,6 +403,58 @@ foam.CLASS({
             }
           ]
         });
+      }
+    },
+    {
+      name: 'identificationDAO',
+      factory: function () {
+        return this.createDAO({
+          of: this.Identification,
+          seqNo: true,
+          testData: [
+            {
+              identifier: 'A0179129',
+              owner: 1,
+              code: 'CCPT',
+              issuer: 'Govt of Canada'
+            },
+            {
+              identifier: '548556788923',
+              owner: 2,
+              code: 'NDIN',
+              issuer: 'Govt of India'
+            }
+          ]
+        })
+      }
+    },
+    {
+      name: 'dateAndPlaceOfBirthDAO',
+      factory: function () {
+        return this.createDAO({
+          of: this.DateAndPlaceOfBirth,
+          seqNo: true,
+          testData: [
+            {
+              user: 1,
+              birthday: new Date('1982-07-07T24:12:00.0Z'),
+              birthplace: {
+                city: 'Toronto',
+                regionId: 'ON',
+                countryId: 'CA'
+              }
+            },
+            {
+              user: 2,
+              birthday: new Date('1985-08-02T24:12:00.0Z'),
+              birthplace: {
+                city: 'Pune',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
+            }
+          ]
+        })
       }
     }
   ],
