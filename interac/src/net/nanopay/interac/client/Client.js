@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.interac',
+  package: 'net.nanopay.interac.client',
   name: 'Client',
 
   implements: [ 'foam.box.Context' ],

@@ -6,6 +6,7 @@ set -e
 cd ..
 find foam2/src NANOPAY/**/src -type f -name services -exec cat {} \; > services
 find foam2/src NANOPAY/**/src -type f -name users -exec cat {} \; > users
+find foam2/src NANOPAY/**/src -type f -name accounts -exec cat {} \; > accounts
 
 cd foam2/src
 ./gen.sh
