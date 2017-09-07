@@ -49,7 +49,7 @@ public class UserTransactionsTest {
         UserAccountInfo uai = new UserAccountInfo();
         uai.setBalance(STARTING_BALANCE);
         accounts[j].setAccountInfo(uai);
-        accounts[j].setId(String.valueOf(i));
+        accounts[j].setId(i);
         accountDao.put(accounts[j]);
       }
       user.setAccounts(accounts);
