@@ -5,8 +5,11 @@ foam.CLASS({
 
   documentation: 'Top-level Retail Controller',
 
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
+  
   implements: [
     'foam.nanos.client.Client',
+    'foam.nanos.client.Client2',
     'net.nanopay.retail.dao.Storage'
   ],
 
