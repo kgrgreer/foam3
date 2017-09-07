@@ -18,7 +18,6 @@ public class ExchangeRateService
 {
   protected DAO exchangeRateDAO_;
 
-
   @Override
   public ExchangeRateQuote getRate(String from, String to, Long amount)
     throws RuntimeException
@@ -64,16 +63,6 @@ public class ExchangeRateService
 
   @Override
   public void start() {
-    ExchangeRateDAO exchangeRateDAO = new ExchangeRateDAO();
-    exchangeRateDAO.setOf(ExchangeRate.getOwnClassInfo());
-    exchangeRateDAO.setX(this.getX());
-
-    try {
-      rateDAO_ = new MapDAO(exchangeRateDAO, "exchangeRates");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    this.getX().put("ExchangeRateDAO", exchangeRateDAO_);
+    exchangeRateDAO_ = (DAO) getX().get("exchangeRateDAO");
   }
 }
