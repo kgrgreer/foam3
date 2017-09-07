@@ -61,7 +61,7 @@ public class UserTransactionsTest {
 
     System.out.println("Creating transactions");
 
-    TransactionDAO transactionDAO = new TransactionDAO();
+    TransactionDAO transactionDAO = new TransactionDAO(Transaction.getOwnClassInfo());
     transactionDAO.setX(boot.getX());
 
     // Random number generator to generate a random UserID for payer and payee

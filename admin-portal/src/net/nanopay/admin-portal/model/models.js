@@ -486,7 +486,7 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.admin.model.Business',
-  targetModel: 'net.nanopay.common.model.Address',
+  targetModel: 'foam.nanos.auth.Address',
   forwardName: 'addresses',
   inverseName: 'businessId',
   sourceProperty: {

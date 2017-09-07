@@ -12,12 +12,15 @@ foam.CLASS({
 
   requires: [
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.interac.Iso20022',
+    'net.nanopay.iso20022.ISO20022Driver'
   ],
 
   exports: [
     'stack',
-    'user'
+    'user',
+    'as ctrl'
   ],
 
   axioms: [
@@ -50,6 +53,18 @@ foam.CLASS({
       factory: function () {
         return this.Stack.create();
       }
+    },
+    {
+      name: 'iso20022',
+      factory: function () {
+        return this.Iso20022.create();
+      }
+    },
+    {
+      name: 'iso20022Driver',
+      factory: function () {
+        return this.ISO20022Driver.create();
+      }
     }
   ],
 
@@ -58,9 +73,14 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+        if ( ! message ) return;
+        console.log(message);
+        console.log(self.iso20022Driver.exportFObject(null, message));
+      });
+
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
-        console.log(a);
         self.user.copyFrom(a.array[0]);
       });
 

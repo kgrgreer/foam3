@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'CountdownView',
   extends: 'foam.u2.View',
 
-  imports: [
-    'onExpiry'
-  ],
-
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -21,6 +17,10 @@ foam.CLASS({
           text-align: left;
           color: #2cab70;
         }
+
+        ^.hidden {
+          display: none;
+        }
       */}
     })
   ],
@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'duration',
-      value: 30 * 60 * 1000
+      value: 30 * 1000
     },
     {
       class: 'DateTime',
@@ -39,21 +39,55 @@ foam.CLASS({
         date.setMilliseconds(this.duration);
         return date;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isStopped',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isHidden',
+      value: false
+    },
+    {
+      class: 'Function',
+      name: 'onExpiry'
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
 
       this
-        .addClass(this.myClass())
+        .addClass(this.myClass()).enableClass('hidden', this.isHidden$)
         .add(this.time$.map(function (value) {
           return value.toISOString().substr(11, 8);
-        }))
+        }));
+    },
 
+    function start() {
+      this.isStopped = false;
       this.tick();
+    },
+
+    function stop() {
+      this.isStopped = true;
+    },
+
+    function reset() {
+      this.stop();
+      this.duration = 30 * 1000;
+      this.time = new Date(null).setMilliseconds(this.duration);
+    },
+
+    function hide() {
+      this.isHidden = true;
+    },
+
+    function show() {
+      this.isHidden = false;
     }
   ],
 
@@ -63,7 +97,10 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 1000,
       code: function () {
-        if ( this.duration <= 0 ) {
+        if ( this.isStopped ) return;
+        if ( this.duration <= 1000 ) {
+          this.duration = 0;
+          this.time = 0;
           this.onExpiry();
           return;
         }
