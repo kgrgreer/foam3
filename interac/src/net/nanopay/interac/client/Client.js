@@ -8,15 +8,31 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
+    'foam.box.HTTPBox',
+    'foam.dao.RequestResponseClientDAO as ClientDAO',
     'net.nanopay.interac.model.Payee',
-    'net.nanopay.exchangerate.model.ExchangeRate'
+    'net.nanopay.exchangerate.model.ExchangeRate',
+    'net.nanopay.interac.client.ClientExchangeRateService'
   ],
 
   exports: [
+    'exchangeRate',
+    'exchangeRateDAO',
     'payeeDAO'
   ],
 
   properties: [
+    {
+      name: 'exchangeRate',
+      factory: function () {
+        return this.ClientExchangeRateService.create({
+          delegate: this.HTTPBox.create({
+            method: 'POST',
+            url: 'http://localhost:8080/exchangeRate'
+          })
+        })
+      }
+    },
     {
       name: 'exchangeRateDAO',
       factory: function () {
