@@ -9,7 +9,6 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.box.HTTPBox',
-    'foam.dao.RequestResponseClientDAO as ClientDAO',
     'net.nanopay.interac.model.Payee',
     'net.nanopay.exchangerate.model.ExchangeRate',
     'net.nanopay.interac.client.ClientExchangeRateService'
