@@ -1,47 +1,54 @@
 package net.nanopay.exchangerate;
 
 import foam.core.ContextAwareSupport;
+import foam.core.Detachable;
 import foam.core.FObject;
 import foam.dao.*;
-import foam.mlang.MLang.*;
+import foam.mlang.MLang;
 import net.nanopay.exchangerate.model.ExchangeRate;
 import net.nanopay.exchangerate.model.ExchangeRateQuote;
 
+import java.net.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.json.simple.JSONParser;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class ExchangeRateService
-  extends ContextAwareSupport
-  implements ExchangeRate
+    extends ContextAwareSupport
+    implements ExchangeRateInterface
 {
   protected DAO exchangeRateDAO_;
-
+  protected Integer feeAmount = 150;
 
   @Override
   public ExchangeRateQuote getRate(String from, String to, Long amount)
-    throws RuntimeException
+      throws RuntimeException
   {
-    ArraySink a = (ArraySink) exchangeRateDAO_.where(
-      AND(
-        EQ(ExchangeRate.FROM, from),
-        EQ(ExchangeRate.TO, to)
-      )
-    ).limit(1).select();
-
-
     ExchangeRateQuote quote = new ExchangeRateQuote();
 
-    quote.setExchangeRateId(a.id);
     quote.setFromCurrency(from);
     quote.setToCurrency(to);
     quote.setFromAmount(amount);
-    quote.setToAmount(amount * a.rate);
-    quote.setRate(a.rate);
-    quote.setFeesAmount(1);
-    quote.setFeesPercentage(1);
-    quote.setExpirationDate(a.expirationDate);
+
+    exchangeRateDAO_.where(
+        MLang.AND(
+            MLang.EQ(ExchangeRate.FROM_CURRENCY, from),
+            MLang.EQ(ExchangeRate.TO_CURRENCY, to)
+        )
+    ).select(new AbstractSink() {
+      @Override
+      public void put(FObject obj, Detachable sub) {
+        quote.setExchangeRateId(((ExchangeRate) obj).getId());
+        quote.setToAmount(amount * ((ExchangeRate) obj).getRate());
+        quote.setRate(((ExchangeRate) obj).getRate());
+        quote.setExpirationDate(((ExchangeRate) obj).getExpirationDate());
+        quote.setFeesAmount(feeAmount);
+        quote.setFeesPercentage(feeAmount / amount);
+      }
+    });
 
     return quote;
   }
@@ -49,31 +56,25 @@ public class ExchangeRateService
   public void fetchRates()
       throws RuntimeException
   {
-    URLConnection connection = new URL("http://api.fixer.io/latest?base=CAD").openStream();
-    connection.setRequestProperty("Accept-Charset", "UTF-8");
-    InputStream response = connection.getInputStream();
+    try {
+      URLConnection connection = new URL("http://api.fixer.io/latest?base=CAD").openConnection();
+      connection.setRequestProperty("Accept-Charset", "UTF-8");
+      InputStream response = connection.getInputStream();
 
-    JSONParser jsonParser = new JSONParser();
+      JSONParser jsonParser = new JSONParser();
 
-    JSONObject parsedResponse = (JSONObject)jsonParser.parse(
-      new InputStreamReader(response, "UTF-8")
-    );
+      JSONObject parsedResponse = (JSONObject) jsonParser.parse(
+          new InputStreamReader(response, "UTF-8")
+      );
 
-    System.out.println(parsedResponse.toString());
+      System.out.println(parsedResponse.toString());
+    } catch (IOException | ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
   public void start() {
-    ExchangeRateDAO exchangeRateDAO = new ExchangeRateDAO();
-    exchangeRateDAO.setOf(ExchangeRate.getOwnClassInfo());
-    exchangeRateDAO.setX(this.getX());
-
-    try {
-      rateDAO_ = new MapDAO(exchangeRateDAO, "exchangeRates");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    this.getX().put("ExchangeRateDAO", exchangeRateDAO_);
+    exchangeRateDAO_ = (DAO) getX().get("exchangeRateDAO");
   }
 }

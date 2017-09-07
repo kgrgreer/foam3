@@ -56,7 +56,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('topNavContainer')
-          .start({class: 'net.nanopay.interac.ui.shared.topNavigation.BusinessLogoView', data: this.data})
+          .start({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaLogoView', data: this.data})
           .end()
           .start({class: 'foam.nanos.menu.MenuBar'}).addClass('menuBar')
           .end()

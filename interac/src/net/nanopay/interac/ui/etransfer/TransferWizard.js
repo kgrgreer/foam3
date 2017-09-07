@@ -6,6 +6,15 @@ foam.CLASS({
 
   documentation: 'Pop up that extends WizardView for e-transfer',
 
+  requires: [
+    'net.nanopay.interac.ui.CountdownView'
+  ],
+
+  exports: [
+    'countdownView',
+    'invoice'
+  ],
+
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.interac.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
@@ -17,7 +26,7 @@ foam.CLASS({
         margin-bottom: 20px;
       }
 
-      ^ .timer {
+      ^ .net-nanopay-interac-ui-CountdownView {
         display: inline-block;
         margin-top: 3px;
       }
@@ -28,6 +37,10 @@ foam.CLASS({
         margin-left: 20px;
         margin-top: 6px;
         opacity: 1 !important;
+      }
+
+      ^ .hidden {
+        display: none !important;
       }
 
       ^ .interacImage {
@@ -143,24 +156,8 @@ foam.CLASS({
         margin-bottom: 20px;
       }
 
-      ^ .userContainer {
-        box-sizing: border-box;
-        border-radius: 2px;
-        background-color: #ffffff;
-        border: solid 1px rgba(164, 179, 184, 0.5);
-        margin-bottom: 20px;
-
-        width: 300px;
-        padding: 20px;
-      }
-
-      ^ .userRow {
-        margin-bottom: 20px;
-      }
-
-      ^ .userName {
-        display: inline-block;
-        margin-bottom: 0 !important;
+      ^ .invoiceLink:hover {
+        cursor: pointer;
       }
     */}})
   ],
@@ -169,14 +166,35 @@ foam.CLASS({
     { name: 'TimerText', message: 'before exchange rate expires.' }
   ],
 
+  properties: [
+    {
+      name: 'countdownView',
+      factory: function() {
+        return this.CountdownView.create();
+      }
+    },
+    'invoice'
+  ],
+
   methods: [
     function init() {
+      this.title = 'Send e-Transfer';
+      if ( this.invoice ) {
+        this.viewData.invoiceNo = this.invoice.invoiceNo;
+        this.viewData.purchaseOrder = this.invoice.purchaseOrder;
+        this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
+        this.viewData.fromAmount = this.invoice.amount;
+      } else {
+        this.viewData.invoiceNo = 'N/A';
+        this.viewData.purchaseOrder = 'N/A';
+      }
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',     label: 'Account & Payee',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-amount',      label: 'Amount',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',      label: 'Review',               view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete',    label: 'Successful',           view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
       ];
+      this.countdownView.hide();
       this.SUPER();
     },
 
@@ -192,8 +210,8 @@ foam.CLASS({
           .start('div').addClass('stackColumn')
             .start('div').addClass('topRow')
               // TODO: 30 minute timer
-              .start({class: 'net.nanopay.interac.ui.CountdownView'}).addClass('timer').end()
-              .start('p').addClass('pDetails').addClass('timerText').add(this.TimerText).end()
+              .add(this.countdownView)
+              .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
               .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
                 .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
                 .addClass('interacImage')
@@ -204,8 +222,8 @@ foam.CLASS({
         .end()
         .start('div').addClass('row')
           .start('div').addClass('navigationContainer')
-            .add(this.GO_BACK)
-            .add(this.GO_NEXT)
+            .tag(this.GO_BACK, {label$: this.backLabel$})
+            .tag(this.GO_NEXT, {label$: this.nextLabel$})
           .end()
         .end();
     }
@@ -215,10 +233,26 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position) {
-        return position == 3 || position == 0 ? false : true;
-      },
-      code: function() {
+      code: function(X) {
+        if ( this.position == 0 ) {
+          X.stack.back();
+          return;
+        }
+
+        if ( this.position == 1 ) {
+          this.countdownView.stop();
+          this.countdownView.hide();
+          this.countdownView.reset();
+          this.viewData.fromAmount = 1.5;
+          this.viewData.toAmount = 0;
+          this.viewData.rateLocked = false;
+        }
+
+        if ( this.position == 3 ) {
+          X.stack.back();
+          return;
+        }
+
         this.subStack.back();
       }
     },
@@ -227,18 +261,38 @@ foam.CLASS({
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < 3 ) return true; // Valid next
-        return false; // Not in dialog
+        return true; // Not in dialog
       },
       code: function() {
         var self = this;
         if ( this.position == 2 ) { // On Review Transfer page.
+          this.countdownView.stop();
+          this.countdownView.hide();
+          this.countdownView.reset();
+
           // TODO: Run the transfer
           this.subStack.push(this.views[this.subStack.pos + 1].view);
+          this.backLabel = 'Back to Home';
+          this.nextLabel = 'Make Another Transfer';
           return;
         }
 
-        this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
+        if ( this.position == 3 ) {
+          // TODO: Reset params and restart flow
+          this.viewData.purpose = 'General';
+          this.viewData.notes = '';
+          this.viewData.fromAmount = 1.5;
+          this.viewData.toAmount = 0;
+          this.viewData.rateLocked = false;
+          while ( this.position != 0 ) {
+            this.subStack.back();
+          }
+          this.backLabel = 'Back';
+          this.nextLabel = 'Next';
+          return;
+        }
+
+        this.subStack.push(this.views[this.subStack.pos + 3].view); // otherwise
       }
     }
   ]
