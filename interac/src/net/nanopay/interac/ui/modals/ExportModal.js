@@ -271,7 +271,7 @@ foam.CLASS({
       } else if (this.dataType == 'XML') {
         this.note = this.xmlDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'PACS 008') {
-        this.iso20022.GENERATE_PACS008_MESSAGE(this.transaction.id).then(function (message) {
+        this.iso20022.GENERATE_PACS008_MESSAGE(this.transaction).then(function (message) {
           self.note = self.iso20022Driver.exportFObject(null, message)
         })
       }

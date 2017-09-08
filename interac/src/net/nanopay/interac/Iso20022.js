@@ -139,11 +139,13 @@ foam.CLASS({
       return entityDetails;
     },
 
-    GENERATE_PACS008_MESSAGE: function (transactionId, invoiceId) {
+    GENERATE_PACS008_MESSAGE: function (transaction, invoiceId) {
+      if ( ! transaction )
+        throw new Error('Please provide a transaction');
+
       var self = this;
 
       var invoice = null;
-      var transaction = null;
       var intermediaries = [];
 
       var payer = null;
@@ -158,16 +160,7 @@ foam.CLASS({
       var payeeIdentification = null;
       var payeeBirthPlace = null;
 
-      return self.transactionDAO.find(transactionId).then(function (result) {
-        if ( ! result )
-          throw new Error('Transaction not found');
-
-        transaction = result;
-
-         // TODO: remove hard coded intermediaries
-        return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]);
-      })
-      .then(function (result) {
+      return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]).then(function (result) {
         if ( ! result )
           throw new Error('Intermediaries not found');
 
