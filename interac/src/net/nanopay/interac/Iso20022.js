@@ -297,6 +297,14 @@ foam.CLASS({
                 Purp: transaction.purpose.proprietary ?
                   { Cd: transaction.purpose.code } :
                   { Prtry: transaction.purpose.code },
+                // only add RltdRmtInf if invoice is present
+                RltdRmtInf: ( invoice ) ? {
+                  RmtId: foam.uuid.randomGUID().replace(/-/g, ''),
+                  RmtLctnDtls: [
+                    Mtd: 'URID',
+                    ElctrncAdr: invoice.invoiceFileUrl
+                  ]
+                } : undefined,
                 // only add RmtInf if transaction or notes are not null
                 RmtInf: ( transaction.notes || invoice ) ? {
                   // only add notes if present
