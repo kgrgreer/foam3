@@ -13,8 +13,10 @@ import net.nanopay.transactionservice.model.TransactionPurpose;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleCurrencyTransactionService
   extends ContextAwareSupport
@@ -73,7 +75,16 @@ public class SingleCurrencyTransactionService
     transaction.setNotes(notes);
 
     String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+
+    Random random = new Random();
+    char[] digits = new char[13];
+    digits[0] = (char) (random.nextInt(9) + '1');
+    for (int i = 1; i < 13; i++) {
+      digits[i] = (char) (random.nextInt(10) + '0');
+    }
+
     transaction.setReferenceNumber(referenceNumber);
+    transaction.setImpsReferenceNumber(Long.parseLong(new String(digits)));
 
     TransactionPurpose p = new TransactionPurpose();
     p.setCode(purposeCode);
