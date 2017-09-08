@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Transfer amount details',
 
+  imports: [
+    'exchangeRate'
+  ],
+
   requires: [
     'net.nanopay.interac.ui.shared.LoadingSpinner'
   ],
@@ -327,6 +331,9 @@ foam.CLASS({
       this.viewData.rateLocked = false;
 
       // TODO: Grab actual fxRate
+      // this.exchangeRate.getRate('CAD', 'INR', 1).then(function(response){
+      //   console.log(response);
+      // });
       setTimeout(function(){
         self.rate = 50.72973;
         self.loadingSpinner.hide();

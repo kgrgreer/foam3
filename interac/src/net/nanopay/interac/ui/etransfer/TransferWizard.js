@@ -10,6 +10,11 @@ foam.CLASS({
     'net.nanopay.interac.ui.CountdownView'
   ],
 
+  imports: [
+    'transaction',
+    'user'
+  ],
+
   exports: [
     'countdownView',
     'invoice',
@@ -280,10 +285,16 @@ foam.CLASS({
           this.countdownView.hide();
           this.countdownView.reset();
 
-          // TODO: Run the transfer
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
-          this.backLabel = 'Back to Home';
-          this.nextLabel = 'Make Another Transfer';
+          this.transaction.transferValueById(this.user.id, this.viewData.payee.id, Math.round(this.viewData.fromAmount * 100)).then(function(error){
+            if ( ! error ) {
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.backLabel = 'Back to Home';
+              self.nextLabel = 'Make Another Transfer';
+            } else {
+              console.log(error);
+            }
+          });
+
           return;
         }
 
