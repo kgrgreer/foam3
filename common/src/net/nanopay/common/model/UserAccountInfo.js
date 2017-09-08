@@ -5,8 +5,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Array',
-      of: 'String',
+      class: 'StringArray',
       name: 'tag'
     },
     {
