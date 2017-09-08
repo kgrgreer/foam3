@@ -83,10 +83,6 @@ foam.CLASS({
 
       net.nanopay.interac.Data.create(undefined, this);
 
-      this.accountDAO.select().then(function (a) {
-        console.log('array =', a.array);
-      })
-
       // var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
       //   if ( ! message ) return;
       //   console.log(message);
