@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
 
 public class SingleCurrencyTransactionService
   extends ContextAwareSupport
@@ -35,7 +36,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public Transaction transferValueById(long payerId, long payeeId, long amount, double rate, String purposeCode)
+  public Transaction transferValueById(long payerId, long payeeId, long amount, String rate, String purposeCode, long fees, String notes)
     throws RuntimeException
   {
     if ( payerId <= 0 ) {
@@ -50,7 +51,7 @@ public class SingleCurrencyTransactionService
       throw new RuntimeException("Invalid amount");
     }
 
-    if ( rate < 0 ) {
+    if ( rate == null || rate.isEmpty() ) {
       throw new RuntimeException("Invalid rate");
     }
 
@@ -58,12 +59,21 @@ public class SingleCurrencyTransactionService
       throw new RuntimeException("Invalid purpose");
     }
 
+    if ( fees < 0 ) {
+      throw new RuntimeException("Invalid fees");
+    }
+
     Transaction transaction = new Transaction();
     transaction.setDate(new Date());
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
-    transaction.setRate(rate);
+    transaction.setRate(Double.parseDouble(rate));
+    transaction.setFees(fees);
+    transaction.setNotes(notes);
+
+    String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+    transaction.setReferenceNumber(referenceNumber);
 
     TransactionPurpose p = new TransactionPurpose();
     p.setCode(purposeCode);

@@ -29,10 +29,18 @@ foam.INTERFACE({
         },
         {
           name: 'rate',
-          javaType: 'double'
+          javaType: 'String'
         },
         {
           name: 'purposeCode',
+          javaType: 'String'
+        },
+        {
+          name: 'fees',
+          javaType: 'long'
+        },
+        {
+          name: 'notes',
           javaType: 'String'
         }
       ]
