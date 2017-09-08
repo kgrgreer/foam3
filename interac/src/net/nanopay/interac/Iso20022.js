@@ -119,7 +119,7 @@ foam.CLASS({
         entityDetails.Id = {
           OrgId: {
             AnyBIC: ( user.bankIdentificationCode ) ?
-              user.bankIdentificationCode : undefined
+              user.bankIdentificationCode : undefined,
             Othr: identification
           }
         };
