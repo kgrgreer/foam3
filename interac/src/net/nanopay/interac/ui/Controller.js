@@ -9,7 +9,8 @@ foam.CLASS({
     'net.nanopay.transactionservice.client.Client',
     'net.nanopay.interac.dao.Storage',
     'net.nanopay.common.dao.Storage',
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'net.nanopay.interac.client.Client'
   ],
 
   requires: [
@@ -83,15 +84,15 @@ foam.CLASS({
 
       net.nanopay.interac.Data.create(undefined, this);
 
-//      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
-//        if ( ! message ) return;
-//        console.log(message);
-//        console.log(self.iso20022Driver.exportFObject(null, message));
-//      })
-//      .catch(function (err) {
-//        console.log('err = ', err);
-//      })
-
+      // var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+      //   if ( ! message ) return;
+      //   console.log(message);
+      //   console.log(self.iso20022Driver.exportFObject(null, message));
+      // })
+      // .catch(function (err) {
+      //   console.log('err = ', err);
+      // })
+      
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
         self.user.copyFrom(a.array[0]);
