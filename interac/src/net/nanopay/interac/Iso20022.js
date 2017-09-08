@@ -61,7 +61,7 @@ foam.CLASS({
             ClrSysId: {
               Cd: bank.clearingSystemIdentification
             },
-            MbmId: bank.memberIdentification
+            MmbId: bank.memberIdentification
           },
           Nm: bank.name,
           PstlAdr: this.GENERATE_POSTAL_ADDRESS(bank.address)
@@ -271,7 +271,11 @@ foam.CLASS({
                 // if proprietary use Cd, else use Prtry
                 Purp: transaction.purpose.proprietary ?
                   { Cd: transaction.purpose.code } :
-                  { Prtry: transaction.purpose.code }
+                  { Prtry: transaction.purpose.code },
+                RmtInf: {
+                  Ustrd: transaction.notes ?
+                    transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined
+                }
               }
             ]
           }
