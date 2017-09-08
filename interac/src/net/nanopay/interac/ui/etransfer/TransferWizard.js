@@ -287,8 +287,8 @@ foam.CLASS({
 
           this.transaction.transferValueById(this.user.id, this.viewData.payee.id, Math.round(this.viewData.fromAmount * 100)).then(function(response) {
             if ( response ) {
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.viewData.transaction = response;
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make Another Transfer';
             } else {
