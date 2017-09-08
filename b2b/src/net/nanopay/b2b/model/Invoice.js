@@ -105,7 +105,7 @@ foam.CLASS({
       aliases: [ 'a' ],
       required: true,
       tableCellFormatter: function(a) {
-        this.start().style({'text-align': 'right', 'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
+        this.start().style({'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
       }
     },
     {
