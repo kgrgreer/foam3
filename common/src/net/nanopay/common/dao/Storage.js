@@ -5,40 +5,79 @@ foam.CLASS({
   documentation: 'Creates all common DAO\'s.',
 
   requires: [
-    'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'foam.dao.history.HistoryRecord',
-    'net.nanopay.transactionservice.model.Transaction',
-    'net.nanopay.b2b.model.Invoice'
+    'net.nanopay.b2b.model.Invoice',
+    'net.nanopay.common.model.Bank'
   ],
 
   exports: [
-    'transactionDAO',
+    'bankDAO',
     'invoiceDAO'
   ],
 
   properties: [
     {
-      name: 'transactionDAO',
+      name: 'bankDAO',
       factory: function() {
-        return this.createDAO({
-          of: this.Transaction,
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.Bank,
+          serviceName: 'bankDAO',
           seqNo: true,
           testData: [
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 2300.00, rate: 52.51, fees: 20.00
-              },
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 3200.00, rate: 52.51, fees: 20.00
+            {
+              name: 'Bank of Montreal',
+              financialId: '001'
+            },
+            {
+              name: 'Scotiabank',
+              financialId: '002'
+            },
+            {
+              name: 'Royal Bank of Canada',
+              financialId: '003'
+            },
+            {
+              name: 'TD Canada',
+              financialId: '004',
+              branchId: '10202',
+              memberIdentification: '004',
+              clearingSystemIdentification: 'CACPA',
+              address: {
+                buildingNumber: 55,
+                address: 'King St W',
+                city: 'Toronto',
+                postalCode: 'M5K1A2',
+                regionId: 'ON',
+                countryId: 'CA'
               }
+            },
+            {
+              name: 'CIBC',
+              financialId: '010'
+            },
+            {
+              name: 'Canadian Bank',
+              financialId: '998'
+            },
+            {
+              name: 'Indian Bank',
+              financialId: '999'
+            },
+            {
+              name: 'State Bank of India',
+              financialId: 'SBIN0071222',
+              memberIdentification: 'SBIN0071222',
+              clearingSystemIdentification: 'INFSC',
+              address: {
+                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI400051',
+                city: 'Mumbai',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
+            }
           ]
         })
-        .addPropertyIndex(this.Transaction.REFERENCE_NUMBER)
-        .addPropertyIndex(this.Transaction.DATE)
-        .addPropertyIndex(this.Transaction.PAYEE_ID)
-        .addPropertyIndex(this.Transaction.AMOUNT)
-        .addPropertyIndex(this.Transaction.RATE)
-        .addPropertyIndex(this.Transaction.FEES)
       }
     },
     {
@@ -66,29 +105,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-
-      var dao = this.ClientDAO.create({
-        of: config.of,
-        delegate: this.HTTPBox.create({
-          method: 'POST',
-          url: 'http://localhost:8080/' + config.url
-        })
-      });
-
-      if ( config.testData ) {
-        dao.select(this.COUNT()).then(function (c) {
-          if ( c.value == 0 ) {
-            for ( var i = 0 ; i < config.testData.length ; i ++ ) {
-              dao.put(config.of.create(config.testData[i]));
-            }
-          }
-        });
-      }
-
-      return dao;
     }
   ]
 });
