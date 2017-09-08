@@ -62,7 +62,7 @@ foam.CLASS({
           margin-top: 25px;
           margin-bottom: 10px;
         }
-        ^ .interacLogo {
+        ^ .impsLogo {
           width: 90px;
           height: 40px;
           display: inline-block;
@@ -175,9 +175,8 @@ foam.CLASS({
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
             .add(this.SEND_TRANSFER)
-            .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-              .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-              .addClass('interacLogo')
+            .start({class: 'foam.u2.tag.Image', data: 'images/imps.jpg'})
+              .addClass('impsLogo')
             .end()
           .end()
           .start()
