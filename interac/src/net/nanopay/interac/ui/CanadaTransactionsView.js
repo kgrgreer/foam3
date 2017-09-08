@@ -7,7 +7,10 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
 
-  imports: [ 'transactionDAO' ],
+  imports: [ 
+    'transactionDAO',
+    'account'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -163,8 +166,8 @@ foam.CLASS({
         .start()
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
-            .start().add('Chequing Account xxxxxxxxxxxx5555').addClass('account').end()
-            .start().add('CAD 5000.00').addClass('accountBalance').end()
+            .start().add('Chequing Account xxxxxxxxxxxx5175').addClass('account').end()
+            .start().add('CAD ', this.account$.dot('accountInfo').dot('balance')).addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
