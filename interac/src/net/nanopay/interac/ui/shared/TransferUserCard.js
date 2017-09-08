@@ -6,7 +6,9 @@ foam.CLASS({
   documentation: 'User card used in transfers',
 
   imports: [
-    'mode'
+    'mode',
+    'bankAccountDAO',
+    'bankDAO'
   ],
 
   axioms: [
@@ -57,6 +59,31 @@ foam.CLASS({
           font-weight: bold;
           margin-bottom: 20px;
           letter-spacing: 0.4px;
+          opacity: 1;
+        }
+
+        ^ .bankInfoContainer {
+          margin-top: 18px;
+          width: 100%;
+        }
+
+        ^ .bankInfoRow {
+          width: 100%;
+          margin-bottom: 5px;
+        }
+
+        ^ .bankInfoRow:last-child {
+          margin-bottom: 0;
+        }
+
+        ^ .bankInfoText {
+          display: inline-block;
+          vertical-align: top;
+          margin: 0;
+        }
+
+        ^ .bankInfoLabel {
+          width: 85px;
         }
       */}
     })
@@ -74,7 +101,9 @@ foam.CLASS({
       name: 'created_',
       value: false
     },
-    'account'
+    'accountId_',
+    'accountNo_',
+    'bankName_'
   ],
 
   methods: [
@@ -99,6 +128,33 @@ foam.CLASS({
           .start('p').addClass('pDetails').add(this.email_$).end()
           .start('p').addClass('pDetails').add(this.phone_$).end()
           .start('p').addClass('pDetails').add(this.address_$).end()
+          .start('div').addClass('bankInfoContainer')
+            .start('div').addClass('bankInfoRow')
+              .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
+                .add('ID')
+              .end()
+              .start('p').addClass('pDetails').addClass('bankInfoText')
+                .add(this.accountId_$)
+              .end()
+            .end()
+            .start('div').addClass('bankInfoRow')
+              .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
+                .add('Account No.')
+              .end()
+              .start('p').addClass('pDetails').addClass('bankInfoText')
+                .add(this.accountNo_$)
+              .end()
+            .end()
+            .start('div').addClass('bankInfoRow')
+              .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
+                .add('Bank Name')
+              .end()
+              .start('p').addClass('pDetails').addClass('bankInfoText')
+                .add(this.bankName_$)
+              .end()
+            .end()
+
+          .end()
         .end();
       this.created_ = true;
     }
@@ -108,6 +164,7 @@ foam.CLASS({
     {
       name: 'userUpdate',
       code: function() {
+        var self = this;
         if ( ! this.user ) return;
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
         if ( this.mode == 'Organization' ) {
@@ -137,8 +194,14 @@ foam.CLASS({
         this.address_ += ', ' + this.nationality_;
 
 
-
-        this.createView();
+        this.bankAccountDAO.find(this.user.id).then(function(account) {
+          self.accountId_ = account.id;
+          self.accountNo_ = account.accountInfo.accountNumber;
+          self.bankDAO.find(account.accountInfo.bankAccount).then(function(bank){
+            self.bankName_ = bank.name;
+            self.createView();
+          });
+        });
       }
     }
   ]

@@ -20,7 +20,7 @@ foam.CLASS({
   imports: [
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
-    'accountsDAO',
+    'bankAccountDAO',
     'payeeDAO',
   ],
 
@@ -118,14 +118,14 @@ foam.CLASS({
       name: 'accounts',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.accountsDAO.where(this.EQ(this.Account.ID, newValue)).select().then(function(a){
+        this.bankAccountDAO.where(this.EQ(this.Account.ID, newValue)).select().then(function(a){
           var account = a.array[0];
           self.viewData.account = account;
         });
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.accountsDAO.where(X.data.EQ(X.data.Account.ID, 1)),
+          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.Account.ID, 1)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length) +
@@ -194,8 +194,8 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.SUPER()
-
+      var self = this;
+      var initSuper = this.SUPER;
       if ( this.viewData.payee ) {
         this.payees = this.viewData.payee.id;
       }
@@ -207,6 +207,12 @@ foam.CLASS({
       if ( this.viewData.notes ) {
         this.notes = this.viewData.notes;
       }
+
+      this.payeeDAO.find(1).then(function(user) {
+        console.log(user);
+        self.fromUser = user;
+      });
+      this.SUPER()
     },
 
     function initE() {
