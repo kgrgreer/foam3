@@ -24,6 +24,7 @@ foam.CLASS({
     'userDAO',
     'bankDAO',
     'bankAccountDAO',
+    'invoiceDAO',
     'transactionDAO',
     'identificationDAO',
     'dateAndPlaceOfBirthDAO',
@@ -136,9 +137,10 @@ foam.CLASS({
       return entityDetails;
     },
 
-    GENERATE_PACS008_MESSAGE: function (transactionId) {
+    GENERATE_PACS008_MESSAGE: function (transactionId, invoiceId) {
       var self = this;
 
+      var invoice = null;
       var transaction = null;
       var intermediaries = [];
 
@@ -168,6 +170,13 @@ foam.CLASS({
           throw new Error('Intermediaries not found');
 
         intermediaries = result;
+
+        // only do a lookup if invoiceId is present
+        return ( invoiceId ) ? self.invoiceDAO.find(invoiceId) : null;
+      })
+      .then(function (result) {
+        if ( result )
+          invoice = result;
 
         // get payer information
         return Promise.all([
@@ -288,10 +297,24 @@ foam.CLASS({
                 Purp: transaction.purpose.proprietary ?
                   { Cd: transaction.purpose.code } :
                   { Prtry: transaction.purpose.code },
-                RmtInf: {
-                  Ustrd: transaction.notes ?
-                    transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined
-                }
+                // only add RmtInf if transaction or notes are not null
+                RmtInf: ( transaction.notes || invoice ) ? {
+                  // only add notes if present
+                  Ustrd: ( transaction.notes ) ?
+                    transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined,
+                  // only add invoice information if present
+                  Strd: ( invoice ) ? {
+                    RfrdDocInf: {
+                      Tp: {
+                        CdOrPrtry: {
+                          Cd: 'CINV'
+                        }
+                      },
+                      Nb: invoice.invoiceNumber,
+                      RltdDt: invoice.issueDate
+                    }
+                  } : undefined
+                } : undefined
               }
             ]
           }
