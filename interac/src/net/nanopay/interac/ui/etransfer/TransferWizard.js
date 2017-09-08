@@ -285,6 +285,7 @@ foam.CLASS({
           this.countdownView.hide();
           this.countdownView.reset();
 
+          // NOTE: payerID, payeeID, amount in cents
           this.transaction.transferValueById(this.user.id, this.viewData.payee.id, Math.round(this.viewData.fromAmount * 100)).then(function(response) {
             if ( response ) {
               self.viewData.transaction = response;
