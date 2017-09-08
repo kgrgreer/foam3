@@ -71,7 +71,34 @@ foam.CLASS({
               memberIdentification: 'SBIN0071222',
               clearingSystemIdentification: 'INFSC',
               address: {
-                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI400051',
+                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI-400051',
+                city: 'Mumbai',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
+            },
+            {
+              name: 'ICICI Bank Canada',
+              financialId: '340',
+              memberIdentification: '340',
+              clearingSystemIdentification: 'CACPA',
+              address: {
+                buildingNumber: 130,
+                address: 'King St W',
+                suite: '2130',
+                city: 'Toronto',
+                postalCode: 'M5X1B1',
+                regionId: 'ON',
+                countryId: 'CA'
+              }
+            },
+            {
+              name: 'ICICI Bank Limited',
+              financialId: 'ICIC0006438',
+              memberIdentification: 'ICIC0006438',
+              clearingSystemIdentification: 'INFSC',
+              address: {
+                address: 'PANCHAVATI CO-OP HOUSING SOCIETY,OPP. POLICE HEAD QUARTER,MAROL-MORSHI ROAD, ANDHERI-EAST MUMBAI-400059',
                 city: 'Mumbai',
                 regionId: 'MH',
                 countryId: 'IN'
