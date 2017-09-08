@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.nanos.client.Client',
     'net.nanopay.interac.client.Client',
     'net.nanopay.transactionservice.client.Client',
+    'net.nanopay.exchangerate.client.Client',
     'net.nanopay.interac.dao.Storage',
     'net.nanopay.common.dao.Storage',
     'foam.mlang.Expressions'
@@ -114,13 +115,13 @@ foam.CLASS({
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business }) :
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.NoMenuTopNav' });
         }))*/
-        
+
         if(this.country == 'Canada') {
           this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav', data: self.business}))
         } else if(this.country == 'India') {
           this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}))
         }
-        
+
         this.br()
         .start('div').addClass('stack-wrapper')
           .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })

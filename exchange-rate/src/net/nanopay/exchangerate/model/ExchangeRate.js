@@ -22,7 +22,7 @@ foam.CLASS({
       name: 'toCurrency'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'rate'
     },
     {
