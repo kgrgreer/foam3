@@ -61,7 +61,7 @@ foam.CLASS({
             ClrSysId: {
               Cd: bank.clearingSystemIdentification
             },
-            MbmId: bank.memberIdentification
+            MmbId: bank.memberIdentification
           },
           Nm: bank.name,
           PstlAdr: this.GENERATE_POSTAL_ADDRESS(bank.address)
@@ -258,8 +258,24 @@ foam.CLASS({
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-                // TODO populate fees
-                ChrgsInf: [],
+                // TODO: removed hard coded fees post demo
+                ChrgsInf: [
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.80
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(intermediaries[0])
+                  },
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.70
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(payerBank)
+
+                  }
+                ],
                 IntrmyAgt1: self.GENERATE_AGENT_DETAILS(intermediaries[0]),
                 IntrmyAgt2: self.GENERATE_AGENT_DETAILS(intermediaries[1]),
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
@@ -267,7 +283,15 @@ foam.CLASS({
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(payerBank),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
-                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank)
+                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank),
+                // if proprietary use Cd, else use Prtry
+                Purp: transaction.purpose.proprietary ?
+                  { Cd: transaction.purpose.code } :
+                  { Prtry: transaction.purpose.code },
+                RmtInf: {
+                  Ustrd: transaction.notes ?
+                    transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined
+                }
               }
             ]
           }

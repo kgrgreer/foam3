@@ -113,6 +113,6 @@ public class TransactionDAO
 
   @Override
   public FObject find_(X x, Object o) {
-    return null;
+    return super.find_(x, o);
   }
 }
