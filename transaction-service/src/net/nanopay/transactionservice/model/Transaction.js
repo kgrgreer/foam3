@@ -7,7 +7,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'userDAO'
   ],
 
   properties: [
@@ -29,7 +30,17 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'payeeId'
+      name: 'payeeId',
+      label: 'Payee',
+      tableCellFormatter: function(payeeId, X) {
+        var self = this;
+        X.userDAO.find(payeeId).then(function(payee) {
+          self.start()
+            .start('h4').style({ 'margin-bottom': 0 }).add(payee.firstName).end()
+            .start('p').style({ 'margin-top': 0 }).add(payee.email).end()
+          .end();
+        })
+      }
     },
     {
       class: 'Currency',
@@ -91,7 +102,7 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       code: function(){
-        this.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
+        this.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
       }
     }
   ]

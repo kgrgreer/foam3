@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.model',
   name: 'Payee',
-
   documentation: 'Transaction recipient',
 
   properties: [

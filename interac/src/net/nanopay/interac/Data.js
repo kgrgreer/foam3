@@ -59,7 +59,7 @@ foam.CLASS({
               inv.paymentId = inv.invoiceNumber;
             }
           }
-          console.log(inv.stringify());
+
           this.invoiceDAO.put(inv);
         }
       }.bind(this));
