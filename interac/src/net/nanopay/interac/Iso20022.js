@@ -299,8 +299,10 @@ foam.CLASS({
                   { Prtry: transaction.purpose.code },
                 // only add RmtInf if transaction or notes are not null
                 RmtInf: ( transaction.notes || invoice ) ? {
+                  // only add notes if present
                   Ustrd: ( transaction.notes ) ?
                     transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined,
+                  // only add invoice information if present
                   Strd: ( invoice ) ? {
                     RfrdDocInf: {
                       Tp: {
