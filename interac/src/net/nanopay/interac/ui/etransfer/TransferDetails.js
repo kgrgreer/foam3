@@ -128,9 +128,8 @@ foam.CLASS({
           dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.Account.ID, 1)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
-                                '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length) +
-                                ' - ' + account.accountInfo.currencyCode +
-                                ' ']; // TODO: Grab amount
+                                '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length)
+                    ]; // TODO: Grab amount and display
           }
         });
       }
@@ -147,7 +146,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.payeeDAO,//.where(X.data.NEQ(X.data.User.ID, 1)),
+          dao: X.data.payeeDAO.where(X.data.NEQ(X.data.User.ID, 1)),
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
             if ( X.data.mode == 'Organization' ) {

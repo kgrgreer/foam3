@@ -182,12 +182,12 @@ foam.CLASS({
     function init() {
       this.title = 'Send e-Transfer';
       // NOTE: Test Invoice
-      this.invoice = {
-        invoiceNo: '123456',
-        purchaseOrder: '123456',
-        invoiceFileUrl: '',
-        amount: 123.45,
-      };
+      // this.invoice = {
+      //   invoiceNo: '123456',
+      //   purchaseOrder: '123456',
+      //   invoiceFileUrl: '',
+      //   amount: 123.45,
+      // };
       if ( this.invoice ) {
         this.viewData.invoiceNo = this.invoice.invoiceNo;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -243,10 +243,11 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, errors) {
-        if ( position == 3 ) {
-          if ( errors ) return false;
-        }
+      isAvailable: function(position, viewData, errors) {
+        if ( position == 1 && errors && errors[0][1] == 'Rate expired' ) return false;
+
+        if ( position == 3 && errors ) return false;
+
         return true;
       },
       code: function(X) {

@@ -506,7 +506,7 @@ foam.CLASS({
               "firstName":"Varun",
               "middleName":"",
               "lastName":"Dhawan",
-              "organization":"",
+              "organization":"360 Design",
               "department":"",
               "email":"varun@gmail.com",
               "phone":"+91-9095253276",
