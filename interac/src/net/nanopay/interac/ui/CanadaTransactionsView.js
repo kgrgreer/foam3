@@ -72,7 +72,9 @@ foam.CLASS({
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #59a5d5;
+          background: #59a5d5;
+          border: 0;
+          box-shadow: none;
           display: inline-block;
           line-height: 40px;
           color: white;

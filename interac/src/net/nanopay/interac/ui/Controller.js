@@ -10,7 +10,7 @@ foam.CLASS({
     'net.nanopay.interac.dao.Storage',
     'net.nanopay.common.dao.Storage',
     'foam.mlang.Expressions',
-    'net.nanopay.interac.Client'
+    'net.nanopay.interac.client.Client'
   ],
 
   requires: [
