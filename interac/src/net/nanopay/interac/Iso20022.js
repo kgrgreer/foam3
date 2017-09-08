@@ -161,7 +161,7 @@ foam.CLASS({
         // get payer information
         return Promise.all([
           self.userDAO.find(transaction.payerId),
-          self.accountDAO.find(transaction.payerId),
+          self.bankAccountDAO.find(transaction.payerId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payerId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payerId)).limit(1).select()
         ]);
@@ -186,7 +186,7 @@ foam.CLASS({
         // get payee information
         return Promise.all([
           self.userDAO.find(transaction.payeeId),
-          self.accountDAO.find(transaction.payeeId),
+          self.bankAccountDAO.find(transaction.payeeId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payeeId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payeeId)).limit(1).select()
         ])

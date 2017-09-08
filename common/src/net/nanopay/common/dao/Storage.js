@@ -7,18 +7,21 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'net.nanopay.b2b.model.Invoice',
-    'net.nanopay.common.model.Bank'
+    'net.nanopay.common.model.Account',
+    'net.nanopay.common.model.Bank',
+    'net.nanopay.common.model.BankAccountInfo'
   ],
 
   exports: [
     'bankDAO',
+    'bankAccountDAO',
     'invoiceDAO'
   ],
 
   properties: [
     {
       name: 'bankDAO',
-      factory: function() {
+      factory: function () {
         return this.EasyDAO.create({
           daoType: 'CLIENT',
           of: this.Bank,
@@ -102,6 +105,34 @@ foam.CLASS({
                 regionId: 'MH',
                 countryId: 'IN'
               }
+            }
+          ]
+        })
+      }
+    },
+    {
+      name: 'bankAccountDAO',
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.Account,
+          serviceName: 'bankAccountDAO',
+          testData: [
+            {
+              id: 1,
+              accountInfo: this.BankAccountInfo.create({
+                accountNumber: '490932681376',
+                currencyCode: 'CAD',
+                bankAccount: 4
+              })
+            },
+            {
+              id: 2,
+              accountInfo: this.BankAccountInfo.create({
+                accountNumber: '923000000008465748932',
+                currencyCode: 'INR',
+                bankAccount: 8
+              })
             }
           ]
         })
