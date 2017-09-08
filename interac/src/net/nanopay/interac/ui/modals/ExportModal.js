@@ -264,13 +264,15 @@ foam.CLASS({
 
   actions: [
     function convertInvoice(){
+      var self = this;
+
       if (this.dataType == 'JSON'){
         this.note = this.jsonDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'XML') {
         this.note = this.xmlDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'PACS 008') {
         this.iso20022.GENERATE_PACS008_MESSAGE(this.transaction.id).then(function (message) {
-          this.note = self.iso20022Driver.exportFObject(null, message)
+          self.note = self.iso20022Driver.exportFObject(null, message)
         })
       }
     }

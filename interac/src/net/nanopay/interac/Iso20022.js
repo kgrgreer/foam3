@@ -295,10 +295,10 @@ foam.CLASS({
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
                 CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank),
-                // if proprietary use Cd, else use Prtry
-                Purp: transaction.purpose.proprietary ?
-                  { Cd: transaction.purpose.code } :
-                  { Prtry: transaction.purpose.code },
+//                 if proprietary use Cd, else use Prtry
+//                Purp: transaction.purpose.proprietary ?
+//                  { Cd: transaction.purpose.code } :
+//                  { Prtry: transaction.purpose.code },
                 // only add RltdRmtInf if invoice is present
                 RltdRmtInf: ( invoice ) ? {
                   RmtId: foam.uuid.randomGUID().replace(/-/g, ''),
