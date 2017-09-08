@@ -32,11 +32,12 @@ foam.CLASS({
         var l = bs.array.length;
 
         for ( var i = 0 ; i < 1000 ; i++ ) {
-          var fi = 100+Math.floor(Math.random()*l);
-          var ti = 2;
+          var fi = 2;
+          var ti = 1;
           var dd = new Date(Date.now() - 2*360*MS_PER_DAY*(Math.random()-0.1));
           var amount = Math.floor(Math.pow(10,3+Math.random()*4))/100;
-
+          var fromUser = bs.array[1];
+          var toUser = bs.array[0];
           if ( ti === fi ) ti = ti === 100 ? 101 : ti-1;
           var inv = net.nanopay.b2b.model.Invoice.create({
             draft:            Math.random()<0.002,
@@ -44,8 +45,8 @@ foam.CLASS({
             purchaseOrder:    10000+i,
             fromBusinessId:   fi,
             toBusinessId:     ti,
-            fromBusinessName: bs.array[fi-100].name,
-            toBusinessName:   bs.array[ti-100].name,
+            fromBusinessName: fromUser.organization || (fromUser.firstName + ' ' + fromUser.lastName),
+            toBusinessName:  toUser.organization || (toUser.firstName + ' ' + toUser.lastName),
             issueDate:        dd,
             amount:           amount
           });
@@ -58,7 +59,7 @@ foam.CLASS({
               inv.paymentId = inv.invoiceNumber;
             }
           }
-
+          console.log(inv.stringify());
           this.invoiceDAO.put(inv);
         }
       }.bind(this));
