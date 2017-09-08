@@ -160,6 +160,7 @@ foam.CLASS({
 
         transaction = result;
 
+         // TODO: remove hard coded intermediaries
         return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]);
       })
       .then(function (result) {
@@ -247,19 +248,18 @@ foam.CLASS({
                   ClrSysRef: Math.floor(Math.random() * (999999 - 1 + 1)) + 1
                 },
                 IntrBkSttlmAmt: {
-                  // TODO: remove hardcoded INR
-                  Ccy: 'INR',
+                  Ccy: payeeAccount.currencyCode,
                   xmlValue: transaction.receivingAmount
                 },
                 IntrBkSttlmDt: transaction.date,
                 InstdAmt: {
-                  // TODO: remove hardcoded CAD
-                  Ccy: 'CAD',
+                  Ccy: payerAccount.currencyCode,
                   xmlValue: transaction.amount
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-                ChrgsInf: [], // TODO populate fees
+                // TODO populate fees
+                ChrgsInf: [],
                 IntrmyAgt1: self.GENERATE_AGENT_DETAILS(intermediaries[0]),
                 IntrmyAgt2: self.GENERATE_AGENT_DETAILS(intermediaries[1]),
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
