@@ -79,13 +79,8 @@ foam.CLASS({
       name: 'rate'
     },
     {
-      class: 'String',
-      name: 'fees',
-      tableCellFormatter: function(fees, X){
-        this.start()
-          .add(X.PAY_NOW)
-        .end()
-      }
+      class: 'Currency',
+      name: 'fees'
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
@@ -93,16 +88,6 @@ foam.CLASS({
       name: 'total',
       expression: function (amount, tip, fees) {
         return amount + tip + fees;
-      }
-    }
-  ],
-  
-  actions: [
-    {
-      name: 'payNow',
-      label: 'Pay now',
-      code: function(){
-        this.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
       }
     }
   ]
