@@ -7,6 +7,7 @@
 var classes = [
   'net.nanopay.transactionservice.TransactionService',
   'net.nanopay.transactionservice.model.Transaction',
+  'net.nanopay.transactionservice.model.TransactionPurpose'
 ];
 
 var abstractClasses = [

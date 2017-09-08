@@ -84,6 +84,12 @@ foam.CLASS({
       expression: function (amount, tip, fees) {
         return amount + tip + fees;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.transactionservice.model.TransactionPurpose',
+      name: 'purpose',
+      documentation: 'Transaction purpose'
     }
   ]
 });
