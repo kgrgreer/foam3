@@ -26,7 +26,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'payerId',
-      label: 'Payor',
+      label: 'Payer',
       tableCellFormatter: function(payerId, X) {
         var self = this;
         X.userDAO.find(payerId).then(function(payer) {
