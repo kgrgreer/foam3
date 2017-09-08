@@ -92,14 +92,14 @@ foam.CLASS({
 
       net.nanopay.interac.Data.create(undefined, this);
 
-       var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
-         if ( ! message ) return;
-         console.log(message);
-         console.log(self.iso20022Driver.exportFObject(null, message));
-       })
-       .catch(function (err) {
-         console.log('err = ', err);
-       })
+//       var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+//         if ( ! message ) return;
+//         console.log(message);
+//         console.log(self.iso20022Driver.exportFObject(null, message));
+//       })
+//       .catch(function (err) {
+//         console.log('err = ', err);
+//       })
       
       // Injecting Sample Partner
       // this.userDAO.limit(1).select().then(function(a) {
