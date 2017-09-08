@@ -95,6 +95,11 @@ foam.CLASS({
       of: 'net.nanopay.transactionservice.model.TransactionPurpose',
       name: 'purpose',
       documentation: 'Transaction purpose'
+    },
+    {
+      class: 'String',
+      name: 'notes',
+      documentation: 'Transaction notes'
     }
   ]
 });
