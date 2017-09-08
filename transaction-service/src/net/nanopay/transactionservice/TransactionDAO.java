@@ -1,23 +1,23 @@
 package net.nanopay.transactionservice;
 
-import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MapDAO;
+import foam.nanos.auth.User;
 import net.nanopay.common.model.Account;
-import net.nanopay.common.model.User;
 import net.nanopay.common.model.UserAccountInfo;
 import net.nanopay.transactionservice.model.Transaction;
 
 public class TransactionDAO
-  extends MapDAO
+    extends MapDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
 
-  public TransactionDAO(ClassInfo of) {
-    this.setOf(of);
+  public TransactionDAO(X x) {
+    this.setX(x);
+    this.setOf(net.nanopay.transactionservice.model.Transaction.getOwnClassInfo());
   }
 
   protected DAO getUserDAO() {
