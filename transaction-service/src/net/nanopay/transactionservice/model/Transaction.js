@@ -25,7 +25,17 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'payerId'
+      name: 'payerId',
+      label: 'Payor',
+      tableCellFormatter: function(payerId, X) {
+        var self = this;
+        X.userDAO.find(payerId).then(function(payer) {
+          self.start()
+            .start('h4').style({ 'margin-bottom': 0 }).add(payer.firstName).end()
+            .start('p').style({ 'margin-top': 0 }).add(payer.email).end()
+          .end();
+        })
+      }
     },
     {
       class: 'Long',

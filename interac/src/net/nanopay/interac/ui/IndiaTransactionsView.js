@@ -9,7 +9,8 @@ foam.CLASS({
 
   imports: [ 
     'transactionDAO',
-    'account' 
+    'account',
+    'user'
   ],
 
   axioms: [
@@ -161,6 +162,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
         .addClass(this.myClass())
@@ -178,24 +180,45 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .tag({
-                class: 'foam.u2.ListCreateController',
-                dao: this.transactionDAO,
-                factory: function() { return self.Transaction.create(); },
-                detailView: {
-                  class: 'foam.u2.DetailView',
-                  properties: [
-                    this.Transaction.REFERENCE_NUMBER,
-                    this.Transaction.DATE,
-                    this.Transaction.PAYEE_ID,
-                    this.Transaction.AMOUNT,
-                    this.Transaction.RECEIVING_AMOUNT,
-                    this.Transaction.RATE,
-                    this.Transaction.FEES
-                  ]
-                },
-              summaryView: this.TransactionTableView.create()
-            })
+            .add(this.user$.dot('id').map(function (id) {
+              return id == 1 ?
+                self.E().tag({
+                    class: 'foam.u2.ListCreateController',
+                    dao: self.transactionDAO,
+                    factory: function() { return self.Transaction.create(); },
+                    detailView: {
+                      class: 'foam.u2.DetailView',
+                      properties: [
+                        self.Transaction.REFERENCE_NUMBER,
+                        self.Transaction.DATE,
+                        self.Transaction.PAYEE_ID,
+                        self.Transaction.AMOUNT,
+                        self.Transaction.RECEIVING_AMOUNT,
+                        self.Transaction.RATE,
+                        self.Transaction.FEES
+                      ]
+                    },
+                  summaryView: self.TransactionTableView.create()
+                }) :
+                self.E().tag({
+                    class: 'foam.u2.ListCreateController',
+                    dao: self.transactionDAO,
+                    factory: function() { return self.Transaction.create(); },
+                    detailView: {
+                      class: 'foam.u2.DetailView',
+                      properties: [
+                        self.Transaction.REFERENCE_NUMBER,
+                        self.Transaction.DATE,
+                        self.Transaction.PAYER_ID,
+                        self.Transaction.AMOUNT,
+                        self.Transaction.RECEIVING_AMOUNT,
+                        self.Transaction.RATE,
+                        self.Transaction.FEES
+                      ]
+                    },
+                  summaryView: self.TransactionIndiaTableView.create()
+                });
+            }))
           .end()
         .end();
     }
@@ -241,6 +264,35 @@ foam.CLASS({
               data: this.data,
               columns: [
                 'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+              ]
+            }).addClass(this.myClass('table')).end();
+        }
+      ]
+    },
+
+    {
+      name: 'TransactionIndiaTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
+
+      imports: [ 'transactionDAO' ],
+
+      properties: [
+        'selection',
+        { name: 'data', factory: function() {return this.transactionDAO}}
+      ],
+
+      methods: [
+        function initE() {
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              selection$: this.selection$,
+              editColumnsEnabled: true,
+              data: this.data,
+              columns: [
+                'referenceNumber', 'date', 'payerId', 'amount', 'receivingAmount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }
