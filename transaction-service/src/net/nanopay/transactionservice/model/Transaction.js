@@ -6,11 +6,6 @@ foam.CLASS({
     'payNow'
   ],
 
-  imports: [
-    'stack',
-    'userDAO'
-  ],
-
   properties: [
     {
       class: 'Long',
