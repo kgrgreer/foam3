@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.b2b.model.Business',
