@@ -35,7 +35,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public Transaction transferValueById(long payerId, long payeeId, long amount, double rate, String purposeCode)
+  public Transaction transferValueById(long payerId, long payeeId, long amount, String rate, String purposeCode)
     throws RuntimeException
   {
     if ( payerId <= 0 ) {
@@ -50,7 +50,7 @@ public class SingleCurrencyTransactionService
       throw new RuntimeException("Invalid amount");
     }
 
-    if ( rate < 0 ) {
+    if ( rate == null || rate.isEmpty() ) {
       throw new RuntimeException("Invalid rate");
     }
 
@@ -63,7 +63,7 @@ public class SingleCurrencyTransactionService
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
-    transaction.setRate(rate);
+    transaction.setRate(Double.parseDouble(rate));
 
     TransactionPurpose p = new TransactionPurpose();
     p.setCode(purposeCode);

@@ -29,7 +29,7 @@ foam.INTERFACE({
         },
         {
           name: 'rate',
-          javaType: 'double'
+          javaType: 'String'
         },
         {
           name: 'purposeCode',
