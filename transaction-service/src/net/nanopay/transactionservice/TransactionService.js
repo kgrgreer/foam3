@@ -17,15 +17,23 @@ foam.INTERFACE({
       args: [
         {
           name: 'payerId',
-          javaType: 'Long'
+          javaType: 'long'
         },
         {
           name: 'payeeId',
-          javaType: 'Long'
+          javaType: 'long'
         },
         {
           name: 'amount',
-          javaType: 'Long'
+          javaType: 'long'
+        },
+        {
+          name: 'rate',
+          javaType: 'double'
+        },
+        {
+          name: 'purposeCode',
+          javaType: 'String'
         }
       ]
     },

@@ -8,6 +8,8 @@ import foam.dao.*;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import net.nanopay.transactionservice.model.Transaction;
+import net.nanopay.transactionservice.model.TransactionPurpose;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,20 +35,27 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public Transaction transferValueById(Long payerId, Long payeeId, Long amount)
+  public Transaction transferValueById(long payerId, long payeeId, long amount, double rate, String purposeCode)
     throws RuntimeException
   {
-
-    if ( payerId == null || payerId == 0 ) {
+    if ( payerId <= 0 ) {
       throw new RuntimeException("Invalid Payer id");
     }
 
-    if ( payeeId == null || payeeId == 0 ) {
+    if ( payeeId <= 0 ) {
       throw new RuntimeException("Invalid Payee id");
     }
 
-    if ( amount == null || amount == 0 ) {
+    if ( amount < 0 ) {
       throw new RuntimeException("Invalid amount");
+    }
+
+    if ( rate < 0 ) {
+      throw new RuntimeException("Invalid rate");
+    }
+
+    if ( purposeCode == null || purposeCode.isEmpty() ) {
+      throw new RuntimeException("Invalid purpose");
     }
 
     Transaction transaction = new Transaction();
@@ -54,6 +63,12 @@ public class SingleCurrencyTransactionService
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
+    transaction.setRate(rate);
+
+    TransactionPurpose p = new TransactionPurpose();
+    p.setCode(purposeCode);
+    p.setProprietary(true);
+    transaction.setPurpose(p);
 
     try {
       return (Transaction) transactionDAO_.put(transaction);
