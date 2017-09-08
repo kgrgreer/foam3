@@ -11,7 +11,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'fromBusinessName', 'issueDate', 'amount', 'status', 'wizardViewBtn'
+    'invoiceNumber', 'purchaseOrder', 'fromBusinessName', 'issueDate', 'amount', 'status', 'payNow'
   ],
 
   properties: [
@@ -159,7 +159,10 @@ foam.CLASS({
     {
       name: 'payNow',
       label: 'Pay now',
-      code: function(X){
+      isAvailable: function(status) {
+        return status !== 'Paid';
+      },
+      code: function(X) {
         X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
       }
     }
