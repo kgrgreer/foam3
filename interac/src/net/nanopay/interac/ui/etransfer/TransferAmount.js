@@ -333,7 +333,6 @@ foam.CLASS({
       // NOTE: fxRate returns too quickly. Added .5 second delay.
       setTimeout(function(){
         self.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
-          console.log(response);
           self.rate = response.toAmount;
           self.loadingSpinner.hide();
           self.startTimer();

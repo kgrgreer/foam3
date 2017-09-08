@@ -91,6 +91,7 @@ foam.CLASS({
 
   properties: [
     'user',
+    'idLabel_',
     'name_',
     'email_',
     'phone_',
@@ -131,7 +132,7 @@ foam.CLASS({
           .start('div').addClass('bankInfoContainer')
             .start('div').addClass('bankInfoRow')
               .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
-                .add('ID')
+                .add(this.idLabel_$)
               .end()
               .start('p').addClass('pDetails').addClass('bankInfoText')
                 .add(this.accountId_$)
@@ -175,17 +176,6 @@ foam.CLASS({
         this.email_ = this.user.email;
         this.phone_ = this.user.phone;
 
-        switch( this.user.address.countryId ) {
-          case 'CA' :
-            this.flagURL_ = 'images/canada.svg';
-            this.nationality_ = 'Canada';
-            break;
-          case 'IN' :
-            this.flagURL_ = 'images/india.svg';
-            this.nationality_ = 'India';
-            break;
-        }
-
         this.address_ = this.user.address.address;
         if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
         if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
@@ -195,9 +185,22 @@ foam.CLASS({
 
 
         this.bankAccountDAO.find(this.user.id).then(function(account) {
-          self.accountId_ = account.id;
           self.accountNo_ = account.accountInfo.accountNumber;
           self.bankDAO.find(account.accountInfo.bankAccount).then(function(bank){
+            switch( self.user.address.countryId ) {
+              case 'CA' :
+                self.flagURL_ = 'images/canada.svg';
+                self.nationality_ = 'Canada';
+                self.idLabel_ = 'FI ID';
+                self.accountId_ = bank.memberIdentification + ' - ' + bank.branchId;
+                break;
+              case 'IN' :
+                self.flagURL_ = 'images/india.svg';
+                self.nationality_ = 'India';
+                self.idLabel_ = 'IFSC';
+                self.accountId_ = bank.memberIdentification;
+                break;
+            }
             self.bankName_ = bank.name;
             self.createView();
           });
