@@ -1,1 +1,2 @@
 p({"class":"foam.nanos.boot.NSpec","name":"bankDAO","lazy":true,"serve":true, "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(net.nanopay.common.model.Bank.getOwnClassInfo(), \"banks\"));"})
+p({"class":"foam.nanos.boot.NSpec","name":"bankAccountDAO","lazy":true,"serve":true, "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(net.nanopay.common.model.Account.getOwnClassInfo(), \"bankAccounts\"));"})
