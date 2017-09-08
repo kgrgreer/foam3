@@ -145,7 +145,7 @@ foam.CLASS({
     {
       name: 'exportModal',
       code: function(X){
-        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.interac.ui.modals.ExportModal'}));
+        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.interac.ui.modals.ExportModal', transaction: X.data.viewData.transaction}));
       }
     },
   ],
