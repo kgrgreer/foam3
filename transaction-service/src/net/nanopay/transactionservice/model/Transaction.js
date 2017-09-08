@@ -2,6 +2,14 @@ foam.CLASS({
   package: 'net.nanopay.transactionservice.model',
   name: 'Transaction',
 
+  exports: [
+    'payNow'
+  ],
+
+  imports: [
+    'stack'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -60,8 +68,13 @@ foam.CLASS({
       name: 'rate'
     },
     {
-      class: 'Currency',
-      name: 'fees'
+      class: 'String',
+      name: 'fees',
+      tableCellFormatter: function(fees, X){
+        this.start()
+          .add(X.PAY_NOW)
+        .end()
+      }
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
@@ -69,6 +82,16 @@ foam.CLASS({
       name: 'total',
       expression: function (amount, tip, fees) {
         return amount + tip + fees;
+      }
+    }
+  ],
+  
+  actions: [
+    {
+      name: 'payNow',
+      label: 'Pay now',
+      code: function(){
+        this.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
       }
     }
   ]

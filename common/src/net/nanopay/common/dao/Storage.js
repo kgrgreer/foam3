@@ -96,9 +96,6 @@ foam.CLASS({
           .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
           .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
       }
-    },
-    {
-
     }
   ],
 

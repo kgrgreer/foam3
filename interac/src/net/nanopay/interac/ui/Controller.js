@@ -97,6 +97,12 @@ foam.CLASS({
 
       net.nanopay.interac.Data.create(undefined, this);
 
+      if(this.country == 'Canada') {
+        this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
+      } else if(this.country == 'India') {
+        this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
+      }
+
       this
         .addClass(this.myClass());
         /*.add(this.user$.dot('id').map(function (id) {
