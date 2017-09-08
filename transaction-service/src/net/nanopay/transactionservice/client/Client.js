@@ -35,10 +35,8 @@ foam.CLASS({
     {
       name: 'transactionDAO',
       factory: function() {
-        return this.EasyDAO.create({
-          daoType: 'CLIENT',
+        return this.createDAO({
           of: this.Transaction,
-          serviceName: 'transactionDAO',
           seqNo: true,
           testData: [
             {
