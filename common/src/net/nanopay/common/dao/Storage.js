@@ -7,23 +7,22 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'net.nanopay.b2b.model.Invoice',
-    'net.nanopay.common.model.Bank',
-    'net.nanopay.transactionservice.model.Transaction'
+    'net.nanopay.common.model.Bank'
   ],
 
   exports: [
     'bankDAO',
-    'invoiceDAO',
-    'transactionDAO'
+    'invoiceDAO'
   ],
 
   properties: [
     {
       name: 'bankDAO',
       factory: function() {
-        return this.clientDAO({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: this.Bank,
-          url: 'bankDAO',
+          serviceName: 'bankDAO',
           seqNo: true,
           testData: [
             {
@@ -109,29 +108,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'transactionDAO',
-      factory: function() {
-        return this.createDAO({
-          of: this.Transaction,
-          seqNo: true,
-          testData: [
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 2300.00, rate: 52.51, fees: 20.00
-              },
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 3200.00, rate: 52.51, fees: 20.00
-              }
-          ]
-        })
-        .addPropertyIndex(this.Transaction.REFERENCE_NUMBER)
-        .addPropertyIndex(this.Transaction.DATE)
-        .addPropertyIndex(this.Transaction.PAYEE_ID)
-        .addPropertyIndex(this.Transaction.AMOUNT)
-        .addPropertyIndex(this.Transaction.RATE)
-        .addPropertyIndex(this.Transaction.FEES)
-      }
-    },
-    {
       name: 'invoiceDAO',
       factory: function() {
         /*this.DecoratedDAO.create({
@@ -156,18 +132,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-      var dao = this.EasyDAO.create({
-        daoType: 'CLIENT',
-        of: config.of,
-        seqNo: config.seqNo,
-        serviceName: config.url,
-        testData: config.testData
-      });
-
-      return dao;
     }
   ]
 });
