@@ -35,7 +35,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public Transaction transferValueById(long payerId, long payeeId, long amount, String rate, String purposeCode)
+  public Transaction transferValueById(long payerId, long payeeId, long amount, String rate, String purposeCode, long fees, String notes)
     throws RuntimeException
   {
     if ( payerId <= 0 ) {
@@ -58,12 +58,18 @@ public class SingleCurrencyTransactionService
       throw new RuntimeException("Invalid purpose");
     }
 
+    if ( fees < 0 ) {
+      throw new RuntimeException("Invalid fees");
+    }
+
     Transaction transaction = new Transaction();
     transaction.setDate(new Date());
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
     transaction.setRate(Double.parseDouble(rate));
+    transaction.setFees(fees);
+    transaction.setNotes(notes);
 
     TransactionPurpose p = new TransactionPurpose();
     p.setCode(purposeCode);
