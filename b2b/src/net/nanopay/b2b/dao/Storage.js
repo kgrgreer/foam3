@@ -513,18 +513,20 @@ foam.CLASS({
     {
       name: 'invoiceResolutionDAO',
       factory: function() {
-        return this.clientDAO({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: net.nanopay.b2b.model.InvoiceResolution,
-          url: 'invoiceResolutionDAO'
+          serviceName: 'invoiceResolutionDAO'
         });
       }
     },
     {
       name: 'countryDAO',
       factory: function() {
-        return this.clientDAO({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: foam.nanos.auth.Country,
-          url: 'countryDAO',
+          serviceName: 'countryDAO',
           testData: [
             {
               name: 'Canada',
@@ -537,9 +539,10 @@ foam.CLASS({
     {
       name: 'businessTypeDAO',
       factory: function() {
-        return this.clientDAO({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: net.nanopay.b2b.model.BusinessType,
-          url: 'businessTypeDAO',
+          serviceName: 'businessTypeDAO',
           testData: [
             {
               name: 'Sole Proprietorship'
@@ -673,29 +676,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-
-      var dao = this.ClientDAO.create({
-        of: config.of,
-        delegate: this.HTTPBox.create({
-          method: 'POST',
-          url: 'http://localhost:8080/' + config.url
-        })
-      });
-
-      if ( config.testData ) {
-        dao.select(this.COUNT()).then(function (c) {
-          if ( c.value == 0 ) {
-            for ( var i = 0 ; i < config.testData.length ; i ++ ) {
-              dao.put(config.of.create(config.testData[i]));
-            }
-          }
-        });
-      }
-
-      return dao;
     }
   ]
 });

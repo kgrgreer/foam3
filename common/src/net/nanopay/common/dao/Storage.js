@@ -7,23 +7,23 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'net.nanopay.b2b.model.Invoice',
-    'net.nanopay.common.model.Bank',
-    'net.nanopay.transactionservice.model.Transaction'
+    'net.nanopay.common.model.Bank'
   ],
 
   exports: [
     'bankDAO',
-    'invoiceDAO',
-    'transactionDAO'
+    'invoiceDAO'
   ],
 
   properties: [
     {
       name: 'bankDAO',
       factory: function() {
-        return this.clientDAO({
-          of: net.nanopay.common.model.Bank,
-          url: 'bankDAO',
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.Bank,
+          serviceName: 'bankDAO',
+          seqNo: true,
           testData: [
             {
               name: 'Bank of Montreal',
@@ -39,7 +39,18 @@ foam.CLASS({
             },
             {
               name: 'TD Canada',
-              financialId: '004'
+              financialId: '004',
+              branchId: '10202',
+              memberIdentification: '004',
+              clearingSystemIdentification: 'CACPA',
+              address: {
+                buildingNumber: 55,
+                address: 'King St W',
+                city: 'Toronto',
+                postalCode: 'M5K1A2',
+                regionId: 'ON',
+                countryId: 'CA'
+              }
             },
             {
               name: 'CIBC',
@@ -52,32 +63,21 @@ foam.CLASS({
             {
               name: 'Indian Bank',
               financialId: '999'
+            },
+            {
+              name: 'State Bank of India',
+              financialId: 'SBIN0071222',
+              memberIdentification: 'SBIN0071222',
+              clearingSystemIdentification: 'INFSC',
+              address: {
+                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI400051',
+                city: 'Mumbai',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
             }
           ]
         })
-      }
-    },
-    {
-      name: 'transactionDAO',
-      factory: function() {
-        return this.createDAO({
-          of: this.Transaction,
-          seqNo: true,
-          testData: [
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 2300.00, rate: 52.51, fees: 20.00
-              },
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 3200.00, rate: 52.51, fees: 20.00
-              }
-          ]
-        })
-        .addPropertyIndex(this.Transaction.REFERENCE_NUMBER)
-        .addPropertyIndex(this.Transaction.DATE)
-        .addPropertyIndex(this.Transaction.PAYEE_ID)
-        .addPropertyIndex(this.Transaction.AMOUNT)
-        .addPropertyIndex(this.Transaction.RATE)
-        .addPropertyIndex(this.Transaction.FEES)
       }
     },
     {
@@ -105,29 +105,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-
-      var dao = this.ClientDAO.create({
-        of: config.of,
-        delegate: this.HTTPBox.create({
-          method: 'POST',
-          url: 'http://localhost:8080/' + config.url
-        })
-      });
-
-      if ( config.testData ) {
-        dao.select(this.COUNT()).then(function (c) {
-          if ( c.value == 0 ) {
-            for ( var i = 0 ; i < config.testData.length ; i ++ ) {
-              dao.put(config.of.create(config.testData[i]));
-            }
-          }
-        });
-      }
-
-      return dao;
     }
   ]
 });

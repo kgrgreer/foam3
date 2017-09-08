@@ -7,6 +7,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.common.model.BankAccountInfo',
     'net.nanopay.interac.model.Identification',
     'net.nanopay.interac.model.DateAndPlaceOfBirth',
     'net.nanopay.iso20022.Pacs00800106',
@@ -29,32 +30,48 @@ foam.CLASS({
 
   constants: {
     GENERATE_POSTAL_ADDRESS: function (address) {
-      return this.PostalAddress6.create({
+      var postalAddress = this.PostalAddress6.create({
         AdrTp: net.nanopay.iso20022.AddressType2Code.ADDR,
-        StrtNm: address.address,
         TwnNm: address.city,
         CtrySubDvsn: address.regionId,
         Ctry: address.countryId
       });
+
+      if ( ! address.buildingNumber && ! address.postalCode ) {
+        // assume address field is unstructured address information
+        // split address into chunks of 70 chars
+        postalAddress.AdrLine = address.address.match(/.{1,70}/g).map(function (chunk) {
+          return chunk;
+        })
+      } else {
+        postalAddress.StrtNm = address.address;
+        postalAddress.PstCd = address.postalCode;
+        postalAddress.BldgNb = address.buildingNumber;
+      }
+
+
+      return postalAddress;
     },
 
-    GENERATE_AGENT_DETAILS: function (agent) {
+    GENERATE_AGENT_DETAILS: function (bank) {
       var agentDetails = this.BranchAndFinancialInstitutionIdentification5.create({
         FinInstnId: {
           ClrSysMmbId: {
             ClrSysId: {
-              // TODO: determine code based on country
-              Cd: ''
+              Cd: bank.clearingSystemIdentification
             },
-            // TODO: determine whether to use FI ID or IFSC Code
-            MbmId: ''
+            MbmId: bank.memberIdentification
           },
-          Nm: '',
-          // PstlAdr: this.GENERATE_POSTAL_ADDRESS(null)
+          Nm: bank.name,
+          PstlAdr: this.GENERATE_POSTAL_ADDRESS(bank.address)
         }
       });
 
-      // TODO: add BranchIdentification if Canadian agent
+      if ( bank.address.countryId === 'CA' ) {
+        agentDetails.BrnchId = {
+          Id: bank.branchId
+        }
+      }
 
       return agentDetails;
     },
@@ -63,10 +80,10 @@ foam.CLASS({
       return this.CashAccount24.create({
         Id: {
           Othr: {
-            Id: account.accountInfo.accountNumber
+            Id: account.accountNumber
           }
         },
-        Ccy: account.accountInfo.currencyCode,
+        Ccy: account.currencyCode,
         // TODO: change to business name if not a business
         Nm: user.firstName + ' ' + user.lastName
       });
@@ -124,11 +141,13 @@ foam.CLASS({
       var transaction = null;
 
       var payer = null;
+      var payerBank = null;
       var payerAccount = null;
       var payerIdentification = null;
       var payerBirthPlace = null;
 
       var payee = null;
+      var payeeBank = null;
       var payeeAccount = null;
       var payeeIdentification = null;
       var payeeBirthPlace = null;
@@ -152,9 +171,17 @@ foam.CLASS({
           throw new Error('Payer not found');
 
         payer = result[0];
-        payerAccount = result[1];
+        payerAccount = result[1].accountInfo;
         payerIdentification = result[2].array;
         payerBirthPlace = result[3].array[0];
+
+        return self.__context__[self.BankAccountInfo.BANK_ACCOUNT.targetDAOKey].find(payerAccount.bankAccount);
+      })
+      .then(function (result) {
+        if ( ! result )
+          throw new Error('Payer bank not found');
+
+        payerBank = result;
 
         // get payee information
         return Promise.all([
@@ -169,9 +196,17 @@ foam.CLASS({
           throw new Error('Payee not found');
 
         payee = result[0];
-        payeeAccount = result[1];
+        payeeAccount = result[1].accountInfo;
         payeeIdentification = result[2].array;
         payeeBirthPlace = result[3].array[0];
+
+        return self.__context__[self.BankAccountInfo.BANK_ACCOUNT.targetDAOKey].find(payeeAccount.bankAccount);
+      })
+      .then(function (result) {
+        if ( ! result )
+          throw new Error('Payee bank not found');
+
+        payeeBank = result;
 
         var msgId = foam.uuid.randomGUID().replace(/-/g, '');
         return self.Pacs00800106.create({
@@ -218,10 +253,10 @@ foam.CLASS({
                 // TODO: populate IntrmyAgt1 & 2
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
                 DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer, payerAccount),
-                DbtrAgt: self.GENERATE_AGENT_DETAILS(null),
+                DbtrAgt: self.GENERATE_AGENT_DETAILS(payerBank),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
-                CdtrAgt: self.GENERATE_AGENT_DETAILS(null)
+                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank)
               }
             ]
           }
