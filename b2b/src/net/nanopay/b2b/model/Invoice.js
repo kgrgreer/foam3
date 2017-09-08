@@ -11,7 +11,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'fromBusinessName', 'issueDate', 'amount', 'status'
+    'invoiceNumber', 'purchaseOrder', 'fromBusinessName', 'issueDate', 'amount', 'status', 'wizardViewBtn'
   ],
 
   properties: [
@@ -136,12 +136,31 @@ foam.CLASS({
         var label;
 
         if ( state === 'Scheduled' || state === 'Paid' ) {
-          label = state + ' ' + formatDate(obj.paymentDate);
+          label = state;
         } else {
           label = state;
         }
 
         this.start().addClass('Invoice-Status-' + state).add(label).end();
+      }
+    },
+    {
+      name: 'wizardViewBtn',
+      label: '',
+      tableCellFormatter: function(fees, X){
+        this.start()
+          .add(X.PAY_NOW)
+        .end()
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'payNow',
+      label: 'Pay now',
+      code: function(X){
+        X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
       }
     }
   ]

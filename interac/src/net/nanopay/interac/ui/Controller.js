@@ -42,6 +42,14 @@ foam.CLASS({
         .stack-wrapper:after, .net-nanopay-interac-ui-shared-FooterView{
           height: 10px;
         }
+        .foam-u2-ActionView-payNow {
+          width: 80px;
+          height: 30px;
+          border: none !important;
+          background: #59a5d5 !important;
+          font-size: 10px !important;
+          color: white !important;
+        }
       */}
     })
   ],
