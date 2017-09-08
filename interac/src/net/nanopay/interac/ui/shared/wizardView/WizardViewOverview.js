@@ -5,6 +5,11 @@ foam.CLASS({
 
   documentation: 'A view that displays the position of the user in the WizardView Stack.',
 
+  imports: [
+    'viewData',
+    'complete'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -45,7 +50,7 @@ foam.CLASS({
 
         ^ .positionCircle.complete {
           border: solid 1px #23c2b7;
-          background-color: #23c2b7;
+          background-color: #23c2b7 !important;
         }
 
         ^ .positionLine {
@@ -88,7 +93,8 @@ foam.CLASS({
           .start().forEach(this.titles, function(title, index) {
             this.start('div')
               .addClass('positionCircle')
-              .addClass(self.position$.map(function(p) { return p == self.titles.length - 1 ? 'complete' : index == p ? 'current' : index < p ? 'complete' : ''; }))
+              .addClass(self.complete$.map(function(flag) { console.log(flag); return flag ? 'complete' : ''; }))
+              .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
             .end();
             if ( index < self.titles.length - 1 ) {
               this.start('div').addClass('positionLine').end();
@@ -100,6 +106,6 @@ foam.CLASS({
             this.start('p').addClass('positionTitle').add(title).end();
           }).end()
         .end()
-    },
+    }
   ]
 });
