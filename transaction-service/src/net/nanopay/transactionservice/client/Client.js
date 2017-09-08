@@ -35,9 +35,10 @@ foam.CLASS({
     {
       name: 'transactionDAO',
       factory: function() {
-        return this.clientDAO({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: this.Transaction,
-          url: 'transactionDAO',
+          serviceName: 'transactionDAO',
           seqNo: true,
           testData: [
             {
@@ -59,12 +60,12 @@ foam.CLASS({
     {
       name: 'accountDAO',
       factory: function() {
-        return this.ClientDAO.create({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: net.nanopay.common.model.Account,
-          delegate: this.HTTPBox.create({
-            method: 'POST',
-            url: 'http://localhost:8080/accountDAO'
-          })});
+          serviceName: 'accountDAO',
+          seqNo: true,
+        });
       }
     },
   ],
@@ -75,24 +76,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-      var dao = this.EasyDAO.create({
-        daoType: 'CLIENT',
-        of: config.of,
-        serviceName: config.url,
-      });
-
-      if ( config.seqNo ) {
-        dao.seqNo = config.seqNo;
-      }
-
-      if ( config.testData ) {
-        dao.testData = config.testData;
-      }
-
-      return dao;
     }
   ]
 });
