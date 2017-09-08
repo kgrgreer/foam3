@@ -100,7 +100,7 @@ foam.CLASS({
         // if organization exists, change name to organization name.
         if ( this.viewData.payee.organization ) this.name = this.viewData.payee.organization;
       }
-      
+
       this
         .addClass(this.myClass())
         .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
