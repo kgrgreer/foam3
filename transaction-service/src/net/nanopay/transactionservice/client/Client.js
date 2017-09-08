@@ -37,17 +37,37 @@ foam.CLASS({
       name: 'transactionDAO',
       factory: function() {
         return this.EasyDAO.create({
-          daoType: 'CLIENT',
+          daoType: 'MDAO',
           remoteListenerSupport: true,
-          serviceName: 'transactionDAO',
+//          serviceName: 'transactionDAO',
           of: this.Transaction,
           seqNo: true,
           testData: [
             {
-              referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 2300.00, rate: 52.51, fees: 20.00
+              referenceNumber: 'CAxxxJZ7',
+              date: '2017 Aug 22',
+              payerId: 1,
+              payeeId: 2,
+              amount: 2300.00,
+              rate: 52.51,
+              fees: 20.00,
+              purpose: {
+                proprietary: true,
+                code: 'S0802'
+              }
             },
             {
-              referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 3200.00, rate: 52.51, fees: 20.00
+              referenceNumber: 'CAxxxJZ7',
+              date: '2017 Aug 22',
+              payerId: 1,
+              payeeId: 2,
+              amount: 3200.00,
+              rate: 52.51,
+              fees: 20.00,
+              purpose: {
+                proprietary: true,
+                code: 'S0802'
+              }
             }
           ]
         })

@@ -267,7 +267,11 @@ foam.CLASS({
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(payerBank),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
-                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank)
+                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank),
+                // if proprietary use Cd, else use Prtry
+                Purp: transaction.purpose.proprietary ?
+                  { Cd: transaction.purpose.code } :
+                  { Prtry: transaction.purpose.code }
               }
             ]
           }
