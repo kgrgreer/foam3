@@ -7,7 +7,10 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
 
-  imports: [ 'transactionDAO' ],
+  imports: [ 
+    'transactionDAO',
+    'account' 
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -69,10 +72,13 @@ foam.CLASS({
           margin: 0;
         }
         ^ .foam-u2-ActionView-sendTransfer {
+
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #e68e43;
+          background: #e68e43;
+          border: 0;
+          box-shadow: none;
           display: inline-block;
           line-height: 40px;
           color: white;
@@ -161,8 +167,8 @@ foam.CLASS({
         .start()
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
-            .start().add('Chequing Account xxxxxxxxxxxx5555').addClass('account').end()
-            .start().add('INR 5000.00').addClass('accountBalance').end()
+            .start().add('Chequing Account xxxxxxxxxxxx0933').addClass('account').end()
+            .start().add('INR ', this.account$.dot('accountInfo').dot('balance')).addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()

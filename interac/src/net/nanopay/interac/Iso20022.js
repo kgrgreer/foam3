@@ -24,6 +24,7 @@ foam.CLASS({
     'userDAO',
     'bankDAO',
     'bankAccountDAO',
+    'invoiceDAO',
     'transactionDAO',
     'identificationDAO',
     'dateAndPlaceOfBirthDAO',
@@ -61,7 +62,7 @@ foam.CLASS({
             ClrSysId: {
               Cd: bank.clearingSystemIdentification
             },
-            MbmId: bank.memberIdentification
+            MmbId: bank.memberIdentification
           },
           Nm: bank.name,
           PstlAdr: this.GENERATE_POSTAL_ADDRESS(bank.address)
@@ -136,9 +137,10 @@ foam.CLASS({
       return entityDetails;
     },
 
-    GENERATE_PACS008_MESSAGE: function (transactionId) {
+    GENERATE_PACS008_MESSAGE: function (transactionId, invoiceId) {
       var self = this;
 
+      var invoice = null;
       var transaction = null;
       var intermediaries = [];
 
@@ -168,6 +170,13 @@ foam.CLASS({
           throw new Error('Intermediaries not found');
 
         intermediaries = result;
+
+        // only do a lookup if invoiceId is present
+        return ( invoiceId ) ? self.invoiceDAO.find(invoiceId) : null;
+      })
+      .then(function (result) {
+        if ( result )
+          invoice = result;
 
         // get payer information
         return Promise.all([
@@ -258,8 +267,24 @@ foam.CLASS({
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-                // TODO populate fees
-                ChrgsInf: [],
+                // TODO: removed hard coded fees post demo
+                ChrgsInf: [
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.80
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(intermediaries[0])
+                  },
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.70
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(payerBank)
+
+                  }
+                ],
                 IntrmyAgt1: self.GENERATE_AGENT_DETAILS(intermediaries[0]),
                 IntrmyAgt2: self.GENERATE_AGENT_DETAILS(intermediaries[1]),
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
@@ -267,7 +292,37 @@ foam.CLASS({
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(payerBank),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
-                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank)
+                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank),
+                // if proprietary use Cd, else use Prtry
+                Purp: transaction.purpose.proprietary ?
+                  { Cd: transaction.purpose.code } :
+                  { Prtry: transaction.purpose.code },
+                // only add RltdRmtInf if invoice is present
+                RltdRmtInf: ( invoice ) ? {
+                  RmtId: foam.uuid.randomGUID().replace(/-/g, ''),
+                  RmtLctnDtls: [
+                    Mtd: 'URID',
+                    ElctrncAdr: invoice.invoiceFileUrl
+                  ]
+                } : undefined,
+                // only add RmtInf if transaction or notes are not null
+                RmtInf: ( transaction.notes || invoice ) ? {
+                  // only add notes if present
+                  Ustrd: ( transaction.notes ) ?
+                    transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined,
+                  // only add invoice information if present
+                  Strd: ( invoice ) ? {
+                    RfrdDocInf: {
+                      Tp: {
+                        CdOrPrtry: {
+                          Cd: 'CINV'
+                        }
+                      },
+                      Nb: invoice.invoiceNumber,
+                      RltdDt: invoice.issueDate
+                    }
+                  } : undefined
+                } : undefined
               }
             ]
           }

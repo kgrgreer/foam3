@@ -18,11 +18,9 @@ find foam2/src NANOPAY/**/src -type f -name permissions -exec cat {} \; > permis
 find foam2/src NANOPAY/**/src -type f -name regions -exec cat {} \; > regions
 find foam2/src NANOPAY/**/src -type f -name script -exec cat {} \; > script
 find foam2/src NANOPAY/**/src -type f -name services -exec cat {} \; > services
-find foam2/src NANOPAY/**/src -type f -name tests -exec cat {} \; > tests
 find foam2/src NANOPAY/**/src -type f -name transactions -exec cat {} \; > transactions
 find foam2/src NANOPAY/**/src -type f -name users -exec cat {} \; > users
 find foam2/src NANOPAY/**/src -type f -name payees -exec cat {} \; > payees
-
 
 cd foam2/src
 ./gen.sh
