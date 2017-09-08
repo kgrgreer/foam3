@@ -306,7 +306,7 @@ foam.CLASS({
         .start('div').addClass('fromToCol')
           .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
-            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNo).end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNumber).end()
             .br()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
