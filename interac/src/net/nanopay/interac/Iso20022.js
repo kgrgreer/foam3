@@ -86,8 +86,9 @@ foam.CLASS({
           }
         },
         Ccy: account.currencyCode,
-        // TODO: change to business name if not a business
-        Nm: user.firstName + ' ' + user.lastName
+        Nm: ( user.type !== 'Business' ) ?
+          user.firstName + ' ' + user.lastName :
+          user.businessName
       });
     },
 
@@ -115,9 +116,10 @@ foam.CLASS({
       })
 
       if ( user.type === 'Business' ) {
-        // TODO: model organisation identification
         entityDetails.Id = {
           OrgId: {
+            AnyBIC: ( user.bankIdentificationCode ) ?
+              user.bankIdentificationCode : undefined
             Othr: identification
           }
         };
