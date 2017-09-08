@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
 
 public class SingleCurrencyTransactionService
   extends ContextAwareSupport
@@ -70,6 +71,9 @@ public class SingleCurrencyTransactionService
     transaction.setRate(Double.parseDouble(rate));
     transaction.setFees(fees);
     transaction.setNotes(notes);
+
+    String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+    transaction.setReferenceNumber(referenceNumber);
 
     TransactionPurpose p = new TransactionPurpose();
     p.setCode(purposeCode);
