@@ -22,23 +22,23 @@ foam.CLASS({
       name: 'toCurrency'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'fromAmount'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'toAmount'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'rate'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'feesAmount'
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'feesPercentage'
     },
     {
