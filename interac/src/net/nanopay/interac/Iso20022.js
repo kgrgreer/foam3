@@ -258,8 +258,24 @@ foam.CLASS({
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-                // TODO populate fees
-                ChrgsInf: [],
+                // TODO: removed hard coded fees post demo
+                ChrgsInf: [
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.80
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(intermediaries[0])
+                  },
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.70
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(payerBank)
+
+                  }
+                ],
                 IntrmyAgt1: self.GENERATE_AGENT_DETAILS(intermediaries[0]),
                 IntrmyAgt2: self.GENERATE_AGENT_DETAILS(intermediaries[1]),
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
