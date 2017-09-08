@@ -330,16 +330,16 @@ foam.CLASS({
       this.countdownView.reset();
       this.viewData.rateLocked = false;
 
-      // TODO: Grab actual fxRate
-      // this.exchangeRate.getRate('CAD', 'INR', 1).then(function(response){
-      //   console.log(response);
-      // });
+      // NOTE: fxRate returns too quickly. Added .5 second delay.
       setTimeout(function(){
-        self.rate = 50.72973;
-        self.loadingSpinner.hide();
-        self.startTimer();
-        self.viewData.rateLocked = true;
-      }, 2000);
+        self.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
+          console.log(response);
+          self.rate = response.toAmount;
+          self.loadingSpinner.hide();
+          self.startTimer();
+          self.viewData.rateLocked = true;
+        });
+      }, 500);
     },
 
     function startTimer() {
