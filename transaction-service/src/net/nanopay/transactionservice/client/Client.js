@@ -38,8 +38,9 @@ foam.CLASS({
       factory: function() {
         return this.EasyDAO.create({
           daoType: 'CLIENT',
-          of: this.Transaction,
+          remoteListenerSupport: true,
           serviceName: 'transactionDAO',
+          of: this.Transaction,
           seqNo: true,
           testData: [
             {
