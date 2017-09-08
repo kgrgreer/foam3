@@ -3,11 +3,12 @@ foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
 
   documentation: 'Top-level admin Controller.',
 
   implements: [
-    'foam.nanos.client.Client',
+    'foam.nanos.client.Client2',
     'net.nanopay.admin.dao.Storage',
     'foam.mlang.Expressions'
   ],
