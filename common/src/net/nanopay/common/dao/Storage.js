@@ -40,7 +40,18 @@ foam.CLASS({
             },
             {
               name: 'TD Canada',
-              financialId: '004'
+              financialId: '004',
+              branchId: '10202',
+              memberIdentification: '004',
+              clearingSystemIdentification: 'CACPA',
+              address: {
+                buildingNumber: 55,
+                address: 'King St W',
+                city: 'Toronto',
+                postalCode: 'M5K1A2',
+                regionId: 'ON',
+                countryId: 'CA'
+              }
             },
             {
               name: 'CIBC',
@@ -53,6 +64,18 @@ foam.CLASS({
             {
               name: 'Indian Bank',
               financialId: '999'
+            },
+            {
+              name: 'State Bank of India',
+              financialId: 'SBIN0071222',
+              memberIdentification: 'SBIN0071222',
+              clearingSystemIdentification: 'INFSC',
+              address: {
+                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI400051',
+                city: 'Mumbai',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
             }
           ]
         })
