@@ -181,13 +181,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
-      // NOTE: Test Invoice
-      // this.invoice = {
-      //   invoiceNumber: '123456',
-      //   purchaseOrder: '123456',
-      //   invoiceFileUrl: '',
-      //   amount: 123.45,
-      // };
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;

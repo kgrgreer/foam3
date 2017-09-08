@@ -24,6 +24,7 @@ foam.CLASS({
   exports: [
     'stack',
     'user',
+    'country',
     'as ctrl'
   ],
 
@@ -40,6 +41,14 @@ foam.CLASS({
         }
         .stack-wrapper:after, .net-nanopay-interac-ui-shared-FooterView{
           height: 10px;
+        }
+        .foam-u2-ActionView-payNow {
+          width: 80px;
+          height: 30px;
+          border: none !important;
+          background: #59a5d5 !important;
+          font-size: 10px !important;
+          color: white !important;
         }
       */}
     })
@@ -93,13 +102,15 @@ foam.CLASS({
 //       })
       
       // Injecting Sample Partner
-      this.userDAO.limit(1).select().then(function(a) {
-        self.user.copyFrom(a.array[0]);
-      });
+      // this.userDAO.limit(1).select().then(function(a) {
+      //   self.user.copyFrom(a.array[0]);
+      // });
     },
 
     function initE() {
       var self = this;
+
+      net.nanopay.interac.Data.create(undefined, this);
 
       if(this.country == 'Canada') {
         this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
@@ -116,9 +127,17 @@ foam.CLASS({
         }))*/
         
         if(this.country == 'Canada') {
-          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav', data: self.business}))
+          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav', data: self.business}));
+          this.userDAO.limit(1).select(this.EQ(this.User.ID, 1)).then(function(a) {
+            self.user.copyFrom(a.array[0]);
+          });
+          this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
         } else if(this.country == 'India') {
-          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}))
+          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}));
+          this.userDAO.limit(1).select(this.EQ(this.User.ID, 2)).then(function(a) {
+            self.user.copyFrom(a.array[0]);
+          });
+          this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
         }
         
         this.br()

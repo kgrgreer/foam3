@@ -69,10 +69,13 @@ foam.CLASS({
           margin: 0;
         }
         ^ .foam-u2-ActionView-sendTransfer {
+
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #e68e43;
+          background: #e68e43;
+          border: 0;
+          box-shadow: none;
           display: inline-block;
           line-height: 40px;
           color: white;

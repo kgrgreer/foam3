@@ -225,7 +225,7 @@ foam.CLASS({
 
       properties: [
         'selection',
-        { name: 'data', factory: function() {return this.transactionDAO}}
+        { name: 'data', factory: function() { return this.transactionDAO; }}
       ],
 
       methods: [
