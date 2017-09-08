@@ -5,7 +5,7 @@ foam.CLASS({
   imports: [
     'invoiceDAO',
     'menuDAO',
-    'country'
+    'country',
   ],
 
   methods: [

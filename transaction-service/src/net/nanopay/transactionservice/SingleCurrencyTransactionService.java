@@ -3,6 +3,7 @@ package net.nanopay.transactionservice;
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.core.FObject;
+import foam.core.X;
 import foam.dao.*;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
@@ -27,10 +28,27 @@ public class SingleCurrencyTransactionService
     return dateFormat.format(new Date());
   }
 
+  public SingleCurrencyTransactionService(X x) {
+    setX(x);
+  }
+
   @Override
   public void transferValueById(Long payerId, Long payeeId, Long amount)
     throws RuntimeException
   {
+
+    if ( payerId == null || payerId == 0 ) {
+      throw new RuntimeException("Invalid Payer id");
+    }
+
+    if ( payeeId == null || payeeId == 0 ) {
+      throw new RuntimeException("Invalid Payee id");
+    }
+
+    if ( amount == null || amount == 0 ) {
+      throw new RuntimeException("Invalid amount");
+    }
+
     Transaction transaction = new Transaction();
     transaction.setDate(new Date());
     transaction.setPayeeId(payeeId);

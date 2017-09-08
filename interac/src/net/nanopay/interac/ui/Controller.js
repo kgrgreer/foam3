@@ -25,6 +25,7 @@ foam.CLASS({
     'stack',
     'user',
     'country',
+    'account',
     'as ctrl'
   ],
 
@@ -60,6 +61,12 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'user',
       factory: function() { return this.User.create(); }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.common.model.Account',
+      name: 'account',
+      factory: function() { return this.Account.create(); }
     },
     {
       name: 'stack',
@@ -125,17 +132,22 @@ foam.CLASS({
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business }) :
             self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.NoMenuTopNav' });
         }))*/
-        
         if(this.country == 'Canada') {
-          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav', data: self.business}));
-          this.userDAO.limit(1).select(this.EQ(this.User.ID, 1)).then(function(a) {
-            self.user.copyFrom(a.array[0]);
+          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav'}));
+          this.userDAO.find(1).then(function(a) {
+            self.user.copyFrom(a);
+            self.accountDAO.find(self.user.id).then(function(a){
+              self.account = a;
+            })
           });
           this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
         } else if(this.country == 'India') {
           this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}));
-          this.userDAO.limit(1).select(this.EQ(this.User.ID, 2)).then(function(a) {
-            self.user.copyFrom(a.array[0]);
+          this.userDAO.find(2).then(function(a) {
+            self.user.copyFrom(a);
+            self.accountDAO.find(self.user.id).then(function(a){
+              self.account = a;
+            })
           });
           this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
         }
