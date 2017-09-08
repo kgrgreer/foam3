@@ -33,7 +33,7 @@ public class SingleCurrencyTransactionService
   }
 
   @Override
-  public void transferValueById(Long payerId, Long payeeId, Long amount)
+  public Transaction transferValueById(Long payerId, Long payeeId, Long amount)
     throws RuntimeException
   {
 
@@ -56,7 +56,7 @@ public class SingleCurrencyTransactionService
     transaction.setAmount(amount);
 
     try {
-      transactionDAO_.put(transaction);
+      return (Transaction) transactionDAO_.put(transaction);
     } catch (RuntimeException e) {
       throw e;
     }
