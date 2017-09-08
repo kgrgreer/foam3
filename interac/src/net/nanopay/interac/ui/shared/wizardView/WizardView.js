@@ -41,7 +41,7 @@ foam.CLASS({
           background-color: #ffffff;
           width: 992px;
           margin: auto;
-          overflow: scroll;
+          overflow: hidden;
         }
 
         ^ .title {
@@ -72,7 +72,7 @@ foam.CLASS({
           box-sizing: border-box;
           padding: 20px 0;
           padding-right: 20px;
-          overflow: scroll;
+          overflow: hidden;
         }
 
         ^ .stackView {
