@@ -22,6 +22,7 @@ foam.CLASS({
 
   imports: [
     'userDAO',
+    'bankDAO',
     'bankAccountDAO',
     'transactionDAO',
     'identificationDAO',
@@ -139,6 +140,7 @@ foam.CLASS({
       var self = this;
 
       var transaction = null;
+      var intermediaries = [];
 
       var payer = null;
       var payerBank = null;
@@ -157,6 +159,15 @@ foam.CLASS({
           throw new Error('Transaction not found');
 
         transaction = result;
+
+         // TODO: remove hard coded intermediaries
+        return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]);
+      })
+      .then(function (result) {
+        if ( ! result )
+          throw new Error('Intermediaries not found');
+
+        intermediaries = result;
 
         // get payer information
         return Promise.all([
@@ -237,20 +248,20 @@ foam.CLASS({
                   ClrSysRef: Math.floor(Math.random() * (999999 - 1 + 1)) + 1
                 },
                 IntrBkSttlmAmt: {
-                  // TODO: remove hardcoded INR
-                  Ccy: 'INR',
+                  Ccy: payeeAccount.currencyCode,
                   xmlValue: transaction.receivingAmount
                 },
                 IntrBkSttlmDt: transaction.date,
                 InstdAmt: {
-                  // TODO: remove hardcoded CAD
-                  Ccy: 'CAD',
+                  Ccy: payerAccount.currencyCode,
                   xmlValue: transaction.amount
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-                ChrgsInf: [], // TODO populate fees
-                // TODO: populate IntrmyAgt1 & 2
+                // TODO populate fees
+                ChrgsInf: [],
+                IntrmyAgt1: self.GENERATE_AGENT_DETAILS(intermediaries[0]),
+                IntrmyAgt2: self.GENERATE_AGENT_DETAILS(intermediaries[1]),
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
                 DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer, payerAccount),
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(payerBank),
