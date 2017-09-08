@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.transactionservice.model',
   name: 'Transaction',
 
+  imports: [
+    'userDAO'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -21,7 +25,17 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'payeeId'
+      name: 'payeeId',
+      label: 'Payee',
+      tableCellFormatter: function(payeeId, X) {
+        var self = this;
+        X.userDAO.find(payeeId).then(function(payee) {
+          self.start()
+            .start('h4').style({ 'margin-bottom': 0 }).add(payee.firstName).end()
+            .start('p').style({ 'margin-top': 0 }).add(payee.email).end()
+          .end();
+        })
+      }
     },
     {
       class: 'Currency',
