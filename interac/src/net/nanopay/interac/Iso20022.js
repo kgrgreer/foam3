@@ -303,8 +303,10 @@ foam.CLASS({
                 RltdRmtInf: ( invoice ) ? {
                   RmtId: foam.uuid.randomGUID().replace(/-/g, ''),
                   RmtLctnDtls: [
-                    Mtd: 'URID',
-                    ElctrncAdr: invoice.invoiceFileUrl
+                    {
+                      Mtd: 'URID',
+                      ElctrncAdr: invoice.invoiceFileUrl
+                    }
                   ]
                 } : undefined,
                 // only add RmtInf if transaction or notes are not null
