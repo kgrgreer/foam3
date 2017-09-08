@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.transactionservice.model',
   name: 'Transaction',
 
+  imports: [
+    'userDAO'
+  ],
+
   exports: [
     'payNow'
   ],
@@ -43,7 +47,7 @@ foam.CLASS({
       label: 'Sending Amount',
       tableCellFormatter: function(amount) {
         this.start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
-            .add(' CAD ', amount.toFixed(2))
+            .add(' CAD ', ( amount/100 ).toFixed(2))
       },
     },
     {
@@ -57,7 +61,7 @@ foam.CLASS({
       },
       tableCellFormatter: function(receivingAmount) {
         this.start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-            .add(' INR ', receivingAmount.toFixed(2))
+            .add(' INR ', ( receivingAmount/100 ).toFixed(2))
       }
     },
     {
@@ -71,11 +75,17 @@ foam.CLASS({
     },
     {
       class: 'Double',
-      name: 'rate'
+      name: 'rate',
+      tableCellFormatter: function(rate){
+        this.start().add(rate.toFixed(2)).end()
+      }
     },
     {
       class: 'Currency',
-      name: 'fees'
+      name: 'fees',
+      tableCellFormatter: function(fees){
+        this.start().add('$', fees.toFixed(2)).end()
+      }
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
