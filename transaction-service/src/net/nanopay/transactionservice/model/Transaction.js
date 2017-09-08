@@ -8,12 +8,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'dao',
-      factory: function(){
-        return this.userDAO
-      }
-    },
-    {
       class: 'Long',
       name: 'id'
     },

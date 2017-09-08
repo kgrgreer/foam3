@@ -70,14 +70,12 @@ foam.CLASS({
             {
               id: 1,
               accountInfo: this.UserAccountInfo.create({
-                tag: ['CAD'],
                 balance: 50000
               })
             },
             {
               id: 2,
               accountInfo: this.UserAccountInfo.create({
-                tag: ['INR'],
                 balance: 50000
               })
             }

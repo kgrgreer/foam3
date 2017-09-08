@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.common.model.AccountInfo',
 
   properties: [
-    {
-      class: 'StringArray',
-      name: 'tag'
-    },
+//    {
+//      class: 'StringArray',
+//      name: 'tag'
+//    },
     {
       class: 'Long',
       name: 'balance'
