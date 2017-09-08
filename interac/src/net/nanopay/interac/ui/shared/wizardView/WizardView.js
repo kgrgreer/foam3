@@ -116,6 +116,7 @@ foam.CLASS({
           background-color: rgba(164, 179, 184, 0.1);
 
           font-size: 14px;
+          font-weight: lighter;
           letter-spacing: 0.2px;
           color: #093649;
         }
@@ -144,6 +145,7 @@ foam.CLASS({
 
 
           font-size: 14px;
+          font-weight: lighter;
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
