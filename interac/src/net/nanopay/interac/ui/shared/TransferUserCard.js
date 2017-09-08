@@ -64,16 +64,17 @@ foam.CLASS({
 
   properties: [
     'user',
-    'name',
-    'email',
-    'phone',
-    'flagURL',
-    'address',
-    'nationality',
+    'name_',
+    'email_',
+    'phone_',
+    'flagURL_',
+    'address_',
+    'nationality_',
     {
       name: 'created_',
       value: false
-    }
+    },
+    'account'
   ],
 
   methods: [
@@ -89,15 +90,15 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('userContainer')
           .start('div').addClass('userRow')
-            .start('p').addClass('bold').addClass('userName').add(this.name$).end()
+            .start('p').addClass('bold').addClass('userName').add(this.name_$).end()
             .start('div').addClass('nationalityContainer')
-              .start({class: 'foam.u2.tag.Image', data: this.flagURL$}).end() // TODO: Make it dynamic
-              .start('p').addClass('pDetails').addClass('nationalityLabel').add(this.nationality$).end() // TODO: Make it dyamic.
+              .start({class: 'foam.u2.tag.Image', data: this.flagURL_$}).end() // TODO: Make it dynamic
+              .start('p').addClass('pDetails').addClass('nationalityLabel').add(this.nationality_$).end() // TODO: Make it dyamic.
             .end()
           .end()
-          .start('p').addClass('pDetails').add(this.email$).end()
-          .start('p').addClass('pDetails').add(this.phone$).end()
-          .start('p').addClass('pDetails').add(this.address$).end()
+          .start('p').addClass('pDetails').add(this.email_$).end()
+          .start('p').addClass('pDetails').add(this.phone_$).end()
+          .start('p').addClass('pDetails').add(this.address_$).end()
         .end();
       this.created_ = true;
     }
@@ -108,32 +109,34 @@ foam.CLASS({
       name: 'userUpdate',
       code: function() {
         if ( ! this.user ) return;
-        this.name = this.user.firstName + ' ' + this.user.lastName;
+        this.name_ = this.user.firstName + ' ' + this.user.lastName;
         if ( this.mode == 'Organization' ) {
           // if organization exists, change name to organization name.
-          if ( this.user.organization ) this.name = this.user.organization;
+          if ( this.user.organization ) this.name_ = this.user.organization;
         }
 
-        this.email = this.user.email;
-        this.phone = this.user.phone;
+        this.email_ = this.user.email;
+        this.phone_ = this.user.phone;
 
         switch( this.user.address.countryId ) {
           case 'CA' :
-            this.flagURL = 'images/canada.svg';
-            this.nationality = 'Canada';
+            this.flagURL_ = 'images/canada.svg';
+            this.nationality_ = 'Canada';
             break;
           case 'IN' :
-            this.flagURL = 'images/india.svg';
-            this.nationality = 'India';
+            this.flagURL_ = 'images/india.svg';
+            this.nationality_ = 'India';
             break;
         }
 
-        this.address = this.user.address.address;
-        if ( this.user.address.suite ) this.address += ', Suite/Unit ' + this.user.address.suite;
-        if ( this.user.address.city ) this.address += ', ' + this.user.address.city;
-        if ( this.user.address.postalCode ) this.address += ', ' + this.user.address.postalCode;
-        if ( this.user.address.regionId ) this.address += ', ' + this.user.address.regionId;
-        this.address += ', ' + this.nationality;
+        this.address_ = this.user.address.address;
+        if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
+        if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
+        if ( this.user.address.postalCode ) this.address_ += ', ' + this.user.address.postalCode;
+        if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
+        this.address_ += ', ' + this.nationality_;
+
+
 
         this.createView();
       }
