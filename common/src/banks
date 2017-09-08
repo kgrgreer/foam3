@@ -1,0 +1,7 @@
+p({"class":"net.nanopay.common.model.Bank","id":1,"name":"Bank of Montreal","financialId":"001","BIC":"","branchId":"","memberIdentification":""})
+p({"class":"net.nanopay.common.model.Bank","id":2,"name":"Scotiabank","financialId":"002","BIC":"","branchId":"","memberIdentification":""})
+p({"class":"net.nanopay.common.model.Bank","id":3,"name":"Royal Bank of Canada","financialId":"003","BIC":"","branchId":"","memberIdentification":""})
+p({"class":"net.nanopay.common.model.Bank","id":4,"name":"TD Canada","financialId":"004","BIC":"","branchId":"","memberIdentification":""})
+p({"class":"net.nanopay.common.model.Bank","id":5,"name":"CIBC","financialId":"010","BIC":"","branchId":"","memberIdentification":""})
+p({"class":"net.nanopay.common.model.Bank","id":6,"name":"Canadian Bank","financialId":"998","BIC":"","branchId":"","memberIdentification":""})
+p({"class":"net.nanopay.common.model.Bank","id":7,"name":"Indian Bank","financialId":"999","BIC":"","branchId":"","memberIdentification":""})

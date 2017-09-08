@@ -22,8 +22,9 @@ foam.CLASS({
       name: 'bankDAO',
       factory: function() {
         return this.clientDAO({
-          of: net.nanopay.common.model.Bank,
+          of: this.Bank,
           url: 'bankDAO',
+          seqNo: true,
           testData: [
             {
               name: 'Bank of Montreal',
@@ -108,24 +109,13 @@ foam.CLASS({
     },
 
     function clientDAO(config) {
-
-      var dao = this.ClientDAO.create({
+      var dao = this.EasyDAO.create({
+        daoType: 'CLIENT',
         of: config.of,
-        delegate: this.HTTPBox.create({
-          method: 'POST',
-          url: 'http://localhost:8080/' + config.url
-        })
+        seqNo: config.seqNo,
+        serviceName: config.url,
+        testData: config.testData
       });
-
-      if ( config.testData ) {
-        dao.select(this.COUNT()).then(function (c) {
-          if ( c.value == 0 ) {
-            for ( var i = 0 ; i < config.testData.length ; i ++ ) {
-              dao.put(config.of.create(config.testData[i]));
-            }
-          }
-        });
-      }
 
       return dao;
     }
