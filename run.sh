@@ -4,7 +4,9 @@
 set -e
 
 cd ..
-find foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
+find foam2/src NANOPAY/**/src -type f -name accounts -exec cat {} \; > accounts
+find foam2/src NANOPAY/**/src -type f -name banks -exec cat {} \; > banks
+find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankAccountsfind foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
 find foam2/src NANOPAY/**/src -type f -name crons -exec cat {} \; > crons
 find foam2/src NANOPAY/**/src -type f -name exchangerate -exec cat {} \; > exchangerate
 find foam2/src NANOPAY/**/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
@@ -16,7 +18,9 @@ find foam2/src NANOPAY/**/src -type f -name regions -exec cat {} \; > regions
 find foam2/src NANOPAY/**/src -type f -name script -exec cat {} \; > script
 find foam2/src NANOPAY/**/src -type f -name tests -exec cat {} \; > tests
 find foam2/src NANOPAY/**/src -type f -name services -exec cat {} \; > services
+find foam2/src NANOPAY/**/src -type f -name transactions -exec cat {} \; > transactions
 find foam2/src NANOPAY/**/src -type f -name users -exec cat {} \; > users
+find foam2/src NANOPAY/**/src -type f -name payees -exec cat {} \; > payees
 
 cd foam2/src
 ./gen.sh

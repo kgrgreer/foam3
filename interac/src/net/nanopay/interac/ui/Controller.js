@@ -7,6 +7,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.client.Client2',
+    'net.nanopay.interac.client.Client',
     'net.nanopay.transactionservice.client.Client',
     'net.nanopay.interac.dao.Storage',
     'net.nanopay.common.dao.Storage',
@@ -15,6 +16,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'net.nanopay.common.model.Account',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.interac.Iso20022',
@@ -82,25 +84,20 @@ foam.CLASS({
       var self = this;
 
       net.nanopay.interac.Data.create(undefined, this);
-      
-      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
-        console.log(message);
-        console.log(self.iso20022Driver.exportFObject(null, message));
-      });
-//      var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
-//        if ( ! message ) return;
-//        console.log(message);
-//        console.log(self.iso20022Driver.exportFObject(null, message));
-//      })
-//      .catch(function (err) {
-//        console.log('err = ', err);
-//      })
 
+//       var message = this.iso20022.GENERATE_PACS008_MESSAGE(1).then(function (message) {
+//         if ( ! message ) return;
+//         console.log(message);
+//         console.log(self.iso20022Driver.exportFObject(null, message));
+//       })
+//       .catch(function (err) {
+//         console.log('err = ', err);
+//       })
+      
       // Injecting Sample Partner
       this.userDAO.limit(1).select().then(function(a) {
         self.user.copyFrom(a.array[0]);
       });
-      
     },
 
     function initE() {

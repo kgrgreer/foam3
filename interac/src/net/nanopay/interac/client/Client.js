@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.interac',
+  package: 'net.nanopay.interac.client',
   name: 'Client',
 
   implements: [ 'foam.box.Context' ],
@@ -11,7 +11,8 @@ foam.CLASS({
     'foam.box.HTTPBox',
     'net.nanopay.interac.model.Payee',
     'net.nanopay.exchangerate.model.ExchangeRate',
-    'net.nanopay.interac.client.ClientExchangeRateService'
+    'net.nanopay.interac.client.ClientExchangeRateService',
+    'foam.nanos.auth.User'
   ],
 
   exports: [
@@ -45,10 +46,11 @@ foam.CLASS({
     {
       name: 'payeeDAO',
       factory: function() {
-        return this.createDAO({
-          of: this.Payee,
-          testData: []
-        });
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.User,
+          serviceName: 'payeeDAO'
+        })
       }
     }
   ],
