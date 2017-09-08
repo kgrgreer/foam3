@@ -19,9 +19,10 @@ foam.CLASS({
     {
       name: 'bankDAO',
       factory: function() {
-        return this.clientDAO({
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: this.Bank,
-          url: 'bankDAO',
+          serviceName: 'bankDAO',
           seqNo: true,
           testData: [
             {
@@ -104,24 +105,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-      var dao = this.EasyDAO.create({
-        daoType: 'CLIENT',
-        of: config.of,
-        serviceName: config.url,
-      });
-
-      if ( config.seqNo ) {
-        dao.seqNo = config.seqNo;
-      }
-
-      if ( config.testData ) {
-        dao.testData = config.testData;
-      }
-
-      return dao;
     }
   ]
 });
