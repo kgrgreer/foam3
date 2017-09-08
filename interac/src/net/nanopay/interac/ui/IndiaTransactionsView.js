@@ -173,10 +173,6 @@ foam.CLASS({
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
             .add(this.SEND_TRANSFER)
-            .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-              .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-              .addClass('interacLogo')
-            .end()
           .end()
           .start()
             .tag({
