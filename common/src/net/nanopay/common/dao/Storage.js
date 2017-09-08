@@ -7,23 +7,25 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'net.nanopay.b2b.model.Invoice',
+    'net.nanopay.common.model.Account',
     'net.nanopay.common.model.Bank',
-    'net.nanopay.transactionservice.model.Transaction'
+    'net.nanopay.common.model.BankAccountInfo'
   ],
 
   exports: [
     'bankDAO',
-    'invoiceDAO',
-    'transactionDAO'
+    'bankAccountDAO',
+    'invoiceDAO'
   ],
 
   properties: [
     {
       name: 'bankDAO',
-      factory: function() {
-        return this.clientDAO({
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
           of: this.Bank,
-          url: 'bankDAO',
+          serviceName: 'bankDAO',
           seqNo: true,
           testData: [
             {
@@ -71,7 +73,35 @@ foam.CLASS({
               memberIdentification: 'SBIN0071222',
               clearingSystemIdentification: 'INFSC',
               address: {
-                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI400051',
+                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI-400051',
+                city: 'Mumbai',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
+            },
+            {
+              name: 'ICICI Bank Canada',
+              financialId: '340',
+              branchId: '10002',
+              memberIdentification: '340',
+              clearingSystemIdentification: 'CACPA',
+              address: {
+                buildingNumber: 130,
+                address: 'King St W',
+                suite: '2130',
+                city: 'Toronto',
+                postalCode: 'M5X1B1',
+                regionId: 'ON',
+                countryId: 'CA'
+              }
+            },
+            {
+              name: 'ICICI Bank Limited',
+              financialId: 'ICIC0006438',
+              memberIdentification: 'ICIC0006438',
+              clearingSystemIdentification: 'INFSC',
+              address: {
+                address: 'PANCHAVATI CO-OP HOUSING SOCIETY,OPP. POLICE HEAD QUARTER,MAROL-MORSHI ROAD, ANDHERI-EAST MUMBAI-400059',
                 city: 'Mumbai',
                 regionId: 'MH',
                 countryId: 'IN'
@@ -82,26 +112,31 @@ foam.CLASS({
       }
     },
     {
-      name: 'transactionDAO',
-      factory: function() {
-        return this.createDAO({
-          of: this.Transaction,
-          seqNo: true,
+      name: 'bankAccountDAO',
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.Account,
+          serviceName: 'bankAccountDAO',
           testData: [
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 2300.00, rate: 52.51, fees: 20.00
-              },
-              {
-                referenceNumber: 'CAxxxJZ7', date: '2017 Aug 22', payerId: 1, payeeId: 2, amount: 3200.00, rate: 52.51, fees: 20.00
-              }
+            {
+              id: 1,
+              accountInfo: this.BankAccountInfo.create({
+                accountNumber: '490932681376',
+                currencyCode: 'CAD',
+                bankAccount: 4
+              })
+            },
+            {
+              id: 2,
+              accountInfo: this.BankAccountInfo.create({
+                accountNumber: '923000000008465748932',
+                currencyCode: 'INR',
+                bankAccount: 8
+              })
+            }
           ]
         })
-        .addPropertyIndex(this.Transaction.REFERENCE_NUMBER)
-        .addPropertyIndex(this.Transaction.DATE)
-        .addPropertyIndex(this.Transaction.PAYEE_ID)
-        .addPropertyIndex(this.Transaction.AMOUNT)
-        .addPropertyIndex(this.Transaction.RATE)
-        .addPropertyIndex(this.Transaction.FEES)
       }
     },
     {
@@ -129,18 +164,6 @@ foam.CLASS({
       config.cache   = true;
 
       return this.EasyDAO.create(config);
-    },
-
-    function clientDAO(config) {
-      var dao = this.EasyDAO.create({
-        daoType: 'CLIENT',
-        of: config.of,
-        seqNo: config.seqNo,
-        serviceName: config.url,
-        testData: config.testData
-      });
-
-      return dao;
     }
   ]
 });

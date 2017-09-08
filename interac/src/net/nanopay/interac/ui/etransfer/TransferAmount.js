@@ -57,6 +57,11 @@ foam.CLASS({
           margin-bottom: 0;
         }
 
+        ^ .rateLabel {
+          line-height: 20px;
+          height: 20px;
+        }
+
         ^ .rateLabelMargin {
           margin-left: 100px;
           margin-bottom: 13px;
@@ -72,7 +77,8 @@ foam.CLASS({
           left: 86px;
         }
 
-        ^ .net-nanopay-interac-ui-shared-FixedFloatView {
+        ^ .property-fromAmount,
+          .property-toAmount {
           display: inline-block;
           box-sizing: border-box;
           vertical-align: top;
@@ -87,7 +93,8 @@ foam.CLASS({
           outline: none;
         }
 
-        ^ .net-nanopay-interac-ui-shared-FixedFloatView:focus {
+        ^ .property-fromAmount:focus,
+          .property-toAmount:focus {
           border: solid 1px #59A5D5;
           padding: 0 19px;
         }
@@ -96,17 +103,6 @@ foam.CLASS({
         ^ input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
-        }
-
-        ^ .toAmountStyle {
-          display: inline-block;
-          box-sizing: border-box;
-          margin: 0;
-          vertical-align: top;
-          padding: 13px 20px;
-          width: 146px;
-          height: 100%;
-          font-size: 12px;
         }
 
         ^ .net-nanopay-interac-ui-shared-LoadingSpinner {
@@ -266,8 +262,14 @@ foam.CLASS({
                 })
               .end()
             .end()
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.fees.toFixed(2) , ' (included)').end() // TODO: Get FX rates
-            .start('p').addClass('pDetails').addClass('rateLabelMargin').enableClass('hidden', this.loadingSpinner.isHidden$, true).add('Rate: ', this.rate$).end() // TODO: Get FX rates
+            .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin')
+              // TODO: Get Fees rates
+              .add('Fees: CAD ', this.fees.toFixed(2) , ' (included)')
+            .end()
+            .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin').enableClass('hidden', this.loadingSpinner.isHidden$, true)
+              // TODO: Get FX rates
+              .add('Rate: ', this.rate$)
+            .end()
             .add(this.loadingSpinner)
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
@@ -295,7 +297,7 @@ foam.CLASS({
         .start('div').addClass('fromToCol')
           .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
-            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNo).end()
+            .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNumber).end()
             .br()
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
@@ -311,7 +313,7 @@ foam.CLASS({
 
           .start('p').add(this.ToLabel).addClass('bold').end()
 
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.viewData.payee })
 
         .end();
     },

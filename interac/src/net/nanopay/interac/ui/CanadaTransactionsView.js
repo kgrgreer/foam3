@@ -7,7 +7,10 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
 
-  imports: [ 'transactionDAO' ],
+  imports: [ 
+    'transactionDAO',
+    'account'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -72,7 +75,9 @@ foam.CLASS({
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #59a5d5;
+          background: #59a5d5;
+          border: 0;
+          box-shadow: none;
           display: inline-block;
           line-height: 40px;
           color: white;
@@ -161,8 +166,8 @@ foam.CLASS({
         .start()
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
-            .start().add('Chequing Account xxxxxxxxxxxx5555').addClass('account').end()
-            .start().add('CAD 5000.00').addClass('accountBalance').end()
+            .start().add('Chequing Account xxxxxxxxxxxx5175').addClass('account').end()
+            .start().add('CAD ', this.account$.dot('accountInfo').dot('balance')).addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
@@ -223,7 +228,7 @@ foam.CLASS({
 
       properties: [
         'selection',
-        { name: 'data', factory: function() {return this.transactionDAO}}
+        { name: 'data', factory: function() { return this.transactionDAO; }}
       ],
 
       methods: [
