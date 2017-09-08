@@ -77,7 +77,8 @@ foam.CLASS({
           left: 86px;
         }
 
-        ^ .net-nanopay-interac-ui-shared-FixedFloatView {
+        ^ .property-fromAmount,
+          .property-toAmount {
           display: inline-block;
           box-sizing: border-box;
           vertical-align: top;
@@ -92,7 +93,8 @@ foam.CLASS({
           outline: none;
         }
 
-        ^ .net-nanopay-interac-ui-shared-FixedFloatView:focus {
+        ^ .property-fromAmount:focus,
+          .property-toAmount:focus {
           border: solid 1px #59A5D5;
           padding: 0 19px;
         }
@@ -101,17 +103,6 @@ foam.CLASS({
         ^ input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
-        }
-
-        ^ .toAmountStyle {
-          display: inline-block;
-          box-sizing: border-box;
-          margin: 0;
-          vertical-align: top;
-          padding: 13px 20px;
-          width: 146px;
-          height: 100%;
-          font-size: 12px;
         }
 
         ^ .net-nanopay-interac-ui-shared-LoadingSpinner {
