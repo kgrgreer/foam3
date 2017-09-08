@@ -25,6 +25,10 @@ foam.CLASS({
     },
     {
       class: 'Long',
+      name: 'impsReferenceNumber'
+    },
+    {
+      class: 'Long',
       name: 'payerId',
       label: 'Payer',
       tableCellFormatter: function(payerId, X) {
