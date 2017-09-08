@@ -308,8 +308,8 @@ foam.CLASS({
                           Cd: 'CINV'
                         }
                       },
-                      Nb: '',
-                      RltdDt: new Date()
+                      Nb: invoice.invoiceNumber,
+                      RltdDt: invoice.issueDate
                     }
                   } : undefined
                 } : undefined
