@@ -35,8 +35,9 @@ foam.CLASS({
     {
       name: 'transactionDAO',
       factory: function() {
-        return this.createDAO({
+        return this.clientDAO({
           of: this.Transaction,
+          url: 'transactionDAO',
           seqNo: true,
           testData: [
             {
