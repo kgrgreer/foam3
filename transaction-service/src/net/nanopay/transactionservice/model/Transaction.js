@@ -26,14 +26,12 @@ foam.CLASS({
       name: 'referenceNumber'
     },
     {
-      class: 'Reference',
-      name: 'payerId',
-      of: 'foam.nanos.auth.User'
+      class: 'Long',
+      name: 'payerId'
     },
     {
-      class: 'Reference',
+      class: 'Long',
       name: 'payeeId',
-      of: 'foam.nanos.auth.User',
       label: 'Payee',
       tableCellFormatter: function(payeeId, X) {
         var self = this;
