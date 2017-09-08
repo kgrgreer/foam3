@@ -15,7 +15,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'birthday'
     },
     {

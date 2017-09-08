@@ -31,14 +31,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'memberIdentification'
+    },
+    {
+      class: 'String',
+      name: 'clearingSystemIdentification'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: 'Bank branch address'
     }
   ]
-});
-
-foam.RELATIONSHIP({
-  cardinality: '1:*',
-  sourceModel: 'net.nanopay.common.model.Bank',
-  targetModel: 'foam.nanos.auth.Address',
-  forwardName: 'address',
-  inverseName: 'resident'
 });

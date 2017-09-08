@@ -1,21 +1,20 @@
 foam.CLASS({
   package: 'net.nanopay.common.model',
   name: 'Account',
-  ids: [ 'accountId' ],
   properties: [
     {
-      class: 'String',
-      name: 'accountId'
+      class: 'Long',
+      name: 'id'
     },
     {
       class: 'FObjectProperty',
-      of:    'AccountLimit',
-      name:  'limit'
+      of: 'net.nanopay.common.model.AccountLimit',
+      name: 'limit'
     },
     {
       class: 'FObjectProperty',
-      of: 'AccountInfo',
+      of: 'net.nanopay.common.model.AccountInfo',
       name: 'accountInfo'
-    },
+    }
   ]
 });

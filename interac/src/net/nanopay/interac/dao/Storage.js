@@ -437,7 +437,7 @@ foam.CLASS({
           testData: [
             {
               user: 1,
-              birthday: new Date('1982-07-07T24:12:00.0Z'),
+              birthday: new Date('1982-07-07T23:12:00.000Z'),
               birthplace: {
                 city: 'Toronto',
                 regionId: 'ON',
@@ -446,7 +446,7 @@ foam.CLASS({
             },
             {
               user: 2,
-              birthday: new Date('1985-08-02T24:12:00.0Z'),
+              birthday: new Date('1985-08-02T23:12:00.000Z'),
               birthplace: {
                 city: 'Pune',
                 regionId: 'MH',
