@@ -139,11 +139,13 @@ foam.CLASS({
       return entityDetails;
     },
 
-    GENERATE_PACS008_MESSAGE: function (transactionId, invoiceId) {
+    GENERATE_PACS008_MESSAGE: function (transaction, invoiceId) {
+      if ( ! transaction )
+        throw new Error('Please provide a transaction');
+
       var self = this;
 
       var invoice = null;
-      var transaction = null;
       var intermediaries = [];
 
       var payer = null;
@@ -158,16 +160,7 @@ foam.CLASS({
       var payeeIdentification = null;
       var payeeBirthPlace = null;
 
-      return self.transactionDAO.find(transactionId).then(function (result) {
-        if ( ! result )
-          throw new Error('Transaction not found');
-
-        transaction = result;
-
-         // TODO: remove hard coded intermediaries
-        return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]);
-      })
-      .then(function (result) {
+      return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]).then(function (result) {
         if ( ! result )
           throw new Error('Intermediaries not found');
 
@@ -295,10 +288,10 @@ foam.CLASS({
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
                 CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank),
-                // if proprietary use Cd, else use Prtry
-                Purp: transaction.purpose.proprietary ?
-                  { Cd: transaction.purpose.code } :
-                  { Prtry: transaction.purpose.code },
+//                 if proprietary use Cd, else use Prtry
+//                Purp: transaction.purpose.proprietary ?
+//                  { Cd: transaction.purpose.code } :
+//                  { Prtry: transaction.purpose.code },
                 // only add RltdRmtInf if invoice is present
                 RltdRmtInf: ( invoice ) ? {
                   RmtId: foam.uuid.randomGUID().replace(/-/g, ''),

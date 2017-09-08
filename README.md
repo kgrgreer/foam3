@@ -15,6 +15,17 @@ Checkout `foam2` and `NANOPAY` repositories into the same directory
 ```
 git clone https://github.com/foam-framework/foam2.git
 git clone https://github.com/nanopayinc/NANOPAY.git
+git clone https://github.com/nanopayinc/iso20022.git
+```
+
+### Building ISO20022 files
+
+Go into the iso20022 directory and run the following commands:
+
+```
+npm install
+node scripts/geniso/index.js
+./build.sh
 ```
 
 ### Build all projects and run Nanos at once

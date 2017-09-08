@@ -98,8 +98,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      net.nanopay.interac.Data.create(undefined, this);
-
       // Injecting Sample Partner
       // this.userDAO.limit(1).select().then(function(a) {
       //   self.user.copyFrom(a.array[0]);
