@@ -22,7 +22,7 @@ foam.CLASS({
 
   imports: [
     'userDAO',
-    'accountDAO',
+    'bankAccountDAO',
     'transactionDAO',
     'identificationDAO',
     'dateAndPlaceOfBirthDAO',
