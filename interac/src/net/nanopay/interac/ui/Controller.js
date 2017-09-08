@@ -120,7 +120,7 @@ foam.CLASS({
         } else if(this.country == 'India') {
           this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}));
           this.userDAO.limit(1).select(this.EQ(this.User.ID, 2)).then(function(a) {
-            self.user.copyFrom(a.array[1]);
+            self.user.copyFrom(a.array[0]);
           });
           this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
         }

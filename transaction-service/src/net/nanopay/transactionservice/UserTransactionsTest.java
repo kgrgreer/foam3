@@ -61,8 +61,7 @@ public class UserTransactionsTest {
 
     System.out.println("Creating transactions");
 
-    TransactionDAO transactionDAO = new TransactionDAO(Transaction.getOwnClassInfo());
-    transactionDAO.setX(boot.getX());
+    TransactionDAO transactionDAO = new TransactionDAO(boot.getX());
 
     // Random number generator to generate a random UserID for payer and payee
     Random rand = new Random();
@@ -121,15 +120,15 @@ public class UserTransactionsTest {
 
     AtomicLong ai = new AtomicLong(0);
     userDao.select(new AbstractSink() {
-       @Override
-       public void put(FObject obj, Detachable sub) {
-         User user = (User) obj;
-         UserAccountInfo uai = (UserAccountInfo) ((Account)user.getAccounts()[0]).getAccountInfo();
-         if (PRINT_USER_BALANCES) {
-           System.out.println(user.getId() + " : " + uai.getBalance());
-         }
-         ai.addAndGet(uai.getBalance());
-       }
+      @Override
+      public void put(FObject obj, Detachable sub) {
+        User user = (User) obj;
+        UserAccountInfo uai = (UserAccountInfo) ((Account)user.getAccounts()[0]).getAccountInfo();
+        if (PRINT_USER_BALANCES) {
+          System.out.println(user.getId() + " : " + uai.getBalance());
+        }
+        ai.addAndGet(uai.getBalance());
+      }
     });
 
     if ( ai.get() != STARTING_BALANCE * USER_COUNT ) {
