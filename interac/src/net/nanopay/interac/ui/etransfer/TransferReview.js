@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Interac transfer review',
 
+  imports: [
+    'pacs008IndiaPurposeDAO'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -99,19 +103,24 @@ foam.CLASS({
           return 'Rate expired';
         }
       }
-    }
+    },
+    'purpose'
   ],
 
   methods: [
     function init() {
-      this.SUPER();
-
       var self = this;
       this.rate = this.viewData.rate;
       this.countdownView.onExpiry = function() {
         self.rate = 'Expired';
         self.viewData.rateLocked = false;
       };
+
+      this.pacs008IndiaPurposeDAO.find(this.viewData.purpose).then(function(purpose) {
+        self.purpose = purpose.code + ' - ' + purpose.description;
+      });
+
+      this.SUPER();
     },
 
     function initE() {
@@ -158,9 +167,9 @@ foam.CLASS({
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.toUser })
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.viewData.payee })
           .start('p').addClass('bold').add(this.PurposeLabel).end()
-          .start('p').addClass('purposeMargin').add(this.viewData.purpose).end()
+          .start('p').addClass('purposeMargin').add(this.purpose$).end()
           .start('p').addClass('bold').add(this.NotesLabel).end()
           .start('p').add(this.viewData.notes ? this.viewData.notes : 'None').end()
         .end();
