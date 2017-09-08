@@ -6,7 +6,8 @@ set -e
 cd ..
 find foam2/src NANOPAY/**/src -type f -name accounts -exec cat {} \; > accounts
 find foam2/src NANOPAY/**/src -type f -name banks -exec cat {} \; > banks
-find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankAccountsfind foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
+find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankAccounts
+find foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
 find foam2/src NANOPAY/**/src -type f -name crons -exec cat {} \; > crons
 find foam2/src NANOPAY/**/src -type f -name exchangerate -exec cat {} \; > exchangerate
 find foam2/src NANOPAY/**/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
