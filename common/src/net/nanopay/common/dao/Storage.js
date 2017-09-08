@@ -7,18 +7,21 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'net.nanopay.b2b.model.Invoice',
-    'net.nanopay.common.model.Bank'
+    'net.nanopay.common.model.Account',
+    'net.nanopay.common.model.Bank',
+    'net.nanopay.common.model.BankAccountInfo'
   ],
 
   exports: [
     'bankDAO',
+    'bankAccountDAO',
     'invoiceDAO'
   ],
 
   properties: [
     {
       name: 'bankDAO',
-      factory: function() {
+      factory: function () {
         return this.EasyDAO.create({
           daoType: 'CLIENT',
           of: this.Bank,
@@ -70,11 +73,66 @@ foam.CLASS({
               memberIdentification: 'SBIN0071222',
               clearingSystemIdentification: 'INFSC',
               address: {
-                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI400051',
+                address: 'THECAPITAL,201,2NDFLOOR,BWING,BANDRAKURLACOMPLEX,BANDRAEAST,MUMBAI-400051',
                 city: 'Mumbai',
                 regionId: 'MH',
                 countryId: 'IN'
               }
+            },
+            {
+              name: 'ICICI Bank Canada',
+              financialId: '340',
+              memberIdentification: '340',
+              clearingSystemIdentification: 'CACPA',
+              address: {
+                buildingNumber: 130,
+                address: 'King St W',
+                suite: '2130',
+                city: 'Toronto',
+                postalCode: 'M5X1B1',
+                regionId: 'ON',
+                countryId: 'CA'
+              }
+            },
+            {
+              name: 'ICICI Bank Limited',
+              financialId: 'ICIC0006438',
+              memberIdentification: 'ICIC0006438',
+              clearingSystemIdentification: 'INFSC',
+              address: {
+                address: 'PANCHAVATI CO-OP HOUSING SOCIETY,OPP. POLICE HEAD QUARTER,MAROL-MORSHI ROAD, ANDHERI-EAST MUMBAI-400059',
+                city: 'Mumbai',
+                regionId: 'MH',
+                countryId: 'IN'
+              }
+            }
+          ]
+        })
+      }
+    },
+    {
+      name: 'bankAccountDAO',
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.Account,
+          serviceName: 'bankAccountDAO',
+          testData: [
+            {
+              id: 1,
+              accountInfo: this.BankAccountInfo.create({
+                accountNumber: '490932681376',
+                currencyCode: 'CAD',
+                bankAccount: 4
+              })
+            },
+            {
+              id: 2,
+              accountInfo: this.BankAccountInfo.create({
+                accountNumber: '923000000008465748932',
+                currencyCode: 'INR',
+                bankAccount: 8
+              })
             }
           ]
         })
