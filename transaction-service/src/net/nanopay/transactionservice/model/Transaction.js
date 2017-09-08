@@ -2,13 +2,12 @@ foam.CLASS({
   package: 'net.nanopay.transactionservice.model',
   name: 'Transaction',
 
-  exports: [
-    'payNow'
+  imports: [
+    'userDAO'
   ],
 
-  imports: [
-    'stack',
-    'userDAO'
+  exports: [
+    'payNow'
   ],
 
   properties: [

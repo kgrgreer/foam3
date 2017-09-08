@@ -86,8 +86,9 @@ foam.CLASS({
           }
         },
         Ccy: account.currencyCode,
-        // TODO: change to business name if not a business
-        Nm: user.firstName + ' ' + user.lastName
+        Nm: ( user.type !== 'Business' ) ?
+          user.firstName + ' ' + user.lastName :
+          user.businessName
       });
     },
 
@@ -115,9 +116,10 @@ foam.CLASS({
       })
 
       if ( user.type === 'Business' ) {
-        // TODO: model organisation identification
         entityDetails.Id = {
           OrgId: {
+            AnyBIC: ( user.bankIdentificationCode ) ?
+              user.bankIdentificationCode : undefined,
             Othr: identification
           }
         };
@@ -301,8 +303,10 @@ foam.CLASS({
                 RltdRmtInf: ( invoice ) ? {
                   RmtId: foam.uuid.randomGUID().replace(/-/g, ''),
                   RmtLctnDtls: [
-                    Mtd: 'URID',
-                    ElctrncAdr: invoice.invoiceFileUrl
+                    {
+                      Mtd: 'URID',
+                      ElctrncAdr: invoice.invoiceFileUrl
+                    }
                   ]
                 } : undefined,
                 // only add RmtInf if transaction or notes are not null
