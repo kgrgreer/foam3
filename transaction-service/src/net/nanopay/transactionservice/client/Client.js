@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.box.HTTPBox',
     'net.nanopay.common.model.Account',
+    'net.nanopay.common.model.UserAccountInfo',
     'net.nanopay.transactionservice.model.Transaction',
     'net.nanopay.transactionservice.client.ClientTransactionService'
   ],
@@ -62,9 +63,25 @@ foam.CLASS({
       factory: function() {
         return this.EasyDAO.create({
           daoType: 'CLIENT',
-          of: net.nanopay.common.model.Account,
+          of: this.Account,
           serviceName: 'accountDAO',
           seqNo: true,
+          testData: [
+            {
+              id: 1,
+              accountInfo: this.UserAccountInfo.create({
+                tag: ['CAD'],
+                balance: 50000
+              })
+            },
+            {
+              id: 2,
+              accountInfo: this.UserAccountInfo.create({
+                tag: ['INR'],
+                balance: 50000
+              })
+            }
+          ]
         });
       }
     },
