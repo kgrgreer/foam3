@@ -25,7 +25,8 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'impsReferenceNumber'
+      name: 'impsReferenceNumber',
+      label: 'IMPS Reference Number'
     },
     {
       class: 'Long',
