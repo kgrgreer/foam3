@@ -40,7 +40,7 @@ foam.CLASS({
           return r / 32768;
         };
 
-        for ( var i = 0 ; i < 1000 ; i++ ) {
+        for ( var i = 0 ; i < 5000 ; i++ ) {
           var fi       = 0;
           var ti       = Math.floor(random()*70);
           var dd       = new Date(Date.now() - 2*360*MS_PER_DAY*(random()-0.1));
