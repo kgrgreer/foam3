@@ -86,7 +86,7 @@ foam.CLASS({
           display: inline-block;
           box-sizing: border-box;
           vertical-align: top;
-          margin-left: 2px;
+          float: right;
           width: 231px;
           height: 38px;
           padding: 0 20px;
