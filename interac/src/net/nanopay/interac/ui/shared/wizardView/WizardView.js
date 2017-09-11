@@ -8,7 +8,8 @@ foam.CLASS({
     'viewData',
     'errors',
     'goBack',
-    'goNext'
+    'goNext',
+    'complete'
   ],
 
   documentation: `
@@ -203,6 +204,11 @@ foam.CLASS({
       class: 'String',
       name: 'nextLabel',
       value: 'Next'
+    },
+    {
+      class: 'Boolean',
+      name: 'complete',
+      value: false
     }
   ],
 

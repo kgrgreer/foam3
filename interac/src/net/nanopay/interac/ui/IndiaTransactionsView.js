@@ -7,7 +7,7 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
 
-  imports: [ 
+  imports: [
     'transactionDAO',
     'account',
     'user'
@@ -170,7 +170,7 @@ foam.CLASS({
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
             .start().add('Chequing Account xxxxxxxxxxxx0933').addClass('account').end()
-            .start().add('INR ', this.account$.dot('accountInfo').dot('balance')).addClass('accountBalance').end()
+            .start().add('INR ', this.account$.dot('accountInfo').dot('balance').map(function(b){return (b/100).toFixed(2); })).addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
@@ -189,7 +189,7 @@ foam.CLASS({
                     detailView: {
                       class: 'foam.u2.DetailView',
                       properties: [
-                        self.Transaction.REFERENCE_NUMBER,
+                        self.Transaction.IMPS_REFERENCE_NUMBER,
                         self.Transaction.DATE,
                         self.Transaction.PAYEE_ID,
                         self.Transaction.AMOUNT,
@@ -207,7 +207,7 @@ foam.CLASS({
                     detailView: {
                       class: 'foam.u2.DetailView',
                       properties: [
-                        self.Transaction.REFERENCE_NUMBER,
+                        self.Transaction.IMPS_REFERENCE_NUMBER,
                         self.Transaction.DATE,
                         self.Transaction.PAYER_ID,
                         self.Transaction.AMOUNT,
@@ -263,7 +263,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+                'impsReferenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }
@@ -292,7 +292,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payerId', 'amount', 'receivingAmount', 'rate', 'fees'
+                'impsReferenceNumber', 'date', 'payerId', 'amount', 'receivingAmount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }

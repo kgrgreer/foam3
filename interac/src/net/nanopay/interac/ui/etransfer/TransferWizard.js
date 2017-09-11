@@ -285,7 +285,15 @@ foam.CLASS({
           this.countdownView.hide();
           this.countdownView.reset();
 
-          this.transaction.transferValueById(this.user.id, this.viewData.payee.id, Math.round(this.viewData.fromAmount * 100)).then(function(response) {
+          // NOTE: payerID, payeeID, amount in cents, rate, purpose
+
+          this.transaction.transferValueById( this.user.id,
+                                              this.viewData.payee.id,
+                                              Math.round(this.viewData.fromAmount * 100),
+                                              this.viewData.rate.toString(),
+                                              this.viewData.purpose,
+                                              Math.round(this.viewData.fees * 100),
+                                              this.viewData.notes).then(function(response) {
             if ( response ) {
               self.viewData.transaction = response;
               self.subStack.push(self.views[self.subStack.pos + 1].view);

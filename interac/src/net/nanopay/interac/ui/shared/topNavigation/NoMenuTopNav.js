@@ -29,8 +29,6 @@ foam.CLASS({
     })
   ],
 
-  
-
   methods: [
     function initE(){
       this

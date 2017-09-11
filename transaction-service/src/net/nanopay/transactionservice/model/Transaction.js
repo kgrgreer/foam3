@@ -25,6 +25,11 @@ foam.CLASS({
     },
     {
       class: 'Long',
+      name: 'impsReferenceNumber',
+      label: 'IMPS Reference Number'
+    },
+    {
+      class: 'Long',
       name: 'payerId',
       label: 'Payer',
       tableCellFormatter: function(payerId, X) {
@@ -94,7 +99,8 @@ foam.CLASS({
       class: 'Currency',
       name: 'fees',
       tableCellFormatter: function(fees){
-        this.start().add('$', fees.toFixed(2)).end()
+        var formattedFees = fees / 100;
+        this.start().add('$', formattedFees.toFixed(2)).end()
       }
     },
     // TODO: field for tax as well? May need a more complex model for that

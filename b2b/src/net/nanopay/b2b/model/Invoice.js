@@ -7,11 +7,11 @@ foam.CLASS({
   ids: [ 'invoiceNumber' ],
 
   searchColumns: [
-    'search', 'fromBusinessId', 'toBusinessId', 'status'
+    'search', /*'fromBusinessId',*/ 'toBusinessId', 'status'
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'fromBusinessName', 'issueDate', 'amount', 'status', 'payNow'
+    'invoiceNumber', 'purchaseOrder', 'toBusinessName', 'issueDate', 'amount', 'status', 'payNow'
   ],
 
   properties: [

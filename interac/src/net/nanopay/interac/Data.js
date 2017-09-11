@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'Data',
 
   imports: [
+    'businessDAO',
     'invoiceDAO',
     'menuDAO',
     'country',
@@ -27,34 +28,40 @@ foam.CLASS({
       ], foam.nanos.menu.Menu, this.__context__).forEach(this.menuDAO.put.bind(this.menuDAO));
 
       var MS_PER_DAY = 1000 * 3600 * 24;
-      
-      this.__context__.userDAO.select().then(function (bs) {
+
+      this.__context__.businessDAO.select().then(function (bs) {
         var l = bs.array.length;
 
-        for ( var i = 0 ; i < 1000 ; i++ ) {
-          var fi = 2;
-          var ti = 1;
-          var dd = new Date(Date.now() - 2*360*MS_PER_DAY*(Math.random()-0.1));
-          var amount = Math.floor(Math.pow(10,3+Math.random()*4))/100;
-          var fromUser = bs.array[1];
-          var toUser = bs.array[0];
-          if ( ti === fi ) ti = ti === 100 ? 101 : ti-1;
+        // Use own random() function rather than Math.random() so we always get
+        // the same results.
+        var r = 16;
+        var random = function() {
+          r = ((r * 7621) + 1) % 32768;
+          return r / 32768;
+        };
+
+        for ( var i = 0 ; i < 5000 ; i++ ) {
+          var fi       = 0;
+          var ti       = Math.floor(random()*70);
+          var dd       = new Date(Date.now() - 2*360*MS_PER_DAY*(random()-0.1));
+          var amount   = Math.floor(Math.pow(10,3+random()*4))/100;
+          var fromUser = bs.array[fi];
+          var toUser   = bs.array[ti];
           var inv = net.nanopay.b2b.model.Invoice.create({
-            draft:            Math.random()<0.002,
+            draft:            random()<0.002,
             invoiceNumber:    10000+i,
             purchaseOrder:    10000+i,
-            fromBusinessId:   fi,
-            toBusinessId:     ti,
-            fromBusinessName: fromUser.organization || (fromUser.firstName + ' ' + fromUser.lastName),
-            toBusinessName:  toUser.organization || (toUser.firstName + ' ' + toUser.lastName),
+            fromBusinessId:   fromUser.id,
+            toBusinessId:     toUser.id,
+            fromBusinessName: fromUser.name || fromUser.organization || (fromUser.firstName + ' ' + fromUser.lastName),
+            toBusinessName:   toUser.name || toUser.organization   || (toUser.firstName   + ' ' + toUser.lastName),
             issueDate:        dd,
             amount:           amount
           });
-
-          if ( Math.random() < 0.005 ) {
+          if ( random() < 0.025 ) {
             inv.paymentId = -1;
-          } else if ( Math.random() < 0.97 ) {
-            inv.paymentDate = new Date(inv.issueDate.getTime() - ( 7 + Math.random() * 60 ) * MS_PER_DAY);
+          } else if ( random() < 0.97 ) {
+            inv.paymentDate = new Date(inv.issueDate.getTime() - ( 7 + random() * 60 ) * MS_PER_DAY);
             if ( inv.paymentDate < Date.now() ) {
               inv.paymentId = inv.invoiceNumber;
             }
