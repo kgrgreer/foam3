@@ -93,6 +93,8 @@ public class TransactionDAO
 
             getAccountDAO().put(payerAccount);
             getAccountDAO().put(payeeAccount);
+
+            super.put_(x, fObject);
           } else {
             throw new RuntimeException("Payer doesn't have enough balance");
           }
@@ -111,6 +113,6 @@ public class TransactionDAO
 
   @Override
   public FObject find_(X x, Object o) {
-    return null;
+    return super.find_(x, o);
   }
 }

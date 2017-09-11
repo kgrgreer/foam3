@@ -10,6 +10,11 @@ foam.CLASS({
     'net.nanopay.interac.ui.CountdownView'
   ],
 
+  imports: [
+    'transaction',
+    'user'
+  ],
+
   exports: [
     'countdownView',
     'invoice',
@@ -181,13 +186,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
-      // NOTE: Test Invoice
-      // this.invoice = {
-      //   invoiceNumber: '123456',
-      //   purchaseOrder: '123456',
-      //   invoiceFileUrl: '',
-      //   amount: 123.45,
-      // };
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -287,10 +285,25 @@ foam.CLASS({
           this.countdownView.hide();
           this.countdownView.reset();
 
-          // TODO: Run the transfer
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
-          this.backLabel = 'Back to Home';
-          this.nextLabel = 'Make Another Transfer';
+          // NOTE: payerID, payeeID, amount in cents, rate, purpose
+
+          this.transaction.transferValueById( this.user.id,
+                                              this.viewData.payee.id,
+                                              Math.round(this.viewData.fromAmount * 100),
+                                              this.viewData.rate.toString(),
+                                              this.viewData.purpose,
+                                              Math.round(this.viewData.fees * 100),
+                                              this.viewData.notes).then(function(response) {
+            if ( response ) {
+              self.viewData.transaction = response;
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.backLabel = 'Back to Home';
+              self.nextLabel = 'Make Another Transfer';
+            } else {
+              console.log(response);
+            }
+          });
+
           return;
         }
 

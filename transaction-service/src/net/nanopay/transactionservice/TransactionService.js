@@ -11,21 +11,37 @@ foam.INTERFACE({
   methods: [
     {
       name: 'transferValueById',
-      javaReturns: 'void',
+      javaReturns: 'net.nanopay.transactionservice.model.Transaction',
       returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
           name: 'payerId',
-          javaType: 'Long'
+          javaType: 'long'
         },
         {
           name: 'payeeId',
-          javaType: 'Long'
+          javaType: 'long'
         },
         {
           name: 'amount',
-          javaType: 'Long'
+          javaType: 'long'
+        },
+        {
+          name: 'rate',
+          javaType: 'String'
+        },
+        {
+          name: 'purposeCode',
+          javaType: 'String'
+        },
+        {
+          name: 'fees',
+          javaType: 'long'
+        },
+        {
+          name: 'notes',
+          javaType: 'String'
         }
       ]
     },

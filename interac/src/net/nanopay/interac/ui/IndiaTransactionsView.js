@@ -7,7 +7,11 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
 
-  imports: [ 'transactionDAO' ],
+  imports: [
+    'transactionDAO',
+    'account',
+    'user'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -58,7 +62,7 @@ foam.CLASS({
           margin-top: 25px;
           margin-bottom: 10px;
         }
-        ^ .interacLogo {
+        ^ .impsLogo {
           width: 90px;
           height: 40px;
           display: inline-block;
@@ -69,10 +73,13 @@ foam.CLASS({
           margin: 0;
         }
         ^ .foam-u2-ActionView-sendTransfer {
+
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #e68e43;
+          background: #e68e43;
+          border: 0;
+          box-shadow: none;
           display: inline-block;
           line-height: 40px;
           color: white;
@@ -155,42 +162,63 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
         .addClass(this.myClass())
         .start()
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
-            .start().add('Chequing Account xxxxxxxxxxxx5555').addClass('account').end()
-            .start().add('INR 5000.00').addClass('accountBalance').end()
+            .start().add('Chequing Account xxxxxxxxxxxx0933').addClass('account').end()
+            .start().add('INR ', this.account$.dot('accountInfo').dot('balance').map(function(b){return (b/100).toFixed(2); })).addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()
             .add(this.SEND_TRANSFER)
-            .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-              .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-              .addClass('interacLogo')
+            .start({class: 'foam.u2.tag.Image', data: 'images/imps.jpg'})
+              .addClass('impsLogo')
             .end()
           .end()
           .start()
-            .tag({
-                class: 'foam.u2.ListCreateController',
-                dao: this.transactionDAO,
-                factory: function() { return self.Transaction.create(); },
-                detailView: {
-                  class: 'foam.u2.DetailView',
-                  properties: [
-                    this.Transaction.REFERENCE_NUMBER,
-                    this.Transaction.DATE,
-                    this.Transaction.PAYEE_ID,
-                    this.Transaction.AMOUNT,
-                    this.Transaction.RECEIVING_AMOUNT,
-                    this.Transaction.RATE,
-                    this.Transaction.FEES
-                  ]
-                },
-              summaryView: this.TransactionTableView.create()
-            })
+            .add(this.user$.dot('id').map(function (id) {
+              return id == 1 ?
+                self.E().tag({
+                    class: 'foam.u2.ListCreateController',
+                    dao: self.transactionDAO,
+                    factory: function() { return self.Transaction.create(); },
+                    detailView: {
+                      class: 'foam.u2.DetailView',
+                      properties: [
+                        self.Transaction.IMPS_REFERENCE_NUMBER,
+                        self.Transaction.DATE,
+                        self.Transaction.PAYEE_ID,
+                        self.Transaction.AMOUNT,
+                        self.Transaction.RECEIVING_AMOUNT,
+                        self.Transaction.RATE,
+                        self.Transaction.FEES
+                      ]
+                    },
+                  summaryView: self.TransactionTableView.create()
+                }) :
+                self.E().tag({
+                    class: 'foam.u2.ListCreateController',
+                    dao: self.transactionDAO,
+                    factory: function() { return self.Transaction.create(); },
+                    detailView: {
+                      class: 'foam.u2.DetailView',
+                      properties: [
+                        self.Transaction.IMPS_REFERENCE_NUMBER,
+                        self.Transaction.DATE,
+                        self.Transaction.PAYER_ID,
+                        self.Transaction.AMOUNT,
+                        self.Transaction.RECEIVING_AMOUNT,
+                        self.Transaction.RATE,
+                        self.Transaction.FEES
+                      ]
+                    },
+                  summaryView: self.TransactionIndiaTableView.create()
+                });
+            }))
           .end()
         .end();
     }
@@ -235,7 +263,36 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+                'impsReferenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+              ]
+            }).addClass(this.myClass('table')).end();
+        }
+      ]
+    },
+
+    {
+      name: 'TransactionIndiaTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
+
+      imports: [ 'transactionDAO' ],
+
+      properties: [
+        'selection',
+        { name: 'data', factory: function() {return this.transactionDAO}}
+      ],
+
+      methods: [
+        function initE() {
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              selection$: this.selection$,
+              editColumnsEnabled: true,
+              data: this.data,
+              columns: [
+                'impsReferenceNumber', 'date', 'payerId', 'amount', 'receivingAmount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }

@@ -82,6 +82,7 @@ foam.CLASS({
             {
               name: 'ICICI Bank Canada',
               financialId: '340',
+              branchId: '10002',
               memberIdentification: '340',
               clearingSystemIdentification: 'CACPA',
               address: {

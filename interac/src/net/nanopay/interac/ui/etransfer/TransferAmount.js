@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Transfer amount details',
 
+  imports: [
+    'exchangeRate'
+  ],
+
   requires: [
     'net.nanopay.interac.ui.shared.LoadingSpinner'
   ],
@@ -77,11 +81,12 @@ foam.CLASS({
           left: 86px;
         }
 
-        ^ .net-nanopay-interac-ui-shared-FixedFloatView {
+        ^ .property-fromAmount,
+          .property-toAmount {
           display: inline-block;
           box-sizing: border-box;
           vertical-align: top;
-          margin-left: 2px;
+          float: right;
           width: 231px;
           height: 38px;
           padding: 0 20px;
@@ -92,7 +97,8 @@ foam.CLASS({
           outline: none;
         }
 
-        ^ .net-nanopay-interac-ui-shared-FixedFloatView:focus {
+        ^ .property-fromAmount:focus,
+          .property-toAmount:focus {
           border: solid 1px #59A5D5;
           padding: 0 19px;
         }
@@ -101,17 +107,6 @@ foam.CLASS({
         ^ input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
-        }
-
-        ^ .toAmountStyle {
-          display: inline-block;
-          box-sizing: border-box;
-          margin: 0;
-          vertical-align: top;
-          padding: 13px 20px;
-          width: 146px;
-          height: 100%;
-          font-size: 12px;
         }
 
         ^ .net-nanopay-interac-ui-shared-LoadingSpinner {
@@ -335,13 +330,15 @@ foam.CLASS({
       this.countdownView.reset();
       this.viewData.rateLocked = false;
 
-      // TODO: Grab actual fxRate
+      // NOTE: fxRate returns too quickly. Added .5 second delay.
       setTimeout(function(){
-        self.rate = 50.72973;
-        self.loadingSpinner.hide();
-        self.startTimer();
-        self.viewData.rateLocked = true;
-      }, 2000);
+        self.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
+          self.rate = response.toAmount;
+          self.loadingSpinner.hide();
+          self.startTimer();
+          self.viewData.rateLocked = true;
+        });
+      }, 500);
     },
 
     function startTimer() {

@@ -3,14 +3,20 @@ package net.nanopay.transactionservice;
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.core.FObject;
+import foam.core.X;
 import foam.dao.*;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import net.nanopay.transactionservice.model.Transaction;
+import net.nanopay.transactionservice.model.TransactionPurpose;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.TimeZone;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleCurrencyTransactionService
   extends ContextAwareSupport
@@ -27,18 +33,66 @@ public class SingleCurrencyTransactionService
     return dateFormat.format(new Date());
   }
 
+  public SingleCurrencyTransactionService(X x) {
+    setX(x);
+  }
+
   @Override
-  public void transferValueById(Long payerId, Long payeeId, Long amount)
+  public Transaction transferValueById(long payerId, long payeeId, long amount, String rate, String purposeCode, long fees, String notes)
     throws RuntimeException
   {
+    if ( payerId <= 0 ) {
+      throw new RuntimeException("Invalid Payer id");
+    }
+
+    if ( payeeId <= 0 ) {
+      throw new RuntimeException("Invalid Payee id");
+    }
+
+    if ( amount < 0 ) {
+      throw new RuntimeException("Invalid amount");
+    }
+
+    if ( rate == null || rate.isEmpty() ) {
+      throw new RuntimeException("Invalid rate");
+    }
+
+    if ( purposeCode == null || purposeCode.isEmpty() ) {
+      throw new RuntimeException("Invalid purpose");
+    }
+
+    if ( fees < 0 ) {
+      throw new RuntimeException("Invalid fees");
+    }
+
     Transaction transaction = new Transaction();
     transaction.setDate(new Date());
     transaction.setPayeeId(payeeId);
     transaction.setPayerId(payerId);
     transaction.setAmount(amount);
+    transaction.setRate(Double.parseDouble(rate));
+    transaction.setFees(fees);
+    transaction.setNotes(notes);
+
+    String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+
+    Random random = new Random();
+    char[] digits = new char[13];
+    digits[0] = (char) (random.nextInt(9) + '1');
+    for (int i = 1; i < 13; i++) {
+      digits[i] = (char) (random.nextInt(10) + '0');
+    }
+
+    transaction.setReferenceNumber(referenceNumber);
+    transaction.setImpsReferenceNumber(Long.parseLong(new String(digits)));
+
+    TransactionPurpose p = new TransactionPurpose();
+    p.setCode(purposeCode);
+    p.setProprietary(true);
+    transaction.setPurpose(p);
 
     try {
-      transactionDAO_.put(transaction);
+      return (Transaction) transactionDAO_.put(transaction);
     } catch (RuntimeException e) {
       throw e;
     }

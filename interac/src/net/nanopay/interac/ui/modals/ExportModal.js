@@ -56,7 +56,8 @@ foam.CLASS({
       name: 'note',
       view: 'foam.u2.tag.TextArea',
       value: ''
-    }
+    },
+    'transaction'
   ],
 
   axioms: [
@@ -263,24 +264,15 @@ foam.CLASS({
 
   actions: [
     function convertInvoice(){
-      var transaction = this.Transaction.create({
-        id: 1,
-        status: 'pending',
-        referenceNumber: 'ds1l2s',
-        payerId: 1,
-        payeeId: 2,
-        amount: 124.02,
-        tip: 10,
-        fee: 1
-      })
+      var self = this;
 
       if (this.dataType == 'JSON'){
-        this.note = this.jsonDriver.exportFObject(null, transaction);
+        this.note = this.jsonDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'XML') {
-        this.note = this.xmlDriver.exportFObject(null, transaction);
+        this.note = this.xmlDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'PACS 008') {
-        this.iso20022.GENERATE_PACS008_MESSAGE(transaction.id).then(function (message) {
-          this.note = self.iso20022Driver.exportFObject(null, message)
+        this.iso20022.GENERATE_PACS008_MESSAGE(this.transaction).then(function (message) {
+          self.note = self.iso20022Driver.exportFObject(null, message)
         })
       }
     }

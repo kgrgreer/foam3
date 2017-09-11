@@ -22,7 +22,9 @@ foam.CLASS({
 
   imports: [
     'userDAO',
+    'bankDAO',
     'bankAccountDAO',
+    'invoiceDAO',
     'transactionDAO',
     'identificationDAO',
     'dateAndPlaceOfBirthDAO',
@@ -60,7 +62,7 @@ foam.CLASS({
             ClrSysId: {
               Cd: bank.clearingSystemIdentification
             },
-            MbmId: bank.memberIdentification
+            MmbId: bank.memberIdentification
           },
           Nm: bank.name,
           PstlAdr: this.GENERATE_POSTAL_ADDRESS(bank.address)
@@ -84,8 +86,9 @@ foam.CLASS({
           }
         },
         Ccy: account.currencyCode,
-        // TODO: change to business name if not a business
-        Nm: user.firstName + ' ' + user.lastName
+        Nm: ( user.type !== 'Business' ) ?
+          user.firstName + ' ' + user.lastName :
+          user.businessName
       });
     },
 
@@ -113,9 +116,10 @@ foam.CLASS({
       })
 
       if ( user.type === 'Business' ) {
-        // TODO: model organisation identification
         entityDetails.Id = {
           OrgId: {
+            AnyBIC: ( user.bankIdentificationCode ) ?
+              user.bankIdentificationCode : undefined,
             Othr: identification
           }
         };
@@ -135,10 +139,14 @@ foam.CLASS({
       return entityDetails;
     },
 
-    GENERATE_PACS008_MESSAGE: function (transactionId) {
+    GENERATE_PACS008_MESSAGE: function (transaction, invoiceId) {
+      if ( ! transaction )
+        throw new Error('Please provide a transaction');
+
       var self = this;
 
-      var transaction = null;
+      var invoice = null;
+      var intermediaries = [];
 
       var payer = null;
       var payerBank = null;
@@ -152,11 +160,18 @@ foam.CLASS({
       var payeeIdentification = null;
       var payeeBirthPlace = null;
 
-      return self.transactionDAO.find(transactionId).then(function (result) {
+      return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]).then(function (result) {
         if ( ! result )
-          throw new Error('Transaction not found');
+          throw new Error('Intermediaries not found');
 
-        transaction = result;
+        intermediaries = result;
+
+        // only do a lookup if invoiceId is present
+        return ( invoiceId ) ? self.invoiceDAO.find(invoiceId) : null;
+      })
+      .then(function (result) {
+        if ( result )
+          invoice = result;
 
         // get payer information
         return Promise.all([
@@ -237,26 +252,74 @@ foam.CLASS({
                   ClrSysRef: Math.floor(Math.random() * (999999 - 1 + 1)) + 1
                 },
                 IntrBkSttlmAmt: {
-                  // TODO: remove hardcoded INR
-                  Ccy: 'INR',
+                  Ccy: payeeAccount.currencyCode,
                   xmlValue: transaction.receivingAmount
                 },
                 IntrBkSttlmDt: transaction.date,
                 InstdAmt: {
-                  // TODO: remove hardcoded CAD
-                  Ccy: 'CAD',
+                  Ccy: payerAccount.currencyCode,
                   xmlValue: transaction.amount
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
-                ChrgsInf: [], // TODO populate fees
-                // TODO: populate IntrmyAgt1 & 2
+                // TODO: removed hard coded fees post demo
+                ChrgsInf: [
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.80
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(intermediaries[0])
+                  },
+                  {
+                    Amt: {
+                      Ccy: 'CAD',
+                      xmlValue: 0.70
+                    },
+                    Agt: self.GENERATE_AGENT_DETAILS(payerBank)
+
+                  }
+                ],
+                IntrmyAgt1: self.GENERATE_AGENT_DETAILS(intermediaries[0]),
+                IntrmyAgt2: self.GENERATE_AGENT_DETAILS(intermediaries[1]),
                 Dbtr: self.GENERATE_ENTITY_DETAILS(payer, payerIdentification, payerBirthPlace),
                 DbtrAcct: self.GENERATE_ENTITY_ACCOUNT(payer, payerAccount),
                 DbtrAgt: self.GENERATE_AGENT_DETAILS(payerBank),
                 Cdtr: self.GENERATE_ENTITY_DETAILS(payee, payeeIdentification, payeeBirthPlace),
                 CdtrAcct: self.GENERATE_ENTITY_ACCOUNT(payee, payeeAccount),
-                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank)
+                CdtrAgt: self.GENERATE_AGENT_DETAILS(payeeBank),
+//                 if proprietary use Cd, else use Prtry
+//                Purp: transaction.purpose.proprietary ?
+//                  { Cd: transaction.purpose.code } :
+//                  { Prtry: transaction.purpose.code },
+                // only add RltdRmtInf if invoice is present
+                RltdRmtInf: ( invoice ) ? {
+                  RmtId: foam.uuid.randomGUID().replace(/-/g, ''),
+                  RmtLctnDtls: [
+                    {
+                      Mtd: 'URID',
+                      ElctrncAdr: invoice.invoiceFileUrl
+                    }
+                  ]
+                } : undefined,
+                // only add RmtInf if transaction or notes are not null
+                RmtInf: ( transaction.notes || invoice ) ? {
+                  // only add notes if present
+                  Ustrd: ( transaction.notes ) ?
+                    transaction.notes.match(/.{1,140}/g).map(function (chunk) { return chunk; }) : undefined,
+                  // only add invoice information if present
+                  Strd: ( invoice ) ? {
+                    RfrdDocInf: {
+                      Tp: {
+                        CdOrPrtry: {
+                          Cd: 'CINV'
+                        }
+                      },
+                      Nb: invoice.invoiceNumber,
+                      RltdDt: invoice.issueDate
+                    }
+                  } : undefined
+                } : undefined
               }
             ]
           }
