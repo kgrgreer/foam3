@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Top-level Ingenico application controller.',
 
   implements: [
-    'net.nanopay.ingenico.client.Client'
+    'foam.nanos.client.Client',
+    'net.nanopay.transactionservice.client.Client'
   ],
 
   requires: [
