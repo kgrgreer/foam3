@@ -101,8 +101,7 @@ foam.CLASS({
   ],
 
   properties: [
-    'user',
-    { name: 'tip',       class: 'String',  value: '$3.00' }
+    'user'
   ],
 
   methods: [
