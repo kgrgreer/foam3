@@ -87,6 +87,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var user = this.data.user
 
       this
         .addClass(this.myClass())
@@ -99,9 +100,11 @@ foam.CLASS({
           .start().addClass('error-from-to').add( ! this.refund ? 'From' : 'To' ).end()
           .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')
-              .tag({ class: 'foam.u2.tag.Image', data: this.data.image })
+              .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
             .end()
-            .start().addClass('error-profile-name').add(this.data.name).end()
+            .start().addClass('error-profile-name')
+              .add(user.firstName + ' ' + user.lastName)
+            .end()
           .end()
         .end()
 

@@ -16,8 +16,9 @@ foam.CLASS({
   ],
 
   exports: [
+    'user',
     'stack',
-    'toolbar',
+    'toolbar'
   ],
 
   axioms: [
@@ -89,16 +90,27 @@ foam.CLASS({
     'drawer',
     'drawerList',
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      factory: function () { return this.User.create(); }
+    },
+    {
       name: 'stack',
-      factory: function () {
-        return this.Stack.create();
-      }
+      factory: function () { return this.Stack.create(); }
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
+      var self = this;
+
+      // Inject sample user
+      this.userDAO.limit(1).select().then(function (a) {
+        self.user.copyFrom(a.array[0]);
+      });
+
       this.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
     },
 

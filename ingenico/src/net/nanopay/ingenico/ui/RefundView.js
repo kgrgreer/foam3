@@ -91,6 +91,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var user = this.data.user;
 
       this
         .addClass(this.myClass())
@@ -102,9 +103,11 @@ foam.CLASS({
           .end()
           .start().addClass('refund-profile')
             .start().addClass('refund-profile-icon')
-              .tag({ class: 'foam.u2.tag.Image', data: this.data.image })
+              .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
             .end()
-            .start().addClass('refund-profile-name').add(this.data.name).end()
+            .start().addClass('refund-profile-name')
+              .add(user.firstName + ' ' + user.lastName)
+            .end()
           .end()
         .end()
         .start('div').addClass('refund-buttons-wrapper')

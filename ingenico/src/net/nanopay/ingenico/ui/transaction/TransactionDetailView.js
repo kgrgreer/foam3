@@ -101,27 +101,28 @@ foam.CLASS({
   ],
 
   properties: [
-    { name: 'tip',       class: 'String',  value: '$3.00' },
-    { name: 'total',     class: 'String',  value: '$26.09' }
+    'user',
+    { name: 'tip',       class: 'String',  value: '$3.00' }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var user = this.data.user;
 
       this
         .addClass(this.myClass())
         .add(this.TransactionToolbar.create())
         .start('div').addClass('transaction-profile')
           .start().addClass('transaction-profile-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: this.data.image })
+            .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
           .end()
           .start('div').addClass('transaction-profile-info')
             .start().addClass('transaction-profile-name')
-              .add(this.data.name)
+              .add(user.firstName + ' ' + user.lastName)
             .end()
             .start().addClass('transaction-profile-datetime')
-              .add(this.data.datetime)
+              .add(this.data.date.toLocaleString())
             .end()
           .end()
         .end()
@@ -139,7 +140,7 @@ foam.CLASS({
               .add('Tip')
             .end()
             .start().addClass('transaction-info-value')
-              .add(this.tip)
+              .add(this.data.tip)
             .end()
           .end()
           .start('div').addClass('transaction-info-wrapper')
@@ -147,7 +148,7 @@ foam.CLASS({
               .add('Total')
             .end()
             .start().addClass('transaction-info-value')
-              .add(this.total)
+              .add(this.data.total)
             .end()
           .end()
         .end()
