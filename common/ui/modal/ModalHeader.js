@@ -49,6 +49,8 @@ foam.CLASS({
         cursor: pointer;
         position: relative;
         top: 4px;
+        right: 20px;
+        float: right;
       }
       ^ .foam-u2-ActionView-close{
         position: relative;
