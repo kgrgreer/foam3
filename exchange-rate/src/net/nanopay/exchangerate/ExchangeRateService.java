@@ -47,8 +47,6 @@ public class ExchangeRateService
 
     double amount = ((double)amountI) / 100.0;
 
-    System.out.println(">>>> ExchangeRateService.getRate");
-
     ExchangeRateQuote quote = new ExchangeRateQuote();
 
     quote.setFromCurrency(from);
@@ -74,21 +72,12 @@ public class ExchangeRateService
 
     pm.log(getX());
 
-    System.out.println(">>>> ExchangeRateService.getRate before new thread");
-
     // TODO: move to cron job
     new Thread() {
       public void run() {
         fetchRates();
       }
     }.start();
-
-    System.out.println(">>>> ExchangeRateService.getRate response");
-
-    System.out.println(quote.getFromCurrency());
-    System.out.println(quote.getToCurrency());
-    System.out.println(quote.getFromAmount());
-    System.out.println(quote.getToAmount());
 
     return quote;
   }
@@ -108,9 +97,6 @@ public class ExchangeRateService
       JSONObject parsedResponse = (JSONObject) jsonParser.parse(
           new InputStreamReader(response, "UTF-8")
       );
-
-      System.out.println(parsedResponse.get("base"));
-      System.out.println(parsedResponse.get("date"));
 
       JSONObject rates = (JSONObject) parsedResponse.get("rates");
 
