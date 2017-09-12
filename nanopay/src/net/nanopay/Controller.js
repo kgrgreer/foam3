@@ -8,7 +8,8 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.client.Client',
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'net.nanopay.ui.style.appStyling'
   ],
 
   requires: [
