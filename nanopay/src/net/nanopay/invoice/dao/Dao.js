@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.dao',
-  name: 'dao',
+  name: 'Dao',
 
   documentation: 'Creates Invoice related DAO\'s.',
 
