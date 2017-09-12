@@ -1,5 +1,3 @@
-require('../nanopay/src/net/nanopay/files.js')
-
 var foam = require('../../foam2/tools/classes.js')
 foam.classes = foam.classes.map(function(element) { return [ '../foam2/src/', element ]; })
 foam.abstractClasses = foam.abstractClasses.map(function(element) { return ['../foam2/src/', element ]; })
