@@ -9,8 +9,13 @@
     <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
     <script language="javascript" src="ui/topNavigation/BusinessLogoView.js"></script>
     <script language="javascript" src="ui/topNavigation/UserTopNavView.js"></script>   
-    <script language="javascript" src="ui/styles/appStyling.js"></script>        
-
+    <script language="javascript" src="ui/styles/appStyling.js"></script> 
+    <script language="javascript" src="TempMenu.js"></script>    
+    <script language="javascript" src="invoice/ui/DashboardView.js"></script>
+    <script language="javascript" src="invoice/ui/payables/ExpensesView.js"></script>
+    <script language="javascript" src="invoice/ui/receivables/SalesView.js"></script>
+    
+    
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500" rel="stylesheet">
     <style>
       body {
@@ -261,6 +266,7 @@
   <body>
     <script>
       var ctrl = net.nanopay.Controller.create();
+      net.nanopay.TempMenu.create(null, ctrl.__subContext__);
       ctrl.write();
     </script>
   </body>
