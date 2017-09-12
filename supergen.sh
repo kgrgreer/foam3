@@ -1,3 +1,5 @@
+#!/bin/sh
+
 rm -r build/
 mkdir build/
 
@@ -14,7 +16,7 @@ for d in *; do
 done
 cd ../../
 
-cd common/src
+cd nanopay/src
 for d in * ; do
     if [ "$d" = 'target/' ]; then
         continue

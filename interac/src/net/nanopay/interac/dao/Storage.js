@@ -13,7 +13,7 @@ foam.CLASS({
     'net.nanopay.interac.model.Pacs008ISOPurpose',
     'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.interac.model.DateAndPlaceOfBirth',
-    'net.nanopay.common.model.Account'
+    'net.nanopay.model.Account'
   ],
 
   exports: [

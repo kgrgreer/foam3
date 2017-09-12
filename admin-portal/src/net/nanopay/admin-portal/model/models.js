@@ -72,10 +72,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.BankAccountInfo',
+      of: 'net.nanopay.model.BankAccountInfo',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.common.model.BankAccountInfo.create(); }
+      factory: function() { return net.nanopay.model.BankAccountInfo.create(); }
     },
     {
       class: 'Reference',
@@ -676,7 +676,7 @@ foam.CLASS({
 });
 
 foam.CLASS({
-  refines: 'net.nanopay.common.model.BankAccountInfo',
+  refines: 'net.nanopay.model.BankAccountInfo',
 
   tableColumns: [ 'accountName', 'transitNumber', 'bankNumber', 'accountNumber', 'status', 'run' ],
 

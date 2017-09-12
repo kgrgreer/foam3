@@ -7,7 +7,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.client.Client',
-    'net.nanopay.transactionservice.client.Client'
+    'net.nanopay.tx.client.Client'
   ],
 
   requires: [

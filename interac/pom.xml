@@ -18,8 +18,8 @@
   <dependencies>
     <dependency>
       <groupId>net.nanopay</groupId>
-      <artifactId>common</artifactId>
-      <version>0.0.2</version>
+      <artifactId>nanopay</artifactId>
+      <version>0.0.1</version>
     </dependency>
   </dependencies>
 
