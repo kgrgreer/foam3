@@ -10,7 +10,7 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.box.HTTPBox',
     'net.nanopay.interac.model.Payee',
-    'net.nanopay.exchangerate.model.ExchangeRate',
+    'net.nanopay.fx.model.ExchangeRate',
     'net.nanopay.interac.client.ClientExchangeRateService',
     'foam.nanos.auth.User'
   ],

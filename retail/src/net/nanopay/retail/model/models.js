@@ -70,10 +70,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.BankAccountInfo',
+      of: 'net.nanopay.model.BankAccountInfo',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.common.model.BankAccountInfo.create(); }
+      factory: function() { return net.nanopay.model.BankAccountInfo.create(); }
     },
     {
       class: 'String',
@@ -81,7 +81,7 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      of: 'net.nanopay.common.Address',
+      of: 'net.nanopay.model.Address',
       name: 'address'
     },
     {
@@ -234,7 +234,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.retail.model',
-  extends: 'net.nanopay.common.model.BankAccountInfo',
+  extends: 'net.nanopay.model.BankAccountInfo',
   name: 'BankAccount',
 
   documentation: 'Bank Account Information',
@@ -302,17 +302,17 @@ foam.CLASS({
       name: 'emailVerified'
     },
     {
-      class: 'Array',
-      of: 'net.nanopay.common.Phone',
+      class: 'FObjectArray',
+      of: 'net.nanopay.model.Phone',
       name: 'phones'
     },
     {
-      class: 'Array',
-      of: 'net.nanopay.common.BankAccountInfo',
+      class: 'FObjectArray',
+      of: 'net.nanopay.model.BankAccountInfo',
       name: 'bankAccounts'
     },
     {
-      class: 'Array',
+      class: 'FObjectArray',
       of: 'net.nanopay.retail.Device',
       name: 'devices'
     }

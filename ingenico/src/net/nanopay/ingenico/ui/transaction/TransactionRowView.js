@@ -95,7 +95,7 @@ foam.CLASS({
               .end()
               .start().addClass('transaction-item-name').add(user.firstName + ' ' + user.lastName).end()
               .start().addClass('transaction-item-datetime').add(self.data.date.toLocaleString()).end()
-              .start().addClass('transaction-item-amount').add(self.data.amount).end()
+              .start().addClass('transaction-item-amount').add('$' + ( self.data.amount / 100 ).toFixed(2)).end()
               .on('click', self.onClick)
             .end();
           });

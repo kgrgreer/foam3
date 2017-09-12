@@ -98,7 +98,7 @@ foam.CLASS({
         .start('div').addClass('refund-info-wrapper')
           .start().addClass('refund-message')
             .add('Refund ')
-            .start('span').addClass('refund-amount').add(this.data.amount).end()
+            .start('span').addClass('refund-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
             .add(' to')
           .end()
           .start().addClass('refund-profile')
