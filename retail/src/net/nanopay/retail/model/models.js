@@ -186,54 +186,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.retail.model',
-  name: 'Transaction',
-
-  documentation: 'Transaction information.',
-
-  tableColumns: ['id', 'dateAndTime', 'type', 'customer', 'server', 'tip', 'total', 'device'],
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id',
-      label: 'Transaction ID'
-    },
-    {
-      class: 'String',
-      name: 'dateAndTime',
-      label: 'Date & Time'
-    },
-    {
-      class: 'String',
-      name: 'type'
-    },
-    {
-      class: 'String',
-      name: 'customer'
-    },
-    {
-      class: 'String',
-      name: 'server'
-    },
-    {
-      class: 'Currency',
-      name: 'tip',
-      required: true
-    },
-    {
-      class: 'Currency',
-      name: 'total',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'device'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.retail.model',
   extends: 'net.nanopay.model.BankAccountInfo',
   name: 'BankAccount',
 

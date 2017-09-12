@@ -8,6 +8,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.client.Client',
     'net.nanopay.client.Client',
+    'net.nanopay.tx.client.Client',
     'net.nanopay.retail.dao.Storage'
   ],
 
