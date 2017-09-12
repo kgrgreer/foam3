@@ -20,6 +20,7 @@ foam.CLASS({
       ^{
         width: 448px;
         margin: auto;
+        font-family: Roboto;
       }
       ^ .blue-button{
         margin: 20px 20px;
@@ -27,7 +28,7 @@ foam.CLASS({
       }
       ^key-value{
         margin-top: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
       }
     */}
     })
@@ -44,7 +45,7 @@ foam.CLASS({
       }))
       .addClass(this.myClass())
         .start()
-          .start().addClass(this.myClass('key-value'))
+          .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
               .start().addClass('value').add("360 Designs Inc.").end()

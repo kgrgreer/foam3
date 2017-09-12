@@ -17,6 +17,9 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
+      ^ {
+        font-family: Roboto;
+      }
       ^ .input-box{
         margin: 0px 20px 20px 20px;
       }
