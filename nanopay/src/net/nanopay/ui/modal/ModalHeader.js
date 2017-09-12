@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.common.ui.modal',
+  package: 'net.nanopay.ui.modal',
   name: 'ModalHeader',
   extends: 'foam.u2.View',
 
@@ -74,7 +74,7 @@ foam.CLASS({
         .start()
           .start().addClass('container')
             .start().addClass('title').add(this.title).end()
-            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.png'}).addClass('close')
+            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close')
               .add(this.CLOSE)
             .end()
           .end()

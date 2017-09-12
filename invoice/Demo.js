@@ -109,7 +109,7 @@ foam.CLASS({
     },
   
     function onClick_emailPopup(){
-      this.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.EmailModal'}));
+      this.add(this.Popup.create().tag({class: 'net.nanopay.ui.modal.EmailModal'}));
     },
   
     function onClick_paynowPopup(){

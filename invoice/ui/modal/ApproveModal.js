@@ -7,17 +7,19 @@ foam.CLASS({
   documentation: 'Approve Invoice Modal',
   
   requires: [
-    'net.nanopay.common.ui.modal.ModalHeader'
+    'net.nanopay.ui.modal.ModalHeader'
   ],
 
   implements: [
-    'net.nanopay.invoice.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
       ^ {
+        width: 448px;
+        margin: auto;
         font-family: Roboto;
       }
       ^ .input-box{

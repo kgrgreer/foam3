@@ -7,11 +7,11 @@ foam.CLASS({
   documentation: 'Dispute Invoice Modal',
 
   requires: [
-    'net.nanopay.common.ui.modal.ModalHeader'
+    'net.nanopay.ui.modal.ModalHeader'
   ],
 
   implements: [
-    'net.nanopay.invoice.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   axioms: [

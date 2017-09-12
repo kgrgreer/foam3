@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.modal',
+  package: 'net.nanopay.ui.modal',
   name: 'ModalStyling',
   extends: 'foam.u2.View',
 
