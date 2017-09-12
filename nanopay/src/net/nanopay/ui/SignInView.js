@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
-  name: 'SignIn',
+  name: 'SignInView',
   extends: 'foam.u2.View',
 
   documentation: 'Sign in View',
@@ -10,7 +10,6 @@ foam.CLASS({
       code: function CSS() {/*
         ^{
           width: 490px;
-          height: 500px;
           margin: auto;
           text-align: center;
           font-family: Roboto;
