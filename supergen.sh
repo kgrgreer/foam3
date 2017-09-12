@@ -64,30 +64,6 @@ for d in * ; do
 done
 cd ../../
 
-cd transaction-service/src
-for d in * ; do
-    if [ "$d" = 'target/' ]; then
-        continue
-    fi
-    if [ "$d" = 'gen.sh' ]; then
-        continue
-    fi
-    cp -r $d ../../build
-done
-cd ../../
-
-cd exchange-rate/src
-for d in * ; do
-    if [ "$d" = 'target/' ]; then
-        continue
-    fi
-    if [ "$d" = 'gen.sh' ]; then
-        continue
-    fi
-    cp -r $d ../../build
-done
-cd ../../
-
 # Generate java files to build dir
 echo $cwd
 cwd=$(pwd)

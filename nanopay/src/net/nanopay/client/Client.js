@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.dao',
-  name: 'Storage',
+  package: 'net.nanopay.client',
+  name: 'Client',
 
   documentation: 'Creates all DAO\'s.',
 
@@ -142,28 +142,17 @@ foam.CLASS({
     {
       name: 'invoiceDAO',
       factory: function() {
-        /*this.DecoratedDAO.create({
-          decorator: this.InvoiceDecorator.create(),
-          delegate: */
-        return this.createDAO({
-            of: this.Invoice,
-            seqNo: true
-          })
-          .addPropertyIndex(this.Invoice.STATUS)
-          .addPropertyIndex(this.Invoice.TO_BUSINESS_NAME)
-          .addPropertyIndex(this.Invoice.FROM_BUSINESS_NAME)
-          .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
-          .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
+          cache: true,
+          of: this.Invoice
+        })
+        .addPropertyIndex(this.Invoice.STATUS)
+        .addPropertyIndex(this.Invoice.TO_BUSINESS_NAME)
+        .addPropertyIndex(this.Invoice.FROM_BUSINESS_NAME)
+        .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
+        .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
       }
-    }
-  ],
-
-  methods: [
-    function createDAO(config) {
-      config.daoType = 'MDAO'; // 'IDB';
-      config.cache   = true;
-
-      return this.EasyDAO.create(config);
     }
   ]
 });

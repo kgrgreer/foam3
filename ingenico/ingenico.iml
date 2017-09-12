@@ -10,8 +10,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: net.nanopay:transaction-service:0.0.1" level="project" />
-    <orderEntry type="library" name="Maven: net.nanopay:common:0.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache-extras.beanshell:bsh:2.0b6" level="project" />
     <orderEntry type="library" name="Maven: com.google:foam:1.0" level="project" />
   </component>
 </module>
