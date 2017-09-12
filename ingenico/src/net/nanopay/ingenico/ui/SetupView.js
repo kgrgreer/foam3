@@ -23,7 +23,7 @@ foam.CLASS({
           line-height: 1.88;
           text-align: center;
           color: #ffffff;
-          padding-top: 76px;
+          padding-top: 20px;
         }
         ^ .serial-number-label {
           height: 29px;
@@ -95,7 +95,7 @@ foam.CLASS({
 
   listeners: [
     function onNextClicked (e) {
-
+      this.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
     }
   ]
 });
