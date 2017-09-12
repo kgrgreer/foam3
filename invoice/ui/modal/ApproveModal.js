@@ -17,7 +17,7 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-      ^ .input-Box{
+      ^ .input-box{
         margin: 0px 20px 20px 20px;
       }
       ^ .mainMessage-Text{
@@ -31,7 +31,7 @@ foam.CLASS({
         margin: 20px 65px 10px 20px;
       }
 
-      ^ .Approve-Button{
+      ^ .blue-button{
         margin: 5px 20px 20px 293px;
       }
     */}
@@ -55,7 +55,7 @@ foam.CLASS({
       .start()
         .start().addClass('mainMessage-Text').add(this.Instructions).end()
         .start('input').addClass('input-Box').end()
-        .start().addClass('Approve-Button').add('Approve').end()
+        .start().addClass('blue-button').add('Approve').end()
       .end()
     .end()
     } 
