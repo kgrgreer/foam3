@@ -87,6 +87,12 @@ foam.CLASS({
             .add('Schedule Pop Up')
             .on('click', function(){self.onClick_schedulePopup()})
           .end()
+
+          .start('button')
+            .add('Record Pop Up')
+            .on('click', function(){self.onClick_recordPopup()})
+          .end()
+
         .end()
     },
 
@@ -94,6 +100,10 @@ foam.CLASS({
       this.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ApproveModal'}));
     },
     
+    function onClick_recordPopup(){
+      this.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal'}));
+    },
+
     function onClick_disputePopup(){
       this.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal'}));
     },

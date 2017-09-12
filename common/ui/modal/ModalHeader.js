@@ -39,7 +39,6 @@ foam.CLASS({
         text-align: left;
         color: #ffffff;
         margin-left: 19px;
-        margin-right: 332px;
         display: inline-block;
       }
       ^ .close{

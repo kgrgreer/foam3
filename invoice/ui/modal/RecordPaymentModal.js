@@ -10,6 +10,10 @@ foam.CLASS({
     'net.nanopay.common.ui.modal.ModalHeader'
   ],
 
+  implements: [
+    'net.nanopay.invoice.ui.modal.ModalStyling'
+  ],
+
   properties: [
     {
       class: 'Date',
@@ -22,46 +26,11 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-      ^{
-        height: 425px;
-        width: 448px;
-        margin: auto;
-        padding-bottom: 20px;
-      }
-      ^ .Email-Container{
-        display: flex;
-      }
-      ^ .Email-Text{
-        margin-right: 0 !important;
-      }
-      ^ .Email-Container > img{
-        position: relative;
-        left: 290px;
-        top: 4px;
-      }
-      ^ .foam-u2-ActionView-close{
-        bottom: 0px !important;
-        right: -245px !important;
-      }
-      ^ h4{
-        display: inline-block;
-        margin-left: 20px;
-      }
-      ^ p{
-        display: inline-block;
-        margin-left: 50px;
-      }
-      .s1-input-container > .message{
-        height: 65px;
-      }
-      ^ .confirm-button{
-        top: 25px;
-        right: 30px;
-        font-weight: 200;
-      }
-      ^ .payment-date{
-        margin-top: 5px;
-      }
+        ^ {
+          width: 448px;
+          margin: auto;
+          font-family: Roboto;
+        }
     */}
     })
   ],
@@ -77,23 +46,25 @@ foam.CLASS({
       }))
       .addClass(this.myClass())
       .start()
-        .start()
-          .start('h4').add('Company').end()
-          .start('p').add('360 Design Inc').end()
+        .start().addClass('key-value-container')
+          .start()
+            .start().addClass('key').add('Company').end()
+            .start().addClass('value').add('360 Design Inc').end()
+          .end()
         .end()
         .start().addClass('s1-input-container payment-date')
-          .start('label').add('Payment Date').end()
-          .start(this.PAYMENT_DATE).end()
+          .start().addClass('label').add('Payment Date').end()
+          .start(this.PAYMENT_DATE).addClass('full-width-input').end()
         .end()
         .start().addClass('s1-input-container')
-          .start('label').add('Amount').end()
-          .start(this.AMOUNT).end()
+          .start().addClass('label').add('Amount').end()
+          .start(this.AMOUNT).addClass('full-width-input').end()
         .end()
         .start().addClass('s1-input-container')
-          .start('label').add('Note').end()
-          .start(this.NOTE).addClass('message').end()
+          .start().addClass('label').add('Note').end()
+          .start(this.NOTE).addClass('input-box').end()
         .end()
-        .start().addClass('confirm-button').add('Record Payment').end()
+        .start().addClass('blue-button').add('Record Payment').end()
       .end()
     } 
   ]

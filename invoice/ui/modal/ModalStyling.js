@@ -30,6 +30,8 @@ foam.CLASS({
           font-size: 14px;
           line-height: 2.86;
           letter-spacing: 0.2px;
+          margin: 20px 20px;
+          float: right;
         }
         .full-width-input{
           width: 90%;

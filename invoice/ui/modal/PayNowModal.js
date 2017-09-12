@@ -22,10 +22,6 @@ foam.CLASS({
         margin: auto;
         font-family: Roboto;
       }
-      ^ .blue-button{
-        margin: 20px 20px;
-        float: right;
-      }
     */}
     })
   ],
