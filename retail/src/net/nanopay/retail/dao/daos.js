@@ -7,7 +7,6 @@ foam.CLASS({
   requires: [
     'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'net.nanopay.retail.model.User',
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.BankAccount',
     'net.nanopay.retail.model.Transaction',
@@ -16,7 +15,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'userDAO',
     'deviceDAO',
     'bankAccountDAO',
     'transactionDAO',
@@ -25,15 +23,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'userDAO',
-      factory: function() {
-        return this.createDAO({
-          of: this.User,
-          seqNo: true
-        })
-      }
-    },
     {
       name: 'deviceDAO',
       factory: function() {
