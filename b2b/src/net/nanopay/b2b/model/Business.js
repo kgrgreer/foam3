@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.b2b.model',
   name: 'Business',
-  javaImports: [ 'net.nanopay.common.model.*' ],
+
   documentation: 'Business information.',
 
   properties: [
@@ -72,11 +72,11 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.BankAccountInfo',
+      of: 'net.nanopay.model.BankAccountInfo',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.common.model.BankAccountInfo.create(); },
-      javaFactory: `return new net.nanopay.common.model.BankAccountInfo();`
+      factory: function() { return net.nanopay.model.BankAccountInfo.create(); },
+      javaFactory: `return new net.nanopay.model.BankAccountInfo();`
     },
     {
       class: 'Reference',

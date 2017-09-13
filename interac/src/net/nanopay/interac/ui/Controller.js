@@ -8,16 +8,16 @@ foam.CLASS({
   implements: [
     'foam.nanos.client.Client2',
     'net.nanopay.interac.client.Client',
-    'net.nanopay.transactionservice.client.Client',
-    'net.nanopay.exchangerate.client.Client',
+    'net.nanopay.tx.client.Client',
+    'net.nanopay.fx.client.Client',
     'net.nanopay.interac.dao.Storage',
-    'net.nanopay.common.dao.Storage',
+    'net.nanopay.client.Client',
     'foam.mlang.Expressions'
   ],
 
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.common.model.Account',
+    'net.nanopay.model.Account',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.interac.Iso20022',
@@ -67,7 +67,7 @@ foam.CLASS({
     },
     {
       class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.common.model.Account',
+      of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
     },

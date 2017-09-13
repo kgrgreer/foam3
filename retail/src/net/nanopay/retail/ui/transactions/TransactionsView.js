@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: 'View displaying list of transactions by devices.',
 
-  requires: [ 'net.nanopay.retail.model.Transaction' ],
+  requires: [ 'net.nanopay.tx.model.Transaction' ],
 
   imports: [ 'transactionDAO', 'stack' ],
 
@@ -233,13 +233,11 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.Transaction.DATE_AND_TIME,
-                    this.Transaction.TYPE,
-                    this.Transaction.CUSTOMER,
-                    this.Transaction.SERVER,
+                    this.Transaction.DATE,
+                    this.Transaction.PAYER_ID,
+                    this.Transaction.PAYEE_ID,
                     this.Transaction.TIP,
-                    this.Transaction.TOTAL,
-                    this.Transaction.DEVICE
+                    this.Transaction.TOTAL
                   ]
                 },
               summaryView: this.TransactionsTableView.create()
@@ -296,7 +294,7 @@ foam.CLASS({
       name: 'TransactionsTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.retail.model.Transaction' ],
+      requires: [ 'net.nanopay.tx.model.Transaction' ],
 
       imports: [ 'transactionDAO' ],
       properties: [
@@ -312,7 +310,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'id', 'dateAndTime', 'type', 'customer', 'server', 'tip', 'total', 'device'
+                'id', 'date', 'payerId', 'payeeId', 'tip', 'total'
               ]
             }).addClass(this.myClass('table')).end();
         }

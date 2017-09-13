@@ -51,7 +51,7 @@ foam.CLASS({
           {
             "id":1,
             "accountInfo":{
-              "class":"net.nanopay.common.model.BankAccountInfo",
+              "class":"net.nanopay.model.BankAccountInfo",
               "id":"",
               "accountName":"",
               "transitNumber":"",

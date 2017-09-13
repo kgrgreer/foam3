@@ -8,7 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'user',
+    'userDAO'
   ],
 
   axioms: [
@@ -73,18 +75,31 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
-      this
-        .addClass(this.myClass())
-        .start('div').addClass('transaction-item')
-          .start().addClass('transaction-item-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: this.data.image })
-          .end()
-          .start().addClass('transaction-item-name').add(this.data.name).end()
-          .start().addClass('transaction-item-datetime').add(this.data.datetime).end()
-          .start().addClass('transaction-item-amount').add(this.data.amount).end()
-          .on('click', this.onClick)
-        .end()
+      self
+        .addClass(self.myClass())
+        .call(function () {
+          Promise.resolve().then(function () {
+            if ( self.data.payerId === self.user.id ) {
+              return self.userDAO.find(self.data.payeeId);
+            } else if ( self.data.payeeId === self.user.id ) {
+              return self.userDAO.find(self.data.payerId);
+            }
+          })
+          .then(function (user) {
+            self.data.user = user;
+            self.start('div').addClass('transaction-item')
+              .start().addClass('transaction-item-icon')
+                .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
+              .end()
+              .start().addClass('transaction-item-name').add(user.firstName + ' ' + user.lastName).end()
+              .start().addClass('transaction-item-datetime').add(self.data.date.toLocaleString()).end()
+              .start().addClass('transaction-item-amount').add('$' + ( self.data.amount / 100 ).toFixed(2)).end()
+              .on('click', self.onClick)
+            .end();
+          });
+        });
     }
   ],
 

@@ -72,10 +72,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.common.model.BankAccountInfo',
+      of: 'net.nanopay.model.BankAccountInfo',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.common.model.BankAccountInfo.create(); }
+      factory: function() { return net.nanopay.model.BankAccountInfo.create(); }
     },
     {
       class: 'Reference',
@@ -591,92 +591,7 @@ foam.CLASS({
 });
 
 foam.CLASS({
-  package: 'net.nanopay.admin.model',
-  name: 'Transaction',
-
-  documentation: 'Transaction information.',
-
-  ids: [ 'transactionNumber' ],
-
-  searchColumns: [
-    'search', 'issueDate', 'payer', 'payee', 'amount', 'transactionNumber'
-  ],
-
-  tableColumns: [
-    'issueDate', 'payer', 'payee', 'amount'
-  ],
-
-  properties: [
-    {
-      name: 'search',
-      transient: true,
-      searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.admin.model.Transaction', richSearch: true }
-    },
-
-    {
-      class: 'Long',
-      name: 'transactionNumber',
-      label: 'Transaction #',
-      aliases: [ 'id', 'transaction', 'i', 't' ],
-      visibility: foam.u2.Visibility.FINAL
-    },
-    // TODO: Change payer/payee to Reference of 'foam.nanos.auth.User'
-    //   && Setup Relationship. Needs development of User service so not
-    //   yet possible.
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'payer',
-      label: 'Payer',
-      tableCellFormatter: function(obj) {
-        return this.start()
-                  .start({ class: 'foam.u2.tag.Image', data: obj.profilePicture })
-                    .addClass('profile-photo')
-                  .end()
-                  .add(obj.firstName + ( obj.lastName ? ' ' + obj.lastName : '' )).end();
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'payee',
-      label: 'Payee',
-      tableCellFormatter: function(obj) {
-        return this.start()
-                  .start({ class: 'foam.u2.tag.Image', data: obj.profilePicture })
-                    .addClass('profile-photo')
-                  .end()
-                  .add(obj.firstName + ( obj.lastName ? ' ' + obj.lastName : '' )).end();
-      }
-    },
-    {
-      class: 'Date',
-      name: 'issueDate',
-      label: 'Date & Time',
-      required: true,
-      factory: function() { return new Date(); },
-      aliases: [ 'issueDate', 'date', 'd', 'issued' ],
-      tableCellFormatter: function(date) {
-        this.start()
-          .add(date.toString().slice(0, -15))
-        .end();
-      }
-    },
-    {
-      // TODO: make Currency class
-      class: 'Double',
-      name: 'amount',
-      aliases: [ 'a' ],
-      required: true,
-      tableCellFormatter: function(a) {
-        this.start().add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).style({color: '#2cab70'}).end();
-      }
-    }
-  ]
-});
-
-foam.CLASS({
-  refines: 'net.nanopay.common.model.BankAccountInfo',
+  refines: 'net.nanopay.model.BankAccountInfo',
 
   tableColumns: [ 'accountName', 'transitNumber', 'bankNumber', 'accountNumber', 'status', 'run' ],
 

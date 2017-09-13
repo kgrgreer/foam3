@@ -1,3 +1,5 @@
+#!/bin/sh
+
 rm -r build/
 mkdir build/
 
@@ -14,7 +16,7 @@ for d in *; do
 done
 cd ../../
 
-cd common/src
+cd nanopay/src
 for d in * ; do
     if [ "$d" = 'target/' ]; then
         continue
@@ -51,30 +53,6 @@ done
 cd ../../
 
 cd retail/src
-for d in * ; do
-    if [ "$d" = 'target/' ]; then
-        continue
-    fi
-    if [ "$d" = 'gen.sh' ]; then
-        continue
-    fi
-    cp -r $d ../../build
-done
-cd ../../
-
-cd transaction-service/src
-for d in * ; do
-    if [ "$d" = 'target/' ]; then
-        continue
-    fi
-    if [ "$d" = 'gen.sh' ]; then
-        continue
-    fi
-    cp -r $d ../../build
-done
-cd ../../
-
-cd exchange-rate/src
 for d in * ; do
     if [ "$d" = 'target/' ]; then
         continue

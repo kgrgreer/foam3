@@ -9,6 +9,8 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.client.Client2',
+    'net.nanopay.client.Client',
+    'net.nanopay.tx.client.Client',
     'net.nanopay.admin.dao.Storage',
     'foam.mlang.Expressions'
   ],

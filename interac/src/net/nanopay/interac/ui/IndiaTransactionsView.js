@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: 'View displaying interac home page with list of accounts and transactions',
 
-  requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
+  requires: [ 'net.nanopay.tx.model.Transaction' ],
 
   imports: [
     'transactionDAO',
@@ -245,7 +245,7 @@ foam.CLASS({
       name: 'TransactionTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
+      requires: [ 'net.nanopay.tx.model.Transaction' ],
 
       imports: [ 'transactionDAO' ],
 
@@ -274,7 +274,7 @@ foam.CLASS({
       name: 'TransactionIndiaTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.transactionservice.model.Transaction' ],
+      requires: [ 'net.nanopay.tx.model.Transaction' ],
 
       imports: [ 'transactionDAO' ],
 
