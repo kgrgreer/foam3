@@ -13,10 +13,6 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^{
-
-        }
-
         ^ .guideColumn {
           display: inline-block;
           vertical-align: top;
