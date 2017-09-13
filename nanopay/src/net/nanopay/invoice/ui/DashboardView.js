@@ -9,8 +9,10 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
-  imports: [ 'invoiceDAO', 'business', 'currencyFormatter' ],
-
+  imports: [ 
+    'invoiceDAO', 
+    'currencyFormatter' 
+  ],
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
