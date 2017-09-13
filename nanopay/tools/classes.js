@@ -1,5 +1,3 @@
-require('../src/foam/files.js');
-
 var classes = [
   'foam.dao.crypto.EncryptedObject',
 

@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.Base64;
 
 public class EncryptingDAO
     extends ProxyDAO
@@ -181,7 +182,7 @@ public class EncryptingDAO
       // store encrypted object instead of original object
       EncryptedObject encryptedObject = new EncryptedObject();
       encryptedObject.setId((Long) obj.getProperty("id"));
-      encryptedObject.setData(nonceWithCipherText);
+      encryptedObject.setData(Base64.getEncoder().encodeToString(nonceWithCipherText));
 
       return super.put_(x, encryptedObject);
     } catch (Exception e) {
@@ -194,7 +195,7 @@ public class EncryptingDAO
   public FObject find_(X x, Object id) {
     try {
       EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
-      byte[] data = encryptedObject.getData();
+      byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
       final byte[] cipherText = new byte[data.length];

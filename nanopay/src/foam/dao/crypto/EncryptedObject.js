@@ -10,9 +10,9 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'foam.core.ByteArray',
+      class: 'String',
       name: 'data',
-      documentation: 'Encrypted data'
+      documentation: 'Encrypted data in Base64'
     }
   ]
 });
