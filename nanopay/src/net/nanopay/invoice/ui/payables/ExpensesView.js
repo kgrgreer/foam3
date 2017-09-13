@@ -30,9 +30,9 @@ foam.CLASS({
           margin: auto;
           position: relative;
         }
-        ^ .foam-u2-view-TableView-net-nanopay-b2b-model-Invoice{
+        ^ .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice{
           position: relative;
-          top: -75px;
+          top: -20px;
         }
         .foam-u2-ActionView-create{
           background: #59aadd;
@@ -48,10 +48,7 @@ foam.CLASS({
         }
         ^ .foam-u2-ActionView-create{
           position: relative;
-          top: -73;
-        }
-        ^ .net-nanopay-b2b-ui-shared-summaryViews-SummaryCard{
-          width: 20.9%;
+          top: -40;
         }
         .sync-action-div{
           display: inline-block;
@@ -133,13 +130,12 @@ foam.CLASS({
           .start('div').addClass('container')
             .start('div').addClass('button-div')
               .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              // .start('input').addClass('filter-search').end()
               .start('div').addClass('sync-action-div')
                 .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
                 .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
                 .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
               .end()          
-              .start('div').addClass('sync-import-div')
+              .start('div').addClass('sync-import-div inline')
                 .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
                 .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
               .end()
