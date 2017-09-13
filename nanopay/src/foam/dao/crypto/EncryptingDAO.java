@@ -46,7 +46,8 @@ public class EncryptingDAO
   protected JSONParser jsonParser_;
   protected final Outputter outputter_ = new Outputter();
 
-  public EncryptingDAO(String keystoreFilename, ClassInfo classInfo, DAO delegate) throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException {
+  public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate) throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException {
+    setX(x);
     setOf(classInfo);
     setDelegate(delegate);
 
@@ -195,10 +196,13 @@ public class EncryptingDAO
   public FObject find_(X x, Object id) {
     try {
       EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
+
+      System.out.println(encryptedObject.getData());
+
       byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
-      final byte[] cipherText = new byte[data.length];
+      final byte[] cipherText = new byte[data.length - GCM_NONCE_LENGTH];
 
       // copy nonce and ciphertext
       System.arraycopy(data, 0, nonce, 0, nonce.length);
@@ -212,6 +216,9 @@ public class EncryptingDAO
       cipher.updateAAD(aad);
 
       byte[] plainText = cipher.doFinal(cipherText);
+
+      System.out.println("Plaintext = " + new String(plainText));
+
       return this.jsonParser_.parseString(new String(plainText));
     } catch (Exception e) {
       e.printStackTrace();
