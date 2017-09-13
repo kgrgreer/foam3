@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.summaryViews',
+  package: 'net.nanopay.invoice.ui',
   name: 'MentionsView',
   extends: 'foam.u2.View',
 
@@ -60,7 +60,7 @@ foam.CLASS({
         ^{
           margin-bottom: 20px;
         }
-        ^ .net-nanopay-b2b-ui-shared-summaryViews-SummaryCard{
+        ^ .net-nanopay-invoice-ui-SummaryCard{
           width: 26.89%;
         }
       */}
@@ -85,9 +85,9 @@ foam.CLASS({
           .add(this.title)
           .start('h4').add('$', this.formattedMentionsAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end()
         .end()
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count: this.disputedCount$, amount: this.formattedDisputedAmount$, status: this.disputeLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count: this.pendingCount$, amount: this.formattedPendingAmount$, status: this.pendingLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count: this.draftCount$, amount: null, status: this.draftLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count: this.disputedCount$, amount: this.formattedDisputedAmount$, status: this.disputeLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count: this.pendingCount$, amount: this.formattedPendingAmount$, status: this.pendingLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count: this.draftCount$, amount: null, status: this.draftLabel })
     },
   ],
 

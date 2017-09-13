@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.summaryViews',
+  package: 'net.nanopay.invoice.ui',
   name: 'ReceivablesSummaryView',
   extends: 'foam.u2.View',
 
@@ -103,10 +103,10 @@ foam.CLASS({
           .add(this.title)
           .start('h4').add('$', this.formattedReceivableAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end() 
         .end()
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
     },
   ],
 

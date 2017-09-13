@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.receivables',
+  package: 'net.nanopay.invoice.ui',
   name: 'SalesView',
   extends: 'foam.u2.View',
 
@@ -79,7 +79,7 @@ foam.CLASS({
           position: relative;
           top: -72px;
         }
-        ^ .net-nanopay-b2b-ui-shared-summaryViews-SummaryCard{
+        ^ .net-nanopay-invoice-ui-SummaryCard{
           width: 20.9%;
         }
         .hide{
@@ -111,19 +111,18 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideReceivableSummary$)
-          .start({class: 'net.nanopay.b2b.ui.shared.summaryViews.ReceivablesSummaryView'}).end()
-          .start('div').addClass('container')
-            .start('div').addClass('button-div')
+          .start({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'}).end()
+          .start().addClass('container')
+            .start().addClass('button-div')
               .tag({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              // .start('input').addClass('filter-search').end()
-              .start('div').addClass('sync-action-div')
-                .tag({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
-                .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
-                .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
+              .start().addClass('sync-action-div')
+                .tag({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/approve.png', text: 'Pay'}})
+                .start({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
+                .start({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
               .end()          
-              .start('div').addClass('sync-import-div')
-                .tag({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
-                .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
+              .start().addClass('sync-import-div')
+                .tag({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
+                .start({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
               .end()
             .end()
           .end()
@@ -133,8 +132,8 @@ foam.CLASS({
             class: 'foam.u2.ListCreateController',
             dao: this.salesDAO,
             factory: function() { return self.Invoice.create({ fromBusinessId: self.business.id, fromBusinessName: self.business.name }); },
-            createDetailView: { class: 'net.nanopay.b2b.ui.InvoiceDetailView' },
-            detailView: { class: 'net.nanopay.b2b.ui.SalesDetailView' },
+            createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
+            detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
             summaryView: this.SalesTableView.create()
           })
         .end()

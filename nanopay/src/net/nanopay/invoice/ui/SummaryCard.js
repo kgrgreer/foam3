@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.summaryViews',
+  package: 'net.nanopay.invoice.ui',
   name: 'SummaryCard',
   extends: 'foam.u2.View',
 

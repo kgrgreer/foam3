@@ -1,20 +1,23 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.detailViews',
-  name: 'ExpensesDetailView',
+  package: 'net.nanopay.invoice.ui',
+  name: 'SalesDetailView',
   extends: 'foam.u2.View',
 
   requires: [ 
-    // 'net.nanopay.b2b.HistoryInvoiceItemView',
+    'net.nanopay.invoice.model.Invoice', 
+    // 'net.nanopay.b2b.HistoryInvoiceItemView', 
     'foam.u2.dialog.Popup' 
   ],
 
   imports: [ 
     'stack', 
-    'hideSaleSummary', 
-    'expensesDAO', 
+    'hideReceivableSummary', 
+    'salesDAO', 
     'historyDAO',
     'ctrl'
   ],
+
+  exports: [ 'hideReceivableSummary' ],
   
   implements: [
     'foam.mlang.Expressions', 
@@ -32,9 +35,12 @@ foam.CLASS({
           color: #093649;
           padding-top: 70px;
         }
-        ^ .foam-u2-history-HistoryView{
+        ^ > .foam-u2-history-HistoryView{
           width: 920px;
           margin-top: 20px;
+        }
+        ^ .foam-u2-ActionView-mainAction{
+          right: 250px !important;
         }
         */
       }
@@ -46,23 +52,20 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      this.hideSaleSummary = true;
+      this.hideReceivableSummary = true;
       this
         .addClass(this.myClass())
         .tag({ 
           class: 'net.nanopay.b2b.ui.DetailButtons', 
-          invoice: this.data,
           detailActions: { 
-            invoice: this.invoice,
-            buttonLabel: 'Pay Now', 
-            buttonAction: this.payNowPopUp, 
-            subMenu1: 'Schedule a Payment', 
-            subMenuAction1: this.schedulePopUp, 
-            subMenu2: 'Dispute', subMenuAction2: 
-            this.disputePopUp 
+            invoice: this.data,
+            buttonLabel: 'Record Payment', 
+            buttonAction: this.recordPaymentModal,
+            subMenu1: 'Edit Invoice',
+            subMenu2: 'Void' 
           }
         })
-        .start('h5').add('Invoice from ', this.data.toBusinessName).end()
+        .start('h5').add('Bill from ', this.data.fromBusinessName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .tag({ 
           class: 'foam.u2.history.HistoryView',
@@ -73,17 +76,9 @@ foam.CLASS({
   ],
 
   listeners: [
-    function payNowPopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.PayNowModal'}));
-    },
-
-    function disputePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.DisputeModal'}));
-    },
-
-    function schedulePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.ScheduleModal'}));
+    function recordPaymentModal(){
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.RecordPaymentModal'}));
     }
   ]
-
+  
 });

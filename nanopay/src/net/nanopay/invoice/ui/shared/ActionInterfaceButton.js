@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
-  name: 'DetailButtons',
+  name: 'ActionInterfaceButton',
   extends: 'foam.u2.View',
 
   documentation: 'Creates interface of action buttons on invoices.',
