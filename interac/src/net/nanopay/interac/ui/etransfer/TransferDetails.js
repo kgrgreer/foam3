@@ -55,18 +55,19 @@ foam.CLASS({
 
           padding: 12px 20px;
           padding-right: 35px;
-          border: solid 1px rgba(164, 179, 184, 0.5);
+          border: solid 1px rgba(164, 179, 184, 0.5) !important;
           background-color: white;
           outline: none;
+          cursor: pointer;
+        }
+
+        ^ .foam-u2-tag-Select:disabled {
+          cursor: default;
         }
 
         ^ .dropdownContainer {
           position: relative;
           margin-bottom: 20px;
-        }
-
-        ^ .foam-u2-tag-Select:hover {
-          cursor: pointer;
         }
 
         ^ .foam-u2-tag-Select:focus {
@@ -75,6 +76,7 @@ foam.CLASS({
 
         ^ .caret {
           position: relative;
+          pointer-events: none;
         }
 
         ^ .caret:before {
@@ -229,8 +231,13 @@ foam.CLASS({
     function init() {
       var self = this;
       var initSuper = this.SUPER;
+
       if ( this.viewData.payee ) {
         this.payees = this.viewData.payee.id;
+      }
+
+      if ( this.invoiceMode ) {
+        this.payees = this.invoice.toBusinessId;
       }
 
       if ( this.viewData.purpose ) {
@@ -262,8 +269,8 @@ foam.CLASS({
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
           .start('div').addClass('dropdownContainer')
-            .add(this.PAYEES)
-            .start('div').addClass('caret').end()
+            .start(this.PAYEES, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
+            .start('div').enableClass('hidden', this.invoiceMode$).addClass('caret').end()
           .end()
           .start('p').add(this.PurposeLabel).end()
           .start('div').addClass('dropdownContainer')
@@ -292,7 +299,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
+          .start({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser }).end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();
