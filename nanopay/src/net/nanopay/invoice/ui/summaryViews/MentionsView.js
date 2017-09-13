@@ -11,7 +11,7 @@ foam.CLASS({
   ],
   
   requires: [
-    'net.nanopay.b2b.model.Invoice'
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   imports: [ 'invoiceDAO', 'business', 'currencyFormatter' ],
@@ -22,22 +22,12 @@ foam.CLASS({
       factory: function() { return this.invoiceDAO; }
     },
     {
-      name: 'businessInvoiceDAO',
-      expression: function(dao) {
-        return dao.where(
-          this.OR(
-            this.EQ(this.Invoice.FROM_BUSINESS_ID, this.business.id),
-            this.EQ(this.Invoice.TO_BUSINESS_ID, this.business.id)
-          )
-        );          
-      }
-    },
-    {
-      name: 'formattedMentionsAmount',
-      expression: function(disputedAmount, pendingAmount) { 
-        var a = disputedAmount + pendingAmount;
-        return this.currencyFormatter.format(a); 
-      }
+      class: 'Currency',
+      name: 'formattedMentionsAmount'
+      // expression: function(disputedAmount, pendingAmount) { 
+      //   var a = disputedAmount + pendingAmount;
+      //   return this.currencyFormatter.format(a); 
+      // }
     },
     {
       class: 'Double',
@@ -45,17 +35,19 @@ foam.CLASS({
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
+      class: 'Currency',
       name: 'formattedDisputedAmount',
-      expression: function(disputedAmount) { return this.currencyFormatter.format(disputedAmount); }
+      // expression: function(disputedAmount) { return this.currencyFormatter.format(disputedAmount); }
     },
     {
       class: 'Double',
       name: 'pendingAmount',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
-    {
+    { 
+      class: 'Currency',
       name: 'formattedPendingAmount',
-      expression: function(pendingAmount) { return this.currencyFormatter.format(pendingAmount); }
+      // expression: function(pendingAmount) { return this.currencyFormatter.format(pendingAmount); }
     },
     'pendingCount',
     'draftCount',
@@ -91,11 +83,11 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('card-title')
           .add(this.title)
-          .start('h4').add(this.formattedMentionsAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end()
+          .start('h4').add('$', this.formattedMentionsAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end()
         .end()
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count: this.disputedCount$, amount: this.formattedDisputedAmount$, status: this.disputeLabel })
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count: this.pendingCount$, amount: this.formattedPendingAmount$, status: this.pendingLabel })
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count: this.draftCount$, amount: null, status: this.draftLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count: this.disputedCount$, amount: this.formattedDisputedAmount$, status: this.disputeLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count: this.pendingCount$, amount: this.formattedPendingAmount$, status: this.pendingLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count: this.draftCount$, amount: null, status: this.draftLabel })
     },
   ],
 

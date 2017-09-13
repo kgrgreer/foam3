@@ -19,23 +19,25 @@ foam.CLASS({
       name: 'dao',
       factory: function() { return this.invoiceDAO; }
     },
+    // {
+    //   class: 'Currency',
+    //   name: 'payableAmount',
+    //   view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    // },
     {
-      class: 'Double',
-      name: 'payableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
-    },
-    {
+      class: 'Currency',
       name: 'formattedPayableAmount',
-      expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
+      // expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
     },
+    // {
+    //   class: 'Currency',
+    //   name: 'receivableAmount',
+    //   view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    // },
     {
-      class: 'Double',
-      name: 'receivableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
-    },
-    {
+      class: 'Currency',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.currencyFormatter.format(receivableAmount); }
+      // expression: function(receivableAmount) { return this.currencyFormatter.format(receivableAmount); }
     }
   ],
 
@@ -45,17 +47,7 @@ foam.CLASS({
         ^{
           width: 992px;
           margin: auto;
-        }
-        ^ h2 {
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1;
-          letter-spacing: 0.3px;
-          color: #093649;
-          opacity: 0.6;
-          margin-bottom: 35px;
-          display: inline-block;
-          width: 200px;
+          font-family: Roboto;
         }
         .card-title{
           display: block;
@@ -72,19 +64,14 @@ foam.CLASS({
         .resize-button{
           height: 30px;
           width: 60px;
-          line-height: 30px;
-        }
-        .dashboard-button-div{
           display: inline-block;
+          text-align: center;
+          line-height: 30px;
         }
         ^cashflow-summary{
           background: white;
           width: 945px;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
           text-align: center;
-          padding: 5px 0;
         }
         ^cashflow-summary h4 {
           font-family: Roboto;
@@ -139,24 +126,24 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .tag({class: 'net.nanopay.b2b.RegistrationProgressView'})
-        .start('h2').add('Weekly Summary').end()
-        .start().addClass('dashboard-button-div')
-          .start().addClass('contacts-button resize-button').add('Me').end()
-          .start().addClass('pending-contacts-button resize-button').add('Team').end()
+        // .tag({class: 'net.nanopay.b2b.RegistrationProgressView'})
+        .start().addClass('light-roboto-h2').add('Weekly Summary').end()
+        .start().addClass('green-border-container')
+          .start().addClass('resize-button').add('Me').end()
+          .start().addClass('resize-button').add('Team').end()
         .end()
-        .tag({class: 'net.nanopay.b2b.ui.shared.summaryViews.MentionsView'})
-        .tag({class: 'net.nanopay.b2b.ui.shared.summaryViews.PayableSummaryView'})
-        .tag({class: 'net.nanopay.b2b.ui.shared.summaryViews.ReceivablesSummaryView'})
+        .tag({class: 'net.nanopay.invoice.ui.summaryViews.MentionsView'})
+        .tag({class: 'net.nanopay.invoice.ui.summaryViews.PayableSummaryView'})
+        .tag({class: 'net.nanopay.invoice.ui.summaryViews.ReceivablesSummaryView'})
         .start().addClass(this.myClass('cashflow-summary'))
           .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
           .start().addClass('overall-receivables overall-detail').add()
             .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
-            .start('h4').add('+', this.formattedReceivableAmount$).end()
+            .start('h4').add('+ $', this.formattedReceivableAmount$).end()
           .end()
           .start().addClass('overall-payables overall-detail').add()
             .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
-            .start('h4').add('-', this.formattedPayableAmount$).end()
+            .start('h4').add('- $', this.formattedPayableAmount$).end()
           .end()
         .end()
     },

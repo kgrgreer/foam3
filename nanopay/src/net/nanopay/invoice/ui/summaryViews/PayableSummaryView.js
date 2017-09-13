@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.shared.summaryViews',
+  package: 'net.nanopay.invoice.ui.summaryViews',
   name: 'PayableSummaryView',
   extends: 'foam.u2.View',
 
@@ -39,8 +39,8 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'dao',
-      factory: function() { return this.expensesDAO; }
+      name: 'dao'
+      // factory: function() { return this.expensesDAO; }
     },
     {
       class: 'Int',
@@ -93,27 +93,28 @@ foam.CLASS({
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
-      name: 'formattedPayableAmount',
-      expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
+      class: 'Currency',
+      name: 'formattedPayableAmount'
+      // expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
     }
   ],
 
   methods: [ 
     function initE() {
-      this.dao.on.sub(this.onDAOUpdate);
-      this.onDAOUpdate();
+      // this.dao.on.sub(this.onDAOUpdate);
+      // this.onDAOUpdate();
 
       this
         .addClass(this.myClass())
         .start().addClass('card-title')
           .add(this.title)
-          .start('h4').add(this.formattedPayableAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end() 
+          .start('h4').add('$', this.formattedPayableAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end() 
         .end()
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.newCount$, amount$: this.newAmount$, status: this.newLabel })
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
-        .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.newCount$, amount$: this.newAmount$, status: this.newLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
     },
   ],
 

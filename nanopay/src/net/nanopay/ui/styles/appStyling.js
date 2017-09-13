@@ -67,6 +67,22 @@ foam.CLASS({
           color: #59a5d5;
           cursor: pointer;
         }
+        .light-roboto-h2 {
+          font-size: 20px;
+          font-weight: 300;
+          line-height: 1;
+          letter-spacing: 0.3px;
+          color: #093649;
+          opacity: 0.6;
+          margin-bottom: 35px;
+          display: inline-block;
+          width: 200px;
+        }
+        .green-border-container{
+          display: inline-block;
+          border-radius: 4px;
+          border: solid 1px #1cc2b7;
+        }
       */}
     })
   ]
