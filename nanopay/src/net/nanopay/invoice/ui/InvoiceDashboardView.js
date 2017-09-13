@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
-  name: 'DashboardView',
+  name: 'InvoiceDashboardView',
   extends: 'foam.u2.Element',
 
   documentation: 'View displaying high-level Sales and Expenses SummaryViews.',
@@ -11,7 +11,8 @@ foam.CLASS({
 
   imports: [ 
     'invoiceDAO', 
-    'currencyFormatter' 
+    'formatCurrency',
+    'user'
   ],
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
@@ -28,7 +29,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedPayableAmount',
-      expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
+      expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
     },
     {
       name: 'receivableAmount',
@@ -37,7 +38,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.currencyFormatter.format(receivableAmount); }
+      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
     }
   ],
 
@@ -95,10 +96,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        // .tag({class: 'net.nanopay.b2b.RegistrationProgressView'})
         .start().addClass('light-roboto-h2').add('Weekly Summary').end()
         .start().addClass('green-border-container')
-          .start().addClass('resize-button').add('Me').end()
+          .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
           .start().addClass('resize-button').add('Team').end()
         .end()
         .tag({class: 'net.nanopay.invoice.ui.summaryViews.MentionsView'})
@@ -108,11 +108,11 @@ foam.CLASS({
           .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
           .start().addClass('overall-receivables inline').add()
             .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
-            .start('h4').add('+ $', this.formattedReceivableAmount$).end()
+            .start('h4').add('+', this.formattedReceivableAmount$).end()
           .end()
           .start().addClass('overall-payables inline').add()
             .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
-            .start('h4').add('- $', this.formattedPayableAmount$).end()
+            .start('h4').add('-', this.formattedPayableAmount$).end()
           .end()
         .end()
     },
@@ -125,15 +125,15 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        var expensesInvoices = this.dao.where(this.EQ(this.Invoice.FROM_USER_ID, this.business.id))
-        var payablesInvoices = this.dao.where(this.EQ(this.Invoice.TO_USER_ID, this.business.id))
+        var expensesInvoices = this.dao.where(this.EQ(this.Invoice.FROM_USER_ID, this.user.id))
+        var payablesInvoices = this.dao.where(this.EQ(this.Invoice.TO_USER_ID, this.user.id))
         
         expensesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.payableAmount = sum.value.toFixed(2);
+          self.payableAmount = sum.value;
         });
 
         payablesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.receivableAmount = sum.value.toFixed(2);
+          self.receivableAmount = sum.value;
         })
       }
     }

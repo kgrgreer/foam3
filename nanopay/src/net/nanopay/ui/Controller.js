@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.nanos.client.Client',
     'foam.mlang.Expressions',
     'net.nanopay.invoice.dao.Dao',
+    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.appStyling'
   ],
 
@@ -20,7 +21,8 @@ foam.CLASS({
 
   exports: [
     'stack',
-    'as ctrl'
+    'as ctrl',
+    'user'
   ],
 
   axioms: [
@@ -45,7 +47,13 @@ foam.CLASS({
     {
       name: 'stack',
       factory: function() { return this.Stack.create(); }
-    }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      factory: function() { return this.User.create(); }
+    },
   ],
 
   methods: [
@@ -53,9 +61,15 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
+      /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
+      this.userDAO.find(1).then(function(a) {
+        self.user.copyFrom(a);
+      });
+
       net.nanopay.TempMenu.create(null, this);
       
-      this.stack.push({ class: 'net.nanopay.ui.SignInView' });
+      this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
 
     function initE() {

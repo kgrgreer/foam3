@@ -1,10 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
-  name: 'RowTableView',
+  name: 'SingleItemView',
   extends: 'foam.u2.View',
 
   properties: [
-    'item',
+    'data',
   ],
 
   axioms: [
@@ -87,14 +87,14 @@ foam.CLASS({
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
-            .start('h3').add(this.item.invoiceNumber).end()
-            .start('h3').add(this.item.purchaseOrder).end()
-            .start('h3').add(this.item.fromBusinessName).end()
-            .start('h4').add(this.item.issueDate.toISOString().substring(0,10)).end()
-            .start('h4').add('$', this.item.amount).end()
-            .start('h4').add('$', this.item.amount).end()
+            .start('h3').add(this.data.invoiceNumber).end()
+            .start('h3').add(this.data.purchaseOrder).end()
+            .start('h3').add(this.data.fromBusinessName).end()
+            .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
+            .start('h4').add('$', this.data.amount).end()
+            .start('h4').add('$', this.data.amount).end()
             .start('h4').add('1.13').end()
-            .start('h3').add(this.item.status).end()
+            .start('h3').add(this.data.status).end()
           .end()
         .end()
     }

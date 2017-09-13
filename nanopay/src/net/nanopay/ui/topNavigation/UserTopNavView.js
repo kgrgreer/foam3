@@ -109,7 +109,7 @@ foam.CLASS({
         .end()
         .start('div')
           .addClass(this.myClass('carrot'))
-        .end()
+        .end();
     }
   ]
 });

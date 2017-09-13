@@ -6,7 +6,9 @@ foam.CLASS({
 
   documentation: 'Cards for summary views',
 
-  imports: [ 'currencyFormatter' ],
+  imports: [ 
+    'formatCurrency' 
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -113,8 +115,8 @@ foam.CLASS({
     'amount', 
     {
       class: 'Currency',
-      name: 'formattedAmount'
-      // expression: function(amount) { return this.currencyFormatter.format(amount); }
+      name: 'formattedAmount',
+      expression: function(amount) { return this.formatCurrency(amount); }
     },
     'count',
     'status'
@@ -126,7 +128,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().addClass('count').add(this.count$).end()
-          .start().addClass('amount').add('$', this.formattedAmount$).end()
+          .start().addClass('amount').add(this.formattedAmount$).end()
           .start().addClass(this.status + ' label special-status-tag').add(this.status).end()
         .end()
     },

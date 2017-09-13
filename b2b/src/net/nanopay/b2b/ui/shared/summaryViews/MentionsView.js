@@ -71,7 +71,6 @@ foam.CLASS({
         ^ .net-nanopay-b2b-ui-shared-summaryViews-SummaryCard{
           width: 26.89%;
         }
-
       */}
     })
   ],

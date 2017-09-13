@@ -1,9 +1,11 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.shared',
+  package: 'net.nanopay.util',
   name: 'CurrencyFormatter',
 
+  exports: [ 'formatCurrency' ],
+
   methods: [
-    function format(a){
+    function formatCurrency(a){
       if ( typeof a != 'number' ) {
         return a;
       }
