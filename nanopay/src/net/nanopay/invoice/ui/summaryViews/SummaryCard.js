@@ -16,12 +16,10 @@ foam.CLASS({
           width: 20%;
           background: white;
           height: 100px;
-          position: relative;
           vertical-align: top;
           margin-right: 6px;
           border-radius: 3px;
           overflow: hidden;
-          font-size: 12px;
         }
         ^ .Pending{
           width: 105px;
@@ -82,10 +80,11 @@ foam.CLASS({
           padding-left: 10px;
           padding-top: 5;
         }
-        .label{
+        ^ .label{
           position: relative;
           top: 35;
           left: 10;
+          font-size: 12px;
         }
         ^ .count{
           font-size: 30px;

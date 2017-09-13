@@ -58,18 +58,6 @@ foam.CLASS({
           display: inline-block;
           width: 200px;
         }
-        .card-title{
-          display: block;
-          width: 135px;
-          height: 70px;
-          padding-top: 30px;
-          border-radius: 2px;
-          background-color: #59aadd;
-          text-align: center;
-          color: white;
-          font-weight: 16px;
-          display: inline-block;
-        }
         .resize-button{
           height: 30px;
           width: 60px;

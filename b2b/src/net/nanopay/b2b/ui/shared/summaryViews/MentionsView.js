@@ -71,6 +71,7 @@ foam.CLASS({
         ^ .net-nanopay-b2b-ui-shared-summaryViews-SummaryCard{
           width: 26.89%;
         }
+
       */}
     })
   ],
@@ -89,9 +90,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('card-title')
+        .start().addClass('blue-card-title')
           .add(this.title)
-          .start('h4').add(this.formattedMentionsAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end()
+          .start().addClass('thin-align').add(this.formattedMentionsAmount$).end()
         .end()
         .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count: this.disputedCount$, amount: this.formattedDisputedAmount$, status: this.disputeLabel })
         .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count: this.pendingCount$, amount: this.formattedPendingAmount$, status: this.pendingLabel })

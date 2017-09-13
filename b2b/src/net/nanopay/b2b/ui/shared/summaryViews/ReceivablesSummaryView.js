@@ -98,9 +98,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('card-title')
+        .start().addClass('blue-card-title')
           .add(this.title)
-          .start('h4').add(this.formattedReceivableAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end() 
+          .start().addClass('thin-align').add(this.formattedReceivableAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end() 
         .end()
         .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
         .tag({ class: 'net.nanopay.b2b.ui.shared.summaryViews.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
