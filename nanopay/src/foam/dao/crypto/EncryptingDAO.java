@@ -143,6 +143,12 @@ public class EncryptingDAO
     }
   }
 
+  /**
+   * Loads the secret key from the keystore
+   * @throws UnrecoverableEntryException
+   * @throws NoSuchAlgorithmException
+   * @throws KeyStoreException
+   */
   protected void loadSecretKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
     // load secret key from keystore
     // TODO: get password from somewhere secure
@@ -208,6 +214,6 @@ public class EncryptingDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return super.select_(x, sink, skip, limit, order, predicate);
+    throw new UnsupportedOperationException("Unsupported operation: select_");
   }
 }
