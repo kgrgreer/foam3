@@ -1,5 +1,5 @@
 FOAM_FILES([
-  // Models
+  { name: 'net/nanopay/client/Client' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/AccountInfo' },
   { name: 'net/nanopay/model/AccountLimit' },
@@ -9,7 +9,5 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/UserAccountInfo' },
-
-  // Views
   { name: 'net/nanopay/ui/SignIn' },
 ]);

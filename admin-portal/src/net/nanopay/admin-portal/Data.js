@@ -216,7 +216,7 @@ foam.CLASS({
             id:               50000+i+'',
             firstName:        bs.array[fi-100].name,
             type:             'Merchant',
-            phone:            phone1,
+            phone:            phone1.number,
             email:            'admin@' + bs.array[fi-100].name + '.com',
             profilePicture:   './images/business-placeholder.png'
           });
@@ -225,7 +225,7 @@ foam.CLASS({
             id:               60000+i+'',
             firstName:        bs.array[ti-100].name,
             type:             'Shopper',
-            phone:            phone2,
+            phone:            phone2.number,
             email:            'admin@' + bs.array[ti-100].name + '.com',
             profilePicture:   './images/business-placeholder.png'
           });
@@ -234,12 +234,12 @@ foam.CLASS({
           this.userDAO.put(payee);
 
           // Transaction
-          var transaction = net.nanopay.admin.model.Transaction.create({
-            transactionNumber:      10000+i,
-            issueDate:              dd,
-            amount:                 amount,
-            payer:                  payer,
-            payee:                  payee
+          var transaction = net.nanopay.tx.model.Transaction.create({
+            id: 10000+i,
+            date: dd,
+            amount: amount,
+            payer: payer.id,
+            payee: payee.id
           });
 
           this.transactionDAO.put(transaction);
