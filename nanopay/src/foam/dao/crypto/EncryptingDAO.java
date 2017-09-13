@@ -177,7 +177,7 @@ public class EncryptingDAO
       // prefix cipher text with nonce for decrypting later
       byte[] nonceWithCipherText = new byte[nonce.length + cipherText.length];
       System.arraycopy(nonce, 0, nonceWithCipherText, 0, nonce.length);
-      System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, nonce.length + cipherText.length);
+      System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, cipherText.length);
 
       // store encrypted object instead of original object
       EncryptedObject encryptedObject = new EncryptedObject();
