@@ -161,10 +161,6 @@ public class EncryptingDAO
       GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
       cipher.init(Cipher.ENCRYPT_MODE, key_, spec);
 
-      // TODO: figure out what aad is used for and come up with better value
-      byte[] aad = "nanoPay".getBytes();
-      cipher.updateAAD(aad);
-
       byte[] input = outputter_.stringify(obj).getBytes();
       byte[] cipherText = cipher.doFinal(input);
 
@@ -202,10 +198,6 @@ public class EncryptingDAO
       GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
       cipher.init(Cipher.DECRYPT_MODE, key_, spec);
 
-      // TODO: figure out what aad is used for and come up with better value
-      byte[] aad = "nanoPay".getBytes();
-      cipher.updateAAD(aad);
-
       byte[] plainText = cipher.doFinal(cipherText);
       return this.jsonParser_.parseString(new String(plainText));
     } catch (Exception e) {
@@ -216,6 +208,6 @@ public class EncryptingDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    throw new UnsupportedOperationException("Unsupported operation");
+    return super.select_(x, sink, skip, limit, order, predicate);
   }
 }
