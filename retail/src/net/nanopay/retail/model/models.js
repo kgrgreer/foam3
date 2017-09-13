@@ -186,54 +186,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.retail.model',
-  name: 'Transaction',
-
-  documentation: 'Transaction information.',
-
-  tableColumns: ['id', 'dateAndTime', 'type', 'customer', 'server', 'tip', 'total', 'device'],
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id',
-      label: 'Transaction ID'
-    },
-    {
-      class: 'String',
-      name: 'dateAndTime',
-      label: 'Date & Time'
-    },
-    {
-      class: 'String',
-      name: 'type'
-    },
-    {
-      class: 'String',
-      name: 'customer'
-    },
-    {
-      class: 'String',
-      name: 'server'
-    },
-    {
-      class: 'Currency',
-      name: 'tip',
-      required: true
-    },
-    {
-      class: 'Currency',
-      name: 'total',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'device'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.retail.model',
   extends: 'net.nanopay.model.BankAccountInfo',
   name: 'BankAccount',
 
@@ -246,75 +198,6 @@ foam.CLASS({
       class: 'String',
       name: 'status',
       value: 'Unverified'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.retail.model',
-  name: 'User',
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'firstName',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'lastName',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'email',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'password',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'profileImageUrl'
-    },
-    {
-      class: 'Boolean',
-      name: 'twoFactorEnabled'
-    },
-    {
-      class: 'String',
-      name: 'twoFactorSecretKey'
-    },
-    {
-      name: 'autoCashout'
-    },
-    {
-      of: 'net.nanopay.retail.model.BusinessInformation',
-      name: 'businessInformation'
-    },
-    {
-      class: 'Boolean',
-      name: 'emailVerified'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'net.nanopay.model.Phone',
-      name: 'phones'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'net.nanopay.model.BankAccountInfo',
-      name: 'bankAccounts'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'net.nanopay.retail.Device',
-      name: 'devices'
     }
   ]
 });

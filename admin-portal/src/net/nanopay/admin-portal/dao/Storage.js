@@ -14,8 +14,7 @@ foam.CLASS({
     'net.nanopay.admin.model.Invoice',
 
     // Admin Portal
-    'net.nanopay.admin.model.TopUp',
-    'net.nanopay.admin.model.Transaction'
+    'net.nanopay.admin.model.TopUp'
   ],
 
   exports: [
@@ -29,7 +28,6 @@ foam.CLASS({
 
     // Admin Portal,
     'topUpDAO',
-    'transactionDAO',
     'accountDAO',
     'bankAccountDAO'
   ],
@@ -543,19 +541,6 @@ foam.CLASS({
         .addPropertyIndex(this.TopUp.ISSUE_DATE)
         .addPropertyIndex(this.TopUp.AMOUNT)
         .addPropertyIndex(this.TopUp.EXPECTED_DATE);
-      }
-    },
-    {
-      name: 'transactionDAO',
-      factory: function() {
-        return this.createDAO({
-            of: this.Transaction,
-            seqNo: true
-          })
-          .addPropertyIndex(this.Transaction.ISSUE_DATE)
-          .addPropertyIndex(this.Transaction.AMOUNT)
-          .addPropertyIndex(this.Transaction.PAYEE)
-          .addPropertyIndex(this.Transaction.PAYER);
       }
     },
     {
