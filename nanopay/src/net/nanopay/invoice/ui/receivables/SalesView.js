@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'hideReceivableSummary',
       value: false
     },
-    { name: 'data', factory: function() { return this.salesDAO; }}
+    { name: 'data', factory: function() { return this.invoiceDAO; }}
   ],
 
   messages: [

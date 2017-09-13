@@ -2,9 +2,12 @@
   <head>
     <script language="javascript" src="../../../../../foam2/src/foam.js"></script>
     <script language="javascript" src="../../../../../foam2/src/foam/nanos/nanos.js"></script>
-
+    <script language="javascript" src="../../../../../foam2/src/foam/u2/ListCreateController.js"></script>
+    
     <script language="javascript" src="ui/Controller.js"></script>
     <script language="javascript" src="ui/FooterView.js"></script> 
+    <script language="javascript" src="ui/ActionButton.js"></script>
+    <script language="javascript" src="ui/PLaceholder.js"></script>         
     <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
     <script language="javascript" src="ui/topNavigation/BusinessLogoView.js"></script>
     <script language="javascript" src="ui/topNavigation/UserTopNavView.js"></script>   
@@ -78,7 +81,7 @@
         margin: auto;
         width: 960px;
       }
-      .net-nanopay-b2b-ActionButton{
+      .net-nanopay-ui-ActionButton{
         margin: 0 2px 0;
       }
       thead > tr > td {
@@ -129,7 +132,7 @@
           font-size: 10pt;
           width: 340px;
       }
-      .foam-u2-view-TableView-net-nanopay-b2b-Invoice > tbody > tr {
+      .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice > tbody > tr {
         height: 40px;
       }
       .foam-u2-view-ReciprocalSearch-filter-header {
@@ -246,11 +249,18 @@
         font-weight: 300;
       }
 
-      .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice .foam-u2-ActionView-create {
+      .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-create {
         display: none;
       }
 
-      .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice .foam-u2-ActionView-edit {
+      .foam-u2-ActionView-create{
+        background: #59aadd !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: white;
+      }
+
+      .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-edit {
         display: none;
       }
 
@@ -265,7 +275,7 @@
       .foam-u2-view-TableView-th-fromBusinessId { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-toBusinessId   { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
-      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; text-align: right !important; }
+      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; }
       .foam-u2-view-TableView-th-status         { width: 200px; min-width: 200px; }
     </style>
   </head>
