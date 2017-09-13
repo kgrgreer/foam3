@@ -45,6 +45,8 @@ public class EncryptingDAO
   protected KeyStore keystore_;
   protected JSONParser jsonParser_;
   protected final Outputter outputter_ = new Outputter();
+  protected final SecureRandom random =
+      SecureRandom.getInstance("SHA1PRNG", "BC");
 
   public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate) throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException {
     setX(x);
@@ -121,7 +123,6 @@ public class EncryptingDAO
    */
   protected void createSecretKey() throws NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException, IOException, CertificateException {
     // generate AES key using BC as provider
-    SecureRandom random = SecureRandom.getInstanceStrong();
     KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
     keygen.init(AES_KEY_SIZE, random);
     key_ = keygen.generateKey();
@@ -160,7 +161,6 @@ public class EncryptingDAO
   @Override
   public FObject put_(X x, FObject obj) {
     try {
-      SecureRandom random = SecureRandom.getInstanceStrong();
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
       random.nextBytes(nonce);
@@ -214,6 +214,10 @@ public class EncryptingDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
+    if ( predicate == null && sink instanceof Count ) {
+
+    }
+
     return super.select_(x, sink, skip, limit, order, predicate);
   }
 }
