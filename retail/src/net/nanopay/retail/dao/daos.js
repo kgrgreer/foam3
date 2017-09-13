@@ -7,33 +7,20 @@ foam.CLASS({
   requires: [
     'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
-    'net.nanopay.retail.model.User',
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.BankAccount',
-    'net.nanopay.retail.model.Transaction',
     'net.nanopay.retail.model.BusinessType',
     'net.nanopay.retail.model.BusinessSector'
   ],
 
   exports: [
-    'userDAO',
     'deviceDAO',
     'bankAccountDAO',
-    'transactionDAO',
     'businessTypeDAO',
     'businessSectorDAO'
   ],
 
   properties: [
-    {
-      name: 'userDAO',
-      factory: function() {
-        return this.createDAO({
-          of: this.User,
-          seqNo: true
-        })
-      }
-    },
     {
       name: 'deviceDAO',
       factory: function() {
@@ -83,36 +70,6 @@ foam.CLASS({
         .addPropertyIndex(this.BankAccount.TRANSIT_NUMBER)
         .addPropertyIndex(this.BankAccount.ACCOUNT_NUMBER)
         .addPropertyIndex(this.BankAccount.STATUS)
-      }
-    },
-    {
-      name: 'transactionDAO',
-      factory: function() {
-        return this.createDAO({
-          of: this.Transaction,
-          seqNo: true,
-          testData: [
-              {
-                id: 1, dateAndTime: 'July 4th 2017', type: 'Sales', customer: 'Tywin Lannister', server: 'Joffrey Baratheon', tip: 5.00, total: 25.00, device: 'Android'
-              },
-              {
-                id: 2, dateAndTime: 'July 5th 2017', type: 'Sales', customer: 'Sansa Stark', server: 'Lord Varys', tip: 15.00, total: 115.00, device: 'Ingenico 1'
-              },
-              {
-                id: 3, dateAndTime: 'July 6th 2017', type: 'Sales', customer: 'Petyr Baelish', server: 'Walder Frey', tip: 3.50, total: 13.50, device: 'iPad'
-              },
-              {
-                id: 4, dateAndTime: 'July 7th 2017', type: 'Sales', customer: 'Sandor Clegane', server: 'Oberyn Martell', tip: 23.00, total: 223.00, device: 'iPhone'
-              }
-          ]
-        })
-        .addPropertyIndex(this.Transaction.DATE_AND_TIME)
-        .addPropertyIndex(this.Transaction.TYPE)
-        .addPropertyIndex(this.Transaction.CUSTOMER)
-        .addPropertyIndex(this.Transaction.SERVER)
-        .addPropertyIndex(this.Transaction.TIP)
-        .addPropertyIndex(this.Transaction.TOTAL)
-        .addPropertyIndex(this.Transaction.DEVICE)
       }
     },
     {
