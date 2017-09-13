@@ -92,8 +92,6 @@ public class EncryptingDAO
       if ( fos != null )
         fos.close();
     }
-
-    System.out.println("keystore created");
   }
 
   /**
@@ -113,8 +111,6 @@ public class EncryptingDAO
       if ( fis != null )
         fis.close();
     }
-
-    System.out.println("keystore loaded");
   }
 
   /**
@@ -145,8 +141,6 @@ public class EncryptingDAO
       if ( fos != null )
         fos.close();
     }
-
-    System.out.println("secret key created");
   }
 
   protected void loadSecretKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
@@ -155,8 +149,6 @@ public class EncryptingDAO
     KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection("password".toCharArray());
     KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keystore_.getEntry(ALIAS, protectionParameter);
     key_ = secretKeyEntry.getSecretKey();
-
-    System.out.println("secret key loaded");
   }
 
   @Override
@@ -196,9 +188,6 @@ public class EncryptingDAO
   public FObject find_(X x, Object id) {
     try {
       EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
-
-      System.out.println(encryptedObject.getData());
-
       byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
@@ -216,9 +205,6 @@ public class EncryptingDAO
       cipher.updateAAD(aad);
 
       byte[] plainText = cipher.doFinal(cipherText);
-
-      System.out.println("Plaintext = " + new String(plainText));
-
       return this.jsonParser_.parseString(new String(plainText));
     } catch (Exception e) {
       e.printStackTrace();
@@ -228,6 +214,6 @@ public class EncryptingDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return super.select_(x, sink, skip, limit, order, predicate);
+    throw new UnsupportedOperationException("Unsupported operation");
   }
 }
