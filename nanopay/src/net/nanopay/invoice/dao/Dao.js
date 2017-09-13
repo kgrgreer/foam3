@@ -21,9 +21,6 @@ foam.CLASS({
     {
       name: 'invoiceDAO',
       factory: function() {
-        /*this.DecoratedDAO.create({
-          decorator: this.InvoiceDecorator.create(),
-          delegate: */
         return this.createDAO({
             of: 'net.nanopay.invoice.model.Invoice',
             seqNo: true
