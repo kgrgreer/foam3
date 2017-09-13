@@ -6,15 +6,18 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.io.*;
+import javax.crypto.*;
+import javax.crypto.spec.GCMParameterSpec;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 
@@ -33,10 +36,14 @@ public class EncryptingDAO
   // TODO: get alias from somewhere secure
   protected static final String ALIAS = "keypair";
   protected static final int AES_KEY_SIZE = 256;
+  protected static final int GCM_NONCE_LENGTH = 12;
+  protected static final int GCM_TAG_LENGTH = 16;
 
   protected File file_;
   protected SecretKey key_;
   protected KeyStore keystore_;
+  protected JSONParser jsonParser_;
+  protected final Outputter outputter_ = new Outputter();
 
   public EncryptingDAO(String keystoreFilename, ClassInfo classInfo, DAO delegate) throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException {
     setOf(classInfo);
@@ -45,6 +52,8 @@ public class EncryptingDAO
     // get instance of keystore, load keystore file
     keystore_ = KeyStore.getInstance("BKS", "BC");
     file_ = new File(keystoreFilename).getAbsoluteFile();
+    jsonParser_ = new JSONParser();
+    jsonParser_.setX(getX());
 
     // load keystore if exists, else create it
     if ( file_.exists() ) {
@@ -81,6 +90,8 @@ public class EncryptingDAO
       if ( fos != null )
         fos.close();
     }
+
+    System.out.println("keystore created");
   }
 
   /**
@@ -100,6 +111,8 @@ public class EncryptingDAO
       if ( fis != null )
         fis.close();
     }
+
+    System.out.println("keystore loaded");
   }
 
   /**
@@ -108,18 +121,30 @@ public class EncryptingDAO
    * @throws NoSuchProviderException
    * @throws KeyStoreException
    */
-  protected void createSecretKey() throws NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException {
+  protected void createSecretKey() throws NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException, IOException, CertificateException {
     // generate AES key using BC as provider
-    SecureRandom srand = SecureRandom.getInstanceStrong();
+    SecureRandom random = SecureRandom.getInstanceStrong();
     KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
-    keygen.init(AES_KEY_SIZE, srand);
+    keygen.init(AES_KEY_SIZE, random);
     key_ = keygen.generateKey();
 
-    // Store secret key in keystore
+    // set secret key entry in keystore
     // TODO: get password from somewhere secure
     KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection("password".toCharArray());
     KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key_);
     keystore_.setEntry(ALIAS, secretKeyEntry, protectionParameter);
+
+    // save keystore
+    FileOutputStream fos = null;
+    try {
+      fos = new FileOutputStream(file_);
+      keystore_.store(fos, "password".toCharArray());
+    } finally {
+      if ( fos != null )
+        fos.close();
+    }
+
+    System.out.println("secret key created");
   }
 
   protected void loadSecretKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
@@ -128,16 +153,69 @@ public class EncryptingDAO
     KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection("password".toCharArray());
     KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keystore_.getEntry(ALIAS, protectionParameter);
     key_ = secretKeyEntry.getSecretKey();
+
+    System.out.println("secret key loaded");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
-    return super.put_(x, obj);
+    try {
+      SecureRandom random = SecureRandom.getInstanceStrong();
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
+      final byte[] nonce = new byte[GCM_NONCE_LENGTH];
+      random.nextBytes(nonce);
+      GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
+      cipher.init(Cipher.ENCRYPT_MODE, key_, spec);
+
+      byte[] aad = "nanoPay".getBytes();
+      cipher.updateAAD(aad);
+
+      byte[] input = outputter_.stringify(obj).getBytes();
+      byte[] cipherText = cipher.doFinal(input);
+
+      // prefix cipher text with nonce for decrypting later
+      byte[] nonceWithCipherText = new byte[nonce.length + cipherText.length];
+      System.arraycopy(nonce, 0, nonceWithCipherText, 0, nonce.length);
+      System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, nonce.length + cipherText.length);
+
+      // store encrypted object instead of original object
+      EncryptedObject encryptedObject = new EncryptedObject();
+      encryptedObject.setId((Long) obj.getProperty("id"));
+      encryptedObject.setData(nonceWithCipherText);
+
+      return super.put_(x, encryptedObject);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Override
   public FObject find_(X x, Object id) {
-    return super.find_(x, id);
+    try {
+      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
+      byte[] data = encryptedObject.getData();
+
+      final byte[] nonce = new byte[GCM_NONCE_LENGTH];
+      final byte[] cipherText = new byte[data.length];
+
+      // copy nonce and ciphertext
+      System.arraycopy(data, 0, nonce, 0, nonce.length);
+      System.arraycopy(data, nonce.length, cipherText, 0, cipherText.length);
+
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
+      GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
+      cipher.init(Cipher.DECRYPT_MODE, key_, spec);
+
+      byte[] aad = "nanoPay".getBytes();
+      cipher.updateAAD(aad);
+
+      byte[] plainText = cipher.doFinal(cipherText);
+      return this.jsonParser_.parseString(new String(plainText));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Override
