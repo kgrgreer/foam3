@@ -9,9 +9,8 @@ foam.CLASS({
     'foam.dao.DecoratedDAO',
     'foam.dao.ClientDAO',
     'foam.dao.EasyDAO',
-    'net.nanopay.b2b.model.Business',
     'net.nanopay.invoice.model.Invoice',
-    'foam.box.HTTPBox',
+    'foam.box.HTTPBox'
   ],
 
   exports: [
@@ -26,14 +25,14 @@ foam.CLASS({
           decorator: this.InvoiceDecorator.create(),
           delegate: */
         return this.createDAO({
-            of: this.Invoice,
+            of: 'net.nanopay.invoice.model.Invoice',
             seqNo: true
           })
           .addPropertyIndex(this.Invoice.STATUS)
-          .addPropertyIndex(this.Invoice.TO_BUSINESS_NAME)
-          .addPropertyIndex(this.Invoice.FROM_BUSINESS_NAME)
-          .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
-          .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
+          .addPropertyIndex(this.Invoice.TO_USER_NAME)
+          .addPropertyIndex(this.Invoice.FROM_USER_NAME)
+          .addPropertyIndex(this.Invoice.TO_USER_ID)
+          .addPropertyIndex(this.Invoice.FROM_USER_ID);
       }
     }
   ]

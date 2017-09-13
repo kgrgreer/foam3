@@ -7,7 +7,7 @@ foam.CLASS({
   ids: [ 'invoiceNumber' ],
 
   searchColumns: [
-    'search', /*'fromUserId',*/ 'toUserId', 'status'
+    'search', 'fromUserId', 'toUserId', 'status'
   ],
 
   tableColumns: [
@@ -15,6 +15,12 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'toUserId'
+    },
+    {
+      name: 'fromUserId'
+    },
     {
       name: 'search',
       transient: true,
