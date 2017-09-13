@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay',
+  package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
 
@@ -53,7 +53,8 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-
+      net.nanopay.TempMenu.create(null, this);
+      
       this.stack.push({ class: 'net.nanopay.ui.SignInView' });
     },
 

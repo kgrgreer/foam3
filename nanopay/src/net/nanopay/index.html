@@ -3,7 +3,7 @@
     <script language="javascript" src="../../../../../foam2/src/foam.js"></script>
     <script language="javascript" src="../../../../../foam2/src/foam/nanos/nanos.js"></script>
 
-    <script language="javascript" src="Controller.js"></script>
+    <script language="javascript" src="ui/Controller.js"></script>
     <script language="javascript" src="ui/SignInView.js"></script>
     <script language="javascript" src="ui/FooterView.js"></script> 
     <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
@@ -269,10 +269,6 @@
     </style>
   </head>
   <body>
-    <script>
-      var ctrl = net.nanopay.Controller.create();
-      net.nanopay.TempMenu.create(null, ctrl.__subContext__);
-      ctrl.write();
-    </script>
+    <foam class="net.nanopay.ui.Controller" id="ctrl"></foam>      
   </body>
 </html>
