@@ -8,7 +8,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.b2b.ui.modals.ModalHeader',
-    'net.nanopay.transactionservice.model.Transaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.interac.Iso20022',
     'net.nanopay.iso20022.ISO20022Driver',
     'foam.nanos.export.JSONDriver',

@@ -171,8 +171,8 @@ foam.CLASS({
           var dd = new Date(Date.now() - 2*360*MS_PER_DAY*(Math.random()-0.1));
           var ed = new Date(Date.now() - 2*360*MS_PER_DAY*(Math.random()-0.1));
           var amount = Math.floor(Math.pow(10,3+Math.random()*4))/100;
-          var phone1 = net.nanopay.common.model.Phone.create({ number: Math.floor(1000000000 + Math.random() * 9000000000) });
-          var phone2 = net.nanopay.common.model.Phone.create({ number: Math.floor(1000000000 + Math.random() * 9000000000) });
+          var phone1 = net.nanopay.model.Phone.create({ number: Math.floor(1000000000 + Math.random() * 9000000000) });
+          var phone2 = net.nanopay.model.Phone.create({ number: Math.floor(1000000000 + Math.random() * 9000000000) });
 
           if ( ti === fi ) ti = ti === 100 ? 101 : ti-1;
           var inv = net.nanopay.admin.model.Invoice.create({
@@ -216,7 +216,7 @@ foam.CLASS({
             id:               50000+i+'',
             firstName:        bs.array[fi-100].name,
             type:             'Merchant',
-            phone:            phone1,
+            phone:            phone1.number,
             email:            'admin@' + bs.array[fi-100].name + '.com',
             profilePicture:   './images/business-placeholder.png'
           });
@@ -225,7 +225,7 @@ foam.CLASS({
             id:               60000+i+'',
             firstName:        bs.array[ti-100].name,
             type:             'Shopper',
-            phone:            phone2,
+            phone:            phone2.number,
             email:            'admin@' + bs.array[ti-100].name + '.com',
             profilePicture:   './images/business-placeholder.png'
           });
@@ -234,12 +234,12 @@ foam.CLASS({
           this.userDAO.put(payee);
 
           // Transaction
-          var transaction = net.nanopay.admin.model.Transaction.create({
-            transactionNumber:      10000+i,
-            issueDate:              dd,
-            amount:                 amount,
-            payer:                  payer,
-            payee:                  payee
+          var transaction = net.nanopay.tx.model.Transaction.create({
+            id: 10000+i,
+            date: dd,
+            amount: amount,
+            payer: payer.id,
+            payee: payee.id
           });
 
           this.transactionDAO.put(transaction);

@@ -5,7 +5,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.exchangerate.ExchangeRateInterface',
+      of: 'net.nanopay.fx.ExchangeRateInterface',
       name: 'delegate'
     }
   ]

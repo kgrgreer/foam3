@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.common.model.BankAccountInfo',
+    'net.nanopay.model.BankAccountInfo',
     'foam.u2.dialog.Popup',
     'foam.nanos.menu.SubMenuView',
     'foam.nanos.menu.Menu'
@@ -166,7 +166,7 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.common.model.BankAccountInfo' ],
+      requires: [ 'net.nanopay.model.BankAccountInfo' ],
       imports: [ 'bankAccountDAO' ],
 
       properties: [

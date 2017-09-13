@@ -12,9 +12,7 @@
   <name>nanoPay parent project</name>
 
   <modules>
-    <module>transaction-service</module>
-    <module>exchange-rate</module>
-    <module>common</module>
+    <module>nanopay</module>
     <module>b2b</module>
     <module>retail</module>
     <module>ingenico</module>

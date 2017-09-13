@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.transactionservice.model.Transaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.ingenico.ui.transaction.TransactionRowView'
   ],
 
@@ -29,10 +29,6 @@ foam.CLASS({
     })
   ],
 
-  properties: [
-    { name: 'data', factory: function () { return this.transactionDAO; } }
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
@@ -40,7 +36,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .select(this.data, function (t) {
+        .select(this.transactionDAO, function (t) {
           this.add(self.TransactionRowView.create({ data: t }));
         });
     }

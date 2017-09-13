@@ -87,6 +87,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var user = this.data.user;
 
       this
         .addClass(this.myClass())
@@ -95,13 +96,15 @@ foam.CLASS({
             .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.png' })
           .end()
           .start().addClass('success-message').add( ! this.refund ? this.paymentSuccess : this.refundSuccess ).end()
-          .start().addClass('success-amount').add(this.data.amount).end()
+          .start().addClass('success-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
           .start().addClass('success-from-to').add( ! this.refund ? 'From' : 'To' ).end()
           .start().addClass('success-profile')
             .start().addClass('success-profile-icon')
-              .tag({ class: 'foam.u2.tag.Image', data: this.data.image })
+              .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
             .end()
-            .start().addClass('success-profile-name').add(this.data.name).end()
+            .start().addClass('success-profile-name')
+              .add(user.firstName + ' ' + user.lastName)
+            .end()
           .end()
         .end();
 
