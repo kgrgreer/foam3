@@ -82,7 +82,7 @@ foam.CLASS({
         .overall-label{
           margin-left: 100px;
         }
-        ^ .net-nanopay-invoice-ui-summaryViews-PayableSummaryView .net-nanopay-invoice-ui-summaryViews-SummaryCard{
+        ^ .net-nanopay-invoice-ui-PayableSummaryView .net-nanopay-invoice-ui-SummaryCard{
           width: 15.9%;
         }
       */}
@@ -101,9 +101,9 @@ foam.CLASS({
           .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
           .start().addClass('resize-button').add('Team').end()
         .end()
-        .tag({class: 'net.nanopay.invoice.ui.summaryViews.MentionsView'})
-        .tag({class: 'net.nanopay.invoice.ui.summaryViews.PayableSummaryView'})
-        .tag({class: 'net.nanopay.invoice.ui.summaryViews.ReceivablesSummaryView'})
+        .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
+        .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
+        .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
         .start().addClass(this.myClass('cashflow-summary'))
           .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
           .start().addClass('overall-receivables inline').add()

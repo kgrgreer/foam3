@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.detailViews',
+  package: 'net.nanopay.invoice.ui',
   name: 'InvoiceDetailView',
   extends: 'foam.u2.View',
 

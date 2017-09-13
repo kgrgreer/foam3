@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.detailViews',
+  package: 'net.nanopay.invoice.ui',
   name: 'SalesDetailView',
   extends: 'foam.u2.View',
 
@@ -56,7 +56,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .tag({ 
-          class: 'net.nanopay.b2b.ui.DetailButtons', 
+          class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           detailActions: { 
             invoice: this.data,
             buttonLabel: 'Record Payment', 

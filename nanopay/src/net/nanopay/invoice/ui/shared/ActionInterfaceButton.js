@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
-  name: 'DetailButtons',
+  name: 'ActionInterfaceButton',
   extends: 'foam.u2.View',
 
   documentation: 'Creates interface of action buttons on invoices.',
@@ -135,7 +135,7 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().addClass(this.myClass('top-action-buttons'))
           .start({  
-            class: 'net.nanopay.b2b.ActionButton', 
+            class: 'net.nanopay.ui.ActionButton', 
             data: {
               image: 'images/approve.png', 
               text: 'Approve',
@@ -144,7 +144,7 @@ foam.CLASS({
             }
           }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
           .start({
-            class: 'net.nanopay.b2b.ActionButton', 
+            class: 'net.nanopay.ui.ActionButton', 
             data: {
               image: 'images/reject.png', 
               text: 'Reject',
@@ -153,9 +153,9 @@ foam.CLASS({
             }
           }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
           .start(this.EMAIL_MODAL).addClass('import-button').end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
             .start('span', null, this.popupMenu_$)

@@ -1,10 +1,10 @@
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui.summaryViews',
-  name: 'ReceivablesSummaryView',
+  package: 'net.nanopay.invoice.ui',
+  name: 'PayableSummaryView',
   extends: 'foam.u2.View',
 
-  documentation: 'Top-level receivable summary view.',
+  documentation: 'Top-level payable summary view.',
 
   implements: [
     'foam.mlang.Expressions'
@@ -32,9 +32,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'title',          message: 'Receivables' },
+    { name: 'title',          message: 'Payables' },
     { name: 'dueLabel',      message: 'Due' },
     { name: 'overDueLabel',       message: 'Overdue' },
+    { name: 'newLabel',       message: 'New' },
     { name: 'scheduledLabel', message: 'Scheduled' },
     { name: 'paidLabel',      message: 'Paid' }
   ],
@@ -46,25 +47,6 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'dueCount'
-    },
-    {
-      class: 'Double',
-      name: 'dueAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
-    },
-    {
-      class: 'Int',
-      name: 'overDueCount'
-    },
-    {
-      class: 'Double',
-      name: 'overDueAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
-    },
-
-    {
-      class: 'Int',
       name: 'scheduledCount'
     },
     {
@@ -72,7 +54,6 @@ foam.CLASS({
       name: 'scheduledAmount',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
-
     {
       class: 'Int',
       name: 'paidCount'
@@ -83,14 +64,41 @@ foam.CLASS({
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
+      class: 'Int',
+      name: 'dueCount'
+    },
+    {
       class: 'Double',
-      name: 'receivableAmount',
+      name: 'dueAmount',
+      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    },   
+    {
+      class: 'Int',
+      name: 'overDueCount'
+    },
+    {
+      class: 'Double',
+      name: 'overDueAmount',
+      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    },
+    {
+      class: 'Int',
+      name: 'newCount'
+    },
+    {
+      class: 'Double',
+      name: 'newAmount',
+      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    },
+    {
+      class: 'Double',
+      name: 'payableAmount',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
       class: 'Currency',
-      name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
+      name: 'formattedPayableAmount',
+      expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
     }
   ],
 
@@ -103,12 +111,13 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('blue-card-title')
           .add(this.title)
-          .start().addClass('thin-align').add(this.formattedReceivableAmount$).end() 
+          .start().addClass('thin-align').add(this.formattedPayableAmount$).end() 
         .end()
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.summaryViews.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.newCount$, amount$: this.newAmount$, status: this.newLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
+        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
     },
   ],
 
@@ -120,12 +129,21 @@ foam.CLASS({
         var self = this;
 
         this.dao.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.receivableAmount = sum.value.toFixed(2);
+          self.payableAmount = sum.value.toFixed(2);
         });
-
         // These two queries could be combined into a SEQ() to save on a
         // network round-trip when used with a network DAO.
-        var overDueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, "Overdue"));
+        var newDAO = this.dao.where(this.EQ(this.Invoice.STATUS, "New"));
+
+        newDAO.select(this.COUNT()).then(function(count) {
+          self.newCount = count.value;
+        });
+
+        newDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
+          self.newAmount = sum.value.toFixed(2);
+        });
+
+        var overDueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Overdue'));
 
         overDueDAO.select(this.COUNT()).then(function(count) {
           self.overDueCount = count.value;
