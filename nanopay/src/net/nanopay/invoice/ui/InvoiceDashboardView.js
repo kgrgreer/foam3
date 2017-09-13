@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
-  name: 'DashboardView',
+  name: 'InvoiceDashboardView',
   extends: 'foam.u2.Element',
 
   documentation: 'View displaying high-level Sales and Expenses SummaryViews.',

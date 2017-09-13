@@ -148,15 +148,6 @@ foam.CLASS({
 
         this.start().addClass('Invoice-Status-' + state).add(label).end();
       }
-    },
-    {
-      name: 'wizardViewBtn',
-      label: '',
-      tableCellFormatter: function(fees, X){
-        this.start()
-          .add(X.PAY_NOW)
-        .end()
-      }
     }
   ],
 
