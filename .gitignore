@@ -3,6 +3,8 @@
 
 # Idea
 .idea/
+*.iml
+ingenico/ingenico.iml
 
 # CMake
 cmake-build-debug/
