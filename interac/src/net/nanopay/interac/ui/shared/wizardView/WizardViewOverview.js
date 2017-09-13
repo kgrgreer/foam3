@@ -93,7 +93,7 @@ foam.CLASS({
           .start().forEach(this.titles, function(title, index) {
             this.start('div')
               .addClass('positionCircle')
-              .addClass(self.complete$.map(function(flag) { console.log(flag); return flag ? 'complete' : ''; }))
+              .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
             .end();
             if ( index < self.titles.length - 1 ) {

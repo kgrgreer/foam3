@@ -21,7 +21,7 @@ foam.CLASS({
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
     'bankAccountDAO',
-    'payeeDAO',
+    'payeeDAO'
   ],
 
   axioms: [
@@ -96,6 +96,31 @@ foam.CLASS({
           border-left: 0px solid transparent;
           border-right: 0px solid transparent;
         }
+
+        ^ .confirmationContainer {
+          margin-top: 18px;
+          width: 100%;
+        }
+
+        ^ input[type='checkbox'] {
+          display: inline-block;
+          vertical-align: top;
+          margin:0 ;
+          border: solid 1px rgba(164, 179, 184, 0.75);
+          cursor: pointer;
+        }
+
+        ^ input[type='checkbox']:checked {
+          background-color: black;
+        }
+
+        ^ .confirmationLabel {
+          display: inline-block;
+          vertical-align: top;
+          width: 85%;
+          margin-left: 20px;
+          font-size: 12px;
+        }
       */}
     })
   ],
@@ -108,6 +133,7 @@ foam.CLASS({
     { name: 'PayeeLabel', message: 'Payee' },
     { name: 'PurposeLabel', message: 'Purpose of Transfer' },
     { name: 'NoteLabel', message: 'Notes (Optional)' },
+    { name: 'NotThirdParty', message: 'Sending money on behalf of myself and not on behalf of a third party' },
     { name: 'InvoiceNoLabel', message: 'Invoice No.' },
     { name: 'PONoLabel', message: 'PO No.' },
     { name: 'PDFLabel', message: 'View Invoice PDF' }
@@ -149,7 +175,7 @@ foam.CLASS({
           dao: X.data.payeeDAO.where(X.data.NEQ(X.data.User.ID, 1)),
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
-            if ( X.data.mode == 'Organization' ) {
+            if ( X.data.invoiceMode ) {
               // if organization exists, change name to organization name.
               if ( payee.organization ) username = payee.organization;
             }
@@ -188,6 +214,14 @@ foam.CLASS({
         this.viewData.notes = newValue;
       },
       view: { class: 'foam.u2.tag.TextArea' }
+    },
+    {
+      class: 'Boolean',
+      name: 'notThirdParty',
+      value: false,
+      validateObj: function(notThirdParty, invoiceMode) {
+        if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
+      }
     }
   ],
 
@@ -208,7 +242,6 @@ foam.CLASS({
       }
 
       this.payeeDAO.find(1).then(function(user) {
-        console.log(user);
         self.fromUser = user;
       });
       this.SUPER()
@@ -239,6 +272,10 @@ foam.CLASS({
           .end()
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
+          .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
+            .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
+            .start('p').addClass('confirmationLabel').add(this.NotThirdParty).end()
+          .end()
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
