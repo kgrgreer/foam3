@@ -39,14 +39,14 @@ public class EncryptingDAO
   protected static final int AES_KEY_SIZE = 256;
   protected static final int GCM_NONCE_LENGTH = 12;
   protected static final int GCM_TAG_LENGTH = 16;
-
+  private static final SecureRandom random =
+      SecureRandom.getInstance("SHA1PRNG", "BC");
+  
   protected File file_;
   protected SecretKey key_;
   protected KeyStore keystore_;
   protected JSONParser jsonParser_;
   protected final Outputter outputter_ = new Outputter();
-  protected final SecureRandom random =
-      SecureRandom.getInstance("SHA1PRNG", "BC");
 
   public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate) throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException {
     setX(x);
