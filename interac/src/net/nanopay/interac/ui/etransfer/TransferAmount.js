@@ -215,6 +215,14 @@ foam.CLASS({
       factory: function() {
         return this.LoadingSpinner.create();
       }
+    },
+    {
+      name: 'isNearRealTime',
+      value: true,
+      expression: function(fromAmount) {
+        if ( fromAmount >= 3500 ) return false;
+        return true;
+      }
     }
   ],
 
@@ -294,7 +302,8 @@ foam.CLASS({
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
           .end()
           .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add('Near Real Time (IMPS)').end()
+            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$, true).add('Near Real Time (IMPS)').end()
+            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$).add('Next Business Days (NEFT)').end()
           .end()
         .end()
         .start('div').addClass('divider').end()

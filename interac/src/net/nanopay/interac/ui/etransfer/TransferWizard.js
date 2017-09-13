@@ -293,16 +293,18 @@ foam.CLASS({
                                               this.viewData.rate.toString(),
                                               this.viewData.purpose,
                                               Math.round(this.viewData.fees * 100),
-                                              this.viewData.notes ).then(function(response) {
-            if ( response ) {
-              self.viewData.transaction = response;
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = 'Back to Home';
-              self.nextLabel = 'Make Another Transfer';
-            } else {
-              console.log(response);
-            }
-          });
+                                              this.viewData.notes )
+            .catch(function(error){
+              if ( error ) console.log(error.message);
+            })
+            .then(function(response) {
+              if ( response ) {
+                self.viewData.transaction = response;
+                self.subStack.push(self.views[self.subStack.pos + 1].view);
+                self.backLabel = 'Back to Home';
+                self.nextLabel = 'Make Another Transfer';
+              }
+            });
 
           return;
         }
