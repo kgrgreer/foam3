@@ -10,6 +10,7 @@ import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.mlang.sink.Count;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.*;
@@ -39,9 +40,10 @@ public class EncryptingDAO
   protected static final int AES_KEY_SIZE = 256;
   protected static final int GCM_NONCE_LENGTH = 12;
   protected static final int GCM_TAG_LENGTH = 16;
-  private static final SecureRandom random =
-      SecureRandom.getInstance("SHA1PRNG", "BC");
-  
+  private static SecureRandom random;
+//  =
+//      SecureRandom.getInstance("SHA1PRNG", "BC");
+
   protected File file_;
   protected SecretKey key_;
   protected KeyStore keystore_;
