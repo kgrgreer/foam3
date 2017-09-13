@@ -21,25 +21,23 @@ foam.CLASS({
       name: 'dao',
       factory: function() { return this.invoiceDAO; }
     },
-    // {
-    //   class: 'Currency',
-    //   name: 'payableAmount',
-    //   view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
-    // },
+    {
+      name: 'payableAmount',
+      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    },
     {
       class: 'Currency',
       name: 'formattedPayableAmount',
-      // expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
+      expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
     },
-    // {
-    //   class: 'Currency',
-    //   name: 'receivableAmount',
-    //   view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
-    // },
+    {
+      name: 'receivableAmount',
+      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+    },
     {
       class: 'Currency',
       name: 'formattedReceivableAmount',
-      // expression: function(receivableAmount) { return this.currencyFormatter.format(receivableAmount); }
+      expression: function(receivableAmount) { return this.currencyFormatter.format(receivableAmount); }
     }
   ],
 
@@ -49,8 +47,6 @@ foam.CLASS({
         ^{
           width: 992px;
           margin: auto;
-          font-family: Roboto;
-          font-weight: 300;
         }
         .resize-button{
           height: 30px;
@@ -129,8 +125,8 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        var expensesInvoices = this.dao.where(this.EQ(this.Invoice.FROM_BUSINESS_ID, this.business.id))
-        var payablesInvoices = this.dao.where(this.EQ(this.Invoice.TO_BUSINESS_ID, this.business.id))
+        var expensesInvoices = this.dao.where(this.EQ(this.Invoice.FROM_USER_ID, this.business.id))
+        var payablesInvoices = this.dao.where(this.EQ(this.Invoice.TO_USER_ID, this.business.id))
         
         expensesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.payableAmount = sum.value.toFixed(2);
