@@ -215,9 +215,8 @@ public class EncryptingDAO
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     if ( predicate == null && sink instanceof Count ) {
-
+      return super.select_(x, sink, skip, limit, order, predicate);
     }
-
-    return super.select_(x, sink, skip, limit, order, predicate);
+    throw new UnsupportedOperationException("Unsupported operation: select_");
   }
 }
