@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.shared',
+  package: 'net.nanopay.util',
   name: 'CurrencyFormatter',
 
   methods: [

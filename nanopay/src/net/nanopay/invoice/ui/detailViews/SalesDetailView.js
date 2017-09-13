@@ -66,7 +66,7 @@ foam.CLASS({
           }
         })
         .start('h5').add('Bill from ', this.data.fromBusinessName).end()
-        .tag({ class: 'net.nanopay.b2b.ui.RowTableView', item: this.data })
+        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .tag({ 
           class: 'foam.u2.history.HistoryView',
           data: this.historyDAO,

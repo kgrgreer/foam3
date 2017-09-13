@@ -8,7 +8,7 @@ foam.CLASS({
   imports: [ 'stack', 'hideReceivableSummary' ],
 
   exports: [ 'hideReceivableSummary' ],
-
+  //Will be refactoring these css rules
   axioms: [
    foam.u2.CSS.create({
      code: function CSS() {/*

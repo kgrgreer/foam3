@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'DetailButtons',
   extends: 'foam.u2.View',
 
+  documentation: 'Creates interface of action buttons on invoices.',
+
   requires: [ 
     'foam.u2.PopupView', 
     'foam.comics.DAOCreateControllerView' 
@@ -150,7 +152,7 @@ foam.CLASS({
               title: 'Dispute'
             }
           }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-email.png', text: 'Email'}}).addClass('import-button').add(this.EMAIL_MODAL).end()
+          .start(this.EMAIL_MODAL).addClass('import-button').end()
           .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
           .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
           .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
@@ -195,6 +197,7 @@ foam.CLASS({
     },
     {
       name: 'emailModal',
+      icon: 'images/ic-email.png',
       code: function(X){
         X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.EmailModal'}));
       }

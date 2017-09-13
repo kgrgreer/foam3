@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ui',
+  package: 'net.nanopay.auth.ui',
   name: 'SignInView',
   extends: 'foam.u2.View',
 
