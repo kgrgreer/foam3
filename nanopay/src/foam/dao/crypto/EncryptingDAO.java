@@ -35,7 +35,7 @@ public class EncryptingDAO
     }
   }
 
-  // TODO: get alias from somewhere secure
+  // TODO: think of a better alias
   protected static final String ALIAS = "keypair";
   protected static final int AES_KEY_SIZE = 256;
   protected static final int GCM_NONCE_LENGTH = 12;
