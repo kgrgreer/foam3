@@ -202,7 +202,8 @@ public class EncryptingDAO
   @Override
   public FObject find_(X x, Object id) {
     try {
-      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
+      String objectId = ( id instanceof String ) ? id : Long.toString((Long) id, 10);
+      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, objectId);
       byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
