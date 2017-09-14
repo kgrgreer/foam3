@@ -5,10 +5,23 @@ foam.CLASS({
 
   documentation: 'View for displaying all Top Up and Cash Out Transactions as well as account Balance',
 
-  requires: [ 'net.nanopay.tx.model.Transaction'],
+  requires: [
+    'foam.u2.dialog.Popup', 
+    'net.nanopay.tx.model.Transaction', 
+  ],
 
   imports: [
-    'transactionDAO'
+    'transactionDAO',
+    'stack'
+  ],
+
+  exports: [
+    'topUp',
+    'confirmTopUp',
+    'onTopUpSuccess',
+    'cashOut',
+    'confirmCashOut',
+    'onCashOutSuccess'
   ],
 
   axioms: [
@@ -168,6 +181,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       this
         .addClass(this.myClass())
         .start()
@@ -199,6 +213,30 @@ foam.CLASS({
             })
           .end()
         .end();
+    },
+
+    function topUp() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.TopUpModal' }));
+    },
+
+    function confirmTopUp() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.ConfirmTopUpModal' }));
+    },
+
+    function onTopUpSuccess() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.TopUpSuccessModal' }));
+    },
+
+    function cashOut() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.co.CashOutModal' }));
+    },
+
+    function confirmCashOut() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.co.ConfirmCashOutModal' }));
+    },
+
+    function onCashOutSuccess() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.co.CashOutSuccessModal' }));
     }
   ],
 
@@ -212,14 +250,14 @@ foam.CLASS({
       name : 'topUpBtn',
       label : 'Top Up',
       code: function(X) {
-        // TODO: open top up modal
+        X.topUp();
       }
     },
     {
       name: 'cashOutBtn',
       label: 'Cash Out',
       code: function(X) {
-        // TODO: open cash out modal
+        X.cashOut();
       }
     }
 
