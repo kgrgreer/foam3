@@ -1,49 +1,29 @@
 foam.CLASS({
-    package: 'net.nanopay.b2b.ui',
+    package: 'net.nanopay.invoice.ui',
     name: 'BillDetailView',
     extends: 'foam.u2.View',
 
-    imports: [ 'stack', 'hideSaleSummary' ],
+    imports: [ 
+      'stack', 
+      'hideSaleSummary' 
+    ],
 
-    requires: [ 'net.nanopay.b2b.model.Invoice' ],
+    requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
     axioms: [
      foam.u2.CSS.create({
        code: function CSS() {/*
-         ^ {
-           background-color: #edf0f5;
-         }
-         ^ .invoice-button-div {
-           width: 1004px;
-           height: 40px;
-           margin: auto;
-           margin-bottom: 30px;
-         }
-         ^ .invoice-title-div {
-           width: 1004px;
-           margin: auto;
-           margin-bottom: 20px;
-         }
-         ^ .invoice-box-div {
-           width: 964px;
-           height: 613px;
-           background: white;
-           radius: 2px;
-           margin: auto;
-           padding: 20px;
-           text-align: center;
-         }
+        ^{
+          font-weight: 100;
+        }
          ^ .customer-div {
            display: inline-block;
            margin-bottom: 20px;
-           vertical-align: top;
          }
          ^ .invoice-due-date-div {
-           display: inline-block;
            float: right;
          }
          ^ .po-amount-div {
-           display: inline-block;
            margin-left: 20px;
            float: right;
          }
@@ -93,14 +73,6 @@ foam.CLASS({
            color: #093649;
            margin: 0;
          }
-         ^ .box-title {
-           font-family: Roboto;
-           font-size: 14px;
-           font-weight: 300;
-           letter-spacing: 0.2px;
-           text-align: left;
-           color: #093649;
-         }
          ^ .note-box {
            width: 481px;
            height: 60px;
@@ -113,13 +85,6 @@ foam.CLASS({
            display: block;
            margin-top: 8px;
            outline: none;
-         }
-         ^ .max-size-text {
-           font-family: Roboto;
-           font-size: 12px;
-           line-height: 1.33;
-           letter-spacing: 0.2px;
-           color: #A4B3B8;
          }
          ^ .enable-recurring-text {
            font-family: Roboto;
@@ -134,26 +99,17 @@ foam.CLASS({
            width: 480px;
            height: 155px;
            border-radius: 2px;
-           background-color: #ffffff;
            border: solid 1px rgba(164, 179, 184, 0.5);
            margin-top: 20px;
          }
-         ^ .company-picture{
-           width: 80px;
-           height: 80px;
-           margin-right: 30px;
-           margin-left: 20px;
-           margin-top: 17px;
-           display: inline-block;
-         }
-         ^ .company-name {
-          font-family: Roboto;
+        ^ .company-picture{
+          width: 80px;
+          height: 80px;
+          margin: 17px 30px 0 20px;
+        }
+        ^ .company-name {
           font-size: 14px;
           font-weight: 300;
-          color: #093649;
-          display: block;
-          margin: 0;
-          margin-top: 20px;
           margin-bottom: 10px;
         }
         ^ .vendor-name {
@@ -178,10 +134,6 @@ foam.CLASS({
           float: right;
           margin-right: 20px;
           margin-top: 110px;
-        }
-        ^ .company-info-div {
-          display: inline-block;
-          vertical-align: top;
         }
          ^ .property-invoiceNumber {
            display: block;
@@ -306,21 +258,19 @@ foam.CLASS({
 
           this
             .addClass(this.myClass())
-            .start('div').addClass('invoice-button-div')
+            .start().addClass('button-row')
               .add(this.DELETE_DRAFT)
               .add(this.SAVE_AND_PREVIEW)
               .add(this.SAVE_AS_DRAFT)
             .end()
-            .start('div').addClass('invoice-title-div')
-              .start('h2').add('New Bill').addClass('new-invoice-title').end()
-            .end()
-            .start('div').addClass('invoice-box-div')
-              .start('div').addClass('customer-div')
-                .add('Vendor').addClass('box-title')
+            .start().add('New Bill').addClass('light-roboto-h2').end()
+            .start().addClass('white-container')
+              .start().addClass('customer-div')
+                .add()
                 .add(this.Invoice.TO_BUSINESS_ID)
-                .start('div').addClass('company-card')
+                .start().addClass('company-card')
                   .start({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('company-picture').end()
-                  .start('div').addClass('company-info-div')
+                  .start().addClass('inline')
                     .start('h5').add('Company Name').addClass('company-name').end()
                     .start('h5').add('Vendor').addClass('vendor-name').end()
                     .start('h6').add('12123 Avenue, Unit 999, Toronto, Ontario,').addClass('company-address').end()
@@ -331,38 +281,38 @@ foam.CLASS({
                 .end()
               .end()
               .start('div').addClass('po-amount-div')
-                .add('PO #').addClass('box-title')
+                .add('PO #')
                 .add(this.Invoice.PURCHASE_ORDER)
-                .add('Amount').addClass('box-title')
+                .add('Amount')
                 .add(this.Invoice.AMOUNT)
               .end()
               .start('div').addClass('invoice-due-date-div')
-                .add('Invoice #').addClass('box-title')
+                .add('Invoice #')
                 .add(this.Invoice.INVOICE_NUMBER)
-                .add('Due Date').addClass('box-title')
+                .add('Due Date')
                 .add(this.Invoice.ISSUE_DATE)
               .end()
-              .add('Attachments').addClass('box-title')
+              .add('Attachments')
               .start('div').add('Add Attachment').addClass('add-attachment-btn').end()
-              .add('Maximum size 10MB').addClass('max-size-text')
+              .add('Maximum size 10MB')
               .start('div')
                 .tag({class: 'foam.u2.CheckBox'})
                 .add('Enable recurring payments').addClass('enable-recurring-text')
               .end()
               .start('div').addClass('frequency-div')
-                .add('Frequency').addClass('box-title')
+                .add('Frequency')
                 .start('div').add('Biweekly').addClass('frequency-box').end()
               .end()
               .start('div').addClass('ends-after-div')
-                .add('Ends After').addClass('box-title')
+                .add('Ends After')
                 .start('div').add('30 Occurences').addClass('frequency-box').end()
               .end()
               .start('div').addClass('next-invoice-div')
-                .add('Next Bill Date').addClass('box-title')
+                .add('Next Bill Date')
                 .add(this.Invoice.PAYMENT_DATE)
               .end()
               .start('div')
-                .add('Note').addClass('box-title')
+                .add('Note')
                 .start('textarea').addClass('note-box').end()
               .end()
             .end();

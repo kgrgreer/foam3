@@ -155,6 +155,15 @@ foam.CLASS({
           border-radius: 4px;
           border: solid 1px #1cc2b7;
         }
+         .button-row {
+           width: 1004px;
+           margin-bottom: 30px;
+         }
+         .white-container {
+           width: 964px;
+           background: white;
+           padding: 20px;
+         }
         .inline{
           display: inline-block;
         }
