@@ -32,10 +32,6 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'String',
-      name: 'certificateId'
-    },
-    {
       class: 'Boolean',
       name: 'resetPassword'
     }
