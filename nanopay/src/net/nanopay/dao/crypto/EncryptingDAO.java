@@ -183,17 +183,17 @@ public class EncryptingDAO
       System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, cipherText.length);
 
       // fetch id, convert from long to string if necessary
-      String id = ( obj.getProperty("id") instanceof String ) ?
-          (String) obj.getProperty("id") :
-          Long.toString((Long) obj.getProperty("id"), 10);
+      Object id = obj.getProperty("id");
+      String objectId = ( id instanceof String ) ? (String) id : Long.toString((Long) id, 10);
 
       // store encrypted object instead of original object
       EncryptedObject encryptedObject = new EncryptedObject();
-      encryptedObject.setId(id);
+      encryptedObject.setId(objectId);
       encryptedObject.setData(Base64.getEncoder().encodeToString(nonceWithCipherText));
 
       return super.put_(x, encryptedObject);
     } catch (Exception e) {
+      // TODO: rethrow as DAOException
       e.printStackTrace();
       return null;
     }
@@ -202,7 +202,7 @@ public class EncryptingDAO
   @Override
   public FObject find_(X x, Object id) {
     try {
-      String objectId = ( id instanceof String ) ? id : Long.toString((Long) id, 10);
+      String objectId = ( id instanceof String ) ? (String) id : Long.toString((Long) id, 10);
       EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, objectId);
       byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
@@ -220,6 +220,7 @@ public class EncryptingDAO
       byte[] plainText = cipher.doFinal(cipherText);
       return this.jsonParser_.parseString(new String(plainText));
     } catch (Exception e) {
+      // TODO: rethrow as DAOException
       e.printStackTrace();
       return null;
     }
