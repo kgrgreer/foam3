@@ -5,6 +5,9 @@
 .idea/
 *.iml
 ingenico/ingenico.iml
+b2b/b2b.iml
+interac/interac.iml
+nanopay/nanopay.iml
 
 # CMake
 cmake-build-debug/
