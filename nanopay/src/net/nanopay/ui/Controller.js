@@ -11,7 +11,8 @@ foam.CLASS({
     'foam.mlang.Expressions',
     'net.nanopay.invoice.dao.Dao',
     'net.nanopay.util.CurrencyFormatter',
-    'net.nanopay.ui.style.appStyling'
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.invoice.ui.style.InvoiceStyles'    
   ],
 
   requires: [

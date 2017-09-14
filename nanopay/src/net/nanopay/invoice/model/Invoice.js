@@ -146,7 +146,7 @@ foam.CLASS({
           label = state;
         }
 
-        this.start().addClass('Invoice-Status-' + state).add(label).end();
+        this.start().addClass('generic-status Invoice-Status-' + state).add(label).end();
       }
     }
   ],

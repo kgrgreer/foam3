@@ -11,7 +11,8 @@
     <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
     <script language="javascript" src="ui/topNavigation/BusinessLogoView.js"></script>
     <script language="javascript" src="ui/topNavigation/UserTopNavView.js"></script>   
-    <script language="javascript" src="ui/styles/appStyling.js"></script>   
+    <script language="javascript" src="ui/styles/AppStyles.js"></script>   
+    <script language="javascript" src="invoice/ui/styles/InvoiceStyles.js"></script>       
     <script language="javascript" src="invoice/ui/ExpensesView.js"></script>   
     <script language="javascript" src="invoice/ui/SalesView.js"></script>   
     <script language="javascript" src="invoice/ui/InvoiceDashboardView.js"></script>
@@ -38,26 +39,6 @@
         margin: 0;
         height: 100%;
       }
-      .foam-u2-Tabs {
-        margin-left: 16px;
-        margin-right: 16px;
-      }
-      .foam-u2-Tabs-content {
-        padding: 8px !important;
-        background: rgb(250, 250, 250) !important;
-      }
-      .foam-u2-Tabs-tab {
-        background: rgb(250, 250, 250) !important;
-      }
-      .foam-u2-TableView thead tr {
-        font-size: 16px;
-        height: 48px;
-        font-family: sans-serif;
-        font-weight: 500;
-        border-bottom: 1px solid rgb(242, 242, 242);
-        color: rgb(138, 138, 138);
-        background: rgb(240,240,240);
-      }
       .foam-u2-view-TableView thead tr {
         font-size: 16px;
         height: 48px;
@@ -66,18 +47,6 @@
         border-bottom: 1px solid rgb(242, 242, 242);
         color: rgb(138, 138, 138);
         background: rgb(240,240,240);
-      }
-      button {
-        background-color: rgb(230, 141, 42);
-        color: rgb(255, 255, 255);
-        font-weight: 300;
-        border-radius: 4px;
-        border-width: initial;
-        border-style: none;
-        border-color: initial;
-        border-image: initial;
-        margin: 4px;
-        padding: 10px;
       }
       table {
         border-collapse: collapse;
@@ -106,15 +75,15 @@
         padding-left: 15px;
       }
       thead > tr > th {
-          font-family: 'Roboto';
-          font-size: 14px;
-          background: #dfe8ee;
-          color: #093649;
-          line-height: 1.14;
-          letter-spacing: 0.3px;
-          border-spacing: 0;
-          text-align: left;
-          padding-left: 15px;
+        font-family: 'Roboto';
+        font-size: 14px;
+        background: #dfe8ee;
+        color: #093649;
+        line-height: 1.14;
+        letter-spacing: 0.3px;
+        border-spacing: 0;
+        text-align: left;
+        padding-left: 15px;
       }
       tbody > tr:nth-child(odd) {
         background: #f6f9f9;
@@ -122,9 +91,6 @@
       tbody > tr {
         height: 60px;
         background: white;
-      }
-      tbody > tr:nth-child(odd) {
-        background: #f6f9f9;
       }
       .recievable-status > span {
         width: 10px;
@@ -142,9 +108,9 @@
         padding: 3px;
       }
      .foam-u2-search-GroupBySearchView select {
-          font-family: monospace;
-          font-size: 10pt;
-          width: 340px;
+        font-family: monospace;
+        font-size: 10pt;
+        width: 340px;
       }
       .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice > tbody > tr {
         height: 40px;
@@ -155,112 +121,6 @@
       }
       .foam-u2-view-ReciprocalSearch-filter {
         margin-bottom: 8px;
-      }
-
-      .Invoice-Status-Disputed  {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        color: #c82e2e;
-        background: white;
-        border: 1px solid #c82e2e;
-      }
-      .Invoice-Status-New  {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        color: #262626;
-        background: white;
-        border: 1px solid #262626;
-      }
-      .Invoice-Status-Overdue {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        background: #c82e2e;
-        color: white;
-      }
-      .Invoice-Status-Due {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        background: #59aadd;
-        color: white;
-      }
-      .Invoice-Status-Paid {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        background: #20b020;
-        color: white;
-      }
-      .Invoice-Status-Scheduled {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        color: #20b020;
-        border: 1px solid #20b020;
-        background: white;
-      }
-      .Invoice-Status-Pending-Approval {
-        border-radius: 30px;
-        padding: 3px 7px;
-        display: inline;
-        color: #093649;
-        border: 1px solid #093649;
-        background: white;
-      }
-      .Invoice-Status-Draft {
-        color: #666666;
-      }
-      .confirm-button{
-        width: 135px;
-        height: 40px;
-        border-radius: 2px;
-        background-color: #59aadd;
-        cursor: pointer;
-        text-align: center;
-        color: #ffffff;
-        font-family: Roboto;
-        font-size: 14px;
-        line-height: 2.86;
-        letter-spacing: 0.2px;
-        float: right;
-        position: relative;
-      }
-      .cancel-button{
-        width: 135px;
-        border-radius: 2px;
-        background-color: rgba(164, 179, 184, 0.1);
-        box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-        padding: 12px 2px;
-        text-align: center;
-      }
-      .s2-input-container{
-        width: 42%;
-        display: inline-block;
-        margin-left: 20px;
-        margin-top: 30px;
-      }
-      .s2-input-container > input{
-        width: 100%;
-        height: 35px;
-        margin-top: 8px;
-      }
-      .s1-input-container{
-        width: 100%;
-        margin-top: 20px;
-      }
-      .s1-input-container > input{
-        width: 89%;
-        margin-left: 20px;
-        height: 35px;
-        margin-top: 8px;
-      }
-      .s1-input-container > label{
-        margin-left: 20px;
-        color: #093649;
-        font-weight: 300;
       }
 
       .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-create {
@@ -283,7 +143,7 @@
       .foam-u2-view-TableView-th-toBusinessId   { width: 180px; min-width: 180px; }
       .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
       .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; }
-      .foam-u2-view-TableView-th-status         { width: 200px; min-width: 200px; }
+      .foam-u2-view-TableView-th-status         { width: 80px; min-width: 80px; }
     </style>
   </head>
   <body>

@@ -1,7 +1,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ui.style',
-  name: 'appStyling',
+  name: 'AppStyles',
   extends: 'foam.u2.View',
 
   documentation: 'Generic App CSS that is used through out the Nanopay platform.',

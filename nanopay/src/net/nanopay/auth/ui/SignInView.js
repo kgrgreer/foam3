@@ -6,8 +6,7 @@ foam.CLASS({
   documentation: 'Sign In View',
 
   implements: [
-    'foam.mlang.Expressions', 
-    'net.nanopay.ui.style.appStyling'
+    'foam.mlang.Expressions' 
   ],
 
   exports: [ 'as data' ],
