@@ -1,4 +1,5 @@
 FOAM_FILES([
+  { name: 'net/nanopay/auth/ui/SignInView' },
   { name: 'net/nanopay/client/Client' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
@@ -12,5 +13,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/UserAccountInfo' },
-  { name: 'net/nanopay/ui/SignIn' },
+  { name: 'net/nanopay/ui/wizard/WizardView' },
+  { name: 'net/nanopay/ui/wizard/WizardOverview' },
+  { name: 'net/nanopay/ui/wizard/WizardSubView' },
+  { name: 'net/nanopay/ui/NotificationActionCard' },
+  { name: 'net/nanopay/ui/ContentCard' }
 ]);

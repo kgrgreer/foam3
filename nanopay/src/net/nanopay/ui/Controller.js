@@ -54,7 +54,7 @@ foam.CLASS({
 
       var self = this;
       net.nanopay.TempMenu.create(null, this);
-      
+
       this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
 
@@ -73,4 +73,3 @@ foam.CLASS({
     },
   ]
 });
-  

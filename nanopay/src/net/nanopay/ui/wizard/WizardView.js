@@ -1,31 +1,20 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.shared.wizardView',
+  package: 'net.nanopay.ui.wizard',
   name: 'WizardView',
   extends: 'foam.u2.Controller',
-
-  imports: [
-    'closeDialog'
-  ],
-
+  abstract: true,
   exports: [
     'viewData',
     'errors',
-    'goNext'
+    'backLabel',
+    'nextLabel',
+    'goBack',
+    'goNext',
+    'complete',
+    'as wizard'
   ],
 
-  documentation: `
-    View that handles multi step procedures. If the next and back buttons require specific instructions aside from moving between views (such as API calls),
-    please subclass this WizardView and override goNext() functions.
-    Parameters:
-    title: -
-      Title of the Wizard itself.
-    views: -
-      Takes an array of ViewSpecs to populate the wizard. The label of the ViewSpec will be used as the title of the view in the subStack. But not the Wizard.
-    startAt: -
-      If you want to start at a certain view, pass in the appropriate index number.
-    viewData: -
-      If the view requires data to be displayed without fetching, viewData can be used to distinguish it from the usual foam.u2.View data.
-  `,
+  documentation: 'View that handles multi step procedures.',
 
   requires: [
     'foam.u2.stack.Stack',
@@ -36,111 +25,125 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
-          background-color: #edf0f5;
+          background-color: #ffffff;
           width: 992px;
-          height: 694px;
           margin: auto;
-          overflow: scroll;
+          overflow: hidden;
         }
+
+        ^ .topRow {
+          padding: 20px;
+        }
+
         ^ .title {
           margin: 0;
-          margin-left: 180px;
+          line-height: 40px;
           display: inline-block;
           opacity: 0.6;
           font-size: 20px;
           font-weight: 300;
           color: #093649;
         }
-        ^ .titleRow div {
-          display: inline;
-        }
-        ^ .titleRow {
-          margin-top: 63px;
-        }
-        ^ .columnRow {
-          margin-top: 42px;
-        }
-        ^ .foam-u2-ActionView-closeBtn {
-          display: inline-block;
-          margin: 0;
-          float: right;
-          margin-right: 68px;
-          background: none;
-          border: none;
-          outline: none;
-        }
-        ^ .foam-u2-ActionView-closeBtn:hover {
-          background: none;
-          cursor: pointer;
-        }
-        ^ .close {
-          display: inline-block;
-          float: right;
-          margin-right: 12px;
-        }
-        ^ .close:hover {
-          cursor: pointer;
-        }
+
         ^ .positionColumn {
           display: inline-block;
-          width: 18%;
-          max-height: 300px;
-          overflow: scroll;
+          width: 25%;
           vertical-align: top;
           box-sizing: border-box;
-          margin-left: 15.7%;
+          padding: 20px;
+          padding-top: 0;
         }
+
         ^ .stackColumn {
           display: inline-block;
           width: 75%;
           box-sizing: border-box;
-          padding: 12px 0;
-          overflow: scroll;
+          padding: 20px 0;
+          padding-top: 4px;
+          padding-right: 20px;
+          overflow: hidden;
         }
+
         ^ .stackView {
-          width: 55%;
+          width: 75%;
           vertical-align: top;
-          padding-top: 0px;
         }
+
         ^ .navigationContainer {
-          margin-top: 50px;
           display: inline-block;
-          width: 100%;
+          width: 75%;
           height: 40px;
           float: right;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
-        ^ .pDefault {
-          font-size: 12px;
-          color: #093649;
-          line-height: 1.33;
-        }
+
         ^ .foam-u2-ActionView-unavailable {
           width: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
         }
-        ^ .foam-u2-ActionView-goNext {
+
+        ^ .foam-u2-ActionView-goBack {
           display: inline-block;
+          margin: 0;
+          box-sizing: border-box;
+          margin-right: 30px;
           background: none;
           outline: none;
           border:none;
           width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #5e91cb;
+
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+          background-color: rgba(164, 179, 184, 0.1);
+
           font-size: 14px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #093649;
+        }
+
+        ^ .foam-u2-ActionView-goBack:disabled {
+          color: rgba(9, 54, 73, 0.5);
+        }
+
+        ^ .foam-u2-ActionView-goBack:hover:enabled {
+          cursor: pointer;
+          background: none;
+          background-color: rgba(164, 179, 184, 0.4);
+        }
+
+        ^ .foam-u2-ActionView-goNext {
+          display: inline-block;
+          margin: 0;
+          background: none;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+
+          background-color: #59a5d5;
+
+
+          font-size: 14px;
+          font-weight: lighter;
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
+
         ^ .foam-u2-ActionView-goNext:disabled {
           color: rgba(88, 165, 213, 0.5);
         }
+
         ^ .foam-u2-ActionView-goNext:hover:enabled {
           cursor: pointer;
           background: none;
           background-color: #3783b3;
         }
+
+
     */}
     })
   ],
@@ -153,32 +156,70 @@ foam.CLASS({
   ],
 
   properties: [
+    // Title of the Wizard View
     {
       class: 'String',
       name: 'title',
       value: ''
     },
+
+    // Array of ViewSpecs.
     'views',
+
+    // The stack that is handled by this Wizard View.
     {
       name: 'subStack',
       factory: function() { return this.Stack.create(); }
     },
+
+    // Current view the user is viewing in the substack.
     'position',
+
+    // The titles of the views extracted from the ViewSpecs into an array.
     {
       name: 'viewTitles',
       factory: function() { return []; }
     },
+
+    // The common data shared between each screen.
     {
       name: 'viewData',
       factory: function() { return {}; }
     },
+
+    // The errors thrown from the sub view.
     'errors',
+
+    // If set, will start the wizard at a certain position
+    'startAt',
+
+    // If true, will not include the back/next buttons
     {
       class: 'Boolean',
-      name: 'inDialog',
+      name: 'isCustomNavigation',
       value: false
     },
-    'startAt'
+
+    // Label for the back button
+    {
+      class: 'String',
+      name: 'backLabel',
+      value: 'Back'
+    },
+
+    // Label for the next button
+    {
+      class: 'String',
+      name: 'nextLabel',
+      value: 'Next'
+    },
+
+    // When set to true, all circles in the overview will be filled in
+    {
+      class: 'Boolean',
+      name: 'complete',
+      value: false
+    }
   ],
 
   methods: [
@@ -194,16 +235,18 @@ foam.CLASS({
       this.subStack.pos$.sub(this.posUpdate);
 
       if ( this.startAt ) { // If startAt position has been specified, push straight to that view
-        if ( this.startAt < 0 || this.startAt > this.views.length - 1 ) { console.error('[WizardView] : Invalid startAt value'); }
+        if ( this.startAt < 0 || this.startAt > this.views.length - 1 ) {
+          console.error('[WizardView] : Invalid startAt value');
+          this.subStack.push(this.views[0].view);
+          return;
+        }
+
         for ( var i = 0 ; i <= this.startAt ; i++ ) {
           this.subStack.push(this.views[i].view);
         }
       } else {
         this.subStack.push(this.views[0].view);
       }
-
-      // Displays Close Button (X) on the top right or not
-      this.inDialog = this.closeDialog ? true : false;
     },
 
     function initE(){
@@ -211,23 +254,26 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div').addClass('row').addClass('titleRow')
+        .start('div').addClass('topRow')
           .start('p').add(this.title || '').addClass('title').end()
-          .add(this.CLOSE_BTN)
         .end()
-        .start('div').addClass('row').addClass('columnRow')
+        .start('div')
           .start('div').addClass('positionColumn')
-            .tag({ class: 'net.nanopay.admin.ui.shared.wizardView.WizardViewOverview', titles: this.viewTitles, position$: this.position$ })
+            .tag({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
           .start('div').addClass('stackColumn')
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
-            .start('div').addClass('row')
-              .start('div').addClass('navigationContainer')
-                .add(this.GO_NEXT)
-              .end()
-            .end()
           .end()
-        .end()
+        .end();
+
+      if ( ! this.isCustomNavigation ) {
+        this.start('div')
+          .start('div').addClass('navigationContainer')
+            .tag(this.GO_BACK, {label$: this.backLabel$})
+            .tag(this.GO_NEXT, {label$: this.nextLabel$})
+          .end()
+        .end();
+      }
     }
   ],
 
@@ -242,26 +288,34 @@ foam.CLASS({
   ],
 
   actions: [
+    /*
+      NOTE:
+      If you intend on displaying the goBack and goNext actions in a custom way
+      by using isCustomNavigation, make sure to use:
+
+      .startContext({data: this.wizard})
+        .tag(//FULL PATH TO YOUR WIZARD//.GO_//BACK or NEXT//, {label$: this.backLabel$})
+      .endContext()
+    */
     {
-      name: 'closeBtn',
-      isAvailable: function(inDialog) { return inDialog; },
-      icon: 'images/ic-cancel.svg',
-      code: function() {
-        this.closeDialog();
+      name: 'goBack',
+      code: function(X) {
+        if ( this.position <= 0 ) {
+          X.stack.back();
+          return;
+        }
+        this.subStack.back();
       }
     },
     {
       name: 'goNext',
-      label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < this.views.length - 1 ) return true; // Valid next
-        if ( position == this.views.length - 1 && this.inDialog) return true; // Last Page & in dialog
-        return false; // Not in dialog
+        return false;
       },
-      code: function() {
-        if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          if ( this.inDialog ) this.closeDialog();
+      code: function(X) {
+        if ( this.position == this.views.length - 1 ) { // If last page
+          X.stack.back();
           return;
         }
 

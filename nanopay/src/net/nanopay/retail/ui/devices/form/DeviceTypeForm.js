@@ -1,26 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceTypeForm',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form for just the device type.',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
-
-  exports: [ 'as data' ],
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^{
-          overflow: scroll;
-        }
-
         ^ .deviceTypeOption {
           box-sizing: border-box;
           position: relative;
@@ -29,6 +16,7 @@ foam.CLASS({
           height: 80px;
           background-color: #FFFFFF;
           box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
+          border: solid 1px #edf0f5;
         }
 
         ^ .deviceTypeOption.selected {
@@ -78,6 +66,10 @@ foam.CLASS({
           letter-spacing: 0.3px;
           color: #8F8F8F;
         }
+
+        ^ .descRow {
+          margin-top: 8px;
+        }
       */}
     })
   ],
@@ -105,8 +97,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
+      this.SUPER();
 
       if ( ! this.viewData.selectedOption ) { return; }
       this.selectedOption = this.viewData.selectedOption;
@@ -119,41 +110,40 @@ foam.CLASS({
       this
         .addClass(this.myClass())
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
-        .end()
-        .start('div').addClass('row')
-          .start('p').addClass('inputFieldLabel').add(this.DeviceTypeLabel).end()
-          .start('p')
-            .addClass('pDefault')
-            .addClass('inputErrorLabel')
-            .add(this.slot(this.SELECTED_OPTION.validateObj))
+        .start('div').addClass('stepRow')
+          .start('p').add(this.Step).end()
         .end()
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
+        .start('p').addClass('inputFieldLabel').add(this.DeviceTypeLabel).end()
+        .start('p')
+          .addClass('inputErrorLabel')
+          .add(this.slot(this.SELECTED_OPTION.validateObj))
+        .end()
+
+        .start('div')
           .start('div').addClass('deviceTypeOption').addClass('optionSpacer')
             .addClass(self.selectedOption$.map(function(o) { return o == 1 ? 'selected' : ''; }))
-            .start({class: 'foam.u2.tag.Image', data: 'ui/images/apple.svg'}).addClass('imageCenter').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/apple.svg'}).addClass('imageCenter').end()
             .on('click', function(){
               self.selectedOption = 1;
             })
           .end()
           .start('div').addClass('deviceTypeOption').addClass('optionSpacer')
             .addClass(self.selectedOption$.map(function(o) { return o == 2 ? 'selected' : ''; }))
-            .start({class: 'foam.u2.tag.Image', data: 'ui/images/android.svg'}).addClass('imageCenter').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/android.svg'}).addClass('imageCenter').end()
             .on('click', function(){
               self.selectedOption = 2;
             })
           .end()
           .start('div').addClass('deviceTypeOption').addClass('optionSpacer')
             .addClass(self.selectedOption$.map(function(o) { return o == 3 ? 'selected' : ''; }))
-            .start({class: 'foam.u2.tag.Image', data: 'ui/images/ingenico.svg'}).addClass('imageCenter').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/ingenico.svg'}).addClass('imageCenter').end()
             .on('click', function(){
               self.selectedOption = 3;
             })
           .end()
         .end()
-        .start('div').addClass('row')
+        .start('div').addClass('descRow').addClass('instructionsRow')
           .start('div').addClass('optionTitleContainer')
             .start('p').addClass('optionTitle').add('Apple').end()
           .end()
@@ -164,19 +154,7 @@ foam.CLASS({
             .start('p').addClass('optionTitle').add('Ingenico').end()
           .end()
         .end()
-        .start('div').addClass('row')
-          .start('p').addClass('pDefault').add(this.Instructions).end()
-        .end()
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        var self = this;
-        this.errors = this.errors_;
-      }
+        .start('p').add(this.Instructions).end()
     }
   ]
 });

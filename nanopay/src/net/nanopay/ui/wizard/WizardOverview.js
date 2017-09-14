@@ -1,21 +1,22 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.shared.wizardView',
-  name: 'WizardViewOverview',
+  package: 'net.nanopay.ui.wizard',
+  name: 'WizardOverview',
   extends: 'foam.u2.View',
 
   documentation: 'A view that displays the position of the user in the WizardView Stack.',
 
+  imports: [
+    'viewData',
+    'complete'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^{
-
-        }
-
         ^ .guideColumn {
           display: inline-block;
-          width: 25%;
           vertical-align: top;
+          margin-right: 20px;
         }
 
         ^ .titleColumn {
@@ -35,7 +36,7 @@ foam.CLASS({
         }
 
         ^ .positionCircle:first-child {
-          margin-top: 15px;
+          margin-top: 4px;
         }
 
         ^ .positionCircle.current {
@@ -45,7 +46,7 @@ foam.CLASS({
 
         ^ .positionCircle.complete {
           border: solid 1px #23c2b7;
-          background-color: #23c2b7;
+          background-color: #23c2b7 !important;
         }
 
         ^ .positionLine {
@@ -66,10 +67,6 @@ foam.CLASS({
           font-family: Roboto;
           color: #093649;
         }
-
-        ^ .positionTitle:first-child {
-          margin-top: 11px;
-        }
       */}
     })
   ],
@@ -88,6 +85,7 @@ foam.CLASS({
           .start().forEach(this.titles, function(title, index) {
             this.start('div')
               .addClass('positionCircle')
+              .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
             .end();
             if ( index < self.titles.length - 1 ) {
@@ -100,6 +98,6 @@ foam.CLASS({
             this.start('p').addClass('positionTitle').add(title).end();
           }).end()
         .end()
-    },
+    }
   ]
 });
