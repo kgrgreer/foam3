@@ -12,6 +12,17 @@ foam.CLASS({
       code: function CSS() {/*
       ^ p {
         margin: 0;
+        font-size: 12px;
+        color: #093649;
+        line-height: 1.33;
+      }
+
+      ^ .stepRow {
+        margin-bottom: 40px;
+      }
+
+      ^ .instructionsRow {
+        margin-bottom: 40px;
       }
 
       ^ input {
@@ -33,6 +44,7 @@ foam.CLASS({
         display: inline-block;
         margin-right: 20px;
         vertical-align: top;
+        margin-bottom: 8px;
       }
 
       ^ .inputErrorLabel {
@@ -63,11 +75,9 @@ foam.CLASS({
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < this.views.length - 1 ) return true; // Valid next
-        if ( position == this.views.length - 1 && this.inDialog) return true; // Last Page & in dialog
-        return false; // Not in dialog
+        return true;
       },
-      code: function() {
+      code: function(X) {
         if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
           //TODO: MAKE API CALL TO ADD DEVICE
             // TODO: CHECK IF SUCCESS OR FAILURE
@@ -78,7 +88,7 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          if ( this.inDialog ) this.closeDialog();
+          X.stack.back();
           return;
         }
 

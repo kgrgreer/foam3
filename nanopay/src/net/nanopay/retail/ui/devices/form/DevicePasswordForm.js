@@ -8,14 +8,6 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^{
-
-        }
-
-        ^ .stepBottomMargin {
-          margin-bottom: 30px;
-        }
-
         ^ .passwordLabel {
           font-size: 45px;
           letter-spacing: 24px;
@@ -40,10 +32,10 @@ foam.CLASS({
       this
         .addClass(this.myClass())
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+        .start('div').addClass('stepRow')
+          .start('p').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').add(this.Instructions).addClass('stepBottomMargin').end()
+        .start('p').addClass('instructionsRow').add(this.Instructions).end()
         .start('p').addClass('passwordLabel').add('012345').end()
     }
   ]

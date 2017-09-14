@@ -130,7 +130,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'deviceDAO'
+    'deviceDAO',
   ],
 
   implements: [
@@ -138,8 +138,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.retail.model.Device',
-    'foam.u2.dialog.Popup'
+    'net.nanopay.retail.model.DeviceStatus'
   ],
 
   messages: [
@@ -251,12 +252,12 @@ foam.CLASS({
           self.allDevicesCount = count.value;
         });
 
-        var activeDevicesDAO = this.dao.where(this.EQ(this.Device.STATUS, "Active"));
+        var activeDevicesDAO = this.dao.where(this.EQ(this.Device.STATUS, this.DeviceStatus.ACTIVE));
         activeDevicesDAO.select(this.COUNT()).then(function(count) {
           self.activeDevicesCount = count.value;
         });
 
-        var disabledDevicesDAO = this.dao.where(this.EQ(this.Device.STATUS, "Disabled"));
+        var disabledDevicesDAO = this.dao.where(this.EQ(this.Device.STATUS, this.DeviceStatus.DISABLED));
         disabledDevicesDAO.select(this.COUNT()).then(function(count) {
           self.disabledDevicesCount = count.value;
         });

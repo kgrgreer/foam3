@@ -5,16 +5,6 @@ foam.CLASS({
 
   documentation: 'Form for just the device name.',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-
-        }
-      */}
-    })
-  ],
-
   messages: [
     { name: 'Step',         message: 'Step 1: Name your device.' },
     { name: 'Instructions', message: 'Please name your device to help distinguish it among other devices.\nYou can change the name at any time.' },
@@ -48,14 +38,15 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+        .start('div').addClass('stepRow')
+          .start('p').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions).end()
+        .start('p').addClass('instructionsRow').add(this.Instructions).end()
         .start('div').addClass('row')
           .start('p').addClass('inputFieldLabel').add(this.NameLabel).end()
-          .start('p').addClass('pDefault').addClass('inputErrorLabel').end()
-          .add(this.slot(this.DEVICE_NAME.validateObj))
+          .start('p').addClass('pDefault').addClass('inputErrorLabel')
+            .add(this.slot(this.DEVICE_NAME.validateObj))
+          .end()
         .end()
         .tag(this.DEVICE_NAME, {onKey: true})
     }
