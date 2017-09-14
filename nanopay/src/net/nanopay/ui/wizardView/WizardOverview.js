@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.shared.wizardView',
-  name: 'WizardViewOverview',
+  name: 'WizardOverview',
   extends: 'foam.u2.View',
 
   documentation: 'A view that displays the position of the user in the WizardView Stack.',
@@ -36,7 +36,7 @@ foam.CLASS({
         }
 
         ^ .positionCircle:first-child {
-          margin-top: 15px;
+          margin-top: 4px;
         }
 
         ^ .positionCircle.current {
@@ -66,10 +66,6 @@ foam.CLASS({
           letter-spacing: 0.3px;
           font-family: Roboto;
           color: #093649;
-        }
-
-        ^ .positionTitle:first-child {
-          margin-top: 11px;
         }
       */}
     })

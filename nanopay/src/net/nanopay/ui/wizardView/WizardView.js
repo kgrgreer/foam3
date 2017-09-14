@@ -11,7 +11,8 @@ foam.CLASS({
     'nextLabel',
     'goBack',
     'goNext',
-    'complete'
+    'complete',
+    'as wizard'
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -31,18 +32,18 @@ foam.CLASS({
           overflow: hidden;
         }
 
+        ^ .topRow {
+          padding: 20px;
+        }
+
         ^ .title {
           margin: 0;
-          margin-bottom: 22px;
+          line-height: 40px;
           display: inline-block;
           opacity: 0.6;
           font-size: 20px;
           font-weight: 300;
           color: #093649;
-        }
-
-        ^ .titleRow div {
-          display: inline;
         }
 
         ^ .positionColumn {
@@ -51,6 +52,7 @@ foam.CLASS({
           vertical-align: top;
           box-sizing: border-box;
           padding: 20px;
+          padding-top: 0;
         }
 
         ^ .stackColumn {
@@ -58,6 +60,7 @@ foam.CLASS({
           width: 75%;
           box-sizing: border-box;
           padding: 20px 0;
+          padding-top: 4px;
           padding-right: 20px;
           overflow: hidden;
         }
@@ -146,6 +149,8 @@ foam.CLASS({
           background: none;
           background-color: #3783b3;
         }
+
+
     */}
     })
   ],
@@ -256,10 +261,12 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div').addClass('row')
+        .start('div').addClass('topRow')
+          .start('p').add(this.title || '').addClass('title').end()
+        .end()
+        .start('div')
           .start('div').addClass('positionColumn')
-            .start('p').add(this.title || '').addClass('title').end()
-            .tag({ class: 'net.nanopay.interac.ui.shared.wizardView.WizardViewOverview', titles: this.viewTitles, position$: this.position$ })
+            .tag({ class: 'net.nanopay.interac.ui.shared.wizardView.WizardOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
           .start('div').addClass('stackColumn')
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
@@ -267,7 +274,7 @@ foam.CLASS({
         .end();
 
       if ( ! this.isCustomNavigation ) {
-        this.start('div').addClass('row')
+        this.start('div')
           .start('div').addClass('navigationContainer')
             .tag(this.GO_BACK, {label$: this.backLabel$})
             .tag(this.GO_NEXT, {label$: this.nextLabel$})
@@ -288,6 +295,15 @@ foam.CLASS({
   ],
 
   actions: [
+    /*
+      NOTE:
+      If you intend on displaying the goBack and goNext actions in a custom way
+      by using isCustomNavigation, make sure to use:
+
+      .startContext({data: this.wizard})
+        .tag(//FULL PATH TO YOUR WIZARD//.GO_//BACK or NEXT//, {label$: this.backLabel$})
+      .endContext()
+    */
     {
       name: 'goBack',
       code: function(X) {

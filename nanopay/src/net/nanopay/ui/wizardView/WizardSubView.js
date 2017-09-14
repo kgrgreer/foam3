@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.ui.wizardView',
   name: 'WizardSubView',
   extends: 'foam.u2.Controller',
+  abstract: true,
 
   documentation: 'The default view that would be used for a view in the substack of the WizardView.',
 
@@ -12,7 +13,8 @@ foam.CLASS({
     'nextLabel',
     'goBack',
     'goNext',
-    'complete'
+    'complete',
+    'wizard'
   ],
 
   methods: [
