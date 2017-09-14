@@ -62,12 +62,12 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.admin.model.BusinessSector',
+      of: 'net.nanopay.model.BusinessSector',
       name: 'sectorId'
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.admin.model.BusinessType',
+      of: 'net.nanopay.model.BusinessType',
       name: 'businessTypeId'
     },
     {
@@ -88,26 +88,6 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.CLASS({
-  package: 'net.nanopay.admin.model',
-  name: 'BusinessSector',
-
-  documentation: 'Unknown, TODO.',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    }
-  ]
-});
-
 
 foam.CLASS({
   package: 'net.nanopay.admin.model',
@@ -136,26 +116,6 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.CLASS({
-  package: 'net.nanopay.admin.model',
-  name: 'BusinessType',
-
-  documentation: 'Proprietor details for business/businesses',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    }
-  ]
-});
-
 
 foam.CLASS({
   package: 'net.nanopay.admin.model',
