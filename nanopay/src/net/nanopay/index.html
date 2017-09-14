@@ -11,8 +11,8 @@
     <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
     <script language="javascript" src="ui/topNavigation/BusinessLogoView.js"></script>
     <script language="javascript" src="ui/topNavigation/UserTopNavView.js"></script>   
-    <script language="javascript" src="ui/styles/AppStyles.js"></script>   
     <script language="javascript" src="invoice/ui/styles/InvoiceStyles.js"></script>       
+    <script language="javascript" src="ui/styles/AppStyles.js"></script>   
     <script language="javascript" src="invoice/ui/ExpensesView.js"></script>   
     <script language="javascript" src="invoice/ui/SalesView.js"></script>   
     <script language="javascript" src="invoice/ui/InvoiceDashboardView.js"></script>
@@ -30,7 +30,121 @@
     <script language="javascript" src="util/CurrencyFormatter.js"></script>               
     
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        color: #373a3c;
+        background: #edf0f5;
+        margin: 0;
+        height: 100%;
+      }
+      .foam-u2-view-TableView thead tr {
+        font-size: 16px;
+        height: 48px;
+        font-family: sans-serif;
+        font-weight: 500;
+        border-bottom: 1px solid rgb(242, 242, 242);
+        color: rgb(138, 138, 138);
+        background: rgb(240,240,240);
+      }
+      table {
+        border-collapse: collapse;
+        margin: auto;
+        width: 960px;
+      }
+      .net-nanopay-ui-ActionButton{
+        margin: 0 2px 0;
+      }
+      thead > tr > td {
+        font-family: 'Roboto';
+        font-size: 14px;
+        background: #dfe8ee;
+        color: #093649;
+        line-height: 1.14;
+        letter-spacing: 0.3px;
+        border-spacing: 0;
+        text-align: left;
+        padding-left: 15px;
+      }
+      tbody > tr > td {
+        font-size: 12px;
+        letter-spacing: 0.2px;
+        text-align: left;
+        color: #093649;
+        padding-left: 15px;
+      }
+      thead > tr > th {
+        font-family: 'Roboto';
+        font-size: 14px;
+        background: #dfe8ee;
+        color: #093649;
+        line-height: 1.14;
+        letter-spacing: 0.3px;
+        border-spacing: 0;
+        text-align: left;
+        padding-left: 15px;
+      }
+      tbody > tr:nth-child(odd) {
+        background: #f6f9f9;
+      }
+      tbody > tr {
+        height: 60px;
+        background: white;
+      }
+      .recievable-status > span {
+        width: 10px;
+        height: 10px;
+        float: left;
+        border-radius: 50%;
+        position: relative;
+        top: -1;
+        right: 10;
+        font-weight: bold;
+      }
+      .foam-u2-search-TextSearchView input {
+        width: 340px;
+        font-size: 10pt;
+        padding: 3px;
+      }
+     .foam-u2-search-GroupBySearchView select {
+        font-family: monospace;
+        font-size: 10pt;
+        width: 340px;
+      }
+      .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice > tbody > tr {
+        height: 40px;
+      }
+      .foam-u2-view-ReciprocalSearch-filter-header {
+        font-size: 20px;
+        color: gray;
+      }
+      .foam-u2-view-ReciprocalSearch-filter {
+        margin-bottom: 8px;
+      }
 
+      .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-create {
+        display: none;
+      }
+
+      .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-edit {
+        display: none;
+      }
+
+      .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice tbody tr {
+        height: 40px;
+      }
+
+      .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; min-width: 80px; }
+      .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; min-width: 80px; }
+      .foam-u2-view-TableView-th-fromBusinessName { width: 180px; min-width: 180px; }
+      .foam-u2-view-TableView-th-toBusinessName   { width: 180px; min-width: 180px; }
+      .foam-u2-view-TableView-th-fromBusinessId { width: 180px; min-width: 180px; }
+      .foam-u2-view-TableView-th-toBusinessId   { width: 180px; min-width: 180px; }
+      .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
+      .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; }
+      .foam-u2-view-TableView-th-status         { width: 80px; min-width: 80px; }
+    </style>
   </head>
   <body>
     <foam class="net.nanopay.ui.Controller" id="ctrl"></foam>      

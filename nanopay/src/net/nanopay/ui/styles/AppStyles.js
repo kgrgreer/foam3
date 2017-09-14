@@ -44,12 +44,7 @@ foam.CLASS({
           padding-left: 15px;
         }
 
-
-          *********************************************
-        ********* Enchanced FOAM CSS Rules *************
-          *********************************************
-
-
+    
         .foam-u2-ActionView-create{
           background: #59aadd !important;
           border: none !important;
@@ -85,10 +80,7 @@ foam.CLASS({
           width: 340px;
         }
 
-          ***********************************
-        ********* Custom CSS Rules *************
-          ***********************************
-
+        
         .input-box{
           width: 90%;
           height: 60px;
