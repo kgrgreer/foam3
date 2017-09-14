@@ -21,8 +21,6 @@ foam.CLASS({
     'historyDAO',
     'addressDAO',
     'businessBusinessJunctionDAO',		
-    'businessSectorDAO',
-    'businessTypeDAO',
     'invoiceResolutionDAO',
     'countryDAO'
   ],
@@ -343,98 +341,6 @@ foam.CLASS({
       }		
     },
     {
-      name: 'businessSectorDAO',
-      factory: function() {
-        return this.createDAO({
-          of: 'net.nanopay.b2b.model.BusinessSector',
-          seqNo: true,
-          testData: [
-          {
-            'name'    : 'Art dealing'
-          },
-          {
-            'name'    : 'Audio & Video'
-          },
-          {
-            'name'    : 'Automotive'
-          },
-          {
-            'name'    : 'Charity & not-for-profit'
-          },
-          {
-            'name'    : 'Consulting services'
-          },
-          {
-            'name'    : 'Design'
-          },
-          {
-            'name'    : 'Education & learning'
-          },
-          {
-            'name'    : 'Entertainment - Adult'
-          },
-          {
-            'name'    : 'Events & entertainment'
-          },
-          {
-            'name'    : 'Financial Services'
-          },
-          {
-            'name'    : 'Gambling, betting & online gaming'
-          },
-          {
-            'name'    : 'Health & beauty'
-          },
-          {
-            'name'    : 'IT services'
-          },
-          {
-            'name'    : 'Jewellery, precious metals & stones'
-          },
-          {
-            'name'    : 'Legal services'
-          },
-          {
-            'name'    : 'Manufacturing'
-          },
-          {
-            'name'    : 'Media & communication'
-          },
-          {
-            'name'    : 'Military & semi-military goods & services'
-          },
-          {
-            'name'    : 'Pharmaceuticals, medical & dietary supplements'
-          },
-          {
-            'name'    : 'Public services'
-          },
-          {
-            'name'    : 'Real estate & construction'
-          },
-          {
-            'name'    : 'Restaurants & catering'
-          },
-          {
-            'name'    : 'Retail & trade'
-          },
-          {
-            'name'    : 'Sports'
-          },
-          {
-            'name'    : 'Tobacco & alcohol'
-          },
-          {
-            'name'    : 'Transport services'
-          },
-          {
-            'name'    : 'Travel'
-          }
-          ]
-        })
-      }
-    },
-    {
       name: 'regionDAO',
       factory: function() {
         return this.createDAO({
@@ -531,33 +437,6 @@ foam.CLASS({
             {
               name: 'Canada',
               code: 'CAN'
-            }
-          ]
-        })
-      }
-    },
-    {
-      name: 'businessTypeDAO',
-      factory: function() {
-        return this.EasyDAO.create({
-          daoType: 'CLIENT',
-          of: net.nanopay.b2b.model.BusinessType,
-          serviceName: 'businessTypeDAO',
-          testData: [
-            {
-              name: 'Sole Proprietorship'
-            },
-            {
-              name: 'General Partnership'
-            },
-            {
-              name: 'Limited Partnership'
-            },
-            {
-              name: 'Corporation'
-            },
-            {
-              name: 'Joint Venture'
             }
           ]
         })
