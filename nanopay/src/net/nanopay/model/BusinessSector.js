@@ -1,8 +1,8 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.model',
+  package: 'net.nanopay.model',
   name: 'BusinessSector',
 
-  documentation: 'Unknown, TODO.',
+  documentation: 'What sector the business is involved with',
 
   properties: [
     {

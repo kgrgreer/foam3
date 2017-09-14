@@ -346,7 +346,7 @@ foam.CLASS({
       name: 'businessSectorDAO',
       factory: function() {
         return this.createDAO({
-          of: 'net.nanopay.b2b.model.BusinessSector',
+          of: 'net.nanopay.model.BusinessSector',
           seqNo: true,
           testData: [
           {
@@ -541,7 +541,7 @@ foam.CLASS({
       factory: function() {
         return this.EasyDAO.create({
           daoType: 'CLIENT',
-          of: net.nanopay.b2b.model.BusinessType,
+          of: net.nanopay.model.BusinessType,
           serviceName: 'businessTypeDAO',
           testData: [
             {

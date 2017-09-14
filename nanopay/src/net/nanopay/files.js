@@ -5,6 +5,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AccountLimit' },
   { name: 'net/nanopay/model/Bank' },
   { name: 'net/nanopay/model/BankAccountInfo' },
+  { name: 'net/nanopay/model/BusinessSector' },
+  { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
