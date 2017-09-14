@@ -17,7 +17,8 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.retail.model.DeviceStatus',
       name: 'status'
     },
     {
