@@ -1,6 +1,5 @@
 var classes = [
-  'foam.dao.crypto.EncryptedObject',
-
+  'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.model.AccountInfo',
   'net.nanopay.model.Account',
   'net.nanopay.model.Bank',
