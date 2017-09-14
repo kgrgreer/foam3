@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'net.nanopay.retail.model.Device'
+    'net.nanopay.retail.model.Device',
+    'net.nanopay.retail.model.DeviceStatus'
   ],
 
   exports: [
@@ -25,13 +26,13 @@ foam.CLASS({
           cache: true,
           testData: [
             {
-              name: 'Ingenico 1', type: 'Terminal', serialNumber: '7D0F5AP3VU529LA', status: 'Active'
+              name: 'Ingenico 1', type: 'Terminal', serialNumber: '7D0F5AP3VU529LA', status: this.DeviceStatus.ACTIVE
             },
             {
-              name: 'Ciao Tablet', type: 'Android', serialNumber: '59GS8F8A3L5FAQ1', status: 'Pending'
+              name: 'Ciao Tablet', type: 'Android', serialNumber: '59GS8F8A3L5FAQ1', status: this.DeviceStatus.PENDING
             },
             {
-              name: 'Merci Pad', type: 'iPad', serialNumber: '0A3H70K5HLA82E4', status: 'Disabled'
+              name: 'Merci Pad', type: 'iPad', serialNumber: '0A3H70K5HLA82E4', status: this.DeviceStatus.DISABLED
             }
           ]
         })
