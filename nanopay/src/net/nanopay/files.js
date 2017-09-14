@@ -12,5 +12,10 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
-  { name: 'net/nanopay/model/UserAccountInfo' }
+  { name: 'net/nanopay/model/UserAccountInfo' },
+  { name: 'net/nanopay/ui/wizard/WizardView' },
+  { name: 'net/nanopay/ui/wizard/WizardOverview' },
+  { name: 'net/nanopay/ui/wizard/WizardSubView' },
+  { name: 'net/nanopay/ui/NotificationActionCard' },
+  { name: 'net/nanopay/ui/ContentCard' }
 ]);

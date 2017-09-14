@@ -1,18 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceSerialForm',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form for just the device serial number.',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
-
-  exports: [ 'as data' ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -47,8 +38,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
+      this.SUPER();
 
       if ( ! this.viewData.serialNumber ) { return; }
       this.serialNumber = this.viewData.serialNumber;
@@ -59,27 +49,19 @@ foam.CLASS({
       this
         .addClass(this.myClass())
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
+        .start('div').addClass('stepRow')
           .start('p').addClass('pDefault').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').add(this.Instructions).end()
-        .start('div').addClass('row')
+        .start('p').addClass('instructionsRow').add(this.Instructions).end()
+        .start('div')
           .start('p').addClass('inputFieldLabel').add(this.SerialLabel).end()
           .start('p')
             .addClass('pDefault')
             .addClass('inputErrorLabel')
             .add(this.slot(this.SERIAL_NUMBER.validateObj))
+          .end()
         .end()
         .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 15})
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });

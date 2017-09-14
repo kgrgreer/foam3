@@ -1,28 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceNameForm',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
-
-  exports: [ 'as data' ],
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form for just the device name.',
-
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-
-        }
-      */}
-    })
-  ],
 
   messages: [
     { name: 'Step',         message: 'Step 1: Name your device.' },
@@ -46,8 +27,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
+      this.SUPER();
 
       if ( ! this.viewData.name ) { return; }
       this.deviceName = this.viewData.name
@@ -58,28 +38,17 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+        .start('div').addClass('stepRow')
+          .start('p').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions).end()
+        .start('p').addClass('instructionsRow').add(this.Instructions).end()
         .start('div').addClass('row')
           .start('p').addClass('inputFieldLabel').add(this.NameLabel).end()
-          .start('p')
-            .addClass('pDefault')
-            .addClass('inputErrorLabel')
+          .start('p').addClass('pDefault').addClass('inputErrorLabel')
             .add(this.slot(this.DEVICE_NAME.validateObj))
+          .end()
         .end()
         .tag(this.DEVICE_NAME, {onKey: true})
-
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });

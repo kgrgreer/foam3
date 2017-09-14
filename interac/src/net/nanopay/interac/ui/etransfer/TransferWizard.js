@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferWizard',
-  extends: 'net.nanopay.interac.ui.shared.wizardView.WizardView',
+  extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for e-transfer',
 
@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.interac.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
       code: function CSS() {/*
       ^ .topRow {
@@ -214,7 +214,7 @@ foam.CLASS({
         .start('div').addClass('row')
           .start('div').addClass('positionColumn')
             .start('p').add(this.title || '').addClass('title').end()
-            .tag({ class: 'net.nanopay.interac.ui.shared.wizardView.WizardViewOverview', titles: this.viewTitles, position$: this.position$ })
+            .tag({ class: 'net.nanopay.ui.wizard.WizardViewOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
           .start('div').addClass('stackColumn')
             .start('div').addClass('topRow')

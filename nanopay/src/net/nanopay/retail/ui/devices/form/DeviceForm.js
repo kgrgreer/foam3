@@ -2,16 +2,63 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceForm',
-  extends: 'net.nanopay.retail.ui.shared.wizardView.WizardView',
+  extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for adding a device',
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.retail.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    foam.u2.CSS.create({
+      code: function CSS() {/*
+      ^ p {
+        margin: 0;
+        font-size: 12px;
+        color: #093649;
+        line-height: 1.33;
+      }
+
+      ^ .stepRow {
+        margin-bottom: 40px;
+      }
+
+      ^ .instructionsRow {
+        margin-bottom: 40px;
+      }
+
+      ^ input {
+        width: 220px;
+        height: 40px;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        border: solid 1px rgba(164, 179, 184, 0.5);
+        padding-left: 15px;
+        padding-right: 15px;
+        outline: none;
+      }
+
+      ^ input:focus {
+        border: solid 1px #59a5d5;
+      }
+
+      ^ .inputFieldLabel {
+        display: inline-block;
+        margin-right: 20px;
+        vertical-align: top;
+        margin-bottom: 8px;
+      }
+
+      ^ .inputErrorLabel {
+        display: inline-block;
+        color: red !important;
+        vertical-align: top;
+      }
+    */}})
   ],
 
   methods: [
     function init() {
+      this.title = 'Add a Device';
+      // this.isCustomNavigation = true;
       this.views = [
         { parent: 'addDevice', id: 'form-addDevice-name',     label: 'Name',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceNameForm' } },
         { parent: 'addDevice', id: 'form-addDevice-type',     label: 'Type',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceTypeForm' } },
@@ -24,25 +71,13 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'goBack',
-      label: 'Back',
-      isAvailable: function(position) {
-        return position == this.viewTitles.length - 1 || position == 0 ? false : true;
-      },
-      code: function() {
-        this.subStack.back();
-      }
-    },
-    {
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < this.views.length - 1 ) return true; // Valid next
-        if ( position == this.views.length - 1 && this.inDialog) return true; // Last Page & in dialog
-        return false; // Not in dialog
+        return true;
       },
-      code: function() {
+      code: function(X) {
         if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
           //TODO: MAKE API CALL TO ADD DEVICE
             // TODO: CHECK IF SUCCESS OR FAILURE
@@ -53,7 +88,7 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          if ( this.inDialog ) this.closeDialog();
+          X.stack.back();
           return;
         }
 
