@@ -94,7 +94,7 @@ foam.CLASS({
             .start().add(this.Title).addClass('popUpTitle').end()
             .add(this.CLOSE_BUTTON)
           .end()
-          .start({class: 'foam.u2.tag.Image', data: 'ui/images/done-30.png'}).addClass('successIcon').end()
+          .start({class: 'foam.u2.tag.Image', data: 'images/done-30.png'}).addClass('successIcon').end()
           .start('div').addClass('cashOutResultDiv')
             .start().add(this.CashOutSuccessDesc).addClass('cashOutResult').end()
             .br()
@@ -107,7 +107,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Title', message: 'Cash Out' },
-    { name: 'CashOutSuccessDesc', message: 'You have successfully cashed out $0.00 to Scotiabank Chequing.'},
+    { name: 'CashOutSuccessDesc', message: 'You have successfully cashed out $X.XX'},
     { 
       name: 'CashOutResultDesc', 
       message: "Please be advised that it will take around 2 business days for the balance to arrive in your bank account. If you don't see your balance after 5 business days please contact our advisor at XXX-XXX-XXXX."

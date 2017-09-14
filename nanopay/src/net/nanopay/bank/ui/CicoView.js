@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui',
-  name: 'CicoHomeView',
+  name: 'CicoView',
   extends: 'foam.u2.View',
 
   documentation: 'View for displaying all Top Up and Cash Out Transactions as well as account Balance',
@@ -87,7 +87,7 @@ foam.CLASS({
         ^ .foam-u2-ActionView-topUpBtn:hover {
           background: #3783b3;
         }
-        ^ .foam-u2-ActionView-cashOutBtn {
+        ^ .foam-u2-ActionView-cashOutButton {
           width: 135px;
           height: 50px;
           border-radius: 2px;
@@ -103,6 +103,9 @@ foam.CLASS({
           font-size: 14px;
           font-weight: normal;
           margin-bottom: 2px;
+        }
+        ^ .foam-u2-ActionView-cashOutButton:hover {
+          background: #ebebeb;
         }
         ^ .recentActivities {
           opacity: 0.6;
@@ -192,7 +195,7 @@ foam.CLASS({
           .end()
           .start('div').addClass('inlineDiv')
             .add(this.TOP_UP_BTN)
-            .add(this.CASH_OUT_BTN)
+            .add(this.CASH_OUT_BUTTON)
           .end()
           .start().add(this.recentActivities).addClass('recentActivities').end()
           .start()
@@ -254,7 +257,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'cashOutBtn',
+      name: 'cashOutButton',
       label: 'Cash Out',
       code: function(X) {
         X.cashOut();
