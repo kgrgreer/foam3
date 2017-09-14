@@ -34,10 +34,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'secureAssetStore'
-    },
-    {
-      class: 'String',
       name: 'certificateId'
     },
     {
