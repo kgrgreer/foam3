@@ -16,4 +16,5 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizardView/WizardView' },
   { name: 'net/nanopay/ui/wizardView/WizardViewOverview' },
   { name: 'net/nanopay/ui/wizardView/WizardSubView' },
+  { name: 'net/nanopay/ui/NotificationActionCard' },
 ]);

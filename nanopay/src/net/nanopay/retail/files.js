@@ -6,5 +6,6 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicesNameForm' },
   { name: 'net/nanopay/retail/ui/devices/form/DevicesTypeForm' },
   { name: 'net/nanopay/retail/ui/devices/form/DevicesSerialForm' },
-  { name: 'net/nanopay/retail/ui/devices/form/DevicesPasswordForm' }
+  { name: 'net/nanopay/retail/ui/devices/form/DevicesPasswordForm' },
+  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard' }
 ]);
