@@ -14,6 +14,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/UserAccountInfo' },
   { name: 'net/nanopay/ui/SignIn' },
   { name: 'net/nanopay/ui/wizard/WizardView' },
-  { name: 'net/nanopay/ui/wizard/WizardViewOverview' },
+  { name: 'net/nanopay/ui/wizard/WizardOverview' },
   { name: 'net/nanopay/ui/wizard/WizardSubView' },
 ]);

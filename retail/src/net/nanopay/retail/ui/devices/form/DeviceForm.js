@@ -2,12 +2,12 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceForm',
-  extends: 'net.nanopay.ui.shared.wizardView.WizardView',
+  extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for adding a device',
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
 
   methods: [

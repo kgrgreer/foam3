@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.interac.ui.shared.wizard',
+  package: 'net.nanopay.ui.wizard',
   name: 'WizardOverview',
   extends: 'foam.u2.View',
 
