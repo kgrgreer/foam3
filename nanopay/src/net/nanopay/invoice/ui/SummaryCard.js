@@ -1,0 +1,135 @@
+
+foam.CLASS({
+  package: 'net.nanopay.invoice.ui',
+  name: 'SummaryCard',
+  extends: 'foam.u2.View',
+
+  documentation: 'Cards for summary views',
+
+  imports: [ 'currencyFormatter' ],
+
+  axioms: [
+    foam.u2.CSS.create({
+      code: function CSS() {/*
+        ^{
+          display: inline-block;
+          width: 20%;
+          background: white;
+          height: 100px;
+          position: relative;
+          vertical-align: top;
+          margin-right: 6px;
+          border-radius: 3px;
+          overflow: hidden;
+          font-size: 12px;
+        }
+        ^ .Pending{
+          width: 105px;
+          height: 15px;
+          border-radius: 100px;
+          border: solid 1px #093649;
+          color: #093649;
+          padding: 3px 3px 3px 15px;
+        }
+        ^ .Overdue{
+          color: white;
+          background: #c82e2e;
+          border-radius: 100px;
+          height: 18px;
+          padding-left: 10px;
+          padding-top: 5;
+          width: 55px;
+        }
+        ^ .Disputed{
+          width: 60px;
+          height: 15px;
+          padding: 3px 3px 3px 15px;
+          border-radius: 100px;
+          border: solid 1px #c82e2e;  
+          color: #c82e2e;
+        }
+        ^ .Paid{
+          width: 40px;
+          height: 15px;
+          padding: 3px 3px 3px 15px;
+          border-radius: 100px;
+          background: #2cab70;
+          color: white;
+        }
+        ^ .Scheduled{
+          color: #2cab70;
+          width: 70px;
+          height: 18px;
+          border: 1px solid #2cab70;
+          border-radius: 100px;
+          padding: 3px 0 0 15px;
+        }
+
+        ^ .New{
+          color: #59a5d5;
+          width: 40px;
+          height: 18px;
+          border: 1px solid #59a5d5;
+          border-radius: 100px;
+          padding: 3px 0 0 15px;
+        }
+        ^ .Due{
+          color: white;
+          background: #59aadd;
+          border-radius: 100px;
+          width: 30px;
+          height: 18px;
+          padding-left: 10px;
+          padding-top: 5;
+        }
+        .label{
+          position: relative;
+          top: 35;
+          left: 10;
+        }
+        ^ .count{
+          font-size: 30px;
+          font-weight: 300;
+          line-height: 1;
+          letter-spacing: 0.5px;
+          position: relative;
+          top: 20;
+          left: 20;
+        }
+        ^ .amount{
+          font-size: 14px;
+          line-height: 0.86;
+          letter-spacing: 0.2px;
+          text-align: left;
+          color: #093649;
+          opacity: 0.6;
+          float: right;
+          margin-right: 15px;
+        }
+      */}
+    })
+  ],
+
+  properties: [
+    'amount', 
+    {
+      class: 'Currency',
+      name: 'formattedAmount'
+      // expression: function(amount) { return this.currencyFormatter.format(amount); }
+    },
+    'count',
+    'status'
+ ],
+
+  methods: [
+    function initE(){
+      var self = this;
+      this
+        .addClass(this.myClass())
+          .start().addClass('count').add(this.count$).end()
+          .start().addClass('amount').add('$', this.formattedAmount$).end()
+          .start().addClass(this.status + ' label special-status-tag').add(this.status).end()
+        .end()
+    },
+  ]
+});

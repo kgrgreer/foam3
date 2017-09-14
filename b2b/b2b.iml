@@ -23,6 +23,8 @@
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
     <orderEntry type="library" name="Maven: com.xero:xero-accounting-api-schema:0.0.5" level="project" />
     <orderEntry type="module" module-name="nanopay" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.57" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.57" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.google:foam:1.0" level="project" />
   </component>

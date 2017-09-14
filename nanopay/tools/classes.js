@@ -1,8 +1,11 @@
 var classes = [
+  'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.model.AccountInfo',
   'net.nanopay.model.Account',
   'net.nanopay.model.Bank',
   'net.nanopay.model.BankAccountInfo',
+  'net.nanopay.model.BusinessSector',
+  'net.nanopay.model.BusinessType',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.Phone',
   'net.nanopay.model.UserAccountInfo',
