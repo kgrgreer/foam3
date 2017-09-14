@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DevicePasswordForm',
-  extends: 'net.nanopay.ui.wizardView.WizardSubView',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to display device password.',
 

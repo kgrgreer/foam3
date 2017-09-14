@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.ui.wizardView',
+  package: 'net.nanopay.ui.wizard',
   name: 'WizardView',
   extends: 'foam.u2.Controller',
   abstract: true,
@@ -266,7 +266,7 @@ foam.CLASS({
         .end()
         .start('div')
           .start('div').addClass('positionColumn')
-            .tag({ class: 'net.nanopay.interac.ui.shared.wizardView.WizardOverview', titles: this.viewTitles, position$: this.position$ })
+            .tag({ class: 'net.nanopay.interac.ui.shared.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
           .start('div').addClass('stackColumn')
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
