@@ -86,6 +86,9 @@ foam.CLASS({
         .inline{
           display: inline-block;
         }
+        .hide{
+          display: none;
+        }
         .thin-align{
           font-weight: 100;
           margin: 10px 0 0 0;
@@ -101,6 +104,27 @@ foam.CLASS({
           color: white;
           font-weight: 16px;
           display: inline-block;
+        }
+        .foam-u2-ActionView-create{
+          background: #59aadd !important;
+          border: none !important;
+          box-shadow: none !important;
+          color: white !important;
+          font-weight: 100 !important;
+          width: 135px;
+          height: 39px;
+          position: relative;
+          top: -40;
+        }
+        .foam-u2-ActionView-back{
+          position: absolute;
+          top: -2px;
+          width: 135px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: rgba(164, 179, 184, 0.1) !important;
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+          color: black;
         }
       */}
     })
