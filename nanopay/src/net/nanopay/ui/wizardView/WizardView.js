@@ -78,12 +78,6 @@ foam.CLASS({
           margin-bottom: 20px;
         }
 
-        ^ .pDefault {
-          font-size: 12px;
-          color: #093649;
-          line-height: 1.33;
-        }
-
         ^ .foam-u2-ActionView-unavailable {
           width: 0 !important;
           margin: 0 !important;
@@ -318,11 +312,11 @@ foam.CLASS({
       name: 'goNext',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < this.views.length - 1 ) return true; // Valid next
         return false;
       },
-      code: function() {
+      code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
+          X.stack.back();
           return;
         }
 

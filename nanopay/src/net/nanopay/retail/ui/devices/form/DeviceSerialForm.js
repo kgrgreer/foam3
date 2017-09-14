@@ -49,16 +49,17 @@ foam.CLASS({
       this
         .addClass(this.myClass())
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
+        .start('div').addClass('stepRow')
           .start('p').addClass('pDefault').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').add(this.Instructions).end()
-        .start('div').addClass('row')
+        .start('p').addClass('instructionsRow').add(this.Instructions).end()
+        .start('div')
           .start('p').addClass('inputFieldLabel').add(this.SerialLabel).end()
           .start('p')
             .addClass('pDefault')
             .addClass('inputErrorLabel')
             .add(this.slot(this.SERIAL_NUMBER.validateObj))
+          .end()
         .end()
         .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 15})
     }

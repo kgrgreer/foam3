@@ -16,6 +16,7 @@ foam.CLASS({
           height: 80px;
           background-color: #FFFFFF;
           box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
+          border: solid 1px #edf0f5;
         }
 
         ^ .deviceTypeOption.selected {
@@ -65,6 +66,10 @@ foam.CLASS({
           letter-spacing: 0.3px;
           color: #8F8F8F;
         }
+
+        ^ .descRow {
+          margin-top: 8px;
+        }
       */}
     })
   ],
@@ -105,18 +110,17 @@ foam.CLASS({
       this
         .addClass(this.myClass())
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
-        .end()
-        .start('div').addClass('row')
-          .start('p').addClass('inputFieldLabel').add(this.DeviceTypeLabel).end()
-          .start('p')
-            .addClass('pDefault')
-            .addClass('inputErrorLabel')
-            .add(this.slot(this.SELECTED_OPTION.validateObj))
+        .start('div').addClass('stepRow')
+          .start('p').add(this.Step).end()
         .end()
 
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
+        .start('p').addClass('inputFieldLabel').add(this.DeviceTypeLabel).end()
+        .start('p')
+          .addClass('inputErrorLabel')
+          .add(this.slot(this.SELECTED_OPTION.validateObj))
+        .end()
+
+        .start('div')
           .start('div').addClass('deviceTypeOption').addClass('optionSpacer')
             .addClass(self.selectedOption$.map(function(o) { return o == 1 ? 'selected' : ''; }))
             .start({class: 'foam.u2.tag.Image', data: 'images/apple.svg'}).addClass('imageCenter').end()
@@ -139,7 +143,7 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start('div').addClass('row')
+        .start('div').addClass('descRow').addClass('instructionsRow')
           .start('div').addClass('optionTitleContainer')
             .start('p').addClass('optionTitle').add('Apple').end()
           .end()
@@ -150,9 +154,7 @@ foam.CLASS({
             .start('p').addClass('optionTitle').add('Ingenico').end()
           .end()
         .end()
-        .start('div').addClass('row')
-          .start('p').addClass('pDefault').add(this.Instructions).end()
-        .end();
+        .start('p').add(this.Instructions).end()
     }
   ]
 });
