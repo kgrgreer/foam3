@@ -1,11 +1,9 @@
-package net.nanopay.interac;
+package net.nanopay.interac.service;
 
 import foam.dao.DAO;
-import net.nanopay.interac.service.InteracService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionService;
 import foam.core.ContextAwareSupport;
-
 import java.util.Random;
 import java.util.UUID;
 
@@ -49,8 +47,17 @@ public class InteracTransactionService
         throw new RuntimeException("Invalid fees");
       }
 
+      /**
+       * Generate 3 random digits to append to CAXxxx, this will be the
+       * Canadian reference number for the demo
+       * */
       String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+      transaction.setReferenceNumber(referenceNumber);
+      canadianTransactionDAO.put(transaction);
 
+      /**
+       * Generate 13 digit random number for IMPS reference number
+       * */
       Random random = new Random();
       char[] digits = new char[13];
       digits[0] = (char) (random.nextInt(9) + '1');
@@ -58,8 +65,8 @@ public class InteracTransactionService
         digits[i] = (char) (random.nextInt(10) + '0');
       }
 
-      transaction.setReferenceNumber(referenceNumber);
-      transaction.setImpsReferenceNumber(Long.parseLong(new String(digits)));
+      transaction.setReferenceNumber(new String(digits));
+      indiaTransactionDAO.put(transaction);
     }
 
     return transaction;
