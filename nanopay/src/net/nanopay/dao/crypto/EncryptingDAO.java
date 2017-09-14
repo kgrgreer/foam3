@@ -1,4 +1,4 @@
-package foam.dao.crypto;
+package net.nanopay.dao.crypto;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
@@ -182,13 +182,18 @@ public class EncryptingDAO
       System.arraycopy(nonce, 0, nonceWithCipherText, 0, nonce.length);
       System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, cipherText.length);
 
+      // fetch id, convert from long to string if necessary
+      Object id = obj.getProperty("id");
+      String objectId = ( id instanceof String ) ? (String) id : Long.toString((Long) id, 10);
+
       // store encrypted object instead of original object
       EncryptedObject encryptedObject = new EncryptedObject();
-      encryptedObject.setId((Long) obj.getProperty("id"));
+      encryptedObject.setId(objectId);
       encryptedObject.setData(Base64.getEncoder().encodeToString(nonceWithCipherText));
 
       return super.put_(x, encryptedObject);
     } catch (Exception e) {
+      // TODO: rethrow as DAOException
       e.printStackTrace();
       return null;
     }
@@ -197,7 +202,8 @@ public class EncryptingDAO
   @Override
   public FObject find_(X x, Object id) {
     try {
-      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
+      String objectId = ( id instanceof String ) ? (String) id : Long.toString((Long) id, 10);
+      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, objectId);
       byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
@@ -214,6 +220,7 @@ public class EncryptingDAO
       byte[] plainText = cipher.doFinal(cipherText);
       return this.jsonParser_.parseString(new String(plainText));
     } catch (Exception e) {
+      // TODO: rethrow as DAOException
       e.printStackTrace();
       return null;
     }

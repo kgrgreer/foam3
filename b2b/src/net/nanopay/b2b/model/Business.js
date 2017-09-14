@@ -62,12 +62,12 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.b2b.model.BusinessSector',
+      of: 'net.nanopay.model.BusinessSector',
       name: 'sectorId'
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.b2b.model.BusinessType',
+      of: 'net.nanopay.model.BusinessType',
       name: 'businessTypeId'
     },
     {

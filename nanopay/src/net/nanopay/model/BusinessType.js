@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.model',
+  package: 'net.nanopay.model',
   name: 'BusinessType',
 
   documentation: 'Proprietor details for business/businesses',

@@ -62,12 +62,12 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.admin.model.BusinessSector',
+      of: 'net.nanopay.model.BusinessSector',
       name: 'sectorId'
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.admin.model.BusinessType',
+      of: 'net.nanopay.model.BusinessType',
       name: 'businessTypeId'
     },
     {
@@ -88,26 +88,6 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.CLASS({
-  package: 'net.nanopay.admin.model',
-  name: 'BusinessSector',
-
-  documentation: 'Unknown, TODO.',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    }
-  ]
-});
-
 
 foam.CLASS({
   package: 'net.nanopay.admin.model',
@@ -136,26 +116,6 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.CLASS({
-  package: 'net.nanopay.admin.model',
-  name: 'BusinessType',
-
-  documentation: 'Proprietor details for business/businesses',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    }
-  ]
-});
-
 
 foam.CLASS({
   package: 'net.nanopay.admin.model',
@@ -585,43 +545,6 @@ foam.CLASS({
                   .end()
                   .add(obj)
                 .end()
-      }
-    }
-  ]
-});
-
-foam.CLASS({
-  refines: 'net.nanopay.model.BankAccountInfo',
-
-  tableColumns: [ 'accountName', 'transitNumber', 'bankNumber', 'accountNumber', 'status', 'run' ],
-
-  properties: [
-    // TODO: Move to nanopaycommon
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      name: 'status',
-      tableCellFormatter: function(a) {
-        var colour = ( a == 'verified' ) ? '#2cab70' : '#f33d3d';
-        this.start()
-          .add(a)
-          .style({
-            'color': colour,
-            'text-transform': 'capitalize'
-          })
-        .end();
-      }
-    }
-  ],
-
-  actions: [
-    {
-      name: 'run',
-      icon: 'images/ic-options-hover.svg',
-      code: function() {
-        foam.nanos.menu.SubMenuView.create({menu: foam.nanos.menu.Menu.create({id: 'accountSettings'})});
       }
     }
   ]
