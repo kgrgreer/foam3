@@ -201,7 +201,7 @@ foam.CLASS({
 
                     var statusColor = obj.status == 'Scheduled' ? { color: '#59a5d5'} : { color: '#2cab70'};
                     
-                    return e.E().addClass('recievable-status').start('span').style(statusCircle).end().add(obj.status).style(statusColor);
+                    return e.E().addClass().start('span').style(statusCircle).end().add(obj.status).style(statusColor);
                   }
                 }
               },

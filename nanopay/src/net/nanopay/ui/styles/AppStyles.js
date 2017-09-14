@@ -4,11 +4,91 @@ foam.CLASS({
   name: 'AppStyles',
   extends: 'foam.u2.View',
 
-  documentation: 'Generic App CSS that is used through out the Nanopay platform.',
+  documentation: 'Generic CSS that is used through out the Nanopay platform. Please Reference when styling views. Implements to class use.',
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
+
+        body {
+          font-family: 'Roboto', sans-serif;
+          font-size: 14px;
+          color: #373a3c;
+          background: #edf0f5;
+          margin: 0;
+        }
+        table {
+          border-collapse: collapse;
+          margin: auto;
+          width: 960px;
+        }
+        thead tr {
+          height: 48px;
+        }
+        thead > tr > th {
+          font-size: 14px;
+          background: #dfe8ee;
+          letter-spacing: 0.3px;
+          padding-left: 15px;
+        }
+        tbody > tr:nth-child(odd) {
+          background: #f6f9f9;
+        }
+        tbody > tr {
+          height: 60px;
+          background: white;
+        }
+        tbody > tr > td {
+          font-size: 12px;
+          letter-spacing: 0.2px;
+          padding-left: 15px;
+        }
+
+
+          *********************************************
+        ********* Enchanced FOAM CSS Rules *************
+          *********************************************
+
+
+        .foam-u2-ActionView-create{
+          background: #59aadd !important;
+          border: none !important;
+          box-shadow: none !important;
+          color: white !important;
+          font-weight: 100 !important;
+          width: 135px;
+          height: 39px;
+          position: relative;
+          top: -40;
+        }
+        .foam-u2-ActionView-back{
+          position: absolute;
+          top: -2px;
+          width: 135px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: rgba(164, 179, 184, 0.1) !important;
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+          color: black;
+        }
+        .foam-u2-view-ReciprocalSearch-filter {
+          margin-bottom: 8px;
+        }
+        .foam-u2-search-TextSearchView input {
+          width: 340px;
+          font-size: 10pt;
+          padding: 3px;
+        }
+        .foam-u2-search-GroupBySearchView select {
+          font-family: monospace;
+          font-size: 10pt;
+          width: 340px;
+        }
+
+          ***********************************
+        ********* Custom CSS Rules *************
+          ***********************************
+
         .input-box{
           width: 90%;
           height: 60px;
@@ -104,27 +184,6 @@ foam.CLASS({
           color: white;
           font-weight: 16px;
           display: inline-block;
-        }
-        .foam-u2-ActionView-create{
-          background: #59aadd !important;
-          border: none !important;
-          box-shadow: none !important;
-          color: white !important;
-          font-weight: 100 !important;
-          width: 135px;
-          height: 39px;
-          position: relative;
-          top: -40;
-        }
-        .foam-u2-ActionView-back{
-          position: absolute;
-          top: -2px;
-          width: 135px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1) !important;
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          color: black;
         }
       */}
     })
