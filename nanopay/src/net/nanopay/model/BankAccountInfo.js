@@ -5,6 +5,8 @@ foam.CLASS({
 
   documentation: 'Bank account information.',
 
+  tableColumns: [ 'accountName', 'transitNumber', 'bankNumber', 'accountNumber', 'status', 'run' ],
+
   properties: [
     {
       class: 'String',
@@ -31,7 +33,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status'
+      name: 'status',
+      tableCellFormatter: function(a) {
+        var colour = ( a == 'verified' ) ? '#2cab70' : '#f33d3d';
+        this.start()
+          .add(a)
+          .style({
+            'color': colour,
+            'text-transform': 'capitalize'
+          })
+        .end();
+      }
     },
     {
       class: 'String',
@@ -40,6 +52,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'currencyCode'
+    }
+  ],
+
+  actions: [
+    {
+      name: 'run',
+      icon: 'images/ic-options-hover.svg',
+      code: function() {
+        foam.nanos.menu.SubMenuView.create({menu: foam.nanos.menu.Menu.create({id: 'accountSettings'})});
+      }
     }
   ]
 });

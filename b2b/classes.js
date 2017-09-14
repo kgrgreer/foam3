@@ -1,9 +1,10 @@
+require('../nanopay/src/net/nanopay/model/BusinessSector');
+require('../nanopay/src/net/nanopay/model/BusinessType');
+
 var classes = [
   'net.nanopay.b2b.model.Invoice',
   'net.nanopay.b2b.xero.TokenStorage',
   'net.nanopay.b2b.dao.Storage',
-  'net.nanopay.b2b.model.BusinessSector',
-  'net.nanopay.b2b.model.BusinessType',
   'net.nanopay.b2b.model.Document',
   'net.nanopay.b2b.model.Payment',
   'net.nanopay.b2b.model.PendingPayment',

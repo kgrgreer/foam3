@@ -97,42 +97,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.retail.model',
-  name: 'BusinessType',
-
-  documentation: 'Proprietor details for business/businesses',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.retail.model',
-  name: 'BusinessSector',
-
-  documentation: 'What sector the business is involved with',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.retail.model',
   name: 'Device',
   ids: ['serialNumber'],
 
