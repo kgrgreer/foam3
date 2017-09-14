@@ -182,9 +182,14 @@ public class EncryptingDAO
       System.arraycopy(nonce, 0, nonceWithCipherText, 0, nonce.length);
       System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, cipherText.length);
 
+      // fetch id, convert from long to string if necessary
+      String id = ( obj.getProperty("id") instanceof String ) ?
+          (String) obj.getProperty("id") :
+          Long.toString((Long) obj.getProperty("id"), 10);
+
       // store encrypted object instead of original object
       EncryptedObject encryptedObject = new EncryptedObject();
-      encryptedObject.setId((Long) obj.getProperty("id"));
+      encryptedObject.setId(id);
       encryptedObject.setData(Base64.getEncoder().encodeToString(nonceWithCipherText));
 
       return super.put_(x, encryptedObject);
