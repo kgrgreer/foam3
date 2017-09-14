@@ -58,7 +58,7 @@ foam.CLASS({
         .start('div')
           .start('div').addClass('coloredColumn').end()
           .start('p').addClass('title').add(this.title$).end()
-          .start('p').addClass('content').add(this.contents$).end()
+          .start('p').addClass('content').add(this.content$).end()
         .end()
     }
   ]
