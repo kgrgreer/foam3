@@ -22,6 +22,8 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
           box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
+          display: inline-block;
+          vertical-align: top;
         }
         ^ .greenBar {
           width: 6px;
@@ -32,6 +34,10 @@ foam.CLASS({
         ^ .balanceBoxTitle {
           color: #093649;
           font-size: 12px;
+          margin-left: 44px;
+          padding-top: 14px;
+          line-height: 1.33;
+          letter-spacing: 0.2px;
         }
         ^ .balance {
           font-size: 30px;
@@ -40,12 +46,18 @@ foam.CLASS({
           letter-spacing: 0.5px;
           text-align: left;
           color: #093649;
+          margin-top: 27px;
+          margin-left: 44px;
+        }
+        ^ .inlineDiv {
+          display: inline-block;
+          width: 135px;
         }
         ^ .foam-u2-ActionView-topUpBtn {
           width: 135px;
           height: 50px;
           border-radius: 2px;
-          background-color: #59a5d5;
+          background: #59a5d5;
           color: white;
           margin: 0;
           padding: 0;
@@ -54,12 +66,16 @@ foam.CLASS({
           cursor: pointer;
           line-height: 50px;
           font-size: 14px;
+          box-shadow: none;
+        }
+        ^ .foam-u2-ActionView-topUpBtn:hover {
+          background: #3783b3;
         }
         ^ .foam-u2-ActionView-cashOutBtn {
           width: 135px;
           height: 50px;
           border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1);
+          background: rgba(164, 179, 184, 0.1);
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           color: #093649;
           margin: 0;
@@ -69,6 +85,7 @@ foam.CLASS({
           cursor: pointer;
           line-height: 50px;
           font-size: 14px;
+          margin-bottom: 2px;
         }
       */}
     })
@@ -84,7 +101,12 @@ foam.CLASS({
         .start()
           .start('div').addClass('balanceBox')
             .start('div').addClass('greenBar').end()
-            .start('h5').add(this.balanceTitle).end()
+            .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
+            .start().add('$2,632.85').addClass('balance').end()
+          .end()
+          .start('div').addClass('inlineDiv')
+            .add(this.TOP_UP_BTN)
+            .add(this.CASH_OUT_BTN)
           .end()
         .end();
     }
