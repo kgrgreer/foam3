@@ -35,14 +35,19 @@ public class EncryptingDAO
     }
   }
 
-  // TODO: get alias from somewhere secure
+  // TODO: think of a better alias
   protected static final String ALIAS = "keypair";
   protected static final int AES_KEY_SIZE = 256;
   protected static final int GCM_NONCE_LENGTH = 12;
   protected static final int GCM_TAG_LENGTH = 16;
+
   private static SecureRandom random;
-//  =
-//      SecureRandom.getInstance("SHA1PRNG", "BC");
+  private static SecureRandom getSecureRandom() throws NoSuchProviderException, NoSuchAlgorithmException {
+    if ( random == null ) {
+      random = SecureRandom.getInstance("SHA1PRNG", "BC");
+    }
+    return random;
+  }
 
   protected File file_;
   protected SecretKey key_;
@@ -126,7 +131,7 @@ public class EncryptingDAO
   protected void createSecretKey() throws NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException, IOException, CertificateException {
     // generate AES key using BC as provider
     KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
-    keygen.init(AES_KEY_SIZE, random);
+    keygen.init(AES_KEY_SIZE, getSecureRandom());
     key_ = keygen.generateKey();
 
     // set secret key entry in keystore
@@ -165,7 +170,7 @@ public class EncryptingDAO
     try {
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
-      random.nextBytes(nonce);
+      getSecureRandom().nextBytes(nonce);
       GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
       cipher.init(Cipher.ENCRYPT_MODE, key_, spec);
 
