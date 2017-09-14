@@ -30,10 +30,6 @@ foam.CLASS({
       class: 'Double',
       name: 'password',
       required: true
-    },
-    {
-      class: 'Boolean',
-      name: 'resetPassword'
     }
   ]
 });
