@@ -17,9 +17,8 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'Boolean',
-      name: 'active',
-      required: true
+      class: 'String',
+      name: 'status'
     },
     {
       class: 'String',
@@ -31,22 +30,6 @@ foam.CLASS({
       class: 'Double',
       name: 'password',
       required: true
-    },
-    {
-      class: 'String',
-      name: 'secureAssetStore'
-    },
-    {
-      class: 'String',
-      name: 'certificateId'
-    },
-    {
-      class: 'Boolean',
-      name: 'resetPassword'
-    },
-    {
-      class: 'String',
-      name: 'status'
     }
   ]
 });

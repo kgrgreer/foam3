@@ -23,7 +23,6 @@ foam.CLASS({
           daoType: 'MDAO',
           of: this.Device,
           cache: true,
-          seqNo: true,
           testData: [
             {
               name: 'Ingenico 1', type: 'Terminal', serialNumber: '7D0F5AP3VU529LA', status: 'Active'
