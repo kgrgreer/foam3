@@ -13,6 +13,33 @@ foam.CLASS({
       ^ p {
         margin: 0;
       }
+
+      ^ input {
+        width: 220px;
+        height: 40px;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        border: solid 1px rgba(164, 179, 184, 0.5);
+        padding-left: 15px;
+        padding-right: 15px;
+        outline: none;
+      }
+
+      ^ input:focus {
+        border: solid 1px #59a5d5;
+      }
+
+      ^ .inputFieldLabel {
+        display: inline-block;
+        margin-right: 20px;
+        vertical-align: top;
+      }
+
+      ^ .inputErrorLabel {
+        display: inline-block;
+        color: red !important;
+        vertical-align: top;
+      }
     */}})
   ],
 

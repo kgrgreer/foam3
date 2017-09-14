@@ -54,10 +54,8 @@ foam.CLASS({
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions).end()
         .start('div').addClass('row')
           .start('p').addClass('inputFieldLabel').add(this.NameLabel).end()
-          .start('p')
-            .addClass('pDefault')
-            .addClass('inputErrorLabel')
-            .add(this.slot(this.DEVICE_NAME.validateObj))
+          .start('p').addClass('pDefault').addClass('inputErrorLabel').end()
+          .add(this.slot(this.DEVICE_NAME.validateObj))
         .end()
         .tag(this.DEVICE_NAME, {onKey: true})
     }
