@@ -5,9 +5,11 @@ foam.CLASS({
 
   documentation: 'View for displaying all Top Up and Cash Out Transactions as well as account Balance',
 
-  requires: [],
+  requires: [ 'net.nanopay.tx.model.Transaction'],
 
-  imports: [],
+  imports: [
+    'transactionDAO'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -66,6 +68,7 @@ foam.CLASS({
           cursor: pointer;
           line-height: 50px;
           font-size: 14px;
+          font-weight: normal;
           box-shadow: none;
         }
         ^ .foam-u2-ActionView-topUpBtn:hover {
@@ -85,7 +88,76 @@ foam.CLASS({
           cursor: pointer;
           line-height: 50px;
           font-size: 14px;
+          font-weight: normal;
           margin-bottom: 2px;
+        }
+        ^ .recentActivities {
+          opacity: 0.6;
+          font-size: 20px;
+          font-weight: 300;
+          line-height: 1;
+          letter-spacing: 0.3px;
+          text-align: left;
+          color: #093649;
+          margin-top: 30px;
+        }
+        ^ table {
+          border-collapse: collapse;
+          margin: auto;
+          width: 962px;
+        }
+        ^ thead > tr > th {
+          font-family: 'Roboto';
+          font-size: 14px;
+          background-color: rgba(110, 174, 195, 0.2);
+          color: #093649;
+          line-height: 1.14;
+          letter-spacing: 0.3px;
+          border-spacing: 0;
+          text-align: left;
+          padding-left: 15px;
+          height: 40px;
+        }
+        ^ tbody > tr > th > td {
+          font-size: 12px;
+          letter-spacing: 0.2px;
+          text-align: left;
+          color: #093649;
+          padding-left: 15px;
+          height: 60px;
+        }
+        ^ .foam-u2-view-TableView th {
+          font-family: 'Roboto';
+          padding-left: 15px;
+          font-size: 14px;
+          line-height: 1;
+          letter-spacing: 0.4px;
+          color: #093649;
+        }
+        ^ .foam-u2-view-TableView td {
+          font-family: Roboto;
+          font-size: 12px;
+          line-height: 1.33;
+          letter-spacing: 0.2px;
+          padding-left: 15px;
+          font-size: 12px;
+          color: #093649;
+        }
+        ^ tbody > tr {
+          height: 60px;
+          background: white;
+        }
+        ^ tbody > tr:nth-child(odd) {
+          background: #f6f9f9;
+        }
+        ^ .foam-u2-ActionView-create {
+          visibility: hidden;
+        }
+        ^ .foam-u2-view-TableView-noselect {
+          cursor: pointer;
+        }
+        ^ .foam-u2-md-OverlayDropdown {
+          width: 175px;
         }
       */}
     })
@@ -108,12 +180,31 @@ foam.CLASS({
             .add(this.TOP_UP_BTN)
             .add(this.CASH_OUT_BTN)
           .end()
+          .start().add(this.recentActivities).addClass('recentActivities').end()
+          .start()
+            .tag({
+              class: 'foam.u2.ListCreateController',
+              dao: this.transactionDAO,
+              factory: function() { return self.Transaction.create(); },
+              detailView: {
+                class: 'foam.u2.DetailView',
+                properties: [
+                  this.Transaction.DATE,
+                  this.Transaction.ID,
+                  this.Transaction.AMOUNT,
+                  this.Transaction.TYPE
+                ]
+              },
+              summaryView: this.CicoTableView.create()
+            })
+          .end()
         .end();
     }
   ],
 
   messages: [
-    { name: 'balanceTitle', message: 'Balance' }
+    { name: 'balanceTitle', message: 'Balance' },
+    { name: 'recentActivities', message: 'Recent Activities'}
   ],
 
   actions: [
@@ -134,5 +225,34 @@ foam.CLASS({
 
   ],
 
-  classes: []
+  classes: [
+    {
+      name: 'CicoTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'net.nanopay.tx.model.Transaction' ],
+
+      imports: [ 'transactionDAO' ],
+
+      properties: [
+        'selection',
+        { name: 'data', factory: function() { return this.transactionDAO; } }
+      ],
+
+      methods: [
+        function initE() {
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              selection$: this.selection$,
+              editColumnsEnabled: true,
+              data: this.data,
+              columns: [
+                'date', 'id', 'amount', 'type'
+              ]
+            }).addClass(this.myClass('table')).end();
+        }
+      ]
+    }
+  ]
 })
