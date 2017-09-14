@@ -1,4 +1,4 @@
-package foam.dao.crypto;
+package net.nanopay.dao.crypto;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
