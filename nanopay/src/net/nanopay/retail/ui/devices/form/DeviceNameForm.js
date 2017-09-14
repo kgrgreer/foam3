@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceNameForm',
-  extends: 'net.nanopay.ui.wizardView.WizardSubView',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form for just the device name.',
 

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ui.wizardView',
+  package: 'net.nanopay.ui.wizard',
   name: 'WizardSubView',
   extends: 'foam.u2.Controller',
   abstract: true,
