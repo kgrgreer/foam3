@@ -17,7 +17,9 @@ public class InteracTransactionService
 
   @Override
   public void start() {
-    service = (TransactionService) getX().get("transaction");
+    service                 = (TransactionService) getX().get("transaction");
+    canadianTransactionDAO  = (DAO) getX().get("canadaTransactionDAO");
+    indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
   }
 
   @Override
@@ -47,26 +49,33 @@ public class InteracTransactionService
         throw new RuntimeException("Invalid fees");
       }
 
-      /**
-       * Generate 3 random digits to append to CAXxxx, this will be the
-       * Canadian reference number for the demo
-       * */
-      String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
-      transaction.setReferenceNumber(referenceNumber);
-      canadianTransactionDAO.put(transaction);
+      try {
+        Transaction completedTransaction = service.transferValue(transaction);
 
-      /**
-       * Generate 13 digit random number for IMPS reference number
-       * */
-      Random random = new Random();
-      char[] digits = new char[13];
-      digits[0] = (char) (random.nextInt(9) + '1');
-      for ( int i = 1; i < 13; i++ ) {
-        digits[i] = (char) (random.nextInt(10) + '0');
+        /**
+         * Generate 3 random digits to append to CAXxxx, this will be the
+         * Canadian reference number for the demo
+         * */
+        String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+        completedTransaction.setReferenceNumber(referenceNumber);
+        canadianTransactionDAO.put(completedTransaction);
+
+        /**
+         * Generate 13 digit random number for IMPS reference number
+         * */
+        Random random = new Random();
+        char[] digits = new char[13];
+        digits[0] = (char) (random.nextInt(9) + '1');
+        for ( int i = 1; i < 13; i++ ) {
+          digits[i] = (char) (random.nextInt(10) + '0');
+        }
+
+        completedTransaction.setReferenceNumber(new String(digits));
+        indiaTransactionDAO.put(completedTransaction);
+
+      } catch (RuntimeException e) {
+        throw e;
       }
-
-      transaction.setReferenceNumber(new String(digits));
-      indiaTransactionDAO.put(transaction);
     }
 
     return transaction;
