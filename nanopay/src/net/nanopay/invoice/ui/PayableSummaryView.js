@@ -11,10 +11,13 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.b2b.model.Invoice'
+    'net.nanopay.invoice.model.Invoice'
   ],
 
-  imports: [ 'expensesDAO', 'currencyFormatter' ],
+  imports: [ 
+    'invoiceDAO', 
+    'formatCurrency' 
+  ],
 
   exports: [ 'as data' ],
 
@@ -39,8 +42,8 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'dao'
-      // factory: function() { return this.expensesDAO; }
+      name: 'dao',
+      factory: function() { return this.invoiceDAO; }
     },
     {
       class: 'Int',
@@ -94,21 +97,21 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'formattedPayableAmount'
-      // expression: function(payableAmount) { return this.currencyFormatter.format(payableAmount); }
+      name: 'formattedPayableAmount',
+      expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
     }
   ],
 
   methods: [ 
     function initE() {
-      // this.dao.on.sub(this.onDAOUpdate);
-      // this.onDAOUpdate();
+      this.dao.on.sub(this.onDAOUpdate);
+      this.onDAOUpdate();
 
       this
         .addClass(this.myClass())
-        .start().addClass('card-title')
+        .start().addClass('blue-card-title')
           .add(this.title)
-          .start('h4').add('$', this.formattedPayableAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end() 
+          .start().addClass('thin-align').add(this.formattedPayableAmount$).end() 
         .end()
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })

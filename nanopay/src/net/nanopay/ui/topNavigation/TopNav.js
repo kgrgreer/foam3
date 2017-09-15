@@ -24,7 +24,6 @@ foam.CLASS({
         .menuBar > div > ul {
           padding-left: 0;
           font-weight: 100;
-          letter-spacing: 0.2px;
           color: #ffffff;
         }
         .menuBar > div > ul > li{

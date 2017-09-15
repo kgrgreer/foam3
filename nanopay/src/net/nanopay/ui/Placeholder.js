@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.shared',
+  package: 'net.nanopay.ui',
   name: 'Placeholder',
   extends: 'foam.u2.View',
 
-  documentation: 'Placeholder for expenses/sales',
+  documentation: "Placeholder with image & text. Use to populate an empty area if data doesn't exist. ",
 
   requires: [
     'foam.dao.FnSink',

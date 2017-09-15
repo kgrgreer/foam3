@@ -22,8 +22,19 @@ foam.CLASS({
       name: 'invoiceDAO',
       factory: function() {
         return this.createDAO({
-            of: 'net.nanopay.invoice.model.Invoice',
-            seqNo: true
+            of: this.Invoice,
+            seqNo: true,
+            testData: [
+              {
+                status: 'Paid',
+                toUserName: 'john',
+                fromUserName: 'ted',
+                toUserId: 1,
+                fromUserId: 2,
+                amount: 300230,
+                invoiceNumber: '403302'
+              }
+            ]
           })
           .addPropertyIndex(this.Invoice.STATUS)
           .addPropertyIndex(this.Invoice.TO_USER_NAME)
