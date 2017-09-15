@@ -5,7 +5,12 @@ foam.CLASS({
 
   documentation: 'Setup view with serial number',
 
+  requires: [
+    'net.nanopay.retail.model.DeviceStatus'
+  ],
+
   imports: [
+    'device',
     'stack',
     'deviceDAO'
   ],
@@ -101,8 +106,29 @@ foam.CLASS({
 
   listeners: [
     function onNextClicked (e) {
-      this.deviceDAO.find(this.serialNumber).then(function (device) {
+      var self = this;
+
+      // look up device, set to active and save
+      this.deviceDAO.find(this.serialNumber).then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device not found');
+        }
+
+        result.status = self.DeviceStatus.ACTIVE;
+        return self.deviceDAO.put(result);
       })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device activation failed');
+        }
+
+        self.device.copyFrom(result);
+        self.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
+      })
+      .catch(function (err) {
+        // TODO: handle error on front end
+        console.log(err);
+      });
     }
   ]
 });

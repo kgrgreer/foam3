@@ -7,7 +7,8 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.client.Client',
-    'net.nanopay.tx.client.Client'
+    'net.nanopay.tx.client.Client',
+    'net.nanopay.retail.client.Client'
   ],
 
   requires: [
@@ -17,6 +18,7 @@ foam.CLASS({
 
   exports: [
     'user',
+    'device',
     'stack',
     'toolbar'
   ],
@@ -94,6 +96,12 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'user',
       factory: function () { return this.User.create(); }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.retail.model.Device',
+      name: 'device',
+      factory: function () { return this.Device.create(); }
     },
     {
       name: 'stack',
