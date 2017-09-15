@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'Controller',
   extends: 'foam.u2.Element',
 
-  documentation: 'Top-level Ingenico application controller.',
+  documentation: 'Top-level Merchant application controller.',
   
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   implements: [
