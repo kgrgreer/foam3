@@ -126,9 +126,6 @@ foam.CLASS({
 
       if ( localStorage.serialNumber ) {
         this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
-          console.log( ! result );
-          console.log(result.status !== self.DeviceStatus.ACTIVE );
-
           if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
             self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
           } else {
