@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'NotificationActionCard',
   extends: 'foam.u2.View',
+
   abstract: true,
 
   documentation: `Card that would display an alert that would prompt the user to take an action.
@@ -109,23 +110,23 @@ foam.CLASS({
     {
       class: 'String',
       name: 'title',
-      factory: function() { return 'How to use me.'; }
+      value: 'How to use me.'
     },
     {
       class: 'String',
       name: 'subtitle',
-      factory: function() { return 'Subclass this model, and set \'title\' and \'subtitle\'. Lastly, override \'actionButton\' in actions.'; }
+      value: "Subclass this model, and set 'title' and 'subtitle'. Lastly, override 'actionButton' in actions."
     },
     {
       class: 'String',
-      name: 'actionTitle',
-      factory: function() { return ''; }
-    },
+      name: 'actionTitle'
+    }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+
       this
         .addClass(this.myClass())
         .start('div').addClass('container')
