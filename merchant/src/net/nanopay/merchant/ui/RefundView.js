@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'RefundView',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   documentation: 'Refund confirmation popup',
 
@@ -86,6 +86,10 @@ foam.CLASS({
         }
       */}
     })
+  ],
+
+  properties: [
+    ['header', true]
   ],
 
   methods: [

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'HomeView',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   axioms: [
     foam.u2.CSS.create({
@@ -42,6 +42,7 @@ foam.CLASS({
   ],
 
   properties: [
+    ['header', true],
     { name: 'amount', class: 'String', value: '$0.00'}
   ],
 

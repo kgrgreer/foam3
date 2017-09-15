@@ -7,12 +7,14 @@
     <script language="javascript" src="../../../../../nanopay/src/net/nanopay/files.js"></script>
     <script language="javascript" src="../../../../../nanopay/src/net/nanopay/retail/files.js"></script>
 
+    <script language="javascript" src="ui/Controller.js"></script>
     <script language="javascript" src="ui/HomeView.js"></script>
     <script language="javascript" src="ui/QRCodeView.js"></script>
     <script language="javascript" src="ui/SuccessView.js"></script>
     <script language="javascript" src="ui/ErrorView.js"></script>
     <script language="javascript" src="ui/RefundView.js"></script>
-    <script language="javascript" src="ui/Controller.js"></script>
+    <script language="javascript" src="ui/ToolbarView.js"></script>
+
     <script language="javascript" src="ui/setup/SetupView.js"></script>
     <script language="javascript" src="ui/setup/SetupSuccessView.js"></script>
     <script language="javascript" src="ui/setup/SetupErrorView.js"></script>
@@ -30,11 +32,11 @@
     <link rel="stylesheet" href="fonts/roboto/fonts.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="libs/material-components-web/material-components-web.css" />
+    <script language="javascript" src="libs/material-components-web/material-components-web.js"></script>
   </head>
 
   <body class="mdc-typography">
-    <script language="javascript" src="libs/material-components-web/material-components-web.js"></script>
-    <foam class="net.nanopay.merchant.ui.Controller"></foam>
-    <script language="javascript" src="mdc.js"></script>
+    <foam id="ctrl" class="net.nanopay.merchant.ui.Controller"></foam>
+    <!--<script language="javascript" src="mdc.js"></script>-->
   </body>
 </html>

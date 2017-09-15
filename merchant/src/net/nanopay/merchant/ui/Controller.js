@@ -20,7 +20,8 @@ foam.CLASS({
     'user',
     'device',
     'stack',
-    'toolbar'
+    'toolbar',
+    'showHeader'
   ],
 
   axioms: [
@@ -92,6 +93,11 @@ foam.CLASS({
     'drawer',
     'drawerList',
     {
+      class: 'Boolean',
+      name: 'showHeader',
+      value: true
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'user',
@@ -127,7 +133,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('mdc-toolbar mdc-toolbar--fixed')
+        .start('div').addClass('mdc-toolbar mdc-toolbar--fixed').show(this.showHeader$)
           .start('div').addClass('mdc-toolbar__row')
             .start('section').addClass('mdc-toolbar__section mdc-toolbar__section--align-start')
               .start('button').addClass('merchant-menu material-icons mdc-toolbar__icon--menu')

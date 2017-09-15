@@ -1,11 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'ErrorView',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'toolbar'
-  ],
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   axioms: [
     foam.u2.CSS.create({
@@ -76,6 +72,7 @@ foam.CLASS({
   ],
 
   properties: [
+    ['header', false],
     { name: 'refund', class: 'Boolean' }
   ],
 
@@ -106,11 +103,7 @@ foam.CLASS({
               .add(user.firstName + ' ' + user.lastName)
             .end()
           .end()
-        .end()
-
-      this.onload.sub(function () {
-        this.toolbar.classList.add('hidden');
-      });
+        .end();
     }
   ]
 })
