@@ -126,8 +126,7 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.ingenico.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        // TODO: handle error on front end
-        console.log(err);
+        self.stack.push({ class: 'net.nanopay.ingenico.ui.setup.SetupErrorView' });
       });
     }
   ]
