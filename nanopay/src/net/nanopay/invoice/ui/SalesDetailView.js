@@ -5,15 +5,13 @@ foam.CLASS({
 
   requires: [ 
     'net.nanopay.invoice.model.Invoice', 
-    // 'net.nanopay.b2b.HistoryInvoiceItemView', 
     'foam.u2.dialog.Popup' 
   ],
 
   imports: [ 
     'stack', 
     'hidePayableSummary', 
-    'salesDAO', 
-    'historyDAO',
+    'invoiceDAO', 
     'ctrl'
   ],
 
@@ -33,10 +31,6 @@ foam.CLASS({
           line-height: 1;
           color: #093649;
           padding-top: 70px;
-        }
-        ^ > .foam-u2-history-HistoryView{
-          width: 920px;
-          margin-top: 20px;
         }
         ^ .foam-u2-ActionView-mainAction{
           right: 250px !important;
@@ -64,19 +58,14 @@ foam.CLASS({
             subMenu2: 'Void' 
           }
         })
-        .start('h5').add('Bill from ', this.data.fromBusinessName).end()
+        .start('h5').add('Bill from ', this.data.fromUserName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
-        .tag({ 
-          class: 'foam.u2.history.HistoryView',
-          data: this.historyDAO,
-          historyItemView: this.HistoryInvoiceItemView.create()
-        });
     }
   ],
 
   listeners: [
     function recordPaymentModal(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.RecordPaymentModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal'}));
     }
   ]
   

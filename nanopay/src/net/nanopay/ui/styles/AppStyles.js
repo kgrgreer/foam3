@@ -57,7 +57,7 @@ foam.CLASS({
         }
         .foam-u2-ActionView-back{
           position: absolute;
-          top: -2px;
+          top: 110px;
           width: 135px;
           height: 40px;
           border-radius: 2px;
@@ -88,7 +88,6 @@ foam.CLASS({
           margin: 0px 5px 0px 0px;
           font-size: 14px;
           padding: 0;
-          margin: 0;
         }
         .foam-u2-ActionView-deleteDraft {
           background-color: rgba(164, 179, 184, 0.1);
