@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Setup view with serial number',
 
   imports: [
-    'stack'
+    'stack',
+    'deviceDAO'
   ],
 
   axioms: [
@@ -57,10 +58,10 @@ foam.CLASS({
     {
       name: 'serialNumber',
       factory: function () {
+        // remove hyphens, use 16 characters, convert to upper case
         return foam.uuid.randomGUID()
           .replace(/-/g, '')
           .substring(0, 16)
-          .replace(/(.{4})/g, '$1 ')
           .toUpperCase()
           .trim();
       }
@@ -83,7 +84,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass('serial-number-label')
-          .add(this.serialNumber)
+          .add(this.serialNumber.replace(/(.{4})/g, '$1 '))
         .end()
         .start()
           .addClass('setup-instructions')
@@ -100,7 +101,8 @@ foam.CLASS({
 
   listeners: [
     function onNextClicked (e) {
-      this.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
+      this.deviceDAO.find(this.serialNumber).then(function (device) {
+      })
     }
   ]
 });
