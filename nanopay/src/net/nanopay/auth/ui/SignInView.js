@@ -77,7 +77,7 @@ foam.CLASS({
             .add("Sign up.")
             .on('click', this.signUp)
           .end()
-          .start('p').style({ 'margin-left': '182px' }).addClass('link')
+          .start('p').style({ 'margin-left': '150px' }).addClass('link')
             .add("Forgot Password?")
             .on('click', function(){ self.stack.push({ class: 'net.nanopay.b2b.ui.forgotPassword.EmailView' })})
           .end()

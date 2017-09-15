@@ -78,7 +78,41 @@ foam.CLASS({
           font-size: 10pt;
           width: 340px;
         }
-
+        .foam-u2-ActionView {
+          width: 135px;
+          height: 40px;
+          border-radius: 2px;
+          text-align: center;
+          display: inline-block;
+          cursor: pointer;
+          margin: 0px 5px 0px 0px;
+          font-size: 14px;
+          padding: 0;
+          margin: 0;
+        }
+        .foam-u2-ActionView-deleteDraft {
+          background-color: rgba(164, 179, 184, 0.1);
+          border: solid 1px #8C92AC;
+          color: #093649;
+          font-size: 14px;
+        }
+        .foam-u2-ActionView-saveAndPreview {
+          background-color: #59AADD;
+          color: white;
+          font-size: 14px;
+          border: 1px solid #59AADD;
+        }
+        .foam-u2-ActionView-saveAsDraft {
+          background-color: #EDF0F5;
+          border: solid 1px #59A5D5;
+          color: #59A5D5;
+        }
+        .foam-u2-ActionView-saveAsDraft {
+          background-color: #EDF0F5;
+          border: solid 1px #59A5D5;
+          color: #59A5D5;
+        }
+        
         
         .input-box{
           width: 90%;
@@ -88,6 +122,35 @@ foam.CLASS({
           font-weight: 300;
           color: #093649;
           text-align: left;
+        }
+         .half-input-box {
+           width: 50%;
+           height: 60px;
+           border: solid 1px rgba(164, 179, 184, 0.5);
+           padding-left: 5px;
+           padding-right: 5px;
+           display: block;
+           margin-top: 8px;
+           outline: none;
+         }
+         .half-small-input-box {
+           width: 50%;
+           height: 40px;
+           border: solid 1px rgba(164, 179, 184, 0.5);
+           padding-left: 5px;
+           padding-right: 5px;
+           display: block;
+           margin-top: 8px;
+           outline: none;
+         }
+        .small-input-box{
+          font-size: 12px;
+          padding: 0px 5px;
+          width: 215px;
+          height: 40px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          outline: none;
         }
         .blue-button{
           width: 135px;

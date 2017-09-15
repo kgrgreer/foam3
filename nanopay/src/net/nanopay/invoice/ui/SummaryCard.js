@@ -97,7 +97,6 @@ foam.CLASS({
           left: 20;
         }
         ^ .amount{
-          font-size: 14px;
           line-height: 0.86;
           text-align: left;
           color: #093649;
