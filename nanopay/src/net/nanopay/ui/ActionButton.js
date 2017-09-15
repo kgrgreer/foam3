@@ -9,36 +9,36 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-            font-family: Roboto;
-            width: 75px;
-            height: 40px;
-            border-radius: 2px;
-            background-color: rgba(164, 179, 184, 0.1);
-            box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-            display: inline-block;
-            cursor: pointer;
-            margin-right: 5px;
-            padding-right: 3px;
+          font-family: Roboto;
+          width: 75px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+          display: inline-block;
+          cursor: pointer;
+          margin-right: 5px;
+          padding-right: 3px;
         }
         ^ .button-image {
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 5px;
-            width: 20px;
-            height: 20px;
-            display: inline-block;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          padding-left: 5px;
+          width: 20px;
+          height: 20px;
+          display: inline-block;
         }
         ^ .button-text {
-            width: 31px;
-            display: inline-block;
-            font-family: 'Roboto';
-            font-size: 11px;
-            color: #093649;
-            padding-left: 9px;
-            font-weight: 300;
-            line-height: 20px;
-            position: relative;
-            top: -16px;
+          width: 31px;
+          display: inline-block;
+          font-family: 'Roboto';
+          font-size: 11px;
+          color: #093649;
+          padding-left: 9px;
+          font-weight: 300;
+          line-height: 20px;
+          position: relative;
+          top: -16px;
         }
       */}
     })

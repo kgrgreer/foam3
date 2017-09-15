@@ -197,7 +197,7 @@ foam.CLASS({
       name: 'emailModal',
       icon: 'images/ic-email.png',
       code: function(X){
-        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.EmailModal'}));
+        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.EmailModal'}));
       }
     },
     {
@@ -207,7 +207,7 @@ foam.CLASS({
         X.ctrl.add(
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
-              class: 'net.nanopay.b2b.ui.modals.SingleResolutionModal', 
+              class: 'net.nanopay.invoice.ui.modal.SingleResolutionModal', 
               invoice: X.data.invoice,
               title: X.data.title
             })
