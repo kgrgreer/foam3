@@ -11,13 +11,13 @@ foam.CLASS({
 
   imports: [ 
     'stack', 
-    'hideReceivableSummary', 
+    'hidePayableSummary', 
     'salesDAO', 
     'historyDAO',
     'ctrl'
   ],
 
-  exports: [ 'hideReceivableSummary' ],
+  exports: [ 'hidePayableSummary' ],
   
   implements: [
     'foam.mlang.Expressions', 

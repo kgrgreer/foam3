@@ -107,11 +107,6 @@ foam.CLASS({
           border: solid 1px #59A5D5;
           color: #59A5D5;
         }
-        .foam-u2-ActionView-saveAsDraft {
-          background-color: #EDF0F5;
-          border: solid 1px #59A5D5;
-          color: #59A5D5;
-        }
         
         
         .input-box{

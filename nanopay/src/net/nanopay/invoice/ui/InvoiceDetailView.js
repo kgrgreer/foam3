@@ -5,7 +5,7 @@ foam.CLASS({
 
   imports: [ 
     'stack', 
-    'hideSaleSummary' 
+    'hideReceivableSummary' 
   ],
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
@@ -61,7 +61,8 @@ foam.CLASS({
   methods: [
       function initE() {
         this.SUPER();
-        this.hideSaleSummary = true;
+        this.hideReceivableSummary = true;
+
         this
           .addClass(this.myClass())
           .start().addClass('button-row')
