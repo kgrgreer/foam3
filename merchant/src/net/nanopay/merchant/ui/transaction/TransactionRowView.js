@@ -1,10 +1,10 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui.transaction',
+  package: 'net.nanopay.merchant.ui.transaction',
   name: 'TransactionRowView',
   extends: 'foam.u2.View',
 
   requires: [
-    'net.nanopay.ingenico.ui.transaction.TransactionDetailView'
+    'net.nanopay.merchant.ui.transaction.TransactionDetailView'
   ],
 
   imports: [

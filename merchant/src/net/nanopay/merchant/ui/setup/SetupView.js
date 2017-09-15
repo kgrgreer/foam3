@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui.setup',
+  package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupView',
   extends: 'foam.u2.View',
 
@@ -123,10 +123,10 @@ foam.CLASS({
         }
 
         self.device.copyFrom(result);
-        self.stack.push({ class: 'net.nanopay.ingenico.ui.setup.SetupSuccessView' });
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        self.stack.push({ class: 'net.nanopay.ingenico.ui.setup.SetupErrorView' });
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
       });
     }
   ]

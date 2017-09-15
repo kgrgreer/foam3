@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui',
-  name: 'ErrorView',
+  package: 'net.nanopay.merchant.ui',
+  name: 'SuccessView',
   extends: 'foam.u2.View',
 
   imports: [
@@ -11,47 +11,47 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          background-color: #f55a5a;
-          height: 480px;
           width: 320px;
+          height: 480px;
+          background-color: #35c38d;
           margin-top: -56px;
         }
-        ^ .error-view-div {
+        ^ .success-view-div {
           padding-top: 70px;
           padding-left: 36px;
         }
-        ^ .error-icon img {
+        ^ .success-icon img {
           height: 76px;
           width: 76px;
         }
-        ^ .error-message {
+        ^ .success-message {
           font-family: Roboto;
           font-size: 32px;
           font-weight: 300;
           text-align: left;
           padding-top: 30px;
         }
-        ^ .error-amount {
+        ^ .success-amount {
           font-family: Roboto;
           font-size: 32px;
           font-weight: bold;
           text-align: left;
           padding-top: 7px;
         }
-        ^ .error-from-to {
+        ^ .success-from-to {
           font-family: Roboto;
           font-size: 12px;
           text-align: left;
           color: rgba(255, 255, 255, 0.7);
           padding-top: 50px;
         }
-        ^ .error-profile {
+        ^ .success-profile {
           display: table;
           height: 40px;
           overflow: hidden;
           padding-top: 10px;
         }
-        ^ .error-profile-icon img {
+        ^ .success-profile-icon img {
           height: 40px;
           width: 40px;
           display: table-cell;
@@ -61,7 +61,7 @@ foam.CLASS({
           border-color: #f1f1f1;
           border-radius: 50%;
         }
-        ^ .error-profile-name {
+        ^ .success-profile-name {
           font-family: Roboto;
           font-size: 16px;
           line-height: 1.88;
@@ -80,33 +80,33 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'paymentError', message: 'Payment failed. Please try again' },
-    { name: 'refundError',  message: 'Refund failed. Please try again' }
+    { name: 'paymentSuccess', message: 'Money Collected Successfully' },
+    { name: 'refundSuccess',  message: 'Money Refunded Successfully' }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var user = this.data.user
+      var user = this.data.user;
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('error-view-div')
-          .start('div').addClass('error-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.png' })
+        .start('div').addClass('success-view-div')
+          .start('div').addClass('success-icon')
+            .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.png' })
           .end()
-          .start().addClass('error-message').add( ! this.refund ? this.paymentError : this.refundError ).end()
-          .start().addClass('error-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
-          .start().addClass('error-from-to').add( ! this.refund ? 'From' : 'To' ).end()
-          .start().addClass('error-profile')
-            .start('div').addClass('error-profile-icon')
+          .start().addClass('success-message').add( ! this.refund ? this.paymentSuccess : this.refundSuccess ).end()
+          .start().addClass('success-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
+          .start().addClass('success-from-to').add( ! this.refund ? 'From' : 'To' ).end()
+          .start().addClass('success-profile')
+            .start().addClass('success-profile-icon')
               .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
             .end()
-            .start().addClass('error-profile-name')
+            .start().addClass('success-profile-name')
               .add(user.firstName + ' ' + user.lastName)
             .end()
           .end()
-        .end()
+        .end();
 
       this.onload.sub(function () {
         this.toolbar.classList.add('hidden');

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui.setup',
+  package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupSuccessView',
   extends: 'foam.u2.View',
 
@@ -80,7 +80,7 @@ foam.CLASS({
 
   listeners: [
     function onNextClicked (e) {
-      this.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }
   ]
 })

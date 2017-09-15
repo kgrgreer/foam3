@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui.setup',
+  package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupErrorView',
   extends: 'foam.u2.View',
 
