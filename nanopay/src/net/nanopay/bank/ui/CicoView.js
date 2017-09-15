@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.Popup', 
     'net.nanopay.tx.model.Transaction', 
+    
   ],
 
   imports: [

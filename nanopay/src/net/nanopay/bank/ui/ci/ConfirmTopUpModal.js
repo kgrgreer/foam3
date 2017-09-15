@@ -104,7 +104,7 @@ foam.CLASS({
           margin-top: 22px;
           margin-left: 75px;
         }
-        ^ .foam-u2-ActionView-topUp {
+        ^ .foam-u2-ActionView-topUpBtn {
           font-family: Roboto;
           width: 136px;
           height: 40px;
@@ -123,8 +123,9 @@ foam.CLASS({
           box-shadow: none;
           font-weight: normal;
           margin-top: 74px;
+          line-height: 40px;
         }
-        ^ .foam-u2-ActionView-topUp:hover {
+        ^ .foam-u2-ActionView-topUpBtn:hover {
           background: #3783b3;
           border-color: #3783b3;
         }
@@ -178,7 +179,7 @@ foam.CLASS({
           .start().add('$30000.00').addClass('amount').end()
           .start('div')
             .add(this.BACK)
-            .add(this.TOP_UP)
+            .add(this.TOP_UP_BTN)
           .end()
         .end()
       .end()
@@ -209,8 +210,8 @@ foam.CLASS({
       }
     },
     {
-      name: 'topUp',
-      label: this.Title,
+      name: 'topUpBtn',
+      label: 'Top Up',
       code: function (X) {
         X.closeDialog();
         X.onTopUpSuccess();

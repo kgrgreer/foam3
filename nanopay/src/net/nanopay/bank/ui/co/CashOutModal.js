@@ -143,7 +143,7 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.bankDAO,
           objToChoice: function(a){
-            return [a.financialId, a.name];
+            return [a.id, a.name];
           }
         })
       }

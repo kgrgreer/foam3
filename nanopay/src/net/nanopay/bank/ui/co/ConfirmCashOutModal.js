@@ -104,7 +104,7 @@ foam.CLASS({
           margin-top: 22px;
           margin-left: 75px;
         }
-        ^ .foam-u2-ActionView-cashOut {
+        ^ .foam-u2-ActionView-cashOutBtn {
           font-family: Roboto;
           width: 136px;
           height: 40px;
@@ -124,7 +124,7 @@ foam.CLASS({
           font-weight: normal;
           margin-top: 74px;
         }
-        ^ .foam-u2-ActionView-cashOut:hover {
+        ^ .foam-u2-ActionView-cashOutBtn:hover {
           background: #3783b3;
           border-color: #3783b3;
         }
@@ -178,7 +178,7 @@ foam.CLASS({
           .start().add('$30000.00').addClass('amount').end()
           .start('div')
             .add(this.BACK)
-            .add(this.CASH_OUT)
+            .add(this.CASH_OUT_BTN)
           .end()
         .end()
       .end()
@@ -209,8 +209,8 @@ foam.CLASS({
       }
     },
     {
-      name: 'cashOut',
-      label: this.Title,
+      name: 'cashOutBtn',
+      label: 'Cash Out',
       code: function (X) {
         X.closeDialog();
         X.onCashOutSuccess();

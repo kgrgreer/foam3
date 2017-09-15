@@ -10,7 +10,9 @@ foam.CLASS({
     'foam.nanos.client.Client',
     'foam.mlang.Expressions',
     'net.nanopay.invoice.dao.Dao',
-    'net.nanopay.ui.style.appStyling'
+    'net.nanopay.ui.style.appStyling',
+    'net.nanopay.tx.client.Client',
+    'net.nanopay.client.Client'
   ],
 
   requires: [
