@@ -63,12 +63,15 @@ foam.CLASS({
     {
       name: 'serialNumber',
       factory: function () {
-        // remove hyphens, use 16 characters, convert to upper case
-        return foam.uuid.randomGUID()
-          .replace(/-/g, '')
-          .substring(0, 16)
-          .toUpperCase()
-          .trim();
+        if ( ! localStorage.serialNumber ) {
+          // remove hyphens, use 16 characters, convert to upper case
+          localStorage.serialNumber = foam.uuid.randomGUID()
+            .replace(/-/g, '')
+            .substring(0, 16)
+            .toUpperCase()
+            .trim();
+        }
+        return localStorage.serialNumber;
       }
     }
   ],
@@ -80,6 +83,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+
+      console.log(localStorage);
 
       this
         .addClass(this.myClass())
