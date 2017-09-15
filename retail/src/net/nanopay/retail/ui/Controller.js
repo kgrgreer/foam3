@@ -8,13 +8,15 @@ foam.CLASS({
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   
   implements: [
+    
     'foam.nanos.client.Client2',
-    'net.nanopay.client.Client',
-    'net.nanopay.tx.client.Client',
-    'net.nanopay.retail.dao.Storage'
+    //'net.nanopay.client.Client',
+    //'net.nanopay.tx.client.Client',
+    //'net.nanopay.retail.dao.Storage'
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.retail.model.Device'
