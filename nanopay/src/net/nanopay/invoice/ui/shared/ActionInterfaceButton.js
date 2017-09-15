@@ -34,7 +34,6 @@ foam.CLASS({
           font-size: 14px;
           font-weight: 200;
           line-height: 2.86;
-          letter-spacing: 0.2px;
           text-align: center;
           float: right;
         }
@@ -77,7 +76,6 @@ foam.CLASS({
           padding-left: 18px;
           font-size: 14px;
           font-weight: 300;
-          letter-spacing: 0.2px;
           color: #093649;
           line-height: 30px;
         }

@@ -35,7 +35,6 @@ foam.CLASS({
             padding-left: 9px;
             font-weight: 300;
             line-height: 20px;
-            letter-spacing: 0.2px;
             position: relative;
             top: -16px;
         }

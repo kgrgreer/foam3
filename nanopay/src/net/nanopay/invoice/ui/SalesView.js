@@ -9,7 +9,7 @@ foam.CLASS({
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
   exports: [ 'hideReceivableSummary' ],
 
-  imports: [ 'salesDAO', 'business', 'stack' ],
+  imports: [ 'invoiceDAO', 'user', 'stack' ],
 
   properties: [ 
     'selection',
@@ -73,14 +73,14 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.salesDAO,
-            factory: function() { return self.Invoice.create({ fromBusinessId: self.business.id, fromBusinessName: self.business.name }); },
+            dao: this.invoiceDAO,
+            factory: function() { return self.Invoice.create({ fromUserId: self.user.id, fromUserName: self.user.name }); },
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
             summaryView: this.SalesTableView.create()
           })
         .end()
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.salesDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.invoiceDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
     }
   ],
 
@@ -112,7 +112,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'fromBusinessId', 'paymentDate', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'fromUserId', 'paymentDate', 'issueDate', 'amount', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         }

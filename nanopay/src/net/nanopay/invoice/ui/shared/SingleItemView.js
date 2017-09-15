@@ -15,7 +15,6 @@ foam.CLASS({
           font-size: 20px;
           font-weight: 300;
           line-height: 1;
-          letter-spacing: 0.3px;
           color: #093649;
           padding-top: 70px;
         }
@@ -30,7 +29,6 @@ foam.CLASS({
           display: inline-block;
           font-size: 14px;
           line-height: 1;
-          letter-spacing: 0.4px;
           font-weight: 500;
           text-align: center;
           color: #093649;
@@ -40,7 +38,6 @@ foam.CLASS({
           display: inline-block;
           font-size: 14px;
           line-height: 1;
-          letter-spacing: 0.4px;
           font-weight: 500;
           text-align: center;
           color: #093649;

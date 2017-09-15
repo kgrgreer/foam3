@@ -126,7 +126,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'toBusinessId', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'toUserId', 'issueDate', 'amount', 'status'
               ],
             }).end()
         },

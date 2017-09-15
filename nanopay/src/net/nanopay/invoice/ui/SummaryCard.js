@@ -92,7 +92,6 @@ foam.CLASS({
           font-size: 30px;
           font-weight: 300;
           line-height: 1;
-          letter-spacing: 0.5px;
           position: relative;
           top: 20;
           left: 20;
@@ -100,7 +99,6 @@ foam.CLASS({
         ^ .amount{
           font-size: 14px;
           line-height: 0.86;
-          letter-spacing: 0.2px;
           text-align: left;
           color: #093649;
           opacity: 0.6;

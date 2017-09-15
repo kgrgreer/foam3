@@ -20,12 +20,8 @@ foam.CLASS({
            display: inline-block;
            margin-bottom: 20px;
          }
-         ^ .invoice-due-date-div {
-           float: right;
-         }
          ^ .po-amount-div {
            margin-left: 20px;
-           float: right;
          }
          ^ .frequency-div {
            display: inline-block;
@@ -52,15 +48,7 @@ foam.CLASS({
            margin-top: 8px;
            line-height: 40px;
          }
-         ^ .add-attachment-btn {
-           width: 135px;
-           height: 40px;
-           border-radius: 2px;
-           border: solid 1px #59A5D5;
-           color: #59A5D5;
-           text-align: center;
-           line-height: 40px;
-           cursor: pointer;
+         ^ .attachment-btn {
            margin-top: 8px;
            margin-bottom: 10px;
          }
@@ -69,7 +57,6 @@ foam.CLASS({
            font-family: Roboto;
            font-size: 20px;
            font-weight: 300;
-           letter-spacing: 0.3px;
            color: #093649;
            margin: 0;
          }
@@ -87,11 +74,7 @@ foam.CLASS({
            outline: none;
          }
          ^ .enable-recurring-text {
-           font-family: Roboto;
            font-size: 12px;
-           line-height: 1.33;
-           letter-spacing: 0.2px;
-           color: #093649;
            margin-top: 20px;
            margin-bottom: 20px;
          }
@@ -114,18 +97,13 @@ foam.CLASS({
         }
         ^ .vendor-name {
           opacity: 0.6;
-          font-family: Roboto;
           font-size: 14px;
           color: #093649;
           margin: 0;
-          display: block;
           margin-bottom: 6px;
         }
         ^ .company-address {
-          font-family: Roboto;
           font-size: 12px;
-          color: #093649;
-          letter-spacing: 0.2px;
           margin: 0;
         }
         ^ .connection-icon {
@@ -267,7 +245,7 @@ foam.CLASS({
             .start().addClass('white-container')
               .start().addClass('customer-div')
                 .add()
-                .add(this.Invoice.TO_BUSINESS_ID)
+                .add(this.Invoice.TO_USER_NAME)
                 .start().addClass('company-card')
                   .start({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('company-picture').end()
                   .start().addClass('inline')
@@ -280,38 +258,38 @@ foam.CLASS({
                   .start({class:'foam.u2.tag.Image', data: 'images/ic-connection.png'}).addClass('connection-icon').end()
                 .end()
               .end()
-              .start('div').addClass('po-amount-div')
+              .start().addClass('po-amount-div float-right')
                 .add('PO #')
                 .add(this.Invoice.PURCHASE_ORDER)
                 .add('Amount')
                 .add(this.Invoice.AMOUNT)
               .end()
-              .start('div').addClass('invoice-due-date-div')
+              .start().addClass('float-right')
                 .add('Invoice #')
                 .add(this.Invoice.INVOICE_NUMBER)
                 .add('Due Date')
                 .add(this.Invoice.ISSUE_DATE)
               .end()
               .add('Attachments')
-              .start('div').add('Add Attachment').addClass('add-attachment-btn').end()
+              .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
               .add('Maximum size 10MB')
-              .start('div')
+              .start()
                 .tag({class: 'foam.u2.CheckBox'})
                 .add('Enable recurring payments').addClass('enable-recurring-text')
               .end()
-              .start('div').addClass('frequency-div')
+              .start().addClass('frequency-div')
                 .add('Frequency')
-                .start('div').add('Biweekly').addClass('frequency-box').end()
+                .start().add('Biweekly').addClass('frequency-box').end()
               .end()
-              .start('div').addClass('ends-after-div')
+              .start().addClass('ends-after-div')
                 .add('Ends After')
-                .start('div').add('30 Occurences').addClass('frequency-box').end()
+                .start().add('30 Occurences').addClass('frequency-box').end()
               .end()
-              .start('div').addClass('next-invoice-div')
+              .start().addClass('next-invoice-div')
                 .add('Next Bill Date')
                 .add(this.Invoice.PAYMENT_DATE)
               .end()
-              .start('div')
+              .start()
                 .add('Note')
                 .start('textarea').addClass('note-box').end()
               .end()

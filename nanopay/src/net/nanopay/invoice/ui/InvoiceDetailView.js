@@ -91,7 +91,6 @@ foam.CLASS({
          font-family: Roboto;
          font-size: 20px;
          font-weight: 300;
-         letter-spacing: 0.3px;
          color: #093649;
          margin: 0;
        }
@@ -99,7 +98,6 @@ foam.CLASS({
          font-family: Roboto;
          font-size: 14px;
          font-weight: 300;
-         letter-spacing: 0.2px;
          text-align: left;
          color: #093649;
        }
@@ -120,14 +118,12 @@ foam.CLASS({
          font-family: Roboto;
          font-size: 12px;
          line-height: 1.33;
-         letter-spacing: 0.2px;
          color: #A4B3B8;
        }
        ^ .enable-recurring-text {
          font-family: Roboto;
          font-size: 12px;
          line-height: 1.33;
-         letter-spacing: 0.2px;
          color: #093649;
          margin-top: 20px;
          margin-bottom: 20px;
@@ -264,12 +260,12 @@ foam.CLASS({
             .add(this.SAVE_AS_DRAFT)
           .end()
           .start('div').addClass('invoice-title-div')
-            .start('h2').add('New Invoice').addClass('new-invoice-title').end()
+            .start('h2').add('New Invoice').addClass('light-roboto-h2').end()
           .end()
           .start('div').addClass('invoice-box-div')
             .start('div').addClass('customer-div')
               .add('Customer').addClass('box-title')
-              .add(this.Invoice.FROM_BUSINESS_ID)
+              .add(this.Invoice.FROM_USER_ID)
             .end()
             .start('div').addClass('po-amount-div')
               .add('PO #').addClass('box-title')

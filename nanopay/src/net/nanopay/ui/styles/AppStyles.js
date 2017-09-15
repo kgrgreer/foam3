@@ -13,6 +13,7 @@ foam.CLASS({
         body {
           font-family: 'Roboto', sans-serif;
           font-size: 14px;
+          letter-spacing: 0.2px;
           color: #373a3c;
           background: #edf0f5;
           margin: 0;
@@ -28,7 +29,6 @@ foam.CLASS({
         thead > tr > th {
           font-size: 14px;
           background: #dfe8ee;
-          letter-spacing: 0.3px;
           padding-left: 15px;
         }
         tbody > tr:nth-child(odd) {
@@ -40,7 +40,6 @@ foam.CLASS({
         }
         tbody > tr > td {
           font-size: 12px;
-          letter-spacing: 0.2px;
           padding-left: 15px;
         }
 
@@ -87,7 +86,6 @@ foam.CLASS({
           margin-left: 5%;
           font-size: 12px;
           font-weight: 300;
-          letter-spacing: 0.2px;
           color: #093649;
           text-align: left;
         }
@@ -101,9 +99,18 @@ foam.CLASS({
           color: #ffffff;
           font-size: 14px;
           line-height: 2.86;
-          letter-spacing: 0.2px;
           margin: 20px 20px;
           float: right;
+        }
+        .white-blue-button{
+          width: 135px;
+          height: 40px;
+          border-radius: 2px;
+          border: solid 1px #59A5D5;
+          color: #59A5D5;
+          text-align: center;
+          line-height: 40px;
+          cursor: pointer;
         }
         .full-width-button{
           width: 90%;
@@ -129,7 +136,6 @@ foam.CLASS({
           font-family: Roboto;
           font-size: 14px;
           font-weight: 300;
-          letter-spacing: 0.2px;
           text-align: left;
           color: #093649;
           margin-bottom: 8px;
@@ -143,7 +149,6 @@ foam.CLASS({
           font-size: 20px;
           font-weight: 300;
           line-height: 1;
-          letter-spacing: 0.3px;
           color: #093649;
           opacity: 0.6;
           margin-bottom: 35px;
@@ -169,6 +174,12 @@ foam.CLASS({
         }
         .hide{
           display: none;
+        }
+        .float-right{
+          float: right;
+        }
+        .float-left{
+          float: left;
         }
         .thin-align{
           font-weight: 100;

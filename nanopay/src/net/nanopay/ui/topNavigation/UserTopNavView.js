@@ -64,7 +64,6 @@ foam.CLASS({
           padding-left: 50px;
           font-size: 14px;
           font-weight: 300;
-          letter-spacing: 0.2px;
           color: #093649;
           line-height: 40px;
         }
@@ -72,7 +71,6 @@ foam.CLASS({
           background-color: #f6f9f9;
           box-shadow: 0 -1px 0 0 #e9e9e9;
           font-size: 14px;
-          letter-spacing: 0.2px;
           color: #c82e2e;
         }
         ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
