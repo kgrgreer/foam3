@@ -206,7 +206,7 @@ foam.CLASS({
       label: this.backBtnTitle,
       code: function (X) {
         X.closeDialog();
-        X.cashOut();
+        X.topUp();
       }
     },
     {
