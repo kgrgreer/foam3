@@ -25,6 +25,9 @@ foam.CLASS({
           color: #093649;
           display: inline-block;
         }
+        .key-value-container{
+          margin-bottom: 20px;
+        }
       */}
     })
   ]
