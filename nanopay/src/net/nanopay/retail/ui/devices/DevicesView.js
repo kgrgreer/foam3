@@ -101,6 +101,8 @@ foam.CLASS({
           letter-spacing: 0.3px;
           color: #FFFFFF;
           border-radius: 2px;
+
+          font-weight: 300;
         }
 
         ^ .foam-u2-ActionView-addDevice span {
