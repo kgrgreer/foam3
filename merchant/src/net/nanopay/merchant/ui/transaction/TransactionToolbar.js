@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui.transaction',
+  package: 'net.nanopay.merchant.ui.transaction',
   name: 'TransactionToolbar',
   extends: 'foam.u2.View',
 

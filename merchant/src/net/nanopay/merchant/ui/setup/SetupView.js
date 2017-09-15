@@ -1,11 +1,16 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui',
+  package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupView',
   extends: 'foam.u2.View',
 
   documentation: 'Setup view with serial number',
 
+  requires: [
+    'net.nanopay.retail.model.DeviceStatus'
+  ],
+
   imports: [
+    'device',
     'stack',
     'deviceDAO'
   ],
@@ -16,7 +21,7 @@ foam.CLASS({
         ^ {
           width: 320px;
           height: 480px;
-          background: #2c4389
+          background: #2c4389;
         }
         ^ .setup-title {
           height: 30px;
@@ -58,12 +63,15 @@ foam.CLASS({
     {
       name: 'serialNumber',
       factory: function () {
-        // remove hyphens, use 16 characters, convert to upper case
-        return foam.uuid.randomGUID()
-          .replace(/-/g, '')
-          .substring(0, 16)
-          .toUpperCase()
-          .trim();
+        if ( ! localStorage.serialNumber ) {
+          // remove hyphens, use 16 characters, convert to upper case
+          localStorage.serialNumber = foam.uuid.randomGUID()
+            .replace(/-/g, '')
+            .substring(0, 16)
+            .toUpperCase()
+            .trim();
+        }
+        return localStorage.serialNumber;
       }
     }
   ],
@@ -101,8 +109,28 @@ foam.CLASS({
 
   listeners: [
     function onNextClicked (e) {
-      this.deviceDAO.find(this.serialNumber).then(function (device) {
+      var self = this;
+
+      // look up device, set to active and save
+      this.deviceDAO.find(this.serialNumber).then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device not found');
+        }
+
+        result.status = self.DeviceStatus.ACTIVE;
+        return self.deviceDAO.put(result);
       })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device activation failed');
+        }
+
+        self.device.copyFrom(result);
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
+      })
+      .catch(function (err) {
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
+      });
     }
   ]
 });

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui',
+  package: 'net.nanopay.merchant.ui',
   name: 'QRCodeView',
   extends: 'foam.u2.View',
 

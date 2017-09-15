@@ -1,13 +1,14 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui',
+  package: 'net.nanopay.merchant.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
 
-  documentation: 'Top-level Ingenico application controller.',
+  documentation: 'Top-level Merchant application controller.',
 
   implements: [
     'foam.nanos.client.Client',
-    'net.nanopay.tx.client.Client'
+    'net.nanopay.tx.client.Client',
+    'net.nanopay.retail.client.Client'
   ],
 
   requires: [
@@ -17,6 +18,7 @@ foam.CLASS({
 
   exports: [
     'user',
+    'device',
     'stack',
     'toolbar'
   ],
@@ -96,6 +98,12 @@ foam.CLASS({
       factory: function () { return this.User.create(); }
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.retail.model.Device',
+      name: 'device',
+      factory: function () { return this.Device.create(); }
+    },
+    {
       name: 'stack',
       factory: function () { return this.Stack.create(); }
     }
@@ -111,7 +119,7 @@ foam.CLASS({
         self.user.copyFrom(a.array[0]);
       });
 
-      this.stack.push({ class: 'net.nanopay.ingenico.ui.SetupView' });
+      this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
     },
 
     function initE() {
@@ -207,10 +215,10 @@ foam.CLASS({
       title.innerHTML = clicked;
       switch ( clicked ) {
         case 'Home':
-          this.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
+          this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
           break;
         case 'Transactions':
-          this.stack.push({ class: 'net.nanopay.ingenico.ui.transaction.TransactionListView' });
+          this.stack.push({ class: 'net.nanopay.merchant.ui.transaction.TransactionListView' });
           break;
       }
       drawer.open = false;

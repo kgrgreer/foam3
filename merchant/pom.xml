@@ -12,8 +12,8 @@
     <artifactId>parent</artifactId>
     <version>0.0.1</version>
   </parent>
-  <artifactId>ingenico</artifactId>
-  <name>nanoPay ingenico</name>
+  <artifactId>merchant</artifactId>
+  <name>nanoPay merchant</name>
 
   <build>
     <directory>target</directory>

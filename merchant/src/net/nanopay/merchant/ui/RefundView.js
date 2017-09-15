@@ -1,13 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui',
+  package: 'net.nanopay.merchant.ui',
   name: 'RefundView',
   extends: 'foam.u2.View',
 
   documentation: 'Refund confirmation popup',
 
   requires: [
-    'net.nanopay.ingenico.ui.SuccessView',
-    'net.nanopay.ingenico.ui.ErrorView'
+    'net.nanopay.merchant.ui.SuccessView',
+    'net.nanopay.merchant.ui.ErrorView'
   ],
 
   imports: [
