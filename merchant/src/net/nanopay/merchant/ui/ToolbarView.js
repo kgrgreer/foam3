@@ -15,7 +15,7 @@ foam.CLASS({
       name: 'header',
       value: true
     }
-  ]
+  ],
 
   methods: [
     function initE() {
