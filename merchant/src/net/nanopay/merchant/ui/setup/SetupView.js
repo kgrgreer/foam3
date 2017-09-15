@@ -84,8 +84,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      console.log(localStorage);
-
       this
         .addClass(this.myClass())
         .start()
