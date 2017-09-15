@@ -20,7 +20,6 @@ foam.CLASS({
     'user',
     'device',
     'stack',
-    'toolbar',
     'showHeader'
   ],
 
@@ -89,7 +88,6 @@ foam.CLASS({
 
   properties: [
     'title',
-    'toolbar',
     'drawer',
     'drawerList',
     {
@@ -194,7 +192,6 @@ foam.CLASS({
         this.drawer = new MDCTemporaryDrawer(drawerEl);
         this.title = document.getElementsByClassName('mdc-toolbar__title')[0];
         this.drawerList = document.getElementsByClassName('mdc-list')[0];
-        this.toolbar = document.getElementsByClassName('mdc-toolbar')[0];
       });
     }
   ],
