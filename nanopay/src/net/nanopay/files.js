@@ -2,15 +2,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ui/SignInView' },
   { name: 'net/nanopay/client/Client' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
-
-  // fx
-  { name: 'net/nanopay/fx/model/ExchangeRate' },
-  { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
-  { name: 'net/nanopay/fx/ExchangeRateInterface' },
-  { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
-  { name: 'net/nanopay/fx/client/Client' },
-
-  //model
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/AccountInfo' },
   { name: 'net/nanopay/model/AccountLimit' },
@@ -22,6 +13,18 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/UserAccountInfo' },
+  { name: 'net/nanopay/ui/wizard/WizardView' },
+  { name: 'net/nanopay/ui/wizard/WizardOverview' },
+  { name: 'net/nanopay/ui/wizard/WizardSubView' },
+  { name: 'net/nanopay/ui/NotificationActionCard' },
+  { name: 'net/nanopay/ui/ContentCard' },
+
+  // fx
+  { name: 'net/nanopay/fx/model/ExchangeRate' },
+  { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
+  { name: 'net/nanopay/fx/ExchangeRateInterface' },
+  { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
+  { name: 'net/nanopay/fx/client/Client' },
 
   // retail
   { name: 'net/nanopay/retail/client/Client' },
@@ -41,11 +44,4 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionService' },
   { name: 'net/nanopay/tx/client/ClientTransactionService' },
   { name: 'net/nanopay/tx/client/Client' },
-
-  // ui
-  { name: 'net/nanopay/ui/wizard/WizardView' },
-  { name: 'net/nanopay/ui/wizard/WizardOverview' },
-  { name: 'net/nanopay/ui/wizard/WizardSubView' },
-  { name: 'net/nanopay/ui/NotificationActionCard' },
-  { name: 'net/nanopay/ui/ContentCard' }
 ]);
