@@ -7,8 +7,8 @@ foam.CLASS({
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.nanos.client.Client',
     'foam.mlang.Expressions',
+    'foam.nanos.client.Client',
     'net.nanopay.invoice.dao.Dao',
     'net.nanopay.ui.style.appStyling'
   ],
@@ -54,7 +54,7 @@ foam.CLASS({
 
       var self = this;
       net.nanopay.TempMenu.create(null, this);
-      
+
       this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
 
@@ -63,14 +63,13 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
+        .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
         .br()
         .start('div').addClass('stack-wrapper')
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
         .br()
-        .tag({class: 'net.nanopay.ui.FooterView'})
-    },
+        .tag({class: 'net.nanopay.ui.FooterView'});
+    }
   ]
 });
-  

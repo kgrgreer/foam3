@@ -28,11 +28,11 @@ admin.abstractClasses = admin.abstractClasses.map(function(element) { return [ '
 admin.skeletons = admin.skeletons.map(function(element) { return [ 'admin-portal/src/', element ]; })
 admin.proxies = admin.proxies.map(function(element) { return [ 'admin-portal/src/', element ]; })
 
-var ingenico = require('../ingenico/classes.js')
-ingenico.classes = retail.classes.map(function(element) { return [ 'ingenico/src/', element ]; })
-ingenico.abstractClasses = retail.abstractClasses.map(function(element) { return [ 'ingenico/src/', element ]; })
-ingenico.skeletons = retail.skeletons.map(function(element) { return [ 'ingenico/src/', element ]; })
-ingenico.proxies = retail.proxies.map(function(element) { return [ 'ingenico/src/', element ]; })
+var merchant = require('../merchant/classes.js')
+merchant.classes = retail.classes.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.abstractClasses = retail.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.skeletons = retail.skeletons.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.proxies = retail.proxies.map(function(element) { return [ 'merchant/src/', element ]; })
 
 var interac = require('../retail/classes.js')
 interac.classes = interac.classes.map(function(element) { return [ 'interac/src/', element ]; })
@@ -41,16 +41,16 @@ interac.skeletons = interac.skeletons.map(function(element) { return [ 'interac/
 interac.proxies = interac.proxies.map(function(element) { return [ 'interac/src/', element ]; })
 
 var classes = [];
-classes = classes.concat(foam.classes, nanopay.classes, b2b.classes, retail.classes, admin.classes, ingenico.classes, interac.classes)
+classes = classes.concat(foam.classes, nanopay.classes, b2b.classes, retail.classes, admin.classes, merchant.classes, interac.classes)
 
 var abstractClasses = [];
-abstractClasses = abstractClasses.concat(foam.abstractClasses, nanopay.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, ingenico.abstractClasses, interac.abstractClasses)
+abstractClasses = abstractClasses.concat(foam.abstractClasses, nanopay.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, merchant.abstractClasses, interac.abstractClasses)
 
 var skeletons = [];
-skeletons = skeletons.concat(foam.skeletons, nanopay.skeletons, b2b.skeletons, retail.skeletons, admin.skeletons, ingenico.skeletons, interac.skeletons)
+skeletons = skeletons.concat(foam.skeletons, nanopay.skeletons, b2b.skeletons, retail.skeletons, admin.skeletons, merchant.skeletons, interac.skeletons)
 
 var proxies = [];
-proxies = proxies.concat(foam.proxies, nanopay.proxies, b2b.proxies, retail.proxies, admin.proxies, ingenico.proxies, interac.proxies)
+proxies = proxies.concat(foam.proxies, nanopay.proxies, b2b.proxies, retail.proxies, admin.proxies, merchant.proxies, interac.proxies)
 
 
 module.exports = {
