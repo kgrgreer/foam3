@@ -13,7 +13,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.retail.model.DeviceStatus'
   ],
 
   exports: [
@@ -123,7 +124,23 @@ foam.CLASS({
         self.user.copyFrom(a.array[0]);
       });
 
-      this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+      if ( localStorage.serialNumber ) {
+        this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
+          console.log( ! result );
+          console.log(result.status !== self.DeviceStatus.ACTIVE );
+
+          if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
+            self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+          } else {
+            self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+          }
+        })
+        .catch(function (err) {
+          self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+        })
+      } else {
+        this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+      }
     },
 
     function initE() {
