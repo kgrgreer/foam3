@@ -12,8 +12,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'header',
-      value: true
+      name: 'header'
     }
   ],
 
@@ -23,7 +22,7 @@ foam.CLASS({
       var self = this;
 
       this.onload.sub(function () {
-        self.showHeader = header;
+        self.showHeader = self.header;
       })
     }
   ]
