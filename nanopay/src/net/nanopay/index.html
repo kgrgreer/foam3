@@ -3,25 +3,34 @@
     <script language="javascript" src="../../../../../foam2/src/foam.js"></script>
     <script language="javascript" src="../../../../../foam2/src/foam/nanos/nanos.js"></script>
     <script language="javascript" src="../../../../../foam2/src/foam/u2/ListCreateController.js"></script>
+
+    <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
+    <script language="javascript" src="ui/topNavigation/BusinessLogoView.js"></script>
+    <script language="javascript" src="ui/topNavigation/UserTopNavView.js"></script>   
+
     
+    <script language="javascript" src="ui/NotificationActionCard.js"></script>
+    <script language="javascript" src="ui/ContentCard.js"></script>
     <script language="javascript" src="ui/Controller.js"></script>
     <script language="javascript" src="ui/FooterView.js"></script> 
     <script language="javascript" src="ui/ActionButton.js"></script>
     <script language="javascript" src="ui/Placeholder.js"></script>         
-    <script language="javascript" src="ui/topNavigation/TopNav.js"></script>
-    <script language="javascript" src="ui/topNavigation/BusinessLogoView.js"></script>
-    <script language="javascript" src="ui/topNavigation/UserTopNavView.js"></script>   
-    <script language="javascript" src="invoice/ui/styles/InvoiceStyles.js"></script>       
     <script language="javascript" src="ui/styles/AppStyles.js"></script>   
+    <script language="javascript" src="ui/wizard/WizardView.js"></script>
+    <script language="javascript" src="ui/wizard/WizardSubView.js"></script>
+    <script language="javascript" src="ui/wizard/WizardOverview.js"></script>
+
+    <script language="javascript" src="TempMenu.js"></script>
+
     <script language="javascript" src="invoice/ui/ExpensesView.js"></script>   
     <script language="javascript" src="invoice/ui/SalesView.js"></script>   
+    <script language="javascript" src="invoice/ui/styles/InvoiceStyles.js"></script>           
     <script language="javascript" src="invoice/ui/InvoiceDashboardView.js"></script>
-    <script language="javascript" src="invoice/dao/Dao.js"></script>       
-    <script language="javascript" src="invoice/model/Invoice.js"></script>       
-    <script language="javascript" src="TempMenu.js"></script>
-    <script language="javascript" src="invoice/ui/MentionsView.js"></script> 
-    <script language="javascript" src="invoice/ui/PayableSummaryView.js"></script>    
-    <script language="javascript" src="invoice/ui/ReceivableSummaryView.js"></script>  
+    <script language="javascript" src="invoice/dao/Dao.js"></script>
+    <script language="javascript" src="invoice/model/Invoice.js"></script>
+    <script language="javascript" src="invoice/ui/MentionsView.js"></script>
+    <script language="javascript" src="invoice/ui/PayableSummaryView.js"></script>
+    <script language="javascript" src="invoice/ui/ReceivableSummaryView.js"></script>
     <script language="javascript" src="invoice/ui/SummaryCard.js"></script>
     <script language="javascript" src="invoice/ui/BillDetailView.js"></script>                   
     <script language="javascript" src="invoice/ui/shared/ActionInterfaceButton.js"></script>               
@@ -30,66 +39,23 @@
     
     <script language="javascript" src="auth/ui/SignInView.js"></script>               
     <script language="javascript" src="util/CurrencyFormatter.js"></script>               
-    
+
+    <script language="javascript" src="retail/client/Client.js"></script>
+    <script language="javascript" src="retail/model/Device.js"></script>
+    <script language="javascript" src="retail/model/DeviceStatus.js"></script>
+    <script language="javascript" src="retail/ui/DeviceCTACard.js"></script>
+    <script language="javascript" src="retail/ui/BankCTACard.js"></script>
+    <script language="javascript" src="retail/ui/devices/form/DeviceForm.js"></script>
+    <script language="javascript" src="retail/ui/devices/form/DeviceNameForm.js"></script>
+    <script language="javascript" src="retail/ui/devices/form/DevicePasswordForm.js"></script>
+    <script language="javascript" src="retail/ui/devices/form/DeviceSerialForm.js"></script>
+    <script language="javascript" src="retail/ui/devices/form/DeviceTypeForm.js"></script>
+    <script language="javascript" src="retail/ui/devices/DevicesView.js"></script>
+
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500" rel="stylesheet">
-    <style>
-      .foam-u2-view-TableView thead tr {
-        font-size: 16px;
-        height: 48px;
-        font-family: sans-serif;
-        font-weight: 500;
-        border-bottom: 1px solid rgb(242, 242, 242);
-        color: rgb(138, 138, 138);
-        background: rgb(240,240,240);
-      }
-      .net-nanopay-ui-ActionButton{
-        margin: 0 2px 0;
-      }
-      .recievable-status > span {
-        width: 10px;
-        height: 10px;
-        float: left;
-        border-radius: 50%;
-        position: relative;
-        top: -1;
-        right: 10;
-        font-weight: bold;
-      }
-      .foam-u2-search-TextSearchView input {
-        width: 340px;
-        font-size: 10pt;
-        padding: 3px;
-      }
-     .foam-u2-search-GroupBySearchView select {
-        font-family: monospace;
-        font-size: 10pt;
-        width: 340px;
-      }
-      .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice > tbody > tr {
-        height: 40px;
-      }
-      .foam-u2-view-ReciprocalSearch-filter-header {
-        font-size: 20px;
-        color: gray;
-      }
-      .foam-u2-view-ReciprocalSearch-filter {
-        margin-bottom: 8px;
-      }
-
-      .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-create {
-        display: none;
-      }
-
-      .foam-comics-BrowserView-net-nanopay-invoice-model-Invoice .foam-u2-ActionView-edit {
-        display: none;
-      }
-
-      .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice tbody tr {
-        height: 40px;
-      }
-    </style>
   </head>
   <body>
-    <foam class="net.nanopay.ui.Controller" id="ctrl"></foam>      
+    <foam class="net.nanopay.ui.Controller" id="ctrl"></foam>
   </body>
 </html>

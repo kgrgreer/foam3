@@ -9,12 +9,16 @@ foam.CLASS({
     'net.nanopay.b2b.model.Invoice',
     'net.nanopay.model.Account',
     'net.nanopay.model.Bank',
-    'net.nanopay.model.BankAccountInfo'
+    'net.nanopay.model.BankAccountInfo',
+    'net.nanopay.model.BusinessSector',
+    'net.nanopay.model.BusinessType'
   ],
 
   exports: [
     'bankDAO',
     'bankAccountDAO',
+    'businessSectorDAO',
+    'businessTypeDAO',
     'invoiceDAO'
   ],
 
@@ -135,6 +139,64 @@ foam.CLASS({
                 bankAccount: 8
               })
             }
+          ]
+        })
+      }
+    },
+    {
+      name: 'businessSectorDAO',
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
+          of: this.BusinessSector,
+          cache: true,
+          seqNo: true,
+          testData: [
+            { 'name': 'Art dealing' },
+            { 'name': 'Audio & Video' },
+            { 'name': 'Automotive' },
+            { 'name': 'Charity & not-for-profit' },
+            { 'name': 'Consulting services' },
+            { 'name': 'Design' },
+            { 'name': 'Education & learning' },
+            { 'name': 'Entertainment - Adult' },
+            { 'name': 'Events & entertainment' },
+            { 'name': 'Financial Services' },
+            { 'name': 'Gambling, betting & online gaming' },
+            { 'name': 'Health & beauty' },
+            { 'name': 'IT services' },
+            { 'name': 'Jewellery, precious metals & stones' },
+            { 'name': 'Legal services' },
+            { 'name': 'Manufacturing' },
+            { 'name': 'Media & communication' },
+            { 'name': 'Military & semi-military goods & services' },
+            { 'name': 'Pharmaceuticals, medical & dietary supplements' },
+            { 'name': 'Public services' },
+            { 'name': 'Real estate & construction' },
+            { 'name': 'Restaurants & catering' },
+            { 'name': 'Retail & trade' },
+            { 'name': 'Sports' },
+            { 'name': 'Tobacco & alcohol' },
+            { 'name': 'Transport services' },
+            { 'name': 'Travel' }
+          ]
+        })
+      }
+    },
+    {
+      name: 'businessTypeDAO',
+      factory: function () {
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
+          of: this.BusinessType,
+          cache: true,
+          seqNo: true,
+          testData: [
+            { name: 'Sole Proprietorship' },
+            { name: 'General Partnership' },
+            { name: 'Limited Partnership' },
+            { name: 'Corporation' },
+            { name: 'Joint Venture' },
           ]
         })
       }

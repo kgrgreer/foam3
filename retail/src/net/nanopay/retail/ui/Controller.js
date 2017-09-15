@@ -9,7 +9,8 @@ foam.CLASS({
     'foam.nanos.client.Client',
     'net.nanopay.client.Client',
     'net.nanopay.tx.client.Client',
-    'net.nanopay.retail.dao.Storage'
+    'net.nanopay.retail.dao.Storage',
+    'net.nanopay.retail.client.Client'
   ],
 
   requires: [
