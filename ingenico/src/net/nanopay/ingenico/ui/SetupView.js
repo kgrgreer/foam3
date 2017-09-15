@@ -57,7 +57,12 @@ foam.CLASS({
     {
       name: 'serialNumber',
       factory: function () {
-        return '1234 5678 9012 1234';
+        return foam.uuid.randomGUID()
+          .replace(/-/g, '')
+          .substring(0, 16)
+          .replace(/(.{4})/g, '$1 ')
+          .toUpperCase()
+          .trim();
       }
     }
   ],
