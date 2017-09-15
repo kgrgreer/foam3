@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ingenico.ui',
+  package: 'net.nanopay.ingenico.ui.setup',
   name: 'SetupView',
   extends: 'foam.u2.View',
 
@@ -21,7 +21,7 @@ foam.CLASS({
         ^ {
           width: 320px;
           height: 480px;
-          background: #2c4389
+          background: #2c4389;
         }
         ^ .setup-title {
           height: 30px;
@@ -64,11 +64,12 @@ foam.CLASS({
       name: 'serialNumber',
       factory: function () {
         // remove hyphens, use 16 characters, convert to upper case
-        return foam.uuid.randomGUID()
-          .replace(/-/g, '')
-          .substring(0, 16)
-          .toUpperCase()
-          .trim();
+//        return foam.uuid.randomGUID()
+//          .replace(/-/g, '')
+//          .substring(0, 16)
+//          .toUpperCase()
+//          .trim();
+        return '5BE0A47824564806';
       }
     }
   ],
@@ -123,7 +124,7 @@ foam.CLASS({
         }
 
         self.device.copyFrom(result);
-        self.stack.push({ class: 'net.nanopay.ingenico.ui.HomeView' });
+        self.stack.push({ class: 'net.nanopay.ingenico.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
         // TODO: handle error on front end

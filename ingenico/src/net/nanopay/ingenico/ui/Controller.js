@@ -119,7 +119,7 @@ foam.CLASS({
         self.user.copyFrom(a.array[0]);
       });
 
-      this.stack.push({ class: 'net.nanopay.ingenico.ui.SetupView' });
+      this.stack.push({ class: 'net.nanopay.ingenico.ui.setup.SetupView' });
     },
 
     function initE() {
