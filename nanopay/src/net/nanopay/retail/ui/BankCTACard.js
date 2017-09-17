@@ -9,12 +9,9 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.NotificationActionCard.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
 
-  methods: [
-    function init() {
-      this.title = 'Connect your bank account.';
-      this.subtitle = "You don't have any bank accounts yet. You need one to cash out your balance.";
-      this.SUPER();
-    }
+  properties: [
+    [ 'title',    'Connect your bank account.' ],
+    [ 'subTitle', "You don't have any bank accounts yet. You need one to cash out your balance." ]
   ],
 
   actions: [
