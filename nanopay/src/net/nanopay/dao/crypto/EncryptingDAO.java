@@ -42,9 +42,9 @@ public class EncryptingDAO
   protected static final int GCM_TAG_LENGTH = 16;
 
   private static SecureRandom random;
-  private static SecureRandom getSecureRandom() throws NoSuchProviderException, NoSuchAlgorithmException {
+  private static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
     if ( random == null ) {
-      random = SecureRandom.getInstance("SHA1PRNG", "BC");
+      random = SecureRandom.getInstance("SHA1PRNG");
     }
     return random;
   }
