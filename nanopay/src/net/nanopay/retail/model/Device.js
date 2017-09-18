@@ -26,11 +26,6 @@ foam.CLASS({
       name: 'serialNumber',
       label: 'Serial No.',
       required: true
-    },
-    {
-      class: 'Double',
-      name: 'password',
-      required: true
     }
   ]
 });

@@ -21,9 +21,9 @@ foam.CLASS({
       name: 'deviceDAO',
       factory: function () {
         return this.EasyDAO.create({
-          daoType: 'MDAO',
+          daoType: 'CLIENT',
           of: this.Device,
-          cache: true,
+          serviceName: 'deviceDAO',
           testData: [
             {
               name: 'Ingenico 1', type: 'Terminal', serialNumber: 'D224E98C71EF42CA', status: this.DeviceStatus.PENDING
