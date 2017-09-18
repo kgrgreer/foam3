@@ -8,18 +8,17 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ input[type="radio"],
-        ^ input[type="checkbox"]{
+        ^ {
+          margin: 11px 0;
+        }
+
+        ^ input[type="radio"] {
           display: none;
         }
 
         ^ label {
           position: relative;
           padding-left: 32px;
-        }
-
-        ^ {
-          margin: 11px 0;
         }
 
         ^ label span::before,
