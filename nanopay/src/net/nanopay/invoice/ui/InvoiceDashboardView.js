@@ -115,7 +115,7 @@ foam.CLASS({
             .start('h4').add('-', this.formattedPayableAmount$).end()
           .end()
         .end()
-    },  
+    }
   ],
 
   listeners: [

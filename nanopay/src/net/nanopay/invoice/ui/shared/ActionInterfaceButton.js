@@ -53,7 +53,7 @@ foam.CLASS({
           border-top: 5px solid white;
           margin-left: 9px;    
           position: relative;
-          top: -35;
+          top: -27px;
         }
         ^top-action-buttons{
           width: 685px;
