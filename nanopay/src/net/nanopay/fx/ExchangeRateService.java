@@ -7,29 +7,28 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.pm.PM;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
 import net.nanopay.fx.model.ExchangeRate;
 import net.nanopay.fx.model.ExchangeRateQuote;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-
 public class ExchangeRateService
-    extends ContextAwareSupport
-    implements ExchangeRateInterface
+  extends    ContextAwareSupport
+  implements ExchangeRateInterface
 {
-  protected DAO exchangeRateDAO_;
+  protected DAO    exchangeRateDAO_;
   protected Double feeAmount = new Double(150);
 
   @Override
   public ExchangeRateQuote getRate(String from, String to, long amountI)
-      throws RuntimeException
+    throws RuntimeException
   {
     PM pm = new PM(this.getClass(), "getRate");
 
@@ -45,9 +44,8 @@ public class ExchangeRateService
       throw new RuntimeException("Invalid amount");
     }
 
-    double amount = ((double)amountI) / 100.0;
-
-    ExchangeRateQuote quote = new ExchangeRateQuote();
+    double            amount = ((double) amountI) / 100.0;
+    ExchangeRateQuote quote  = new ExchangeRateQuote();
 
     quote.setFromCurrency(from);
     quote.setToCurrency(to);
@@ -75,6 +73,8 @@ public class ExchangeRateService
     // TODO: move to cron job
     new Thread() {
       public void run() {
+        // TODO: this should be in a loop with a sleep
+        // (or just move to cron)
         fetchRates();
       }
     }.start();
@@ -100,11 +100,10 @@ public class ExchangeRateService
 
       JSONObject rates = (JSONObject) parsedResponse.get("rates");
 
-      for (Object key : rates.keySet()) {
-        String currencyCode = (String) key;
-        Double rateValue = (Double) rates.get(currencyCode);
-
-        ExchangeRate rate = new ExchangeRate();
+      for ( Object key : rates.keySet() ) {
+        String       currencyCode = (String) key;
+        Double       rateValue    = (Double) rates.get(currencyCode);
+        ExchangeRate rate         = new ExchangeRate();
 
         rate.setFromCurrency((String) parsedResponse.get("base"));
         rate.setToCurrency((String) currencyCode);

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.devices',
+  package: 'net.nanopay.retail.ui',
   name: 'DeviceCTACard',
   extends: 'net.nanopay.ui.NotificationActionCard',
 
@@ -9,12 +9,9 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.NotificationActionCard.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
 
-  methods: [
-    function init() {
-      this.title = 'Activate a new device.';
-      this.subtitle = 'You don\'t have any devices yet. You need to activate a device in order to view the transactions.';
-      this.SUPER();
-    }
+  properties: [
+    [ 'title',    'Activate a new device.' ],
+    [ 'subtitle', "You don't have any devices yet. You need to activate a device in order to view the transactions." ]
   ],
 
   actions: [

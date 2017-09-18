@@ -34,7 +34,6 @@ foam.CLASS({
           font-size: 14px;
           font-weight: 200;
           line-height: 2.86;
-          letter-spacing: 0.2px;
           text-align: center;
           float: right;
         }
@@ -77,7 +76,6 @@ foam.CLASS({
           padding-left: 18px;
           font-size: 14px;
           font-weight: 300;
-          letter-spacing: 0.2px;
           color: #093649;
           line-height: 30px;
         }
@@ -135,7 +133,7 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().addClass(this.myClass('top-action-buttons'))
           .start({  
-            class: 'net.nanopay.b2b.ActionButton', 
+            class: 'net.nanopay.ui.ActionButton', 
             data: {
               image: 'images/approve.png', 
               text: 'Approve',
@@ -144,7 +142,7 @@ foam.CLASS({
             }
           }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
           .start({
-            class: 'net.nanopay.b2b.ActionButton', 
+            class: 'net.nanopay.ui.ActionButton', 
             data: {
               image: 'images/reject.png', 
               text: 'Reject',
@@ -153,9 +151,9 @@ foam.CLASS({
             }
           }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
           .start(this.EMAIL_MODAL).addClass('import-button').end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
-          .start({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
             .start('span', null, this.popupMenu_$)
@@ -199,7 +197,7 @@ foam.CLASS({
       name: 'emailModal',
       icon: 'images/ic-email.png',
       code: function(X){
-        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.EmailModal'}));
+        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.EmailModal'}));
       }
     },
     {
@@ -209,7 +207,7 @@ foam.CLASS({
         X.ctrl.add(
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
-              class: 'net.nanopay.b2b.ui.modals.SingleResolutionModal', 
+              class: 'net.nanopay.invoice.ui.modal.SingleResolutionModal', 
               invoice: X.data.invoice,
               title: X.data.title
             })

@@ -26,7 +26,7 @@ foam.CLASS({
           cache: true,
           testData: [
             {
-              name: 'Ingenico 1', type: 'Terminal', serialNumber: '5BE0A47824564806', status: this.DeviceStatus.PENDING
+              name: 'Ingenico 1', type: 'Terminal', serialNumber: 'D224E98C71EF42CA', status: this.DeviceStatus.PENDING
             },
             {
               name: 'Ciao Tablet', type: 'Android', serialNumber: '59GS8F8A3L5FAQ1', status: this.DeviceStatus.PENDING

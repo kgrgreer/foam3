@@ -13,11 +13,9 @@ foam.CLASS({
           margin: auto;
           position: relative;
         }
-        ^ h3 {
-          font-family: Roboto;
+        ^ h3{
           font-size: 14px;
           font-weight: 300;
-          letter-spacing: 0.2px;
           text-align: center;
           color: #262626;
           display: inline-block;

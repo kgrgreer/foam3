@@ -15,7 +15,6 @@ foam.CLASS({
           font-size: 20px;
           font-weight: 300;
           line-height: 1;
-          letter-spacing: 0.3px;
           color: #093649;
           padding-top: 70px;
         }
@@ -30,7 +29,6 @@ foam.CLASS({
           display: inline-block;
           font-size: 14px;
           line-height: 1;
-          letter-spacing: 0.4px;
           font-weight: 500;
           text-align: center;
           color: #093649;
@@ -40,7 +38,6 @@ foam.CLASS({
           display: inline-block;
           font-size: 14px;
           line-height: 1;
-          letter-spacing: 0.4px;
           font-weight: 500;
           text-align: center;
           color: #093649;
@@ -91,8 +88,8 @@ foam.CLASS({
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.data.fromBusinessName).end()
             .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
-            .start('h4').add('$', this.data.amount).end()
-            .start('h4').add('$', this.data.amount).end()
+            .start('h4').add('$', this.data.amount.toFixed(2)).end()
+            .start('h4').add('$', this.data.amount.toFixed(2)).end()
             .start('h4').add('1.13').end()
             .start('h3').add(this.data.status).end()
           .end()
