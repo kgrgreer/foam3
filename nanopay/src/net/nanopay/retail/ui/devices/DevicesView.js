@@ -89,9 +89,11 @@ foam.CLASS({
         ^ .foam-u2-ActionView-addDevice {
           display: inline-block;
           vertical-align: top;
+          margin: 0;
           background: none;
           outline: none;
           border: none;
+          box-shadow: none;
 
           width: 218px;
           height: 100px;
