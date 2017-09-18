@@ -110,7 +110,7 @@ foam.CLASS({
             .start().add(this.Title).addClass('popUpTitle').end()
             .add(this.CLOSE_BUTTON)
           .end()
-          .start({class: 'foam.u2.tag.Image', data: 'images/done-30.png'}).addClass('successIcon').end()
+          .start({class: 'foam.u2.tag.Image', data: 'images/done-30.svg'}).addClass('successIcon').end()
           .start('div').addClass('cashInResultDiv')
             .start().add(this.CashInSuccessDesc).addClass('cashInResult').end()
             .tag(this.CicoView.AMOUNT, { mode: foam.u2.DisplayMode.RO })
