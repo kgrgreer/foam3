@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupView',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   documentation: 'Setup view with serial number',
 
@@ -60,6 +60,7 @@ foam.CLASS({
   ],
 
   properties: [
+    ['header', false],
     {
       name: 'serialNumber',
       factory: function () {

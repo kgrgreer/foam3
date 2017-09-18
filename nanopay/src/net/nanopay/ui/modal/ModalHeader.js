@@ -35,7 +35,6 @@ foam.CLASS({
         font-family: Roboto;
         font-size: 14px;
         line-height: 2.86;
-        letter-spacing: 0.2px;
         text-align: left;
         color: #ffffff;
         margin-left: 19px;

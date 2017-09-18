@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'QRCodeView',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   axioms: [
     foam.u2.CSS.create({
@@ -42,6 +42,10 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    ['header', true]
+  ],
+
   messages: [
     { name: 'instruction1', message: '1. Open MintChip App' },
     { name: 'instruction2', message: '2. Tap Pay Merchant' },
@@ -67,15 +71,6 @@ foam.CLASS({
           .add(this.instruction2).br()
           .add(this.instruction3).br()
         .end()
-
-
-      this.onload.sub(function () {
-        var qrCode = new QRCode(document.getElementsByClassName('qr-code-div')[0], {
-          text: 'YDUwM6ADCgEBoQYWBHRlc3SiJKEiMCAECEMQAAAAAAlXBAIAAQQFAAAAAfQBAf8WAIAEAJn1Lw==',
-          width: 160,
-          height: 160
-        });
-      });
     }
   ]
 })

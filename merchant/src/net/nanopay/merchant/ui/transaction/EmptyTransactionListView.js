@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'View for empty transaction list',
 
+  imports: [
+    'showHeader'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -34,6 +38,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
         .addClass(this.myClass())

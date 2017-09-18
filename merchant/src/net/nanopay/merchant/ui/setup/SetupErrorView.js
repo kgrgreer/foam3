@@ -1,13 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupErrorView',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   documentation: 'Success screen after set up',
 
   imports: [
-    'stack',
-    'toolbar'
+    'stack'
   ],
 
   axioms: [
@@ -47,6 +46,10 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    ['header', false]
+  ],
+
   messages: [
     { name: 'provisionError', message: 'Provision failed. Please try again.' },
     { name: 'provisionButton', message: 'Start again >>' }
@@ -74,7 +77,7 @@ foam.CLASS({
               .on('click', this.onNextClicked)
             .end()
           .end()
-        .end()
+        .end();
     }
   ],
 

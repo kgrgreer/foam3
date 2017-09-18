@@ -9,7 +9,7 @@ foam.CLASS({
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
   exports: [ 'hideReceivableSummary' ],
 
-  imports: [ 'salesDAO', 'business', 'stack' ],
+  imports: [ 'invoiceDAO', 'user', 'stack' ],
 
   properties: [ 
     'selection',
@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'hideReceivableSummary',
       value: false
     },
-    { name: 'data', factory: function() { return this.salesDAO; }}
+    { name: 'data', factory: function() { return this.invoiceDAO; }}
   ],
 
   messages: [
@@ -35,65 +35,8 @@ foam.CLASS({
           width: 970px;
           margin: auto;
         }
-        ^ .foam-u2-view-TableView-net-nanopay-b2b-model-Invoice{
-          position: relative;
-          top: -75px;
-        }
-        ^ table {
-          border-collapse: collapse;
-          margin: auto;
-          width: 960px;
-        }
-        ^ thead > tr > th {
-          font-family: 'Roboto';
-          font-size: 14px;
-          background: #dfe8ee;
-          color: #093649;
-          line-height: 1.14;
-          letter-spacing: 0.3px;
-          border-spacing: 0;
-          text-align: left;
-          padding-left: 15px;
-        }
-        ^ tbody > tr > th {
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-          padding-left: 15px;
-        }
-        ^ .foam-u2-view-TableView th {
-          padding-left: 15px;
-        }
-        ^ tbody > tr {
-          height: 60px;
-          background: white;
-        }
-        ^ tbody > tr:nth-child(odd) {
-          background: #f6f9f9;
-        }
-        ^ .sync-import-div{
-          margin-right: 265px;
-        }
-        ^ .foam-u2-ActionView-create{
-          position: relative;
-          top: -72px;
-        }
         ^ .net-nanopay-invoice-ui-SummaryCard{
           width: 20.9%;
-        }
-        .hide{
-          display: none;
-        }
-        ^ .foam-u2-ActionView-back{
-          position: absolute;
-          top: 110px;
-          width: 135px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1) !important;
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          color: black;
         }
         ^ .optionsDropDown {
           left: -117 !important;
@@ -114,15 +57,15 @@ foam.CLASS({
           .start({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'}).end()
           .start().addClass('container')
             .start().addClass('button-div')
-              .tag({class: 'net.nanopay.b2b.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              .start().addClass('sync-action-div')
-                .tag({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/approve.png', text: 'Pay'}})
-                .start({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
-                .start({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
+              .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
+              .start().addClass('inline')
+                .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
+                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
+                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
               .end()          
-              .start().addClass('sync-import-div')
-                .tag({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
-                .start({class: 'net.nanopay.invoice.ui.ActionInterfaceButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
+              .start().addClass('inline')
+                .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
+                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
               .end()
             .end()
           .end()
@@ -130,14 +73,14 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.salesDAO,
-            factory: function() { return self.Invoice.create({ fromBusinessId: self.business.id, fromBusinessName: self.business.name }); },
+            dao: this.invoiceDAO,
+            factory: function() { return self.Invoice.create({ fromUserId: self.user.id, fromUserName: self.user.name }); },
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
             summaryView: this.SalesTableView.create()
           })
         .end()
-        .tag({ class: 'net.nanopay.b2b.ui.shared.Placeholder', dao: this.salesDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.invoiceDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
     }
   ],
 
@@ -146,12 +89,12 @@ foam.CLASS({
       name: 'SalesTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.b2b.model.Invoice' ],
+      requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
-      imports: [ 'salesDAO' ],
+      imports: [ 'invoiceDAO' ],
       properties: [ 
         'selection', 
-        { name: 'data', factory: function() { return this.salesDAO; }}
+        { name: 'data', factory: function() { return this.invoiceDAO; }}
       ],
 
       methods: [
@@ -169,7 +112,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'fromBusinessId', 'paymentDate', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'fromUserId', 'paymentDate', 'issueDate', 'amount', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         }
