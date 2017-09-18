@@ -11,6 +11,7 @@ import foam.lib.json.Outputter;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
+import foam.mlang.sink.Max;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.*;
@@ -228,7 +229,7 @@ public class EncryptingDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    if ( predicate == null && sink instanceof Count ) {
+    if ( predicate == null && ( sink instanceof Count || sink instanceof Max ) ) {
       return super.select_(x, sink, skip, limit, order, predicate);
     }
     throw new UnsupportedOperationException("Unsupported operation: select_");
