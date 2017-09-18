@@ -21,7 +21,8 @@ foam.CLASS({
     'user',
     'device',
     'stack',
-    'showHeader'
+    'showHeader',
+    'tipEnabled'
   ],
 
   axioms: [
@@ -95,6 +96,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showHeader',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'tipEnabled',
+      value: false
     },
     {
       class: 'FObjectProperty',

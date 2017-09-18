@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   imports: [
-    'user'
+    'user',
+    'tipEnabled'
   ],
 
   axioms: [
@@ -60,6 +61,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
         .addClass(this.myClass())
@@ -80,7 +82,9 @@ foam.CLASS({
       this.onload.sub(function () {
         var qrCode = new QRCode(document.getElementsByClassName('qr-code-div')[0], {
           text: JSON.stringify({
-            amount: this.amount
+            userId: self.user.id,
+            amount: self.amount,
+            tip: self.tipEnabled
           }),
           width: 160,
           height: 160
