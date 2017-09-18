@@ -11,6 +11,10 @@ foam.CLASS({
     'stack'
   ],
 
+  exports: [
+    'as data'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -28,7 +32,7 @@ foam.CLASS({
           color: #ffffff;
           padding-top: 58px;
         }
-        ^ .amount-field {
+        ^ .property-amount {
           border: none;
           background-color: #2c4389;
           height: 88px;
@@ -42,7 +46,7 @@ foam.CLASS({
           margin-top: 14px;
         }
 
-        ^ .amount-field:focus {
+        ^ .property-amount:focus {
           outline: none;
         }
       */}
@@ -61,24 +65,24 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyPressed)
-        .start().addClass('amount-label').add('Amount')
-        .start('input')
-          .attrs({
-            value: this.amount
-          })
-          .addClass('amount-field')
-        .end()
+        .start().addClass('amount-label').add('Amount').end()
+        .tag(this.AMOUNT, { onKey: true })
     }
   ],
 
   listeners: [
     function onKeyPressed (e) {
-      if ( e.key !== 'Enter' ) {
+      if ( e.key !== 'Enter' )
         return;
-      }
 
+      // check if amount entered is less than allowed amount of 1 cent
+      var amountFloat = parseFloat(this.amount.replace(/\$|,|/g, ''));
+      if ( amountFloat < 0.01 )
+        return;
+
+      // push QR code view
       this.stack.push(this.QRCodeView.create({
-        amount: this.amount.replace(/\$|,|\./g, '')
+        amount: (amountFloat * 100)
       }));
     }
   ]
