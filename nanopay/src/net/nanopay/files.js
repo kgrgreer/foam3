@@ -17,5 +17,32 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardOverview' },
   { name: 'net/nanopay/ui/wizard/WizardSubView' },
   { name: 'net/nanopay/ui/NotificationActionCard' },
-  { name: 'net/nanopay/ui/ContentCard' }
+  { name: 'net/nanopay/ui/ContentCard' },
+
+  // fx
+  { name: 'net/nanopay/fx/model/ExchangeRate' },
+  { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
+  { name: 'net/nanopay/fx/ExchangeRateInterface' },
+  { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
+  { name: 'net/nanopay/fx/client/Client' },
+
+  // retail
+  { name: 'net/nanopay/retail/client/Client' },
+  { name: 'net/nanopay/retail/model/Device' },
+  { name: 'net/nanopay/retail/model/DeviceStatus' },
+  { name: 'net/nanopay/retail/ui/DeviceCTACard' },
+  { name: 'net/nanopay/retail/ui/BankCTACard' },
+  { name: 'net/nanopay/retail/ui/devices/DevicesView' },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceForm' },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm' },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm' },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm' },
+  { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm' },
+
+  // tx
+  { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/model/TransactionPurpose' },
+  { name: 'net/nanopay/tx/TransactionService' },
+  { name: 'net/nanopay/tx/client/ClientTransactionService' },
+  { name: 'net/nanopay/tx/client/Client' },
 ]);

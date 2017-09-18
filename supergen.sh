@@ -28,7 +28,7 @@ for d in * ; do
 done
 cd ../../
 
-cd ingenico/src
+cd merchant/src
 for d in * ; do
     if [ "$d" = 'target/' ]; then
         continue

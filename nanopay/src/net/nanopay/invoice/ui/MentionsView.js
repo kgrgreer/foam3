@@ -14,7 +14,10 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice'
   ],
 
-  imports: [ 'invoiceDAO', 'business', 'currencyFormatter' ],
+  imports: [ 
+    'invoiceDAO', 
+    'formatCurrency' 
+  ],
 
   properties: [
     {
@@ -23,11 +26,11 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'formattedMentionsAmount'
-      // expression: function(disputedAmount, pendingAmount) { 
-      //   var a = disputedAmount + pendingAmount;
-      //   return this.currencyFormatter.format(a); 
-      // }
+      name: 'formattedMentionsAmount',
+      expression: function(disputedAmount, pendingAmount) { 
+        var a = disputedAmount + pendingAmount;
+        return this.formatCurrency(a); 
+      }
     },
     {
       class: 'Double',
@@ -37,7 +40,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedDisputedAmount',
-      // expression: function(disputedAmount) { return this.currencyFormatter.format(disputedAmount); }
+      expression: function(disputedAmount) { return this.formatCurrency(disputedAmount); }
     },
     {
       class: 'Double',
@@ -47,7 +50,7 @@ foam.CLASS({
     { 
       class: 'Currency',
       name: 'formattedPendingAmount',
-      // expression: function(pendingAmount) { return this.currencyFormatter.format(pendingAmount); }
+      expression: function(pendingAmount) { return this.formatCurrency(pendingAmount); }
     },
     'pendingCount',
     'draftCount',
@@ -81,9 +84,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('card-title')
+        .start().addClass('blue-card-title')
           .add(this.title)
-          .start('h4').add('$', this.formattedMentionsAmount$).style({ 'font-weight': '100', 'margin': '10px 0 0 0', 'font-size': '14px' }).end()
+          .start().addClass('thin-align').add(this.formattedMentionsAmount$).end()
         .end()
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count: this.disputedCount$, amount: this.formattedDisputedAmount$, status: this.disputeLabel })
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count: this.pendingCount$, amount: this.formattedPendingAmount$, status: this.pendingLabel })
@@ -98,7 +101,7 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        var disputedDAO = this.businessInvoiceDAO.where(this.EQ(this.Invoice.STATUS, "Disputed"));
+        var disputedDAO = this.invoiceDAO.where(this.EQ(this.Invoice.STATUS, "Disputed"));
 
         disputedDAO.select(this.COUNT()).then(function(count) {
           self.disputedCount = count.value;
@@ -108,7 +111,7 @@ foam.CLASS({
           self.disputedAmount = sum.value.toFixed(2);
         });
 
-        var pendingDAO = this.businessInvoiceDAO.where(this.EQ(this.Invoice.STATUS, "Pending"));
+        var pendingDAO = this.invoiceDAO.where(this.EQ(this.Invoice.STATUS, "Pending"));
 
         pendingDAO.select(this.COUNT()).then(function(count) {
           self.pendingCount = count.value;
@@ -118,7 +121,7 @@ foam.CLASS({
           self.pendingAmount = sum.value.toFixed(2);
         });
 
-        var draftDAO = this.businessInvoiceDAO.where(this.EQ(this.Invoice.STATUS, "Draft"));
+        var draftDAO = this.invoiceDAO.where(this.EQ(this.Invoice.STATUS, "Draft"));
 
         draftDAO.select(this.COUNT()).then(function(count) {
           self.draftCount = count.value;
