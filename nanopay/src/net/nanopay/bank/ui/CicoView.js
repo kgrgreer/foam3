@@ -173,6 +173,7 @@ foam.CLASS({
           visibility: hidden;
         }
         ^ .foam-u2-view-TableView-noselect {
+          width: 1px;
           cursor: pointer;
         }
         ^ .foam-u2-md-OverlayDropdown {
