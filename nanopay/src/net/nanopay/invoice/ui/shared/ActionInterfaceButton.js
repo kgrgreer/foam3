@@ -97,7 +97,7 @@ foam.CLASS({
           position: absolute;
           height: 35px;
           width: 125px;
-          right: 25px;
+          right: 175px;
         }
         ^ .foam-u2-ActionView-emailModal{
           position: absolute;
@@ -197,13 +197,12 @@ foam.CLASS({
       name: 'emailModal',
       icon: 'images/ic-email.png',
       code: function(X){
-        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.EmailModal'}));
+        X.ctrl.add(foam.u2.dialog.Popup.create().tag({class: 'net.nanopay.ui.modal.EmailModal'}));
       }
     },
     {
       name: 'resolutionModal',
       code: function(X){
-
         X.ctrl.add(
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
