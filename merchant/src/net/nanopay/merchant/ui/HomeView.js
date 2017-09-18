@@ -51,7 +51,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { name: 'amount', class: 'String', value: '$5.00'}
+    { name: 'amount', class: 'String', value: '$0.00'}
   ],
 
   methods: [
