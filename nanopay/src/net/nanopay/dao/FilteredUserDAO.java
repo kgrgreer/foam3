@@ -13,10 +13,10 @@ import foam.nanos.auth.User;
 import net.nanopay.tx.TransactionDAO;
 import net.nanopay.tx.model.Transaction;
 
-public class AuthenticatedUserDAO
+public class FilteredUserDAO
     extends ProxyDAO
 {
-  public AuthenticatedUserDAO(DAO delegate) {
+  public FilteredUserDAO(DAO delegate) {
     setDelegate(delegate);
   }
 
