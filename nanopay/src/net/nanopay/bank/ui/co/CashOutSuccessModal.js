@@ -1,9 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.co',
   name: 'CashOutSuccessModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'closeDialog' ],
+  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+
+  imports: [ 'closeDialog', 'amount' ],
 
   documentation: 'Pop up modal displaying details of a successful cash out.',
 
@@ -54,11 +56,11 @@ foam.CLASS({
           width: 301px;
         }
         ^ .cashOutResult {
-          font-family: Roboto;
           font-size: 12px;
           line-height: 16px;
           letter-spacing: 0.3px;
           color: #093649;
+          display: inline-block;
         }
         ^ .foam-u2-ActionView-closeButton {
           width: 24px;
@@ -77,6 +79,19 @@ foam.CLASS({
         ^ .foam-u2-ActionView-closeButton:hover {
           background: transparent;
           background-color: transparent;
+        }
+        ^ .property-amount {
+          width: 100px;
+          height: 16px;
+          display: inline-block;
+          padding: 0;
+          margin: 0;
+          margin-left: 5px;
+          margin-bottom: 20px;
+          font-size: 12px;
+          line-height: 16px;
+          letter-spacing: 0.3px;
+          color: #093649;
         }
     */}
     })
@@ -97,6 +112,7 @@ foam.CLASS({
           .start({class: 'foam.u2.tag.Image', data: 'images/done-30.png'}).addClass('successIcon').end()
           .start('div').addClass('cashOutResultDiv')
             .start().add(this.CashOutSuccessDesc).addClass('cashOutResult').end()
+            .tag(this.CicoView.AMOUNT, { mode: foam.u2.DisplayMode.RO })
             .br()
             .start().add(this.CashOutResultDesc).addClass('cashOutResult').end()
           .end()
@@ -107,7 +123,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Title', message: 'Cash Out' },
-    { name: 'CashOutSuccessDesc', message: 'You have successfully cashed out $X.XX'},
+    { name: 'CashOutSuccessDesc', message: 'You have successfully cashed out ' },
     { 
       name: 'CashOutResultDesc', 
       message: "Please be advised that it will take around 2 business days for the balance to arrive in your bank account. If you don't see your balance after 5 business days please contact our advisor at XXX-XXX-XXXX."

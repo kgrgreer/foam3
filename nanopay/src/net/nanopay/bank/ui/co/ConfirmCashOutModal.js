@@ -1,9 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.co',
   name: 'ConfirmCashOutModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'closeDialog', 'onCashOutSuccess', 'cashOut' ],
+  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+
+  imports: [ 'amount', 'bankDAO', 'bankList', 'closeDialog', 'onCashOutSuccess', 'cashOut' ],
 
   documentation: 'Pop up modal for confirming cash out.',
 
@@ -95,13 +97,16 @@ foam.CLASS({
           color: #093649;
           margin-top: 5px;
         }
-        ^ .amount {
+        ^ .property-amount {
+          height: 15px;
+          width: 100px;
+          padding: 0;
+          line-height: 16px;
           font-size: 12px;
-          line-height: 1.33;
           letter-spacing: 0.2px;
           color: #093649;
           display: inline-block;
-          margin-top: 22px;
+          margin-top: 20px;
           margin-left: 75px;
         }
         ^ .foam-u2-ActionView-cashOutBtn {
@@ -170,12 +175,19 @@ foam.CLASS({
           .start().add(this.bankLabel).addClass('label').end()
           .start('div').addClass('bankInfoDiv')
             .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
-            .start().add('Bank Name').addClass('bankName').end()
+            .start()
+              .addClass('bankName')
+              .call(function() {
+                self.bankDAO.find(self.bankList).then(function(bank) {
+                  this.add(bank.name);
+                }.bind(this));
+              })
+            .end()
             .start().add('xxxx123456').addClass('accountNumber').end()
           .end()
           .br()
           .start().add(this.amountLabel).addClass('label').end()
-          .start().add('$30000.00').addClass('amount').end()
+          .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
           .start('div')
             .add(this.BACK)
             .add(this.CASH_OUT_BTN)

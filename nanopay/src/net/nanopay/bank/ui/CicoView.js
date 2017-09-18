@@ -196,8 +196,7 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'amount',
-      view: 'foam.u2.CurrencyView'
+      name: 'amount'
     }
   ],
 

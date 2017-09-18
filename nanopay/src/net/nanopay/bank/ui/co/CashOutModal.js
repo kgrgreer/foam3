@@ -1,9 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.co',
   name: 'CashOutModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'closeDialog', 'confirmCashOut', 'bankDAO' ],
+  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+
+  imports: [ 'closeDialog', 'confirmCashOut', 'bankList', 'amount' ],
 
   documentation: 'Pop up modal for cashing out.',
 
@@ -136,18 +138,6 @@ foam.CLASS({
   ],
 
   properties: [
-    'amount',
-    {
-      name: 'bankList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.bankDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    }
   ],
 
   methods: [
@@ -163,9 +153,9 @@ foam.CLASS({
             .add(this.CLOSE_BUTTON)
           .end()
           .start().add(this.bankLabel).addClass('label').end()
-          .add(this.BANK_LIST)
+          .add(this.CicoView.BANK_LIST)
           .start().add(this.amountLabel).addClass('label').end()
-          .start('input').add(this.AMOUNT).end()
+          .add(this.CicoView.AMOUNT)
           .add(this.NEXT_BUTTON)
           .add(this.GO_TO_BANK)
         .end()

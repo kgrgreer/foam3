@@ -89,6 +89,10 @@ foam.CLASS({
           margin: 0;
           margin-left: 5px;
           margin-bottom: 20px;
+          font-size: 12px;
+          line-height: 16px;
+          letter-spacing: 0.3px;
+          color: #093649;
         }
     */}
     })
@@ -109,7 +113,7 @@ foam.CLASS({
           .start({class: 'foam.u2.tag.Image', data: 'images/done-30.png'}).addClass('successIcon').end()
           .start('div').addClass('cashInResultDiv')
             .start().add(this.CashInSuccessDesc).addClass('cashInResult').end()
-            .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
+            .tag(this.CicoView.AMOUNT, { mode: foam.u2.DisplayMode.RO })
             .br()
             .start().add(this.CashInResultDesc).addClass('cashInResult').end()
           .end()
