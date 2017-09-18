@@ -46,19 +46,12 @@ public class FilteredUserDAO
     }
 
     User result = (User) super.find_(x, id);
-    result.setSpid(null);
-    result.setLastLogin(null);
-    result.setPhone(null);
-    result.setMobile(null);
-    result.setBirthday(null);
-    result.setAddress(null);
-    result.setAccounts(null);
-    result.setLanguage(null);
-    result.setTimeZone(null);
-    result.setPassword(null);
-    result.setPreviousPassword(null);
-    result.setPasswordLastModified(null);
-    return result;
+    User ret = new User();
+    ret.setFirstName(result.getFirstName());
+    ret.setMiddleName(result.getMiddleName());
+    ret.setLastName(result.getLastName());
+    ret.setProfilePicture(result.getProfilePicture());
+    return ret;
   }
 
   @Override
