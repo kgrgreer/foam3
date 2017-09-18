@@ -1,11 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.ci',
-  name: 'TopUpModal',
-  extends: 'foam.u2.View',
+  name: 'CashInModal',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'closeDialog', 'confirmTopUp', 'bankDAO' ],
+  requires: [ 'net.nanopay.bank.ui.CicoView' ],
 
-  documentation: 'Pop up modal for topping up.',
+  imports: [ 'closeDialog', 'confirmCashIn', 'bankList', 'amount' ],
+
+  documentation: 'Pop up modal for cashing In.',
 
   axioms: [
     foam.u2.CSS.create({
@@ -15,7 +17,7 @@ foam.CLASS({
           height: 288px;
           margin: auto;
         }
-        ^ .topUpContainer {
+        ^ .cashInContainer {
           width: 448px;
           height: 288px;
           border-radius: 2px;
@@ -136,18 +138,6 @@ foam.CLASS({
   ],
 
   properties: [
-    'amount',
-    {
-      name: 'bankList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.bankDAO,
-          objToChoice: function(a){
-            return [a.financialId, a.name];
-          }
-        })
-      }
-    }
   ],
 
   methods: [
@@ -157,15 +147,15 @@ foam.CLASS({
 
       this.addClass(this.myClass())
       .start()
-        .start().addClass('topUpContainer')
+        .start().addClass('cashInContainer')
           .start().addClass('popUpHeader')
             .start().add(this.Title).addClass('popUpTitle').end()
             .add(this.CLOSE_BUTTON)
           .end()
           .start().add(this.bankLabel).addClass('label').end()
-          .add(this.BANK_LIST)
+          .add(this.CicoView.BANK_LIST)
           .start().add(this.amountLabel).addClass('label').end()
-          .start('input').add(this.AMOUNT).end()
+          .add(this.CicoView.AMOUNT)
           .add(this.NEXT_BUTTON)
           .add(this.GO_TO_BANK)
         .end()
@@ -174,7 +164,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Top Up' },
+    { name: 'Title', message: 'Cash In' },
     { name: 'bankLabel', message: 'Bank Name' },
     { name: 'amountLabel', message: 'Amount' }
   ],
@@ -192,7 +182,7 @@ foam.CLASS({
       label: 'Next',
       code: function(X) {
         X.closeDialog();
-        X.confirmTopUp();
+        X.confirmCashIn();
       }
     },
     {

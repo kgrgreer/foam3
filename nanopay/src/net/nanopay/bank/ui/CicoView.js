@@ -3,26 +3,28 @@ foam.CLASS({
   name: 'CicoView',
   extends: 'foam.u2.View',
 
-  documentation: 'View for displaying all Top Up and Cash Out Transactions as well as account Balance',
+  documentation: 'View for displaying all Cash In and Cash Out Transactions as well as account Balance',
 
   requires: [
     'foam.u2.dialog.Popup', 
     'net.nanopay.tx.model.Transaction', 
-    
   ],
 
   imports: [
     'transactionDAO',
+    'bankDAO',
     'stack'
   ],
 
   exports: [
-    'topUp',
-    'confirmTopUp',
-    'onTopUpSuccess',
+    'cashIn',
+    'confirmCashIn',
+    'onCashInSuccess',
     'cashOut',
     'confirmCashOut',
-    'onCashOutSuccess'
+    'onCashOutSuccess',
+    'bankList',
+    'amount'
   ],
 
   axioms: [
@@ -69,7 +71,7 @@ foam.CLASS({
           display: inline-block;
           width: 135px;
         }
-        ^ .foam-u2-ActionView-topUpBtn {
+        ^ .foam-u2-ActionView-cashInBtn {
           width: 135px;
           height: 50px;
           border-radius: 2px;
@@ -85,7 +87,7 @@ foam.CLASS({
           font-weight: normal;
           box-shadow: none;
         }
-        ^ .foam-u2-ActionView-topUpBtn:hover {
+        ^ .foam-u2-ActionView-cashInBtn:hover {
           background: #3783b3;
         }
         ^ .foam-u2-ActionView-cashOutButton {
@@ -180,11 +182,29 @@ foam.CLASS({
     })
   ],
 
-  properties: [],
+  properties: [
+    {
+      name: 'bankList',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.bankDAO,
+          objToChoice: function(a){
+            return [a.id, a.name];
+          }
+        })
+      }
+    },
+    {
+      class: 'Currency',
+      name: 'amount',
+      view: 'foam.u2.CurrencyView'
+    }
+  ],
 
   methods: [
     function initE() {
       this.SUPER();
+
       var self = this;
       this
         .addClass(this.myClass())
@@ -195,7 +215,7 @@ foam.CLASS({
             .start().add('$2,632.85').addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
-            .add(this.TOP_UP_BTN)
+            .add(this.CASH_IN_BTN)
             .add(this.CASH_OUT_BUTTON)
           .end()
           .start().add(this.recentActivities).addClass('recentActivities').end()
@@ -219,16 +239,16 @@ foam.CLASS({
         .end();
     },
 
-    function topUp() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.TopUpModal' }));
+    function cashIn() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.CashInModal' }));
     },
 
-    function confirmTopUp() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.ConfirmTopUpModal' }));
+    function confirmCashIn() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.ConfirmCashInModal' }));
     },
 
-    function onTopUpSuccess() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.TopUpSuccessModal' }));
+    function onCashInSuccess() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.CashInSuccessModal' }));
     },
 
     function cashOut() {
@@ -251,10 +271,10 @@ foam.CLASS({
 
   actions: [
     {
-      name : 'topUpBtn',
-      label : 'Top Up',
+      name : 'cashInBtn',
+      label : 'Cash In',
       code: function(X) {
-        X.topUp();
+        X.cashIn();
       }
     },
     {

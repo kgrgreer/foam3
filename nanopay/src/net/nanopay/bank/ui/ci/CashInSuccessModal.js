@@ -1,11 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.ci',
-  name: 'TopUpSuccessModal',
-  extends: 'foam.u2.View',
+  name: 'CashInSuccessModal',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'closeDialog' ],
+  requires: [ 'net.nanopay.bank.ui.CicoView' ],
 
-  documentation: 'Pop up modal displaying details of a successful top up.',
+  imports: [ 'closeDialog', 'amount' ],
+
+  documentation: 'Pop up modal displaying details of a successful cash in.',
 
   axioms: [
     foam.u2.CSS.create({
@@ -15,7 +17,7 @@ foam.CLASS({
           height: 288px;
           margin: auto;
         }
-        ^ .topUpContainer {
+        ^ .cashInContainer {
           width: 448px;
           height: 288px;
           border-radius: 2px;
@@ -48,17 +50,18 @@ foam.CLASS({
           vertical-align: top;
           margin-top: 20px;
         }
-        ^ .topUpResultDiv {
+        ^ .cashInResultDiv {
           margin-top: 34px;
           display: inline-block;
           width: 301px;
         }
-        ^ .topUpResult {
+        ^ .cashInResult {
           font-family: Roboto;
           font-size: 12px;
           line-height: 16px;
           letter-spacing: 0.3px;
           color: #093649;
+          display: inline-block;
         }
         ^ .foam-u2-ActionView-closeButton {
           width: 24px;
@@ -78,6 +81,15 @@ foam.CLASS({
           background: transparent;
           background-color: transparent;
         }
+        ^ .property-amount {
+          width: 100px;
+          height: 16px;
+          display: inline-block;
+          padding: 0;
+          margin: 0;
+          margin-left: 5px;
+          margin-bottom: 20px;
+        }
     */}
     })
   ],
@@ -89,16 +101,17 @@ foam.CLASS({
 
       this.addClass(this.myClass())
       .start()
-        .start().addClass('topUpContainer')
+        .start().addClass('cashInContainer')
           .start().addClass('popUpHeader')
             .start().add(this.Title).addClass('popUpTitle').end()
             .add(this.CLOSE_BUTTON)
           .end()
           .start({class: 'foam.u2.tag.Image', data: 'images/done-30.png'}).addClass('successIcon').end()
-          .start('div').addClass('topUpResultDiv')
-            .start().add(this.TopUpSuccessDesc).addClass('topUpResult').end()
+          .start('div').addClass('cashInResultDiv')
+            .start().add(this.CashInSuccessDesc).addClass('cashInResult').end()
+            .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
             .br()
-            .start().add(this.TopUpResultDesc).addClass('topUpResult').end()
+            .start().add(this.CashInResultDesc).addClass('cashInResult').end()
           .end()
         .end()
       .end()
@@ -106,10 +119,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Top Up' },
-    { name: 'TopUpSuccessDesc', message: 'You have successfully topped up $X.XX'},
+    { name: 'Title', message: 'Cash In' },
+    { name: 'CashInSuccessDesc', message: 'You have successfully cashed in '},
     { 
-      name: 'TopUpResultDesc', 
+      name: 'CashInResultDesc', 
       message: "Please be advised that it will take around 2 business days for you to see the balance in the portal. If you don't see your balance after 5 business days please contact our advisor at XXX-XXX-XXXX."
     }
   ],

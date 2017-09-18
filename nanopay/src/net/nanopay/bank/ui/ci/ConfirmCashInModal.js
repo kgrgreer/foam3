@@ -1,9 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.ci',
-  name: 'ConfirmTopUpModal',
-  extends: 'foam.u2.View',
+  name: 'ConfirmCashInModal',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'closeDialog', 'onTopUpSuccess', 'topUp' ],
+  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+
+  imports: [ 'bankDAO', 'bankList', 'closeDialog', 'onCashInSuccess', 'cashIn', 'amount' ],
 
   documentation: 'Pop up modal for confirming top up.',
 
@@ -15,7 +17,7 @@ foam.CLASS({
           height: 288px;
           margin: auto;
         }
-        ^ .topUpContainer {
+        ^ .cashInContainer {
           width: 448px;
           height: 288px;
           border-radius: 2px;
@@ -95,16 +97,19 @@ foam.CLASS({
           color: #093649;
           margin-top: 5px;
         }
-        ^ .amount {
+        ^ .property-amount {
+          height: 15px;
+          width: 100px;
+          padding: 0;
+          line-height: 16px;
           font-size: 12px;
-          line-height: 1.33;
           letter-spacing: 0.2px;
           color: #093649;
           display: inline-block;
-          margin-top: 22px;
+          margin-top: 20px;
           margin-left: 75px;
         }
-        ^ .foam-u2-ActionView-topUpBtn {
+        ^ .foam-u2-ActionView-cashInBtn {
           font-family: Roboto;
           width: 136px;
           height: 40px;
@@ -125,7 +130,7 @@ foam.CLASS({
           margin-top: 74px;
           line-height: 40px;
         }
-        ^ .foam-u2-ActionView-topUpBtn:hover {
+        ^ .foam-u2-ActionView-cashInBtn:hover {
           background: #3783b3;
           border-color: #3783b3;
         }
@@ -156,6 +161,8 @@ foam.CLASS({
     })
   ],
 
+  properties: [],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -163,7 +170,7 @@ foam.CLASS({
 
       this.addClass(this.myClass())
       .start()
-        .start().addClass('topUpContainer')
+        .start().addClass('cashInContainer')
           .start().addClass('popUpHeader')
             .start().add(this.Title).addClass('popUpTitle').end()
             .add(this.CLOSE_BUTTON)
@@ -171,15 +178,22 @@ foam.CLASS({
           .start().add(this.bankLabel).addClass('label').end()
           .start('div').addClass('bankInfoDiv')
             .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
-            .start().add('Bank Name').addClass('bankName').end()
+            .start()
+              .addClass('bankName')
+              .call(function() {
+                self.bankDAO.find(self.bankList).then(function(bank) {
+                  this.add(bank.name);
+                }.bind(this));
+              })
+            .end()
             .start().add('xxxx123456').addClass('accountNumber').end()
           .end()
           .br()
           .start().add(this.amountLabel).addClass('label').end()
-          .start().add('$30000.00').addClass('amount').end()
+          .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
           .start('div')
             .add(this.BACK)
-            .add(this.TOP_UP_BTN)
+            .add(this.CASH_IN_BTN)
           .end()
         .end()
       .end()
@@ -187,7 +201,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Top Up' },
+    { name: 'Title', message: 'Cash In' },
     { name: 'bankLabel', message: 'Bank Account' },
     { name: 'amountLabel', message: 'Amount' },
     { name: 'backBtnTitle', message: 'Back' }
@@ -206,15 +220,15 @@ foam.CLASS({
       label: this.backBtnTitle,
       code: function (X) {
         X.closeDialog();
-        X.topUp();
+        X.cashIn();
       }
     },
     {
-      name: 'topUpBtn',
-      label: 'Top Up',
+      name: 'cashInBtn',
+      label: 'Cash In',
       code: function (X) {
         X.closeDialog();
-        X.onTopUpSuccess();
+        X.onCashInSuccess();
       }
     }
   ]
