@@ -3,6 +3,14 @@ foam.CLASS({
   name: 'HomeView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  requires: [
+    'net.nanopay.merchant.ui.QRCodeView'
+  ],
+
+  imports: [
+    'stack'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -43,7 +51,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { name: 'amount', class: 'String', value: '$0.00'}
+    { name: 'amount', class: 'String', value: '$5.00'}
   ],
 
   methods: [
@@ -52,6 +60,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
+        .on('keydown', this.onKeyPressed)
         .start().addClass('amount-label').add('Amount')
         .start('input')
           .attrs({
@@ -59,6 +68,18 @@ foam.CLASS({
           })
           .addClass('amount-field')
         .end()
+    }
+  ],
+
+  listeners: [
+    function onKeyPressed (e) {
+      if ( e.key !== 'Enter' ) {
+        return;
+      }
+
+      this.stack.push(this.QRCodeView.create({
+        amount: this.amount.replace(/\$|,|\./g, '')
+      }));
     }
   ]
 })

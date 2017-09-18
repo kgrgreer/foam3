@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'QRCodeView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  imports: [
+    'user'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -43,7 +47,8 @@ foam.CLASS({
   ],
 
   properties: [
-    ['header', true]
+    ['header', true],
+    { class: 'Currency', name: 'amount' }
   ],
 
   messages: [
@@ -64,13 +69,23 @@ foam.CLASS({
         .end()
         .start('span')
         .start('div').addClass('amount-div')
-          .add('$12.05')
+          .add('$' + ( this.amount / 100 ).toFixed(2))
         .end()
         .start('div').addClass('instructions-div')
           .add(this.instruction1).br()
           .add(this.instruction2).br()
           .add(this.instruction3).br()
         .end()
+
+      this.onload.sub(function () {
+        var qrCode = new QRCode(document.getElementsByClassName('qr-code-div')[0], {
+          text: JSON.stringify({
+            amount: this.amount
+          }),
+          width: 160,
+          height: 160
+        });
+      });
     }
   ]
 })
