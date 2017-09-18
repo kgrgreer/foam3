@@ -1,8 +1,7 @@
 var classes = [
   'net.nanopay.interac.model.Payee',
   'net.nanopay.interac.model.CountryAgent',
-  'net.nanopay.interac.model.Identification',
-  'net.nanopay.interac.service.InteracService'
+  'net.nanopay.interac.model.Identification'
 ];
 
 var abstractClasses = [
