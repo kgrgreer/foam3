@@ -6,7 +6,6 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import java.util.Random;
 import java.util.UUID;
-import net.nanopay.tx.TransactionService;
 import net.nanopay.tx.model.Transaction;
 
 public class InteracTransactionDAO
@@ -14,7 +13,7 @@ public class InteracTransactionDAO
 {
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    TransactionService service  = (TransactionService) getX().get("transaction");
+    DAO transactionDAO          = (DAO) getX().get("transactionDAO");
     DAO canadianTransactionDAO  = (DAO) getX().get("canadaTransactionDAO");
     DAO indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
 
@@ -44,7 +43,7 @@ public class InteracTransactionDAO
     }
 
     try {
-      Transaction completedTransaction = service.transferValue(transaction);
+      Transaction completedTransaction = (Transaction) transactionDAO.put(transaction);
 
       /**
        * Generate 3 random digits to append to CAXxxx, this will be the
