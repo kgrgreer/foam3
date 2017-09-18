@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'RadioView',
   extends: 'foam.u2.view.RadioView',
 
-  documentation: '',
+  documentation: 'Radio view styled with NANOPAY colors and design. Functionality remains the same.',
 
   axioms: [
     foam.u2.CSS.create({
