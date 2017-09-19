@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.dao.ClientDAO',
     'foam.dao.EasyDAO',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.RecurringInvoice',
     'foam.box.HTTPBox'
   ],
 
@@ -41,6 +42,23 @@ foam.CLASS({
           .addPropertyIndex(this.Invoice.FROM_USER_NAME)
           .addPropertyIndex(this.Invoice.TO_USER_ID)
           .addPropertyIndex(this.Invoice.FROM_USER_ID);
+      }
+    },
+    {
+      name: 'recurringInvoiceDAO',
+      factory: function() {
+        return this.createDAO({
+          of: this.RecurringInvoice,
+          seqNo: true,
+          testData: [
+            {
+              frequency: 'Weekly',
+              endsAfter: Date.now(),
+              nextInvoiceDate: Date.now(),
+              deleted: false
+            }
+          ]
+        })
       }
     }
   ]
