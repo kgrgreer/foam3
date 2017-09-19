@@ -198,21 +198,6 @@ foam.CLASS({
           ]
         })
       }
-    },
-    // {
-    //   name: 'invoiceDAO',
-    //   factory: function() {
-    //     return this.EasyDAO.create({
-    //       daoType: 'MDAO',
-    //       cache: true,
-    //       of: this.Invoice
-    //     })
-    //     .addPropertyIndex(this.Invoice.STATUS)
-    //     .addPropertyIndex(this.Invoice.TO_BUSINESS_NAME)
-    //     .addPropertyIndex(this.Invoice.FROM_BUSINESS_NAME)
-    //     .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
-    //     .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
-    //   }
-    // }
+    }
   ]
 });
