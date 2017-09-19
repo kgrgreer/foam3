@@ -55,7 +55,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { name: 'amount', class: 'String', value: '$0.00'}
+    { name: 'amount', class: 'Currency' }
   ],
 
   methods: [
@@ -72,17 +72,12 @@ foam.CLASS({
 
   listeners: [
     function onKeyPressed (e) {
-      if ( e.key !== 'Enter' )
-        return;
-
-      // check if amount entered is less than allowed amount of 1 cent
-      var amountFloat = parseFloat(this.amount.replace(/\$|,|/g, ''));
-      if ( amountFloat < 0.01 )
+      if ( e.key !== 'Enter' || this.amount < 1)
         return;
 
       // push QR code view
       this.stack.push(this.QRCodeView.create({
-        amount: (amountFloat * 100)
+        amount: this.amount
       }));
     }
   ]

@@ -29,8 +29,8 @@ FOAM_FILES([
 
   // retail
   { name: 'net/nanopay/retail/client/Client' },
-  { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
+  { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/ui/DeviceCTACard' },
   { name: 'net/nanopay/retail/ui/BankCTACard' },
   { name: 'net/nanopay/retail/ui/devices/DevicesView' },
