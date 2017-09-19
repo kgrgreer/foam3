@@ -7,13 +7,19 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.model.Account',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.tx.model.Transaction'
+  ],
+
+  exports: [
+    'as data'
   ],
 
   imports: [
     'user',
     'userDAO',
-    'bankAccountDAO'
+    'bankAccountDAO',
+    'transactionDAO'
   ],
 
   axioms: [
@@ -23,69 +29,67 @@ foam.CLASS({
           width: 992px;
           margin: auto;
         }
+        ^ .label{
+          margin-top: 15px;
+        }
+        ^ .foam-u2-tag-Select{
+          width: 215px;
+          height: 40px;
+        }
       */}
     })
   ],
 
   properties: [
+    'payee',
+    'transferAmount',
     {
       name: 'payees',
-      postSet: function(oldValue, newValue) {
-        var self = this;
-        this.userDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
-          var user = a.array[0];
-        });
-      },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: this.userDAO,
+          dao: X.userDAO,
           objToChoice: function(user) {
             var username = user.firstName + ' ' + user.lastName;
-            if ( X.data.mode == 'Organization' ) {
-              // if organization exists, change name to organization name.
-              if ( user.organization ) username = user.organization;
-            }
             return [user.id, username + ' - (' + user.email + ')'];
           }
         });
       }
-    },
-    {
-      name: 'accounts',
-      postSet: function(oldValue, newValue) {
-        var self = this;
-        this.bankAccountDAO.where(this.EQ(this.Account.ID, newValue)).select().then(function(a){
-          var account = a.array[0];
-        });
-      },
-      view: function(_,X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: this.bankAccountDAO.where(this.EQ(this.Account.ID, 1)),
-          objToChoice: function(account) {
-            return [account.id, 'Account No. ' +
-                                account.accountInfo.accountNumber//'***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length)
-                    ]; // TODO: Grab amount and display
-          }
-        });
-      }
-    },
+    }
   ],
 
   methods: [
     function initE(){
       this.SUPER();
+      var self = this;
 
       this
       .start().addClass(this.myClass())
-      .start().addClass('light-roboto-h2').add('Transfer Value').end()
-      .start().addClass('label').add('Transfer To:').end()
-      .start(this.PAYEES).addClass('half-small-input-box').end()
-      .start().addClass('label').add('Select Account').end()
-      .start(this.ACCOUNTS).addClass('half-small-input-box').end()
+        .start().addClass('light-roboto-h2').add('Transfer Value').end()
+        .start().addClass('label').add('Transfer To:').end()
+        .start(this.PAYEES).end()
+        .start().addClass('label').add('Transfer Amount').end()
+        .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
+        .start(this.TRANSFER_VALUE).addClass('blue-button').end()
       .end()
     }
   ],
 
-  listeners:[
+  actions:[
+    {
+      name: 'transferValue',
+      label: 'Send',
+      code: function(X){
+        var self = this;
+
+        var transaction = this.Transaction.create({
+          payeeId: this.user.id,
+          payerId: this.payees,
+          amount: this.transferAmount
+        });
+
+        this.transactionDAO.put(transaction);
+        console.log('Hit Transaction Complete');
+      }
+    }
   ],
 });

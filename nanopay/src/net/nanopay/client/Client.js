@@ -17,8 +17,7 @@ foam.CLASS({
     'bankDAO',
     'bankAccountDAO',
     'businessSectorDAO',
-    'businessTypeDAO',
-    'invoiceDAO'
+    'businessTypeDAO'
   ],
 
   properties: [

@@ -14,7 +14,8 @@ foam.CLASS({
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.client.Client'       
+    'net.nanopay.client.Client',
+    'net.nanopay.tx.client.Client'
   ],
 
   requires: [
@@ -66,8 +67,8 @@ foam.CLASS({
       var self = this;
 
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.userDAO.find(1).then(function(a) {
-        self.user.copyFrom(a);
+      this.userDAO.where(this.EQ(this.User.ID, 1)).select().then(function(a){
+        self.user = a.array[0];
       });
 
       net.nanopay.TempMenu.create(null, this);
