@@ -92,7 +92,6 @@ foam.CLASS({
 
   properties: [
     'drawer',
-    'drawerList',
     {
       class: 'Boolean',
       name: 'showHeader',
@@ -221,7 +220,6 @@ foam.CLASS({
         var drawerEl = document.querySelector('.mdc-temporary-drawer');
         var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;
         this.drawer = new MDCTemporaryDrawer(drawerEl);
-        this.drawerList = document.getElementsByClassName('mdc-list')[0];
       });
     }
   ],
