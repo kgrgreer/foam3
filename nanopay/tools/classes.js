@@ -1,10 +1,11 @@
 var classes = [
-  'foam.dao.crypto.EncryptedObject',
-
+  'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.model.AccountInfo',
   'net.nanopay.model.Account',
   'net.nanopay.model.Bank',
   'net.nanopay.model.BankAccountInfo',
+  'net.nanopay.model.BusinessSector',
+  'net.nanopay.model.BusinessType',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.Phone',
   'net.nanopay.model.UserAccountInfo',
@@ -14,7 +15,9 @@ var classes = [
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.TransactionService',
   'net.nanopay.tx.model.Transaction',
-  'net.nanopay.tx.model.TransactionPurpose'
+  'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.retail.model.DeviceStatus',
+  'net.nanopay.retail.model.Device'
 ];
 
 var abstractClasses = [

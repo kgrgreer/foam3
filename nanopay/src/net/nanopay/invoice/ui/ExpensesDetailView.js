@@ -4,15 +4,13 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [ 
-    // 'net.nanopay.b2b.HistoryInvoiceItemView',
     'foam.u2.dialog.Popup' 
   ],
 
   imports: [ 
     'stack', 
     'hideSaleSummary', 
-    'expensesDAO', 
-    'historyDAO',
+    'invoiceDAO', 
     'ctrl'
   ],
   
@@ -28,13 +26,8 @@ foam.CLASS({
           font-size: 20px;
           font-weight: 300;
           line-height: 1;
-          letter-spacing: 0.3px;
           color: #093649;
           padding-top: 70px;
-        }
-        ^ .foam-u2-history-HistoryView{
-          width: 920px;
-          margin-top: 20px;
         }
         */
       }
@@ -50,7 +43,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .tag({ 
-          class: 'net.nanopay.b2b.ui.DetailButtons', 
+          class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
           detailActions: { 
             invoice: this.invoice,
@@ -62,27 +55,22 @@ foam.CLASS({
             this.disputePopUp 
           }
         })
-        .start('h5').add('Invoice from ', this.data.toBusinessName).end()
+        .start('h5').add('Invoice from ', this.data.toUserName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
-        .tag({ 
-          class: 'foam.u2.history.HistoryView',
-          data: this.historyDAO,
-          historyItemView: this.HistoryInvoiceItemView.create()
-        });
     }
   ],
 
   listeners: [
     function payNowPopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.PayNowModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.PayNowModal'}));
     },
 
     function disputePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.DisputeModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal'}));
     },
 
     function schedulePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.b2b.ui.modals.ScheduleModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal'}));
     }
   ]
 

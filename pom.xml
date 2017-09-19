@@ -15,7 +15,7 @@
     <module>nanopay</module>
     <module>b2b</module>
     <module>retail</module>
-    <module>ingenico</module>
+    <module>merchant</module>
     <module>admin-portal</module>
     <module>interac</module>
   </modules>

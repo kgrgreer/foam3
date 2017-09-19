@@ -7,12 +7,15 @@ foam.CLASS({
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.nanos.client.Client',
     'foam.mlang.Expressions',
+    'foam.nanos.client.Client',
     'net.nanopay.invoice.dao.Dao',
-    'net.nanopay.ui.style.appStyling',
     'net.nanopay.tx.client.Client',
-    'net.nanopay.client.Client'
+    'net.nanopay.client.Client',
+    'net.nanopay.util.CurrencyFormatter',
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.invoice.ui.style.InvoiceStyles',
+    'net.nanopay.ui.modal.ModalStyling'        
   ],
 
   requires: [
@@ -22,7 +25,8 @@ foam.CLASS({
 
   exports: [
     'stack',
-    'as ctrl'
+    'as ctrl',
+    'user'
   ],
 
   axioms: [
@@ -47,7 +51,13 @@ foam.CLASS({
     {
       name: 'stack',
       factory: function() { return this.Stack.create(); }
-    }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      factory: function() { return this.User.create(); }
+    },
   ],
 
   methods: [
@@ -55,8 +65,14 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
+      /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
+      this.userDAO.find(1).then(function(a) {
+        self.user.copyFrom(a);
+      });
+
       net.nanopay.TempMenu.create(null, this);
-      
+
       this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
 
@@ -65,14 +81,13 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
+        .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
         .br()
         .start('div').addClass('stack-wrapper')
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
         .br()
-        .tag({class: 'net.nanopay.ui.FooterView'})
-    },
+        .tag({class: 'net.nanopay.ui.FooterView'});
+    }
   ]
 });
-  

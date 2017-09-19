@@ -6,7 +6,9 @@ foam.CLASS({
 
   documentation: 'Cards for summary views',
 
-  imports: [ 'currencyFormatter' ],
+  imports: [ 
+    'formatCurrency' 
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -16,12 +18,10 @@ foam.CLASS({
           width: 20%;
           background: white;
           height: 100px;
-          position: relative;
           vertical-align: top;
           margin-right: 6px;
           border-radius: 3px;
           overflow: hidden;
-          font-size: 12px;
         }
         ^ .Pending{
           width: 105px;
@@ -82,24 +82,22 @@ foam.CLASS({
           padding-left: 10px;
           padding-top: 5;
         }
-        .label{
+        ^ .label{
           position: relative;
           top: 35;
           left: 10;
+          font-size: 12px;
         }
         ^ .count{
           font-size: 30px;
           font-weight: 300;
           line-height: 1;
-          letter-spacing: 0.5px;
           position: relative;
           top: 20;
           left: 20;
         }
         ^ .amount{
-          font-size: 14px;
           line-height: 0.86;
-          letter-spacing: 0.2px;
           text-align: left;
           color: #093649;
           opacity: 0.6;
@@ -114,8 +112,8 @@ foam.CLASS({
     'amount', 
     {
       class: 'Currency',
-      name: 'formattedAmount'
-      // expression: function(amount) { return this.currencyFormatter.format(amount); }
+      name: 'formattedAmount',
+      expression: function(amount) { return this.formatCurrency(amount); }
     },
     'count',
     'status'
@@ -127,7 +125,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().addClass('count').add(this.count$).end()
-          .start().addClass('amount').add('$', this.formattedAmount$).end()
+          .start().addClass('amount').add(this.formattedAmount$).end()
           .start().addClass(this.status + ' label special-status-tag').add(this.status).end()
         .end()
     },

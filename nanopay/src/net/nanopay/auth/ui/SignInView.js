@@ -6,31 +6,16 @@ foam.CLASS({
   documentation: 'Sign In View',
 
   implements: [
-    'foam.mlang.Expressions', 
-    'net.nanopay.ui.style.appStyling'
+    'foam.mlang.Expressions'
   ],
+
+  imports: [ 'stack' ],
 
   exports: [ 'as data' ],
-
-  imports: [
-    'stack'
-  ],
 
   requires: [
     'foam.nanos.auth.User',
     'foam.comics.DAOCreateControllerView'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'email'
-    },
-    {
-      class: 'Password',
-      name: 'password',
-      view: 'foam.u2.view.PasswordView'
-    }
   ],
 
   axioms: [
@@ -49,17 +34,29 @@ foam.CLASS({
       }
       ^ p{
         display: inline-block;
-      } 
+      }
     */}
     })
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'email'
+    },
+    {
+      class: 'Password',
+      name: 'password',
+      view: 'foam.u2.view.PasswordView'
+    }
+  ],
+
   methods: [
-    function initE(){
-    this.SUPER();
-    var self = this;
-    this
-      .addClass(this.myClass())
+    function initE() {
+      this.SUPER();
+      var self = this;
+
+      this.addClass(this.myClass())
       .start()
         .start('h1').add("Sign In").end()
         .start().addClass('sign-in-container')
@@ -78,12 +75,12 @@ foam.CLASS({
             .add("Sign up.")
             .on('click', this.signUp)
           .end()
-          .start('p').style({ 'margin-left': '182px' }).addClass('link')
+          .start('p').style({ 'margin-left': '150px' }).addClass('link')
             .add("Forgot Password?")
             .on('click', function(){ self.stack.push({ class: 'net.nanopay.b2b.ui.forgotPassword.EmailView' })})
           .end()
         .end()
-      .end()
+      .end();
     }
   ],
 
@@ -106,7 +103,7 @@ foam.CLASS({
 
     function signIn(){
       var self = this;
-  
+
       if(!this.email || !this.password){
         console.log('Please provide email & password.')
         return;
@@ -122,5 +119,5 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.b2b.ui.dashboard.DashboardView' })
       })
     }
-  ],
+  ]
 });
