@@ -19,7 +19,8 @@ foam.CLASS({
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
-    'transactionDAO'
+    'transactionDAO',
+    'userDAO'
   ],
 
   axioms: [
@@ -83,9 +84,7 @@ foam.CLASS({
       var sub = this.transactionDAO.where(this.AND(
         this.EQ(this.Transaction.PAYEE_ID, this.user.id),
         this.EQ(this.Transaction.AMOUNT, this.amount)
-      )).listen(this.FnSink.create({
-        fn: this.onTransactionDAOUpdate
-      }));
+      )).listen({ put: this.onTransactionCreated });
 
       // detach listener when view is removed
       this.onunload.sub(function () {
@@ -124,10 +123,15 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'onTransactionDAOUpdate',
-      code: function () {
-        // TODO: push data to success view as well
-        this.stack.push(this.SuccessView.create({ refund: false }));
+      name: 'onTransactionCreated',
+      code: function (obj, s) {
+        var self = this;
+
+        this.userDAO.find(obj.payerId)
+        .then(function (user) {
+          obj.user = user;
+          self.stack.push(self.SuccessView.create({ refund: false, data: obj }));
+        })
       }
     }
   ]
