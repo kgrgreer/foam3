@@ -5,7 +5,7 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.bank.ui.CicoView' ],
 
-  imports: [ 'closeDialog', 'confirmCashOut', 'bankList', 'amount' ],
+  imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn' ],
 
   documentation: 'Pop up modal for cashing out.',
 

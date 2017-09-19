@@ -5,7 +5,14 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.bank.ui.CicoView' ],
 
-  imports: [ 'amount', 'bankDAO', 'bankList', 'closeDialog', 'onCashInSuccess', 'cashIn' ],
+  imports: [ 
+    'amount', 
+    'bankDAO', 
+    'bankList', 
+    'cashIn', 
+    'closeDialog', 
+    'onCashInSuccess'
+  ],
 
   documentation: 'Pop up modal for confirming top up.',
 
