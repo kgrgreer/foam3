@@ -42,8 +42,6 @@ foam.CLASS({
           font-size: 12px;
           padding-left: 15px;
         }
-
-    
         .foam-u2-ActionView-create{
           background: #59aadd !important;
           border: none !important;

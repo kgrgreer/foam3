@@ -23,6 +23,7 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
           box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.02);
+          position: relative;
         }
         ^ .popUpHeader {
           width: 448px;
@@ -100,9 +101,8 @@ foam.CLASS({
           text-align: center;
           cursor: pointer;
           font-size: 14px;
+          padding: 0;
           margin: 0;
-          margin-right: 20px;
-          margin-top: 20px;
           outline: none;
           float: right;
           box-shadow: none;
@@ -113,6 +113,8 @@ foam.CLASS({
           border-color: #3783b3;
         }
         ^ .foam-u2-ActionView-goToBank {
+          width: 118.3px;
+          height: 14px;
           font-family: Roboto;
           font-size: 12px;
           line-height: 1.33;
@@ -127,8 +129,6 @@ foam.CLASS({
           border: 0;
           outline: none;
           padding: 0;
-          margin-left: 20px;
-          margin-top: 44px;
         }
         ^ .foam-u2-ActionView-goToBank:hover {
           background: transparent;
@@ -156,8 +156,10 @@ foam.CLASS({
           .add(this.CicoView.BANK_LIST)
           .start().add(this.amountLabel).addClass('label').end()
           .add(this.CicoView.AMOUNT)
-          .add(this.NEXT_BUTTON)
-          .add(this.GO_TO_BANK)
+          .start('div').addClass('modal-button-container')
+            .add(this.NEXT_BUTTON)
+            .add(this.GO_TO_BANK)
+          .end()
         .end()
       .end()
     }

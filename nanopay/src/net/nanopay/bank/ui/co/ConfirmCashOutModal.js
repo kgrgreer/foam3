@@ -23,6 +23,7 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
           box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.02);
+          position: relative;
         }
         ^ .popUpHeader {
           width: 448px;
@@ -113,6 +114,7 @@ foam.CLASS({
           font-family: Roboto;
           width: 136px;
           height: 40px;
+          position: static;
           border-radius: 2px;
           background: #59a5d5;
           border: solid 1px #59a5d5;
@@ -122,12 +124,10 @@ foam.CLASS({
           cursor: pointer;
           font-size: 14px;
           margin: 0;
-          margin-right: 20px;
           outline: none;
           float: right;
           box-shadow: none;
           font-weight: normal;
-          margin-top: 74px;
         }
         ^ .foam-u2-ActionView-cashOutBtn:hover {
           background: #3783b3;
@@ -137,6 +137,7 @@ foam.CLASS({
           font-family: Roboto;
           width: 136px;
           height: 40px;
+          position: static;
           background: rgba(164, 179, 184, 0.1);
           border-radius: 2px;
           border: solid 1px #ebebeb;
@@ -148,10 +149,8 @@ foam.CLASS({
           margin: 0;
           outline: none;
           float: left;
-          margin-left: 20px;
           box-shadow: none;
           font-weight: normal;
-          margin-top: 74px;
         }
         ^ .foam-u2-ActionView-back:hover {
           background: #ebebeb;
@@ -188,7 +187,7 @@ foam.CLASS({
           .br()
           .start().add(this.amountLabel).addClass('label').end()
           .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
-          .start('div')
+          .start('div').addClass('modal-button-container')
             .add(this.BACK)
             .add(this.CASH_OUT_BTN)
           .end()
