@@ -11,6 +11,11 @@ import net.nanopay.tx.model.Transaction;
 public class InteracTransactionDAO
   extends ProxyDAO
 {
+  public InteracTransactionDAO(X x) {
+    this.setX(x);
+    this.setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo());
+  }
+
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     DAO transactionDAO          = (DAO) getX().get("transactionDAO");
