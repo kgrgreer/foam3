@@ -5,7 +5,10 @@ foam.CLASS({
 
   imports: [
     'user',
-    'tipEnabled'
+    'stack',
+    'tipEnabled',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   axioms: [
@@ -62,6 +65,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.toolbarIcon = 'arrow_back';
+      this.toolbarTitle = 'Back';
 
       this
         .addClass(this.myClass())

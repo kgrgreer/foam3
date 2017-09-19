@@ -22,7 +22,9 @@ foam.CLASS({
     'device',
     'stack',
     'showHeader',
-    'tipEnabled'
+    'tipEnabled',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   axioms: [
@@ -89,7 +91,6 @@ foam.CLASS({
   ],
 
   properties: [
-    'title',
     'drawer',
     'drawerList',
     {
@@ -101,6 +102,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'tipEnabled',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'toolbarIcon',
+      value: 'menu'
+    },
+    {
+      class: 'String',
+      name: 'toolbarTitle',
+      value: 'Home'
     },
     {
       class: 'FObjectProperty',
@@ -155,10 +166,10 @@ foam.CLASS({
           .start('div').addClass('mdc-toolbar__row')
             .start('section').addClass('mdc-toolbar__section mdc-toolbar__section--align-start')
               .start('button').addClass('merchant-menu material-icons mdc-toolbar__icon--menu')
-                .add('menu')
+                .add(this.toolbarIcon$)
                 .on('click', this.onMenuClicked)
               .end()
-              .start('span').addClass('mdc-toolbar__title catalog-title').add('Home').end()
+              .start('span').addClass('mdc-toolbar__title catalog-title').add(this.toolbarTitle$).end()
             .end()
           .end()
         .end()
@@ -210,7 +221,6 @@ foam.CLASS({
         var drawerEl = document.querySelector('.mdc-temporary-drawer');
         var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;
         this.drawer = new MDCTemporaryDrawer(drawerEl);
-        this.title = document.getElementsByClassName('mdc-toolbar__title')[0];
         this.drawerList = document.getElementsByClassName('mdc-list')[0];
       });
     }
@@ -218,12 +228,18 @@ foam.CLASS({
 
   listeners: [
     function onMenuClicked (e) {
-      drawer.open = true;
+      if ( this.toolbarTitle === 'Back' ) {
+        this.toolbarTitle = 'Home';
+        this.toolbarIcon = 'menu';
+        this.stack.back();
+      } else {
+        drawer.open = true;
+      }
     },
 
     function onMenuItemClicked (e) {
       var clicked = e.target.text;
-      if ( title === clicked || clicked === 'Back' ) {
+      if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
         drawer.open = false;
         return;
       }
@@ -235,7 +251,8 @@ foam.CLASS({
         e.target.classList.add('selected')
       }
 
-      title.innerHTML = clicked;
+      this.toolbarTitle = clicked;
+      this.stack.back();
       switch ( clicked ) {
         case 'Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
