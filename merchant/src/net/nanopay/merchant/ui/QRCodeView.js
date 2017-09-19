@@ -8,7 +8,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.dao.FnSink',
     'net.nanopay.merchant.ui.SuccessView',
     'net.nanopay.tx.model.Transaction'
   ],
