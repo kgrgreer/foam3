@@ -11,9 +11,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'transactionDAO',
     'bankDAO',
-    'stack'
+    'stack',
+    'transactionDAO'
   ],
 
   exports: [
