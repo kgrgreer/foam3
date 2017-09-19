@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MapDAO;
 import foam.nanos.auth.User;
+import java.util.Date;
 import net.nanopay.model.Account;
 import net.nanopay.model.UserAccountInfo;
 import net.nanopay.tx.model.Transaction;
@@ -46,6 +47,8 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject fObject) throws RuntimeException {
     Transaction transaction = (Transaction) fObject;
+    transaction.setDate(new Date());
+
     long payeeId            = transaction.getPayeeId();
     long payerId            = transaction.getPayerId();
 
