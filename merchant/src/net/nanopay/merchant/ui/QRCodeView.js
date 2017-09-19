@@ -3,12 +3,23 @@ foam.CLASS({
   name: 'QRCodeView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.dao.FnSink',
+    'net.nanopay.merchant.ui.SuccessView',
+    'net.nanopay.tx.model.Transaction'
+  ],
+
   imports: [
     'user',
     'stack',
     'tipEnabled',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'transactionDAO'
   ],
 
   axioms: [
@@ -68,6 +79,19 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
+      // add a listener for the payee id and amount
+      var sub = this.transactionDAO.where(this.AND(
+        this.EQ(this.Transaction.PAYEE_ID, this.user.id),
+        this.EQ(this.Transaction.AMOUNT, this.amount)
+      )).listen(this.FnSink.create({
+        fn: this.onTransactionDAOUpdate
+      }));
+
+      // detach listener when view is removed
+      this.onunload.sub(function () {
+        sub.detach();
+      });
+
       this
         .addClass(this.myClass())
         .start('div')
@@ -95,6 +119,16 @@ foam.CLASS({
           height: 160
         });
       });
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onTransactionDAOUpdate',
+      code: function () {
+        // TODO: push data to success view as well
+        this.stack.push(this.SuccessView.create({ refund: false }));
+      }
     }
   ]
 })
