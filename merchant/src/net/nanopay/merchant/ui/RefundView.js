@@ -7,13 +7,14 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.merchant.ui.SuccessView',
-    'net.nanopay.merchant.ui.ErrorView'
+    'net.nanopay.merchant.ui.ErrorView',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
     'user',
     'stack',
-    'transaction'
+    'transactionDAO'
   ],
 
   axioms: [
@@ -137,14 +138,17 @@ foam.CLASS({
     function onRefundClicked (e) {
       var self = this;
 
-      this.transaction.transferValueById(this.user.id, this.data.user.id, this.data.amount, null, null, 0, null)
+      this.transactionDAO.put(this.Transaction.create({
+        payerId: this.user.id,
+        payeeId: this.data.user.id,
+        amount: this.data.amount
+      }))
       .then(function () {
         self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
       })
       .catch(function (err) {
         self.stack.push(self.ErrorView.create({ refund: true, data: self.data }));
       });
-      //
     }
   ]
 });
