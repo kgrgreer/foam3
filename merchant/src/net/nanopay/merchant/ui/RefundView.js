@@ -141,7 +141,8 @@ foam.CLASS({
       this.transactionDAO.put(this.Transaction.create({
         payerId: this.user.id,
         payeeId: this.data.user.id,
-        amount: this.data.amount
+        amount: this.data.amount,
+        date: new Date()
       }))
       .then(function () {
         self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
