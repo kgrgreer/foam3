@@ -25,8 +25,7 @@ foam.CLASS({
       factory: function () {
         return this.ClientExchangeRateService.create({
           delegate: this.HTTPBox.create({
-            method: 'POST',
-            url: 'http://localhost:8080/exchangeRate'
+            url: 'exchangeRate'
           })
         })
       }

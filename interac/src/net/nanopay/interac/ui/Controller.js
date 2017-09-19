@@ -6,13 +6,14 @@ foam.CLASS({
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
 
   implements: [
+    //'foam.nanos.client.Client',
     'foam.nanos.client.Client2',
-    'net.nanopay.interac.client.Client',
-    'net.nanopay.tx.client.Client',
-    'net.nanopay.fx.client.Client',
-    'net.nanopay.interac.dao.Storage',
-    'net.nanopay.client.Client',
-    'foam.mlang.Expressions'
+    //'net.nanopay.interac.client.Client',
+    //'net.nanopay.tx.client.Client',
+    //'net.nanopay.fx.client.Client',
+    //'net.nanopay.interac.dao.Storage',
+    //'net.nanopay.client.Client',
+    //'foam.mlang.Expressions'
   ],
 
   requires: [
