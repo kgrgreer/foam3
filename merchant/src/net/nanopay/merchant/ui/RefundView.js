@@ -11,7 +11,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'user',
+    'stack',
+    'transaction'
   ],
 
   axioms: [
@@ -133,7 +135,16 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      this.stack.push(this.SuccessView.create({ refund: true, data: this.data }));
+      var self = this;
+
+      this.transaction.transferValueById(this.user.id, this.data.user.id, this.data.amount, null, null, 0, null)
+      .then(function () {
+        self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
+      })
+      .catch(function (err) {
+        self.stack.push(self.ErrorView.create({ refund: true, data: self.data }));
+      });
+      //
     }
   ]
 });
