@@ -122,6 +122,7 @@ foam.CLASS({
           width: 80%;
           margin-left: 20px;
           font-size: 12px;
+          cursor: pointer;
         }
       */}
     })
@@ -258,7 +259,7 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
+      var self = this;
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
@@ -283,7 +284,11 @@ foam.CLASS({
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
             .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
-            .start('p').addClass('confirmationLabel').add(this.NotThirdParty).end()
+            .start('p').addClass('confirmationLabel').add(this.NotThirdParty)
+              .on('click', function() {
+                self.notThirdParty = ! self.notThirdParty;
+              })
+            .end()
           .end()
         .end()
         .start('div').addClass('divider').end()
