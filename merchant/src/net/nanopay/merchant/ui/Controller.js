@@ -205,8 +205,18 @@ foam.CLASS({
                   .add('Transactions')
                   .on('click', this.onMenuItemClicked)
                 .end()
+
+                .start('a').addClass('mdc-list-item')
+                  .start('i').addClass('mdc-list-item__start-detail')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.png' })
+                  .end()
+                  .add('Tip')
+                  .on('click', this.onMenuItemClicked)
+                  .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
+                .end()
+
               .end()
-              .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$, label: 'Tip Enabled' })
             .end()
           .end()
         .end()
@@ -243,6 +253,11 @@ foam.CLASS({
         return;
       }
 
+      if ( clicked === 'Tip' ) {
+        this.tipEnabled = ! this.tipEnabled;
+        return;
+      }
+
       // remove selected class from current and add to new
       var selected = document.getElementsByClassName('mdc-list-item selected')[0];
       if ( selected ) {
@@ -251,6 +266,8 @@ foam.CLASS({
       }
 
       this.toolbarTitle = clicked;
+      console.log('clicked =', clicked);
+
       this.stack.back();
       switch ( clicked ) {
         case 'Home':
