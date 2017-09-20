@@ -248,11 +248,18 @@ foam.CLASS({
 
     function onMenuItemClicked (e) {
       var clicked = e.target.text;
+      // if clicked is null, don't do anything
+      if ( ! clicked ) {
+        return;
+      }
+
+      // if we are on the same screen or have clicked the back button, close drawer
       if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
         drawer.open = false;
         return;
       }
 
+      // if clicking the tip button, enable tip and don't close
       if ( clicked === 'Tip' ) {
         this.tipEnabled = ! this.tipEnabled;
         return;
