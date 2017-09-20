@@ -10,6 +10,8 @@ foam.CLASS({
     'foam.mlang.Expressions',
     'foam.nanos.client.Client',
     'net.nanopay.invoice.dao.Dao',
+    'net.nanopay.tx.client.Client',
+    'net.nanopay.client.Client',
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
@@ -67,8 +69,8 @@ foam.CLASS({
       var self = this;
 
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.userDAO.where(this.EQ(this.User.ID, 1)).select().then(function(a){
-        self.user = a.array[0];
+      this.userDAO.find(1).then(function(a) {
+        self.user.copyFrom(a);
       });
 
       net.nanopay.TempMenu.create(null, this);

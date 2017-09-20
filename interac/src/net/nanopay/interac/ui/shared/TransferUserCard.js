@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'User card used in transfers',
 
   imports: [
-    'mode',
+    'invoiceMode',
     'bankAccountDAO',
     'bankDAO'
   ],
@@ -168,7 +168,7 @@ foam.CLASS({
         var self = this;
         if ( ! this.user ) return;
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
-        if ( this.mode == 'Organization' ) {
+        if ( this.invoiceMode ) {
           // if organization exists, change name to organization name.
           if ( this.user.organization ) this.name_ = this.user.organization;
         }
@@ -185,7 +185,7 @@ foam.CLASS({
 
 
         this.bankAccountDAO.find(this.user.id).then(function(account) {
-          self.accountNo_ = account.accountInfo.accountNumber;
+          self.accountNo_ = '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length);
           self.bankDAO.find(account.accountInfo.bankAccount).then(function(bank){
             switch( self.user.address.countryId ) {
               case 'CA' :
@@ -197,7 +197,7 @@ foam.CLASS({
               case 'IN' :
                 self.flagURL_ = 'images/india.svg';
                 self.nationality_ = 'India';
-                self.idLabel_ = 'IFSC';
+                self.idLabel_ = 'IFSC ID';
                 self.accountId_ = bank.memberIdentification;
                 break;
             }

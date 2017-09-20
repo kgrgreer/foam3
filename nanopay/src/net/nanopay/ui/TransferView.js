@@ -82,13 +82,12 @@ foam.CLASS({
         var self = this;
 
         var transaction = this.Transaction.create({
-          payeeId: this.user.id,
-          payerId: this.payees,
+          payeeId: this.payees,
+          payerId: this.user.id,
           amount: this.transferAmount
         });
 
         this.transactionDAO.put(transaction);
-        console.log('Hit Transaction Complete');
       }
     }
   ],

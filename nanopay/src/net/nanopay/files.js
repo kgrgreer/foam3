@@ -19,6 +19,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/NotificationActionCard' },
   { name: 'net/nanopay/ui/ContentCard' },
   { name: 'net/nanopay/ui/RadioView' },
+  { name: 'net/nanopay/ui/ToggleSwitch' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -29,8 +30,8 @@ FOAM_FILES([
 
   // retail
   { name: 'net/nanopay/retail/client/Client' },
-  { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
+  { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/ui/DeviceCTACard' },
   { name: 'net/nanopay/retail/ui/BankCTACard' },
   { name: 'net/nanopay/retail/ui/devices/DevicesView' },
@@ -43,7 +44,8 @@ FOAM_FILES([
   // tx
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
-  { name: 'net/nanopay/tx/TransactionService' },
-  { name: 'net/nanopay/tx/client/ClientTransactionService' },
   { name: 'net/nanopay/tx/client/Client' },
+
+  { name: 'net/nanopay/util/ChallengeGenerator' },
+  { name: 'net/nanopay/util/CurrencyFormatter' }
 ]);
