@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'duration',
-      value: 30 * 1000
+      value: 30 * 60 * 1000
     },
     {
       class: 'DateTime',
@@ -78,7 +78,7 @@ foam.CLASS({
 
     function reset() {
       this.stop();
-      this.duration = 30 * 1000;
+      this.duration = 30 * 60 * 1000;
       this.time = new Date(null).setMilliseconds(this.duration);
     },
 

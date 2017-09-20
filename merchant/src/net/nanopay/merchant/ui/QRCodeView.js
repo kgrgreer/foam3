@@ -3,12 +3,24 @@ foam.CLASS({
   name: 'QRCodeView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  implements: [
+    'foam.mlang.Expressions',
+    'net.nanopay.util.ChallengeGenerator'
+  ],
+
+  requires: [
+    'net.nanopay.merchant.ui.SuccessView',
+    'net.nanopay.tx.model.Transaction'
+  ],
+
   imports: [
     'user',
     'stack',
     'tipEnabled',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'transactionDAO',
+    'userDAO'
   ],
 
   axioms: [
@@ -68,6 +80,20 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
+      var challenge = this.generateChallenge();
+
+      // add a listener for the payee id and amount
+      var sub = this.transactionDAO.where(this.AND(
+        this.EQ(this.Transaction.PAYEE_ID, this.user.id),
+        this.EQ(this.Transaction.AMOUNT, this.amount),
+        this.EQ(this.Transaction.CHALLENGE, this.challenge)
+      )).listen({ put: this.onTransactionCreated });
+
+      // detach listener when view is removed
+      this.onunload.sub(function () {
+        sub.detach();
+      });
+
       this
         .addClass(this.myClass())
         .start('div')
@@ -89,12 +115,28 @@ foam.CLASS({
           text: JSON.stringify({
             userId: self.user.id,
             amount: self.amount,
+            challenge: challenge,
             tip: self.tipEnabled
           }),
           width: 160,
           height: 160
         });
       });
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onTransactionCreated',
+      code: function (obj, s) {
+        var self = this;
+
+        this.userDAO.find(obj.payerId)
+        .then(function (user) {
+          obj.user = user;
+          self.stack.push(self.SuccessView.create({ refund: false, data: obj }));
+        })
+      }
     }
   ]
 })

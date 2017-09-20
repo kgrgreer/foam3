@@ -52,6 +52,16 @@ foam.CLASS({
           serviceName: 'payeeDAO'
         })
       }
+    },
+    {
+      name: 'interacTransactionDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.User,
+          serviceName: 'interacTransactionDAO'
+        })
+      }
     }
   ],
 

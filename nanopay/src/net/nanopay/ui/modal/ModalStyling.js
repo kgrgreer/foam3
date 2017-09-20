@@ -28,6 +28,15 @@ foam.CLASS({
         .key-value-container{
           margin-bottom: 20px;
         }
+        .modal-button-container{
+          width: 408px;
+          height: 40px;
+          position: absolute;
+          bottom: 0;
+          padding-left: 20px;
+          padding-right: 20px;
+          margin-bottom: 20px;
+         }
       */}
     })
   ]

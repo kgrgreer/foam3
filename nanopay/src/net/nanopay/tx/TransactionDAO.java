@@ -5,12 +5,13 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MapDAO;
 import foam.nanos.auth.User;
+import java.util.Date;
 import net.nanopay.model.Account;
 import net.nanopay.model.UserAccountInfo;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionDAO
-    extends MapDAO
+  extends MapDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -46,15 +47,25 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject fObject) throws RuntimeException {
     Transaction transaction = (Transaction) fObject;
+    transaction.setDate(new Date());
+
     long payeeId            = transaction.getPayeeId();
     long payerId            = transaction.getPayerId();
 
-    if ( transaction.getAmount() <= 0 ) {
-      throw new RuntimeException("Transaction amount must be greater than 0");
+    if ( payerId <= 0 ) {
+      throw new RuntimeException("Invalid Payer id");
+    }
+
+    if ( payeeId <= 0 ) {
+      throw new RuntimeException("Invalid Payee id");
     }
 
     if ( payeeId == payerId ) {
       throw new RuntimeException("PayeeID and PayerID cannot be the same");
+    }
+
+    if ( transaction.getAmount() <= 0 ) {
+      throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
     Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
@@ -95,15 +106,15 @@ public class TransactionDAO
             getAccountDAO().put(payeeAccount);
 
             super.put_(x, fObject);
+            return fObject;
           } else {
             throw new RuntimeException("Payer doesn't have enough balance");
           }
-        } catch (Exception err) {
-          err.printStackTrace();
+        } catch (Exception e) {
+          throw e;
         }
       }
     }
-    return fObject;
   }
 
   @Override

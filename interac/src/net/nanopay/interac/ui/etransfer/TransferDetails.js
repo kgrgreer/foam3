@@ -21,7 +21,7 @@ foam.CLASS({
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
     'bankAccountDAO',
-    'payeeDAO',
+    'payeeDAO'
   ],
 
   axioms: [
@@ -55,9 +55,18 @@ foam.CLASS({
 
           padding: 12px 20px;
           padding-right: 35px;
-          border: solid 1px rgba(164, 179, 184, 0.5);
+          border: solid 1px rgba(164, 179, 184, 0.5) !important;
           background-color: white;
           outline: none;
+          cursor: pointer;
+        }
+
+        ^ .foam-u2-tag-Select:disabled {
+          cursor: default;
+        }
+
+        ^ .foam-u2-tag-Select:focus {
+          border: solid 1px #59A5D5;
         }
 
         ^ .dropdownContainer {
@@ -65,16 +74,9 @@ foam.CLASS({
           margin-bottom: 20px;
         }
 
-        ^ .foam-u2-tag-Select:hover {
-          cursor: pointer;
-        }
-
-        ^ .foam-u2-tag-Select:focus {
-          border: solid 1px #59A5D5;
-        }
-
         ^ .caret {
           position: relative;
+          pointer-events: none;
         }
 
         ^ .caret:before {
@@ -96,6 +98,32 @@ foam.CLASS({
           border-left: 0px solid transparent;
           border-right: 0px solid transparent;
         }
+
+        ^ .confirmationContainer {
+          margin-top: 18px;
+          width: 100%;
+        }
+
+        ^ input[type='checkbox'] {
+          display: inline-block;
+          vertical-align: top;
+          margin:0 ;
+          border: solid 1px rgba(164, 179, 184, 0.75);
+          cursor: pointer;
+        }
+
+        ^ input[type='checkbox']:checked {
+          background-color: black;
+        }
+
+        ^ .confirmationLabel {
+          display: inline-block;
+          vertical-align: top;
+          width: 80%;
+          margin-left: 20px;
+          font-size: 12px;
+          cursor: pointer;
+        }
       */}
     })
   ],
@@ -108,6 +136,7 @@ foam.CLASS({
     { name: 'PayeeLabel', message: 'Payee' },
     { name: 'PurposeLabel', message: 'Purpose of Transfer' },
     { name: 'NoteLabel', message: 'Notes (Optional)' },
+    { name: 'NotThirdParty', message: 'Sending money on behalf of myself and not on behalf of a third party' },
     { name: 'InvoiceNoLabel', message: 'Invoice No.' },
     { name: 'PONoLabel', message: 'PO No.' },
     { name: 'PDFLabel', message: 'View Invoice PDF' }
@@ -128,7 +157,7 @@ foam.CLASS({
           dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.Account.ID, 1)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
-                                account.accountInfo.accountNumber//'***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length)
+                                '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length)
                     ]; // TODO: Grab amount and display
           }
         });
@@ -149,7 +178,7 @@ foam.CLASS({
           dao: X.data.payeeDAO.where(X.data.NEQ(X.data.User.ID, 1)),
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
-            if ( X.data.mode == 'Organization' ) {
+            if ( X.data.invoiceMode ) {
               // if organization exists, change name to organization name.
               if ( payee.organization ) username = payee.organization;
             }
@@ -188,6 +217,17 @@ foam.CLASS({
         this.viewData.notes = newValue;
       },
       view: { class: 'foam.u2.tag.TextArea' }
+    },
+    {
+      class: 'Boolean',
+      name: 'notThirdParty',
+      value: false,
+      postSet: function(oldValue, newValue) {
+        this.viewData.notThirdParty = newValue;
+      },
+      validateObj: function(notThirdParty, invoiceMode) {
+        if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
+      }
     }
   ],
 
@@ -199,6 +239,10 @@ foam.CLASS({
         this.payees = this.viewData.payee.id;
       }
 
+      if ( this.invoiceMode ) {
+        this.payees = this.invoice.toBusinessId;
+      }
+
       if ( this.viewData.purpose ) {
         this.purpose = this.viewData.purpose;
       }
@@ -208,7 +252,6 @@ foam.CLASS({
       }
 
       this.payeeDAO.find(1).then(function(user) {
-        console.log(user);
         self.fromUser = user;
       });
       this.SUPER()
@@ -216,7 +259,7 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
+      var self = this;
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
@@ -229,8 +272,8 @@ foam.CLASS({
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
           .start('div').addClass('dropdownContainer')
-            .add(this.PAYEES)
-            .start('div').addClass('caret').end()
+            .start(this.PAYEES, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
+            .start('div').enableClass('hidden', this.invoiceMode$).addClass('caret').end()
           .end()
           .start('p').add(this.PurposeLabel).end()
           .start('div').addClass('dropdownContainer')
@@ -239,6 +282,14 @@ foam.CLASS({
           .end()
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
+          .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
+            .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
+            .start('p').addClass('confirmationLabel').add(this.NotThirdParty)
+              .on('click', function() {
+                self.notThirdParty = ! self.notThirdParty;
+              })
+            .end()
+          .end()
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
