@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'net.nanopay.util.ChallengeGenerator'
   ],
 
   requires: [
@@ -79,10 +80,13 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
+      var challenge = this.generateChallenge();
+
       // add a listener for the payee id and amount
       var sub = this.transactionDAO.where(this.AND(
         this.EQ(this.Transaction.PAYEE_ID, this.user.id),
-        this.EQ(this.Transaction.AMOUNT, this.amount)
+        this.EQ(this.Transaction.AMOUNT, this.amount),
+        this.EQ(this.Transaction.CHALLENGE, this.challenge)
       )).listen({ put: this.onTransactionCreated });
 
       // detach listener when view is removed
@@ -111,6 +115,7 @@ foam.CLASS({
           text: JSON.stringify({
             userId: self.user.id,
             amount: self.amount,
+            challenge: challenge,
             tip: self.tipEnabled
           }),
           width: 160,
