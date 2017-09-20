@@ -116,14 +116,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
+      var id
+
       this.addClass(this.myClass())
         .start('div').addClass(this.myClass('toggleswitch'))
           .start({class: 'foam.u2.CheckBox', data$: this.data$})
             .addClass(this.myClass('checkbox'))
-            .setID(id = 'mytoggleswitch')
+            .setID(id = self.NEXT_ID())
           .end()
           .start('label').addClass(this.myClass('label'))
-            .attrs({ for: 'mytoggleswitch' })
+            .attrs({ for: id })
             .start('span').addClass(this.myClass('inner')).end()
             .start('span').addClass(this.myClass('switch')).end()
           .end()
