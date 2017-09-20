@@ -52,8 +52,7 @@ foam.CLASS({
       }
       ^ .foam-u2-ActionView-close{
         position: relative;
-        bottom: 50px;
-        right: -390px;
+        right: -270px;
         width: 50px;
         height: 40px;
         opacity: 0.01;
