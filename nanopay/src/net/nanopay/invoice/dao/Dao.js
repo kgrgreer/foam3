@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'recurringInvoiceDAO'
   ],
 
   properties: [
@@ -53,8 +54,8 @@ foam.CLASS({
           testData: [
             {
               frequency: 'Weekly',
-              endsAfter: Date.now(),
-              nextInvoiceDate: Date.now(),
+              endsAfter: new Date(),
+              nextInvoiceDate: new Date(),
               deleted: false
             }
           ]
@@ -62,5 +63,4 @@ foam.CLASS({
       }
     }
   ]
-  
 });

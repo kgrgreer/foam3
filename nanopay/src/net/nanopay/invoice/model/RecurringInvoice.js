@@ -30,6 +30,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'deleted'
+    },
+    {
+      name: 'toUserId'
+    },
+    {
+      name: 'fromUserId'
     }
   ]
 });
