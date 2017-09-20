@@ -65,13 +65,13 @@ foam.CLASS({
           cursor: default;
         }
 
+        ^ .foam-u2-tag-Select:focus {
+          border: solid 1px #59A5D5;
+        }
+
         ^ .dropdownContainer {
           position: relative;
           margin-bottom: 20px;
-        }
-
-        ^ .foam-u2-tag-Select:focus {
-          border: solid 1px #59A5D5;
         }
 
         ^ .caret {
@@ -119,7 +119,7 @@ foam.CLASS({
         ^ .confirmationLabel {
           display: inline-block;
           vertical-align: top;
-          width: 85%;
+          width: 80%;
           margin-left: 20px;
           font-size: 12px;
         }
@@ -221,6 +221,9 @@ foam.CLASS({
       class: 'Boolean',
       name: 'notThirdParty',
       value: false,
+      postSet: function(oldValue, newValue) {
+        this.viewData.notThirdParty = newValue;
+      },
       validateObj: function(notThirdParty, invoiceMode) {
         if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
       }
@@ -231,7 +234,6 @@ foam.CLASS({
     function init() {
       var self = this;
       var initSuper = this.SUPER;
-
       if ( this.viewData.payee ) {
         this.payees = this.viewData.payee.id;
       }
@@ -299,7 +301,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
-          .start({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser }).end()
+          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();
