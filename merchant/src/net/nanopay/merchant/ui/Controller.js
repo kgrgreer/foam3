@@ -266,8 +266,6 @@ foam.CLASS({
       }
 
       this.toolbarTitle = clicked;
-      console.log('clicked =', clicked);
-
       this.stack.back();
       switch ( clicked ) {
         case 'Home':
