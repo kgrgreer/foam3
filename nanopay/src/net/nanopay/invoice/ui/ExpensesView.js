@@ -8,9 +8,9 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
-  imports: [ 'invoiceDAO', 'user' ],
+  imports: [ 'user' ],
 
-  exports: [ 'hideSaleSummary' ],
+  exports: [ 'hideSaleSummary', 'expensesDAO' ],
 
   properties: [ 
     'selection', 
@@ -19,7 +19,12 @@ foam.CLASS({
       name: 'hideSaleSummary',
       value: false
     },
-    { name: 'data', factory: function() { return this.invoiceDAO; }}
+    {
+      name: 'expensesDAO',
+      factory: function() {
+        return this.user.expenses;
+      }
+    }
   ],
 
   axioms: [
@@ -74,7 +79,7 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.invoiceDAO,
+            dao: this.expensesDAO,
             factory: function() { return self.Invoice.create({ toUserId: self.user.id, toUserName: self.user.name }); },
             createLabel: 'New Invoice',
             createDetailView: { class: 'net.nanopay.invoice.ui.BillDetailView' },
@@ -82,7 +87,7 @@ foam.CLASS({
             summaryView: this.ExpensesTableView.create()
           })
         .end()
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.invoiceDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
     },
   ],
 
@@ -92,11 +97,11 @@ foam.CLASS({
       extends: 'foam.u2.View',
       
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
-      imports: [ 'invoiceDAO' ],
+      imports: [ 'expensesDAO' ],
 
       properties: [ 
         'selection', 
-        { name: 'data', factory: function() { return this.invoiceDAO; }}
+        { name: 'data', factory: function() { return this.expensesDAO; }}
       ],
 
       methods: [

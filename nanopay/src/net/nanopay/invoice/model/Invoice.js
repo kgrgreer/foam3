@@ -164,3 +164,68 @@ foam.CLASS({
     }
   ]
 });
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.invoice.model.Invoice',
+  forwardName: 'sales',
+  inverseName: 'toUserId',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    label: 'Vendor',
+    searchView: {
+      class: "foam.u2.search.GroupBySearchView",
+      width: 40,
+      aFormatLabel: function(key) {
+        var dao = this.__context__.userDAO;
+        return new Promise(function (resolve, reject) {
+          dao.find(key).then(function (user) {
+            resolve(user ? user.name : 'Unknown User: ' + key);
+          });
+        });
+      },
+      viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
+    },
+    tableCellFormatter: function(value, obj, rel) {
+      this.__context__[rel.targetDAOKey].find(value).then(function (o) {
+        this.add(o.name);
+      }.bind(this));
+    }
+  }
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.invoice.model.Invoice',
+  forwardName: 'expenses',
+  inverseName: 'fromUserId',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    label: 'Customer',
+//    aliases: [ 'from', 'customer' ],
+    searchView: {
+      class: "foam.u2.search.GroupBySearchView",
+      width: 40,
+      aFormatLabel: function(key) {
+        var dao = this.__context__.userDAO;
+        return new Promise(function (resolve, reject) {
+          dao.find(key).then(function (user) {
+            resolve(user ? user.name : 'Unknown User: ' + key);
+          });
+        });
+      },
+      viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
+    },
+    tableCellFormatter: function(value, obj, rel) {
+      this.__context__[rel.targetDAOKey].find(value).then(function (o) {
+        this.add(o.name);
+      }.bind(this));
+    }
+  }
+});

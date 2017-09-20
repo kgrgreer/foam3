@@ -10,7 +10,6 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'invoiceDAO', 
     'formatCurrency',
     'user'
   ],
@@ -18,10 +17,6 @@ foam.CLASS({
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
   properties: [
-    {
-      name: 'dao',
-      factory: function() { return this.invoiceDAO; }
-    },
     {
       name: 'payableAmount',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
@@ -39,6 +34,18 @@ foam.CLASS({
       class: 'Currency',
       name: 'formattedReceivableAmount',
       expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
+    },
+    {
+      name: 'salesDAO',
+      factory: function() {
+        return this.user.sales;
+      }
+    },
+    {
+      name: 'expensesDAO',
+      factory: function() {
+        return this.user.expenses;
+      }
     }
   ],
 
@@ -125,14 +132,11 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        var expensesInvoices = this.dao.where(this.EQ(this.Invoice.FROM_USER_ID, this.user.id))
-        var payablesInvoices = this.dao.where(this.EQ(this.Invoice.TO_USER_ID, this.user.id))
-        
-        expensesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
+        this.expensesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.payableAmount = sum.value;
         });
 
-        payablesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        this.salesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.receivableAmount = sum.value;
         })
       }
