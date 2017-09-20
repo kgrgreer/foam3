@@ -151,12 +151,15 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start('div').addClass('transaction-refund')
+
+      if ( ! this.data.refund ) {
+        this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
             .on('click', this.onRefundClicked)
           .end()
         .end()
+      }
     }
   ],
 
