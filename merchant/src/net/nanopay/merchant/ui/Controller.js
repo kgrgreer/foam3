@@ -89,6 +89,9 @@ foam.CLASS({
           height: 20px;
           object-fit: contain;
         }
+        ^ .net-nanopay-ui-ToggleSwitch {
+          padding-left: 60px;
+        }
       */}
     })
   ],
@@ -208,6 +211,17 @@ foam.CLASS({
                   .add('Transactions')
                   .on('click', this.onMenuItemClicked)
                 .end()
+
+                .start('a').addClass('mdc-list-item')
+                  .start('i').addClass('mdc-list-item__start-detail')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.png' })
+                  .end()
+                  .add('Tip')
+                  .on('click', this.onMenuItemClicked)
+                  .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
+                .end()
+
               .end()
             .end()
           .end()
@@ -240,8 +254,20 @@ foam.CLASS({
 
     function onMenuItemClicked (e) {
       var clicked = e.target.text;
+      // if clicked is null, don't do anything
+      if ( ! clicked ) {
+        return;
+      }
+
+      // if we are on the same screen or have clicked the back button, close drawer
       if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
         drawer.open = false;
+        return;
+      }
+
+      // if clicking the tip button, enable tip and don't close
+      if ( clicked === 'Tip' ) {
+        this.tipEnabled = ! this.tipEnabled;
         return;
       }
 

@@ -19,6 +19,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/NotificationActionCard' },
   { name: 'net/nanopay/ui/ContentCard' },
   { name: 'net/nanopay/ui/RadioView' },
+  { name: 'net/nanopay/ui/ToggleSwitch' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },

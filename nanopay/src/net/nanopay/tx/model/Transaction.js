@@ -13,7 +13,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      label: 'Transaction ID'
     },
     {
       class: 'String',
@@ -85,6 +86,10 @@ foam.CLASS({
       label: 'Date & Time'
     },
     {
+      class: 'String',
+      name: 'type'
+    },
+    {
       class: 'Currency',
       name: 'tip'
     },
@@ -107,6 +112,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'total',
+      transient: true,
       expression: function (amount, tip, fees) {
         return amount + tip + fees;
       }

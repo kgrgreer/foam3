@@ -60,10 +60,18 @@ foam.CLASS({
         }
         ^ .transaction-item-amount {
           position: absolute;
-          font-family: Roboto;
-          font-size: 25px;
+          font-size: 20px;
           text-align: right;
           color: #26a96c;
+          padding-top: 22px;
+          padding-bottom: 19px;
+          padding-left: 217px;
+        }
+        ^ .transaction-item-amount-refund {
+          position: absolute;
+          font-size: 20px;
+          text-align: right;
+          color: #f55a5a;
           padding-top: 22px;
           padding-bottom: 19px;
           padding-left: 217px;
@@ -82,6 +90,7 @@ foam.CLASS({
         .call(function () {
           Promise.resolve().then(function () {
             if ( self.data.payerId === self.user.id ) {
+              self.data.refund = true;
               return self.userDAO.find(self.data.payeeId);
             } else if ( self.data.payeeId === self.user.id ) {
               return self.userDAO.find(self.data.payerId);
@@ -93,9 +102,15 @@ foam.CLASS({
               .start().addClass('transaction-item-icon')
                 .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
               .end()
-              .start().addClass('transaction-item-name').add(user.firstName + ' ' + user.lastName).end()
-              .start().addClass('transaction-item-datetime').add(self.data.date.toLocaleString()).end()
-              .start().addClass('transaction-item-amount').add('$' + ( self.data.amount / 100 ).toFixed(2)).end()
+              .start().addClass('transaction-item-name')
+                .add(user.firstName + ' ' + user.lastName)
+              .end()
+              .start().addClass('transaction-item-datetime')
+                .add(self.data.date.toLocaleString())
+              .end()
+              .start().addClass('transaction-item-amount' + ( self.data.refund ? '-refund' : '' ) )
+                .add( ( self.data.refund ? '-' : '' ) + '$' + ( self.data.amount / 100 ).toFixed(2))
+              .end()
               .on('click', self.onClick)
             .end();
           });
