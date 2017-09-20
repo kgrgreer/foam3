@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferWizard',
-  extends: 'net.nanopay.interac.ui.shared.wizardView.WizardView',
+  extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for e-transfer',
 
@@ -22,24 +22,33 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.interac.ui.shared.wizardView.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
       code: function CSS() {/*
+      ^ .overviewTopMargin {
+        margin-top: 21px;
+      }
+
+      ^ .title {
+        margin-top: 15px !important;
+      }
+
       ^ .topRow {
+        margin-top: 15px;
         width: 100%;
         height: 40px;
+        padding: 0 !important;
         box-sizing: border-box;
         margin-bottom: 20px;
       }
 
       ^ .net-nanopay-interac-ui-CountdownView {
         display: inline-block;
-        margin-top: 3px;
+        line-height: 40px;
       }
 
       ^ .timerText {
         display: inline-block;
-        vertical-align: top;
         margin-left: 20px;
         margin-top: 6px;
         opacity: 1 !important;
@@ -50,6 +59,8 @@ foam.CLASS({
       }
 
       ^ .interacImage {
+        display: inline-block;
+        vertical-align: top;
         width: 90px;
         height: 40px;
         object-fit: contain;
@@ -214,7 +225,7 @@ foam.CLASS({
         .start('div').addClass('row')
           .start('div').addClass('positionColumn')
             .start('p').add(this.title || '').addClass('title').end()
-            .tag({ class: 'net.nanopay.interac.ui.shared.wizardView.WizardViewOverview', titles: this.viewTitles, position$: this.position$ })
+            .start({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ }).addClass('overviewTopMargin').end()
           .end()
           .start('div').addClass('stackColumn')
             .start('div').addClass('topRow')

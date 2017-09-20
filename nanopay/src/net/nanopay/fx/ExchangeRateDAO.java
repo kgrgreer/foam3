@@ -8,7 +8,6 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 
-
 public class ExchangeRateDAO
   extends AbstractDAO
 {

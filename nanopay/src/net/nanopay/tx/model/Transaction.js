@@ -13,7 +13,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      label: 'Transaction ID'
     },
     {
       class: 'String',
@@ -83,6 +84,10 @@ foam.CLASS({
       class: 'DateTime',
       name: 'date',
       label: 'Date & Time'
+    },
+    {
+      class: 'String',
+      name: 'type'
     },
     {
       class: 'Currency',
