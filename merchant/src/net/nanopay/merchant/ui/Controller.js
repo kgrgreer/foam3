@@ -206,6 +206,7 @@ foam.CLASS({
                   .on('click', this.onMenuItemClicked)
                 .end()
               .end()
+              .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$, label: 'Tip Enabled' })
             .end()
           .end()
         .end()
