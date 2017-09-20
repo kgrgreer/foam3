@@ -86,6 +86,9 @@ foam.CLASS({
           height: 20px;
           object-fit: contain;
         }
+        ^ .net-nanopay-ui-ToggleSwitch {
+          padding-left: 60px;
+        }
       */}
     })
   ],
