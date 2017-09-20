@@ -112,6 +112,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'total',
+      transient: true,
       expression: function (amount, tip, fees) {
         return amount + tip + fees;
       }
