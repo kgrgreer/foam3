@@ -12,7 +12,7 @@ foam.CLASS({
     'goNext',
     'countdownView',
     'invoice',
-    'mode',
+    'invoiceMode',
     'user'
   ],
 
