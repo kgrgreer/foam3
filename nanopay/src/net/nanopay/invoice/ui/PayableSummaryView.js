@@ -105,7 +105,7 @@ foam.CLASS({
 
   methods: [ 
     function initE() {
-      this.expensesDAO.on.sub(this.onDAOUpdate);
+      this.dao.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
 
       this

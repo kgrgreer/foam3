@@ -65,9 +65,8 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.userDAO.find(1).then(function(a) {
+      this.localUserDAO.find(1).then(function(a) {
         self.user.copyFrom(a);
       });
 
