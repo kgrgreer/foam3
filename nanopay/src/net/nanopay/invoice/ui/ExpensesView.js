@@ -57,7 +57,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      
+
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)
@@ -88,7 +88,9 @@ foam.CLASS({
             summaryView: this.ExpensesTableView.create()
           })
         .end()
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
+        .start().enableClass('hide', this.hideSaleSummary$)        
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
+        .end()
     },
   ],
 

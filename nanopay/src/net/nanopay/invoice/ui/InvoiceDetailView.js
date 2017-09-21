@@ -62,7 +62,7 @@ foam.CLASS({
       function initE() {
         this.SUPER();
         this.hideReceivableSummary = true;
-        debugger;
+
         this
           .addClass(this.myClass())
           .start().addClass('button-row')

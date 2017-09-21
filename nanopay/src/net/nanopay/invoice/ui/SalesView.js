@@ -87,7 +87,9 @@ foam.CLASS({
             summaryView: this.SalesTableView.create()
           })
         .end()
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.salesDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
+        .start().enableClass('hide', this.hideReceivableSummary$)        
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.salesDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
+        .end()
     }
   ],
 
