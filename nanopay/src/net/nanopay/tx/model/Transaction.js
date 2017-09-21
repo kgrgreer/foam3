@@ -81,6 +81,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'challenge',
+      documentation: 'Randomly generated challenge'
+    },
+    {
       class: 'DateTime',
       name: 'date',
       label: 'Date & Time'
