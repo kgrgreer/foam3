@@ -5,7 +5,7 @@ foam.CLASS({
 
     imports: [ 
       'stack', 
-      'hideSaleSummary' 
+      'hideSaleSummary'
     ],
 
     requires: [ 'net.nanopay.invoice.model.Invoice' ],
@@ -104,17 +104,17 @@ foam.CLASS({
             .start().add('New Bill').addClass('light-roboto-h2').end()
             .start().addClass('white-container')
               .start().addClass('customer-div')
-                .add(this.Invoice.TO_USER_NAME)
+                .start(this.Invoice.TO_USER_ID).end()
                 .start().addClass('company-card')
-                  .start({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('company-picture').end()
-                  .start().addClass('inline')
-                    .start('h5').add('Company Name').addClass('company-name').end()
-                    .start('h5').add('Vendor').addClass('vendor-name').end()
-                    .start('h6').add('12123 Avenue, Unit 999, Toronto, Ontario,').addClass('company-address').end()
-                    .start('h6').add('Canada').addClass('company-address').end()
-                    .start('h6').add('M2G 1K9').addClass('company-address').end()
-                  .end()
-                  .start({class:'foam.u2.tag.Image', data: 'images/ic-connection.png'}).addClass('connection-icon').end()
+                  // .start({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('company-picture').end()
+                  // .start().addClass('inline')
+                  //   .start('h5').add('Company Name').addClass('company-name').end()
+                  //   .start('h5').add('Vendor').addClass('vendor-name').end()
+                  //   .start('h6').add('12123 Avenue, Unit 999, Toronto, Ontario,').addClass('company-address').end()
+                  //   .start('h6').add('Canada').addClass('company-address').end()
+                  //   .start('h6').add('M2G 1K9').addClass('company-address').end()
+                  // .end()
+                  // .start({class:'foam.u2.tag.Image', data: 'images/ic-connection.png'}).addClass('connection-icon').end()
                 .end()
               .end()
               .start().addClass('po-amount-div float-right')

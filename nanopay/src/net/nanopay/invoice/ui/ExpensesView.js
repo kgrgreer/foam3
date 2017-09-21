@@ -57,6 +57,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)

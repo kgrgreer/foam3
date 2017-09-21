@@ -16,12 +16,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'toUserId'
-    },
-    {
-      name: 'fromUserId'
-    },
-    {
       name: 'search',
       transient: true,
       searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.b2b.model.Invoice', richSearch: true }

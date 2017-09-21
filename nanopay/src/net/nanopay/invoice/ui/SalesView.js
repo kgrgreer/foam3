@@ -7,11 +7,10 @@ foam.CLASS({
   documentation: 'Summary View of Sales Invoices.',
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
-  exports: [ 'hideReceivableSummary' ],
 
   imports: [ 'user', 'stack' ],
 
-  exports: [ 'salesDAO' ],
+  exports: [ 'hideReceivableSummary', 'salesDAO' ],  
 
   properties: [ 
     'selection',
@@ -56,6 +55,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();      
       var self = this;
 
       this
@@ -81,7 +81,7 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.salesDAO,
-            factory: function() { return self.Invoice.create({ fromUserId: self.user.id, fromUserName: self.user.name }); },
+            factory: function() { return self.Invoice.create({ toUserId: self.user.id, toUserName: self.user.name }); },
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
             summaryView: this.SalesTableView.create()

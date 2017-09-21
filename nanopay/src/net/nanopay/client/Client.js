@@ -20,8 +20,7 @@ foam.CLASS({
     'bankAccountDAO',
     'businessSectorDAO',
     'businessTypeDAO',
-    'invoiceDAO',
-    'localUserDAO'
+    'invoiceDAO'
   ],
 
   properties: [
@@ -216,22 +215,6 @@ foam.CLASS({
         .addPropertyIndex(this.Invoice.FROM_USER_NAME)
         .addPropertyIndex(this.Invoice.TO_USER_ID)
         .addPropertyIndex(this.Invoice.FROM_USER_ID);
-      }
-    },
-    {
-      name: 'localUserDAO',
-      factory: function() {
-        return this.EasyDAO.create({
-          daoType: 'MDAO',
-          cache: true,
-          of: this.User,
-          seqNo: true,
-          testData: [
-            { firstName: 'Bob', lastName: 'Sanchez' },
-            { firstName: 'Rob', lastName: 'Chevy' },
-            { firstName: 'Trevor', lastName: 'Paul' }
-          ]
-        })
       }
     }
   ]

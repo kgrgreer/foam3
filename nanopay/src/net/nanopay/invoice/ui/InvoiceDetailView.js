@@ -62,7 +62,7 @@ foam.CLASS({
       function initE() {
         this.SUPER();
         this.hideReceivableSummary = true;
-
+        debugger;
         this
           .addClass(this.myClass())
           .start().addClass('button-row')
@@ -74,7 +74,7 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
-              .start(this.Invoice.TO_USER_NAME).addClass('input-box').end()
+              .start(this.Invoice.FROM_USER_ID).end()
               .start().addClass('company-card')
               .end()
             .end()
@@ -123,7 +123,7 @@ foam.CLASS({
       name: 'deleteDraft',
       label: 'Delete Draft',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
+        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
     },
     {
@@ -131,7 +131,7 @@ foam.CLASS({
       label: 'Save As Draft',
       code: function(X) {
         X.dao.put(this);
-        X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
+        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
     },
     {
@@ -139,7 +139,7 @@ foam.CLASS({
       label: 'Save & Preview',
       code: function(X) {
         X.dao.put(this);
-        X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
+        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
     },
 

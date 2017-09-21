@@ -66,8 +66,8 @@ foam.CLASS({
 
       var self = this;
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.localUserDAO.find(1).then(function(a) {
-        self.user.copyFrom(a);
+      this.userDAO.select().then(function(a) {
+        self.user.copyFrom(a.array[0]);
       });
 
       net.nanopay.TempMenu.create(null, this);
