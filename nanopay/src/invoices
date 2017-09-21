@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.invoice.model.Invoice", "status": "Paid", "toUserName":"john", "fromUserName":"ted", "toUserId":1, "fromUserId":2, "amount":300230, "invoiceNumber":"403302"})
+p({"class":"net.nanopay.invoice.model.Invoice", "currencyCode":"01", "toUserId":1, "fromUserId":2, "amount":300230, "invoiceNumber":403302, "issueDate":"2017-08-22T04:04:00.0Z", "paymentDate":"2017-08-22T04:04:00.0Z"})

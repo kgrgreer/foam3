@@ -17,7 +17,7 @@ foam.CLASS({
     {
       name: 'invoiceDAO',
       factory: function() {
-        return this.EasyDAO({
+        return this.EasyDAO.create({
           daoType: 'MDAO',
           of: this.Invoice,
           cache: true,

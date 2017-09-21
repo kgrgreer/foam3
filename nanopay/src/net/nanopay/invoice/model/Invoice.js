@@ -24,7 +24,7 @@ foam.CLASS({
     {
       name: 'search',
       transient: true,
-      searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.b2b.model.Invoice', richSearch: true }
+      searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
     },
     {
       class: 'Long',
@@ -114,7 +114,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Double',
+      class: 'String',
       name: 'currencyCode',
       required: true
     },
