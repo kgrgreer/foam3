@@ -54,6 +54,11 @@ foam.CLASS({
         margin-top: 15px;
         height: 40px;
       }
+      ^ .foam-u2-tag-Select {
+        width: 300px;
+        height: 40px;
+        margin-top: 10px;
+      }
      */}
    })
  ],
@@ -74,9 +79,7 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
-              .start(this.Invoice.FROM_USER_ID).end()
-              // .start().addClass('company-card')
-              // .end()
+              .start(this.Invoice.FROM_USER_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
             .end()
             .start().addClass('po-amount-div float-right')
               .start().addClass('label').add('PO #').end()
@@ -90,9 +93,11 @@ foam.CLASS({
               .start().addClass('label').add('Due Date').end()
               .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
             .end()
-            .add('Attachments')
-            .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
-            .add('Maximum size 10MB')
+            .start()
+              .add('Attachments')
+              .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
+              .add('Maximum size 10MB')
+            .end()
             .start()
               .tag({class: 'foam.u2.CheckBox'})
               .add('Enable recurring payments').addClass('enable-recurring-text')
