@@ -177,7 +177,7 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function (resolve, reject) {
           dao.find(key).then(function (user) {
-            resolve(user ? user.name : 'Unknown User: ' + key);
+            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
           });
         });
       },
@@ -210,7 +210,7 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function (resolve, reject) {
           dao.find(key).then(function (user) {
-            resolve(user ? user.name : 'Unknown User: ' + key);
+            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
           });
         });
       },
