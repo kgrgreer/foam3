@@ -105,10 +105,10 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('light-roboto-h2').add('Weekly Summary').end()
-        .start().addClass('green-border-container')
-          .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
-          .start().addClass('resize-button').add('Team').end()
-        .end()
+        // .start().addClass('green-border-container')
+        //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
+        //   .start().addClass('resize-button').add('Team').end()
+        // .end()
         .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
         .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
         .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
@@ -125,6 +125,8 @@ foam.CLASS({
         .end()
     }
   ],
+
+
 
   listeners: [
     {

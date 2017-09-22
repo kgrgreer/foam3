@@ -84,7 +84,8 @@ foam.CLASS({
             factory: function() { return self.Invoice.create({ toUserId: self.user.id, toUserName: self.user.name }); },
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
-            summaryView: this.SalesTableView.create()
+            summaryView: this.SalesTableView.create(),
+            showActions: false            
           })
         .end()
         .start().enableClass('hide', this.hideReceivableSummary$)        
@@ -100,7 +101,7 @@ foam.CLASS({
 
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
-      imports: [ 'salesDAO' ],
+      imports: [ 'salesDAO' , 'hideSaleSummary'],
       properties: [ 
         'selection', 
         { name: 'data', factory: function() { return this.salesDAO; }}
@@ -108,6 +109,7 @@ foam.CLASS({
 
       methods: [
         function initE() {
+
           this
             .start({
               class: 'foam.u2.view.TableView',
@@ -123,9 +125,9 @@ foam.CLASS({
               columns: [
                 'invoiceNumber', 'purchaseOrder', 'fromUserId', 'paymentDate', 'issueDate', 'amount', 'status'
               ]
-            }).addClass(this.myClass('table')).end();
+            }).addClass(this.myClass('table')).end()
         }
-      ]
+      ],
     }
   ]
 });

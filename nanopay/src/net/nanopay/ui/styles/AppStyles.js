@@ -130,6 +130,10 @@ foam.CLASS({
           border: solid 1px #59A5D5;
           color: #59A5D5;
         }
+        .foam-u2-ActionView-backAction{
+          position: relative;
+          top: 40px;
+        }
         
         
         .input-box{

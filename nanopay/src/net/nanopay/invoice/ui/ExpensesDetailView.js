@@ -38,10 +38,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
       this.hideSaleSummary = true;
+
       this
         .addClass(this.myClass())
+        .start(this.BACK_ACTION).end()
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
@@ -72,6 +73,15 @@ foam.CLASS({
     function schedulePopUp(){
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal'}));
     }
-  ]
+  ],
 
+  actions: [
+    {
+      name: 'backAction',
+      label: 'Back',
+      code: function(X){
+        console.log('hit')
+      }
+    }
+  ]
 });

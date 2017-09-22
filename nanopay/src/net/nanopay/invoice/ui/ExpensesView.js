@@ -85,7 +85,8 @@ foam.CLASS({
             createLabel: 'New Invoice',
             createDetailView: { class: 'net.nanopay.invoice.ui.BillDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
-            summaryView: this.ExpensesTableView.create()
+            summaryView: this.ExpensesTableView.create(),
+            showActions: false
           })
         .end()
         .start().enableClass('hide', this.hideSaleSummary$)        

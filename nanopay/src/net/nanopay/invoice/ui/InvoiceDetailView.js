@@ -75,8 +75,8 @@ foam.CLASS({
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
               .start(this.Invoice.FROM_USER_ID).end()
-              .start().addClass('company-card')
-              .end()
+              // .start().addClass('company-card')
+              // .end()
             .end()
             .start().addClass('po-amount-div float-right')
               .start().addClass('label').add('PO #').end()
@@ -142,6 +142,5 @@ foam.CLASS({
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
     },
-
   ]
 })

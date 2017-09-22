@@ -49,6 +49,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
+        .start(this.BACK_ACTION).end()
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
@@ -69,6 +70,15 @@ foam.CLASS({
     function recordPaymentModal(){
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal'}));
     }
+  ],
+
+  actions: [
+    {
+      name: 'backAction',
+      label: 'Back',
+      code: function(X){
+        console.log('hit');
+      }
+    }
   ]
-  
 });
