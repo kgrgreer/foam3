@@ -11,28 +11,15 @@ foam.CLASS({
     'foam.box.HTTPBox',
     'net.nanopay.model.Account',
     'net.nanopay.model.UserAccountInfo',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.client.ClientTransactionService'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   exports: [
-    'transaction',
     'transactionDAO',
     'accountDAO'
   ],
 
   properties: [
-    {
-      name: 'transaction',
-      factory: function () {
-        return this.ClientTransactionService.create({
-          delegate: this.HTTPBox.create({
-            method: 'POST',
-            url: 'http://localhost:8080/transaction'
-          })
-        })
-      }
-    },
     {
       name: 'transactionDAO',
       factory: function() {

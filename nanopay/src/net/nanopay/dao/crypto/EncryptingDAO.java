@@ -11,6 +11,7 @@ import foam.lib.json.Outputter;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
+import foam.mlang.sink.Max;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.*;
@@ -42,9 +43,9 @@ public class EncryptingDAO
   protected static final int GCM_TAG_LENGTH = 16;
 
   private static SecureRandom random;
-  private static SecureRandom getSecureRandom() throws NoSuchProviderException, NoSuchAlgorithmException {
+  private static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
     if ( random == null ) {
-      random = SecureRandom.getInstance("SHA1PRNG", "BC");
+      random = SecureRandom.getInstance("SHA1PRNG");
     }
     return random;
   }
@@ -228,7 +229,7 @@ public class EncryptingDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    if ( predicate == null && sink instanceof Count ) {
+    if ( predicate == null && ( sink instanceof Count || sink instanceof Max ) ) {
       return super.select_(x, sink, skip, limit, order, predicate);
     }
     throw new UnsupportedOperationException("Unsupported operation: select_");

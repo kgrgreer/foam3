@@ -18,6 +18,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardSubView' },
   { name: 'net/nanopay/ui/NotificationActionCard' },
   { name: 'net/nanopay/ui/ContentCard' },
+  { name: 'net/nanopay/ui/RadioView' },
+  { name: 'net/nanopay/ui/ToggleSwitch' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -28,8 +30,8 @@ FOAM_FILES([
 
   // retail
   { name: 'net/nanopay/retail/client/Client' },
-  { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
+  { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/ui/DeviceCTACard' },
   { name: 'net/nanopay/retail/ui/BankCTACard' },
   { name: 'net/nanopay/retail/ui/devices/DevicesView' },
@@ -42,7 +44,63 @@ FOAM_FILES([
   // tx
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
-  { name: 'net/nanopay/tx/TransactionService' },
-  { name: 'net/nanopay/tx/client/ClientTransactionService' },
   { name: 'net/nanopay/tx/client/Client' },
+
+  { name: 'net/nanopay/util/ChallengeGenerator' },
+
+  // invoice 
+  { name: 'net/nanopay/invoice/model/Invoice'}, 
+  { name: 'net/nanopay/invoice/dao/Dao'},  
+  { name: 'net/nanopay/invoice/ui/ExpensesView' },
+  { name: 'net/nanopay/invoice/ui/SalesView' },
+  { name: 'net/nanopay/invoice/ui/InvoiceDashboardView' },
+  { name: 'net/nanopay/invoice/ui/PayableSummaryView' },
+  { name: 'net/nanopay/invoice/ui/ReceivableSummaryView' },
+  { name: 'net/nanopay/invoice/ui/MentionsView' },
+  { name: 'net/nanopay/invoice/ui/SummaryCard'}, 
+  { name: 'net/nanopay/invoice/ui/shared/ActionInterfaceButton'}, 
+  { name: 'net/nanopay/invoice/ui/shared/SingleItemView'}, 
+  { name: 'net/nanopay/invoice/ui/BillDetailView'}, 
+  { name: 'net/nanopay/invoice/ui/InvoiceDetailView'}, 
+  { name: 'net/nanopay/invoice/ui/ExpensesDetailView'}, 
+  { name: 'net/nanopay/invoice/ui/SalesDetailView'}, 
+
+  //cico
+  { name: 'net/nanopay/bank/ui/CicoView'},  
+  
+  // style
+  { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles'}, 
+  { name: 'net/nanopay/ui/modal/ModalStyling' }, 
+  { name: 'net/nanopay/ui/styles/AppStyles' },    
+  
+  // modal
+  { name: 'net/nanopay/invoice/ui/modal/ApproveModal' },
+  { name: 'net/nanopay/invoice/ui/modal/DisputeModal' },
+  { name: 'net/nanopay/invoice/ui/modal/PayNowModal' },
+  { name: 'net/nanopay/invoice/ui/modal/ScheduleModal' },
+  { name: 'net/nanopay/invoice/ui/modal/RecordPaymentModal' },
+  { name: 'net/nanopay/invoice/ui/modal/SingleResolutionModal' },
+  { name: 'net/nanopay/ui/modal/EmailModal' },
+  { name: 'net/nanopay/ui/modal/ModalHeader' },
+  { name: 'net/nanopay/bank/ui/ci/ConfirmCashInModal'},
+  { name: 'net/nanopay/bank/ui/co/ConfirmCashOutModal'},  
+  { name: 'net/nanopay/bank/ui/ci/CashInModal'},  
+  { name: 'net/nanopay/bank/ui/co/CashOutModal'},
+  { name: 'net/nanopay/bank/ui/ci/CashInSuccessModal'},
+  { name: 'net/nanopay/bank/ui/co/CashOutSuccessModal'},
+  
+  //misc 
+  { name: 'net/nanopay/TempMenu' },
+  
+  //util
+  { name: 'net/nanopay/util/CurrencyFormatter' },
+
+  //ui
+  { name: 'net/nanopay/ui/topNavigation/TopNav' },
+  { name: 'net/nanopay/ui/topNavigation/BusinessLogoView' },
+  { name: 'net/nanopay/ui/topNavigation/UserTopNavView' },
+  { name: 'net/nanopay/ui/FooterView' },  
+  { name: 'net/nanopay/ui/ActionButton' },  
+  { name: 'net/nanopay/ui/Placeholder' },    
+  { name: 'net/nanopay/ui/Controller' }
 ]);

@@ -24,6 +24,7 @@ foam.CLASS({
         ^placeholder-container{
            text-align: center;
            display: none;
+           margin: 50px 0;
         }
         .show{
           display: block;

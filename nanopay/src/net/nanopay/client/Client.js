@@ -6,7 +6,7 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'net.nanopay.b2b.model.Invoice',
+    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Account',
     'net.nanopay.model.Bank',
     'net.nanopay.model.BankAccountInfo',
@@ -210,10 +210,10 @@ foam.CLASS({
           of: this.Invoice
         })
         .addPropertyIndex(this.Invoice.STATUS)
-        .addPropertyIndex(this.Invoice.TO_BUSINESS_NAME)
-        .addPropertyIndex(this.Invoice.FROM_BUSINESS_NAME)
-        .addPropertyIndex(this.Invoice.TO_BUSINESS_ID)
-        .addPropertyIndex(this.Invoice.FROM_BUSINESS_ID);
+        .addPropertyIndex(this.Invoice.TO_USER_NAME)
+        .addPropertyIndex(this.Invoice.FROM_USER_NAME)
+        .addPropertyIndex(this.Invoice.TO_USER_ID)
+        .addPropertyIndex(this.Invoice.FROM_USER_ID);
       }
     }
   ]

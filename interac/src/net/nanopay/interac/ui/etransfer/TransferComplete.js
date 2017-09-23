@@ -101,7 +101,7 @@ foam.CLASS({
       var self = this;
 
       this.name = this.viewData.payee.firstName + ' ' + this.viewData.payee.lastName;
-      if ( this.mode == 'Organization' ) {
+      if ( this.invoiceMode ) {
         // if organization exists, change name to organization name.
         if ( this.viewData.payee.organization ) this.name = this.viewData.payee.organization;
       }

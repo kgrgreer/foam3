@@ -10,12 +10,12 @@ foam.CLASS({
 
   imports: [ 
     'stack', 
-    'hidePayableSummary', 
+    'hideReceivableSummary', 
     'invoiceDAO', 
     'ctrl'
   ],
 
-  exports: [ 'hidePayableSummary' ],
+  exports: [ 'hideReceivableSummary' ],
   
   implements: [
     'foam.mlang.Expressions', 
@@ -46,10 +46,12 @@ foam.CLASS({
       this.SUPER();
 
       this.hideReceivableSummary = true;
+
       this
         .addClass(this.myClass())
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
+          invoice: this.data,
           detailActions: { 
             invoice: this.data,
             buttonLabel: 'Record Payment', 

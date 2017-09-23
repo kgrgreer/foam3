@@ -13,17 +13,17 @@ var classes = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
-  'net.nanopay.tx.TransactionService',
   'net.nanopay.tx.model.Transaction',
-  'net.nanopay.tx.model.TransactionPurpose'
+  'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.retail.model.DeviceStatus',
+  'net.nanopay.retail.model.Device'
 ];
 
 var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.tx.TransactionService'
+  'net.nanopay.fx.ExchangeRateInterface'
 ];
 
 var proxies = [

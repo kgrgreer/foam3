@@ -3,6 +3,18 @@ foam.CLASS({
   name: 'HomeView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  requires: [
+    'net.nanopay.merchant.ui.QRCodeView'
+  ],
+
+  imports: [
+    'stack'
+  ],
+
+  exports: [
+    'as data'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -20,7 +32,7 @@ foam.CLASS({
           color: #ffffff;
           padding-top: 58px;
         }
-        ^ .amount-field {
+        ^ .property-amount {
           border: none;
           background-color: #2c4389;
           height: 88px;
@@ -34,7 +46,7 @@ foam.CLASS({
           margin-top: 14px;
         }
 
-        ^ .amount-field:focus {
+        ^ .property-amount:focus {
           outline: none;
         }
       */}
@@ -43,7 +55,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { name: 'amount', class: 'String', value: '$0.00'}
+    { name: 'amount', class: 'Currency' }
   ],
 
   methods: [
@@ -52,13 +64,21 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('amount-label').add('Amount')
-        .start('input')
-          .attrs({
-            value: this.amount
-          })
-          .addClass('amount-field')
-        .end()
+        .on('keydown', this.onKeyPressed)
+        .start().addClass('amount-label').add('Amount').end()
+        .tag(this.AMOUNT, { onKey: true })
+    }
+  ],
+
+  listeners: [
+    function onKeyPressed (e) {
+      if ( e.key !== 'Enter' || this.amount < 1)
+        return;
+
+      // push QR code view
+      this.stack.push(this.QRCodeView.create({
+        amount: this.amount
+      }));
     }
   ]
 })

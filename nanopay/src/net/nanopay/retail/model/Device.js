@@ -26,11 +26,13 @@ foam.CLASS({
       name: 'serialNumber',
       label: 'Serial No.',
       required: true
-    },
-    {
-      class: 'Double',
-      name: 'password',
-      required: true
     }
   ]
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.retail.model.Device',
+  forwardName: 'devices',
+  inverseName: 'user'
 });

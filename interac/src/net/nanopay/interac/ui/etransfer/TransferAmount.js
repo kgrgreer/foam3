@@ -217,6 +217,14 @@ foam.CLASS({
       factory: function() {
         return this.LoadingSpinner.create();
       }
+    },
+    {
+      name: 'isNearRealTime',
+      value: true,
+      expression: function(fromAmount) {
+        if ( fromAmount >= 3500 ) return false;
+        return true;
+      }
     }
   ],
 
@@ -261,7 +269,7 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('CAD').end() // TODO: Make it dyamic.
               .end()
-              .start(this.FROM_AMOUNT, {onKey: true, mode: this.invoice ? foam.u2.DisplayMode.RO : undefined})
+              .start(this.FROM_AMOUNT, {onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
                   onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
@@ -283,7 +291,7 @@ foam.CLASS({
                 .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
                 .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
               .end()
-              .start(this.TO_AMOUNT, {onKey: true, mode: this.invoice ? foam.u2.DisplayMode.RO : undefined})
+              .start(this.TO_AMOUNT, {onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
                   onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
@@ -296,7 +304,8 @@ foam.CLASS({
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
           .end()
           .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add('Near Real Time (IMPS)').end()
+            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$, true).add('Near Real Time (IMPS)').end()
+            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$).add('Next Business Days (NEFT)').end()
           .end()
         .end()
         .start('div').addClass('divider').end()
