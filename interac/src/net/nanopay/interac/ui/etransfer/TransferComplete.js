@@ -142,7 +142,7 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }))
             .start('p').add('Payment Successful...').enableClass('show-green', this.time$.map(function (value) { if ( value > 5 ) { self.complete = true; return true; } })).end().end()
           .end()
-        .end()
+        .end();
     }
   ],
 
@@ -152,7 +152,7 @@ foam.CLASS({
       code: function(X){
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.interac.ui.modals.ExportModal', transaction: X.viewData.transaction}));
       }
-    },
+    }
   ],
 
   listeners: [
