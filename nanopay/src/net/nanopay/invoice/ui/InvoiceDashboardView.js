@@ -82,9 +82,15 @@ foam.CLASS({
           width: 200px;
         }
         .overall-receivables img{
-          top: 8;
+          top: 8px;
+          right: 5px;
           transform: rotate(180deg);
           position: relative;
+        }
+        .overall-payables img{
+          position: relative;
+          top: 5px;
+          right: 5px;
         }
         .overall-label{
           margin-left: 100px;

@@ -185,7 +185,7 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
-        this.add(o.name);
+        this.add(o.firstName + ' ' + o.lastName);
       }.bind(this));
     }
   }
@@ -218,7 +218,7 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
-        this.add(o.name);
+        this.add(o.firstName + ' ' + o.lastName);
       }.bind(this));
     }
   }
