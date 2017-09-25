@@ -81,7 +81,7 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.expensesDAO,
-            factory: function() { return self.Invoice.create({ toUserId: self.user.id, toUserName: self.user.name }); },
+            factory: function() { return self.Invoice.create({ payerId: self.user.id, payerName: self.user.name }); },
             createLabel: 'New Invoice',
             createDetailView: { class: 'net.nanopay.invoice.ui.BillDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
@@ -135,7 +135,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'toUserId', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'payeeId', 'issueDate', 'amount', 'status'
               ],
             }).end()
         },

@@ -5,6 +5,8 @@ foam.CLASS({
 
   properties: [
     'data',
+    'type',
+    'userName'
   ],
 
   axioms: [
@@ -62,27 +64,39 @@ foam.CLASS({
 
   methods: [
     function initE(){
+      var self = this;
+      if(self.type == 'expense'){
+        self.data.payeeId$find.then(function(a){ 
+          self.userName = a.firstName + ' ' + a.lastName
+        })
+      } else {
+        self.data.payerId$find.then(function(a){ 
+          self.userName = a.firstName + ' ' + a.lastName
+        })
+      }
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
-            .start('h3').add('Customer').end()
+            .call(function(){
+              if(self.type == 'expense'){
+                this.start('h3').add('Vendor').end()
+              } else {
+                this.start('h3').add('Customer').end()
+              }
+            })
             .start('h4').add('Date Due').end()
             .start('h4').add('Amount').end()
-            // .start('h4').add('Sending Amount').end()
-            // .start('h4').add('Exh Rate').end()
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
-            .start('h3').add(this.data.fromUserName).end()
+            .start('h3').add(this.userName$).end()
             .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
             .start('h4').add('$', this.data.amount.toFixed(2)).end()
-            // .start('h4').add('$', this.data.amount.toFixed(2)).end()
-            // .start('h4').add(this.data.exchangeRate).end()
             .start('h3').add(this.data.status).end()
           .end()
         .end()

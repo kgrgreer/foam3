@@ -55,10 +55,10 @@ foam.CLASS({
         }
         .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; min-width: 80px; }
         .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; min-width: 80px; }
-        .foam-u2-view-TableView-th-fromUserName { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-toUserName   { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-fromUserId { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-toUserId   { width: 150px; min-width: 150px; }
+        .foam-u2-view-TableView-th-payerName { width: 150px; min-width: 150px; }
+        .foam-u2-view-TableView-th-payeeName   { width: 150px; min-width: 150px; }
+        .foam-u2-view-TableView-th-payerId { width: 150px; min-width: 150px; }
+        .foam-u2-view-TableView-th-payeeId   { width: 150px; min-width: 150px; }
         .foam-u2-view-TableView-th-paymentDate      { width: 90px; min-width: 90px; }
         .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
         .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; }

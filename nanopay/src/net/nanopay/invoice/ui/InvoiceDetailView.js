@@ -79,7 +79,7 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
-              .start(this.Invoice.FROM_USER_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
+              .start(this.Invoice.PAYER_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
             .end()
             .start().addClass('po-amount-div float-right')
               .start().addClass('label').add('PO #').end()
@@ -116,7 +116,7 @@ foam.CLASS({
             .end()
             .start()
               .add('Note')
-              .start('textarea').addClass('half-input-box').end()
+              .start(this.Invoice.NOTE).addClass('half-input-box').end()
             .end()
           .end();
           

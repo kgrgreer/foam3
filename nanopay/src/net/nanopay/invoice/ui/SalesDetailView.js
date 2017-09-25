@@ -21,6 +21,10 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
+  properties: [
+    'userName'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -44,8 +48,12 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
+      var self = this;
       this.hideReceivableSummary = true;
+      
+      this.data.payerId$find.then(function(a){ 
+        self.userName =  a.firstName + ' ' + a.lastName;
+      })
 
       this
         .addClass(this.myClass())
@@ -61,8 +69,8 @@ foam.CLASS({
             subMenu2: 'Void' 
           }
         })
-        .start('h5').add('Bill from ', this.data.fromUserName).end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
+        .start('h5').add('Bill from ', this.userName$).end()
+        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data, type: 'sales' })
     }
   ],
 

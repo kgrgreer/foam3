@@ -70,7 +70,7 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add('Company').end()
-              .start().addClass('value').add(this.invoice.toUserName).end()
+              .start().addClass('value').add(this.invoiceUserName$).end()
             .end()
             .start()
               .start().addClass('key').add('Amount').end()

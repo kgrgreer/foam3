@@ -7,11 +7,11 @@ foam.CLASS({
   ids: [ 'invoiceNumber' ],
 
   searchColumns: [
-    'search', 'fromUserId', 'toUserId', 'status'
+    'search', 'payerId', 'payeeId', 'status'
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'toUserName', 'issueDate', 'amount', 'status', 'payNow'
+    'invoiceNumber', 'purchaseOrder', 'payeeName', 'issueDate', 'amount', 'status', 'payNow'
   ],
 
   properties: [
@@ -57,14 +57,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'toUserName',
+      name: 'payeeName',
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
       transient: true
     },
     {
       class: 'String',
-      name: 'fromUserName',
+      name: 'payerName',
       label: 'Customer',
       aliases: [ 'from', 'customer', 'c' ],
       transient: true
@@ -169,7 +169,7 @@ foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
-  inverseName: 'toUserId',
+  inverseName: 'payeeId',
   sourceProperty: {
     hidden: true
   },
@@ -201,7 +201,7 @@ foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
-  inverseName: 'fromUserId',
+  inverseName: 'payerId',
   sourceProperty: {
     hidden: true
   },

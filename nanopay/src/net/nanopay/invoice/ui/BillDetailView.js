@@ -110,7 +110,7 @@ foam.CLASS({
             .start().addClass('white-container')
               .start().addClass('customer-div')
               .start().addClass('label').add('Vendor').end()              
-                .start(this.Invoice.TO_USER_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
+                .start(this.Invoice.PAYEE_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
               .end()
               .start().addClass('po-amount-div float-right')
                 .start().addClass('label').add('PO #').end()
