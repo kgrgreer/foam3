@@ -96,12 +96,12 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/modal/SingleResolutionModal' },
   { name: 'net/nanopay/ui/modal/EmailModal' },
   { name: 'net/nanopay/ui/modal/ModalHeader' },
-  { name: 'net/nanopay/bank/ui/ci/ConfirmCashInModal'},
-  { name: 'net/nanopay/bank/ui/co/ConfirmCashOutModal'},
-  { name: 'net/nanopay/bank/ui/ci/CashInModal'},
-  { name: 'net/nanopay/bank/ui/co/CashOutModal'},
-  { name: 'net/nanopay/bank/ui/ci/CashInSuccessModal'},
-  { name: 'net/nanopay/bank/ui/co/CashOutSuccessModal'},
+  { name: 'net/nanopay/cico/ui/ci/ConfirmCashInModal'},
+  { name: 'net/nanopay/cico/ui/co/ConfirmCashOutModal'},
+  { name: 'net/nanopay/cico/ui/ci/CashInModal'},
+  { name: 'net/nanopay/cico/ui/co/CashOutModal'},
+  { name: 'net/nanopay/cico/ui/ci/CashInSuccessModal'},
+  { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal'},
 
   //misc
   { name: 'net/nanopay/TempMenu' },
