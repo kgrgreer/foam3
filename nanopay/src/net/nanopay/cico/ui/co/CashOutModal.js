@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.co',
+  package: 'net.nanopay.cico.ui.co',
   name: 'CashOutModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+  requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
   imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn' ],
 
