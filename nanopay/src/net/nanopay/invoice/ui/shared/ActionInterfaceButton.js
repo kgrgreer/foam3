@@ -140,7 +140,7 @@ foam.CLASS({
               invoice: this.invoice,
               title: 'Approve'
             }
-          }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
+          }).addClass('import-button').add(this.APPROVE_MODAL).end()
           .start({
             class: 'net.nanopay.ui.ActionButton', 
             data: {
@@ -207,6 +207,19 @@ foam.CLASS({
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
               class: 'net.nanopay.invoice.ui.modal.SingleResolutionModal', 
+              invoice: X.data.invoice,
+              title: X.data.title
+            })
+        );
+      }
+    },
+    {
+      name: 'approveModal',
+      code: function(X){
+        X.ctrl.add(
+          foam.u2.dialog.Popup.create(null, X)
+            .tag({ 
+              class: 'net.nanopay.invoice.ui.modal.ApproveModal', 
               invoice: X.data.invoice,
               title: X.data.title
             })

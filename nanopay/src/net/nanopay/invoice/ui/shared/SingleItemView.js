@@ -90,7 +90,7 @@ foam.CLASS({
             .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
             .start('h4').add('$', this.data.amount.toFixed(2)).end()
             .start('h4').add('$', this.data.amount.toFixed(2)).end()
-            .start('h4').add('1.13').end()
+            .start('h4').add(this.data.exchangeRate).end()
             .start('h3').add(this.data.status).end()
           .end()
         .end()

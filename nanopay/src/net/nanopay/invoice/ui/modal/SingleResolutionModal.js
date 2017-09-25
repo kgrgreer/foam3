@@ -74,7 +74,7 @@ foam.CLASS({
             .end()
             .start()
               .start().addClass('key').add('Amount').end()
-              .start().addClass('value').add('$',this.invoice.amount).end()
+              .start().addClass('value').add('$', this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
           .start().addClass('label').add('Note').end()
