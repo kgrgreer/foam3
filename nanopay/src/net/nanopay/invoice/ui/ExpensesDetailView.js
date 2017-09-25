@@ -55,8 +55,10 @@ foam.CLASS({
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
+          userName: this.userName,
           detailActions: { 
             invoice: this.invoice,
+            userName: this.userName,
             buttonLabel: 'Pay Now', 
             buttonAction: this.payNowPopUp, 
             subMenu1: 'Schedule a Payment', 

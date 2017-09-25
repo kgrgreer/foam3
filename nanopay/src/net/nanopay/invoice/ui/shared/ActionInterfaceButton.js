@@ -14,7 +14,8 @@ foam.CLASS({
     'detailActions',
     'popupMenu_',
     'openMenu',
-    'invoice'
+    'invoice',
+    'userName'
   ],
 
   exports: [

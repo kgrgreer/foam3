@@ -30,7 +30,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      
+
       this
       .tag(this.ModalHeader.create({
         title: 'Pay Now'
@@ -40,11 +40,11 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
-              .start().addClass('value').add("360 Designs Inc.").end()
+              .start().addClass('value').add(this.__context__.data.payeeName).end()
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add("CAD $1234.56").end()
+              .start().addClass('value').add('$', this.__context__.data.amount.toFixed(2)).end()
             .end()
           .end()
           .start().addClass('label').add("Payment Method").end()
