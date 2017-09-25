@@ -80,7 +80,7 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView'});
+        X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView'});
       }
     }
   ]

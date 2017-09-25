@@ -82,6 +82,7 @@ foam.CLASS({
             class: 'foam.u2.ListCreateController',
             dao: this.salesDAO,
             factory: function() { return self.Invoice.create({ toUserId: self.user.id, toUserName: self.user.name }); },
+            createLabel: 'New Bill',
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
             summaryView: this.SalesTableView.create(),
