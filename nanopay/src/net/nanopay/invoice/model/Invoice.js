@@ -95,6 +95,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'note',
+      view: 'foam.u2.tag.TextArea'
+    },
+    {
+      class: 'String',
       name: 'invoiceImageUrl'
     },
     {

@@ -147,7 +147,7 @@ foam.CLASS({
               .end()
               .start()
                 .add('Note')
-                .start('textarea').addClass('half-input-box').end()
+                .start(this.Invoice.NOTE).addClass('half-input-box').end()
               .end()
             .end();
             
