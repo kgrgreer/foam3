@@ -1,13 +1,20 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.co',
-  name: 'ConfirmCashOutModal',
+  package: 'net.nanopay.cico.ui.ci',
+  name: 'ConfirmCashInModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+  requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
-  imports: [ 'amount', 'bankDAO', 'bankList', 'closeDialog', 'onCashOutSuccess', 'cashOut' ],
+  imports: [
+    'amount',
+    'bankDAO',
+    'bankList',
+    'cashIn',
+    'closeDialog',
+    'onCashInSuccess'
+  ],
 
-  documentation: 'Pop up modal for confirming cash out.',
+  documentation: 'Pop up modal for confirming top up.',
 
   axioms: [
     foam.u2.CSS.create({
@@ -17,7 +24,7 @@ foam.CLASS({
           height: 288px;
           margin: auto;
         }
-        ^ .cashOutContainer {
+        ^ .cashInContainer {
           width: 448px;
           height: 288px;
           border-radius: 2px;
@@ -110,7 +117,7 @@ foam.CLASS({
           margin-top: 20px;
           margin-left: 75px;
         }
-        ^ .foam-u2-ActionView-cashOutBtn {
+        ^ .foam-u2-ActionView-cashInBtn {
           font-family: Roboto;
           width: 136px;
           height: 40px;
@@ -128,8 +135,9 @@ foam.CLASS({
           float: right;
           box-shadow: none;
           font-weight: normal;
+          line-height: 40px;
         }
-        ^ .foam-u2-ActionView-cashOutBtn:hover {
+        ^ .foam-u2-ActionView-cashInBtn:hover {
           background: #3783b3;
           border-color: #3783b3;
         }
@@ -159,6 +167,8 @@ foam.CLASS({
     })
   ],
 
+  properties: [],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -166,7 +176,7 @@ foam.CLASS({
 
       this.addClass(this.myClass())
       .start()
-        .start().addClass('cashOutContainer')
+        .start().addClass('cashInContainer')
           .start().addClass('popUpHeader')
             .start().add(this.Title).addClass('popUpTitle').end()
             .add(this.CLOSE_BUTTON)
@@ -189,7 +199,7 @@ foam.CLASS({
           .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
           .start('div').addClass('modal-button-container')
             .add(this.BACK)
-            .add(this.CASH_OUT_BTN)
+            .add(this.CASH_IN_BTN)
           .end()
         .end()
       .end()
@@ -197,7 +207,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Cash Out' },
+    { name: 'Title', message: 'Cash In' },
     { name: 'bankLabel', message: 'Bank Account' },
     { name: 'amountLabel', message: 'Amount' },
     { name: 'backBtnTitle', message: 'Back' }
@@ -216,15 +226,15 @@ foam.CLASS({
       label: this.backBtnTitle,
       code: function (X) {
         X.closeDialog();
-        X.cashOut();
+        X.cashIn();
       }
     },
     {
-      name: 'cashOutBtn',
-      label: 'Cash Out',
+      name: 'cashInBtn',
+      label: 'Cash In',
       code: function (X) {
         X.closeDialog();
-        X.onCashOutSuccess();
+        X.onCashInSuccess();
       }
     }
   ]
