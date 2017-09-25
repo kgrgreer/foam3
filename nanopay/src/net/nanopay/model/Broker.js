@@ -21,11 +21,6 @@ foam.CLASS({
       name: 'active'
     },
     {
-      class: 'FObjectArray',
-      of: 'foam.core.FObject',
-      name: 'accounts'
-    },
-    {
       class: 'String',
       name: 'branchId'
     },
