@@ -1,42 +1,27 @@
-//
-//  swiftfoamTests.swift
-//  swiftfoamTests
-//
-//  Created by Kenny Kan on 2017-09-25.
-//  Copyright © 2017 nanoPay Corporation. All rights reserved.
-//
-
 import XCTest
 @testable import swiftfoam
 
 class swiftfoamTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+  override func setUp() {
+    super.setUp()
+    FOAM_utils.registerClasses()
+  }
 
-      XCTAssertEqual(swiftfoam(), "Hello World")
-      transferValueByEmail(payer: "asd@fgh", payee: "asd@fgh", amount:123) {
-        error in
-        XCTAssertNotNil(error)
-      }
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
+  override func tearDown() {
+    super.tearDown()
+  }
+
+  func testTransactionDAO() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+
+    let httpBox = X.create(HTTPBox.self)!
+    httpBox.url = "http://localhost:8080/transactionDAO"
+
+    let dao = X.create(BaseClientDAO.self)!
+    dao.delegate = httpBox
+
+    let sink = dao.limit(1).select(ArraySink())
+    XCTAssertNotNil(sink)
+  }
 }
