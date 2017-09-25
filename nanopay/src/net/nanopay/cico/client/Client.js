@@ -15,6 +15,16 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'cicoLogDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.User,
+          serviceName: 'cicoLogDAO'
+        })
+      }
+    }
   ],
 
   methods: [
