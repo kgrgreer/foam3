@@ -36,9 +36,6 @@ foam.CLASS({
           color: #093649;
           padding-top: 70px;
         }
-        ^ .foam-u2-ActionView-mainAction{
-          right: 250px !important;
-        }
         */
       }
     })
@@ -50,7 +47,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.hideReceivableSummary = true;
-      
+
       this.data.payerId$find.then(function(a){ 
         self.userName =  a.firstName + ' ' + a.lastName;
       })
@@ -69,7 +66,7 @@ foam.CLASS({
             subMenu2: 'Void' 
           }
         })
-        .start('h5').add('Bill from ', this.userName$).end()
+        .start('h5').add('Bill to ', this.userName$).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data, type: 'sales' })
     }
   ],
