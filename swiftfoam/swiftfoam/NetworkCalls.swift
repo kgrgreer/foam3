@@ -8,8 +8,6 @@
 
 import Foundation
 
-
-
 func transferValueByEmail(payer: String, payee: String, amount: Int, callback: @escaping (Any?) -> Void) throws {
   DispatchQueue.global(qos: .userInitiated).async {
     // TODO: API call.
