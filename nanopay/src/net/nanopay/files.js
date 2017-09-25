@@ -24,6 +24,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ToggleSwitch' },
 
   // cico
+  { name: 'net/nanopay/cico/model/AlternaFormat' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
