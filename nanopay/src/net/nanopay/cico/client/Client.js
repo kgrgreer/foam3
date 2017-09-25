@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'cicoLogDAO'
   ],
 
   properties: [

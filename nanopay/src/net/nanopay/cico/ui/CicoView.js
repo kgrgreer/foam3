@@ -13,7 +13,7 @@ foam.CLASS({
   imports: [
     'bankDAO',
     'stack',
-    'transactionDAO'
+    'cicoLogDAO'
   ],
 
   exports: [
@@ -173,7 +173,7 @@ foam.CLASS({
           .start()
             .tag({
               class: 'foam.u2.ListCreateController',
-              dao: this.transactionDAO,
+              dao: this.cicoLogDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
                 class: 'foam.u2.DetailView',
@@ -245,11 +245,11 @@ foam.CLASS({
 
       requires: [ 'net.nanopay.tx.model.Transaction' ],
 
-      imports: [ 'transactionDAO' ],
+      imports: [ 'cicoLogDAO' ],
 
       properties: [
         'selection',
-        { name: 'data', factory: function() { return this.transactionDAO; } }
+        { name: 'data', factory: function() { return this.cicoLogDAO; } }
       ],
 
       methods: [
