@@ -40,13 +40,18 @@ class swiftfoamTests: XCTestCase {
     t.payerId = 1
     t.payeeId = 2
     t.amount = 5000
-    t.date = "2017-09-26T14:49:20.548Z"
     t.rate = 15
     t.fees = 20
     t.notes = "Mike's test!"
 
     let t2 = (try? dao.put(t)) as? Transaction
     XCTAssertNotNil(t2)
+    XCTAssertEqual(t2?.payerId, 1)
+    XCTAssertEqual(t2?.payeeId, 2)
+    XCTAssertEqual(t2?.amount, 5000)
+    XCTAssertEqual(t2?.rate, 15)
+    XCTAssertEqual(t2?.fees, 20)
+    XCTAssertEqual(t2?.notes, "Mike's test!")
   }
 
 }
