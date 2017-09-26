@@ -21,7 +21,8 @@ class swiftfoamTests: XCTestCase {
     let dao = X.create(BaseClientDAO.self)!
     dao.delegate = httpBox
 
-    let sink = dao.limit(1).select(ArraySink())
-    XCTAssertNotNil(sink)
+    let sink = dao.skip(0).limit(1).select(ArraySink()) as? ArraySink
+    let transaction = sink?.array[0] as? Transaction
+    XCTAssertNotNil(transaction)
   }
 }

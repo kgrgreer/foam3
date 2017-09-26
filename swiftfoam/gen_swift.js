@@ -41,6 +41,7 @@ var executor = foam.classloader.NodeJsModelExecutor.create({
       'foam.box.RemoteException',
 
       'net.nanopay.tx.model.Transaction',
+      'net.nanopay.tx.model.TransactionPurpose',
     ],
     outdir: genDir,
   },

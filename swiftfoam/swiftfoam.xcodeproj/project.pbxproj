@@ -119,6 +119,7 @@
 		101482B71F79CA6E00689AE5 /* foam_u2_Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101482421F79CA5F00689AE5 /* foam_u2_Visibility.swift */; };
 		101482B81F79CA6E00689AE5 /* net_nanopay_tx_model_Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101481E71F79CA4D00689AE5 /* net_nanopay_tx_model_Transaction.swift */; };
 		101482B91F79CA6E00689AE5 /* RegisterClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101482051F79CA5200689AE5 /* RegisterClasses.swift */; };
+		1031958E1F79FF9000EA28AB /* net_nanopay_tx_model_TransactionPurpose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1031958D1F79FF9000EA28AB /* net_nanopay_tx_model_TransactionPurpose.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -247,6 +248,7 @@
 		1014824D1F79CA6000689AE5 /* foam_mlang_order_Comparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = foam_mlang_order_Comparator.swift; path = stubs/foam_mlang_order_Comparator.swift; sourceTree = SOURCE_ROOT; };
 		1014824E1F79CA6100689AE5 /* foam_swift_parse_parser_Substring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = foam_swift_parse_parser_Substring.swift; path = stubs/foam_swift_parse_parser_Substring.swift; sourceTree = SOURCE_ROOT; };
 		1014824F1F79CA6100689AE5 /* foam_swift_parse_json_StringParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = foam_swift_parse_json_StringParser.swift; path = stubs/foam_swift_parse_json_StringParser.swift; sourceTree = SOURCE_ROOT; };
+		1031958D1F79FF9000EA28AB /* net_nanopay_tx_model_TransactionPurpose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = net_nanopay_tx_model_TransactionPurpose.swift; path = stubs/net_nanopay_tx_model_TransactionPurpose.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,6 +418,7 @@
 				101482291F79CA5B00689AE5 /* foam_swift_parse_StringPStream.swift */,
 				101482421F79CA5F00689AE5 /* foam_u2_Visibility.swift */,
 				101481E71F79CA4D00689AE5 /* net_nanopay_tx_model_Transaction.swift */,
+				1031958D1F79FF9000EA28AB /* net_nanopay_tx_model_TransactionPurpose.swift */,
 				101482051F79CA5200689AE5 /* RegisterClasses.swift */,
 			);
 			path = stubs;
@@ -584,6 +587,7 @@
 				101482631F79CA6E00689AE5 /* foam_box_ReplyBox.swift in Sources */,
 				1014825C1F79CA6E00689AE5 /* foam_box_LoggedLookupContext.swift in Sources */,
 				101482511F79CA6E00689AE5 /* foam_box_BoxRegistry.swift in Sources */,
+				1031958E1F79FF9000EA28AB /* net_nanopay_tx_model_TransactionPurpose.swift in Sources */,
 				101482731F79CA6E00689AE5 /* foam_dao_InternalException.swift in Sources */,
 				101482A21F79CA6E00689AE5 /* foam_swift_parse_json_Whitespace.swift in Sources */,
 				101482B31F79CA6E00689AE5 /* foam_swift_parse_parser_Seq2.swift in Sources */,
