@@ -6,13 +6,9 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-<<<<<<< HEAD
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.RecurringInvoice',
     'foam.box.HTTPBox'
-=======
-    'net.nanopay.invoice.model.Invoice'
->>>>>>> 4687724b9572b2d6f4c4f1987e537baee637071c
   ],
 
   exports: [

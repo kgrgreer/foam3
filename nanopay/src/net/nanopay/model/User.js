@@ -10,3 +10,11 @@ foam.RELATIONSHIP({
   forwardName: 'phones',
   inverseName: 'owner'
 });
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.tx.model.TransactionLimit',
+  forwardName: 'transactionLimits',
+  inverseName: 'owner'
+});

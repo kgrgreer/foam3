@@ -15,7 +15,9 @@ foam.CLASS({
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling'        
+    'net.nanopay.ui.modal.ModalStyling',
+    'net.nanopay.client.Client',
+    'net.nanopay.tx.client.Client'
   ],
 
   requires: [
@@ -65,6 +67,8 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
+      foam.__context__.register(foam.u2.ActionView, 'net.nanopay.ui.ActionView');
 
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
       this.userDAO.find(1).then(function(a) {
