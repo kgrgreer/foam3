@@ -65,7 +65,7 @@ foam.CLASS({
 
   listeners: [
     function recordPaymentModal(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
     }
   ],
 

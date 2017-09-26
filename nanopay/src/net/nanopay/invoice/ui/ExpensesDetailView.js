@@ -64,15 +64,15 @@ foam.CLASS({
 
   listeners: [
     function payNowPopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.PayNowModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.PayNowModal', invoice: this.data }));
     },
 
     function disputePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
     function schedulePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
     }
   ],
 

@@ -14,6 +14,14 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'note',
+      view: 'foam.u2.tag.TextArea'
+    }
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -58,7 +66,7 @@ foam.CLASS({
     .addClass(this.myClass())
       .start()
         .start().addClass('mainMessage-Text').add(this.Instructions).end()
-        .start('input').addClass('input-Box').end()
+        .start(this.NOTE).addClass('input-Box').end()
         .start().addClass('blue-button').add('Approve').end()
       .end()
     .end()

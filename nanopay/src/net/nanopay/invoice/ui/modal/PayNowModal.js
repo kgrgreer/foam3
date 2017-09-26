@@ -39,7 +39,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-
+      
       this
       .tag(this.ModalHeader.create({
         title: 'Pay Now'
@@ -53,7 +53,7 @@ foam.CLASS({
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add('$', this.invoice.amount.toFixed(2)).end()
+              .start().addClass('value').add(this.invoice.currencyType, ' ', this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
           .start().addClass('label').add("Payment Method").end()
