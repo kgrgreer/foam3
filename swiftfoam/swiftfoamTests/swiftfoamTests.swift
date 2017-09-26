@@ -18,7 +18,7 @@ class swiftfoamTests: XCTestCase {
     let httpBox = X.create(HTTPBox.self)!
     httpBox.url = "http://localhost:8080/transactionDAO"
 
-    let dao = X.create(BaseClientDAO.self)!
+    let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
 
     let sink = dao.skip(0).limit(1).select(ArraySink()) as? ArraySink

@@ -36,8 +36,8 @@ var executor = foam.classloader.NodeJsModelExecutor.create({
       'foam.swift.box.RPCReturnBox',
       'foam.box.RPCMessage',
       'foam.box.Message',
-      'foam.dao.BaseClientDAO',
       'foam.dao.ArraySink',
+      'foam.dao.ClientDAO',
       'foam.box.RemoteException',
 
       'net.nanopay.tx.model.Transaction',
