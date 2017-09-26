@@ -28,7 +28,6 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
-  { name: 'net/nanopay/cico/client/Client' },
   { name: 'net/nanopay/cico/ui/CicoView'},
 
   // fx

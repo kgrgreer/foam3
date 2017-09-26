@@ -87,10 +87,6 @@ foam.CLASS({
       label: 'Date & Time'
     },
     {
-      class: 'String',
-      name: 'type'
-    },
-    {
       class: 'Currency',
       name: 'tip'
     },
