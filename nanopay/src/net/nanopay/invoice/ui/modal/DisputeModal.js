@@ -13,6 +13,10 @@ foam.CLASS({
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
+  
+  properties:[
+    'invoice'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -30,7 +34,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      
+      debugger;
       this
       .tag(this.ModalHeader.create({
         title: 'Dispute'

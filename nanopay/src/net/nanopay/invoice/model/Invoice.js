@@ -60,14 +60,31 @@ foam.CLASS({
       name: 'payeeName',
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
-      transient: true
+      transient: true,
+      // factory: function(){
+      //   var dao = this.__context__.userDAO,
+      //       result;
+      //   dao.find(this.payeeId).then(function(a){
+      //     result =  a.firstName + ' ' + a.lastName;
+      //     return result;
+      //   });
+      // }
     },
     {
       class: 'String',
       name: 'payerName',
       label: 'Customer',
       aliases: [ 'from', 'customer', 'c' ],
-      transient: true
+      transient: true,
+      // factory: function(){
+      //   var dao = this.__context__.userDAO,
+      //       result;
+        
+      //   dao.find(this.payerId).then(function(a){
+      //     result = a.firstName + ' ' + a.lastName;
+      //     return result;
+      //   });
+      // }
     },
     {
       name: 'paymentId'
@@ -192,6 +209,17 @@ foam.RELATIONSHIP({
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
         this.add(o.firstName + ' ' + o.lastName);
       }.bind(this));
+    },
+    postSet: function(oldValue, newValue){
+      var self = this;      
+      var dao = this.__context__.userDAO;
+
+      dao.find(newValue).then(function(a){
+        self.payeeName = a.firstName + ' ' + a.lastName;
+      });
+      dao.find(this.payerId).then(function(a){
+        self.payerName = a.firstName + ' ' + a.lastName;
+      })
     }
   }
 });
@@ -225,6 +253,17 @@ foam.RELATIONSHIP({
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
         this.add(o.firstName + ' ' + o.lastName);
       }.bind(this));
+    },
+    postSet: function(oldValue, newValue){
+      var self = this;
+      var dao = this.__context__.userDAO;
+
+      dao.find(newValue).then(function(a){
+        self.payerName = a.firstName + ' ' + a.lastName;
+      });
+      dao.find(this.payeeId).then(function(a){
+        self.payeeName = a.firstName + ' ' + a.lastName;
+      })
     }
   }
 });

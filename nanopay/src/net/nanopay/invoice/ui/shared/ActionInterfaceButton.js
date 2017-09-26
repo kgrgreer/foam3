@@ -100,21 +100,7 @@ foam.CLASS({
           width: 125px;
           right: 175px;
         }
-        ^ .foam-u2-ActionView-emailModal{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 10;
-          opacity: 0.01;
-        }
-        ^ .foam-u2-ActionView-approveModal{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 10;
-          opacity: 0.01;
-        }
-        ^ .foam-u2-ActionView-resolutionModal{
+        ^ .foam-u2-ActionView{
           position: absolute;
           width: 75px;
           height: 35px;
@@ -150,7 +136,7 @@ foam.CLASS({
               invoice: this.invoice,
               title: 'Dispute'
             }
-          }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
+          }).addClass('import-button').add(this.DISPUTE_MODAL).end()
           .start(this.EMAIL_MODAL).addClass('import-button').end()
           .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
           .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
@@ -202,27 +188,25 @@ foam.CLASS({
       }
     },
     {
-      name: 'resolutionModal',
-      code: function(X){
-        X.ctrl.add(
-          foam.u2.dialog.Popup.create(null, X)
-            .tag({ 
-              class: 'net.nanopay.invoice.ui.modal.SingleResolutionModal', 
-              invoice: X.data.invoice,
-              title: X.data.title
-            })
-        );
-      }
-    },
-    {
       name: 'approveModal',
       code: function(X){
         X.ctrl.add(
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
               class: 'net.nanopay.invoice.ui.modal.ApproveModal', 
-              invoice: X.data.invoice,
-              title: X.data.title
+              invoice: X.data.invoice
+            })
+        );
+      }
+    },
+    {
+      name: 'disputeModal',
+      code: function(X){
+        X.ctrl.add(
+          foam.u2.dialog.Popup.create(null, X)
+            .tag({ 
+              class: 'net.nanopay.invoice.ui.modal.DisputeModal', 
+              invoice: X.data.invoice
             })
         );
       }
