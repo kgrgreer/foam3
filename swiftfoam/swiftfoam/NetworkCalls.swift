@@ -9,18 +9,20 @@
 import Foundation
 
 func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Void) {
-  let boxContext = BoxContext()
-  let X = boxContext.__subContext__
+  DispatchQueue.global(qos: .userInitiated).async {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
 
-  let httpBox = X.create(HTTPBox.self)!
-  httpBox.url = "http://localhost:8080/transactionDAO"
+    let httpBox = X.create(HTTPBox.self)!
+    httpBox.url = "http://localhost:8080/transactionDAO"
 
-  let dao = X.create(ClientDAO.self)!
-  dao.delegate = httpBox
+    let dao = X.create(ClientDAO.self)!
+    dao.delegate = httpBox
 
-  let placedTransaction = (try? dao.put(transaction)) as? Transaction
-  DispatchQueue.main.async {
-    callback(placedTransaction)
+    let placedTransaction = (try? dao.put(transaction)) as? Transaction
+    DispatchQueue.main.async {
+      callback(placedTransaction)
+    }
   }
 }
 
