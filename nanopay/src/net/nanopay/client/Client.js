@@ -6,6 +6,10 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
+<<<<<<< HEAD
+=======
+    'net.nanopay.invoice.model.Invoice',
+>>>>>>> 575f6533189ca4830bd26e36f44652bd8396ea2b
     'net.nanopay.model.Account',
     'net.nanopay.model.Bank',
     'net.nanopay.model.BankAccountInfo',
@@ -197,6 +201,21 @@ foam.CLASS({
             { name: 'Joint Venture' },
           ]
         })
+      }
+    },
+    {
+      name: 'invoiceDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
+          cache: true,
+          of: this.Invoice
+        })
+        .addPropertyIndex(this.Invoice.STATUS)
+        .addPropertyIndex(this.Invoice.TO_USER_NAME)
+        .addPropertyIndex(this.Invoice.FROM_USER_NAME)
+        .addPropertyIndex(this.Invoice.TO_USER_ID)
+        .addPropertyIndex(this.Invoice.FROM_USER_ID);
       }
     }
   ]

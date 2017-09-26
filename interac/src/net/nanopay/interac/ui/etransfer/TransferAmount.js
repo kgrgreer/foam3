@@ -164,6 +164,7 @@ foam.CLASS({
       value: false
     },
     {
+      // TODO: change class to Currency?
       class: 'Double',
       name: 'fromAmount',
       value: 1.5,
@@ -190,6 +191,7 @@ foam.CLASS({
       }
     },
     {
+      // TODO: change class to Currency?
       class: 'Double',
       name: 'toAmount',
       min: 0,
