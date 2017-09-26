@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'PayNowModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Pay Now Modal',
 
@@ -60,9 +60,22 @@ foam.CLASS({
           .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start().addClass('blue-button').add('Pay Now').end()
+          .start(this.PAY).addClass('blue-button').end()
         .end()
       .end()
     } 
+  ],
+
+  actions: [
+    {
+      name: 'pay',
+      label: 'Pay Now',
+      code: function(X){
+        /* 
+          Create transaction & continue flow here.
+          Invoice Data is accessible through X.data.invoice
+        */ 
+      }
+    }
   ]
 })

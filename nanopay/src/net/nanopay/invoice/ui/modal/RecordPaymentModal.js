@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'RecordPaymentModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Record Payment Modal',
 
@@ -69,8 +69,21 @@ foam.CLASS({
           .start().addClass('label').add('Note').end()
           .start(this.NOTE).addClass('input-box').end()
         .end()
-        .start().addClass('blue-button').add('Record Payment').end()
+        .start(this.RECORD).addClass('blue-button').add('Record Payment').end()
       .end()
     } 
+  ],
+
+  actions: [
+    {
+      name: 'record',
+      label: 'Record Payment',
+      code: function(X){
+        /* 
+          Create transaction & continue flow here.
+          Invoice Data is accessible through X.data.invoice
+        */ 
+      }
+    }
   ]
 })

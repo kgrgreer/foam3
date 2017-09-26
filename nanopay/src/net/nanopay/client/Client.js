@@ -11,8 +11,7 @@ foam.CLASS({
     'net.nanopay.model.Bank',
     'net.nanopay.model.BankAccountInfo',
     'net.nanopay.model.BusinessSector',
-    'net.nanopay.model.BusinessType',
-    'foam.nanos.auth.User'
+    'net.nanopay.model.BusinessType'
   ],
 
   exports: [
