@@ -20,7 +20,8 @@ foam.CLASS({
       name: 'paymentDate'
     },
     'amount',
-    'note'
+    'note',
+    'invoice'
   ],
 
   axioms: [

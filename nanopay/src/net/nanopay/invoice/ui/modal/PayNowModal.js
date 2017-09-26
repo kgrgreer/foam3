@@ -14,6 +14,10 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling'
   ],
 
+  properties: [
+    'invoice'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*    

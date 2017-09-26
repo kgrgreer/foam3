@@ -48,7 +48,7 @@ foam.CLASS({
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
           detailActions: { 
-            invoice: this.invoice,
+            invoice: this.data,
             buttonLabel: 'Pay Now', 
             buttonAction: this.payNowPopUp, 
             subMenu1: 'Schedule a Payment', 
@@ -57,7 +57,7 @@ foam.CLASS({
             this.disputePopUp 
           }
         })
-        .start('h5').add('Invoice from ', this.invoice.payerName).end()
+        .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data, type: 'expense' })
     }
   ],
