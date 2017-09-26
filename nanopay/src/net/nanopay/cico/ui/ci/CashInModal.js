@@ -42,7 +42,7 @@ foam.CLASS({
           margin-left: 20px;
           display: inline-block;
         }
-        ^ .foam-u2-ActionView-closeButton {
+        ^ .net-nanopay-ui-ActionView-closeButton {
           width: 24px;
           height: 24px;
           margin: 0;
@@ -56,7 +56,7 @@ foam.CLASS({
           background: transparent;
           box-shadow: none;
         }
-        ^ .foam-u2-ActionView-closeButton:hover {
+        ^ .net-nanopay-ui-ActionView-closeButton:hover {
           background: transparent;
           background-color: transparent;
         }
@@ -89,7 +89,7 @@ foam.CLASS({
           outline: none;
           padding: 10px;
         }
-        ^ .foam-u2-ActionView-nextButton {
+        ^ .net-nanopay-ui-ActionView-nextButton {
           font-family: Roboto;
           width: 136px;
           height: 40px;
@@ -108,11 +108,11 @@ foam.CLASS({
           box-shadow: none;
           font-weight: normal;
         }
-        ^ .foam-u2-ActionView-nextButton:hover {
+        ^ .net-nanopay-ui-ActionView-nextButton:hover {
           background: #3783b3;
           border-color: #3783b3;
         }
-        ^ .foam-u2-ActionView-goToBank {
+        ^ .net-nanopay-ui-ActionView-goToBank {
           width: 118.3px;
           height: 14px;
           font-family: Roboto;
@@ -130,7 +130,7 @@ foam.CLASS({
           outline: none;
           padding: 0;
         }
-        ^ .foam-u2-ActionView-goToBank:hover {
+        ^ .net-nanopay-ui-ActionView-goToBank:hover {
           background: transparent;
         }
     */}
