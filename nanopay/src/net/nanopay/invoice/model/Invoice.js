@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: 'Invoice model.',
+  documentation: 'Invoice model. Amount is set to double type.',
 
   ids: [ 'invoiceNumber' ],
 

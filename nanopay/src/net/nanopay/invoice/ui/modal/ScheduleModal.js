@@ -14,6 +14,10 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling'
   ],
 
+  imports: [
+    'user'
+  ],
+
   properties: [
     'invoice',
     {

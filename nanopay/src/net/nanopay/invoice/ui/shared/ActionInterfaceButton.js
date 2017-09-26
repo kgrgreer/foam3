@@ -53,7 +53,7 @@ foam.CLASS({
           border-top: 5px solid white;
           margin-left: 9px;    
           position: relative;
-          top: -27px;
+          top: -22px;
         }
         ^top-action-buttons{
           width: 685px;
@@ -84,12 +84,12 @@ foam.CLASS({
           color: white;
           cursor: pointer;
         }
-        ^ .foam-u2-ActionView-popUp{
+        ^ .foam-u2-ActionView{
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          z-index: 10;
           opacity: 0.01;
-          z-index: 5;
-          position: relative;
-          top: -15;
-          right: 10;
         }
         ^ .foam-u2-ActionView-mainAction{
           opacity: 0.01;
@@ -99,12 +99,13 @@ foam.CLASS({
           width: 125px;
           right: 175px;
         }
-        ^ .foam-u2-ActionView{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 10;
+        ^ .foam-u2-ActionView-popUp{
           opacity: 0.01;
+          z-index: 5;
+          position: relative;
+          top: 0;
+          right: 10;
+          width: 35px;
         }
         */
       }
