@@ -15,9 +15,7 @@ foam.CLASS({
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.client.Client',
-    'net.nanopay.tx.client.Client'
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   requires: [
