@@ -53,7 +53,7 @@ foam.CLASS({
           border-top: 5px solid white;
           margin-left: 9px;    
           position: relative;
-          top: -22px;
+          top: 18px;
         }
         ^top-action-buttons{
           width: 685px;
@@ -84,14 +84,14 @@ foam.CLASS({
           color: white;
           cursor: pointer;
         }
-        ^ .foam-u2-ActionView{
+        ^ .net-nanopay-ui-ActionView{
           position: absolute;
           width: 75px;
           height: 35px;
           z-index: 10;
           opacity: 0.01;
         }
-        ^ .foam-u2-ActionView-mainAction{
+        ^ .net-nanopay-ui-ActionView-mainAction{
           opacity: 0.01;
           z-index: 1;
           position: absolute;
@@ -99,13 +99,14 @@ foam.CLASS({
           width: 125px;
           right: 175px;
         }
-        ^ .foam-u2-ActionView-popUp{
-          opacity: 0.01;
-          z-index: 5;
+        .net-nanopay-ui-ActionView-backAction{
           position: relative;
-          top: 0;
-          right: 10;
-          width: 35px;
+          top: 40;
+          width: 135px;
+          height: 40px;
+          border-radius: 2px;
+          border: 1px solid lightgrey;
+          background-color: rgba(164, 179, 184, 0.1);
         }
         */
       }

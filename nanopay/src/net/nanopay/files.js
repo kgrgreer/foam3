@@ -7,6 +7,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AccountLimit' },
   { name: 'net/nanopay/model/Bank' },
   { name: 'net/nanopay/model/BankAccountInfo' },
+  { name: 'net/nanopay/model/Currency' },  
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
@@ -20,6 +21,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ContentCard' },
   { name: 'net/nanopay/ui/RadioView' },
   { name: 'net/nanopay/ui/ToggleSwitch' },
+
+  // cico
+  { name: 'net/nanopay/cico/model/ServiceProvider' },
+  { name: 'net/nanopay/cico/client/Client' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -42,9 +47,16 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm' },
 
   // tx
-  { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
+  { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
+  { name: 'net/nanopay/tx/model/TransactionLimitType' },
+  { name: 'net/nanopay/tx/model/TransactionLimit' }, 
+  { name: 'net/nanopay/tx/model/Transaction' },  
+  { name: 'net/nanopay/tx/model/Fee' },
+  { name: 'net/nanopay/tx/model/FixedFee' },
+  { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/client/Client' },
+  { name: 'net/nanopay/model/Broker' },  
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
@@ -102,5 +114,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/FooterView' },  
   { name: 'net/nanopay/ui/ActionButton' },  
   { name: 'net/nanopay/ui/Placeholder' },    
-  { name: 'net/nanopay/ui/Controller' }
+  { name: 'net/nanopay/ui/TransferView' },
+  { name: 'net/nanopay/ui/ActionView' },
+  { name: 'net/nanopay/ui/Controller' },
+  { name: 'net/nanopay/model/Relationships' }
 ]);

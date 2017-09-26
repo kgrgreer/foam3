@@ -197,6 +197,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Send e-Transfer';
+
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -208,12 +209,14 @@ foam.CLASS({
         this.viewData.purchaseOrder = 'N/A';
         this.invoiceMode = false;
       }
+
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-amount',   label: 'Amount',          view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
       ];
+
       this.countdownView.hide();
       this.SUPER();
     },
