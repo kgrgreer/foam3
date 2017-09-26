@@ -32,7 +32,7 @@ foam.CLASS({
           color: #093649;
           padding-top: 70px;
         }
-        ^ .foam-u2-ActionView-mainAction{
+        ^ .net-nanopay-ui-ActionView-mainAction{
           right: 250px !important;
         }
         */

@@ -66,6 +66,8 @@ foam.CLASS({
 
       var self = this;
 
+      foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
       this.userDAO.find(1).then(function(a) {
         self.user.copyFrom(a);

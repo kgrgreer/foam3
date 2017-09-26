@@ -84,14 +84,14 @@ foam.CLASS({
           color: white;
           cursor: pointer;
         }
-        ^ .foam-u2-ActionView-popUp{
+        ^ .net-nanopay-ui-ActionView-popUp{
           opacity: 0.01;
           z-index: 5;
           position: relative;
           top: -15;
           right: 10;
         }
-        ^ .foam-u2-ActionView-mainAction{
+        ^ .net-nanopay-ui-ActionView-mainAction{
           opacity: 0.01;
           z-index: 1;
           position: absolute;
@@ -99,21 +99,21 @@ foam.CLASS({
           width: 125px;
           right: 175px;
         }
-        ^ .foam-u2-ActionView-emailModal{
+        ^ .net-nanopay-ui-ActionView-emailModal{
           position: absolute;
           width: 75px;
           height: 35px;
           z-index: 10;
           opacity: 0.01;
         }
-        ^ .foam-u2-ActionView-approveModal{
+        ^ .net-nanopay-ui-ActionView-approveModal{
           position: absolute;
           width: 75px;
           height: 35px;
           z-index: 10;
           opacity: 0.01;
         }
-        ^ .foam-u2-ActionView-resolutionModal{
+        ^ .net-nanopay-ui-ActionView-resolutionModal{
           position: absolute;
           width: 75px;
           height: 35px;
