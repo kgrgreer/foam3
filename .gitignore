@@ -41,4 +41,3 @@ fabric.properties
 # Generated Code
 cp.txt
 build/
-swiftfoam/swiftfoam/stubs/*
