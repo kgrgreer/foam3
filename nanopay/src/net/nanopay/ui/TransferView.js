@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TransferView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: "View to Transfer Amounts From User to User",
 
@@ -9,10 +9,6 @@ foam.CLASS({
     'net.nanopay.model.Account',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction'
-  ],
-
-  exports: [
-    'as data'
   ],
 
   imports: [
@@ -70,7 +66,7 @@ foam.CLASS({
         .start().addClass('label').add('Transfer Amount').end()
         .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
         .start(this.TRANSFER_VALUE).addClass('blue-button').end()
-      .end()
+      .end();
     }
   ],
 
@@ -90,5 +86,5 @@ foam.CLASS({
         this.transactionDAO.put(transaction);
       }
     }
-  ],
+  ]
 });
