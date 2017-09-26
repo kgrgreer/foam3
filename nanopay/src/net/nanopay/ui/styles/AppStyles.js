@@ -18,7 +18,6 @@ foam.CLASS({
           background: #edf0f5;
           margin: 0;
         }
-
         table {
           border-collapse: collapse;
           margin: auto;
@@ -68,7 +67,7 @@ foam.CLASS({
         tbody > tr:nth-child(odd) {
           background: #f6f9f9;
         }
-        .foam-u2-ActionView-create{
+        .net-nanopay-ui-ActionView-create{
           background: #59aadd !important;
           border: none !important;
           box-shadow: none !important;
@@ -79,7 +78,7 @@ foam.CLASS({
           position: relative;
           top: -40;
         }
-        .foam-u2-ActionView-back{
+        .net-nanopay-ui-ActionView-back{
           position: absolute;
           top: 110px;
           width: 135px;
@@ -102,7 +101,7 @@ foam.CLASS({
           font-size: 10pt;
           width: 340px;
         }
-        .foam-u2-ActionView {
+        .net-nanopay-ui-ActionView {
           width: 135px;
           height: 40px;
           border-radius: 2px;
@@ -113,19 +112,19 @@ foam.CLASS({
           font-size: 14px;
           padding: 0;
         }
-        .foam-u2-ActionView-deleteDraft {
+        .net-nanopay-ui-ActionView-deleteDraft {
           background-color: rgba(164, 179, 184, 0.1);
           border: solid 1px #8C92AC;
           color: #093649;
           font-size: 14px;
         }
-        .foam-u2-ActionView-saveAndPreview {
+        .net-nanopay-ui-ActionView-saveAndPreview {
           background-color: #59AADD;
           color: white;
           font-size: 14px;
           border: 1px solid #59AADD;
         }
-        .foam-u2-ActionView-saveAsDraft {
+        .net-nanopay-ui-ActionView-saveAsDraft {
           background-color: #EDF0F5;
           border: solid 1px #59A5D5;
           color: #59A5D5;
