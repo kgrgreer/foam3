@@ -52,6 +52,11 @@ class swiftfoamTests: XCTestCase {
     XCTAssertEqual(t2?.rate, 15)
     XCTAssertEqual(t2?.fees, 20)
     XCTAssertEqual(t2?.notes, "Mike's test!")
+
+    XCTAssertNotEqual(t.compareTo(t2), 0)
+    t.id = t2!.id
+    t.date = t2!.date
+    XCTAssertEqual(t.compareTo(t2), 0)
   }
 
 }
