@@ -6,7 +6,10 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
+<<<<<<< HEAD
+=======
     'net.nanopay.invoice.model.Invoice',
+>>>>>>> 575f6533189ca4830bd26e36f44652bd8396ea2b
     'net.nanopay.model.Account',
     'net.nanopay.model.Bank',
     'net.nanopay.model.BankAccountInfo',
@@ -18,8 +21,7 @@ foam.CLASS({
     'bankDAO',
     'bankAccountDAO',
     'businessSectorDAO',
-    'businessTypeDAO',
-    'invoiceDAO'
+    'businessTypeDAO'
   ],
 
   properties: [
