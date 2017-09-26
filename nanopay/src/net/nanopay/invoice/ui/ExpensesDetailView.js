@@ -18,10 +18,6 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
-  properties: [
-    'userName'
-  ],
-
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -44,10 +40,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.hideSaleSummary = true;
-      
-      this.data.payeeId$find.then(function(a){ 
-        self.userName =  a.firstName + ' ' + a.lastName;
-      })
 
       this
         .addClass(this.myClass())
@@ -55,10 +47,8 @@ foam.CLASS({
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
-          userName: this.userName,
           detailActions: { 
             invoice: this.invoice,
-            userName: this.userName,
             buttonLabel: 'Pay Now', 
             buttonAction: this.payNowPopUp, 
             subMenu1: 'Schedule a Payment', 
@@ -67,7 +57,7 @@ foam.CLASS({
             this.disputePopUp 
           }
         })
-        .start('h5').add('Invoice from ', this.userName$).end()
+        .start('h5').add('Invoice from ', this.invoice.payerName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data, type: 'expense' })
     }
   ],

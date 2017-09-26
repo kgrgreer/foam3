@@ -10,10 +10,6 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
-  properties: [
-    'fromUserName'
-  ],
-
   axioms: [
    foam.u2.CSS.create({
      code: function CSS() {/*
@@ -150,7 +146,6 @@ foam.CLASS({
       name: 'saveAndPreview',
       label: 'Save & Preview',
       code: function(X) {
-        debugger;
         X.dao.put(this);
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
