@@ -11,13 +11,6 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
-  imports: [
-    'user',
-    'userDAO',
-    'bankAccountDAO',
-    'transactionDAO'
-  ],
-
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -79,11 +72,11 @@ foam.CLASS({
 
         var transaction = this.Transaction.create({
           payeeId: this.payees,
-          payerId: this.user.id,
-          amount: this.transferAmount
+          payerId: X.user.id,
+          amount: X.transferAmount
         });
 
-        this.transactionDAO.put(transaction);
+        X.transactionDAO.put(transaction);
       }
     }
   ]
