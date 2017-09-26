@@ -97,7 +97,7 @@ foam.CLASS({
           position: absolute;
           height: 35px;
           width: 125px;
-          right: 175px;
+          right: 185px;
         }
         .net-nanopay-ui-ActionView-backAction{
           position: relative;
