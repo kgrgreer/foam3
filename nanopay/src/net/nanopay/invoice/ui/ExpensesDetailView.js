@@ -53,12 +53,12 @@ foam.CLASS({
             buttonAction: this.payNowPopUp, 
             subMenu1: 'Schedule a Payment', 
             subMenuAction1: this.schedulePopUp, 
-            subMenu2: 'Dispute', subMenuAction2: 
-            this.disputePopUp 
+            subMenu2: 'Dispute', 
+            subMenuAction2: this.disputePopUp 
           }
         })
         .start('h5').add('Invoice from ', this.data.payeeName).end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data, type: 'expense' })
+        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
     }
   ],
 

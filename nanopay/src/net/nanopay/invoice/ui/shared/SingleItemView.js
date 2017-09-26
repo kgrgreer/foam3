@@ -3,10 +3,18 @@ foam.CLASS({
   name: 'SingleItemView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'user'
+  ],
+
   properties: [
     'data',
-    'type',
-    'userName'
+    {
+      name: 'type',
+      expression: function(data, user){
+        return user.id ? data.payeeId : data.payerId
+      }
+    }
   ],
 
   axioms: [
@@ -65,15 +73,7 @@ foam.CLASS({
   methods: [
     function initE(){
       var self = this;
-      if(self.type == 'expense'){
-        self.data.payeeId$find.then(function(a){ 
-          self.userName = a.firstName + ' ' + a.lastName
-        })
-      } else {
-        self.data.payerId$find.then(function(a){ 
-          self.userName = a.firstName + ' ' + a.lastName
-        })
-      }
+
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
@@ -81,11 +81,7 @@ foam.CLASS({
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function(){
-              if(self.type == 'expense'){
-                this.start('h3').add('Vendor').end()
-              } else {
-                this.start('h3').add('Customer').end()
-              }
+              self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end()
             })
             .start('h4').add('Date Due').end()
             .start('h4').add('Amount').end()
@@ -94,7 +90,7 @@ foam.CLASS({
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
-            .start('h3').add(this.userName$).end()
+            .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
             .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
             .start('h4').add('$', this.data.amount.toFixed(2)).end()
             .start('h3').add(this.data.status).end()

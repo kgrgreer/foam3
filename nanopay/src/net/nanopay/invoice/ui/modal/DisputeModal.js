@@ -34,7 +34,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      debugger;
+
       this
       .tag(this.ModalHeader.create({
         title: 'Dispute'
@@ -44,7 +44,7 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
-              .start().addClass('value').add("360 Designs Inc.").end()
+              .start().addClass('value').add(this.invoice.payeeName).end()
             .end()
             .start()
               .start().addClass('key').add("Amount").end()

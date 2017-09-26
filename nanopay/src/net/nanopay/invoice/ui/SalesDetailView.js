@@ -59,7 +59,7 @@ foam.CLASS({
           }
         })
         .start('h5').add('Bill to ', this.data.payeeName).end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data, type: 'sales' })
+        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
     }
   ],
 
