@@ -43,7 +43,7 @@ foam.CLASS({
         position: relative;
         top: -2px;
       }
-      ^ .foam-u2-ActionView-saveApproval{
+      ^ .net-nanopay-ui-ActionView-saveApproval{
         position: relative;
         width: 135px;
         height: 40px;

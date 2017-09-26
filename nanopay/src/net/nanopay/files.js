@@ -116,6 +116,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Placeholder' },    
   { name: 'net/nanopay/ui/TransferView' },
   { name: 'net/nanopay/ui/ActionView' },
-  { name: 'net/nanopay/ui/Controller' }
+  { name: 'net/nanopay/ui/Controller' },
   { name: 'net/nanopay/model/Relationships' }
 ]);
