@@ -12,8 +12,7 @@ foam.CLASS({
         text-align: center;
         display: inline-block;
         cursor: pointer;
-        margin: 0px 5px 0px 0px;
-        font-size: 14px;
+        font-size: 12px;
         padding: 0;
       }
 
