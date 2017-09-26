@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'ScheduleModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Schedule Payment Modal',
 
@@ -84,9 +84,24 @@ foam.CLASS({
           .start(this.PAYMENT_DATE).addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start().addClass('blue-button').add('Confirm').end()
+          .start(this.SCHEDULE).addClass('blue-button').end()
         .end()
       .end()
     } 
+  ],
+
+  actions: [
+    {
+      name: 'schedule',
+      label: 'Confirm',
+      code: function(X){
+        var invoice = X.data.invoice;
+        invoice.paymentDate = this.paymentDate;
+        invoice.note = this.note;
+
+        X.invoiceDAO.put(invoice);
+        X.closeDialog();
+      }
+    }
   ]
 })

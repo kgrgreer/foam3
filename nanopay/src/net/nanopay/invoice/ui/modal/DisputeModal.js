@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'DisputeModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Dispute Invoice Modal',
 

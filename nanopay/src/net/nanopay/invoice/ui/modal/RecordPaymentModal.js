@@ -83,6 +83,7 @@ foam.CLASS({
           Create transaction & continue flow here.
           Invoice Data is accessible through X.data.invoice
         */ 
+        X.closeDialog();
       }
     }
   ]
