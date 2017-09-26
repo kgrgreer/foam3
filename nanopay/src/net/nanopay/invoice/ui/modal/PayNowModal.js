@@ -15,7 +15,12 @@ foam.CLASS({
   ],
 
   properties: [
-    'invoice'
+    'invoice',
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    }
   ],
 
   axioms: [
@@ -44,17 +49,17 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
-              .start().addClass('value').add(this.__context__.data.payeeName).end()
+              .start().addClass('value').add(this.invoice.payerName).end()
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add('$', this.__context__.data.amount.toFixed(2)).end()
+              .start().addClass('value').add('$', this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
           .start().addClass('label').add("Payment Method").end()
           .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
-          .start('input').addClass('input-box').end()
+          .start(this.NOTE).addClass('input-box').end()
           .start().addClass('blue-button').add('Pay Now').end()
         .end()
       .end()

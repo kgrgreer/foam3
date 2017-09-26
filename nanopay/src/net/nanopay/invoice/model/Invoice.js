@@ -57,34 +57,21 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'currencyType'
+    },
+    {
+      class: 'String',
       name: 'payeeName',
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
-      transient: true,
-      // factory: function(){
-      //   var dao = this.__context__.userDAO,
-      //       result;
-      //   dao.find(this.payeeId).then(function(a){
-      //     result =  a.firstName + ' ' + a.lastName;
-      //     return result;
-      //   });
-      // }
+      transient: true
     },
     {
       class: 'String',
       name: 'payerName',
       label: 'Customer',
       aliases: [ 'from', 'customer', 'c' ],
-      transient: true,
-      // factory: function(){
-      //   var dao = this.__context__.userDAO,
-      //       result;
-        
-      //   dao.find(this.payerId).then(function(a){
-      //     result = a.firstName + ' ' + a.lastName;
-      //     return result;
-      //   });
-      // }
+      transient: true
     },
     {
       name: 'paymentId'
@@ -216,6 +203,7 @@ foam.RELATIONSHIP({
 
       dao.find(newValue).then(function(a){
         self.payeeName = a.firstName + ' ' + a.lastName;
+        self.currencyType = a.address.countryId + 'D'
       });
       dao.find(this.payerId).then(function(a){
         self.payerName = a.firstName + ' ' + a.lastName;
@@ -260,6 +248,7 @@ foam.RELATIONSHIP({
 
       dao.find(newValue).then(function(a){
         self.payerName = a.firstName + ' ' + a.lastName;
+        self.currencyType = a.address.countryId + 'D'
       });
       dao.find(this.payeeId).then(function(a){
         self.payeeName = a.firstName + ' ' + a.lastName;

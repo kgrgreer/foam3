@@ -19,8 +19,12 @@ foam.CLASS({
       class: 'Date',
       name: 'paymentDate'
     },
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    },
     'amount',
-    'note',
     'invoice'
   ],
 
@@ -50,7 +54,7 @@ foam.CLASS({
         .start().addClass('key-value-container')
           .start()
             .start().addClass('key').add('Company').end()
-            .start().addClass('value').add('360 Design Inc').end()
+            .start().addClass('value').add(this.invoice.payeeName).end()
           .end()
         .end()
         .start()

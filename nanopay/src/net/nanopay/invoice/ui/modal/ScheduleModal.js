@@ -15,7 +15,22 @@ foam.CLASS({
   ],
 
   properties: [
-    'invoice'
+    'invoice',
+    {
+      name: 'type',
+      expression: function(invoice, user){
+        return user.id ? invoice.payeeId : invoice.payerId
+      }
+    },
+    {
+      class: 'Date',
+      name: 'paymentDate'
+    },
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    }
   ],
 
   axioms: [
@@ -52,19 +67,19 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
-              .start().addClass('value').add("360 Designs Inc.").end()
+              .start().addClass('value').add(this.type ? this.invoice.payeeName : this.invoice.payerName).end()
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add("CAD $1234.56").end()
+              .start().addClass('value').add(this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
           .start().addClass('label').add("Payment Method").end()
           .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Schedule a Date").end()
-          .start('input type ="date"').addClass('full-width-input').end()
+          .start(this.PAYMENT_DATE).addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
-          .start('input').addClass('input-box').end()
+          .start(this.NOTE).addClass('input-box').end()
           .start().addClass('blue-button').add('Confirm').end()
         .end()
       .end()

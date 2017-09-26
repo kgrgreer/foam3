@@ -25,6 +25,11 @@ foam.CLASS({
       expression: function(invoice, user){
         return user.id ? invoice.payeeId : invoice.payerId
       }
+    },
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
     }
   ],
 
@@ -44,7 +49,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      debugger;
+
       this
       .tag(this.ModalHeader.create({
         title: 'Dispute'
@@ -62,7 +67,7 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('label').add("Note").end()
-          .start('input').addClass('input-box').end()
+          .start(this.NOTE).addClass('input-box').end()
           .start().addClass('blue-button').add('Confirm').end()
         .end()
       .end()
