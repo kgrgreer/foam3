@@ -53,66 +53,13 @@ foam.CLASS({
         ^ .foam-u2-ActionView-create {
           visibility: hidden;
         }
-        ^ table {
-          border-collapse: collapse;
-          margin: auto;
-          width: 992px;
-        }
-        ^ thead > tr > th {
-          font-family: 'Roboto';
-          font-size: 14px;
-          background-color: rgba(110, 174, 195, 0.2);
-          color: #093649;
-          line-height: 1.14;
-          letter-spacing: 0.3px;
-          border-spacing: 0;
-          text-align: left;
-          padding-left: 15px;
-          height: 40px;
-        }
-        ^ tbody > tr > th > td {
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-          padding-left: 15px;
-          height: 60px;
-        }
-        ^ .foam-u2-view-TableView th {
-          padding-left: 15px;
-          font-family: Roboto;
-          font-size: 14px;
-          line-height: 1;
-          letter-spacing: 0.4px;
-          color: #093649;
-          font-style: normal;
-        }
-        ^ .foam-u2-view-TableView td {
-          font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-          padding-left: 15px;
-          font-size: 12px;
-          color: #093649;
-        }
-        ^ tbody > tr {
-          height: 60px;
-          background: white;
-        }
-        ^ tbody > tr:nth-child(odd) {
-          background: #f6f9f9;
-        }
-
         ^ .foam-u2-ActionView-addBank {
           background: none;
           outline: none;
           border: none;
-
           width: 218px;
           height: 100px;
           float: right;
-
           background-color: #23C2b7;
           letter-spacing: 0.3px;
           color: #FFFFFF;
@@ -120,28 +67,23 @@ foam.CLASS({
           opacity: 1;
           font-weight: normal;
         }
-
         ^ .foam-u2-ActionView-addBank span {
           display: block;
           margin-top: 8px;
-
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
         }
-
         ^ .foam-u2-ActionView-addBank:hover {
           background: none;
           cursor: pointer;
           background-color: #20B1A7;
         }
-
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
           background-color: #edf0f5;
           opacity: 1;
         }
-
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
         }
