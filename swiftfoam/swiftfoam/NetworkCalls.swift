@@ -24,7 +24,7 @@ private func getX() -> Context {
   return boxContext.__subContext__
 }
 
-func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Void) {
+public func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Void) {
   DispatchQueue.global(qos: .userInitiated).async {
     let dao = getTransactionDAO()
 
@@ -42,7 +42,7 @@ func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Voi
   }
 }
 
-func transferValueBy(payer payerId: Int,
+public func transferValueBy(payer payerId: Int,
                      payee payeeId: Int,
                      amount: Int,
                      rate: Float? = 1,
@@ -76,8 +76,8 @@ func transferValueBy(payer payerId: Int,
   }
 }
 
-func getTransactions(startingAt skip: Int? = 0,
-                     limit: Int? = 0,
+public func getTransactions(startingAt skip: Int? = 0,
+                     withLimit  limit: Int? = 0,
                      callback: @escaping ([Any?]?) -> Void) {
   DispatchQueue.global(qos: .userInitiated).async {
     let dao = getTransactionDAO()

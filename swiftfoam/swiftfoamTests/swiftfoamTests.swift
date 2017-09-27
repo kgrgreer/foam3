@@ -52,7 +52,6 @@ class swiftfoamTests: XCTestCase {
     {
       response in
       guard let t2 = response as? Transaction else {
-        XCTAssertNil(response)
         return
       }
       XCTAssertNotNil(t2)
@@ -72,7 +71,6 @@ class swiftfoamTests: XCTestCase {
     transferValueBy(transaction: t) {
       response in
       guard let t2 = response as? Transaction else {
-        XCTAssertNil(response)
         return
       }
       XCTAssertNotNil(t2)
@@ -91,7 +89,7 @@ class swiftfoamTests: XCTestCase {
   }
 
   func testGetTransactions() {
-    getTransactions(startingAt: 0, limit: 1) {
+    getTransactions(startingAt: 0, withLimit: 1) {
       response in
       XCTAssertNotNil(response)
       XCTAssertEqual(response!.count, 1)
