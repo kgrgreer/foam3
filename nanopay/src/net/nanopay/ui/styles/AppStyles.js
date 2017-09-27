@@ -67,6 +67,9 @@ foam.CLASS({
         tbody > tr:nth-child(odd) {
           background: #f6f9f9;
         }
+        .net-nanopay-ui-ActionView{
+          border: none;
+        }
         .net-nanopay-ui-ActionView-create{
           background: #59aadd !important;
           border: none !important;
@@ -102,15 +105,8 @@ foam.CLASS({
           width: 340px;
         }
         .net-nanopay-ui-ActionView {
-          width: 135px;
-          height: 40px;
-          border-radius: 2px;
-          text-align: center;
-          display: inline-block;
-          cursor: pointer;
-          margin: 0px 5px 0px 0px;
-          font-size: 14px;
-          padding: 0;
+          padding: 4px 16px;
+          text-decoration: none;
         }
         .net-nanopay-ui-ActionView-deleteDraft {
           background-color: rgba(164, 179, 184, 0.1);
@@ -128,6 +124,10 @@ foam.CLASS({
           background-color: #EDF0F5;
           border: solid 1px #59A5D5;
           color: #59A5D5;
+          margin-right: 15px;
+        }
+        .net-nanopay-ui-ActionView-pay{
+
         }
         
         
