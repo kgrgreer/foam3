@@ -77,8 +77,9 @@ public func transferValueBy(payer payerId: Int,
 }
 
 public func getTransactions(startingAt skip: Int? = 0,
-                     withLimit  limit: Int? = 0,
-                     callback: @escaping ([Any?]?) -> Void) {
+                            withLimit  limit: Int? = 100,
+                            callback: @escaping ([Any?]?) -> Void)
+{
   DispatchQueue.global(qos: .userInitiated).async {
     let dao = getTransactionDAO()
 
