@@ -42,13 +42,13 @@ class swiftfoamTests: XCTestCase {
     t.fees = 20
     t.notes = "Mike's test!"
 
-    transferValueBy(payer: t.payerId,
-                    payee: t.payeeId,
-                    amount: t.amount,
-                    rate: t.rate,
-                    purpose: nil,
-                    fees: t.fees,
-                    notes: t.notes)
+    TransactionService.instance.transferValueBy(payer: t.payerId,
+                                                payee: t.payeeId,
+                                                amount: t.amount,
+                                                rate: t.rate,
+                                                purpose: nil,
+                                                fees: t.fees,
+                                                notes: t.notes)
     {
       response in
       guard let t2 = response as? Transaction else {
@@ -68,7 +68,7 @@ class swiftfoamTests: XCTestCase {
       XCTAssertEqual(t.compareTo(t2), 0)
     }
 
-    transferValueBy(transaction: t) {
+    TransactionService.instance.transferValueBy(transaction: t) {
       response in
       guard let t2 = response as? Transaction else {
         return
@@ -89,7 +89,7 @@ class swiftfoamTests: XCTestCase {
   }
 
   func testGetTransactions() {
-    getTransactions(startingAt: 0, withLimit: 1) {
+    TransactionService.instance.getTransactions(startingAt: 0, withLimit: 1) {
       response in
       XCTAssertNotNil(response)
       XCTAssertEqual(response!.count, 1)
