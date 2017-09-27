@@ -43,7 +43,7 @@ foam.CLASS({
         position: relative;
         top: -2px;
       }
-      ^ .foam-u2-ActionView-saveApproval{
+      ^ .net-nanopay-ui-ActionView-saveApproval{
         position: relative;
         width: 135px;
         height: 40px;
@@ -70,11 +70,11 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add('Company').end()
-              .start().addClass('value').add(this.invoice.toUserName).end()
+              .start().addClass('value').add(this.invoiceUserName$).end()
             .end()
             .start()
               .start().addClass('key').add('Amount').end()
-              .start().addClass('value').add('$',this.invoice.amount).end()
+              .start().addClass('value').add('$', this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
           .start().addClass('label').add('Note').end()

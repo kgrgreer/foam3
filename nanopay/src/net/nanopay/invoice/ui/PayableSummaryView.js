@@ -16,7 +16,8 @@ foam.CLASS({
 
   imports: [ 
     'invoiceDAO', 
-    'formatCurrency' 
+    'formatCurrency',
+    'user'
   ],
 
   exports: [ 'as data' ],
@@ -43,7 +44,7 @@ foam.CLASS({
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.invoiceDAO; }
+      factory: function() { return this.user.expenses; }
     },
     {
       class: 'Int',
