@@ -8,11 +8,20 @@
 
 import Foundation
 
+let host: String = "http://localhost:8080/"
+enum ServiceURL: String {
+  func path() -> String {
+    return "\(host)\(self.rawValue)"
+  }
+
+  case Transaction = "transactionDAO"
+}
+
 public class TransactionService {
   public static let instance = TransactionService()
   private lazy var dao: ClientDAO = {
     let httpBox = X.create(HTTPBox.self)!
-    httpBox.url = "http://localhost:8080/transactionDAO"
+    httpBox.url = ServiceURL.Transaction.path()
 
     let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox

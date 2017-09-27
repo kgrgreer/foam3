@@ -16,7 +16,7 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let httpBox = X.create(HTTPBox.self)!
-    httpBox.url = "http://localhost:8080/transactionDAO"
+    httpBox.url = ServiceURL.Transaction.path()
 
     let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
