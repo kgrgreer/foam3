@@ -6,8 +6,7 @@ foam.CLASS({
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
 
   implements: [
-    //'foam.nanos.client.Client',
-    'foam.nanos.client.Client2',
+    'foam.nanos.client.Client',
     'net.nanopay.interac.client.Client',
     'net.nanopay.tx.client.Client',
     'net.nanopay.fx.client.Client',

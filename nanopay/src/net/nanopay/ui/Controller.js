@@ -8,9 +8,8 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    //'foam.nanos.client.Client',
-    'foam.nanos.client.Client2',
-    //'net.nanopay.invoice.dao.Dao',
+    'foam.nanos.client.Client',
+    // 'net.nanopay.invoice.dao.Dao',
     // 'net.nanopay.tx.client.Client',
     // 'net.nanopay.client.Client',
     'net.nanopay.util.CurrencyFormatter',
