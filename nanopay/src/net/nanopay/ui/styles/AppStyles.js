@@ -139,6 +139,7 @@ foam.CLASS({
           font-weight: 300;
           color: #093649;
           text-align: left;
+          border: 1px solid lightgrey;
         }
          .half-input-box {
            width: 50%;
