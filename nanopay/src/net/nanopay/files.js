@@ -77,6 +77,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView'}, 
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView'}, 
   { name: 'net/nanopay/invoice/ui/SalesDetailView'}, 
+  { name: 'net/nanopay/invoice/ui/SubscriptionView'},
 
   //cico
   { name: 'net/nanopay/bank/ui/CicoView'},  

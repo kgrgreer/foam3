@@ -75,15 +75,15 @@ foam.CLASS({
 
       net.nanopay.TempMenu.create(null, this);
 
-      var r, i;
+      // var r, i;
       
-      this.recurringInvoiceDAO.select().then(function(a){ 
-        r = a.array[0]
-        self.invoiceDAO.select().then(function(a){
-          i = a.array[0]
-          i.recurringInvoice = r;
-        })
-      })
+      // this.recurringInvoiceDAO.select().then(function(a){ 
+      //   r = a.array[0]
+      //   self.invoiceDAO.select().then(function(a){
+      //     i = a.array[0]
+      //     i.recurringInvoice = r;
+      //   })
+      // })
 
       this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
