@@ -21,8 +21,52 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().add('Subscriptions').end()
-        .tag({ class: 'foam.u2.view.TableView', of: this.RecurringInvoice, data: this.recurringInvoiceDAO})
+        .start().add('Subscriptions').addClass('light-roboto-h2').end()
+        .tag({
+          class: 'foam.u2.ListCreateController',
+          dao: this.recurringInvoiceDAO,
+          createDetailView: { class: 'net.nanopay.invoice.ui.SubscriptionEditView' },
+          detailView: { class: 'net.nanopay.invoice.ui.SubscriptionDetailView' },
+          summaryView: this.SubscriptionTableView.create(),
+          showActions: false            
+        })
+    }
+  ],
+
+  classes: [
+    {
+      name: 'SubscriptionTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'net.nanopay.invoice.model.RecurringInvoice' ],
+
+      imports: [ 'recurringInvoiceDAO' ],
+      properties: [ 
+        'selection', 
+        { name: 'data', factory: function() { return this.recurringInvoiceDAO; }}
+      ],
+
+      methods: [
+        function initE() {
+
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              selection$: this.selection$,
+              data: this.data,
+              config: {
+                amount: { 
+                  tableCellView: function(obj, e) {
+                  return e.E().add('- $', obj.amount).style({color: '#c82e2e'})
+                  }
+                }
+              },
+              columns: [
+                'id', 'payerName', 'nextInvoiceDate', 'amount', 'frequency', 'endsAfter', 'status'
+              ]
+            }).addClass(this.myClass('table')).end()
+        }
+      ],
     }
   ]
 });

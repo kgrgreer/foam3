@@ -32,10 +32,18 @@ foam.CLASS({
       name: 'deleted'
     },
     {
-      name: 'toUserId'
+      name: 'payeeId'
     },
     {
-      name: 'fromUserId'
+      name: 'payerId'
+    },
+    {
+      class: 'String',
+      name: 'payeeName'
+    },
+    {
+      class: 'String',
+      name: 'payerName'
     }
   ]
 });
