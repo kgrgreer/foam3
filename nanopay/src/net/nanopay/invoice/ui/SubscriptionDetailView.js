@@ -12,11 +12,13 @@ foam.CLASS({
 
   imports: [
     'recurringInvoiceDAO',
-    'stack'
+    'stack',
+    'hideActionButton'
   ],
 
   exports: [
-    'showInvoices'
+    'showInvoices',
+    'hideActionButton'
   ],
 
   properties: [
@@ -81,6 +83,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
+      this.hideActionButton = true;
 
       this
         .addClass(this.myClass())

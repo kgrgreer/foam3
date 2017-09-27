@@ -15,20 +15,32 @@ foam.CLASS({
     'invoiceDAO'
   ],
 
+  exports: [ 'hideActionButton' ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
           width: 970px;
           margin: auto;
-          margin-top: 25px;
         }
         ^ .net-nanopay-ui-ActionView-create{
           display: none;
         }
+        ^ .button-div{
+          margin-bottom: 25px;
+        }
         */
       }
     })
+  ],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'hideActionButton',
+      value: false
+    }
   ],
 
   methods: [
@@ -47,8 +59,16 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        // .start().add('Subscriptions').addClass('light-roboto-h2').end()
-        .tag({
+        .start().enableClass('hide', this.hideActionButton$)
+          .start().addClass('button-div')
+            .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})    
+            .start().addClass('inline float-right')
+            .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
+            .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Export'}}).addClass('import-button').end()
+            .end()
+          .end()
+        .end()
+        .start({
           class: 'foam.u2.ListCreateController',
           dao: this.recurringInvoiceDAO,
           createDetailView: { class: 'net.nanopay.invoice.ui.SubscriptionEditView' },
@@ -56,6 +76,7 @@ foam.CLASS({
           summaryView: this.SubscriptionTableView.create(),
           showActions: false            
         })
+        .end()
     }
   ],
 

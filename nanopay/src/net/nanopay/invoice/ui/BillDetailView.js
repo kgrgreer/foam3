@@ -126,7 +126,7 @@ foam.CLASS({
               .end()
               .start()
                 .add('Attachments')
-                .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
+                .start().add('Add Attachment').addClass('attachment-btn white-blue-button btn').end()
                 .add('Maximum size 10MB')
               .end()
               .start()
