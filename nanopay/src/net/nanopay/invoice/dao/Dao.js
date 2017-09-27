@@ -52,10 +52,31 @@ foam.CLASS({
           seqNo: true,
           testData: [
             {
+              id: 1,
+              frequency: 'Daily',
+              endsAfter: new Date('2017-11-01'),
+              nextInvoiceDay: new Date('2017-07-10'),
+              deleted: false,
+              payeeId: 1,
+              payerId: 2
+            },
+            {
+              id: 2,
               frequency: 'Weekly',
-              endsAfter: new Date(),
-              nextInvoiceDate: new Date(),
-              deleted: false
+              endsAfter: new Date('2018-12-01'),
+              nextInvoiceDay: new Date('2017-09-28'),
+              deleted: false,
+              payeeId: 1,
+              payerId: 2
+            },
+            {
+              id: 3,
+              frequency: 'Biweekly',
+              endsAfter: new Date('2017-06-01'),
+              nextInvoiceDay: new Date('2017-06-01'),
+              deleted: false,
+              payeeId: 1,
+              payerId: 2
             }
           ]
         })

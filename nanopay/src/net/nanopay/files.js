@@ -62,6 +62,7 @@ FOAM_FILES([
 
   // invoice 
   { name: 'net/nanopay/invoice/model/Invoice'}, 
+  { name: 'net/nanopay/invoice/model/RecurringInvoice'},   
   { name: 'net/nanopay/invoice/dao/Dao'},  
   { name: 'net/nanopay/invoice/ui/ExpensesView' },
   { name: 'net/nanopay/invoice/ui/SalesView' },

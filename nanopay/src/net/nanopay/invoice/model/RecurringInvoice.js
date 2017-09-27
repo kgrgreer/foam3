@@ -39,11 +39,3 @@ foam.CLASS({
     }
   ]
 });
-
-foam.RELATIONSHIP({
-  cardinality: '1:*',
-  sourceModel: 'net.nanopay.invoice.model.RecurringInvoice',
-  targetModel: 'net.nanopay.invoice.model.Invoice',
-  forwardName: 'invoices',
-  inverseName: 'recurringInvoice'
-});
