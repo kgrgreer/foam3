@@ -12,7 +12,7 @@ find foam2/src NANOPAY/**/src -type f -name businessTypes -exec cat {} \; > busi
 find foam2/src NANOPAY/**/src -type f -name businessSectors -exec cat {} \; > businessSectors
 find foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
 find foam2/src NANOPAY/**/src -type f -name countryAgents -exec cat {} \; > countryAgents
-find foam2/src NANOPAY/**/src -type f -name crons -exec cat {} \; > crons
+find foam2/src NANOPAY/**/src -type f -name cronjobs -exec cat {} \; > cronjobs
 find foam2/src NANOPAY/**/src -type f -name currency -exec cat {} \; > currency
 find foam2/src NANOPAY/**/src -type f -name devices -exec cat {} \; > devices
 find foam2/src NANOPAY/**/src -type f -name dateofbirth -exec cat {} \; > dateofbirth
