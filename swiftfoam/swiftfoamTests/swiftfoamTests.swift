@@ -21,9 +21,13 @@ class swiftfoamTests: XCTestCase {
     let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
 
-    let sink = (try? dao.skip(0).limit(1).select(ArraySink())) as? ArraySink
-    let transaction = sink?.array[0] as? Transaction
-    XCTAssertNotNil(transaction)
+    do {
+      let sink = (try dao.skip(0).limit(1).select(ArraySink())) as? ArraySink
+      let transaction = sink?.array[0] as? Transaction
+      XCTAssertNotNil(transaction)
+    } catch let e {
+      NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+    }
   }
 
   func testPutTransactionDAO() {
@@ -47,36 +51,50 @@ class swiftfoamTests: XCTestCase {
                     notes: t.notes)
     {
       response in
-      let t2 = response as? Transaction
+      guard let t2 = response as? Transaction else {
+        XCTAssertNil(response)
+        return
+      }
       XCTAssertNotNil(t2)
-      XCTAssertEqual(t2?.payerId, 1)
-      XCTAssertEqual(t2?.payeeId, 2)
-      XCTAssertEqual(t2?.amount, 5000)
-      XCTAssertEqual(t2?.rate, 15)
-      XCTAssertEqual(t2?.fees, 20)
-      XCTAssertEqual(t2?.notes, "Mike's test!")
+      XCTAssertEqual(t2.payerId, 1)
+      XCTAssertEqual(t2.payeeId, 2)
+      XCTAssertEqual(t2.amount, 5000)
+      XCTAssertEqual(t2.rate, 15)
+      XCTAssertEqual(t2.fees, 20)
+      XCTAssertEqual(t2.notes, "Mike's test!")
 
       XCTAssertNotEqual(t.compareTo(t2), 0)
-      t.id = t2!.id
-      t.date = t2!.date
+      t.id = t2.id
+      t.date = t2.date
       XCTAssertEqual(t.compareTo(t2), 0)
     }
 
     transferValueBy(transaction: t) {
       response in
-      let t2 = response as? Transaction
+      guard let t2 = response as? Transaction else {
+        XCTAssertNil(response)
+        return
+      }
       XCTAssertNotNil(t2)
-      XCTAssertEqual(t2?.payerId, 1)
-      XCTAssertEqual(t2?.payeeId, 2)
-      XCTAssertEqual(t2?.amount, 5000)
-      XCTAssertEqual(t2?.rate, 15)
-      XCTAssertEqual(t2?.fees, 20)
-      XCTAssertEqual(t2?.notes, "Mike's test!")
+      XCTAssertEqual(t2.payerId, 1)
+      XCTAssertEqual(t2.payeeId, 2)
+      XCTAssertEqual(t2.amount, 5000)
+      XCTAssertEqual(t2.rate, 15)
+      XCTAssertEqual(t2.fees, 20)
+      XCTAssertEqual(t2.notes, "Mike's test!")
 
       XCTAssertNotEqual(t.compareTo(t2), 0)
-      t.id = t2!.id
-      t.date = t2!.date
+      t.id = t2.id
+      t.date = t2.date
       XCTAssertEqual(t.compareTo(t2), 0)
+    }
+  }
+
+  func testGetTransactions() {
+    getTransactions(startingAt: 0, limit: 1) {
+      response in
+      XCTAssertNotNil(response)
+      XCTAssertEqual(response!.count, 1)
     }
   }
 }

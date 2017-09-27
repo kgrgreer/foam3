@@ -8,20 +8,36 @@
 
 import Foundation
 
+private func getTransactionDAO() -> ClientDAO {
+  let X = getX()
+
+  let httpBox = X.create(HTTPBox.self)!
+  httpBox.url = "http://localhost:8080/transactionDAO"
+
+  let dao = X.create(ClientDAO.self)!
+  dao.delegate = httpBox
+  return dao
+}
+
+private func getX() -> Context {
+  let boxContext = BoxContext()
+  return boxContext.__subContext__
+}
+
 func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Void) {
   DispatchQueue.global(qos: .userInitiated).async {
-    let boxContext = BoxContext()
-    let X = boxContext.__subContext__
+    let dao = getTransactionDAO()
 
-    let httpBox = X.create(HTTPBox.self)!
-    httpBox.url = "http://localhost:8080/transactionDAO"
-
-    let dao = X.create(ClientDAO.self)!
-    dao.delegate = httpBox
-
-    let placedTransaction = (try? dao.put(transaction)) as? Transaction
-    DispatchQueue.main.async {
-      callback(placedTransaction)
+    do {
+      let placedTransaction = (try dao.put(transaction)) as? Transaction
+      DispatchQueue.main.async {
+        callback(placedTransaction)
+      }
+    } catch let e {
+      NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+      DispatchQueue.main.async {
+        callback(nil)
+      }
     }
   }
 }
@@ -36,16 +52,9 @@ func transferValueBy(payer payerId: Int,
                      callback: @escaping (Any?) -> Void)
 {
   DispatchQueue.global(qos: .userInitiated).async {
-    let boxContext = BoxContext()
-    let X = boxContext.__subContext__
+    let dao = getTransactionDAO()
 
-    let httpBox = X.create(HTTPBox.self)!
-    httpBox.url = "http://localhost:8080/transactionDAO"
-
-    let dao = X.create(ClientDAO.self)!
-    dao.delegate = httpBox
-
-    let transaction = X.create(Transaction.self)!
+    let transaction = getX().create(Transaction.self)!
     transaction.payerId = payerId
     transaction.payeeId = payeeId
     transaction.amount = amount
@@ -53,9 +62,36 @@ func transferValueBy(payer payerId: Int,
     transaction.fees = fees!
     transaction.notes = notes!
 
-    let placedTransaction = (try? dao.put(transaction)) as? Transaction
-    DispatchQueue.main.async {
-      callback(placedTransaction)
+    do {
+      let placedTransaction = (try dao.put(transaction)) as? Transaction
+      DispatchQueue.main.async {
+        callback(placedTransaction)
+      }
+    } catch let e {
+      NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+      DispatchQueue.main.async {
+        callback(nil)
+      }
+    }
+  }
+}
+
+func getTransactions(startingAt skip: Int? = 0,
+                     limit: Int? = 0,
+                     callback: @escaping ([Any?]?) -> Void) {
+  DispatchQueue.global(qos: .userInitiated).async {
+    let dao = getTransactionDAO()
+
+    do {
+      let sink = (try dao.skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink
+      DispatchQueue.main.async {
+        callback(sink?.array)
+      }
+    } catch let e {
+      NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+      DispatchQueue.main.async {
+        callback(nil)
+      }
     }
   }
 }
