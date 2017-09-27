@@ -11,7 +11,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankDAO',
+    'bankAccountDAO',
     'stack',
     'transactionDAO'
   ],
@@ -139,9 +139,9 @@ foam.CLASS({
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankDAO,
+          dao: X.bankAccountDAO,
           objToChoice: function(a){
-            return [a.id, a.name];
+            return [a.id, a.accountInfo.accountName];
           }
         })
       }

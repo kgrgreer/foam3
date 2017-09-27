@@ -118,13 +118,14 @@ foam.CLASS({
       name: 'bankAccountDAO',
       factory: function () {
         return this.EasyDAO.create({
-          daoType: 'CLIENT',
+          daoType: 'MDAO',
           of: this.Account,
           serviceName: 'bankAccountDAO',
           testData: [
             {
               id: 1,
               accountInfo: this.BankAccountInfo.create({
+                accountName: 'Scotiabank Chequing',
                 accountNumber: '490932681376',
                 currencyCode: 'CAD',
                 bankAccount: 4
@@ -133,6 +134,7 @@ foam.CLASS({
             {
               id: 2,
               accountInfo: this.BankAccountInfo.create({
+                accountName: 'TD Savings',
                 accountNumber: '923000000008465748932',
                 currencyCode: 'INR',
                 bankAccount: 8

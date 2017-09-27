@@ -5,7 +5,7 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
-  imports: [ 'amount', 'bankDAO', 'bankList', 'closeDialog', 'onCashOutSuccess', 'cashOut' ],
+  imports: [ 'amount', 'bankAccountDAO', 'bankList', 'closeDialog', 'onCashOutSuccess', 'cashOut' ],
 
   documentation: 'Pop up modal for confirming cash out.',
 
@@ -46,7 +46,7 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin: 0;
-          margin-top: 5px;
+          margin-top: 7px;
           margin-right: 20px;
           cursor: pointer;
           display: inline-block;
@@ -177,8 +177,8 @@ foam.CLASS({
             .start()
               .addClass('bankName')
               .call(function() {
-                self.bankDAO.find(self.bankList).then(function(bank) {
-                  this.add(bank.name);
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.add(bank.accountInfo.accountName);
                 }.bind(this));
               })
             .end()

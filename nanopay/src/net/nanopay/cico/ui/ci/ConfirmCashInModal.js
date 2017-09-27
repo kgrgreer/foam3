@@ -7,7 +7,7 @@ foam.CLASS({
 
   imports: [
     'amount',
-    'bankDAO',
+    'bankAccountDAO',
     'bankList',
     'cashIn',
     'closeDialog',
@@ -53,7 +53,7 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin: 0;
-          margin-top: 5px;
+          margin-top: 7px;
           margin-right: 20px;
           cursor: pointer;
           display: inline-block;
@@ -187,8 +187,8 @@ foam.CLASS({
             .start()
               .addClass('bankName')
               .call(function() {
-                self.bankDAO.find(self.bankList).then(function(bank) {
-                  this.add(bank.name);
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.add(bank.accountInfo.accountName);
                 }.bind(this));
               })
             .end()
