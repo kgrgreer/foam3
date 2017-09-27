@@ -7,11 +7,11 @@ foam.CLASS({
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.mlang.Expressions',
     'foam.nanos.client.Client',
     // 'net.nanopay.invoice.dao.Dao',
     // 'net.nanopay.tx.client.Client',
     // 'net.nanopay.client.Client',
+    'foam.mlang.Expressions',
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
