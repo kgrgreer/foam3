@@ -44,19 +44,23 @@ class swiftfoamTests: XCTestCase {
     t.fees = 20
     t.notes = "Mike's test!"
 
-    let t2 = (try? dao.put(t)) as? Transaction
-    XCTAssertNotNil(t2)
-    XCTAssertEqual(t2?.payerId, 1)
-    XCTAssertEqual(t2?.payeeId, 2)
-    XCTAssertEqual(t2?.amount, 5000)
-    XCTAssertEqual(t2?.rate, 15)
-    XCTAssertEqual(t2?.fees, 20)
-    XCTAssertEqual(t2?.notes, "Mike's test!")
+    do {
+      let t2 = (try dao.put(t)) as? Transaction
+      XCTAssertNotNil(t2)
+      XCTAssertEqual(t2?.payerId, 1)
+      XCTAssertEqual(t2?.payeeId, 2)
+      XCTAssertEqual(t2?.amount, 5000)
+      XCTAssertEqual(t2?.rate, 15)
+      XCTAssertEqual(t2?.fees, 20)
+      XCTAssertEqual(t2?.notes, "Mike's test!")
 
-    XCTAssertNotEqual(t.compareTo(t2), 0)
-    t.id = t2!.id
-    t.date = t2!.date
-    XCTAssertEqual(t.compareTo(t2), 0)
+      XCTAssertNotEqual(t.compareTo(t2), 0)
+      t.id = t2!.id
+      t.date = t2!.date
+      XCTAssertEqual(t.compareTo(t2), 0)
+    } catch let e {
+      NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+    }
   }
 
 }
