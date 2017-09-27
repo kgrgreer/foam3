@@ -95,4 +95,39 @@ class swiftfoamTests: XCTestCase {
       XCTAssertEqual(response!.count, 1)
     }
   }
+
+  func testThreadSafe() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+
+    let t = X.create(Transaction.self)!
+    t.payerId = 1
+    t.payeeId = 2
+    t.amount = 5 //cents
+    t.rate = 15
+    t.fees = 20
+    t.notes = "Mike's test!"
+
+    var errors:[String] = []
+
+    let dispatchGroup = DispatchGroup()
+    for i in 0 ..< 50 {
+      print("Entering Thread \(i)")
+      dispatchGroup.enter()
+      TransactionService.instance.transferValueBy(transaction: t) {
+        response in
+        guard let _ = response as? Transaction else {
+          print("Thread \(i) Leaving With Error..")
+          errors.append("failure")
+          return
+        }
+        print("Thread \(i) Leaving..")
+        dispatchGroup.leave()
+      }
+    }
+
+    dispatchGroup.notify(queue: DispatchQueue.main) {
+      XCTAssertEqual(errors.count, 0)
+    }
+  }
 }

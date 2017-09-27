@@ -19,19 +19,20 @@ enum ServiceURL: String {
 
 public class TransactionService {
   public static let instance = TransactionService()
-  private lazy var dao: ClientDAO = {
+
+  private var X: Context!
+  private var dao: ClientDAO!
+
+  init() {
+    let boxContext = BoxContext()
+    X = boxContext.__subContext__
+
     let httpBox = X.create(HTTPBox.self)!
     httpBox.url = ServiceURL.Transaction.path()
 
-    let dao = X.create(ClientDAO.self)!
+    dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
-    return dao
-  }()
-
-  private lazy var X: Context = {
-    let boxContext = BoxContext()
-    return boxContext.__subContext__
-  }()
+  }
 
   public func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Void) {
     DispatchQueue.global(qos: .userInitiated).async {
