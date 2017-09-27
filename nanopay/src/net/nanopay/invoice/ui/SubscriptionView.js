@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'recurringInvoiceDAO'
+    'recurringInvoiceDAO',
+    'invoiceDAO'
   ],
 
   axioms: [
@@ -20,6 +21,10 @@ foam.CLASS({
         ^{
           width: 970px;
           margin: auto;
+          margin-top: 25px;
+        }
+        ^ .net-nanopay-ui-ActionView-create{
+          display: none;
         }
         */
       }
@@ -30,6 +35,15 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
+      var r, i;
+      
+      this.recurringInvoiceDAO.select().then(function(a){ 
+        r = a.array[0]
+        self.invoiceDAO.select().then(function(a){
+          i = a.array[0]
+          i.recurringInvoice = r;
+        })
+      });
 
       this
         .addClass(this.myClass())

@@ -15,6 +15,17 @@ foam.CLASS({
     'stack'
   ],
 
+  exports: [
+    'showInvoices'
+  ],
+
+  properties: [
+    {
+      name: 'showInvoices',
+      value: false
+    }
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -47,11 +58,20 @@ foam.CLASS({
           margin-right: 40px;
         }
         ^ .grey-button{
-          margin: 20px 20px;
+          margin-top: 20px;
         }
         ^ .white-blue-button{
-          margin: 20px 20px;
+          margin-top: 20px
         }
+        ^ .net-nanopay-ui-ActionView-expandInvoices{
+          width: 300px;
+          height: 30px;
+          position: absolute;
+          opacity: 0.01;
+        }
+         ^ .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice{
+           margin-top: 25px;
+         }
         */
       }
     })
@@ -73,9 +93,17 @@ foam.CLASS({
         .add('Recurring Invoice for ', this.data.payerName).addClass('light-roboto-h2')
         .end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleSubscriptionView', data: this.data })
-        .start().addClass(this.myClass('view-invoices'))
+        .start().addClass(this.myClass('view-invoices')).start(this.EXPAND_INVOICES).end()
           .start().add('View Past Invoices').addClass('link inline').end()
           .start().addClass('arrow-down inline float-right').end()
+        .end()
+        .start({
+          class: 'foam.u2.ListCreateController',
+          dao: this.data.invoices,
+          detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
+          summaryView: this.InvoicesTableView.create(),
+          showActions: false            
+        }).addClass('hide').enableClass('show', true)
         .end()
     }
   ],
@@ -99,6 +127,48 @@ foam.CLASS({
       code: function(X){
         X.stack.push({ class: 'net.nanopay.invoice.ui.SubscriptionView' })        
       }
+    },
+    {
+      name: 'expandInvoices',
+      code: function(X){
+
+      }
+    }
+  ],
+
+  classes: [
+    {
+      name: 'InvoicesTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'net.nanopay.invoice.model.Invoice' ],
+
+      properties: [ 
+        'selection', 
+        'data'
+      ],
+
+      methods: [
+        function initE() {
+
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              selection$: this.selection$,
+              data: this.data,
+              config: {
+                amount: { 
+                  tableCellView: function(obj, e) {
+                  return e.E().add('- $', obj.amount).style({color: '#c82e2e'})
+                  }
+                }
+              },
+              columns: [
+                'invoiceNumber', 'purchaseOrder', 'payerId', 'issueDate', 'amount', 'status'
+              ]
+            }).addClass(this.myClass('table')).end()
+        }
+      ],
     }
   ]
 });
