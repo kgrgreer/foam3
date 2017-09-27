@@ -18,8 +18,7 @@ foam.CLASS({
     'bankDAO',
     'bankAccountDAO',
     'businessSectorDAO',
-    'businessTypeDAO',
-    'invoiceDAO'
+    'businessTypeDAO'
   ],
 
   properties: [
@@ -210,10 +209,10 @@ foam.CLASS({
           of: this.Invoice
         })
         .addPropertyIndex(this.Invoice.STATUS)
-        .addPropertyIndex(this.Invoice.TO_USER_NAME)
-        .addPropertyIndex(this.Invoice.FROM_USER_NAME)
-        .addPropertyIndex(this.Invoice.TO_USER_ID)
-        .addPropertyIndex(this.Invoice.FROM_USER_ID);
+        .addPropertyIndex(this.Invoice.PAYEE_NAME)
+        .addPropertyIndex(this.Invoice.PAYER_NAME)
+        .addPropertyIndex(this.Invoice.PAYEE_ID)
+        .addPropertyIndex(this.Invoice.PAYER_ID);
       }
     }
   ]

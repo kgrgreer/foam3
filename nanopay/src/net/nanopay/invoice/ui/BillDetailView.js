@@ -5,7 +5,7 @@ foam.CLASS({
 
     imports: [ 
       'stack', 
-      'hideSaleSummary' 
+      'hideSaleSummary'
     ],
 
     requires: [ 'net.nanopay.invoice.model.Invoice' ],
@@ -81,9 +81,14 @@ foam.CLASS({
         ^ .label{
           margin: 0;
         }
-        ^ .foam-u2-ActionView-cancel {
+        ^ .net-nanopay-ui-ActionView-cancel {
           margin-left: 457px;
           margin-top: 20px;
+        }
+        ^ .foam-u2-tag-Select {
+          width: 300px;
+          height: 40px;
+          margin-top: 10px;
         }
        */}
      })
@@ -104,18 +109,8 @@ foam.CLASS({
             .start().add('New Bill').addClass('light-roboto-h2').end()
             .start().addClass('white-container')
               .start().addClass('customer-div')
-                .add(this.Invoice.TO_USER_NAME)
-                .start().addClass('company-card')
-                  .start({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('company-picture').end()
-                  .start().addClass('inline')
-                    .start('h5').add('Company Name').addClass('company-name').end()
-                    .start('h5').add('Vendor').addClass('vendor-name').end()
-                    .start('h6').add('12123 Avenue, Unit 999, Toronto, Ontario,').addClass('company-address').end()
-                    .start('h6').add('Canada').addClass('company-address').end()
-                    .start('h6').add('M2G 1K9').addClass('company-address').end()
-                  .end()
-                  .start({class:'foam.u2.tag.Image', data: 'images/ic-connection.png'}).addClass('connection-icon').end()
-                .end()
+              .start().addClass('label').add('Vendor').end()              
+                .start(this.Invoice.PAYEE_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
               .end()
               .start().addClass('po-amount-div float-right')
                 .start().addClass('label').add('PO #').end()
@@ -129,9 +124,11 @@ foam.CLASS({
                 .start().addClass('label').add('Due Date').end()
                 .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
               .end()
-              .add('Attachments')
-              .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
-              .add('Maximum size 10MB')
+              .start()
+                .add('Attachments')
+                .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
+                .add('Maximum size 10MB')
+              .end()
               .start()
                 .tag({class: 'foam.u2.CheckBox'})
                 .add('Enable recurring payments').addClass('enable-recurring-text')
@@ -150,7 +147,7 @@ foam.CLASS({
               .end()
               .start()
                 .add('Note')
-                .start('textarea').addClass('half-input-box').end()
+                .start(this.Invoice.NOTE).addClass('half-input-box').end()
               .end()
             .end();
             
