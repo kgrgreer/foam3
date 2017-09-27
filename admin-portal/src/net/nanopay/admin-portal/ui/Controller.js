@@ -3,6 +3,7 @@ foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
 
   documentation: 'Top-level admin Controller.',
 
@@ -15,6 +16,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.admin.model.Business',

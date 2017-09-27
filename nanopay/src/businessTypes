@@ -1,0 +1,5 @@
+p({"class":"net.nanopay.b2b.BusinessType", "name":"Sole Proprietorship"})
+p({"class":"net.nanopay.b2b.BusinessType", "name":"General Partnership"})
+p({"class":"net.nanopay.b2b.BusinessType", "name":"Limited Partnership"})
+p({"class":"net.nanopay.b2b.BusinessType", "name":"Corporation"})
+p({"class":"net.nanopay.b2b.BusinessType", "name":"Joint Venture"})

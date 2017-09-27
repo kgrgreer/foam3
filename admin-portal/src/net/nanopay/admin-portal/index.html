@@ -51,10 +51,6 @@
     <link rel = "stylesheet" type = "text/css" href = "ui/Theme.css" />
   </head>
   <body>
-    <script>
-      var ctrl = net.nanopay.admin.ui.Controller.create();
-      net.nanopay.admin.Data.create(null, ctrl.__subContext__);
-      ctrl.write();
-    </script>
+    <foam class="net.nanopay.admin.ui.Controller" id="ctrl"></foam>
   </body>
 </html>

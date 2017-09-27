@@ -59,7 +59,7 @@ public class UserTransactionsTest {
       user.setAccounts(accounts);
       //user.setAddress(new Address[0]);
       //user.setPhones(new Phone[0]);
-//      userDao.cmd(new ActionCommand(user, "put"));
+      //userDao.cmd(new ActionCommand(user, "put"));
       userDao.put(user);
     }
 

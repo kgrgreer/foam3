@@ -5,6 +5,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   documentation: 'Top-level B2B Controller.',
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
 
   implements: [
     'foam.nanos.client.Client',
@@ -13,6 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.b2b.model.Business',
