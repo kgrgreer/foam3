@@ -14,6 +14,18 @@ foam.CLASS({
     'recurringInvoiceDAO'
   ],
 
+  axioms: [
+    foam.u2.CSS.create({
+      code: function CSS() {/*
+        ^{
+          width: 970px;
+          margin: auto;
+        }
+        */
+      }
+    })
+  ],
+
   methods: [
     function initE(){
       this.SUPER();
