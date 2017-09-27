@@ -73,12 +73,15 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SummaryCard'}, 
   { name: 'net/nanopay/invoice/ui/shared/ActionInterfaceButton'}, 
   { name: 'net/nanopay/invoice/ui/shared/SingleItemView'}, 
+  { name: 'net/nanopay/invoice/ui/shared/SingleSubscriptionView'},   
   { name: 'net/nanopay/invoice/ui/BillDetailView'}, 
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView'}, 
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView'}, 
   { name: 'net/nanopay/invoice/ui/SalesDetailView'}, 
   { name: 'net/nanopay/invoice/ui/SubscriptionView'},
-
+  { name: 'net/nanopay/invoice/ui/SubscriptionEditView'},  
+  { name: 'net/nanopay/invoice/ui/SubscriptionDetailView'},
+  
   //cico
   { name: 'net/nanopay/bank/ui/CicoView'},  
   
