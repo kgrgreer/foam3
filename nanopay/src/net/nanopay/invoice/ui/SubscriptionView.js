@@ -33,7 +33,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().add('Subscriptions').addClass('light-roboto-h2').end()
+        // .start().add('Subscriptions').addClass('light-roboto-h2').end()
         .tag({
           class: 'foam.u2.ListCreateController',
           dao: this.recurringInvoiceDAO,
