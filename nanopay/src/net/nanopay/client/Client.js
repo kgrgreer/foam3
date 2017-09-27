@@ -126,18 +126,32 @@ foam.CLASS({
               id: 1,
               accountInfo: this.BankAccountInfo.create({
                 accountName: 'Scotiabank Chequing',
-                accountNumber: '490932681376',
+                bankNumber: '002',
+                transitNumber: '49093',
+                accountNumber: '2681376',
                 currencyCode: 'CAD',
-                bankAccount: 4
+                bankAccount: 4,
+                status: 'Unverified'
               })
             },
             {
               id: 2,
               accountInfo: this.BankAccountInfo.create({
                 accountName: 'TD Savings',
-                accountNumber: '923000000008465748932',
+                bankNumber: '004',
+                transitNumber: '92300',
+                accountNumber: '5748932',
                 currencyCode: 'INR',
-                bankAccount: 8
+                bankAccount: 8,
+                status: 'Verified'
+              })
+            },
+            {
+              id: 3,
+              accountInfo: this.BankAccountInfo.create({
+                accountName: 'CIBC Chequing',
+                bankNumber: '010',
+                accountNumber: ''
               })
             }
           ]
