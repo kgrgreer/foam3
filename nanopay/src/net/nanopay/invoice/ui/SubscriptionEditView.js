@@ -1,54 +1,52 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'SubscriptionEditView',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.View',
 
   documentation: "Edit View for Recurring Invoices.",
 
   requires: [ 
-    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.RecurringInvoice'
   ],
 
   imports: [
-    'recurringInvoiceDAO',
-    'invoiceDAO'
+    'recurringInvoiceDAO'
   ],
 
   properties: [
     'data',
-    'purchaseOrder',
-    'amount',
-    'invoiceNumber',
-    {
-      name: 'frequency',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Daily',
-          'Weekly',
-          'Biweekly',
-          'Monthly'
-        ]
-      }
-    },
-    {
-      class: 'Date',      
-      name: 'issueDate'
-    },
-    { 
-      class: 'Date',      
-      name: 'endsAfter'
-    },
-    {
-      class: 'Date',      
-      name: 'nextDate'
-    },
-    {
-      name: 'note',
-      view: 'foam.u2.tag.TextArea',
-      value: ''
-    }
+    // 'purchaseOrder',
+    // 'amount',
+    // 'invoiceNumber',
+    // {
+    //   name: 'frequency',
+    //   view: {
+    //     class: 'foam.u2.view.ChoiceView',
+    //     choices: [
+    //       'Daily',
+    //       'Weekly',
+    //       'Biweekly',
+    //       'Monthly'
+    //     ]
+    //   }
+    // },
+    // {
+    //   class: 'Date',      
+    //   name: 'issueDate'
+    // },
+    // { 
+    //   class: 'Date',      
+    //   name: 'endsAfter'
+    // },
+    // {
+    //   class: 'Date',      
+    //   name: 'nextDate'
+    // },
+    // {
+    //   name: 'note',
+    //   view: 'foam.u2.tag.TextArea',
+    //   value: ''
+    // }
   ],
 
   axioms: [
@@ -155,8 +153,8 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('button-row')
           .start(this.BACK_TO_REC).addClass('grey-button').end()
+          .start(this.APPLY).addClass('float-right blue-button').end()          
           .start(this.NEXT_INVOICE).addClass('float-right white-blue-button').end()
-          .start(this.APPLY).addClass('float-right blue-button').end()
         .end()
         .start().add('Edit Invoice').addClass('light-roboto-h2').end()
         .start().addClass('white-container')
@@ -166,15 +164,15 @@ foam.CLASS({
           .end()
           .start().addClass('po-amount-div float-right')
             .start().addClass('label').add('PO #').end()
-            .start(this.PURCHASE_ORDER).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.PURCHASE_ORDER).addClass('small-input-box').end()
             .start().addClass('label').add('Amount').end()
-            .start(this.AMOUNT).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.AMOUNT).addClass('small-input-box').end()
           .end()
           .start().addClass('float-right')
             .start().addClass('label').add('Invoice #').end()
-            .start(this.INVOICE_NUMBER).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.INVOICE_NUMBER).addClass('small-input-box').end()
             .start().addClass('label').add('Due Date').end()
-            .start(this.ISSUE_DATE).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.ISSUE_DATE).addClass('small-input-box').end()
           .end()
           .start()
             .add('Attachments')
@@ -187,19 +185,19 @@ foam.CLASS({
           .end()
           .start().addClass('frequency-div')
             .start().addClass('label').add('Frequency').end()
-            .start(this.FREQUENCY).end()
+            .start(this.RecurringInvoice.FREQUENCY).end()
           .end()
           .start().addClass('inline').style({ 'margin-right' : '36px'})
             .start().addClass('label').add('Ends After').end()
-            .start(this.ENDS_AFTER).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.ENDS_AFTER).addClass('small-input-box').end()
           .end()
           .start().addClass('inline')
             .start().addClass('label').add('Next Bill Date').end()
-            .start(this.NEXT_DATE).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.NEXT_INVOICE_DATE).addClass('small-input-box').end()
           .end()
           .start()
             .add('Note')
-            .start(this.NOTE).addClass('half-input-box').end()
+            .start(this.RecurringInvoice.NOTE).addClass('half-input-box').end()
           .end()
         .end();
         
@@ -218,6 +216,7 @@ foam.CLASS({
       name: 'nextInvoice',
       label: 'Apply To Next Invoice',
       code: function(X) {
+        /* edit all invoice associated to this recurring invoice */
         X.dao.put(this);
         X.stack.push({class: 'net.nanopay.invoice.ui.SubscriptionView'});
       }
