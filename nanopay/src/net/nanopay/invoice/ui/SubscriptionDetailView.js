@@ -18,14 +18,20 @@ foam.CLASS({
 
   exports: [
     'showInvoices',
-    'hideActionButton'
+    'hideActionButton',
+    'hideSubscription'
   ],
 
   properties: [
     {
       name: 'showInvoices',
       value: false
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'hideSubscription',
+      value: false
+    },
   ],
 
   axioms: [
@@ -61,6 +67,7 @@ foam.CLASS({
         }
         ^ .grey-button{
           margin-top: 20px;
+          top: 0;
         }
         ^ .white-blue-button{
           margin-top: 20px
@@ -87,23 +94,26 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('button-row')
-          .start(this.BACK_ACTION).addClass('grey-button').end()
-          .start(this.MODIFY).addClass('float-right blue-button').end()
-          .start(this.CANCEL_SUBSCRIPTION).addClass('float-right white-blue-button').end()
-        .end() 
         .start()
-        .add('Recurring Invoice for ', this.data.payerName).addClass('light-roboto-h2')
-        .end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleSubscriptionView', data: this.data })
-        .start().addClass(this.myClass('view-invoices')).start(this.EXPAND_INVOICES).end()
-          .start().add('View Past Invoices').addClass('link inline').end()
-          .start().addClass('arrow-down inline float-right').end()
+          .hide(this.hideSubscription$)
+          .start().addClass('button-row')
+            .start(this.BACK_ACTION).addClass('grey-button').end()
+            .start(this.MODIFY).addClass('float-right blue-button').end()
+            .start(this.CANCEL_SUBSCRIPTION).addClass('float-right white-blue-button').end()
+          .end() 
+          .start()
+          .add('Recurring Invoice for ', this.data.payerName).addClass('light-roboto-h2')
+          .end()
+          .tag({ class: 'net.nanopay.invoice.ui.shared.SingleSubscriptionView', data: this.data })
+          .start().addClass(this.myClass('view-invoices')).start(this.EXPAND_INVOICES).end()
+            .start().add('View Past Invoices').addClass('link inline').end()
+            .start().addClass('arrow-down inline float-right').end()
+          .end()
         .end()
         .start({
           class: 'foam.u2.ListCreateController',
           dao: this.data.invoices,
-          detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
+          detailView: { class: 'net.nanopay.invoice.ui.SubscriptionInvoiceView' },
           summaryView: this.InvoicesTableView.create(),
           showActions: false            
         }).addClass('hide').enableClass('show', true)
@@ -128,7 +138,7 @@ foam.CLASS({
     {
       name: 'modify',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SubscriptionView' })        
+        X.stack.push({ class: 'net.nanopay.invoice.ui.SubscriptionEditView' })        
       }
     },
     {
@@ -169,7 +179,8 @@ foam.CLASS({
               columns: [
                 'invoiceNumber', 'purchaseOrder', 'payerId', 'issueDate', 'amount', 'status'
               ]
-            }).addClass(this.myClass('table')).end()
+            }).addClass(this.myClass('table'))
+            .end()
         }
       ],
     }
