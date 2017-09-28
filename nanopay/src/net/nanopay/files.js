@@ -22,14 +22,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/RadioView' },
   { name: 'net/nanopay/ui/ToggleSwitch' },
 
-  // cico
-  { name: 'net/nanopay/cico/model/AlternaFormat' },
-  { name: 'net/nanopay/cico/model/ServiceProvider' },
-  { name: 'net/nanopay/cico/model/Transaction' },
-  { name: 'net/nanopay/cico/model/TransactionStatus' },
-  { name: 'net/nanopay/cico/model/TransactionType' },
-  { name: 'net/nanopay/cico/ui/CicoView'},
-
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
@@ -63,6 +55,14 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
+
+  // cico
+  { name: 'net/nanopay/cico/model/AlternaFormat' },
+  { name: 'net/nanopay/cico/model/ServiceProvider' },
+  { name: 'net/nanopay/cico/model/TransactionStatus' },
+  { name: 'net/nanopay/cico/model/TransactionType' },
+  { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/cico/ui/CicoView'},
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
