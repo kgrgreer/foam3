@@ -3,15 +3,15 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
-
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.mlang.Expressions',
     'foam.nanos.client.Client',
-    'net.nanopay.invoice.dao.Dao',
-    'net.nanopay.tx.client.Client',
-    'net.nanopay.client.Client',
+    // 'net.nanopay.invoice.dao.Dao',
+    // 'net.nanopay.tx.client.Client',
+    // 'net.nanopay.client.Client',
+    'foam.mlang.Expressions',
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
@@ -19,6 +19,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.model.Currency',
+    'foam.dao.EasyDAO',
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView'
   ],
@@ -66,9 +69,11 @@ foam.CLASS({
 
       var self = this;
 
+      foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.userDAO.find(1).then(function(a) {
-        self.user.copyFrom(a);
+      this.userDAO.select().then(function(a) {
+        self.user.copyFrom(a.array[0]);
       });
 
       net.nanopay.TempMenu.create(null, this);

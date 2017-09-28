@@ -2,8 +2,8 @@
 
 # Exit on first failure
 set -e
-
 cd ../foam2/src
+
 ./gen.sh
 
 cd ../build

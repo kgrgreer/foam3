@@ -17,7 +17,7 @@ foam.CLASS({
     {
       name: 'invoiceDAO',
       factory: function() {
-        return this.EasyDAO({
+        return this.EasyDAO.create({
           daoType: 'MDAO',
           of: this.Invoice,
           cache: true,
@@ -25,20 +25,20 @@ foam.CLASS({
           testData: [
             {
               status: 'Paid',
-              toUserName: 'john',
-              fromUserName: 'ted',
-              toUserId: 1,
-              fromUserId: 2,
+              payeeName: 'john',
+              payerName: 'ted',
+              payeeId: 1,
+              payerId: 2,
               amount: 300230,
               invoiceNumber: '403302'
             }
           ]
         })
         .addPropertyIndex(this.Invoice.STATUS)
-        .addPropertyIndex(this.Invoice.TO_USER_NAME)
-        .addPropertyIndex(this.Invoice.FROM_USER_NAME)
-        .addPropertyIndex(this.Invoice.TO_USER_ID)
-        .addPropertyIndex(this.Invoice.FROM_USER_ID);
+        .addPropertyIndex(this.Invoice.PAYEE_NAME)
+        .addPropertyIndex(this.Invoice.PAYER_NAME)
+        .addPropertyIndex(this.Invoice.PAYEE_ID)
+        .addPropertyIndex(this.Invoice.PAYER_ID);
       }
     }
   ]

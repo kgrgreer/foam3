@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'RecordPaymentModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Record Payment Modal',
 
@@ -19,8 +19,13 @@ foam.CLASS({
       class: 'Date',
       name: 'paymentDate'
     },
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    },
     'amount',
-    'note'
+    'invoice'
   ],
 
   axioms: [
@@ -49,7 +54,7 @@ foam.CLASS({
         .start().addClass('key-value-container')
           .start()
             .start().addClass('key').add('Company').end()
-            .start().addClass('value').add('360 Design Inc').end()
+            .start().addClass('value').add(this.invoice.payeeName).end()
           .end()
         .end()
         .start()
@@ -64,8 +69,22 @@ foam.CLASS({
           .start().addClass('label').add('Note').end()
           .start(this.NOTE).addClass('input-box').end()
         .end()
-        .start().addClass('blue-button').add('Record Payment').end()
+        .start(this.RECORD).addClass('blue-button').end()
       .end()
     } 
+  ],
+
+  actions: [
+    {
+      name: 'record',
+      label: 'Record Payment',
+      code: function(X){
+        /* 
+          Create transaction & continue flow here.
+          Invoice Data is accessible through X.data.invoice
+        */ 
+        X.closeDialog();
+      }
+    }
   ]
 })

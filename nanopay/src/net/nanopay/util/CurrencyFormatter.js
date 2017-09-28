@@ -18,7 +18,7 @@ foam.CLASS({
       if ( a >= 1000 ) {
           return '$' + (a / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
       }
-      return '$' + a;
+      return '$' + a.toFixed(2);
     }
   ]
 })
