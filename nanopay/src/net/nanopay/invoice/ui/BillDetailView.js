@@ -9,6 +9,14 @@ foam.CLASS({
     ],
 
     requires: [ 'net.nanopay.invoice.model.Invoice' ],
+    
+    properties: [
+      {
+        class: 'Boolean',
+        name: 'checkBoxRecurring',
+        value: false
+      }
+    ],
 
     axioms: [
      foam.u2.CSS.create({
@@ -130,20 +138,22 @@ foam.CLASS({
                 .add('Maximum size 10MB')
               .end()
               .start()
-                .tag({class: 'foam.u2.CheckBox'})
+                .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
                 .add('Enable recurring payments').addClass('enable-recurring-text')
               .end()
-              .start().addClass('frequency-div')
-                .start().addClass('label').add('Frequency').end()
-                .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
-              .end()
-              .start().addClass('inline').style({ 'margin-right' : '36px'})
-                .start().addClass('label').add('Ends After').end()
-                .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
-              .end()
-              .start().addClass('inline')
-                .start().addClass('label').add('Next Bill Date').end()
-                .start(this.Invoice.PAYMENT_DATE).addClass('small-input-box').end()
+              .start().show(this.checkBoxRecurring$)
+                .start().addClass('frequency-div')
+                  .start().addClass('label').add('Frequency').end()
+                  .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+                .end()
+                .start().addClass('inline').style({ 'margin-right' : '36px'})
+                  .start().addClass('label').add('Ends After').end()
+                  .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+                .end()
+                .start().addClass('inline')
+                  .start().addClass('label').add('Next Bill Date').end()
+                  .start(this.Invoice.PAYMENT_DATE).addClass('small-input-box').end()
+                .end()
               .end()
               .start()
                 .add('Note')
