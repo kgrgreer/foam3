@@ -20,11 +20,16 @@ enum ServiceURL: String {
 public class TransactionService {
   public static let instance = TransactionService()
 
-  private var X: Context!
+  private lazy var boxContext: BoxContext = {
+    return Context.GLOBAL.create(BoxContext.self)!
+  }()
+  private lazy var X: Context = {
+    return self.boxContext.__subContext__
+  }()
   private var dao: ClientDAO!
 
   init() {
-    let boxContext = BoxContext()
+    FOAM_utils.registerClasses()
     X = boxContext.__subContext__
 
     let httpBox = X.create(HTTPBox.self)!
@@ -82,9 +87,9 @@ public class TransactionService {
     }
   }
 
-  public func getTransactions(startingAt skip: Int? = 0,
+  public func getTransactions(startingAt skip:  Int? = 0,
                               withLimit  limit: Int? = 100,
-                              callback: @escaping ([Any?]?) -> Void)
+                              callback:  @escaping ([Any?]?) -> Void)
   {
     DispatchQueue.global(qos: .userInitiated).async {
       do {

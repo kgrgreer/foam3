@@ -1,0 +1,2 @@
+p({"class":"net.nanopay.model.Account","id":1,"accountInfo":{"class":"net.nanopay.model.BankAccountInfo","id":"","accountName":"","transitNumber":"","accountNumber":"490932681376","status":"","xeroId":"","currencyCode":"CAD","bankAccount":4}})
+p({"class":"net.nanopay.model.Account","id":2,"accountInfo":{"class":"net.nanopay.model.BankAccountInfo","id":"","accountName":"","transitNumber":"","accountNumber":"923000000008465748932","status":"","xeroId":"","currencyCode":"INR","bankAccount":8}})

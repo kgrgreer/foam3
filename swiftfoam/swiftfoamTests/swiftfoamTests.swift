@@ -11,7 +11,7 @@ class swiftfoamTests: XCTestCase {
     super.tearDown()
   }
 
-  func testTransactionDAO() {
+  func testSelectTransactionDAO() {
     let boxContext = BoxContext()
     let X = boxContext.__subContext__
 
@@ -21,13 +21,32 @@ class swiftfoamTests: XCTestCase {
     let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
 
-    do {
-      let sink = (try dao.skip(0).limit(1).select(ArraySink())) as? ArraySink
-      let transaction = sink?.array[0] as? Transaction
-      XCTAssertNotNil(transaction)
-    } catch let e {
-      NSLog(((e as? FoamError)?.toString()) ?? "Error!")
-    }
+    let sink = (try? dao.skip(0).limit(1).select(ArraySink())) as? ArraySink
+    let transaction = sink?.array[0] as? Transaction
+    XCTAssertNotNil(transaction)
+  }
+
+  func testSelectUserDAO() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+
+    let userDAOBox = X.create(HTTPBox.self)!
+    userDAOBox.url = "http://localhost:8080/userDAO"
+    let userDAO = X.create(ClientDAO.self)!
+    userDAO.delegate = userDAOBox
+
+    let accountDAOBox = X.create(HTTPBox.self)!
+    accountDAOBox.url = "http://localhost:8080/accountDAO"
+    let accountDAO = X.create(ClientDAO.self)!
+    accountDAO.delegate = accountDAOBox
+
+    let userSink = (try? userDAO.skip(0).limit(2).select(ArraySink())) as? ArraySink
+    let user = userSink?.array[0] as? User
+    XCTAssertNotNil(user)
+
+//    let accountSink = (try? accountDAO.skip(0).limit(100).select(ArraySink())) as? ArraySink
+//    let account = accountSink?.array[0] as? Account
+//    XCTAssertNotNil(account)
   }
 
   func testPutTransactionDAO() {

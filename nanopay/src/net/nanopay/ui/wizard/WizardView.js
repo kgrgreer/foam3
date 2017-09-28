@@ -77,13 +77,13 @@ foam.CLASS({
           margin-bottom: 20px;
         }
 
-        ^ .foam-u2-ActionView-unavailable {
+        ^ .net-nanopay-ui-ActionView-unavailable {
           width: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
         }
 
-        ^ .foam-u2-ActionView-goBack {
+        ^ .net-nanopay-ui-ActionView-goBack {
           display: inline-block;
           margin: 0;
           box-sizing: border-box;
@@ -104,17 +104,17 @@ foam.CLASS({
           color: #093649;
         }
 
-        ^ .foam-u2-ActionView-goBack:disabled {
+        ^ .net-nanopay-ui-ActionView-goBack:disabled {
           color: rgba(9, 54, 73, 0.5);
         }
 
-        ^ .foam-u2-ActionView-goBack:hover:enabled {
+        ^ .net-nanopay-ui-ActionView-goBack:hover:enabled {
           cursor: pointer;
           background: none;
           background-color: rgba(164, 179, 184, 0.4);
         }
 
-        ^ .foam-u2-ActionView-goNext {
+        ^ .net-nanopay-ui-ActionView-goNext {
           display: inline-block;
           margin: 0;
           background: none;
@@ -133,11 +133,11 @@ foam.CLASS({
           color: #FFFFFF;
         }
 
-        ^ .foam-u2-ActionView-goNext:disabled {
+        ^ .net-nanopay-ui-ActionView-goNext:disabled {
           color: rgba(88, 165, 213, 0.5);
         }
 
-        ^ .foam-u2-ActionView-goNext:hover:enabled {
+        ^ .net-nanopay-ui-ActionView-goNext:hover:enabled {
           cursor: pointer;
           background: none;
           background-color: #3783b3;

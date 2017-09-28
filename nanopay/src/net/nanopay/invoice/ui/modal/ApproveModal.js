@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'ApproveModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Approve Invoice Modal',
   
@@ -12,6 +12,14 @@ foam.CLASS({
 
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'note',
+      view: 'foam.u2.tag.TextArea'
+    }
   ],
 
   axioms: [
@@ -58,7 +66,7 @@ foam.CLASS({
     .addClass(this.myClass())
       .start()
         .start().addClass('mainMessage-Text').add(this.Instructions).end()
-        .start('input').addClass('input-Box').end()
+        .start(this.NOTE).addClass('input-Box').end()
         .start().addClass('blue-button').add('Approve').end()
       .end()
     .end()

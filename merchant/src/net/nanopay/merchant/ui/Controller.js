@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   documentation: 'Top-level Merchant application controller.',
-
+  
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   implements: [
     'foam.nanos.client.Client',
     'net.nanopay.tx.client.Client',
@@ -12,6 +13,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.retail.model.DeviceStatus'

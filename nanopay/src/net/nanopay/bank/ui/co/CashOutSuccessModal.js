@@ -62,7 +62,7 @@ foam.CLASS({
           color: #093649;
           display: inline-block;
         }
-        ^ .foam-u2-ActionView-closeButton {
+        ^ .net-nanopay-ui-ActionView-closeButton {
           width: 24px;
           height: 24px;
           margin: 0;
@@ -76,7 +76,7 @@ foam.CLASS({
           background: transparent;
           box-shadow: none;
         }
-        ^ .foam-u2-ActionView-closeButton:hover {
+        ^ .net-nanopay-ui-ActionView-closeButton:hover {
           background: transparent;
           background-color: transparent;
         }

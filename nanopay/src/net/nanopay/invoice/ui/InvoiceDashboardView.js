@@ -10,7 +10,6 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'invoiceDAO', 
     'formatCurrency',
     'user'
   ],
@@ -18,10 +17,6 @@ foam.CLASS({
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
   properties: [
-    {
-      name: 'dao',
-      factory: function() { return this.invoiceDAO; }
-    },
     {
       name: 'payableAmount',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
@@ -39,6 +34,18 @@ foam.CLASS({
       class: 'Currency',
       name: 'formattedReceivableAmount',
       expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
+    },
+    {
+      name: 'salesDAO',
+      factory: function() {
+        return this.user.sales;
+      }
+    },
+    {
+      name: 'expensesDAO',
+      factory: function() {
+        return this.user.expenses;
+      }
     }
   ],
 
@@ -75,9 +82,15 @@ foam.CLASS({
           width: 200px;
         }
         .overall-receivables img{
-          top: 8;
+          top: 8px;
+          right: 5px;
           transform: rotate(180deg);
           position: relative;
+        }
+        .overall-payables img{
+          position: relative;
+          top: 5px;
+          right: 5px;
         }
         .overall-label{
           margin-left: 100px;
@@ -91,16 +104,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.dao.on.sub(this.onDAOUpdate);
+      this.expensesDAO.on.sub(this.onDAOUpdate);
+      this.salesDAO.on.sub(this.onDAOUpdate);      
       this.onDAOUpdate();
 
       this
         .addClass(this.myClass())
         .start().addClass('light-roboto-h2').add('Weekly Summary').end()
-        .start().addClass('green-border-container')
-          .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
-          .start().addClass('resize-button').add('Team').end()
-        .end()
+        // .start().addClass('green-border-container')
+        //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
+        //   .start().addClass('resize-button').add('Team').end()
+        // .end()
         .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
         .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
         .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
@@ -118,6 +132,8 @@ foam.CLASS({
     }
   ],
 
+
+
   listeners: [
     {
       name: 'onDAOUpdate',
@@ -125,14 +141,11 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        var expensesInvoices = this.dao.where(this.EQ(this.Invoice.FROM_USER_ID, this.user.id))
-        var payablesInvoices = this.dao.where(this.EQ(this.Invoice.TO_USER_ID, this.user.id))
-        
-        expensesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
+        this.expensesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.payableAmount = sum.value;
         });
 
-        payablesInvoices.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        this.salesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.receivableAmount = sum.value;
         })
       }
