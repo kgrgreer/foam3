@@ -48,11 +48,13 @@ var executor = foam.classloader.NodeJsModelExecutor.create({
       'net.nanopay.model.Account',
       'net.nanopay.model.AccountInfo',
       'net.nanopay.model.AccountLimit',
+      'net.nanopay.model.UserAccountInfo',
       'net.nanopay.tx.model.Transaction',
       'net.nanopay.tx.model.TransactionPurpose',
     ],
     outdir: genDir,
   },
 });
-executor.execute();
-
+executor.execute().then(function() {
+  execSync('cp ' + foam_root + '/swift_src/* ' + genDir);
+});
