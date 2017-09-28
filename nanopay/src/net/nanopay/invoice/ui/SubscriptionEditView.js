@@ -14,39 +14,7 @@ foam.CLASS({
   ],
 
   properties: [
-    'data',
-    // 'purchaseOrder',
-    // 'amount',
-    // 'invoiceNumber',
-    // {
-    //   name: 'frequency',
-    //   view: {
-    //     class: 'foam.u2.view.ChoiceView',
-    //     choices: [
-    //       'Daily',
-    //       'Weekly',
-    //       'Biweekly',
-    //       'Monthly'
-    //     ]
-    //   }
-    // },
-    // {
-    //   class: 'Date',      
-    //   name: 'issueDate'
-    // },
-    // { 
-    //   class: 'Date',      
-    //   name: 'endsAfter'
-    // },
-    // {
-    //   class: 'Date',      
-    //   name: 'nextDate'
-    // },
-    // {
-    //   name: 'note',
-    //   view: 'foam.u2.tag.TextArea',
-    //   value: ''
-    // }
+    'data'
   ],
 
   axioms: [
@@ -140,6 +108,10 @@ foam.CLASS({
         ^ .white-blue-button{
           margin-top: 20px
         }
+        ^ .payerName{
+          margin: 20px 0;
+          font-size: 25px;
+        }
         */
       }
     })
@@ -148,7 +120,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
+      debugger;
       this
         .addClass(this.myClass())
         .start().addClass('button-row')
@@ -160,7 +132,7 @@ foam.CLASS({
         .start().addClass('white-container')
           .start().addClass('customer-div')
           .start().addClass('label').add('Vendor').end()              
-            .add(this.data.payeeName)
+          .start().addClass('payerName').add(this.data.payerName).end()
           .end()
           .start().addClass('po-amount-div float-right')
             .start().addClass('label').add('PO #').end()
@@ -180,8 +152,6 @@ foam.CLASS({
           //   .add('Maximum size 10MB')
           // .end()
           .start()
-            // .tag({class: 'foam.u2.CheckBox'})
-            // .add('Enable recurring payments').addClass('enable-recurring-text')
           .end()
           .start().addClass('frequency-div')
             .start().addClass('label').add('Frequency').end()

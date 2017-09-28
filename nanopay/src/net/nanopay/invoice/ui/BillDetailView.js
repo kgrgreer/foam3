@@ -15,6 +15,27 @@ foam.CLASS({
         class: 'Boolean',
         name: 'checkBoxRecurring',
         value: false
+      },
+      {
+        class: 'Date',
+        name: 'endsAfter'
+      },
+      {
+        class: 'Date',
+        name: 'nextInvoiceDate'
+      },
+      {
+        class: 'String',
+        name: 'frequency',
+        view: {
+          class: 'foam.u2.view.ChoiceView',
+          choices: [
+            'Daily',
+            'Weekly',
+            'Biweekly',
+            'Monthly'
+          ]
+        }
       }
     ],
 
@@ -94,7 +115,7 @@ foam.CLASS({
           margin-top: 20px;
         }
         ^ .foam-u2-tag-Select {
-          width: 300px;
+          width: 225px;
           height: 40px;
           margin-top: 10px;
         }
@@ -141,20 +162,22 @@ foam.CLASS({
                 .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
                 .add('Enable recurring payments').addClass('enable-recurring-text')
               .end()
-              .start().show(this.checkBoxRecurring$)
+              .startContext({data: this})
+              .start().show(this.checkBoxRecurring$)              
                 .start().addClass('frequency-div')
                   .start().addClass('label').add('Frequency').end()
-                  .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+                    .start(this.FREQUENCY).end()
                 .end()
                 .start().addClass('inline').style({ 'margin-right' : '36px'})
                   .start().addClass('label').add('Ends After').end()
-                  .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+                  .start(this.ENDS_AFTER).addClass('small-input-box').end()
                 .end()
                 .start().addClass('inline')
                   .start().addClass('label').add('Next Bill Date').end()
-                  .start(this.Invoice.PAYMENT_DATE).addClass('small-input-box').end()
+                  .start(this.NEXT_INVOICE_DATE).addClass('small-input-box').end()
                 .end()
               .end()
+              .endContext()
               .start()
                 .add('Note')
                 .start(this.Invoice.NOTE).addClass('half-input-box').end()
