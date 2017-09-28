@@ -85,6 +85,35 @@ foam.CLASS({
     {
       name: 'status',
       transient: true
+    },
+    {
+      class: 'Long',
+      name: 'invoiceNumber',
+      label: 'Invoice #',
+      aliases: [ 'invoice', 'i' ],
+      visibility: foam.u2.Visibility.FINAL
+    },
+    {
+      class: 'String',
+      name: 'purchaseOrder',
+      label: 'PO #',
+      aliases: [ 'purchase', 'po', 'p' ],
+    },
+    {
+      class: 'String',
+      name: 'note',
+      view: 'foam.u2.tag.TextArea'
+    },
+    {
+      class: 'Date',
+      name: 'issueDate',
+      label: 'Date Due',
+      required: true,
+      factory: function() { return new Date(); },
+      aliases: [ 'dueDate', 'due', 'd', 'issued' ],
+      tableCellFormatter: function(date) {
+        this.add(date ? date.toISOString().substring(0,10) : '');
+      }
     }
   ]
 });

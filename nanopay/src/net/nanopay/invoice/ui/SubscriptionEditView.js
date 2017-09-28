@@ -158,7 +158,7 @@ foam.CLASS({
           .start(this.NEXT_INVOICE).addClass('float-right white-blue-button').end()
           .start(this.APPLY).addClass('float-right blue-button').end()
         .end()
-        .start().add('New Bill').addClass('light-roboto-h2').end()
+        .start().add('Edit Invoice').addClass('light-roboto-h2').end()
         .start().addClass('white-container')
           .start().addClass('customer-div')
           .start().addClass('label').add('Vendor').end()              
