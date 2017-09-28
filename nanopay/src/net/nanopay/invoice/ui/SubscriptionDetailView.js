@@ -50,7 +50,7 @@ foam.CLASS({
           margin: auto;
         }
         ^ .link{
-          margin: 6px 20px;
+          margin: 8px 20px;
           font-size: 12px;
         }
         ^ .arrow-down{
@@ -78,9 +78,18 @@ foam.CLASS({
           position: absolute;
           opacity: 0.01;
         }
-         ^ .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice{
-           margin-top: 25px;
-         }
+        ^ .foam-u2-view-TableView-net-nanopay-invoice-model-Invoice{
+          margin-top: 25px;
+        }
+        ^ .blue {
+          background: #59aadd;
+          color: white;
+        }
+        ^ .turn{
+          transform: rotate(180deg);
+          -ms-transform: rotate(180deg);
+          -webkit-transform: rotate(180deg);         
+        }
         */
       }
     })
@@ -105,9 +114,10 @@ foam.CLASS({
           .add('Recurring Invoice for ', this.data.payerName).addClass('light-roboto-h2')
           .end()
           .tag({ class: 'net.nanopay.invoice.ui.shared.SingleSubscriptionView', data: this.data })
-          .start().addClass(this.myClass('view-invoices')).start(this.EXPAND_INVOICES).end()
-            .start().add('View Past Invoices').addClass('link inline').end()
-            .start().addClass('arrow-down inline float-right').end()
+          .start().addClass(this.myClass('view-invoices')).enableClass('blue' ,this.showInvoices$)
+            .start(this.EXPAND_INVOICES).end()
+            .start().add('View Past Invoices').addClass('link inline').enableClass('blue' ,this.showInvoices$).end()
+            .start().addClass('arrow-down inline float-right').enableClass('turn' ,this.showInvoices$).end()
           .end()
         .end()
         .start({
