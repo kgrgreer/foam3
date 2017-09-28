@@ -26,6 +26,21 @@ class swiftfoamTests: XCTestCase {
     XCTAssertNotNil(transaction)
   }
 
+  func testSelectUserDAO() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+
+    let httpBox = X.create(HTTPBox.self)!
+    httpBox.url = "http://localhost:8080/userDAO"
+
+    let dao = X.create(ClientDAO.self)!
+    dao.delegate = httpBox
+
+    let sink = (try? dao.skip(0).limit(1).select(ArraySink())) as? ArraySink
+    let transaction = sink?.array[0] as? User
+    XCTAssertNotNil(transaction)
+  }
+
   func testPutTransactionDAO() {
     let boxContext = BoxContext()
     let X = boxContext.__subContext__
