@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'SubscriptionEditView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: "Edit View for Recurring Invoices.",
 
@@ -16,7 +16,39 @@ foam.CLASS({
   ],
 
   properties: [
-    'data'
+    'data',
+    'purchaseOrder',
+    'amount',
+    'invoiceNumber',
+    {
+      name: 'frequency',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          'Daily',
+          'Weekly',
+          'Biweekly',
+          'Monthly'
+        ]
+      }
+    },
+    {
+      class: 'Date',      
+      name: 'issueDate'
+    },
+    { 
+      class: 'Date',      
+      name: 'endsAfter'
+    },
+    {
+      class: 'Date',      
+      name: 'nextDate'
+    },
+    {
+      name: 'note',
+      view: 'foam.u2.tag.TextArea',
+      value: ''
+    }
   ],
 
   axioms: [
@@ -99,9 +131,16 @@ foam.CLASS({
           margin-top: 20px;
         }
         ^ .foam-u2-tag-Select {
-          width: 300px;
+          width: 228px;
           height: 40px;
           margin-top: 10px;
+        }
+        ^ .grey-button{
+          margin-top: 20px;
+          top: 0;
+        }
+        ^ .white-blue-button{
+          margin-top: 20px
         }
         */
       }
@@ -115,27 +154,27 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('button-row')
-          .start(this.BACK_ACTION).end()
-          .start(this.NEXT_INVOICE).addClass('float-right').end()
-          .start(this.APPLY).addClass('float-right').end()
+          .start(this.BACK_TO_REC).addClass('grey-button').end()
+          .start(this.NEXT_INVOICE).addClass('float-right white-blue-button').end()
+          .start(this.APPLY).addClass('float-right blue-button').end()
         .end()
         .start().add('New Bill').addClass('light-roboto-h2').end()
         .start().addClass('white-container')
           .start().addClass('customer-div')
           .start().addClass('label').add('Vendor').end()              
-
+            .add(this.data.payeeName)
           .end()
           .start().addClass('po-amount-div float-right')
             .start().addClass('label').add('PO #').end()
-            .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
+            .start(this.PURCHASE_ORDER).addClass('small-input-box').end()
             .start().addClass('label').add('Amount').end()
-            .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
+            .start(this.AMOUNT).addClass('small-input-box').end()
           .end()
           .start().addClass('float-right')
             .start().addClass('label').add('Invoice #').end()
-            .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+            .start(this.INVOICE_NUMBER).addClass('small-input-box').end()
             .start().addClass('label').add('Due Date').end()
-            .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+            .start(this.ISSUE_DATE).addClass('small-input-box').end()
           .end()
           .start()
             .add('Attachments')
@@ -148,19 +187,19 @@ foam.CLASS({
           .end()
           .start().addClass('frequency-div')
             .start().addClass('label').add('Frequency').end()
-            .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+            .start(this.FREQUENCY).end()
           .end()
           .start().addClass('inline').style({ 'margin-right' : '36px'})
             .start().addClass('label').add('Ends After').end()
-            .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+            .start(this.ENDS_AFTER).addClass('small-input-box').end()
           .end()
           .start().addClass('inline')
             .start().addClass('label').add('Next Bill Date').end()
-            .start(this.Invoice.PAYMENT_DATE).addClass('small-input-box').end()
+            .start(this.NEXT_DATE).addClass('small-input-box').end()
           .end()
           .start()
             .add('Note')
-            .start(this.Invoice.NOTE).addClass('half-input-box').end()
+            .start(this.NOTE).addClass('half-input-box').end()
           .end()
         .end();
         
@@ -169,10 +208,10 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'backActions',
+      name: 'backToRec',
       label: 'Back',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
+        X.stack.back();
       }
     },
     {
@@ -180,7 +219,7 @@ foam.CLASS({
       label: 'Apply To Next Invoice',
       code: function(X) {
         X.dao.put(this);
-        X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
+        X.stack.push({class: 'net.nanopay.invoice.ui.SubscriptionView'});
       }
     },
     {
@@ -188,7 +227,7 @@ foam.CLASS({
       label: 'Apply To All',
       code: function(X) {
         X.dao.put(this);
-        X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
+        X.stack.push({class: 'net.nanopay.invoice.ui.SubscriptionView'});
       }
     },
   ]
