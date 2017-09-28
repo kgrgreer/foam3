@@ -8,10 +8,15 @@ foam.CLASS({
     'hideReceivableSummary',
     'recurringInvoiceDAO'
   ],
+  
+  exports: [
+    'frequency',
+    'endsAfter',
+    'nextInvoiceDate'
+  ],
 
   requires: [ 
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.RecurringInvoice' 
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   properties: [
@@ -139,20 +144,20 @@ foam.CLASS({
               .add('Enable recurring payments').addClass('enable-recurring-text')
             .end()
             .startContext({data: this})
-            .start().show(this.checkBoxRecurring$)              
-              .start().addClass('frequency-div')
-                .start().addClass('label').add('Frequency').end()
-                  .start(this.FREQUENCY).end()
+              .start().show(this.checkBoxRecurring$)              
+                .start().addClass('frequency-div')
+                  .start().addClass('label').add('Frequency').end()
+                    .start(this.FREQUENCY).end()
+                .end()
+                .start().addClass('inline').style({ 'margin-right' : '36px'})
+                  .start().addClass('label').add('Ends After').end()
+                  .start(this.ENDS_AFTER).addClass('small-input-box').end()
+                .end()
+                .start().addClass('inline')
+                  .start().addClass('label').add('Next Bill Date').end()
+                  .start(this.NEXT_INVOICE_DATE).addClass('small-input-box').end()
+                .end()
               .end()
-              .start().addClass('inline').style({ 'margin-right' : '36px'})
-                .start().addClass('label').add('Ends After').end()
-                .start(this.ENDS_AFTER).addClass('small-input-box').end()
-              .end()
-              .start().addClass('inline')
-                .start().addClass('label').add('Next Bill Date').end()
-                .start(this.NEXT_INVOICE_DATE).addClass('small-input-box').end()
-              .end()
-            .end()
             .endContext()
             .start()
               .add('Note')
@@ -182,7 +187,29 @@ foam.CLASS({
       name: 'saveAndPreview',
       label: 'Save & Preview',
       code: function(X) {
-        X.dao.put(this);
+        var self = this;
+        if(X.frequency && X.endsAfter && X.nextInvoiceDate){
+          var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
+            frequency: X.frequency,
+            endsAfter: X.endsAfter,
+            nextInvoiceDate: X.nextInvoiceDate,
+            amount: this.amount,
+            payeeId: this.payeeId,
+            payerId: this.payerId,
+            invoiceNumber: this.invoiceNumber,
+            issueDate: this.issueDate,
+            purchaseOrder: this.purchaseOrder,
+            payeeName: this.payeeName,
+            payerName: this.payerName
+          })
+          X.recurringInvoiceDAO.put(recurringInvoice).then(function(a){
+            self.recurringInvoice = a.id;
+            X.dao.put(self);
+          })
+        } else {
+          X.dao.put(this);          
+        }
+
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
     },

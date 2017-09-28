@@ -49,42 +49,7 @@ foam.CLASS({
       factory: function() {
         return this.createDAO({
           of: this.RecurringInvoice,
-          seqNo: true,
-          testData: [
-            {
-              id: 1,
-              frequency: 'Daily',
-              endsAfter: new Date('2017-11-01'),
-              nextInvoiceDate: new Date('2017-07-10'),
-              deleted: false,
-              payerName: 'John Wayne',
-              amount: 11.44,
-              payeeId: 1,
-              payerId: 2
-            },
-            {
-              id: 2,
-              frequency: 'Weekly',
-              endsAfter: new Date('2018-12-01'),
-              nextInvoiceDate: new Date('2017-09-28'),
-              deleted: false,
-              amount: 33.22,
-              payerName: 'Pro Bono',
-              payeeId: 1,
-              payerId: 2
-            },
-            {
-              id: 3,
-              frequency: 'Biweekly',
-              endsAfter: new Date('2017-06-01'),
-              nextInvoiceDate: new Date('2017-06-01'),
-              deleted: false,
-              amount: 14.21,
-              payerName: 'Linus Welton',
-              payeeId: 1,
-              payerId: 2
-            }
-          ]
+          seqNo: true
         })
       }
     }

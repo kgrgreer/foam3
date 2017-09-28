@@ -120,7 +120,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      debugger;
+
       this
         .addClass(this.myClass())
         .start().addClass('button-row')
