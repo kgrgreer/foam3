@@ -47,7 +47,8 @@ foam.CLASS({
     {
       name: 'recurringInvoiceDAO',
       factory: function() {
-        return this.createDAO({
+        return this.EasyDAO.create({
+          dayType: 'MDAO',
           of: this.RecurringInvoice,
           seqNo: true
         })

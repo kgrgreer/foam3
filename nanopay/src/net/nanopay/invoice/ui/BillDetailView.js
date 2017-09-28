@@ -35,7 +35,8 @@ foam.CLASS({
             'Biweekly',
             'Monthly'
           ]
-        }
+        },
+        value: null        
       }
     ],
 
@@ -223,7 +224,7 @@ foam.CLASS({
               payerName: this.payerName
             })
             X.recurringInvoiceDAO.put(recurringInvoice).then(function(a){
-              self.recurringInvoice = a.id;
+              self.recurringInvoice = a;
               X.dao.put(self);
             })
           } else {
