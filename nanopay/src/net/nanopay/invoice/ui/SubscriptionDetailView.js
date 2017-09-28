@@ -116,7 +116,7 @@ foam.CLASS({
           detailView: { class: 'net.nanopay.invoice.ui.SubscriptionInvoiceView' },
           summaryView: this.InvoicesTableView.create(),
           showActions: false            
-        }).addClass('hide').enableClass('show', true)
+        }).show(this.showInvoices$)
         .end()
     }
   ],
@@ -132,19 +132,20 @@ foam.CLASS({
     {
       name: 'cancelSubscription',
       code: function(X){
+        X.recurringInvoiceDAO.remove(this)
         X.stack.push({ class: 'net.nanopay.invoice.ui.SubscriptionView' })        
       }
     },
     {
       name: 'modify',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SubscriptionEditView' })        
+        X.stack.push({ class: 'net.nanopay.invoice.ui.SubscriptionEditView', data: this })        
       }
     },
     {
       name: 'expandInvoices',
       code: function(X){
-
+        X.showInvoices$.set(X.showInvoices ? false : true);
       }
     }
   ],

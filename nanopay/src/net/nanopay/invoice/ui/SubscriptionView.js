@@ -71,7 +71,6 @@ foam.CLASS({
         .start({
           class: 'foam.u2.ListCreateController',
           dao: this.recurringInvoiceDAO,
-          createDetailView: { class: 'net.nanopay.invoice.ui.SubscriptionEditView' },
           detailView: { class: 'net.nanopay.invoice.ui.SubscriptionDetailView' },
           summaryView: this.SubscriptionTableView.create(),
           showActions: false            
