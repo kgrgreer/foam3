@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
-  name: 'SingleItemView',
+  name: 'SingleSubscriptionView',
   extends: 'foam.u2.View',
 
   imports: [
@@ -8,13 +8,7 @@ foam.CLASS({
   ],
 
   properties: [
-    'data',
-    {
-      name: 'type',
-      expression: function(data, user){
-        return user.id != data.payeeId
-      }
-    }
+    'data'
   ],
 
   axioms: [
@@ -69,6 +63,7 @@ foam.CLASS({
     })
   ],
 
+
   methods: [
     function initE(){
       var self = this;
@@ -77,22 +72,20 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
-            .start('h3').add('Invoice #').end()
-            .start('h3').add('PO #').end()
-            .call(function(){
-              self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end()
-            })
-            .start('h4').add('Date Due').end()
-            .start('h4').add('Amount').end()
-            .start('h3').add('Status').end()
+            .start('h3').add('Recurring ID').end()
+            .start('h3').add('Customer').end()
+            .start('h4').add('Amount Per Invoice').end()
+            .start('h4').add('Next Invoice Date').end()
+            .start('h3').add('Frequency').end()
+            .start('h3').add('End Date').end()
           .end()
           .start().addClass(this.myClass('table-body'))
-            .start('h3').add(this.data.invoiceNumber).end()
-            .start('h3').add(this.data.purchaseOrder).end()
-            .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
-            .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
-            .start('h4').add(this.data.currencyType, ' ', this.data.amount.toFixed(2)).end()
-            .start('h3').add(this.data.status).end()
+            .start('h3').add(this.data.id).end()
+            .start('h3').add(this.data.payerName).end()
+            .start('h3').add(this.data.amount).end()
+            .start('h4').add(this.data.nextInvoiceDate.toISOString().substring(0,10)).end()
+            .start('h4').add(this.data.frequency).end()
+            .start('h3').add(this.data.endsAfter.toISOString().substring(0,10)).end()
           .end()
         .end()
     }

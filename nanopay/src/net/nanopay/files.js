@@ -1,6 +1,5 @@
 FOAM_FILES([
   { name: 'net/nanopay/auth/ui/SignInView' },
-  { name: 'net/nanopay/client/Client' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/AccountInfo' },
@@ -62,7 +61,7 @@ FOAM_FILES([
 
   // invoice 
   { name: 'net/nanopay/invoice/model/Invoice'}, 
-  { name: 'net/nanopay/invoice/dao/Dao'},  
+  { name: 'net/nanopay/invoice/model/RecurringInvoice'},   
   { name: 'net/nanopay/invoice/ui/ExpensesView' },
   { name: 'net/nanopay/invoice/ui/SalesView' },
   { name: 'net/nanopay/invoice/ui/InvoiceDashboardView' },
@@ -72,11 +71,16 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SummaryCard'}, 
   { name: 'net/nanopay/invoice/ui/shared/ActionInterfaceButton'}, 
   { name: 'net/nanopay/invoice/ui/shared/SingleItemView'}, 
+  { name: 'net/nanopay/invoice/ui/shared/SingleSubscriptionView'},   
   { name: 'net/nanopay/invoice/ui/BillDetailView'}, 
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView'}, 
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView'}, 
   { name: 'net/nanopay/invoice/ui/SalesDetailView'}, 
-
+  { name: 'net/nanopay/invoice/ui/SubscriptionView'},
+  { name: 'net/nanopay/invoice/ui/SubscriptionEditView'},  
+  { name: 'net/nanopay/invoice/ui/SubscriptionDetailView'},
+  { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView'},
+  
   //cico
   { name: 'net/nanopay/bank/ui/CicoView'},  
   

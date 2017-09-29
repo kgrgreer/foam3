@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
-  name: 'SalesDetailView',
+  name: 'SubscriptionInvoiceView',
   extends: 'foam.u2.View',
 
   requires: [ 
@@ -10,12 +10,10 @@ foam.CLASS({
 
   imports: [ 
     'stack', 
-    'hideReceivableSummary', 
     'invoiceDAO', 
-    'ctrl'
+    'ctrl',
+    'hideSubscription'
   ],
-
-  exports: [ 'hideReceivableSummary' ],
   
   implements: [
     'foam.mlang.Expressions', 
@@ -42,7 +40,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideReceivableSummary = true;
+      this.hideSubscription = true;
 
       this
         .addClass(this.myClass())
@@ -58,7 +56,7 @@ foam.CLASS({
             subMenu2: 'Void' 
           }
         })
-        .start('h5').add('Bill to ', this.data.payerName).end()
+        .start('h5').add('Bill to ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
     }
   ],
@@ -74,7 +72,8 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView'});
+        X.hideSubscription$.set(false);
+        X.stack.back();
       }
     }
   ]

@@ -15,12 +15,13 @@ foam.CLASS({
 
       foam.json.parse([
         {                         id: 'sign-in',       label: 'Sign in',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView' } } },
+        {                         id: 'subscription',  label: 'Subscription',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SubscriptionView' } } },        
         {                         id: 'dashboard',     label: 'Dashboard',          handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.InvoiceDashboardView' } } },
-        {                         id: 'banks',         label: 'Banks',              handler : { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.bank.ui.CicoView' } } },
+        {                         id: 'banks',         label: 'Banks',              handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.bank.ui.CicoView' } } },
         {                         id: 'sales',         label: 'Receivable',         handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SalesView' } } },
         {                         id: 'expenses',      label: 'Payable',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.ExpensesView'} } },
         { /*parent: 'support',*/  id: 'aaainvoices',   label: 'Invoices',           handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'invoiceDAO' } },
-        {                         id: 'transfer',          label: 'Transfer',                        handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.TransferView' } } },                
+        {                         id: 'transfer',      label: 'Transfer',           handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.TransferView' } } },                
         {                         id: 'devices',       label: 'Devices',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.devices.DevicesView' } } },
  //       { parent: 'support',  id: 'data',         label: 'View Data',                handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.DebugView' } } }
       ], foam.nanos.menu.Menu, this.__context__).forEach(this.menuDAO.put.bind(this.menuDAO));
