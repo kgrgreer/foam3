@@ -1,6 +1,5 @@
 FOAM_FILES([
   { name: 'net/nanopay/auth/ui/SignInView' },
-  { name: 'net/nanopay/client/Client' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/AccountInfo' },
