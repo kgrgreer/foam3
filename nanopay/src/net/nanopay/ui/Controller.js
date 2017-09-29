@@ -3,21 +3,25 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
-
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.mlang.Expressions',
     'foam.nanos.client.Client',
-    'net.nanopay.tx.client.Client',
-    'net.nanopay.client.Client',
+    // 'net.nanopay.invoice.dao.Dao',
+    // 'net.nanopay.tx.client.Client',
+    // 'net.nanopay.client.Client',
+    'foam.mlang.Expressions',
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling'        
   ],
 
   requires: [
+    'net.nanopay.model.Currency',
+    'foam.dao.EasyDAO',
+    'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView'
   ],

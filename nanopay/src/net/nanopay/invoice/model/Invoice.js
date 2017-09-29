@@ -117,7 +117,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Double',
+      class: 'String',
       name: 'currencyCode',
       required: true
     },

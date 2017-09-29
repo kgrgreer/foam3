@@ -207,9 +207,9 @@ foam.CLASS({
       name: 'invoiceDAO',
       factory: function() {
         return this.EasyDAO.create({
-          daoType: 'MDAO',
-          cache: true,
-          of: this.Invoice
+          daoType: 'CLIENT',
+          of: this.Invoice,
+          serviceName: 'invoiceDAO',
         })
         .addPropertyIndex(this.Invoice.STATUS)
         .addPropertyIndex(this.Invoice.PAYEE_NAME)
