@@ -1,3 +1,6 @@
+global.FOAM_FLAGS.src = __dirname + '/../src/';
+require('../src/net/nanopay/files.js');
+
 var classes = [
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.AlternaFormat',
