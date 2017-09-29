@@ -57,12 +57,12 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // cico
-  { name: 'net/nanopay/cico/model/AlternaFormat' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/ui/CicoView'},
+  { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

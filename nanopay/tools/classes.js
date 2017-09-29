@@ -3,10 +3,10 @@ require('../src/net/nanopay/files.js');
 
 var classes = [
   'net.nanopay.dao.crypto.EncryptedObject',
-  'net.nanopay.cico.model.AlternaFormat',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.model.AccountInfo',
   'net.nanopay.model.Account',
   'net.nanopay.model.Bank',
