@@ -7,6 +7,7 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.RecurringInvoice',
     'net.nanopay.model.Account',
     'net.nanopay.model.Bank',
     'net.nanopay.model.BankAccountInfo',
@@ -18,7 +19,9 @@ foam.CLASS({
     'bankDAO',
     'bankAccountDAO',
     'businessSectorDAO',
-    'businessTypeDAO'
+    'businessTypeDAO',
+    'recurringInvoiceDAO',
+    'invoiceDAO'
   ],
 
   properties: [
@@ -213,6 +216,17 @@ foam.CLASS({
         .addPropertyIndex(this.Invoice.PAYER_NAME)
         .addPropertyIndex(this.Invoice.PAYEE_ID)
         .addPropertyIndex(this.Invoice.PAYER_ID);
+      }
+    },
+    {
+      name: 'recurringInvoiceDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          daoType: 'CLIENT',
+          of: this.RecurringInvoice,
+          serviceName: 'recurringInvoiceDAO',
+          seqNo: true
+        })
       }
     }
   ]
