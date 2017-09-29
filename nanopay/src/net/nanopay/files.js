@@ -60,12 +60,12 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
-  { name: 'net/nanopay/cico/ui/CicoView'},
+  { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
-  { name: 'net/nanopay/invoice/dao/Dao'},
+  { name: 'net/nanopay/invoice/model/RecurringInvoice'},
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceDashboardView', flags: ['web'] },
@@ -75,13 +75,18 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SummaryCard', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/shared/ActionInterfaceButton', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/shared/SingleItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/shared/SingleSubscriptionView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/BillDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesDetailView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/SubscriptionView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
 
   // style
-  { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles'},
+  { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
 
@@ -117,5 +122,5 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
-  { name: 'net/nanopay/model/Relationships', flags: ['web'] }
+  { name: 'net/nanopay/model/Relationships'}
 ]);
