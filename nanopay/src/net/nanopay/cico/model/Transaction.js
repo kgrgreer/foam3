@@ -5,7 +5,7 @@ foam.CLASS({
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.cico.model.TransactionStatus',
-      name: 'status'
+      name: 'cicoStatus'
     },
     {
       class: 'foam.core.Enum',
