@@ -12,7 +12,7 @@ foam.CLASS({
     {
       name: 'type',
       expression: function(data, user){
-        return user.id == data.payeeId ? false : true
+        return user.id != data.payeeId
       }
     }
   ],
@@ -68,7 +68,6 @@ foam.CLASS({
       }
     })
   ],
-
 
   methods: [
     function initE(){

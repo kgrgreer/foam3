@@ -11,15 +11,15 @@ foam.CLASS({
   ],
 
   imports: [
+    'hideActionButton',   
+    'stack',    
     'recurringInvoiceDAO',
-    'stack',
-    'hideActionButton'
   ],
 
   exports: [
-    'showInvoices',
     'hideActionButton',
-    'hideSubscription'
+    'hideSubscription',
+    'showInvoices'
   ],
 
   properties: [
