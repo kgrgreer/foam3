@@ -12,8 +12,8 @@ foam.CLASS({
 
   imports: [
     'hideActionButton',   
-    'stack',    
     'recurringInvoiceDAO',
+    'stack'    
   ],
 
   exports: [

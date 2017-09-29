@@ -13,11 +13,10 @@ foam.CLASS({
     properties: [
       {
         class: 'Boolean',
-        name: 'checkBoxRecurring',
-        value: false
+        name: 'checkBoxRecurring'
       },
       {
-        class: 'Date',
+        class: 'Double',
         name: 'endsAfter'
       },
       {

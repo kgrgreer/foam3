@@ -36,14 +36,9 @@ foam.CLASS({
       }
     },
     {
-      class: 'DateTime',      
+      class: 'Double',      
       name: 'endsAfter',
-      label: 'End Date',
-      tableCellFormatter: function(date) {
-        if ( date ) {
-          this.add(date.toISOString().substring(0,10));
-        }
-      }
+      label: 'End Date'
     },
     {
       class: 'DateTime',

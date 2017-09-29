@@ -26,7 +26,7 @@ foam.CLASS({
       value: false
     },
     {
-      class: 'Date',
+      class: 'Double',
       name: 'endsAfter'
     },
     {
