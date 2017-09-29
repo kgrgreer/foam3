@@ -23,18 +23,6 @@ foam.CLASS({
       name: 'active'
     },
     {
-      class: 'String',
-      name: 'branchId'
-    },
-    {
-      class: 'String',
-      name: 'memberIdentification'
-    },
-    {
-      class: 'String',
-      name: 'clearingSystemIdentification'
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
