@@ -116,8 +116,7 @@ class swiftfoamTests: XCTestCase {
   }
 
   func testThreadSafe() {
-    let boxContext = BoxContext()
-    let X = boxContext.__subContext__
+    let X = Context.GLOBAL
 
     let t = X.create(Transaction.self)!
     t.payerId = 1
@@ -133,11 +132,14 @@ class swiftfoamTests: XCTestCase {
     for i in 0 ..< 50 {
       print("Entering Thread \(i)")
       dispatchGroup.enter()
-      TransactionService.instance.transferValueBy(transaction: t) {
+      TransactionService.instance.transferValueBy(
+          transaction: t,
+          callbackDispatchQueue: DispatchQueue.global(qos: .background)) {
         response in
         guard let _ = response as? Transaction else {
           print("Thread \(i) Leaving With Error..")
           errors.append("failure")
+          dispatchGroup.leave()
           return
         }
         print("Thread \(i) Leaving..")
@@ -145,8 +147,7 @@ class swiftfoamTests: XCTestCase {
       }
     }
 
-    dispatchGroup.notify(queue: DispatchQueue.main) {
-      XCTAssertEqual(errors.count, 0)
-    }
+    dispatchGroup.wait()
+    XCTAssertEqual(errors.count, 0)
   }
 }

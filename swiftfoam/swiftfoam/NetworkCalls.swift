@@ -32,6 +32,10 @@ public class TransactionService {
     FOAM_utils.registerClasses()
     X = boxContext.__subContext__
 
+    // Need to touch this so it's created before any async business happens.
+    // TODO(mcarcaso): make property initializers thread safe.
+    _ = (boxContext.registry as? BoxRegistryBox)?.registry_
+
     let httpBox = X.create(HTTPBox.self)!
     httpBox.url = ServiceURL.Transaction.path()
 
@@ -39,16 +43,19 @@ public class TransactionService {
     dao.delegate = httpBox
   }
 
-  public func transferValueBy(transaction: Transaction, callback: @escaping (Any?) -> Void) {
-    DispatchQueue.global(qos: .userInitiated).async {
+  public func transferValueBy(transaction: Transaction,
+                              putDispatchQueue: DispatchQueue = DispatchQueue.global(qos: .background),
+                              callbackDispatchQueue: DispatchQueue = DispatchQueue.main,
+                              callback: @escaping (Any?) -> Void) {
+    putDispatchQueue.async {
       do {
         let placedTransaction = (try self.dao.put(transaction)) as? Transaction
-        DispatchQueue.main.async {
+        callbackDispatchQueue.async {
           callback(placedTransaction)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
-        DispatchQueue.main.async {
+        callbackDispatchQueue.async {
           callback(nil)
         }
       }
