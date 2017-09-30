@@ -48,18 +48,46 @@ foam.RELATIONSHIP({
   inverseName: 'owner'
 });
 
+/*
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.model.Phone',
   forwardName: 'phones',
   inverseName: 'owner'
 });
+*/
 
+// Store Phone Numbers as an internal array rather than as an external DAO
+foam.CLASS({
+  refines: 'foam.nanos.auth.User',
+  properties: [
+    {
+      class: 'FObjectArray',
+      name: 'phones',
+      of: 'net.nanopay.model.Phone'
+    }
+  ]
+});
+
+/*
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.tx.model.TransactionLimit',
   forwardName: 'transactionLimits',
   inverseName: 'owner'
+});
+*/
+
+// Store Transaction Limits as an internal array rather than as an external DAO
+foam.CLASS({
+  refines: 'foam.nanos.auth.User',
+  properties: [
+    {
+      class: 'FObjectArray',
+      name: 'transactionLimits',
+      of: 'net.nanopay.tx.model.TransactionLimit'
+    }
+  ]
 });
 
 foam.RELATIONSHIP({
