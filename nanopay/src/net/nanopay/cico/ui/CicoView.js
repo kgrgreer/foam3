@@ -1,17 +1,17 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui',
+  package: 'net.nanopay.cico.ui',
   name: 'CicoView',
   extends: 'foam.u2.View',
 
   documentation: 'View for displaying all Cash In and Cash Out Transactions as well as account Balance',
 
   requires: [
-    'foam.u2.dialog.Popup', 
-    'net.nanopay.tx.model.Transaction', 
+    'foam.u2.dialog.Popup',
+    'net.nanopay.tx.model.Transaction',
   ],
 
   imports: [
-    'bankDAO',
+    'bankAccountDAO',
     'stack',
     'transactionDAO'
   ],
@@ -139,9 +139,9 @@ foam.CLASS({
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankDAO,
+          dao: X.bankAccountDAO,
           objToChoice: function(a){
-            return [a.id, a.name];
+            return [a.id, a.accountInfo.accountName];
           }
         })
       }
@@ -191,27 +191,27 @@ foam.CLASS({
     },
 
     function cashIn() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.CashInModal' }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.CashInModal' }));
     },
 
     function confirmCashIn() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.ConfirmCashInModal' }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.ConfirmCashInModal' }));
     },
 
     function onCashInSuccess() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.ci.CashInSuccessModal' }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.CashInSuccessModal' }));
     },
 
     function cashOut() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.co.CashOutModal' }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutModal' }));
     },
 
     function confirmCashOut() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.co.ConfirmCashOutModal' }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.ConfirmCashOutModal' }));
     },
 
     function onCashOutSuccess() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.co.CashOutSuccessModal' }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutSuccessModal' }));
     }
   ],
 

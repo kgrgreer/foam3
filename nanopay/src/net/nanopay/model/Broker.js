@@ -4,6 +4,8 @@ foam.CLASS({
 
   documentation: 'Broker user information.',
 
+  searchColumns: [],
+
   properties: [
     {
       class: 'Long',
@@ -19,23 +21,6 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'active'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.core.FObject',
-      name: 'accounts'
-    },
-    {
-      class: 'String',
-      name: 'branchId'
-    },
-    {
-      class: 'String',
-      name: 'memberIdentification'
-    },
-    {
-      class: 'String',
-      name: 'clearingSystemIdentification'
     },
     {
       class: 'FObjectProperty',

@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.co',
+  package: 'net.nanopay.cico.ui.co',
   name: 'CashOutSuccessModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+  requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
   imports: [ 'closeDialog', 'amount' ],
 
@@ -66,7 +66,7 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin: 0;
-          margin-top: 5px;
+          margin-top: 7px;
           margin-right: 20px;
           cursor: pointer;
           display: inline-block;
@@ -124,8 +124,8 @@ foam.CLASS({
   messages: [
     { name: 'Title', message: 'Cash Out' },
     { name: 'CashOutSuccessDesc', message: 'You have successfully cashed out ' },
-    { 
-      name: 'CashOutResultDesc', 
+    {
+      name: 'CashOutResultDesc',
       message: "Please be advised that it will take around 2 business days for the balance to arrive in your bank account. If you don't see your balance after 5 business days please contact our advisor at XXX-XXX-XXXX."
     }
   ],
