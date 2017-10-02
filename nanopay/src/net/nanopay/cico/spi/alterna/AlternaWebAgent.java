@@ -72,7 +72,6 @@ public class AlternaWebAgent
 
   public synchronized void execute(X x) {
     DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
