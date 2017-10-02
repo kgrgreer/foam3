@@ -14,6 +14,8 @@ foam.CLASS({
     'invoiceNumber', 'purchaseOrder', 'payeeName', 'issueDate', 'amount', 'status', 'payNow'
   ],
 
+  javaImports: [ 'java.util.Date' ],
+
   properties: [
     {
       name: 'search',
@@ -74,6 +76,7 @@ foam.CLASS({
       transient: true
     },
     {
+      class: 'Long',
       name: 'paymentId'
     },
     {
@@ -126,6 +129,7 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
       name: 'status',
       transient: true,
       aliases: [ 's' ],
@@ -137,6 +141,14 @@ foam.CLASS({
         if ( issueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         return paymentDate ? 'Scheduled' : 'New';
       },
+      javaGetter: `
+        if ( getDraft() ) return "Draft";
+        if ( getPaymentId() == -1 ) return "Disputed";
+        if ( getPaymentId() > 0 ) return "Paid";
+        if ( getIssueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
+        if ( getIssueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        return getPaymentDate() != null ? "Scheduled" : "New";
+      `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
       tableCellFormatter: function(state, obj, rel) {
         function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
@@ -198,7 +210,7 @@ foam.RELATIONSHIP({
       }.bind(this));
     },
     postSet: function(oldValue, newValue){
-      var self = this;      
+      var self = this;
       var dao = this.__context__.userDAO;
 
       dao.find(newValue).then(function(a){
