@@ -31,7 +31,7 @@ foam.CLASS({
       name: 'accountNumber'
     },
     {
-      class: 'Double',
+      class: 'String',
       name: 'amountDollar'
     },
     {

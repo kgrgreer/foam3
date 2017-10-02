@@ -8,6 +8,7 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
+import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
@@ -68,6 +69,7 @@ public class AlternaWebAgent
   }
 
   public synchronized void execute(X x) {
+    DAO userDAO = (DAO) x.get("localUserDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
@@ -80,11 +82,23 @@ public class AlternaWebAgent
     transactionDAO.select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {
+        User user = null;
+        String txnType = null;
         Transaction t = (Transaction) obj;
-        String txnType = ( t.getType() == TransactionType.CASHIN ) ? "DB" :
-            ( t.getType() == TransactionType.CASHOUT ) ? "CR" : null;
+
+        if ( t.getType() == TransactionType.CASHIN ) {
+          txnType = "DB";
+          user = (User) userDAO.find(t.getPayeeId());
+        } else if ( t.getType() == TransactionType.CASHOUT ) {
+          txnType = "CR";
+          user = (User) userDAO.find(t.getPayerId());
+        }
 
         AlternaFormat alternaFormat = new AlternaFormat();
+        // TODO: add logic for businesses
+        alternaFormat.setFirstName(user.getFirstName());
+        alternaFormat.setLastName(user.getLastName());
+        alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
         alternaFormat.setTxnType(txnType);
         alternaFormat.setProcessDate(generateProcessDate(now));
         alternaFormat.setReference(generateReferenceId());
