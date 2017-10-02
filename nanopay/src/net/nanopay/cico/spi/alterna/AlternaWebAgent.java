@@ -21,7 +21,14 @@ import java.util.Date;
 public class AlternaWebAgent
     implements WebAgent
 {
-  protected ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>() {
+  protected ThreadLocal<SimpleDateFormat> filenameSdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyyMMdd");
+    }
+  };
+
+  protected ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
     protected SimpleDateFormat initialValue() {
       return new SimpleDateFormat("yyyy-MM-dd");
@@ -40,7 +47,7 @@ public class AlternaWebAgent
     Calendar now = Calendar.getInstance();
     now.setTime(date);
     now.add(Calendar.DAY_OF_MONTH, ( now.get(Calendar.HOUR_OF_DAY) < 11 ) ? 1 : 2);
-    return sdf.get().format(now.getTime());
+    return csvSdf.get().format(now.getTime());
   }
 
   /**
@@ -49,7 +56,7 @@ public class AlternaWebAgent
    * @return the filename
    */
   public String generateFilename(Date date) {
-    return "mintchipcashout_" + sdf.get().format(date) + ".csv";
+    return "mintchipcashout_" + filenameSdf.get().format(date) + ".csv";
   }
 
   /**
