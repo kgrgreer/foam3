@@ -92,12 +92,16 @@ public class AlternaWebAgent
         } else if ( t.getType() == TransactionType.CASHOUT ) {
           txnType = "CR";
           user = (User) userDAO.find(t.getPayerId());
+        } else {
+          // don't output if for whatever reason we get here and
+          // the transaction is not a cash in or cash out
+          return;
         }
 
         AlternaFormat alternaFormat = new AlternaFormat();
-        // TODO: add logic for businesses
-        alternaFormat.setFirstName(user.getFirstName());
-        alternaFormat.setLastName(user.getLastName());
+        boolean isOrganization = ( user.getOrganization() != null && ! user.getOrganization().isEmpty() );
+        alternaFormat.setFirstName( ! isOrganization ? user.getFirstName() : user.getOrganization() );
+        alternaFormat.setLastName( ! isOrganization ? user.getLastName() : " ");
         alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
         alternaFormat.setTxnType(txnType);
         alternaFormat.setProcessDate(generateProcessDate(now));
