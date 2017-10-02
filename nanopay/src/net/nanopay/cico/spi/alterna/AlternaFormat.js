@@ -44,7 +44,7 @@ foam.CLASS({
       value: '450-Misc. Payments'
     },
     {
-      class: 'Date',
+      class: 'String',
       name: 'processDate'
     },
     {
