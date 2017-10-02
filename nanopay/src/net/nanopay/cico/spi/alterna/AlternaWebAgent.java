@@ -86,21 +86,7 @@ public class AlternaWebAgent
       public void put(FObject obj, Detachable sub) {
         User user = null;
         String txnType = null;
-        Account account = null;
-        BankAccountInfo accountInfo = null;
         Transaction t = (Transaction) obj;
-
-        // check if account id is null
-        if ( t.getAccountId() == null )
-          return;
-
-        // get and validate account information
-        account = (Account) bankAccountDAO.find(t.getAccountId());
-        if ( account == null || ! ( account.getAccountInfo() instanceof BankAccountInfo ) ) {
-          return;
-        }
-
-        accountInfo = (BankAccountInfo) account.getAccountInfo();
 
         if ( t.getType() == TransactionType.CASHIN ) {
           txnType = "DB";
@@ -118,9 +104,6 @@ public class AlternaWebAgent
         boolean isOrganization = ( user.getOrganization() != null && ! user.getOrganization().isEmpty() );
         alternaFormat.setFirstName( ! isOrganization ? user.getFirstName() : user.getOrganization() );
         alternaFormat.setLastName( ! isOrganization ? user.getLastName() : " ");
-        alternaFormat.setTransitNumber(accountInfo.getTransitNumber());
-        alternaFormat.setAccountNumber(accountInfo.getAccountNumber());
-        // TODO: add bank number
         alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
         alternaFormat.setTxnType(txnType);
         alternaFormat.setProcessDate(generateProcessDate(now));
