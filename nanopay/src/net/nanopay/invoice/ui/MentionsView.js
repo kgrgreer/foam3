@@ -53,16 +53,13 @@ foam.CLASS({
       expression: function(pendingAmount) { return this.formatCurrency(pendingAmount); }
     },
     {
-      name: 'pendingCount',
-      value: 0
+      name: 'pendingCount'
     },
     {
-      name: 'draftCount',
-      value: 0
+      name: 'draftCount'
     },
     {
       name: 'disputedCount',
-      value: 0
     }
   ],
 
