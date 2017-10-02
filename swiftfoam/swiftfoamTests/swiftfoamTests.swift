@@ -122,31 +122,31 @@ class swiftfoamTests: XCTestCase {
     let t = X.create(Transaction.self)!
     t.payerId = 1
     t.payeeId = 2
-    t.amount = 5 //cents
+    t.amount = 1 //cents
     t.rate = 15
     t.fees = 20
     t.notes = "Mike's test!"
 
     var errors:[String] = []
+    var expectations:[XCTestExpectation] = []
 
-    let dispatchGroup = DispatchGroup()
     for i in 0 ..< 50 {
-      print("Entering Thread \(i)")
-      dispatchGroup.enter()
+      print("Adding Expectation \(i)")
+      expectations.append(XCTestExpectation(description: "ThreadSafe Expectation \(i)"))
+    }
+
+    for i in 0 ..< 50 {
       TransactionService.instance.transferValueBy(transaction: t) {
         response in
-        guard let _ = response as? Transaction else {
-          print("Thread \(i) Leaving With Error..")
-          errors.append("failure")
-          return
+        if (response as? Transaction) == nil {
+          errors.append("invalid response")
         }
-        print("Thread \(i) Leaving..")
-        dispatchGroup.leave()
+        print("Fulfilling Expectation \(i)")
+        expectations[i].fulfill()
       }
     }
 
-    dispatchGroup.notify(queue: DispatchQueue.main) {
-      XCTAssertEqual(errors.count, 0)
-    }
+    wait(for: expectations, timeout: 20)
+    XCTAssertEqual(errors.count, 0)
   }
 }
