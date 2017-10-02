@@ -56,7 +56,7 @@ class swiftfoamTests: XCTestCase {
     let t = X.create(Transaction.self)!
     t.payerId = 1
     t.payeeId = 2
-    t.amount = 5000
+    t.amount = 1
     t.rate = 15
     t.fees = 20
     t.notes = "Mike's test!"
@@ -76,7 +76,7 @@ class swiftfoamTests: XCTestCase {
       XCTAssertNotNil(t2)
       XCTAssertEqual(t2.payerId, 1)
       XCTAssertEqual(t2.payeeId, 2)
-      XCTAssertEqual(t2.amount, 5000)
+      XCTAssertEqual(t2.amount, 1)
       XCTAssertEqual(t2.rate, 15)
       XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
@@ -95,7 +95,7 @@ class swiftfoamTests: XCTestCase {
       XCTAssertNotNil(t2)
       XCTAssertEqual(t2.payerId, 1)
       XCTAssertEqual(t2.payeeId, 2)
-      XCTAssertEqual(t2.amount, 5000)
+      XCTAssertEqual(t2.amount, 1)
       XCTAssertEqual(t2.rate, 15)
       XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
@@ -108,11 +108,14 @@ class swiftfoamTests: XCTestCase {
   }
 
   func testGetTransactions() {
+    let expectations:[XCTestExpectation] = [XCTestExpectation(description: "Get TX Expectation")]
     TransactionService.instance.getTransactions(startingAt: 0, withLimit: 1) {
       response in
       XCTAssertNotNil(response)
       XCTAssertEqual(response!.count, 1)
+      expectations.first!.fulfill()
     }
+    wait(for: expectations, timeout: 20)
   }
 
   func testThreadSafe() {
