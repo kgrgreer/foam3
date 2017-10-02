@@ -11,6 +11,8 @@ import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import net.nanopay.cico.model.TransactionType;
+import net.nanopay.model.Account;
+import net.nanopay.model.BankAccountInfo;
 import net.nanopay.tx.model.Transaction;
 
 import javax.servlet.http.HttpServletResponse;
@@ -70,6 +72,7 @@ public class AlternaWebAgent
 
   public synchronized void execute(X x) {
     DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
@@ -84,7 +87,21 @@ public class AlternaWebAgent
       public void put(FObject obj, Detachable sub) {
         User user = null;
         String txnType = null;
+        Account account = null;
+        BankAccountInfo accountInfo = null;
         Transaction t = (Transaction) obj;
+
+        // check if account id is null
+        if ( t.getAccountId() == null )
+          return;
+
+        // get and validate account information
+        account = (Account) bankAccountDAO.find(t.getAccountId());
+        if ( account == null || ! ( account.getAccountInfo() instanceof BankAccountInfo ) ) {
+          return;
+        }
+
+        accountInfo = (BankAccountInfo) account.getAccountInfo();
 
         if ( t.getType() == TransactionType.CASHIN ) {
           txnType = "DB";
@@ -102,6 +119,9 @@ public class AlternaWebAgent
         boolean isOrganization = ( user.getOrganization() != null && ! user.getOrganization().isEmpty() );
         alternaFormat.setFirstName( ! isOrganization ? user.getFirstName() : user.getOrganization() );
         alternaFormat.setLastName( ! isOrganization ? user.getLastName() : " ");
+        alternaFormat.setTransitNumber(accountInfo.getTransitNumber());
+        alternaFormat.setAccountNumber(accountInfo.getAccountNumber());
+        // TODO: add bank number
         alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
         alternaFormat.setTxnType(txnType);
         alternaFormat.setProcessDate(generateProcessDate(now));
