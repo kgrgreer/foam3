@@ -85,7 +85,7 @@ foam.CLASS({
             .start('h3').add(this.data.amount).end()
             .start('h4').add(this.data.nextInvoiceDate.toISOString().substring(0,10)).end()
             .start('h4').add(this.data.frequency).end()
-            .start('h3').add(this.data.endsAfter.toISOString().substring(0,10)).end()
+            .start('h3').add(this.data.endsAfter).end()
           .end()
         .end()
     }
