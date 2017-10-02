@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.model',
+  package: 'net.nanopay.cico.spi.alterna',
   name: 'AlternaFormat',
 
   documentation: 'Cashout and Cashin CSV Format for alterna.',
@@ -8,7 +8,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'padType',
-      default: 'Personal'
+      value: 'Personal'
     },
     {
       class: 'String',
@@ -41,7 +41,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'txnCode',
-      default: '450-Misc. Payments'
+      value: '450-Misc. Payments'
     },
     {
       class: 'Date',

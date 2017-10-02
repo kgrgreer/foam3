@@ -3,21 +3,23 @@ foam.CLASS({
   name: 'SingleItemView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'user'
+  ],
+
   properties: [
     'data',
+    {
+      name: 'type',
+      expression: function(data, user){
+        return user.id != data.payeeId
+      }
+    }
   ],
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ h5{
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1;
-          color: #093649;
-          padding-top: 70px;
-        }
         ^table-header{
           width: 960px;
           height: 40px;
@@ -25,7 +27,7 @@ foam.CLASS({
           padding-bottom: 10px;
         }
         ^ h3{
-          width: 100px;
+          width: 150px;
           display: inline-block;
           font-size: 14px;
           line-height: 1;
@@ -34,7 +36,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ h4{
-          width: 130px;
+          width: 150px;
           display: inline-block;
           font-size: 14px;
           line-height: 1;
@@ -67,30 +69,29 @@ foam.CLASS({
     })
   ],
 
-
   methods: [
     function initE(){
+      var self = this;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
             .start('h3').add('Invoice #').end()
-            .start('h3').add('PO#').end()
-            .start('h3').add('Customer').end()
+            .start('h3').add('PO #').end()
+            .call(function(){
+              self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end()
+            })
             .start('h4').add('Date Due').end()
-            .start('h4').add('Requested Amount').end()
-            .start('h4').add('Sending Amount').end()
-            .start('h4').add('Exh Rate').end()
+            .start('h4').add('Amount').end()
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
-            .start('h3').add(this.data.fromBusinessName).end()
+            .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
             .start('h4').add(this.data.issueDate.toISOString().substring(0,10)).end()
-            .start('h4').add('$', this.data.amount.toFixed(2)).end()
-            .start('h4').add('$', this.data.amount.toFixed(2)).end()
-            .start('h4').add('1.13').end()
+            .start('h4').add(this.data.currencyType, ' ', this.data.amount.toFixed(2)).end()
             .start('h3').add(this.data.status).end()
           .end()
         .end()

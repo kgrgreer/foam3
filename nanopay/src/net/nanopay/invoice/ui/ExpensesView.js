@@ -8,9 +8,9 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
-  imports: [ 'invoiceDAO', 'user' ],
+  imports: [ 'user' ],
 
-  exports: [ 'hideSaleSummary' ],
+  exports: [ 'hideSaleSummary', 'expensesDAO' ],
 
   properties: [ 
     'selection', 
@@ -19,7 +19,12 @@ foam.CLASS({
       name: 'hideSaleSummary',
       value: false
     },
-    { name: 'data', factory: function() { return this.invoiceDAO; }}
+    {
+      name: 'expensesDAO',
+      factory: function() {
+        return this.user.expenses;
+      }
+    }
   ],
 
   axioms: [
@@ -35,6 +40,10 @@ foam.CLASS({
         ^ .optionsDropDown {
           left: -92 !important;
           top: 30 !important;
+        }
+        ^ .net-nanopay-ui-ActionView-create{
+          position: relative;
+          top: -40;
         }
         */
       }
@@ -52,6 +61,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)
@@ -74,15 +84,18 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.invoiceDAO,
-            factory: function() { return self.Invoice.create({ toUserId: self.user.id, toUserName: self.user.name }); },
+            dao: this.expensesDAO,
+            factory: function() { return self.Invoice.create({ payerId: self.user.id, payerName: self.user.name }); },
             createLabel: 'New Invoice',
             createDetailView: { class: 'net.nanopay.invoice.ui.BillDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
-            summaryView: this.ExpensesTableView.create()
+            summaryView: this.ExpensesTableView.create(),
+            showActions: false
           })
         .end()
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.invoiceDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
+        .start().enableClass('hide', this.hideSaleSummary$)        
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
+        .end()
     },
   ],
 
@@ -92,11 +105,11 @@ foam.CLASS({
       extends: 'foam.u2.View',
       
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
-      imports: [ 'invoiceDAO' ],
+      imports: [ 'expensesDAO' ],
 
       properties: [ 
         'selection', 
-        { name: 'data', factory: function() { return this.invoiceDAO; }}
+        { name: 'data', factory: function() { return this.expensesDAO; }}
       ],
 
       methods: [
@@ -126,7 +139,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'toUserId', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'payeeId', 'issueDate', 'amount', 'status'
               ],
             }).end()
         },

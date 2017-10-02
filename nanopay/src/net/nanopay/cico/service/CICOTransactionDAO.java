@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import java.util.Random;
 import java.util.UUID;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.cico.model.TransactionStatus;
 
 public class CICOTransactionDAO
   extends ProxyDAO
@@ -54,11 +56,15 @@ public class CICOTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
+          if ( transaction.getStatus() == null ) {
+            transaction.setCicoStatus(TransactionStatus.NEW);
+          }
+          // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...
+          if ( transaction.getType() == null ) {
+            transaction.setType(TransactionType.CASHOUT);
+          }
           Transaction completedTransaction = (Transaction) transactionDAO.put(transaction);
-          // BUILD THE NEW MODEL
-          // BUSINESS LOGIC
-          // HERE IN THIS PART...
-          super.put_(x, obj);
+          super.put_(x, transaction);
           return completedTransaction;
 
         } catch (RuntimeException e) {

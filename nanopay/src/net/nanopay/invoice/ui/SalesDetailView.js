@@ -32,9 +32,6 @@ foam.CLASS({
           color: #093649;
           padding-top: 70px;
         }
-        ^ .net-nanopay-ui-ActionView-mainAction{
-          right: 250px !important;
-        }
         */
       }
     })
@@ -44,11 +41,12 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
+      var self = this;
       this.hideReceivableSummary = true;
 
       this
         .addClass(this.myClass())
+        .start(this.BACK_ACTION).end()
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
@@ -60,15 +58,24 @@ foam.CLASS({
             subMenu2: 'Void' 
           }
         })
-        .start('h5').add('Bill from ', this.data.fromUserName).end()
+        .start('h5').add('Bill to ', this.data.payerName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
     }
   ],
 
   listeners: [
     function recordPaymentModal(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
+    }
+  ],
+
+  actions: [
+    {
+      name: 'backAction',
+      label: 'Back',
+      code: function(X){
+        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView'});
+      }
     }
   ]
-  
 });

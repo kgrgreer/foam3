@@ -7,9 +7,10 @@ foam.CLASS({
   documentation: 'Summary View of Sales Invoices.',
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
-  exports: [ 'hideReceivableSummary' ],
 
-  imports: [ 'invoiceDAO', 'user', 'stack' ],
+  imports: [ 'user', 'stack' ],
+
+  exports: [ 'hideReceivableSummary', 'salesDAO' ],  
 
   properties: [ 
     'selection',
@@ -18,7 +19,12 @@ foam.CLASS({
       name: 'hideReceivableSummary',
       value: false
     },
-    { name: 'data', factory: function() { return this.invoiceDAO; }}
+    {
+      name: 'salesDAO',
+      factory: function() {
+        return this.user.sales;
+      }
+    }
   ],
 
   messages: [
@@ -42,6 +48,10 @@ foam.CLASS({
           left: -117 !important;
           top: 30 !important;
         }
+        ^ .net-nanopay-ui-ActionView-create{
+          position: relative;
+          top: -40;
+        }
         */
       }
     })
@@ -49,6 +59,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();      
       var self = this;
 
       this
@@ -73,14 +84,18 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.invoiceDAO,
-            factory: function() { return self.Invoice.create({ fromUserId: self.user.id, fromUserName: self.user.name }); },
+            dao: this.salesDAO,
+            factory: function() { return self.Invoice.create({ payeeId: self.user.id, payeeName: self.user.name }); },
+            createLabel: 'New Bill',
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
-            summaryView: this.SalesTableView.create()
+            summaryView: this.SalesTableView.create(),
+            showActions: false            
           })
         .end()
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.invoiceDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
+        .start().enableClass('hide', this.hideReceivableSummary$)        
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.salesDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
+        .end()
     }
   ],
 
@@ -91,14 +106,15 @@ foam.CLASS({
 
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
-      imports: [ 'invoiceDAO' ],
+      imports: [ 'salesDAO' , 'hideSaleSummary'],
       properties: [ 
         'selection', 
-        { name: 'data', factory: function() { return this.invoiceDAO; }}
+        { name: 'data', factory: function() { return this.salesDAO; }}
       ],
 
       methods: [
         function initE() {
+
           this
             .start({
               class: 'foam.u2.view.TableView',
@@ -112,11 +128,11 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'fromUserId', 'paymentDate', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'payerId', 'issueDate', 'amount', 'status'
               ]
-            }).addClass(this.myClass('table')).end();
+            }).addClass(this.myClass('table')).end()
         }
-      ]
+      ],
     }
   ]
 });

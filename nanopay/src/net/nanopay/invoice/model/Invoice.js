@@ -2,29 +2,25 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: 'Invoice model.',
+  documentation: 'Invoice model. Amount is set to double type.',
 
   ids: [ 'invoiceNumber' ],
 
   searchColumns: [
-    'search', 'fromUserId', 'toUserId', 'status'
+    'search', 'payerId', 'payeeId', 'status'
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'toUserName', 'issueDate', 'amount', 'status', 'payNow'
+    'invoiceNumber', 'purchaseOrder', 'payeeName', 'issueDate', 'amount', 'status', 'payNow'
   ],
+
+  javaImports: [ 'java.util.Date' ],
 
   properties: [
     {
-      name: 'toUserId'
-    },
-    {
-      name: 'fromUserId'
-    },
-    {
       name: 'search',
       transient: true,
-      searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.b2b.model.Invoice', richSearch: true }
+      searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
     },
     {
       class: 'Long',
@@ -63,19 +59,24 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'toUserName',
+      name: 'currencyType'
+    },
+    {
+      class: 'String',
+      name: 'payeeName',
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
       transient: true
     },
     {
       class: 'String',
-      name: 'fromUserName',
+      name: 'payerName',
       label: 'Customer',
       aliases: [ 'from', 'customer', 'c' ],
       transient: true
     },
     {
+      class: 'Long',
       name: 'paymentId'
     },
     {
@@ -101,6 +102,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'note',
+      view: 'foam.u2.tag.TextArea'
+    },
+    {
+      class: 'String',
       name: 'invoiceImageUrl'
     },
     {
@@ -114,7 +120,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Double',
+      class: 'String',
       name: 'currencyCode',
       required: true
     },
@@ -123,6 +129,7 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
       name: 'status',
       transient: true,
       aliases: [ 's' ],
@@ -134,6 +141,14 @@ foam.CLASS({
         if ( issueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         return paymentDate ? 'Scheduled' : 'New';
       },
+      javaGetter: `
+        if ( getDraft() ) return "Draft";
+        if ( getPaymentId() == -1 ) return "Disputed";
+        if ( getPaymentId() > 0 ) return "Paid";
+        if ( getIssueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
+        if ( getIssueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        return getPaymentDate() != null ? "Scheduled" : "New";
+      `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
       tableCellFormatter: function(state, obj, rel) {
         function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
@@ -163,4 +178,93 @@ foam.CLASS({
       }
     }
   ]
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.invoice.model.Invoice',
+  forwardName: 'sales',
+  inverseName: 'payeeId',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    label: 'Vendor',
+    searchView: {
+      class: "foam.u2.search.GroupBySearchView",
+      width: 40,
+      aFormatLabel: function(key) {
+        var dao = this.__context__.userDAO;
+        return new Promise(function (resolve, reject) {
+          dao.find(key).then(function (user) {
+            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
+          });
+        });
+      },
+      viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
+    },
+    tableCellFormatter: function(value, obj, rel) {
+      this.__context__[rel.targetDAOKey].find(value).then(function (o) {
+        this.add(o.firstName + ' ' + o.lastName);
+      }.bind(this));
+    },
+    postSet: function(oldValue, newValue){
+      var self = this;
+      var dao = this.__context__.userDAO;
+
+      dao.find(newValue).then(function(a){
+        self.payeeName = a.firstName + ' ' + a.lastName;
+        self.currencyType = a.address.countryId + 'D'
+      });
+      dao.find(this.payerId).then(function(a){
+        self.payerName = a.firstName + ' ' + a.lastName;
+      })
+    }
+  }
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.invoice.model.Invoice',
+  forwardName: 'expenses',
+  inverseName: 'payerId',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    label: 'Customer',
+//    aliases: [ 'from', 'customer' ],
+    searchView: {
+      class: "foam.u2.search.GroupBySearchView",
+      width: 40,
+      aFormatLabel: function(key) {
+        var dao = this.__context__.userDAO;
+        return new Promise(function (resolve, reject) {
+          dao.find(key).then(function (user) {
+            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
+          });
+        });
+      },
+      viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
+    },
+    tableCellFormatter: function(value, obj, rel) {
+      this.__context__[rel.targetDAOKey].find(value).then(function (o) {
+        this.add(o.firstName + ' ' + o.lastName);
+      }.bind(this));
+    },
+    postSet: function(oldValue, newValue){
+      var self = this;
+      var dao = this.__context__.userDAO;
+
+      dao.find(newValue).then(function(a){
+        self.payerName = a.firstName + ' ' + a.lastName;
+        self.currencyType = a.address.countryId + 'D'
+      });
+      dao.find(this.payeeId).then(function(a){
+        self.payeeName = a.firstName + ' ' + a.lastName;
+      })
+    }
+  }
 });

@@ -53,7 +53,7 @@ foam.CLASS({
           border-top: 5px solid white;
           margin-left: 9px;    
           position: relative;
-          top: -27px;
+          top: 18px;
         }
         ^top-action-buttons{
           width: 685px;
@@ -84,12 +84,12 @@ foam.CLASS({
           color: white;
           cursor: pointer;
         }
-        ^ .net-nanopay-ui-ActionView-popUp{
+        ^ .net-nanopay-ui-ActionView{
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          z-index: 10;
           opacity: 0.01;
-          z-index: 5;
-          position: relative;
-          top: -15;
-          right: 10;
         }
         ^ .net-nanopay-ui-ActionView-mainAction{
           opacity: 0.01;
@@ -97,28 +97,16 @@ foam.CLASS({
           position: absolute;
           height: 35px;
           width: 125px;
-          right: 175px;
+          right: 185px;
         }
-        ^ .net-nanopay-ui-ActionView-emailModal{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 10;
-          opacity: 0.01;
-        }
-        ^ .net-nanopay-ui-ActionView-approveModal{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 10;
-          opacity: 0.01;
-        }
-        ^ .net-nanopay-ui-ActionView-resolutionModal{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 10;
-          opacity: 0.01;
+        .net-nanopay-ui-ActionView-backAction{
+          position: relative;
+          top: 40;
+          width: 135px;
+          height: 40px;
+          border-radius: 2px;
+          border: 1px solid lightgrey;
+          background-color: rgba(164, 179, 184, 0.1);
         }
         */
       }
@@ -140,7 +128,7 @@ foam.CLASS({
               invoice: this.invoice,
               title: 'Approve'
             }
-          }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
+          }).addClass('import-button').add(this.APPROVE_MODAL).end()
           .start({
             class: 'net.nanopay.ui.ActionButton', 
             data: {
@@ -149,7 +137,7 @@ foam.CLASS({
               invoice: this.invoice,
               title: 'Dispute'
             }
-          }).addClass('import-button').add(this.RESOLUTION_MODAL).end()
+          }).addClass('import-button').add(this.DISPUTE_MODAL).end()
           .start(this.EMAIL_MODAL).addClass('import-button').end()
           .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
           .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
@@ -201,14 +189,25 @@ foam.CLASS({
       }
     },
     {
-      name: 'resolutionModal',
+      name: 'approveModal',
       code: function(X){
         X.ctrl.add(
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
-              class: 'net.nanopay.invoice.ui.modal.SingleResolutionModal', 
-              invoice: X.data.invoice,
-              title: X.data.title
+              class: 'net.nanopay.invoice.ui.modal.ApproveModal', 
+              invoice: X.data.invoice
+            })
+        );
+      }
+    },
+    {
+      name: 'disputeModal',
+      code: function(X){
+        X.ctrl.add(
+          foam.u2.dialog.Popup.create(null, X)
+            .tag({ 
+              class: 'net.nanopay.invoice.ui.modal.DisputeModal', 
+              invoice: X.data.invoice
             })
         );
       }

@@ -38,40 +38,51 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
+      var self = this;
       this.hideSaleSummary = true;
+
       this
         .addClass(this.myClass())
+        .start(this.BACK_ACTION).end()
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
           invoice: this.data,
           detailActions: { 
-            invoice: this.invoice,
+            invoice: this.data,
             buttonLabel: 'Pay Now', 
             buttonAction: this.payNowPopUp, 
             subMenu1: 'Schedule a Payment', 
             subMenuAction1: this.schedulePopUp, 
-            subMenu2: 'Dispute', subMenuAction2: 
-            this.disputePopUp 
+            subMenu2: 'Dispute', 
+            subMenuAction2: this.disputePopUp 
           }
         })
-        .start('h5').add('Invoice from ', this.data.toUserName).end()
+        .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
     }
   ],
 
   listeners: [
     function payNowPopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.PayNowModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.PayNowModal', invoice: this.data }));
     },
 
     function disputePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
     function schedulePopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal'}));
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+    }
+  ],
+
+  actions: [
+    {
+      name: 'backAction',
+      label: 'Back',
+      code: function(X){
+        X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView'});
+      }
     }
   ]
-
 });
