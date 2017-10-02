@@ -14,65 +14,19 @@ foam.CLASS({
     'foam.mlang.Expressions',
   ],
 
-  properties: [
-    {
-      name: 'accountName',
-      expression: function(accountName) {
-        return this.Account.accountInfo.accountName;
-      }
-    },
-    {
-      name: 'bankNumber',
-      expression: function(bankNumber) {
-        return this.Account.accountInfo.bankNumber;
-      }
-    },
-    {
-      name: 'transitNumber',
-      expression: function(transitNumber) {
-        return this.Account.accountInfo.transitNumber;
-      }
-    },
-    {
-      name: 'accountNumber',
-      expression: function(accountNumber) {
-        return this.Account.accountInfo.accountNumber;
-      }
-    },
-    {
-      name: 'status',
-      expression: function(status) {
-        return this.Account.accountInfo.status;
-      }
-    },
-    'allBanksCount',
-    'verifiedBanksCount',
-    'unverifiedBanksCount',
-    'selection',
-    { name: 'data', factory: function() { return this.bankAccountDAO; }},
-    {
-      name: 'dao',
-      factory: function() { return this.bankAccountDAO; }
-    }
-  ],
-
   documentation: 'View displaying list of Bank Accounts added.',
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^{
-          width: 100%;
-          background-color: #edf0f5;
-        }
-        ^ .bankAccountContainer {
-          width: 992px;
-          margin: auto;
+        ^ {
+          width: 962px;
+          margin: 0 auto;
         }
         ^ .bankContentCard {
           width: 218px;
           height: 100px;
-          margin-right: 30px;
+          margin-right: 15px;
         }
         ^ .actionButton {
           width: 218px;
@@ -117,8 +71,27 @@ foam.CLASS({
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
         }
+        ^ .foam-u2-view-TableView-noselect {
+          width: 1px;
+          cursor: pointer;
+        }
+        ^ .foam-u2-md-OverlayDropdown {
+          width: 175px;
+        }
       */}
     })
+  ],
+
+  properties: [
+    'allBanksCount',
+    'verifiedBanksCount',
+    'unverifiedBanksCount',
+    'selection',
+    { name: 'data', factory: function() { return this.bankAccountDAO; }},
+    {
+      name: 'dao',
+      factory: function() { return this.bankAccountDAO; }
+    }
   ],
 
   messages: [
@@ -136,7 +109,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('bankAccountContainer')
           .start('div').addClass('row')
             .start('div').addClass('spacer')
               .tag({class: 'net.nanopay.ui.ContentCard', data: { title: this.TitleAll}, contents$: this.allBanksCount$ }).addClass('bankContentCard')
@@ -159,17 +131,23 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.ACCOUNT_NAME,
-                    this.BANK_NUMBER,
-                    this.TRANSIT_NUMBER,
-                    this.ACCOUNT_NUMBER,
-                    this.STATUS
+                    this.Account.ID
                   ]
                 },
               summaryView: this.BankAccountTableView.create()
             })
           .end()
-        .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addBank',
+      label: 'Add a bank account',
+      icon: 'images/ic-plus.svg',
+      code: function() {
+        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
+      }
     }
   ],
 
@@ -192,31 +170,14 @@ foam.CLASS({
             .start({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
+              editColumnsEnabled: true,
               data: this.data,
-              config: {
-                status: {
-                  tableCellView: function(obj, e) {
-                    return e.E().style({color: '#2cab70'})
-                  }
-                }
-              },
               columns: [
-                'accountName', 'bankNumber', 'transitNumber', 'accountNumber', 'status'
+                'id'
               ]
             }).addClass(this.myClass('table')).end();
         }
       ]
-    }
-  ],
-
-  actions: [
-    {
-      name: 'addBank',
-      label: 'Add a bank account',
-      icon: 'images/ic-plus.svg',
-      code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
-      }
     }
   ],
 
@@ -230,12 +191,12 @@ foam.CLASS({
           self.allBanksCount = count.value;
         });
 
-        var verifiedBanksDAO = this.dao.where(this.EQ(this.Account.ACCOUNT_INFO.STATUS, "Verified"));
+        var verifiedBanksDAO = this.dao.where(this.EQ(self.status, "Verified"));
         verifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.verifiedBanksCount = count.value;
         });
 
-        var unverifiedBanksDAO = this.dao.where(this.EQ(this.Account.ACCOUNT_INFO.STATUS, "Unverified"));
+        var unverifiedBanksDAO = this.dao.where(this.EQ(self.status, "Unverified"));
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
         });

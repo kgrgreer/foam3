@@ -141,7 +141,7 @@ foam.CLASS({
                 bankNumber: '004',
                 transitNumber: '92300',
                 accountNumber: '5748932',
-                currencyCode: 'INR',
+                currencyCode: 'USD',
                 bankAccount: 8,
                 status: 'Verified'
               })
@@ -151,7 +151,23 @@ foam.CLASS({
               accountInfo: this.BankAccountInfo.create({
                 accountName: 'CIBC Chequing',
                 bankNumber: '010',
-                accountNumber: ''
+                transitNumber: '38463',
+                accountNumber: '1029387',
+                currencyCode: 'CAD',
+                bankAccount: 12,
+                status: 'Verified'
+              })
+            },
+            {
+              id: 4,
+              accountInfo: this.BankAccountInfo.create({
+                accountName: 'RBC Savings',
+                bankNumber: '003',
+                transitNumber: '04697',
+                accountNumber: '3897402',
+                currencyCoe: 'USD',
+                bankAccount: 16,
+                status: 'Unverified'
               })
             }
           ]

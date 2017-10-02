@@ -139,7 +139,6 @@ foam.CLASS({
         }
         .spacer {
           display: inline-block;
-          margin-left: 8px;
         }
         .spacer:first-child {
           margin-left: 0;
