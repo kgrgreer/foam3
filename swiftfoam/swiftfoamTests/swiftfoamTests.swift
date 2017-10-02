@@ -127,27 +127,25 @@ class swiftfoamTests: XCTestCase {
     t.notes = "Mike's test!"
 
     var errors:[String] = []
+    var expectations:[XCTestExpectation] = []
 
-    let dispatchGroup = DispatchGroup()
     for i in 0 ..< 50 {
+      expectations.append(XCTestExpectation(description: "ThreadSafe Expectation \(i)"))
       print("Entering Thread \(i)")
-      dispatchGroup.enter()
-      TransactionService.instance.transferValueBy(
-          transaction: t,
-          callbackDispatchQueue: DispatchQueue.global(qos: .background)) {
+      TransactionService.instance.transferValueBy(transaction: t) {
         response in
         guard let _ = response as? Transaction else {
           print("Thread \(i) Leaving With Error..")
           errors.append("failure")
-          dispatchGroup.leave()
+          expectations[i].fulfill()
           return
         }
         print("Thread \(i) Leaving..")
-        dispatchGroup.leave()
+        expectations[i].fulfill()
       }
     }
 
-    dispatchGroup.wait()
+    wait(for: expectations, timeout: 20)
     XCTAssertEqual(errors.count, 0)
   }
 }
