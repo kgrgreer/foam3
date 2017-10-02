@@ -71,15 +71,13 @@ foam.CLASS({
           border: none;
         }
         .net-nanopay-ui-ActionView-create{
-          background: #59aadd !important;
-          border: none !important;
-          box-shadow: none !important;
-          color: white !important;
-          font-weight: 100 !important;
+          background: #59aadd;
+          border: none;
+          box-shadow: none;
+          color: white;
+          font-weight: 100;
           width: 135px;
           height: 39px;
-          position: relative;
-          top: -40;
         }
         .net-nanopay-ui-ActionView-back{
           position: absolute;
@@ -87,7 +85,7 @@ foam.CLASS({
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1) !important;
+          background-color: rgba(164, 179, 184, 0.1);
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           color: black;
         }

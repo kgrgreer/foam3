@@ -41,6 +41,10 @@ foam.CLASS({
           left: -92 !important;
           top: 30 !important;
         }
+        ^ .net-nanopay-ui-ActionView-create{
+          position: relative;
+          top: -40;
+        }
         */
       }
     })
