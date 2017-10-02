@@ -23,35 +23,12 @@ public class CICOTransactionDAO
     DAO transactionDAO = (DAO) getX().get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
-    long payeeId = transaction.getPayeeId();
-    long payerId  = transaction.getPayerId();
-
-    if ( transaction.getPayerId() <= 0 ) {
-      throw new RuntimeException("Invalid Payer id");
+    if ( transaction.getAccountId() == null ) {
+      throw new RuntimeException("Invalid bank account");
     }
 
-    if ( transaction.getPayeeId() <= 0 ) {
-      throw new RuntimeException("Invalid Payee id");
-    }
-
-    if ( transaction.getAmount() < 0 ) {
-      throw new RuntimeException("Invalid amount");
-    }
-
-    if ( transaction.getRate() <= 0 ) {
-      throw new RuntimeException("Invalid rate");
-    }
-
-    if ( transaction.getPurpose() == null ) {
-      throw new RuntimeException("Invalid purpose");
-    }
-
-    if ( transaction.getFees() < 0 ) {
-      throw new RuntimeException("Invalid fees");
-    }
-
-    Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-    Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
+    Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
+    Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
 
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
