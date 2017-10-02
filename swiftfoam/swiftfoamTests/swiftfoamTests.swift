@@ -116,8 +116,7 @@ class swiftfoamTests: XCTestCase {
   }
 
   func testThreadSafe() {
-    let boxContext = BoxContext()
-    let X = boxContext.__subContext__
+    let X = Context.GLOBAL
 
     let t = X.create(Transaction.self)!
     t.payerId = 1
@@ -131,15 +130,13 @@ class swiftfoamTests: XCTestCase {
     var expectations:[XCTestExpectation] = []
 
     for i in 0 ..< 50 {
-      print("Adding Expectation \(i)")
       expectations.append(XCTestExpectation(description: "ThreadSafe Expectation \(i)"))
-    }
-
-    for i in 0 ..< 50 {
       TransactionService.instance.transferValueBy(transaction: t) {
         response in
-        if (response as? Transaction) == nil {
-          errors.append("invalid response")
+        guard let _ = response as? Transaction else {
+          errors.append("invalid response in async task \(i)")
+          expectations[i].fulfill()
+          return
         }
         print("Fulfilling Expectation \(i)")
         expectations[i].fulfill()
