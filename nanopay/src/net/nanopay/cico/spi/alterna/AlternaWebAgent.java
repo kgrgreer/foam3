@@ -11,22 +11,36 @@ import foam.lib.json.OutputterMode;
 import foam.nanos.http.WebAgent;
 import net.nanopay.tx.model.Transaction;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AlternaWebAgent
     implements WebAgent
 {
+  protected ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyyMMdd");
+    }
+  };
+
   public AlternaWebAgent() {}
 
   public String generateReferenceId() {
     return new Date().getTime() + "" + Math.floor(Math.random() * (99999 - 10000) + 10000);
   }
 
-  public void execute(X x) {
-    PrintWriter out = (PrintWriter) x.get(PrintWriter.class);
+  public synchronized void execute(X x) {
     DAO transactionDAO = (DAO) x.get("transactionDAO");
+    PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
+    HttpServletResponse response = (HttpServletResponse) x.get(HttpServletResponse.class);
+
+    response.setContentType("text/html");
+    response.setHeader("Content-disposition", "attachment; filename=\"mintchipcashout_" + sdf.get().format(new Date()) + ".csv\"");
 
     transactionDAO.select(new AbstractSink() {
       @Override
