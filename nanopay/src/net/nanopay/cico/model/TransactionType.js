@@ -6,12 +6,12 @@ foam.ENUM({
 
   values: [
     {
-      name: 'CASHIN',
-      label: 'Cash In'
-    },
-    {
       name: 'CASHOUT',
       label: 'Cash Out'
+    },
+    {
+      name: 'CASHIN',
+      label: 'Cash In'
     },
     {
       name: 'VERIFICATION',
