@@ -64,7 +64,7 @@ public class AlternaWebAgent
    * @return a reference id
    */
   public String generateReferenceId() {
-    return new Date().getTime() + "" + Math.floor(Math.random() * (99999 - 10000) + 10000);
+    return new Date().getTime() + "" + (int) (Math.random() * (99999 - 10000) + 10000);
   }
 
   public synchronized void execute(X x) {
