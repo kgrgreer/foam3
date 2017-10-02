@@ -37,6 +37,8 @@ foam.CLASS({
           top: -35;
           height: 20px;
           display: inline-block;
+          vertical-align: middle;
+          margin-top: 32px;
         }
         ^placeholder-business{
           width: 40px;
@@ -56,14 +58,8 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .add(this.data.profileImageURL$.map(function(profileImg){
-            return profileImg ? 
-              self.E()
-                .start({ class: 'foam.u2.tag.Image', data: self.data.profileImageURL$ }).end() :
-              self.E()
-                .start().addClass(self.myClass('placeholder-business')).end()
-          }))
-          .start().addClass(self.myClass('business-name')).add(self.data.name$).end()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg' }).end()
+          .start().addClass(self.myClass('business-name')).add('nanopay').end()
         .end();
     }
   ]
