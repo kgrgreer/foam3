@@ -13,6 +13,7 @@ import foam.nanos.http.WebAgent;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccountInfo;
+import net.nanopay.model.Branch;
 import net.nanopay.tx.model.Transaction;
 
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +73,7 @@ public class AlternaWebAgent
 
   public synchronized void execute(X x) {
     DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO branchDAO = (DAO) x.get("branchDAO");
     DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
@@ -111,13 +113,16 @@ public class AlternaWebAgent
           if (bankAccount == null || !(bankAccount.getAccountInfo() instanceof BankAccountInfo)) {
             return;
           }
+
           bankAccountInfo = (BankAccountInfo) bankAccount.getAccountInfo();
+          Branch branch = (Branch) branchDAO.find(bankAccountInfo.getBranchId());
 
           AlternaFormat alternaFormat = new AlternaFormat();
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
           alternaFormat.setTransitNumber(bankAccountInfo.getTransitNumber());
+          alternaFormat.setBankNumber(branch.getFinancialId());
           alternaFormat.setAccountNumber(bankAccountInfo.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
