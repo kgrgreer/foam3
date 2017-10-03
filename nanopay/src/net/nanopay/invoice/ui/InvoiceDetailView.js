@@ -5,10 +5,49 @@ foam.CLASS({
 
   imports: [ 
     'stack', 
-    'hideReceivableSummary' 
+    'hideReceivableSummary',
+    'recurringInvoiceDAO'
+  ],
+  
+  exports: [
+    'frequency',
+    'endsAfter',
+    'nextInvoiceDate'
   ],
 
-  requires: [ 'net.nanopay.invoice.model.Invoice' ],
+  requires: [ 
+    'net.nanopay.invoice.model.Invoice'
+  ],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'checkBoxRecurring',
+      value: false
+    },
+    {
+      class: 'Double',
+      name: 'endsAfter'
+    },
+    {
+      class: 'Date',
+      name: 'nextInvoiceDate'
+    },
+    {
+      class: 'String',
+      name: 'frequency',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          'Daily',
+          'Weekly',
+          'Biweekly',
+          'Monthly'
+        ]
+      },
+      value: 'Daily'
+    }
+  ],
 
   axioms: [
    foam.u2.CSS.create({
@@ -55,7 +94,7 @@ foam.CLASS({
         height: 40px;
       }
       ^ .foam-u2-tag-Select {
-        width: 300px;
+        width: 225px;
         height: 40px;
         margin-top: 10px;
       }
@@ -76,7 +115,7 @@ foam.CLASS({
             .start(this.SAVE_AND_PREVIEW).addClass('float-right').end()
             .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
           .end()
-          .start().add('New Bill').addClass('light-roboto-h2').end()
+          .start().add('New Invoice').addClass('light-roboto-h2').end()
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
@@ -98,31 +137,34 @@ foam.CLASS({
             .end()
             .start()
               .add('Attachments')
-              .start().add('Add Attachment').addClass('attachment-btn white-blue-button').end()
+              .start().add('Add Attachment').addClass('attachment-btn white-blue-button btn').end()
               .add('Maximum size 10MB')
             .end()
             .start()
-              .tag({class: 'foam.u2.CheckBox'})
+              .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })              
               .add('Enable recurring payments').addClass('enable-recurring-text')
             .end()
-            .start().addClass('frequency-div')
-              .start().addClass('label').add('Frequency').end()
-              .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
-            .end()
-            .start().addClass('inline').style({ 'margin-right' : '36px'})
-              .start().addClass('label').add('Ends After').end()
-              .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
-            .end()
-            .start().addClass('inline')
-              .start().addClass('label').add('Next Bill Date').end()
-              .start(this.Invoice.PAYMENT_DATE).addClass('small-input-box').end()
-            .end()
+            .startContext({data: this})
+              .start().show(this.checkBoxRecurring$)              
+                .start().addClass('frequency-div')
+                  .start().addClass('label').add('Frequency').end()
+                    .start(this.FREQUENCY).end()
+                .end()
+                .start().addClass('inline').style({ 'margin-right' : '36px'})
+                  .start().addClass('label').add('Ends After ( ) Occurences').end()
+                  .start(this.ENDS_AFTER).addClass('small-input-box').end()
+                .end()
+                .start().addClass('inline')
+                  .start().addClass('label').add('Next Bill Date').end()
+                  .start(this.NEXT_INVOICE_DATE).addClass('small-input-box').end()
+                .end()
+              .end()
+            .endContext()
             .start()
               .add('Note')
               .start(this.Invoice.NOTE).addClass('half-input-box').end()
             .end()
           .end();
-          
       }
   ],
 
@@ -146,7 +188,29 @@ foam.CLASS({
       name: 'saveAndPreview',
       label: 'Save & Preview',
       code: function(X) {
-        X.dao.put(this);
+        var self = this;
+        if(X.frequency && X.endsAfter && X.nextInvoiceDate){
+          var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
+            frequency: X.frequency,
+            endsAfter: X.endsAfter,
+            nextInvoiceDate: X.nextInvoiceDate,
+            amount: this.amount,
+            payeeId: this.payeeId,
+            payerId: this.payerId,
+            invoiceNumber: this.invoiceNumber,
+            issueDate: this.issueDate,
+            purchaseOrder: this.purchaseOrder,
+            payeeName: this.payeeName,
+            payerName: this.payerName
+          })
+          X.recurringInvoiceDAO.put(recurringInvoice).then(function(a){
+            self.recurringInvoice = a;
+            X.dao.put(self);
+          })
+        } else {
+          X.dao.put(this);          
+        }
+
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
     },

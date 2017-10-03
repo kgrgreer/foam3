@@ -1,11 +1,11 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.ci',
+  package: 'net.nanopay.cico.ui.ci',
   name: 'CashInModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+  requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
-  imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn' ],
+  imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn', 'goToBankAccounts' ],
 
   documentation: 'Pop up modal for cashing In.',
 
@@ -46,7 +46,7 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin: 0;
-          margin-top: 5px;
+          margin-top: 7px;
           margin-right: 20px;
           cursor: pointer;
           display: inline-block;
@@ -192,7 +192,7 @@ foam.CLASS({
       label: 'Go to Bank Accounts',
       code: function(X) {
         X.closeDialog();
-        // TODO: Bring user to bank accounts
+        X.goToBankAccounts();
       }
     }
   ]

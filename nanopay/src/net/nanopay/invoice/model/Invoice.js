@@ -11,8 +11,10 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payeeName', 'issueDate', 'amount', 'status', 'payNow'
+    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'amount', 'status', 'payNow'
   ],
+
+  javaImports: [ 'java.util.Date' ],
 
   properties: [
     {
@@ -74,6 +76,7 @@ foam.CLASS({
       transient: true
     },
     {
+      class: 'Long',
       name: 'paymentId'
     },
     {
@@ -126,6 +129,7 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
       name: 'status',
       transient: true,
       aliases: [ 's' ],
@@ -137,6 +141,14 @@ foam.CLASS({
         if ( issueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         return paymentDate ? 'Scheduled' : 'New';
       },
+      javaGetter: `
+        if ( getDraft() ) return "Draft";
+        if ( getPaymentId() == -1 ) return "Disputed";
+        if ( getPaymentId() > 0 ) return "Paid";
+        if ( getIssueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
+        if ( getIssueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        return getPaymentDate() != null ? "Scheduled" : "New";
+      `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
       tableCellFormatter: function(state, obj, rel) {
         function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
@@ -159,7 +171,7 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function(status) {
-        return status !== 'Paid';
+        return status !== 'Paid' && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard');
       },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
@@ -186,7 +198,7 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function (resolve, reject) {
           dao.find(key).then(function (user) {
-            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
+            resolve(user ? user.label() : 'Unknown User: ' + key);
           });
         });
       },
@@ -194,20 +206,21 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
-        this.add(o.firstName + ' ' + o.lastName);
+        this.add(o.label());
       }.bind(this));
     },
     postSet: function(oldValue, newValue){
-      var self = this;      
+      var self = this;
       var dao = this.__context__.userDAO;
 
-      dao.find(newValue).then(function(a){
-        self.payeeName = a.firstName + ' ' + a.lastName;
-        self.currencyType = a.address.countryId + 'D'
+      dao.find(newValue).then(function(a) {
+        if ( a ) {
+          self.payerName = a.label();
+          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+        } else {
+          self.payerName = 'Unknown Id: ' + newValue;
+        }
       });
-      dao.find(this.payerId).then(function(a){
-        self.payerName = a.firstName + ' ' + a.lastName;
-      })
     }
   }
 });
@@ -231,7 +244,7 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function (resolve, reject) {
           dao.find(key).then(function (user) {
-            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
+            resolve(user ? user.label() : 'Unknown User: ' + key);
           });
         });
       },
@@ -239,20 +252,21 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
-        this.add(o.firstName + ' ' + o.lastName);
+        this.add(o.label());
       }.bind(this));
     },
     postSet: function(oldValue, newValue){
       var self = this;
       var dao = this.__context__.userDAO;
 
-      dao.find(newValue).then(function(a){
-        self.payerName = a.firstName + ' ' + a.lastName;
-        self.currencyType = a.address.countryId + 'D'
+      dao.find(newValue).then(function(a) {
+        if ( a ) {
+          self.payerName = a.label();
+          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+        } else {
+          self.payerName = 'Unknown Id: ' + newValue;
+        }
       });
-      dao.find(this.payeeId).then(function(a){
-        self.payeeName = a.firstName + ' ' + a.lastName;
-      })
     }
   }
 });

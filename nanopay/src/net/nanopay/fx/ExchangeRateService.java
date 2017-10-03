@@ -83,7 +83,6 @@ public class ExchangeRateService
   }
 
   public void fetchRates()
-      throws RuntimeException
   {
     PM pmFetch = new PM(this.getClass(), "fetchRates");
 
@@ -114,7 +113,8 @@ public class ExchangeRateService
       }
 
       pmFetch.log(getX());
-    } catch (IOException | ParseException e) {
+    } catch (Throwable e) {
+      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }

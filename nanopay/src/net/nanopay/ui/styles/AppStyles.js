@@ -71,15 +71,13 @@ foam.CLASS({
           border: none;
         }
         .net-nanopay-ui-ActionView-create{
-          background: #59aadd !important;
-          border: none !important;
-          box-shadow: none !important;
-          color: white !important;
-          font-weight: 100 !important;
+          background: #59aadd;
+          border: none;
+          box-shadow: none;
+          color: white;
+          font-weight: 100;
           width: 135px;
           height: 39px;
-          position: relative;
-          top: -40;
         }
         .net-nanopay-ui-ActionView-back{
           position: absolute;
@@ -87,7 +85,7 @@ foam.CLASS({
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1) !important;
+          background-color: rgba(164, 179, 184, 0.1);
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           color: black;
         }
@@ -126,11 +124,20 @@ foam.CLASS({
           color: #59A5D5;
           margin-right: 15px;
         }
-        .net-nanopay-ui-ActionView-pay{
-
+        .row {
+          display: inline-block;
+          margin-top: 16px;
+          width: 100%;
         }
-        
-        
+        .rowTopMarginOverride {
+          margin-top: 0;
+        }
+        .spacer {
+          display: inline-block;
+        }
+        .spacer:first-child {
+          margin-left: 0;
+        }
         .input-box{
           width: 90%;
           height: 60px;
@@ -139,6 +146,7 @@ foam.CLASS({
           font-weight: 300;
           color: #093649;
           text-align: left;
+          border: 1px solid lightgrey;
         }
          .half-input-box {
            width: 50%;
@@ -169,28 +177,30 @@ foam.CLASS({
           border: solid 1px rgba(164, 179, 184, 0.5);
           outline: none;
         }
-        .blue-button{
+        .btn{
           width: 135px;
           height: 40px;
           border-radius: 2px;
-          background-color: #59aadd;
           cursor: pointer;
           text-align: center;
-          color: #ffffff;
           font-size: 14px;
           line-height: 2.86;
+        }
+        .blue-button{
+          background-color: #59aadd;
+          color: #ffffff;
           margin: 20px 20px;
           float: right;
         }
+        .grey-button{
+          background-color: rgba(164, 179, 184, 0.1);
+          border: solid 1px #8C92AC;
+          color: #093649;
+        }
         .white-blue-button{
-          width: 135px;
-          height: 40px;
-          border-radius: 2px;
           border: solid 1px #59A5D5;
           color: #59A5D5;
-          text-align: center;
-          line-height: 40px;
-          cursor: pointer;
+          background: none;
         }
         .full-width-button{
           width: 90%;
@@ -276,6 +286,13 @@ foam.CLASS({
           color: white;
           font-weight: 16px;
           display: inline-block;
+        }
+        .arrow-down {
+          width: 0; 
+          height: 0; 
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-top: 10px solid lightgrey;
         }
       */}
     })

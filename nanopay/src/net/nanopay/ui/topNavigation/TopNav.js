@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: 'Top navigation bar',
 
-  imports: [ 'menuDAO' ],
+  imports: [ 'menuDAO', 'user' ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -55,12 +55,12 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('topNavContainer')
-          // .start({class: 'net.nanopay.ui.topNavigation.BusinessLogoView', data: '' })
-          // .end()
+          .start({class: 'net.nanopay.ui.topNavigation.BusinessLogoView', data: this.user })
+          .end()
           .start({class: 'foam.nanos.menu.MenuBar'}).addClass('menuBar')
           .end()
-          // .start({class: 'net.nanopay.ui.topNavigation.UserTopNavView'})
-          // .end()
+          .start({class: 'net.nanopay.ui.topNavigation.UserTopNavView'})
+          .end()
         .end()
     }
   ]

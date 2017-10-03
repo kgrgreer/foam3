@@ -41,6 +41,10 @@ foam.CLASS({
           left: -92 !important;
           top: 30 !important;
         }
+        ^ .net-nanopay-ui-ActionView-create{
+          position: relative;
+          top: -40;
+        }
         */
       }
     })
@@ -82,7 +86,7 @@ foam.CLASS({
             class: 'foam.u2.ListCreateController',
             dao: this.expensesDAO,
             factory: function() { return self.Invoice.create({ payerId: self.user.id, payerName: self.user.name }); },
-            createLabel: 'New Invoice',
+            createLabel: 'New Bill',
             createDetailView: { class: 'net.nanopay.invoice.ui.BillDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
             summaryView: this.ExpensesTableView.create(),

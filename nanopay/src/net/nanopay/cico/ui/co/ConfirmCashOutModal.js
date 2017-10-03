@@ -1,13 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.co',
-  name: 'CashOutModal',
+  package: 'net.nanopay.cico.ui.co',
+  name: 'ConfirmCashOutModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+  requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
-  imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn' ],
+  imports: [ 'amount', 'bankAccountDAO', 'bankList', 'closeDialog', 'onCashOutSuccess', 'cashOut' ],
 
-  documentation: 'Pop up modal for cashing out.',
+  documentation: 'Pop up modal for confirming cash out.',
 
   axioms: [
     foam.u2.CSS.create({
@@ -46,7 +46,7 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin: 0;
-          margin-top: 5px;
+          margin-top: 7px;
           margin-right: 20px;
           cursor: pointer;
           display: inline-block;
@@ -60,39 +60,61 @@ foam.CLASS({
           background: transparent;
           background-color: transparent;
         }
-        input {
-          width: 408px;
-          height: 40px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          outline: none;
-          margin-left: 20px;
-          border-radius: 5px;
-          padding: 10px;
-        }
         ^ .label {
           font-family: Roboto;
           font-size: 14px;
-          font-weight: 300;
+          font-weight: bold;
           letter-spacing: 0.2px;
           color: #093649;
           margin-top: 20px;
-          margin-left: 20px;
+          margin-bottom: 0;
+          display: inline-block;
+          vertical-align: top;
         }
-        ^ .foam-u2-tag-Select{
-          height: 40px;
-          width: 408px;
-          background: white;
-          border: solid 1px rgba(164, 179, 184, 0.5);
+        ^ .bankInfoDiv {
+          display: inline-block;
+          margin-left: 35px;
+          margin-top: 18px;
+        }
+        ^ .bankLogo {
+          width: 24px;
+          height: 24px;
+          float: left;
+          clear: both;
+          margin-bottom: 5px;
+        }
+        ^ .bankName {
+          width: 200px;
+          font-size: 12px;
+          line-height: 1.33;
+          letter-spacing: 0.2px;
+          color: #093649;
+          clear: both;
+        }
+        ^ .accountNumber {
+          font-size: 12px;
+          line-height: 1.33;
+          letter-spacing: 0.2px;
+          color: #093649;
           margin-top: 5px;
-          margin-left: 20px;
-          outline: none;
-          padding: 10px;
         }
-        ^ .net-nanopay-ui-ActionView-nextButton {
+        ^ .property-amount {
+          height: 15px;
+          width: 100px;
+          padding: 0;
+          line-height: 16px;
+          font-size: 12px;
+          letter-spacing: 0.2px;
+          color: #093649;
+          display: inline-block;
+          margin-top: 20px;
+          margin-left: 75px;
+        }
+        ^ .net-nanopay-ui-ActionView-cashOutBtn {
           font-family: Roboto;
           width: 136px;
           height: 40px;
+          position: static;
           border-radius: 2px;
           background: #59a5d5;
           border: solid 1px #59a5d5;
@@ -101,43 +123,40 @@ foam.CLASS({
           text-align: center;
           cursor: pointer;
           font-size: 14px;
-          padding: 0;
           margin: 0;
           outline: none;
           float: right;
           box-shadow: none;
           font-weight: normal;
         }
-        ^ .net-nanopay-ui-ActionView-nextButton:hover {
+        ^ .net-nanopay-ui-ActionView-cashOutBtn:hover {
           background: #3783b3;
           border-color: #3783b3;
         }
-        ^ .net-nanopay-ui-ActionView-goToBank {
-          width: 118.3px;
-          height: 14px;
+        ^ .net-nanopay-ui-ActionView-back {
           font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.3px;
-          color: #5e91cb;
-          text-decoration: underline;
+          width: 136px;
+          height: 40px;
+          position: static;
+          background: rgba(164, 179, 184, 0.1);
+          border-radius: 2px;
+          border: solid 1px #ebebeb;
           display: inline-block;
-          margin: 0;
-          float: left;
+          color: #093649;
+          text-align: center;
           cursor: pointer;
-          background: transparent;
-          border: 0;
+          font-size: 14px;
+          margin: 0;
           outline: none;
-          padding: 0;
+          float: left;
+          box-shadow: none;
+          font-weight: normal;
         }
-        ^ .net-nanopay-ui-ActionView-goToBank:hover {
-          background: transparent;
+        ^ .net-nanopay-ui-ActionView-back:hover {
+          background: #ebebeb;
         }
     */}
     })
-  ],
-
-  properties: [
   ],
 
   methods: [
@@ -153,12 +172,24 @@ foam.CLASS({
             .add(this.CLOSE_BUTTON)
           .end()
           .start().add(this.bankLabel).addClass('label').end()
-          .add(this.CicoView.BANK_LIST)
+          .start('div').addClass('bankInfoDiv')
+            .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
+            .start()
+              .addClass('bankName')
+              .call(function() {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.add(bank.accountInfo.accountName);
+                }.bind(this));
+              })
+            .end()
+            .start().add('xxxx123456').addClass('accountNumber').end()
+          .end()
+          .br()
           .start().add(this.amountLabel).addClass('label').end()
-          .add(this.CicoView.AMOUNT)
+          .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
           .start('div').addClass('modal-button-container')
-            .add(this.NEXT_BUTTON)
-            .add(this.GO_TO_BANK)
+            .add(this.BACK)
+            .add(this.CASH_OUT_BTN)
           .end()
         .end()
       .end()
@@ -167,8 +198,9 @@ foam.CLASS({
 
   messages: [
     { name: 'Title', message: 'Cash Out' },
-    { name: 'bankLabel', message: 'Bank Name' },
-    { name: 'amountLabel', message: 'Amount' }
+    { name: 'bankLabel', message: 'Bank Account' },
+    { name: 'amountLabel', message: 'Amount' },
+    { name: 'backBtnTitle', message: 'Back' }
   ],
 
   actions: [
@@ -180,19 +212,19 @@ foam.CLASS({
       }
     },
     {
-      name: 'nextButton',
-      label: 'Next',
-      code: function(X) {
+      name: 'back',
+      label: this.backBtnTitle,
+      code: function (X) {
         X.closeDialog();
-        X.confirmCashOut();
+        X.cashOut();
       }
     },
     {
-      name: 'goToBank',
-      label: 'Go to Bank Accounts',
-      code: function(X) {
+      name: 'cashOutBtn',
+      label: 'Cash Out',
+      code: function (X) {
         X.closeDialog();
-        // TODO: Bring user to bank accounts
+        X.onCashOutSuccess();
       }
     }
   ]

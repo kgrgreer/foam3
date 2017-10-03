@@ -84,7 +84,7 @@ foam.CLASS({
           .start(this.PAYMENT_DATE).addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start(this.SCHEDULE).addClass('blue-button').end()
+          .start(this.SCHEDULE).addClass('blue-button btn').end()
         .end()
       .end()
     } 

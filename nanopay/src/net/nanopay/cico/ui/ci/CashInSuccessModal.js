@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.ci',
+  package: 'net.nanopay.cico.ui.ci',
   name: 'CashInSuccessModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.bank.ui.CicoView' ],
+  requires: [ 'net.nanopay.cico.ui.CicoView' ],
 
   imports: [ 'closeDialog', 'amount' ],
 
@@ -67,7 +67,7 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin: 0;
-          margin-top: 5px;
+          margin-top: 7px;
           margin-right: 20px;
           cursor: pointer;
           display: inline-block;
@@ -125,8 +125,8 @@ foam.CLASS({
   messages: [
     { name: 'Title', message: 'Cash In' },
     { name: 'CashInSuccessDesc', message: 'You have successfully cashed in '},
-    { 
-      name: 'CashInResultDesc', 
+    {
+      name: 'CashInResultDesc',
       message: "Please be advised that it will take around 2 business days for you to see the balance in the portal. If you don't see your balance after 5 business days please contact our advisor at XXX-XXX-XXXX."
     }
   ],
