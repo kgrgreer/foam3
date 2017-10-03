@@ -16,6 +16,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.cico.model.ServiceProvider',
       name: 'providerId'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Account',
+      name: 'accountId'
     }
   ]
 });

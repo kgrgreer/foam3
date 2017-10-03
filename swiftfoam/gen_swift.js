@@ -10,7 +10,7 @@ var execSync = require('child_process').execSync
 
 var dir = __dirname;
 var foam_root = dir + '/../../foam2';
-var genDir = dir + '/stubs';
+var genDir = dir + '/swiftfoam/stubs';
 
 require(foam_root + '/src/foam.js');
 execSync('rm -rf ' + genDir);
@@ -35,15 +35,26 @@ var executor = foam.classloader.NodeJsModelExecutor.create({
       'foam.box.ReplyBox',
       'foam.dao.ArraySink',
       'foam.dao.ClientDAO',
+      'foam.nanos.auth.Address',
+      'foam.nanos.auth.EnabledAware',
+      'foam.nanos.auth.Language',
+      'foam.nanos.auth.LastModifiedAware',
+      'foam.nanos.auth.LastModifiedByAware',
+      'foam.nanos.auth.User',
       'foam.swift.box.RPCReturnBox',
       'foam.swift.parse.StringPStream',
       'foam.swift.parse.json.output.HTTPBoxOutputter',
       'foam.u2.Visibility',
+      'net.nanopay.model.Account',
+      'net.nanopay.model.AccountInfo',
+      'net.nanopay.model.AccountLimit',
+      'net.nanopay.model.UserAccountInfo',
       'net.nanopay.tx.model.Transaction',
       'net.nanopay.tx.model.TransactionPurpose',
     ],
     outdir: genDir,
   },
 });
-executor.execute();
-
+executor.execute().then(function() {
+  execSync('cp ' + foam_root + '/swift_src/* ' + genDir);
+});
