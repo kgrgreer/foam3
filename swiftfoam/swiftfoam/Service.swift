@@ -17,7 +17,6 @@ public class Service {
 
   init(withURL url: ServiceURL) {
     FOAM_utils.registerClasses()
-    X = boxContext.__subContext__
 
     // Need to touch this so it's created before any async business happens.
     // TODO(mcarcaso): make property initializers thread safe.
