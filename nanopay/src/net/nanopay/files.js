@@ -3,7 +3,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/AccountInfo' },
   { name: 'net/nanopay/model/AccountLimit' },
-  { name: 'net/nanopay/model/Bank' },
+  { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccountInfo' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },

@@ -48,6 +48,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'currencyCode'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Branch',
+      name: 'branchId'
     }
   ],
 

@@ -9,7 +9,7 @@ var classes = [
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.model.AccountInfo',
   'net.nanopay.model.Account',
-  'net.nanopay.model.Bank',
+  'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccountInfo',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
