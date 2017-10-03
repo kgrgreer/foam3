@@ -31,12 +31,12 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let userDAOBox = X.create(HTTPBox.self)!
-    userDAOBox.url = "http://localhost:8080/userDAO"
+    userDAOBox.url = ServiceURL.User.path()
     let userDAO = X.create(ClientDAO.self)!
     userDAO.delegate = userDAOBox
 
     let accountDAOBox = X.create(HTTPBox.self)!
-    accountDAOBox.url = "http://localhost:8080/accountDAO"
+    accountDAOBox.url = ServiceURL.Account.path()
     let accountDAO = X.create(ClientDAO.self)!
     accountDAO.delegate = accountDAOBox
 
@@ -60,32 +60,6 @@ class swiftfoamTests: XCTestCase {
     t.rate = 15
     t.fees = 20
     t.notes = "Mike's test!"
-
-    TransactionService.instance.transferValueBy(payer: t.payerId,
-                                                payee: t.payeeId,
-                                                amount: t.amount,
-                                                rate: t.rate,
-                                                purpose: nil,
-                                                fees: t.fees,
-                                                notes: t.notes)
-    {
-      response in
-      guard let t2 = response as? Transaction else {
-        return
-      }
-      XCTAssertNotNil(t2)
-      XCTAssertEqual(t2.payerId, 1)
-      XCTAssertEqual(t2.payeeId, 2)
-      XCTAssertEqual(t2.amount, 1)
-      XCTAssertEqual(t2.rate, 15)
-      XCTAssertEqual(t2.fees, 20)
-      XCTAssertEqual(t2.notes, "Mike's test!")
-
-      XCTAssertNotEqual(t.compareTo(t2), 0)
-      t.id = t2.id
-      t.date = t2.date
-      XCTAssertEqual(t.compareTo(t2), 0)
-    }
 
     TransactionService.instance.transferValueBy(transaction: t) {
       response in
