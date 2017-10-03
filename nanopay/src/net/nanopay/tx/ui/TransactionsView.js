@@ -163,19 +163,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('h3').add(this.myAccounts).end()
-          .start('div').addClass('accountDiv')
-            .start().add('Chequing Account xxxxxxxxxxxx5175').addClass('account').end()
-            .start().add('CAD 10000').addClass('accountBalance').end() /*this.user$.dot('accountInfo').dot('balance').map(function(b){return (b/100).toFixed(2); })).addClass('accountBalance').end()*/
-          .end()
-          .start('div').addClass('tableBarDiv')
-            .start('h3').add(this.recentActivities).addClass('titleMargin').end()
-            .add(this.SEND_TRANSFER)
-            .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-              .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-              .addClass('interacLogo')
-            .end()
-          .end()
+          .start('h3').add(this.recentTransactions).end()
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
@@ -202,7 +190,8 @@ foam.CLASS({
 
   messages: [
     { name: 'myAccounts', message: 'My Accounts' },
-    { name: 'recentActivities', message: 'Recent Activities' }
+    { name: 'recentActivities', message: 'Recent Activities' },
+    { name: 'recentTransactions', message: 'Recent Transactions' }
   ],
 
   actions: [
