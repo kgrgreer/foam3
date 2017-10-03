@@ -72,6 +72,7 @@ public class AlternaWebAgent
 
   public synchronized void execute(X x) {
     DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
@@ -84,31 +85,48 @@ public class AlternaWebAgent
     transactionDAO.select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {
-        User user = null;
-        String txnType = null;
-        Transaction t = (Transaction) obj;
+        try {
+          User user = null;
+          String txnType = null;
+          Account bankAccount = null;
+          BankAccountInfo bankAccountInfo = null;
 
-        if ( t.getType() == TransactionType.CASHIN ) {
-          txnType = "DB";
-          user = (User) userDAO.find(t.getPayeeId());
-        } else if ( t.getType() == TransactionType.CASHOUT ) {
-          txnType = "CR";
-          user = (User) userDAO.find(t.getPayerId());
-        } else {
-          // don't output if for whatever reason we get here and
-          // the transaction is not a cash in or cash out
-          return;
+          Transaction t = (Transaction) obj;
+
+          // get transaction type and user
+          if (t.getType() == TransactionType.CASHIN) {
+            txnType = "DB";
+            user = (User) userDAO.find(t.getPayeeId());
+          } else if (t.getType() == TransactionType.CASHOUT) {
+            txnType = "CR";
+            user = (User) userDAO.find(t.getPayerId());
+          } else {
+            // don't output if for whatever reason we get here and
+            // the transaction is not a cash in or cash out
+            return;
+          }
+
+          // get account
+          bankAccount = (Account) bankAccountDAO.find(t.getAccountId());
+          if (bankAccount == null || !(bankAccount.getAccountInfo() instanceof BankAccountInfo)) {
+            return;
+          }
+          bankAccountInfo = (BankAccountInfo) bankAccount.getAccountInfo();
+
+          AlternaFormat alternaFormat = new AlternaFormat();
+          boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
+          alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
+          alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
+          alternaFormat.setTransitNumber(bankAccountInfo.getTransitNumber());
+          alternaFormat.setAccountNumber(bankAccountInfo.getAccountNumber());
+          alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
+          alternaFormat.setTxnType(txnType);
+          alternaFormat.setProcessDate(generateProcessDate(now));
+          alternaFormat.setReference(generateReferenceId());
+          outputter.put(alternaFormat, sub);
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-
-        AlternaFormat alternaFormat = new AlternaFormat();
-        boolean isOrganization = ( user.getOrganization() != null && ! user.getOrganization().isEmpty() );
-        alternaFormat.setFirstName( ! isOrganization ? user.getFirstName() : user.getOrganization() );
-        alternaFormat.setLastName( ! isOrganization ? user.getLastName() : " ");
-        alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
-        alternaFormat.setTxnType(txnType);
-        alternaFormat.setProcessDate(generateProcessDate(now));
-        alternaFormat.setReference(generateReferenceId());
-        outputter.put(alternaFormat, sub);
       }
     });
   }
