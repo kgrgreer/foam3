@@ -190,7 +190,7 @@ foam.CLASS({
         payerIdentification = result[2].array;
         payerBirthPlace = result[3].array[0];
 
-        return self.__context__[self.BankAccountInfo.BANK_ACCOUNT.targetDAOKey].find(payerAccount.bankAccount);
+        return self.branchDAO.find(payerAccount.branchId);
       })
       .then(function (result) {
         if ( ! result )
@@ -215,7 +215,7 @@ foam.CLASS({
         payeeIdentification = result[2].array;
         payeeBirthPlace = result[3].array[0];
 
-        return self.__context__[self.BankAccountInfo.BANK_ACCOUNT.targetDAOKey].find(payeeAccount.bankAccount);
+        return self.branchDAO.find(payeeAccount.branchId);
       })
       .then(function (result) {
         if ( ! result )
