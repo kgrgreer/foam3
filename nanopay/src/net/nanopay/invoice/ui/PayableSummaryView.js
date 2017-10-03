@@ -15,7 +15,6 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'invoiceDAO', 
     'formatCurrency',
     'user'
   ],

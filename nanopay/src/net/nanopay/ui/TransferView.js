@@ -22,8 +22,24 @@ foam.CLASS({
           margin-top: 15px;
         }
         ^ .foam-u2-tag-Select{
-          width: 215px;
+          width: 100%;
           height: 40px;
+        }
+        ^ .white-container{
+          width: 450px;
+          height: 350px;
+          margin: auto;
+          margin-top: 50px;
+        }
+        ^ .half-small-input-box{
+          width: 100%;
+        }
+        ^ .light-roboto-h2{
+          margin-left: 150px;
+          margin-bottom: 15px;
+        }
+        ^ .btn{ 
+          margin-top: 25px;
         }
       */}
     })
@@ -32,6 +48,11 @@ foam.CLASS({
   properties: [
     'payee',
     'transferAmount',
+    {
+      class: 'String',
+      name: 'note',
+      view: 'foam.u2.tag.TextArea'
+    },
     {
       name: 'payees',
       view: function(_,X) {
@@ -53,12 +74,16 @@ foam.CLASS({
 
       this
       .start().addClass(this.myClass())
-        .start().addClass('light-roboto-h2').add('Transfer Value').end()
-        .start().addClass('label').add('Transfer To:').end()
-        .start(this.PAYEES).end()
-        .start().addClass('label').add('Transfer Amount').end()
-        .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
-        .start(this.TRANSFER_VALUE).addClass('blue-button').end()
+        .start().addClass('white-container')
+          .start().addClass('light-roboto-h2').add('Transfer Value').end()        
+          .start().addClass('label').add('Transfer To:').end()
+          .start(this.PAYEES).end()
+          .start().addClass('label').add('Transfer Amount:').end()
+          .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
+          .start().addClass('label').add('Note:').end()        
+          .start(this.NOTE).addClass('half-small-input-box').end()
+          .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
+        .end()
       .end();
     }
   ],
@@ -73,7 +98,8 @@ foam.CLASS({
         var transaction = this.Transaction.create({
           payeeId: this.payees,
           payerId: X.user.id,
-          amount: X.transferAmount
+          amount: X.transferAmount,
+          notes: X.note
         });
 
         X.transactionDAO.put(transaction);
