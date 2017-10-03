@@ -52,9 +52,15 @@ foam.CLASS({
       name: 'formattedPendingAmount',
       expression: function(pendingAmount) { return this.formatCurrency(pendingAmount); }
     },
-    'pendingCount',
-    'draftCount',
-    'disputedCount'
+    {
+      name: 'pendingCount'
+    },
+    {
+      name: 'draftCount'
+    },
+    {
+      name: 'disputedCount',
+    }
   ],
 
   axioms: [
@@ -100,7 +106,6 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-
         var disputedDAO = this.invoiceDAO.where(this.EQ(this.Invoice.STATUS, "Disputed"));
 
         disputedDAO.select(this.COUNT()).then(function(count) {
