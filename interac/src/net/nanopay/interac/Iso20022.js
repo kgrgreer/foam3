@@ -22,7 +22,7 @@ foam.CLASS({
 
   imports: [
     'userDAO',
-    'bankDAO',
+    'branchDAO',
     'bankAccountDAO',
     'invoiceDAO',
     'transactionDAO',
@@ -160,7 +160,7 @@ foam.CLASS({
       var payeeIdentification = null;
       var payeeBirthPlace = null;
 
-      return Promise.all([ self.bankDAO.find(9), self.bankDAO.find(10) ]).then(function (result) {
+      return Promise.all([ self.branchDAO.find(9), self.branchDAO.find(10) ]).then(function (result) {
         if ( ! result )
           throw new Error('Intermediaries not found');
 
