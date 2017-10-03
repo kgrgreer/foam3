@@ -23,6 +23,7 @@ foam.CLASS({
     'cashIn',
     'confirmCashOut',
     'confirmCashIn',
+    'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess'
   ],
@@ -212,6 +213,10 @@ foam.CLASS({
 
     function onCashOutSuccess() {
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutSuccessModal' }));
+    },
+
+    function goToBankAccounts() {
+      this.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountsView' });
     }
   ],
 

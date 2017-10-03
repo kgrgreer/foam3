@@ -124,8 +124,20 @@ foam.CLASS({
           color: #59A5D5;
           margin-right: 15px;
         }
-        
-        
+        .row {
+          display: inline-block;
+          margin-top: 16px;
+          width: 100%;
+        }
+        .rowTopMarginOverride {
+          margin-top: 0;
+        }
+        .spacer {
+          display: inline-block;
+        }
+        .spacer:first-child {
+          margin-left: 0;
+        }
         .input-box{
           width: 90%;
           height: 60px;
