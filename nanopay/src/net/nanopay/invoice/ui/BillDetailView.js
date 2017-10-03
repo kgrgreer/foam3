@@ -169,7 +169,7 @@ foam.CLASS({
                       .start(this.FREQUENCY).end()
                   .end()
                   .start().addClass('inline').style({ 'margin-right' : '36px'})
-                    .start().addClass('label').add('Ends After').end()
+                    .start().addClass('label').add('Ends After ( ) Occurences').end()
                     .start(this.ENDS_AFTER).addClass('small-input-box').end()
                   .end()
                   .start().addClass('inline')
