@@ -4,8 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import java.util.Random;
-import java.util.UUID;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.cico.model.TransactionStatus;
@@ -33,7 +31,7 @@ public class CICOTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-          if ( transaction.getStatus() == null ) {
+          if ( transaction.getCicoStatus() == null ) {
             transaction.setCicoStatus(TransactionStatus.NEW);
           }
           // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...

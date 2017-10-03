@@ -35,7 +35,7 @@ foam.CLASS({
             'Monthly'
           ]
         },
-        value: null        
+        value: 'Daily'       
       }
     ],
 
