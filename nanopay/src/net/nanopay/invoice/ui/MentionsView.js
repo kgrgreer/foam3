@@ -106,7 +106,6 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-        
         var disputedDAO = this.invoiceDAO.where(this.EQ(this.Invoice.STATUS, "Disputed"));
 
         disputedDAO.select(this.COUNT()).then(function(count) {
