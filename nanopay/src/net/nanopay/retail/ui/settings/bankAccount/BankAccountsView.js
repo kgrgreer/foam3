@@ -131,7 +131,7 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.Account.ID
+                    this.Account.ACCOUNT_INFO
                   ]
                 },
               summaryView: this.BankAccountTableView.create()
@@ -156,7 +156,7 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.retail.model.BankAccount' ],
+      requires: [ 'net.nanopay.retail.model.Account' ],
 
       imports: [ 'bankAccountDAO' ],
       properties: [
@@ -173,7 +173,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'id'
+                'accountInfo'
               ]
             }).addClass(this.myClass('table')).end();
         }

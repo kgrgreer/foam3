@@ -118,7 +118,7 @@ foam.CLASS({
       name: 'bankAccountDAO',
       factory: function () {
         return this.EasyDAO.create({
-          daoType: 'MDAO',
+          daoType: 'CLIENT',
           of: this.Account,
           serviceName: 'bankAccountDAO',
           testData: [

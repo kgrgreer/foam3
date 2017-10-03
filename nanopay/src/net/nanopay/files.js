@@ -21,6 +21,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/RadioView', flags: ['web'] },
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
 
+  { name: 'net/nanopay/client/Client'},
+
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
