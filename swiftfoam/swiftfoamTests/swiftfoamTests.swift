@@ -83,10 +83,10 @@ class swiftfoamTests: XCTestCase {
 
   func testGetTransactions() {
     let expectations:[XCTestExpectation] = [XCTestExpectation(description: "Get TX Expectation")]
-    TransactionService.instance.getTransactions(startingAt: 0, withLimit: 1) {
+    TransactionService.instance.getTransactions(startingAt: 0) {
       response in
       XCTAssertNotNil(response)
-      XCTAssertEqual(response!.count, 1)
+      XCTAssertEqual(response!.count, 100)
       expectations.first!.fulfill()
     }
     wait(for: expectations, timeout: 20)
