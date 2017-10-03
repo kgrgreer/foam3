@@ -171,7 +171,7 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function(status) {
-        return status !== 'Paid';
+        return status !== 'Paid' && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard');
       },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
