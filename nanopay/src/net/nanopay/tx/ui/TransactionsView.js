@@ -28,7 +28,7 @@ foam.CLASS({
           letter-spacing: 0.3px;
           text-align: left;
           color: #093649;
-          margin-bottom: 20px;
+          margin: 0;
           display: inline-block;
           vertical-align: top;
         }
