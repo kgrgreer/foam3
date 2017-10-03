@@ -198,7 +198,7 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function (resolve, reject) {
           dao.find(key).then(function (user) {
-            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
+            resolve(user ? user.label() : 'Unknown User: ' + key);
           });
         });
       },
@@ -206,19 +206,23 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
-        this.add(o.firstName + ' ' + o.lastName);
+        this.add(o.label());
       }.bind(this));
     },
     postSet: function(oldValue, newValue){
       var self = this;
       var dao = this.__context__.userDAO;
 
-      dao.find(newValue).then(function(a){
-        self.payeeName = a.firstName + ' ' + a.lastName;
-        self.currencyType = a.address.countryId + 'D'
+      dao.find(newValue).then(function(a) {
+        if ( a ) {
+          self.payerName = a.label();
+          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+        } else {
+          self.payerName = 'Unknown Id: ' + newValue;
+        }
       });
-      dao.find(this.payerId).then(function(a){
-        self.payerName = a.firstName + ' ' + a.lastName;
+      dao.find(this.payerId).then(function(a) {
+        self.payerName = a ? a.label() : 'Unknown Id: ' + self.payerId;
       })
     }
   }
@@ -243,7 +247,7 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function (resolve, reject) {
           dao.find(key).then(function (user) {
-            resolve(user ? (user.firstName  + ' ' + user.lastName) : 'Unknown User: ' + key);
+            resolve(user ? user.label() : 'Unknown User: ' + key);
           });
         });
       },
@@ -251,19 +255,23 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.__context__[rel.targetDAOKey].find(value).then(function (o) {
-        this.add(o.firstName + ' ' + o.lastName);
+        this.add(o.label());
       }.bind(this));
     },
     postSet: function(oldValue, newValue){
       var self = this;
       var dao = this.__context__.userDAO;
 
-      dao.find(newValue).then(function(a){
-        self.payerName = a.firstName + ' ' + a.lastName;
-        self.currencyType = a.address.countryId + 'D'
+      dao.find(newValue).then(function(a) {
+        if ( a ) {
+          self.payerName = a.label();
+          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+        } else {
+          self.payerName = 'Unknown Id: ' + newValue;
+        }
       });
-      dao.find(this.payeeId).then(function(a){
-        self.payeeName = a.firstName + ' ' + a.lastName;
+      dao.find(this.payeeId).then(function(a) {
+        self.payeeName = a ? a.label() : 'Unknown Id: ' + self.payeeId;
       })
     }
   }
