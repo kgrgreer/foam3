@@ -10,10 +10,6 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'String',
       name: 'accountName',
       label: 'Account Name'
     },
