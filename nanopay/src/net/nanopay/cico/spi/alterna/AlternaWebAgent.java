@@ -84,6 +84,7 @@ public class AlternaWebAgent
     response.setContentType("text/html");
     response.setHeader("Content-disposition", "attachment; filename=\"" + generateFilename(now) + "\"");
 
+    // TODO: filter for the correct transactions
     transactionDAO.select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {
