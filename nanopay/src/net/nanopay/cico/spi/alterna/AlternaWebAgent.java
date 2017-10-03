@@ -8,8 +8,10 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
+import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
+import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccountInfo;
@@ -84,8 +86,7 @@ public class AlternaWebAgent
     response.setContentType("text/html");
     response.setHeader("Content-disposition", "attachment; filename=\"" + generateFilename(now) + "\"");
 
-    // TODO: filter for the correct transactions
-    transactionDAO.select(new AbstractSink() {
+    transactionDAO.where(MLang.EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {
         try {
