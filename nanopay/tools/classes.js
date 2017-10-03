@@ -19,6 +19,7 @@ var classes = [
   'net.nanopay.model.Phone',
   'net.nanopay.model.UserAccountInfo',
   'net.nanopay.model.AccountLimit',
+  'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.model.ExchangeRate',

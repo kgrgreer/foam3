@@ -62,9 +62,11 @@ foam.CLASS({
       name: 'deleted'
     },
     {
+      class: 'Long',
       name: 'payeeId'
     },
     {
+      class: 'Long',
       name: 'payerId'
     },
     {
@@ -78,8 +80,8 @@ foam.CLASS({
       label: 'Customer'
     },
     {
-      name: 'status',
-      transient: true
+      class: 'String',
+      name: 'status'
     },
     {
       class: 'Long',
