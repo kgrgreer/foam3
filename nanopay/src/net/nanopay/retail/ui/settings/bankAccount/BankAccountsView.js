@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.bankAccount',
+  package: 'net.nanopay.retail.ui.settings.bankAccount',
   name: 'BankAccountsView',
   extends: 'foam.u2.Controller',
 
@@ -146,7 +146,7 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
+        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.settings.bankAccount.form.BankForm', title: this.ActionAdd }));
       }
     }
   ],

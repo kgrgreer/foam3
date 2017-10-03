@@ -33,21 +33,26 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
 
-  { name: 'net/nanopay/retail/ui/bankAccount/BankAccountsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/bankAccount/form/BankDoneForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/bankAccount/form/BankForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/bankAccount/form/BankInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/bankAccount/form/BankVerificationForm', flags: ['web'] },
-
-  { name: 'net/nanopay/retail/ui/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/BankCTACard', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
+
+  { name: 'net/nanopay/retail/ui/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/bankAccount/BankAccountsView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankCashoutForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankDoneForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankVerificationForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/business/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/business/EditBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/personal/PersonalSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/settings/SettingsNavigator', flags: ['web'] },
 
   // tx
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
@@ -60,6 +65,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/client/Client' },
   { name: 'net/nanopay/model/Broker' },
+
+  { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 

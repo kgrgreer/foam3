@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.bankAccount.form',
+  package: 'net.nanopay.retail.ui.settings.bankAccount.form',
   name: 'BankForm',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
