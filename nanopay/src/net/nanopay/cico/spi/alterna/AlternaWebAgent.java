@@ -98,10 +98,10 @@ public class AlternaWebAgent
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
-          if (t.getType() == TransactionType.CASHIN) {
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "DB";
             user = (User) userDAO.find(t.getPayeeId());
-          } else if (t.getType() == TransactionType.CASHOUT) {
+          } else if ( t.getType() == TransactionType.CASHOUT ) {
             txnType = "CR";
             user = (User) userDAO.find(t.getPayerId());
           } else {
@@ -112,7 +112,7 @@ public class AlternaWebAgent
 
           // get account
           bankAccount = (Account) bankAccountDAO.find(t.getAccountId());
-          if (bankAccount == null || !(bankAccount.getAccountInfo() instanceof BankAccountInfo)) {
+          if ( bankAccount == null || ! ( bankAccount.getAccountInfo() instanceof BankAccountInfo ) ) {
             return;
           }
 
@@ -131,6 +131,12 @@ public class AlternaWebAgent
           alternaFormat.setProcessDate(generateProcessDate(now));
           alternaFormat.setReference(generateReferenceId());
           outputter.put(alternaFormat, sub);
+          // if a verification transaction, also add a CR with same information
+          if ( t.getType() == TransactionType.VERIFICATION ) {
+            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
+            cashout.setTxnType("CR");
+            outputter.put(cashout, sub);
+          }
         } catch (Exception e) {
           e.printStackTrace();
         }
