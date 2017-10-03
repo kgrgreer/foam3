@@ -19,6 +19,7 @@ foam.CLASS({
       searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.invoice.model.RecurringInvoice', richSearch: true }
     },
     {
+      class: 'Long',
       name: 'id',
       label: 'Recurring ID'
     },
@@ -62,9 +63,11 @@ foam.CLASS({
       name: 'deleted'
     },
     {
+      class: 'Long',
       name: 'payeeId'
     },
     {
+      class: 'Long',
       name: 'payerId'
     },
     {
@@ -78,8 +81,8 @@ foam.CLASS({
       label: 'Customer'
     },
     {
-      name: 'status',
-      transient: true
+      class: 'String',
+      name: 'status'
     },
     {
       class: 'Long',
