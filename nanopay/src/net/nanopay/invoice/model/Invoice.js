@@ -221,9 +221,6 @@ foam.RELATIONSHIP({
           self.payerName = 'Unknown Id: ' + newValue;
         }
       });
-      dao.find(this.payerId).then(function(a) {
-        self.payerName = a ? a.label() : 'Unknown Id: ' + self.payerId;
-      })
     }
   }
 });
@@ -270,9 +267,6 @@ foam.RELATIONSHIP({
           self.payerName = 'Unknown Id: ' + newValue;
         }
       });
-      dao.find(this.payeeId).then(function(a) {
-        self.payeeName = a ? a.label() : 'Unknown Id: ' + self.payeeId;
-      })
     }
   }
 });
