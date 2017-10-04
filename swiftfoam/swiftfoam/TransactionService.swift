@@ -9,10 +9,6 @@
 public class TransactionService: Service {
   public static let instance = TransactionService()
 
-  init() {
-    super.init(withURL: ServiceURL.Transaction)
-  }
-
   public enum TransactionError: ServiceErrorProtocol {
     case TransactionNotFound
 
@@ -22,6 +18,10 @@ public class TransactionService: Service {
           return "Transaction not found."
       }
     }
+  }
+
+  init() {
+    super.init(withURL: ServiceURL.Transaction)
   }
 
   public func transferValueBy(transaction: Transaction,
@@ -71,7 +71,7 @@ public class TransactionService: Service {
         do {
           //        let sink = (try self.dao.skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink
           DispatchQueue.main.async {
-
+            
           }
         } catch let e {
           NSLog(((e as? FoamError)?.toString()) ?? "Error!")

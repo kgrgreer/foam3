@@ -15,7 +15,7 @@ public class Service {
   }()
   var dao: ClientDAO!
 
-  enum ServiceError: ServiceErrorProtocol {
+  public enum ServiceError: ServiceErrorProtocol {
     case Failed
     func description() -> String {
       switch(self) {

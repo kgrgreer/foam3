@@ -9,12 +9,6 @@
 public class UserService: Service {
   public static let instance: UserService = UserService()
 
-  private var loggedInUser: User?
-
-  init() {
-    super.init(withURL: ServiceURL.User)
-  }
-
   // Helps determine type of error to handle on frontend
   public enum UserError: ServiceErrorProtocol {
     case IncorrectCredentials
@@ -26,22 +20,28 @@ public class UserService: Service {
     case UserUnverifiedPhone
     func description() -> String {
       switch(self) {
-      case .IncorrectCredentials:
-        return "Incorrect email or password."
-      case .UpdateFailed:
-        return "Could not update user. Please try again."
-      case .UserAlreadyExists:
-        return "User already exists. Please try a different email."
-      case .UserNotFound:
-        return "Could not find user."
-      case .UserNotLoggedIn:
-        return "Please log in again."
-      case .UserUnverifiedEmail:
-        return "User's email is not verfied. Verify your email and try again."
-      case .UserUnverifiedPhone:
-        return "User's telephone number has not been verified. Verify the number and try again."
+        case .IncorrectCredentials:
+          return "Incorrect email or password."
+        case .UpdateFailed:
+          return "Could not update user. Please try again."
+        case .UserAlreadyExists:
+          return "User already exists. Please try a different email."
+        case .UserNotFound:
+          return "Could not find user."
+        case .UserNotLoggedIn:
+          return "Please log in again."
+        case .UserUnverifiedEmail:
+          return "User's email is not verfied. Verify your email and try again."
+        case .UserUnverifiedPhone:
+          return "User's telephone number has not been verified. Verify the number and try again."
       }
     }
+  }
+
+  private var loggedInUser: User?
+
+  init() {
+    super.init(withURL: ServiceURL.User)
   }
 
   public func register(user: User,
