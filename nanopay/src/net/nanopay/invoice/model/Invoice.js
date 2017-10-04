@@ -11,7 +11,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'amount', 'status', 'payNow'
+    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'amount', 'status'/*, 'payNow'*/
   ],
 
   javaImports: [ 'java.util.Date' ],
@@ -171,7 +171,8 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function(status) {
-        return status !== 'Paid' && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard');
+        return false;
+        return status !== 'Paid' && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
       },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
