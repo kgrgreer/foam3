@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.settings.business',
+  package: 'net.nanopay.settings.business',
   name: 'EditBusinessView',
   extends: 'foam.u2.View',
 
@@ -311,7 +311,7 @@ foam.CLASS({
             }
           )
         }).then(function(a) {
-          self.stack.push({ class:'net.nanopay.retail.ui.settings.business.BusinessSettingsView' })
+          self.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
       }
     }
