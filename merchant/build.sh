@@ -4,8 +4,9 @@
 set -e
 
 # copy foam-bin into libs
-cd ../../foam2/src
-./gen.sh
+cd ../../foam2/tools
+node build.js web,nanos
+cp ../src/foam.js ../../NANOPAY/merchant/src/net/nanopay/merchant/libs/foam/
 cp ../foam-bin.js ../../NANOPAY/merchant/src/net/nanopay/merchant/libs/foam/
 
 # copy nanopay-bin into libs

@@ -21,4 +21,4 @@ foam.CLASS({
       return '$' + a.toFixed(2);
     }
   ]
-})
+});
