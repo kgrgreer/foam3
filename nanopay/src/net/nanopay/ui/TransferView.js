@@ -38,8 +38,11 @@ foam.CLASS({
           margin-left: 150px;
           margin-bottom: 15px;
         }
-        ^ .btn{ 
+        ^ .btn{
           margin-top: 25px;
+        }
+        ^ .property-note {
+          height: auto;
         }
       */}
     })
@@ -51,7 +54,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'note',
-      view: 'foam.u2.tag.TextArea'
+      view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 80 }
     },
     {
       name: 'payees',
@@ -75,12 +78,12 @@ foam.CLASS({
       this
       .start().addClass(this.myClass())
         .start().addClass('white-container')
-          .start().addClass('light-roboto-h2').add('Transfer Value').end()        
+          .start().addClass('light-roboto-h2').add('Transfer Value').end()
           .start().addClass('label').add('Transfer To:').end()
           .start(this.PAYEES).end()
           .start().addClass('label').add('Transfer Amount:').end()
           .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
-          .start().addClass('label').add('Note:').end()        
+          .start().addClass('label').add('Note:').end()
           .start(this.NOTE).addClass('half-small-input-box').end()
           .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
         .end()

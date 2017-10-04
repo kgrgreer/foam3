@@ -31,7 +31,7 @@ foam.CLASS({
       class: 'String',
       name: 'status',
       tableCellFormatter: function(a) {
-        var colour = ( a == 'verified' ) ? '#2cab70' : '#f33d3d';
+        var colour = ( a == 'Verified' ) ? '#2cab70' : '#f33d3d';
         this.start()
           .add(a)
           .style({
