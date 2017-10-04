@@ -8,7 +8,6 @@ foam.CLASS({
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
   implements: [
     'foam.nanos.client.Client',
-    'net.nanopay.tx.client.Client',
     'net.nanopay.retail.client.Client'
   ],
 
