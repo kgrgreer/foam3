@@ -13,6 +13,13 @@ public class AccountService: Service {
     super.init(withURL: ServiceURL.Account)
   }
 
+  public func verify(account: Account,
+                     withPassword pass: String,
+                     callback: @escaping (Any?) -> Void)
+  {
+    
+  }
+
   public func update(account: Account,
                      forUserId id: Int,
                      callback: @escaping (Any?) -> Void)

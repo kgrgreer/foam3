@@ -4,7 +4,6 @@ import XCTest
 class swiftfoamTests: XCTestCase {
   override func setUp() {
     super.setUp()
-    FOAM_utils.registerClasses()
   }
 
   override func tearDown() {
@@ -86,7 +85,11 @@ class swiftfoamTests: XCTestCase {
     TransactionService.instance.getTransactions(startingAt: 0) {
       response in
       XCTAssertNotNil(response)
-      XCTAssertEqual(response!.count, 100)
+      guard let transactions = response as? [Transaction] else {
+        XCTFail()
+        return
+      }
+      XCTAssertEqual(transactions.count, 100)
       expectations.first!.fulfill()
     }
     wait(for: expectations, timeout: 20)

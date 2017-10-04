@@ -13,6 +13,17 @@ public class TransactionService: Service {
     super.init(withURL: ServiceURL.Transaction)
   }
 
+  public enum TransactionError: ServiceErrorProtocol {
+    case TransactionNotFound
+
+    func description() -> String {
+      switch(self) {
+        case .TransactionNotFound:
+          return "Transaction not found."
+      }
+    }
+  }
+
   public func transferValueBy(transaction: Transaction,
                               putDispatchQueue: DispatchQueue = DispatchQueue.global(qos: .background),
                               callbackDispatchQueue: DispatchQueue = DispatchQueue.main,
@@ -28,7 +39,7 @@ public class TransactionService: Service {
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         callbackDispatchQueue.async {
-          callback(nil)
+          callback(ServiceError.Failed)
         }
       }
     }
@@ -36,7 +47,7 @@ public class TransactionService: Service {
 
   public func getTransactions(startingAt skip:  Int? = 0,
                               withLimit  limit: Int? = 100,
-                              callback:  @escaping ([Any?]?) -> Void)
+                              callback:  @escaping (Any?) -> Void)
   {
     // TODO: Add User Authenticity
     DispatchQueue.global(qos: .userInitiated).async {
@@ -48,8 +59,30 @@ public class TransactionService: Service {
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(nil)
+          callback(ServiceError.Failed)
         }
+      }
+    }
+  }
+
+  public func getTransactionBy(id: Int, callback:  @escaping (Any?) -> Void) {
+    DispatchQueue.global(qos: .userInitiated).async {
+      guard let error = UserService.instance.isUserFullyVerified() else {
+        do {
+          //        let sink = (try self.dao.skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink
+          DispatchQueue.main.async {
+
+          }
+        } catch let e {
+          NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+          DispatchQueue.main.async {
+            callback(ServiceError.Failed)
+          }
+        }
+        return
+      }
+      DispatchQueue.main.async {
+        callback(error)
       }
     }
   }
