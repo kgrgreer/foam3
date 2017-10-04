@@ -16,8 +16,6 @@ public class Service {
   var dao: ClientDAO!
 
   init(withURL url: ServiceURL) {
-    FOAM_utils.registerClasses()
-
     // Need to touch this so it's created before any async business happens.
     // TODO(mcarcaso): make property initializers thread safe.
     _ = (boxContext.registry as? BoxRegistryBox)?.registry_
