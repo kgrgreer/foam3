@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.settings',
+  package: 'net.nanopay.settings',
   name: 'SettingsNavigator',
   extends: 'foam.u2.View',
 
@@ -74,28 +74,28 @@ foam.CLASS({
       name: 'personalProfile',
       label: 'Personal Profile',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.personal.PersonalSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.personal.PersonalSettingsView' });
       }
     },
     {
       name: 'businessProfile',
       label: 'Business Profile',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.business.BusinessSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.business.BusinessSettingsView' });
       }
     },
     {
       name: 'bankAccount',
       label: 'Bank Account',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountsView' });
+        X.stack.push({ class: 'net.nanopay.settings.bankAccount.BankAccountsView' });
       }
     },
     {
       name: 'cashOut',
       label: 'Cash Out',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.autoCashout.AutoCashoutSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.autoCashout.AutoCashoutSettingsView' });
       }
     }
   ]

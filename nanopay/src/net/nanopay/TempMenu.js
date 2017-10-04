@@ -27,9 +27,9 @@ foam.CLASS({
         { parent: 'admin',        id: 'brokers',       label: 'Brokers',            handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'brokerDAO' } },
         { parent: 'admin',        id: 'servproviders', label: 'Service Providers',  handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'cicoServiceProviderDAO' } },
         {                         id: 'transfer',      label: 'Transfer',           handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.TransferView' } } },
-        { parent: 'settings',     id: 'set-personal',     label: 'Personal', order: 30,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.settings.personal.PersonalSettingsView' } } },
-        { parent: 'settings',     id: 'set-bus',          label: 'Business', order: 40,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.settings.business.BusinessSettingsView' } } },
-        { parent: 'settings',     id: 'set-bank',         label: 'Bank Account',      order: 50,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountsView' } } },
+        { parent: 'settings',     id: 'set-personal',     label: 'Personal', order: 30,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.settings.personal.PersonalSettingsView' } } },
+        { parent: 'settings',     id: 'set-bus',          label: 'Business', order: 40,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.settings.business.BusinessSettingsView' } } },
+        { parent: 'settings',     id: 'set-bank',         label: 'Bank Account',      order: 50,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' } } },
         { parent: 'settings',     id: 'set-security',     label: 'Log Out',           order: 70,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView'} } }
  //       { parent: 'support',  id: 'data',         label: 'View Data',                handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.DebugView' } } }
       ], foam.nanos.menu.Menu, this.__subContext__).forEach(this.menuDAO.put.bind(this.menuDAO));

@@ -41,18 +41,6 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
-  { name: 'net/nanopay/retail/ui/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/BankAccountsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankCashoutForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankDoneForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankVerificationForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/business/BusinessSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/business/EditBusinessView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/personal/PersonalSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/SettingsNavigator', flags: ['web'] },
-
   // tx
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
@@ -73,6 +61,13 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAcount/BankCTACard', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankDoneForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankVerificationForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
 
@@ -97,6 +92,13 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
+
+  // settings
+  { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
