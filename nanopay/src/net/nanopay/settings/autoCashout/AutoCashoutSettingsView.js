@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.settings.autoCashout',
+  package: 'net.nanopay.settings.autoCashout',
   name: 'AutoCashoutSettingsView',
   extends: 'foam.u2.View',
 

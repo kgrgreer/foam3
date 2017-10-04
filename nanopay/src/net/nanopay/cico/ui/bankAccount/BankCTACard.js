@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui',
+  package: 'net.nanopay.cico.ui.bankAccount',
   name: 'BankCTACard',
   extends: 'net.nanopay.ui.NotificationActionCard',
 

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.settings.bankAccount',
+  package: 'net.nanopay.cico.ui.bankAccount',
   name: 'BankAccountsView',
   extends: 'foam.u2.Controller',
 
