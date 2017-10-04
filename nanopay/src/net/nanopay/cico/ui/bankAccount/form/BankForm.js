@@ -1,6 +1,6 @@
 
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.settings.bankAccount.form',
+  package: 'net.nanopay.cico.ui.bankAccount.form',
   name: 'BankForm',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
@@ -94,4 +94,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

@@ -1,3 +1,3 @@
-p({"class":"net.nanopay.retail.model.Device", "name":"Ingenico 1",  "type":"Terminal", "serialNumber":"D224E98C71EF42CA", "status":{"class":"net.nanopay.retail.model.DeviceStatus", "name":"PENDING" }})
-p({"class":"net.nanopay.retail.model.Device", "name":"Ciao Tablet", "type":"Android",  "serialNumber":"59GS8F8A3L5FAQ1",  "status":{"class":"net.nanopay.retail.model.DeviceStatus", "name":"PENDING" }})
-p({"class":"net.nanopay.retail.model.Device", "name":"Merci Pad",   "type":"iPad",     "serialNumber":"0A3H70K5HLA82E4",  "status":{"class":"net.nanopay.retail.model.DeviceStatus", "name":"DISABLED" }}) 
+p({"class":"net.nanopay.retail.model.Device", "name":"Ingenico 1",  "type":"Terminal", "serialNumber":"D224E98C71EF42CA", "status":1})
+p({"class":"net.nanopay.retail.model.Device", "name":"Ciao Tablet", "type":"Android",  "serialNumber":"59GS8F8A3L5FAQ1",  "status":1})
+p({"class":"net.nanopay.retail.model.Device", "name":"Merci Pad",   "type":"iPad",     "serialNumber":"0A3H70K5HLA82E4",  "status":2})
