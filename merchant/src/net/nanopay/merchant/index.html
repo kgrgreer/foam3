@@ -2,10 +2,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1" />
-    <script language="javascript" src="libs/foam/foam.js"></script>
     <script language="javascript" src="libs/foam/foam-bin.js"></script>
     <script language="javascript" src="libs/nanopay/nanopay-bin.js"></script>
-    <script language="javascript" src="files.js"></script>
+
+    <script language="javascript" src="ui/Controller.js"></script>
+    <script language="javascript" src="ui/HomeView.js"></script>
+    <script language="javascript" src="ui/QRCodeView.js"></script>
+    <script language="javascript" src="ui/SuccessView.js"></script>
+    <script language="javascript" src="ui/ErrorView.js"></script>
+    <script language="javascript" src="ui/RefundView.js"></script>
+    <script language="javascript" src="ui/ToolbarView.js"></script>
+    <script language="javascript" src="ui/setup/SetupView.js"></script>
+    <script language="javascript" src="ui/setup/SetupSuccessView.js"></script>
+    <script language="javascript" src="ui/setup/SetupErrorView.js"></script>
+    <script language="javascript" src="ui/transaction/TransactionToolbar.js"></script>
+    <script language="javascript" src="ui/transaction/TransactionDetailView.js"></script>
+    <script language="javascript" src="ui/transaction/TransactionRowView.js"></script>
+    <script language="javascript" src="ui/transaction/TransactionListView.js"></script>
+    <script language="javascript" src="ui/transaction/EmptyTransactionListView.js"></script>
 
     <script language="javascript" src="libs/qrcode/qrcode.min.js"></script>
     <script language="javascript" src="libs/tetra/tetra.min.js"></script>
@@ -18,6 +32,6 @@
   </head>
 
   <body class="mdc-typography">
-    <foam id="ctrl" class="net.nanopay.merchant.ui.Controller"></foam>
+  <foam id="ctrl" class="net.nanopay.merchant.ui.Controller"></foam>
   </body>
 </html>
