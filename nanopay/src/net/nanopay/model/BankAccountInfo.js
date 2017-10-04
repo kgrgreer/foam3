@@ -10,10 +10,6 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'String',
       name: 'accountName',
       label: 'Account Name'
     },
@@ -52,6 +48,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'currencyCode'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Branch',
+      name: 'branchId'
     }
   ],
 

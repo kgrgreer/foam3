@@ -41,3 +41,4 @@ fabric.properties
 # Generated Code
 cp.txt
 build/
+nanopay-bin.js

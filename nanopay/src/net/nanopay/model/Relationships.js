@@ -1,6 +1,6 @@
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.BankAccountInfo',
-  targetModel: 'net.nanopay.model.Bank',
+  targetModel: 'net.nanopay.model.Branch',
   forwardName: 'bankAccount',
   inverseName: 'bankNumber'
 });

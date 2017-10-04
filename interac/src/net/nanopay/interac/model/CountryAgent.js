@@ -17,12 +17,12 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Bank',
+      of: 'net.nanopay.model.Branch',
       name:  'debtorAgent'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Bank',
+      of: 'net.nanopay.model.Branch',
       name:  'creditorAgent'
     },
     {

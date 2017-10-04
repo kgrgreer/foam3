@@ -21,3 +21,4 @@ find ../build/ -name "*.js" -type f -delete
 # Generate java files to build dir
 cwd=$(pwd)
 node ../../../foam2/tools/genjava.js $cwd/../tools/classes.js $cwd/../build $cwd
+node ../../tools/build.js web

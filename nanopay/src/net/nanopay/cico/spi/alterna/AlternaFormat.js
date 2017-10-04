@@ -31,7 +31,7 @@ foam.CLASS({
       name: 'accountNumber'
     },
     {
-      class: 'Double',
+      class: 'String',
       name: 'amountDollar'
     },
     {
@@ -44,7 +44,7 @@ foam.CLASS({
       value: '450-Misc. Payments'
     },
     {
-      class: 'Date',
+      class: 'String',
       name: 'processDate'
     },
     {
