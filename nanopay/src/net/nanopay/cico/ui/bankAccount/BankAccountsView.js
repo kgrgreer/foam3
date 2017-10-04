@@ -35,11 +35,12 @@ foam.CLASS({
           display: inline-block;
           vertical-align: top;
           margin: 0;
+          margin-top: 20px;
         }
         ^ .bankContentCard {
           width: 218px;
           height: 100px;
-          margin-right: 30px;
+          margin-right: 15px;
         }
         ^ .actionButton {
           width: 218px;
@@ -119,12 +120,12 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      //this.dao.on.sub(this.onDAOUpdate);
-      //this.onDAOUpdate();
+      this.dao.on.sub(this.onDAOUpdate);
+      this.onDAOUpdate();
 
       this
         .addClass(this.myClass())
-          /*.start('div').addClass('row')
+          .start('div').addClass('row')
             .start('div').addClass('spacer')
               .tag({class: 'net.nanopay.ui.ContentCard', data: { title: this.TitleAll}, contents$: this.allBanksCount$ }).addClass('bankContentCard')
             .end()
@@ -137,7 +138,7 @@ foam.CLASS({
             .start('div').addClass('spacer')
               .tag(this.ADD_BANK, { showLabel: true })
             .end()
-          .end()*/
+          .end()
           .start('h3').add(this.MyBankAccounts).end()
           .start()
             .tag({
@@ -201,7 +202,7 @@ foam.CLASS({
     }
   ],
 
-  /*listeners: [
+  listeners: [
     {
       name: 'onDAOUpdate',
       isFramed: true,
@@ -222,5 +223,5 @@ foam.CLASS({
         });
       }
     }
-  ]*/
+  ]
 });
