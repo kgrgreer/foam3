@@ -29,6 +29,7 @@ foam.CLASS({
       ^ .container{
         height: 40.8px;
         background-color: #093649;
+        margin-bottom: 20px;
       }
       ^ .title{
         height: 40px;

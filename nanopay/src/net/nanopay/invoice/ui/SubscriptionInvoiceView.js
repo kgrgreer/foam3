@@ -47,7 +47,7 @@ foam.CLASS({
         .start(this.BACK_ACTION).end()
         .tag({ 
           class: 'net.nanopay.invoice.ui.shared.ActionInterfaceButton', 
-          invoice: this.data,
+          data: this.data,
           detailActions: { 
             invoice: this.data,
             buttonLabel: 'Record Payment', 

@@ -101,6 +101,7 @@ FOAM_FILES([
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
+  { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },  
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
 
   // modal
