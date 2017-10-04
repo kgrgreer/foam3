@@ -9,6 +9,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'String',
       name: 'accountName',
       label: 'Account Name'

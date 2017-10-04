@@ -12,6 +12,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/UserAccountInfo' },
+  { name: 'net/nanopay/model/DateAndPlaceOfBirth' },  
+  { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },

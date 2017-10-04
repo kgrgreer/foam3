@@ -8,8 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.model.BankAccountInfo',
-    'net.nanopay.interac.model.Identification',
-    'net.nanopay.interac.model.DateAndPlaceOfBirth',
+    'net.nanopay.model.Identification',
+    'net.nanopay.model.DateAndPlaceOfBirth',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.CashAccount24',
     'net.nanopay.iso20022.PostalAddress6',
@@ -172,11 +172,10 @@ foam.CLASS({
       .then(function (result) {
         if ( result )
           invoice = result;
-
         // get payer information
         return Promise.all([
           self.userDAO.find(transaction.payerId),
-          self.bankAccountDAO.find(transaction.payerId),
+          self.bankAccountInfoDAO.find(transaction.payerId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payerId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payerId)).limit(1).select()
         ]);
@@ -201,7 +200,7 @@ foam.CLASS({
         // get payee information
         return Promise.all([
           self.userDAO.find(transaction.payeeId),
-          self.bankAccountDAO.find(transaction.payeeId),
+          self.bankAccountInfoDAO.find(transaction.payeeId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payeeId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payeeId)).limit(1).select()
         ])

@@ -223,7 +223,6 @@ foam.CLASS({
     {
       name: 'exportModal',
       code: function(X){
-        debugger;
         X.ctrl.add(
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
