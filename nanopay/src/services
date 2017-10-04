@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 p({"class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",             "lazy":true,  "serve":false, "boxClass":"foam.dao.DAOSkeleton", "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(net.nanopay.model.Account.getOwnClassInfo(), \"accounts\"));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"accountDAO",                  "lazy":true,  "serve":true,  "boxClass":"foam.dao.DAOSkeleton", "serviceScript":"return /* new net.nanopay.tx.AuthenticatedAccountDAO(*/ x.get(\"localAccountDAO\")/*)*/;","client":"{\"of\":\"net.nanopay.model.Account\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"bankDAO",                     "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(net.nanopay.model.Bank.getOwnClassInfo(), \"banks\"));","client":"{\"of\":\"net.nanopay.model.Bank\"}"})
