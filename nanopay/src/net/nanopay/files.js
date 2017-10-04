@@ -125,6 +125,7 @@ FOAM_FILES([
 
   //util
   { name: 'net/nanopay/util/CurrencyFormatter' },
+  { name: 'net/nanopay/util/Iso20022' },  
 
   //ui
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
