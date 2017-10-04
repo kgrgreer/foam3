@@ -32,8 +32,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
 
-  { name: 'net/nanopay/retail/ui/BankCTACard', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/DeviceCTACard', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
@@ -62,7 +61,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
-  { name: 'net/nanopay/cico/ui/bankAcount/BankCTACard', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankDoneForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankForm', flags: ['web'] },
