@@ -4,7 +4,6 @@ import XCTest
 class swiftfoamTests: XCTestCase {
   override func setUp() {
     super.setUp()
-    FOAM_utils.registerClasses()
   }
 
   override func tearDown() {
@@ -40,13 +39,39 @@ class swiftfoamTests: XCTestCase {
     let accountDAO = X.create(ClientDAO.self)!
     accountDAO.delegate = accountDAOBox
 
-    let userSink = (try? userDAO.skip(0).limit(2).select(ArraySink())) as? ArraySink
+    let userSink = (try? userDAO.skip(0).limit(100).select(ArraySink())) as? ArraySink
     let user = userSink?.array[0] as? User
     XCTAssertNotNil(user)
 
 //    let accountSink = (try? accountDAO.skip(0).limit(100).select(ArraySink())) as? ArraySink
 //    let account = accountSink?.array[0] as? Account
 //    XCTAssertNotNil(account)
+  }
+
+  func testWhereUserDAO() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+
+    let userDAOBox = X.create(HTTPBox.self)!
+    userDAOBox.url = "http://localhost:8080/userDAO"
+    let userDAO = X.create(ClientDAO.self)!
+    userDAO.delegate = userDAOBox
+
+    let pred = X.create(And.self, args: [
+      "args": [
+        X.create(Eq.self, args: [
+          "arg1": User.classInfo().axiom(byName: "email"),
+          "arg2": "simon@gmail.com",
+        ]),
+        X.create(Eq.self, args: [
+          "arg1": User.classInfo().axiom(byName: "password"),
+          "arg2": "22b70d9b9c98bdfee23e47c874f4a92257268449572e7edfcaa7f0eee569b7de35e8bea44e5b93e3e1dce9cf96425ac3c7fc88b6cfa53a6fa9064b99244192ce:5932aeb0bda8cf763dc94f02459799250a619b6d",
+        ])
+      ]
+    ])
+
+    let userSink = (try? userDAO.`where`(pred).skip(0).limit(100).select(ArraySink())) as? ArraySink
+    XCTAssertEqual(userSink?.array.count, 1)
   }
 
   func testPutTransactionDAO() {

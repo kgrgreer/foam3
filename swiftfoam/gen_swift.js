@@ -51,6 +51,10 @@ var executor = foam.classloader.NodeJsModelExecutor.create({
       'net.nanopay.model.UserAccountInfo',
       'net.nanopay.tx.model.Transaction',
       'net.nanopay.tx.model.TransactionPurpose',
+
+      'foam.mlang.predicate.Eq',
+      'foam.mlang.Expr',
+      'foam.mlang.Constant',
     ],
     outdir: genDir,
   },
