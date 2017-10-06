@@ -66,7 +66,7 @@ public class UserTransactionsTest {
 
     System.out.println("Creating transactions");
 
-    MapDAO transactionMapDao = new MapDAO(Transaction.getOwnClassInfo(), boot.getX());
+    MapDAO transactionMapDao = new MapDAO( boot.getX(), Transaction.getOwnClassInfo());
 
     boot.getX().put("transactionTestDAO", transactionMapDao);
 
