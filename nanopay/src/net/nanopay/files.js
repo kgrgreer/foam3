@@ -3,7 +3,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/AccountInfo' },
   { name: 'net/nanopay/model/AccountLimit' },
-  { name: 'net/nanopay/model/Bank' },
+  { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccountInfo' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
@@ -30,30 +30,16 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/client/Client' },
 
   // retail
-  { name: 'net/nanopay/retail/client/Client' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
 
-  { name: 'net/nanopay/retail/ui/BankCTACard', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/DeviceCTACard', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
-
-  { name: 'net/nanopay/retail/ui/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/BankAccountsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankCashoutForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankDoneForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/bankAccount/form/BankVerificationForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/business/BusinessSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/business/EditBusinessView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/personal/PersonalSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/settings/SettingsNavigator', flags: ['web'] },
 
   // tx
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
@@ -75,6 +61,13 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankDoneForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankVerificationForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
 
@@ -99,6 +92,13 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
+
+  // settings
+  { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
