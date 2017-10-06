@@ -1,11 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BankAccountInfo',
-  extends: 'net.nanopay.model.AccountInfo',
 
   documentation: 'Bank account information.',
 
-  tableColumns: [ 'accountName', 'transitNumber', 'bankNumber', 'accountNumber', 'status', 'run' ],
+  tableColumns: ['accountName', 'transitNumber', 'accountNumber', 'status'],
 
   properties: [
     {
@@ -16,6 +15,11 @@ foam.CLASS({
       class: 'String',
       name: 'accountName',
       label: 'Account Name'
+    },
+    {
+      class: 'String',
+      name: 'institutionNumber',
+      label: 'Institution No.'
     },
     {
       class: 'String',

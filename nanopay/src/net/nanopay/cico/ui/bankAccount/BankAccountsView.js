@@ -147,7 +147,6 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.BankAccountInfo.ID,
                     this.BankAccountInfo.ACCOUNT_NAME,
                     this.BankAccountInfo.TRANSIT_NUMBER,
                     this.BankAccountInfo.ACCOUNT_NUMBER,
@@ -193,7 +192,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'id', 'accountName', 'transitNumber', 'accountNumber', 'status'
+                'accountName', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         }

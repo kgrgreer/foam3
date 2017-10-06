@@ -7,11 +7,11 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a bank account',
 
   requires: [
-    'net.nanopay.retail.model.Account'
+    'net.nanopay.model.BankAccountInfo'
   ],
 
   imports: [
-    'bankAccountDAO'
+    'bankAccountInfoDAO'
   ],
 
   axioms: [
@@ -50,14 +50,14 @@ foam.CLASS({
         if ( this.position == 0 ) { // On Submission screen.
           // data from form
           var accountInfo = this.viewData;
-          var newAccount = this.Account.create({
+          var newAccount = this.BankAccountInfo.create({
             accountName: accountInfo.accountName,
             bankNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber,
           });
 
-          this.bankAccountDAO.put(newAccount).then(function(response){
+          this.bankAccountInfoDAO.put(newAccount).then(function(response){
             console.log(response);
           });
 
