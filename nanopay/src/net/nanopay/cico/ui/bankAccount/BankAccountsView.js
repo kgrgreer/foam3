@@ -166,7 +166,7 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.settings.bankAccount.form.BankForm', title: this.ActionAdd }));
+        this.add(this.Popup.create().tag({class: 'net.nanopay.cico.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
       }
     }
   ],
