@@ -10,9 +10,8 @@ import net.nanopay.cico.model.TransactionType;
 public class BrokerNanopayTransactionDAO
   extends ProxyDAO
 {
-  public BrokerNanopayTransactionDAO(X x) {
-    this.setX(x);
-    this.setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo());
+  public BrokerNanopayTransactionDAO(DAO delegate) {
+    setDelegate(delegate);
   }
 
   private static final Long BROKER_ID = 1L;

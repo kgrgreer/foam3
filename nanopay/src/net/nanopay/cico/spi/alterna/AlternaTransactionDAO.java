@@ -9,9 +9,8 @@ import net.nanopay.tx.model.Transaction;
 public class AlternaTransactionDAO
   extends ProxyDAO
 {
-  public AlternaTransactionDAO(X x) {
-    this.setX(x);
-    this.setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo());
+  public AlternaTransactionDAO(DAO delegate) {
+    setDelegate(delegate);
   }
 
   private static final Long ALTERNA_ID = 1L;
