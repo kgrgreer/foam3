@@ -19,7 +19,7 @@ public class BrokerNanopayTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
 
-    DAO transactionDAO = (DAO) getX().get("transactionDAO");
+    DAO transactionDAO = (DAO) x.get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
     if ( transaction.getType() == null ) {
