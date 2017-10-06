@@ -5,6 +5,7 @@ import foam.core.FObject;
 import foam.dao.AbstractSink;
 import foam.dao.ListSink;
 import foam.dao.MapDAO;
+import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.boot.Boot;
 import net.nanopay.model.Account;
@@ -65,7 +66,11 @@ public class UserTransactionsTest {
 
     System.out.println("Creating transactions");
 
-    TransactionDAO transactionDAO = new TransactionDAO(boot.getX());
+    MapDAO transactionMapDao = new MapDAO(Transaction.getOwnClassInfo(), boot.getX());
+
+    boot.getX().put("transactionTestDAO", transactionMapDao);
+
+    TransactionDAO transactionDAO = new TransactionDAO(transactionMapDao);
 
     // Random number generator to generate a random UserID for payer and payee
     Random rand = new Random();
