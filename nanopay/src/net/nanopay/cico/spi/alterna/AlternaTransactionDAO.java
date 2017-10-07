@@ -17,7 +17,7 @@ public class AlternaTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO transactionDAO = (DAO) getX().get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
     Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
