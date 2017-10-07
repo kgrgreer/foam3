@@ -29,7 +29,6 @@ public class TransactionService {
   private var dao: ClientDAO!
 
   init() {
-    FOAM_utils.registerClasses()
     X = boxContext.__subContext__
 
     // Need to touch this so it's created before any async business happens.
