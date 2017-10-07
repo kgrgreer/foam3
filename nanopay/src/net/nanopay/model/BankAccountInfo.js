@@ -1,3 +1,20 @@
+supressWarnings([
+  'Unknown property foam.core.Model.tableColumns: accountName,transitNumber,bankNumber,accountNumber,status,run',
+  `Unknown property foam.core.String.tableCellFormatter: function (a) {
+        var colour = ( a == 'Verified' ) ? '#2cab70' : '#f33d3d';
+        this.start()
+          .add(a)
+          .style({
+            'color': colour,
+            'text-transform': 'capitalize'
+          })
+        .end();
+      }`,
+  `Unknown property foam.core.String.tableCellFormatter: function (str) {
+        this.start()
+          .add('***' + str.substring(str.length - 4, str.length))
+      }`,
+])
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BankAccountInfo',

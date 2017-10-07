@@ -1,3 +1,36 @@
+supressWarnings([
+
+'Unknown property foam.core.Model.searchColumns: search,payerId,payeeId,status',
+'Unknown property foam.core.Model.tableColumns: invoiceNumber,purchaseOrder,payerId,payeeId,issueDate,amount,status',
+'Unknown property foam.core.Property.searchView: [object Object]',
+'Unknown property foam.core.String.searchView: [object Object]',
+'Unknown property foam.core.Long.visibility: FINAL',
+'Unknown property foam.core.String.view: foam.u2.tag.TextArea',
+`Unknown property foam.core.Date.tableCellFormatter: function (date) {
+        this.add(date ? date.toISOString().substring(0,10) : '');
+      }`,
+`Unknown property foam.core.DateTime.tableCellFormatter: function (date) {
+        if ( date ) {
+          this.add(date.toISOString().substring(0,10));
+        }
+      }`,
+`Unknown property foam.core.Double.tableCellFormatter: function (a) {
+        this.start().style({'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
+      }`,
+`Unknown property foam.core.String.tableCellFormatter: function (state, obj, rel) {
+        function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
+
+        var label;
+
+        if ( state === 'Scheduled' || state === 'Paid' ) {
+          label = state;
+        } else {
+          label = state;
+        }
+
+        this.start().addClass('generic-status Invoice-Status-' + state).add(label).end();
+      }`,
+])
 foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',

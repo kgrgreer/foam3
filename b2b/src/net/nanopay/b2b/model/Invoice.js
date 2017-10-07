@@ -1,3 +1,37 @@
+supressWarnings([
+  'Unknown property foam.core.Model.tableColumns: invoiceNumber,purchaseOrder,toBusinessName,issueDate,amount,status,payNow',
+  'Unknown property foam.core.Property.searchView: [object Object]',
+  'Unknown property foam.core.Long.visibility: FINAL',
+  `Unknown property foam.core.Date.tableCellFormatter: function (date) {
+        this.add(date ? date.toISOString().substring(0,10) : '');
+      }`,
+  `Unknown property foam.core.Double.tableCellFormatter: function (a) {
+        this.start().style({'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
+      }`,
+  `Unknown property foam.core.Date.tableCellFormatter: function (date) {
+        if ( date ) {
+          this.add(date.toISOString().substring(0,10));
+        }
+      }`,
+  `Unknown property foam.core.Property.tableCellFormatter: function (state, obj, rel) {
+        function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
+
+        var label;
+
+        if ( state === 'Scheduled' || state === 'Paid' ) {
+          label = state;
+        } else {
+          label = state;
+        }
+
+        this.start().addClass('Invoice-Status-' + state).add(label).end();
+      }`,
+  `Unknown property foam.core.Property.tableCellFormatter: function (fees, X){
+        this.start()
+          .add(X.PAY_NOW)
+        .end()
+      }`,
+  ])
 foam.CLASS({
   package: 'net.nanopay.b2b.model',
   name: 'Invoice',
@@ -6,9 +40,6 @@ foam.CLASS({
 
   ids: [ 'invoiceNumber' ],
 
-  searchColumns: [
-    'search', /*'fromBusinessId',*/ 'toBusinessId', 'status'
-  ],
 
   tableColumns: [
     'invoiceNumber', 'purchaseOrder', 'toBusinessName', 'issueDate', 'amount', 'status', 'payNow'

@@ -1,3 +1,11 @@
+supressWarnings([
+`Unknown property foam.core.Double.tableCellFormatter: function (a) {
+        this.start().style({'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
+      }`,
+`Unknown property foam.core.Date.tableCellFormatter: function (date) {
+        this.add(date ? date.toISOString().substring(0,10) : '');
+      }`,
+])
 foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'RecurringInvoice',
