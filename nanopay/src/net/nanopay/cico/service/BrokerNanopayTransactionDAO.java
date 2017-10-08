@@ -18,8 +18,6 @@ public class BrokerNanopayTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-
-    DAO transactionDAO = (DAO) getX().get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
     if ( transaction.getType() == null ) {
@@ -33,7 +31,6 @@ public class BrokerNanopayTransactionDAO
       synchronized ( secondLock ) {
         try {
 
-          // TransactionType type = (TransactionType) transaction.getType();
           switch ( (TransactionType) transaction.getType() ) {
             case CASHOUT :
               transaction.setPayeeId(BROKER_ID);
@@ -41,9 +38,7 @@ public class BrokerNanopayTransactionDAO
               transaction.setPayerId(BROKER_ID);
           }
 
-          Transaction completedTransaction = (Transaction) transactionDAO.put(transaction);
-          super.put_(x, transaction);
-          return completedTransaction;
+          return getDelegate().put(transaction);
 
         } catch (RuntimeException e) {
           throw e;
