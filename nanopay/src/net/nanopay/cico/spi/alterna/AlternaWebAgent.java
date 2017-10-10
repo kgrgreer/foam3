@@ -76,7 +76,7 @@ public class AlternaWebAgent
   public synchronized void execute(X x) {
     DAO userDAO = (DAO) x.get("localUserDAO");
     DAO branchDAO = (DAO) x.get("branchDAO");
-    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
+    DAO bankAccountInfoDAO = (DAO) x.get("bankAccountInfoDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
@@ -92,9 +92,6 @@ public class AlternaWebAgent
         try {
           User user = null;
           String txnType = null;
-          Account bankAccount = null;
-          BankAccountInfo bankAccountInfo = null;
-
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
@@ -110,13 +107,8 @@ public class AlternaWebAgent
             return;
           }
 
-          // get account
-          bankAccount = (Account) bankAccountDAO.find(t.getAccountId());
-          if ( bankAccount == null || ! ( bankAccount.getAccountInfo() instanceof BankAccountInfo ) ) {
-            return;
-          }
-
-          bankAccountInfo = (BankAccountInfo) bankAccount.getAccountInfo();
+          // get bank account
+          BankAccountInfo bankAccountInfo = (BankAccountInfo) bankAccountInfoDAO.find(t.getBankAccountInfoId());
           Branch branch = (Branch) branchDAO.find(bankAccountInfo.getBranchId());
 
           AlternaFormat alternaFormat = new AlternaFormat();

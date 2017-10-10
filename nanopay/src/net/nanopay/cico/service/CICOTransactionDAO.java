@@ -20,7 +20,7 @@ public class CICOTransactionDAO
     DAO transactionDAO = (DAO) getX().get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
-    if ( transaction.getAccountId() == null ) {
+    if ( transaction.getBankAccountInfoId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
 
