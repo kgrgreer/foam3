@@ -72,20 +72,20 @@ public class UserService: Service {
     DispatchQueue.global(qos: .userInitiated).async {
       do {
         // TODO: Get user from DAO and place into self.loggedInUser
-        let pred = X.create(And.self, args: [
+        let pred = self.X.create(And.self, args: [
           "args": [
-            X.create(Eq.self, args: [
+            self.X.create(Eq.self, args: [
               "arg1": User.classInfo().axiom(byName: "email"),
               "arg2": username,
             ]),
-            X.create(Eq.self, args: [
+            self.X.create(Eq.self, args: [
               "arg1": User.classInfo().axiom(byName: "password"),
               "arg2": pass,
             ])
           ]
         ])
 
-        let userSink = (try? dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink
+        let userSink = (try? self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as! ArraySink
 
         guard userSink.array.count > 0 else {
           // User Not Found.
@@ -95,7 +95,7 @@ public class UserService: Service {
           return
         }
 
-        guard loggedInUser = userSink.array[0] as? User else {
+        guard (self.loggedInUser = userSink.array[0] as? User) != nil else {
           // Could not convert item in array into User
           DispatchQueue.main.async {
             callback(ServiceError.Failed)
