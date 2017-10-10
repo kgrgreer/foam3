@@ -103,20 +103,22 @@ public class UserService: Service {
           return
         }
 
-        guard self.isUserVerifiedEmail() else {
-          // lets the front end know the logged in user hasn't verified their email
-          DispatchQueue.main.async {
-            callback(UserError.UserUnverifiedEmail)
-          }
-          return
-        }
-        guard self.isUserVerifiedPhone() else {
-          // lets the front end know the logged in user hasn't verified their phone
-          DispatchQueue.main.async {
-            callback(UserError.UserUnverifiedPhone)
-          }
-          return
-        }
+//        guard self.isUserVerifiedEmail() else {
+//          // lets the front end know the logged in user hasn't verified their email
+//          DispatchQueue.main.async {
+//            callback(UserError.UserUnverifiedEmail)
+//          }
+//          return
+//        }
+//        guard self.isUserVerifiedPhone() else {
+//          // lets the front end know the logged in user hasn't verified their phone
+//          DispatchQueue.main.async {
+//            callback(UserError.UserUnverifiedPhone)
+//          }
+//          return
+//        }
+
+        callback(self.loggedInUser)
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
@@ -133,6 +135,10 @@ public class UserService: Service {
    */
   public func isUserLoggedIn() -> Bool {
     return loggedInUser != nil
+  }
+
+  public func getLoggedInUser() -> User? {
+    return loggedInUser
   }
 
   public func isUserVerifiedEmail() -> Bool {

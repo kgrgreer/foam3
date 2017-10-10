@@ -74,6 +74,40 @@ class swiftfoamTests: XCTestCase {
     XCTAssertEqual(userSink?.array.count, 1)
   }
 
+  func testLogin() {
+    var expectations:[XCTestExpectation] = []
+    let expLoginSuccess = XCTestExpectation(description: "Login Expection - Login Successful")
+    let expLoginFailure = XCTestExpectation(description: "Login Expection - Login Failure")
+    expectations.append(expLoginSuccess)
+    expectations.append(expLoginFailure)
+//    NOTE: Need to wait for actual fields inside auth object
+//    expectations.append(XCTestExpectation(description: "Login Expection - Email Unverified"))
+//    expectations.append(XCTestExpectation(description: "Login Expection - Phone Unverified"))
+    UserService.instance.login(withUsername: "simon@gmail.com", andPassword: "22b70d9b9c98bdfee23e47c874f4a92257268449572e7edfcaa7f0eee569b7de35e8bea44e5b93e3e1dce9cf96425ac3c7fc88b6cfa53a6fa9064b99244192ce:5932aeb0bda8cf763dc94f02459799250a619b6d") {
+      response in
+      XCTAssertNotNil(UserService.instance.getLoggedInUser())
+      guard let _ = response as? User else {
+        XCTFail()
+        expLoginSuccess.fulfill()
+        return
+      }
+      expLoginSuccess.fulfill()
+    }
+
+    UserService.instance.login(withUsername: "simon@gmail.com", andPassword: "IShouldFailDueToIncorrectCredentials") {
+      response in
+      guard let error = response as? UserService.UserError else {
+        XCTFail()
+        expLoginFailure.fulfill()
+        return
+      }
+      XCTAssert(error == UserService.UserError.IncorrectCredentials)
+      expLoginFailure.fulfill()
+    }
+
+    wait(for: expectations, timeout: 20)
+  }
+
   func testPutTransactionDAO() {
     let boxContext = BoxContext()
     let X = boxContext.__subContext__
