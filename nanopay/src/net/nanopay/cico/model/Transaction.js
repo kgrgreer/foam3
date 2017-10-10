@@ -19,8 +19,8 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Account',
-      name: 'accountId'
+      of: 'net.nanopay.model.BankAccountInfo',
+      name: 'bankAccountInfoId'
     },
     {
       class: 'String',
