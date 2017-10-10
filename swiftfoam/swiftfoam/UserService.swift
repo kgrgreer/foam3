@@ -94,8 +94,8 @@ public class UserService: Service {
           }
           return
         }
-
-        guard (self.loggedInUser = userSink.array[0] as? User) != nil else {
+        self.loggedInUser = userSink.array[0] as? User
+        guard self.loggedInUser != nil else {
           // Could not convert item in array into User
           DispatchQueue.main.async {
             callback(ServiceError.Failed)
