@@ -29,7 +29,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
   { name: 'net/nanopay/fx/client/Client' },
-  { name: 'net/nanopay/cron/RecurringInvoiceInterface' },
 
   // retail
   { name: 'net/nanopay/retail/model/DeviceStatus' },
@@ -126,7 +125,7 @@ FOAM_FILES([
 
   //misc
   { name: 'net/nanopay/TempMenu' },
-  
+
   //util
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },  

@@ -58,16 +58,6 @@ foam.CLASS({
       name: 'user',
       factory: function() { return this.User.create(); }
     },
-    {
-      name: 'invoiceDAO',
-      expression: function(){
-        return this.ClientDAO.create({ 
-          delegate: this.HTTPBox.create({ 
-            url: 'http://172.18.4.207:8080/invoiceDAO' 
-          }) 
-        })
-      }
-    }
   ],
 
   methods: [
