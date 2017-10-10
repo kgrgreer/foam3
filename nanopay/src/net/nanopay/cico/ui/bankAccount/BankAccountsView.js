@@ -35,11 +35,12 @@ foam.CLASS({
           display: inline-block;
           vertical-align: top;
           margin: 0;
+          margin-top: 20px;
         }
         ^ .bankContentCard {
           width: 218px;
           height: 100px;
-          margin-right: 30px;
+          margin-right: 15px;
         }
         ^ .actionButton {
           width: 218px;
@@ -119,26 +120,25 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      //this.dao.on.sub(this.onDAOUpdate);
-      //this.onDAOUpdate();
+      this.dao.on.sub(this.onDAOUpdate);
+      this.onDAOUpdate();
 
       this
         .addClass(this.myClass())
-          /*.start('div').addClass('row')
+          .start('div').addClass('row')
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', data: { title: this.TitleAll}, contents$: this.allBanksCount$ }).addClass('bankContentCard')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleAll, content$: this.allBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', data: { title: this.TitleVerified}, contents$: this.verifiedBanksCount$ }).addClass('bankContentCard')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleVerified, content$: this.verifiedBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', data: { title: this.TitleUnverified}, contents$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleUnverified, content$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
               .tag(this.ADD_BANK, { showLabel: true })
             .end()
-          .end()*/
-          .start('h3').add(this.MyBankAccounts).end()
+          .end()
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
@@ -147,7 +147,6 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.BankAccountInfo.ID,
                     this.BankAccountInfo.ACCOUNT_NAME,
                     this.BankAccountInfo.TRANSIT_NUMBER,
                     this.BankAccountInfo.ACCOUNT_NUMBER,
@@ -166,7 +165,7 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.retail.ui.settings.bankAccount.form.BankForm', title: this.ActionAdd }));
+        this.add(this.Popup.create().tag({class: 'net.nanopay.cico.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
       }
     }
   ],
@@ -193,7 +192,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'id', 'accountName', 'transitNumber', 'accountNumber', 'status'
+                'accountName', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         }
@@ -201,7 +200,7 @@ foam.CLASS({
     }
   ],
 
-  /*listeners: [
+  listeners: [
     {
       name: 'onDAOUpdate',
       isFramed: true,
@@ -222,5 +221,5 @@ foam.CLASS({
         });
       }
     }
-  ]*/
+  ]
 });
