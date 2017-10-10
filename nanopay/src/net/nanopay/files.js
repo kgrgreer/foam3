@@ -12,6 +12,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/UserAccountInfo' },
+  { name: 'net/nanopay/model/DateAndPlaceOfBirth' },  
+  { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
@@ -103,6 +105,7 @@ FOAM_FILES([
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
+  { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },  
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
 
   // modal
@@ -126,6 +129,7 @@ FOAM_FILES([
 
   //util
   { name: 'net/nanopay/util/CurrencyFormatter' },
+  { name: 'net/nanopay/util/Iso20022' },  
 
   //ui
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
