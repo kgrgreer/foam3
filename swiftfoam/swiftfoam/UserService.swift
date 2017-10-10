@@ -151,11 +151,12 @@ public class UserService: Service {
     return false; // TEMP as we dont have verified field
   }
 
-  public func isUserFullyVerified() -> Error? {
-    guard isUserLoggedIn()      else { return UserError.UserNotLoggedIn }
-    guard isUserVerifiedEmail() else { return UserError.UserUnverifiedEmail }
-    guard isUserVerifiedPhone() else { return UserError.UserUnverifiedPhone }
-    return nil
+  public func isUserFullyVerified() -> (isFullyVerified: Bool, error: Error?) {
+    // Ordered from most important to least
+    guard isUserLoggedIn()      else { return (false, UserError.UserNotLoggedIn) }
+    guard isUserVerifiedEmail() else { return (false, UserError.UserUnverifiedEmail) }
+    guard isUserVerifiedPhone() else { return (false, UserError.UserUnverifiedPhone) }
+    return (true, nil)
   }
 
   public func update(user: User, callback: @escaping (Any?) -> Void) {
