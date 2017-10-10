@@ -4,7 +4,6 @@ import XCTest
 class swiftfoamTests: XCTestCase {
   override func setUp() {
     super.setUp()
-    FOAM_utils.registerClasses()
   }
 
   override func tearDown() {
@@ -31,22 +30,48 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let userDAOBox = X.create(HTTPBox.self)!
-    userDAOBox.url = "http://localhost:8080/userDAO"
+    userDAOBox.url = ServiceURL.User.path()
     let userDAO = X.create(ClientDAO.self)!
     userDAO.delegate = userDAOBox
 
     let accountDAOBox = X.create(HTTPBox.self)!
-    accountDAOBox.url = "http://localhost:8080/accountDAO"
+    accountDAOBox.url = ServiceURL.Account.path()
     let accountDAO = X.create(ClientDAO.self)!
     accountDAO.delegate = accountDAOBox
 
-    let userSink = (try? userDAO.skip(0).limit(2).select(ArraySink())) as? ArraySink
+    let userSink = (try? userDAO.skip(0).limit(100).select(ArraySink())) as? ArraySink
     let user = userSink?.array[0] as? User
     XCTAssertNotNil(user)
 
 //    let accountSink = (try? accountDAO.skip(0).limit(100).select(ArraySink())) as? ArraySink
 //    let account = accountSink?.array[0] as? Account
 //    XCTAssertNotNil(account)
+  }
+
+  func testWhereUserDAO() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+
+    let userDAOBox = X.create(HTTPBox.self)!
+    userDAOBox.url = "http://localhost:8080/userDAO"
+    let userDAO = X.create(ClientDAO.self)!
+    userDAO.delegate = userDAOBox
+
+    let pred = X.create(And.self, args: [
+      "args": [
+        X.create(Eq.self, args: [
+          "arg1": User.classInfo().axiom(byName: "email"),
+          "arg2": "simon@gmail.com",
+        ]),
+        X.create(Eq.self, args: [
+          "arg1": User.classInfo().axiom(byName: "password"),
+          "arg2": "22b70d9b9c98bdfee23e47c874f4a92257268449572e7edfcaa7f0eee569b7de35e8bea44e5b93e3e1dce9cf96425ac3c7fc88b6cfa53a6fa9064b99244192ce:5932aeb0bda8cf763dc94f02459799250a619b6d",
+        ])
+      ]
+    ])
+
+    let userSink = (try? userDAO.`where`(pred).skip(0).limit(100).select(ArraySink())) as? ArraySink
+    XCTAssertEqual(userSink?.array.count, 1)
   }
 
   func testPutTransactionDAO() {
@@ -56,36 +81,10 @@ class swiftfoamTests: XCTestCase {
     let t = X.create(Transaction.self)!
     t.payerId = 1
     t.payeeId = 2
-    t.amount = 5000
+    t.amount = 1
     t.rate = 15
     t.fees = 20
     t.notes = "Mike's test!"
-
-    TransactionService.instance.transferValueBy(payer: t.payerId,
-                                                payee: t.payeeId,
-                                                amount: t.amount,
-                                                rate: t.rate,
-                                                purpose: nil,
-                                                fees: t.fees,
-                                                notes: t.notes)
-    {
-      response in
-      guard let t2 = response as? Transaction else {
-        return
-      }
-      XCTAssertNotNil(t2)
-      XCTAssertEqual(t2.payerId, 1)
-      XCTAssertEqual(t2.payeeId, 2)
-      XCTAssertEqual(t2.amount, 5000)
-      XCTAssertEqual(t2.rate, 15)
-      XCTAssertEqual(t2.fees, 20)
-      XCTAssertEqual(t2.notes, "Mike's test!")
-
-      XCTAssertNotEqual(t.compareTo(t2), 0)
-      t.id = t2.id
-      t.date = t2.date
-      XCTAssertEqual(t.compareTo(t2), 0)
-    }
 
     TransactionService.instance.transferValueBy(transaction: t) {
       response in
@@ -95,7 +94,7 @@ class swiftfoamTests: XCTestCase {
       XCTAssertNotNil(t2)
       XCTAssertEqual(t2.payerId, 1)
       XCTAssertEqual(t2.payeeId, 2)
-      XCTAssertEqual(t2.amount, 5000)
+      XCTAssertEqual(t2.amount, 1)
       XCTAssertEqual(t2.rate, 15)
       XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
@@ -108,11 +107,18 @@ class swiftfoamTests: XCTestCase {
   }
 
   func testGetTransactions() {
-    TransactionService.instance.getTransactions(startingAt: 0, withLimit: 1) {
+    let expectations:[XCTestExpectation] = [XCTestExpectation(description: "Get TX Expectation")]
+    TransactionService.instance.getTransactions(startingAt: 0) {
       response in
       XCTAssertNotNil(response)
-      XCTAssertEqual(response!.count, 1)
+      guard let transactions = response as? [Transaction] else {
+        XCTFail()
+        return
+      }
+      XCTAssertEqual(transactions.count, 100)
+      expectations.first!.fulfill()
     }
+    wait(for: expectations, timeout: 20)
   }
 
   func testThreadSafe() {

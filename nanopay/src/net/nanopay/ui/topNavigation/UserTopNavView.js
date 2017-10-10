@@ -65,7 +65,7 @@ foam.CLASS({
           font-size: 14px;
           font-weight: 300;
           color: #093649;
-          line-height: 40px;
+          line-height: 25px;
         }
         ^ .foam-nanos-menu-SubMenuView-inner > div:last-child {
           background-color: #f6f9f9;

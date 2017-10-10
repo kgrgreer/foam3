@@ -16,8 +16,6 @@ foam.CLASS({
           padding-left: 50px;
         }
         ^ img {
-          border-radius: 50%;
-          width: 40px;
           height: 40px;
           margin: 5px;
         }
@@ -37,6 +35,9 @@ foam.CLASS({
           top: -35;
           height: 20px;
           display: inline-block;
+          vertical-align: middle;
+          margin-top: 32px;
+          margin-left: 5px;
         }
         ^placeholder-business{
           width: 40px;
@@ -56,14 +57,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .add(this.data.profileImageURL$.map(function(profileImg){
-            return profileImg ? 
-              self.E()
-                .start({ class: 'foam.u2.tag.Image', data: self.data.profileImageURL$ }).end() :
-              self.E()
-                .start().addClass(self.myClass('placeholder-business')).end()
-          }))
-          .start().addClass(self.myClass('business-name')).add(self.data.name$).end()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/nanopay_logo_white.png' }).end()
         .end();
     }
   ]

@@ -42,3 +42,5 @@ fabric.properties
 cp.txt
 build/
 root/target/
+nanopay-bin.js
+

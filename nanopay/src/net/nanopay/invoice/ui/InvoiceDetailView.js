@@ -45,7 +45,7 @@ foam.CLASS({
           'Monthly'
         ]
       },
-      value: null
+      value: 'Daily'
     }
   ],
 
@@ -115,7 +115,7 @@ foam.CLASS({
             .start(this.SAVE_AND_PREVIEW).addClass('float-right').end()
             .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
           .end()
-          .start().add('New Bill').addClass('light-roboto-h2').end()
+          .start().add('New Invoice').addClass('light-roboto-h2').end()
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
@@ -151,7 +151,7 @@ foam.CLASS({
                     .start(this.FREQUENCY).end()
                 .end()
                 .start().addClass('inline').style({ 'margin-right' : '36px'})
-                  .start().addClass('label').add('Ends After').end()
+                  .start().addClass('label').add('Ends After ( ) Occurences').end()
                   .start(this.ENDS_AFTER).addClass('small-input-box').end()
                 .end()
                 .start().addClass('inline')
@@ -215,4 +215,4 @@ foam.CLASS({
       }
     },
   ]
-})
+});

@@ -1,21 +1,25 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BankAccountInfo',
-  extends: 'net.nanopay.model.AccountInfo',
 
   documentation: 'Bank account information.',
 
-  tableColumns: [ 'accountName', 'transitNumber', 'bankNumber', 'accountNumber', 'status', 'run' ],
+  tableColumns: ['accountName', 'transitNumber', 'accountNumber', 'status'],
 
   properties: [
     {
-      class: 'String',
+      class: 'Long',
       name: 'id'
     },
     {
       class: 'String',
       name: 'accountName',
       label: 'Account Name'
+    },
+    {
+      class: 'String',
+      name: 'institutionNumber',
+      label: 'Institution No.'
     },
     {
       class: 'String',
@@ -35,7 +39,7 @@ foam.CLASS({
       class: 'String',
       name: 'status',
       tableCellFormatter: function(a) {
-        var colour = ( a == 'verified' ) ? '#2cab70' : '#f33d3d';
+        var colour = ( a == 'Verified' ) ? '#2cab70' : '#f33d3d';
         this.start()
           .add(a)
           .style({
@@ -52,6 +56,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'currencyCode'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Branch',
+      name: 'branchId'
     }
   ],
 

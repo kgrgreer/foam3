@@ -5,8 +5,9 @@
 set -e
 
 find foam2/src NANOPAY/**/src -type f -name accounts -exec cat {} \; > accounts
-find foam2/src NANOPAY/**/src -type f -name banks -exec cat {} \; > banks
+find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
 find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankAccounts
+find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
 find foam2/src NANOPAY/**/src -type f -name brokers -exec cat {} \; > brokers
 find foam2/src NANOPAY/**/src -type f -name businesses -exec cat {} \; > businesses
 find foam2/src NANOPAY/**/src -type f -name canadaTransactions -exec cat {} \; > canadaTransactions

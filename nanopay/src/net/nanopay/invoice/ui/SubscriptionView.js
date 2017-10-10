@@ -30,6 +30,12 @@ foam.CLASS({
         ^ .button-div{
           margin-bottom: 25px;
         }
+        ^ .foam-u2-view-TableView th {
+          text-align: center !important;
+        }
+        ^ .foam-u2-view-TableView td{
+          text-align: center !important;
+        }
         */
       }
     })

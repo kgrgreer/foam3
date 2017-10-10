@@ -11,7 +11,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountDAO',
+    'bankAccountInfoDAO',
     'stack',
     'transactionDAO'
   ],
@@ -23,6 +23,7 @@ foam.CLASS({
     'cashIn',
     'confirmCashOut',
     'confirmCashIn',
+    'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess'
   ],
@@ -139,9 +140,9 @@ foam.CLASS({
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountDAO,
+          dao: X.bankAccountInfoDAO,
           objToChoice: function(a){
-            return [a.id, a.accountInfo.accountName];
+            return [a.id, a.accountName];
           }
         })
       }
@@ -212,6 +213,10 @@ foam.CLASS({
 
     function onCashOutSuccess() {
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutSuccessModal' }));
+    },
+
+    function goToBankAccounts() {
+      this.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountsView' });
     }
   ],
 
@@ -268,4 +273,4 @@ foam.CLASS({
       ]
     }
   ]
-})
+});

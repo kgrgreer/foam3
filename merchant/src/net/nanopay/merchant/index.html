@@ -2,10 +2,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1" />
-    <script language="javascript" src="../../../../../../foam2/src/foam.js"></script>
-    <script language="javascript" src="../../../../../../foam2/src/foam/nanos/nanos.js"></script>
-    <script language="javascript" src="../../../../../nanopay/src/net/nanopay/files.js"></script>
+    <script language="javascript" src="libs/foam/foam-bin.js"></script>
+    <script language="javascript" src="libs/nanopay/nanopay-bin.js"></script>
 
+    <script language="javascript" src="client/Client.js"></script>
     <script language="javascript" src="ui/Controller.js"></script>
     <script language="javascript" src="ui/HomeView.js"></script>
     <script language="javascript" src="ui/QRCodeView.js"></script>
@@ -13,7 +13,6 @@
     <script language="javascript" src="ui/ErrorView.js"></script>
     <script language="javascript" src="ui/RefundView.js"></script>
     <script language="javascript" src="ui/ToolbarView.js"></script>
-
     <script language="javascript" src="ui/setup/SetupView.js"></script>
     <script language="javascript" src="ui/setup/SetupSuccessView.js"></script>
     <script language="javascript" src="ui/setup/SetupErrorView.js"></script>
@@ -23,19 +22,17 @@
     <script language="javascript" src="ui/transaction/TransactionListView.js"></script>
     <script language="javascript" src="ui/transaction/EmptyTransactionListView.js"></script>
 
-    <script language="javascript" src="libs/tetra/tetra.min.js"></script>
     <script language="javascript" src="libs/qrcode/qrcode.min.js"></script>
-    <script language="javascript" src="libs/mintchip/mintchip.min.js"></script>
+    <script language="javascript" src="libs/tetra/tetra.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="main.css" />
-    <link rel="stylesheet" href="fonts/roboto/fonts.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="libs/material-components-web/material-components-web.css" />
-    <script language="javascript" src="libs/material-components-web/material-components-web.js"></script>
+    <link rel="stylesheet" href="fonts/roboto/roboto.css" />
+    <link rel="stylesheet" href="fonts/material-icons/material-icons.css">
+    <link rel="stylesheet" href="libs/mdc/material-components-web.min.css" />
+    <script language="javascript" src="libs/mdc/material-components-web.min.js"></script>
   </head>
 
   <body class="mdc-typography">
-    <foam id="ctrl" class="net.nanopay.merchant.ui.Controller"></foam>
-    <!--<script language="javascript" src="mdc.js"></script>-->
+  <foam id="ctrl" class="net.nanopay.merchant.ui.Controller"></foam>
   </body>
 </html>
