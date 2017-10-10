@@ -18,6 +18,7 @@
     <module>merchant</module>
     <module>admin-portal</module>
     <module>interac</module>
+    <module>root</module>
   </modules>
 
   <properties>
