@@ -32,6 +32,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/client/Client' },
 
   // retail
+  { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
 

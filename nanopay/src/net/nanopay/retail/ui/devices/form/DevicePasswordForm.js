@@ -36,7 +36,7 @@ foam.CLASS({
           .start('p').add(this.Step).end()
         .end()
         .start('p').addClass('instructionsRow').add(this.Instructions).end()
-        .start('p').addClass('passwordLabel').add('012345').end()
+        .start('p').addClass('passwordLabel').add(this.viewData.password).end()
     }
   ]
 });
