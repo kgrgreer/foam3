@@ -327,7 +327,7 @@ foam.CLASS({
       name: 'personalProfile',
       label: 'Personal Profile',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.personal.PersonalSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.personal.PersonalSettingsView' });
       }
     },
     {
