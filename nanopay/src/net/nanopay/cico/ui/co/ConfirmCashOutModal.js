@@ -241,8 +241,6 @@ foam.CLASS({
           bankAccountInfoId: X.bankList,
           date: '2017-10-11T04:04:00.0Z'
         }));
-        console.log(X.amount);
-        console.log(X.bankList);
         X.closeDialog();
         X.onCashOutSuccess();
       }
