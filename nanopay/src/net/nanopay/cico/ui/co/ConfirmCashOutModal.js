@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'ConfirmCashOutModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.cico.ui.CicoView' ],
+  requires: [ 
+    'net.nanopay.cico.ui.CicoView',
+    'net.nanopay.tx.model.Transaction' 
+  ],
 
   imports: [ 
     'amount', 
@@ -11,7 +14,8 @@ foam.CLASS({
     'bankList', 
     'closeDialog', 
     'onCashOutSuccess', 
-    'cashOut' 
+    'cashOut',
+    'standardCICOTransactionDAO' 
   ],
 
   documentation: 'Pop up modal for confirming cash out.',
@@ -230,6 +234,15 @@ foam.CLASS({
       name: 'cashOutBtn',
       label: 'Cash Out',
       code: function (X) {
+        var dao = X.standardCICOTransactionDAO;
+        dao.put(this.Transaction.create({
+          id: 3,
+          amount: X.amount,
+          bankAccountInfoId: X.bankList,
+          date: '2017-10-11T04:04:00.0Z'
+        }));
+        console.log(X.amount);
+        console.log(X.bankList);
         X.closeDialog();
         X.onCashOutSuccess();
       }
