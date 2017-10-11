@@ -11,9 +11,8 @@ import net.nanopay.cico.model.TransactionStatus;
 public class CICOTransactionDAO
   extends ProxyDAO
 {
-  public CICOTransactionDAO(X x) {
-    this.setX(x);
-    this.setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo());
+  public CICOTransactionDAO(DAO delegate) {
+    setDelegate(delegate);
   }
 
   @Override
@@ -21,7 +20,7 @@ public class CICOTransactionDAO
     DAO transactionDAO = (DAO) getX().get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
-    if ( transaction.getAccountId() == null ) {
+    if ( transaction.getBankAccountInfoId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
 

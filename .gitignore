@@ -41,4 +41,6 @@ fabric.properties
 # Generated Code
 cp.txt
 build/
+root/target/
 nanopay-bin.js
+

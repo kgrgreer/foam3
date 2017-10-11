@@ -7,11 +7,11 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a bank account',
 
   requires: [
-    'net.nanopay.retail.model.Account'
+    'net.nanopay.model.BankAccountInfo'
   ],
 
   imports: [
-    'bankAccountDAO'
+    'bankAccountInfoDAO'
   ],
 
   axioms: [
@@ -21,10 +21,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',  view: { class: 'net.nanopay.retail.ui.bankAccount.form.BankInfoForm' } },
-        { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',  view: { class: 'net.nanopay.retail.ui.bankAccount.form.BankVerificationForm' } },
-        { parent: 'addBank', id: 'form-addBank-cashout',      label: 'Cashout plan',  view: { class: 'net.nanopay.retail.ui.bankAccount.form.BankCashoutForm' } },
-        { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.retail.ui.bankAccount.form.BankDoneForm' } }
+        { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankInfoForm' } },
+        { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
+        { parent: 'addBank', id: 'form-addBank-cashout',      label: 'Cashout plan',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankCashoutForm' } },
+        { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
       this.SUPER();
     }
@@ -50,14 +50,14 @@ foam.CLASS({
         if ( this.position == 0 ) { // On Submission screen.
           // data from form
           var accountInfo = this.viewData;
-          var newAccount = this.Account.create({
+          var newAccount = this.BankAccountInfo.create({
             accountName: accountInfo.accountName,
             bankNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber,
           });
 
-          this.bankAccountDAO.put(newAccount).then(function(response){
+          this.bankAccountInfoDAO.put(newAccount).then(function(response){
             console.log(response);
           });
 
