@@ -98,7 +98,6 @@ FOAM_FILES([
   // settings
   { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/settings/bankAccount/BankAccountSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
