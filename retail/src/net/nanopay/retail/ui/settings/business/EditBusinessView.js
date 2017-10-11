@@ -348,7 +348,7 @@ foam.CLASS({
       name: 'cashOut',
       label: 'Cash Out',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.autoCashout.AutoCashoutSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.autoCashout.AutoCashoutSettingsView' });
       }
     }
   ]
