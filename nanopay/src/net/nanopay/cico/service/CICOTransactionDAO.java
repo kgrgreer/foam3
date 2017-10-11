@@ -17,7 +17,6 @@ public class CICOTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    DAO transactionDAO = (DAO) getX().get("transactionDAO");
     Transaction transaction = (Transaction) obj;
 
     if ( transaction.getBankAccountInfoId() == null ) {
@@ -37,9 +36,8 @@ public class CICOTransactionDAO
           if ( transaction.getType() == null ) {
             transaction.setType(TransactionType.CASHOUT);
           }
-          Transaction completedTransaction = (Transaction) transactionDAO.put(transaction);
-          super.put_(x, transaction);
-          return completedTransaction;
+
+          return getDelegate().put(transaction);
 
         } catch (RuntimeException e) {
           throw e;
