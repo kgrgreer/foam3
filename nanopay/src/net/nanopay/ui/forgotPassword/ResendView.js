@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.forgotPassword',
+  package: 'net.nanopay.ui.forgotPassword',
   name: 'ResendView',
   extends: 'foam.u2.View',
 
@@ -17,8 +17,11 @@ foam.CLASS({
           margin: auto;
         }
         ^ .Message-Container{
+          width: 490px;
+          height: 145px;
+          border-radius: 2px;
           background-color: #ffffff;
-          padding: 25px 25px 25px;
+          padding-top: 5px;
         }
         ^ .Forgot-Password{
           width: 236px;
@@ -50,28 +53,30 @@ foam.CLASS({
           letter-spacing: 0.2px;
           text-align: left;
           color: #093649;
+          margin-top: 15px;
+          margin-left: 20px;
+          margin-right: 20px;
           margin-bottom: 20px;
         }
         ^ .Resend-Button{
-          width: 100%;
+          width: 450px;
           height: 40px;
           border-radius: 2px;
           border: solid 1px #59a5d5;
+          margin-left: 20px;
+          margin-right: 20px;
           background: #ffffff;
           text-align: center;
           line-height: 40px;
           cursor: pointer;
           color: #59a5d5;
         }
-        ^ .Resend-Button:hover {
-          color: white;
-          background: #59aadd;
-        }
+
         ^ .Change-Button{
+          width: 450px;
           height: 40px;
           border-radius: 2px;
           border: solid 1px #59a5d5;
-          margin: auto;
           margin-top: 150px;
           background: #59aadd;
           text-align: center;
@@ -79,10 +84,7 @@ foam.CLASS({
           cursor: pointer;
           color: white;
         }
-        ^ .Change-Button:hover {
-          background-color: #3783b3;
-          border-color: #3783b3;
-        }
+
       */}
     })
   ],
@@ -107,11 +109,11 @@ foam.CLASS({
         .start('p').add('Remember your password?').end()
         .start('p').addClass('link')
           .add('Sign in.')
-          .on('click', function() {self.stack.push({ class: 'net.nanopay.retail.ui.onboarding.SignInView' })})
+          .on('click', function() {self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
         .end()
         .start('div')
           .add('Change Your Password!').addClass('Change-Button')
-          .on('click', function() {self.stack.push({ class: 'net.nanopay.retail.ui.forgotPassword.ResetView'})})
+          .on('click', function() {self.stack.push({ class: 'net.nanopay.ui.forgotPassword.ResetView'})})
         .end()
       .end()
       }

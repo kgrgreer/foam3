@@ -106,7 +106,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .tag({class: 'net.nanopay.retail.ui.settings.SettingsNavigator'})
+        .tag({class: 'net.nanopay.settings.SettingsNavigator'})
         .start('div').addClass('bankAccountContainer')
           .start('div').addClass('row')
             .start('div').addClass('spacer')

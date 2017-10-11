@@ -96,11 +96,11 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
 
   // settings
+  { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -132,6 +132,10 @@ FOAM_FILES([
   { name: 'net/nanopay/util/Iso20022' },  
 
   //ui
+  { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
+  { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
+  { name: 'net/nanopay/ui/forgotPassword/ResetView', flags: ['web'] },
+  { name: 'net/nanopay/ui/forgotPassword/SuccessView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/UserTopNavView', flags: ['web'] },
