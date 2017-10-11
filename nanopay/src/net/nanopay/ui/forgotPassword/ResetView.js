@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.forgotPassword',
+  package: 'net.nanopay.ui.forgotPassword',
   name: 'ResetView',
   extends: 'foam.u2.View',
 
@@ -12,16 +12,22 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
+
       ^{
         width: 490px;
         margin: auto;
       }
+
       ^ .Message-Container{
+        width: 490px;
+        height: 251px;
+        border-radius: 2px;
         background-color: #ffffff;
-        padding: 25px 25px 25px;
+        padding-top: 5px;
       }
+
       ^ .Reset-Password{
-        width: 225px;
+        width: 225;
         height: 30px;
         font-family: Roboto;
         font-size: 30px;
@@ -33,9 +39,11 @@ foam.CLASS({
         margin-top: 20px;
         margin-bottom: 30px;
       }
+
       ^ p{
         display: inline-block;
       }
+
       ^ .newPassword-Text{
         width: 182px;
         height: 16px;
@@ -45,7 +53,12 @@ foam.CLASS({
         letter-spacing: 0.2px;
         text-align: left;
         color: #093649;
+        margin-top: 15px;
+        margin-left: 20px;
+        margin-right: 288px;
+        margin-bottom: 5px;
       }
+
       ^ .confirmPassword-Text{
         width: 182px;
         height: 16px;
@@ -53,49 +66,47 @@ foam.CLASS({
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
-        text-align: left;
+        text-algin: left;
         color: #093649;
+        margin-left: 20px;
+        margin-bottom: 5px;
+        margin-top: 10px;
       }
+      
       ^ .Confirm-Button{
-        width: 100%;
+        width: 450px;
         height: 40px;
         border-radius: 2px;
         border: solid 1px #59a5d5;
+        margin-left: 20px;
+        margin-right: 20px;
         background-color: #59aadd;
         text-align: center;
         line-height: 40px;
         cursor: pointer;
         color: #ffffff;
+        margin-top: 10px;
       }
-      ^ .Confirm-Button:hover {
-        cursor: pointer;
-        background-color: #3783b3;
-        border-color: #3783b3;
-      }
+
       ^ .Input-Box{
-        width: 100%;
+        width: 450px;
         height: 40px;
         background-color: #ffffff;
         border: solid 1px rgba(164, 179, 184, 0.5);
-        margin-bottom: 20px;
-        margin-top: 7px;
-        padding: 0 15px;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
         font-family: Roboto;
         font-size: 12px;
         text-align: left;
         color: #093649;
         font-weight: 300;
         letter-spacing: 0.2px;
-        outline: none;
       }
-      ^ .property-password {
-        -webkit-text-security: disc;
-        -moz-text-security: disc;
-        text-security: disc;
-      }
-      ^ .Input-Box:focus {
-        border: solid 1px #59A5D5;
-      }
+
       ^ .link{
         margin-left: 2px;
         color: #59a5d5;
@@ -104,7 +115,7 @@ foam.CLASS({
     */}
   })
   ],
-
+  
   methods: [
     function initE(){
     this.SUPER();
@@ -118,16 +129,16 @@ foam.CLASS({
           .start().addClass('newPassword-Text').add("New Password").end()
           .start('input').addClass('Input-Box').end()
           .start().addClass('confirmPassword-Text').add("Confirm Password").end()
-          .start('input').addClass('Input-Box property-password').end()
+          .start('input').addClass('Input-Box').end()
           .start().addClass('Confirm-Button')
             .add("Confirm")
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.retail.ui.forgotPassword.SuccessView'})})
+            .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.SuccessView'})})
           .end()
         .end()
         .start('p').add("Remember your password?").end()
         .start('p').addClass('link')
           .add('Sign in.')
-          .on('click', function(){ self.stack.push({ class: 'net.nanopay.retail.ui.onboarding.SignInView' })}) 
+          .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
         .end()
       .end()
     }

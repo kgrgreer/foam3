@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.forgotPassword',
+  package: 'net.nanopay.ui.forgotPassword',
   name: 'SuccessView',
   extends: 'foam.u2.View',
 
@@ -94,7 +94,7 @@ foam.CLASS({
           .start().addClass('success-Text').add(this.Instructions).end()
           .start().addClass('Back-Button')
             .add("Back to Sign In")
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.b2b.ui.signin.SignInView' })})
+            .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
           .end()
         .end()
       .end()

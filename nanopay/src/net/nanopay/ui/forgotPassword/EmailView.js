@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.forgotPassword',
+  package: 'net.nanopay.ui.forgotPassword',
   name: 'EmailView',
   extends: 'foam.u2.View',
 
@@ -137,12 +137,12 @@ foam.CLASS({
         .start('input').addClass('Input-Box').end()
         .start().addClass('Next-Button')
           .add('Next')
-          .on('click', function(){ self.stack.push({ class: 'net.nanopay.b2b.ui.forgotPassword.ResendView' })})
+          .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.ResendView' })})
         .end()
         .start('p').add('Remember your password?').end()
         .start('p').addClass('link')
           .add('Sign in.')
-          .on('click', function(){ self.stack.push({ class: 'net.nanopay.b2b.ui.signin.SignInView' })})
+          .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
         .end()
       .end()
     }
