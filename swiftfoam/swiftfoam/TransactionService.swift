@@ -29,7 +29,12 @@ public class TransactionService: Service {
                               callbackDispatchQueue: DispatchQueue = DispatchQueue.main,
                               callback: @escaping (Any?) -> Void)
   {
-    // TODO: Add User Authenticity
+    let auth = UserService.instance.isUserFullyVerified()
+    guard auth.isFullyVerified else {
+      callback(auth.error)
+      return
+    }
+    
     putDispatchQueue.async {
       do {
         let placedTransaction = (try self.dao.put(transaction)) as? Transaction
@@ -49,7 +54,6 @@ public class TransactionService: Service {
                               withLimit  limit: Int? = 100,
                               callback:  @escaping (Any?) -> Void)
   {
-    // TODO: Add User Authenticity
     guard let user = UserService.instance.getLoggedInUser() else {
       callback(UserService.UserError.UserNotLoggedIn)
       return
@@ -91,14 +95,12 @@ public class TransactionService: Service {
   }
 
   public func getTransactionBy(transactionId id: Int, callback:  @escaping (Any?) -> Void) {
-    DispatchQueue.global(qos: .userInitiated).async {
-      guard let user = UserService.instance.getLoggedInUser() else {
-        DispatchQueue.main.async {
-          callback(UserService.UserError.UserNotLoggedIn)
-        }
-        return
-      }
+    guard let user = UserService.instance.getLoggedInUser() else {
+      callback(UserService.UserError.UserNotLoggedIn)
+      return
+    }
 
+    DispatchQueue.global(qos: .userInitiated).async {
       do {
         // predicate to return the transaction that the logged in user was involved in
         let orPred = [

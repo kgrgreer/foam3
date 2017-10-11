@@ -135,10 +135,6 @@ class swiftfoamTests: XCTestCase {
       XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
 
-      XCTAssertNotEqual(t.compareTo(t2), 0)
-      t.id = t2.id
-      t.date = t2.date
-      XCTAssertEqual(t.compareTo(t2), 0)
       expectations[0].fulfill()
     }
     wait(for: expectations, timeout: 20)
@@ -181,6 +177,20 @@ class swiftfoamTests: XCTestCase {
         XCTAssert(tx.payerId == UserService.instance.getLoggedInUser()?.id || tx.payeeId == UserService.instance.getLoggedInUser()?.id)
       }
       expectations[2].fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+
+    expectations.append(XCTestExpectation(description: "Get TX Failed Expectation"))
+    TransactionService.instance.getTransactionBy(transactionId: 1276854863548) {
+      response in
+      XCTAssertNotNil(response)
+      guard let error = response as? TransactionService.TransactionError else {
+        XCTFail()
+        expectations[3].fulfill()
+        return
+      }
+      XCTAssert(error == .TransactionNotFound)
+      expectations[3].fulfill()
     }
     wait(for: expectations, timeout: 20)
   }
