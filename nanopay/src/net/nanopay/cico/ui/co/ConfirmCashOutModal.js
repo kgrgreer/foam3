@@ -240,8 +240,6 @@ foam.CLASS({
           amount: X.amount,
           bankAccountInfoId: X.bankList
         }));
-        console.log(X.amount);
-        console.log(X.bankList);
         X.closeDialog();
         X.onCashOutSuccess();
       }
