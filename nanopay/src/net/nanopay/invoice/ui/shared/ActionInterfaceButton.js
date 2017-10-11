@@ -14,7 +14,7 @@ foam.CLASS({
     'detailActions',
     'popupMenu_',
     'openMenu',
-    'invoice'
+    'data'
   ],
 
   exports: [
@@ -125,7 +125,7 @@ foam.CLASS({
             data: {
               image: 'images/approve.png', 
               text: 'Approve',
-              invoice: this.invoice,
+              data: this.data,
               title: 'Approve'
             }
           }).addClass('import-button').add(this.APPROVE_MODAL).end()
@@ -134,13 +134,21 @@ foam.CLASS({
             data: {
               image: 'images/reject.png', 
               text: 'Reject',
-              invoice: this.invoice,
+              data: this.data,
               title: 'Dispute'
             }
           }).addClass('import-button').add(this.DISPUTE_MODAL).end()
           .start(this.EMAIL_MODAL).addClass('import-button').end()
           .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
-          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
+          .start({
+            class: 'net.nanopay.ui.ActionButton', 
+            data: {
+              image: 'images/ic-export.png', 
+              text: 'Export',
+              data: this.data,
+              title: 'Export'
+            }
+          }).addClass('import-button').add(this.EXPORT_MODAL).end()
           .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
@@ -195,7 +203,7 @@ foam.CLASS({
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
               class: 'net.nanopay.invoice.ui.modal.ApproveModal', 
-              invoice: X.data.invoice
+              invoice: X.data.data
             })
         );
       }
@@ -207,7 +215,19 @@ foam.CLASS({
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
               class: 'net.nanopay.invoice.ui.modal.DisputeModal', 
-              invoice: X.data.invoice
+              invoice: X.data.data
+            })
+        );
+      }
+    },
+    {
+      name: 'exportModal',
+      code: function(X){
+        X.ctrl.add(
+          foam.u2.dialog.Popup.create(null, X)
+            .tag({ 
+              class: 'net.nanopay.ui.modal.ExportModal', 
+              exportData: X.data.data
             })
         );
       }
