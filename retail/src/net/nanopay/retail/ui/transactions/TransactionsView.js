@@ -190,7 +190,7 @@ foam.CLASS({
             .tag({class: 'net.nanopay.retail.ui.devices.DeviceCTACard'})
           .end()
           .start('div').addClass('row')
-            .tag({class: 'net.nanopay.retail.ui.settings.bankAccount.BankCTACard'})
+            .tag({class: 'net.nanopay.cico.ui.bankAccount.BankCTACard'})
           .end()
         .end()
 
