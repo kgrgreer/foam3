@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'net.nanopay.retail.model.BankAccount',
+    'net.nanopay.model.BankAccountInfo',
     'foam.u2.dialog.Popup'
   ],
 
@@ -130,11 +130,11 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.BankAccount.ACCOUNT_NAME,
-                    this.BankAccount.BANK_NUMBER,
-                    this.BankAccount.TRANSIT_NUMBER,
-                    this.BankAccount.ACCOUNT_NUMBER,
-                    this.BankAccount.STATUS
+                    this.BankAccountInfo.ACCOUNT_NAME,
+                    this.BankAccountInfo.BANK_NUMBER,
+                    this.BankAccountInfo.TRANSIT_NUMBER,
+                    this.BankAccountInfo.ACCOUNT_NUMBER,
+                    this.BankAccountInfo.STATUS
                   ]
                 },
               summaryView: this.BankAccountTableView.create()
@@ -149,7 +149,7 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.retail.model.BankAccount' ],
+      requires: [ 'net.nanopay.model.BankAccountInfo' ],
 
       imports: [ 'bankAccountDAO' ],
       properties: [
@@ -201,12 +201,12 @@ foam.CLASS({
           self.allBanksCount = count.value;
         });
 
-        var verifiedBanksDAO = this.dao.where(this.EQ(this.BankAccount.STATUS, "Verified"));
+        var verifiedBanksDAO = this.dao.where(this.EQ(this.BankAccountInfo.STATUS, "Verified"));
         verifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.verifiedBanksCount = count.value;
         });
 
-        var unverifiedBanksDAO = this.dao.where(this.EQ(this.BankAccount.STATUS, "Unverified"));
+        var unverifiedBanksDAO = this.dao.where(this.EQ(this.BankAccountInfo.STATUS, "Unverified"));
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
         });
