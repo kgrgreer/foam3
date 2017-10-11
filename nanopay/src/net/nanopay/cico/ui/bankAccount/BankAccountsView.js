@@ -102,11 +102,7 @@ foam.CLASS({
     'verifiedBanksCount',
     'unverifiedBanksCount',
     'selection',
-    { name: 'data', factory: function() { return this.bankAccountInfoDAO; }},
-    {
-      name: 'dao',
-      factory: function() { return this.bankAccountInfoDAO; }
-    }
+    { name: 'data', factory: function () { return this.bankAccountInfoDAO; } }
   ],
 
   messages: [
@@ -120,7 +116,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.dao.on.sub(this.onDAOUpdate);
+      this.data.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
 
       this
@@ -175,7 +171,7 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.retail.model.BankAccountInfo' ],
+      requires: [ 'net.nanopay.model.BankAccountInfo' ],
 
       imports: [ 'bankAccountInfoDAO' ],
       properties: [
@@ -206,16 +202,16 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-        this.dao.select(this.COUNT()).then(function(count) {
+        this.data.select(this.COUNT()).then(function(count) {
           self.allBanksCount = count.value;
         });
 
-        var verifiedBanksDAO = this.dao.where(this.EQ(this.BankAccountInfo.STATUS, "Verified"));
+        var verifiedBanksDAO = this.data.where(this.EQ(this.BankAccountInfo.STATUS, "Verified"));
         verifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.verifiedBanksCount = count.value;
         });
 
-        var unverifiedBanksDAO = this.dao.where(this.EQ(this.BankAccountInfo.STATUS, "Unverified"));
+        var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccountInfo.STATUS, "Unverified"));
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
         });
