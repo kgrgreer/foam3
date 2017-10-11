@@ -221,10 +221,10 @@ foam.CLASS({
               .end()
             .end()
           .end()
-          .tag({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'ui/images/ic-filter.svg', text: this.FilterButtonTitle}})
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'ui/images/shape.svg', text: this.RefundButtonTitle}}).addClass('buttonFloat').end()
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'ui/images/ic-print.svg', text: this.PrintButtonTitle}}).addClass('buttonFloat').end()
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'ui/images/ic-export.svg', text: this.ExportButtonTitle}}).addClass('buttonFloat').end()
+          .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'ui/images/ic-filter.svg', text: this.FilterButtonTitle}})
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'ui/images/shape.svg', text: this.RefundButtonTitle}}).addClass('buttonFloat').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'ui/images/ic-print.svg', text: this.PrintButtonTitle}}).addClass('buttonFloat').end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'ui/images/ic-export.svg', text: this.ExportButtonTitle}}).addClass('buttonFloat').end()
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
