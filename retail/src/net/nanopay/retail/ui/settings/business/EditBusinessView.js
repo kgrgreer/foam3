@@ -319,7 +319,7 @@ foam.CLASS({
             }
           )
         }).then(function(a) {
-          self.stack.push({ class:'net.nanopay.retail.ui.settings.business.BusinessSettingsView' })
+          self.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
       }
     },
@@ -334,7 +334,7 @@ foam.CLASS({
       name: 'businessProfile',
       label: 'Business Profile',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.business.BusinessSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.business.BusinessSettingsView' });
       }
     },
     {
