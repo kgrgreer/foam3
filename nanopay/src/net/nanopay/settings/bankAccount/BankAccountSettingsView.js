@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.ui.bankAccount',
+  package: 'net.nanopay.settings.bankAccount',
   name: 'BankAccountSettingsView',
   extends: 'foam.u2.Controller',
 
@@ -110,13 +110,13 @@ foam.CLASS({
         .start('div').addClass('bankAccountContainer')
           .start('div').addClass('row')
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCard', data: { title: this.TitleAll}, contents$: this.allBanksCount$ }).addClass('bankContentCard')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleAll, content$: this.allBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCard', data: { title: this.TitleVerified}, contents$: this.verifiedBanksCount$ }).addClass('bankContentCard')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleVerified, content$: this.verifiedBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.retail.ui.shared.contentCard.ContentCard', data: { title: this.TitleUnverified}, contents$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleUnverified, content$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
               .tag(this.ADD_BANK, { showLabel: true })
