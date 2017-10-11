@@ -30,14 +30,16 @@ public class BrokerNanopayTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-
           switch ( (TransactionType) transaction.getType() ) {
             case CASHOUT :
               transaction.setPayeeId(BROKER_ID);
+              break;
             case CASHIN :
               transaction.setPayerId(BROKER_ID);
+              break;
+            default :
+              System.out.println("Transaction Type not defined");
           }
-
           return getDelegate().put(transaction);
 
         } catch (RuntimeException e) {
