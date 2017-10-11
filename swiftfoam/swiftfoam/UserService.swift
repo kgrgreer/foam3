@@ -72,20 +72,54 @@ public class UserService: Service {
     DispatchQueue.global(qos: .userInitiated).async {
       do {
         // TODO: Get user from DAO and place into self.loggedInUser
+        let pred = self.X.create(And.self, args: [
+          "args": [
+            self.X.create(Eq.self, args: [
+              "arg1": User.classInfo().axiom(byName: "email"),
+              "arg2": username,
+            ]),
+            self.X.create(Eq.self, args: [
+              "arg1": User.classInfo().axiom(byName: "password"),
+              "arg2": pass,
+            ])
+          ]
+        ])
 
-        guard self.isUserVerifiedEmail() else {
-          // lets the front end know the user hasn't verified their email
+        let userSink = (try? self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as! ArraySink
+
+        guard userSink.array.count > 0 else {
+          // User Not Found.
           DispatchQueue.main.async {
-            callback(UserError.UserUnverifiedEmail)
+            callback(UserError.IncorrectCredentials)
           }
           return
         }
-        guard self.isUserVerifiedPhone() else {
-          // lets the front end know the user hasn't verified their phone
+        self.loggedInUser = userSink.array[0] as? User
+        guard self.loggedInUser != nil else {
+          // Could not convert item in array into User
           DispatchQueue.main.async {
-            callback(UserError.UserUnverifiedPhone)
+            callback(ServiceError.Failed)
           }
           return
+        }
+//        NOTE: removed until fields are implemented
+//        guard self.isUserVerifiedEmail() else {
+//          // lets the front end know the logged in user hasn't verified their email
+//          DispatchQueue.main.async {
+//            callback(UserError.UserUnverifiedEmail)
+//          }
+//          return
+//        }
+//        guard self.isUserVerifiedPhone() else {
+//          // lets the front end know the logged in user hasn't verified their phone
+//          DispatchQueue.main.async {
+//            callback(UserError.UserUnverifiedPhone)
+//          }
+//          return
+//        }
+
+        DispatchQueue.main.async {
+          callback(self.loggedInUser)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
@@ -105,6 +139,10 @@ public class UserService: Service {
     return loggedInUser != nil
   }
 
+  public func getLoggedInUser() -> User? {
+    return loggedInUser
+  }
+
   public func isUserVerifiedEmail() -> Bool {
     guard isUserLoggedIn() else { return false; }
     return false; // TEMP as we dont have verified field
@@ -115,49 +153,30 @@ public class UserService: Service {
     return false; // TEMP as we dont have verified field
   }
 
-  public func isUserFullyVerified() -> Error? {
-    guard isUserLoggedIn()      else { return UserError.UserNotLoggedIn }
-    guard isUserVerifiedEmail() else { return UserError.UserUnverifiedEmail }
-    guard isUserVerifiedPhone() else { return UserError.UserUnverifiedPhone }
-    return nil
+  public func isUserFullyVerified() -> (isFullyVerified: Bool, error: Error?) {
+    // Ordered from most important to least
+    guard isUserLoggedIn()      else { return (false, UserError.UserNotLoggedIn) }
+//    NOTE: Commented out until fields are available
+//    guard isUserVerifiedEmail() else { return (false, UserError.UserUnverifiedEmail) }
+//    guard isUserVerifiedPhone() else { return (false, UserError.UserUnverifiedPhone) }
+    return (true, nil)
   }
 
   public func update(user: User, callback: @escaping (Any?) -> Void) {
-    
-  }
-
-  public func get(userWithId id: Int, callback: @escaping (Any?) -> Void) {
-
-  }
-
-  public func get(userWithEmail email: String, callback: @escaping (Any?) -> Void) {
-
-  }
-
-  public func logout(callback: @escaping (Any?) -> Void) {
+    guard isUserLoggedIn() else {
+      callback(UserError.UserNotLoggedIn)
+      return
+    }
     DispatchQueue.global(qos: .userInitiated).async {
-      guard self.isUserLoggedIn() else {
-        DispatchQueue.main.async {
-          callback(UserError.UserNotLoggedIn)
-        }
-        return;
-      }
       do {
-        // TODO: Get user from DAO and place into self.loggedInUser
-
-        guard self.isUserVerifiedEmail() else {
-          // lets the front end know the user hasn't verified their email
+        guard let updatedUser = (try self.dao.put(user)) as? User else {
           DispatchQueue.main.async {
-            callback(UserError.UserUnverifiedEmail)
+            callback(ServiceError.Failed)
           }
           return
         }
-        guard self.isUserVerifiedPhone() else {
-          // lets the front end know the user hasn't verified their phone
-          DispatchQueue.main.async {
-            callback(UserError.UserUnverifiedPhone)
-          }
-          return
+        DispatchQueue.main.async {
+          callback(updatedUser)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
@@ -166,5 +185,89 @@ public class UserService: Service {
         }
       }
     }
+  }
+
+  public func get(userWithId id: Int, callback: @escaping (Any?) -> Void) {
+    guard isUserLoggedIn() else {
+      callback(UserError.UserNotLoggedIn)
+      return
+    }
+
+    DispatchQueue.global(qos: .userInitiated).async {
+      let pred = self.X.create(Eq.self, args: [
+        "arg1": User.classInfo().axiom(byName: "id"),
+        "arg2": id,
+      ])
+
+      guard let userSink = (try? self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
+        return
+      }
+
+      guard userSink.array.count > 0 else {
+        // User Not Found.
+        DispatchQueue.main.async {
+          callback(UserError.UserNotFound)
+        }
+        return
+      }
+
+      guard let user = userSink.array[0] as? User else {
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
+        return
+      }
+
+      DispatchQueue.main.async {
+        callback(user)
+      }
+    }
+  }
+
+  public func get(userWithEmail email: String, callback: @escaping (Any?) -> Void) {
+    guard isUserLoggedIn() else {
+      callback(UserError.UserNotLoggedIn)
+      return
+    }
+
+    DispatchQueue.global(qos: .userInitiated).async {
+      let pred = self.X.create(Eq.self, args: [
+        "arg1": User.classInfo().axiom(byName: "email"),
+        "arg2": email,
+        ])
+
+      guard let userSink = (try? self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
+        return
+      }
+
+      guard userSink.array.count > 0 else {
+        // User Not Found.
+        DispatchQueue.main.async {
+          callback(UserError.UserNotFound)
+        }
+        return
+      }
+
+      guard let user = userSink.array[0] as? User else {
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
+        return
+      }
+
+      DispatchQueue.main.async {
+        callback(user)
+      }
+    }
+  }
+
+  public func logout() {
+    self.loggedInUser = nil
   }
 }
