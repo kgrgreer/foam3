@@ -1,26 +1,3 @@
-supressWarnings([
-`Unknown property foam.core.Double.tableCellFormatter: function(a) {
-        this.start().style({'text-align': 'right', 'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
-      }`,
-`Unknown property foam.core.Property.tableCellFormatter: function (state, obj, rel) {
-        function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
-
-        var label;
-
-        if ( state === 'Scheduled' || state === 'Paid' ) {
-          label = state;
-        } else {
-          label = state;
-        }
-
-        this.start().addClass('Invoice-Status-' + state).add(label).end();
-      }`,
-`Unknown property foam.core.Property.tableCellFormatter: function (fees, X){
-        this.start()
-          .add(X.PAY_NOW)
-        .end()
-      }`,
-])
 foam.CLASS({
   package: 'net.nanopay.admin.model',
   name: 'Business',
