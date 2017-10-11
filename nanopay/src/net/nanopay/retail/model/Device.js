@@ -15,7 +15,8 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.retail.model.DeviceType',
       name: 'type',
       required: true
     },
@@ -29,6 +30,10 @@ foam.CLASS({
       name: 'serialNumber',
       label: 'Serial No.',
       required: true
+    },
+    {
+      class: 'String',
+      name: 'password'
     }
   ]
 });
