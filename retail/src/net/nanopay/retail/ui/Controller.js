@@ -53,7 +53,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .tag({class: 'net.nanopay.retail.ui.shared.topNavigation.TopNav', data: this.user })
+        .tag({class: 'net.nanopay.ui.topNavigation.TopNav', data: this.user })
         .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
     }
   ],
