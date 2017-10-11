@@ -1,3 +1,4 @@
+
 foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'RecurringInvoice',
