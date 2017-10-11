@@ -94,21 +94,3 @@ foam.CLASS({
     }
   ]
 });
-
-foam.CLASS({
-  package: 'net.nanopay.retail.model',
-  extends: 'net.nanopay.model.BankAccountInfo',
-  name: 'BankAccount',
-
-  documentation: 'Bank Account Information',
-
-  tableColumns: ['accountName', 'bankNumber', 'transitNumber', 'accountNumber', 'status'],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'status',
-      value: 'Unverified'
-    }
-  ]
-});

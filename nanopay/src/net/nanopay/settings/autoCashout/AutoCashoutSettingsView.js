@@ -177,8 +177,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-
-        .tag({class: 'net.nanopay.retail.ui.settings.SettingsNavigator'})
         .start('div').addClass('autoCashOutContainer')
           .start('div').addClass('row')
             .start('p').add(this.Title).addClass('title').end()
