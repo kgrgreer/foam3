@@ -5,6 +5,14 @@ foam.CLASS({
 
   documentation: 'View displaying list of Devices provisioned.',
 
+  imports: [
+    'deviceDAO'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -144,8 +152,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus'
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.retail.model.Device'
   ],
 
   messages: [
@@ -156,23 +164,18 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'allDevicesCount',
-      value: 0
-    },
-    {
-      name: 'activeDevicesCount',
-      value: 0
-    },
-    {
-      name: 'disabledDevicesCount',
-      value: 0
-    }
+    'allDevicesCount',
+    'activeDevicesCount',
+    'disabledDevicesCount',
+    { name: 'data', factory: function () { return this.deviceDAO; } }
   ],
 
   methods: [
     function initE() {
       var self = this;
+      this.data.on.sub(this.onDAOUpdate);
+      this.onDAOUpdate();
+
       this
         .addClass(this.myClass())
         .start('div').addClass('devicesContainer')
@@ -182,7 +185,24 @@ foam.CLASS({
             .start({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledDevicesCount$ }).addClass('deviceContentCard').end()
             .start(this.ADD_DEVICE, { showLabel: true }).end()
           .end()
-          // TODO: Table to display Devices
+        .end()
+        .start()
+          .tag({
+            class: 'foam.u2.ListCreateController',
+            dao: this.deviceDAO,
+            factory: function() { return self.Device.create(); },
+            detailView: {
+              class: 'foam.u2.DetailView',
+              properties: [
+                this.Device.NAME,
+                this.Device.TYPE,
+                this.Device.STATUS,
+                this.Device.SERIAL_NUMBER,
+                this.Device.PASSWORD
+              ]
+            },
+            summaryView: this.DeviceTableView.create()
+          })
         .end()
     }
   ],
@@ -194,6 +214,56 @@ foam.CLASS({
       icon: 'images/ic-plus.svg',
       code: function(X) {
         X.stack.push({class: 'net.nanopay.retail.ui.devices.form.DeviceForm'});
+      }
+    }
+  ],
+
+  classes: [
+    {
+      name: 'DeviceTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'net.nanopay.retail.model.Device' ],
+
+      imports: [ 'deviceDAO' ],
+      properties: [
+        'selection',
+        { name: 'data', factory: function () { return this.deviceDAO; } }
+      ],
+
+      methods: [
+        function initE() {
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              selection$: this.selection$,
+              data: this.data,
+              columns: [
+                'name', 'type', 'status', 'serialNumber', 'password'
+              ]
+            }).addClass(this.myClass('table')).end();
+        }
+      ]
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isFramed: true,
+      code: function () {
+        var self = this;
+        this.data.select(this.COUNT()).then(function (count) {
+          self.allDevicesCount = count.value;
+        });
+
+        this.data.where(this.EQ(this.Device.STATUS, this.DeviceStatus.ACTIVE)).select(this.COUNT()).then(function (count) {
+          self.activeDevicesCount = count.value;
+        });
+
+        this.data.where(this.EQ(this.Device.STATUS, this.DeviceStatus.DISABLED)).select(this.COUNT()).then(function (count) {
+          self.disabledDevicesCount = count.value;
+        });
       }
     }
   ]

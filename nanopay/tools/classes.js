@@ -29,6 +29,7 @@ var classes = [
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.retail.model.DeviceType',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device'
 ];

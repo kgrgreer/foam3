@@ -216,7 +216,7 @@ foam.CLASS({
     },
 
     function goToBankAccounts() {
-      this.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountsView' });
+      this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
     }
   ],
 

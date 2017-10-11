@@ -29,7 +29,12 @@ public class TransactionService: Service {
                               callbackDispatchQueue: DispatchQueue = DispatchQueue.main,
                               callback: @escaping (Any?) -> Void)
   {
-    // TODO: Add User Authenticity
+    let auth = UserService.instance.isUserFullyVerified()
+    guard auth.isFullyVerified else {
+      callback(auth.error)
+      return
+    }
+    
     putDispatchQueue.async {
       do {
         let placedTransaction = (try self.dao.put(transaction)) as? Transaction
@@ -49,12 +54,36 @@ public class TransactionService: Service {
                               withLimit  limit: Int? = 100,
                               callback:  @escaping (Any?) -> Void)
   {
-    // TODO: Add User Authenticity
+    guard let user = UserService.instance.getLoggedInUser() else {
+      callback(UserService.UserError.UserNotLoggedIn)
+      return
+    }
+
     DispatchQueue.global(qos: .userInitiated).async {
       do {
-        let sink = (try self.dao.skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink
+        // predicate to return transactions that have the logged in user involved
+        let orPred = [
+          self.X.create(Eq.self, args: [
+            "arg1": Transaction.classInfo().axiom(byName: "payerId"),
+            "arg2": user.id,
+          ]),
+          self.X.create(Eq.self, args: [
+            "arg1": Transaction.classInfo().axiom(byName: "payeeId"),
+            "arg2": user.id,
+          ])
+        ]
+        let pred = self.X.create(Or.self, args: [
+          "args": orPred
+        ])
+
+        guard let sink = (try self.dao.`where`(pred).skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink else {
+          DispatchQueue.main.async {
+            callback(ServiceError.Failed)
+          }
+          return
+        }
         DispatchQueue.main.async {
-          callback(sink?.array)
+          callback(sink.array)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
@@ -65,24 +94,61 @@ public class TransactionService: Service {
     }
   }
 
-  public func getTransactionBy(id: Int, callback:  @escaping (Any?) -> Void) {
+  public func getTransactionBy(transactionId id: Int, callback:  @escaping (Any?) -> Void) {
+    guard let user = UserService.instance.getLoggedInUser() else {
+      callback(UserService.UserError.UserNotLoggedIn)
+      return
+    }
+
     DispatchQueue.global(qos: .userInitiated).async {
-      guard let error = UserService.instance.isUserFullyVerified() else {
-        do {
-          //        let sink = (try self.dao.skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink
-          DispatchQueue.main.async {
-            
-          }
-        } catch let e {
-          NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+      do {
+        // predicate to return the transaction that the logged in user was involved in
+        let orPred = [
+          self.X.create(Eq.self, args: [
+            "arg1": Transaction.classInfo().axiom(byName: "payerId"),
+            "arg2": user.id
+          ]),
+          self.X.create(Eq.self, args: [
+            "arg1": Transaction.classInfo().axiom(byName: "payeeId"),
+            "arg2": user.id
+          ])
+        ]
+        let andPred = [
+          self.X.create(Eq.self, args: [
+            "arg1": Transaction.classInfo().axiom(byName: "id"),
+            "arg2": id
+          ]),
+          self.X.create(Or.self, args: [
+            "args": orPred
+          ])
+        ]
+        let pred = self.X.create(And.self, args: [
+          "args": andPred
+        ])
+
+        guard let sink = (try self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
           DispatchQueue.main.async {
             callback(ServiceError.Failed)
           }
+          return
         }
-        return
-      }
-      DispatchQueue.main.async {
-        callback(error)
+
+        guard sink.array.count > 0 else {
+          // User Not Found.
+          DispatchQueue.main.async {
+            callback(TransactionError.TransactionNotFound)
+          }
+          return
+        }
+
+        DispatchQueue.main.async {
+          callback(sink.array[0])
+        }
+      } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
       }
     }
   }
