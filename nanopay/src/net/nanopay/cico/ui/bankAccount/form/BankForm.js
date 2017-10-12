@@ -43,7 +43,7 @@ foam.CLASS({
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
         if ( position < this.views.length - 1 ) return true;
-        if ( position == this.views.length - 1 && this.inDialog) return true; // Last Page & in dialog
+        if ( position == this.views.length - 1 && this.inDialog) return true; // Show in dialog
         return false; // Not in dialog
       },
       code: function() {
@@ -92,6 +92,15 @@ foam.CLASS({
           return;
         }
       }
+    },
+    {
+      name: 'Done',
+      label: 'Done',
+      isAvailable: function() {
+        if ( position == this.views.length - 1 ) return true; // Show in last page
+        return false;
+      },
+      code: function() {}
     }
   ]
 });
