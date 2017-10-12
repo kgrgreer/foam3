@@ -42,8 +42,7 @@ foam.CLASS({
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < this.views.length - 1 ) return true;
-        if ( position == this.views.length - 1 && this.inDialog) return true; // Show in dialog
+        if ( position <= this.views.length - 1 ) return true;
         return false; // Not in dialog
       },
       code: function() {
@@ -88,19 +87,9 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          if ( this.inDialog ) this.closeDialog();
-          return;
+          return this.closeDialog();
         }
       }
-    },
-    {
-      name: 'Done',
-      label: 'Done',
-      isAvailable: function() {
-        if ( position == this.views.length - 1 ) return true; // Show in last page
-        return false;
-      },
-      code: function() {}
     }
   ]
 });
