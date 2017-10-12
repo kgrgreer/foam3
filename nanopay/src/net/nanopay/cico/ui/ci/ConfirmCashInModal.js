@@ -195,7 +195,13 @@ foam.CLASS({
                 }.bind(this));
               })
             .end()
-            .start().add('xxxx123456').addClass('accountNumber').end()
+            .start().addClass('accountNumber')
+            .call(function() {
+              self.bankAccountInfoDAO.find(self.bankList).then(function(bank) {
+                this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+              }.bind(this));
+            })
+            .end()
           .end()
           .br()
           .start().add(this.amountLabel).addClass('label').end()
