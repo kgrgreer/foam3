@@ -7,7 +7,7 @@ foam.CLASS({
 
   imports: [
     'invoiceMode',
-    'bankAccountDAO',
+    'bankAccountInfoDAO',
     'branchDAO'
   ],
 
@@ -184,9 +184,9 @@ foam.CLASS({
         this.address_ += ', ' + this.nationality_;
 
 
-        this.bankAccountDAO.find(this.user.id).then(function(account) {
-          self.accountNo_ = '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length);
-          self.branchDAO.find(account.accountInfo.bankAccount).then(function(bank){
+        this.bankAccountInfoDAO.find(this.user.id).then(function(account) {
+          self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+          self.branchDAO.find(account.branchId).then(function(bank){
             switch( self.user.address.countryId ) {
               case 'CA' :
                 self.flagURL_ = 'images/canada.svg';

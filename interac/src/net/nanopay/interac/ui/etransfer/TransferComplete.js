@@ -119,7 +119,7 @@ foam.CLASS({
           .end()
         .end()
         .start().style({ float: 'right'})
-          .start({class: 'net.nanopay.retail.ui.shared.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button hide').add(this.EXPORT_MODAL).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
+          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button hide').add(this.EXPORT_MODAL).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
         .end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))

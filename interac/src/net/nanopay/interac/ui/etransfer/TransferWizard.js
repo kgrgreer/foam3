@@ -7,12 +7,13 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for e-transfer',
 
   requires: [
-    'net.nanopay.interac.ui.CountdownView'
+    'net.nanopay.interac.ui.CountdownView',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
-    'transaction',
-    'user'
+    'user',
+    'transactionDAO'
   ],
 
   exports: [
@@ -300,25 +301,28 @@ foam.CLASS({
           this.countdownView.reset();
 
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
+          var transaction = this.Transaction.create({
+            payerId: this.user.id,
+            payeeId: this.viewData.payee.id,
+            amount: Math.round(this.viewData.fromAmount * 100),
+            rate: this.viewData.rate.toString(),
+            fees: Math.round(this.viewData.fees * 100),
+            purpose: this.viewData.purpose,
+            notes: this.viewData.notes
+          });
 
-          this.transaction.transferValueById( this.user.id,
-                                              this.viewData.payee.id,
-                                              Math.round(this.viewData.fromAmount * 100),
-                                              this.viewData.rate.toString(),
-                                              this.viewData.purpose,
-                                              Math.round(this.viewData.fees * 100),
-                                              this.viewData.notes )
-            .catch(function(error){
-              if ( error ) console.log(error.message);
-            })
-            .then(function(response) {
-              if ( response ) {
-                self.viewData.transaction = response;
-                self.subStack.push(self.views[self.subStack.pos + 1].view);
-                self.backLabel = 'Back to Home';
-                self.nextLabel = 'Make Another Transfer';
-              }
-            });
+          this.transactionDAO.put(transaction)
+          .then(function (result) {
+            if ( result ) {
+              self.viewData.transaction = result;
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.backLabel = 'Back to Home';
+              self.nextLabel = 'Make Another Transfer';
+            }
+          })
+          .catch(function (err) {
+            if ( err ) console.log(err.message);
+          });
 
           return;
         }
