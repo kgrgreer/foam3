@@ -34,7 +34,7 @@ foam.CLASS({
     'city',
     {
       name: 'postalCode',
-      view: 'net.nanopay.b2b.ui.shared.PostalCodeFormat'
+      view: 'net.nanopay.ui.PostalCodeFormat'
     },
     {
       name: 'regionList',
