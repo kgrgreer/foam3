@@ -1,3 +1,6 @@
+supressWarnings([
+'Unknown property foam.core.String.view: [object Object]'
+])
 foam.CLASS({
   package: 'net.nanopay.retail.model',
   name: 'Device',
