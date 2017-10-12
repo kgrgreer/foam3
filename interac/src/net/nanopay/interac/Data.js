@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.interac',
   name: 'Data',
 
+  requires: [
+    'net.nanopay.invoice.model.Invoice'
+  ],
+
   imports: [
     'businessDAO',
     'invoiceDAO',
@@ -47,7 +51,7 @@ foam.CLASS({
           var amount   = Math.floor(Math.pow(10,3+random()*4))/100;
           var fromUser = bs.array[fi];
           var toUser   = bs.array[ti];
-          var inv = net.nanopay.invoice.model.Invoice.create({
+          var inv = this.Invoice.create({
             draft:            random()<0.002,
             invoiceNumber:    10000+i,
             purchaseOrder:    10000+i,
