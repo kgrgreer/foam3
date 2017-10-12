@@ -80,7 +80,7 @@ foam.CLASS({
           margin-bottom: 20px;
           margin-right: 15px;
         }
-        ^check-box{
+        ^ .check-box{
           display: inline-block;
           border: solid 1px rgba(164, 179, 184, 0.5);
           width: 14px;
