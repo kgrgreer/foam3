@@ -345,7 +345,7 @@ foam.CLASS({
                 monthlyLimit: 8000,
                 yearlyLimit: 20000
               }),
-              accountInfo: net.nanopay.model.BankAccountInfo.create({
+              accountInfo: net.nanopay.model.BankAccount.create({
                 accountName: 'Tip for Anna',
                 transitNumber: '1234',
                 bankNumber: 'SB-004',
@@ -360,7 +360,7 @@ foam.CLASS({
                 monthlyLimit: 8000,
                 yearlyLimit: 20000,
               }),
-              accountInfo: net.nanopay.model.BankAccountInfo.create({
+              accountInfo: net.nanopay.model.BankAccount.create({
                 accountName: 'TD Saving Restaurant',
                 transitNumber: '5678',
                 bankNumber: 'TD-004',
@@ -375,7 +375,7 @@ foam.CLASS({
                 monthlyLimit: 8000,
                 yearlyLimit: 20000,
               }),
-              accountInfo: net.nanopay.model.BankAccountInfo.create({
+              accountInfo: net.nanopay.model.BankAccount.create({
                 accountName:'TD Chequing Restaurant',
                 transitNumber: '9101',
                 bankNumber: 'TD-004',
@@ -396,7 +396,7 @@ foam.CLASS({
       name: 'bankAccountDAO',
       factory: function() {
         return this.createDAO({
-          of: 'net.nanopay.model.BankAccountInfo',
+          of: 'net.nanopay.model.BankAccount',
           seqNo: true,
           testData: [
             {
