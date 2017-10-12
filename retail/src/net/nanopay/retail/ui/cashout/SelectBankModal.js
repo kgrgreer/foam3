@@ -181,7 +181,7 @@ foam.CLASS({
       name: 'addBank',
       label: 'Add Bank Account',
       code: function (X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.settings.bankAccount.BankAccountSettingsView' });
+        X.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountSettingsView' });
       }
     }
   ]

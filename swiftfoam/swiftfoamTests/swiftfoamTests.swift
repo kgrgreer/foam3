@@ -74,6 +74,40 @@ class swiftfoamTests: XCTestCase {
     XCTAssertEqual(userSink?.array.count, 1)
   }
 
+  func testLogin() {
+    var expectations:[XCTestExpectation] = []
+    let expLoginSuccess = XCTestExpectation(description: "Login Expection - Login Successful")
+    let expLoginFailure = XCTestExpectation(description: "Login Expection - Login Failure")
+    expectations.append(expLoginSuccess)
+    expectations.append(expLoginFailure)
+//    NOTE: Need to wait for actual fields inside auth object
+//    expectations.append(XCTestExpectation(description: "Login Expection - Email Unverified"))
+//    expectations.append(XCTestExpectation(description: "Login Expection - Phone Unverified"))
+    UserService.instance.login(withUsername: "simon@gmail.com", andPassword: "22b70d9b9c98bdfee23e47c874f4a92257268449572e7edfcaa7f0eee569b7de35e8bea44e5b93e3e1dce9cf96425ac3c7fc88b6cfa53a6fa9064b99244192ce:5932aeb0bda8cf763dc94f02459799250a619b6d") {
+      response in
+      XCTAssertNotNil(UserService.instance.getLoggedInUser())
+      guard let _ = response as? User else {
+        XCTFail()
+        expLoginSuccess.fulfill()
+        return
+      }
+      expLoginSuccess.fulfill()
+    }
+
+    UserService.instance.login(withUsername: "simon@gmail.com", andPassword: "IShouldFailDueToIncorrectCredentials") {
+      response in
+      guard let error = response as? UserService.UserError else {
+        XCTFail()
+        expLoginFailure.fulfill()
+        return
+      }
+      XCTAssert(error == .IncorrectCredentials)
+      expLoginFailure.fulfill()
+    }
+
+    wait(for: expectations, timeout: 20)
+  }
+
   func testPutTransactionDAO() {
     let boxContext = BoxContext()
     let X = boxContext.__subContext__
@@ -86,9 +120,11 @@ class swiftfoamTests: XCTestCase {
     t.fees = 20
     t.notes = "Mike's test!"
 
+    let expectations:[XCTestExpectation] = [XCTestExpectation(description: "Put TX Expectation")]
     TransactionService.instance.transferValueBy(transaction: t) {
       response in
       guard let t2 = response as? Transaction else {
+        XCTFail()
         return
       }
       XCTAssertNotNil(t2)
@@ -99,24 +135,62 @@ class swiftfoamTests: XCTestCase {
       XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
 
-      XCTAssertNotEqual(t.compareTo(t2), 0)
-      t.id = t2.id
-      t.date = t2.date
-      XCTAssertEqual(t.compareTo(t2), 0)
+      expectations[0].fulfill()
     }
+    wait(for: expectations, timeout: 20)
   }
 
   func testGetTransactions() {
-    let expectations:[XCTestExpectation] = [XCTestExpectation(description: "Get TX Expectation")]
+    var expectations:[XCTestExpectation] = [XCTestExpectation(description: "Get TX Failure Expectation")]
+    TransactionService.instance.getTransactions(startingAt: 0) {
+      response in
+      XCTAssertNotNil(response)
+      let error = response as! UserService.UserError
+      XCTAssert(error == .UserNotLoggedIn)
+      expectations[0].fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+
+    expectations.append(XCTestExpectation(description: "Put TX Expectation"))
+    UserService.instance.login(withUsername: "simon@gmail.com", andPassword: "22b70d9b9c98bdfee23e47c874f4a92257268449572e7edfcaa7f0eee569b7de35e8bea44e5b93e3e1dce9cf96425ac3c7fc88b6cfa53a6fa9064b99244192ce:5932aeb0bda8cf763dc94f02459799250a619b6d") {
+      response in
+      XCTAssertNotNil(UserService.instance.getLoggedInUser())
+      guard let _ = response as? User else {
+        XCTFail()
+        expectations[1].fulfill()
+        return
+      }
+      expectations[1].fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+
+    expectations.append(XCTestExpectation(description: "Get TX Success Expectation"))
     TransactionService.instance.getTransactions(startingAt: 0) {
       response in
       XCTAssertNotNil(response)
       guard let transactions = response as? [Transaction] else {
         XCTFail()
+        expectations[2].fulfill()
         return
       }
-      XCTAssertEqual(transactions.count, 100)
-      expectations.first!.fulfill()
+      for tx in transactions {
+        XCTAssert(tx.payerId == UserService.instance.getLoggedInUser()?.id || tx.payeeId == UserService.instance.getLoggedInUser()?.id)
+      }
+      expectations[2].fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+
+    expectations.append(XCTestExpectation(description: "Get TX Failed Expectation"))
+    TransactionService.instance.getTransactionBy(transactionId: 1276854863548) {
+      response in
+      XCTAssertNotNil(response)
+      guard let error = response as? TransactionService.TransactionError else {
+        XCTFail()
+        expectations[3].fulfill()
+        return
+      }
+      XCTAssert(error == .TransactionNotFound)
+      expectations[3].fulfill()
     }
     wait(for: expectations, timeout: 20)
   }
@@ -134,9 +208,12 @@ class swiftfoamTests: XCTestCase {
 
     var errors:[String] = []
     var expectations:[XCTestExpectation] = []
+    for i in 0 ..< 50 {
+      // put expectations into array first before attempting to fulfil them
+      expectations.append(XCTestExpectation(description: "ThreadSafe Expectation \(i)"))
+    }
 
     for i in 0 ..< 50 {
-      expectations.append(XCTestExpectation(description: "ThreadSafe Expectation \(i)"))
       TransactionService.instance.transferValueBy(transaction: t) {
         response in
         guard let _ = response as? Transaction else {
