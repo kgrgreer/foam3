@@ -47,14 +47,14 @@ foam.CLASS({
           var amount   = Math.floor(Math.pow(10,3+random()*4))/100;
           var fromUser = bs.array[fi];
           var toUser   = bs.array[ti];
-          var inv = net.nanopay.b2b.model.Invoice.create({
+          var inv = net.nanopay.invoice.model.Invoice.create({
             draft:            random()<0.002,
             invoiceNumber:    10000+i,
             purchaseOrder:    10000+i,
-            fromBusinessId:   fromUser.id,
-            toBusinessId:     toUser.id,
-            fromBusinessName: fromUser.name || fromUser.organization || (fromUser.firstName + ' ' + fromUser.lastName),
-            toBusinessName:   toUser.name || toUser.organization   || (toUser.firstName   + ' ' + toUser.lastName),
+            payerId:   fromUser.id,
+            payeeId:     toUser.id,
+            payerName: fromUser.name || fromUser.organization || (fromUser.firstName + ' ' + fromUser.lastName),
+            payeeName:   toUser.name || toUser.organization   || (toUser.firstName   + ' ' + toUser.lastName),
             issueDate:        dd,
             amount:           amount
           });
