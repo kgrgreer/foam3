@@ -100,7 +100,7 @@ foam.CLASS({
           color: #093649;
           margin-bottom: 50px;
         }
-        ^ .registration-container{
+        ^registration-container{
           background: white;
           padding: 4px 25px;
         }
@@ -112,7 +112,7 @@ foam.CLASS({
         ^ img{
           display: inline-block;
         }
-        ^ .upload-button{
+        ^upload-button{
           display: inline-block;
           width: 135px;
           height: 40px;
@@ -179,14 +179,14 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('h2').add('Edit Business profile').end()
-          .start().addClass('registration-container')
+          .start().addClass(this.myClass('registration-container'))
             .start('h3').add('Business information').end()
-            .start().addClass('business-image-container')
+            .start().addClass(this.myClass('business-image-container'))
               .tag({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'})
-              .start('button').add('Upload Image').addClass('upload-button').end()
+              .start('button').add('Upload Image').addClass(this.myClass('upload-button')).end()
               .start('p').add('JPG, GIF, JPEG, BMP or PNG').end()
             .end()
-            .start().addClass('business-registration-input')
+            .start().addClass(this.myClass('business-registration-input'))
               .start().addClass('input-container')
                 .start('label').add('Company Name').end()
                 .start(this.BUSINESS_NAME).end()
@@ -209,7 +209,7 @@ foam.CLASS({
               .end()
             .end()
             .start('h3').add('Business Address').end()
-            .start().addClass('business-registration-input')
+            .start().addClass(this.myClass('business-registration-input'))
               .start().addClass('input-container')
                 .start('label').add('Country').end()
                 .add(this.COUNTRY_LIST)
@@ -267,7 +267,7 @@ foam.CLASS({
             }
           )
         }).then(function(a){
-          self.stack.push({ class:'net.nanopay.invoice.ui.InvoiceDashboardView' })
+          self.stack.push({ class:'net.nanopay.b2b.ui.dashboard.DashboardView' })
         })
       }
     }
