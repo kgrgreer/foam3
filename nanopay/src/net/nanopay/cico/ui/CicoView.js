@@ -13,7 +13,8 @@ foam.CLASS({
   imports: [
     'bankAccountInfoDAO',
     'stack',
-    'standardCICOTransactionDAO'
+    'standardCICOTransactionDAO',
+    'user'
   ],
 
   exports: [
@@ -137,6 +138,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Currency',
+      name: 'amount'
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
@@ -149,7 +154,7 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'amount'
+      name: 'balance'
     }
   ],
 
@@ -158,13 +163,16 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
+      var formattedBalance = this.user.accounts[0].accountInfo.balance/100;
+
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('balanceBox')
             .start('div').addClass('greenBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$2,632.85').addClass('balance').end()
+            .start().add('$', formattedBalance.toFixed(2)).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .add(this.CASH_IN_BTN)
