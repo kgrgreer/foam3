@@ -7,7 +7,7 @@ foam.CLASS({
 
   imports: [
     'invoiceMode',
-    'bankAccountInfoDAO',
+    'bankAccountDAO',
     'branchDAO'
   ],
 
@@ -183,8 +183,7 @@ foam.CLASS({
         if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
         this.address_ += ', ' + this.nationality_;
 
-
-        this.bankAccountInfoDAO.find(this.user.id).then(function(account) {
+        this.bankAccountDAO.find(this.user.id).then(function(account) {
           self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
           self.branchDAO.find(account.branchId).then(function(bank){
             switch( self.user.address.countryId ) {

@@ -7,7 +7,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccountInfo',
+    'net.nanopay.model.BankAccount',
     'net.nanopay.interac.model.Identification',
     'net.nanopay.interac.model.DateAndPlaceOfBirth',
     'net.nanopay.iso20022.Pacs00800106',

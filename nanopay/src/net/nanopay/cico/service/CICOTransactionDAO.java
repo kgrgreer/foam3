@@ -19,7 +19,7 @@ public class CICOTransactionDAO
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
 
-    if ( transaction.getBankAccountInfoId() == null ) {
+    if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
 
