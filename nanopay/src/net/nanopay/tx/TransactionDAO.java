@@ -7,7 +7,6 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import java.util.Date;
 import net.nanopay.model.Account;
-import net.nanopay.model.UserAccountInfo;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionDAO
@@ -41,9 +40,7 @@ public class TransactionDAO
   protected Account createNewAccount(long id) {
     Account account = new Account();
     account.setId(id);
-    UserAccountInfo userAccountInfo = new UserAccountInfo();
-    userAccountInfo.setBalance(0);
-    account.setAccountInfo(userAccountInfo);
+    account.setBalance(0);
     return account;
   }
 
@@ -95,15 +92,10 @@ public class TransactionDAO
           }
 
           long amount = transaction.getAmount();
-          UserAccountInfo payerAccountInfo = (UserAccountInfo) payerAccount.getAccountInfo();
-          UserAccountInfo payeeAccountInfo = (UserAccountInfo) payeeAccount.getAccountInfo();
 
-          if ( payerAccountInfo.getBalance() >= amount ) {
-            payerAccountInfo.setBalance(payerAccountInfo.getBalance() - amount);
-            payeeAccountInfo.setBalance(payeeAccountInfo.getBalance() + amount);
-
-            payerAccount.setAccountInfo(payerAccountInfo);
-            payeeAccount.setAccountInfo(payeeAccountInfo);
+          if ( payerAccount.getBalance() >= amount ) {
+            payerAccount.setBalance(payerAccount.getBalance() - amount);
+            payeeAccount.setBalance(payeeAccount.getBalance() + amount);
 
             getAccountDAO().put(payerAccount);
             getAccountDAO().put(payeeAccount);

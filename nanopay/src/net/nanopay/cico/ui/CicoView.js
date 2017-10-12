@@ -11,9 +11,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountInfoDAO',
+    'bankAccountDAO',
     'stack',
-    'transactionDAO'
+    'standardCICOTransactionDAO',
+    'user'
   ],
 
   exports: [
@@ -137,10 +138,14 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Currency',
+      name: 'amount'
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountInfoDAO,
+          dao: X.bankAccountDAO,
           objToChoice: function(a){
             return [a.id, a.accountName];
           }
@@ -149,7 +154,7 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'amount'
+      name: 'balance'
     }
   ],
 
@@ -158,13 +163,16 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
+      var formattedBalance = this.user.accounts[0].accountInfo.balance/100;
+
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('balanceBox')
             .start('div').addClass('greenBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$2,632.85').addClass('balance').end()
+            .start().add('$', formattedBalance.toFixed(2)).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .add(this.CASH_IN_BTN)
@@ -174,7 +182,7 @@ foam.CLASS({
           .start()
             .tag({
               class: 'foam.u2.ListCreateController',
-              dao: this.transactionDAO,
+              dao: this.standardCICOTransactionDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
                 class: 'foam.u2.DetailView',
@@ -250,11 +258,11 @@ foam.CLASS({
 
       requires: [ 'net.nanopay.tx.model.Transaction' ],
 
-      imports: [ 'transactionDAO' ],
+      imports: [ 'standardCICOTransactionDAO' ],
 
       properties: [
         'selection',
-        { name: 'data', factory: function() { return this.transactionDAO; } }
+        { name: 'data', factory: function() { return this.standardCICOTransactionDAO; } }
       ],
 
       methods: [

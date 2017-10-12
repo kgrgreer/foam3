@@ -56,10 +56,11 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      label: 'Sending Amount',
+      label: 'Amount',
       tableCellFormatter: function(amount) {
-        this.start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
-            .add(' CAD ', ( amount/100 ).toFixed(2))
+        //this.start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
+        var formattedAmount = amount/100;
+        this.start().add('$', formattedAmount.toFixed(2)).end()
       },
     },
     {

@@ -3,8 +3,6 @@ foam.CLASS({
   name: 'CashOutSuccessModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.cico.ui.CicoView' ],
-
   imports: [ 'closeDialog', 'amount' ],
 
   documentation: 'Pop up modal displaying details of a successful cash out.',
@@ -80,7 +78,7 @@ foam.CLASS({
           background: transparent;
           background-color: transparent;
         }
-        ^ .property-amount {
+        ^ .amount {
           width: 100px;
           height: 16px;
           display: inline-block;
@@ -102,6 +100,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      var formattedAmount = this.amount/100;
+
       this.addClass(this.myClass())
       .start()
         .start().addClass('cashOutContainer')
@@ -112,7 +112,7 @@ foam.CLASS({
           .start({class: 'foam.u2.tag.Image', data: 'images/done-30.svg'}).addClass('successIcon').end()
           .start('div').addClass('cashOutResultDiv')
             .start().add(this.CashOutSuccessDesc).addClass('cashOutResult').end()
-            .tag(this.CicoView.AMOUNT, { mode: foam.u2.DisplayMode.RO })
+            .start().add('$', formattedAmount.toFixed(2)).addClass('amount').end()
             .br()
             .start().add(this.CashOutResultDesc).addClass('cashOutResult').end()
           .end()

@@ -1,17 +1,15 @@
 FOAM_FILES([
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
-  { name: 'net/nanopay/model/AccountInfo' },
   { name: 'net/nanopay/model/AccountLimit' },
   { name: 'net/nanopay/model/Branch' },
-  { name: 'net/nanopay/model/BankAccountInfo' },
+  { name: 'net/nanopay/model/BankAccount' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
-  { name: 'net/nanopay/model/UserAccountInfo' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
@@ -60,6 +58,7 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // cico
+  { name: 'net/nanopay/cico/model/BaseServiceProvider' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },

@@ -14,7 +14,7 @@ public class BrokerNanopayTransactionDAO
     setDelegate(delegate);
   }
 
-  private static final Long BROKER_ID = 1L;
+  private static final Long BROKER_ID = 999L;
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
@@ -30,14 +30,16 @@ public class BrokerNanopayTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-
           switch ( (TransactionType) transaction.getType() ) {
             case CASHOUT :
               transaction.setPayeeId(BROKER_ID);
+              break;
             case CASHIN :
               transaction.setPayerId(BROKER_ID);
+              break;
+            default :
+              System.out.println("Transaction Type not defined");
           }
-
           return getDelegate().put(transaction);
 
         } catch (RuntimeException e) {
