@@ -218,7 +218,7 @@ foam.CLASS({
       });
 
       self.userDAO.put(user).then(function(user) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.registration.BusinessRegistrationView', user: user });
+        X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
       })
     }
   ]

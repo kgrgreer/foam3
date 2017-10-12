@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.registration',
+  package: 'net.nanopay.auth.ui',
   name: 'BusinessRegistrationView',
   extends: 'foam.u2.View',
 
@@ -100,7 +100,7 @@ foam.CLASS({
           color: #093649;
           margin-bottom: 50px;
         }
-        ^registration-container{
+        ^ .registration-container{
           background: white;
           padding: 4px 25px;
         }
@@ -108,11 +108,11 @@ foam.CLASS({
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.2px;
-        } 
+        }
         ^ img{
           display: inline-block;
         }
-        ^upload-button{
+        ^ .upload-button{
           display: inline-block;
           width: 135px;
           height: 40px;
@@ -179,14 +179,14 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('h2').add('Edit Business profile').end()
-          .start().addClass(this.myClass('registration-container'))
+          .start().addClass('registration-container')
             .start('h3').add('Business information').end()
-            .start().addClass(this.myClass('business-image-container'))
+            .start().addClass('business-image-container')
               .tag({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'})
-              .start('button').add('Upload Image').addClass(this.myClass('upload-button')).end()
+              .start('button').add('Upload Image').addClass('upload-button').end()
               .start('p').add('JPG, GIF, JPEG, BMP or PNG').end()
             .end()
-            .start().addClass(this.myClass('business-registration-input'))
+            .start().addClass('business-registration-input')
               .start().addClass('input-container')
                 .start('label').add('Company Name').end()
                 .start(this.BUSINESS_NAME).end()
@@ -209,7 +209,7 @@ foam.CLASS({
               .end()
             .end()
             .start('h3').add('Business Address').end()
-            .start().addClass(this.myClass('business-registration-input'))
+            .start().addClass('business-registration-input')
               .start().addClass('input-container')
                 .start('label').add('Country').end()
                 .add(this.COUNTRY_LIST)
@@ -267,9 +267,9 @@ foam.CLASS({
             }
           )
         }).then(function(a){
-          self.stack.push({ class:'net.nanopay.b2b.ui.dashboard.DashboardView' })
+          self.stack.push({ class:'net.nanopay.invoice.ui.InvoiceDashboardView' })
         })
       }
     }
   ]
-})
+});

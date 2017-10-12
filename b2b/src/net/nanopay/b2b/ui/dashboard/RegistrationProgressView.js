@@ -127,7 +127,7 @@ foam.CLASS({
         if( this.ctrl.business.name ){
           return;
         }
-        this.ctrl.stack.push({ class: 'net.nanopay.b2b.ui.registration.BusinessRegistrationView'})       
+        this.ctrl.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView'})
       }
     },
     {
