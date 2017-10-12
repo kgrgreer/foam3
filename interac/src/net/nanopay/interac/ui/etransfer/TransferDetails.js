@@ -157,7 +157,7 @@ foam.CLASS({
           dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.Account.ID, 1)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
-                                '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length)
+                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
                     ]; // TODO: Grab amount and display
           }
         });

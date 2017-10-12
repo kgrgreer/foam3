@@ -7,7 +7,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccountInfo',
+    'net.nanopay.model.BankAccount',
     'net.nanopay.interac.model.Identification',
     'net.nanopay.interac.model.DateAndPlaceOfBirth',
     'net.nanopay.iso20022.Pacs00800106',
@@ -186,7 +186,7 @@ foam.CLASS({
           throw new Error('Payer not found');
 
         payer = result[0];
-        payerAccount = result[1].accountInfo;
+        payerAccount = result[1];
         payerIdentification = result[2].array;
         payerBirthPlace = result[3].array[0];
 
@@ -211,7 +211,7 @@ foam.CLASS({
           throw new Error('Payee not found');
 
         payee = result[0];
-        payeeAccount = result[1].accountInfo;
+        payeeAccount = result[1];
         payeeIdentification = result[2].array;
         payeeBirthPlace = result[3].array[0];
 
