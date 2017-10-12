@@ -70,10 +70,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.BankAccountInfo',
+      of: 'net.nanopay.model.BankAccount',
       name: 'bankAccount',
       hidden: true,
-      factory: function() { return net.nanopay.model.BankAccountInfo.create(); }
+      factory: function() { return net.nanopay.model.BankAccount.create(); }
     },
     {
       class: 'String',
