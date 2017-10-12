@@ -10,7 +10,7 @@ foam.CLASS({
 
   imports: [
     'amount',
-    'bankAccountInfoDAO',
+    'bankAccountDAO',
     'bankList',
     'closeDialog',
     'onCashOutSuccess',
@@ -187,14 +187,14 @@ foam.CLASS({
             .start()
               .addClass('bankName')
               .call(function() {
-                self.bankAccountInfoDAO.find(self.bankList).then(function(bank) {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
                   this.add(bank.accountName);
                 }.bind(this));
               })
             .end()
             .start().addClass('accountNumber')
             .call(function() {
-              self.bankAccountInfoDAO.find(self.bankList).then(function(bank) {
+              self.bankAccountDAO.find(self.bankList).then(function(bank) {
                 this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
               }.bind(this));
             })
@@ -243,7 +243,7 @@ foam.CLASS({
         dao.put(this.Transaction.create({
           payerId: 1,
           amount: X.amount,
-          bankAccountInfoId: X.bankList,
+          bankAccountId: X.bankList,
           type: this.TransactionType.CASHOUT
         }));
         X.closeDialog();
