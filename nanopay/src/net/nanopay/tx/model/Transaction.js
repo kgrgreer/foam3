@@ -59,7 +59,8 @@ foam.CLASS({
       label: 'Amount',
       tableCellFormatter: function(amount) {
         //this.start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
-            this.start().add(( amount/100 ).toFixed(2))
+        var formattedAmount = amount/100;
+        this.start().add('$', formattedAmount.toFixed(2)).end()
       },
     },
     {
