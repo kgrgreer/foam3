@@ -13,14 +13,14 @@ foam.CLASS({
     'net.nanopay.interac.model.Pacs008ISOPurpose',
     'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.interac.ui.shared.TransferUserCard',
-    'net.nanopay.model.Account',
+    'net.nanopay.model.BankAccountInfo',
     'foam.nanos.auth.User'
   ],
 
   imports: [
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
-    'bankAccountDAO',
+    'bankAccountInfoDAO',
     'payeeDAO'
   ],
 
@@ -147,14 +147,14 @@ foam.CLASS({
       name: 'accounts',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.bankAccountDAO.where(this.EQ(this.Account.ID, newValue)).select().then(function(a){
+        this.bankAccountInfoDAO.where(this.EQ(this.BankAccountInfo.ID, newValue)).select().then(function(a){
           var account = a.array[0];
           self.viewData.account = account;
         });
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.Account.ID, 1)),
+          dao: X.data.bankAccountInfoDAO.where(X.data.EQ(X.data.BankAccountInfo.ID, 1)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)

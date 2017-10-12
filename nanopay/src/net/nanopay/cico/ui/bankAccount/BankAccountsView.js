@@ -78,6 +78,9 @@ foam.CLASS({
           cursor: pointer;
           background-color: #20B1A7;
         }
+        ^ .foam-u2-dialog-Popup.popup-with-topnav {
+          margin-top: 65px;
+        }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
           background-color: #edf0f5;
@@ -161,7 +164,12 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.cico.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
+        this.add(
+          this.Popup.create().tag({
+            class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
+            title: this.ActionAdd
+          }).addClass('popup-with-topnav')
+        );
       }
     }
   ],
