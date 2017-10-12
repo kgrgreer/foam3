@@ -23,7 +23,7 @@ foam.CLASS({
   imports: [
     'userDAO',
     'branchDAO',
-    'bankAccountDAO',
+    'bankAccountInfoDAO',
     'invoiceDAO',
     'transactionDAO',
     'identificationDAO',
@@ -176,7 +176,7 @@ foam.CLASS({
         // get payer information
         return Promise.all([
           self.userDAO.find(transaction.payerId),
-          self.bankAccountDAO.find(transaction.payerId),
+          self.bankAccountInfoDAO.find(transaction.payerId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payerId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payerId)).limit(1).select()
         ]);
@@ -186,7 +186,7 @@ foam.CLASS({
           throw new Error('Payer not found');
 
         payer = result[0];
-        payerAccount = result[1].accountInfo;
+        payerAccount = result[1];
         payerIdentification = result[2].array;
         payerBirthPlace = result[3].array[0];
 
@@ -201,7 +201,7 @@ foam.CLASS({
         // get payee information
         return Promise.all([
           self.userDAO.find(transaction.payeeId),
-          self.bankAccountDAO.find(transaction.payeeId),
+          self.bankAccountInfoDAO.find(transaction.payeeId),
           self.identificationDAO.where(self.EQ(self.Identification.OWNER, transaction.payeeId)).select(),
           self.dateAndPlaceOfBirthDAO.where(self.EQ(self.DateAndPlaceOfBirth.USER, transaction.payeeId)).limit(1).select()
         ])
@@ -211,7 +211,7 @@ foam.CLASS({
           throw new Error('Payee not found');
 
         payee = result[0];
-        payeeAccount = result[1].accountInfo;
+        payeeAccount = result[1];
         payeeIdentification = result[2].array;
         payeeBirthPlace = result[3].array[0];
 
