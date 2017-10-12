@@ -6,3 +6,7 @@ sudo rm apache-tomcat-8.5.23.zip
 sudo rm -rf /Library/Tomcat
 sudo ln -s /usr/local/apache-tomcat-8.5.23 /Library/Tomcat
 sudo chmod +x /Library/Tomcat/bin/*.sh
+cd /Library/Tomcat
+sudo rm -rf webapps/
+sudo mkdir webapps/
+sudo chown -R $USER /Library/Tomcat/
