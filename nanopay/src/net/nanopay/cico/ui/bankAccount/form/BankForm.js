@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountInfoDAO'
+    'bankAccountInfoDAO',
+    'closeDialog',
   ],
 
   axioms: [
