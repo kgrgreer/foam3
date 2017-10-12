@@ -9,7 +9,6 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.boot.Boot;
 import net.nanopay.model.Account;
-import net.nanopay.model.UserAccountInfo;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.ArrayList;
@@ -50,10 +49,8 @@ public class UserTransactionsTest {
       Account[] accounts = new Account[ACCOUNT_COUNT];
       for ( int j = 0; j < ACCOUNT_COUNT; j++ ) {
         accounts[j] = new Account();
-        // accounts[j].setOwner(user.getId());
-        UserAccountInfo uai = new UserAccountInfo();
-        uai.setBalance(STARTING_BALANCE);
-        accounts[j].setAccountInfo(uai);
+
+        accounts[j].setBalance(STARTING_BALANCE);
         accounts[j].setId(i);
         accountDao.put(accounts[j]);
       }
@@ -132,11 +129,11 @@ public class UserTransactionsTest {
       @Override
       public void put(FObject obj, Detachable sub) {
         User user = (User) obj;
-        UserAccountInfo uai = (UserAccountInfo) ((Account)user.getAccounts()[0]).getAccountInfo();
+        Account acc = ((Account)user.getAccounts()[0]);
         if (PRINT_USER_BALANCES) {
-          System.out.println(user.getId() + " : " + uai.getBalance());
+          System.out.println(user.getId() + " : " + acc.getBalance());
         }
-        ai.addAndGet(uai.getBalance());
+        ai.addAndGet(acc.getBalance());
       }
     });
 
@@ -149,9 +146,9 @@ public class UserTransactionsTest {
     long[] userBalances = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
-      UserAccountInfo uai = (UserAccountInfo) ((Account)((User)userList.get(i)).getAccounts()[0]).getAccountInfo();
-      userBalances[i] = uai.getBalance();
-      uai.setBalance(STARTING_BALANCE);
+      Account acc = (Account)((User)userList.get(i)).getAccounts()[0];
+      userBalances[i] = acc.getBalance();
+      acc.setBalance(STARTING_BALANCE);
     }
 
     startTime = System.nanoTime();
@@ -170,8 +167,8 @@ public class UserTransactionsTest {
     long[] userBalances2 = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
-      UserAccountInfo uai = (UserAccountInfo) ((Account)((User)userList.get(i)).getAccounts()[0]).getAccountInfo();
-      userBalances2[i] = uai.getBalance();
+      Account acc = (Account)((User)userList.get(i)).getAccounts()[0];
+      userBalances2[i] = acc.getBalance();
     }
 
     ai.set(0);
@@ -179,11 +176,11 @@ public class UserTransactionsTest {
       @Override
       public void put(FObject obj, Detachable sub) {
         User user = (User) obj;
-        UserAccountInfo uai = (UserAccountInfo) ((Account)user.getAccounts()[0]).getAccountInfo();
+        Account acc = (Account)user.getAccounts()[0];
         if (PRINT_USER_BALANCES) {
-          System.out.println(user.getId() + " : " + uai.getBalance());
+          System.out.println(user.getId() + " : " + acc.getBalance());
         }
-        ai.addAndGet(uai.getBalance());
+        ai.addAndGet(acc.getBalance());
       }
     });
 
