@@ -161,11 +161,22 @@ foam.CLASS({
           border: 1px solid lightgrey;
           margin-top: 5px;
         }
-        ^ .foam-u2-ActionView-saveBusiness{
+        ^ .net-nanopay-ui-ActionView-saveBusiness{
+          position: relative;
           width: 100%;
           height: 40px;
-          background: #59aadd;
-          margin-bottom: 15px;
+          background: none;
+          background-color: #59a5d5;
+          font-size: 14px;
+          border: none;
+          color: white;
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+        }
+        ^ .net-nanopay-ui-ActionView-saveBusiness:hover{
+          background: none;
+          background-color: #3783b3;
         }
       */}
     })

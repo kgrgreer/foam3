@@ -101,7 +101,7 @@ foam.CLASS({
           position: relative;
           display: block;
         }
-        ^ .foam-u2-ActionView-signUp{
+        ^ .net-nanopay-ui-ActionView-signUp{
           position: relative;
           width: 100%;
           height: 40px;
@@ -114,7 +114,7 @@ foam.CLASS({
           outline: none;
           cursor: pointer;
         }
-        ^ .foam-u2-ActionView-signUp:hover{
+        ^ .net-nanopay-ui-ActionView-signUp:hover{
           background: none;
           background-color: #3783b3;
         }
@@ -123,13 +123,6 @@ foam.CLASS({
           -moz-text-security: disc;
           text-security: disc;
         }
-        .foam-u2-ActionView-cancel {
-          visibility: hidden;
-        }
-        .foam-u2-ActionView-save {
-          visibility: hidden;
-        }
-
       */}
     })
   ],
