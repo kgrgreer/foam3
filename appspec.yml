@@ -1,0 +1,9 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /pkg/stack/stage/nanopay
+permissions:
+hooks:
+  AfterInstall:
+    - location: root/build.sh
