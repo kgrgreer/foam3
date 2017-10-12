@@ -5,6 +5,13 @@ foam.CLASS({
 
   documentation: 'End of the add bank flow. Show success message here.',
 
+  imports: [
+    'viewData',
+    'errors',
+    'goBack',
+    'goNext'
+  ],
+
   messages: [
     { name: 'Step', message: 'Step 4: Done!' },
     { name: 'Done', message: 'You have successfully added this bank account! You can now use this account to cashout your device balances in the transaction screen.' }

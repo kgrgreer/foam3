@@ -166,7 +166,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'pricingOption',
-      value: -1,
+      value: 1,
       postSet: function(oldValue, newValue) {
         this.viewData.pricingOption = newValue;
       },
