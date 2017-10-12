@@ -55,6 +55,7 @@ foam.CLASS({
             bankNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber,
+            status: 'Verified'
           });
 
           this.bankAccountInfoDAO.put(newAccount).then(function(response){
