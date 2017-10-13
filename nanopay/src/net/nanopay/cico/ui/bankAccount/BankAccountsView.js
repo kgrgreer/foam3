@@ -4,11 +4,11 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'net.nanopay.model.BankAccountInfo',
+    'net.nanopay.model.BankAccount',
     'foam.u2.dialog.Popup'
   ],
 
-  imports: [ 'bankAccountInfoDAO', 'stack' ],
+  imports: [ 'bankAccountDAO', 'stack' ],
 
   implements: [
     'foam.mlang.Expressions',
@@ -78,6 +78,9 @@ foam.CLASS({
           cursor: pointer;
           background-color: #20B1A7;
         }
+        ^ .foam-u2-dialog-Popup.popup-with-topnav {
+          margin-top: 65px;
+        }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
           background-color: #edf0f5;
@@ -102,7 +105,7 @@ foam.CLASS({
     'verifiedBanksCount',
     'unverifiedBanksCount',
     'selection',
-    { name: 'data', factory: function () { return this.bankAccountInfoDAO; } }
+    { name: 'data', factory: function () { return this.bankAccountDAO; } }
   ],
 
   messages: [
@@ -138,15 +141,15 @@ foam.CLASS({
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
-                dao: this.bankAccountInfoDAO,
-                factory: function() { return self.BankAccountInfo.create(); },
+                dao: this.bankAccountDAO,
+                factory: function() { return self.BankAccount.create(); },
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.BankAccountInfo.ACCOUNT_NAME,
-                    this.BankAccountInfo.TRANSIT_NUMBER,
-                    this.BankAccountInfo.ACCOUNT_NUMBER,
-                    this.BankAccountInfo.STATUS
+                    this.BankAccount.ACCOUNT_NAME,
+                    this.BankAccount.TRANSIT_NUMBER,
+                    this.BankAccount.ACCOUNT_NUMBER,
+                    this.BankAccount.STATUS
                   ]
                 },
               summaryView: this.BankAccountTableView.create()
@@ -161,7 +164,12 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(this.Popup.create().tag({class: 'net.nanopay.cico.ui.bankAccount.form.BankForm', title: this.ActionAdd }));
+        this.add(
+          this.Popup.create().tag({
+            class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
+            title: this.ActionAdd
+          }).addClass('popup-with-topnav')
+        );
       }
     }
   ],
@@ -171,12 +179,12 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.model.BankAccountInfo' ],
+      requires: [ 'net.nanopay.model.BankAccount' ],
 
-      imports: [ 'bankAccountInfoDAO' ],
+      imports: [ 'bankAccountDAO' ],
       properties: [
         'selection',
-        { name: 'data', factory: function() { return this.bankAccountInfoDAO; } }
+        { name: 'data', factory: function() { return this.bankAccountDAO; } }
       ],
 
       methods: [
@@ -206,12 +214,12 @@ foam.CLASS({
           self.allBanksCount = count.value;
         });
 
-        var verifiedBanksDAO = this.data.where(this.EQ(this.BankAccountInfo.STATUS, "Verified"));
+        var verifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Verified"));
         verifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.verifiedBanksCount = count.value;
         });
 
-        var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccountInfo.STATUS, "Unverified"));
+        var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Unverified"));
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
         });

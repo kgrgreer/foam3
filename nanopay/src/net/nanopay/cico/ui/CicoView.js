@@ -6,14 +6,19 @@ foam.CLASS({
   documentation: 'View for displaying all Cash In and Cash Out Transactions as well as account Balance',
 
   requires: [
+    'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.model.Account'
   ],
 
   imports: [
-    'bankAccountInfoDAO',
+    'accountDAO',
+    'account',
+    'bankAccountDAO',
     'stack',
-    'transactionDAO'
+    'standardCICOTransactionDAO',
+    'user'
   ],
 
   exports: [
@@ -137,19 +142,22 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Currency',
+      name: 'amount'
+    },
+    {
+      name: 'formattedBalance'
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountInfoDAO,
+          dao: X.bankAccountDAO,
           objToChoice: function(a){
             return [a.id, a.accountName];
           }
         })
       }
-    },
-    {
-      class: 'Currency',
-      name: 'amount'
     }
   ],
 
@@ -158,13 +166,17 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+      this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
+
+      this.formattedBalance = this.account.balance/100;
+
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('balanceBox')
             .start('div').addClass('greenBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$2,632.85').addClass('balance').end()
+            .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .add(this.CASH_IN_BTN)
@@ -174,7 +186,7 @@ foam.CLASS({
           .start()
             .tag({
               class: 'foam.u2.ListCreateController',
-              dao: this.transactionDAO,
+              dao: this.standardCICOTransactionDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
                 class: 'foam.u2.DetailView',
@@ -250,11 +262,11 @@ foam.CLASS({
 
       requires: [ 'net.nanopay.tx.model.Transaction' ],
 
-      imports: [ 'transactionDAO' ],
+      imports: [ 'standardCICOTransactionDAO' ],
 
       properties: [
         'selection',
-        { name: 'data', factory: function() { return this.transactionDAO; } }
+        { name: 'data', factory: function() { return this.standardCICOTransactionDAO; } }
       ],
 
       methods: [
@@ -271,6 +283,20 @@ foam.CLASS({
             }).addClass(this.myClass('table')).end();
         }
       ]
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: true,
+      code: function onDAOUpdate() {
+        var self = this;
+        this.accountDAO.find(this.account.id).then(function(account) {
+          self.account = account;
+          self.formattedBalance = account.balance/100;
+        });
+      }
     }
   ]
 });

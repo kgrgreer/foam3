@@ -160,14 +160,14 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      console.log(this.account$.dot('accountInfo').dot('balance'))
+      console.log(this.account$.dot('balance'))
       this
         .addClass(this.myClass())
         .start()
           .start('h3').add(this.myAccounts).end()
           .start('div').addClass('accountDiv')
             .start().add('Chequing Account xxxxxxxxxxxx5175').addClass('account').end()
-            .start().add('CAD ', this.account$.dot('accountInfo').dot('balance').map(function(b){return (b/100).toFixed(2); })).addClass('accountBalance').end()
+            .start().add('CAD ', this.account$.dot('balance').map(function(b){return (b/100).toFixed(2); })).addClass('accountBalance').end()
           .end()
           .start('div').addClass('tableBarDiv')
             .start('h3').add(this.recentActivities).addClass('titleMargin').end()

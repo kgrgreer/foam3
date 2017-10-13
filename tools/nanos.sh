@@ -10,6 +10,8 @@ find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankA
 find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
 find foam2/src NANOPAY/**/src -type f -name brokers -exec cat {} \; > brokers
 find foam2/src NANOPAY/**/src -type f -name businesses -exec cat {} \; > businesses
+find foam2/src NANOPAY/**/src -type f -name businessSectors -exec cat {} \; > businessSectors
+find foam2/src NANOPAY/**/src -type f -name businessTypes -exec cat {} \; > businessTypes
 find foam2/src NANOPAY/**/src -type f -name canadaTransactions -exec cat {} \; > canadaTransactions
 find foam2/src NANOPAY/**/src -type f -name cicoServiceProviders -exec cat {} \; > cicoServiceProviders
 find foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries

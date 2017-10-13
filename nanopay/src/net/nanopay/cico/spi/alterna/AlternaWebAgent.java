@@ -14,7 +14,7 @@ import foam.nanos.http.WebAgent;
 import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
-import net.nanopay.model.BankAccountInfo;
+import net.nanopay.model.BankAccount;
 import net.nanopay.model.Branch;
 import net.nanopay.tx.model.Transaction;
 
@@ -76,8 +76,8 @@ public class AlternaWebAgent
   public synchronized void execute(X x) {
     DAO userDAO = (DAO) x.get("localUserDAO");
     DAO branchDAO = (DAO) x.get("branchDAO");
-    DAO bankAccountInfoDAO = (DAO) x.get("bankAccountInfoDAO");
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
+    DAO transactionDAO = (DAO) x.get("cicoTransactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
     HttpServletResponse response = (HttpServletResponse) x.get(HttpServletResponse.class);
@@ -108,16 +108,16 @@ public class AlternaWebAgent
           }
 
           // get bank account
-          BankAccountInfo bankAccountInfo = (BankAccountInfo) bankAccountInfoDAO.find(t.getBankAccountInfoId());
-          Branch branch = (Branch) branchDAO.find(bankAccountInfo.getBranchId());
+          BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
+          Branch branch = (Branch) branchDAO.find(bankAccount.getBranchId());
 
           AlternaFormat alternaFormat = new AlternaFormat();
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
-          alternaFormat.setTransitNumber(bankAccountInfo.getTransitNumber());
+          alternaFormat.setTransitNumber(bankAccount.getTransitNumber());
           alternaFormat.setBankNumber(branch.getFinancialId());
-          alternaFormat.setAccountNumber(bankAccountInfo.getAccountNumber());
+          alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
           alternaFormat.setProcessDate(generateProcessDate(now));

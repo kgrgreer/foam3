@@ -88,9 +88,9 @@ public class XeroComplete
     contact.setEmail(xero.getEmailAddress());
     return contact;
   }
-  public BankAccountInfo addBankAccount(String code, Account xero)
+  public BankAccount addBankAccount(String code, Account xero)
   {
-    BankAccountInfo account = new BankAccountInfo();
+    BankAccount account = new BankAccount();
     account.setXeroId(xero.getAccountID());
     account.setAccountName(xero.getName());
     account.setCurrencyCode(xero.getCurrencyCode().value());

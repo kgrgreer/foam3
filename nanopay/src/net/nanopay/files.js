@@ -1,21 +1,21 @@
 FOAM_FILES([
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
-  { name: 'net/nanopay/model/AccountInfo' },
   { name: 'net/nanopay/model/AccountLimit' },
   { name: 'net/nanopay/model/Branch' },
-  { name: 'net/nanopay/model/BankAccountInfo' },
+  { name: 'net/nanopay/model/BankAccount' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
-  { name: 'net/nanopay/model/UserAccountInfo' },
-  { name: 'net/nanopay/model/DateAndPlaceOfBirth' },  
+  { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
+  { name: 'net/nanopay/auth/ui/UserRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -23,6 +23,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/RadioView', flags: ['web'] },
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
+  { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -60,10 +61,12 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // cico
+  { name: 'net/nanopay/cico/model/BaseServiceProvider' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/cico/model/User' },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
@@ -106,7 +109,7 @@ FOAM_FILES([
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
-  { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },  
+  { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
 
   // modal
@@ -130,15 +133,17 @@ FOAM_FILES([
 
   //util
   { name: 'net/nanopay/util/CurrencyFormatter' },
-  { name: 'net/nanopay/util/Iso20022' },  
+  { name: 'net/nanopay/util/Iso20022' },
 
   //ui
   { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
   { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
   { name: 'net/nanopay/ui/forgotPassword/ResetView', flags: ['web'] },
   { name: 'net/nanopay/ui/forgotPassword/SuccessView', flags: ['web'] },
-  { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/UserTopNavView', flags: ['web'] },
   { name: 'net/nanopay/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },

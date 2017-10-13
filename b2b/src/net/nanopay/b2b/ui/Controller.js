@@ -136,11 +136,11 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.TopNav', data: self.business })
+          .tag({class: 'net.nanopay.ui.topNavigation.TopNav', data: self.business })
         // .add(this.user$.dot('id').map(function (id) {
         //   return id ?
-        //     self.E().tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.TopNav', data: self.business }) :
-        //     self.E().tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.NoMenuTopNav' });
+        //     self.E().tag({class: 'net.nanopay.ui.topNavigation.TopNav', data: self.business }) :
+        //     self.E().tag({class: 'net.nanopay.ui.topNavigation.NoMenuTopNav' });
         // }))
         .br()
         .start('div').addClass('stack-wrapper')

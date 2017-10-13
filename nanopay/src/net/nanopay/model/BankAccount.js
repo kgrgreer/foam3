@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.model',
-  name: 'BankAccountInfo',
+  name: 'BankAccount',
 
   documentation: 'Bank account information.',
 
