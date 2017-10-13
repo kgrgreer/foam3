@@ -158,10 +158,17 @@ foam.CLASS({
         }
       }
     },
+    {
+      name: 'agreed',
+      validateObj: function(agreed) {
+        if(!agreed){
+          return 'Terms & conditions required.'
+        }
+      }
+    },
     'organization',
     'department',
-    'phone',
-    'agreed'    
+    'phone'
   ],
 
   methods: [
@@ -215,6 +222,7 @@ foam.CLASS({
               .end()
               .start('p').add('I agree with the ').end()
               .start('p').addClass('link').add('terms and conditions.').end()
+              .start().addClass('error-label').add(this.slot(this.AGREED.validateObj)).end()                         
               .start().add(this.SIGN_UP).end()
             .end()
           .end()
@@ -229,22 +237,28 @@ foam.CLASS({
   ],
 
   actions: [
-    function signUp(X, obj) {
-      var self = this;
-
-      var user = self.User.create({
-        firstName: self.firstName,
-        lastName: self.lastName,
-        email: self.email,
-        phone: self.phone,
-        password: self.password,
-        organization: self.organization,
-        department: self.department
-      });
-
-      self.userDAO.put(user).then(function(user) {
-        X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
-      })
+    {
+      name: 'signUp',
+      isEnabled: function(firstName, lastName, email, password, agreed){
+        return firstName && lastName && email && password && agreed;
+      },
+      code: function(X, obj){
+        var self = this;
+        
+        var user = self.User.create({
+          firstName: self.firstName,
+          lastName: self.lastName,
+          email: self.email,
+          phone: self.phone,
+          password: self.password,
+          organization: self.organization,
+          department: self.department
+        });
+  
+        self.userDAO.put(user).then(function(user) {
+          X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
+        })
+      }
     }
   ]
 });
