@@ -131,39 +131,31 @@ foam.CLASS({
     {
       name: 'firstName',
       validateObj: function(firstName) {
-        return 'First name required.'
+        if(!firstName) return 'First name required.';
       }
     },
     {
       name: 'lastName',
       validateObj: function(lastName) {
-        if(!lastName) {
-          return 'Last name required.'
-        }
+        if(!lastName) return 'Last name required.';
       }
     },
     {
       name: 'email',
       validateObj: function(email) {
-        if(!email){
-          return 'Email required.'
-        }
+        if(!email) return 'Email required.';
       }
     },
     {
       name: 'password',
       validateObj: function(password) {
-        if(!password){
-          return 'Password required.'
-        }
+        if(!password) return 'Password required.';
       }
     },
     {
       name: 'agreed',
       validateObj: function(agreed) {
-        if(!agreed){
-          return 'Terms & conditions required.'
-        }
+        if(!agreed) return 'Terms & conditions required.';
       }
     },
     'organization',
