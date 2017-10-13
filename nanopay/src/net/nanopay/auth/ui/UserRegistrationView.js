@@ -128,14 +128,40 @@ foam.CLASS({
   ],
 
   properties: [
-    'agreed',
-    'firstName',
-    'lastName',
+    {
+      name: 'firstName',
+      validateObj: function(firstName) {
+        return 'First name required.'
+      }
+    },
+    {
+      name: 'lastName',
+      validateObj: function(lastName) {
+        if(!lastName) {
+          return 'Last name required.'
+        }
+      }
+    },
+    {
+      name: 'email',
+      validateObj: function(email) {
+        if(!email){
+          return 'Email required.'
+        }
+      }
+    },
+    {
+      name: 'password',
+      validateObj: function(password) {
+        if(!password){
+          return 'Password required.'
+        }
+      }
+    },
     'organization',
     'department',
-    'email',
     'mobile',
-    'password'
+    'agreed'    
   ],
 
   methods: [
@@ -152,10 +178,12 @@ foam.CLASS({
             .start().addClass('business-registration-input')
               .start().addClass('input-container')
                 .start('label').add('First Name').end()
+                  .add(this.slot(this.FIRST_NAME.validateObj))                
                   .add(this.FIRST_NAME)
               .end()
               .start().addClass('input-container-right')
                 .start('label').add('Last Name').end()
+                  .add(this.slot(this.LAST_NAME.validateObj))
                   .add(this.LAST_NAME)
               .end()
               .start().addClass('input-container')
@@ -168,14 +196,17 @@ foam.CLASS({
               .end()
               .start().addClass('input-container')
                 .start('label').add('Email Address').end()
+                  .add(this.slot(this.EMAIL.validateObj))                
                   .add(this.EMAIL)
               .end()
               .start().addClass('input-container-right')
                 .start('label').add('Phone Number').end()
+                  .add(this.slot(this.MOBILE.validateObj))                
                   .add(this.MOBILE)
               .end()
               .start().addClass('input-container-full-width')
                 .start('label').add('Password').end()
+                  .add(this.slot(this.PASSWORD.validateObj))                
                   .add(this.PASSWORD)
               .end()
             .end()
@@ -207,7 +238,9 @@ foam.CLASS({
         lastName: self.lastName,
         email: self.email,
         mobile: self.mobile,
-        password: self.password
+        password: self.password,
+        organization: self.organization,
+        department: self.department
       });
 
       self.userDAO.put(user).then(function(user) {
