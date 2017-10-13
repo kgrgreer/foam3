@@ -160,7 +160,7 @@ foam.CLASS({
     },
     'organization',
     'department',
-    'mobile',
+    'phone',
     'agreed'    
   ],
 
@@ -201,7 +201,7 @@ foam.CLASS({
               .end()
               .start().addClass('input-container-right')
                 .start('label').add('Phone Number').end()
-                  .add(this.MOBILE)
+                  .add(this.PHONE)
               .end()
               .start().addClass('input-container-full-width')
                 .start('label').add('Password').end()
@@ -236,7 +236,7 @@ foam.CLASS({
         firstName: self.firstName,
         lastName: self.lastName,
         email: self.email,
-        mobile: self.mobile,
+        phone: self.phone,
         password: self.password,
         organization: self.organization,
         department: self.department
