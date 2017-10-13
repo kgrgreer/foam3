@@ -128,14 +128,39 @@ foam.CLASS({
   ],
 
   properties: [
-    'agreed',
-    'firstName',
-    'lastName',
+    {
+      name: 'firstName',
+      validateObj: function(firstName) {
+        if(!firstName) return 'First name required.';
+      }
+    },
+    {
+      name: 'lastName',
+      validateObj: function(lastName) {
+        if(!lastName) return 'Last name required.';
+      }
+    },
+    {
+      name: 'email',
+      validateObj: function(email) {
+        if(!email) return 'Email required.';
+      }
+    },
+    {
+      name: 'password',
+      validateObj: function(password) {
+        if(!password) return 'Password required.';
+      }
+    },
+    {
+      name: 'agreed',
+      validateObj: function(agreed) {
+        if(!agreed) return 'Terms & conditions required.';
+      }
+    },
     'organization',
     'department',
-    'email',
-    'mobile',
-    'password'
+    'phone'
   ],
 
   methods: [
@@ -152,10 +177,12 @@ foam.CLASS({
             .start().addClass('business-registration-input')
               .start().addClass('input-container')
                 .start('label').add('First Name').end()
+                  .start().addClass('error-label').add(this.slot(this.FIRST_NAME.validateObj)).end()          
                   .add(this.FIRST_NAME)
               .end()
               .start().addClass('input-container-right')
                 .start('label').add('Last Name').end()
+                  .start().addClass('error-label').add(this.slot(this.LAST_NAME.validateObj)).end()  
                   .add(this.LAST_NAME)
               .end()
               .start().addClass('input-container')
@@ -168,23 +195,26 @@ foam.CLASS({
               .end()
               .start().addClass('input-container')
                 .start('label').add('Email Address').end()
+                  .start().addClass('error-label').add(this.slot(this.EMAIL.validateObj)).end()              
                   .add(this.EMAIL)
               .end()
               .start().addClass('input-container-right')
                 .start('label').add('Phone Number').end()
-                  .add(this.MOBILE)
+                  .add(this.PHONE)
               .end()
               .start().addClass('input-container-full-width')
                 .start('label').add('Password').end()
+                  .start().addClass('error-label').add(this.slot(this.PASSWORD.validateObj)).end()           
                   .add(this.PASSWORD)
               .end()
             .end()
             .start().addClass('term-conditions')
               .start('div').addClass('check-box').enableClass('agreed', this.agreed$).on('click', function(){ self.agreed = !self.agreed })
-                .tag({class:'foam.u2.tag.Image', data: 'ui/images/check-mark.png'}).enableClass('show-checkmark', this.agreed$)
+                .tag({class:'foam.u2.tag.Image', data: 'images/check-mark.png'}).enableClass('show-checkmark', this.agreed$)
               .end()
               .start('p').add('I agree with the ').end()
               .start('p').addClass('link').add('terms and conditions.').end()
+              .start().addClass('error-label').add(this.slot(this.AGREED.validateObj)).end()                         
               .start().add(this.SIGN_UP).end()
             .end()
           .end()
@@ -199,20 +229,28 @@ foam.CLASS({
   ],
 
   actions: [
-    function signUp(X, obj) {
-      var self = this;
-
-      var user = self.User.create({
-        firstName: self.firstName,
-        lastName: self.lastName,
-        email: self.email,
-        mobile: self.mobile,
-        password: self.password
-      });
-
-      self.userDAO.put(user).then(function(user) {
-        X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
-      })
+    {
+      name: 'signUp',
+      isEnabled: function(firstName, lastName, email, password, agreed){
+        return firstName && lastName && email && password && agreed;
+      },
+      code: function(X, obj){
+        var self = this;
+        
+        var user = self.User.create({
+          firstName: self.firstName,
+          lastName: self.lastName,
+          email: self.email,
+          phone: self.phone,
+          password: self.password,
+          organization: self.organization,
+          department: self.department
+        });
+  
+        self.userDAO.put(user).then(function(user) {
+          X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
+        })
+      }
     }
   ]
 });
