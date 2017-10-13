@@ -294,6 +294,11 @@ foam.CLASS({
           border-right: 10px solid transparent;
           border-top: 10px solid lightgrey;
         }
+        .error-label{
+          float: right;
+          font-size: 8px;
+          color: red;
+        }
       */}
     })
   ]
