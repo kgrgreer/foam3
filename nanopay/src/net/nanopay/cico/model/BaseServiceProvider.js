@@ -5,17 +5,17 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getFee',
-      javaReturns: 'net.nanopay.tx.model.Fee',
+      javaReturns: 'long',
       returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
           name: 'providerId',
-          javaType: 'Long'
+          javaType: 'long'
         },
         {
           name: 'amount',
-          javaType: 'foam.core.Currency'
+          class: 'foam.core.Currency'
         }
       ]
     }

@@ -1,15 +1,12 @@
 foam.CLASS({
-  package: 'net.nanopay.retail.ui.registration',
+  package: 'net.nanopay.auth.ui',
   name: 'UserRegistrationView',
   extends: 'foam.u2.View',
 
   documentation: 'User Registration View',
 
   imports: [
-    'stack',
-    'save', 
-    'userDAO',
-    'user'
+    'stack', 'save', 'userDAO', 'user'
   ],
 
   exports: [
@@ -27,7 +24,7 @@ foam.CLASS({
           width: 490px;
           margin: auto;
         }
-        ^registration-container{
+        ^ .registration-container{
           background: white;
           padding: 25px 25px 25px;
         }
@@ -83,7 +80,7 @@ foam.CLASS({
           margin-bottom: 20px;
           margin-right: 15px;
         }
-        ^check-box{
+        ^ .check-box{
           display: inline-block;
           border: solid 1px rgba(164, 179, 184, 0.5);
           width: 14px;
@@ -104,7 +101,7 @@ foam.CLASS({
           position: relative;
           display: block;
         }
-        ^ .foam-u2-ActionView-signUp{
+        ^ .net-nanopay-ui-ActionView-signUp{
           position: relative;
           width: 100%;
           height: 40px;
@@ -117,7 +114,7 @@ foam.CLASS({
           outline: none;
           cursor: pointer;
         }
-        ^ .foam-u2-ActionView-signUp:hover{
+        ^ .net-nanopay-ui-ActionView-signUp:hover{
           background: none;
           background-color: #3783b3;
         }
@@ -126,13 +123,6 @@ foam.CLASS({
           -moz-text-security: disc;
           text-security: disc;
         }
-        .foam-u2-ActionView-cancel {
-          visibility: hidden;
-        }
-        .foam-u2-ActionView-save {
-          visibility: hidden;
-        }
-
       */}
     })
   ],
@@ -141,6 +131,8 @@ foam.CLASS({
     'agreed',
     'firstName',
     'lastName',
+    'organization',
+    'department',
     'email',
     'mobile',
     'password'
@@ -155,9 +147,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('h2').add('Sign Up').end()
-          .start().addClass(this.myClass('registration-container'))
-            .start().addClass(this.myClass('business-registration-input'))
+          .start('h1').add('Sign Up').end()
+          .start().addClass('registration-container')
+            .start().addClass('business-registration-input')
               .start().addClass('input-container')
                 .start('label').add('First Name').end()
                   .add(this.FIRST_NAME)
@@ -165,6 +157,14 @@ foam.CLASS({
               .start().addClass('input-container-right')
                 .start('label').add('Last Name').end()
                   .add(this.LAST_NAME)
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Company Name').end()
+                  .add(this.ORGANIZATION)
+              .end()
+              .start().addClass('input-container-right')
+                .start('label').add('Job Title').end()
+                  .add(this.DEPARTMENT)
               .end()
               .start().addClass('input-container')
                 .start('label').add('Email Address').end()
@@ -179,8 +179,8 @@ foam.CLASS({
                   .add(this.PASSWORD)
               .end()
             .end()
-            .start().addClass(this.myClass('term-conditions'))
-              .start('div').addClass(this.myClass('check-box')).enableClass('agreed', this.agreed$).on('click', function(){ self.agreed = !self.agreed })
+            .start().addClass('term-conditions')
+              .start('div').addClass('check-box').enableClass('agreed', this.agreed$).on('click', function(){ self.agreed = !self.agreed })
                 .tag({class:'foam.u2.tag.Image', data: 'ui/images/check-mark.png'}).enableClass('show-checkmark', this.agreed$)
               .end()
               .start('p').add('I agree with the ').end()
@@ -191,7 +191,7 @@ foam.CLASS({
           .start('p').add('Already have an account?').end()
           .start('p').addClass('link')
             .add('Sign in.')
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.retail.ui.onboarding.SignInView' }) })
+            .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' }) })
           .end()
         .end()
       .end()
@@ -211,8 +211,8 @@ foam.CLASS({
       });
 
       self.userDAO.put(user).then(function(user) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.registration.BusinessRegistrationView', user: user });
+        X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
       })
     }
   ]
-})
+});

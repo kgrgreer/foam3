@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.registration',
+  package: 'net.nanopay.auth.ui',
   name: 'BusinessRegistrationView',
   extends: 'foam.u2.View',
 
@@ -34,7 +34,7 @@ foam.CLASS({
     'city',
     {
       name: 'postalCode',
-      view: 'net.nanopay.b2b.ui.shared.PostalCodeFormat'
+      view: 'net.nanopay.ui.PostalCodeFormat'
     },
     {
       name: 'regionList',
@@ -108,7 +108,7 @@ foam.CLASS({
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.2px;
-        } 
+        }
         ^ img{
           display: inline-block;
         }
@@ -161,11 +161,22 @@ foam.CLASS({
           border: 1px solid lightgrey;
           margin-top: 5px;
         }
-        ^ .foam-u2-ActionView-saveBusiness{
+        ^ .net-nanopay-ui-ActionView-saveBusiness{
+          position: relative;
           width: 100%;
           height: 40px;
-          background: #59aadd;
-          margin-bottom: 15px;
+          background: none;
+          background-color: #59a5d5;
+          font-size: 14px;
+          border: none;
+          color: white;
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+        }
+        ^ .net-nanopay-ui-ActionView-saveBusiness:hover{
+          background: none;
+          background-color: #3783b3;
         }
       */}
     })
@@ -272,4 +283,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

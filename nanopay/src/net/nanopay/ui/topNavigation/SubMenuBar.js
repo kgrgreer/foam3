@@ -49,7 +49,7 @@ foam.CLASS({
                     .on('click', function() {
                       if(!i.selected){
                         self.selected = true;
-                        self.tag({class: 'net.nanopay.b2b.ui.shared.topNavigation.SubMenuBar', data: menus, parent: i })
+                        self.tag({class: 'net.nanopay.ui.topNavigation.SubMenuBar', data: menus, parent: i })
                       }
                     })
                   .end()
