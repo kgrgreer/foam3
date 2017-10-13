@@ -6,11 +6,15 @@ foam.CLASS({
   documentation: 'View for displaying all Cash In and Cash Out Transactions as well as account Balance',
 
   requires: [
+    'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.model.Account'
   ],
 
   imports: [
+    'accountDAO',
+    'account',
     'bankAccountDAO',
     'stack',
     'standardCICOTransactionDAO',
@@ -142,6 +146,9 @@ foam.CLASS({
       name: 'amount'
     },
     {
+      name: 'formattedBalance'
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
@@ -151,10 +158,6 @@ foam.CLASS({
           }
         })
       }
-    },
-    {
-      class: 'Currency',
-      name: 'balance'
     }
   ],
 
@@ -163,8 +166,9 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+      this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
 
-      // var formattedBalance = this.user.accounts[0].balance/100;
+      this.formattedBalance = this.account.balance/100;
 
       this
         .addClass(this.myClass())
@@ -172,7 +176,7 @@ foam.CLASS({
           .start('div').addClass('balanceBox')
             .start('div').addClass('greenBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$'/*, formattedBalance.toFixed(2)*/).addClass('balance').end()
+            .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .add(this.CASH_IN_BTN)
@@ -279,6 +283,20 @@ foam.CLASS({
             }).addClass(this.myClass('table')).end();
         }
       ]
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: true,
+      code: function onDAOUpdate() {
+        var self = this;
+        this.accountDAO.find(this.account.id).then(function(account) {
+          self.account = account;
+          self.formattedBalance = account.balance/100;
+        });
+      }
     }
   ]
 });
