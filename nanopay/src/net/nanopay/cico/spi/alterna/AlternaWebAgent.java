@@ -77,7 +77,7 @@ public class AlternaWebAgent
     DAO userDAO = (DAO) x.get("localUserDAO");
     DAO branchDAO = (DAO) x.get("branchDAO");
     DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO transactionDAO = (DAO) x.get("cicoTransactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
     HttpServletResponse response = (HttpServletResponse) x.get(HttpServletResponse.class);
