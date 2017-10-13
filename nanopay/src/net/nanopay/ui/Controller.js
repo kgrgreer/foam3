@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
@@ -17,6 +16,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.model.Currency',
+    'net.nanopay.model.Account',
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
@@ -24,6 +24,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'account',
     'stack',
     'as ctrl',
     'user'
@@ -58,6 +59,12 @@ foam.CLASS({
       name: 'user',
       factory: function() { return this.User.create(); }
     },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.model.Account',
+      name: 'account',
+      factory: function() { return this.Account.create(); }
+    }
   ],
 
   methods: [
@@ -71,6 +78,11 @@ foam.CLASS({
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
       this.userDAO.select().then(function(a) {
         self.user.copyFrom(a.array[0]);
+      });
+
+      /*******   Loads Account with balance for Testing Purposes (comment out if not needed)  ********/
+      this.accountDAO.select().then(function(a) {
+        self.account.copyFrom(a.array[0]);
       });
 
       net.nanopay.TempMenu.create(null, this);
