@@ -164,7 +164,10 @@ foam.CLASS({
 
       var self = this;
 
-      var formattedBalance = this.user.accounts[0].accountInfo.balance/100;
+      var formattedBalance = 0;
+      if ( this.user.accounts && this.user.accounts.length > 0 ) {
+        formattedBalance = this.user.accounts[0].balance / 100;
+      }
 
       this
         .addClass(this.myClass())
