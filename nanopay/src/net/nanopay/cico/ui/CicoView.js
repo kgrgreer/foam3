@@ -164,10 +164,7 @@ foam.CLASS({
 
       var self = this;
 
-      var formattedBalance = 0;
-      if ( this.user.accounts && this.user.accounts.length > 0 ) {
-        formattedBalance = this.user.accounts[0].balance / 100;
-      }
+      // var formattedBalance = this.user.accounts[0].balance/100;
 
       this
         .addClass(this.myClass())
@@ -175,7 +172,7 @@ foam.CLASS({
           .start('div').addClass('balanceBox')
             .start('div').addClass('greenBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$', formattedBalance.toFixed(2)).addClass('balance').end()
+            .start().add('$'/*, formattedBalance.toFixed(2)*/).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .add(this.CASH_IN_BTN)
