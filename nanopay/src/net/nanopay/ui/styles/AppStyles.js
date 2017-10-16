@@ -126,7 +126,6 @@ foam.CLASS({
         }
         .row {
           display: inline-block;
-          margin-top: 16px;
           width: 100%;
         }
         .rowTopMarginOverride {
