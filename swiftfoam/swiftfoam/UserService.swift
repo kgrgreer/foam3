@@ -85,7 +85,12 @@ public class UserService: Service {
           ]
         ])
 
-        let userSink = (try? self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as! ArraySink
+        guard let userSink = (try self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
+          DispatchQueue.main.async {
+            callback(ServiceError.Failed)
+          }
+          return
+        }
 
         guard userSink.array.count > 0 else {
           // User Not Found.
@@ -94,29 +99,16 @@ public class UserService: Service {
           }
           return
         }
+
         self.loggedInUser = userSink.array[0] as? User
-        guard self.loggedInUser != nil else {
-          // Could not convert item in array into User
+
+        let auth = self.isUserFullyVerified()
+        guard auth.isFullyVerified else {
           DispatchQueue.main.async {
-            callback(ServiceError.Failed)
+            callback(auth.error)
           }
           return
         }
-//        NOTE: removed until fields are implemented
-//        guard self.isUserVerifiedEmail() else {
-//          // lets the front end know the logged in user hasn't verified their email
-//          DispatchQueue.main.async {
-//            callback(UserError.UserUnverifiedEmail)
-//          }
-//          return
-//        }
-//        guard self.isUserVerifiedPhone() else {
-//          // lets the front end know the logged in user hasn't verified their phone
-//          DispatchQueue.main.async {
-//            callback(UserError.UserUnverifiedPhone)
-//          }
-//          return
-//        }
 
         DispatchQueue.main.async {
           callback(self.loggedInUser)

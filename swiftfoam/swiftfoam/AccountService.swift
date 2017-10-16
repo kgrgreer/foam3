@@ -29,7 +29,7 @@ public class AccountService: Service {
 
   public func getAccounts(startingAt skip:  Int? = 0,
                           withLimit  limit: Int? = 100,
-                          callback:  @escaping ([Any?]?) -> Void)
+                          callback:  @escaping (Any?) -> Void)
   {
     // TODO: Add User Authenticity
   }
