@@ -16,6 +16,7 @@ mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
 #Remove build folder and rebuild nanopay
 cd ../../NANOPAY/
 ./gen.sh
+mvn clean install
 
 cd nanopay/
 rm -rf build/
@@ -30,6 +31,7 @@ mvn clean install
 
 #Copy over files to tomcat location
 cp target/ROOT.war $CATALINA_HOME/webapps
+cp server.xml $CATALINA_HOME/conf
 
 #Concatenate files into one services file
 cd ../../
@@ -104,11 +106,11 @@ cp transactions $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
 
 #Copy over NANOPAY and foam2
-rm -rf /Library/Tomcat/bin/foam2/
-cp -r foam2/ /Library/Tomcat/bin/foam2
+rm -rf $CATALINA_HOME/bin/foam2/
+cp -r foam2/ $CATALINA_HOME/bin/foam2
 
-rm -rf /Library/Tomcat/bin/NANOPAY/
-cp -r NANOPAY/ /Library/Tomcat/bin/NANOPAY
+rm -rf $CATALINA_HOME/bin/NANOPAY/
+cp -r NANOPAY/ $CATALINA_HOME/bin/NANOPAY
 
 #Start the server
 cd $CATALINA_HOME/bin/

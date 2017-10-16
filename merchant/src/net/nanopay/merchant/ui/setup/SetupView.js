@@ -47,10 +47,10 @@ foam.CLASS({
           color: #ffffff;
           padding-top: 66px;
         }
-        ^ .setup-next-wrapper {
+        .setup-next-wrapper {
           padding-top: 103px;
         }
-        ^ .setup-next-button {
+        .setup-next-button {
           width: 320px;
           height: 72px;
           background-color: #26a96c;
