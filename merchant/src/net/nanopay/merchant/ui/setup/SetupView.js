@@ -84,9 +84,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
+      
       this
         .addClass(this.myClass())
+        .tag({ class: 'net.nanopay.merchant.ui.ErrorMessage', message: 'check you internet connection'})
         .start()
           .addClass('setup-title')
           .add('Serial Number')
