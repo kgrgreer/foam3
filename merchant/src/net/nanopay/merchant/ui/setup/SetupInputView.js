@@ -113,7 +113,8 @@ foam.CLASS({
       name: 'next',
       label: '',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' })
+        /* not sure what service or model to call here but the retail code is available under X.retailCode */
+        X.stack.push({ class: 'net.nanopay.merchant.ui.SetupSuccessView' })
       }
     }
   ]
