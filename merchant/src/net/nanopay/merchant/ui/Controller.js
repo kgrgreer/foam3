@@ -142,87 +142,87 @@ foam.CLASS({
       this.userDAO.limit(1).select().then(function (a) {
         self.user.copyFrom(a.array[0]);
       });
-      // if ( localStorage.serialNumber ) {
-      //   this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
-      //     if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
-      //       self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-      //     } else {
-      //       self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
-      //     }
-      //   })
-      //   .catch(function (err) {
-      //     self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-      //   })
-      // } else {
-      //   this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-      // }
+      if ( localStorage.serialNumber ) {
+        this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
+          if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
+            self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+          } else {
+            self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+          }
+        })
+        .catch(function (err) {
+          self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+        })
+      } else {
+        this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+      }
     },
 
     function initE() {
       var self = this;
       this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupInputView'});
       
-      // this
-      //   .addClass(this.myClass())
-      //   .start('div').addClass('mdc-toolbar mdc-toolbar--fixed').show(this.showHeader$)
-      //     .start('div').addClass('mdc-toolbar__row')
-      //       .start('section').addClass('mdc-toolbar__section mdc-toolbar__section--align-start')
-      //         .start('button').addClass('merchant-menu material-icons mdc-toolbar__icon--menu')
-      //           .add(this.toolbarIcon$)
-      //           .on('click', this.onMenuClicked)
-      //         .end()
-      //         .start('span').addClass('mdc-toolbar__title catalog-title').add(this.toolbarTitle$).end()
-      //       .end()
-      //     .end()
-      //   .end()
+      this
+        .addClass(this.myClass())
+        .start('div').addClass('mdc-toolbar mdc-toolbar--fixed').show(this.showHeader$)
+          .start('div').addClass('mdc-toolbar__row')
+            .start('section').addClass('mdc-toolbar__section mdc-toolbar__section--align-start')
+              .start('button').addClass('merchant-menu material-icons mdc-toolbar__icon--menu')
+                .add(this.toolbarIcon$)
+                .on('click', this.onMenuClicked)
+              .end()
+              .start('span').addClass('mdc-toolbar__title catalog-title').add(this.toolbarTitle$).end()
+            .end()
+          .end()
+        .end()
 
-      //   .start('aside').addClass('mdc-temporary-drawer')
-      //     .start('nav').addClass('mdc-temporary-drawer__drawer')
-      //       .start('nav').addClass('mdc-temporary-drawer__content mdc-list-group')
-      //         .start('div').addClass('mdc-list')
-      //           .start('a').addClass('mdc-list-item back')
-      //             .attrs({ href: '#' })
-      //             .start('i').addClass('mdc-list-item__start-detail back')
-      //               .attrs({ 'aria-hidden': true })
-      //               .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
-      //             .end()
-      //             .add('Back')
-      //             .on('click', this.onMenuItemClicked)
-      //           .end()
+        .start('aside').addClass('mdc-temporary-drawer')
+          .start('nav').addClass('mdc-temporary-drawer__drawer')
+            .start('nav').addClass('mdc-temporary-drawer__content mdc-list-group')
+              .start('div').addClass('mdc-list')
+                .start('a').addClass('mdc-list-item back')
+                  .attrs({ href: '#' })
+                  .start('i').addClass('mdc-list-item__start-detail back')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
+                  .end()
+                  .add('Back')
+                  .on('click', this.onMenuItemClicked)
+                .end()
 
-      //           .start('a').addClass('mdc-list-item selected')
-      //             .attrs({ href: '#' })
-      //             .start('i').addClass('mdc-list-item__start-detail')
-      //               .attrs({ 'aria-hidden': true })
-      //               .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
-      //             .end()
-      //             .add('Home')
-      //             .on('click', this.onMenuItemClicked)
-      //           .end()
-      //           .start('a').addClass('mdc-list-item')
-      //             .attrs({ href: '#' })
-      //             .start('i').addClass('mdc-list-item__start-detail')
-      //               .attrs({ 'aria-hidden': true })
-      //               .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-transactions.png' })
-      //             .end()
-      //             .add('Transactions')
-      //             .on('click', this.onMenuItemClicked)
-      //           .end()
+                .start('a').addClass('mdc-list-item selected')
+                  .attrs({ href: '#' })
+                  .start('i').addClass('mdc-list-item__start-detail')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
+                  .end()
+                  .add('Home')
+                  .on('click', this.onMenuItemClicked)
+                .end()
+                .start('a').addClass('mdc-list-item')
+                  .attrs({ href: '#' })
+                  .start('i').addClass('mdc-list-item__start-detail')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-transactions.png' })
+                  .end()
+                  .add('Transactions')
+                  .on('click', this.onMenuItemClicked)
+                .end()
 
-      //           .start('a').addClass('mdc-list-item')
-      //             .start('i').addClass('mdc-list-item__start-detail')
-      //               .attrs({ 'aria-hidden': true })
-      //               .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.png' })
-      //             .end()
-      //             .add('Tip')
-      //             .on('click', this.onMenuItemClicked)
-      //             .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
-      //           .end()
+                .start('a').addClass('mdc-list-item')
+                  .start('i').addClass('mdc-list-item__start-detail')
+                    .attrs({ 'aria-hidden': true })
+                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.png' })
+                  .end()
+                  .add('Tip')
+                  .on('click', this.onMenuItemClicked)
+                  .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
+                .end()
 
-      //         .end()
-      //       .end()
-      //     .end()
-      //   .end()
+              .end()
+            .end()
+          .end()
+        .end()
       this
         .start('div')
           .addClass('stack-wrapper')
