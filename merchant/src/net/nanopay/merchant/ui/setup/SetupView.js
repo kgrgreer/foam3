@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Setup view with serial number',
 
   requires: [
-    'net.nanopay.retail.model.DeviceStatus'
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.merchant.ui.ErrorMessage'
   ],
 
   imports: [
@@ -87,7 +88,6 @@ foam.CLASS({
       
       this
         .addClass(this.myClass())
-        .tag({ class: 'net.nanopay.merchant.ui.ErrorMessage', message: 'check you internet connection'})
         .start()
           .addClass('setup-title')
           .add('Serial Number')
@@ -112,7 +112,6 @@ foam.CLASS({
   listeners: [
     function onNextClicked (e) {
       var self = this;
-
       // look up device, set to active and save
       this.deviceDAO.find(this.serialNumber).then(function (result) {
         if ( ! result ) {

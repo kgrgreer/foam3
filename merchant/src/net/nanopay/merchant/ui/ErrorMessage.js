@@ -18,7 +18,20 @@ foam.CLASS({
           background: #f55a5a;
           text-align: center;
           position: fixed;
-          top: 1;
+          top: -100px;
+        }
+        ^ {
+          -webkit-animation-name: example;
+          -webkit-animation-duration: 4s;
+          animation-name: slide;
+          animation-duration: 4s;
+        }
+        @keyframes slide {
+          0%  { top: -100px; }
+          10% { top:0px; }
+          80% { top: 0px; }
+          100% { top: -100px; }
+        }
         }
       */
       }
@@ -27,11 +40,15 @@ foam.CLASS({
 
   methods: [
     function initE(){
+      var self = this;
+
       this
         .addClass(this.myClass())
         .start()
           .add(this.message)
-        .end()
+        .end();
+
+        setTimeout(function(){ self.remove() }, 4000);        
     }
   ]
 });
