@@ -12,9 +12,8 @@ foam.CLASS({
       name: 'limit'
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.model.AccountInfo',
-      name: 'accountInfo'
+      class: 'Long',
+      name: 'balance'
     }
   ]
 });

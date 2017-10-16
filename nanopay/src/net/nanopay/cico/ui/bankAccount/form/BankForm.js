@@ -7,11 +7,13 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a bank account',
 
   requires: [
-    'net.nanopay.model.BankAccountInfo'
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
-    'bankAccountInfoDAO'
+
+    'bankAccountDAO',
+    'closeDialog'
   ],
 
   axioms: [
@@ -42,22 +44,22 @@ foam.CLASS({
       label: 'Next',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        if ( position < this.views.length - 1 ) return true;
-        if ( position == this.views.length - 1 && this.inDialog) return true; // Last Page & in dialog
+        if ( position <= this.views.length - 1 ) return true;
         return false; // Not in dialog
       },
       code: function() {
         if ( this.position == 0 ) { // On Submission screen.
           // data from form
           var accountInfo = this.viewData;
-          var newAccount = this.BankAccountInfo.create({
+          var newAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
             bankNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber,
+            status: 'Verified'
           });
 
-          this.bankAccountInfoDAO.put(newAccount).then(function(response){
+          this.bankAccountDAO.put(newAccount).then(function(response){
             console.log(response);
           });
 
@@ -88,8 +90,7 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          if ( this.inDialog ) this.closeDialog();
-          return;
+          return this.closeDialog();
         }
       }
     }

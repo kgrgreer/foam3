@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.shared',
+  package: 'net.nanopay.ui',
   name: 'PostalCodeFormat',
   extends: 'foam.u2.tag.Input',
 

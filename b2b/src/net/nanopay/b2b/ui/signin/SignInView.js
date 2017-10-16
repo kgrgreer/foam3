@@ -189,7 +189,7 @@ foam.CLASS({
       var view = foam.u2.ListCreateController.CreateController.create(
         null,
         this.__context__.createSubContext({
-          detailView: net.nanopay.b2b.ui.registration.UserRegistrationView,
+          detailView: net.nanopay.auth.ui.UserRegistrationView,
           back: this.stack.back.bind(this.stack),
           dao: this.userDAO,
           factory: function() {

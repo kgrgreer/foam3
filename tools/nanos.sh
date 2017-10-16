@@ -10,6 +10,8 @@ find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankA
 find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
 find foam2/src NANOPAY/**/src -type f -name brokers -exec cat {} \; > brokers
 find foam2/src NANOPAY/**/src -type f -name businesses -exec cat {} \; > businesses
+find foam2/src NANOPAY/**/src -type f -name businessSectors -exec cat {} \; > businessSectors
+find foam2/src NANOPAY/**/src -type f -name businessTypes -exec cat {} \; > businessTypes
 find foam2/src NANOPAY/**/src -type f -name canadaTransactions -exec cat {} \; > canadaTransactions
 find foam2/src NANOPAY/**/src -type f -name cicoServiceProviders -exec cat {} \; > cicoServiceProviders
 find foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
@@ -18,6 +20,7 @@ find foam2/src NANOPAY/**/src -type f -name cronjobs -exec cat {} \; > cronjobs
 find foam2/src NANOPAY/**/src -type f -name currency -exec cat {} \; > currency
 find foam2/src NANOPAY/**/src -type f -name devices -exec cat {} \; > devices
 find foam2/src NANOPAY/**/src -type f -name dateofbirth -exec cat {} \; > dateofbirth
+find foam2/src NANOPAY/**/src -type f -name emailTemplates -exec cat {} \; > emailTemplates
 find foam2/src NANOPAY/**/src -type f -name exchangeRates -exec cat {} \; > exchangeRates
 find foam2/src NANOPAY/**/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
 find foam2/src NANOPAY/**/src -type f -name groups -exec cat {} \; > groups

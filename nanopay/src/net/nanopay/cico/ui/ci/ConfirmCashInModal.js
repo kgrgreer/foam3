@@ -3,15 +3,19 @@ foam.CLASS({
   name: 'ConfirmCashInModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.cico.ui.CicoView' ],
+  requires: [
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.cico.model.TransactionType'
+  ],
 
   imports: [
     'amount',
-    'bankAccountInfoDAO',
+    'bankAccountDAO',
     'bankList',
     'cashIn',
     'closeDialog',
-    'onCashInSuccess'
+    'onCashInSuccess',
+    'standardCICOTransactionDAO'
   ],
 
   documentation: 'Pop up modal for confirming top up.',
@@ -105,16 +109,13 @@ foam.CLASS({
           color: #093649;
           margin-top: 5px;
         }
-        ^ .property-amount {
-          height: 15px;
-          width: 100px;
-          padding: 0;
-          line-height: 16px;
+        ^ .amount {
           font-size: 12px;
+          line-height: 1.33;
           letter-spacing: 0.2px;
           color: #093649;
           display: inline-block;
-          margin-top: 20px;
+          margin-top: 22px;
           margin-left: 75px;
         }
         ^ .net-nanopay-ui-ActionView-cashInBtn {
@@ -174,6 +175,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      var formattedAmount = this.amount/100;
+
       this.addClass(this.myClass())
       .start()
         .start().addClass('cashInContainer')
@@ -187,16 +190,22 @@ foam.CLASS({
             .start()
               .addClass('bankName')
               .call(function() {
-                self.bankAccountInfoDAO.find(self.bankList).then(function(bank) {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
                   this.add(bank.accountName);
                 }.bind(this));
               })
             .end()
-            .start().add('xxxx123456').addClass('accountNumber').end()
+            .start().addClass('accountNumber')
+            .call(function() {
+              self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+              }.bind(this));
+            })
+            .end()
           .end()
           .br()
           .start().add(this.amountLabel).addClass('label').end()
-          .tag(this.CicoView.AMOUNT, {mode: foam.u2.DisplayMode.RO})
+          .start().add('$', formattedAmount.toFixed(2)).addClass('amount').end()
           .start('div').addClass('modal-button-container')
             .add(this.BACK)
             .add(this.CASH_IN_BTN)
@@ -233,6 +242,13 @@ foam.CLASS({
       name: 'cashInBtn',
       label: 'Cash In',
       code: function (X) {
+        var dao = X.standardCICOTransactionDAO;
+        dao.put(this.Transaction.create({
+          payeeId: 1,
+          amount: X.amount,
+          bankAccountId: X.bankList,
+          type: this.TransactionType.CASHIN
+        }));
         X.closeDialog();
         X.onCashInSuccess();
       }

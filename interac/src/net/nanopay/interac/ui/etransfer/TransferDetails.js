@@ -13,7 +13,7 @@ foam.CLASS({
     'net.nanopay.interac.model.Pacs008ISOPurpose',
     'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.interac.ui.shared.TransferUserCard',
-    'net.nanopay.model.Account',
+    'net.nanopay.model.BankAccount',
     'foam.nanos.auth.User'
   ],
 
@@ -147,17 +147,17 @@ foam.CLASS({
       name: 'accounts',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.bankAccountDAO.where(this.EQ(this.Account.ID, newValue)).select().then(function(a){
+        this.bankAccountDAO.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
           var account = a.array[0];
           self.viewData.account = account;
         });
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.Account.ID, 1)),
+          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
-                                '***' + account.accountInfo.accountNumber.substring(account.accountInfo.accountNumber.length - 4, account.accountInfo.accountNumber.length)
+                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
                     ]; // TODO: Grab amount and display
           }
         });

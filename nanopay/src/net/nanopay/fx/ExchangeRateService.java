@@ -115,7 +115,7 @@ public class ExchangeRateService
       pmFetch.log(getX());
     } catch (Throwable e) {
       e.printStackTrace();
-      throw new RuntimeException(e);
+      // throw new RuntimeException(e);
     }
   }
 
