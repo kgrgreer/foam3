@@ -94,9 +94,6 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
-      },
-      validateObj: function(businessTypeList) {
-        if (!businessTypeList) return 'Business Type required.'
       }
     },
     {
@@ -108,9 +105,6 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
-      },
-      validateObj: function(sectorList) {
-        if (!sectorList) return 'Sector required.'
       }
     }
   ],
