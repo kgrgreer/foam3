@@ -7,17 +7,15 @@ foam.CLASS({
 
   requires:[
     'foam.nanos.auth.Address',
-    'net.nanopay.b2b.model.Business'
   ],
 
   imports: [
-    'businessDAO',
     'addressDAO',
-    'business',
     'user',
     'stack',
     'countryDAO',
     'regionDAO',
+    'userDAO',
     'businessSectorDAO',
     'businessTypeDAO'
   ],
@@ -27,14 +25,37 @@ foam.CLASS({
   ],
 
   properties:[
-    'businessName',
-    'businessNumber',
+    {
+      name: 'businessName',
+      validateObj: function(businessName) {
+        if(!businessName) return 'Business Name required.'
+      }
+    },
+    {
+      name: 'businessNumber',
+      validateObj: function(businessNumber) {
+        if (!businessNumber) return 'Business Number required.'
+      }
+    },
     'website',
-    'address',
-    'city',
+    {
+      name: 'address',
+      validateObj: function(address) {
+        if (!address) return 'Address required.'
+      }
+    },
+    {
+      name: 'city',
+      validateObj: function(city) {
+        if (!city) return 'City required.'
+      }
+    },
     {
       name: 'postalCode',
-      view: 'net.nanopay.ui.PostalCodeFormat'
+      view: 'net.nanopay.ui.PostalCodeFormat',
+      validateObj: function(postalCode) {
+        if (!postalCode) return 'Postal Code required.'
+      }
     },
     {
       name: 'regionList',
@@ -45,6 +66,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
+      },
+      validateObj: function(regionList) {
+        if (!regionList) return 'Region required.'
       }
     },
     {
@@ -56,6 +80,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
+      },
+      validateObj: function(countryList) {
+        if (!countryList) return 'Country required.'
       }
     },
     {
@@ -102,7 +129,7 @@ foam.CLASS({
         }
         ^registration-container{
           background: white;
-          padding: 4px 25px;
+          padding: 15px 25px;
         }
         ^ h3{
           font-size: 14px;
@@ -200,10 +227,11 @@ foam.CLASS({
             .start().addClass(this.myClass('business-registration-input'))
               .start().addClass('input-container')
                 .start('label').add('Company Name').end()
+                .start().addClass('error-label').add(this.slot(this.BUSINESS_NAME.validateObj)).end()                              
                 .start(this.BUSINESS_NAME).end()
               .end()
               .start().addClass('input-container')
-                .start('label').add('Company Type').end()
+                .start('label').add('Company Type').end()                            
                 .start(this.BUSINESS_TYPE_LIST).end()
               .end()
               .start().addClass('input-container')
@@ -212,6 +240,7 @@ foam.CLASS({
               .end()
               .start().addClass('input-container')
                 .start('label').add('Business Number').end()
+                .start().addClass('error-label').add(this.slot(this.BUSINESS_NUMBER.validateObj)).end()                              
                 .start(this.BUSINESS_NUMBER).end()
               .end()
               .start().addClass('input-container')
@@ -223,22 +252,27 @@ foam.CLASS({
             .start().addClass(this.myClass('business-registration-input'))
               .start().addClass('input-container')
                 .start('label').add('Country').end()
+                .start().addClass('error-label').add(this.slot(this.COUNTRY_LIST.validateObj)).end()                              
                 .add(this.COUNTRY_LIST)
               .end()
               .start().addClass('input-container')
                 .start('label').add('Address').end()
+                .start().addClass('error-label').add(this.slot(this.ADDRESS.validateObj)).end()                              
                 .start(this.ADDRESS).end()
               .end()
               .start().addClass('input-container')
                 .start('label').add('City').end()
+                .start().addClass('error-label').add(this.slot(this.CITY.validateObj)).end()                              
                 .start(this.CITY).end()
               .end()
               .start().addClass('input-container')
                 .start('label').add('Province').end()
+                .start().addClass('error-label').add(this.slot(this.REGION_LIST.validateObj)).end()                              
                 .add(this.REGION_LIST)
               .end()
               .start().addClass('input-container')
                 .start('label').add('Postal Code').end()
+                .start().addClass('error-label').add(this.slot(this.POSTAL_CODE.validateObj)).end()                              
                 .start(this.POSTAL_CODE).end()
               .end()
             .end()
@@ -252,34 +286,31 @@ foam.CLASS({
     {
       name: 'saveBusiness',
       label: 'Save',
+      isEnabled: function(businessName, address, city, postalCode, businessNumber, countryList){
+        return businessName && address && city && businessNumber && postalCode && countryList;
+      },
       code: function(){
         var self = this;
 
-        this.businessDAO.put(
-          {
-            name: self.businessName,
-            businessTypeId: self.businessTypeList,
-            sectorId: self.sectorList,
-            businessNumber: self.businessNumber,
-            website: self.website
-          }
-        ).then(function(a){
-          self.user.business = a.id;
-          self.business.copyFrom(a)
+        var newAddress = this.Address.create({
+          countryId: self.countryList,
+          regionId: self.regionList,
+          address: self.address,
+          city: self.city,
+          postalCode: self.postalCode
+        });
 
-          return self.addressDAO.put(
-            {
-              countryId: self.countryList,
-              regionId: self.regionList,
-              address: self.address,
-              city: self.city,
-              postalCode: self.postalCode,
-              businessId: self.business.id
-            }
-          )
-        }).then(function(a){
-          self.stack.push({ class:'net.nanopay.b2b.ui.dashboard.DashboardView' })
-        })
+        this.user.businessName = self.businessName;
+        this.user.businessType = self.businessTypeList;
+        this.user.businessSector = self.sectorList;
+        this.user.businessIdentificationNumber = self.businessNumber;
+        this.user.website = self.website;
+        this.user.address = newAddress;
+        this.user.type = 'business';
+
+        this.userDAO.put(this.user).then(function(a){
+          self.stack.push({ class:'net.nanopay.auth.ui.SignInView' });
+        });
       }
     }
   ]

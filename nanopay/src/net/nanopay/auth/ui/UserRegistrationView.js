@@ -248,6 +248,8 @@ foam.CLASS({
         });
   
         self.userDAO.put(user).then(function(user) {
+          // Setting controller user as the one created here. May need tuning once auth & email verfication come to play.
+          self.user = user;
           X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
         })
       }
