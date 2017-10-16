@@ -219,6 +219,8 @@ foam.CLASS({
           height: 40px;
           margin-left: 5%;
           margin-bottom: 15px;
+          outline: none;
+          padding: 10px;
         }
         .label{
           height: 16px;
@@ -228,7 +230,7 @@ foam.CLASS({
           text-align: left;
           color: #093649;
           margin-bottom: 8px;
-          margin-left: 20px;
+          margin-left: 25px;
         }
         .link{
           color: #59a5d5;
@@ -307,6 +309,10 @@ foam.CLASS({
           margin-left: 20px;
           border-radius: 5px;
           padding: 10px;
+        }
+        .foam-u2-view-TableView-noselect {
+          width: 1px;
+          cursor: pointer;
         }
       */}
     })

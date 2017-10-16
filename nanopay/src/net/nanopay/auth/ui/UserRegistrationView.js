@@ -56,6 +56,8 @@ foam.CLASS({
           width: 100%;
           height: 40px;
           margin-top: 7px;
+          padding: 10px;
+          outline: none;
         }
         ^ label{
           font-weight: 300;
@@ -113,6 +115,7 @@ foam.CLASS({
           border-radius: 2px;
           outline: none;
           cursor: pointer;
+          filter: grayscale(0%);
         }
         ^ .net-nanopay-ui-ActionView-signUp:hover{
           background: none;
@@ -129,34 +132,19 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'firstName',
-      validateObj: function(firstName) {
-        if(!firstName) return 'First name required.';
-      }
+      name: 'firstName'
     },
     {
-      name: 'lastName',
-      validateObj: function(lastName) {
-        if(!lastName) return 'Last name required.';
-      }
+      name: 'lastName'
     },
     {
-      name: 'email',
-      validateObj: function(email) {
-        if(!email) return 'Email required.';
-      }
+      name: 'email'
     },
     {
-      name: 'password',
-      validateObj: function(password) {
-        if(!password) return 'Password required.';
-      }
+      name: 'password'
     },
     {
-      name: 'agreed',
-      validateObj: function(agreed) {
-        if(!agreed) return 'Terms & conditions required.';
-      }
+      name: 'agreed'
     },
     'organization',
     'department',
@@ -176,13 +164,11 @@ foam.CLASS({
           .start().addClass('registration-container')
             .start().addClass('business-registration-input')
               .start().addClass('input-container')
-                .start('label').add('First Name').end()
-                  .start().addClass('error-label').add(this.slot(this.FIRST_NAME.validateObj)).end()          
+                .start('label').add('First Name').end()      
                   .add(this.FIRST_NAME)
               .end()
               .start().addClass('input-container-right')
                 .start('label').add('Last Name').end()
-                  .start().addClass('error-label').add(this.slot(this.LAST_NAME.validateObj)).end()  
                   .add(this.LAST_NAME)
               .end()
               .start().addClass('input-container')
@@ -194,8 +180,7 @@ foam.CLASS({
                   .add(this.DEPARTMENT)
               .end()
               .start().addClass('input-container')
-                .start('label').add('Email Address').end()
-                  .start().addClass('error-label').add(this.slot(this.EMAIL.validateObj)).end()              
+                .start('label').add('Email Address').end()           
                   .add(this.EMAIL)
               .end()
               .start().addClass('input-container-right')
@@ -203,8 +188,7 @@ foam.CLASS({
                   .add(this.PHONE)
               .end()
               .start().addClass('input-container-full-width')
-                .start('label').add('Password').end()
-                  .start().addClass('error-label').add(this.slot(this.PASSWORD.validateObj)).end()           
+                .start('label').add('Password').end()       
                   .add(this.PASSWORD)
               .end()
             .end()
@@ -213,8 +197,7 @@ foam.CLASS({
                 .tag({class:'foam.u2.tag.Image', data: 'images/check-mark.png'}).enableClass('show-checkmark', this.agreed$)
               .end()
               .start('p').add('I agree with the ').end()
-              .start('p').addClass('link').add('terms and conditions.').end()
-              .start().addClass('error-label').add(this.slot(this.AGREED.validateObj)).end()                         
+              .start('p').addClass('link').add('terms and conditions.').end()                      
               .start().add(this.SIGN_UP).end()
             .end()
           .end()
