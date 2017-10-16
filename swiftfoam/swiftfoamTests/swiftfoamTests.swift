@@ -74,6 +74,59 @@ class swiftfoamTests: XCTestCase {
     XCTAssertEqual(userSink?.array.count, 1)
   }
 
+  func testRegistration() {
+    let boxContext = BoxContext()
+    let X = boxContext.__subContext__
+    var expectations:[XCTestExpectation] = []
+    let expRegistrationSuccess = XCTestExpectation(description: "Registration Expection - Registration Successful")
+    let expRegistrationFailure = XCTestExpectation(description: "Registration Expection - Registration Failure")
+    expectations.append(expRegistrationFailure)
+    expectations.append(expRegistrationSuccess)
+    let existingUser = X.create(User.self)!
+    existingUser.email = "simon@gmail.com"
+    UserService.instance.register(user: existingUser) {
+      response in
+      guard let error = response as? UserService.UserError else {
+        XCTFail()
+        expRegistrationFailure.fulfill()
+        return
+      }
+      XCTAssert(error == .UserAlreadyExists)
+      expRegistrationFailure.fulfill()
+    }
+
+    let newUser = X.create(User.self)!
+    newUser.email = "userForTest@nanopay.net"
+    newUser.password = "1234567890"
+    UserService.instance.register(user: newUser) {
+      response in
+      guard let user = response as? User else {
+        let error = response as! UserService.UserError
+        XCTAssert(error == .UserAlreadyExists)
+        expRegistrationSuccess.fulfill()
+        return
+      }
+      XCTAssert(user.email == newUser.email)
+      XCTAssert(user.password == newUser.password)
+      expRegistrationSuccess.fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+
+    let expGetRegisteredUser = XCTestExpectation(description: "Get Registered User")
+    expectations.append(expGetRegisteredUser)
+    UserService.instance.login(withUsername: "userForTest@nanopay.net", andPassword: "1234567890") {
+      response in
+      XCTAssertNotNil(UserService.instance.getLoggedInUser())
+      guard let _ = response as? User else {
+        XCTFail()
+        expGetRegisteredUser.fulfill()
+        return
+      }
+      expGetRegisteredUser.fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+  }
+
   func testLogin() {
     var expectations:[XCTestExpectation] = []
     let expLoginSuccess = XCTestExpectation(description: "Login Expection - Login Successful")
