@@ -231,13 +231,11 @@ foam.CLASS({
                 .start(this.BUSINESS_NAME).end()
               .end()
               .start().addClass('input-container')
-                .start('label').add('Company Type').end()
-                .start().addClass('error-label').add(this.slot(this.BUSINESS_TYPE_LIST.validateObj)).end()                              
+                .start('label').add('Company Type').end()                            
                 .start(this.BUSINESS_TYPE_LIST).end()
               .end()
               .start().addClass('input-container')
                 .start('label').add('Business Sector').end()
-                .start().addClass('error-label').add(this.slot(this.SECTOR_LIST.validateObj)).end()                              
                 .add(this.SECTOR_LIST)
               .end()
               .start().addClass('input-container')
@@ -288,8 +286,8 @@ foam.CLASS({
     {
       name: 'saveBusiness',
       label: 'Save',
-      isEnabled: function(businessName, businessTypeList, sectorList, businessNumber, countryList){
-        return businessName && businessTypeList && businessNumber && sectorList && countryList;
+      isEnabled: function(businessName, address, city, postalCode, businessNumber, countryList){
+        return businessName && address && city && businessNumber && postalCode && countryList;
       },
       code: function(){
         var self = this;
@@ -302,16 +300,17 @@ foam.CLASS({
           postalCode: self.postalCode
         });
 
-        this.user.businessName = self.businessName
-        this.user.businessType = self.businessTypeList
-        this.user.businessSector = self.sectorList
-        this.user.businessIdentificationNumber = self.businessNumber
-        this.user.website = self.website
-        this.user.address = newAddress
+        this.user.businessName = self.businessName;
+        this.user.businessType = self.businessTypeList;
+        this.user.businessSector = self.sectorList;
+        this.user.businessIdentificationNumber = self.businessNumber;
+        this.user.website = self.website;
+        this.user.address = newAddress;
+        this.user.type = 'business';
 
         this.userDAO.put(this.user).then(function(a){
-          self.stack.push({ class:'net.nanopay.auth.ui.SignInView' })
-        })
+          self.stack.push({ class:'net.nanopay.auth.ui.SignInView' });
+        });
       }
     }
   ]
