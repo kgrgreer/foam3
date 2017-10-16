@@ -152,7 +152,7 @@ foam.CLASS({
           }
         })
         .catch(function (err) {
-          self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+          self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupInputView' });
         })
       } else {
         this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
