@@ -1,10 +1,3 @@
-supressWarnings([
-
-'Unknown property foam.core.Property.searchView: [object Object]',
-'Unknown property foam.core.String.searchView: [object Object]',
-'Unknown property foam.core.Long.visibility: FINAL',
-'Unknown property foam.core.String.view: foam.u2.tag.TextArea',
-])
 foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',

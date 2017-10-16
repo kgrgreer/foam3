@@ -32,11 +32,6 @@ foam.CLASS({
       name: 'defaultContact'
     },
     {
-      class: 'String',
-      name: 'secureAssetStore',
-      required: true
-    },
-    {
       class: 'Boolean',
       name: 'active'
     },
