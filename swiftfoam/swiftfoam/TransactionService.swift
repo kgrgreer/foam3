@@ -29,17 +29,23 @@ public class TransactionService: Service {
                               callbackDispatchQueue: DispatchQueue = DispatchQueue.main,
                               callback: @escaping (Any?) -> Void)
   {
-    let auth = UserService.instance.isUserFullyVerified()
-    guard auth.isFullyVerified else {
-      callback(auth.error)
-      return
-    }
-    
     putDispatchQueue.async {
-      do {
-        let placedTransaction = (try self.dao.put(transaction)) as? Transaction
+      let auth = UserService.instance.isUserFullyVerified()
+      guard auth.isFullyVerified else {
         callbackDispatchQueue.async {
-          callback(placedTransaction)
+          callback(auth.error)
+        }
+        return
+      }
+      do {
+        guard let newTransaction = (try self.dao.put(transaction)) as? Transaction else {
+          callbackDispatchQueue.async {
+            callback(ServiceError.ConversionFailed)
+          }
+          return
+        }
+        callbackDispatchQueue.async {
+          callback(newTransaction)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
@@ -54,12 +60,11 @@ public class TransactionService: Service {
                               withLimit  limit: Int? = 100,
                               callback:  @escaping (Any?) -> Void)
   {
-    guard let user = UserService.instance.getLoggedInUser() else {
-      callback(UserService.UserError.UserNotLoggedIn)
-      return
-    }
-
     DispatchQueue.global(qos: .userInitiated).async {
+      guard let user = UserService.instance.getLoggedInUser() else {
+        callback(UserService.UserError.UserNotLoggedIn)
+        return
+      }
       do {
         // predicate to return transactions that have the logged in user involved
         let orPred = [
@@ -78,7 +83,7 @@ public class TransactionService: Service {
 
         guard let sink = (try self.dao.`where`(pred).skip(skip!).limit(limit!).select(ArraySink())) as? ArraySink else {
           DispatchQueue.main.async {
-            callback(ServiceError.Failed)
+            callback(ServiceError.ConversionFailed)
           }
           return
         }
@@ -95,12 +100,11 @@ public class TransactionService: Service {
   }
 
   public func getTransactionBy(transactionId id: Int, callback:  @escaping (Any?) -> Void) {
-    guard let user = UserService.instance.getLoggedInUser() else {
-      callback(UserService.UserError.UserNotLoggedIn)
-      return
-    }
-
     DispatchQueue.global(qos: .userInitiated).async {
+      guard let user = UserService.instance.getLoggedInUser() else {
+        callback(UserService.UserError.UserNotLoggedIn)
+        return
+      }
       do {
         // predicate to return the transaction that the logged in user was involved in
         let orPred = [
@@ -128,7 +132,7 @@ public class TransactionService: Service {
 
         guard let sink = (try self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
           DispatchQueue.main.async {
-            callback(ServiceError.Failed)
+            callback(ServiceError.ConversionFailed)
           }
           return
         }

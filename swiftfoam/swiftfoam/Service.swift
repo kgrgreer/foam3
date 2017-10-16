@@ -17,10 +17,13 @@ public class Service {
 
   public enum ServiceError: ServiceErrorProtocol {
     case Failed
+    case ConversionFailed
     func description() -> String {
       switch(self) {
         case .Failed:
           return "Something went wrong."
+        case .ConversionFailed:
+          return "Could not convert object."
       }
     }
   }

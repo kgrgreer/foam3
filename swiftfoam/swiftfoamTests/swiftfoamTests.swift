@@ -151,7 +151,7 @@ class swiftfoamTests: XCTestCase {
     }
     wait(for: expectations, timeout: 20)
 
-    expectations.append(XCTestExpectation(description: "Put TX Expectation"))
+    expectations.append(XCTestExpectation(description: "Login Expectation"))
     UserService.instance.login(withUsername: "simon@gmail.com", andPassword: "22b70d9b9c98bdfee23e47c874f4a92257268449572e7edfcaa7f0eee569b7de35e8bea44e5b93e3e1dce9cf96425ac3c7fc88b6cfa53a6fa9064b99244192ce:5932aeb0bda8cf763dc94f02459799250a619b6d") {
       response in
       XCTAssertNotNil(UserService.instance.getLoggedInUser())
@@ -221,7 +221,6 @@ class swiftfoamTests: XCTestCase {
           expectations[i].fulfill()
           return
         }
-        print("Fulfilling Expectation \(i)")
         expectations[i].fulfill()
       }
     }
