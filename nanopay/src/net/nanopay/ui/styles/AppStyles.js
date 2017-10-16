@@ -299,6 +299,16 @@ foam.CLASS({
           font-size: 8px;
           color: red;
         }
+        .property-amount {
+          width: 408px;
+          height: 40px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          outline: none;
+          margin-left: 20px;
+          border-radius: 5px;
+          padding: 10px;
+        }
       */}
     })
   ]
