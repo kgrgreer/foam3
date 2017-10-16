@@ -15,7 +15,7 @@ foam.CLASS({
   methods: [
     function init() {
 
-      foam.json.parse([ 
+      foam.json.parse([
         {                         id: 'sign-in',       label: 'Sign in',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView' } } },
         {                         id: 'subscription',  label: 'Subscription',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SubscriptionView' } } },
         {                         id: 'dashboard',     label: 'Dashboard',          handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.InvoiceDashboardView' } } },
