@@ -206,7 +206,7 @@ foam.CLASS({
           height: 40px;
           border-radius: 2px;
           border: solid 1px #59a5d5;
-          margin-left: 20px;
+          margin: 0 auto;
           background-color: #59aadd;
           text-align: center;
           line-height: 40px;
