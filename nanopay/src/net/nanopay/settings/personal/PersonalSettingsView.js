@@ -313,7 +313,7 @@ foam.CLASS({
         }
         ^ .twoFactorDiv {
           display: inline-block;
-          width: 850px;
+          width: 855px;
         }
         ^ .toggleDiv {
           position: relative;
