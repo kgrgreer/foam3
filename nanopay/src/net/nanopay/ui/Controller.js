@@ -20,7 +20,8 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   exports: [
@@ -102,6 +103,7 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+      this.add(this.NotificationMessage.create({ message: 'Please check internet connection'}))
     }
   ]
 });
