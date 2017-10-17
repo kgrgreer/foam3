@@ -34,13 +34,6 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'net.nanopay.tx.model.TransactionLimit',
-  forwardName: 'transactionLimits',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.model.Account',
   forwardName: 'accounts',
@@ -81,6 +74,11 @@ foam.RELATIONSHIP({
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
   properties: [
+     {
+      class: 'Reference',
+      of: 'net.nanopay.model.Broker',
+      name: 'brokerId'
+    },
     {
       class: 'FObjectArray',
       name: 'transactionLimits',
