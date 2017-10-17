@@ -2,12 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>parent</artifactId>
-    <groupId>net.nanopay</groupId>
-    <version>0.0.1</version>
-  </parent>
-
+  
   <packaging>war</packaging>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>root</artifactId>
@@ -23,12 +18,6 @@
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
       <version>1.3.4</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google</groupId>
-      <artifactId>foam</artifactId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
