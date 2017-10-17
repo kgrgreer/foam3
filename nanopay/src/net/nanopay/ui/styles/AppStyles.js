@@ -310,7 +310,6 @@ foam.CLASS({
         }
         .close-x {
           position: absolute;
-
           width: 32px;
           height: 32px;
           opacity: 0.3;

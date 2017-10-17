@@ -103,7 +103,6 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
-      this.add(this.NotificationMessage.create({ message: 'Please check internet connection'}))
     }
   ]
 });
