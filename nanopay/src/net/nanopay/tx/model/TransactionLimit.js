@@ -11,6 +11,11 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
+      name: 'name',
+      required: true
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
       name: 'timeFrame'
