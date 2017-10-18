@@ -16,6 +16,9 @@ foam.CLASS({
           -moz-user-select:none;
           -ms-user-select: none;
         }
+        ^toggleswitch input[type="checkbox"] {
+          display: none;
+        }
         ^checkbox {
           display: none;
         }

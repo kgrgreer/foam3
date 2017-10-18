@@ -206,7 +206,7 @@ foam.CLASS({
           height: 40px;
           border-radius: 2px;
           border: solid 1px #59a5d5;
-          margin-left: 20px;
+          margin: 0 auto;
           background-color: #59aadd;
           text-align: center;
           line-height: 40px;
@@ -219,6 +219,8 @@ foam.CLASS({
           height: 40px;
           margin-left: 5%;
           margin-bottom: 15px;
+          outline: none;
+          padding: 10px;
         }
         .label{
           height: 16px;
@@ -228,7 +230,7 @@ foam.CLASS({
           text-align: left;
           color: #093649;
           margin-bottom: 8px;
-          margin-left: 20px;
+          margin-left: 25px;
         }
         .link{
           color: #59a5d5;
@@ -308,6 +310,32 @@ foam.CLASS({
           border-radius: 5px;
           padding: 10px;
         }
+        .foam-u2-view-TableView-noselect {
+          width: 1px;
+          cursor: pointer;
+        }
+        .close-x {
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          opacity: 0.3;
+        }
+        .close-x:hover {
+          opacity: 1;
+        }
+        .close-x:before, .close-x:after {
+          position: absolute;
+          content: ' ';
+          height: 20px;
+          width: 2px;
+          background-color: #333;
+        }
+        .close-x:before {
+          transform: rotate(45deg);
+        }
+        .close-x:after {
+          transform: rotate(-45deg);
+        }   
       */}
     })
   ]

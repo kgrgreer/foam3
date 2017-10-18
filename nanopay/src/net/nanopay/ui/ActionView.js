@@ -24,8 +24,6 @@ foam.CLASS({
         vertical-align: middle;
       }
 
-      ^:disabled { filter: grayscale(80%); }
-
       ^.material-icons {
         cursor: pointer;
       }
