@@ -6,7 +6,6 @@ cwd=$(pwd)
 cp pom.xml build
 cd ../foam2/src
 find . -name '*.java' | cpio -pdm $cwd/build/
-find . -name '*.js' | cpio -pdm $cwd/build/
 cd ../../NANOPAY/
 cd b2b/src
 find . -name '*.java' | cpio -pdm $cwd/build
