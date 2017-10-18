@@ -15,12 +15,10 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-
         ^{
           width: 1280px;
           margin: auto;
         }
-
         ^ .first_Container{
           width: 960px;
           height: 80px;
@@ -29,7 +27,6 @@ foam.CLASS({
           margin-top: 30px;
           margin-left: 160px;
         }
-
         ^ .second-Container{
           width: 960px;
           height: 80px;
@@ -37,7 +34,6 @@ foam.CLASS({
           background-color: #ffffff;
           margin-left: 160px;;
         }
-
         ^ .third-Container{
           width: 960px;
           height: 80px;
@@ -46,7 +42,6 @@ foam.CLASS({
           margin-left: 160px;
           margin-top: 20px;
         }
-
         ^ .fourth-Container{
           width: 960px;
           height: 80px;
@@ -55,22 +50,18 @@ foam.CLASS({
           margin-left: 160px;
           margin-top: 20px;
         }
-
         ^ .firstName-Text{
           margin-left: 20px;
           margin-right: 88px;
           margin-bottom: 8px;
         }
-
         ^ .lastName-Text{
           margin-right: 82px;
           margin-bottom: 8px;
         }
-
         ^ .jobTitle-Text{
           margin-bottom: 8px;
         }
-
         ^ h1{
           opacity: 0.6;
           font-family: Roboto;
@@ -82,7 +73,6 @@ foam.CLASS({
           color: #093649;
           display: inline-block;
         }
-
         ^ h2{
           width: 150px;
           font-family: Roboto;
@@ -93,7 +83,6 @@ foam.CLASS({
           color: #093649;
           display: inline-block;
         }
-
         ^ input{
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
@@ -105,7 +94,6 @@ foam.CLASS({
           text-align: left;
           color: #093649;
         }
-
         ^ .firstName-Input{
           width: 215px;
           height: 40px;
@@ -113,24 +101,20 @@ foam.CLASS({
           margin-right: 20px;
           margin-bottom: 20px;
         }
-
         ^ .lastName-Input{
           width: 215px;
           height: 40px;
           margin-right: 20px;
         }
-
         ^ .jobTitle-Input{
           width: 450px;
           height: 40px;
         }
-
         ^ .emailAddress-Text{
           margin-left: 20px;
           margin-bottom: 8px;
           margin-right: 322px;
         }
-
         ^ .phoneNumber-Dropdown{
           width: 80px;
           height: 40px;
@@ -144,7 +128,6 @@ foam.CLASS({
           color: #093649;
           margin-right: 10px;
         }
-
         ^ .emailAddress-Input{
           width: 450px;
           height: 40px;
@@ -152,12 +135,10 @@ foam.CLASS({
           margin-right: 20px;
           margin-bottom: 19px;
         }
-
         ^ .phoneNumber-Input{
           width: 360px;
           height: 40px;
         }
-
         ^ .update-BTN{
           width: 135px;
           height: 40px;
@@ -173,7 +154,6 @@ foam.CLASS({
           margin-left: 20px;
           margin-top: 19px;
         }
-
         ^ .expand-BTN{
           width: 135px;
           height: 40px;
@@ -191,7 +171,6 @@ foam.CLASS({
           margin-right: 20px;
           margin-top: 20px;
         }
-
         ^ .close-BTN{
           width: 135px;
           height: 40px;
@@ -210,7 +189,6 @@ foam.CLASS({
           margin-right: 20px;
           margin-top: 20px;
         }
-
         ^ .check-Box{
           border: solid 1px rgba(164, 179, 184, 0.5);
           width: 14px;
@@ -219,7 +197,6 @@ foam.CLASS({
           margin-right: 20px;
           position: relative;
         }
-
         ^ .originalPass-Text{
           width: 118px;
           height: 16px;
@@ -227,42 +204,35 @@ foam.CLASS({
           margin-left: 20px;
           margin-right: 195px;
         }
-
         ^ .newPass-Text{
           width: 118px;
           height: 16px;
           margin-right: 195px;
         }
-
         ^ .confirmPass-Text{
           width: 119px;
           height: 16px;
         }
-
         ^ .originalPass-Input{
           width: 293px;
           height: 40px;
           margin-left: 20px;
           margin-right: 20px;
         }
-
         ^ .newPass-Input{
           width: 293px;
           height: 40px;
           margin-right: 20px;
         }
-
         ^ .confirmPass-Input{
           width: 294px;
           height: 40px;
         }
-
         ^ .foam-u2-CheckBox{
           margin-left: 20px;
           padding-bottom: 11px;
           display: inline-block;
         }
-
         ^ .checkBox-Text{
           height: 16px;
           font-family: Roboto;
@@ -274,7 +244,6 @@ foam.CLASS({
           display: block;
           margin-bottom: 11px;
         }
-
         ^ .status-Text{
           width: 90px;
           height: 14px;
@@ -287,38 +256,32 @@ foam.CLASS({
           margin-right: 770px;
           display: inline-block;
         }
-
         ^ .personalProfile-Text{
           width: 141px;
           height: 20px;
           margin-left: 20px;
           margin-right: 640px;
         }
-
         ^ .resetPass-Text{
           width: 147px;
           height: 20px;
           margin-left: 20px;
           margin-right: 638px;
         }
-
         ^ .tfa-Text{
           width: 211px;
           height: 20px;
           margin-left: 20px;
         }
-
         ^ .emailPref-Text{
           width: 185px;
           height: 20px;
           margin-left: 20px;
           margin-right: 600px;
         }
-
         ^ .unsubscribe-Text{
           margin-top: 39px;
         }
-
         ^ .expandFirstFalse-Container{
           width: 960px;
           height: 298px;
@@ -329,7 +292,6 @@ foam.CLASS({
           overflow: hidden;
           transition: height 1s;
         }
-
         ^ .expandSecondFalse-Container{
           width: 960px;
           height: 164px;
@@ -340,7 +302,6 @@ foam.CLASS({
           overflow: hidden;
           transition: height 1s;
         }
-
         ^ .expandFourthFalse-Container{
           width: 960px;
           height: 390px;
@@ -350,45 +311,18 @@ foam.CLASS({
           overflow: hidden;
           transition: height 1s;
         }
-
+        ^ .twoFactorDiv {
+          display: inline-block;
+          width: 855px;
+        }
+        ^ .toggleDiv {
+          position: relative;
+          display: inline-block;
+          top: -5;
+        }
         ^ .expandTrue{
           visibility: hidden;
           height: 0px;
-        }
-
-        ^ .slider{
-          cursor: pointer;
-          width: 60px;
-          height: 31px;
-          background: grey;
-          border-radius: 15.5px;
-          position: absolute;
-          margin-right: 20px;
-          margin-left: 770px;
-          display: inline-block;
-        }
-
-        ^ .silder:before{
-          conent: '';
-          position: absolute;
-          width: 28px;
-          height: 28px;
-          background: #ffffff;
-          transition: 0.4s;
-          background-color: white;
-        }
-
-        ^ .input2:checked + toggle{
-          background: #59aadd:
-        }
-
-        ^ .input2:checked + toggle:after{
-          left: calc(100% - 5px)
-          transfor: translateX(-100%)
-        }
-
-        ^ .label:active:after{
-          width: 130px;
         }
       */}
     })
@@ -405,6 +339,11 @@ foam.CLASS({
     },
     {
       name: "expandBox4",
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'twoFactorEnabled',
       value: false
     }
   ],
@@ -479,13 +418,12 @@ foam.CLASS({
         .end()
 
         .start().addClass('third-Container')
-          .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
-          .start('div')
-            .start().add("Status: Disabled").addClass('status-Text').end()
+          .start('div').addClass('twoFactorDiv')
+            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
+            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
           .end()
-          .start('div')
-            .start().addClass('slider').end()
-            .start().addClass('toggle-Switch').end()
+          .start('div').addClass('toggleDiv')
+            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
           .end()
         .end()
 

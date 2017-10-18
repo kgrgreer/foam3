@@ -17,8 +17,8 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
-          width: 100%;
-          background-color: #edf0f5;
+          width: 962px;
+          margin: 0 auto;
         }
         ^ .devicesRow {
           width: 100%;
@@ -28,11 +28,9 @@ foam.CLASS({
           margin: auto;
         }
         ^ .deviceContentCard {
-          display: inline-block;
-          vertical-align: top;
           width: 218px;
           height: 100px;
-          margin-right: 30px;
+          margin-right: 15px;
         }
         ^ .actionButton {
           width: 218px;
@@ -43,82 +41,26 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
         }
-        ^ table {
-          border-collapse: collapse;
-          margin: auto;
-          width: 992px;
-        }
-        ^ thead > tr > th {
-          font-family: 'Roboto';
-          font-size: 14px;
-          background-color: rgba(110, 174, 195, 0.2);
-          color: #093649;
-          line-height: 1.14;
-          letter-spacing: 0.3px;
-          border-spacing: 0;
-          text-align: left;
-          padding-left: 15px;
-          height: 40px;
-        }
-        ^ tbody > tr > th > td {
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-          padding-left: 15px;
-          height: 60px;
-        }
-        ^ .foam-u2-view-TableView th {
-          padding-left: 15px;
-          font-family: Roboto;
-          font-size: 14px;
-          line-height: 1;
-          letter-spacing: 0.4px;
-          color: #093649;
-          font-style: normal;
-        }
-        ^ .foam-u2-view-TableView td {
-          font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-          padding-left: 15px;
-          font-size: 12px;
-          color: #093649;
-        }
-        ^ tbody > tr {
-          height: 60px;
-          background: white;
-        }
-        ^ tbody > tr:nth-child(odd) {
-          background: #f6f9f9;
-        }
 
         ^ .net-nanopay-ui-ActionView-addDevice {
-          display: inline-block;
-          vertical-align: top;
-          margin: 0;
           background: none;
           outline: none;
           border: none;
-          box-shadow: none;
-
           width: 218px;
           height: 100px;
           float: right;
-
           background-color: #23C2b7;
           letter-spacing: 0.3px;
           color: #FFFFFF;
           border-radius: 2px;
-
-          font-weight: 300;
+          opacity: 1;
+          font-weight: normal;
+          margin-left: 45px;
         }
 
         ^ .net-nanopay-ui-ActionView-addDevice span {
           display: block;
           margin-top: 8px;
-
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
@@ -178,32 +120,38 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('devicesContainer')
-          .start('div').addClass('devicesRow')
-            .start({class: 'net.nanopay.ui.ContentCard', title: this.TitleAll, content$: this.allDevicesCount$ }).addClass('deviceContentCard').end()
-            .start({class: 'net.nanopay.ui.ContentCard', title: this.TitleActive, content$: this.activeDevicesCount$ }).addClass('deviceContentCard').end()
-            .start({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledDevicesCount$ }).addClass('deviceContentCard').end()
-            .start(this.ADD_DEVICE, { showLabel: true }).end()
+          .start('div').addClass('row')
+            .start('div').addClass('spacer')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleAll, content$: this.allDevicesCount$ }).addClass('deviceContentCard')
+            .end()
+            .start('div').addClass('spacer')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleActive, content$: this.activeDevicesCount$ }).addClass('deviceContentCard')
+            .end()
+            .start('div').addClass('spacer')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledDevicesCount$ }).addClass('deviceContentCard')
+            .end()
+            .start('div').addClass('spacer')
+              .tag(this.ADD_DEVICE, { showLabel: true })
+            .end()
           .end()
-        .end()
-        .start()
-          .tag({
-            class: 'foam.u2.ListCreateController',
-            dao: this.deviceDAO,
-            factory: function() { return self.Device.create(); },
-            detailView: {
-              class: 'foam.u2.DetailView',
-              properties: [
-                this.Device.NAME,
-                this.Device.TYPE,
-                this.Device.STATUS,
-                this.Device.SERIAL_NUMBER,
-                this.Device.PASSWORD
-              ]
-            },
-            summaryView: this.DeviceTableView.create()
-          })
-        .end()
+          .start()
+            .tag({
+              class: 'foam.u2.ListCreateController',
+              dao: this.deviceDAO,
+              factory: function() { return self.Device.create(); },
+              detailView: {
+                class: 'foam.u2.DetailView',
+                properties: [
+                  this.Device.NAME,
+                  this.Device.TYPE,
+                  this.Device.STATUS,
+                  this.Device.SERIAL_NUMBER,
+                  this.Device.PASSWORD
+                ]
+              },
+              summaryView: this.DeviceTableView.create()
+            })
+          .end()
     }
   ],
 

@@ -85,8 +85,8 @@ foam.CLASS({
           width: 0;
           border: 8px solid transparent;
           border-bottom-color: white;
-          -ms-transform: translate(140px, -176px);
-          transform: translate(140px, -176px);
+          -ms-transform: translate(140px, -175.5px);
+          transform: translate(140px, -175.5px);
         }
       */}
     })
