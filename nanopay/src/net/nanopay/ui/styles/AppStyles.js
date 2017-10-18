@@ -314,6 +314,28 @@ foam.CLASS({
           width: 1px;
           cursor: pointer;
         }
+        .close-x {
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          opacity: 0.3;
+        }
+        .close-x:hover {
+          opacity: 1;
+        }
+        .close-x:before, .close-x:after {
+          position: absolute;
+          content: ' ';
+          height: 20px;
+          width: 2px;
+          background-color: #333;
+        }
+        .close-x:before {
+          transform: rotate(45deg);
+        }
+        .close-x:after {
+          transform: rotate(-45deg);
+        }   
       */}
     })
   ]
