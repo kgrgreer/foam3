@@ -172,7 +172,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .add(this.TEST)
         .start()
           .start('h1').add('Sign Up').end()
           .start().addClass('registration-container')
