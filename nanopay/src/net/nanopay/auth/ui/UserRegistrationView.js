@@ -14,7 +14,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   axioms: [
@@ -171,6 +172,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
+        .add(this.TEST)
         .start()
           .start('h1').add('Sign Up').end()
           .start().addClass('registration-container')
@@ -252,6 +254,12 @@ foam.CLASS({
           self.user = user;
           X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
         })
+      }
+    },
+    {
+      name: 'test',
+      code: function(X, obj){
+        this.add(this.NotificationMessage.create({message: 'Please check internet connection.', type: 'error' }));
       }
     }
   ]
