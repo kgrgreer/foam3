@@ -4,8 +4,8 @@
   <version>0.0.1</version>
 
   <groupId>net.nanopay</groupId>
-  <artifactId>parent</artifactId>
-  <name>nanoPay parent project</name>
+  <artifactId>nanofoam</artifactId>
+  <name>nanoPay</name>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -35,7 +35,7 @@
   </repositories>
   
   <dependencies>
-     <dependency>
+    <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>${appengine.sdk.version}</version>
