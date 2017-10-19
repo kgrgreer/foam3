@@ -20,15 +20,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ExchangeRateService
-  extends    ContextAwareSupport
-  implements ExchangeRateInterface
+    extends    ContextAwareSupport
+    implements ExchangeRateInterface
 {
   protected DAO    exchangeRateDAO_;
   protected Double feeAmount = new Double(150);
 
   @Override
   public ExchangeRateQuote getRate(String from, String to, long amountI)
-    throws RuntimeException
+      throws RuntimeException
   {
     PM pm = new PM(this.getClass(), "getRate");
 
@@ -44,8 +44,8 @@ public class ExchangeRateService
       throw new RuntimeException("Invalid amount");
     }
 
-    double            amount = ((double) amountI) / 100.0;
-    ExchangeRateQuote quote  = new ExchangeRateQuote();
+    final double amount = ((double) amountI) / 100.0;
+    final ExchangeRateQuote quote  = new ExchangeRateQuote();
 
     quote.setFromCurrency(from);
     quote.setToCurrency(to);

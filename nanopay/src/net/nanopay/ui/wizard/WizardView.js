@@ -25,8 +25,9 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
-          background-color: #ffffff;
+          background-color: #edf0f5;
           width: 992px;
+          height: 590px;
           margin: auto;
           overflow: hidden;
         }

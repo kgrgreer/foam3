@@ -124,7 +124,7 @@ foam.CLASS({
           letter-spacing: 0.3px;
           text-align: left;
           color: #093649;
-          margin-top: 30px;
+          margin-top: 15px;
         }
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;

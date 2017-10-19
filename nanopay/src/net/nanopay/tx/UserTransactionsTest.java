@@ -67,12 +67,12 @@ public class UserTransactionsTest {
 
     boot.getX().put("transactionTestDAO", transactionMapDao);
 
-    TransactionDAO transactionDAO = new TransactionDAO(transactionMapDao);
+    final TransactionDAO transactionDAO = new TransactionDAO(transactionMapDao);
 
     // Random number generator to generate a random UserID for payer and payee
     Random rand = new Random();
 
-    ArrayList<Transaction> transactionList = new ArrayList<>();
+    final ArrayList<Transaction> transactionList = new ArrayList<>();
 
     // Generate TRANSACTION_COUNT transactions
     for ( int i = 0; i < TRANSACTION_COUNT; i++ ) {
@@ -92,15 +92,17 @@ public class UserTransactionsTest {
 
     Thread[] threads = new Thread[THREAD_COUNT];
     for(int i = 0; i < THREAD_COUNT; i++) {
-      int finalI = i;
-      Thread thread = new Thread(() -> {
-        int counter = finalI;
-        while(counter < TRANSACTION_COUNT) {
-          transactionDAO.put(transactionList.get(counter));
-          counter += THREAD_COUNT;
+      final int finalI = i;
+      threads[i] = new Thread(new Runnable() {
+        @Override
+        public void run() {
+          int counter = finalI;
+          while(counter < TRANSACTION_COUNT) {
+            transactionDAO.put(transactionList.get(counter));
+            counter += THREAD_COUNT;
+          }
         }
       });
-      threads[i] = thread;
     }
 
     System.out.println("Beginning test");
@@ -124,7 +126,7 @@ public class UserTransactionsTest {
     System.out.println("[Multi-Thread] Completed " + TRANSACTION_COUNT + " transactions with user pool size of "
         + USER_COUNT + " in " + endTime / Math.pow(10.0, 9.0) + "s");
 
-    AtomicLong ai = new AtomicLong(0);
+    final AtomicLong ai = new AtomicLong(0);
     userDao.select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {

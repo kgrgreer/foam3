@@ -24,6 +24,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
+  { name: 'net/nanopay/ui/NotificationMessage', flags: ['web'] },  
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -66,7 +67,6 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
-  { name: 'net/nanopay/cico/model/User' },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
