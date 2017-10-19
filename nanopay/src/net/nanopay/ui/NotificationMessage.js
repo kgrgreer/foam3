@@ -24,7 +24,7 @@ foam.CLASS({
           width: 250px;
           padding: 20px 60px;
           background: #cff0e1;
-          position: fixed;
+          position: absolute;
           top: 100px;
           right: 100px;
           border: 1px solid #2cab70;
@@ -33,7 +33,7 @@ foam.CLASS({
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
-          text-align: left;
+          text-align: center;
         }
         @keyframes fade {
           0% { opacity: 0; }
