@@ -9,13 +9,18 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  imports: [ 'stack' ],
+  imports: [ 
+    'stack',
+    'webAuth'
+  ],
 
   exports: [ 'as data' ],
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.comics.DAOCreateControllerView'
+    'foam.comics.DAOCreateControllerView',
+    'net.nanopay.ui.NotificationMessage',
+    'foam.nanos.auth.WebAuthService'
   ],
 
   axioms: [
@@ -105,19 +110,16 @@ foam.CLASS({
       var self = this;
 
       if(!this.email || !this.password){
-        console.log('Please provide email & password.')
+        this.add(this.NotificationMessage.create({ message: 'Please provide full credentials.', type: 'error'}));
         return;
       }
-
-      this.userDAO.where(this.AND(this.EQ(this.User.EMAIL, this.email), this.EQ(this.User.PASSWORD, this.password))).select().then(function(user){
-        if(user.array.length <= 0){
-          console.log('Login Failed.')
-          return;
-        }
-
-        self.user.copyFrom(user.array[0]);
-        self.stack.push({ class: 'net.nanopay.b2b.ui.dashboard.DashboardView' })
-      })
+      
+      this.webAuth.login(this.email, this.password).then(function(user){
+        self.user.copyFrom(user);        
+        self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+      }).catch(function(a){
+        self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
+      });
     }
   ]
 });
