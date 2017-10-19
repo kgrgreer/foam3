@@ -5,8 +5,8 @@ set -e
 /$CATALINA_HOME/bin/shutdown.sh
 
 #Remove build folder and rebuild nanopay
-cd ../../NANOPAY/
-rm -rf build/
+cd ../
+rm -rf build
 ./gen.sh
 
 cd build
@@ -14,7 +14,7 @@ mvn clean compile package
 mvn install:install-file -Dfile="target/nanofoam-0.0.1.jar" -DgroupId=net.nanopay -DartifactId=nanofoam -Dversion=1.0 -Dname=nanoPay -Dpackaging=jar
 mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
 #Build root which is 1 war file of all projects
-cd ../root/
+cd ../root
 mvn clean install
 
 #Copy over files to tomcat location
