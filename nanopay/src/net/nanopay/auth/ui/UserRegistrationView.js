@@ -254,12 +254,6 @@ foam.CLASS({
           X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
         })
       }
-    },
-    {
-      name: 'test',
-      code: function(X, obj){
-        this.add(this.NotificationMessage.create({message: 'Please check internet connection.', type: 'error' }));
-      }
     }
   ]
 });
