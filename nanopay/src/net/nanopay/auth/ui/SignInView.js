@@ -9,13 +9,18 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  imports: [ 'stack' ],
+  imports: [ 
+    'stack',
+    'webAuth'
+  ],
 
   exports: [ 'as data' ],
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.comics.DAOCreateControllerView'
+    'foam.comics.DAOCreateControllerView',
+    'net.nanopay.ui.NotificationMessage',
+    'foam.nanos.auth.WebAuthService'
   ],
 
   axioms: [
@@ -34,6 +39,10 @@ foam.CLASS({
       }
       ^ p{
         display: inline-block;
+      }
+      ^ .net-nanopay-ui-ActionView-signIn{
+        width: 90%;
+        margin-left: 25px;
       }
     */}
     })
@@ -64,10 +73,7 @@ foam.CLASS({
           .start(this.EMAIL).addClass('full-width-input').end()
           .start().addClass('label').add("Password").end()
           .start(this.PASSWORD).addClass('full-width-input').end()
-          .start().addClass('full-width-button')
-            .add("Sign In")
-            .on('click', this.signIn)
-          .end()
+          .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
           .start('p').add("Don't have an account?").end()
@@ -99,25 +105,26 @@ foam.CLASS({
           showActions: false
         }));
       this.stack.push(view);
-    },
+    }
+  ],
 
-    function signIn(){
-      var self = this;
-
-      if(!this.email || !this.password){
-        console.log('Please provide email & password.')
-        return;
+  actions: [
+    {
+      name: 'signIn',
+      label: 'Sign In',
+      isEnabled: function(email, password){
+        return email && password;
+      },
+      code: function(X){
+        var self = this;
+        
+        this.webAuth.login(this.email, this.password).then(function(user){
+          self.user.copyFrom(user);        
+          self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+        }).catch(function(a){
+          self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
+        });
       }
-
-      this.userDAO.where(this.AND(this.EQ(this.User.EMAIL, this.email), this.EQ(this.User.PASSWORD, this.password))).select().then(function(user){
-        if(user.array.length <= 0){
-          console.log('Login Failed.')
-          return;
-        }
-
-        self.user.copyFrom(user.array[0]);
-        self.stack.push({ class: 'net.nanopay.b2b.ui.dashboard.DashboardView' })
-      })
     }
   ]
 });

@@ -16,7 +16,6 @@ var classes = [
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
   'net.nanopay.model.PadAccount',
-  'net.nanopay.model.Phone',
   'net.nanopay.model.AccountLimit',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',

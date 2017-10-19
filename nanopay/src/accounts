@@ -1,3 +1,4 @@
 p({"class":"net.nanopay.model.Account","id":1,"balance":50000})
 p({"class":"net.nanopay.model.Account","id":2,"balance":50000})
 p({"class":"net.nanopay.model.Account","id":999,"balance":500000})
+p({"class":"net.nanopay.model.Account","id":1000,"balance":500000})

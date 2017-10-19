@@ -113,7 +113,7 @@ foam.CLASS({
       this.onload.sub(function () {
         var qrCode = new QRCode(document.getElementsByClassName('qr-code-div')[0], {
           text: JSON.stringify({
-            userId: self.user.id,
+            payeeId: self.user.id,
             amount: self.amount,
             challenge: challenge,
             tip: self.tipEnabled
