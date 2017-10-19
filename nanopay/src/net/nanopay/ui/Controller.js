@@ -20,8 +20,7 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.stack.StackView'
   ],
 
   exports: [

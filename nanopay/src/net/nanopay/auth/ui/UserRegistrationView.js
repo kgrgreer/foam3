@@ -14,8 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.User',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.nanos.auth.User'
   ],
 
   axioms: [
