@@ -18,7 +18,7 @@ public class Service {
   public enum ServiceError: ServiceErrorProtocol {
     case Failed
     case ConversionFailed
-    func description() -> String {
+    public func description() -> String {
       switch(self) {
         case .Failed:
           return "Something went wrong."
@@ -41,6 +41,6 @@ public class Service {
   }
 }
 
-protocol ServiceErrorProtocol: Error {
+public protocol ServiceErrorProtocol: Error {
   func description() -> String
 }

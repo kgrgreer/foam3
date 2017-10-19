@@ -12,7 +12,7 @@ public class TransactionService: Service {
   public enum TransactionError: ServiceErrorProtocol {
     case TransactionNotFound
 
-    func description() -> String {
+    public func description() -> String {
       switch(self) {
         case .TransactionNotFound:
           return "Transaction not found."

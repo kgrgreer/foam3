@@ -18,7 +18,7 @@ public class UserService: Service {
     case UserNotLoggedIn
     case UserUnverifiedEmail
     case UserUnverifiedPhone
-    func description() -> String {
+    public func description() -> String {
       switch(self) {
         case .IncorrectCredentials:
           return "Incorrect email or password."
@@ -31,9 +31,9 @@ public class UserService: Service {
         case .UserNotLoggedIn:
           return "Please log in."
         case .UserUnverifiedEmail:
-          return "User's email is not verfied. Verify your email and try again."
+          return "User's email is not verfied."
         case .UserUnverifiedPhone:
-          return "User's telephone number has not been verified. Verify the number and try again."
+          return "User's telephone number has not been verified."
       }
     }
   }
