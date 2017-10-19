@@ -40,6 +40,10 @@ foam.CLASS({
       ^ p{
         display: inline-block;
       }
+      ^ .net-nanopay-ui-ActionView-signIn{
+        width: 90%;
+        margin-left: 25px;
+      }
     */}
     })
   ],
@@ -69,10 +73,7 @@ foam.CLASS({
           .start(this.EMAIL).addClass('full-width-input').end()
           .start().addClass('label').add("Password").end()
           .start(this.PASSWORD).addClass('full-width-input').end()
-          .start().addClass('full-width-button')
-            .add("Sign In")
-            .on('click', this.signIn)
-          .end()
+          .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
           .start('p').add("Don't have an account?").end()
@@ -104,22 +105,26 @@ foam.CLASS({
           showActions: false
         }));
       this.stack.push(view);
-    },
+    }
+  ],
 
-    function signIn(){
-      var self = this;
-
-      if(!this.email || !this.password){
-        this.add(this.NotificationMessage.create({ message: 'Please provide full credentials.', type: 'error'}));
-        return;
+  actions: [
+    {
+      name: 'signIn',
+      label: 'Sign In',
+      isEnabled: function(email, password){
+        return email && password;
+      },
+      code: function(X){
+        var self = this;
+        
+        this.webAuth.login(this.email, this.password).then(function(user){
+          self.user.copyFrom(user);        
+          self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+        }).catch(function(a){
+          self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
+        });
       }
-      
-      this.webAuth.login(this.email, this.password).then(function(user){
-        self.user.copyFrom(user);        
-        self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
-      }).catch(function(a){
-        self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
-      });
     }
   ]
 });
