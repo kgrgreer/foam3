@@ -8,7 +8,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
-  { name: 'net/nanopay/model/Phone' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
@@ -24,7 +23,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
-  { name: 'net/nanopay/ui/NotificationMessage', flags: ['web'] },  
+  { name: 'net/nanopay/ui/NotificationMessage', flags: ['web'] },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
