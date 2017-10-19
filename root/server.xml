@@ -148,8 +148,8 @@
       <Host name="localhost"  appBase="webapps"
             unpackWARs="true" autoDeploy="true">
 
-            <Context docBase="/opt/tomcat/bin" path="/static" />
-            <Context docBase="/Users/waseemchamaa/Desktop/foam/NANOPAY/nanopay" path="/dev" />
+            <Context docBase="/Library/Tomcat/bin" path="/static" />
+            <Context docBase="/Users/marcroopchand/nanopay" path="/dev" />
 
         <!-- SingleSignOn valve, share authentication between web applications
              Documentation at: /docs/config/valve.html -->
