@@ -6,7 +6,8 @@
   <packaging>war</packaging>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>root</artifactId>
-  
+  <groupId>net.nanopay</groupId>
+  <version>1.0</version>
   <dependencies>
     <dependency>
       <groupId>org.apache-extras.beanshell</groupId>
