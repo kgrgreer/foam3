@@ -74,15 +74,15 @@ public class AlternaWebAgent
   }
 
   public synchronized void execute(X x) {
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO branchDAO = (DAO) x.get("branchDAO");
-    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
-    DAO transactionDAO = (DAO) x.get("cicoTransactionDAO");
+    final DAO userDAO = (DAO) x.get("localUserDAO");
+    final DAO branchDAO = (DAO) x.get("branchDAO");
+    final DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
+    final DAO transactionDAO = (DAO) x.get("cicoTransactionDAO");
     PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
     HttpServletResponse response = (HttpServletResponse) x.get(HttpServletResponse.class);
 
-    Date now = new Date();
+    final Date now = new Date();
     response.setContentType("text/html");
     response.setHeader("Content-disposition", "attachment; filename=\"" + generateFilename(now) + "\"");
 
