@@ -193,8 +193,9 @@ public class UserService: Service {
           }
           return
         }
+        self.loggedInUser = updatedUser
         DispatchQueue.main.async {
-          callback(updatedUser)
+          callback(self.loggedInUser)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")

@@ -23,6 +23,8 @@ var classes = [
   'foam.nanos.auth.LastModifiedAware',
   'foam.nanos.auth.LastModifiedByAware',
   'foam.nanos.auth.User',
+  'foam.nanos.auth.Country',
+  'foam.nanos.auth.Region',
   'foam.nanos.auth.Phone',
   'foam.swift.box.RPCReturnBox',
   'foam.swift.parse.StringPStream',
