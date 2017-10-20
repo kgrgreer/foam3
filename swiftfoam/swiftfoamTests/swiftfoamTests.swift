@@ -281,4 +281,42 @@ class swiftfoamTests: XCTestCase {
     wait(for: expectations, timeout: 20)
     XCTAssertEqual(errors.count, 0)
   }
+
+  func testCountry() {
+    let countryService = CountryService.instance
+    var expectations:[XCTestExpectation] = []
+
+    let getAllExpectation = XCTestExpectation(description: "Get All Countries")
+    expectations.append(getAllExpectation)
+    countryService.getAllCountries() {
+      response in
+      guard let countries = response as? [Country] else {
+        XCTFail()
+        return
+      }
+      XCTAssert(countries.count > 0)
+      getAllExpectation.fulfill()
+    }
+
+    wait(for: expectations, timeout: 20)
+  }
+
+  func testRegion() {
+    let regionService = RegionService.instance
+    var expectations:[XCTestExpectation] = []
+
+    let getAllExpectation = XCTestExpectation(description: "Get All Regions")
+    expectations.append(getAllExpectation)
+    regionService.getAllRegions() {
+      response in
+      guard let regions = response as? [Region] else {
+        XCTFail()
+        return
+      }
+      XCTAssert(regions.count > 0)
+      getAllExpectation.fulfill()
+    }
+
+    wait(for: expectations, timeout: 20)
+  }
 }
