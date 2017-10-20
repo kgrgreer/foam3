@@ -6,13 +6,13 @@ foam.CLASS({
   properties: [
     {
       class: 'Currency',
-      name: 'amount'
+      name: 'fixedFee'
     }
   ],
 
   methods: [
     function getFee(transactionAmount) {
-      return this.amount;
+      return this.fixedFee;
     },
     function getTotalAmount(transactionAmount) {
       return getFee(transactionAmount) + transactionAmount;
