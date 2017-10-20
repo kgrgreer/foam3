@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'FixedFee',
-  implements: ['net.nanopay.tx.model.Fee'],
+  extends: 'net.nanopay.tx.model.Fee',
 
   properties: [
     {
@@ -11,17 +11,11 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'getFee',
-      code: function getFee(transactionAmount) {
-        return this.amount;
-      }
+    function getFee(transactionAmount) {
+      return this.amount;
     },
-    {
-      name: 'getTotalAmount',
-      code: function getTotalAmount(transactionAmount) {
-        return this.getFee(transactionAmount) + transactionAmount;
-      }
+    function getTotalAmount(transactionAmount) {
+      return getFee(transactionAmount) + transactionAmount;
     }
   ]
 });
