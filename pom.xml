@@ -140,7 +140,7 @@
     </dependency>
   </dependencies>
     <build>
-        <sourceDirectory>.</sourceDirectory>
+        <sourceDirectory>build</sourceDirectory>
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
