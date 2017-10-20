@@ -46,4 +46,4 @@ cd NANOPAY/
 mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
 
 cd ../
-java -cp `cat foam2/build/cp.txt`:`cat NANOPAY/build/cp.txt`:`realpath NANOPAY/**/target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+java -cp `cat NANOPAY/cp.txt`:`realpath NANOPAY/target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
