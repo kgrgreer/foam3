@@ -1,3 +1,4 @@
+#!/bin/sh
 
 # Exit on first failure
 set -e

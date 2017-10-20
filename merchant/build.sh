@@ -12,3 +12,7 @@ cp ../foam-bin.js ../../NANOPAY/merchant/src/net/nanopay/merchant/libs/foam/
 cd ../../NANOPAY/nanopay/src/
 ./gen.sh
 cp ../../nanopay-bin.js ../../merchant/src/net/nanopay/merchant/libs/nanopay/
+
+cd ../../merchant/
+./node_modules/babel/bin/babel.js -b useStrict src/net/nanopay/merchant/libs/foam/foam-bin.js -o src/net/nanopay/merchant/libs/foam/foam-bin.js
+./node_modules/babel/bin/babel.js -b useStrict src/net/nanopay/merchant/libs/nanopay/nanopay-bin.js -o src/net/nanopay/merchant/libs/nanopay/nanopay-bin.js
