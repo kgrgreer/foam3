@@ -5,7 +5,6 @@ mkdir build
 
 echo $cwd
 cwd=$(pwd)
-cp pom.xml build
 cd ../foam2/src
 find . -name '*.java' | cpio -pdm $cwd/build/
 cd ../../NANOPAY/

@@ -30,7 +30,7 @@ cd ../root/
 mvn clean install
 
 #Copy over files to tomcat location
-cp target/ROOT.war $CATALINA_HOME/webapps
+cp target/nanofoam-0.0.1.war $CATALINA_HOME/webapps
 cp server.xml $CATALINA_HOME/conf
 
 #Concatenate files into one services file
