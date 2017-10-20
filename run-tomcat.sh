@@ -1,32 +1,13 @@
+#!/bin/sh
+
 # exit on first failure
 set -e
 
 #Shutdown tomcat if already running
 /$CATALINA_HOME/bin/shutdown.sh
 
-#Remove build folder and rebuild foam
-rm -rf ../../foam2/build/
-cd ../../foam2/src/
+# build nanofoam and compile
 ./gen.sh
-cd ../build/
-mvn compile package
-mvn install:install-file -Dfile="target/foam-1.0-SNAPSHOT.jar" -DgroupId=com.google -DartifactId=foam -Dversion=1.0 -Dname=foam -Dpackaging=jar
-mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
-
-#Remove build folder and rebuild nanopay
-cd ../../NANOPAY/
-./gen.sh
-mvn clean install
-
-cd nanopay/
-rm -rf build/
-cd src/
-./gen.sh
-cd ..
-mvn clean install
-
-#Build root which is 1 war file of all projects
-cd ../root/
 mvn clean install
 
 #Copy over files to tomcat location
@@ -34,7 +15,7 @@ cp target/nanofoam-0.0.1.war $CATALINA_HOME/webapps
 cp server.xml $CATALINA_HOME/conf
 
 #Concatenate files into one services file
-cd ../../
+cd ../
 find foam2/src NANOPAY/**/src -type f -name accounts -exec cat {} \; > accounts
 find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
 find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankAccounts
