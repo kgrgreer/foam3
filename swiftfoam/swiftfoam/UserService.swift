@@ -70,9 +70,9 @@ public class UserService: Service {
   public func isUserFullyVerified() -> (isFullyVerified: Bool, error: Error?) {
     // Ordered from most important to least
     guard isUserLoggedIn()      else { return (false, UserError.UserNotLoggedIn) }
-    //    NOTE: Commented out until fields are available
-    //    guard isUserVerifiedEmail() else { return (false, UserError.UserUnverifiedEmail) }
-    //    guard isUserVerifiedPhone() else { return (false, UserError.UserUnverifiedPhone) }
+//    NOTE: Commented out until fields are available
+//    guard isUserVerifiedEmail() else { return (false, UserError.UserUnverifiedEmail) }
+//    guard isUserVerifiedPhone() else { return (false, UserError.UserUnverifiedPhone) }
     return (true, nil)
   }
 
