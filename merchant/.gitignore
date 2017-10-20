@@ -2,5 +2,6 @@ build/
 target/
 cp.txt
 dist/
+node_modules/
 src/net/nanopay/merchant/libs/foam/*
 src/net/nanopay/merchant/libs/nanopay/*
