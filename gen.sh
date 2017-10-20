@@ -5,7 +5,10 @@ mkdir build
 
 echo $cwd
 cwd=$(pwd)
-cd ../foam2/src
+cd ../foam2
+rm -rf build
+mkdir build
+cd src
 find . -name '*.java' | cpio -pdm $cwd/build/
 cd ../../NANOPAY/
 cd b2b/src
