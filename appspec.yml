@@ -6,4 +6,4 @@ files:
 permissions:
 hooks:
   AfterInstall:
-    - location: root/build.sh
+    - location: run-tomcat.sh
