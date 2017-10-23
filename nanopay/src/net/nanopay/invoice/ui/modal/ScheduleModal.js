@@ -23,7 +23,7 @@ foam.CLASS({
     {
       name: 'type',
       expression: function(invoice, user){
-        return user.id ? invoice.payeeId : invoice.payerId
+        return user.id != invoice.payeeId;
       }
     },
     {
