@@ -99,12 +99,9 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'FObjectArray',
       name: 'fees',
-      tableCellFormatter: function(fees){
-        var formattedFees = fees / 100;
-        this.start().add('$', formattedFees.toFixed(2)).end()
-      }
+      of: 'net.nanopay.tx.model.Fee'
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
