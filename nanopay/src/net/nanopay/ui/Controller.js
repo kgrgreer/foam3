@@ -20,7 +20,7 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView',
+    'foam.u2.stack.StackView'
   ],
 
   exports: [
