@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.cico.model',
   name: 'ServiceProvider',
-
+  implements: 'net.nanopay.cico.model.BaseServiceProvider'
   documentation: 'Service Provider information.',
 
   properties: [
@@ -23,6 +23,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'apiBaseUrl'
+    },
+    {
+      class: 'FObjectArray',
+      name: 'fees',
+      of: 'net.nanopay.tx.model.Fee'
     }
   ]
 });

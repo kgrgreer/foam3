@@ -27,13 +27,6 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'net.nanopay.tx.model.Fee',
-  forwardName: 'fees',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.model.Account',
   forwardName: 'accounts',
@@ -84,13 +77,6 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.cico.model.ServiceProvider',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.cico.model.ServiceProvider',
-  targetModel: 'net.nanopay.tx.model.Fee',
-  forwardName: 'fees',
   inverseName: 'owner'
 });
 

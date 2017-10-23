@@ -27,6 +27,11 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'address',
       documentation: 'Bank branch address'
+    },
+    {
+      class: 'FObjectArray',
+      name: 'fees',
+      of: 'net.nanopay.tx.model.Fee'
     }
   ]
 });
