@@ -30,6 +30,7 @@ public class EmailVerificationUserDAO
         .limit(1).select(count);
 
     // send email
+    User result = (User) super.put_(x, obj);
     if ( count.getValue() == 0 ) {
       EmailMessage message = new EmailMessage();
       message.setFrom("info@nanopay.net");
@@ -38,12 +39,12 @@ public class EmailVerificationUserDAO
       message.setSubject("MintChip email verification");
 
       HashMap<String, Object> args = new HashMap<>();
-      args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-      args.put("link", "http://localhost:8080/verifyEmail?token=" + emailToken.generateToken(user));
+      args.put("name", String.format("%s %s", result.getFirstName(), result.getLastName()));
+      args.put("link", "http://localhost:8080/verifyEmail?userId=" + result.getId() + "&token=" + emailToken.generateToken(user));
 
       email.sendEmailFromTemplate(message, "welcome-mintchip", args);
     }
 
-    return super.put_(x, obj);
+    return result;
   }
 }
