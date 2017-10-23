@@ -40,8 +40,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.hideSaleSummary = true;
-      debugger;
-      
+
       this
         .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
