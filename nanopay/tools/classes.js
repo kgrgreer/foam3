@@ -4,7 +4,9 @@ require('../src/net/nanopay/files.js');
 var classes = [
   'net.nanopay.auth.token.Token',
   'net.nanopay.auth.token.TokenService',
+  'net.nanopay.auth.token.ClientTokenService',
   'net.nanopay.auth.email.EmailTokenService',
+  'net.nanopay.auth.sms.SMSTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.BaseServiceProvider',
   'net.nanopay.cico.model.ServiceProvider',
