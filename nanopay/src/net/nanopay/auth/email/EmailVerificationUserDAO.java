@@ -24,6 +24,7 @@ public class EmailVerificationUserDAO
     User user = (User) obj;
     Count count = new Count();
     EmailService email = (EmailService) x.get("email");
+    EmailTokenService emailToken = (EmailTokenService) x.get("emailToken");
 
     count = (Count) getDelegate().where(MLang.EQ(User.EMAIL, user.getEmail()))
         .limit(1).select(count);

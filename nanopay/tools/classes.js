@@ -2,6 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
+  'net.nanopay.auth.token.TokenService',
+  'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.BaseServiceProvider',
   'net.nanopay.cico.model.ServiceProvider',
@@ -39,6 +41,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
+  'net.nanopay.auth.token.TokenService',
   'net.nanopay.fx.ExchangeRateInterface'
 ];
 
