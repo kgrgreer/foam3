@@ -213,13 +213,12 @@ foam.RELATIONSHIP({
     postSet: function(oldValue, newValue){
       var self = this;
       var dao = this.__context__.userDAO;
-
       dao.find(newValue).then(function(a) {
         if ( a ) {
-          self.payerName = a.label();
+          self.payeeName = a.label();
           if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
-          self.payerName = 'Unknown Id: ' + newValue;
+          self.payeeName = 'Unknown Id: ' + newValue;
         }
       });
     }
@@ -259,7 +258,6 @@ foam.RELATIONSHIP({
     postSet: function(oldValue, newValue){
       var self = this;
       var dao = this.__context__.userDAO;
-
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payerName = a.label();
