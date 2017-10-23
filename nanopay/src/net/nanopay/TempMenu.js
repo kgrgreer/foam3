@@ -8,10 +8,7 @@ foam.CLASS({
     'cicoServiceProviderDAO',
     'menuDAO',
     'nSpecDAO',
-    'transactionLimitDAO',
-    'fixedFeeDAO',
-    'percentageFeeDAO',
-    'variableFeeDAO'
+    'transactionLimitDAO'
   ],
 
   documentation: 'Temporary menu data.',
@@ -31,9 +28,6 @@ foam.CLASS({
         {                         id: 'devices',       label: 'Devices',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.devices.DevicesView' } } },
         { /*parent: 'support',*/  id: 'aaainvoices',   label: 'Invoices',           handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'invoiceDAO' } },
         { parent: 'admin',        id: 'brokers',       label: 'Brokers',            handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'brokerDAO' } },
-        { parent: 'admin',        id: 'fxdfee',       label: 'Fixed Fees',    order: 110,        handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'fixedFeeDAO' } },
-        { parent: 'admin',        id: 'pctfee',       label: 'Percentage Fees',        order: 120,    handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'percentageFeeDAO' } },
-        { parent: 'admin',        id: 'vrbfee',       label: 'Variable Fees',   order: 130,         handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'variableFeeDAO' } },
         { parent: 'admin',        id: 'servproviders', label: 'Service Providers',  handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'cicoServiceProviderDAO' } },
         { parent: 'admin',        id: 'translimits',   label: 'Transaction Limits', handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'transactionLimitDAO' } },
         { parent: 'admin',        id: 'emailTemplates',label: 'Email Templates', handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'emailTemplateDAO' } },
