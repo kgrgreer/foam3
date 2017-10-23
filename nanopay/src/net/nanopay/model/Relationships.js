@@ -53,7 +53,17 @@ foam.RELATIONSHIP({
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
   properties: [
-     {
+    {
+      class: 'Boolean',
+      name: 'emailVerified',
+      documentation: 'Email verified flag'
+    },
+    {
+      class: 'Boolean',
+      name: 'phoneVerified',
+      documentation: 'Phone verified flag'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.model.Broker',
       name: 'brokerId'
