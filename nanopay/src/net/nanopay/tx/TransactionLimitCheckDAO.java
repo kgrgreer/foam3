@@ -3,9 +3,11 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.ListSink;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.MLang;
+import foam.mlang.sink.Sum;
 import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 import net.nanopay.model.AccountLimit;
@@ -26,15 +28,10 @@ public class TransactionLimitCheckDAO
   private static final String DEFAULT_USER_NAME = "default_user";
 
   @Override
-  public FObject put_(X x, FObject obj) throws RuntimeException {
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO branchDAO = (DAO) x.get("branchDAO");
-    DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
-    DAO transactionLimitDAO = (DAO) x.get("transactionLimitDAO");
-    Transaction transaction = (Transaction) obj;
-    // TODO: find out if theres a way to have a watch on a boolean for limit Violation
-    Boolean limitViolation = false;
+  public FObject put_(X x, FObject fObject) throws RuntimeException {
+    Transaction transaction = (Transaction) fObject;
+
+
     if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
@@ -45,61 +42,71 @@ public class TransactionLimitCheckDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
+          DAO transactionDAO = (DAO) x.get("transactionDAO");
+          DAO accountDAO = (DAO) x.get("accountDAO");
+          DAO branchDAO = (DAO) x.get("branchDAO");
+          DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
+          DAO transactionLimitDAO = (DAO) x.get("transactionLimitDAO");
+          DAO userDAO = (DAO) x.get("localUserDAO");
           User payee = (User) userDAO.find(transaction.getPayeeId());
           User payer = (User) userDAO.find(transaction.getPayerId());
 
           //Holds total amount from transactions
           long transactionTotal = 0;
 
-          //Query all transactions within the year
-          Sink payeeTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payee.getId(),transaction.getPayeeId()),MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR))));
-          Sink payerTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payer.getId(),transaction.getPayerId()),MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR))));
 
           //Makes a shortcut for accessing default limits for payer to set all values to the default
-          AccountLimit defaultLimit = ((Account)payer.getAccounts()[0]).getLimit();
-          long[] payerLimit = {defaultLimit.getYearlyLimit(),defaultLimit.getMonthlyLimit(),defaultLimit.getWeeklyLimit(),defaultLimit.getDailyLimit()};
+          AccountLimit defaultpayerLimit = ((Account)accountDAO.find(payer.getId())).getLimit();
+          long[] payerLimit = {defaultpayerLimit.getYearlyLimit(),defaultpayerLimit.getMonthlyLimit(),defaultpayerLimit.getWeeklyLimit(),defaultpayerLimit.getDailyLimit()};
 
           //Makes a shortcut for accessing default limits for payee to set all values to the default
-          defaultLimit = ((Account)payee.getAccounts()[0]).getLimit();
-          long[] payeeLimit = {defaultLimit.getYearlyLimit(),defaultLimit.getMonthlyLimit(),defaultLimit.getWeeklyLimit(),defaultLimit.getDailyLimit()};
+          AccountLimit defaultpayeeLimit = ((Account)accountDAO.find(payee.getId())).getLimit();
+          long[] payeeLimit = {defaultpayeeLimit.getYearlyLimit(),defaultpayeeLimit.getMonthlyLimit(),defaultpayeeLimit.getWeeklyLimit(),defaultpayeeLimit.getDailyLimit()};
 
           //Checks for special limits of User and overrides the default
           if (payer.getTransactionLimits().length>0) payerLimit = setSpecialLimits(payer, payerLimit);
           if (payee.getTransactionLimits().length>0) payeeLimit = setSpecialLimits(payee, payeeLimit);
 
-          transactionTotal = getTransactionAmounts(payerTransaction);
-          if (transaction.getAmount()+transactionTotal>payerLimit[0]) limitViolation = true;
-          transactionTotal = getTransactionAmounts(payeeTransaction);
-          if (transaction.getAmount()+transactionTotal>payeeLimit[0]) limitViolation = true;
-
-          payerTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payer.getId(),transaction.getPayerId()), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR)),MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)))));
-          payeeTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payee.getId(),transaction.getPayeeId()), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR)),MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)))));
+          //Query all transactions within the year
+          DAO payerTransaction = transactionDAO.where(MLang.AND(MLang.EQ(payer.getId(),transaction.getPayerId()),MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR))));
+          DAO payeeTransaction = transactionDAO.where(MLang.AND(MLang.EQ(payee.getId(),transaction.getPayeeId()),MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR))));
 
           transactionTotal = getTransactionAmounts(payerTransaction);
-          if (transaction.getAmount()+transactionTotal>payerLimit[1]) limitViolation = true;
+          if (transaction.getTotal()+transactionTotal>payerLimit[0]) throw new RuntimeException("Transaction amount is over Payers yearly limit");
           transactionTotal = getTransactionAmounts(payeeTransaction);
-          if (transaction.getAmount()+transactionTotal>payeeLimit[1]) limitViolation = true;
+          if (transaction.getTotal()+transactionTotal>payeeLimit[0]) throw new RuntimeException("Transaction amount is over Payees yearly limit");
 
-          payerTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payer.getId(),transaction.getPayerId()),MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR)), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)), MLang.EQ(getTime(transaction.getDate()).get(Calendar.WEEK_OF_MONTH),getTime(new Date()).get(Calendar.WEEK_OF_MONTH))))));
-          payeeTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payee.getId(),transaction.getPayeeId()),MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR)), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)), MLang.EQ(getTime(transaction.getDate()).get(Calendar.WEEK_OF_MONTH),getTime(new Date()).get(Calendar.WEEK_OF_MONTH))))));
+          //Query all transactions within the month
+          payerTransaction = transactionDAO.where(MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)));
+          payeeTransaction = transactionDAO.where(MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)));
 
           transactionTotal = getTransactionAmounts(payerTransaction);
-          if (transaction.getAmount()+transactionTotal>payerLimit[2]) limitViolation = true;
+          if (transaction.getTotal()+transactionTotal>payerLimit[1]) throw new RuntimeException("Transaction amount is over Payers monthly limit");
           transactionTotal = getTransactionAmounts(payeeTransaction);
-          if (transaction.getAmount()+transactionTotal>payeeLimit[2]) limitViolation = true;
+          if (transaction.getTotal()+transactionTotal>payeeLimit[1]) throw new RuntimeException("Transaction amount is over Payees monthly limit");
 
-
-
-          payerTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payer.getId(),transaction.getPayerId()),MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR)), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.WEEK_OF_MONTH),getTime(new Date()).get(Calendar.WEEK_OF_MONTH)), MLang.EQ(getTime(transaction.getDate()).get(Calendar.DAY_OF_MONTH),getTime(new Date()).get(Calendar.DAY_OF_MONTH)))))));
-          payeeTransaction = (Sink) transactionDAO.where(MLang.AND(MLang.EQ(payee.getId(),transaction.getPayeeId()),MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.YEAR),getTime(new Date()).get(Calendar.YEAR)), MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.MONTH),getTime(new Date()).get(Calendar.MONTH)),   MLang.AND(MLang.EQ(getTime(transaction.getDate()).get(Calendar.WEEK_OF_MONTH),getTime(new Date()).get(Calendar.WEEK_OF_MONTH)), MLang.EQ(getTime(transaction.getDate()).get(Calendar.DAY_OF_MONTH),getTime(new Date()).get(Calendar.DAY_OF_MONTH)))))));
+          //Query all transactions within the week
+          payerTransaction = transactionDAO.where(MLang.EQ(getTime(transaction.getDate()).get(Calendar.WEEK_OF_MONTH),getTime(new Date()).get(Calendar.WEEK_OF_MONTH)));
+          payeeTransaction = transactionDAO.where(MLang.EQ(getTime(transaction.getDate()).get(Calendar.WEEK_OF_MONTH),getTime(new Date()).get(Calendar.WEEK_OF_MONTH)));
 
           transactionTotal = getTransactionAmounts(payerTransaction);
-          if (transaction.getAmount()+transactionTotal>payerLimit[3]) limitViolation = true;
+          if (transaction.getTotal()+transactionTotal>payerLimit[2]) throw new RuntimeException("Transaction amount is over Payers weekly limit");
           transactionTotal = getTransactionAmounts(payeeTransaction);
-          if (transaction.getAmount()+transactionTotal>payeeLimit[3]) limitViolation = true;
+          if (transaction.getTotal()+transactionTotal>payeeLimit[2]) throw new RuntimeException("Transaction amount is over Payees weekly limit");
 
 
-          return getDelegate().put(transaction);
+          //Query all transactions within the day
+          payerTransaction = transactionDAO.where(MLang.EQ(getTime(transaction.getDate()).get(Calendar.DAY_OF_MONTH),getTime(new Date()).get(Calendar.DAY_OF_MONTH)));
+          payeeTransaction = transactionDAO.where(MLang.EQ(getTime(transaction.getDate()).get(Calendar.DAY_OF_MONTH),getTime(new Date()).get(Calendar.DAY_OF_MONTH)));
+
+          transactionTotal = getTransactionAmounts(payerTransaction);
+          if (transaction.getTotal()+transactionTotal>payerLimit[3]) throw new RuntimeException("Transaction amount is over Payers daily limit");
+          transactionTotal = getTransactionAmounts(payeeTransaction);
+          if (transaction.getTotal()+transactionTotal>payeeLimit[3]) throw new RuntimeException("Transaction amount is over Payees daily limit");
+
+
+          throw new RuntimeException("I WANNA SEE YOU WORK");
+         // return getDelegate().put(transaction);
 
         } catch (RuntimeException e) {
           throw e;
@@ -131,11 +138,11 @@ public class TransactionLimitCheckDAO
     }
     return limits;
   }
-  long getTransactionAmounts(Sink list)
+  long getTransactionAmounts(DAO list)
   {
     long total=0;
-    for (Transaction trans: (List<Transaction>)list) {
-      total = trans.getAmount();
+    for (Transaction trans: (List<Transaction>) list.select(new ListSink())) {
+      total = trans.getTotal();
     }
     return total;
   }

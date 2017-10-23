@@ -1,8 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Account',
-  //TODO: GET RID OF EXTENTIONS WHEN RELATIONSHIPS WITH JAVA
-  extends: 'foam.core.FObject',
   properties: [
     {
       class: 'Long',
