@@ -55,10 +55,10 @@ public class EmailVerificationWebAgent
       }
 
       if ( ! emailToken.processToken(user, token)) {
-        throw new Exception();
+        throw new Exception("");
       }
     } catch (Throwable t) {
-      message = "Problem verifying your email." + t.getMessage();
+      message = "Problem verifying your email.\n" + t.getMessage();
     } finally {
       DAO emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
       if ( config_ == null ) {
