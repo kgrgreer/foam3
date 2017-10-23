@@ -29,15 +29,17 @@ foam.CLASS({
           right: 100px;
           border: 1px solid #2cab70;
           animation-name: fade;
-          animation-duration: 1s;
+          animation-duration: 4s;
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
-          text-align: left;
+          text-align: center;
         }
         @keyframes fade {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { opacity: 0; }
         }
         ^error-background{
           background: #f4cccc;
@@ -73,6 +75,8 @@ foam.CLASS({
         .startContext({ data: this })
           .start().addClass('close-x').add(this.CLOSE).end()
         .endContext()
+
+        setTimeout(function(){ self.remove() }, 3900);
     }
   ],
 

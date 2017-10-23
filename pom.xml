@@ -5,7 +5,7 @@
   <version>0.0.1</version>
 
   <groupId>net.nanopay</groupId>
-  <artifactId>nanofoam</artifactId>
+  <artifactId>root</artifactId>
   <name>nanoPay</name>
 
   <properties>
@@ -193,8 +193,8 @@
         <version>3.1</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
           <excludes>
             <exclude>**/com/chrome/**</exclude>
           </excludes>
@@ -222,6 +222,7 @@
         <version>2.4</version>
         <configuration>
           <webXml>WEB-INF/web.xml</webXml>
+          <warName>ROOT</warName>
         </configuration>
       </plugin>
 
