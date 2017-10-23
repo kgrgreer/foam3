@@ -15,14 +15,19 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
     },
     {
-      class: 'String',
-      name: 'data',
-      documentation: 'The token data'
+      class: 'Boolean',
+      name: 'processed',
+      value: false
     },
     {
       class: 'Date',
       name: 'expiry',
       documentation: 'The token expiry date'
+    },
+    {
+      class: 'String',
+      name: 'data',
+      documentation: 'The token data'
     }
   ]
 });
