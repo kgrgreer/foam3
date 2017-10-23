@@ -1,4 +1,4 @@
-package net.nanopay.dao.auth;
+package net.nanopay.auth.email;
 
 import foam.core.FObject;
 import foam.core.X;
