@@ -8,7 +8,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
-  { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
