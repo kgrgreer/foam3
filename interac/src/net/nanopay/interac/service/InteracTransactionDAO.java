@@ -43,7 +43,7 @@ public class InteracTransactionDAO
       throw new RuntimeException("Invalid purpose");
     }
 
-    if ( transaction.getFees() < 0 ) {
+    if ( transaction.getFees() == null ) {
       throw new RuntimeException("Invalid fees");
     }
 
