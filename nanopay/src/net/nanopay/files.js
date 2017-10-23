@@ -62,7 +62,6 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // cico
-  { name: 'net/nanopay/cico/model/BaseServiceProvider' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
