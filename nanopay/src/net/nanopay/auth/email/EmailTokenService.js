@@ -31,6 +31,7 @@ foam.CLASS({
   token.setData(UUID.randomUUID().toString());
   return ((Token) tokenDAO.put(token)).getData();
 } catch (Throwable t) {
+  t.printStackTrace();
   return null;
 }`
     },
@@ -67,6 +68,7 @@ foam.CLASS({
 
   return true;
 } catch (Throwable t) {
+  t.printStackTrace();
   return false;
 }`
     },
