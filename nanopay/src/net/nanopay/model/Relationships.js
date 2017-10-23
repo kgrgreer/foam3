@@ -59,11 +59,6 @@ foam.CLASS({
       documentation: 'Email verified flag'
     },
     {
-      class: 'Boolean',
-      name: 'phoneVerified',
-      documentation: 'Phone verified flag'
-    },
-    {
       class: 'Reference',
       of: 'net.nanopay.model.Broker',
       name: 'brokerId'
