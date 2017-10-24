@@ -31,6 +31,7 @@ foam.CLASS({
           margin: 0;
           display: inline-block;
           vertical-align: top;
+          margin-bottom: 30px;
         }
         ^ .accountDiv {
           width: 400px;
@@ -116,6 +117,19 @@ foam.CLASS({
           padding-left: 15px;
           height: 60px;
         }
+        .filter-search {
+          width: 225px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #ffffff;
+          display: inline-block;
+          margin-left: 10px;
+          vertical-align: top;
+          border: 0;
+          box-shadow:none;
+          padding-left: 10px;
+          font-size: 14px;
+        }
         ^ .foam-u2-view-TableView th {
           font-family: 'Roboto';
           padding-left: 15px;
@@ -164,6 +178,15 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('h3').add(this.recentTransactions).end()
+          .start().addClass('container')
+            .start().addClass('button-div')
+              .start().addClass('inline')
+                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
+              .end()
+              .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
+              .start('input').addClass('filter-search').end()       
+            .end()
+          .end()
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
