@@ -8,7 +8,8 @@ foam.CLASS({
   imports: [
     'device',
     'stack',
-    'deviceDAO'
+    'deviceDAO',
+    'serialNumber'
   ],
 
   properties: [
@@ -112,9 +113,9 @@ foam.CLASS({
     {
       name: 'next',
       label: '',
-      code: function(X){
+      code: function (X) {
         /* not sure what service or model to call here but the retail code is available under X.retailCode */
-        X.stack.push({ class: 'net.nanopay.merchant.ui.SetupSuccessView' })
+        X.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' })
       }
     }
   ]

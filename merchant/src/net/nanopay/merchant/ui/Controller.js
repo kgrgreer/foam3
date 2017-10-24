@@ -142,6 +142,7 @@ foam.CLASS({
       this.userDAO.limit(1).select().then(function (a) {
         self.user.copyFrom(a.array[0]);
       });
+
       if ( localStorage.serialNumber ) {
         this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
           if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
@@ -160,8 +161,7 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupInputView'});
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('mdc-toolbar mdc-toolbar--fixed').show(this.showHeader$)

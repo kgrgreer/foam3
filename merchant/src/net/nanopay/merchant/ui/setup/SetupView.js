@@ -16,6 +16,10 @@ foam.CLASS({
     'deviceDAO'
   ],
 
+  exports: [
+    'serialNumber'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -111,27 +115,28 @@ foam.CLASS({
 
   listeners: [
     function onNextClicked (e) {
-      var self = this;
-      // look up device, set to active and save
-      this.deviceDAO.find(this.serialNumber).then(function (result) {
-        if ( ! result ) {
-          throw new Error('Device not found');
-        }
-
-        result.status = self.DeviceStatus.ACTIVE;
-        return self.deviceDAO.put(result);
-      })
-      .then(function (result) {
-        if ( ! result ) {
-          throw new Error('Device activation failed');
-        }
-
-        self.device.copyFrom(result);
-        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
-      })
-      .catch(function (err) {
-        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
-      });
+      this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupInputView' });
+//
+//      // look up device, set to active and save
+//      this.deviceDAO.find(this.serialNumber).then(function (result) {
+//        if ( ! result ) {
+//          throw new Error('Device not found');
+//        }
+//
+//        result.status = self.DeviceStatus.ACTIVE;
+//        return self.deviceDAO.put(result);
+//      })
+//      .then(function (result) {
+//        if ( ! result ) {
+//          throw new Error('Device activation failed');
+//        }
+//
+//        self.device.copyFrom(result);
+//        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
+//      })
+//      .catch(function (err) {
+//        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
+//      });
     }
   ]
 });
