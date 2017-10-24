@@ -17,7 +17,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',         message: 'Step 3: Input the device\'s serial number.' },
-    { name: 'Instructions', message: 'Open the MintChip merchant app on your device and enter the 15 alphanumeric serial code displayed on the screen of the device. Do not use spaces.' },
+    { name: 'Instructions', message: 'Open the MintChip merchant app on your device and enter the 16 alphanumeric serial code displayed on the screen of the device. Do not use spaces.' },
     { name: 'SerialLabel',  message: 'Serial # *' },
     { name: 'Error',        message: 'Invalid Serial Number used.' }
   ],
