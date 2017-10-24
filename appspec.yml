@@ -4,6 +4,6 @@ files:
   - source: /
     destination: /pkg/stack/stage/NANOPAY
 permissions:
-#hooks:
-#  AfterInstall:
-#    - location: run-tomcat.sh
+hooks:
+  AfterInstall:
+    - location: run-tomcat.sh
