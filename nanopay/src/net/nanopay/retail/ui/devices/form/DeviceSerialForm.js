@@ -17,7 +17,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',         message: 'Step 3: Input the device\'s serial number.' },
-    { name: 'Instructions', message: 'Open the MintChip merchant app on your device and enter the 15 alphanumeric serial code displayed on the screen of the device. Do not use spaces.' },
+    { name: 'Instructions', message: 'Open the MintChip merchant app on your device and enter the 16 alphanumeric serial code displayed on the screen of the device. Do not use spaces.' },
     { name: 'SerialLabel',  message: 'Serial # *' },
     { name: 'Error',        message: 'Invalid Serial Number used.' }
   ],
@@ -31,7 +31,7 @@ foam.CLASS({
       },
       validateObj: function(serialNumber) {
         //Checks if the length is correct and if the value is alphanumerical
-        if ( ! /^[a-zA-Z0-9]{15}$/.exec(serialNumber) ) return this.Error;
+        if ( ! /^[a-zA-Z0-9]{16}$/.exec(serialNumber) ) return this.Error;
       }
     }
   ],
@@ -61,7 +61,7 @@ foam.CLASS({
             .add(this.slot(this.SERIAL_NUMBER.validateObj))
           .end()
         .end()
-        .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 15})
+        .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 16})
     }
   ]
 });
