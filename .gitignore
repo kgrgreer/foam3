@@ -8,6 +8,8 @@ ingenico/ingenico.iml
 b2b/b2b.iml
 interac/interac.iml
 nanopay/nanopay.iml
+admin-portal/admin-portal.iml
+retail/retail.iml
 
 # CMake
 cmake-build-debug/
@@ -45,3 +47,37 @@ target/
 root/target/
 nanopay-bin.js
 
+# Concatenated files
+accounts
+bankAccounts
+branches
+brokers
+businesses
+canadaTransactions
+cicoServiceProviders
+countries
+countryAgents
+cronjobs
+currency
+dateofbirth
+devices
+exchangeRates
+exportDriverRegistrys
+groups
+historyRecords
+identification
+indiaTransactions
+invoiceResolutions
+invoices
+languages
+menus
+pacs8india
+pacs8iso
+payees
+permissions
+regions
+scripts
+services
+tests
+transactions
+users
