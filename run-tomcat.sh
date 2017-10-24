@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# exit on first failure
-set -e
-
 # build nanofoam and compile
 ./gen.sh
 mvn clean install
