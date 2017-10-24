@@ -28,7 +28,7 @@ var classes = [
   'foam.nanos.auth.Phone',
   'foam.swift.box.RPCReturnBox',
   'foam.swift.parse.StringPStream',
-  'foam.swift.parse.json.output.HTTPBoxOutputter',
+  'foam.swift.parse.json.output.Outputter',
   'foam.u2.Visibility',
   'net.nanopay.model.Account',
   'net.nanopay.model.AccountLimit',

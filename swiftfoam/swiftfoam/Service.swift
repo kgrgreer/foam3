@@ -13,7 +13,7 @@ public class Service {
   lazy var X: Context = {
     return self.boxContext.__subContext__
   }()
-  var dao: ClientDAO!
+  public var dao: ClientDAO!
 
   public enum ServiceError: ServiceErrorProtocol {
     case Failed

@@ -178,7 +178,7 @@ public class RegionService: Service {
 
     var regionsInCountry: [Region] = []
     for region in regions! {
-      if String(describing: region.countryId) == code {
+      if String(describing: region.countryId!) == code {
         regionsInCountry.append(region)
       }
     }
