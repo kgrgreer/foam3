@@ -5,18 +5,10 @@ foam.CLASS({
 
   documentation: 'Setup view with serial number',
 
-  requires: [
-    'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.merchant.ui.ErrorMessage'
-  ],
-
   imports: [
     'device',
     'stack',
-    'deviceDAO'
-  ],
-
-  exports: [
+    'deviceDAO',
     'serialNumber'
   ],
 
@@ -34,7 +26,7 @@ foam.CLASS({
           line-height: 1.88;
           text-align: center;
           color: #ffffff;
-          padding-top: 20px;
+          padding-top: 76px;
         }
         ^ .serial-number-label {
           height: 29px;
@@ -65,21 +57,7 @@ foam.CLASS({
   ],
 
   properties: [
-    ['header', false],
-    {
-      name: 'serialNumber',
-      factory: function () {
-        if ( ! localStorage.serialNumber ) {
-          // remove hyphens, use 16 characters, convert to upper case
-          localStorage.serialNumber = foam.uuid.randomGUID()
-            .replace(/-/g, '')
-            .substring(0, 16)
-            .toUpperCase()
-            .trim();
-        }
-        return localStorage.serialNumber;
-      }
-    }
+    ['header', false]
   ],
 
   messages: [
@@ -116,27 +94,6 @@ foam.CLASS({
   listeners: [
     function onNextClicked (e) {
       this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupInputView' });
-//
-//      // look up device, set to active and save
-//      this.deviceDAO.find(this.serialNumber).then(function (result) {
-//        if ( ! result ) {
-//          throw new Error('Device not found');
-//        }
-//
-//        result.status = self.DeviceStatus.ACTIVE;
-//        return self.deviceDAO.put(result);
-//      })
-//      .then(function (result) {
-//        if ( ! result ) {
-//          throw new Error('Device activation failed');
-//        }
-//
-//        self.device.copyFrom(result);
-//        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
-//      })
-//      .catch(function (err) {
-//        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
-//      });
     }
   ]
 });

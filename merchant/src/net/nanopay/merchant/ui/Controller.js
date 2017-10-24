@@ -24,7 +24,8 @@ foam.CLASS({
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'serialNumber'
   ],
 
   axioms: [
@@ -34,12 +35,11 @@ foam.CLASS({
           width: 320px;
           background-color: #2c4389;
         }
-        ^ .stack-wrapper {
-          margin-top: 56px;
-        }
         ^ .mdc-toolbar--fixed {
           -webkit-box-shadow: none;
           box-shadow: none;
+          position: relative;
+          height: 56px;
         }
         ^ .mdc-list-item {
           min-height: 90px;
@@ -126,6 +126,21 @@ foam.CLASS({
       of: 'net.nanopay.retail.model.Device',
       name: 'device',
       factory: function () { return this.Device.create(); }
+    },
+    {
+      class: 'String',
+      name: 'serialNumber',
+      factory: function () {
+        if ( ! localStorage.serialNumber ) {
+          // remove hyphens, use 16 characters, convert to upper case
+          localStorage.serialNumber = foam.uuid.randomGUID()
+            .replace(/-/g, '')
+            .substring(0, 16)
+            .toUpperCase()
+            .trim();
+        }
+        return localStorage.serialNumber;
+      }
     },
     {
       name: 'stack',
