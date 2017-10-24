@@ -87,9 +87,8 @@ cp users $CATALINA_HOME/bin/
 rm -rf $CATALINA_HOME/bin/foam2/
 cp -r foam2/ $CATALINA_HOME/bin/foam2
 
-cd ../
 rm -rf $CATALINA_HOME/bin/NANOPAY/
-cp -r NANOPAY/ $CATALINA_HOME/bin/NANOPAY
+cp -r $(pwd) $CATALINA_HOME/bin/NANOPAY
 
 #Start the server
 cd $CATALINA_HOME/bin/
