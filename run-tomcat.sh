@@ -1,15 +1,10 @@
 #!/bin/sh
 
-# build nanofoam and compile
+# Build root and compile
 ./gen.sh
 mvn clean install
 
-#Copy over files to tomcat location
-cp target/ROOT.war $CATALINA_HOME/webapps
-#cp server.xml $CATALINA_HOME/conf
-
-#Concatenate files into one services file
-
+# Find and concatenate files
 find **/src -type f -name accounts -exec cat {} \; > accounts
 find **/src -type f -name branches -exec cat {} \; > branches
 find **/src -type f -name bankAccounts -exec cat {} \; > bankAccounts
@@ -45,7 +40,47 @@ find **/src -type f -name tests -exec cat {} \; > tests
 find **/src -type f -name transactions -exec cat {} \; > transactions
 find **/src -type f -name users -exec cat {} \; > users
 
-#Copy over all JDAO files to /bin
+#Remove old files
+rm $CATALINA_HOME/bin/accounts
+rm $CATALINA_HOME/bin/branches
+rm $CATALINA_HOME/bin/bankAccounts
+rm $CATALINA_HOME/bin/brokers
+rm $CATALINA_HOME/bin/businesses
+rm $CATALINA_HOME/bin/canadaTransactions
+rm $CATALINA_HOME/bin/cicoServiceProviders
+rm $CATALINA_HOME/bin/countries
+rm $CATALINA_HOME/bin/countryAgents
+rm $CATALINA_HOME/bin/cronjobs
+rm $CATALINA_HOME/bin/currency
+rm $CATALINA_HOME/bin/devices
+rm $CATALINA_HOME/bin/dateofbirth
+rm $CATALINA_HOME/bin/exchangeRates
+rm $CATALINA_HOME/bin/exportDriverRegistrys
+rm $CATALINA_HOME/bin/groups
+rm $CATALINA_HOME/bin/historyRecords
+rm $CATALINA_HOME/bin/indiaTransactions
+rm $CATALINA_HOME/bin/identification
+rm $CATALINA_HOME/bin/invoices
+rm $CATALINA_HOME/bin/invoiceResolutions
+rm $CATALINA_HOME/bin/languages
+rm $CATALINA_HOME/bin/menus
+rm $CATALINA_HOME/bin/pacs8india
+rm $CATALINA_HOME/bin/pacs8iso
+rm $CATALINA_HOME/bin/payees
+rm $CATALINA_HOME/bin/permissions
+rm $CATALINA_HOME/bin/regions
+rm $CATALINA_HOME/bin/scripts
+rm $CATALINA_HOME/bin/services
+rm $CATALINA_HOME/bin/tests
+rm $CATALINA_HOME/bin/transactions
+rm $CATALINA_HOME/bin/users
+rm -rf $CATALINA_HOME/bin/foam2/
+rm -rf $CATALINA_HOME/bin/NANOPAY/
+rm -rf $CATALINA_HOME/webapps/ROOT
+rm $CATALINA_HOME/webapps/ROOT.war
+
+#Copy over all required files to $CATALINA_HOME/bin/
+#cp server.xml $CATALINA_HOME/conf
 cp accounts $CATALINA_HOME/bin/
 cp branches $CATALINA_HOME/bin/
 cp bankAccounts $CATALINA_HOME/bin/
@@ -79,13 +114,9 @@ cp services $CATALINA_HOME/bin/
 cp tests $CATALINA_HOME/bin/
 cp transactions $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
-
-#Copy over NANOPAY and foam2
-rm -rf $CATALINA_HOME/bin/foam2/
 cp -r foam2/ $CATALINA_HOME/bin/foam2
-
-rm -rf $CATALINA_HOME/bin/NANOPAY/
 cp -r $(pwd) $CATALINA_HOME/bin/NANOPAY
+cp target/ROOT.war $CATALINA_HOME/webapps
 
 #Start the server
 cd $CATALINA_HOME/bin/
