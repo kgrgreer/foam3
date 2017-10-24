@@ -31,7 +31,7 @@ foam.CLASS({
       },
       validateObj: function(serialNumber) {
         //Checks if the length is correct and if the value is alphanumerical
-        if ( ! /^[a-zA-Z0-9]{15}$/.exec(serialNumber) ) return this.Error;
+        if ( ! /^[a-zA-Z0-9]{16}$/.exec(serialNumber) ) return this.Error;
       }
     }
   ],
@@ -61,7 +61,7 @@ foam.CLASS({
             .add(this.slot(this.SERIAL_NUMBER.validateObj))
           .end()
         .end()
-        .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 15})
+        .tag(this.SERIAL_NUMBER, {onKey: true, maxLength: 16})
     }
   ]
 });
