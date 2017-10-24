@@ -3,9 +3,6 @@
 # exit on first failure
 set -e
 
-#Shutdown tomcat if already running
-/$CATALINA_HOME/bin/shutdown.sh
-
 # build nanofoam and compile
 ./gen.sh
 mvn clean install
@@ -96,4 +93,5 @@ cp -r NANOPAY/ $CATALINA_HOME/bin/NANOPAY
 
 #Start the server
 cd $CATALINA_HOME/bin/
+./shutdown.sh
 ./startup.sh
