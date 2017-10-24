@@ -12,6 +12,10 @@ foam.CLASS({
     'user'
   ],
 
+  exports: [
+    'as data'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -168,12 +172,18 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'filter'
+    },
     { name: 'data', factory: function() { return this.transactionDAO; }}
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
       this
         .addClass(this.myClass())
         .start()
@@ -184,7 +194,7 @@ foam.CLASS({
                 .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
               .end()
               .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              .start('input').addClass('filter-search').end()       
+              .start(this.FILTER).addClass('filter-search').end()       
             .end()
           .end()
           .start()
