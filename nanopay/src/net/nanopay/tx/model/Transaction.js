@@ -68,8 +68,8 @@ foam.CLASS({
       name: 'receivingAmount',
       label: 'Receiving Amount',
       transient: true,
-      expression: function(amount, fees, rate) {
-        var receivingAmount = (amount - fees) * rate;
+      expression: function(amount, rate) {
+        var receivingAmount = amount * rate;
         return receivingAmount;
       },
       tableCellFormatter: function(receivingAmount) {
@@ -100,7 +100,12 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      name: 'fees',
+      name: 'feeTransactions',
+      of: 'net.nanopay.tx.model.Transaction'
+    },
+    {
+      class: 'FObjectArray',
+      name: 'informationalFees',
       of: 'net.nanopay.tx.model.Fee'
     },
     // TODO: field for tax as well? May need a more complex model for that
@@ -108,8 +113,8 @@ foam.CLASS({
       class: 'Currency',
       name: 'total',
       transient: true,
-      expression: function (amount, tip, fees) {
-        return amount + tip + fees;
+      expression: function (amount, tip) {
+        return amount + tip;
       }
     },
     {
