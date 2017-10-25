@@ -11,6 +11,6 @@ permissions:
     type:
       - directory
 hooks:
-  AfterInstall:
+  BeforeInstall:
     - location: gen.sh
       runas: root
