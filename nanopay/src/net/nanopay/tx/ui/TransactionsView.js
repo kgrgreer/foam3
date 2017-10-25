@@ -140,7 +140,7 @@ foam.CLASS({
           vertical-align: top;
           border: 0;
           box-shadow:none;
-          padding: 10px 10px 10px 30px;
+          padding: 10px 10px 10px 31px;
           font-size: 14px;
         }
         ^ .foam-u2-view-TableView th {

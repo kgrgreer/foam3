@@ -12,7 +12,8 @@ foam.CLASS({
     'net.nanopay.util.Iso20022',
     'net.nanopay.iso20022.ISO20022Driver',
     'foam.nanos.export.JSONDriver',
-    'foam.nanos.export.XMLDriver'
+    'foam.nanos.export.XMLDriver',
+    'foam.nanos.export.CSVDriver'
   ],
 
   properties: [
@@ -41,16 +42,21 @@ foam.CLASS({
       }
     },
     {
+      name: 'csvDriver',
+      factory: function () {
+        return this.CSVDriver.create();
+      }
+    },
+    {
       name: 'dataType',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'XML',
-          'JSON',
-          'PACS 008'
-        ],
-      },
-      value: 'JSON'
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.exportDriverRegistryDAO,
+          objToChoice: function(a){
+            return [a.id, a.id];
+          }
+        })
+      }
     },
     {
       name: 'note',
@@ -118,14 +124,14 @@ foam.CLASS({
     function convertInvoice(){
       var self = this;
 
+      console.log(this.dataType);
+
       if (this.dataType == 'JSON'){
         this.note = this.jsonDriver.exportFObject(null, this.exportData);
       } else if (this.dataType == 'XML') {
         this.note = this.xmlDriver.exportFObject(null, this.exportData);
-      } else if (this.dataType == 'PACS 008') {
-        this.iso20022.GENERATE_PACS008_MESSAGE(this.exportData).then(function (message) {
-          self.note = self.iso20022Driver.exportFObject(null, message)
-        })
+      } else if (this.dataType == 'CSV') {
+        this.note = this.csvDriver.exportFObject(null, this.exportData);
       }
     }
   ]
