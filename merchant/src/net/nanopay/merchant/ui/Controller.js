@@ -24,7 +24,8 @@ foam.CLASS({
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'serialNumber'
   ],
 
   axioms: [
@@ -34,12 +35,11 @@ foam.CLASS({
           width: 320px;
           background-color: #2c4389;
         }
-        ^ .stack-wrapper {
-          margin-top: 56px;
-        }
         ^ .mdc-toolbar--fixed {
           -webkit-box-shadow: none;
           box-shadow: none;
+          position: relative;
+          height: 56px;
         }
         ^ .mdc-list-item {
           min-height: 90px;
@@ -128,6 +128,21 @@ foam.CLASS({
       factory: function () { return this.Device.create(); }
     },
     {
+      class: 'String',
+      name: 'serialNumber',
+      factory: function () {
+        if ( ! localStorage.serialNumber ) {
+          // remove hyphens, use 16 characters, convert to upper case
+          localStorage.serialNumber = foam.uuid.randomGUID()
+            .replace(/-/g, '')
+            .substring(0, 16)
+            .toUpperCase()
+            .trim();
+        }
+        return localStorage.serialNumber;
+      }
+    },
+    {
       name: 'stack',
       factory: function () { return this.Stack.create(); }
     }
@@ -142,6 +157,7 @@ foam.CLASS({
       this.userDAO.limit(1).select().then(function (a) {
         self.user.copyFrom(a.array[0]);
       });
+
       if ( localStorage.serialNumber ) {
         this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
           if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
@@ -160,8 +176,7 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupInputView'});
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('mdc-toolbar mdc-toolbar--fixed').show(this.showHeader$)

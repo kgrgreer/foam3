@@ -1,17 +1,28 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui.setup',
   name: 'SetupInputView',
-  extends: 'foam.u2.Controller',
+  extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   documentation: 'Setup view with serial number',
+
+  requires: [
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.merchant.ui.transaction.TransactionToolbar'
+  ],
 
   imports: [
     'device',
     'stack',
-    'deviceDAO'
+    'deviceDAO',
+    'serialNumber'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
   ],
 
   properties: [
+    ['header', false],
     {
       class: 'Int',
       name: 'retailCode',
@@ -22,16 +33,17 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ .net-nanopay-merchant-ui-BackElement{
-          position: relative;
-          left: 25px;
+        ^ {
+          width: 320px;
+          height: 480px;
+          background: #2c4389;
         }
         ^ h4{
           width: 259px;
           font-weight: 300;
           text-align: center;
           margin: auto;
-          margin-top: 90px;
+          margin-top: 95px;
         }
         ^ input {
           width: 265px;
@@ -68,13 +80,6 @@ foam.CLASS({
           height: 72px;
           background-color: #26a96c;
         }
-        ^ .foam-u2-ActionView-next{
-          position: absolute;
-          width: 100%;
-          height: 80px;
-          bottom: 75px;
-          opacity: 0.01;
-        }
       */
       }
     })
@@ -87,7 +92,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .tag({ class: 'net.nanopay.merchant.ui.BackElement'})        
+        .add(this.TransactionToolbar.create())
         .start('h4')
           .add('Enter the code showed in retail portal to finish provision.')
         .end()
@@ -99,23 +104,39 @@ foam.CLASS({
             }
           })
         .end()
-        .start().addClass('setup-next-wrapper')
+        .start('div').addClass('setup-next-wrapper')
           .start('button').addClass('setup-next-button')
             .add('Next')
-            .add(this.NEXT)
+            .on('click', this.onNextClicked)
           .end()
         .end()
     }
   ],
 
-  actions: [
-    {
-      name: 'next',
-      label: '',
-      code: function(X){
-        /* not sure what service or model to call here but the retail code is available under X.retailCode */
-        X.stack.push({ class: 'net.nanopay.merchant.ui.SetupSuccessView' })
-      }
+  listeners: [
+    function onNextClicked (e) {
+      var self = this;
+
+      // look up device, set to active and save
+      this.deviceDAO.find(this.serialNumber).then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device not found');
+        }
+
+        result.status = self.DeviceStatus.ACTIVE;
+        return self.deviceDAO.put(result);
+      })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device activation failed');
+        }
+
+        self.device.copyFrom(result);
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
+      })
+      .catch(function (err) {
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
+      });
     }
   ]
 });
