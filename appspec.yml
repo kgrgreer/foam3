@@ -3,7 +3,11 @@ os: linux
 files:
   - source: /
     destination: /pkg/stack/stage/NANOPAY
-hooks:
-  AfterInstall:
-    - location: gen.sh
-      runas: root
+permissions:
+  - object: /pkg/stack/stage/NANOPAY
+    owner: root
+    mode: 777
+#hooks:
+#  AfterInstall:
+#    - location: gen.sh
+#      runas: root
