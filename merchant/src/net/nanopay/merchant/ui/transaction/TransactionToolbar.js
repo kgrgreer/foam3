@@ -12,7 +12,7 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 320px;
-          height: 55px;
+          height: 56px;
           background-color: #2c4389;
         }
         ^ .transaction-toolbar-icon-wrapper {
