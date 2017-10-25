@@ -10,12 +10,6 @@ permissions:
     mode: 777
     type:
       - directory
-  - object: /pkg/stack/stage/
-      pattern: "**"
-      owner: root
-      mode: 777
-      type:
-        - file
 #hooks:
 #  AfterInstall:
 #    - location: gen.sh
