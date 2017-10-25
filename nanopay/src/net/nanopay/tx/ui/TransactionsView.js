@@ -80,6 +80,11 @@ foam.CLASS({
         ^ .titleMargin {
           margin: 0;
         }
+        ^ .searchIcon {
+          position: absolute;
+          margin-left: 20px;
+          margin-top: 8px;
+        }
         ^ .net-nanopay-ui-ActionView-sendTransfer {
           width: 135px;
           height: 40px;
@@ -131,11 +136,11 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
           display: inline-block;
-          margin-left: 10px;
+          margin-left: 15px;
           vertical-align: top;
           border: 0;
           box-shadow:none;
-          padding-left: 10px;
+          padding: 10px 10px 10px 30px;
           font-size: 14px;
         }
         ^ .foam-u2-view-TableView th {
@@ -213,8 +218,8 @@ foam.CLASS({
               .start().addClass('inline')
                 .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).end()
               .end()
-              .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filter'}}).add(this.FILTER_BUTTON).end()
-              .start(this.FILTER).addClass('filter-search').end()       
+              .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
+              .start(this.FILTER).addClass('filter-search').end()
             .end()
           .end()
           .start()
@@ -260,12 +265,6 @@ foam.CLASS({
       name: 'exportButton',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal'/*, transaction: X.viewData.transaction*/}));
-      }
-    },
-    {
-      name: 'filterButton',
-      code: function(X) {
-        console.log(X.filter);
       }
     }
   ],
