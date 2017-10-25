@@ -2,8 +2,8 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /pkg/stack/stage/nanopay
+    destination: /pkg/stack/stage/NANOPAY
 permissions:
-hooks:
-  AfterInstall:
-    - location: root/build.sh
+#hooks:
+#  AfterInstall:
+#    - location: run-tomcat.sh
