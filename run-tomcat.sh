@@ -41,39 +41,6 @@ find **/src -type f -name transactions -exec cat {} \; > transactions
 find **/src -type f -name users -exec cat {} \; > users
 
 #Remove old files
-rm $CATALINA_HOME/bin/accounts
-rm $CATALINA_HOME/bin/branches
-rm $CATALINA_HOME/bin/bankAccounts
-rm $CATALINA_HOME/bin/brokers
-rm $CATALINA_HOME/bin/businesses
-rm $CATALINA_HOME/bin/canadaTransactions
-rm $CATALINA_HOME/bin/cicoServiceProviders
-rm $CATALINA_HOME/bin/countries
-rm $CATALINA_HOME/bin/countryAgents
-rm $CATALINA_HOME/bin/cronjobs
-rm $CATALINA_HOME/bin/currency
-rm $CATALINA_HOME/bin/devices
-rm $CATALINA_HOME/bin/dateofbirth
-rm $CATALINA_HOME/bin/exchangeRates
-rm $CATALINA_HOME/bin/exportDriverRegistrys
-rm $CATALINA_HOME/bin/groups
-rm $CATALINA_HOME/bin/historyRecords
-rm $CATALINA_HOME/bin/indiaTransactions
-rm $CATALINA_HOME/bin/identification
-rm $CATALINA_HOME/bin/invoices
-rm $CATALINA_HOME/bin/invoiceResolutions
-rm $CATALINA_HOME/bin/languages
-rm $CATALINA_HOME/bin/menus
-rm $CATALINA_HOME/bin/pacs8india
-rm $CATALINA_HOME/bin/pacs8iso
-rm $CATALINA_HOME/bin/payees
-rm $CATALINA_HOME/bin/permissions
-rm $CATALINA_HOME/bin/regions
-rm $CATALINA_HOME/bin/scripts
-rm $CATALINA_HOME/bin/services
-rm $CATALINA_HOME/bin/tests
-rm $CATALINA_HOME/bin/transactions
-rm $CATALINA_HOME/bin/users
 rm -rf $CATALINA_HOME/bin/foam2/
 rm -rf $CATALINA_HOME/bin/NANOPAY/
 rm -rf $CATALINA_HOME/webapps/ROOT
