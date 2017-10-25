@@ -14,6 +14,10 @@ public class CICOTransactionDAO
   public CICOTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
+  public CICOTransactionDAO(X x, DAO delegate) {
+    setX(x);
+    setDelegate(delegate);
+  }
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
@@ -37,7 +41,7 @@ public class CICOTransactionDAO
             transaction.setType(TransactionType.CASHOUT);
           }
 
-          return getDelegate().put(transaction);
+          return getDelegate().put_(x, transaction);
 
         } catch (RuntimeException e) {
           throw e;
