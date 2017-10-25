@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.ui',
+  package: 'net.nanopay.ui.transfer',
   name: 'TransferUserCard',
   extends: 'foam.u2.Controller',
 
@@ -20,7 +20,6 @@ foam.CLASS({
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
           margin-bottom: 20px;
-
           width: 300px;
           padding: 20px;
         }

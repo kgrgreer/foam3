@@ -170,7 +170,7 @@ foam.CLASS({
       value: 1.5,
       min: 1.5,
       precision: 2,
-      view: 'net.nanopay.interac.ui.shared.FixedFloatView',
+      view: 'net.nanopay.ui.transfer.FixedFloatView',
       preSet: function(oldValue, newValue) {
         // TODO: Use mode of the view later on.
         if ( this.invoice ) return this.invoice.amount + this.fees;
@@ -197,7 +197,7 @@ foam.CLASS({
       min: 0,
       value: 0,
       precision: 2,
-      view: 'net.nanopay.interac.ui.shared.FixedFloatView',
+      view: 'net.nanopay.ui.transfer.FixedFloatView',
       postSet: function(oldValue, newValue) {
         this.viewData.toAmount = newValue;
 

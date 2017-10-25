@@ -12,7 +12,7 @@ foam.CLASS({
   requires: [
     // 'net.nanopay.interac.model.Pacs008ISOPurpose',
     // 'net.nanopay.interac.model.Pacs008IndiaPurpose',
-    'net.nanopay.interac.ui.shared.TransferUserCard',
+    'net.nanopay.ui.transfer.TransferUserCard',
     'net.nanopay.model.BankAccount',
     'foam.nanos.auth.User'
   ],
@@ -306,7 +306,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();

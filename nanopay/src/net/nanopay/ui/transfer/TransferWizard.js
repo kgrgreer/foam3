@@ -236,7 +236,6 @@ foam.CLASS({
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
               .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-                .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
                 .addClass('interacImage')
               .end()
             .end()
