@@ -7,3 +7,4 @@ permissions:
 hooks:
   AfterInstall:
     - location: run-tomcat.sh
+      runas: root
