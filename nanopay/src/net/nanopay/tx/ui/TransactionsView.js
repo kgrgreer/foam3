@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'View displaying interac home page with list of accounts and transactions',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [ 'net.nanopay.tx.model.Transaction' ],
 
   imports: [
@@ -167,6 +171,22 @@ foam.CLASS({
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
+        ^ .net-nanopay-ui-ActionView-exportButton {
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          opacity: 0.01;
+          cursor: pointer;
+          z-index: 100;
+        }
+        ^ .net-nanopay-ui-ActionView-filterButton {
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          opacity: 0.01;
+          cursor: pointer;
+          z-index: 100;
+        }
       */}
     })
   ],
@@ -191,9 +211,9 @@ foam.CLASS({
           .start().addClass('container')
             .start().addClass('button-div')
               .start().addClass('inline')
-                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
+                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).end()
               .end()
-              .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
+              .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filter'}}).add(this.FILTER_BUTTON).end()
               .start(this.FILTER).addClass('filter-search').end()       
             .end()
           .end()
@@ -234,6 +254,18 @@ foam.CLASS({
       code: function(X) {
         // send e-Transfer functionality
         X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
+      }
+    },
+    {
+      name: 'exportButton',
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal'/*, transaction: X.viewData.transaction*/}));
+      }
+    },
+    {
+      name: 'filterButton',
+      code: function(X) {
+        console.log(X.filter);
       }
     }
   ],
