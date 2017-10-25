@@ -1,4 +1,5 @@
 # Merchant application
 
 ## Running
-Run `build.sh` first before running your nano server
+1. Run `npm install`
+2. Run `build.sh`

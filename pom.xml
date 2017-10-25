@@ -5,7 +5,7 @@
   <version>0.0.1</version>
 
   <groupId>net.nanopay</groupId>
-  <artifactId>nanofoam</artifactId>
+  <artifactId>root</artifactId>
   <name>nanoPay</name>
 
   <properties>
@@ -222,6 +222,7 @@
         <version>2.4</version>
         <configuration>
           <webXml>WEB-INF/web.xml</webXml>
+          <warName>ROOT</warName>
         </configuration>
       </plugin>
 

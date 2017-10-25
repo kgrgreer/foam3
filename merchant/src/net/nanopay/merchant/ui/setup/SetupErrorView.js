@@ -16,7 +16,6 @@ foam.CLASS({
           width: 320px;
           height: 480px;
           background: #f55a5a;
-          margin-top: -56px;
         }
         ^ .error-view-div {
           padding-top: 70px;
