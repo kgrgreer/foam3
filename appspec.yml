@@ -4,12 +4,18 @@ files:
   - source: /
     destination: /pkg/stack/stage/NANOPAY
 permissions:
-  - object: /pkg/stack/stage/NANOPAY
+  - object: /pkg/stack/stage/
     pattern: "**"
-    owner: ubuntu
+    owner: root
     mode: 777
     type:
       - directory
+  - object: /pkg/stack/stage/
+      pattern: "**"
+      owner: root
+      mode: 777
+      type:
+        - file
 #hooks:
 #  AfterInstall:
 #    - location: gen.sh
