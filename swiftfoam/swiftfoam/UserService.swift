@@ -178,6 +178,24 @@ public class UserService: Service {
     }
   }
 
+  // TODO: There is probably a better implementation for this.
+  public func reloadUser(callback: @escaping (Any?) -> Void) {
+    guard isUserLoggedIn() else { return }
+    self.get(userWithId: getLoggedInUser()!.id) {
+      response in
+      guard let updatedUser = response as? User else {
+        guard let error = response as? ServiceErrorProtocol else {
+          callback(Service.ServiceError.Failed)
+          return
+        }
+        callback(error)
+        return
+      }
+      self.loggedInUser = updatedUser
+      callback(updatedUser)
+    }
+  }
+
   public func update(user: User, callback: @escaping (Any?) -> Void) {
     DispatchQueue.global(qos: .userInitiated).async {
       guard self.isUserLoggedIn() else {
@@ -218,7 +236,7 @@ public class UserService: Service {
         let pred = self.X.create(Eq.self, args: [
           "arg1": User.classInfo().axiom(byName: "id"),
           "arg2": id,
-          ])
+        ])
 
         guard let userSink = (try self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
           DispatchQueue.main.async {

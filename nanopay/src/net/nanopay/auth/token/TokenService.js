@@ -9,10 +9,13 @@ foam.INTERFACE({
       name: 'generateToken',
       returns: 'Promise',
       javaReturns: 'String',
+      swiftReturns: 'String?',
+      swiftThrows: true,
       args: [
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          javaType: 'foam.nanos.auth.User',
+          swiftType: 'User'
         }
       ]
     },
@@ -20,14 +23,18 @@ foam.INTERFACE({
       name: 'processToken',
       returns: 'Promise',
       javaReturns: 'boolean',
+      swiftReturns: 'Bool?',
+      swiftThrows: true,
       args: [
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          javaType: 'foam.nanos.auth.User',
+          swiftType: 'User'
         },
         {
           name: 'token',
-          javaType: 'String'
+          javaType: 'String',
+          swiftType: 'String'
         }
       ]
     }

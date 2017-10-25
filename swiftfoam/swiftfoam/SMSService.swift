@@ -28,27 +28,34 @@ public class SMSService: Service {
     service.delegate = dao.delegate
   }
 
-  public func generateToken(forUser user: User, callback: @escaping (Any?) -> Void) {
+  public func generateToken(callback: @escaping (Any?) -> Void) {
     guard UserService.instance.isUserLoggedIn() else {
       callback(UserService.UserError.UserNotLoggedIn)
       return
     }
 
     DispatchQueue.global(qos: .userInitiated).async {
-      guard let token = self.service.generateToken(user) as? String else {
-        DispatchQueue.main.async {
-          callback(ServiceError.ConversionFailed)
+      do {
+        guard let token = try self.service.generateToken(UserService.instance.getLoggedInUser()!) else {
+          DispatchQueue.main.async {
+            callback(ServiceError.ConversionFailed)
+          }
+          return
         }
-        return
-      }
 
-      DispatchQueue.main.async {
-        callback(token)
+        DispatchQueue.main.async {
+          callback(token)
+        }
+      } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
       }
     }
   }
 
-  public func processToken(forUser user: User, withCode code: String, callback: @escaping (Any?) -> Void) {
+  public func processToken(withCode code: String, callback: @escaping (Any?) -> Void) {
     guard UserService.instance.isUserLoggedIn() else {
       callback(UserService.UserError.UserNotLoggedIn)
       return
@@ -60,15 +67,22 @@ public class SMSService: Service {
     }
 
     DispatchQueue.global(qos: .userInitiated).async {
-      guard let success = self.service.processToken(user, code) as? Bool else {
-        DispatchQueue.main.async {
-          callback(ServiceError.ConversionFailed)
+      do {
+        guard let success = try self.service.processToken(UserService.instance.getLoggedInUser()!, code) else {
+          DispatchQueue.main.async {
+            callback(ServiceError.ConversionFailed)
+          }
+          return
         }
-        return
-      }
 
-      DispatchQueue.main.async {
-        callback(success)
+        DispatchQueue.main.async {
+          callback(success)
+        }
+      } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
+        DispatchQueue.main.async {
+          callback(ServiceError.Failed)
+        }
       }
     }
   }
