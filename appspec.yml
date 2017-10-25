@@ -6,5 +6,5 @@ files:
 permissions:
 hooks:
   AfterInstall:
-    - location: run-tomcat.sh
+    - location: gen.sh
       runas: root
