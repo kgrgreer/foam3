@@ -16,6 +16,7 @@ public enum ServiceURL: String {
   case User = "userDAO"
   case Country = "countryDAO"
   case Region = "regionDAO"
+  case SMS = "smsToken"
 
   func path() -> String {
     return "\(ServiceHost.Localhost.rawValue)\(self.rawValue)"

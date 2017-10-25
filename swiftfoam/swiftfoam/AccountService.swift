@@ -25,13 +25,12 @@ public class AccountService: Service {
   }
 
   public func getAccountFor(userId id: Int, callback: @escaping (Any?) -> Void) {
+    guard UserService.instance.isUserLoggedIn() else {
+      callback(UserService.UserError.UserNotLoggedIn)
+      return
+    }
+
     DispatchQueue.global(qos: .userInitiated).async {
-      guard UserService.instance.isUserLoggedIn() else {
-        DispatchQueue.main.async {
-          callback(UserService.UserError.UserNotLoggedIn)
-        }
-        return
-      }
       do {
         let pred = self.X.create(Eq.self, args: [
           "arg1": Account.classInfo().axiom(byName: "owner"),

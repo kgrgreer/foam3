@@ -35,6 +35,11 @@ var classes = [
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.auth.token.ClientTokenService',
+  'net.nanopay.auth.token.Token',
+  'net.nanopay.auth.token.TokenService',
+  'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.email.EmailTokenService',
 ];
 
 module.exports = {

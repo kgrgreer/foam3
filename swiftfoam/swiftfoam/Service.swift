@@ -35,7 +35,7 @@ public class Service {
 
     let httpBox = X.create(HTTPBox.self)!
     httpBox.url = url.path()
-
+    
     dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
   }
