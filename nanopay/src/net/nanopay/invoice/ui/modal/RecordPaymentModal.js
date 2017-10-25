@@ -36,6 +36,9 @@ foam.CLASS({
           margin: auto;
           font-family: Roboto;
         }
+        ^ .net-nanopay-ui-ActionView-close{
+          right: -280px !important;
+        }
     */}
     })
   ],
@@ -44,7 +47,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-          
+
       this
       .tag(this.ModalHeader.create({
         title: 'Record Payment'
@@ -54,7 +57,7 @@ foam.CLASS({
         .start().addClass('key-value-container')
           .start()
             .start().addClass('key').add('Company').end()
-            .start().addClass('value').add(this.invoice.payeeName).end()
+            .start().addClass('value').add(this.invoice.payerName).end()
           .end()
         .end()
         .start()

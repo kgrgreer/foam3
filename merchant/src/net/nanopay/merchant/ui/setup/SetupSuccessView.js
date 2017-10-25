@@ -16,7 +16,6 @@ foam.CLASS({
           width: 320px;
           height: 480px;
           background: #35c38d;
-          margin-top: -56px;
         }
         ^ .success-view-div {
           padding-top: 70px;
