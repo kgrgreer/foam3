@@ -40,12 +40,6 @@ find **/src -type f -name tests -exec cat {} \; > tests
 find **/src -type f -name transactions -exec cat {} \; > transactions
 find **/src -type f -name users -exec cat {} \; > users
 
-#Remove old files
-rm -rf $CATALINA_HOME/bin/foam2/
-rm -rf $CATALINA_HOME/bin/NANOPAY/
-rm -rf $CATALINA_HOME/webapps/ROOT
-rm $CATALINA_HOME/webapps/ROOT.war
-
 #Copy over all required files to $CATALINA_HOME/bin/
 #cp server.xml $CATALINA_HOME/conf
 cp accounts $CATALINA_HOME/bin/
@@ -85,7 +79,14 @@ cp -r foam2/ $CATALINA_HOME/bin/foam2
 cp -r $(pwd) $CATALINA_HOME/bin/NANOPAY
 cp target/ROOT.war $CATALINA_HOME/webapps
 
+
+#Remove old files
+#rm -rf $CATALINA_HOME/bin/foam2/
+#rm -rf $CATALINA_HOME/bin/NANOPAY/
+#rm -rf $CATALINA_HOME/webapps/ROOT
+#rm $CATALINA_HOME/webapps/ROOT.war
+
 #Start the server
-cd $CATALINA_HOME/bin/
-./shutdown.sh
-./startup.sh
+#cd $CATALINA_HOME/bin/
+#./shutdown.sh
+#./startup.sh
