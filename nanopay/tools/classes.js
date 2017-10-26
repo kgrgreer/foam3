@@ -5,6 +5,7 @@ var classes = [
   'net.nanopay.auth.token.Token',
   'net.nanopay.auth.token.TokenService',
   'net.nanopay.auth.token.ClientTokenService',
+  'net.nanopay.auth.token.AbstractTokenService',
   'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
