@@ -78,15 +78,3 @@ cp users $CATALINA_HOME/bin/
 cp -r foam2/ $CATALINA_HOME/bin/foam2
 cp -r $(pwd) $CATALINA_HOME/bin/NANOPAY
 cp target/ROOT.war $CATALINA_HOME/webapps
-
-
-#Remove old files
-#rm -rf $CATALINA_HOME/bin/foam2/
-#rm -rf $CATALINA_HOME/bin/NANOPAY/
-#rm -rf $CATALINA_HOME/webapps/ROOT
-#rm $CATALINA_HOME/webapps/ROOT.war
-
-#Start the server
-#cd $CATALINA_HOME/bin/
-#./shutdown.sh
-#./startup.sh

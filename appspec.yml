@@ -9,7 +9,7 @@ permissions:
     owner: root
     mode: 777
     type:
-      - directory
+      - file
 hooks:
   AfterInstall:
     - location: build.sh
