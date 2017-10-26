@@ -63,7 +63,8 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea',
       value: ''
     },
-    'exportData'
+    'exportData',
+    'transaction'
   ],
 
   axioms: [
@@ -78,7 +79,7 @@ foam.CLASS({
         width: 125px;
         height: 40px;
         border-radius: 0;
-        margin-left: 20px;
+        margin-left: 25px;
         padding: 12px 20px;
         border: solid 1px rgba(164, 179, 184, 0.5);
         background-color: white;
@@ -92,6 +93,10 @@ foam.CLASS({
       }
       ^ .label{
         margin-top: 10px;
+      }
+      ^ .note {
+        width: 398px;
+        margin-left: 25px;
       }
     */}
     })
@@ -112,7 +117,7 @@ foam.CLASS({
             .start().addClass('label').add("Data Type").end()
             .start(this.DATA_TYPE).end()
             .start().addClass('label').add("Response").end()
-            .start(this.NOTE).addClass('input-box').end()
+            .start(this.NOTE).addClass('input-box note').end()
             .start(this.CONVERT_INVOICE).addClass('blue-button btn').end()
           .end()
         .end()
@@ -124,14 +129,12 @@ foam.CLASS({
     function convertInvoice(){
       var self = this;
 
-      console.log(this.dataType);
-
       if (this.dataType == 'JSON'){
-        this.note = this.jsonDriver.exportFObject(null, this.exportData);
+        this.note = this.jsonDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'XML') {
-        this.note = this.xmlDriver.exportFObject(null, this.exportData);
+        this.note = this.xmlDriver.exportFObject(null, this.transaction);
       } else if (this.dataType == 'CSV') {
-        this.note = this.csvDriver.exportFObject(null, this.exportData);
+        this.note = this.csvDriver.exportFObject(null, this.transaction);
       }
     }
   ]

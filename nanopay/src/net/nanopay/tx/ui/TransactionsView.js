@@ -17,7 +17,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'as data'
+    'as data',
+    'testTransaction'
   ],
 
   axioms: [
@@ -198,15 +199,19 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'testTransaction'
+    },
+    {
       class: 'String',
       name: 'filter'
     },
-    { name: 'data', factory: function() { return this.transactionDAO; }}
+    { name: 'data', factory: function() { return this.transactionDAO; }},
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      this.onDAOUpdate();
       var self = this;
 
       this
@@ -264,7 +269,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal'/*, transaction: X.viewData.transaction*/}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', transaction: X.testTransaction}));
       }
     }
   ],
@@ -297,6 +302,20 @@ foam.CLASS({
             }).addClass(this.myClass('table')).end();
         }
       ]
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isFramed: true,
+      code: function() {
+        var self = this;
+        
+        this.transactionDAO.limit(1).select().then(function(a){
+          self.testTransaction = a.array[0];
+        });
+      }
     }
   ]
 });
