@@ -57,7 +57,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
-  { name: 'net/nanopay/tx/model/VariableFee' },
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
