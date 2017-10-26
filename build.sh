@@ -1,2 +1,2 @@
 cd /pkg/stack/stage/NANOPAY
-./gen.sh
+./run-tomcat.sh
