@@ -26,6 +26,10 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
       code: function CSS() {/*
+      ^ {
+        height: auto !important;
+      }
+
       ^ .overviewTopMargin {
         margin-top: 21px;
       }
@@ -177,6 +181,14 @@ foam.CLASS({
       ^ .invoiceLink:hover {
         cursor: pointer;
       }
+
+      ^ .net-nanopay-ui-ActionView-goNext {
+        font-size: 10px;
+      }
+
+      ^ .net-nanopay-ui-ActionView-goBack {
+        font-size: 10px;
+      }
     */}})
   ],
 
@@ -244,8 +256,8 @@ foam.CLASS({
         .end()
         .start('div').addClass('row')
           .start('div').addClass('navigationContainer')
-            .tag(this.GO_BACK, {label$: this.backLabel$})
-            .tag(this.GO_NEXT, {label$: this.nextLabel$})
+            .start(this.GO_BACK, {label$: this.backLabel$}).end()
+            .start(this.GO_NEXT, {label$: this.nextLabel$}).end()
           .end()
         .end();
     }
@@ -255,13 +267,13 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, viewData, errors) {
-        if ( position == 1 && errors && errors[0][1] == 'Rate expired' ) return false;
+      // isAvailable: function(position, viewData, errors) {
+      //   if ( position == 1 && errors && errors[0][1] == 'Rate expired' ) return false;
 
-        if ( position == 3 && errors ) return false;
+      //   if ( position == 3 && errors ) return false;
 
-        return true;
-      },
+      //   return true;
+      // },
       code: function(X) {
         if ( this.position == 0 ) {
           X.stack.back();
@@ -288,10 +300,10 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      isAvailable: function(position, errors) {
-        if ( errors ) return false; // Error present
-        return true; // Not in dialog
-      },
+      // isAvailable: function(position, errors) {
+      //   if ( errors ) return false; // Error present
+      //   return true; // Not in dialog
+      // },
       code: function() {
         var self = this;
         if ( this.position == 2 ) { // On Review Transfer page.

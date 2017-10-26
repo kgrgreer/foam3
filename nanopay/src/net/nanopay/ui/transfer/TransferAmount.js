@@ -324,11 +324,11 @@ foam.CLASS({
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
 
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
 
           .start('p').add(this.ToLabel).addClass('bold').end()
 
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.viewData.payee })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payee })
 
         .end();
     },

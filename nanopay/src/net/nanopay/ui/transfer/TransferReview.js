@@ -116,9 +116,9 @@ foam.CLASS({
         self.viewData.rateLocked = false;
       };
 
-      this.pacs008IndiaPurposeDAO.find(this.viewData.purpose).then(function(purpose) {
-        self.purpose = purpose.code + ' - ' + purpose.description;
-      });
+      // this.pacs008IndiaPurposeDAO.find(this.viewData.purpose).then(function(purpose) {
+      //   self.purpose = purpose.code + ' - ' + purpose.description;
+      // });
 
       this.SUPER();
     },
@@ -138,7 +138,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.fromUser })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
             .start('div').addClass('currencyContainer')
@@ -167,7 +167,7 @@ foam.CLASS({
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.interac.ui.shared.TransferUserCard', user: this.viewData.payee })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payee })
           .start('p').addClass('bold').add(this.PurposeLabel).end()
           .start('p').addClass('purposeMargin').add(this.purpose$).end()
           .start('p').addClass('bold').add(this.NotesLabel).end()

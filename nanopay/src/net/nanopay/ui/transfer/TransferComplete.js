@@ -35,7 +35,7 @@ foam.CLASS({
           letter-spacing: 0.4px;
           color: #093649;
         }
-        ^ .foam-u2-ActionView-exportModal{
+        ^ .net-nanopay-ui-ActionView-exportModal{
           position: absolute;
           width: 75px;
           height: 35px;
