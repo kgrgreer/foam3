@@ -61,6 +61,19 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Branch',
       name: 'branchId'
+    },
+    {
+      class: 'Int',
+      name: 'randomDepositAmount',
+      factory: function() {
+        var randomAmountInCents = Math.floor(Math.random() * 100);
+
+        if (!randomAmountInCents) {
+          randomAmountInCents++;
+        }
+
+        return randomAmountInCents;
+      }
     }
   ],
 
