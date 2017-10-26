@@ -13,7 +13,10 @@ public class BrokerNanopayTransactionDAO
   public BrokerNanopayTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
-
+  public BrokerNanopayTransactionDAO(X x, DAO delegate) {
+    setX(x);
+    setDelegate(delegate);
+  }
   private static final Long BROKER_ID = 999L;
 
   @Override
@@ -40,7 +43,7 @@ public class BrokerNanopayTransactionDAO
             default :
               System.out.println("Transaction Type not defined");
           }
-          return getDelegate().put(transaction);
+          return getDelegate().put_(x, transaction);
 
         } catch (RuntimeException e) {
           throw e;
