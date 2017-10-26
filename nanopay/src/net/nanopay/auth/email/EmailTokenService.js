@@ -6,13 +6,7 @@ foam.CLASS({
   documentation: 'Implementation of Token Service used for verifying email addresses',
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.dao.ListSink',
-    'foam.dao.Sink',
-    'foam.mlang.MLang',
-    'net.nanopay.auth.token.Token',
-    'java.util.Calendar',
-    'java.util.List'
+    'foam.dao.DAO'
   ],
 
   methods: [
