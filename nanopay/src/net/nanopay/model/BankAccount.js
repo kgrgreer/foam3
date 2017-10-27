@@ -74,6 +74,11 @@ foam.CLASS({
 
         return randomAmountInCents;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'verified',
+      value: false
     }
   ],
 
