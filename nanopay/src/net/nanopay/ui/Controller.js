@@ -27,7 +27,8 @@ foam.CLASS({
     'account',
     'stack',
     'as ctrl',
-    'user'
+    'user',
+    'requestLogin'
   ],
 
   imports: [
@@ -113,6 +114,7 @@ foam.CLASS({
 
     function requestLogin(){
       var self = this;
+
       return new Promise(function(resolve, reject){
         self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
