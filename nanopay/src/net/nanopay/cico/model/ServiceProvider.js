@@ -24,8 +24,13 @@ foam.CLASS({
       name: 'apiBaseUrl'
     },
     {
-      class: 'FObjectArray',
-      name: 'fees',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'userId'
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      name: 'fee',
       of: 'net.nanopay.tx.model.Fee'
     }
   ]
