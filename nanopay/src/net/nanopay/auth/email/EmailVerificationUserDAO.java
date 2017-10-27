@@ -32,17 +32,7 @@ public class EmailVerificationUserDAO
     // send email
     User result = (User) super.put_(x, obj);
     if ( count.getValue() == 0 ) {
-      EmailMessage message = new EmailMessage();
-      message.setFrom("info@nanopay.net");
-      message.setReplyTo("noreply@nanopay.net");
-      message.setTo(new String[] { user.getEmail() });
-      message.setSubject("MintChip email verification");
-
-      HashMap<String, Object> args = new HashMap<>();
-      args.put("name", String.format("%s %s", result.getFirstName(), result.getLastName()));
-      args.put("link", "http://localhost:8080/verifyEmail?userId=" + result.getId() + "&token=" + emailToken.generateToken(user));
-
-      email.sendEmailFromTemplate(message, "welcome-mintchip", args);
+      emailToken.generateToken(result);
     }
 
     return result;

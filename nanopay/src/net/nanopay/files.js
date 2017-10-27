@@ -13,6 +13,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
