@@ -99,7 +99,6 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      this.loginSuccess$.sub(this.requestLogin());
 
       this
         .addClass(this.myClass())
@@ -115,11 +114,8 @@ foam.CLASS({
     function requestLogin(){
       var self = this;
       return new Promise(function(resolve, reject){
-        if(this.loginSuccess){
-          resolve('Success.');
-        } else {
-          self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
-        }
+        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        self.loginSuccess$.sub(resolve);
       });
     }
   ]
