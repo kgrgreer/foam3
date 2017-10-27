@@ -88,7 +88,7 @@ foam.CLASS({
       net.nanopay.TempMenu.create(null, this);
 
       // this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
-      this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard' })
+      this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' });
     },
 
     function initE() {

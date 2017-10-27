@@ -180,7 +180,7 @@ foam.CLASS({
         if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
         if ( this.user.address.postalCode ) this.address_ += ', ' + this.user.address.postalCode;
         if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
-        this.address_ += ', ' + this.nationality_;
+        this.address_ += ', ' + this.user.address.countryId;
 
         this.bankAccountDAO.find(this.user.id).then(function(account) {
           self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);

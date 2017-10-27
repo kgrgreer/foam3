@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Transfer amount details',
 
   imports: [
-    'exchangeRate'
+    'exchangeRate',
+    'type'
   ],
 
   requires: [
@@ -267,11 +268,11 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
+      console.log(this.type)
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start('div').addClass('transferRateContainer')
+          .start('div').addClass('transferRateContainer').show(this.type == 'foreign')
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
               .start('div').addClass('currencyDenominationContainer')
@@ -309,7 +310,7 @@ foam.CLASS({
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
-          .start().addClass('regular-transfer')
+          .start().addClass('regular-transfer').show(this.type == 'regular')
             .start().addClass('label').add('Enter Amount:').end()
             .start(this.FROM_AMOUNT, { onKey: true }).addClass('from-amount').end()          
           .end()

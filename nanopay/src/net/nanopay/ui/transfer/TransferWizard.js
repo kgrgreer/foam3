@@ -19,7 +19,8 @@ foam.CLASS({
   exports: [
     'countdownView',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'type'
   ],
 
   axioms: [

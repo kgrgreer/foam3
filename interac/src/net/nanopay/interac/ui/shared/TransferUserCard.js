@@ -165,14 +165,13 @@ foam.CLASS({
     {
       name: 'userUpdate',
       code: function() {
-        var self = this;
+        var self = this;      
         if ( ! this.user ) return;
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
         if ( this.invoiceMode ) {
           // if organization exists, change name to organization name.
           if ( this.user.organization ) this.name_ = this.user.organization;
         }
-        
         this.email_ = this.user.email;
         this.phone_ = this.user.phone;
 
