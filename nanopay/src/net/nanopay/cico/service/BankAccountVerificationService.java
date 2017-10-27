@@ -32,19 +32,11 @@ public class BankAccountVerificationService
 
     boolean isVerified = false;
 
-    bankAccountDAO_.where(
-      MLang.EQ(BankAccount.ID, bankAccountId)
-    ).select(new AbstractSink() {
-      @Override
-      public void put(FObject obj, Detachable sub) {
-        if (
-          ((BankAccount) obj).getVerified() ||
-          ((BankAccount) obj).getRandomDepositAmount() == randomDepositAmount
-        ) {
-          isVerified = true;
-        }
-      }
-    });
+    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+
+    if (bankAccount.getVerified() || bankAccount.getRandomDepositAmount() == randomDepositAmount) {
+      isVerified = true;
+    }
 
     pm.log(getX());
 
