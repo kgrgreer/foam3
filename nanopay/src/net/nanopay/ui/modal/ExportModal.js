@@ -93,6 +93,7 @@ foam.CLASS({
         margin-top: 10px;
       }
       ^ .note {
+        height: 150px;
         width: 398px;
         margin-left: 25px;
       }
@@ -125,12 +126,26 @@ foam.CLASS({
 
   actions: [
     function convert(){
+      var self = this;
+
       if (this.dataType == 'JSON') {
-        this.note = this.jsonDriver.exportFObject(null, this.exportData);
+        this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+          console.log(result);
+          self.note = result;
+        });
+        //this.note = this.jsonDriver.exportFObject(null, this.exportData)
       } else if (this.dataType == 'XML') {
-        this.note = this.xmlDriver.exportFObject(null, this.exportData);
+        this.xmlDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+          console.log(result);
+          self.note = result;
+        });
+        //this.note = this.xmlDriver.exportFObject(null, this.exportData);
       } else if (this.dataType == 'CSV') {
-        this.note = this.csvDriver.exportFObject(null, this.exportData);
+        this.csvDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+          console.log(result);
+          self.note = result;
+        });
+        //this.note = this.csvDriver.exportFObject(null, this.exportData);
       }
     }
   ]

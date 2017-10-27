@@ -17,8 +17,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'as data',
-    'daoData'
+    'as data'
   ],
 
   axioms: [
@@ -199,9 +198,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'daoData'
-    },
-    {
       class: 'String',
       name: 'filter'
     },
@@ -211,7 +207,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.onDAOUpdate();
       var self = this;
 
       this
@@ -269,7 +264,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.daoData}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.transactionDAO}));
       }
     }
   ],
@@ -302,20 +297,6 @@ foam.CLASS({
             }).addClass(this.myClass('table')).end();
         }
       ]
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onDAOUpdate',
-      isFramed: true,
-      code: function() {
-        var self = this;
-        
-        this.transactionDAO.select().then(function(sink){
-          self.daoData = sink.array;
-        });
-      }
     }
   ]
 });
