@@ -113,6 +113,15 @@ foam.CLASS({
           margin-left: 100px;
           margin-bottom: 13px;
         }
+        
+        ^ .from-amount {
+          float: none;
+          margin-bottom: 20px;
+        }
+        
+        ^ .label{
+          margin-left: 0;
+        }
       */}
     })
   ],
@@ -299,6 +308,10 @@ foam.CLASS({
               .end()
             .end()
             .start('div').addClass('rateDivider').end()
+          .end()
+          .start().addClass('regular-transfer')
+            .start().addClass('label').add('Enter Amount:').end()
+            .start(this.FROM_AMOUNT, { onKey: true }).addClass('from-amount').end()          
           .end()
           .start('div').addClass('pricingCol')
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()

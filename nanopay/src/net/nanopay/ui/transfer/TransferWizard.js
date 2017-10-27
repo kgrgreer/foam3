@@ -203,6 +203,7 @@ foam.CLASS({
         return this.CountdownView.create();
       }
     },
+    'type',
     'invoice',
     'invoiceMode'
   ],

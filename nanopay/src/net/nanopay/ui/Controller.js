@@ -27,7 +27,8 @@ foam.CLASS({
     'account',
     'stack',
     'as ctrl',
-    'user'
+    'user',
+    'requestLogin'
   ],
 
   axioms: [

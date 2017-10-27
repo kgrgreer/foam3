@@ -21,7 +21,8 @@ foam.CLASS({
     // 'pacs008ISOPurposeDAO',
     // 'pacs008IndiaPurposeDAO',
     'bankAccountDAO',
-    'payeeDAO'
+    'payeeDAO',
+    'user'
   ],
 
   axioms: [
@@ -228,6 +229,13 @@ foam.CLASS({
       validateObj: function(notThirdParty, invoiceMode) {
         if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
       }
+    },
+    {
+      class: 'FObject',
+      name: 'fromUser',
+      expression: function(user){
+        return user;
+      }
     }
   ],
 
@@ -250,10 +258,6 @@ foam.CLASS({
       if ( this.viewData.notes ) {
         this.notes = this.viewData.notes;
       }
-
-      this.payeeDAO.find(1).then(function(user) {
-        self.fromUser = user;
-      });
       this.SUPER()
     },
 
