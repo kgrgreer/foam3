@@ -4,7 +4,7 @@
 set -e
 
 #Shutdown tomcat if already running
-/$CATALINA_HOME/bin/shutdown.sh
+/$CATALINA_HOME/bin/shutdown.sh 2> /dev/null
 
 # build nanofoam and compile
 ./gen.sh
