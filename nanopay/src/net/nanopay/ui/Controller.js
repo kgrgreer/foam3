@@ -27,8 +27,7 @@ foam.CLASS({
     'account',
     'stack',
     'as ctrl',
-    'user',
-    'requestLogin'
+    'user'
   ],
 
   axioms: [
@@ -82,9 +81,9 @@ foam.CLASS({
       });
 
       /*******   Loads Account with balance for Testing Purposes (comment out if not needed)  ********/
-      this.accountDAO.select().then(function(a) {
-        self.account.copyFrom(a.array[0]);
-      });
+      // this.accountDAO.select().then(function(a) {
+      //   self.account.copyFrom(a.array[0]);
+      // });
 
       net.nanopay.TempMenu.create(null, this);
 

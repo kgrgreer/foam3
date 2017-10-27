@@ -191,6 +191,7 @@ foam.CLASS({
         return this.CountdownView.create();
       }
     },
+    
     'invoice',
     'invoiceMode'
   ],
