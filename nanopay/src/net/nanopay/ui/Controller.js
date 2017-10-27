@@ -30,6 +30,10 @@ foam.CLASS({
     'user'
   ],
 
+  imports: [
+    'sessionSuccess'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -64,6 +68,11 @@ foam.CLASS({
       of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
+    },
+    {
+      class: 'Boolean',
+      name: 'loginSuccess',
+      value: false
     }
   ],
 
@@ -86,12 +95,11 @@ foam.CLASS({
       });
 
       net.nanopay.TempMenu.create(null, this);
-
-      this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
 
     function initE() {
       var self = this;
+      this.loginSuccess$.sub(this.requestLogin());
 
       this
         .addClass(this.myClass())
@@ -102,6 +110,17 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function requestLogin(){
+      var self = this;
+      return new Promise(function(resolve, reject){
+        if(this.loginSuccess){
+          resolve('Success.');
+        } else {
+          self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        }
+      });
     }
   ]
 });
