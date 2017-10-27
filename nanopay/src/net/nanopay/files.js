@@ -11,7 +11,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
