@@ -14,6 +14,7 @@ var classes = [
   'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
+  'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
