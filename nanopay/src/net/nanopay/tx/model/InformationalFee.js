@@ -18,11 +18,33 @@ foam.CLASS({
   ],
 
   methods: [
-    function getFee(transactionAmount) {
-      return this.amount;
+    {
+      name: 'getFee',
+      args: [
+        {
+          name: 'transactionAmount',
+          javaType: 'long'
+        }
+      ],
+      javaReturns: 'long',
+      javaCode: ' return this.getAmount(); ',
+      code: function() {
+        return this.amount;
+      }
     },
-    function getTotalAmount(transactionAmount) {
-      return getFee(transactionAmount) + transactionAmount;
+    {
+      name: 'getTotalAmount',
+      args: [
+        {
+          name: 'transactionAmount',
+          javaType: 'long'
+        }
+      ],
+      javaReturns: 'long',
+      javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
+      code: function() {
+        return getFee(transactionAmount) + transactionAmount;
+      }
     }
   ]
 });
