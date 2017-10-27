@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Interac transfer review',
 
   imports: [
-    'pacs008IndiaPurposeDAO'
+    'pacs008IndiaPurposeDAO',
+    'type'
   ],
 
   axioms: [
@@ -75,6 +76,10 @@ foam.CLASS({
         ^ .purposeMargin {
           margin-bottom: 20px
         }
+
+        ^ .currencyAmount-L{
+          font-size: 30px;
+        }
       */}
     })
   ],
@@ -125,7 +130,7 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
+      debugger;
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
@@ -140,7 +145,7 @@ foam.CLASS({
           // TODO: Make card based on from and to information
           .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
           .start('p').addClass('bold').add(this.AmountLabel).end()
-          .start('div').addClass('transferRateContainer')
+          .start('div').addClass('transferRateContainer').show(this.type == 'foreign')
             .start('div').addClass('currencyContainer')
               .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('CAD ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
@@ -152,6 +157,9 @@ foam.CLASS({
               .start('p').addClass('currencyAmount').add('INR ', parseFloat(this.viewData.toAmount).toFixed(2)).end()
             .end()
             .start('div').addClass('rateDivider').end()
+          .end()
+          .start().addClass('transferRateContainer').show(this.type == 'regular')
+            .start('p').addClass('currencyAmount-L').add('$ ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
           .end()
           .start('div').addClass('pricingCol')
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()

@@ -310,7 +310,7 @@ foam.CLASS({
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
-          .start().addClass('regular-transfer').show(this.type == 'regular')
+          .start().addClass().show(this.type == 'regular')
             .start().addClass('label').add('Enter Amount:').end()
             .start(this.FROM_AMOUNT, { onKey: true }).addClass('from-amount').end()          
           .end()
