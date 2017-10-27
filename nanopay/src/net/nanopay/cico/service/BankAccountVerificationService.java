@@ -22,15 +22,15 @@ public class BankAccountVerificationService
   {
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
-    if ( bankAccountId == null || bankAccountId <= 0 ) {
+    if ( bankAccountId <= 0 ) {
       throw new RuntimeException("Invalid Bank Account Id");
     }
 
-    if ( randomDepositAmount == null || randomDepositAmount <= 0 ) {
+    if ( randomDepositAmount <= 0 ) {
       throw new RuntimeException("Invalid amount");
     }
 
-    bool isVerified = false;
+    boolean isVerified = false;
 
     bankAccountDAO_.where(
       MLang.EQ(BankAccount.ID, bankAccountId)
