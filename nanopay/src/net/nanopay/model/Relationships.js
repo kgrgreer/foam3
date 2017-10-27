@@ -7,13 +7,6 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'net.nanopay.model.Account',
-  forwardName: 'accounts',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
   inverseName: 'owner'
@@ -50,11 +43,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'emailVerified',
       documentation: 'Email verified flag'
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Broker',
-      name: 'brokerId'
     },
     {
       class: 'FObjectArray',
