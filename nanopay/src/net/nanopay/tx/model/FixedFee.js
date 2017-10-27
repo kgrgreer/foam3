@@ -5,17 +5,39 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Currency',
+      class: 'Long',
       name: 'fixedFee'
     }
   ],
 
   methods: [
-    function getFee(transactionAmount) {
-      return this.fixedFee;
+    {
+      name: 'getFee',
+      args: [
+        {
+          name: 'transactionAmount',
+          javaType: 'long'
+        }
+      ],
+      javaReturns: 'long',
+      javaCode: ' return this.getFixedFee(); ',
+      code: function() {
+        return this.fixedFee;
+      }
     },
-    function getTotalAmount(transactionAmount) {
-      return getFee(transactionAmount) + transactionAmount;
+    {
+      name: 'getTotalAmount',
+      args: [
+        {
+          name: 'transactionAmount',
+          javaType: 'long'
+        }
+      ],
+      javaReturns: 'long',
+      javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
+      code: function() {
+        return getFee(transactionAmount) + transactionAmount;
+      }
     }
   ]
 });
