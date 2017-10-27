@@ -22,6 +22,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'active'
     },
+
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'userId'
+    },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
@@ -29,8 +35,8 @@ foam.CLASS({
       documentation: 'Bank branch address'
     },
     {
-      class: 'FObjectArray',
-      name: 'fees',
+      class: 'foam.core.FObjectProperty',
+      name: 'fee',
       of: 'net.nanopay.tx.model.Fee'
     }
   ]
