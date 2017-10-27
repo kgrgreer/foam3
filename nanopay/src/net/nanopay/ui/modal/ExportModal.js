@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui.modal',
   name: 'ExportModal',
@@ -63,8 +62,7 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea',
       value: ''
     },
-    'exportData',
-    'transaction'
+    'exportData'
   ],
 
   axioms: [
@@ -118,7 +116,7 @@ foam.CLASS({
             .start(this.DATA_TYPE).end()
             .start().addClass('label').add("Response").end()
             .start(this.NOTE).addClass('input-box note').end()
-            .start(this.CONVERT_INVOICE).addClass('blue-button btn').end()
+            .start(this.CONVERT).addClass('blue-button btn').end()
           .end()
         .end()
       .end()
@@ -126,15 +124,13 @@ foam.CLASS({
   ],
 
   actions: [
-    function convertInvoice(){
-      var self = this;
-
-      if (this.dataType == 'JSON'){
-        this.note = this.jsonDriver.exportFObject(null, this.transaction);
+    function convert(){
+      if (this.dataType == 'JSON') {
+        this.note = this.jsonDriver.exportFObject(null, this.exportData);
       } else if (this.dataType == 'XML') {
-        this.note = this.xmlDriver.exportFObject(null, this.transaction);
+        this.note = this.xmlDriver.exportFObject(null, this.exportData);
       } else if (this.dataType == 'CSV') {
-        this.note = this.csvDriver.exportFObject(null, this.transaction);
+        this.note = this.csvDriver.exportFObject(null, this.exportData);
       }
     }
   ]
