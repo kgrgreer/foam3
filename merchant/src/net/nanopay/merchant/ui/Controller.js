@@ -265,7 +265,7 @@ foam.CLASS({
     },
 
     function onMenuItemClicked (e) {
-      var clicked = e.target.text;
+      var clicked = e.target.text.trim();
       // if clicked is null, don't do anything
       if ( ! clicked ) {
         return;
