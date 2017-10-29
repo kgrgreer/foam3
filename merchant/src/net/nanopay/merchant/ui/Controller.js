@@ -107,52 +107,6 @@ foam.CLASS({
           width: 20px;
           height: 20px;
         }
-
-
-
-        ^ .mdc-list-item {
-          min-height: 90px;
-          background-color: #ffffff;
-          font-family: Roboto;
-          font-size: 16px;
-          font-weight: 500;
-          line-height: 1.88;
-          text-align: left;
-          color: #595959;
-          padding: 0px;
-          margin: 0px;
-        }
-        ^ .mdc-list-item.back {
-          min-height: 56px;
-          background-color: #26a96c;
-          font-family: Roboto;
-          font-size: 16px;
-          line-height: 1.88;
-          text-align: center;
-          color: #ffffff;
-        }
-        ^ .mdc-list-item.selected {
-        }
-        ^ .mdc-list-item__start-detail {
-          height: 90px;
-          margin-left: 20px;
-          margin-top: 50px;
-        }
-        ^ .mdc-list-item__start-detail img {
-
-          object-fit: contain;
-        }
-        ^ .mdc-list-item__start-detail.back {
-          height: 90px;
-          margin-left: 27px;
-          margin-top: 70px;
-          margin-right: 25px;
-        }
-        ^ .mdc-list-item__start-detail.back img {
-          width: 20px;
-          height: 20px;
-          object-fit: contain;
-        }
         ^ .net-nanopay-ui-ToggleSwitch {
           padding-left: 60px;
         }
@@ -298,60 +252,7 @@ foam.CLASS({
           .start('div').addClass('toolbar-title').add(this.toolbarTitle$).end()
         .end()
 
-//        .start('div').addClass('mdc-toolbar mdc-toolbar--fixed').show(this.showHeader$)
-//          .start('div').addClass('mdc-toolbar__row')
-//            .start('section').addClass('mdc-toolbar__section mdc-toolbar__section--align-start')
-
-//              .start('span').addClass('mdc-toolbar__title catalog-title').add(this.toolbarTitle$).end()
-//            .end()
-//          .end()
-//        .end()
-//
-//        .start('aside').addClass('mdc-temporary-drawer')
-//          .start('nav').addClass('mdc-temporary-drawer__drawer')
-//            .start('nav').addClass('mdc-temporary-drawer__content mdc-list-group')
-//              .start('div').addClass('mdc-list')
-//                .start('a').addClass('mdc-list-item back')
-//                  .attrs({ href: '#' })
-//                  .start('i').addClass('mdc-list-item__start-detail back')
-//                    .attrs({ 'aria-hidden': true })
-//                    .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
-//                  .end()
-//                  .add('Back')
-//                  .on('click', this.onMenuItemClicked)
-//                .end()
-//
-//                .start('a').addClass('mdc-list-item selected')
-//                  .attrs({ href: '#' })
-//                  .start('i').addClass('mdc-list-item__start-detail')
-//                    .attrs({ 'aria-hidden': true })
-//                  .end()
-//                  .add('Home')
-//                  .on('click', this.onMenuItemClicked)
-//                .end()
-//                .start('a').addClass('mdc-list-item')
-//                  .attrs({ href: '#' })
-//                  .start('i').addClass('mdc-list-item__start-detail')
-//                    .attrs({ 'aria-hidden': true })
-//
-//                  .end()
-//                  .add('Transactions')
-//                  .on('click', this.onMenuItemClicked)
-//                .end()
-//
-//                .start('a').addClass('mdc-list-item')
-
-//                  .add('Tip')
-//                  .on('click', this.onMenuItemClicked)
-//                  .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
-//                .end()
-//
-//              .end()
-//            .end()
-//          .end()
-//        .end()
-
-      this
+        // main content
         .start('div')
           .addClass('stack-wrapper')
           .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
