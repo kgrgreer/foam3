@@ -141,6 +141,9 @@
 		060E4CA41FA1048100247BE8 /* foam_swift_parse_json_BooleanParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E4C1F1FA1048000247BE8 /* foam_swift_parse_json_BooleanParser.swift */; };
 		060E4CA51FA1048100247BE8 /* foam_swift_parse_StringPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E4C201FA1048000247BE8 /* foam_swift_parse_StringPStream.swift */; };
 		060E4CA61FA1048100247BE8 /* foam_box_BoxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E4C211FA1048100247BE8 /* foam_box_BoxService.swift */; };
+		060E4CB51FA7ACD400247BE8 /* EmailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E4CB41FA7ACD400247BE8 /* EmailService.swift */; };
+		060E4CB91FA7AE4000247BE8 /* foam_blob_Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E4CB81FA7AE4000247BE8 /* foam_blob_Blob.swift */; };
+		060E4CBB1FA7AED500247BE8 /* TokenGenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E4CBA1FA7AED500247BE8 /* TokenGenService.swift */; };
 		060F94FE1F84155D0037D18F /* ServiceURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060F94FD1F84155D0037D18F /* ServiceURL.swift */; };
 		060F95001F84158C0037D18F /* TransactionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060F94FF1F84158C0037D18F /* TransactionService.swift */; };
 		060F95021F8417070037D18F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060F95011F8417070037D18F /* Service.swift */; };
@@ -298,6 +301,9 @@
 		060E4C1F1FA1048000247BE8 /* foam_swift_parse_json_BooleanParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_parse_json_BooleanParser.swift; sourceTree = "<group>"; };
 		060E4C201FA1048000247BE8 /* foam_swift_parse_StringPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_parse_StringPStream.swift; sourceTree = "<group>"; };
 		060E4C211FA1048100247BE8 /* foam_box_BoxService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_box_BoxService.swift; sourceTree = "<group>"; };
+		060E4CB41FA7ACD400247BE8 /* EmailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailService.swift; sourceTree = "<group>"; };
+		060E4CB81FA7AE4000247BE8 /* foam_blob_Blob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_blob_Blob.swift; sourceTree = "<group>"; };
+		060E4CBA1FA7AED500247BE8 /* TokenGenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenGenService.swift; sourceTree = "<group>"; };
 		060F94FD1F84155D0037D18F /* ServiceURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceURL.swift; sourceTree = "<group>"; };
 		060F94FF1F84158C0037D18F /* TransactionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionService.swift; sourceTree = "<group>"; };
 		060F95011F8417070037D18F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
@@ -364,6 +370,8 @@
 				06B035431F9A5564008960D7 /* CountryService.swift */,
 				06B035451F9A7107008960D7 /* RegionService.swift */,
 				060E4B9B1FA1013500247BE8 /* SMSService.swift */,
+				060E4CB41FA7ACD400247BE8 /* EmailService.swift */,
+				060E4CBA1FA7AED500247BE8 /* TokenGenService.swift */,
 			);
 			path = swiftfoam;
 			sourceTree = "<group>";
@@ -380,6 +388,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				060E4CB81FA7AE4000247BE8 /* foam_blob_Blob.swift */,
 				060E4BBE1FA1047600247BE8 /* foam_box_Box.swift */,
 				060E4C081FA1047E00247BE8 /* foam_box_BoxRegistry.swift */,
 				060E4C0A1FA1047E00247BE8 /* foam_box_BoxRegistryBox.swift */,
@@ -704,6 +713,7 @@
 				060E4C721FA1048100247BE8 /* net_nanopay_model_AccountLimit.swift in Sources */,
 				060E4C8F1FA1048100247BE8 /* foam_box_BoxRegistryBox.swift in Sources */,
 				060E4C331FA1048100247BE8 /* foam_dao_BaseClientDAO.swift in Sources */,
+				060E4CBB1FA7AED500247BE8 /* TokenGenService.swift in Sources */,
 				060E4C8B1FA1048100247BE8 /* foam_swift_parse_json_ArrayParser.swift in Sources */,
 				060E4C5F1FA1048100247BE8 /* foam_swift_parse_json_FloatParser.swift in Sources */,
 				060E4C321FA1048100247BE8 /* foam_swift_parse_parser_Optional.swift in Sources */,
@@ -728,6 +738,7 @@
 				060E4C6B1FA1048100247BE8 /* foam_swift_parse_parser_ProxyParser.swift in Sources */,
 				060E4C7D1FA1048100247BE8 /* foam_dao_ExternalException.swift in Sources */,
 				060E4C941FA1048100247BE8 /* foam_swift_parse_parser_Seq2.swift in Sources */,
+				060E4CB51FA7ACD400247BE8 /* EmailService.swift in Sources */,
 				060E4C4F1FA1048100247BE8 /* net_nanopay_auth_email_EmailTokenService.swift in Sources */,
 				060E4C681FA1048100247BE8 /* foam_swift_parse_json_KeyParser.swift in Sources */,
 				060E4C751FA1048100247BE8 /* foam_nanos_auth_EnabledAware.swift in Sources */,
@@ -752,6 +763,7 @@
 				060E4C671FA1048100247BE8 /* foam_dao_LimitedDAO.swift in Sources */,
 				060E4C771FA1048100247BE8 /* foam_dao_OrderedSink.swift in Sources */,
 				060E4CA51FA1048100247BE8 /* foam_swift_parse_StringPStream.swift in Sources */,
+				060E4CB91FA7AE4000247BE8 /* foam_blob_Blob.swift in Sources */,
 				060E4C2B1FA1048100247BE8 /* foam_mlang_AbstractExpr.swift in Sources */,
 				060E4C341FA1048100247BE8 /* foam_swift_parse_parser_NotChars.swift in Sources */,
 				060E4C5D1FA1048100247BE8 /* foam_dao_ResetListener.swift in Sources */,

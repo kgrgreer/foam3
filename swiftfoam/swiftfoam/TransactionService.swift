@@ -46,9 +46,8 @@ public class TransactionService: Service {
           callback(newTransaction)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         callbackDispatchQueue.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
@@ -89,9 +88,8 @@ public class TransactionService: Service {
           callback(sink.array)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
@@ -147,9 +145,8 @@ public class TransactionService: Service {
           callback(sink.array[0])
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }

@@ -113,9 +113,8 @@ public class UserService: Service {
           callback(newUser)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         callbackDispatchQueue.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
@@ -170,9 +169,8 @@ public class UserService: Service {
           callback(self.loggedInUser)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
@@ -216,9 +214,8 @@ public class UserService: Service {
           callback(self.loggedInUser)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
@@ -264,9 +261,8 @@ public class UserService: Service {
           callback(user)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
@@ -312,9 +308,8 @@ public class UserService: Service {
           callback(user)
         }
       } catch let e {
-        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(ServiceError.Failed)
+          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
         }
       }
     }
