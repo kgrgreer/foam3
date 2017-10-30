@@ -65,12 +65,19 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyPressed)
-        .start().addClass('amount-label').add('Amount').end()
-        .tag(this.AMOUNT, { onKey: true })
+        .start().addClass('amount-label')
+          .add('Amount')
+        .end()
+        .start(this.AMOUNT, { onKey: true })
+        .on('focus', this.onAmountFocus).end()
     }
   ],
 
   listeners: [
+    function onAmountFocus (e) {
+      e.target.value = null;
+    },
+
     function onKeyPressed (e) {
       if ( e.key !== 'Enter' || this.amount < 1)
         return;
