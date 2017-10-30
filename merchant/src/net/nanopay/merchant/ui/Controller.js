@@ -93,6 +93,8 @@ foam.CLASS({
           height: 40px;
           object-fit: contain;
           vertical-align: middle;
+          padding-left: 20px;
+          padding-right: 10px;
         }
         ^ .sidenav-list-item.back {
           height: 56px;
@@ -106,6 +108,8 @@ foam.CLASS({
         ^ .sidenav-list-icon.back img {
           width: 20px;
           height: 20px;
+          padding-left: 20px;
+          padding-right: 30px;
         }
         ^ .net-nanopay-ui-ToggleSwitch {
           padding-left: 60px;
@@ -244,7 +248,7 @@ foam.CLASS({
         .end()
 
         // toolbar
-        .start('div').addClass('toolbar')
+        .start('div').addClass('toolbar').show(this.showHeader$)
           .start('button').addClass('toolbar-icon material-icons')
             .add(this.toolbarIcon$)
             .on('click', this.onMenuClicked)
