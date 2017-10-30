@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ui',
   name: 'TransactionsView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
 
   documentation: 'View displaying interac home page with list of accounts and transactions',
 
@@ -9,15 +9,20 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [ 'net.nanopay.tx.model.Transaction' ],
+  requires: [ 
+    'net.nanopay.tx.model.Transaction'
+  ],
 
   imports: [
     'transactionDAO',
+    'userDAO',
     'user'
   ],
 
   exports: [
-    'as data'
+    'as data',
+    'filter',
+    'filteredTransactionDAO'
   ],
 
   axioms: [
@@ -137,6 +142,7 @@ foam.CLASS({
           background-color: #ffffff;
           display: inline-block;
           margin-left: 15px;
+          margin-bottom: 30px;
           vertical-align: top;
           border: 0;
           box-shadow:none;
@@ -199,9 +205,26 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'filter'
+      name: 'filter',
+      view: {
+        class: 'foam.u2.TextField',
+        type: 'search',
+        onKey: true
+      }
     },
     { name: 'data', factory: function() { return this.transactionDAO; }},
+    {
+      name: 'filteredTransactionDAO',
+      expression: function(data, filter) {
+        return data.where(this.CONTAINS_IC(this.Transaction.REFERENCE_NUMBER, filter));
+      },
+      view: {
+        class: 'foam.u2.view.TableView',
+        columns: [
+          'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+        ]
+      }
+    }
   ],
 
   methods: [
@@ -222,10 +245,11 @@ foam.CLASS({
               .start(this.FILTER).addClass('filter-search').end()
             .end()
           .end()
-          .start()
+          .add(this.FILTERED_TRANSACTION_DAO)
+          /*.start()
             .tag({
                 class: 'foam.u2.ListCreateController',
-                dao: this.transactionDAO,
+                dao: this.filteredTransactionDAO,
                 factory: function() { return self.Transaction.create(); },
                 detailView: {
                   class: 'foam.u2.DetailView',
@@ -241,7 +265,7 @@ foam.CLASS({
                 },
               summaryView: this.TransactionTableView.create()
             })
-          .end()
+          .end()*/
         .end();
     }
   ],
@@ -264,7 +288,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.transactionDAO}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
       }
     }
   ],
