@@ -24,7 +24,7 @@ public class AccountService: Service {
     }
   }
 
-  public func getAccountFor(userId id: Int, callback: @escaping (Any?) -> Void) {
+  public func getAccount(callback: @escaping (Any?) -> Void) {
     guard UserService.instance.isUserLoggedIn() else {
       callback(UserService.UserError.UserNotLoggedIn)
       return
@@ -34,7 +34,7 @@ public class AccountService: Service {
       do {
         let pred = self.X.create(Eq.self, args: [
           "arg1": Account.classInfo().axiom(byName: "owner"),
-          "arg2": id,
+          "arg2": UserService.instance.getLoggedInUser()!.id,
           ])
 
         guard let accountSink = (try self.dao.`where`(pred).skip(0).limit(1).select(ArraySink())) as? ArraySink else {
@@ -71,3 +71,4 @@ public class AccountService: Service {
     }
   }
 }
+
