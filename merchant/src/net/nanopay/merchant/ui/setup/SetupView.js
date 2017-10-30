@@ -26,7 +26,7 @@ foam.CLASS({
           line-height: 1.88;
           text-align: center;
           color: #ffffff;
-          padding-top: 76px;
+          padding-top: 20px;
         }
         ^ .serial-number-label {
           height: 29px;
