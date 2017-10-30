@@ -24,7 +24,7 @@ foam.CLASS({
         {                         id: 'sales',         label: 'Receivable',         handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SalesView' } } },
         {                         id: 'expenses',      label: 'Payable',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.ExpensesView' } } },
         {                         id: 'interac',       label: 'Transactions',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.tx.ui.TransactionsView' } } },
-        {                         id: 'transfer',      label: 'Transfer',           handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.TransferView' } } },
+        {                         id: 'transfer',      label: 'Transfer',           handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' } } },
         {                         id: 'devices',       label: 'Devices',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.devices.DevicesView' } } },
         { /*parent: 'support',*/  id: 'aaainvoices',   label: 'Invoices',           handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'invoiceDAO' } },
         { parent: 'admin',        id: 'brokers',       label: 'Brokers',            handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'brokerDAO' } },

@@ -251,6 +251,7 @@ foam.CLASS({
       if ( this.viewData.notes ) {
         this.notes = this.viewData.notes;
       }
+      
       this.SUPER()
     },
 

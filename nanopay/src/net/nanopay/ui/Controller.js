@@ -107,8 +107,7 @@ foam.CLASS({
 
       net.nanopay.TempMenu.create(null, this);
 
-      // this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
-      this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' });
+      this.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
     },
 
     function initE() {
@@ -121,6 +120,7 @@ foam.CLASS({
         .start('div').addClass('stack-wrapper')
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
+        .add(this.TEST)
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
     },
@@ -132,6 +132,13 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
+    }
+  ],
+
+  actions: [
+    
+    function test(X){
+      X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' });
     }
   ]
 });

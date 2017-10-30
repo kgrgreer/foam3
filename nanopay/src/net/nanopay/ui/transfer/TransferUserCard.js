@@ -174,7 +174,6 @@ foam.CLASS({
           // if organization exists, change name to organization name.
           if ( this.user.organization ) this.name_ = this.user.organization;
         }
-        console.log(this.name_)
         this.email_ = this.user.email;
         this.phone_ = this.user.phone;
 
@@ -210,7 +209,7 @@ foam.CLASS({
           });
         }
 
-        self.createView();        
+        this.createView();        
       }
     }
   ]
