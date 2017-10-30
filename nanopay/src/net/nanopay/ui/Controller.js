@@ -27,7 +27,12 @@ foam.CLASS({
     'account',
     'stack',
     'as ctrl',
-    'user'
+    'user',
+    'requestLogin'
+  ],
+
+  imports: [
+    'sessionSuccess'
   ],
 
   axioms: [
@@ -64,6 +69,11 @@ foam.CLASS({
       of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
+    },
+    {
+      class: 'Boolean',
+      name: 'loginSuccess',
+      value: false
     }
   ],
 
@@ -103,6 +113,15 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function requestLogin(){
+      var self = this;
+
+      return new Promise(function(resolve, reject){
+        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        self.loginSuccess$.sub(resolve);
+      });
     }
   ]
 });
