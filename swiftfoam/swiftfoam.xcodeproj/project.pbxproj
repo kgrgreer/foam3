@@ -369,9 +369,9 @@
 				060F95051F8418970037D18F /* AccountService.swift */,
 				06B035431F9A5564008960D7 /* CountryService.swift */,
 				06B035451F9A7107008960D7 /* RegionService.swift */,
+				060E4CBA1FA7AED500247BE8 /* TokenGenService.swift */,
 				060E4B9B1FA1013500247BE8 /* SMSService.swift */,
 				060E4CB41FA7ACD400247BE8 /* EmailService.swift */,
-				060E4CBA1FA7AED500247BE8 /* TokenGenService.swift */,
 			);
 			path = swiftfoam;
 			sourceTree = "<group>";

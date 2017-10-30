@@ -63,8 +63,9 @@ public class AccountService: Service {
           callback(account)
         }
       } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
+          callback(ServiceError.Failed)
         }
       }
     }

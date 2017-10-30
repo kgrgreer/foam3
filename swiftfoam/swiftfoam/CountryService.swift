@@ -61,8 +61,9 @@ public class CountryService: Service {
           callback(self.countries)
         }
       } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
+          callback(ServiceError.Failed)
         }
       }
     }
@@ -102,8 +103,9 @@ public class CountryService: Service {
           self.findCountry(byCode: code, callback: callback)
         }
       } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
+          callback(ServiceError.Failed)
         }
       }
     }

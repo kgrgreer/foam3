@@ -61,8 +61,9 @@ public class RegionService: Service {
           callback(self.regions)
         }
       } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
+          callback(ServiceError.Failed)
         }
       }
     }
@@ -102,8 +103,9 @@ public class RegionService: Service {
           self.findRegion(byCode: code, callback: callback)
         }
       } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
+          callback(ServiceError.Failed)
         }
       }
     }
@@ -144,8 +146,9 @@ public class RegionService: Service {
           self.findRegions(byCountryCode: code, callback: callback)
         }
       } catch let e {
+        NSLog(((e as? FoamError)?.toString()) ?? "Error!")
         DispatchQueue.main.async {
-          callback(((e as? FoamError)?.toString()) ?? ServiceError.Failed)
+          callback(ServiceError.Failed)
         }
       }
     }
