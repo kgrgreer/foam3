@@ -155,7 +155,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
+          dao: X.data.user.bankAccounts,
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
@@ -229,13 +229,6 @@ foam.CLASS({
       validateObj: function(notThirdParty, invoiceMode) {
         if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
       }
-    },
-    {
-      class: 'FObject',
-      name: 'fromUser',
-      expression: function(user){
-        return user;
-      }
     }
   ],
 
@@ -264,6 +257,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
@@ -310,7 +304,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.user })
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();

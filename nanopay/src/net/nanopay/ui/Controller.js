@@ -20,7 +20,8 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.model.BankAccount'
   ],
 
   exports: [
@@ -94,6 +95,15 @@ foam.CLASS({
       // this.accountDAO.select().then(function(a) {
       //   self.account.copyFrom(a.array[0]);
       // });
+      var bankAccount = this.BankAccount.create({
+        accountName: "test",
+        transitNumber: "1234567",
+        accountNumber: "490932681376",
+        status: "Verified",
+        currencyCode: "CAD",
+        branchId: 3
+      })
+      self.user.bankAccounts.put(bankAccount)
 
       net.nanopay.TempMenu.create(null, this);
 

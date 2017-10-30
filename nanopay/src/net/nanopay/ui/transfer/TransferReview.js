@@ -130,7 +130,7 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-      debugger;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
@@ -145,7 +145,7 @@ foam.CLASS({
           // TODO: Make card based on from and to information
           .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
           .start('p').addClass('bold').add(this.AmountLabel).end()
-          .start('div').addClass('transferRateContainer').show(this.type == 'foreign')
+          .start('div').addClass('transferRateContainer').show(this.type$ == 'foreign')
             .start('div').addClass('currencyContainer')
               .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
               .start('p').addClass('currencyAmount').add('CAD ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
@@ -158,7 +158,7 @@ foam.CLASS({
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
-          .start().addClass('transferRateContainer').show(this.type == 'regular')
+          .start().addClass('transferRateContainer').show(this.type$ == 'regular')
             .start('p').addClass('currencyAmount-L').add('$ ', parseFloat(this.viewData.fromAmount).toFixed(2)).end()
           .end()
           .start('div').addClass('pricingCol')

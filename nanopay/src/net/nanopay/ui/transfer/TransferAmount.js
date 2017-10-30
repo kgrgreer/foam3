@@ -268,11 +268,11 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-      console.log(this.type)
+
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start('div').addClass('transferRateContainer').show(this.type == 'foreign')
+          .start('div').addClass('transferRateContainer').show(this.type$ == 'foreign')
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
               .start('div').addClass('currencyDenominationContainer')
@@ -310,7 +310,7 @@ foam.CLASS({
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
-          .start().addClass().show(this.type == 'regular')
+          .start().show(this.type$ == 'regular')
             .start().addClass('label').add('Enter Amount:').end()
             .start(this.FROM_AMOUNT, { onKey: true }).addClass('from-amount').end()          
           .end()

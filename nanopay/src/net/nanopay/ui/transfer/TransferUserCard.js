@@ -7,7 +7,7 @@ foam.CLASS({
 
   imports: [
     'invoiceMode',
-    'bankAccountDAO',
+    'accountDAO',
     'branchDAO'
   ],
 
@@ -103,7 +103,8 @@ foam.CLASS({
     },
     'accountId_',
     'accountNo_',
-    'bankName_'
+    'bankName_',
+    'account'
   ],
 
   methods: [
@@ -128,7 +129,7 @@ foam.CLASS({
           .start('p').addClass('pDetails').add(this.email_$).end()
           .start('p').addClass('pDetails').add(this.phone_$).end()
           .start('p').addClass('pDetails').add(this.address_$).end()
-          .start('div').addClass('bankInfoContainer')
+          .start('div').addClass('bankInfoContainer').show(this.accountId_$)
             .start('div').addClass('bankInfoRow')
               .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
                 .add(this.idLabel_$)
@@ -165,44 +166,51 @@ foam.CLASS({
       name: 'userUpdate',
       code: function() {
         var self = this;
+
         if ( ! this.user ) return;
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
+
         if ( this.invoiceMode ) {
           // if organization exists, change name to organization name.
           if ( this.user.organization ) this.name_ = this.user.organization;
         }
-
+        console.log(this.name_)
         this.email_ = this.user.email;
         this.phone_ = this.user.phone;
 
-        this.address_ = this.user.address.address;
-        if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
-        if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
-        if ( this.user.address.postalCode ) this.address_ += ', ' + this.user.address.postalCode;
-        if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
-        this.address_ += ', ' + this.user.address.countryId;
+        if( this.user.address){
+          this.address_ = this.user.address.address;
+          if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
+          if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
+          if ( this.user.address.postalCode ) this.address_ += ', ' + this.user.address.postalCode;
+          if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
+          this.address_ += ', ' + this.user.address.countryId; 
+        }
 
-        this.bankAccountDAO.find(this.user.id).then(function(account) {
-          self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
-          self.branchDAO.find(account.branchId).then(function(bank){
-            switch( self.user.address.countryId ) {
-              case 'CA' :
-                self.flagURL_ = 'images/canada.svg';
-                self.nationality_ = 'Canada';
-                self.idLabel_ = 'FI ID';
-                self.accountId_ = bank.memberIdentification + ' - ' + bank.branchId;
-                break;
-              case 'IN' :
-                self.flagURL_ = 'images/india.svg';
-                self.nationality_ = 'India';
-                self.idLabel_ = 'IFSC ID';
-                self.accountId_ = bank.memberIdentification;
-                break;
-            }
-            self.bankName_ = bank.name;
-            self.createView();
+        if(this.account){
+          this.user.bankAccounts.find(this.account).then(function(account) {
+            self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+            self.branchDAO.find(account.branchId).then(function(bank){
+              switch( self.user.address.countryId ) {
+                case 'CA' :
+                  self.flagURL_ = 'images/canada.svg';
+                  self.nationality_ = 'Canada';
+                  self.idLabel_ = 'FI ID';
+                  self.accountId_ = bank.memberIdentification + ' - ' + bank.branchId;
+                  break;
+                case 'IN' :
+                  self.flagURL_ = 'images/india.svg';
+                  self.nationality_ = 'India';
+                  self.idLabel_ = 'IFSC ID';
+                  self.accountId_ = bank.memberIdentification;
+                  break;
+              }
+              self.bankName_ = bank.name;
+            });
           });
-        });
+        }
+
+        self.createView();        
       }
     }
   ]
