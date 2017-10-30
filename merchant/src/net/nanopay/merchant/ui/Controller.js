@@ -112,7 +112,10 @@ foam.CLASS({
           padding-right: 30px;
         }
         ^ .net-nanopay-ui-ToggleSwitch {
-          padding-left: 60px;
+          float: right;
+          padding-top: 33px;
+          padding-bottom: 33px;
+          padding-right: 43px;
         }
       */}
     })
@@ -242,6 +245,7 @@ foam.CLASS({
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.png' })
               .end()
               .add('Tip')
+              .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
