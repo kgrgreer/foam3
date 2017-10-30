@@ -70,19 +70,18 @@ foam.CLASS({
           .add('Amount')
         .end()
         .start(this.AMOUNT, { onKey: true })
-        .on('focus', this.onAmountFocus).end()
+          .attrs({autofocus: true})
+        .end()
     }
   ],
 
   listeners: [
-    function onAmountFocus (e) {
+    function onKeyPressed (e) {
       if ( ! this.focused ) {
         this.focused = true;
         e.target.value = null;
       }
-    },
 
-    function onKeyPressed (e) {
       var key = e.key || e.keyIdentifier;
       if ( key !== 'Enter' || this.amount < 1)
         return;
