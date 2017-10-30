@@ -83,7 +83,8 @@ foam.CLASS({
     },
 
     function onKeyPressed (e) {
-      if ( e.key !== 'Enter' || this.amount < 1)
+      var key = e.key || e.keyIdentifier;
+      if ( key !== 'Enter' || this.amount < 1)
         return;
 
       // push QR code view
