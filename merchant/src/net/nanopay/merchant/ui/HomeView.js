@@ -55,7 +55,8 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { name: 'amount', class: 'Currency' }
+    { class: 'Currency', name: 'amount' },
+    { class: 'Boolean', name: 'focused', value: false }
   ],
 
   methods: [
@@ -75,7 +76,10 @@ foam.CLASS({
 
   listeners: [
     function onAmountFocus (e) {
-      e.target.value = null;
+      if ( ! this.focused ) {
+        this.focused = true;
+        e.target.value = null;
+      }
     },
 
     function onKeyPressed (e) {
