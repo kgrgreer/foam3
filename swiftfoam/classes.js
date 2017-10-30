@@ -14,6 +14,7 @@ var classes = [
   'foam.box.ReplyBox',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
+  'foam.blob.Blob',
   'foam.mlang.Constant',
   'foam.mlang.Expr',
   'foam.mlang.predicate.Eq',
