@@ -8,7 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   exports: [
@@ -63,6 +65,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.toolbarTitle = 'Home';
+      this.toolbarIcon = 'menu';
 
       this
         .addClass(this.myClass())

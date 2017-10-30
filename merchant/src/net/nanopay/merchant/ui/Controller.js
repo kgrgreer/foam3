@@ -276,8 +276,6 @@ foam.CLASS({
   listeners: [
     function onMenuClicked (e) {
       if ( this.toolbarTitle === 'Back' ) {
-        this.toolbarTitle = 'Home';
-        this.toolbarIcon = 'menu';
         this.stack.back();
       } else {
         var sidenav = document.querySelector('.sidenav');
