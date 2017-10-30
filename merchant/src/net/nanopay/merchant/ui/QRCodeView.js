@@ -119,10 +119,7 @@ foam.CLASS({
         .end()
 
       this.onload.sub(function () {
-        var qrCodeDiv = document.getElementsByClassName('qr-code-div')[0];
-        qrCodeDiv.focus();
-
-        var qrCode = new QRCode(qrCodeDiv, {
+        var qrCode = new QRCode(document.querySelector('.qr-code-div'), {
           text: JSON.stringify({
             payeeId: self.user.id,
             amount: self.amount,

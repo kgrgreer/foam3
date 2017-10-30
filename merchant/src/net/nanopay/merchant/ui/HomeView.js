@@ -62,6 +62,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
         .addClass(this.myClass())
@@ -74,7 +75,7 @@ foam.CLASS({
         .end()
 
       this.onload.sub(function () {
-        document.querySelector('.property-amount').focus();
+        self.document.querySelector('.property-amount').focus();
       });
     }
   ],
@@ -90,6 +91,8 @@ foam.CLASS({
       if ( ( key !== 'Enter' && key !== 13 ) || this.amount < 1 ) {
         return;
       }
+
+      this.document.querySelector('.property-amount').blur();
 
       // push QR code view
       this.stack.push(this.QRCodeView.create({
