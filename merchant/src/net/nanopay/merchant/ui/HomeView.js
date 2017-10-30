@@ -72,6 +72,10 @@ foam.CLASS({
         .start(this.AMOUNT, { onKey: true })
           .attrs({autofocus: true})
         .end()
+
+      this.onload.sub(function () {
+        document.querySelector('.property-amount').focus();
+      });
     }
   ],
 
@@ -79,7 +83,7 @@ foam.CLASS({
     function onKeyPressed (e) {
       if ( ! this.focused ) {
         this.focused = true;
-        e.target.value = null;
+        e.target.value = '';
       }
 
       var key = e.key || e.keyCode;
