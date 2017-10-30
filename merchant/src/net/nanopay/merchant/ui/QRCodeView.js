@@ -58,6 +58,9 @@ foam.CLASS({
           top: 279px;
           width: 320px;
         }
+        ^ .qr-code-div:focus {
+          outline: none;
+        }
       */}
     })
   ],
@@ -94,6 +97,11 @@ foam.CLASS({
         sub.detach();
       });
 
+      this.document.addEventListener('keydown', this.onKeyPressed);
+      this.onDetach(function () {
+        self.document.removeEventListener('keydown', self.onKeyPressed);
+      });
+
       this
         .addClass(this.myClass())
         .start('div')
@@ -111,7 +119,10 @@ foam.CLASS({
         .end()
 
       this.onload.sub(function () {
-        var qrCode = new QRCode(document.getElementsByClassName('qr-code-div')[0], {
+        var qrCodeDiv = document.getElementsByClassName('qr-code-div')[0];
+        qrCodeDiv.focus();
+
+        var qrCode = new QRCode(qrCodeDiv, {
           text: JSON.stringify({
             payeeId: self.user.id,
             amount: self.amount,
@@ -126,6 +137,15 @@ foam.CLASS({
   ],
 
   listeners: [
+    function onKeyPressed (e) {
+      var key = e.key || e.keyIdentifier;
+      if ( key === 'Backspace' ) {
+        this.toolbarTitle = 'Home';
+        this.toolbarIcon = 'menu';
+        this.stack.back();
+      }
+    },
+
     {
       name: 'onTransactionCreated',
       code: function (obj, s) {
