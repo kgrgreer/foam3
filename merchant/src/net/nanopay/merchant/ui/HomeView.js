@@ -82,9 +82,10 @@ foam.CLASS({
         e.target.value = null;
       }
 
-      var key = e.key || e.keyIdentifier;
-      if ( key !== 'Enter' || this.amount < 1)
+      var key = e.key || e.keyCode;
+      if ( ( key !== 'Enter' && key !== 13 ) || this.amount < 1 ) {
         return;
+      }
 
       // push QR code view
       this.stack.push(this.QRCodeView.create({

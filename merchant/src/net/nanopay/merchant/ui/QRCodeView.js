@@ -138,8 +138,8 @@ foam.CLASS({
 
   listeners: [
     function onKeyPressed (e) {
-      var key = e.key || e.keyIdentifier;
-      if ( key === 'Backspace' ) {
+      var key = e.key || e.keyCode;
+      if ( key === 'Backspace' || key === 27 || key === 8  ) {
         this.toolbarTitle = 'Home';
         this.toolbarIcon = 'menu';
         this.stack.back();
