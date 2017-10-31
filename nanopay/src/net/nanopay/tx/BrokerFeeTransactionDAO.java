@@ -17,43 +17,36 @@ import net.nanopay.cico.model.TransactionType;
 public class BrokerFeeTransactionDAO
   extends ProxyDAO
 {
-  protected DAO userDAO_;
-  protected DAO brokerDAO_;
-
-  public BrokerFeeTransactionDAO(DAO delegate) {
-    setDelegate(delegate);
-  }
 
   public BrokerFeeTransactionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
 
-  protected DAO getUserDAO() {
-    if ( userDAO_ == null ) {
-      userDAO_ = (DAO) getX().get("localUserDAO");
-    }
-    return userDAO_;
-  }
-
-  protected DAO getBrokerDAO() {
-    if ( brokerDAO_ == null ) {
-      brokerDAO_ = (DAO) getX().get("brokerDAO");
-    }
-    return brokerDAO_;
+  public BrokerFeeTransactionDAO(DAO delegate) {
+    setDelegate(delegate);
   }
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
-    User payee = (User) getUserDAO().find(transaction.getPayeeId());
-    User payer = (User) getUserDAO().find(transaction.getPayerId());
+
+    X context = x != null ? x : getX();
+
+    System.out.println("getX() :"+getX());
+    System.out.println("x from PUT:"+x);
+
+    DAO userDAO = (DAO) context.get("localUserDAO");
+    DAO brokerDAO = (DAO) context.get("brokerDAO");
+
+    User payee = (User) userDAO.find(transaction.getPayeeId());
+    User payer = (User) userDAO.find(transaction.getPayerId());
 
     if ( transaction.getBrokerId() == null ) {
-      throw new RuntimeException("Broker is not defined.");
+      return obj;
     }
 
-    Broker broker = (Broker) getBrokerDAO().find(transaction.getBrokerId());
+    Broker broker = (Broker) brokerDAO.find(transaction.getBrokerId());
 
     if ( broker.getUserId() == null ) {
       throw new RuntimeException("Broker has no user defined.");
@@ -66,7 +59,8 @@ public class BrokerFeeTransactionDAO
     //Creating Another transaction for the broker fees
     Transaction brokerTransaction = new Transaction();
 
-    brokerTransaction.setPayeeId((long) broker.getUserId());
+    System.out.println("BROKER USER :"+broker.getUserId());
+    brokerTransaction.setPayeeId((Long) broker.getUserId());
 
     if ( transaction.getType() == TransactionType.CASHOUT ) {
       brokerTransaction.setPayerId(transaction.getPayerId());
@@ -75,18 +69,26 @@ public class BrokerFeeTransactionDAO
     } else {
       throw new RuntimeException("Transaction Type is not defined.");
     }
+    System.out.println("Transaction PAYER ID :"+transaction.getPayerId());
+    System.out.println("Transaction PAYEE ID :"+transaction.getPayeeId());
+    System.out.println("BROKER TRANSACTION PAYER ID :"+brokerTransaction.getPayerId());
+    System.out.println("BROKER TRANSACTION PAYEE ID :"+brokerTransaction.getPayeeId());
 
-    brokerTransaction.setAmount( ((Fee) broker.getFee()).getFee(transaction.getAmount()));
-
+    long brokerTransactionFee = ((Fee) broker.getFee()).getFee(transaction.getAmount());
+    System.out.println("BROKER :"+broker);
+    System.out.println("BROKER FEE:"+broker.getFee());
+    System.out.println("Broker TRANSACTION FEE:"+brokerTransactionFee);
+    brokerTransaction.setAmount( brokerTransactionFee > 0 ? brokerTransactionFee : 100);
+    System.out.println("Broker TRANSACTION AMOUNT:"+brokerTransaction.getAmount());
     Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
 
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-          DAO transactionDAO = (TransactionDAO) x.get("transactionDAO");
+          DAO tDAO = (DAO) context.get("transactionDAO");
 
-          brokerTransaction = (Transaction) transactionDAO.put(brokerTransaction);
+          brokerTransaction = (Transaction) tDAO.put(brokerTransaction);
 
           //Adding the created transaction to the "main" transaction
           transaction.setFeeTransactions(Arrays.append(transaction.getFeeTransactions(), brokerTransaction));
