@@ -129,7 +129,7 @@ foam.CLASS({
           .start('p').addClass('pDetails').add(this.email_$).end()
           .start('p').addClass('pDetails').add(this.phone_$).end()
           .start('p').addClass('pDetails').add(this.address_$).end()
-          .start('div').addClass('bankInfoContainer').show(this.accountId_$)
+          .start('div').addClass('bankInfoContainer').show(this.accountNo_$)
             .start('div').addClass('bankInfoRow')
               .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
                 .add(this.idLabel_$)
@@ -158,6 +158,28 @@ foam.CLASS({
           .end()
         .end();
       this.created_ = true;
+    },
+
+    function setBankInfo(account){
+      var self = this;
+      self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+      self.branchDAO.find(account.branchId).then(function(bank){        
+        switch( self.user.address.countryId ) {
+          case 'CA' :
+            self.flagURL_ = 'images/canada.svg';
+            self.nationality_ = 'Canada';
+            self.idLabel_ = 'FI ID';
+            self.accountId_ = bank.memberIdentification + ' - ' + bank.branchId;
+            break;
+          case 'IN' :
+            self.flagURL_ = 'images/india.svg';
+            self.nationality_ = 'India';
+            self.idLabel_ = 'IFSC ID';
+            self.accountId_ = bank.memberIdentification;
+            break;
+        }
+        self.bankName_ = bank.name;
+      });
     }
   ],
 
@@ -186,28 +208,17 @@ foam.CLASS({
           if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
           this.address_ += ', ' + this.user.address.countryId; 
         }
-
-        this.user.bankAccounts.select().then(function(a) {
-          var account = a.array[0];
-          self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
-          self.branchDAO.find(account.branchId).then(function(bank){
-            switch( self.user.address.countryId ) {
-              case 'CA' :
-                self.flagURL_ = 'images/canada.svg';
-                self.nationality_ = 'Canada';
-                self.idLabel_ = 'FI ID';
-                self.accountId_ = bank.memberIdentification + ' - ' + bank.branchId;
-                break;
-              case 'IN' :
-                self.flagURL_ = 'images/india.svg';
-                self.nationality_ = 'India';
-                self.idLabel_ = 'IFSC ID';
-                self.accountId_ = bank.memberIdentification;
-                break;
-            }
-            self.bankName_ = bank.name;
+        
+        if(this.user.defaultBankAccountId){
+          this.user.bankAccounts.find(this.user.defaultBankAccountId).then(function(a){
+            self.setBankInfo(a)
           });
-        });
+        } else {
+          this.user.bankAccounts.select().then(function(a) {
+            var account = a.array[0];
+            self.setBankInfo(account)
+          });
+        }
         
         this.createView();        
       }

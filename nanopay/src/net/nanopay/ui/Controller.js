@@ -91,7 +91,7 @@ foam.CLASS({
         self.user.copyFrom(a.array[0]);
 
         // var bankAccount = self.BankAccount.create({
-        //   accountName: "test",
+        //   accountName: "test11",
         //   transitNumber: "1234567",
         //   accountNumber: "490932681376",
         //   status: "Verified",
