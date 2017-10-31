@@ -8,7 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   exports: [
@@ -55,25 +57,46 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { name: 'amount', class: 'Currency' }
+    { class: 'Currency', name: 'amount' },
+    { class: 'Boolean', name: 'focused', value: false }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+      this.toolbarTitle = 'Home';
+      this.toolbarIcon = 'menu';
 
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyPressed)
-        .start().addClass('amount-label').add('Amount').end()
-        .tag(this.AMOUNT, { onKey: true })
+        .start().addClass('amount-label')
+          .add('Amount')
+        .end()
+        .start(this.AMOUNT, { onKey: true })
+          .attrs({autofocus: true})
+        .end()
+
+      this.onload.sub(function () {
+        self.document.querySelector('.property-amount').focus();
+      });
     }
   ],
 
   listeners: [
     function onKeyPressed (e) {
-      if ( e.key !== 'Enter' || this.amount < 1)
+      if ( ! this.focused ) {
+        this.focused = true;
+        e.target.value = '';
+      }
+
+      var key = e.key || e.keyCode;
+      if ( ( key !== 'Enter' && key !== 13 ) || this.amount < 1 ) {
         return;
+      }
+
+      this.document.querySelector('.property-amount').blur();
 
       // push QR code view
       this.stack.push(this.QRCodeView.create({

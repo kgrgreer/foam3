@@ -11,7 +11,8 @@ foam.CLASS({
 
   imports: [ 
     'stack',
-    'webAuth'
+    'webAuth',
+    'loginSuccess'
   ],
 
   exports: [ 'as data' ],
@@ -119,8 +120,7 @@ foam.CLASS({
         var self = this;
         
         this.webAuth.login(this.email, this.password).then(function(user){
-          self.user.copyFrom(user);        
-          self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+          self.loginSuccess = user ? true : false;
         }).catch(function(a){
           self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
         });
