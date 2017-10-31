@@ -34,31 +34,10 @@ foam.CLASS({
               "type":2,
               "serialNumber":"D224E98C71EF42CA",
               "status":1,
-              "password":123456
-            },
-            {
-              "name":"Ciao Tablet",
-              "type":1,
-              "serialNumber":"59GS8F8A3L5FAQ1",
-              "status":1,
-              "password":123456
-            },
-            {
-              "name":"Merci Pad",
-              "type":0,
-              "serialNumber":"0A3H70K5HLA82E4",
-              "status":2,
-              "password":123456
+              "password": 123456
             }
           ]
         });
-//        return this.RequestResponseClientDAO.create({
-//          of: this.Device,
-//          delegate: this.HTTPBox.create({
-//            method: 'POST',
-//            url: 'http://localhost:8080/deviceDAO'
-//          })
-//        });
       }
     },
     {
@@ -68,13 +47,6 @@ foam.CLASS({
           of: this.Transaction,
           seqNo: true,
         });
-//        return this.RequestResponseClientDAO.create({
-//          of: this.Transaction,
-//          delegate: this.HTTPBox.create({
-//            method: 'POST',
-//            url: 'http://localhost:8080/transactionDAO'
-//          })
-//        });
       }
     },
     {
@@ -91,8 +63,13 @@ foam.CLASS({
               "organization":"",
               "department":"",
               "email":"simon@gmail.com",
-              "phone":"+1-4169001111",
-              "mobile":"", "type":"",
+              "phone":{
+                "class":"foam.nanos.auth.Phone",
+                "number":"+1-4169001111",
+                "verified":true
+              },
+              "mobile":"",
+              "type":"",
               "birthday":"1982-07-07T23:12:00.0Z",
               "address":{
                 "class":"foam.nanos.auth.Address",
@@ -116,13 +93,6 @@ foam.CLASS({
             }
           ]
         });
-//        return this.RequestResponseClientDAO.create({
-//          of: this.User,
-//          delegate: this.HTTPBox.create({
-//            method: 'POST',
-//            url: 'http://localhost:8080/userDAO'
-//          })
-//        });
       }
     }
   ],

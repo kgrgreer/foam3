@@ -164,12 +164,13 @@ foam.CLASS({
       name: 'serialNumber',
       factory: function () {
         if ( ! localStorage.serialNumber ) {
-          // remove hyphens, use 16 characters, convert to upper case
-          localStorage.serialNumber = foam.uuid.randomGUID()
-            .replace(/-/g, '')
-            .substring(0, 16)
-            .toUpperCase()
-            .trim();
+          localStorage.serialNumber = 'D224E98C71EF42CA';
+//          // remove hyphens, use 16 characters, convert to upper case
+//          localStorage.serialNumber = foam.uuid.randomGUID()
+//            .replace(/-/g, '')
+//            .substring(0, 16)
+//            .toUpperCase()
+//            .trim();
         }
         return localStorage.serialNumber;
       }
