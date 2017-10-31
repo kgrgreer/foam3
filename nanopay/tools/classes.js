@@ -47,7 +47,8 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.auth.token.TokenService',
-  'net.nanopay.fx.ExchangeRateInterface'
+  'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.cico.service.BankAccountVerificationInterface'
 ];
 
 var proxies = [
