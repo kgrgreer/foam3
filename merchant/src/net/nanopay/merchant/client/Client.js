@@ -32,7 +32,7 @@ foam.CLASS({
             {
               "name":"Ingenico 1",
               "type":2,
-              "serialNumber":"D224E98C71EF42CA",
+              "serialNumber":"D0905F62CBB44474",
               "status":1,
               "password": 123456
             }
