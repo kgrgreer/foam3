@@ -47,7 +47,8 @@ foam.CLASS({
             'text-transform': 'capitalize'
           })
         .end();
-      }
+      },
+      value: 'Unverified'
     },
     {
       class: 'String',
