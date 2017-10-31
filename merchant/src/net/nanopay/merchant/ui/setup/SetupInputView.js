@@ -26,9 +26,9 @@ foam.CLASS({
   properties: [
     ['header', true],
     {
-      class: 'Int',
+      class: 'String',
       name: 'retailCode',
-      max: 999999
+      value: '000000'
     }
   ],
 
@@ -46,32 +46,34 @@ foam.CLASS({
           margin: auto;
           margin-top: 95px;
         }
-        ^ input {
-          width: 265px;
+        ^ .retail-code {
+          border: none;
+          padding-top: 50px;
+          margin-left: 46px;
+          margin-right: 36px;
+          background:
+            repeating-linear-gradient(90deg,
+                white 0,
+                white 2.5ch,
+                transparent 0,
+                transparent 4.5ch)
+              0 100%/100% 2px no-repeat;
+        }
+        ^ .retail-code:focus {
+          outline: none;
+        }
+        ^ .retail-code span {
+          width: 320px;
           background: none;
           color: white;
           border: none;
-          font-size: 40px;
-          letter-spacing: 20px;
-          margin-left: 42px;
-          margin-top: 50px;
-          padding-bottom: 7px;          
+          letter-spacing: 19px;
+          font: 4.25ch Roboto, monospace;
         }
         ^ input:focus{
           outline: none;
           color: transparent;
           text-shadow: 0px 0px 0px white;
-        }
-        ^ .line{
-          width: 26px;
-          height: 3px;
-          background: white;
-          display: inline-block;
-          margin-left: 17px;
-        }
-        ^ .dotted-container{
-          width: 265px;
-          margin: auto;
         }
         ^ .setup-next-wrapper {
           position: fixed;
@@ -99,13 +101,9 @@ foam.CLASS({
         .start('h4')
           .add('Enter the code showed in retail portal to finish provision.')
         .end()
-        .start().start(this.RETAIL_CODE).end().end()
-        .start().addClass('dotted-container')
-          .call(function(){
-            for(i = 0; i < 6; i++){
-              this.start().addClass('line').end()              
-            }
-          })
+        .start('div').addClass('retail-code')
+          .attrs({ autofocus: true, tabindex: 1 })
+          .add(this.retailCode$)
         .end()
         .start('div').addClass('setup-next-wrapper')
           .start('button').addClass('setup-next-button')
