@@ -60,21 +60,23 @@ foam.CLASS({
         }
         ^ .transaction-item-amount {
           position: absolute;
+          right: 0px;
           font-size: 20px;
           text-align: right;
           color: #26a96c;
           padding-top: 22px;
           padding-bottom: 19px;
-          padding-left: 217px;
+          padding-right: 20px;
         }
         ^ .transaction-item-amount-refund {
           position: absolute;
+          right: 0px;
           font-size: 20px;
           text-align: right;
           color: #f55a5a;
           padding-top: 22px;
           padding-bottom: 19px;
-          padding-left: 217px;
+          padding-right: 20px;
         }
       */}
     })
