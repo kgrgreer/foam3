@@ -30,12 +30,15 @@ public class BankAccountVerificationService
       throw new RuntimeException("Invalid amount");
     }
 
-    boolean isVerified = false;
-
     BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
 
-    if (bankAccount.getVerified() || bankAccount.getRandomDepositAmount() == randomDepositAmount) {
+    boolean isVerified = false;
+
+    if ( bankAccount.getVerified() || bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
+      bankAccount.setStatus("Verified");
       isVerified = true;
+
+      bankAccountDAO_.put(bankAccount);
     }
 
     pm.log(getX());
