@@ -5,7 +5,12 @@ foam.CLASS({
 
   documentation: 'Setup view with serial number',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
+    'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.merchant.ui.transaction.TransactionToolbar'
   ],
@@ -25,11 +30,8 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    {
-      class: 'String',
-      name: 'retailCode',
-      value: '000000'
-    }
+    { class: 'String', name: 'retailCode', value: '000000' },
+    { class: 'Boolean', name: 'focused', value: false }
   ],
 
   axioms: [
@@ -48,7 +50,7 @@ foam.CLASS({
         }
         ^ .retail-code {
           border: none;
-          padding-top: 50px;
+          margin-top: 50px;
           margin-left: 46px;
           margin-right: 36px;
           background:
@@ -64,11 +66,15 @@ foam.CLASS({
         }
         ^ .retail-code span {
           width: 320px;
+          height: 44px;
           background: none;
           color: white;
           border: none;
           letter-spacing: 19px;
           font: 4.25ch Roboto, monospace;
+        }
+        ^ .retail-code span:empty:before {
+          content: "\200b";
         }
         ^ input:focus{
           outline: none;
@@ -96,6 +102,11 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
+      this.document.addEventListener('keydown', this.onKeyPressed);
+      this.onDetach(function () {
+        self.document.removeEventListener('keydown', self.onKeyPressed);
+      });
+
       this
         .addClass(this.myClass())
         .start('h4')
@@ -115,17 +126,57 @@ foam.CLASS({
   ],
 
   listeners: [
+    function onKeyPressed (e) {
+      var key = e.key || e.keyCode;
+      if ( ! this.focused ) {
+        this.retailCode = '';
+        this.focused = true;
+      }
+
+      console.log('key =', key);
+
+      if ( ( key === 'Enter' || key === 13 ) ) {
+        this.onNextClicked(e);
+        return;
+      }
+
+      var length = this.retailCode.length;
+      // handle backspace
+      if ( key === 'Backspace' || key === 8 && length > 0 ) {
+        this.retailCode = this.retailCode.substring(0, length - 1);
+        return;
+      }
+
+      if ( length >= 6 ) {
+        e.preventDefault();
+        return;
+      }
+
+      var isNumeric = ( ! isNaN(parseFloat(key)) && isFinite(key) );
+      if ( isNumeric ) {
+        this.retailCode += key;
+      }
+    },
+
     function onNextClicked (e) {
       var self = this;
 
       // look up device, set to active and save
-      this.deviceDAO.find(this.serialNumber).then(function (result) {
+      this.deviceDAO.where(this.AND(
+        this.EQ(this.Device.SERIAL_NUMBER, this.serialNumber),
+        this.EQ(this.Device.PASSWORD, this.retailCode)
+      )).select().then(function (result) {
         if ( ! result ) {
           throw new Error('Device not found');
         }
 
-        result.status = self.DeviceStatus.ACTIVE;
-        return self.deviceDAO.put(result);
+        if ( ! result.array || result.array.length !== 1 ) {
+          throw new Error('Device not found');
+        }
+
+        var device = result.array[0];
+        device.status = self.DeviceStatus.ACTIVE;
+        return self.deviceDAO.put(device);
       })
       .then(function (result) {
         if ( ! result ) {
