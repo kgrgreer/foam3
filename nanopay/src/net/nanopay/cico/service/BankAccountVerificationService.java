@@ -34,7 +34,7 @@ public class BankAccountVerificationService
 
     boolean isVerified = false;
 
-    if ( bankAccount.getVerified() || bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
+    if ( bankAccount.getStatus() == "Verified" || bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
       bankAccount.setStatus("Verified");
       isVerified = true;
 
