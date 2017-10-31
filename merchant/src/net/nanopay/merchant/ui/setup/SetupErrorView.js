@@ -16,6 +16,7 @@ foam.CLASS({
           width: 320px;
           height: 480px;
           background: #f55a5a;
+          margin-top: -56px;
         }
         ^ .error-view-div {
           padding-top: 70px;
@@ -57,6 +58,12 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
+      this.document.addEventListener('keydown', this.onKeyPressed);
+      this.onDetach(function () {
+        self.document.removeEventListener('keydown', self.onKeyPressed);
+      });
 
       this
         .addClass(this.myClass())
@@ -81,6 +88,14 @@ foam.CLASS({
   ],
 
   listeners: [
+    function onKeyPressed (e) {
+      var key = e.key || e.keyCode;
+      if ( key === 'Backspace' || key === 'Enter' || key === 'Escape' ||
+          key === 8 || key === 13 || key === 27 ) {
+        this.stack.back();
+      }
+    },
+
     function onNextClicked (e) {
       this.stack.back();
     }

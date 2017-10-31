@@ -8,7 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   exports: [
@@ -62,6 +64,9 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+      this.toolbarTitle = 'Home';
+      this.toolbarIcon = 'menu';
 
       this
         .addClass(this.myClass())
@@ -70,21 +75,28 @@ foam.CLASS({
           .add('Amount')
         .end()
         .start(this.AMOUNT, { onKey: true })
-        .on('focus', this.onAmountFocus).end()
+          .attrs({autofocus: true})
+        .end()
+
+      this.onload.sub(function () {
+        self.document.querySelector('.property-amount').focus();
+      });
     }
   ],
 
   listeners: [
-    function onAmountFocus (e) {
+    function onKeyPressed (e) {
       if ( ! this.focused ) {
         this.focused = true;
-        e.target.value = null;
+        e.target.value = '';
       }
-    },
 
-    function onKeyPressed (e) {
-      if ( e.key !== 'Enter' || this.amount < 1)
+      var key = e.key || e.keyCode;
+      if ( ( key !== 'Enter' && key !== 13 ) || this.amount < 1 ) {
         return;
+      }
+
+      this.document.querySelector('.property-amount').blur();
 
       // push QR code view
       this.stack.push(this.QRCodeView.create({

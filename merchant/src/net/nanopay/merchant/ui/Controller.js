@@ -35,6 +35,9 @@ foam.CLASS({
           width: 320px;
           background-color: #2C4389;
         }
+        ^ .stack-wrapper {
+          padding-top: 56px;
+        }
         ^ .sidenav {
           display: none;
           height: 100%;
@@ -54,10 +57,12 @@ foam.CLASS({
         }
         ^ .toolbar {
           height: 56px;
+          width: 320px;
           background-color: #4054B5;
           -webkit-box-shadow: none;
           box-shadow: none;
-          position: relative;
+          position: fixed;
+          top: 0;
         }
         ^ .toolbar-icon {
           height: 100%;
@@ -159,12 +164,13 @@ foam.CLASS({
       name: 'serialNumber',
       factory: function () {
         if ( ! localStorage.serialNumber ) {
-          // remove hyphens, use 16 characters, convert to upper case
-          localStorage.serialNumber = foam.uuid.randomGUID()
-            .replace(/-/g, '')
-            .substring(0, 16)
-            .toUpperCase()
-            .trim();
+          localStorage.serialNumber = 'D224E98C71EF42CA';
+//          // remove hyphens, use 16 characters, convert to upper case
+//          localStorage.serialNumber = foam.uuid.randomGUID()
+//            .replace(/-/g, '')
+//            .substring(0, 16)
+//            .toUpperCase()
+//            .trim();
         }
         return localStorage.serialNumber;
       }
@@ -251,6 +257,12 @@ foam.CLASS({
           .end()
         .end()
 
+        // main content
+        .start('div')
+          .addClass('stack-wrapper')
+          .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
+        .end()
+
         // toolbar
         .start('div').addClass('toolbar').show(this.showHeader$)
           .start('button').addClass('toolbar-icon material-icons')
@@ -259,20 +271,12 @@ foam.CLASS({
           .end()
           .start('div').addClass('toolbar-title').add(this.toolbarTitle$).end()
         .end()
-
-        // main content
-        .start('div')
-          .addClass('stack-wrapper')
-          .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
-        .end()
     }
   ],
 
   listeners: [
     function onMenuClicked (e) {
       if ( this.toolbarTitle === 'Back' ) {
-        this.toolbarTitle = 'Home';
-        this.toolbarIcon = 'menu';
         this.stack.back();
       } else {
         var sidenav = document.querySelector('.sidenav');
