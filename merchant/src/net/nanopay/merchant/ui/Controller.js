@@ -314,6 +314,8 @@ foam.CLASS({
 
       this.toolbarTitle = clicked;
       this.stack.back();
+      console.log('here');
+      console.log('clicked')
       switch ( clicked ) {
         case 'Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
