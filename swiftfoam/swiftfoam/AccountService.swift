@@ -10,7 +10,7 @@ public class AccountService: Service {
   public static let instance: AccountService = AccountService()
 
   init() {
-    super.init(withURL: ServiceURL.Account)
+    super.init(withURL: ServiceURLs.ServiceURL.Account)
   }
 
   // Helps determine type of error to handle on frontend

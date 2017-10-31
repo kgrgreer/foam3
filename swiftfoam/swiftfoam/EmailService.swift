@@ -10,7 +10,7 @@ public class EmailService: TokenGenService {
   public static let instance: EmailService = EmailService()
 
   init() {
-    super.init(withURL: ServiceURL.Email)
+    super.init(withURL: ServiceURLs.ServiceURL.Email)
   }
 }
 
