@@ -109,7 +109,7 @@ foam.CLASS({
                 .add(self.data.date.toLocaleString())
               .end()
               .start().addClass('transaction-item-amount' + ( self.data.refund ? '-refund' : '' ) )
-                .add( ( self.data.refund ? '-' : '' ) + '$' + ( self.data.total / 100 ).toFixed(2))
+                .add( '$' + ( self.data.total / 100 ).toFixed(2))
               .end()
               .on('click', self.onClick)
             .end();
