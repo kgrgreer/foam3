@@ -32,9 +32,13 @@ public class BankAccountVerificationService
 
     BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
 
+    if ( bankAccount.getStatus() == "Verified" ) {
+      return true;
+    }
+
     boolean isVerified = false;
 
-    if ( bankAccount.getStatus() == "Verified" || bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
+    if ( bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
       bankAccount.setStatus("Verified");
       isVerified = true;
 
