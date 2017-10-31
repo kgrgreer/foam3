@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.dao.RequestResponseClientDAO',
     'foam.nanos.auth.User',
     'net.nanopay.retail.model.Device',
+    'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -143,14 +144,14 @@ foam.CLASS({
               "name":"Ingenico 1",
               "type":2,
               "serialNumber":"D0905F62CBB44474",
-              "status":1,
+              "status": this.DeviceStatus.ACTIVE,
               "password": 123456
             },
             {
               "name":"Ingenico 2",
               "type":2,
               "serialNumber":"D224E98C71EF42CA",
-              "status":1,
+              "status": this.DeviceStatus.ACTIVE,
               "password": 123456
             }
           ]
