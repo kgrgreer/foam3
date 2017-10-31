@@ -30,7 +30,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { class: 'String', name: 'password', value: '000000' },
+    { class: 'String', name: 'password', value: '' },
     { class: 'Boolean', name: 'focused', value: false }
   ],
 
@@ -133,8 +133,13 @@ foam.CLASS({
         this.focused = true;
       }
 
-      console.log('key =', key);
+      // handle escape key
+      if ( key === 'Escape' || key === 27 ) {
+        this.stack.back();
+        return;
+      }
 
+      // handle enter key
       if ( ( key === 'Enter' || key === 13 ) ) {
         this.onNextClicked(e);
         return;
@@ -142,16 +147,25 @@ foam.CLASS({
 
       var length = this.password.length;
       // handle backspace
-      if ( key === 'Backspace' || key === 8 && length > 0 ) {
+      if ( key === 'Backspace' || key === 8 ) {
+        if ( length <= 0 ) return;
         this.password = this.password.substring(0, length - 1);
         return;
       }
 
+      // limit to 6 characters
       if ( length >= 6 ) {
         e.preventDefault();
         return;
       }
 
+      // if handling keycodes 0-9, subtract 48
+      if ( key >= 48 && key <= 57 ) {
+        key -= 48;
+      }
+
+
+      // check if numeric
       var isNumeric = ( ! isNaN(parseFloat(key)) && isFinite(key) );
       if ( isNumeric ) {
         this.password += key;
