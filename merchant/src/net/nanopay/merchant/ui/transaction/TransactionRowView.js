@@ -101,7 +101,7 @@ foam.CLASS({
                 .add(user.firstName + ' ' + user.lastName)
               .end()
               .start().addClass('transaction-item-datetime')
-                .add(self.data.date.toLocaleString())
+                .add(self.data.date.toString())
               .end()
               .start().addClass('transaction-item-amount').addClass( self.data.refund ? 'refund' : '')
                 .add( '$' + ( self.data.total / 100 ).toFixed(2))
