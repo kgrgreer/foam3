@@ -8,7 +8,8 @@ foam.CLASS({
   imports: [
     'invoiceMode',
     'accountDAO',
-    'branchDAO'
+    'branchDAO',
+    'type'
   ],
 
   axioms: [
@@ -121,7 +122,7 @@ foam.CLASS({
         .start('div').addClass('userContainer')
           .start('div').addClass('userRow')
             .start('p').addClass('bold').addClass('userName').add(this.name_$).end()
-            .start('div').addClass('nationalityContainer')
+            .start('div').addClass('nationalityContainer').show(this.type == 'foreign')
               .start({class: 'foam.u2.tag.Image', data: this.flagURL_$}).end() // TODO: Make it dynamic
               .start('p').addClass('pDetails').addClass('nationalityLabel').add(this.nationality_$).end() // TODO: Make it dyamic.
             .end()
@@ -180,6 +181,18 @@ foam.CLASS({
         }
         self.bankName_ = bank.name;
       });
+    },
+
+    function resetUser() {
+      this.address_ = null;
+      this.name_ = null;
+      this.idLabel_ = null;
+      this.accountId_ = null;
+      this.accountNo_ = null;
+      this.bankName_ = null;
+      this.flagURL_ = null;
+      this.nationality_ = null; 
+      this.idLabel_= null;
     }
   ],
 
@@ -190,7 +203,7 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.user ) return;
-        this.address_ = null;
+        this.resetUser();
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
 
         if ( this.invoiceMode ) {
@@ -211,11 +224,13 @@ foam.CLASS({
         
         if(this.user.defaultBankAccountId){
           this.user.bankAccounts.find(this.user.defaultBankAccountId).then(function(a){
+            if(!a) return;
             self.setBankInfo(a)
           });
         } else {
           this.user.bankAccounts.select().then(function(a) {
             var account = a.array[0];
+            if(!account) return;
             self.setBankInfo(account)
           });
         }

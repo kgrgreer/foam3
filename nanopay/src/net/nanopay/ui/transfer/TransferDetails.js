@@ -281,14 +281,14 @@ foam.CLASS({
           // .end()
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
-          .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
-            .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
-            .start('p').addClass('confirmationLabel').add(this.NotThirdParty)
-              .on('click', function() {
-                self.notThirdParty = ! self.notThirdParty;
-              })
-            .end()
-          .end()
+          // .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
+          //   .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
+          //   .start('p').addClass('confirmationLabel').add(this.NotThirdParty)
+          //     .on('click', function() {
+          //       self.notThirdParty = ! self.notThirdParty;
+          //     })
+          //   .end()
+          // .end()
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
