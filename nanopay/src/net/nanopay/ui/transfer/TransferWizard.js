@@ -250,7 +250,7 @@ foam.CLASS({
             .start('div').addClass('topRow')
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
+              .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).show(this.type == 'foreign')
                 .addClass('interacImage')
               .end()
             .end()
@@ -313,13 +313,16 @@ foam.CLASS({
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
-
+          var rate;
+          if(this.type == 'foreign'){
+            rate = this.viewData.rate.toString();
+          }
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
             payerId: this.user.id,
             payeeId: this.viewData.payee.id,
             amount: Math.round(this.viewData.fromAmount * 100),
-            rate: this.viewData.rate.toString(),
+            rate: rate,
             fees: Math.round(this.viewData.fees * 100),
             purpose: this.viewData.purpose,
             notes: this.viewData.notes

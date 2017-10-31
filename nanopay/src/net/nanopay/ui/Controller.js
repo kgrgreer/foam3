@@ -103,7 +103,9 @@ foam.CLASS({
         currencyCode: "CAD",
         branchId: 3
       })
-      self.user.bankAccounts.put(bankAccount)
+
+      this.user.bankAccounts.put(bankAccount).then(function(a){
+      })
 
       net.nanopay.TempMenu.create(null, this);
 

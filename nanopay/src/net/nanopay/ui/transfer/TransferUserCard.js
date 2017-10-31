@@ -168,6 +168,7 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.user ) return;
+        this.address_ = null;
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
 
         if ( this.invoiceMode ) {

@@ -7,7 +7,8 @@ foam.CLASS({
 
   imports: [
     'exchangeRate',
-    'type'
+    'type',
+    'user'
   ],
 
   requires: [
@@ -244,12 +245,14 @@ foam.CLASS({
       var self = this;
 
       // TODO: Get FX Rate
-      this.countdownView.onExpiry = function() {
-        self.refreshRate();
-      };
+      if(this.type == 'foreign'){
+        this.countdownView.onExpiry = function() {
+          self.refreshRate();
+        };
+      }
 
       // TODO: Get FX Rate
-      if ( ! this.viewData.rateLocked ) {
+      if ( ! this.viewData.rateLocked && this.type == 'foreign' ) {
         this.refreshRate();
       } else {
         this.loadingSpinner.hide();
@@ -272,7 +275,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start('div').addClass('transferRateContainer').show(this.type$ == 'foreign')
+          .start('div').addClass('transferRateContainer').show(this.type == 'foreign')
             .start('div').addClass('currencyContainer')
               // TODO: Get currency & total
               .start('div').addClass('currencyDenominationContainer')
@@ -310,7 +313,7 @@ foam.CLASS({
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
-          .start().show(this.type$ == 'regular')
+          .start().show(this.type == 'regular')
             .start().addClass('label').add('Enter Amount:').end()
             .start(this.FROM_AMOUNT, { onKey: true }).addClass('from-amount').end()          
           .end()
@@ -338,7 +341,7 @@ foam.CLASS({
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
 
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.fromUser })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.user })
 
           .start('p').add(this.ToLabel).addClass('bold').end()
 
