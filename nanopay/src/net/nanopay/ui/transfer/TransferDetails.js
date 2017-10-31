@@ -148,7 +148,7 @@ foam.CLASS({
       name: 'accounts',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.bankAccountDAO.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
+        this.user.bankAccounts.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
           var account = a.array[0];
           self.viewData.account = account;
         });
