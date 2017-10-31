@@ -30,7 +30,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { class: 'String', name: 'retailCode', value: '000000' },
+    { class: 'String', name: 'password', value: '000000' },
     { class: 'Boolean', name: 'focused', value: false }
   ],
 
@@ -114,7 +114,7 @@ foam.CLASS({
         .end()
         .start('div').addClass('retail-code')
           .attrs({ autofocus: true, tabindex: 1 })
-          .add(this.retailCode$)
+          .add(this.password$)
         .end()
         .start('div').addClass('setup-next-wrapper')
           .start('button').addClass('setup-next-button')
@@ -129,7 +129,7 @@ foam.CLASS({
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( ! this.focused ) {
-        this.retailCode = '';
+        this.password = '';
         this.focused = true;
       }
 
@@ -140,10 +140,10 @@ foam.CLASS({
         return;
       }
 
-      var length = this.retailCode.length;
+      var length = this.password.length;
       // handle backspace
       if ( key === 'Backspace' || key === 8 && length > 0 ) {
-        this.retailCode = this.retailCode.substring(0, length - 1);
+        this.password = this.password.substring(0, length - 1);
         return;
       }
 
@@ -154,7 +154,7 @@ foam.CLASS({
 
       var isNumeric = ( ! isNaN(parseFloat(key)) && isFinite(key) );
       if ( isNumeric ) {
-        this.retailCode += key;
+        this.password += key;
       }
     },
 
@@ -164,7 +164,7 @@ foam.CLASS({
       // look up device, set to active and save
       this.deviceDAO.where(this.AND(
         this.EQ(this.Device.SERIAL_NUMBER, this.serialNumber),
-        this.EQ(this.Device.PASSWORD, this.retailCode)
+        this.EQ(this.Device.PASSWORD, this.password)
       )).select().then(function (result) {
         if ( ! result ) {
           throw new Error('Device not found');
