@@ -14,7 +14,9 @@ foam.CLASS({
     'device',
     'stack',
     'deviceDAO',
-    'serialNumber'
+    'serialNumber',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   implements: [
@@ -22,7 +24,7 @@ foam.CLASS({
   ],
 
   properties: [
-    ['header', false],
+    ['header', true],
     {
       class: 'Int',
       name: 'retailCode',
@@ -35,7 +37,6 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 320px;
-          height: 480px;
           background: #2c4389;
         }
         ^ h4{
@@ -72,10 +73,11 @@ foam.CLASS({
           width: 265px;
           margin: auto;
         }
-        .setup-next-wrapper {
-          padding-top: 103px;
+        ^ .setup-next-wrapper {
+          position: fixed;
+          bottom: 0px;
         }
-        .setup-next-button {
+        ^ .setup-next-button {
           width: 320px;
           height: 72px;
           background-color: #26a96c;
@@ -89,10 +91,11 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.toolbarIcon = 'arrow_back';
+      this.toolbarTitle = 'Back';
 
       this
         .addClass(this.myClass())
-        .add(this.TransactionToolbar.create())
         .start('h4')
           .add('Enter the code showed in retail portal to finish provision.')
         .end()

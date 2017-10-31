@@ -89,7 +89,8 @@ foam.CLASS({
           padding-bottom: 12px;
         }
         ^ .transaction-refund {
-          padding-top: 33px;
+          position: fixed;
+          bottom: 0px;
         }
         ^ .transaction-refund-button {
           width: 320px;
