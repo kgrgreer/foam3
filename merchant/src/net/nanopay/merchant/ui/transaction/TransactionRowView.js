@@ -68,15 +68,8 @@ foam.CLASS({
           padding-bottom: 19px;
           padding-right: 20px;
         }
-        ^ .transaction-item-amount-refund {
-          position: absolute;
-          right: 0px;
-          font-size: 20px;
-          text-align: right;
+        ^ .transaction-item-amount.refund {
           color: #f55a5a;
-          padding-top: 22px;
-          padding-bottom: 19px;
-          padding-right: 20px;
         }
       */}
     })
@@ -110,7 +103,7 @@ foam.CLASS({
               .start().addClass('transaction-item-datetime')
                 .add(self.data.date.toLocaleString())
               .end()
-              .start().addClass('transaction-item-amount' + ( self.data.refund ? '-refund' : '' ) )
+              .start().addClass('transaction-item-amount').addClass( self.data.refund ? 'refund' : '')
                 .add( '$' + ( self.data.total / 100 ).toFixed(2))
               .end()
               .on('click', self.onClick)
