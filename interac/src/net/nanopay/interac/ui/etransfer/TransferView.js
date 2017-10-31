@@ -33,7 +33,6 @@ foam.CLASS({
         "phone":"+1-4169001111",
         "mobile":"","type":"",
         "birthday":"1982-07-07T21:12:00.0Z",
-        "profilePicture":"",
         "address":{
           "class":"foam.nanos.auth.Address",
           "type":"",
@@ -86,7 +85,6 @@ foam.CLASS({
         "mobile":"",
         "type":"",
         "birthday":"1985-08-02T21:12:00.0Z",
-        "profilePicture":"",
         "address":{
           "class":"foam.nanos.auth.Address",
           "type":"",

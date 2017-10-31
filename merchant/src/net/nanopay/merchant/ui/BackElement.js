@@ -24,7 +24,7 @@ foam.CLASS({
         }
         ^ img{
           height: 25px;
-          width: 16px;
+          width: 25px;
         }
         ^ p{
           display: inline-block;
@@ -51,7 +51,6 @@ foam.CLASS({
           .start('p').add('Back').end()
           .add(this.BACK)
         .end()
-        
     }
   ],
 

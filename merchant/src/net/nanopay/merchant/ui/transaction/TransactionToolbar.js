@@ -30,7 +30,7 @@ foam.CLASS({
           padding-bottom: 3px;
         }
         ^ .transaction-toolbar-icon img {
-          width: 13.5px;
+          width: 23px;
           height: 23px;
           object-fit: contain;
         }
