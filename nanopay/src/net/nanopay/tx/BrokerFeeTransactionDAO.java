@@ -33,9 +33,6 @@ public class BrokerFeeTransactionDAO
 
     X context = x != null ? x : getX();
 
-    System.out.println("getX() :"+getX());
-    System.out.println("x from PUT:"+x);
-
     DAO userDAO = (DAO) context.get("localUserDAO");
     DAO brokerDAO = (DAO) context.get("brokerDAO");
 
@@ -59,7 +56,6 @@ public class BrokerFeeTransactionDAO
     //Creating Another transaction for the broker fees
     Transaction brokerTransaction = new Transaction();
 
-    System.out.println("BROKER USER :"+broker.getUserId());
     brokerTransaction.setPayeeId((Long) broker.getUserId());
 
     if ( transaction.getType() == TransactionType.CASHOUT ) {
@@ -69,17 +65,11 @@ public class BrokerFeeTransactionDAO
     } else {
       throw new RuntimeException("Transaction Type is not defined.");
     }
-    System.out.println("Transaction PAYER ID :"+transaction.getPayerId());
-    System.out.println("Transaction PAYEE ID :"+transaction.getPayeeId());
-    System.out.println("BROKER TRANSACTION PAYER ID :"+brokerTransaction.getPayerId());
-    System.out.println("BROKER TRANSACTION PAYEE ID :"+brokerTransaction.getPayeeId());
-
+    //temporary test
     long brokerTransactionFee = ((Fee) broker.getFee()).getFee(transaction.getAmount());
-    System.out.println("BROKER :"+broker);
-    System.out.println("BROKER FEE:"+broker.getFee());
-    System.out.println("Broker TRANSACTION FEE:"+brokerTransactionFee);
+    //temporary test
     brokerTransaction.setAmount( brokerTransactionFee > 0 ? brokerTransactionFee : 100);
-    System.out.println("Broker TRANSACTION AMOUNT:"+brokerTransaction.getAmount());
+
     Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
 

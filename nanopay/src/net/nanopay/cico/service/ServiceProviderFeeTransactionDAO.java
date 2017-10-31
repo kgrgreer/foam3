@@ -31,9 +31,6 @@ public class ServiceProviderFeeTransactionDAO
 
     X context = x != null ? x : getX();
 
-    System.out.println("getX() :"+getX());
-    System.out.println("x from PUT:"+x);
-
     DAO userDAO = (DAO) context.get("localUserDAO");
     DAO serviceProviderDAO = (DAO) context.get("cicoServiceProviderDAO");
 
@@ -57,7 +54,6 @@ public class ServiceProviderFeeTransactionDAO
     //Creating Another transaction for the broker fees
     Transaction serviceProviderTransaction = new Transaction();
 
-    System.out.println("serviceProvider USER :"+serviceProvider.getUserId());
     serviceProviderTransaction.setPayeeId((Long) serviceProvider.getUserId());
 
     if ( transaction.getType() == TransactionType.CASHOUT ) {
@@ -67,16 +63,12 @@ public class ServiceProviderFeeTransactionDAO
     } else {
       throw new RuntimeException("Transaction Type is not defined.");
     }
-    System.out.println("Transaction PAYER ID :"+transaction.getPayerId());
-    System.out.println("Transaction PAYEE ID :"+transaction.getPayeeId());
-    System.out.println("serviceProviderTransaction PAYER ID :"+serviceProviderTransaction.getPayerId());
-    System.out.println("serviceProviderTransaction PAYEE ID :"+serviceProviderTransaction.getPayeeId());
+
+    //temporary test
     Long serviceProviderTransactionFee = ((Fee) serviceProvider.getFee()).getFee(transaction.getAmount());
-    System.out.println("SERVICE PROVIDER :"+serviceProvider);
-    System.out.println("SERVICE PROVIDER FEE:"+serviceProvider.getFee());
-    System.out.println("SERVICE PROVIDER TRANSACTION FEE:"+serviceProviderTransactionFee);
+    //temporary test
     serviceProviderTransaction.setAmount( serviceProviderTransactionFee > 0 ? serviceProviderTransactionFee : 100);
-    System.out.println("serviceProviderTransaction AMOUNT:"+serviceProviderTransaction.getAmount());
+
     Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
 
