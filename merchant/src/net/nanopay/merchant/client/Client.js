@@ -153,6 +153,13 @@ foam.CLASS({
               "serialNumber":"D224E98C71EF42CA",
               "status": this.DeviceStatus.ACTIVE,
               "password": 123456
+            },
+            {
+              "name":"Ingenico 3",
+              "type":2,
+              "serialNumber":"370D7D32C23F4CE6",
+              "status": this.DeviceStatus.ACTIVE,
+              "password": 123456
             }
           ]
         });
