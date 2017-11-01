@@ -89,25 +89,7 @@ foam.CLASS({
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
       this.userDAO.select().then(function(a) {
         self.user.copyFrom(a.array[0]);
-
-        // var bankAccount = self.BankAccount.create({
-        //   accountName: "test11",
-        //   transitNumber: "1234567",
-        //   accountNumber: "490932681376",
-        //   status: "Verified",
-        //   currencyCode: "CAD",
-        //   branchId: 3
-        // })
-        
-        // self.user.bankAccounts.put(bankAccount).then(function(a){
-        //   console.log('success!')
-        // })
       });
-
-      /*******   Loads Account with balance for Testing Purposes (comment out if not needed)  ********/
-      // this.accountDAO.select().then(function(a) {
-      //   self.account.copyFrom(a.array[0]);
-      // });
 
       net.nanopay.TempMenu.create(null, this);
 
