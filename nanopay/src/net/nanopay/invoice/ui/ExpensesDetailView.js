@@ -64,7 +64,7 @@ foam.CLASS({
 
   listeners: [
     function payNowPopUp(){
-      this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' });
+      this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: this.data });
     },
 
     function disputePopUp(){

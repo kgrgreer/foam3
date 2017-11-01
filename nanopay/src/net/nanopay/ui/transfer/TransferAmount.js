@@ -124,6 +124,12 @@ foam.CLASS({
         ^ .label{
           margin-left: 0;
         }
+
+        ^ .invoice-amount{
+          font-size: 40px;
+          margin: 20px 0;
+          font-weight: 300;
+        }
       */}
     })
   ],
@@ -313,9 +319,13 @@ foam.CLASS({
             .end()
             .start('div').addClass('rateDivider').end()
           .end()
-          .start().show(this.type == 'regular')
+          .start().show(this.type == 'regular' && !this.invoiceMode)
             .start().addClass('label').add('Enter Amount:').end()
-            .start(this.FROM_AMOUNT, { onKey: true }).addClass('from-amount').end()          
+            .start(this.FROM_AMOUNT, { onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).addClass('from-amount').end()          
+          .end()
+          .start().show(this.type == 'regular' && this.invoiceMode)
+            .start().addClass('label').add('Amount:').end()
+            .start().addClass('invoice-amount').add('$ ', this.fromAmount.toFixed(2)).end()
           .end()
           .start('div').addClass('pricingCol')
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
