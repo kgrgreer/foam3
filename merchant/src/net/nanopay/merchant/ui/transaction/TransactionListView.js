@@ -39,10 +39,18 @@ foam.CLASS({
       this.toolbarIcon = 'menu';
 
       this
-        .addClass(this.myClass())
-        .select(this.transactionDAO, function (t) {
-          this.add(self.TransactionRowView.create({ data: t }));
-        });
+        .addClass(this.myClass());
+
+      this.transactionDAO.select().then(function (result) {
+        var transactions = result.array;
+        for ( var i = 0; i < transactions.length; i++ ) {
+          setTimeout(function (i) {
+            return function () {
+              self.add(self.TransactionRowView.create({ data: transactions[i] }));
+            }
+          }(i), 0);
+        }
+      });
     }
   ]
 });
