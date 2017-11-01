@@ -110,11 +110,12 @@ foam.CLASS({
           line-height: 56px;
           text-decoration: none;
         }
-        ^ .sidenav-list-icon.back img {
-          width: 20px;
-          height: 20px;
-          padding-left: 20px;
-          padding-right: 30px;
+        ^ .sidenav-list-icon.back {
+          height: 100%;
+          padding-left: 25px;
+          padding-right: 20px;
+          float: left;
+          line-height: 56px;
         }
         ^ .net-nanopay-ui-ToggleSwitch {
           float: right;
@@ -216,9 +217,9 @@ foam.CLASS({
         .start('div').addClass('sidenav')
           .start('div').addClass('sidenav-list-item back')
             .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon back')
+              .start('i').addClass('sidenav-list-icon back material-icons')
                 .attrs({ 'aria-hidden': true })
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
+                .add('arrow_back')
               .end()
               .add('Back')
             .end()
@@ -294,7 +295,7 @@ foam.CLASS({
 
       var sidenav = document.querySelector('.sidenav');
       // if we are on the same screen or have clicked the back button, close drawer
-      if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
+      if ( this.toolbarTitle === clicked || clicked.includes('back') ) {
         sidenav.classList.remove('open');
         return;
       }
@@ -314,8 +315,6 @@ foam.CLASS({
 
       this.toolbarTitle = clicked;
       this.stack.back();
-      console.log('here');
-      console.log('clicked')
       switch ( clicked ) {
         case 'Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
