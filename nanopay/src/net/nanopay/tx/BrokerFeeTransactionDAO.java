@@ -8,6 +8,8 @@ import foam.nanos.auth.User;
 import foam.util.Arrays;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Fee;
+import net.nanopay.tx.model.FeeInterface;
+import net.nanopay.tx.model.FixedFee;
 import net.nanopay.tx.TransactionDAO;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
@@ -31,26 +33,22 @@ public class BrokerFeeTransactionDAO
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
 
-    X context = x != null ? x : getX();
+    if ( transaction.getBrokerId() == null ) {
+      System.out.println("RETURN 1");
+      return getDelegate().put_(x, transaction);
+    }
 
-    DAO userDAO = (DAO) context.get("localUserDAO");
-    DAO brokerDAO = (DAO) context.get("brokerDAO");
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO brokerDAO = (DAO) x.get("brokerDAO");
 
     User payee = (User) userDAO.find(transaction.getPayeeId());
     User payer = (User) userDAO.find(transaction.getPayerId());
 
-    if ( transaction.getBrokerId() == null ) {
-      return obj;
-    }
-
     Broker broker = (Broker) brokerDAO.find(transaction.getBrokerId());
 
-    if ( broker.getUserId() == null ) {
-      throw new RuntimeException("Broker has no user defined.");
-    }
-
-    if ( broker.getFee() == null ) {
-      throw new RuntimeException("Broker has no fee defined.");
+    if ( broker.getUserId() == null || broker.getFee() == null ) {
+      System.out.println("RETURN 2");
+      return getDelegate().put_(x, transaction);
     }
 
     //Creating Another transaction for the broker fees
@@ -65,10 +63,8 @@ public class BrokerFeeTransactionDAO
     } else {
       throw new RuntimeException("Transaction Type is not defined.");
     }
-    //temporary test
-    long brokerTransactionFee = ((Fee) broker.getFee()).getFee(transaction.getAmount());
-    //temporary test
-    brokerTransaction.setAmount( brokerTransactionFee > 0 ? brokerTransactionFee : 100);
+
+    brokerTransaction.setAmount(((FeeInterface) broker.getFee()).getFee(transaction.getAmount()));
 
     Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
@@ -76,14 +72,14 @@ public class BrokerFeeTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-          DAO tDAO = (DAO) context.get("transactionDAO");
+          DAO tDAO = (DAO) x.get("transactionDAO");
 
           brokerTransaction = (Transaction) tDAO.put(brokerTransaction);
 
           //Adding the created transaction to the "main" transaction
           transaction.setFeeTransactions(Arrays.append(transaction.getFeeTransactions(), brokerTransaction));
 
-          return getDelegate().put(transaction);
+          return getDelegate().put_(x, transaction);
 
         } catch (RuntimeException e) {
           throw e;
