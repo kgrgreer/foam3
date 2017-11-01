@@ -30,6 +30,7 @@ var classes = [
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.model.Fee',
+  'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.FixedFee',
