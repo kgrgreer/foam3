@@ -66,7 +66,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.toolbarTitle = 'Home';
+      this.toolbarTitle = 'MintChip Home';
       this.toolbarIcon = 'menu';
 
       this

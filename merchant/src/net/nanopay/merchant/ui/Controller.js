@@ -146,7 +146,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'toolbarTitle',
-      value: 'Home'
+      value: 'MintChip Home'
     },
     {
       class: 'FObjectProperty',
@@ -231,7 +231,7 @@ foam.CLASS({
                 .attrs({ 'aria-hidden': true })
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
               .end()
-              .add('Home')
+              .add('MintChip Home')
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
@@ -321,7 +321,7 @@ foam.CLASS({
       this.toolbarTitle = clicked;
       this.stack.back();
       switch ( clicked ) {
-        case 'Home':
+        case 'MintChip Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
           break;
         case 'Transactions':
