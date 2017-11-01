@@ -130,7 +130,7 @@ foam.CLASS({
           .start('p').addClass('pDetails').add(this.email_$).end()
           .start('p').addClass('pDetails').add(this.phone_$).end()
           .start('p').addClass('pDetails').add(this.address_$).end()
-          .start('div').addClass('bankInfoContainer').show(this.accountNo_$)
+          .start('div').addClass('bankInfoContainer').show(this.accountNo_$ && this.type == 'foreign')
             .start('div').addClass('bankInfoRow')
               .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
                 .add(this.idLabel_$)
