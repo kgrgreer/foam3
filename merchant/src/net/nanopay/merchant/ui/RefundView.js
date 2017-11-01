@@ -24,6 +24,7 @@ foam.CLASS({
           width: 320px;
           height: 480px;
           background-color: #ffffff;
+          position: fixed;
         }
         ^ .refund-info-wrapper {
           width: 320px;

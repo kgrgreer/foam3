@@ -3,6 +3,16 @@ foam.CLASS({
   name: 'SuccessView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  documentation: 'Success screen after payment / refund',
+
+  imports: [
+    'stack'
+  ],
+
+  requires: [
+    'foam.u2.stack.Stack',
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -48,8 +58,8 @@ foam.CLASS({
           padding-top: 10px;
         }
         ^ .success-profile-icon img {
-          height: 40px;
-          width: 40px;
+          height: 45px;
+          width: 45px;
           display: table-cell;
           vertical-align: middle;
           border-style: solid;
@@ -84,7 +94,13 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       var user = this.data.user;
+
+      this.document.addEventListener('keydown', this.onKeyPressed);
+      this.onDetach(function () {
+        self.document.removeEventListener('keydown', self.onKeyPressed);
+      });
 
       this
         .addClass(this.myClass())
@@ -104,6 +120,19 @@ foam.CLASS({
             .end()
           .end()
         .end();
+    }
+  ],
+
+  listeners: [
+    function onKeyPressed (e) {
+      var key = e.key || e.keyCode;
+      if ( key === 'Enter' || key === 13 ) {
+        // reset nav items
+        var sidenavs = document.getElementsByClassName('sidenav-list-item');
+        sidenavs[1].classList.add('selected');
+        sidenavs[2].classList.remove('selected');
+        this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+      }
     }
   ]
 })

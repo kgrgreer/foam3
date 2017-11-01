@@ -60,21 +60,16 @@ foam.CLASS({
         }
         ^ .transaction-item-amount {
           position: absolute;
+          right: 0px;
           font-size: 20px;
           text-align: right;
           color: #26a96c;
           padding-top: 22px;
           padding-bottom: 19px;
-          padding-left: 217px;
+          padding-right: 20px;
         }
-        ^ .transaction-item-amount-refund {
-          position: absolute;
-          font-size: 20px;
-          text-align: right;
+        ^ .transaction-item-amount.refund {
           color: #f55a5a;
-          padding-top: 22px;
-          padding-bottom: 19px;
-          padding-left: 217px;
         }
       */}
     })
@@ -87,6 +82,7 @@ foam.CLASS({
 
       self
         .addClass(self.myClass())
+        .on('click', self.onClick)
         .call(function () {
           Promise.resolve().then(function () {
             if ( self.data.payerId === self.user.id ) {
@@ -106,12 +102,11 @@ foam.CLASS({
                 .add(user.firstName + ' ' + user.lastName)
               .end()
               .start().addClass('transaction-item-datetime')
-                .add(self.data.date.toLocaleString())
+                .add(self.data.date.toString())
               .end()
-              .start().addClass('transaction-item-amount' + ( self.data.refund ? '-refund' : '' ) )
-                .add( ( self.data.refund ? '-' : '' ) + '$' + ( self.data.total / 100 ).toFixed(2))
+              .start().addClass('transaction-item-amount').addClass( self.data.refund ? 'refund' : '')
+                .add( '$' + ( self.data.total / 100 ).toFixed(2))
               .end()
-              .on('click', self.onClick)
             .end();
           });
         });
