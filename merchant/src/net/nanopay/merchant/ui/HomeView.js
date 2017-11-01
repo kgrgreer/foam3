@@ -27,6 +27,7 @@ foam.CLASS({
         }
         ^ .amount-label {
           height: 30px;
+          width: 320px;
           font-family: Roboto;
           font-size: 16px;
           line-height: 1.88;
