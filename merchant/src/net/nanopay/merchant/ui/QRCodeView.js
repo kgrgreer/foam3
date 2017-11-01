@@ -39,9 +39,6 @@ foam.CLASS({
           left: 70px;
           top: 20px;
         }
-        ^ .qr-code-div {
-          padding: 10px;
-        }
         ^ .amount-div {
           font-size: 25px;
           font-weight: 500;
@@ -118,17 +115,17 @@ foam.CLASS({
           .add(this.instruction3).br()
         .end()
 
+      var QRC = qrcodegen.QrCode;
+      var qr0 = QRC.encodeText(JSON.stringify({
+        payeeId: self.user.id,
+        amount: self.amount,
+        challenge: challenge,
+        tip: self.tipEnabled
+      }), QRC.Ecc.MEDIUM);
+
       this.onload.sub(function () {
-        var qrCode = new QRCode(document.querySelector('.qr-code-div'), {
-          text: JSON.stringify({
-            payeeId: self.user.id,
-            amount: self.amount,
-            challenge: challenge,
-            tip: self.tipEnabled
-          }),
-          width: 160,
-          height: 160
-        });
+        var wrapper = document.querySelector('.qr-code-wrapper-div');
+        wrapper.innerHTML = qr0.toSvgString(4);
       });
     }
   ],
