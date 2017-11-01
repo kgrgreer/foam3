@@ -56,8 +56,8 @@ foam.CLASS({
           display: block;
         }
         ^ .toolbar {
-          height: 56px;
           width: 320px;
+          height: 56px;
           background-color: #4054B5;
           -webkit-box-shadow: none;
           box-shadow: none;
@@ -88,6 +88,15 @@ foam.CLASS({
           line-height: 90px;
           text-decoration: none;
         }
+        ^ .sidenav-list-item.about {
+          height: 56px;
+          width: 250px;
+          position: fixed;
+          bottom: 0px;
+        }
+        ^ .sidenav-list-item.about a {
+          line-height: 56px;
+        }
         ^ .sidenav-list-icon i {
           display: inline-block;
           height: 100%;
@@ -110,11 +119,12 @@ foam.CLASS({
           line-height: 56px;
           text-decoration: none;
         }
-        ^ .sidenav-list-icon.back img {
-          width: 20px;
-          height: 20px;
-          padding-left: 20px;
-          padding-right: 30px;
+        ^ .sidenav-list-icon.material-icons {
+          height: 100%;
+          padding-left: 25px;
+          padding-right: 20px;
+          float: left;
+          line-height: 56px;
         }
         ^ .net-nanopay-ui-ToggleSwitch {
           float: right;
@@ -145,7 +155,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'toolbarTitle',
-      value: 'Home'
+      value: 'MintChip Home'
     },
     {
       class: 'FObjectProperty',
@@ -216,9 +226,9 @@ foam.CLASS({
         .start('div').addClass('sidenav')
           .start('div').addClass('sidenav-list-item back')
             .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon back')
+              .start('i').addClass('sidenav-list-icon back material-icons')
                 .attrs({ 'aria-hidden': true })
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
+                .add('arrow_back')
               .end()
               .add('Back')
             .end()
@@ -230,7 +240,7 @@ foam.CLASS({
                 .attrs({ 'aria-hidden': true })
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
               .end()
-              .add('Home')
+              .add('MintChip Home')
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
@@ -252,6 +262,16 @@ foam.CLASS({
               .end()
               .add('Tip')
               .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
+            .end()
+            .on('click', this.onMenuItemClicked)
+          .end()
+          .start('div').addClass('sidenav-list-item about')
+            .start('a').attrs({ href: '#' })
+              .start('i').addClass('sidenav-list-icon about material-icons')
+                .attrs({ 'aria-hidden': true })
+                .add('info_outline')
+              .end()
+              .add('About MintChip')
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
@@ -292,6 +312,15 @@ foam.CLASS({
         return;
       }
 
+      // fix issue with clicking back button
+      if ( clicked === 'arrow_back' || clicked === 'arrow_backBack' ) {
+        clicked = 'Back';
+      }
+
+      if ( clicked === 'info_outline' || clicked === 'info_outlineAbout MintChip') {
+        clicked = 'About MintChip';
+      }
+
       var sidenav = document.querySelector('.sidenav');
       // if we are on the same screen or have clicked the back button, close drawer
       if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
@@ -315,11 +344,14 @@ foam.CLASS({
       this.toolbarTitle = clicked;
       this.stack.back();
       switch ( clicked ) {
-        case 'Home':
+        case 'MintChip Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
           break;
         case 'Transactions':
           this.stack.push({ class: 'net.nanopay.merchant.ui.transaction.TransactionListView' });
+          break;
+        case 'About MintChip':
+          this.stack.push({ class: 'net.nanopay.merchant.ui.AboutView' });
           break;
       }
       sidenav.classList.remove('open');

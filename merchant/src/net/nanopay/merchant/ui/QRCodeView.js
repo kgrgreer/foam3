@@ -137,7 +137,7 @@ foam.CLASS({
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( key === 'Backspace' || key === 27 || key === 8  ) {
-        this.toolbarTitle = 'Home';
+        this.toolbarTitle = 'MintChip Home';
         this.toolbarIcon = 'menu';
         this.stack.back();
       }

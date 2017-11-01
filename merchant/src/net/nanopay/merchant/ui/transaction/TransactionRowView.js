@@ -82,6 +82,7 @@ foam.CLASS({
 
       self
         .addClass(self.myClass())
+        .on('click', self.onClick)
         .call(function () {
           Promise.resolve().then(function () {
             if ( self.data.payerId === self.user.id ) {
@@ -101,12 +102,11 @@ foam.CLASS({
                 .add(user.firstName + ' ' + user.lastName)
               .end()
               .start().addClass('transaction-item-datetime')
-                .add(self.data.date.toLocaleString())
+                .add(self.data.date.toString())
               .end()
               .start().addClass('transaction-item-amount').addClass( self.data.refund ? 'refund' : '')
                 .add( '$' + ( self.data.total / 100 ).toFixed(2))
               .end()
-              .on('click', self.onClick)
             .end();
           });
         });
