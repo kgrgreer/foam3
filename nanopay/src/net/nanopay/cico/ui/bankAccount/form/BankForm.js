@@ -11,13 +11,22 @@ foam.CLASS({
   ],
 
   imports: [
-
     'bankAccountDAO',
     'closeDialog'
   ],
 
+  exports: [
+    'newBankAccount'
+  ],
+
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+  ],
+
+  properties: [
+    {
+      name: 'newBankAccount'
+    }
   ],
 
   methods: [
@@ -57,6 +66,8 @@ foam.CLASS({
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber
           });
+
+          this.newBankAccount = newAccount;
 
           this.bankAccountDAO.put(newAccount).then(function(response){
             console.log(response);

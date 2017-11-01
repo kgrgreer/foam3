@@ -9,7 +9,9 @@ foam.CLASS({
     'viewData',
     'errors',
     'goBack',
-    'goNext'
+    'goNext',
+    'bankAccountVerification',
+    'newBankAccount'
   ],
 
   axioms: [
@@ -66,6 +68,12 @@ foam.CLASS({
       validateObj: function(amount, tenthCent, cent) {
         if ( amount == 0.00 ) return 'Please enter an amount.';
         if ( amount > 1.00 || amount < 0.01 ) return 'Do not put more than 1 number in a single field.';
+        this.bankAccountVerification.verify(this.newBankAccount.id, amount).then(function(response) {
+          console.log(response);
+        }).catch(function(error) {
+          console.log(error);
+          return error;
+        });
       }
     },
     {
