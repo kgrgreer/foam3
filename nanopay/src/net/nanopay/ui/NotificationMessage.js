@@ -34,6 +34,7 @@ foam.CLASS({
           line-height: 1.33;
           letter-spacing: 0.2px;
           text-align: center;
+          z-index: 100;
         }
         @keyframes fade {
           0% { opacity: 0; }
@@ -55,7 +56,7 @@ foam.CLASS({
           position: absolute;
           left: -14px;
           top: -5px;
-          z-index: 1;
+          z-index: 101;
           opacity: 0.01;
         }
       */
