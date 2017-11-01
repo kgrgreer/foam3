@@ -115,18 +115,18 @@ foam.CLASS({
           .add(this.instruction3).br()
         .end()
 
-      var QRC = qrcodegen.QrCode;
-      var qr0 = QRC.encodeText(JSON.stringify({
+      var worker = new Worker('libs/qrcode/qrcode.js');
+      worker.addEventListener('message', function (e) {
+        var wrapper = self.document.querySelector('.qr-code-wrapper-div');
+        wrapper.innerHTML = e.data;
+      }, false);
+
+      worker.postMessage(JSON.stringify({
         payeeId: self.user.id,
         amount: self.amount,
         challenge: challenge,
         tip: self.tipEnabled
-      }), QRC.Ecc.MEDIUM);
-
-      this.onload.sub(function () {
-        var wrapper = document.querySelector('.qr-code-wrapper-div');
-        wrapper.innerHTML = qr0.toSvgString(4);
-      });
+      }));
     }
   ],
 
