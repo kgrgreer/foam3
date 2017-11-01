@@ -293,9 +293,14 @@ foam.CLASS({
         return;
       }
 
+      // fix issue with clicking back button
+      if ( clicked === 'arrow_back' || clicked === 'arrow_backBack' ) {
+        clicked = 'Back';
+      }
+
       var sidenav = document.querySelector('.sidenav');
       // if we are on the same screen or have clicked the back button, close drawer
-      if ( this.toolbarTitle === clicked || clicked.includes('back') ) {
+      if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
         sidenav.classList.remove('open');
         return;
       }
