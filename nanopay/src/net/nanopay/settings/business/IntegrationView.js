@@ -148,6 +148,7 @@ foam.CLASS({
     methods: [
       function initE() {
         this.SUPER();
+        
         this
           .addClass(this.myClass())
           .start('div').addClass('businessSettingsContainer')
