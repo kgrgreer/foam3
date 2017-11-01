@@ -46,7 +46,7 @@ foam.CLASS({
           border: 1px solid #f33d3d;
         }
         ^ .close-x{
-          right: -10px;
+          right: 5px;
           top: 10px;
         }
         ^ .net-nanopay-ui-ActionView-close{
