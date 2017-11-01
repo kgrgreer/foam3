@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.CountdownView',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   imports: [
@@ -338,6 +339,7 @@ foam.CLASS({
             }
           })
           .catch(function (err) {
+            self.add(self.NotificationMessage.create({ type: 'error', message: err.message }));
             if ( err ) console.log(err.message);
           });
 
