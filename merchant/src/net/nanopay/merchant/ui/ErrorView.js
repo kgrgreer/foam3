@@ -54,8 +54,8 @@ foam.CLASS({
           padding-top: 10px;
         }
         ^ .error-profile-icon img {
-          height: 40px;
-          width: 40px;
+          height: 45px;
+          width: 45px;
           display: table-cell;
           vertical-align: middle;
           border-style: solid;
