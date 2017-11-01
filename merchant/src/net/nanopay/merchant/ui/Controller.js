@@ -56,8 +56,8 @@ foam.CLASS({
           display: block;
         }
         ^ .toolbar {
-          height: 56px;
           width: 320px;
+          height: 56px;
           background-color: #4054B5;
           -webkit-box-shadow: none;
           box-shadow: none;
