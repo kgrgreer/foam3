@@ -76,10 +76,12 @@ foam.CLASS({
 
           var newAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
-            bankNumber: accountInfo.bankNumber,
+            institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber
           });
+
+          console.log(accountInfo.bankNumber);
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
             console.log(response);

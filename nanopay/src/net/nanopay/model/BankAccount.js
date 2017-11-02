@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Bank account information.',
 
-  tableColumns: ['accountName', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
 
   properties: [
     {
