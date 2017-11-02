@@ -294,7 +294,8 @@ foam.CLASS({
             .start().add('Multi-user Management').addClass('boxTitle').end()
             .start().addClass('close-BTN').add("Close").end()
           .end()
-        .end()
+          .tag({ class: "net.nanopay.settings.business.IntegrationView"})
+        .end()     
     }
   ]
 });
