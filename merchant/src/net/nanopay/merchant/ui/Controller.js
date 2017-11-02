@@ -21,6 +21,7 @@ foam.CLASS({
     'user',
     'device',
     'stack',
+    'showAbout',
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
@@ -65,14 +66,22 @@ foam.CLASS({
           top: 0;
         }
         ^ .toolbar-icon {
-          height: 100%;
+          height: 56px;
           padding-left: 20px;
           padding-right: 20px;
           float: left;
         }
+        ^ .toolbar-icon.about {
+          height: 56px;
+          padding-left: 20px;
+          padding-right: 20px;
+          float: right;
+        }
         ^ .toolbar-title {
           font-size: 16px;
           line-height: 56px;
+          position: absolute;
+          margin-left: 64px;
         }
         ^ .sidenav-list-item {
           height: 90px;
@@ -137,6 +146,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'showAbout',
+      value: true
+    },
     {
       class: 'Boolean',
       name: 'showHeader',
@@ -265,16 +279,6 @@ foam.CLASS({
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
-          .start('div').addClass('sidenav-list-item about')
-            .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon about material-icons')
-                .attrs({ 'aria-hidden': true })
-                .add('info_outline')
-              .end()
-              .add('About MintChip')
-            .end()
-            .on('click', this.onMenuItemClicked)
-          .end()
         .end()
 
         // main content
@@ -290,11 +294,19 @@ foam.CLASS({
             .on('click', this.onMenuClicked)
           .end()
           .start('div').addClass('toolbar-title').add(this.toolbarTitle$).end()
+          .start('button').addClass('toolbar-icon about material-icons').show(this.showAbout$)
+            .add('info_outline')
+            .on('click', this.onAboutClicked)
+          .end()
         .end()
     }
   ],
 
   listeners: [
+    function onAboutClicked (e) {
+      this.stack.push({ class: 'net.nanopay.merchant.ui.AboutView' });
+    },
+
     function onMenuClicked (e) {
       if ( this.toolbarTitle === 'Back' ) {
         this.stack.back();
@@ -315,10 +327,6 @@ foam.CLASS({
       // fix issue with clicking back button
       if ( clicked === 'arrow_back' || clicked === 'arrow_backBack' ) {
         clicked = 'Back';
-      }
-
-      if ( clicked === 'info_outline' || clicked === 'info_outlineAbout MintChip') {
-        clicked = 'About MintChip';
       }
 
       var sidenav = document.querySelector('.sidenav');
@@ -349,9 +357,6 @@ foam.CLASS({
           break;
         case 'Transactions':
           this.stack.push({ class: 'net.nanopay.merchant.ui.transaction.TransactionListView' });
-          break;
-        case 'About MintChip':
-          this.stack.push({ class: 'net.nanopay.merchant.ui.AboutView' });
           break;
       }
       sidenav.classList.remove('open');

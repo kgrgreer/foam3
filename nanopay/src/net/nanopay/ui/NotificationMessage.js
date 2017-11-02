@@ -24,7 +24,7 @@ foam.CLASS({
           width: 250px;
           padding: 20px 60px;
           background: #cff0e1;
-          position: absolute;
+          position: fixed;
           top: 100px;
           right: 100px;
           border: 1px solid #2cab70;

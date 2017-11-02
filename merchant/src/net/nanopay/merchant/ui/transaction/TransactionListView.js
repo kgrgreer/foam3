@@ -13,6 +13,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'toolbarIcon',
+    'toolbarTitle',
     'transactionDAO'
   ],
 
@@ -33,6 +35,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.toolbarTitle = 'Transactions';
+      this.toolbarIcon = 'menu';
 
       this
         .addClass(this.myClass())
