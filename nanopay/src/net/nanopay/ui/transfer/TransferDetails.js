@@ -22,7 +22,8 @@ foam.CLASS({
     // 'pacs008IndiaPurposeDAO',
     'bankAccountDAO',
     'payeeDAO',
-    'user'
+    'user',
+    'type'
   ],
 
   axioms: [
@@ -262,27 +263,31 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start().show(this.type == 'foreign')
-            .start('p').add(this.TransferFromLabel).addClass('bold').end()
-            .start('p').add(this.AccountLabel).end()
-            .start('div').addClass('dropdownContainer')
-              .add(this.ACCOUNTS)
-              .start('div').addClass('caret').end()
+          .callIf(this.type == 'foreign', function() {
+            self.start()
+              .start('p').add(this.TransferFromLabel).addClass('bold').end()
+              .start('p').add(this.AccountLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .add(this.ACCOUNTS)
+                .start('div').addClass('caret').end()
+              .end()
             .end()
-          .end()
+          })
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
           .start('div').addClass('dropdownContainer')
             .start(this.PAYEES, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
             .start('div').enableClass('hidden', this.invoiceMode$).addClass('caret').end()
           .end()
-          .start().show(this.type == 'foreign')
-            .start('p').add(this.PurposeLabel).end()
-            .start('div').addClass('dropdownContainer')
-              .add(this.PURPOSE)
-              .start('div').addClass('caret').end()
-            .end()
-          .end()
+          .callIf(this.type == 'foreign', function() {
+            self.start()
+              .start('p').add(this.PurposeLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .add(this.PURPOSE)
+                .start('div').addClass('caret').end()
+              .end()
+            .end()      
+          })
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$).show(this.type == 'foreign')
