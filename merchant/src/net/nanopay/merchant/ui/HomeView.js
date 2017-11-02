@@ -103,10 +103,24 @@ foam.CLASS({
         return;
       }
 
+      var length = this.amount.length;
+
+      if ( key === 'Backspace' || key === 8 ) {
+        if ( length <= 1 ) return;
+        this.amount = this.amount.substring(0, length - 1);
+        return;
+      }
+
+      var decimal = this.amount.indexOf('.');
       // handle enter key
       if ( ( key === 'Enter' || key === 13 ) ) {
+        // append 0 if only one decimal digit is specified
+        if ( length - decimal === 2 ) {
+          this.amount += '0';
+          length += 1;
+        }
+
         // validate amount greater than 0
-        var hasDecimal = ( this.amount.indexOf('.') !== -1 );
         var value = this.amount.replace(/\D/g, '');
         if ( value <= 0 ) {
           return;
@@ -114,15 +128,13 @@ foam.CLASS({
 
         // display QR code view
         this.stack.push(this.QRCodeView.create({
-          amount: ( hasDecimal ) ? value : value * 100
+          amount: ( decimal !== -1 ) ? value : value * 100
         }));
         return;
       }
 
-      var length = this.amount.length;
-      if ( key === 'Backspace' || key === 8 ) {
-        if ( length <= 1 ) return;
-        this.amount = this.amount.substring(0, length - 1);
+      // only allow 2 decimal places
+      if ( decimal !== -1 && length - decimal > 2 ) {
         return;
       }
 
