@@ -14,7 +14,8 @@ foam.CLASS({
   imports: [
     'bankAccountDAO',
     'closeDialog',
-    'bankAccountVerification'
+    'bankAccountVerification',
+    'stack'
   ],
 
   exports: [
@@ -94,7 +95,7 @@ foam.CLASS({
               if(!response) {
                 self.add(self.NotificationMessage.create({ message: 'Invalid amount', type: 'error' }));
               } else {
-                self.add(self.NotificationMessage.create({ message: 'Account successfully verified!' }));
+                self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
                 self.subStack.push(self.views[self.subStack.pos + 1].view);
               }
             }).catch(function(error) {
@@ -112,7 +113,8 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          return this.closeDialog();
+          this.closeDialog();
+          return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }
     }
