@@ -27,6 +27,16 @@ foam.CLASS({
           line-height: 1;
           letter-spacing: 0.5px;
           color: #093649;
+          position: relative;
+          top: 6px;
+        }
+
+        ^ .property-tenthcent {
+          height: 30px;
+        }
+
+        ^ .property-cent {
+          height: 30px;
         }
 
         ^ .inputErrorLabel {
