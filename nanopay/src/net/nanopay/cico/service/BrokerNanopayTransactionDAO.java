@@ -52,7 +52,7 @@ public class BrokerNanopayTransactionDAO
               transaction.setPayerId((Long) broker.getUserId());
               break;
             default :
-              return transaction;
+              System.out.println("Transaction Type not Cashout or Cashin.");
           }
 
           return getDelegate().put_(x, transaction);
