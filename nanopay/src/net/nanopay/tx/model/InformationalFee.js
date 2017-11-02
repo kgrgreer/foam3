@@ -12,8 +12,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.FeeType',
       name: 'type',
-      factory: function() { return net.nanopay.tx.model.FeeType.INFORMATIONAL; },
-      javaFactory: `return net.nanopay.tx.model.FeeType.INFORMATIONAL;`
+      value: 'net.nanopay.tx.model.FeeType.INFORMATIONAL'
     }
   ],
 
