@@ -214,7 +214,7 @@ foam.CLASS({
     function init() {
       if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
       else { this.title = 'Send Transfer' }
-
+      
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;

@@ -168,8 +168,7 @@ foam.CLASS({
 
     // The stack that is handled by this Wizard View.
     {
-      name: 'subStack',
-      factory: function() { return this.Stack.create(); }
+      name: 'subStack'
     },
 
     // Current view the user is viewing in the substack.
@@ -227,7 +226,8 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.title ) { console.warn('[WizardView] : No title provided'); }
-
+      this.viewTitles = [];
+      this.subStack = this.Stack.create();
       this.views.forEach(function(viewData){
         self.viewTitles.push(viewData.label);
       });
