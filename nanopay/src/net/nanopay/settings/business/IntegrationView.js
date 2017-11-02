@@ -37,9 +37,12 @@ foam.CLASS({
             font-weight: 300;
             line-height: 20px;
             letter-spacing: 0.3px;
-            text-align: left;
+						text-align: left;
+						
             color: #093649;
-            display: inline-block;
+						display: inline-block;
+						
+						margin: 0;
             
           }
           
@@ -56,7 +59,8 @@ foam.CLASS({
             text-align: center;
             color: #093649;
             cursor: pointer;
-            display: inline-block;
+						display: inline-block;
+						margin: 0;
             float: right;
           }
 
@@ -142,65 +146,51 @@ foam.CLASS({
         */}
       })
     ],
-
-    
   
     methods: [
       function initE() {
         this.SUPER();
-        
         this
           .addClass(this.myClass())
           .start('div').addClass('businessSettingsContainer')
-            
-           
             .start('div').addClass('boxContainer')
               .start().add('Integration Management').addClass('boxTitle').end()
               .start().addClass('close-BTN').add("Close").end()
-
               .start().addClass('labelContent').add("Connct to your accounting software and make your payment process seamlessly.").end()
               .start().addClass('integrationImgDiv')
-                    .start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
-                    .attrs({
-                        srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
-                      })
-                      .end()
+                .start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
+                .attrs({
+                    srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
+                    })
+								.end()
               .end()
-
               .start().addClass('integrationImgDiv')
-                    .start({class:'foam.u2.tag.Image', data:'images/setting/integration/qb.png'}).addClass('integrationImg')
-                    .attrs({
-                        srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
-                        })
-                    .end()
+                .start({class:'foam.u2.tag.Image', data:'images/setting/integration/qb.png'}).addClass('integrationImg')
+                .attrs({
+                    srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
+                    })
+                .end()
              .end()
-
              .start().addClass('integrationImgDiv')
-                    .start({class:'foam.u2.tag.Image', data:'images/setting/integration/fresh.png'}).addClass('integrationImg')
-                    .attrs({
-                        srcset: 'images/setting/integration/fresh@2x.png 2x, images/setting/integration/fresh@3x.png 3x'
-                        })
-                    .end()
+                .start({class:'foam.u2.tag.Image', data:'images/setting/integration/fresh.png'}).addClass('integrationImg')
+                .attrs({
+                    srcset: 'images/setting/integration/fresh@2x.png 2x, images/setting/integration/fresh@3x.png 3x'
+                    })
+                .end()
              .end()
-
              .start().addClass('integrationImgDiv last-integrationImgDiv')
              .start({class:'foam.u2.tag.Image', data:'images/setting/integration/intacct.png'}).addClass('integrationImg')
-                    .attrs({
-                        srcset: 'images/setting/integration/intacct@2x.png 2x, images/setting/integration/intacct@3x.png 3x'
-                        })
-                    .end()
+                .attrs({
+                    srcset: 'images/setting/integration/intacct@2x.png 2x, images/setting/integration/intacct@3x.png 3x'
+                    })
+                .end()
             .end()
-
             .start().addClass('labelContent centerDiv').add("Can’t find your software? Tell us about it.").end()
             .start().addClass('centerDiv inputLine')
-                .start('input').addClass('intergration-Input').end()
-                .start().add("submit").addClass('submit-BTN').end()
+							.start('input').addClass('intergration-Input').end()
+							.start().add("submit").addClass('submit-BTN').end()
             .end()
-
-              
         .end()
-
-
      .end()
       }
     ]
