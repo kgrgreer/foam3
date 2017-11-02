@@ -20,7 +20,7 @@ foam.CLASS({
         }
       ],
       javaReturns: 'long',
-      javaCode: ' return ((Double) (this.getPercentage()/100 * transactionAmount)).longValue(); ',
+      javaCode: ' return ((Double) (this.getPercentage()/100.0 * transactionAmount)).longValue(); ',
       code: function() {
         return this.percentage/100 * transactionAmount;
       }
