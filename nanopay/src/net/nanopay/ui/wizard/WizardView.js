@@ -226,8 +226,10 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.title ) { console.warn('[WizardView] : No title provided'); }
+      
       this.viewTitles = [];
       this.subStack = this.Stack.create();
+
       this.views.forEach(function(viewData){
         self.viewTitles.push(viewData.label);
       });

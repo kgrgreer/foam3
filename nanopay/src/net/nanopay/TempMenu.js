@@ -17,6 +17,7 @@ foam.CLASS({
     function init() {
 
       foam.json.parse([
+        {                         id: "transfer",         label: "Transfer",        handler: { class: "foam.nanos.menu.SubMenu" } },
         {                         id: 'sign-in',       label: 'Sign in',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView' } } },
         {                         id: 'subscription',  label: 'Subscription',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SubscriptionView' } } },
         {                         id: 'dashboard',     label: 'Dashboard',          handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.InvoiceDashboardView' } } },
@@ -24,7 +25,6 @@ foam.CLASS({
         {                         id: 'sales',         label: 'Receivable',         handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SalesView' } } },
         {                         id: 'expenses',      label: 'Payable',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.ExpensesView' } } },
         {                         id: 'interac',       label: 'Transactions',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.tx.ui.TransactionsView' } } },
-        {                         id: 'transfer',      label: 'Transfer',           handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' } } },
         {                         id: 'devices',       label: 'Devices',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.devices.DevicesView' } } },
         { /*parent: 'support',*/  id: 'aaainvoices',   label: 'Invoices',           handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'invoiceDAO' } },
         { parent: 'admin',        id: 'brokers',       label: 'Brokers',            handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'brokerDAO' } },
@@ -35,7 +35,9 @@ foam.CLASS({
         { parent: 'settings',     id: 'set-personal',     label: 'Personal', order: 30,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.settings.personal.PersonalSettingsView' } } },
         { parent: 'settings',     id: 'set-bus',          label: 'Business', order: 40,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.settings.business.BusinessSettingsView' } } },
         { parent: 'settings',     id: 'set-bank',         label: 'Bank Account',      order: 50,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' } } },
-        { parent: 'settings',     id: 'set-security',     label: 'Log Out',           order: 70,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView'} } }
+        { parent: 'settings',     id: 'set-security',     label: 'Log Out',           order: 70,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView'} } },
+        { parent: 'transfer',     id: 'regular',     label: 'Regular',   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular' } } },
+        { parent: 'transfer',     id: 'foreign',     label: 'Foreign',   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.transfer.TransferWizard', type: 'foreign' } } }        
  //       { parent: 'support',  id: 'data',         label: 'View Data',                handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.DebugView' } } }
       ], foam.nanos.menu.Menu, this.__subContext__).forEach(this.menuDAO.put.bind(this.menuDAO));
     }
