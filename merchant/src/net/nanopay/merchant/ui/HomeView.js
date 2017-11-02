@@ -85,7 +85,7 @@ foam.CLASS({
         .end()
 
       this.onload.sub(function () {
-        self.document.querySelector('.property-amount').focus();
+        self.document.querySelector('.amount-field').focus();
       });
     }
   ],
@@ -106,6 +106,7 @@ foam.CLASS({
       // handle enter key
       if ( ( key === 'Enter' || key === 13 ) ) {
         // validate amount greater than 0
+        var hasDecimal = ( this.amount.indexOf('.') !== -1 );
         var value = this.amount.replace(/\D/g, '');
         if ( value <= 0 ) {
           return;
@@ -113,7 +114,7 @@ foam.CLASS({
 
         // display QR code view
         this.stack.push(this.QRCodeView.create({
-          amount: value
+          amount: ( hasDecimal ) ? value : value * 100
         }));
         return;
       }
