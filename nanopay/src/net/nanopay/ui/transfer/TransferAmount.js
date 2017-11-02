@@ -281,51 +281,55 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start('div').addClass('transferRateContainer').show(this.type == 'foreign')
-            .start('div').addClass('currencyContainer')
-              // TODO: Get currency & total
-              .start('div').addClass('currencyDenominationContainer')
-                .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
-                .start('p').addClass('currencyName').add('CAD').end() // TODO: Make it dyamic.
+          .start('div').addClass('transferRateContainer')
+            .callIf(this.type == 'foreign', function() {
+              this.start('div').addClass('currencyContainer')
+                // TODO: Get currency & total
+                .start('div').addClass('currencyDenominationContainer')
+                  .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
+                  .start('p').addClass('currencyName').add('CAD').end() // TODO: Make it dyamic.
+                .end()
+                .start(self.FROM_AMOUNT, {onKey: true, mode: self.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
+                  .attrs({
+                    step: 0.01
+                  })
+                .end()
               .end()
-              .start(this.FROM_AMOUNT, {onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
-                .attrs({
-                  step: 0.01,
-                  precision: 2
-                })
+              .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin')
+                // TODO: Get Fees rates
+                .add('Fees: CAD ', self.fees.toFixed(2) , ' (included)')
               .end()
-            .end()
-            .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin')
-              // TODO: Get Fees rates
-              .add('Fees: CAD ', this.fees.toFixed(2) , ' (included)')
-            .end()
-            .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin').enableClass('hidden', this.loadingSpinner.isHidden$, true)
-              // TODO: Get FX rates
-              .add('Rate: ', this.rate$)
-            .end()
-            .add(this.loadingSpinner)
-            .start('div').addClass('currencyContainer')
-              // TODO: Get currency & total
-              .start('div').addClass('currencyDenominationContainer')
-                .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
-                .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
+              .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin').enableClass('hidden', self.loadingSpinner.isHidden$, true)
+                // TODO: Get FX rates
+                .add('Rate: ', self.rate$)
               .end()
-              .start(this.TO_AMOUNT, {onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
-                .attrs({
-                  step: 0.01,
-                  precision: 2
-                })
+              .add(self.loadingSpinner)
+              .start('div').addClass('currencyContainer')
+                // TODO: Get currency & total
+                .start('div').addClass('currencyDenominationContainer')
+                  .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
+                  .start('p').addClass('currencyName').add('INR').end() // TODO: Make it dyamic.
+                .end()
+                .start(self.TO_AMOUNT, {onKey: true, mode: self.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
+                  .attrs({
+                    step: 0.01
+                  })
+                .end()
               .end()
-            .end()
-            .start('div').addClass('rateDivider').end()
+              .start('div').addClass('rateDivider').end()
+            })
           .end()
-          .start().show(this.type == 'regular' && !this.invoiceMode)
-            .start().addClass('label').add('Enter Amount:').end()
-            .start(this.FROM_AMOUNT, { onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).addClass('from-amount').end()          
+          .start()
+            .callIf(this.type == 'regular' && !invoice, function() {
+              this.start().addClass('label').add('Enter Amount:').end()
+              .start(self.FROM_AMOUNT, { onKey: true, mode: self.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).addClass('from-amount').end()
+            })          
           .end()
-          .start().show(this.type == 'regular' && this.invoiceMode)
-            .start().addClass('label').add('Amount:').end()
-            .start().addClass('invoice-amount').add('$ ', this.fromAmount.toFixed(2)).end()
+          .start()
+            .callIf(this.type == 'regular' && this.invoiceMode, function(){
+              this.start().addClass('label').add('Amount:').end()
+              .start().addClass('invoice-amount').add('$ ', self.fromAmount.toFixed(2)).end()
+            })
           .end()
           .start('div').addClass('pricingCol')
             .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
@@ -368,7 +372,7 @@ foam.CLASS({
       this.countdownView.reset();
       this.viewData.rateLocked = false;
 
-      self.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
+      this.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
         self.rate = response.toAmount;
         self.loadingSpinner.hide();
         self.startTimer();
