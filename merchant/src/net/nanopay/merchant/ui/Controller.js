@@ -21,6 +21,7 @@ foam.CLASS({
     'user',
     'device',
     'stack',
+    'showAbout',
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
@@ -65,14 +66,22 @@ foam.CLASS({
           top: 0;
         }
         ^ .toolbar-icon {
-          height: 100%;
+          height: 56px;
           padding-left: 20px;
           padding-right: 20px;
           float: left;
         }
+        ^ .toolbar-icon.about {
+          height: 56px;
+          padding-left: 20px;
+          padding-right: 20px;
+          float: right;
+        }
         ^ .toolbar-title {
           font-size: 16px;
           line-height: 56px;
+          position: absolute;
+          margin-left: 64px;
         }
         ^ .sidenav-list-item {
           height: 90px;
@@ -87,6 +96,15 @@ foam.CLASS({
           color: #595959;
           line-height: 90px;
           text-decoration: none;
+        }
+        ^ .sidenav-list-item.about {
+          height: 56px;
+          width: 250px;
+          position: fixed;
+          bottom: 0px;
+        }
+        ^ .sidenav-list-item.about a {
+          line-height: 56px;
         }
         ^ .sidenav-list-icon i {
           display: inline-block;
@@ -110,7 +128,7 @@ foam.CLASS({
           line-height: 56px;
           text-decoration: none;
         }
-        ^ .sidenav-list-icon.back {
+        ^ .sidenav-list-icon.material-icons {
           height: 100%;
           padding-left: 25px;
           padding-right: 20px;
@@ -130,6 +148,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
+      name: 'showAbout',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'showHeader',
       value: true
     },
@@ -146,7 +169,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'toolbarTitle',
-      value: 'Home'
+      value: 'MintChip Home'
     },
     {
       class: 'FObjectProperty',
@@ -231,7 +254,7 @@ foam.CLASS({
                 .attrs({ 'aria-hidden': true })
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
               .end()
-              .add('Home')
+              .add('MintChip Home')
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
@@ -271,11 +294,19 @@ foam.CLASS({
             .on('click', this.onMenuClicked)
           .end()
           .start('div').addClass('toolbar-title').add(this.toolbarTitle$).end()
+          .start('button').addClass('toolbar-icon about material-icons').show(this.showAbout$)
+            .add('info_outline')
+            .on('click', this.onAboutClicked)
+          .end()
         .end()
     }
   ],
 
   listeners: [
+    function onAboutClicked (e) {
+      this.stack.push({ class: 'net.nanopay.merchant.ui.AboutView' });
+    },
+
     function onMenuClicked (e) {
       if ( this.toolbarTitle === 'Back' ) {
         this.stack.back();
@@ -293,9 +324,14 @@ foam.CLASS({
         return;
       }
 
+      // fix issue with clicking back button
+      if ( clicked === 'arrow_back' || clicked === 'arrow_backBack' ) {
+        clicked = 'Back';
+      }
+
       var sidenav = document.querySelector('.sidenav');
       // if we are on the same screen or have clicked the back button, close drawer
-      if ( this.toolbarTitle === clicked || clicked.includes('back') ) {
+      if ( this.toolbarTitle === clicked || clicked === 'Back' ) {
         sidenav.classList.remove('open');
         return;
       }
@@ -316,7 +352,7 @@ foam.CLASS({
       this.toolbarTitle = clicked;
       this.stack.back();
       switch ( clicked ) {
-        case 'Home':
+        case 'MintChip Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
           break;
         case 'Transactions':

@@ -32,15 +32,12 @@ foam.CLASS({
           position: relative;
         }
         ^ .qr-code-wrapper-div {
-          background-color: #ffffff;
+          background-color: #2c4389;
           width: 180px;
           height: 180px;
           position: absolute;
           left: 70px;
           top: 20px;
-        }
-        ^ .qr-code-div {
-          padding: 10px;
         }
         ^ .amount-div {
           font-size: 25px;
@@ -118,18 +115,18 @@ foam.CLASS({
           .add(this.instruction3).br()
         .end()
 
-      this.onload.sub(function () {
-        var qrCode = new QRCode(document.querySelector('.qr-code-div'), {
-          text: JSON.stringify({
-            payeeId: self.user.id,
-            amount: self.amount,
-            challenge: challenge,
-            tip: self.tipEnabled
-          }),
-          width: 160,
-          height: 160
-        });
-      });
+      var worker = new Worker('libs/qrcode/qrcode.js');
+      worker.addEventListener('message', function (e) {
+        var wrapper = self.document.querySelector('.qr-code-wrapper-div');
+        wrapper.innerHTML = e.data;
+      }, false);
+
+      worker.postMessage(JSON.stringify({
+        payeeId: self.user.id,
+        amount: self.amount,
+        challenge: challenge,
+        tip: self.tipEnabled
+      }));
     }
   ],
 
@@ -137,7 +134,7 @@ foam.CLASS({
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( key === 'Backspace' || key === 27 || key === 8  ) {
-        this.toolbarTitle = 'Home';
+        this.toolbarTitle = 'MintChip Home';
         this.toolbarIcon = 'menu';
         this.stack.back();
       }
