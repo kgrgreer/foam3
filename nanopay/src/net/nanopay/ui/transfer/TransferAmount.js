@@ -12,7 +12,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   axioms: [
@@ -374,6 +375,10 @@ foam.CLASS({
       this.viewData.rateLocked = false;
 
       this.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
+        if(!response){
+          self.tag(self.NotificationMessage.create({ message: 'Unable to retrieve rate, Please try again later.', type: 'error'}));
+          return;
+        }
         self.rate = response.toAmount;
         self.loadingSpinner.hide();
         self.startTimer();
