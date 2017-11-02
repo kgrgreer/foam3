@@ -81,8 +81,6 @@ foam.CLASS({
             accountNumber: accountInfo.accountNumber
           });
 
-          console.log(accountInfo.bankNumber);
-
           this.bankAccountDAO.put(newAccount).then(function(response) {
             console.log(response);
             self.newBankAccount = response;
