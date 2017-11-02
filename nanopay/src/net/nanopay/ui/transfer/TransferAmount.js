@@ -291,7 +291,7 @@ foam.CLASS({
               .start(this.FROM_AMOUNT, {onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
-                  onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
+                  precision: 2
                 })
               .end()
             .end()
@@ -313,7 +313,7 @@ foam.CLASS({
               .start(this.TO_AMOUNT, {onKey: true, mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined})
                 .attrs({
                   step: 0.01,
-                  onchange: '(function(el){ el.value ? el.value=parseFloat(el.value).toFixed(2) : el.value = (0).toFixed(2); })(this)'
+                  precision: 2
                 })
               .end()
             .end()
@@ -368,15 +368,13 @@ foam.CLASS({
       this.countdownView.reset();
       this.viewData.rateLocked = false;
 
-      // NOTE: fxRate returns too quickly. Added .5 second delay.
-      setTimeout(function(){
-        self.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
-          self.rate = response.toAmount;
-          self.loadingSpinner.hide();
-          self.startTimer();
-          self.viewData.rateLocked = true;
-        });
-      }, 500);
+      self.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
+        self.rate = response.toAmount;
+        self.loadingSpinner.hide();
+        self.startTimer();
+        self.viewData.rateLocked = true;
+      });
+      
     },
 
     function startTimer() {

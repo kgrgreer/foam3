@@ -318,6 +318,7 @@ foam.CLASS({
           if(this.type == 'foreign'){
             rate = this.viewData.rate.toString();
           }
+
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
             payerId: this.user.id,
