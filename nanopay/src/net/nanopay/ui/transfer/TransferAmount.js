@@ -276,6 +276,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
       this.SUPER();
 
       this
