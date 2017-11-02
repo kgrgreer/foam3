@@ -32,7 +32,7 @@ foam.CLASS({
           position: relative;
         }
         ^ .qr-code-wrapper-div {
-          background-color: #ffffff;
+          background-color: #2c4389;
           width: 180px;
           height: 180px;
           position: absolute;
