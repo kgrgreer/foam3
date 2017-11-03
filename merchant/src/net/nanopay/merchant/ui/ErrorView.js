@@ -3,6 +3,12 @@ foam.CLASS({
   name: 'ErrorView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
+  documentation: 'Error screen after payment / refund',
+
+  imports: [
+    'stack'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -48,8 +54,8 @@ foam.CLASS({
           padding-top: 10px;
         }
         ^ .error-profile-icon img {
-          height: 40px;
-          width: 40px;
+          height: 45px;
+          width: 45px;
           display: table-cell;
           vertical-align: middle;
           border-style: solid;
@@ -84,7 +90,13 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       var user = this.data.user
+
+      this.document.addEventListener('keydown', this.onKeyPressed);
+      this.onDetach(function () {
+        self.document.removeEventListener('keydown', self.onKeyPressed);
+      });
 
       this
         .addClass(this.myClass())
@@ -104,6 +116,16 @@ foam.CLASS({
             .end()
           .end()
         .end();
+    }
+  ],
+
+  listeners: [
+    function onKeyPressed (e) {
+      var key = e.key || e.keyCode;
+      if ( key === 'Backspace' || key === 'Enter' || key === 'Escape' ||
+          key === 8 || key === 13 || key === 27 ) {
+        this.stack.back();
+      }
     }
   ]
 })
