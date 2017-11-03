@@ -12,6 +12,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
@@ -104,7 +105,9 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/IntegrationView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
+  
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -152,4 +155,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/model/Relationships'}
+
+  
 ]);

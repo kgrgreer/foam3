@@ -1,84 +1,57 @@
 foam.CLASS({
   package: 'net.nanopay.auth.email',
   name: 'EmailTokenService',
+  extends: 'net.nanopay.auth.token.AbstractTokenService',
 
   documentation: 'Implementation of Token Service used for verifying email addresses',
 
-  implements: [
-    'net.nanopay.auth.token.TokenService'
-  ],
-
   javaImports: [
     'foam.dao.DAO',
-    'foam.dao.ListSink',
-    'foam.dao.Sink',
-    'foam.mlang.MLang',
-    'net.nanopay.auth.token.Token',
-    'java.util.Calendar',
-    'java.util.List',
-    'java.util.UUID'
+    'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.EmailService',
+    'java.util.HashMap'
   ],
 
   methods: [
     {
       name: 'generateToken',
       javaCode:
-`try {
-  DAO tokenDAO = (DAO) getX().get("tokenDAO");
-  Token token = new Token();
-  token.setUserId(user.getId());
-  token.setExpiry(generateExpiryDate());
-  token.setData(UUID.randomUUID().toString());
-  return ((Token) tokenDAO.put(token)).getData();
-} catch (Throwable t) {
-  t.printStackTrace();
+`String token = super.generateToken(user);
+if ( token == null ) {
   return null;
-}`
+}
+
+EmailService email = (EmailService) getX().get("email");
+EmailMessage message = new EmailMessage();
+message.setFrom("info@nanopay.net");
+message.setReplyTo("noreply@nanopay.net");
+message.setTo(new String[] { user.getEmail() });
+message.setSubject("MintChip email verification");
+
+HashMap<String, Object> args = new HashMap<>();
+args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
+args.put("link", "http://localhost:8080/verifyEmail?userId=" + user.getId() + "&token=" + token);
+
+email.sendEmailFromTemplate(message, "welcome-mintchip", args);
+return token;`
     },
     {
       name: 'processToken',
       javaCode:
-`try {
-  DAO userDAO = (DAO) getX().get("userDAO");
-  DAO tokenDAO = (DAO) getX().get("tokenDAO");
-  Calendar calendar = Calendar.getInstance();
+`if ( ! super.processToken(user, token) ) {
+  return false;
+}
 
-  Sink sink = new ListSink();
-  sink = tokenDAO.where(MLang.AND(
-    MLang.EQ(Token.USER_ID, user.getId()),
-    MLang.EQ(Token.PROCESSED, false),
-    MLang.GT(Token.EXPIRY, calendar.getTime()),
-    MLang.EQ(Token.DATA, token)
-  )).limit(1).select(sink);
-
-  List data = ((ListSink) sink).getData();
-  if (data == null || data.size() == 0) {
-    // token not found
-    throw new Exception("Token not found");
-  }
-
-  // set token processed to true
-  Token result = (Token) data.get(0);
-  result.setProcessed(true);
-  tokenDAO.put(result);
-
+try {
   // set user email verified to true
+  DAO userDAO = (DAO) getX().get("userDAO");
   user.setEmailVerified(true);
   userDAO.put(user);
-
   return true;
 } catch (Throwable t) {
   t.printStackTrace();
   return false;
 }`
-    },
-    {
-      name: 'generateExpiryDate',
-      javaReturns: 'java.util.Date',
-      javaCode:
-`java.util.Calendar calendar = java.util.Calendar.getInstance();
-calendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
-return calendar.getTime();`
     }
   ]
 });

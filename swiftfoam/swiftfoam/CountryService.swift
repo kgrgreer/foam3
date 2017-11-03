@@ -23,7 +23,7 @@ public class CountryService: Service {
   private var countries: [Country]?
 
   init() {
-    super.init(withURL: ServiceURL.Country)
+    super.init(withURL: ServiceURLs.ServiceURL.Country)
   }
 
   public func getAllCountries(callback: @escaping (Any?) -> Void) {

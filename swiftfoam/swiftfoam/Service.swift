@@ -28,16 +28,20 @@ public class Service {
     }
   }
 
-  init(withURL url: ServiceURL) {
+  init(withURL url: ServiceURLs.ServiceURL, withSession: Bool = false) {
     // Need to touch this so it's created before any async business happens.
     // TODO(mcarcaso): make property initializers thread safe.
     _ = (boxContext.registry as? BoxRegistryBox)?.registry_
 
     let httpBox = X.create(HTTPBox.self)!
     httpBox.url = url.path()
-    
-    dao = X.create(ClientDAO.self)!
-    dao.delegate = httpBox
+
+    guard withSession else {
+      dao = X.create(ClientDAO.self, args: ["delegate": httpBox])!
+      return
+    }
+
+    dao = X.create(ClientDAO.self, args: ["delegate" : X.create(SessionClientBox.self, args: ["delegate": httpBox])!])!
   }
 }
 
