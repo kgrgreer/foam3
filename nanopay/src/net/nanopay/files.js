@@ -54,6 +54,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/Fee' },
+  { name: 'net/nanopay/tx/model/FeeInterface' },
+  { name: 'net/nanopay/tx/model/FeeType' },
+  { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/model/Broker' },
@@ -63,7 +66,6 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // cico
-  { name: 'net/nanopay/cico/model/BaseServiceProvider' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
