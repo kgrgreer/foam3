@@ -322,7 +322,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .callIf(this.type == 'regular' && !invoice, function() {
+            .callIf(this.type == 'regular' && !this.invoice, function() {
               this.start().addClass('label').add('Enter Amount:').end()
               .start(self.FROM_AMOUNT, { onKey: true, mode: self.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).addClass('from-amount').end()
             })          
