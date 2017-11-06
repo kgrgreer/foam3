@@ -18,7 +18,6 @@ foam.CLASS({
 
       foam.json.parse([
         {                         id: 'sign-in',       label: 'Sign in',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.auth.ui.SignInView' } } },
-        {                         id: 'experiment',    label: 'experiment',         handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.settings.business.experiment' } } },
         {                         id: 'subscription',  label: 'Subscription',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.SubscriptionView' } } },
         {                         id: 'dashboard',     label: 'Dashboard',          handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.invoice.ui.InvoiceDashboardView' } } },
         {                         id: 'banks',         label: 'Banks',              handler : { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.cico.ui.CicoView' } } },
