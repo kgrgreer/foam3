@@ -66,33 +66,11 @@ foam.CLASS({
           background: white;
           opacity: 1;
         }
-        ^ .firstContainer {
-          width: 992px;
-          height: 322px;
-          border-radius: 2px;
-          background-color: white;
-        }
-        ^ .secondContainer {
-          width: 992px;
-          height: 200px;
-          border-radius: 2px;
-          background-color: white;
-          margin-top: 20px;
-        }
-        ^ .thirdContainer {
+        ^ .Container {
           width: 992px;
           height: 80px;
           border-radius: 2px;
           background-color: white;
-          margin-top: 20px;
-        }
-        ^ .fourthContainer {
-          width: 992px;
-          height: 80px;
-          border-radius: 2px;
-          background-color: white;
-          margin-top: 20px;
-          margin-bottom: 20px;
         }
         ^ .boxTitle {
           opacity: 0.6;
@@ -112,7 +90,6 @@ foam.CLASS({
           height: 80px;
         }
         ^ .profileImgDiv {
-          margin-top: 20px;
           margin-bottom: 20px;
           margin-left: 20px;
           line-height: 80px;
@@ -197,7 +174,25 @@ foam.CLASS({
           cursor: pointer;
           opacity: 1;
         }
-        ^ .close-BTN {
+        ^ .expand-BTN{
+          width: 135px;
+          height: 40px;
+          border-radous: 2px;
+          background-color: #59a5d5;
+          border-radius: 2px;
+          font-family: Roboto;
+          font-size: 14px;
+          line-height: 2.86;
+          letter-spacing: 0.2px;
+          text-align: center;
+          color: #ffffff;
+          cursor: pointer;
+          display: inline-block;
+          margin-right: 20px;
+          margin-top: 20px;
+          float: right;
+        }
+        ^ .close-BTN{
           width: 135px;
           height: 40px;
           border-radius: 2px;
@@ -215,6 +210,38 @@ foam.CLASS({
           margin-top: 20px;
           float: right;
         }
+        ^ .expandFirstFalse-Container{
+          width: 992px;
+          height: 272px;
+          border-radius: 2px;
+          background-color: #ffffff;
+          margin-bottom: 20px;
+          overflow: hidden;
+          transition: height 1s;
+        }
+        ^ .expandSecondFalse-Container{
+          width: 992px;
+          height: 120px;
+          border-radius: 2px;
+          background-color: #ffffff;
+          margin-bottom: 20px;
+          overflow: hidden;
+          transition: height 1s;
+        }
+        ^ .expandThirdFalse-Container{
+          width: 992px;
+          height: 120px;
+          border-radius: 2px;
+          background-color: #ffffff;
+          margin-bottom: 20px;
+          overflow: hidden;
+          transition: height 1s;
+        }
+        ^ .expandTrue{
+          visibility: hidden;
+          height: 0px;
+          transition: background .1s linear;
+
         @media only screen and (max-width: 992px) {
         ^ .spacer {
           margin-left: 0px;
@@ -226,16 +253,42 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    {
+      name: "expandBox1",
+      value: false
+    },
+    {
+      name: "expandBox2",
+      value: false
+    },
+    {
+      name: "expandBox3",
+      value: false
+    },
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
       this
         .addClass(this.myClass())
-        .start('div').addClass('businessSettingsContainer')
-          .start('div').addClass('firstContainer')
+
+        .start().addClass('businessSettingsContainer')
+          .start('div').addClass('Container')
             .start().add('Business Profile').addClass('boxTitle').end()
+            .start()
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$.map(function(e) { return e ? false : true; }))
+              .add(this.expandBox1$.map(function(e) { return e ? "Expand" : "Close"; }))
+              .enableClass('', self.expandBox1 = (self.expandBox1 ? false : true))
+              .on('click', function(){ self.expandBox1 = ( self.expandBox1 ? false : true ) })
+            .end()
+          .end()
+
+          .start().addClass('expandFirstFalse-Container').enableClass("expandTrue", self.expandBox1$)
             .add(this.EDIT_PROFILE)
-            .start().addClass('close-BTN').add("Close").end()
             .br()
             .start('div').addClass('profileImgDiv')
               .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
@@ -279,24 +332,39 @@ foam.CLASS({
               .end()
             .end()
           .end()
-          .start('div').addClass('secondContainer')
+        
+          .start('div').addClass('Container')
             .start().add('Bank Account').addClass('boxTitle').end()
-            .start().addClass('close-BTN').add("Close").end()
+            .start()
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$.map(function(e) { return e ? false : true; }))
+              .add(this.expandBox2$.map(function(e) { return e ? 'Expand' : "Close"; }))
+              .enableClass('', self.expandBox2 = (self.expandBox2 ? false : true))
+              .on('click', function(){ self.expandBox2 = ( self.expandBox2 ? false : true )})
+            .end()
+          .end()
+          .start().addClass('expandSecondFalse-Container').enableClass("expandTrue", self.expandBox2$)
             .start('div').addClass('addBankButtonDiv')
               .add(this.ADD_BANK)
             .end()
           .end()
-          .start('div').addClass('thirdContainer')
-            .start().add('Invoice Preference').addClass('boxTitle').end()
-            .start().addClass('close-BTN').add("Close").end()
-          .end()
-          .start('div').addClass('fourthContainer')
+         
+          .start('div').addClass('Container')
             .start().add('Multi-user Management').addClass('boxTitle').end()
-            .start().addClass('close-BTN').add("Close").end()
+            .start()
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox3$.map(function(e) { return e ? false : true; }))
+              .add(this.expandBox3$.map(function(e) { return e ? 'Expand' : "Close"; }))
+              .enableClass('', self.expandBox3 = (self.expandBox3 ? false : true))
+              .on('click', function(){ self.expandBox3 = ( self.expandBox3 ? false : true )})
+            .end()
           .end()
-
-          .tag({ class: "net.nanopay.settings.business.IntegrationView"})
+          .start().addClass('expandthirdFalse-Container').enableClass("expandTrue", self.expandBox3$)
+          .start().addClass()
+            .add()
+          .end()
         .end()
+
+        .tag({ class: "net.nanopay.settings.business.IntegrationView"})
+      .end()
 											
         
     }
