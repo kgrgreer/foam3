@@ -15,7 +15,7 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let httpBox = X.create(HTTPBox.self)!
-    httpBox.url = ServiceURL.Transaction.path()
+    httpBox.url = ServiceURLs.ServiceURL.Transaction.path()
 
     let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
@@ -30,12 +30,12 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let userDAOBox = X.create(HTTPBox.self)!
-    userDAOBox.url = ServiceURL.User.path()
+    userDAOBox.url = ServiceURLs.ServiceURL.User.path()
     let userDAO = X.create(ClientDAO.self)!
     userDAO.delegate = userDAOBox
 
     let accountDAOBox = X.create(HTTPBox.self)!
-    accountDAOBox.url = ServiceURL.Account.path()
+    accountDAOBox.url = ServiceURLs.ServiceURL.Account.path()
     let accountDAO = X.create(ClientDAO.self)!
     accountDAO.delegate = accountDAOBox
 
@@ -166,18 +166,33 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let t = X.create(Transaction.self)!
-    t.payerId = 1
-    t.payeeId = 2
+    t.payerId = 1000
+    t.payeeId = 1
     t.amount = 1
-    t.rate = 15
-    t.fees = 20
+    t.rate = 1
+    t.fees = 2
     t.notes = "Mike's test!"
 
-    let expectations:[XCTestExpectation] = [XCTestExpectation(description: "Put TX Expectation")]
+    var expectations:[XCTestExpectation] = []
+    expectations.append(XCTestExpectation(description: "Login Expectation"))
+    UserService.instance.login(withUsername: "kirk@mintchip.ca", andPassword: "mintchip123") {
+      response in
+      XCTAssertNotNil(UserService.instance.getLoggedInUser())
+      guard let _ = response as? User else {
+        XCTFail()
+        expectations[0].fulfill()
+        return
+      }
+      expectations[0].fulfill()
+    }
+    wait(for: expectations, timeout: 20)
+
+    expectations.append(XCTestExpectation(description: "Put TX Expectation"))
     TransactionService.instance.transferValueBy(transaction: t) {
       response in
       guard let t2 = response as? Transaction else {
         XCTFail()
+        expectations[1].fulfill()
         return
       }
       XCTAssertNotNil(t2)
@@ -188,7 +203,7 @@ class swiftfoamTests: XCTestCase {
       XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
 
-      expectations[0].fulfill()
+      expectations[1].fulfill()
     }
     wait(for: expectations, timeout: 20)
   }
