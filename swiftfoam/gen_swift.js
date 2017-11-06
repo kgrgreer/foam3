@@ -8,6 +8,7 @@ var outdir = dir + '/swiftfoam/stubs';
 var classpaths = [
   foam_root + '/src',
   nanopay_root + '/src',
+  dir + '/src',
 ].join(',')
 
 var command = [
