@@ -820,6 +820,7 @@ net/nanopay/b2b/model/Invoice$11.class
 foam/core/EmptyClassInfo.class
 foam/mlang/predicate/Predicate.class
 net/nanopay/invoice/model/Invoice$16.class
+net/nanopay/tx/AccountRegistrationService.class
 foam/box/LocalBoxRegistry$Registration$1.class
 foam/nanos/auth/twofactor/authy/AuthyService.class
 foam/dao/pg/ConnectionPool$6.class

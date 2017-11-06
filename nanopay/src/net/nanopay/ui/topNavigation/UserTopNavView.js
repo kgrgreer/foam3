@@ -97,8 +97,8 @@ foam.CLASS({
       
       this
         .addClass(this.myClass())
-        .tag({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'})
-        .tag({class: 'foam.u2.tag.Image', data: 'images/bell.png'})
+        /*.tag({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'})
+        .tag({class: 'foam.u2.tag.Image', data: 'images/bell.png'})*/
         .start('h1')
           .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
             .on('click', function() {
