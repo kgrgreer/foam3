@@ -59,6 +59,12 @@ foam.CLASS({
           border: solid 1px #59A5D5;
         }
 
+        ^ .foam-u2-TextField {
+          outline: none;
+          height: 40px;
+          padding: 10px;
+        }
+
         ^ .caret {
           position: relative;
         }

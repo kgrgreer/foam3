@@ -144,19 +144,18 @@ foam.CLASS({
                 dao: this.bankAccountDAO,
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
-                  class: 'foam.u2.DetailView',
+                  class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
+                  startAt: 1,
+                  title: 'Verification',
                   properties: [
-                    this.BankAccount.ACCOUNT_NAME,
-                    this.BankAccount.INSTITUTION_NUMBER,
-                    this.BankAccount.TRANSIT_NUMBER,
-                    this.BankAccount.ACCOUNT_NUMBER,
-                    this.BankAccount.STATUS
+                    this.BankAccount.ID
                   ]
                 },
               summaryView: this.BankAccountTableView.create()
             })
           .end()
     }
+    
   ],
 
   actions: [
@@ -180,7 +179,10 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.model.BankAccount' ],
+      requires: [ 
+        'net.nanopay.model.BankAccount',
+        'foam.u2.dialog.Popup'
+      ],
 
       imports: [ 'bankAccountDAO' ],
       properties: [
@@ -190,6 +192,8 @@ foam.CLASS({
 
       methods: [
         function initE() {
+          var self = this;
+
           this
             .start({
               class: 'foam.u2.view.TableView',

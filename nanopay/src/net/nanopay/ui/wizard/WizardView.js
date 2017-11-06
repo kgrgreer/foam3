@@ -27,7 +27,7 @@ foam.CLASS({
         ^{
           background-color: #edf0f5;
           width: 992px;
-          height: 590px;
+          height: 600px;
           margin: auto;
           overflow: hidden;
         }

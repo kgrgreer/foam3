@@ -33,10 +33,12 @@ foam.CLASS({
 
         ^ .property-tenthcent {
           height: 30px;
+          outline: none;
         }
 
         ^ .property-cent {
           height: 30px;
+          outline: none;
         }
 
         ^ .inputErrorLabel {

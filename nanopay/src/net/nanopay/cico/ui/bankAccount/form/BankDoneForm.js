@@ -14,7 +14,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Step', message: 'Step 4: Done!' },
-    { name: 'Done', message: 'You have successfully added this bank account! You can now use this account to cashout your device balances in the transaction screen.' }
+    { name: 'Done', message: 'You have successfully added and verified this bank account! You are now ready to use the cash in / cash out service to manage your balances!' }
   ],
 
   methods: [

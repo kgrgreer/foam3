@@ -15,7 +15,8 @@ foam.CLASS({
     'bankAccountDAO',
     'closeDialog',
     'bankAccountVerification',
-    'stack'
+    'stack',
+    'goToBankAccounts'
   ],
 
   exports: [
