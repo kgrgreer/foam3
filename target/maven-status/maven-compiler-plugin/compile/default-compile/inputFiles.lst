@@ -53,7 +53,6 @@
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/dao/EnabledAware.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/net/nanopay/cico/spi/alterna/AlternaWebAgent.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/core/Validateable.java
-/Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/net/nanopay/cico/service/BankAccountVerificationInterfaceSkeleton.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/dao/ProxySink.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/mlang/predicate/Has.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/core/ContextAgent.java
@@ -293,7 +292,6 @@
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/dao/BaseClientDAO.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/core/AbstractFObjectArrayPropertyInfo.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/core/ProxyX.java
-/Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/net/nanopay/cico/service/BankAccountVerificationInterface.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/net/nanopay/b2b/xero/XeroComplete.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/blob/SubBlob.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/dao/OrderedSink.java
@@ -400,7 +398,6 @@
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/dao/ResetSink.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/nanos/boot/Boot.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/net/nanopay/tx/model/TransactionLimitType.java
-/Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/net/nanopay/cico/service/BankAccountVerificationService.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/mlang/predicate/StartsWith.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/lib/parse/ProxyPStream.java
 /Users/blakegreen/nanopay/FOAM_NANOPAY/NANOPAY/build/foam/box/NoSuchNameException.java
