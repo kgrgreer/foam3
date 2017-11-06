@@ -291,7 +291,6 @@ foam.CLASS({
           margin-bottom: 20px;
           overflow: hidden;
           transition: height 1s;
-          -webkit
         }
         ^ .expandSecondFalse-Container{
           width: 960px;

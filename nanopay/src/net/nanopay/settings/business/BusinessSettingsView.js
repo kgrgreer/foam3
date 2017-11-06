@@ -160,13 +160,13 @@ foam.CLASS({
           width: 952px;
           height: auto;
           overflow: hidden;
-          transition: max-height 1s ease-out;
-          max-height: 800px;
+          transition: max-height 1.2s ease;
+          max-height: 600px;
         }
        ^ .expandTrue{
           visibility: hidden;
           max-height: 0;
-          transition: height .1s ease-out;
+          transition: height .1s;
         }
       */}
     })
