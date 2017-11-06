@@ -1,11 +1,11 @@
 foam.CLASS({
-	package: 'net.nanopay.settings.business',
-	name: 'IntegrationView',
-	extends: 'foam.u2.View',
+  package: 'net.nanopay.settings.business',
+  name: 'IntegrationView',
+  extends: 'foam.u2.View',
 
-	imports: [ 'stack' ],
+  imports: [ 'stack' ],
 
-	documentation: 'Accounting Integration Management',
+  documentation: 'Accounting Integration Management',
 
 	axioms: [
 		foam.u2.CSS.create({
@@ -83,41 +83,41 @@ foam.CLASS({
 					margin-right: 0;
 				}
 
-				^ .centerDiv{
-					margin: auto;
-					text-align: center;
-				}
-				^ .intergration-Input{
-					width: 225px;
-					height: 30px;
-					border: solid 1px rgba(164, 179, 184, 0.5);
-					display: inline-block;
-					margin-right: 20px;
-				}
-				^ .submit-BTN{
-					width: 110px;
-					height: 30px;
-					border-radius: 2px;
-					border: solid 1px #59a5d5;
-					box-sizing: border-box;
-					font-size: 14px;
-					line-height: 2.14;
-					letter-spacing: 0.2px;
-					text-align: center;
-					color: #59a5d5;
-					display: inline-block;
-					cursor: pointer;
-				}
-				^ .submit-BTN:hover{
-					background-color: #59a5d5;
-					color: white;
-				}
-				^ .inputLine{
-					margin-top: 20px;
-				}        
-			*/}
-		})
-	],
+        ^ .centerDiv{
+          margin: auto;
+          text-align: center;
+        }
+        ^ .intergration-Input{
+          width: 225px;
+          height: 30px;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          display: inline-block;
+          margin-right: 20px;
+        }
+        ^ .submit-BTN{
+          width: 110px;
+          height: 30px;
+          border-radius: 2px;
+          border: solid 1px #59a5d5;
+          box-sizing: border-box;
+          font-size: 14px;
+          line-height: 2.14;
+          letter-spacing: 0.2px;
+          text-align: center;
+          color: #59a5d5;
+          display: inline-block;
+          cursor: pointer;
+        }
+        ^ .submit-BTN:hover{
+          background-color: #59a5d5;
+          color: white;
+        }
+        ^ .inputLine{
+          margin-top: 20px;
+        }        
+      */}
+    })
+  ],
   
 	methods: [
 		function initE() {

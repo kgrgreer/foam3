@@ -203,7 +203,7 @@ foam.CLASS({
           .start().addClass('Container')
             .start().add('Business Profile').addClass('boxTitle').end()
             .start()
-              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$.map(function(e) { return e ? false : true; }))
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$, true)
               .add(this.expandBox1$.map(function(e) { return e ? "Expand" : "Close"; }))
               .enableClass('', self.expandBox1 = (self.expandBox1 ? false : true))
               .on('click', function(){ self.expandBox1 = ( self.expandBox1 ? false : true ) })
@@ -259,7 +259,7 @@ foam.CLASS({
         .start().addClass('Container')
           .start().add('Bank Account').addClass('boxTitle').end()
           .start()
-            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$.map(function(e) { return e ? false : true; }))
+            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$, true)
             .add(this.expandBox2$.map(function(e) { return e ? 'Expand' : "Close"; }))
             .enableClass('', self.expandBox2 = (self.expandBox2 ? false : true))
             .on('click', function(){ self.expandBox2 = ( self.expandBox2 ? false : true )})
@@ -274,7 +274,7 @@ foam.CLASS({
         .start().addClass('Container')
           .start().add('Multi-user Management').addClass('boxTitle').end()
           .start()
-            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox3$.map(function(e) { return e ? false : true; }))
+            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox3$, true)
             .add(this.expandBox3$.map(function(e) { return e ? 'Expand' : "Close"; }))
             .enableClass('', self.expandBox3 = (self.expandBox3 ? false : true))
             .on('click', function(){ self.expandBox3 = ( self.expandBox3 ? false : true )})
@@ -292,7 +292,7 @@ foam.CLASS({
         .start().addClass('Container')
         .start().add('Integration Management').addClass('boxTitle').end()
         .start()
-          .addClass('expand-BTN').enableClass('close-BTN', this.expandBox4$.map(function(e) { return e ? false : true; }))
+          .addClass('expand-BTN').enableClass('close-BTN', this.expandBox4$, true)
           .add(this.expandBox4$.map(function(e) { return e ? 'Expand' : "Close"; }))
           .enableClass('', self.expandBox4 = (self.expandBox4 ? false : true))
           .on('click', function(){ self.expandBox4 = ( self.expandBox4 ? false : true )})
@@ -302,12 +302,8 @@ foam.CLASS({
             .tag({ class: "net.nanopay.settings.business.IntegrationView"})
           .end()
         .end()
-      .end()
-
-       
-      .end()
-											
-        
+      .end()      
+    .end()										       
     }
   ]
 });

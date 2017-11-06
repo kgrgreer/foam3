@@ -11,7 +11,7 @@ foam.CLASS({
 
   imports: [ 
     'stack',
-    'webAuth',
+    'auth',
     'loginSuccess'
   ],
 
@@ -119,7 +119,7 @@ foam.CLASS({
       code: function(X){
         var self = this;
         
-        this.webAuth.login(this.email, this.password).then(function(user){
+        this.auth.loginByEmail(this.email, this.password).then(function(user){
           self.loginSuccess = user ? true : false;
         }).catch(function(a){
           self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
