@@ -251,8 +251,9 @@ foam.CLASS({
             .start('div').addClass('topRow')
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).show(this.type == 'foreign')
-                .addClass('interacImage')
+              .start().callIf(this.type == 'foreign', function(){
+                this.tag({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).addClass('interacImage')
+              })
               .end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
