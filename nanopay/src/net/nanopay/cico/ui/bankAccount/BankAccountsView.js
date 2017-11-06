@@ -180,13 +180,19 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [ 
-        'net.nanopay.model.BankAccount',
-        'foam.u2.dialog.Popup'
+        'net.nanopay.model.BankAccount'
       ],
 
       imports: [ 'bankAccountDAO' ],
+
       properties: [
-        'selection',
+        {
+          name: 'selection',
+          preSet: function(oldValue, newValue) {
+            if ( newValue && newValue.status == 'Verified' ) return oldValue;
+            return newValue;
+          }
+        },
         { name: 'data', factory: function() { return this.bankAccountDAO; } }
       ],
 

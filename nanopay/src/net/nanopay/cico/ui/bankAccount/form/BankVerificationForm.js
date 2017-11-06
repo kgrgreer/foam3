@@ -14,7 +14,8 @@ foam.CLASS({
     'errors',
     'goBack',
     'goNext',
-    'verifyAmount'
+    'verifyAmount',
+    'unverifiedBankId'
   ],
 
   axioms: [
@@ -70,7 +71,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',           message: 'Step 2: Please verify your bank account.' },
-    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the account you have provided. In 2-3 business days, your account should display the amount.' },
+    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the account you have provided. The random deposit amount will appear in your account 2-3 business days from the account creation date' },
     { name: 'Instructions2',  message: 'Please input the correct amount below. If the amount is correct your account will be verified.' }
   ],
 
@@ -124,6 +125,7 @@ foam.CLASS({
     },
 
     function initE() {
+      console.log(this.unverifiedBankId);
       this.SUPER();
       this
         .addClass(this.myClass())
