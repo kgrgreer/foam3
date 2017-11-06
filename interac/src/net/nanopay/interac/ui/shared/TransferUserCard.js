@@ -165,7 +165,7 @@ foam.CLASS({
     {
       name: 'userUpdate',
       code: function() {
-        var self = this;      
+        var self = this;
         if ( ! this.user ) return;
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
         if ( this.invoiceMode ) {
