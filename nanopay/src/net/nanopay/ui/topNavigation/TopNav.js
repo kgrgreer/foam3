@@ -39,6 +39,13 @@ foam.CLASS({
           padding-bottom: 5px;
           text-shadow: 0 0 0px white, 0 0 0px white;
         }
+
+        ^ .menuBar{
+          width: 700px;
+          overflow: auto;
+          white-space: nowrap;
+          margin-left: 25px;
+        }          
       */}
     })
   ],
