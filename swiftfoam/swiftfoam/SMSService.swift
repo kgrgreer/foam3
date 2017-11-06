@@ -10,6 +10,6 @@ public class SMSService: TokenGenService {
   public static let instance: SMSService = SMSService()
 
   init() {
-    super.init(withURL: ServiceURLs.ServiceURL.SMS)
+    super.init(withURL: ServiceURLs.ServiceURL.SMS, withSession: true)
   }
 }

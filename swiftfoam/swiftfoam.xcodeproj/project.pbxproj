@@ -167,6 +167,7 @@
 		10FD182D1FAD120C007DB07D /* foam_box_Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD179B1FAD120B007DB07D /* foam_box_Box.swift */; };
 		10FD182E1FAD120C007DB07D /* foam_mlang_Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD179C1FAD120B007DB07D /* foam_mlang_Constant.swift */; };
 		10FD182F1FAD120C007DB07D /* foam_u2_Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD179D1FAD120B007DB07D /* foam_u2_Visibility.swift */; };
+		10FD18331FAFB8B0007DB07D /* TransactionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD18321FAFB8B0007DB07D /* TransactionRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -343,6 +344,7 @@
 		10FD179B1FAD120B007DB07D /* foam_box_Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_box_Box.swift; sourceTree = "<group>"; };
 		10FD179C1FAD120B007DB07D /* foam_mlang_Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_mlang_Constant.swift; sourceTree = "<group>"; };
 		10FD179D1FAD120B007DB07D /* foam_u2_Visibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_u2_Visibility.swift; sourceTree = "<group>"; };
+		10FD18321FAFB8B0007DB07D /* TransactionRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -427,6 +429,7 @@
 				10FD178D1FAD1208007DB07D /* foam_box_HTTPBox.swift */,
 				10FD175E1FAD11FE007DB07D /* foam_box_HTTPReplyBox.swift */,
 				10FD17291FAD11F3007DB07D /* foam_box_InvalidMessageException.swift */,
+				10FD18321FAFB8B0007DB07D /* TransactionRow.swift */,
 				10FD175A1FAD11FD007DB07D /* foam_box_LocalBoxRegistry.swift */,
 				10FD17751FAD1203007DB07D /* foam_box_LoggedLookupContext.swift */,
 				10FD17811FAD1205007DB07D /* foam_box_LookupBox.swift */,
@@ -697,6 +700,7 @@
 				10FD17E21FAD120C007DB07D /* foam_dao_FnSink.swift in Sources */,
 				10FD18281FAD120C007DB07D /* foam_mlang_F.swift in Sources */,
 				10FD18071FAD120C007DB07D /* foam_box_LoggedLookupContext.swift in Sources */,
+				10FD18331FAFB8B0007DB07D /* TransactionRow.swift in Sources */,
 				10FD182D1FAD120C007DB07D /* foam_box_Box.swift in Sources */,
 				10FD182A1FAD120C007DB07D /* foam_nanos_auth_EnabledAware.swift in Sources */,
 				10FD18121FAD120C007DB07D /* foam_swift_ui_DAOTableViewSource.swift in Sources */,
