@@ -5,6 +5,7 @@ var classes = [
   'TransactionRow',
   'TransactionRowIBView',
   'foam.swift.ui.FOAMUILabel',
+  'foam.swift.ui.DAOTableViewSource',
 
   'foam.blob.Blob',
   'foam.box.Box',
