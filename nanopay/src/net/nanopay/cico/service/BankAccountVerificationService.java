@@ -22,32 +22,34 @@ public class BankAccountVerificationService
   {
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
-    if ( bankAccountId <= 0 ) {
-      throw new RuntimeException("Invalid Bank Account Id");
+    try {
+      if ( bankAccountId <= 0 ) {
+        throw new RuntimeException("Invalid Bank Account Id");
+      }
+
+      if ( randomDepositAmount <= 0 ) {
+        throw new RuntimeException("Invalid amount");
+      }
+
+      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+
+      if ( bankAccount.getStatus() == "Verified" ) {
+        return true;
+      }
+
+      boolean isVerified = false;
+
+      if ( bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
+        bankAccount.setStatus("Verified");
+        isVerified = true;
+
+        bankAccountDAO_.put(bankAccount);
+      }
+
+      return isVerified;
+    } finally {
+      pm.log(x);
     }
-
-    if ( randomDepositAmount <= 0 ) {
-      throw new RuntimeException("Invalid amount");
-    }
-
-    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
-
-    if ( bankAccount.getStatus() == "Verified" ) {
-      return true;
-    }
-
-    boolean isVerified = false;
-
-    if ( bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
-      bankAccount.setStatus("Verified");
-      isVerified = true;
-
-      bankAccountDAO_.put(bankAccount);
-    }
-
-    pm.log(getX());
-
-    return isVerified;
   }
 
   @Override
