@@ -15,8 +15,7 @@ foam.CLASS({
     'bankAccountDAO',
     'closeDialog',
     'bankAccountVerification',
-    'stack',
-    'goToBankAccounts'
+    'stack'
   ],
 
   exports: [
@@ -52,8 +51,10 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function() { return false; },
-      code: function() {}
+      isAvailable: function() { return true; },
+      code: function(X) {
+        X.closeDialog();
+      }
     },
     {
       name: 'goNext',
