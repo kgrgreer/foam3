@@ -90,7 +90,13 @@ foam.CLASS({
       this.accountDAO.select().then(function(a) {
         self.account.copyFrom(a.array[0]);
       });
-
+      window.onpopstate = function(event) {
+        if (event.state != null){
+         self.menuDAO.find(event.state.id).then(function(menu){
+           menu.launch(this,null);
+        })
+        }
+      };
       net.nanopay.TempMenu.create(null, this);
     },
 
