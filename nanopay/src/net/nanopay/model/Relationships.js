@@ -7,13 +7,6 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'net.nanopay.model.Account',
-  forwardName: 'accounts',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
   inverseName: 'owner'
@@ -23,13 +16,6 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'net.nanopay.tx.model.Fee',
-  forwardName: 'fees',
   inverseName: 'owner'
 });
 
@@ -67,11 +53,6 @@ foam.CLASS({
       documentation: 'Email verified flag'
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.model.Broker',
-      name: 'brokerId'
-    },
-    {
       class: 'FObjectArray',
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit'
@@ -97,13 +78,6 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.cico.model.ServiceProvider',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.cico.model.ServiceProvider',
-  targetModel: 'net.nanopay.tx.model.Fee',
-  forwardName: 'fees',
   inverseName: 'owner'
 });
 

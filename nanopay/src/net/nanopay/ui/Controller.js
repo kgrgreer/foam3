@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
@@ -11,7 +11,7 @@ foam.CLASS({
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling'        
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   requires: [
@@ -35,23 +35,19 @@ foam.CLASS({
     'sessionSuccess'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        .stack-wrapper{
-          min-height: calc(80% - 60px);
-          margin-bottom: -10px;
-        }
-        .stack-wrapper:after{
-          content: "";
-          display: block;
-        }
-        .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView{
-          height: 10px;
-        }
-      */}
-    })
-  ],
+  css: `
+    .stack-wrapper{
+      min-height: calc(80% - 60px);
+      margin-bottom: -10px;
+    }
+    .stack-wrapper:after{
+      content: "";
+      display: block;
+    }
+    .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView{
+      height: 10px;
+    }
+  `,
 
   properties: [
     {

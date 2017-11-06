@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   imports: [
+    'showAbout',
     'toolbarIcon',
     'toolbarTitle'
   ],
@@ -48,8 +49,13 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.toolbarTitle = 'About MintChip';
-      this.toolbarIcon = 'menu';
+      this.showAbout = false;
+      this.toolbarTitle = 'Back';
+      this.toolbarIcon = 'arrow_back';
+
+      this.onDetach(function () {
+        self.showAbout = true;
+      });
 
       this
         .addClass(this.myClass())

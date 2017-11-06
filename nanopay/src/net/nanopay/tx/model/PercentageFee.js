@@ -5,12 +5,39 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Double',
+      class: 'Float',
       name: 'percentage'
     }
   ],
 
   methods: [
-    function calculateAmount(transactionAmount) { return transactionAmount * this.percentage; }
+    {
+      name: 'getFee',
+      args: [
+        {
+          name: 'transactionAmount',
+          javaType: 'long'
+        }
+      ],
+      javaReturns: 'long',
+      javaCode: ' return ((Double) (this.getPercentage()/100.0 * transactionAmount)).longValue(); ',
+      code: function() {
+        return this.percentage/100 * transactionAmount;
+      }
+    },
+    {
+      name: 'getTotalAmount',
+      args: [
+        {
+          name: 'transactionAmount',
+          javaType: 'long'
+        }
+      ],
+      javaReturns: 'long',
+      javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
+      code: function() {
+        return getFee(transactionAmount) + transactionAmount;
+      }
+    }
   ]
 });
