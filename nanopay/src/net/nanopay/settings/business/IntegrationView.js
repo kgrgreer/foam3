@@ -24,8 +24,6 @@ foam.CLASS({
 					min-height: 80px;
 					border-radius: 2px;
 					background-color: white;
-					padding: 20px;
-					box-sizing: border-box;
 				}
 				^ .boxTitle {
 					opacity: 0.6;
@@ -129,8 +127,6 @@ foam.CLASS({
 				.addClass(this.myClass())
 				.start('div').addClass('businessSettingsContainer')
 					.start('div').addClass('boxContainer')
-						.start().add('Integration Management').addClass('boxTitle').end()
-						.start().addClass('close-BTN').add("Close").end()
 						.start().addClass('labelContent').add("Connct to your accounting software and make your payment process seamlessly.").end()
 						.start().addClass('integrationImgDiv')
 							.start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
