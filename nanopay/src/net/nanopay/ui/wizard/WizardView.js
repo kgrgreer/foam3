@@ -26,6 +26,8 @@ foam.CLASS({
       code: function CSS() {/*
         ^{
           background-color: #edf0f5;
+          position: relative;
+          bottom: 45px;
           width: 992px;
           height: 600px;
           margin: auto;
