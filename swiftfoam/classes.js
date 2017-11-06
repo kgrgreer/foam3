@@ -2,6 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../nanopay/src/';
 require(__dirname + '/../nanopay/src/net/nanopay/files.js');
 
 var classes = [
+  'MintChipClient',
+  'MintChipSession',
   'TransactionRow',
   'TransactionRowIBView',
   'foam.swift.ui.FOAMUILabel',
@@ -19,6 +21,7 @@ var classes = [
   'foam.box.RemoteException',
   'foam.box.ReplyBox',
   'foam.box.SessionClientBox',
+  'foam.box.swift.FileBox',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
   'foam.mlang.Constant',
