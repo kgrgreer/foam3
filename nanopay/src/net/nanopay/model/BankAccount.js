@@ -70,7 +70,9 @@ foam.CLASS({
         var randomAmountInCents = 1 + Math.floor(Math.random() * 99);
 
         return randomAmountInCents;
-      }
+      },
+      hidden: true,
+      transient: true
     }
   ],
 
