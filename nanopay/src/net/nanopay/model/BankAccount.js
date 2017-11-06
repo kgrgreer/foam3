@@ -67,11 +67,7 @@ foam.CLASS({
       class: 'Int',
       name: 'randomDepositAmount',
       factory: function() {
-        var randomAmountInCents = Math.floor(Math.random() * 100);
-
-        if (!randomAmountInCents) {
-          randomAmountInCents++;
-        }
+        var randomAmountInCents = 1 + Math.floor(Math.random() * 99);
 
         return randomAmountInCents;
       }
