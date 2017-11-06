@@ -48,7 +48,7 @@ public class BankAccountVerificationService
 
       return isVerified;
     } finally {
-      pm.log(x);
+      pm.log(getX());
     }
   }
 
