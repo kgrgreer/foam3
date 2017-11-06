@@ -34,11 +34,13 @@ foam.CLASS({
         ^ .property-tenthcent {
           height: 30px;
           outline: none;
+          padding-left: 5px;
         }
 
         ^ .property-cent {
           height: 30px;
           outline: none;
+          padding-left: 5px;
         }
 
         ^ .inputErrorLabel {
@@ -68,8 +70,8 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',           message: 'Step 2: Please verify your bank account.' },
-    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the acccount you have provided. In 2-3 business days, your account should display the amount.' },
-    { name: 'Instructions2',  message: 'Please input the right amount below. Once you have input the right amount, your account will be verified.' }
+    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the account you have provided. In 2-3 business days, your account should display the amount.' },
+    { name: 'Instructions2',  message: 'Please input the correct amount below. If the amount is correct your account will be verified.' }
   ],
 
   properties: [
