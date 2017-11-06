@@ -79,6 +79,28 @@ foam.CLASS({
           background: transparent;
           background-color: transparent;
         }
+        ^ .net-nanopay-ui-ActionView-okButton {
+          font-family: Roboto;
+          width: 136px;
+          height: 40px;
+          position: static;
+          border-radius: 2px;
+          background: #59a5d5;
+          border: solid 1px #59a5d5;
+          display: inline-block;
+          color: white;
+          text-align: center;
+          cursor: pointer;
+          font-size: 14px;
+          margin: 0;
+          outline: none;
+          box-shadow: none;
+          font-weight: normal;
+        }
+        ^ .net-nanopay-ui-ActionView-okButton:hover {
+          background: #3783b3;
+          border-color: #3783b3;
+        }
         ^ .amount {
           width: 100px;
           height: 16px;
@@ -91,6 +113,11 @@ foam.CLASS({
           line-height: 16px;
           letter-spacing: 0.3px;
           color: #093649;
+        }
+        ^ .okButtonDiv {
+          width: 100%;
+          text-align: center;
+          margin-top: 40px;
         }
     */}
     })
@@ -117,6 +144,9 @@ foam.CLASS({
             .br()
             .start().add(this.CashInResultDesc).addClass('cashInResult').end()
           .end()
+          .start('div').addClass('okButtonDiv')
+            .add(this.OK_BUTTON)
+          .end()
         .end()
       .end()
     }
@@ -135,6 +165,13 @@ foam.CLASS({
     {
       name: 'closeButton',
       icon: 'images/ic-cancelwhite.svg',
+      code: function(X) {
+        X.closeDialog();
+      }
+    },
+    {
+      name: 'okButton',
+      label: 'OK',
       code: function(X) {
         X.closeDialog();
       }
