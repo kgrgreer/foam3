@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Bank account information.',
 
-  tableColumns: ['accountName', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
 
   properties: [
     {
@@ -47,7 +47,8 @@ foam.CLASS({
             'text-transform': 'capitalize'
           })
         .end();
-      }
+      },
+      value: 'Unverified'
     },
     {
       class: 'String',
@@ -61,6 +62,17 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Branch',
       name: 'branchId'
+    },
+    {
+      class: 'Int',
+      name: 'randomDepositAmount',
+      factory: function() {
+        var randomAmountInCents = 1 + Math.floor(Math.random() * 99);
+
+        return randomAmountInCents;
+      },
+      hidden: true,
+      transient: true
     }
   ],
 
