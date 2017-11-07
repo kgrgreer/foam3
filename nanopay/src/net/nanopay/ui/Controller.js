@@ -78,7 +78,6 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
@@ -90,8 +89,21 @@ foam.CLASS({
       this.accountDAO.select().then(function(a) {
         self.account.copyFrom(a.array[0]);
       });
-
+      window.onpopstate = function(event) {
+        if (location.hash != null) {
+          var hid = location.hash.substr(1);
+          self.menuDAO.find(hid).then(function(menu){          
+            menu.launch(this,null);
+         })
+        }
+      }
       net.nanopay.TempMenu.create(null, this);
+      if (location.hash != null) {
+        var hid = location.hash.substr(1);        
+        self.menuDAO.find(hid).then(function(menu){          
+          menu.launch(this,null);
+       })
+      }
     },
 
     function initE() {
