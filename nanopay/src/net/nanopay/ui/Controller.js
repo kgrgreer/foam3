@@ -91,9 +91,7 @@ foam.CLASS({
       });
       window.onpopstate = function(event) {
         if (location.hash != null) {
-          var hid= location.hash.substr(1);
-          console.log(hid);
-          
+          var hid = location.hash.substr(1);
           self.menuDAO.find(hid).then(function(menu){          
             menu.launch(this,null);
          })
@@ -101,9 +99,7 @@ foam.CLASS({
       }
       net.nanopay.TempMenu.create(null, this);
       if (location.hash != null) {
-        var hid= location.hash.substr(1);
-        console.log(hid);
-        
+        var hid = location.hash.substr(1);        
         self.menuDAO.find(hid).then(function(menu){          
           menu.launch(this,null);
        })
