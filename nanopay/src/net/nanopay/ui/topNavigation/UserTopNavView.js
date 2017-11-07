@@ -20,10 +20,13 @@ foam.CLASS({
         }
         ^ h1 {
           margin: 0;
+          padding: 15px;
           font-size: 15px;
           display: inline-block;
           font-weight: 100;
           color: white;
+          position: relative;
+          bottom: 5;
         }
         ^carrot {
           width: 0; 
@@ -33,8 +36,9 @@ foam.CLASS({
           border-top: 5px solid white;
           display: inline-block;
           position: relative;
-          top: -2;
-          left: 5;
+          right: 10;
+          bottom: 7;
+          cursor: pointer;
         }
         ^ img{
           width: 25px;
@@ -85,8 +89,8 @@ foam.CLASS({
           width: 0;
           border: 8px solid transparent;
           border-bottom-color: white;
-          -ms-transform: translate(140px, -175.5px);
-          transform: translate(140px, -175.5px);
+          -ms-transform: translate(120px, -175.5px);
+          transform: translate(120px, -175.5px);
         }
       */}
     })
@@ -107,6 +111,9 @@ foam.CLASS({
         .end()
         .start('div')
           .addClass(this.myClass('carrot'))
+            .on('click', function() {
+              this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
+            }.bind(this))
         .end();
     }
   ]
