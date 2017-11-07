@@ -30,6 +30,7 @@ foam/core/MergedListener$ListenerThread.class
 net/nanopay/cico/model/ServiceProvider.class
 foam/dao/pg/ConnectionPool.class
 foam/lib/parse/AnyChar.class
+net/nanopay/cico/service/BankAccountVerificationInterfaceSkeleton$1.class
 net/nanopay/tx/model/Transaction$10.class
 net/nanopay/invoice/model/Invoice$4.class
 net/nanopay/fx/model/ExchangeRateQuote$9.class
@@ -63,6 +64,7 @@ net/nanopay/cico/model/ServiceProvider$6.class
 net/nanopay/b2b/xero/TokenStorage$4.class
 net/nanopay/tx/model/InformationalFee$1.class
 net/nanopay/tx/model/Transaction$15.class
+net/nanopay/model/BankAccount$11.class
 net/nanopay/model/Branch.class
 net/nanopay/auth/token/Token$1.class
 net/nanopay/tx/model/Fee.class
@@ -452,6 +454,7 @@ foam/nanos/boot/NSpec$9.class
 foam/core/AbstractEnumPropertyInfo.class
 foam/lib/parse/TracingPStream.class
 foam/lib/json/IntParser.class
+net/nanopay/model/BankAccount$10.class
 foam/dao/Relationship$13.class
 foam/nanos/auth/User$23.class
 net/nanopay/fx/model/ExchangeRateQuote$7.class
@@ -566,6 +569,7 @@ foam/core/ContextAwareSupport.class
 foam/mlang/order/Desc.class
 net/nanopay/model/Broker$3.class
 foam/nanos/register/ProxyRegistrationService$1.class
+net/nanopay/cico/service/BankAccountVerificationService.class
 net/nanopay/retail/model/Device$2.class
 net/nanopay/invoice/model/Invoice$10.class
 net/nanopay/cico/model/TransactionStatus.class
@@ -898,6 +902,7 @@ foam/nanos/menu/AbstractMenu.class
 foam/core/AbstractBytePropertyInfo.class
 foam/lib/json/DateParser.class
 foam/mlang/sink/Max$1.class
+net/nanopay/cico/service/BankAccountVerificationInterface.class
 foam/nanos/menu/Menu$2.class
 foam/core/X.class
 foam/nanos/notification/email/SMTPEmailService$5.class
@@ -930,6 +935,7 @@ foam/dao/pg/ConnectionPool$9.class
 net/nanopay/tx/model/Transaction$6.class
 foam/nanos/http/NanoRouter.class
 foam/nanos/auth/Address$1.class
+net/nanopay/cico/service/BankAccountVerificationInterfaceSkeleton.class
 net/nanopay/tx/model/Transaction$11.class
 foam/dao/pg/PostgresDAO$1.class
 foam/nanos/auth/Region$4.class
