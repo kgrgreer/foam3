@@ -245,7 +245,7 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions).end()
         .start('div').addClass('row')

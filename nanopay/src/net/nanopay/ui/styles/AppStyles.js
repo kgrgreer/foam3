@@ -335,6 +335,9 @@ foam.CLASS({
         }
         .close-x:after {
           transform: rotate(-45deg);
+        }
+        .stepTopMargin {
+          margin-top: 0;
         }   
       */}
     })

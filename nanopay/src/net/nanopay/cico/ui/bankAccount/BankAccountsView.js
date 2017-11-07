@@ -79,7 +79,8 @@ foam.CLASS({
           background-color: #20B1A7;
         }
         ^ .foam-u2-dialog-Popup.popup-with-topnav {
-          margin-top: 65px;
+          margin-top: 145px;
+          height: 450px;
         }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
@@ -109,11 +110,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TitleAll',         message: 'Total Bank Accounts' },
-    { name: 'TitleVerified',    message: 'Verified Account(s)' },
-    { name: 'TitleUnverified',  message: 'Unverified Account(s)' },
-    { name: 'ActionAdd',        message: 'Add a new bank account' },
-    { name: 'MyBankAccounts',   message: 'My Bank Accounts' }
+    { name: 'TitleAll',          message: 'Total Bank Accounts' },
+    { name: 'TitleVerified',     message: 'Verified Account(s)' },
+    { name: 'TitleUnverified',   message: 'Unverified Account(s)' },
+    { name: 'ActionAdd',         message: 'Add a new bank account' },
+    { name: 'MyBankAccounts',    message: 'My Bank Accounts' },
+    { name: 'TitleVerification', message: 'Verification' }
   ],
 
   methods: [
@@ -146,9 +148,12 @@ foam.CLASS({
                 detailView: {
                   class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
                   startAt: 1,
-                  title: 'Verification',
+                  title: this.TitleVerification,
                   properties: [
                     this.BankAccount.ID
+                  ],
+                  imports: [
+                    'closeDialog'
                   ]
                 },
               summaryView: this.BankAccountTableView.create()
