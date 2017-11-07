@@ -13,6 +13,7 @@ var classes = [
   'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
+  'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -50,7 +51,8 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.auth.token.TokenService',
-  'net.nanopay.fx.ExchangeRateInterface'
+  'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.cico.service.BankAccountVerificationInterface'
 ];
 
 var proxies = [
