@@ -1,12 +1,18 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
-  name: 'FixedFee',
+  name: 'InformationalFee',
   extends: 'net.nanopay.tx.model.Fee',
 
   properties: [
     {
       class: 'Long',
-      name: 'fixedFee'
+      name: 'amount'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.FeeType',
+      name: 'type',
+      value: 'net.nanopay.tx.model.FeeType.INFORMATIONAL'
     }
   ],
 
@@ -20,9 +26,9 @@ foam.CLASS({
         }
       ],
       javaReturns: 'long',
-      javaCode: ' return this.getFixedFee(); ',
+      javaCode: ' return this.getAmount(); ',
       code: function() {
-        return this.fixedFee;
+        return this.amount;
       }
     },
     {

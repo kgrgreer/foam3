@@ -4,7 +4,6 @@
 set -e
 
 ./gen.sh
-mvn clean compile package
 # NANOPAY doesn't all build successfully at the moment
 set +e
 mvn clean install

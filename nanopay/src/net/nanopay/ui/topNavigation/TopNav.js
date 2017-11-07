@@ -26,19 +26,28 @@ foam.CLASS({
           font-weight: 100;
           color: #ffffff;
         }
-        .menuBar > div > ul > li{
-          margin-left: 25px;
+        .menuItem{
           display: inline-block;
           cursor: pointer;
           border-bottom: 4px solid transparent;
           transition: text-shadow;
         }
-
-        .menuBar > div > ul > li:hover {
+        ^ .menuItem:hover {
           border-bottom: 4px solid #1cc2b7;
           padding-bottom: 5px;
           text-shadow: 0 0 0px white, 0 0 0px white;
         }
+        ^ .selected {
+          border-bottom: 4px solid #1cc2b7;
+          padding-bottom: 5px;
+          text-shadow: 0 0 0px white, 0 0 0px white;
+        }
+        ^ .menuBar{
+          width: 700px;
+          overflow: auto;
+          white-space: nowrap;
+          margin-left: 25px;
+        }          
       */}
     })
   ],
