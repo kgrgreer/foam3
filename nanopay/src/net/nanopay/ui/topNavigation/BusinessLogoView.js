@@ -9,11 +9,11 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
-          width: 15%;
-          text-align: center;
+          width: 175px;
           display: inline-block;
+          text-align: center;
           padding-top: 3px;
-          padding-left: 50px;
+          padding-left: 25px;
         }
         ^ img {
           height: 40px;

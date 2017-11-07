@@ -9,7 +9,8 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 990px;
+          width: 100%;
+          min-width: 992px;
           margin: auto;
           position: relative;
         }
