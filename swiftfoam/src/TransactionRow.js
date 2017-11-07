@@ -25,6 +25,33 @@ return f + " " + l
     },
     {
       class: 'String',
+      name: 'date',
+      swiftView: 'foam.swift.ui.FOAMUILabel',
+      swiftExpressionArgs: ['transaction$date'],
+      swiftExpression: `
+var d: String!
+
+guard let rawD = (transaction$date as? String) else {
+  return "Date failed to convert"
+}
+
+let baseFormatter = DateFormatter()
+baseFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+let convFormatter = DateFormatter()
+convFormatter.dateFormat = "dd MMM yyyy, hh:mma"
+
+let baseDate = baseFormatter.date(from: rawD)!
+
+let seconds = TimeZone.autoupdatingCurrent.secondsFromGMT(for: baseDate);
+let localTime = Date(timeInterval: TimeInterval(seconds), since: baseDate);
+
+d = convFormatter.string(from: localTime)
+
+return d
+      `,
+    },
+    {
+      class: 'String',
       name: 'amount',
       swiftView: 'foam.swift.ui.FOAMUILabel',
       swiftExpressionArgs: ['transaction$amount'],
