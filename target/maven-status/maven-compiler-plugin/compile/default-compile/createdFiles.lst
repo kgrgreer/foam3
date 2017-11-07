@@ -460,6 +460,7 @@ foam/nanos/auth/User$23.class
 net/nanopay/fx/model/ExchangeRateQuote$7.class
 net/nanopay/model/Broker.class
 foam/mlang/MLang.class
+net/nanopay/retail/model/DeviceType$4.class
 foam/core/ContextAgent.class
 net/nanopay/tx/model/Transaction$20.class
 foam/nanos/boot/NSpec$3.class
@@ -473,6 +474,7 @@ foam/nanos/notification/email/EmailMessage$4.class
 net/nanopay/b2b/model/Business$9.class
 foam/dao/history/PropertyUpdate.class
 foam/mlang/sink/Min.class
+foam/u2/Visibility$4.class
 net/nanopay/invoice/model/Invoice$3.class
 net/nanopay/b2b/xero/TokenStorage$3.class
 foam/nanos/auth/Phone$1.class
@@ -496,6 +498,7 @@ foam/nanos/auth/Group$2.class
 net/nanopay/b2b/xero/AbstractXeroService$12.class
 net/nanopay/b2b/model/PendingPayment$1.class
 foam/mlang/predicate/Binary$1.class
+foam/nanos/script/Language$4.class
 net/nanopay/b2b/model/PendingPayment$4.class
 net/nanopay/cico/model/ServiceProvider$2.class
 foam/nanos/boot/NSpec$8.class
@@ -516,6 +519,7 @@ foam/nanos/notification/email/EmailMessage$7.class
 foam/nanos/boot/NSpec$6.class
 net/nanopay/b2b/model/PendingPayment$2.class
 foam/box/Message$2.class
+foam/lib/json/OutputterMode$4.class
 foam/mlang/predicate/Binary$2.class
 net/nanopay/tx/TransactionLimitCheckDAO.class
 foam/box/SessionClientBox$2.class
@@ -590,6 +594,7 @@ foam/nanos/auth/Address$5.class
 foam/dao/pg/ConnectionPool$5.class
 foam/nanos/menu/Menu.class
 net/nanopay/fx/ExchangeRateService$1.class
+net/nanopay/tx/model/FeeType$4.class
 foam/nanos/http/ClassesWebAgent.class
 foam/dao/DAOSkeleton$1.class
 foam/nanos/script/Language$3.class
@@ -615,6 +620,7 @@ foam/util/Email.class
 foam/nanos/auth/User$12.class
 net/nanopay/b2b/model/Document.class
 net/nanopay/tx/model/FixedFee$1.class
+net/nanopay/tx/model/TransactionLimitType$4.class
 foam/blob/InputStreamBlob.class
 foam/dao/RemoveSink.class
 foam/mlang/predicate/ArrayBinary.class
@@ -658,8 +664,8 @@ foam/nanos/auth/User$7.class
 foam/dao/Relationship$9.class
 foam/nanos/auth/Region$3.class
 foam/nanos/logger/StdoutLogger$CustomFormatter.class
+net/nanopay/cico/model/TransactionStatus$4.class
 foam/nanos/menu/Menu$3.class
-foam/nanos/auth/UserAndGroupAuthService$1.class
 net/nanopay/b2b/xero/AbstractXeroService$9.class
 foam/core/SimpleFacetManager.class
 net/nanopay/invoice/model/RecurringInvoice$15.class
@@ -897,6 +903,7 @@ foam/mlang/sink/GroupBy.class
 foam/box/RegisterSelfMessage.class
 net/nanopay/tx/model/TransactionLimitType.class
 foam/dao/AbstractDAO.class
+net/nanopay/tx/model/TransactionLimitTimeFrame$4.class
 foam/dao/Relationship.class
 foam/nanos/menu/AbstractMenu.class
 foam/core/AbstractBytePropertyInfo.class
@@ -975,6 +982,7 @@ foam/dao/PMDAO.class
 net/nanopay/model/Identification$5.class
 foam/lib/json/BooleanParser.class
 foam/nanos/cron/Cron$1.class
+net/nanopay/retail/model/DeviceStatus$4.class
 foam/dao/SkipDAO.class
 foam/mlang/sink/AbstractUnarySink.class
 net/nanopay/cico/model/TransactionType$1.class
@@ -1051,6 +1059,7 @@ foam/box/RPCReturnMessage.class
 net/nanopay/retail/model/DeviceStatus$1.class
 foam/core/AbstractLongPropertyInfo.class
 foam/nanos/http/WebAgentServlet.class
+net/nanopay/cico/model/TransactionType$4.class
 net/nanopay/fx/model/ExchangeRate$5.class
 net/nanopay/tx/model/Transaction$18.class
 foam/blob/Buffer$1.class

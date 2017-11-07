@@ -47,9 +47,8 @@ foam.CLASS({
           width: 25px;
           display: inline-block;
           position: relative;
-          top: 7px;
+          top: 2px;
           right: 10px;
-          padding-right: 15px;
           cursor: pointer;
         }
         ^user-name:hover {
@@ -101,11 +100,13 @@ foam.CLASS({
 
   methods: [
     function initE() {
+
+      var self = this;
       
       this
         .addClass(this.myClass())
         .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
-          this.window.location.assign('https://nanopay.net/contact/')
+          self.window.location.assign('https://nanopay.net/contact/')
         })
         .end()
         .start('h1')
