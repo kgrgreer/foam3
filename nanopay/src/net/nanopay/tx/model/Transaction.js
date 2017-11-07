@@ -106,7 +106,8 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'informationalFees',
-      of: 'net.nanopay.tx.model.Fee'
+      of: 'net.nanopay.tx.model.Fee',
+      swiftSupport: false
     },
     // TODO: field for tax as well? May need a more complex model for that
     {

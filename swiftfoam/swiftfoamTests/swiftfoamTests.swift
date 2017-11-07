@@ -15,7 +15,7 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let httpBox = X.create(HTTPBox.self)!
-    httpBox.url = ServiceURLs.ServiceURL.Transaction.path()
+    httpBox.url = ServiceURLs.URL.Transaction.path()
 
     let dao = X.create(ClientDAO.self)!
     dao.delegate = httpBox
@@ -30,12 +30,12 @@ class swiftfoamTests: XCTestCase {
     let X = boxContext.__subContext__
 
     let userDAOBox = X.create(HTTPBox.self)!
-    userDAOBox.url = ServiceURLs.ServiceURL.User.path()
+    userDAOBox.url = ServiceURLs.URL.User.path()
     let userDAO = X.create(ClientDAO.self)!
     userDAO.delegate = userDAOBox
 
     let accountDAOBox = X.create(HTTPBox.self)!
-    accountDAOBox.url = ServiceURLs.ServiceURL.Account.path()
+    accountDAOBox.url = ServiceURLs.URL.Account.path()
     let accountDAO = X.create(ClientDAO.self)!
     accountDAO.delegate = accountDAOBox
 

@@ -28,7 +28,7 @@ public class Service {
     }
   }
 
-  init(withURL url: ServiceURLs.ServiceURL, withSession: Bool = false) {
+  init(withURL url: ServiceURLs.URL, withSession: Bool = false) {
     // Need to touch this so it's created before any async business happens.
     // TODO(mcarcaso): make property initializers thread safe.
     _ = (boxContext.registry as? BoxRegistryBox)?.registry_

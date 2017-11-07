@@ -31,7 +31,13 @@ if let str = try? String(contentsOf: sessionPath),
 return MintChipSession_create()
       `,
     },
-
+    {
+      swiftType: 'ServiceURLs.Host',
+      name: 'httpBoxUrlRoot',
+      swiftFactory: `
+      return ServiceURLs.Host.Localhost
+      `
+    },
     {
       class: 'foam.dao.DAOProperty',
       name: 'transactionDAO',
@@ -39,7 +45,7 @@ return MintChipSession_create()
 return ClientDAO_create([
   "delegate": SessionClientBox_create([
     "delegate": HTTPBox_create([
-      "url": "http://localhost:8080/transactionDAO"
+      "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
     ])
   ])
 ])

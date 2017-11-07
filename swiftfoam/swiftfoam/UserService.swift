@@ -41,7 +41,7 @@ public class UserService: Service {
   private var loggedInUser: User?
 
   init() {
-    super.init(withURL: ServiceURLs.ServiceURL.User)
+    super.init(withURL: ServiceURLs.URL.User)
   }
 
   /*

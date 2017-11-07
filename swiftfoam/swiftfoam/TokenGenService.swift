@@ -9,7 +9,7 @@
 public class TokenGenService: Service {
   public var service: ClientTokenService!
 
-  override init(withURL: ServiceURLs.ServiceURL, withSession: Bool = false) {
+  override init(withURL: ServiceURLs.URL, withSession: Bool = false) {
     super.init(withURL: withURL)
     self.service = X.create(ClientTokenService.self)!
     self.service.delegate = dao.delegate
