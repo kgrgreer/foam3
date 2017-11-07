@@ -64,14 +64,14 @@ foam.CLASS({
     MLang.EQ(Token.DATA, token)
   )).limit(1).select(sink);
 
-  List data = ((ListSink) sink).getData();
-  if (data == null || data.size() == 0) {
+  List list = ((ListSink) sink).getData();
+  if ( list == null || list.size() == 0 ) {
     // token not found
     throw new Exception("Token not found");
   }
 
   // set token processed to true
-  Token result = (Token) data.get(0);
+  Token result = (Token) list.get(0);
   result.setProcessed(true);
   tokenDAO.put(result);
 
