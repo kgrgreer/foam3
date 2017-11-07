@@ -21,6 +21,8 @@
 		0644010F1F795BFA003E3692 /* swiftfoam.h in Headers */ = {isa = PBXBuildFile; fileRef = 064401011F795BFA003E3692 /* swiftfoam.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06B035441F9A5564008960D7 /* CountryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B035431F9A5564008960D7 /* CountryService.swift */; };
 		06B035461F9A7107008960D7 /* RegionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B035451F9A7107008960D7 /* RegionService.swift */; };
+		10FA16F01FB1DDCD00F4727E /* foam_log_LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FA16EE1FB1DDCD00F4727E /* foam_log_LogLevel.swift */; };
+		10FA16F11FB1DDCD00F4727E /* foam_box_LogBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FA16EF1FB1DDCD00F4727E /* foam_box_LogBox.swift */; };
 		10FD18D41FB105F2007DB07D /* foam_swift_parse_parser_Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD183C1FB105C0007DB07D /* foam_swift_parse_parser_Parser.swift */; };
 		10FD18D51FB105F2007DB07D /* foam_swift_parse_StringPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD183D1FB105C1007DB07D /* foam_swift_parse_StringPStream.swift */; };
 		10FD18D61FB105F2007DB07D /* foam_swift_parse_json_AnyKeyParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD183E1FB105C1007DB07D /* foam_swift_parse_json_AnyKeyParser.swift */; };
@@ -203,6 +205,8 @@
 		0644010E1F795BFA003E3692 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06B035431F9A5564008960D7 /* CountryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryService.swift; sourceTree = "<group>"; };
 		06B035451F9A7107008960D7 /* RegionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionService.swift; sourceTree = "<group>"; };
+		10FA16EE1FB1DDCD00F4727E /* foam_log_LogLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_log_LogLevel.swift; sourceTree = "<group>"; };
+		10FA16EF1FB1DDCD00F4727E /* foam_box_LogBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_box_LogBox.swift; sourceTree = "<group>"; };
 		10FD183C1FB105C0007DB07D /* foam_swift_parse_parser_Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_parse_parser_Parser.swift; sourceTree = "<group>"; };
 		10FD183D1FB105C1007DB07D /* foam_swift_parse_StringPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_parse_StringPStream.swift; sourceTree = "<group>"; };
 		10FD183E1FB105C1007DB07D /* foam_swift_parse_json_AnyKeyParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_parse_json_AnyKeyParser.swift; sourceTree = "<group>"; };
@@ -440,6 +444,7 @@
 				10FD18921FB105DD007DB07D /* foam_box_HTTPReplyBox.swift */,
 				10FD18591FB105CB007DB07D /* foam_box_InvalidMessageException.swift */,
 				10FD188E1FB105DC007DB07D /* foam_box_LocalBoxRegistry.swift */,
+				10FA16EF1FB1DDCD00F4727E /* foam_box_LogBox.swift */,
 				10FD18A91FB105E5007DB07D /* foam_box_LoggedLookupContext.swift */,
 				10FD18B71FB105E9007DB07D /* foam_box_LookupBox.swift */,
 				10FD18A51FB105E3007DB07D /* foam_box_Message.swift */,
@@ -483,6 +488,7 @@
 				10FD188B1FB105DC007DB07D /* foam_dao_Sink.swift */,
 				10FD18A01FB105E1007DB07D /* foam_dao_SkipDAO.swift */,
 				10FD18671FB105D1007DB07D /* foam_dao_SkipSink.swift */,
+				10FA16EE1FB1DDCD00F4727E /* foam_log_LogLevel.swift */,
 				10FD18AA1FB105E5007DB07D /* foam_mlang_AbstractExpr.swift */,
 				10FD18D21FB105F1007DB07D /* foam_mlang_Constant.swift */,
 				10FD189D1FB105E0007DB07D /* foam_mlang_Expr.swift */,
@@ -766,6 +772,7 @@
 				10FD18F51FB105F2007DB07D /* MintChipClient.swift in Sources */,
 				10FD18E31FB105F2007DB07D /* foam_swift_ui_DetailView.swift in Sources */,
 				10FD192A1FB105F2007DB07D /* foam_box_HTTPReplyBox.swift in Sources */,
+				10FA16F11FB1DDCD00F4727E /* foam_box_LogBox.swift in Sources */,
 				10FD19071FB105F2007DB07D /* foam_dao_ProxyDAO.swift in Sources */,
 				10FD19341FB105F2007DB07D /* foam_box_RPCReturnMessage.swift in Sources */,
 				10FD19111FB105F2007DB07D /* foam_swift_parse_json_KeyValueParser0.swift in Sources */,
@@ -817,6 +824,7 @@
 				10FD19531FB105F2007DB07D /* foam_swift_parse_json_FObjectParser_.swift in Sources */,
 				10FD19231FB105F2007DB07D /* foam_dao_Sink.swift in Sources */,
 				10FD19581FB105F2007DB07D /* foam_nanos_auth_Address.swift in Sources */,
+				10FA16F01FB1DDCD00F4727E /* foam_log_LogLevel.swift in Sources */,
 				10FD19061FB105F2007DB07D /* foam_nanos_NanoService.swift in Sources */,
 				10FD194C1FB105F2007DB07D /* foam_dao_DAO.swift in Sources */,
 				0600B4781FACE9D6002825CD /* Session.xcdatamodeld in Sources */,
