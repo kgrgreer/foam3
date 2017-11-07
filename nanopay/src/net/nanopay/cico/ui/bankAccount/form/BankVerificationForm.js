@@ -5,11 +5,16 @@ foam.CLASS({
 
   documentation: 'Page to input verification amount that was deposited into the user\'s bank account provided.',
 
+  requires: [
+    'net.nanopay.ui.NotificationMessage'
+  ],
+
   imports: [
     'viewData',
     'errors',
     'goBack',
-    'goNext'
+    'goNext',
+    'verifyAmount'
   ],
 
   axioms: [
@@ -22,6 +27,16 @@ foam.CLASS({
           line-height: 1;
           letter-spacing: 0.5px;
           color: #093649;
+          position: relative;
+          top: 6px;
+        }
+
+        ^ .property-tenthcent {
+          height: 30px;
+        }
+
+        ^ .property-cent {
+          height: 30px;
         }
 
         ^ .inputErrorLabel {
@@ -64,8 +79,8 @@ foam.CLASS({
         this.viewData.verificationAmount = newValue;
       },
       validateObj: function(amount, tenthCent, cent) {
-        if ( amount == 0.00 ) return 'Please enter an amount.';
-        if ( amount > 1.00 || amount < 0.01 ) return 'Do not put more than 1 number in a single field.';
+        amount = parseInt(Math.round(amount * 100));
+        this.verifyAmount = amount;
       }
     },
     {

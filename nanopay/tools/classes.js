@@ -9,11 +9,11 @@ var classes = [
   'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
-  'net.nanopay.cico.model.BaseServiceProvider',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
+  'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -31,6 +31,11 @@ var classes = [
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.model.Fee',
+  'net.nanopay.tx.model.FeeInterface',
+  'net.nanopay.tx.model.FeeType',
+  'net.nanopay.tx.model.InformationalFee',
+  'net.nanopay.tx.model.FixedFee',
+  'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
@@ -46,7 +51,8 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.auth.token.TokenService',
-  'net.nanopay.fx.ExchangeRateInterface'
+  'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.cico.service.BankAccountVerificationInterface'
 ];
 
 var proxies = [
