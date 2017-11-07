@@ -6,7 +6,10 @@ foam.CLASS({
 
   documentation: 'View user name and user nav settings',
 
-  imports: [ 'user' ],
+  imports: [ 
+    'user',
+    'window'
+  ],
 
   requires: [ 'foam.nanos.menu.SubMenuView', 'foam.nanos.menu.Menu' ],
 
@@ -98,7 +101,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
-          window.location.assign('https://nanopay.net/contact/')
+          this.window.location.assign('https://nanopay.net/contact/')
         })
         .end()
         .start('h1')
