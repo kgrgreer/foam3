@@ -164,9 +164,7 @@ foam.CLASS({
           max-height: 600px;
         }
        ^ .expandTrue{
-          visibility: hidden;
           max-height: 0;
-          transition: height .1s;
         }
       */}
     })
