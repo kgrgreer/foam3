@@ -71,7 +71,9 @@ return "$" + String(amount)
       swiftExpression: `
 let f = (user$firstName as? String) ?? ""
 let l = (user$lastName as? String) ?? ""
-return "\\(f.char(at: 0))\\(l.char(at: 0))"
+let fc = f.count > 0 ? String(f.char(at: 0)) : ""
+let lc = l.count > 0 ? String(l.char(at: 0)) : ""
+return "\\(fc)\\(lc)"
       `,
     },
     {
