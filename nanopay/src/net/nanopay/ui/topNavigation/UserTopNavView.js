@@ -16,12 +16,12 @@ foam.CLASS({
         ^ {
           display: inline-block;
           float: right;
-          margin: 10px 40px 0 0;
+          margin: 8px 40px 0 0;
         }
         ^ h1 {
           margin: 0;
           padding: 15px;
-          font-size: 15px;
+          font-size: 16px;
           display: inline-block;
           font-weight: 100;
           color: white;

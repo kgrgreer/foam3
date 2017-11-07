@@ -89,10 +89,6 @@ foam.CLASS({
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
         }
-        ^ .foam-u2-view-TableView-noselect {
-          width: 1px;
-          cursor: pointer;
-        }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }

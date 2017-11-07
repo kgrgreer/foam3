@@ -41,7 +41,6 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
         }
-
         ^ .net-nanopay-ui-ActionView-addDevice {
           background: none;
           outline: none;
@@ -57,7 +56,6 @@ foam.CLASS({
           font-weight: normal;
           margin-left: 45px;
         }
-
         ^ .net-nanopay-ui-ActionView-addDevice span {
           display: block;
           margin-top: 8px;
@@ -65,21 +63,23 @@ foam.CLASS({
           line-height: 1.33;
           letter-spacing: 0.2px;
         }
-
         ^ .net-nanopay-ui-ActionView-addDevice:hover {
           background: none;
           cursor: pointer;
           background-color: #20B1A7;
         }
-
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
           background-color: #edf0f5;
           opacity: 1;
         }
-
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
+        }
+        ^ .foam-u2-view-TableView-noselect {
+          width: 1px;
+          cursor: pointer;
+          text-align: right;
         }
       */}
     })
