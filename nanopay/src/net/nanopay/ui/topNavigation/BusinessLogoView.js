@@ -9,7 +9,6 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
-          width: 15%;
           text-align: center;
           display: inline-block;
           padding-top: 3px;
