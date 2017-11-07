@@ -8,7 +8,7 @@ foam.INTERFACE({
     {
       name: 'generateToken',
       returns: 'Promise',
-      javaReturns: 'String',
+      javaReturns: 'boolean',
       args: [
         {
           name: 'user',

@@ -30,7 +30,7 @@ foam.CLASS({
         ^ .deviceContentCard {
           width: 218px;
           height: 100px;
-          margin-right: 15px;
+          margin-right: 13.5px;
         }
         ^ .actionButton {
           width: 218px;

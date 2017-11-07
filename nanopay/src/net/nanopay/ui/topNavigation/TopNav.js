@@ -13,6 +13,7 @@ foam.CLASS({
         ^ {
           background: #093649;
           width: 100%;
+          min-width: 992px;
           height: 60px;
           color: white;
           padding-top: 5px;
@@ -43,10 +44,10 @@ foam.CLASS({
           text-shadow: 0 0 0px white, 0 0 0px white;
         }
         ^ .menuBar{
-          width: 700px;
+          width: 50%;
           overflow: auto;
           white-space: nowrap;
-          margin-left: 25px;
+          margin-left: 60px;
         }          
       */}
     })

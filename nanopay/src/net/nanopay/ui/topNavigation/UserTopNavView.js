@@ -6,7 +6,10 @@ foam.CLASS({
 
   documentation: 'View user name and user nav settings',
 
-  imports: [ 'user' ],
+  imports: [ 
+    'user',
+    'window'
+  ],
 
   requires: [ 'foam.nanos.menu.SubMenuView', 'foam.nanos.menu.Menu' ],
 
@@ -42,12 +45,12 @@ foam.CLASS({
         }
         ^ img{
           width: 25px;
-          height: 25px;
           display: inline-block;
           position: relative;
-          top: 5;
-          right: 10;
+          top: 7px;
+          right: 10px;
           padding-right: 15px;
+          cursor: pointer;
         }
         ^user-name:hover {
           cursor: pointer;
@@ -101,8 +104,10 @@ foam.CLASS({
       
       this
         .addClass(this.myClass())
-        /*.tag({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'})
-        .tag({class: 'foam.u2.tag.Image', data: 'images/bell.png'})*/
+        .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
+          this.window.location.assign('https://nanopay.net/contact/')
+        })
+        .end()
         .start('h1')
           .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
             .on('click', function() {
