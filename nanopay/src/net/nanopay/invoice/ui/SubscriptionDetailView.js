@@ -188,7 +188,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'payerId', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate', 'amount', 'status'
               ]
             }).addClass(this.myClass('table'))
             .end()
