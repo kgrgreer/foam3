@@ -114,7 +114,7 @@ foam.CLASS({
           margin-bottom: 2px;
         }
         ^ .net-nanopay-ui-ActionView-cashOutButton:hover {
-          background: #ebebeb;
+          background: lightgray;
         }
         ^ .recentActivities {
           opacity: 0.6;
@@ -128,10 +128,6 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
-        }
-        ^ .foam-u2-view-TableView-noselect {
-          width: 1px;
-          cursor: pointer;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
