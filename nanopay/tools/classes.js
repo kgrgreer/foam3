@@ -8,11 +8,13 @@ var classes = [
   'net.nanopay.auth.token.AbstractTokenService',
   'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.password.ResetPasswordTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
+  'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -50,7 +52,8 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.auth.token.TokenService',
-  'net.nanopay.fx.ExchangeRateInterface'
+  'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.cico.service.BankAccountVerificationInterface'
 ];
 
 var proxies = [

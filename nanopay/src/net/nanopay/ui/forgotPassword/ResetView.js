@@ -115,7 +115,31 @@ foam.CLASS({
     */}
   })
   ],
-  
+
+  properties: [
+    {
+      class: 'String',
+      name: 'token',
+      factory: function () {
+        var search = /([^&=]+)=?([^&]*)/g;
+        var query  = window.location.search.substring(1);
+
+        var decode = function (s) {
+          return decodeURIComponent(s.replace(/\+/g, ' '));
+        };
+
+        var params = {};
+        var match;
+
+        while ( match = search.exec(query) ) {
+          params[decode(match[1])] = decode(match[2]);
+        }
+
+        return params.token || null;
+      }
+    }
+  ],
+
   methods: [
     function initE(){
     this.SUPER();

@@ -12,7 +12,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/password/ResetPasswordTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
@@ -70,6 +72,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/cico/service/BankAccountVerificationInterface' },
+  { name: 'net/nanopay/cico/client/ClientBankAccountVerificationService' },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
@@ -168,6 +172,5 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },  
   { name: 'net/nanopay/model/Relationships'}
-
-  
+ 
 ]);

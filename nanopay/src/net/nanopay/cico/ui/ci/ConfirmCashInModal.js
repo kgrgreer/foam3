@@ -162,7 +162,7 @@ foam.CLASS({
           font-weight: normal;
         }
         ^ .net-nanopay-ui-ActionView-back:hover {
-          background: #ebebeb;
+          background: lightgray;
         }
     */}
     })
