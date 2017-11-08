@@ -11,7 +11,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'amount', 'status'/*, 'payNow'*/
+    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'dueDate', 'amount', 'status'/*, 'payNow'*/
   ],
 
   javaImports: [ 'java.util.Date' ],
@@ -48,7 +48,7 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'DateDue',
+      name: 'dueDate',
       label: 'Date Due',
       aliases: [ 'dueDate', 'due', 'd', 'issued' ],
       tableCellFormatter: function(date) {
@@ -142,20 +142,22 @@ foam.CLASS({
       name: 'status',
       transient: true,
       aliases: [ 's' ],
-      expression: function(draft, paymentId, issueDate, paymentDate) {
+      expression: function(draft, paymentId, dueDate, paymentDate) {
         if ( draft ) return 'Draft';
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId ) return 'Paid';
-        if ( issueDate.getTime() < Date.now() ) return 'Overdue';
-        if ( issueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
+        if ( !dueDate ) return 'New';
+        if ( dueDate.getTime() < Date.now() ) return 'Overdue';
+        if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         return paymentDate ? 'Scheduled' : 'New';
       },
       javaGetter: `
         if ( getDraft() ) return "Draft";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
-        if ( getIssueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
-        if ( getIssueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        if ( getDueDate() != null ) return "New";
+        if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
+        if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
         return getPaymentDate() != null ? "Scheduled" : "New";
       `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },

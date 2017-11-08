@@ -150,7 +150,7 @@ foam.CLASS({
                 .end()
                 .start().addClass('float-right')
                   .start().addClass('label').add('Due Date').end()
-                  .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+                  .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
                   .start().addClass('label').add('Amount').end()
                   .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
                 .end()
@@ -219,7 +219,7 @@ foam.CLASS({
               payeeId: this.payeeId,
               payerId: this.payerId,
               invoiceNumber: this.invoiceNumber,
-              issueDate: this.issueDate,
+              dueDate: this.dueDate,
               purchaseOrder: this.purchaseOrder,
               payeeName: this.payeeName,
               payerName: this.payerName
