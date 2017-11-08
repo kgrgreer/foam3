@@ -9,9 +9,9 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^{
-          display: inline-block;
-          width: 20px;
-          height: 20px;
+          position: relative;
+          top: -32px;
+          left: 30px;
         }
 
         ^.hidden {
