@@ -144,7 +144,7 @@ foam.CLASS({
             .start().addClass('label').add('Invoice #').end()
             .start(this.RecurringInvoice.INVOICE_NUMBER).addClass('small-input-box').end()
             .start().addClass('label').add('Due Date').end()
-            .start(this.RecurringInvoice.ISSUE_DATE).addClass('small-input-box').end()
+            .start(this.RecurringInvoice.DUE_DATE).addClass('small-input-box').end()
           .end()
           // .start()
           //   .add('Attachments')
