@@ -40,7 +40,7 @@ foam.CLASS({
         ^ .bankContentCard {
           width: 218px;
           height: 100px;
-          margin-right: 15px;
+          margin-right: 13.5px;
         }
         ^ .actionButton {
           width: 218px;
@@ -79,8 +79,8 @@ foam.CLASS({
           background-color: #20B1A7;
         }
         ^ .foam-u2-dialog-Popup.popup-with-topnav {
-          margin-top: 145px;
-          height: 450px;
+          margin-top: 155px;
+          height: 420px;
         }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
@@ -216,23 +216,16 @@ foam.CLASS({
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
-        }
-      ],
-      
-      listeners: [
-        {
-          name: 'verifyAccount',
-          isFramed: true,
-          code: function() {
-            var self = this;
-            this.add(
-              this.Popup.create().tag({
-                class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
-                startAt: 1,
-                title: this.TitleVerification
-              }).addClass('popup-with-topnav')
-            );
-          }
+        },
+
+        function verifyAccount() {
+          this.add(
+            this.Popup.create().tag({
+              class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
+              startAt: 1,
+              title: this.TitleVerification
+            }).addClass('popup-with-topnav')
+          );
         }
       ]
     }
