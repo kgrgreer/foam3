@@ -90,20 +90,16 @@ foam.CLASS({
         self.account.copyFrom(a.array[0]);
       });
       window.onpopstate = function(event) {
-        if (location.hash != null) {
+        if ( location.hash != null ) {
           var hid = location.hash.substr(1);
-          self.menuDAO.find(hid).then(function(menu){          
-            menu.launch(this,null);
+
+          hid && self.menuDAO.find(hid).then(function(menu) {
+            menu && menu.launch(this,null);
          })
         }
-      }
+      };
       net.nanopay.TempMenu.create(null, this);
-      if (location.hash != null) {
-        var hid = location.hash.substr(1);        
-        self.menuDAO.find(hid).then(function(menu){          
-          menu.launch(this,null);
-       })
-      }
+      window.onpopstate();
     },
 
     function initE() {
