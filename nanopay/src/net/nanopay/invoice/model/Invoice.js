@@ -38,9 +38,18 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'issueDate',
-      label: 'Date Due',
+      label: 'Issue Date',
       required: true,
       factory: function() { return new Date(); },
+      aliases: [ 'issueDate', 'issue', 'issued' ],
+      tableCellFormatter: function(date) {
+        this.add(date ? date.toISOString().substring(0,10) : '');
+      }
+    },
+    {
+      class: 'Date',
+      name: 'DateDue',
+      label: 'Date Due',
       aliases: [ 'dueDate', 'due', 'd', 'issued' ],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
