@@ -176,20 +176,24 @@ foam.CLASS({
         'foam.u2.dialog.Popup' 
       ],
 
-      imports: [ 
+      imports: [
         'bankAccountDAO'
+      ],
+
+      exports: [
+        'unverifiedBank'
       ],
 
       properties: [
         {
-          class: 'Boolean',
-          name: 'bankSelected',
-          value: false
+          name: 'unverifiedBank',
+          value: null
         },
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
             if ( newValue && newValue.status == 'Unverified' ) {
+              this.unverifiedBank = newValue;
               this.verifyAccount();
               return oldValue;
             }

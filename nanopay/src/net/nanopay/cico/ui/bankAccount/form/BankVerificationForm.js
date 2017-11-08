@@ -14,8 +14,7 @@ foam.CLASS({
     'errors',
     'goBack',
     'goNext',
-    'verifyAmount',
-    'unverifiedBankId'
+    'verifyAmount'
   ],
 
   axioms: [
@@ -125,7 +124,6 @@ foam.CLASS({
     },
 
     function initE() {
-      console.log(this.unverifiedBankId);
       this.SUPER();
       this
         .addClass(this.myClass())
