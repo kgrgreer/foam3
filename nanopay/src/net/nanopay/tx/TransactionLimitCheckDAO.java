@@ -56,8 +56,8 @@ public class TransactionLimitCheckDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
 
-        if ( ! limitsNotAbove(payer, isBroker(brokerDAO, payer), TransactionLimitType.SEND) ||
-             ! limitsNotAbove(payee, isBroker(brokerDAO, payee), TransactionLimitType.RECEIVE) ) {
+        if ( ! limitsNotAbove(payer, isBroker(brokerDAO, payer), TransactionLimitType.SEND, true) ||
+             ! limitsNotAbove(payee, isBroker(brokerDAO, payee), TransactionLimitType.RECEIVE, false) ) {
           throw new RuntimeException("Transaction Limits overstepped.");
         }
 
@@ -75,7 +75,7 @@ public class TransactionLimitCheckDAO
   }
 
   // Checking if user overstepped its limits
-  private boolean limitsNotAbove(User user, boolean isBroker, TransactionLimitType type) {
+  private boolean limitsNotAbove(User user, boolean isBroker, TransactionLimitType type, boolean isPayer) {
 
     DAO transactionLimitDAO = (DAO) getX().get("transactionLimitDAO");
 
@@ -109,7 +109,7 @@ public class TransactionLimitCheckDAO
       }
 
 
-      if ( isOverTimeFrameLimit(user, timeFrame, userLimitValue) ) {
+      if ( isOverTimeFrameLimit(user, timeFrame, userLimitValue, isPayer) ) {
         return false;
       }
     }
@@ -118,36 +118,47 @@ public class TransactionLimitCheckDAO
   }
 
 
-  private boolean isOverTimeFrameLimit(User user, TransactionLimitTimeFrame timeFrame, long limit) {
+  private boolean isOverTimeFrameLimit(User user, TransactionLimitTimeFrame timeFrame, long limit, boolean isPayer) {
 
     long userTransactionAmount = 0;
     switch( (TransactionLimitTimeFrame) timeFrame ) {
       case DAY :
-        userTransactionAmount = getTransactionAmounts(user, Calendar.HOUR_OF_DAY);
+        userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.HOUR_OF_DAY);
         break;
       case WEEK :
-        userTransactionAmount = getTransactionAmounts(user, Calendar.DAY_OF_WEEK);
+        userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_WEEK);
         break;
       case MONTH :
-        userTransactionAmount = getTransactionAmounts(user, Calendar.DAY_OF_MONTH);
+        userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_MONTH);
         break;
       case YEAR :
-        userTransactionAmount = getTransactionAmounts(user, Calendar.DAY_OF_YEAR);
+        userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
         break;
     }
+    System.out.println("timeframe:"+timeFrame+", userTransactionAmount:"+userTransactionAmount+", DEFINED LIMIT:"+limit);
     return (userTransactionAmount > limit);
   }
 
   // Getting user amount spent given a time period
-  private long getTransactionAmounts(User user, int calendarType) {
+  private long getTransactionAmounts(User user, boolean isPayer, int calendarType) {
     DAO transactionDAO = (DAO) getX().get("transactionDAO");
-    DAO list = transactionDAO.where(AND(EQ(user.getId(), Transaction.PAYEE_ID),
-                                        AND(
-                                            GTE(Transaction.DATE, getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN) ),
-                                            LTE(Transaction.DATE, getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX) )
-                                        )
-                                      )
-                                    );
+    Date firstDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN);
+    Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
+    System.out.println("user:"+user.getFirstName());
+    System.out.println("firstDate:"+firstDate);
+    System.out.println("lastDate:"+lastDate);
+    DAO list = transactionDAO.where(AND(EQ(user.getId(), ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
+                                        GTE(Transaction.DATE, firstDate ),
+                                        LTE(Transaction.DATE, lastDate )
+                                    ));
+    Sum sum = (Sum) list.select(SUM(Transaction.AMOUNT));
+    System.out.println("sum:"+sum);
+    Double doubleAmount = (Double) sum.getValue();
+    System.out.println("doubleAmount:"+doubleAmount);
+    long longValue = doubleAmount.longValue();
+    System.out.println("longValue:"+longValue);
+    long groupedAmount = ((Double)( ( (Sum) list.select(SUM(Transaction.AMOUNT)) ).getValue())).longValue();
+    System.out.println("groupedAmount:"+groupedAmount);
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 
