@@ -110,8 +110,8 @@ foam.CLASS({
     { name: 'TitleVerified',     message: 'Verified Account(s)' },
     { name: 'TitleUnverified',   message: 'Unverified Account(s)' },
     { name: 'ActionAdd',         message: 'Add a new bank account' },
-    { name: 'MyBankAccounts',    message: 'My Bank Accounts' },
-    { name: 'TitleVerification', message: 'Verification' }
+    { name: 'MyBankAccounts',    message: 'My Bank Accounts' }
+    
   ],
 
   methods: [
@@ -142,15 +142,6 @@ foam.CLASS({
                 dao: this.bankAccountDAO,
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
-                  class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
-                  startAt: 1,
-                  title: this.TitleVerification,
-                  properties: [
-                    this.BankAccount.ID
-                  ],
-                  imports: [
-                    'closeDialog'
-                  ]
                 },
               summaryView: this.BankAccountTableView.create()
             })
@@ -181,20 +172,34 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [ 
-        'net.nanopay.model.BankAccount'
+        'net.nanopay.model.BankAccount', 
+        'foam.u2.dialog.Popup' 
       ],
 
-      imports: [ 'bankAccountDAO' ],
+      imports: [ 
+        'bankAccountDAO'
+      ],
 
       properties: [
         {
+          class: 'Boolean',
+          name: 'bankSelected',
+          value: false
+        },
+        {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if ( newValue && newValue.status == 'Verified' ) return oldValue;
-            return newValue;
+            if ( newValue && newValue.status == 'Unverified' ) {
+              this.verifyAccount();
+              return oldValue;
+            }
           }
         },
         { name: 'data', factory: function() { return this.bankAccountDAO; } }
+      ],
+
+      messages: [
+        { name: 'TitleVerification', message: 'Verification' }
       ],
 
       methods: [
@@ -211,6 +216,23 @@ foam.CLASS({
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
+        }
+      ],
+      
+      listeners: [
+        {
+          name: 'verifyAccount',
+          isFramed: true,
+          code: function() {
+            var self = this;
+            this.add(
+              this.Popup.create().tag({
+                class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
+                startAt: 1,
+                title: this.TitleVerification
+              }).addClass('popup-with-topnav')
+            );
+          }
         }
       ]
     }
