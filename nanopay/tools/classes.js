@@ -8,6 +8,7 @@ var classes = [
   'net.nanopay.auth.token.AbstractTokenService',
   'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.password.ResetPasswordTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionStatus',

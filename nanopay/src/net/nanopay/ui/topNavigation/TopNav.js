@@ -22,13 +22,19 @@ foam.CLASS({
           width: 100%;
           margin: auto;
         }
-        .menuBar > div > ul {
+        ^ .menuBar > div > ul {
+          margin-top: 0;
           padding-left: 0;
           font-weight: 100;
           color: #ffffff;
         }
-        .menuItem{
+        ^ .foam-nanos-menu-MenuBar li {
           display: inline-block;
+          cursor: pointer;
+        }
+        ^ .menuItem{
+          display: inline-block;
+          padding: 20px 0 10px 0px;
           cursor: pointer;
           border-bottom: 4px solid transparent;
           transition: text-shadow;

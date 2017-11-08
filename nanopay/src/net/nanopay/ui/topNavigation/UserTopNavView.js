@@ -19,7 +19,7 @@ foam.CLASS({
         ^ {
           display: inline-block;
           float: right;
-          margin: 8px 40px 0 0;
+          margin-right: 40px;
         }
         ^ h1 {
           margin: 0;
@@ -94,26 +94,32 @@ foam.CLASS({
           -ms-transform: translate(120px, -175.5px);
           transform: translate(120px, -175.5px);
         }
+        ^ .profile-container{
+          display: inline-block;
+          cursor: pointer;
+          padding-top: 10px;
+          height: 40px;
+          width: 75px;
+        }
       */}
     })
   ],
 
   methods: [
     function initE() {
-
-      var self = this;
-      
       this
         .addClass(this.myClass())
         .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
           self.window.location.assign('https://nanopay.net/contact/')
         })
         .end()
-        .start('h1')
-          .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
-            .on('click', function() {
-              this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
-            }.bind(this))
+        .start().addClass('profile-container')
+          .on('click', function() {
+            this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
+          }.bind(this))
+          .start('h1')
+            .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
+          .end()
         .end()
         .start('div')
           .addClass(this.myClass('carrot'))
