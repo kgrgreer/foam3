@@ -6,9 +6,11 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.dao.ProxyDAO;
 import static foam.mlang.MLang.*;
+import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
 import foam.nanos.auth.User;
 import net.nanopay.model.Account;
+import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionLimit;
 import net.nanopay.tx.model.TransactionLimitTimeFrame;
@@ -69,7 +71,7 @@ public class TransactionLimitCheckDAO
     Sink count = new Count();
     count = brokerDAO.where(EQ(user.getId(), Broker.USER_ID)).limit(1).select(count);
 
-    return count > 0 ? true : false;
+    return ( ( (Count) count).getValue() > 0 ) ? true : false;
   }
 
   // Checking if user overstepped its limits
@@ -83,7 +85,7 @@ public class TransactionLimitCheckDAO
       long userLimitValue = 0;
 
       for ( TransactionLimit userLimit : userLimits ) {
-        if ( userLimit.getTimeFrame() == timeFrame && userLimit.getType() ) {
+        if ( userLimit.getTimeFrame() == timeFrame && userLimit.getType() == type ) {
           isDefault = false;
           userLimitValue = userLimit.getAmount();
           break;
