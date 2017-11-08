@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.interac.ui.etransfer',
+  package: 'net.nanopay.ui.transfer',
   name: 'TransferView',
   extends: 'foam.u2.Controller',
 
