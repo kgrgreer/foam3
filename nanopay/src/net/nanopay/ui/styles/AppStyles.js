@@ -266,9 +266,6 @@ foam.CLASS({
         .hide{
           display: none;
         }
-        .float-right{
-          float: right;
-        }
         .float-left{
           float: left;
         }
@@ -313,6 +310,7 @@ foam.CLASS({
         .foam-u2-view-TableView-noselect {
           width: 1px;
           cursor: pointer;
+          text-align: right !important;
         }
         .close-x {
           position: absolute;

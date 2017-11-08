@@ -143,9 +143,6 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
         }
-        ^ .foam-u2-view-TableView-noselect {
-          cursor: pointer;
-        }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
@@ -177,8 +174,7 @@ foam.CLASS({
                     this.Transaction.PAYEE_ID,
                     this.Transaction.AMOUNT,
                     this.Transaction.RECEIVING_AMOUNT,
-                    this.Transaction.RATE,
-                    this.Transaction.FEES
+                    this.Transaction.RATE
                   ]
                 },
               summaryView: this.TransactionTableView.create()
@@ -228,7 +224,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
               ]
             }).addClass(this.myClass('table')).end();
         }
