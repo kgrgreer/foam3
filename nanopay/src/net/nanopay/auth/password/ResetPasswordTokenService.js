@@ -13,7 +13,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
+    'foam.util.Password',
     'net.nanopay.auth.token.Token',
+    'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
     'java.util.UUID'
@@ -67,7 +69,42 @@ foam.CLASS({
     },
     {
       name: 'processToken',
-      javaCode: 'return true;'
+      javaCode:
+`try {
+  DAO userDAO = (DAO) getX().get("userDAO");
+  DAO tokenDAO = (DAO) getX().get("tokenDAO");
+  Calendar calendar = Calendar.getInstance();
+
+  Sink sink = new ListSink();
+  sink = tokenDAO.where(MLang.AND(
+    MLang.EQ(Token.PROCESSED, false),
+    MLang.EQ(Token.EXPIRY, calendar.getTime()),
+    MLang.EQ(Token.DATA, token)
+  )).limit(1).select(sink);
+
+  List data = ((ListSink) sink).getData();
+  if ( data == null || data.size() == 0 ) {
+    throw new Exception("Token not found");
+  }
+
+  // set token processed to true
+  Token tokenResult = (Token) data.get(0);
+  tokenResult.setProcessed(true);
+  tokenDAO.put(tokenResult);
+
+  User userResult = (User) userDAO.find(tokenResult.getUserId());
+  if ( userResult == null ) {
+    throw new Exception("User not found");
+  }
+
+  // update user's password
+  userResult.setPassword(Password.hash(user.getPassword()));
+  userDAO.put(userResult);
+  return true;
+} catch (Throwable t) {
+  t.printStackTrace();
+  return false;
+}`
     }
   ]
 });

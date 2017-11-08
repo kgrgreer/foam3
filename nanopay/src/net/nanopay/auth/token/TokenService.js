@@ -28,11 +28,6 @@ foam.INTERFACE({
         {
           name: 'token',
           javaType: 'String'
-        },
-        {
-          name: 'data',
-          javaType: 'java.util.Map',
-          documentation: 'Any additional data needed to process the token'
         }
       ]
     }
