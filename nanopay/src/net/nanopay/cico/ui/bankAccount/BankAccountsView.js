@@ -106,12 +106,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TitleAll',          message: 'Total Bank Accounts' },
-    { name: 'TitleVerified',     message: 'Verified Account(s)' },
-    { name: 'TitleUnverified',   message: 'Unverified Account(s)' },
-    { name: 'ActionAdd',         message: 'Add a new bank account' },
-    { name: 'MyBankAccounts',    message: 'My Bank Accounts' }
-    
+    { name: 'TitleAll',         message: 'Total Bank Accounts' },
+    { name: 'TitleVerified',    message: 'Verified Account(s)' },
+    { name: 'TitleUnverified',  message: 'Unverified Account(s)' },
+    { name: 'ActionAdd',        message: 'Add a new bank account' },
+    { name: 'MyBankAccounts',   message: 'My Bank Accounts' },
+    { name: 'placeholderText',  message: 'You don\'t have any bank accounts right now. Click the Add a bank account button to add a new bank account.' }
   ],
 
   methods: [
@@ -146,6 +146,7 @@ foam.CLASS({
               summaryView: this.BankAccountTableView.create()
             })
           .end()
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.bankAccountDAO, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
     }
     
   ],

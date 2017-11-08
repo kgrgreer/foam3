@@ -177,6 +177,10 @@ foam.CLASS({
       label: 'Next',
       code: function(X) {
         var self = this;
+        if(self.bankList == null) {
+          self.add(self.NotificationMessage.create({ message: 'Please add a bank account to continue.', type: 'error' }));
+          return;
+        }
         if(self.amount == 0) {
           self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than 0.00', type: 'error' }));
           return;
