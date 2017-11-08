@@ -97,8 +97,13 @@ foam.CLASS({
     throw new Exception("User not found");
   }
 
+  String newPassword = user.getPassword();
+  if ( ! Password.isValid(newPassword) ) {
+    throw new Exception("Invalid password");
+  }
+
   // update user's password
-  userResult.setPassword(Password.hash(user.getPassword()));
+  userResult.setPassword(Password.hash(newPassword));
   userDAO.put(userResult);
   return true;
 } catch (Throwable t) {
