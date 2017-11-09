@@ -134,6 +134,10 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
+      name: 'paymentMethod'
+    },
+    {
       name: 'iso20022',
       required: true
     },
