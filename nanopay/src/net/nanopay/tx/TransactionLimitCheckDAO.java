@@ -18,7 +18,6 @@ import net.nanopay.tx.model.TransactionLimitType;
 import java.util.Calendar;
 import java.util.Date;
 
-
 public class TransactionLimitCheckDAO
         extends ProxyDAO {
 
@@ -30,7 +29,7 @@ public class TransactionLimitCheckDAO
     setX(x);
     setDelegate(delegate);
   }
-
+  // Constants used to get the predefined limit values from the Transaction limits(through the property name)
   private static final String DEFAULT_USER_TRANSACTION_LIMIT = "default_user";
   private static final String DEFAULT_BROKER_TRANSACTION_LIMIT = "default_broker";
 
@@ -56,8 +55,8 @@ public class TransactionLimitCheckDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
 
-        if ( ! limitsNotAbove(payer, isBroker(brokerDAO, payer), TransactionLimitType.SEND, true) ||
-             ! limitsNotAbove(payee, isBroker(brokerDAO, payee), TransactionLimitType.RECEIVE, false) ) {
+        if ( ! limitsNotAbove(transaction, payer, isBroker(brokerDAO, payer), TransactionLimitType.SEND, true) ||
+             ! limitsNotAbove(transaction, payee, isBroker(brokerDAO, payee), TransactionLimitType.RECEIVE, false) ) {
           throw new RuntimeException("Transaction Limits overstepped.");
         }
 
@@ -75,7 +74,7 @@ public class TransactionLimitCheckDAO
   }
 
   // Checking if user overstepped its limits
-  private boolean limitsNotAbove(User user, boolean isBroker, TransactionLimitType type, boolean isPayer) {
+  private boolean limitsNotAbove(Transaction transaction, User user, boolean isBroker, TransactionLimitType type, boolean isPayer) {
 
     DAO transactionLimitDAO = (DAO) getX().get("transactionLimitDAO");
 
@@ -91,7 +90,6 @@ public class TransactionLimitCheckDAO
           break;
         }
       }
-
       if ( isDefault ) {
         DAO sumLimitDAO;
         if( isBroker ) {
@@ -107,18 +105,15 @@ public class TransactionLimitCheckDAO
         }
         userLimitValue = ((Double)(((Sum) sumLimitDAO.select(SUM(TransactionLimit.AMOUNT))).getValue())).longValue();
       }
-
-
-      if ( isOverTimeFrameLimit(user, timeFrame, userLimitValue, isPayer) ) {
+      if ( isOverTimeFrameLimit(transaction, user, timeFrame, userLimitValue, isPayer) ) {
         return false;
       }
     }
-
     return true;
   }
 
-
-  private boolean isOverTimeFrameLimit(User user, TransactionLimitTimeFrame timeFrame, long limit, boolean isPayer) {
+  // Check if user reached period for a given timeframe and limit
+  private boolean isOverTimeFrameLimit(Transaction transaction, User user, TransactionLimitTimeFrame timeFrame, long limit, boolean isPayer) {
 
     long userTransactionAmount = 0;
     switch( (TransactionLimitTimeFrame) timeFrame ) {
@@ -135,30 +130,23 @@ public class TransactionLimitCheckDAO
         userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
         break;
     }
-    System.out.println("timeframe:"+timeFrame+", userTransactionAmount:"+userTransactionAmount+", DEFINED LIMIT:"+limit);
-    return (userTransactionAmount > limit);
+    // PRINT TO BE USED ON INTERNAL NANOPAY DEMO, after that, just remove this comments...
+    // System.out.println("User "+user.getFirstName()+" BEFORE TRANSACTION timeframe:"+timeFrame+", userTransactionAmount:"+userTransactionAmount+", DEFINED LIMIT:"+limit);
+    // System.out.println("User "+user.getFirstName()+" AFTER TRANSACTION timeframe:"+timeFrame+", userTransactionAmount:"+(userTransactionAmount+transaction.getAmount())+", DEFINED LIMIT:"+limit);
+    return ( ( userTransactionAmount + transaction.getAmount() ) > limit);
   }
 
   // Getting user amount spent given a time period
   private long getTransactionAmounts(User user, boolean isPayer, int calendarType) {
     DAO transactionDAO = (DAO) getX().get("transactionDAO");
+
     Date firstDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN);
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
-    System.out.println("user:"+user.getFirstName());
-    System.out.println("firstDate:"+firstDate);
-    System.out.println("lastDate:"+lastDate);
+
     DAO list = transactionDAO.where(AND(EQ(user.getId(), ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
                                         GTE(Transaction.DATE, firstDate ),
                                         LTE(Transaction.DATE, lastDate )
                                     ));
-    Sum sum = (Sum) list.select(SUM(Transaction.AMOUNT));
-    System.out.println("sum:"+sum);
-    Double doubleAmount = (Double) sum.getValue();
-    System.out.println("doubleAmount:"+doubleAmount);
-    long longValue = doubleAmount.longValue();
-    System.out.println("longValue:"+longValue);
-    long groupedAmount = ((Double)( ( (Sum) list.select(SUM(Transaction.AMOUNT)) ).getValue())).longValue();
-    System.out.println("groupedAmount:"+groupedAmount);
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 
