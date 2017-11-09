@@ -4,6 +4,7 @@ foam.CLASS({
   requires: [
     'MintChipSession',
     'foam.box.HTTPBox',
+    'foam.box.LogBox',
     'foam.box.Message',
     'foam.box.SessionClientBox',
     'foam.box.swift.FileBox',
