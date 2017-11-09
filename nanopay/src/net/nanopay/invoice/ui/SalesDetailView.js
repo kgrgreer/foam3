@@ -65,6 +65,10 @@ foam.CLASS({
 
   listeners: [
     function recordPaymentModal(){
+      if(this.data.paymentDate){
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has already been paid.', type: 'error' }));   
+        return;             
+      }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
     }
   ],

@@ -7,11 +7,16 @@ foam.CLASS({
   documentation: 'Record Payment Modal',
 
   requires: [
-    'net.nanopay.ui.modal.ModalHeader'
+    'net.nanopay.ui.modal.ModalHeader',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
+  ],
+
+  imports: [
+    'invoiceDAO'
   ],
 
   properties: [
@@ -24,7 +29,6 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea',
       value: ''
     },
-    'amount',
     'invoice'
   ],
 
@@ -65,10 +69,6 @@ foam.CLASS({
           .start(this.PAYMENT_DATE).addClass('full-width-input').end()
         .end()
         .start()
-          .start().addClass('label').add('Amount').end()
-          .start(this.AMOUNT).addClass('full-width-input').end()
-        .end()
-        .start()
           .start().addClass('label').add('Note').end()
           .start(this.NOTE).addClass('input-box').end()
         .end()
@@ -82,10 +82,16 @@ foam.CLASS({
       name: 'record',
       label: 'Record Payment',
       code: function(X){
-        /* 
-          Create transaction & continue flow here.
-          Invoice Data is accessible through X.data.invoice
-        */ 
+        if(!X.data.paymentDate){
+          this.add(this.NotificationMessage.create({ message: 'Please select a payment date.', type: 'error' }));
+          return;
+        }
+
+        this.invoice.status = 'Paid';
+        this.invoice.paymentDate = X.data.paymentDate;
+        this.invoice.note = X.data.note;
+        this.invoiceDAO.put(this.invoice);
+        ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment recorded.', type: '' }));        
         X.closeDialog();
       }
     }

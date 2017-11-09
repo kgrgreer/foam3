@@ -88,7 +88,7 @@ foam.CLASS({
           position: absolute;
           width: 75px;
           height: 35px;
-          z-index: 10;
+          z-index: 1;
           opacity: 0.01;
         }
         ^ .net-nanopay-ui-ActionView-mainAction{

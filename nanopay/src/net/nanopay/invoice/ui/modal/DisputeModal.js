@@ -52,7 +52,7 @@ foam.CLASS({
 
       this
       .tag(this.ModalHeader.create({
-        title: 'Dispute'
+        title: 'Void'
       }))
       .addClass(this.myClass())
         .start()

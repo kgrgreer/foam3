@@ -209,7 +209,7 @@ foam.CLASS({
             self.recurringInvoice = a;
             X.dao.put(self);
           })
-        } else {
+        } else {          
           X.dao.put(this);          
         }
 
