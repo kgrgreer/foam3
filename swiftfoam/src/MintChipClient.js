@@ -4,6 +4,7 @@ foam.CLASS({
   requires: [
     'MintChipSession',
     'foam.box.HTTPBox',
+    'foam.box.LogBox',
     'foam.box.Message',
     'foam.box.SessionClientBox',
     'foam.box.swift.FileBox',
@@ -68,9 +69,11 @@ return ClientDAO_create([
       name: 'transactionDAO',
       swiftFactory: `
 return ClientDAO_create([
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
+      ])
     ])
   ])
 ])
