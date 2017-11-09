@@ -7,18 +7,18 @@
 //
 
 public class ServiceURLs {
-  public enum ServiceHost: String {
+  public enum Host: String {
     case Localhost = "http://localhost:8080/"
     case KennysMacBook = "http://192.168.20.54:8080/"
   }
 
-  static var hostRoute: ServiceHost = .Localhost
+  static var hostRoute: Host = .Localhost
 
-  public static func setHostRoute(url: ServiceHost) {
+  public static func setHostRoute(url: Host) {
     hostRoute = url
   }
 
-  public enum ServiceURL: String {
+  public enum URL: String {
     case Transaction = "transactionDAO"
     case Account = "accountDAO"
     case User = "userDAO"

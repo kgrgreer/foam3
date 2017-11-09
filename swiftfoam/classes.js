@@ -54,7 +54,7 @@ var classes = [
   'net.nanopay.model.AccountLimit',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
-  'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.tx.model.TransactionPurpose'
 ];
 
 module.exports = {

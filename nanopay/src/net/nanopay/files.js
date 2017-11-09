@@ -12,7 +12,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/password/ResetPasswordTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
@@ -54,6 +56,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/Fee' },
+  { name: 'net/nanopay/tx/model/FeeInterface' },
+  { name: 'net/nanopay/tx/model/FeeType' },
+  { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/model/Broker' },
@@ -63,11 +68,12 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // cico
-  { name: 'net/nanopay/cico/model/BaseServiceProvider' },
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/cico/service/BankAccountVerificationInterface' },
+  { name: 'net/nanopay/cico/client/ClientBankAccountVerificationService' },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
@@ -155,6 +161,5 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/model/Relationships'}
-
-  
+ 
 ]);

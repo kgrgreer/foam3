@@ -21,7 +21,7 @@ public class TransactionService: Service {
   }
 
   init() {
-    super.init(withURL: ServiceURLs.ServiceURL.Transaction)
+    super.init(withURL: ServiceURLs.URL.Transaction)
   }
 
   public func transferValueBy(transaction: Transaction,

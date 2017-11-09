@@ -23,7 +23,7 @@ public class RegionService: Service {
   private var regions: [Region]?
 
   init() {
-    super.init(withURL: ServiceURLs.ServiceURL.Region)
+    super.init(withURL: ServiceURLs.URL.Region)
   }
 
   public func getAllRegions(callback: @escaping (Any?) -> Void) {

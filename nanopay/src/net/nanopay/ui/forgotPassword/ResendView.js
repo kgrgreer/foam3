@@ -6,7 +6,14 @@ foam.CLASS({
   documentation: 'Forgot Password Resend View',
 
   imports: [
-    'stack'
+    'stack',
+    'resetPasswordToken'
+  ],
+
+  exports: [ 'as data' ],
+
+  requires: [
+    'foam.nanos.auth.User'
   ],
 
   axioms: [
@@ -89,6 +96,13 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'email'
+    }
+  ],
+
   messages: [
     { name: 'Instructions', message: "We've sent the instructions to your email. Please check your inbox to continue."}
   ],
@@ -104,7 +118,7 @@ foam.CLASS({
         .start().addClass('Forgot-Password').add('Forgot Password').end()
         .start().addClass('Message-Container')
           .start().addClass('Instructions-Text').add(this.Instructions).end()
-          .start().addClass('Resend-Button').add('Resend Email').end()
+          .start(this.RESEND_EMAIL).addClass('Resend-Button').end()
         .end()
         .start('p').add('Remember your password?').end()
         .start('p').addClass('link')
@@ -117,5 +131,25 @@ foam.CLASS({
         .end()
       .end()
       }
-    ]
+  ],
+
+  actions: [
+    {
+      name: 'resendEmail',
+      label: 'Resend Email',
+      code: function (X) {
+        var self = this;
+        var user = this.User.create({ email: this.email });
+        this.resetPasswordToken.generateToken(user).then(function (result) {
+          if ( ! result ) {
+            throw new Error('Error generating reset token');
+          }
+          // TODO: show success message
+        })
+        .catch(function (err) {
+          throw err;
+        });
+      }
+    }
+  ]
 });

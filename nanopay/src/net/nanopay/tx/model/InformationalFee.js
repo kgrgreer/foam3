@@ -1,13 +1,19 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
-  name: 'PercentageFee',
+  name: 'InformationalFee',
   extends: 'net.nanopay.tx.model.Fee',
 
   properties: [
     {
-      class: 'Float',
-      swiftType: 'Float',
-      name: 'percentage'
+      class: 'Long',
+      swiftType: 'Int',
+      name: 'amount'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.FeeType',
+      name: 'type',
+      value: 'net.nanopay.tx.model.FeeType.INFORMATIONAL'
     }
   ],
 
@@ -23,10 +29,10 @@ foam.CLASS({
       ],
       javaReturns: 'long',
       swiftReturns: 'Int',
-      javaCode: ' return ((Double) (this.getPercentage()/100.0 * transactionAmount)).longValue(); ',
-      swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
+      javaCode: ' return this.getAmount(); ',
+      swiftCode: ' return amount ',
       code: function() {
-        return this.percentage/100 * transactionAmount;
+        return this.amount;
       }
     },
     {
@@ -35,13 +41,13 @@ foam.CLASS({
         {
           name: 'transactionAmount',
           javaType: 'long',
-          swiftType: 'Int'
+          swiftType: 'Int',
         }
       ],
       javaReturns: 'long',
       swiftReturns: 'Int',
       javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
-      swiftCode: ' return getFee(transactionAmount) + transactionAmount ',
+      swiftCode: ' return getFee(transactionAmount) + transactionAmount',
       code: function() {
         return getFee(transactionAmount) + transactionAmount;
       }

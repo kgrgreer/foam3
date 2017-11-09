@@ -6,7 +6,10 @@ foam.CLASS({
   documentation: 'User Registration View',
 
   imports: [
-    'stack', 'save', 'userDAO', 'user'
+    'stack',
+    'save',
+    'user',
+    'emailUserRegistration'
   ],
 
   exports: [
@@ -229,12 +232,12 @@ foam.CLASS({
           organization: self.organization,
           department: self.department
         });
-  
-        self.userDAO.put(user).then(function(user) {
+
+        self.emailUserRegistration.register(user).then(function (user) {
           // Setting controller user as the one created here. May need tuning once auth & email verfication come to play.
           self.user = user;
           X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', user: user });
-        })
+        });
       }
     }
   ]
