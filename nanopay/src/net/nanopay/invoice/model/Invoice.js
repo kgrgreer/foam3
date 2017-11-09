@@ -152,7 +152,7 @@ foam.CLASS({
       transient: true,
       aliases: [ 's' ],
       expression: function(draft, paymentId, voided, dueDate, paymentDate) {
-        if ( voided ) return 'Void'        
+        if ( voided ) return 'Void';        
         if ( draft ) return 'Draft';
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId ) return 'Paid';
@@ -163,6 +163,7 @@ foam.CLASS({
         return paymentDate ? 'Scheduled' : 'Due';
       },
       javaGetter: `
+        if ( getVoided() ) return 'Void';              
         if ( getDraft() ) return "Draft";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
