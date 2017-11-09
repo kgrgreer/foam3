@@ -129,6 +129,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'voided',
+      value: false
+    },
+    {
       class: 'String',
       name: 'currencyCode',
       required: true
@@ -146,7 +151,8 @@ foam.CLASS({
       name: 'status',
       transient: true,
       aliases: [ 's' ],
-      expression: function(draft, paymentId, dueDate, paymentDate) {
+      expression: function(draft, paymentId, voided, dueDate, paymentDate) {
+        if ( voided ) return 'Void'        
         if ( draft ) return 'Draft';
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId ) return 'Paid';
@@ -154,7 +160,7 @@ foam.CLASS({
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         }
-        return paymentDate ? 'Scheduled' : 'New';
+        return paymentDate ? 'Scheduled' : 'Due';
       },
       javaGetter: `
         if ( getDraft() ) return "Draft";
@@ -164,7 +170,7 @@ foam.CLASS({
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
           if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
         }
-        return getPaymentDate() != null ? "Scheduled" : "New";
+        return getPaymentDate() != null ? "Scheduled" : "Due";
       `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
       tableCellFormatter: function(state, obj, rel) {
