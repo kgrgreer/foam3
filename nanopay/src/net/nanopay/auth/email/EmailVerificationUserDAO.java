@@ -19,8 +19,8 @@ public class EmailVerificationUserDAO
   public FObject put_(X x, FObject obj) {
     EmailTokenService emailToken = (EmailTokenService) getX().get("emailToken");
     User user = (User) obj;
-    // assume new user if id is 0 or cannot find user in DAO
-    if ( user.getId() == 0 || getDelegate().find(user.getId()) == null ) {
+    // assume new user if can't find in delegate
+    if ( getDelegate().find(user.getId()) == null ) {
       emailToken.generateToken(user);
     }
     return super.put_(x, obj);
