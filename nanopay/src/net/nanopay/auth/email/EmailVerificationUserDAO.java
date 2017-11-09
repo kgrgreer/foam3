@@ -7,6 +7,10 @@ import foam.dao.ProxyDAO;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 
+/**
+ * DAO decorator used to generate an email verification token
+ * and send email verification link to newly created users
+ */
 public class EmailVerificationUserDAO
     extends ProxyDAO
 {
