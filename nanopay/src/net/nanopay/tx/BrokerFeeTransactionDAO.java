@@ -47,7 +47,6 @@ public class BrokerFeeTransactionDAO
     Broker broker = (Broker) brokerDAO.find(transaction.getBrokerId());
 
     if ( broker.getUserId() == null || broker.getFee() == null ) {
-      System.out.println("RETURN 2");
       return getDelegate().put_(x, transaction);
     }
 
