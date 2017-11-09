@@ -339,12 +339,6 @@ foam.CLASS({
           seqNo: true,
           testData: [
             {
-              limit: net.nanopay.model.AccountLimit.create({
-                dailyLimit: 700,
-                weeklyLimit: 4000,
-                monthlyLimit: 8000,
-                yearlyLimit: 20000
-              }),
               accountInfo: net.nanopay.model.BankAccount.create({
                 accountName: 'Tip for Anna',
                 transitNumber: '1234',
@@ -354,12 +348,6 @@ foam.CLASS({
               })
             },
             {
-              limit: net.nanopay.model.AccountLimit.create({
-                dailyLimit: 700,
-                weeklyLimit: 4000,
-                monthlyLimit: 8000,
-                yearlyLimit: 20000,
-              }),
               accountInfo: net.nanopay.model.BankAccount.create({
                 accountName: 'TD Saving Restaurant',
                 transitNumber: '5678',
@@ -369,12 +357,6 @@ foam.CLASS({
               })
             },
             {
-              limit: net.nanopay.model.AccountLimit.create({
-                dailyLimit: 700,
-                weeklyLimit: 4000,
-                monthlyLimit: 8000,
-                yearlyLimit: 20000,
-              }),
               accountInfo: net.nanopay.model.BankAccount.create({
                 accountName:'TD Chequing Restaurant',
                 transitNumber: '9101',

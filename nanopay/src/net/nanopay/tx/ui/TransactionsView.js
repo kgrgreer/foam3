@@ -154,6 +154,13 @@ foam.CLASS({
     { name: 'data', factory: function() { return this.transactionDAO; }}
   ],
 
+  messages: [
+    { name: 'myAccounts', message: 'My Accounts' },
+    { name: 'recentActivities', message: 'Recent Activities' },
+    { name: 'recentTransactions', message: 'Recent Transactions' },
+    { name: 'placeholderText', message: 'You don\'t have any recent transactions right now.' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -180,14 +187,9 @@ foam.CLASS({
               summaryView: this.TransactionTableView.create()
             })
           .end()
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
     }
-  ],
-
-  messages: [
-    { name: 'myAccounts', message: 'My Accounts' },
-    { name: 'recentActivities', message: 'Recent Activities' },
-    { name: 'recentTransactions', message: 'Recent Transactions' }
   ],
 
   actions: [

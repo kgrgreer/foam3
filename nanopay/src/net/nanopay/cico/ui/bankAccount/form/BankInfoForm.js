@@ -59,6 +59,12 @@ foam.CLASS({
           border: solid 1px #59A5D5;
         }
 
+        ^ .foam-u2-TextField {
+          outline: none;
+          height: 40px;
+          padding: 10px;
+        }
+
         ^ .caret {
           position: relative;
         }
@@ -239,7 +245,7 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions).end()
         .start('div').addClass('row')

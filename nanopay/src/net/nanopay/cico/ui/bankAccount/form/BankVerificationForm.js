@@ -33,10 +33,14 @@ foam.CLASS({
 
         ^ .property-tenthcent {
           height: 30px;
+          outline: none;
+          padding-left: 5px;
         }
 
         ^ .property-cent {
           height: 30px;
+          outline: none;
+          padding-left: 5px;
         }
 
         ^ .inputErrorLabel {
@@ -66,8 +70,8 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',           message: 'Step 2: Please verify your bank account.' },
-    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the acccount you have provided. In 2-3 business days, your account should display the amount.' },
-    { name: 'Instructions2',  message: 'Please input the right amount below. Once you have input the right amount, your account will be verified.' }
+    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the account you have provided. The random deposit amount will appear in your account 2-3 business days from the account creation date.' },
+    { name: 'Instructions2',  message: 'Please input the correct amount below. If the amount is correct your account will be verified.' }
   ],
 
   properties: [
@@ -125,7 +129,7 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions1)
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions2)

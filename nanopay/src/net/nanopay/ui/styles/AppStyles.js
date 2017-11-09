@@ -116,6 +116,7 @@ foam.CLASS({
           background-color: #59AADD;
           color: white;
           font-size: 14px;
+          float: right;
           border: 1px solid #59AADD;
         }
         .net-nanopay-ui-ActionView-saveAsDraft {
@@ -123,6 +124,7 @@ foam.CLASS({
           border: solid 1px #59A5D5;
           color: #59A5D5;
           margin-right: 15px;
+          float: right;
         }
         .row {
           display: inline-block;
@@ -269,6 +271,9 @@ foam.CLASS({
         .float-left{
           float: left;
         }
+        .float-right{
+          float: right;
+        }
         .thin-align{
           font-weight: 100;
           margin: 10px 0 0 0;
@@ -333,6 +338,9 @@ foam.CLASS({
         }
         .close-x:after {
           transform: rotate(-45deg);
+        }
+        .stepTopMargin {
+          margin-top: 0;
         }   
       */}
     })

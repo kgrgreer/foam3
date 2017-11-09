@@ -105,7 +105,7 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'issueDate',
+      name: 'dueDate',
       label: 'Date Due',
       required: true,
       factory: function() { return new Date(); },
