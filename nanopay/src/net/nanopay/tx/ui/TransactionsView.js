@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   requires: [ 
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'foam.nanos.auth.User'
   ],
 
   imports: [
@@ -206,6 +207,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
+        placeholder: 'Reference #',
         onKey: true
       }
     },
@@ -218,7 +220,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+          'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
         ]
       }
     }
@@ -227,7 +229,6 @@ foam.CLASS({
   messages: [
     { name: 'myAccounts', message: 'My Accounts' },
     { name: 'recentActivities', message: 'Recent Activities' },
-    { name: 'recentTransactions', message: 'Recent Transactions' },
     { name: 'placeholderText', message: 'You don\'t have any recent transactions right now.' }
   ],
 
@@ -239,7 +240,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('h3').add(this.recentTransactions).end()
           .start().addClass('container')
             .start().addClass('button-div')
               .start().addClass('inline')
