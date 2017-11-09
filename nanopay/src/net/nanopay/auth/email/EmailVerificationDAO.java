@@ -11,10 +11,10 @@ import foam.nanos.auth.User;
  * DAO decorator used to generate an email verification token
  * and send email verification link to newly created users
  */
-public class EmailVerificationUserDAO
+public class EmailVerificationDAO
     extends ProxyDAO
 {
-  public EmailVerificationUserDAO(X x, DAO delegate) {
+  public EmailVerificationDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
