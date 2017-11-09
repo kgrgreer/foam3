@@ -148,7 +148,7 @@ foam.CLASS({
               title: 'Export'
             }
           }).addClass('import-button').add(this.EXPORT_MODAL).end()
-          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
+          // .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
             .start('span', null, this.popupMenu_$)
