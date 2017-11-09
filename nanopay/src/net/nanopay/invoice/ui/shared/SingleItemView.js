@@ -78,7 +78,6 @@ foam.CLASS({
   methods: [
     function initE(){
       var self = this;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
@@ -99,9 +98,9 @@ foam.CLASS({
             .start('h4').add(this.data.dueDate ? this.data.dueDate.toISOString().substring(0,10) : '').end()
             .start('h4').add(this.data.currencyType, ' ', this.data.amount.toFixed(2)).end()
             .start('h3')
-              .start().addClass('generic-status ' + this.statusClassName$)
-                .add(this.data.status$)
-              .end()
+              .add(this.data$.dot('status').map(function(a){                    
+                return self.E().add(a).addClass('generic-status Invoice-Status-' + a);
+              }))
           .end()
         .end()
     }
