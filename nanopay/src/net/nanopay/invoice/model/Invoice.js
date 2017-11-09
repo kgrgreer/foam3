@@ -146,18 +146,20 @@ foam.CLASS({
         if ( draft ) return 'Draft';
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId ) return 'Paid';
-        if ( !dueDate ) return 'New';
-        if ( dueDate.getTime() < Date.now() ) return 'Overdue';
-        if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
+        if ( dueDate ) { 
+          if ( dueDate.getTime() < Date.now() ) return 'Overdue';
+          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
+        }
         return paymentDate ? 'Scheduled' : 'New';
       },
       javaGetter: `
         if ( getDraft() ) return "Draft";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
-        if ( getDueDate() != null ) return "New";
-        if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
-        if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        if ( getDueDate() != null ){
+          if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
+          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        }
         return getPaymentDate() != null ? "Scheduled" : "New";
       `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
