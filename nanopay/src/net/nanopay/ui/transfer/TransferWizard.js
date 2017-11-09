@@ -1,14 +1,15 @@
 
 foam.CLASS({
-  package: 'net.nanopay.interac.ui.etransfer',
+  package: 'net.nanopay.ui.transfer',
   name: 'TransferWizard',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for e-transfer',
 
   requires: [
-    'net.nanopay.interac.ui.CountdownView',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.ui.CountdownView',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   imports: [
@@ -27,6 +28,10 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
       code: function CSS() {/*
+      ^ {
+        height: auto !important;
+      }
+
       ^ .overviewTopMargin {
         margin-top: 21px;
       }
@@ -178,6 +183,14 @@ foam.CLASS({
       ^ .invoiceLink:hover {
         cursor: pointer;
       }
+
+      ^ .net-nanopay-ui-ActionView-goNext {
+        font-size: 10px;
+      }
+
+      ^ .net-nanopay-ui-ActionView-goBack {
+        font-size: 10px;
+      }
     */}})
   ],
 
@@ -199,8 +212,9 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.title = 'Send e-Transfer';
-
+      if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
+      else { this.title = 'Send Transfer' }
+      
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -214,10 +228,10 @@ foam.CLASS({
       }
 
       this.views = [
-        { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.interac.ui.etransfer.TransferDetails' } },
-        { parent: 'etransfer', id: 'etransfer-transfer-amount',   label: 'Amount',          view: { class: 'net.nanopay.interac.ui.etransfer.TransferAmount'  } },
-        { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.interac.ui.etransfer.TransferReview'  } },
-        { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.interac.ui.etransfer.TransferComplete'  } }
+        { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
+        { parent: 'etransfer', id: 'etransfer-transfer-amount',   label: 'Amount',          view: { class: 'net.nanopay.ui.transfer.TransferAmount'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
 
       this.countdownView.hide();
@@ -237,9 +251,9 @@ foam.CLASS({
             .start('div').addClass('topRow')
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/interac.png'})
-                .attrs({srcset: 'images/interac@2x.png 2x, images/interac@3x.png 3x'})
-                .addClass('interacImage')
+              .start().callIf(this.type == 'foreign', function(){
+                this.tag({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).addClass('interacImage')
+              })
               .end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
@@ -247,8 +261,8 @@ foam.CLASS({
         .end()
         .start('div').addClass('row')
           .start('div').addClass('navigationContainer')
-            .tag(this.GO_BACK, {label$: this.backLabel$})
-            .tag(this.GO_NEXT, {label$: this.nextLabel$})
+            .start(this.GO_BACK, {label$: this.backLabel$}).end()
+            .start(this.GO_NEXT, {label$: this.nextLabel$}).end()
           .end()
         .end();
     }
@@ -258,13 +272,13 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, viewData, errors) {
-        if ( position == 1 && errors && errors[0][1] == 'Rate expired' ) return false;
+      // isAvailable: function(position, viewData, errors) {
+      //   if ( position == 1 && errors && errors[0][1] == 'Rate expired' ) return false;
 
-        if ( position == 3 && errors ) return false;
+      //   if ( position == 3 && errors ) return false;
 
-        return true;
-      },
+      //   return true;
+      // },
       code: function(X) {
         if ( this.position == 0 ) {
           X.stack.back();
@@ -291,23 +305,27 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      isAvailable: function(position, errors) {
-        if ( errors ) return false; // Error present
-        return true; // Not in dialog
-      },
+      // isAvailable: function(position, errors) {
+      //   if ( errors ) return false; // Error present
+      //   return true; // Not in dialog
+      // },
       code: function() {
         var self = this;
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
+          var rate;
+          if(this.type == 'foreign'){
+            rate = this.viewData.rate.toString();
+          }
 
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
             payerId: this.user.id,
             payeeId: this.viewData.payee.id,
             amount: Math.round(this.viewData.fromAmount * 100),
-            rate: this.viewData.rate.toString(),
+            rate: rate,
             fees: Math.round(this.viewData.fees * 100),
             purpose: this.viewData.purpose,
             notes: this.viewData.notes
@@ -323,6 +341,7 @@ foam.CLASS({
             }
           })
           .catch(function (err) {
+            self.add(self.NotificationMessage.create({ type: 'error', message: err.message }));
             if ( err ) console.log(err.message);
           });
 

@@ -216,14 +216,14 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').add(this.Step).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
         .start('p').addClass('pDefault').add(this.Instructions).end()
-        .start('a')
+        /*.start('a')
           .addClass('link')
           .attrs({ href: 'javascript:' })
           .add(this.More)
-        .end()
+        .end()*/
         .start('div').addClass('row')
           .start('div')
             .addClass('cashoutOption')
@@ -250,10 +250,10 @@ foam.CLASS({
           .start('p').addClass('autoCashoutLabel').add(this.AutoCashout).end()
           .add(this.AUTO_CASHOUT)
         .end()
-        .start('div').addClass('promoContainer')
+        /*.start('div').addClass('promoContainer')
           .start('p').addClass('pDefault').add(this.PromoCode).end()
           .tag(this.PROMO_CODE, {onKey: true})
-        .end()
+        .end()*/
     }
   ],
 

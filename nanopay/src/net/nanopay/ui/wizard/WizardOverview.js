@@ -80,6 +80,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+
       this.addClass(this.myClass())
         .start('div').addClass('guideColumn')
           .start().forEach(this.titles, function(title, index) {
