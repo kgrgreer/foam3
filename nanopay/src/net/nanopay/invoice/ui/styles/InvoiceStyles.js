@@ -15,6 +15,11 @@ foam.CLASS({
           background: white;
           border: 1px solid #c82e2e;
         }
+        .Invoice-Status-Void {
+          border: 1px solid black;
+          color: white;
+          background: black;
+        }
         .Invoice-Status-New  {
           color: #262626;
           background: white;
