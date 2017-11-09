@@ -9,7 +9,7 @@ foam.INTERFACE({
       name: 'generateToken',
       returns: 'Promise',
       javaReturns: 'boolean',
-      swiftReturns: 'Bool',
+      swiftReturns: 'Bool?',
       swiftThrows: true,
       args: [
         {
@@ -23,7 +23,7 @@ foam.INTERFACE({
       name: 'processToken',
       returns: 'Promise',
       javaReturns: 'boolean',
-      swiftReturns: 'Bool',
+      swiftReturns: 'Bool?',
       swiftThrows: true,
       args: [
         {

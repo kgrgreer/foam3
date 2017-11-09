@@ -10,6 +10,15 @@ class swiftfoamTests: XCTestCase {
     super.tearDown()
   }
 
+  func testMintChipClient() {
+    let client = Context.GLOBAL.create(MintChipClient.self)!
+    do {
+      var user = try client.clientAuthService!.loginByEmail(client.__context__, "kirk@mintchip.ca", "mintchip123")
+    } catch let e {
+      print(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
+
   func testSelectTransactionDAO() {
     let boxContext = BoxContext()
     let X = boxContext.__subContext__
@@ -172,7 +181,7 @@ class swiftfoamTests: XCTestCase {
     t.payeeId = 1
     t.amount = 1
     t.rate = 1
-    t.fees = 2
+    //t.fees = 2
     t.notes = "Mike's test!"
 
     var expectations:[XCTestExpectation] = []
@@ -201,8 +210,8 @@ class swiftfoamTests: XCTestCase {
       XCTAssertEqual(t2.payerId, 1000)
       XCTAssertEqual(t2.payeeId, 1)
       XCTAssertEqual(t2.amount, 1)
-      XCTAssertEqual(t2.rate, 1)
-      XCTAssertEqual(t2.fees, 2)
+      XCTAssertEqual(t2.rate, 15)
+      //XCTAssertEqual(t2.fees, 20)
       XCTAssertEqual(t2.notes, "Mike's test!")
 
       expectations[1].fulfill()
@@ -273,7 +282,7 @@ class swiftfoamTests: XCTestCase {
     t.payeeId = 2
     t.amount = 1 //cents
     t.rate = 15
-    t.fees = 20
+    //t.fees = 20
     t.notes = "Mike's test!"
 
     var errors:[String] = []

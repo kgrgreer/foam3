@@ -11,6 +11,7 @@ var classes = [
 
   'foam.blob.Blob',
   'foam.box.Box',
+  'foam.box.LogBox',
   'foam.box.BoxRegistry',
   'foam.box.BoxService',
   'foam.box.ClientBoxRegistry',
@@ -23,6 +24,7 @@ var classes = [
   'foam.box.ReplyBox',
   'foam.box.SessionClientBox',
   'foam.box.swift.FileBox',
+  'foam.log.LogLevel',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
   'foam.mlang.Constant',

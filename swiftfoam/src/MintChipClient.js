@@ -10,6 +10,8 @@ foam.CLASS({
     'foam.box.swift.FileBox',
     'foam.dao.ClientDAO',
     'foam.swift.parse.json.FObjectParser',
+    'foam.nanos.auth.ClientAuthService',
+    'net.nanopay.auth.token.ClientTokenService'
   ],
   properties: [
     {
@@ -36,8 +38,31 @@ return MintChipSession_create()
       swiftType: 'ServiceURLs.Host',
       name: 'httpBoxUrlRoot',
       swiftFactory: `
-      return ServiceURLs.Host.Localhost
-      `
+return ServiceURLs.Host.Localhost
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.ClientAuthService',
+      name: 'clientAuthService',
+      swiftFactory: `
+return ClientAuthService_create([
+  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)auth"
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'userDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
+    ])
+  ])
+])
+      `,
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -50,6 +75,56 @@ return ClientDAO_create([
         "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
       ])
     ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.token.ClientTokenService',
+      name: 'SMSService',
+      swiftFactory: `
+return ClientTokenService_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)smsToken"
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.token.ClientTokenService',
+      name: 'EmailService',
+      swiftFactory: `
+return ClientTokenService_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)emailToken"
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'countryDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'regionDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
   ])
 ])
       `,

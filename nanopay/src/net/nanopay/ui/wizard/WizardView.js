@@ -27,7 +27,7 @@ foam.CLASS({
         ^{
           background-color: #edf0f5;
           width: 992px;
-          height: 590px;
+          height: 600px;
           margin: auto;
           overflow: hidden;
         }
@@ -99,7 +99,7 @@ foam.CLASS({
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           background-color: rgba(164, 179, 184, 0.1);
 
-          font-size: 14px;
+          font-size: 10px;
           font-weight: lighter;
           letter-spacing: 0.2px;
           color: #093649;
@@ -128,7 +128,7 @@ foam.CLASS({
           background-color: #59a5d5;
 
 
-          font-size: 14px;
+          font-size: 10px;
           font-weight: lighter;
           letter-spacing: 0.2px;
           color: #FFFFFF;
@@ -143,7 +143,6 @@ foam.CLASS({
           background: none;
           background-color: #3783b3;
         }
-
 
     */}
     })
@@ -169,8 +168,7 @@ foam.CLASS({
 
     // The stack that is handled by this Wizard View.
     {
-      name: 'subStack',
-      factory: function() { return this.Stack.create(); }
+      name: 'subStack'
     },
 
     // Current view the user is viewing in the substack.
@@ -228,6 +226,9 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.title ) { console.warn('[WizardView] : No title provided'); }
+      
+      this.viewTitles = [];
+      this.subStack = this.Stack.create();
 
       this.views.forEach(function(viewData){
         self.viewTitles.push(viewData.label);
