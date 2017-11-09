@@ -23,7 +23,7 @@ public class TokenGenService: Service {
 
     DispatchQueue.global(qos: .userInitiated).async {
       do {
-        guard let token = try self.service.generateToken(UserService.instance.getLoggedInUser()!) else {
+        guard let success = try self.service.generateToken(UserService.instance.getLoggedInUser()!) else {
           DispatchQueue.main.async {
             callback(ServiceError.ConversionFailed)
           }
@@ -31,7 +31,7 @@ public class TokenGenService: Service {
         }
 
         DispatchQueue.main.async {
-          callback(token)
+          callback(success)
         }
       } catch let e {
         NSLog(((e as? FoamError)?.toString()) ?? "Error!")
