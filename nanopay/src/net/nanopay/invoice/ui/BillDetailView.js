@@ -49,11 +49,6 @@ foam.CLASS({
           display: inline-block;
           margin-bottom: 20px;
         }
-        ^ .po-amount-div {
-          margin-left: 20px;
-          position: relative;
-          right: 70px;
-        }
         ^ .frequency-div {
           display: inline-block;
           margin: 0 36px 20px 0;
@@ -121,6 +116,10 @@ foam.CLASS({
           height: 40px;
           margin-top: 10px;
         }
+        ^ .input-container-1{
+          width: 600px;
+          float: right;
+        }
        */}
      })
    ],
@@ -143,14 +142,14 @@ foam.CLASS({
               .start().addClass('label').add('Vendor').end()              
                 .start(this.Invoice.PAYEE_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
               .end()
-              .start().style({ 'float' : 'right'})
-                .start().addClass('po-amount-div float-right')
+              .start().addClass('input-container-1')
+                .start().addClass('float-right')
                   .start().addClass('label').add('PO #').end()
                   .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
                 .end()
-                .start().addClass('float-right')
+                .start().addClass('')
                   .start().addClass('label').add('Due Date').end()
-                  .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+                  .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
                   .start().addClass('label').add('Amount').end()
                   .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
                 .end()
@@ -219,7 +218,7 @@ foam.CLASS({
               payeeId: this.payeeId,
               payerId: this.payerId,
               invoiceNumber: this.invoiceNumber,
-              issueDate: this.issueDate,
+              dueDate: this.dueDate,
               purchaseOrder: this.purchaseOrder,
               payeeName: this.payeeName,
               payerName: this.payerName

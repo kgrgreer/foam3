@@ -5,10 +5,15 @@ foam.CLASS({
 
   documentation: 'View for displaying all Cash In and Cash Out Transactions as well as account Balance',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.Account'
   ],
 
@@ -154,6 +159,25 @@ foam.CLASS({
           }
         })
       }
+    },
+    {
+      name: 'cicoTransactions',
+      expression: function(standardCICOTransactionDAO) {
+        return standardCICOTransactionDAO.where(
+          this.OR(
+            this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
+            this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
+          )
+        );
+      }
+    }
+  ],
+
+  messages: [
+    { name: 'balanceTitle', message: 'Balance' },
+    {
+      name: 'placeholderText',
+      message: 'You don’t have any cash in or cash out transactions. Verify a bank account to proceed to cash in or cash out.'
     }
   ],
 
@@ -178,7 +202,6 @@ foam.CLASS({
             .add(this.CASH_IN_BTN)
             .add(this.CASH_OUT_BUTTON)
           .end()
-          .start().add(this.recentActivities).addClass('recentActivities').end()
           .start()
             .tag({
               class: 'foam.u2.ListCreateController',
@@ -195,7 +218,8 @@ foam.CLASS({
               },
               summaryView: this.CicoTableView.create()
             })
-          .end()
+          .end()      
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.cicoTransactions, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
         .end();
     },
 
@@ -226,11 +250,6 @@ foam.CLASS({
     function goToBankAccounts() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
     }
-  ],
-
-  messages: [
-    { name: 'balanceTitle', message: 'Balance' },
-    { name: 'recentActivities', message: 'Recent Activities'}
   ],
 
   actions: [
