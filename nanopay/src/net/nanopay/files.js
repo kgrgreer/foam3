@@ -1,7 +1,6 @@
 FOAM_FILES([
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
-  { name: 'net/nanopay/model/AccountLimit' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccount' },
   { name: 'net/nanopay/model/Currency' },
@@ -113,7 +112,7 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/IntegrationView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
-  
+
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -172,5 +171,5 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },  
   { name: 'net/nanopay/model/Relationships'}
- 
+
 ]);

@@ -28,7 +28,6 @@ var classes = [
   'foam.swift.parse.json.output.HTTPBoxOutputter',
   'foam.u2.Visibility',
   'net.nanopay.model.Account',
-  'net.nanopay.model.AccountLimit',
   'net.nanopay.model.Phone',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
