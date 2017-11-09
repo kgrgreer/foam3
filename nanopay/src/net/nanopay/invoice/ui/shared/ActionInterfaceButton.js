@@ -120,26 +120,26 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().addClass(this.myClass('top-action-buttons'))
-          .start({  
-            class: 'net.nanopay.ui.ActionButton', 
-            data: {
-              image: 'images/approve.png', 
-              text: 'Approve',
-              data: this.data,
-              title: 'Approve'
-            }
-          }).addClass('import-button').add(this.APPROVE_MODAL).end()
-          .start({
-            class: 'net.nanopay.ui.ActionButton', 
-            data: {
-              image: 'images/reject.png', 
-              text: 'Reject',
-              data: this.data,
-              title: 'Dispute'
-            }
-          }).addClass('import-button').add(this.DISPUTE_MODAL).end()
-          .start(this.EMAIL_MODAL).addClass('import-button').end()
-          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
+          // .start({  
+          //   class: 'net.nanopay.ui.ActionButton', 
+          //   data: {
+          //     image: 'images/approve.png', 
+          //     text: 'Approve',
+          //     data: this.data,
+          //     title: 'Approve'
+          //   }
+          // }).addClass('import-button').add(this.APPROVE_MODAL).end()
+          // .start({
+          //   class: 'net.nanopay.ui.ActionButton', 
+          //   data: {
+          //     image: 'images/reject.png', 
+          //     text: 'Reject',
+          //     data: this.data,
+          //     title: 'Dispute'
+          //   }
+          // }).addClass('import-button').add(this.DISPUTE_MODAL).end()
+          // .start(this.EMAIL_MODAL).addClass('import-button').end()
+          // .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
           .start({
             class: 'net.nanopay.ui.ActionButton', 
             data: {

@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'invoiceDAO'
   ],
 
   properties: [
@@ -68,9 +69,18 @@ foam.CLASS({
           .end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start().addClass('blue-button btn').add('Confirm').end()
+          .start(this.VOIDED).addClass('blue-button btn').end()
         .end()
       .end()
     } 
+  ],
+
+  actions: [
+    {
+      name: 'voided',
+      code: function(X){
+        X.closeDialog();
+      }
+    }
   ]
 })
