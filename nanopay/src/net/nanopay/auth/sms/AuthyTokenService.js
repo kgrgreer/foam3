@@ -1,12 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.auth.sms',
   name: 'AuthyTokenService',
+  extends: 'net.nanopay.auth.token.AbstractTokenService',
 
   documentation: 'Implementation of Token Service used for verifying SMS',
 
   implements: [
-    'foam.nanos.NanoService',
-    'net.nanopay.auth.token.TokenService'
+    'foam.nanos.NanoService'
   ],
 
   javaImports: [
@@ -45,19 +45,19 @@ foam.CLASS({
       javaCode:
 `AuthyApiClient client = getClient();
 if ( client == null ) {
-  return null;
+  return false;
 }
 
 // don't send token if already verified
 Phone phone = user.getPhone();
 if ( phone.getVerified() ) {
-  return null;
+  return false;
 }
 
 // TODO: Remove hardcoded country code of 1
 PhoneVerification phoneVerification = client.getPhoneVerification();
 Verification verification = phoneVerification.start(phone.getNumber(), "1", "sms", new Params());
-return verification.getSuccess();`
+return Boolean.parseBoolean(verification.getSuccess());`
     },
     {
       name: 'processToken',

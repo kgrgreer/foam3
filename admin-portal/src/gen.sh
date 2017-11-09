@@ -5,14 +5,14 @@ rm -r ../build/
 mkdir ../build/
 
 # Copy over directories from src
-for d in * ; do
-    if [ "$d" = 'target/' ]; then
-        continue
-    fi
-    if [ "$d" = 'gen.sh' ]; then
-        continue
-    fi
-    cp -r $d ../build
+for d in *; do
+  if [ "$d" = 'target/' ]; then
+    continue
+  fi
+  if [ "$d" = 'gen.sh' ]; then
+    continue
+  fi
+  cp -r $d ../build
 done
 
 # Delete javascript files from ../build/
@@ -21,3 +21,7 @@ find ../build/ -name "*.js" -type f -delete
 # Generate java files to build dir
 cwd=$(pwd)
 node ../../../foam2/tools/genjava.js $cwd/../classes.js $cwd/../build $cwd
+
+# Copy java files to NANOPAY build folder
+cd ../build/
+find . -name '*.java' | cpio -pdm ../../build/

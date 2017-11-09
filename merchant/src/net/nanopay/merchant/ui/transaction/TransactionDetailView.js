@@ -89,7 +89,8 @@ foam.CLASS({
           padding-bottom: 12px;
         }
         ^ .transaction-refund {
-          padding-top: 33px;
+          position: fixed;
+          bottom: 0px;
         }
         ^ .transaction-refund-button {
           width: 320px;
@@ -121,7 +122,7 @@ foam.CLASS({
               .add(user.firstName + ' ' + user.lastName)
             .end()
             .start().addClass('transaction-profile-datetime')
-              .add(this.data.date.toLocaleString())
+              .add(this.data.date.toString())
             .end()
           .end()
         .end()

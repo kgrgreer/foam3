@@ -19,80 +19,14 @@ foam.CLASS({
           width: 992px;
           margin: auto;
         }
-        ^ .row {
-          display: inline-block;
-          margin-top: 16px;
-          width: 100%;
-        }
-        ^ .settingsBar {
-          width: 100%;
-          height: 40px;
-          line-height: 40px;
-          background-color: #FFFFFF;
+        ^ .Container {
+          width: 992px;
+          min-height: 80px;
           margin-bottom: 20px;
-        }
-        ^ .settingsBarContainer {
-          width: 992px;
-          margin: auto;
-        }
-        ^ .spacer {
-          display: inline-block;
-          margin-left: 8px;
-        }
-        ^ .spacer:first-child {
-          margin-left: 0;
-        }
-        ^ .foam-u2-ActionView {
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.3px;
-          color: #093649;
-          padding: 0;
-          padding-left: 30px;
-          display: inline-block;
-          cursor: pointer;
-          margin: 0;
-          border: none;
-          background: transparent;
-          outline: none;
-          line-height: 40px;
-        }
-        ^ .foam-u2-ActionView-personalProfile {
-          padding-left: 0;
-        }
-        ^ .foam-u2-ActionView:hover {
-          background: white;
-          opacity: 1;
-        }
-        ^ .firstContainer {
-          width: 992px;
-          height: 322px;
+          padding: 20px;
           border-radius: 2px;
           background-color: white;
-        }
-        ^ .secondContainer {
-          width: 992px;
-          height: 200px;
-          border-radius: 2px;
-          background-color: white;
-          margin-top: 20px;
-        }
-        ^ .thirdContainer {
-          width: 992px;
-          height: 80px;
-          border-radius: 2px;
-          background-color: white;
-          margin-top: 20px;
-        }
-        ^ .fourthContainer {
-          width: 992px;
-          height: 80px;
-          border-radius: 2px;
-          background-color: white;
-          margin-top: 20px;
-          margin-bottom: 20px;
+          box-sizing: border-box;
         }
         ^ .boxTitle {
           opacity: 0.6;
@@ -104,17 +38,13 @@ foam.CLASS({
           text-align: left;
           color: #093649;
           display: inline-block;
-          margin-left: 20px;
-          margin-top: 20px;
         }
         ^ .profileImg {
           width: 80px;
           height: 80px;
         }
         ^ .profileImgDiv {
-          margin-top: 20px;
           margin-bottom: 20px;
-          margin-left: 20px;
           line-height: 80px;
           position: relative;
         }
@@ -135,12 +65,10 @@ foam.CLASS({
         }
         ^ .inlineDiv {
           display: inline-block;
-          margin-left: 20px;
           margin-right: 100px;
         }
         ^ .topInlineDiv {
           display: inline-block;
-          margin-left: 20px;
           margin-right: 100px;
           vertical-align: top;
         }
@@ -161,7 +89,6 @@ foam.CLASS({
           color: #093649;
         }
         ^ .addBankButtonDiv {
-          width: 100%;
           text-align: center;
           margin-top: 40px;
         }
@@ -197,7 +124,23 @@ foam.CLASS({
           cursor: pointer;
           opacity: 1;
         }
-        ^ .close-BTN {
+        ^ .expand-BTN{
+          width: 135px;
+          height: 40px;
+          border-radous: 2px;
+          background-color: #59a5d5;
+          border-radius: 2px;
+          font-family: Roboto;
+          font-size: 14px;
+          line-height: 2.86;
+          letter-spacing: 0.2px;
+          text-align: center;
+          color: #ffffff;
+          cursor: pointer;
+          display: inline-block;
+          float: right;
+        }
+        ^ .close-BTN{
           width: 135px;
           height: 40px;
           border-radius: 2px;
@@ -211,65 +154,95 @@ foam.CLASS({
           color: #093649;
           cursor: pointer;
           display: inline-block;
-          margin-right: 20px;
-          margin-top: 20px;
           float: right;
         }
-        @media only screen and (max-width: 992px) {
-        ^ .spacer {
-          margin-left: 0px;
+        ^ .expand-Container{
+          width: 952px;
+          height: auto;
+          overflow: hidden;
+          transition: max-height 1.2s ease;
+          max-height: 600px;
         }
-        ^ .spacer:last-child {
-          float: middle;
+       ^ .expandTrue{
+          max-height: 0;
         }
       */}
     })
   ],
 
+  properties: [
+    {
+      name: "expandBox1",
+      value: false
+    },
+    {
+      name: "expandBox2",
+      value: false
+    },
+    {
+      name: "expandBox3",
+      value: false
+    },
+    {
+      name: "expandBox4",
+      value: false
+    },
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
       this
         .addClass(this.myClass())
-        .start('div').addClass('businessSettingsContainer')
-          .start('div').addClass('firstContainer')
+
+        .start().addClass('businessSettingsContainer')
+          .start().addClass('Container')
             .start().add('Business Profile').addClass('boxTitle').end()
+            .start()
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$, true)
+              .add(this.expandBox1$.map(function(e) { return e ? "Expand" : "Close"; }))
+              .enableClass('', self.expandBox1 = (self.expandBox1 ? false : true))
+              .on('click', function(){ self.expandBox1 = ( self.expandBox1 ? false : true ) })
+            .end()
+        
+          .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox1$)
             .add(this.EDIT_PROFILE)
-            .start().addClass('close-BTN').add("Close").end()
             .br()
-            .start('div').addClass('profileImgDiv')
+            .start().addClass('profileImgDiv')
               .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
               .start().add('Company Name').addClass('companyName').end()
             .end()
-            .start('div')
-              .start('div').addClass('inlineDiv')
-                .start('div').addClass('labelDiv')
+            .start()
+              .start().addClass('inlineDiv')
+                .start().addClass('labelDiv')
                   .start().add('Company Type').addClass('labelTitle').end()
                   .start().add('Limited Company').addClass('labelContent').end()
                 .end()
-                .start('div').addClass('labelDiv')
+                .start().addClass('labelDiv')
                   .start().add('Business Sector').addClass('labelTitle').end()
                   .start().add('Tobacco & Alcohol').addClass('labelContent').end()
                 .end()
               .end()
-              .start('div').addClass('inlineDiv')
-                .start('div').addClass('labelDiv')
+              .start().addClass('inlineDiv')
+                .start().addClass('labelDiv')
                   .start().add('Business Identification No.').addClass('labelTitle').end()
                   .start().add('0000000001').addClass('labelContent').end()
                 .end()
-                .start('div').addClass('labelDiv')
+                .start().addClass('labelDiv')
                   .start().add('Issuing Authority').addClass('labelTitle').end()
                   .start().add('Placeholder Text').addClass('labelContent').end()
                 .end()
               .end()
-              .start('div').addClass('topInlineDiv')
-                .start('div').addClass('labelDiv')
+              .start().addClass('topInlineDiv')
+                .start().addClass('labelDiv')
                   .start().add('Website').addClass('labelTitle').end()
                   .start().add('www.nanopay.net').addClass('labelContent').end()
                 .end()
               .end()
-              .start('div').addClass('topInlineDiv')
-                .start('div').addClass('labelDiv')
+              .start().addClass('topInlineDiv')
+                .start().addClass('labelDiv')
                   .start().add('Address').addClass('labelTitle').end()
                   .start().add('123 Avenue').addClass('labelContent').end()
                   .start().add('Toronto, Ontario').addClass('labelContent').end()
@@ -279,22 +252,56 @@ foam.CLASS({
               .end()
             .end()
           .end()
-          .start('div').addClass('secondContainer')
-            .start().add('Bank Account').addClass('boxTitle').end()
-            .start().addClass('close-BTN').add("Close").end()
+        .end()
+        
+        .start().addClass('Container')
+          .start().add('Bank Account').addClass('boxTitle').end()
+          .start()
+            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$, true)
+            .add(this.expandBox2$.map(function(e) { return e ? 'Expand' : "Close"; }))
+            .enableClass('', self.expandBox2 = (self.expandBox2 ? false : true))
+            .on('click', function(){ self.expandBox2 = ( self.expandBox2 ? false : true )})
+          .end()
+          .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox2$)
             .start('div').addClass('addBankButtonDiv')
               .add(this.ADD_BANK)
             .end()
           .end()
-          .start('div').addClass('thirdContainer')
-            .start().add('Invoice Preference').addClass('boxTitle').end()
-            .start().addClass('close-BTN').add("Close").end()
+        .end()
+         
+        .start().addClass('Container')
+          .start().add('Multi-user Management').addClass('boxTitle').end()
+          .start()
+            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox3$, true)
+            .add(this.expandBox3$.map(function(e) { return e ? 'Expand' : "Close"; }))
+            .enableClass('', self.expandBox3 = (self.expandBox3 ? false : true))
+            .on('click', function(){ self.expandBox3 = ( self.expandBox3 ? false : true )})
           .end()
-          .start('div').addClass('fourthContainer')
-            .start().add('Multi-user Management').addClass('boxTitle').end()
-            .start().addClass('close-BTN').add("Close").end()
+          .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox3$)
+            .start().addClass()
+              .br()
+              .br()
+              .br()
+              .br()
+            .end()
           .end()
         .end()
+
+        .start().addClass('Container')
+        .start().add('Integration Management').addClass('boxTitle').end()
+        .start()
+          .addClass('expand-BTN').enableClass('close-BTN', this.expandBox4$, true)
+          .add(this.expandBox4$.map(function(e) { return e ? 'Expand' : "Close"; }))
+          .enableClass('', self.expandBox4 = (self.expandBox4 ? false : true))
+          .on('click', function(){ self.expandBox4 = ( self.expandBox4 ? false : true )})
+        .end()
+        .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox4$)
+          .start().addClass()
+            .tag({ class: "net.nanopay.settings.business.IntegrationView"})
+          .end()
+        .end()
+      .end()      
+    .end()										       
     }
   ]
 });

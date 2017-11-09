@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'CashOutModal',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'net.nanopay.cico.ui.CicoView' ],
+  requires: [ 
+    'net.nanopay.cico.ui.CicoView',
+    'net.nanopay.ui.NotificationMessage'  
+  ],
 
   imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn', 'goToBankAccounts' ],
 
@@ -173,6 +176,11 @@ foam.CLASS({
       name: 'nextButton',
       label: 'Next',
       code: function(X) {
+        var self = this;
+        if(self.amount == 0) {
+          self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than 0.00', type: 'error' }));
+          return;
+        }
         X.closeDialog();
         X.confirmCashOut();
       }

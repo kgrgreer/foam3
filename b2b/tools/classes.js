@@ -1,5 +1,5 @@
-require('../nanopay/src/net/nanopay/model/BusinessSector');
-require('../nanopay/src/net/nanopay/model/BusinessType');
+require('../../nanopay/src/net/nanopay/model/BusinessSector');
+require('../../nanopay/src/net/nanopay/model/BusinessType');
 
 var classes = [
   'net.nanopay.b2b.model.Invoice',

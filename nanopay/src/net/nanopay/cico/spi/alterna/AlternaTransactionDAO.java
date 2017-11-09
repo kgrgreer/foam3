@@ -12,7 +12,10 @@ public class AlternaTransactionDAO
   public AlternaTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
-
+  public AlternaTransactionDAO(X x, DAO delegate) {
+    setX(x);
+    setDelegate(delegate);
+  }
   private static final Long ALTERNA_ID = 1L;
 
   @Override
@@ -26,7 +29,7 @@ public class AlternaTransactionDAO
       synchronized ( secondLock ) {
         try {
           transaction.setProviderId(ALTERNA_ID);
-          return getDelegate().put(transaction);
+          return getDelegate().put_(x, transaction);
 
         } catch (RuntimeException e) {
           throw e;

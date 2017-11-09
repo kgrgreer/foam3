@@ -24,7 +24,7 @@ foam.CLASS({
           width: 250px;
           padding: 20px 60px;
           background: #cff0e1;
-          position: absolute;
+          position: fixed;
           top: 100px;
           right: 100px;
           border: 1px solid #2cab70;
@@ -34,6 +34,7 @@ foam.CLASS({
           line-height: 1.33;
           letter-spacing: 0.2px;
           text-align: center;
+          z-index: 100;
         }
         @keyframes fade {
           0% { opacity: 0; }
@@ -46,7 +47,7 @@ foam.CLASS({
           border: 1px solid #f33d3d;
         }
         ^ .close-x{
-          right: -10px;
+          right: 5px;
           top: 10px;
         }
         ^ .net-nanopay-ui-ActionView-close{
@@ -55,7 +56,7 @@ foam.CLASS({
           position: absolute;
           left: -14px;
           top: -5px;
-          z-index: 1;
+          z-index: 101;
           opacity: 0.01;
         }
       */

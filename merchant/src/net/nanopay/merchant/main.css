@@ -4,6 +4,11 @@ body {
   background-color: #2c4389;
   margin: 0;
   width: 320px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 button {
@@ -15,4 +20,12 @@ button {
   line-height: 1.88;
   text-align: center;
   color: #ffffff;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
 }

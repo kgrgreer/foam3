@@ -14,37 +14,18 @@ foam.CLASS({
           width: 320px;
           height: 56px;
           background-color: #2c4389;
-        }
-        ^ .transaction-toolbar-icon-wrapper {
-          width: 30px;
-          height: 30px;
-          padding-left: 20px;
-          padding-top: 13px;
-          padding-bottom: 12px;
-          float: left;
+          -webkit-box-shadow: none;
+          box-shadow: none;
         }
         ^ .transaction-toolbar-icon {
-          width: 50%;
-          margin: 0 auto;
-          padding-top: 4px;
-          padding-bottom: 3px;
-        }
-        ^ .transaction-toolbar-icon img {
-          width: 13.5px;
-          height: 23px;
-          object-fit: contain;
+          height: 100%;
+          padding-left: 20px;
+          padding-right: 20px;
+          float: left;
         }
         ^ .transaction-toolbar-title {
-          height: 30px;
-          font-family: Roboto;
           font-size: 16px;
-          line-height: 1.88;
-          text-align: center;
-          color: #ffffff;
-          padding-left: 20px;
-          padding-top: 12px;
-          padding-bottom: 13px;
-          float: left;
+          line-height: 56px;
         }
       */}
     })
@@ -60,15 +41,11 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('transaction-toolbar-icon-wrapper')
-          .start('div').addClass('transaction-toolbar-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png '})
-          .end()
+        .start('button').addClass('transaction-toolbar-icon material-icons')
+          .add('arrow_back')
           .on('click', this.onBackClicked)
         .end()
-        .start('div').addClass('transaction-toolbar-title')
-          .add(this.title)
-        .end()
+        .start('div').addClass('transaction-toolbar-title').add('Back').end()
     }
   ],
 

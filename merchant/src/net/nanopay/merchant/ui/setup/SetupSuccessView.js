@@ -16,6 +16,7 @@ foam.CLASS({
           width: 320px;
           height: 480px;
           background: #35c38d;
+          margin-top: -56px;
         }
         ^ .success-view-div {
           padding-top: 70px;
@@ -57,6 +58,12 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
+      this.document.addEventListener('keydown', this.onKeyPressed);
+      this.onDetach(function () {
+        self.document.removeEventListener('keydown', self.onKeyPressed);
+      });
 
       this
         .addClass(this.myClass())
@@ -81,6 +88,13 @@ foam.CLASS({
   ],
 
   listeners: [
+    function onKeyPressed (e) {
+      var key = e.key || e.keyCode;
+      if ( key === 'Enter' || key === 13 ) {
+        this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+      }
+    },
+
     function onNextClicked (e) {
       this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }

@@ -114,7 +114,7 @@ foam.CLASS({
           margin-bottom: 2px;
         }
         ^ .net-nanopay-ui-ActionView-cashOutButton:hover {
-          background: #ebebeb;
+          background: lightgray;
         }
         ^ .recentActivities {
           opacity: 0.6;
@@ -128,10 +128,6 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
-        }
-        ^ .foam-u2-view-TableView-noselect {
-          width: 1px;
-          cursor: pointer;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
@@ -259,14 +255,28 @@ foam.CLASS({
     {
       name: 'CicoTableView',
       extends: 'foam.u2.View',
-
-      requires: [ 'net.nanopay.tx.model.Transaction' ],
+      implements: [
+        'foam.mlang.Expressions',
+      ],
+      requires: [ 'net.nanopay.tx.model.Transaction',
+                  'net.nanopay.cico.model.TransactionType'
+                ],
 
       imports: [ 'standardCICOTransactionDAO' ],
 
       properties: [
         'selection',
-        { name: 'data', factory: function() { return this.standardCICOTransactionDAO; } }
+        {
+          name: 'cicoTransactions',
+          expression: function(standardCICOTransactionDAO) {
+            return standardCICOTransactionDAO.where(
+              this.OR(
+                this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
+                this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
+              )
+            );
+          }
+        }
       ],
 
       methods: [
@@ -276,7 +286,7 @@ foam.CLASS({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
               editColumnsEnabled: true,
-              data: this.data,
+              data: this.cicoTransactions,
               columns: [
                 'date', 'id', 'amount', 'type'
               ]

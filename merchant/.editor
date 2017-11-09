@@ -1,6 +1,6 @@
 {
-  "last.page": "page:web.app.conf.weblet",
+  "last.page": "page:terminal",
   "profiling": [
-    "merchant"
+    "MintChip"
   ]
 }
