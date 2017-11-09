@@ -42,7 +42,7 @@ foam.CLASS({
           margin: auto;
         }
         ^ .net-nanopay-invoice-ui-SummaryCard{
-          width: 20.9%;
+          width: 20.8%;
         }
         ^ .optionsDropDown {
           left: -117 !important;
@@ -51,6 +51,7 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create{
           position: relative;
           top: -40;
+          margin-right: 5px;
         }
         */
       }
@@ -128,7 +129,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'payerId', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate', 'amount', 'status'
               ]
             }).addClass(this.myClass('table')).end()
         }

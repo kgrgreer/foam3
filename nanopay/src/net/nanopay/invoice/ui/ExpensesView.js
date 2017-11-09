@@ -44,6 +44,7 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create{
           position: relative;
           top: -40;
+          margin-right: 5px;
         }
         */
       }
@@ -139,7 +140,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'payeeId', 'issueDate', 'amount', 'status'
+                'invoiceNumber', 'purchaseOrder', 'payeeId', 'dueDate', 'amount', 'status'
               ],
             }).end()
         },

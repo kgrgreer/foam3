@@ -176,9 +176,6 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
         }
-        ^ .foam-u2-view-TableView-noselect {
-          cursor: pointer;
-        }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
@@ -227,6 +224,13 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'myAccounts', message: 'My Accounts' },
+    { name: 'recentActivities', message: 'Recent Activities' },
+    { name: 'recentTransactions', message: 'Recent Transactions' },
+    { name: 'placeholderText', message: 'You don\'t have any recent transactions right now.' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -259,21 +263,15 @@ foam.CLASS({
                     this.Transaction.PAYEE_ID,
                     this.Transaction.AMOUNT,
                     this.Transaction.RECEIVING_AMOUNT,
-                    this.Transaction.RATE,
-                    this.Transaction.FEES
+                    this.Transaction.RATE
                   ]
                 },
               summaryView: this.TransactionTableView.create()
             })
           .end()*/
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
     }
-  ],
-
-  messages: [
-    { name: 'myAccounts', message: 'My Accounts' },
-    { name: 'recentActivities', message: 'Recent Activities' },
-    { name: 'recentTransactions', message: 'Recent Transactions' }
   ],
 
   actions: [
@@ -316,7 +314,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate', 'fees'
+                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
               ]
             }).addClass(this.myClass('table')).end();
         }

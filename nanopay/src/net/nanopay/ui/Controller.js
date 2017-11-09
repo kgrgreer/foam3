@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
@@ -11,7 +11,7 @@ foam.CLASS({
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling'        
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   requires: [
@@ -20,7 +20,8 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.model.BankAccount'
   ],
 
   exports: [
@@ -35,23 +36,19 @@ foam.CLASS({
     'sessionSuccess'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        .stack-wrapper{
-          min-height: calc(80% - 60px);
-          margin-bottom: -10px;
-        }
-        .stack-wrapper:after{
-          content: "";
-          display: block;
-        }
-        .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView{
-          height: 10px;
-        }
-      */}
-    })
-  ],
+  css: `
+    .stack-wrapper{
+      min-height: calc(80% - 60px);
+      margin-bottom: -10px;
+    }
+    .stack-wrapper:after{
+      content: "";
+      display: block;
+    }
+    .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView{
+      height: 10px;
+    }
+  `,
 
   properties: [
     {
@@ -82,7 +79,6 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
       /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
@@ -94,8 +90,17 @@ foam.CLASS({
       this.accountDAO.select().then(function(a) {
         self.account.copyFrom(a.array[0]);
       });
+      window.onpopstate = function(event) {
+        if ( location.hash != null ) {
+          var hid = location.hash.substr(1);
 
+          hid && self.menuDAO.find(hid).then(function(menu) {
+            menu && menu.launch(this,null);
+         })
+        }
+      };
       net.nanopay.TempMenu.create(null, this);
+      window.onpopstate();
     },
 
     function initE() {

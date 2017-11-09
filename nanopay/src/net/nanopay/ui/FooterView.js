@@ -9,9 +9,11 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 990px;
+          width: 100%;
+          min-width: 992px;
           margin: auto;
           position: relative;
+          top: 60;
         }
         ^ h3{
           font-size: 14px;

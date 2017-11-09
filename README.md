@@ -27,14 +27,29 @@ npm install
 node scripts/geniso/index.js
 ./build.sh
 ```
+### Installing tomcat 
+
+Go into the NANOPAY/tools directory and run the following commands:
+
+```
+./tomcatInstall.sh
+
+```
+
 
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
 
-`sh run.sh`
+`sh run-nanos.sh`
 OR
-`./run.sh`
+`./run-nanos.sh`
 
+### Build all projects and run tomcat at once
+You can run the script generateAll.sh to build all projects and run tomcat, go to the NANOPAY project root folder and execute:
+
+`sh run-tomcat.sh`
+OR
+`./run-tomcat.sh`
 
 ### Build manual procedures
 
@@ -72,17 +87,3 @@ cd ..
 
 Visit [http://localhost:8080/static/NANOPAY](http://localhost:8080/static/NANOPAY) and go into any of the submodules to view that project
 
-### Compiling a single module
-
-To compile a single module run the following command:
-
-```
-cd ./{project}/src
-./gen.sh
-cd ../..
-mvn -pl {project} {command}
-```
-
-where:
- - project is the project name (i.e common, b2b, etc)
- - command is the command you which to run (i.e. clean, compile, package, etc)

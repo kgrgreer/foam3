@@ -21,6 +21,7 @@ foam.CLASS({
     'user',
     'device',
     'stack',
+    'showAbout',
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
@@ -34,6 +35,9 @@ foam.CLASS({
         ^ {
           width: 320px;
           background-color: #2C4389;
+        }
+        ^ .stack-wrapper {
+          padding-top: 56px;
         }
         ^ .sidenav {
           display: none;
@@ -53,21 +57,31 @@ foam.CLASS({
           display: block;
         }
         ^ .toolbar {
+          width: 320px;
           height: 56px;
           background-color: #4054B5;
           -webkit-box-shadow: none;
           box-shadow: none;
-          position: relative;
+          position: fixed;
+          top: 0;
         }
         ^ .toolbar-icon {
-          height: 100%;
+          height: 56px;
           padding-left: 20px;
           padding-right: 20px;
           float: left;
         }
+        ^ .toolbar-icon.about {
+          height: 56px;
+          padding-left: 20px;
+          padding-right: 20px;
+          float: right;
+        }
         ^ .toolbar-title {
           font-size: 16px;
           line-height: 56px;
+          position: absolute;
+          margin-left: 64px;
         }
         ^ .sidenav-list-item {
           height: 90px;
@@ -82,6 +96,15 @@ foam.CLASS({
           color: #595959;
           line-height: 90px;
           text-decoration: none;
+        }
+        ^ .sidenav-list-item.about {
+          height: 56px;
+          width: 250px;
+          position: fixed;
+          bottom: 0px;
+        }
+        ^ .sidenav-list-item.about a {
+          line-height: 56px;
         }
         ^ .sidenav-list-icon i {
           display: inline-block;
@@ -105,11 +128,12 @@ foam.CLASS({
           line-height: 56px;
           text-decoration: none;
         }
-        ^ .sidenav-list-icon.back img {
-          width: 20px;
-          height: 20px;
-          padding-left: 20px;
-          padding-right: 30px;
+        ^ .sidenav-list-icon.material-icons {
+          height: 100%;
+          padding-left: 25px;
+          padding-right: 20px;
+          float: left;
+          line-height: 56px;
         }
         ^ .net-nanopay-ui-ToggleSwitch {
           float: right;
@@ -122,6 +146,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'showAbout',
+      value: true
+    },
     {
       class: 'Boolean',
       name: 'showHeader',
@@ -140,7 +169,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'toolbarTitle',
-      value: 'Home'
+      value: 'MintChip Home'
     },
     {
       class: 'FObjectProperty',
@@ -159,12 +188,13 @@ foam.CLASS({
       name: 'serialNumber',
       factory: function () {
         if ( ! localStorage.serialNumber ) {
-          // remove hyphens, use 16 characters, convert to upper case
-          localStorage.serialNumber = foam.uuid.randomGUID()
-            .replace(/-/g, '')
-            .substring(0, 16)
-            .toUpperCase()
-            .trim();
+          localStorage.serialNumber = 'D224E98C71EF42CA';
+//          // remove hyphens, use 16 characters, convert to upper case
+//          localStorage.serialNumber = foam.uuid.randomGUID()
+//            .replace(/-/g, '')
+//            .substring(0, 16)
+//            .toUpperCase()
+//            .trim();
         }
         return localStorage.serialNumber;
       }
@@ -210,9 +240,9 @@ foam.CLASS({
         .start('div').addClass('sidenav')
           .start('div').addClass('sidenav-list-item back')
             .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon back')
+              .start('i').addClass('sidenav-list-icon back material-icons')
                 .attrs({ 'aria-hidden': true })
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-arrow-left.png' })
+                .add('arrow_back')
               .end()
               .add('Back')
             .end()
@@ -224,7 +254,7 @@ foam.CLASS({
                 .attrs({ 'aria-hidden': true })
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
               .end()
-              .add('Home')
+              .add('MintChip Home')
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
@@ -251,6 +281,12 @@ foam.CLASS({
           .end()
         .end()
 
+        // main content
+        .start('div')
+          .addClass('stack-wrapper')
+          .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
+        .end()
+
         // toolbar
         .start('div').addClass('toolbar').show(this.showHeader$)
           .start('button').addClass('toolbar-icon material-icons')
@@ -258,21 +294,21 @@ foam.CLASS({
             .on('click', this.onMenuClicked)
           .end()
           .start('div').addClass('toolbar-title').add(this.toolbarTitle$).end()
-        .end()
-
-        // main content
-        .start('div')
-          .addClass('stack-wrapper')
-          .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
+          .start('button').addClass('toolbar-icon about material-icons').show(this.showAbout$)
+            .add('info_outline')
+            .on('click', this.onAboutClicked)
+          .end()
         .end()
     }
   ],
 
   listeners: [
+    function onAboutClicked (e) {
+      this.stack.push({ class: 'net.nanopay.merchant.ui.AboutView' });
+    },
+
     function onMenuClicked (e) {
       if ( this.toolbarTitle === 'Back' ) {
-        this.toolbarTitle = 'Home';
-        this.toolbarIcon = 'menu';
         this.stack.back();
       } else {
         var sidenav = document.querySelector('.sidenav');
@@ -286,6 +322,11 @@ foam.CLASS({
       // if clicked is null, don't do anything
       if ( ! clicked ) {
         return;
+      }
+
+      // fix issue with clicking back button
+      if ( clicked === 'arrow_back' || clicked === 'arrow_backBack' ) {
+        clicked = 'Back';
       }
 
       var sidenav = document.querySelector('.sidenav');
@@ -311,7 +352,7 @@ foam.CLASS({
       this.toolbarTitle = clicked;
       this.stack.back();
       switch ( clicked ) {
-        case 'Home':
+        case 'MintChip Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
           break;
         case 'Transactions':

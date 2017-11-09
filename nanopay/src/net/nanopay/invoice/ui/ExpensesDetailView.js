@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [ 
-    'foam.u2.dialog.Popup' 
+    'foam.u2.dialog.Popup'
   ],
 
   imports: [ 
@@ -64,7 +64,7 @@ foam.CLASS({
 
   listeners: [
     function payNowPopUp(){
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.PayNowModal', invoice: this.data }));
+      this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: this.data });
     },
 
     function disputePopUp(){

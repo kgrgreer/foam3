@@ -19,7 +19,7 @@ foam.CLASS({
           background: white;
           height: 100px;
           vertical-align: top;
-          margin-right: 6px;
+          margin-left: 6px;
           border-radius: 3px;
           overflow: hidden;
         }
@@ -62,7 +62,7 @@ foam.CLASS({
           height: 18px;
           border: 1px solid #2cab70;
           border-radius: 100px;
-          padding: 3px 0 0 15px;
+          padding: 3px 0 0 10px;
         }
 
         ^ .New{

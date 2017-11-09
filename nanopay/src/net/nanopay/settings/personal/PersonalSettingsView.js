@@ -323,6 +323,7 @@ foam.CLASS({
         ^ .expandTrue{
           visibility: hidden;
           height: 0px;
+          transition: background .1s linear;
         }
       */}
     })
@@ -360,7 +361,7 @@ foam.CLASS({
         .start().addClass('first_Container')
           .start('h1').add("Personal profile").addClass('personalProfile-Text').end()
           .start()
-            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$.map(function(e) { return e ? false : true; }))
+            .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$, true)
             .add(this.expandBox1$.map(function(e) { return e ? "Expand" : "Close"; }))
             .enableClass('', self.expandBox1 = (self.expandBox1 ? false : true))
             .on('click', function(){ self.expandBox1 = ( self.expandBox1 ? false : true ) })
@@ -396,7 +397,7 @@ foam.CLASS({
           .start('div')
             .start('h1').add("Reset Password").addClass('resetPass-Text').end()
             .start()
-              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$.map(function(e) { return e ? false : true; }))
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$, true)
               .add(this.expandBox2$.map(function(e) { return e ? 'Expand' : "Close"; }))
               .enableClass('', self.expandBox2 = (self.expandBox2 ? false : true))
               .on('click', function(){ self.expandBox2 = ( self.expandBox2 ? false : true )})
@@ -431,7 +432,7 @@ foam.CLASS({
           .start('div')
             .start('h1').add("Email Prefrences").addClass('emailPref-Text').end()
             .start()
-              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox4$.map(function(e) { return e ? false : true; }))
+              .addClass('expand-BTN').enableClass('close-BTN', this.expandBox4$, true)
               .add(this.expandBox4$.map(function(e) { return e ? 'Expand' : "Close"; }))
               .enableClass('', self.expandBox4 = (self.expandBox4 ? false : true))
               .on('click', function(){ self.expandBox4 = ( self.expandBox4 ? false : true )})
