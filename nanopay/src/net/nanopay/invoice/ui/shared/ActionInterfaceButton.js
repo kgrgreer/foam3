@@ -63,7 +63,6 @@ foam.CLASS({
           padding: 0;
           z-index: 1;
           width: 157px;
-          height: 60px;
           background: white;
           opacity: 1;
           box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
@@ -167,9 +166,9 @@ foam.CLASS({
     {
       name: 'popUp',
       code: function(X){
+        var self = this;
         var p = this.PopupView.create({
           width: 157,
-          height: 60,
           left: -117,
           top: 30
         }, X)
@@ -177,9 +176,13 @@ foam.CLASS({
           .start('div').add(this.detailActions.subMenu1)
             .on('click', this.detailActions.subMenuAction1)
           .end()
-          .start('div').add(this.detailActions.subMenu2)
-            .on('click', this.detailActions.subMenuAction2)
-          .end()
+          .call(function(){
+            if(self.detailActions.subMenu2){
+              p.start().add(self.detailActions.subMenu2)
+                .on('click', self.detailActions.subMenuAction2)
+              .end()
+            }
+          })            
         this.popupMenu_.add(p)
       }
     },

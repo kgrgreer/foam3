@@ -7,7 +7,8 @@ foam.CLASS({
   documentation: 'Dispute Invoice Modal',
 
   requires: [
-    'net.nanopay.ui.modal.ModalHeader'
+    'net.nanopay.ui.modal.ModalHeader',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   implements: [
@@ -78,7 +79,12 @@ foam.CLASS({
   actions: [
     {
       name: 'voided',
+      label: 'Void',
       code: function(X){
+        this.invoice.status = 'Void';
+        this.invoice.note = X.data.note;
+        this.invoiceDAO.put(this.invoice);
+        ctrl.add(this.NotificationMessage.create({ message: 'Invoice voided.', type: '' }));        
         X.closeDialog();
       }
     }

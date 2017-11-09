@@ -89,6 +89,7 @@ foam.CLASS({
 
         this.invoice.status = 'Paid';
         this.invoice.paymentDate = X.data.paymentDate;
+        this.invoice.paymentMethod = 'external';
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
         ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment recorded.', type: '' }));        
