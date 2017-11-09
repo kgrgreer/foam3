@@ -72,7 +72,6 @@ foam.CLASS({
   methods: [
     function initE(){
       var self = this;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
@@ -90,7 +89,7 @@ foam.CLASS({
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
-            .start('h4').add(this.data.dueDate.toISOString().substring(0,10)).end()
+            .start('h4').add(this.data.dueDate ? this.data.dueDate.toISOString().substring(0,10) : '').end()
             .start('h4').add(this.data.currencyType, ' ', this.data.amount.toFixed(2)).end()
             .start('h3').add(this.data.status).end()
           .end()

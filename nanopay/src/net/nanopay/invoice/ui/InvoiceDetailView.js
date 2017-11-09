@@ -210,6 +210,7 @@ foam.CLASS({
             X.dao.put(self);
           })
         } else {
+          console.log('hit');          
           X.dao.put(this);          
         }
 
