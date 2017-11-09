@@ -17,12 +17,15 @@ public class EmailVerificationUserDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    EmailTokenService emailToken = (EmailTokenService) getX().get("emailToken");
     User user = (User) obj;
-    // assume new user if can't find in delegate
-    if ( getDelegate().find(user.getId()) == null ) {
-      emailToken.generateToken(user);
+    EmailTokenService emailToken = (EmailTokenService) getX().get("emailToken");
+    boolean newUser = ( getDelegate().find(user.getId()) == null );
+
+    User result = (User) super.put_(x, obj);
+    // send email verification if new user
+    if ( result != null && newUser ) {
+      emailToken.generateToken(result);
     }
-    return super.put_(x, obj);
+    return result;
   }
 }
