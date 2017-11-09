@@ -4,16 +4,12 @@ foam.CLASS({
 
   documentation: 'Pre-defined limit for transactions.',
 
+  ids: [ 'name', 'timeFrame', 'type' ],
+
   properties: [
     {
-      class: 'Long',
-      name: 'id',
-      required: true
-    },
-    {
       class: 'String',
-      name: 'name',
-      required: true
+      name: 'name'
     },
     {
       class: 'foam.core.Enum',
