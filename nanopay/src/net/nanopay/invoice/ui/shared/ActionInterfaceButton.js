@@ -14,7 +14,11 @@ foam.CLASS({
     'detailActions',
     'popupMenu_',
     'openMenu',
-    'data'
+    'data',
+    {
+      name: 'activePopUp',
+      value: false
+    }
   ],
 
   exports: [
@@ -120,7 +124,7 @@ foam.CLASS({
   methods: [
     function initE(){
       this.SUPER();
-
+      var self = this;
       this
         .addClass(this.myClass())
           .start().addClass(this.myClass('top-action-buttons'))
@@ -157,7 +161,7 @@ foam.CLASS({
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
             .start().addClass(this.myClass('expand-button')).add(this.POP_UP)
-            .start().addClass(this.myClass('expand-triangle')).end()
+              .start().addClass(this.myClass('expand-triangle')).end()
             .end()   
             .start('span', null, this.popupMenu_$)      
             .end()
@@ -167,16 +171,22 @@ foam.CLASS({
     }
   ],
 
+
   actions: [
     {
       name: 'popUp',
-      code: function(X){
+      isAvailable: function(activePopUp){
+        return ! activePopUp;
+      },
+      code: function(X) {
+        this.activePopUp = true;
         var self = this;
         var p = this.PopupView.create({
           width: 157,
           left: -117,
           top: 30
-        }, X)
+        }, X);
+        p.onunload.sub(function() { self.activePopUp = false; });
         p.addClass('optionsDropDown')
           .start('div').add(this.detailActions.subMenu1)
             .on('click', this.detailActions.subMenuAction1)
@@ -187,7 +197,7 @@ foam.CLASS({
                 .on('click', self.detailActions.subMenuAction2)
               .end()
             }
-          })            
+          })
         this.popupMenu_.add(p)
       }
     },
