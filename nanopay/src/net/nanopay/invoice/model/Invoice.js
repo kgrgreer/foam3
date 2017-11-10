@@ -130,8 +130,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'voided',
-      value: false
+      name: 'voided'
     },
     {
       class: 'String',
