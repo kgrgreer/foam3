@@ -53,7 +53,7 @@ foam.CLASS({
           border-top: 5px solid white;
           margin-left: 9px;    
           position: relative;
-          top: 18px;
+          top: -20px;
         }
         ^top-action-buttons{
           width: 685px;
@@ -89,6 +89,11 @@ foam.CLASS({
           height: 35px;
           z-index: 1;
           opacity: 0.01;
+        }
+        ^ .net-nanopay-ui-ActionView-PopUp{
+          position: relative;
+          width: 30px;
+          height: 40px;
         }
         ^ .net-nanopay-ui-ActionView-mainAction{
           opacity: 0.01;
@@ -151,10 +156,10 @@ foam.CLASS({
           // .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
-            .start('span', null, this.popupMenu_$)
-              .start().addClass(this.myClass('expand-button')).add(this.POP_UP)
-              .start().addClass(this.myClass('expand-triangle')).end()
-              .end()         
+            .start().addClass(this.myClass('expand-button')).add(this.POP_UP)
+            .start().addClass(this.myClass('expand-triangle')).end()
+            .end()   
+            .start('span', null, this.popupMenu_$)      
             .end()
           .end()
           .end()
