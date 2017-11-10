@@ -54,8 +54,8 @@ foam.CLASS({
             invoice: this.data,
             buttonLabel: 'Record Payment', 
             buttonAction: this.recordPaymentModal,
-            subMenu1: 'Edit Invoice',
-            subMenu2: 'Void' 
+            subMenu1: 'Void',
+            subMenuAction1: this.voidPopUp 
           }
         })
         .start('h5').add('Bill to ', this.data.payerName).end()
@@ -65,7 +65,18 @@ foam.CLASS({
 
   listeners: [
     function recordPaymentModal(){
+      if(this.data.paymentMethod.name != "NONE"){
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
+    },
+    function voidPopUp(){
+      if(this.data.paymentMethod.name != "NONE"){
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     }
   ],
 

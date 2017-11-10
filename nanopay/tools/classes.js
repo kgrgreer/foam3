@@ -25,6 +25,7 @@ var classes = [
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
+  'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.fx.ExchangeRateInterface',
