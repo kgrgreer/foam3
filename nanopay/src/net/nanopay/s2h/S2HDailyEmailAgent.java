@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.Currency;
 
 
-public class s2hDailyEmailAgent
+public class S2HDailyEmailAgent
         implements ContextAgent
 {
   String [] recipients;
