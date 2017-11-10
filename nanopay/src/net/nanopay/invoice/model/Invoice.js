@@ -150,10 +150,11 @@ foam.CLASS({
       name: 'status',
       transient: true,
       aliases: [ 's' ],
-      expression: function(draft, paymentId, voided, dueDate, paymentDate) {
+      expression: function(draft, paymentId, voided, dueDate, paymentDate, paymentMethod) {
         if ( voided ) return 'Void';        
         if ( draft ) return 'Draft';
         if ( paymentId === -1 ) return 'Disputed';
+        if ( paymentMethod == 'external' && paymentDate) return 'Paid';
         if ( paymentId ) return 'Paid';
         if ( dueDate ) { 
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
@@ -165,6 +166,7 @@ foam.CLASS({
         if ( getVoided() ) return "Void";              
         if ( getDraft() ) return "Draft";
         if ( getPaymentId() == -1 ) return "Disputed";
+        if ( getPaymentMethod() == "external" && getPaymentDate() != null) return "Paid";        
         if ( getPaymentId() > 0 ) return "Paid";
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
@@ -239,7 +241,7 @@ foam.RELATIONSHIP({
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payeeName = a.label();
-          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+          // if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
           self.payeeName = 'Unknown Id: ' + newValue;
         }
@@ -284,7 +286,7 @@ foam.RELATIONSHIP({
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payerName = a.label();
-          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+          // if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
           self.payerName = 'Unknown Id: ' + newValue;
         }

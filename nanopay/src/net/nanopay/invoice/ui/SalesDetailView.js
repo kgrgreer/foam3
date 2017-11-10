@@ -80,7 +80,7 @@ foam.CLASS({
         this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been voided.', type: 'error' }));
         return;
       }
-      else if(this.data.paymentDate && this.data.paymentDate < new Date()){
+      else if(this.data.paymentDate){
         this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been paid.', type: 'error' }));
         return;
       }

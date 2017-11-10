@@ -40,6 +40,7 @@ foam.CLASS({
           line-height: 2.86;
           text-align: center;
           float: right;
+          margin-right: 10px;
         }
         ^expand-button{
           width: 27px;
