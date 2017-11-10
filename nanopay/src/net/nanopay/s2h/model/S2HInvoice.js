@@ -4,9 +4,13 @@ foam.CLASS({
 
   documentation: 'S2H Invoice model.',
 
-  ids: [ 'id' ],
+  imports: [ 'invoiceDAO' ],
 
-  javaImports: [ 'java.util.Date' ],
+  javaImports: [
+    'foam.dao.DAO',
+    'net.nanopay.invoice.model.Invoice',
+    'java.util.Date'
+  ],
 
   properties: [
     {
@@ -35,6 +39,7 @@ foam.CLASS({
     },
     {
       class: 'Date',
+      javaFactory: 'return new Date();',
       name: 'date'
     },
     {
@@ -98,6 +103,34 @@ foam.CLASS({
       name: 'currencySuffix'
     }
 
+  ],
+
+  methods: [
+    {
+      name: 'generateNanoInvoice',
+        javaReturns: 'net.nanopay.invoice.model.Invoice',
+        javaCode: `
+          DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
+
+          Invoice inv = new Invoice();
+          inv.setX(getX());
+
+          inv.setInvoiceNumber(getInvoiceNum());
+          inv.setPurchaseOrder("" + getId());
+          inv.setIssueDate(getDate());
+          //inv.setDueDate(getDueDate());
+          inv.setPaymentDate(getDatePaid());
+          inv.setDraft(false);
+          inv.setNote(getNotes());
+          inv.setAmount(getTotal());
+          inv.setCurrencyCode(getCurrencyCode());
+          inv.setStatus(getStatus());
+          inv.setPayeeId(2);
+          inv.setPayerId(getUserId());
+          invoiceDAO.put(inv);
+          return inv;
+          `
+      }
   ]
 
 });

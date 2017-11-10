@@ -111,7 +111,7 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/IntegrationView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
-  
+
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -158,6 +158,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
-  { name: 'net/nanopay/model/Relationships'}
- 
+  { name: 'net/nanopay/model/Relationships'},
+
+   //s2h
+  { name: 'net/nanopay/s2h/model/S2HInvoice'}
 ]);
