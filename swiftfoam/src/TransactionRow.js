@@ -60,7 +60,7 @@ guard let amount = transaction$amount as? Int else {
   return "ERROR " + String(describing: transaction$amount)
 }
 // TODO: Do the +/-
-return "$" + String(amount)
+return "$" + String(format: "%.2f", Float(amount)/100)
       `,
     },
     {
