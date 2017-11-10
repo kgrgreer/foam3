@@ -6,7 +6,15 @@ foam.CLASS({
   documentation: 'Forgot Password Email View',
 
   imports: [
-    'stack'
+    'stack',
+    'resetPasswordToken'
+  ],
+
+  exports: [ 'as data' ],
+
+  requires: [
+    'foam.nanos.auth.User',
+    'net.nanopay.ui.forgotPassword.ResendView'
   ],
 
   axioms: [
@@ -118,6 +126,13 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'email'
+    }
+  ],
+
   messages: [
     { name: 'Instructions', message: 'Please input your registered email address.'}
   ],
@@ -134,17 +149,36 @@ foam.CLASS({
         .start().addClass('Message-Container')
         .start().addClass('Instructions-Text').add(this.Instructions).end()
         .start().addClass('Email-Text').add("Email Address").end()
-        .start('input').addClass('Input-Box').end()
-        .start().addClass('Next-Button')
-          .add('Next')
-          .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.ResendView' })})
-        .end()
+        .start(this.EMAIL).addClass('full-width-input').end()
+        .start(this.NEXT).addClass('Next-Button').end()
         .start('p').add('Remember your password?').end()
         .start('p').addClass('link')
           .add('Sign in.')
-          .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
+          .on('click', function() {
+            self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+          })
         .end()
       .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'next',
+      label: 'Next',
+      code: function (X) {
+        var self = this;
+        var user = this.User.create({ email: this.email });
+        this.resetPasswordToken.generateToken(user).then(function (result) {
+          if ( ! result ) {
+            throw new Error('Error generating reset token');
+          }
+          self.stack.push(self.ResendView.create({ email: self.email }));;
+        })
+        .catch(function (err) {
+          throw err;
+        });
+      }
     }
   ]
 });

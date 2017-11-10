@@ -19,14 +19,17 @@ foam.CLASS({
         ^ {
           display: inline-block;
           float: right;
-          margin: 10px 50px 0 0;
+          margin-right: 40px;
         }
         ^ h1 {
           margin: 0;
-          font-size: 15px;
+          padding: 15px;
+          font-size: 16px;
           display: inline-block;
           font-weight: 100;
           color: white;
+          position: relative;
+          bottom: 5;
         }
         ^carrot {
           width: 0; 
@@ -36,16 +39,16 @@ foam.CLASS({
           border-top: 5px solid white;
           display: inline-block;
           position: relative;
-          top: -2;
-          left: 5;
+          right: 10;
+          bottom: 7;
+          cursor: pointer;
         }
         ^ img{
           width: 25px;
           display: inline-block;
           position: relative;
-          top: 7px;
+          top: 2px;
           right: 10px;
-          padding-right: 15px;
           cursor: pointer;
         }
         ^user-name:hover {
@@ -88,8 +91,15 @@ foam.CLASS({
           width: 0;
           border: 8px solid transparent;
           border-bottom-color: white;
-          -ms-transform: translate(140px, -175.5px);
-          transform: translate(140px, -175.5px);
+          -ms-transform: translate(120px, -175.5px);
+          transform: translate(120px, -175.5px);
+        }
+        ^ .profile-container{
+          display: inline-block;
+          cursor: pointer;
+          padding-top: 10px;
+          height: 40px;
+          width: 75px;
         }
       */}
     })
@@ -97,21 +107,25 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      
       this
         .addClass(this.myClass())
         .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
-          this.window.location.assign('https://nanopay.net/contact/')
+          self.window.location.assign('https://nanopay.net/contact/')
         })
         .end()
-        .start('h1')
-          .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
-            .on('click', function() {
-              this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
-            }.bind(this))
+        .start().addClass('profile-container')
+          .on('click', function() {
+            this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
+          }.bind(this))
+          .start('h1')
+            .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
+          .end()
         .end()
         .start('div')
           .addClass(this.myClass('carrot'))
+            .on('click', function() {
+              this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
+            }.bind(this))
         .end();
     }
   ]

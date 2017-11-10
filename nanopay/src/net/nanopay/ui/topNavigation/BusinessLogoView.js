@@ -16,8 +16,8 @@ foam.CLASS({
           padding-left: 25px;
         }
         ^ img {
-          height: 40px;
-          margin: 5px;
+          height: 30px;
+          padding-top: 10px;
         }
         ^ span{
           position: relative;

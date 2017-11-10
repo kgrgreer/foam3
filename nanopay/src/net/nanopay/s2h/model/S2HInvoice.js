@@ -44,6 +44,7 @@ foam.CLASS({
     },
     {
       class: 'Date',
+      javaFactory: 'return new Date();',
       name: 'dueDate'
     },
     {
@@ -118,7 +119,7 @@ foam.CLASS({
           inv.setInvoiceNumber(getInvoiceNum());
           inv.setPurchaseOrder("" + getId());
           inv.setIssueDate(getDate());
-          //inv.setDueDate(getDueDate());
+          inv.setDueDate(getDueDate());
           inv.setPaymentDate(getDatePaid());
           inv.setDraft(false);
           inv.setNote(getNotes());

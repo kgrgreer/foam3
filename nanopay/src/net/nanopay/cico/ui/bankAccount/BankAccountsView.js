@@ -40,7 +40,7 @@ foam.CLASS({
         ^ .bankContentCard {
           width: 218px;
           height: 100px;
-          margin-right: 15px;
+          margin-right: 13.5px;
         }
         ^ .actionButton {
           width: 218px;
@@ -79,7 +79,8 @@ foam.CLASS({
           background-color: #20B1A7;
         }
         ^ .foam-u2-dialog-Popup.popup-with-topnav {
-          margin-top: 65px;
+          margin-top: 155px;
+          height: 420px;
         }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
@@ -88,10 +89,6 @@ foam.CLASS({
         }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
-        }
-        ^ .foam-u2-view-TableView-noselect {
-          width: 1px;
-          cursor: pointer;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
@@ -113,7 +110,8 @@ foam.CLASS({
     { name: 'TitleVerified',    message: 'Verified Account(s)' },
     { name: 'TitleUnverified',  message: 'Unverified Account(s)' },
     { name: 'ActionAdd',        message: 'Add a new bank account' },
-    { name: 'MyBankAccounts',   message: 'My Bank Accounts' }
+    { name: 'MyBankAccounts',   message: 'My Bank Accounts' },
+    { name: 'placeholderText',  message: 'You don\'t have any bank accounts right now. Click the Add a bank account button to add a new bank account.' }
   ],
 
   methods: [
@@ -144,19 +142,13 @@ foam.CLASS({
                 dao: this.bankAccountDAO,
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
-                  class: 'foam.u2.DetailView',
-                  properties: [
-                    this.BankAccount.ACCOUNT_NAME,
-                    this.BankAccount.INSTITUTION_NUMBER,
-                    this.BankAccount.TRANSIT_NUMBER,
-                    this.BankAccount.ACCOUNT_NUMBER,
-                    this.BankAccount.STATUS
-                  ]
                 },
               summaryView: this.BankAccountTableView.create()
             })
           .end()
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.bankAccountDAO, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
     }
+    
   ],
 
   actions: [
@@ -180,16 +172,45 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.model.BankAccount' ],
+      requires: [ 
+        'net.nanopay.model.BankAccount', 
+        'foam.u2.dialog.Popup' 
+      ],
 
-      imports: [ 'bankAccountDAO' ],
+      imports: [
+        'bankAccountDAO'
+      ],
+
+      exports: [
+        'unverifiedBank'
+      ],
+
       properties: [
-        'selection',
+        {
+          name: 'unverifiedBank',
+          value: null
+        },
+        {
+          name: 'selection',
+          preSet: function(oldValue, newValue) {
+            if ( newValue && newValue.status == 'Unverified' ) {
+              this.unverifiedBank = newValue;
+              this.verifyAccount();
+              return oldValue;
+            }
+          }
+        },
         { name: 'data', factory: function() { return this.bankAccountDAO; } }
+      ],
+
+      messages: [
+        { name: 'TitleVerification', message: 'Verification' }
       ],
 
       methods: [
         function initE() {
+          var self = this;
+
           this
             .start({
               class: 'foam.u2.view.TableView',
@@ -200,6 +221,16 @@ foam.CLASS({
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
+        },
+
+        function verifyAccount() {
+          this.add(
+            this.Popup.create().tag({
+              class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
+              startAt: 1,
+              title: this.TitleVerification
+            }).addClass('popup-with-topnav')
+          );
         }
       ]
     }

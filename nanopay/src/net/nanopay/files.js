@@ -1,7 +1,6 @@
 FOAM_FILES([
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
-  { name: 'net/nanopay/model/AccountLimit' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccount' },
   { name: 'net/nanopay/model/Currency' },
@@ -12,7 +11,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/password/ResetPasswordTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView' , flags: ['web']},
@@ -142,6 +143,16 @@ FOAM_FILES([
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
 
+  //transfer
+  { name: 'net/nanopay/ui/transfer/TransferWizard', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferReview', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferDetails', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferAmount', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferComplete', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferView', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferUserCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
+
   //ui
   { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
   { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
@@ -160,6 +171,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/model/Relationships'},
 
-   //s2h
+  { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
+  { name: 'net/nanopay/model/Relationships'},
+
+  //s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice'}
+
 ]);
