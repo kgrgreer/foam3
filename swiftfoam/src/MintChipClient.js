@@ -80,6 +80,21 @@ return ClientDAO_create([
       `,
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'accountDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)accountDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.token.ClientTokenService',
       name: 'SMSService',
