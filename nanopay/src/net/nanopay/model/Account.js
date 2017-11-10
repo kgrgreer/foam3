@@ -7,11 +7,6 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.model.AccountLimit',
-      name: 'limit'
-    },
-    {
       class: 'Long',
       name: 'balance'
     }
