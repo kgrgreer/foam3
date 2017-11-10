@@ -53,7 +53,6 @@ var classes = [
   'net.nanopay.auth.token.Token',
   'net.nanopay.auth.token.TokenService',
   'net.nanopay.model.Account',
-  'net.nanopay.model.AccountLimit',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionPurpose'
