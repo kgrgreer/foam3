@@ -97,7 +97,7 @@ return ClientDAO_create([
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.token.ClientTokenService',
-      name: 'SMSService',
+      name: 'smsService',
       swiftFactory: `
 return ClientTokenService_create([
   "delegate": SessionClientBox_create([
@@ -111,7 +111,7 @@ return ClientTokenService_create([
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.token.ClientTokenService',
-      name: 'EmailService',
+      name: 'emailService',
       swiftFactory: `
 return ClientTokenService_create([
   "delegate": SessionClientBox_create([
