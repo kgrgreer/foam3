@@ -81,7 +81,7 @@ foam.CLASS({
       name: 'voided',
       label: 'Void',
       code: function(X){
-        this.invoice.voided = true;
+        this.invoice.paymentMethod = "VOID";
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
         ctrl.add(this.NotificationMessage.create({ message: 'Invoice voided.', type: '' }));        
