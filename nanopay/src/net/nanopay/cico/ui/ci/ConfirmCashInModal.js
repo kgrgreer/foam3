@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
+    'net.nanopay.ui.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType'
   ],
@@ -242,15 +243,21 @@ foam.CLASS({
       name: 'cashInBtn',
       label: 'Cash In',
       code: function (X) {
-        var dao = X.standardCICOTransactionDAO;
-        dao.put(this.Transaction.create({
+        var self = this;
+
+        var cashInTransaction = this.Transaction.create({
           payeeId: 1,
           amount: X.amount,
           bankAccountId: X.bankList,
           type: this.TransactionType.CASHIN
-        }));
-        X.closeDialog();
-        X.onCashInSuccess();
+        });
+
+        X.standardCICOTransactionDAO.put(cashInTransaction).then(function(response) {
+          X.closeDialog();
+          X.onCashInSuccess();
+        }).catch(function(error) {
+          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+        });
       }
     }
   ]
