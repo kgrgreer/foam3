@@ -16,7 +16,8 @@ foam.CLASS({
     'closeDialog',
     'onCashOutSuccess',
     'cashOut',
-    'standardCICOTransactionDAO'
+    'standardCICOTransactionDAO',
+    'user'
   ],
 
   documentation: 'Pop up modal for confirming cash out.',
@@ -243,7 +244,7 @@ foam.CLASS({
         var self = this; 
 
         var cashOutTransaction = this.Transaction.create({
-          payerId: 1,
+          payerId: X.user.id,
           amount: X.amount,
           bankAccountId: X.bankList,
           type: this.TransactionType.CASHOUT

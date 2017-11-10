@@ -16,7 +16,8 @@ foam.CLASS({
     'cashIn',
     'closeDialog',
     'onCashInSuccess',
-    'standardCICOTransactionDAO'
+    'standardCICOTransactionDAO',
+    'user'
   ],
 
   documentation: 'Pop up modal for confirming top up.',
@@ -246,7 +247,7 @@ foam.CLASS({
         var self = this;
 
         var cashInTransaction = this.Transaction.create({
-          payeeId: 1,
+          payeeId: X.user.id,
           amount: X.amount,
           bankAccountId: X.bankList,
           type: this.TransactionType.CASHIN
