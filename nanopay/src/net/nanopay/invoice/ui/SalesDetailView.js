@@ -66,22 +66,22 @@ foam.CLASS({
   listeners: [
     function recordPaymentModal(){
       if(this.data.voided){
-        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has already been voided.', type: 'error' }));
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been voided.', type: 'error' }));
         return;
       }
       else if(this.data.paymentDate){
-        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has already been paid.', type: 'error' }));
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been paid.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
     },
     function voidPopUp(){
       if(this.data.voided){
-        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has already been voided.', type: 'error' }));
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been voided.', type: 'error' }));
         return;
       }
       else if(this.data.paymentDate && this.data.paymentDate < new Date()){
-        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has already been paid.', type: 'error' }));
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been paid.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
