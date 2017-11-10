@@ -163,7 +163,7 @@ foam.CLASS({
         return paymentDate ? 'Scheduled' : 'Due';
       },
       javaGetter: `
-        if ( getVoided() ) return 'Void';              
+        if ( getVoided() ) return "Void";              
         if ( getDraft() ) return "Draft";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
