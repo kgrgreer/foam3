@@ -38,8 +38,8 @@ foam.CLASS({
 
   css: `
     .stack-wrapper {
-      min-height: calc(80% - 60px);
       margin-bottom: -10px;
+      min-height: calc(80% - 60px);
     }
 
     .stack-wrapper:after {
@@ -55,6 +55,10 @@ foam.CLASS({
       height: auto;
       padding: 3px;
       width: auto;
+    }
+
+    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
+      height: 40px;
     }
   `,
 
