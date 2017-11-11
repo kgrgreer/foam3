@@ -37,16 +37,24 @@ foam.CLASS({
   ],
 
   css: `
-    .stack-wrapper{
+    .stack-wrapper {
       min-height: calc(80% - 60px);
       margin-bottom: -10px;
     }
-    .stack-wrapper:after{
+
+    .stack-wrapper:after {
       content: "";
       display: block;
     }
-    .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView{
+
+    .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView {
       height: 10px;
+    }
+
+    .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
+      height: auto;
+      padding: 3px;
+      width: auto;
     }
   `,
 
