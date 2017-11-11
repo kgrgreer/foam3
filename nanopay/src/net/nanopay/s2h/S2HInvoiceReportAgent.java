@@ -9,6 +9,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.dao.ListSink;
 import net.nanopay.model.*;
+import net.nanopay.tx.model.Transaction;
 
 import java.text.NumberFormat;
 import java.util.*;
@@ -48,9 +49,10 @@ public class S2HInvoiceReportAgent
   {
     DAO userDAO = (DAO) x.get("userDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-
+    DAO transactionDAO = (DAO) x.get("transactionDAO");
     //retrieves invoices that were paid the day that passed
     DAO timeInvoice = invoiceDAO.where(AND(EQ(Invoice.PAYEE_ID, 2), OR(AND(GTE(Invoice.PAYMENT_DATE, dayStart.getTime()), LTE(Invoice.PAYMENT_DATE, dayEnd.getTime())),AND(GTE(Invoice.ISSUE_DATE, dayStart.getTime()), LTE(Invoice.ISSUE_DATE, dayEnd.getTime())))));
+    DAO timeTransaction = transactionDAO.where(AND(EQ(Transaction.PAYEE_ID, 2), AND(GTE(Transaction.DATE, dayStart.getTime()), LTE(Transaction.DATE, dayEnd.getTime()))));
 
     //sets up an email to be sent
     EmailService email = (EmailService) x.get("email");
@@ -69,11 +71,12 @@ public class S2HInvoiceReportAgent
 
     //makes a list of the DAO information
     List<Invoice> invoicesList = (List)((ListSink)timeInvoice.select(new ListSink())).getData();
-
+    List<Transaction> transactionList = (List)((ListSink)timeTransaction.select(new ListSink())).getData();
+    double sum = 0.0;
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
     if (!invoicesList.isEmpty()) {
-      double sum = 0.0;
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
+      sum = 0.0;
       String list="<tr><th align= \"center\">Invoice #</th><th style=\"text-align: left\">Issue Date:</th><th style=\"text-align: left\">Payer Name:</th><th style=\"text-align: left\">Status:</th><th style=\"text-align: right\">Amount:</th></tr>";
       for (Invoice invoice : invoicesList){
         list += "<tr><td align=\"left\">"+ invoice.getInvoiceNumber()+"</td><td style=\"text-align: left\">" + invoice.getIssueDate() + "</td><td style=\"text-align: left\">"+userDAO.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName())+ "</td><td style=\"text-align: left\">" + invoice.getStatus() + "</td><td style=\"text-align: right\">"+  formatter.format(invoice.getAmount()) +"</td></tr>";
@@ -82,6 +85,19 @@ public class S2HInvoiceReportAgent
       list +="<tr><td align=\"left\"></td><td align=\"left\"></td><td style=\"text-align: left\"><b>TOTAL</b></td><td align=\"left\"></td><td style=\"text-align: right\"><b>"+  formatter.format(sum) +"</b></td></tr>";
       args.put("title1", "Invoices between: ");
       args.put("list1", list);
+      args.put("date1", dayStart.getTime());
+      args.put("date2", dayEnd.getTime());
+    }
+    if (!transactionList.isEmpty()) {
+      sum = 0.0;
+      String list="<tr><th align= \"center\">Transaction #</th><th style=\"text-align: left\">Transaction Date:</th><th style=\"text-align: left\">Payer Name:</th><th style=\"text-align: left\">Status:</th><th style=\"text-align: right\">Amount:</th></tr>";
+      for (Transaction transaction : transactionList){
+        list += "<tr><td align=\"left\">"+ transaction.getId()+"</td><td style=\"text-align: left\">" + transaction.getDate() + "</td><td style=\"text-align: left\">"+userDAO.find(transaction.getPayerId()).getProperty(User.ORGANIZATION.getName())+ "</td><td style=\"text-align: left\">" + transaction.getStatus() + "</td><td style=\"text-align: right\">"+  formatter.format(transaction.getAmount()) +"</td></tr>";
+        sum += transaction.getAmount();
+      }
+      list +="<tr><td align=\"left\"></td><td align=\"left\"></td><td style=\"text-align: left\"><b>TOTAL</b></td><td align=\"left\"></td><td style=\"text-align: right\"><b>"+  formatter.format(sum) +"</b></td></tr>";
+      args.put("title2", "Transactions between: ");
+      args.put("list2", list);
       args.put("date1", dayStart.getTime());
       args.put("date2", dayEnd.getTime());
     }
