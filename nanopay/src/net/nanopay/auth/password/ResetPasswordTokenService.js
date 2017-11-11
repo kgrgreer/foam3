@@ -78,7 +78,7 @@ foam.CLASS({
   Sink sink = new ListSink();
   sink = tokenDAO.where(MLang.AND(
     MLang.EQ(Token.PROCESSED, false),
-    MLang.EQ(Token.EXPIRY, calendar.getTime()),
+    MLang.GT(Token.EXPIRY, calendar.getTime()),
     MLang.EQ(Token.DATA, token)
   )).limit(1).select(sink);
 
