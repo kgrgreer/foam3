@@ -5,6 +5,12 @@ foam.CLASS({
 
   documentation: 'Implementation of Token Service used for reset password',
 
+  imports: [
+    'email',
+    'tokenDAO',
+    'localUserDAO'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ListSink',
@@ -26,8 +32,8 @@ foam.CLASS({
       name: 'generateToken',
       javaCode:
 `try {
-  DAO userDAO = (DAO) getX().get("userDAO");
-  DAO tokenDAO = (DAO) getX().get("tokenDAO");
+  DAO userDAO = (DAO) getLocalUserDAO();
+  DAO tokenDAO = (DAO) getTokenDAO();
 
   Sink sink = new ListSink();
   sink = userDAO.where(MLang.EQ(User.EMAIL, user.getEmail()))
@@ -49,7 +55,7 @@ foam.CLASS({
   token.setData(UUID.randomUUID().toString());
   token = (Token) tokenDAO.put(token);
 
-  EmailService email = (EmailService) getX().get("email");
+  EmailService email = (EmailService) getEmail();
   EmailMessage message = new EmailMessage();
   message.setFrom("info@nanopay.net");
   message.setReplyTo("noreply@nanopay.net");
@@ -71,14 +77,14 @@ foam.CLASS({
       name: 'processToken',
       javaCode:
 `try {
-  DAO userDAO = (DAO) getX().get("userDAO");
-  DAO tokenDAO = (DAO) getX().get("tokenDAO");
+  DAO userDAO = (DAO) getLocalUserDAO();
+  DAO tokenDAO = (DAO) getTokenDAO();
   Calendar calendar = Calendar.getInstance();
 
   Sink sink = new ListSink();
   sink = tokenDAO.where(MLang.AND(
     MLang.EQ(Token.PROCESSED, false),
-    MLang.EQ(Token.EXPIRY, calendar.getTime()),
+    MLang.GT(Token.EXPIRY, calendar.getTime()),
     MLang.EQ(Token.DATA, token)
   )).limit(1).select(sink);
 
@@ -103,6 +109,8 @@ foam.CLASS({
   }
 
   // update user's password
+  userResult.setPasswordLastModified(Calendar.getInstance().getTime());
+  userResult.setPreviousPassword(userResult.getPassword());
   userResult.setPassword(Password.hash(newPassword));
   userDAO.put(userResult);
   return true;

@@ -41,6 +41,7 @@ foam.CLASS({
           width: 218px;
           height: 100px;
           margin-right: 13.5px;
+          float: left;
         }
         ^ .actionButton {
           width: 218px;
@@ -52,6 +53,7 @@ foam.CLASS({
           visibility: hidden;
         }
         ^ .net-nanopay-ui-ActionView-addBank {
+          margin: 0;
           background: none;
           outline: none;
           border: none;
@@ -64,7 +66,6 @@ foam.CLASS({
           border-radius: 2px;
           opacity: 1;
           font-weight: normal;
-          margin-left: 45px;
         }
         ^ .net-nanopay-ui-ActionView-addBank span {
           display: block;
@@ -132,7 +133,7 @@ foam.CLASS({
             .start('div').addClass('spacer')
               .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleUnverified, content$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
             .end()
-            .start('div').addClass('spacer')
+            .start('div')
               .tag(this.ADD_BANK, { showLabel: true })
             .end()
           .end()

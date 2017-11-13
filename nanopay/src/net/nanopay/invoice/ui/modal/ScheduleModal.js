@@ -7,7 +7,8 @@ foam.CLASS({
   documentation: 'Schedule Payment Modal',
 
   requires: [
-    'net.nanopay.ui.modal.ModalHeader'
+    'net.nanopay.ui.modal.ModalHeader',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   implements: [
@@ -15,7 +16,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'invoiceDAO'
   ],
 
   properties: [
@@ -78,8 +80,8 @@ foam.CLASS({
               .start().addClass('value').add(this.invoice.currencyType, ' ', this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
-          .start().addClass('label').add("Payment Method").end()
-          .start('select').addClass('full-width-input').end()
+          // .start().addClass('label').add("Payment Method").end()
+          // .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Schedule a Date").end()
           .start(this.PAYMENT_DATE).addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
@@ -94,12 +96,17 @@ foam.CLASS({
     {
       name: 'schedule',
       label: 'Confirm',
-      code: function(X){
-        var invoice = X.data.invoice;
-        invoice.paymentDate = this.paymentDate;
-        invoice.note = this.note;
+      code: function(X){        
+        if(!X.data.paymentDate){
+          this.add(this.NotificationMessage.create({ message: 'Please select a Schedule Date.', type: 'error' }));
+          return;
+        }
+        
+        this.invoice.paymentDate = this.paymentDate;
+        this.invoice.note = this.note;
 
-        X.invoiceDAO.put(invoice);
+        this.invoiceDAO.put(this.invoice);
+        ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment has been scheduled.', type: ''}));
         X.closeDialog();
       }
     }

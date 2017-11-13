@@ -45,6 +45,10 @@ public class ServiceProviderFeeTransactionDAO
       return getDelegate().put_(x, transaction);
     }
 
+    if( serviceProvider.getFee() != null && ((FeeInterface) serviceProvider.getFee()).getFee(transaction.getAmount()) <= 0 ) {
+      return getDelegate().put_(x, transaction);
+    }
+
     //Creating Another transaction for the broker fees
     Transaction serviceProviderTransaction = new Transaction();
 

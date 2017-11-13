@@ -91,8 +91,8 @@ foam.CLASS({
           width: 0;
           border: 8px solid transparent;
           border-bottom-color: white;
-          -ms-transform: translate(120px, -175.5px);
-          transform: translate(120px, -175.5px);
+          -ms-transform: translate(130px, -175.5px);
+          transform: translate(130px, -175.5px);
         }
         ^ .profile-container{
           display: inline-block;

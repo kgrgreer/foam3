@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui.modal',
   name: 'ExportModal',
@@ -12,7 +11,8 @@ foam.CLASS({
     'net.nanopay.util.Iso20022',
     'net.nanopay.iso20022.ISO20022Driver',
     'foam.nanos.export.JSONDriver',
-    'foam.nanos.export.XMLDriver'
+    'foam.nanos.export.XMLDriver',
+    'foam.nanos.export.CSVDriver'
   ],
 
   properties: [
@@ -41,16 +41,21 @@ foam.CLASS({
       }
     },
     {
+      name: 'csvDriver',
+      factory: function () {
+        return this.CSVDriver.create();
+      }
+    },
+    {
       name: 'dataType',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'XML',
-          'JSON',
-          'PACS 008'
-        ],
-      },
-      value: 'JSON'
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.exportDriverRegistryDAO,
+          objToChoice: function(a){
+            return [a.id, a.id];
+          }
+        })
+      }
     },
     {
       name: 'note',
@@ -72,7 +77,7 @@ foam.CLASS({
         width: 125px;
         height: 40px;
         border-radius: 0;
-        margin-left: 20px;
+        margin-left: 25px;
         padding: 12px 20px;
         border: solid 1px rgba(164, 179, 184, 0.5);
         background-color: white;
@@ -86,6 +91,11 @@ foam.CLASS({
       }
       ^ .label{
         margin-top: 10px;
+      }
+      ^ .note {
+        height: 150px;
+        width: 398px;
+        margin-left: 25px;
       }
     */}
     })
@@ -106,8 +116,8 @@ foam.CLASS({
             .start().addClass('label').add("Data Type").end()
             .start(this.DATA_TYPE).end()
             .start().addClass('label').add("Response").end()
-            .start(this.NOTE).addClass('input-box').end()
-            .start(this.CONVERT_INVOICE).addClass('blue-button btn').end()
+            .start(this.NOTE).addClass('input-box note').end()
+            .start(this.CONVERT).addClass('blue-button btn').end()
           .end()
         .end()
       .end()
@@ -115,17 +125,27 @@ foam.CLASS({
   ],
 
   actions: [
-    function convertInvoice(){
+    function convert(){
       var self = this;
 
-      if (this.dataType == 'JSON'){
-        this.note = this.jsonDriver.exportFObject(null, this.exportData);
+      if (this.dataType == 'JSON') {
+        this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+          console.log(result);
+          self.note = result;
+        });
+        //this.note = this.jsonDriver.exportFObject(null, this.exportData)
       } else if (this.dataType == 'XML') {
-        this.note = this.xmlDriver.exportFObject(null, this.exportData);
-      } else if (this.dataType == 'PACS 008') {
-        this.iso20022.GENERATE_PACS008_MESSAGE(this.exportData).then(function (message) {
-          self.note = self.iso20022Driver.exportFObject(null, message)
-        })
+        this.xmlDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+          console.log(result);
+          self.note = result;
+        });
+        //this.note = this.xmlDriver.exportFObject(null, this.exportData);
+      } else if (this.dataType == 'CSV') {
+        this.csvDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+          console.log(result);
+          self.note = result;
+        });
+        //this.note = this.csvDriver.exportFObject(null, this.exportData);
       }
     }
   ]

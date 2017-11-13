@@ -9,11 +9,20 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        
+        .generic-status {
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
+        }
         .Invoice-Status-Disputed  {
           color: #c82e2e;
           background: white;
           border: 1px solid #c82e2e;
+        }
+        .Invoice-Status-Void {
+          border: 1px solid black;
+          color: white;
+          background: black;
         }
         .Invoice-Status-New  {
           color: #262626;

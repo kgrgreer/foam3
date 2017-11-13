@@ -50,6 +50,10 @@ public class BrokerFeeTransactionDAO
       return getDelegate().put_(x, transaction);
     }
 
+    if( broker.getFee() != null && ((FeeInterface) broker.getFee()).getFee(transaction.getAmount()) <= 0 ) {
+      return getDelegate().put_(x, transaction);
+    }
+
     //Creating Another transaction for the broker fees
     Transaction brokerTransaction = new Transaction();
 
