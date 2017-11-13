@@ -34,6 +34,20 @@ public class S2HDailyEmailAgent
     int month = calendar.get(Calendar.MONTH);
     int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+    //TODO replace with S2H's email
+    if ( recipients.length == 0 ){
+      System.out.println("NO EMAIL SET");
+      return;
+    }
+    //sets up an email to be sent
+    EmailService email = (EmailService) x.get("email");
+    EmailMessage message = new EmailMessage();
+    HashMap<String, Object> args = new HashMap<>();
+    message.setFrom("info@nanopay.net");
+    message.setReplyTo("noreply@nanopay.net");
+    message.setTo(recipients);
+    message.setSubject("S2H status");
+
     //set to the day that just passed
     dayStart.set(year, month, day-1, 0, 0, 0);
     dayEnd.set(year, month, day, 0, 0, 0);
@@ -53,20 +67,6 @@ public class S2HDailyEmailAgent
         LTE(Invoice.DUE_DATE, dayEnd.getTime()),
         EQ(Invoice.PAYMENT_ID, 0)));
 
-    //sets up an email to be sent
-    EmailService email = (EmailService) x.get("email");
-    EmailMessage message = new EmailMessage();
-    HashMap<String, Object> args = new HashMap<>();
-    message.setFrom("info@nanopay.net");
-    message.setReplyTo("noreply@nanopay.net");
-
-    //TODO replace with S2H's email
-    if ( recipients.length == 0 ){
-      System.out.println("NO EMAIL SET");
-      return;
-    }
-    message.setTo(recipients);
-    message.setSubject("S2H status");
 
     //makes a list of the DAO information
     List<Invoice> paidList =    (List)((ListSink)   paidInvoices.select(new ListSink())).getData();
@@ -91,33 +91,33 @@ public class S2HDailyEmailAgent
   {
     double sum = 0.0;
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    String list = "";
-    list +="<tr><th style=\"text-align: left\">Invoice #</th>";
-    list +="<th style=\"text-align: left\">Payer Name:</th>";
+    StringBuilder list = new StringBuilder("");
+    list.append("<tr><th style=\"text-align: left\">Invoice #</th>");
+    list.append("<th style=\"text-align: left\">Payer Name:</th>");
     if( ! dayTitle.isEmpty() ) {
-      list +="<th style=\"text-align: right\">"+ dayTitle +"</th>";
+      list.append("<th style=\"text-align: right\">"+ dayTitle +"</th>");
     }
-    list +="<th style=\"text-align: right\">Amount:</th></tr>";
+    list.append("<th style=\"text-align: right\">Amount:</th></tr>");
 
     for (Invoice invoice : invoices){
-      list += "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber()+"</td>";
-      list += "<td style=\"text-align: left\">"+ user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>";
+      list.append( "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber()+"</td>");
+      list.append( "<td style=\"text-align: left\">"+ user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>");
       if( ! dayTitle.isEmpty() ) {
-        list += "<td style=\"text-align: right\">" +
+        list.append( "<td style=\"text-align: right\">" +
           (dayEnd.getTimeInMillis() - invoice.getDueDate().getTime()) / 86400000
-          + "</td>";
+          + "</td>");
       }
-      list += "<td style=\"text-align: right\">" + formatter.format(invoice.getAmount()) + "</td></tr>";
+      list.append( "<td style=\"text-align: right\">" + formatter.format(invoice.getAmount()) + "</td></tr>");
       sum += invoice.getAmount();
 
     }
-    list += "<tr><td style=\"text-align: left\"></td>";
-    list += "<td style=\"text-align: left\"><b>TOTAL</b></td>";
+    list.append( "<tr><td style=\"text-align: left\"></td>");
+    list.append( "<td style=\"text-align: left\"><b>TOTAL</b></td>");
     if( ! dayTitle.isEmpty() ){
-      list +="<td style=\"text-align: right\"></td>";
+      list.append("<td style=\"text-align: right\"></td>");
     }
-    list += "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>";
-    return list;
+    list.append( "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>");
+    return list.toString();
   }
   public void setRecipients(String[] people)
   {

@@ -51,6 +51,20 @@ public class S2HReportingAgent
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
 
+    //sets up an email to be sent
+    //TODO replace with S2H's email
+    if ( recipients.length == 0 ){
+      System.out.println("NO EMAIL SET");
+      return;
+    }
+    EmailService email = (EmailService) x.get("email");
+    EmailMessage message = new EmailMessage();
+    HashMap<String, Object> args = new HashMap<>();
+    message.setFrom("info@nanopay.net");
+    message.setReplyTo("noreply@nanopay.net");
+    message.setTo(recipients);
+    message.setSubject("S2H status");
+
     //retrieves invoices that were paid the day that passed
     DAO timeInvoice = invoiceDAO.where(AND(
       EQ(Invoice.PAYEE_ID, 2),
@@ -67,72 +81,59 @@ public class S2HReportingAgent
         GTE(Transaction.DATE, dayStart.getTime()),
         LTE(Transaction.DATE, dayEnd.getTime()))));
 
-    //sets up an email to be sent
-    EmailService email = (EmailService) x.get("email");
-    EmailMessage message = new EmailMessage();
-    HashMap<String, Object> args = new HashMap<>();
-    message.setFrom("info@nanopay.net");
-    message.setReplyTo("noreply@nanopay.net");
 
-    //TODO replace with S2H's email
-    if ( recipients.length == 0 ){
-      System.out.println("NO EMAIL SET");
-      return;
-    }
-    message.setTo(recipients);
-    message.setSubject("S2H status");
 
     //makes a list of the DAO information
     List<Invoice> invoicesList = (List)((ListSink)timeInvoice.select(new ListSink())).getData();
     List<Transaction> transactionList = (List)((ListSink)timeTransaction.select(new ListSink())).getData();
     double sum = 0.0;
-    String list = "";
+    StringBuilder list = new StringBuilder("");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
     if ( ! invoicesList.isEmpty() ){
-      list += "<tr><th style=\"text-align: left\">Invoice #</th>";
-      list += "<th style=\"text-align: left\">Issue Date:</th>";
-      list += "<th style=\"text-align: left\">Payer Name:</th>";
-      list += "<th style=\"text-align: left\">Status:</th>";
-      list += "<th style=\"text-align: right\">Amount:</th></tr>";
+      list.append( "<tr><th style=\"text-align: left\">Invoice #</th>");
+      list.append( "<th style=\"text-align: left\">Issue Date:</th>");
+      list.append( "<th style=\"text-align: left\">Payer Name:</th>");
+      list.append( "<th style=\"text-align: left\">Status:</th>");
+      list.append( "<th style=\"text-align: right\">Amount:</th></tr>");
       for (Invoice invoice : invoicesList){
-        list += "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber() +"</td>";
-        list += "<td style=\"text-align: left\">"+ invoice.getIssueDate() +"</td>";
-        list += "<td style=\"text-align: left\">"+ userDAO.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>";
-        list += "<td style=\"text-align: left\">"+ invoice.getStatus() +"</td>";
-        list += "<td style=\"text-align: right\">"+ formatter.format(invoice.getAmount()) +"</td></tr>";
+        list.append( "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber() +"</td>");
+        list.append( "<td style=\"text-align: left\">"+ invoice.getIssueDate() +"</td>");
+        list.append( "<td style=\"text-align: left\">"+ userDAO.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>");
+        list.append( "<td style=\"text-align: left\">"+ invoice.getStatus() +"</td>");
+        list.append( "<td style=\"text-align: right\">"+ formatter.format(invoice.getAmount()) +"</td></tr>");
         sum += invoice.getAmount();
       }
-      list += "<tr><td style=\"text-align: left\"></td>";
-      list += "<td style=\"text-align: left\"></td>";
-      list += "<td style=\"text-align: left\"><b>TOTAL</b></td>";
-      list += "<td style=\"text-align: left\"></td>";
-      list += "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>";
+      list.append( "<tr><td style=\"text-align: left\"></td>");
+      list.append( "<td style=\"text-align: left\"></td>");
+      list.append( "<td style=\"text-align: left\"><b>TOTAL</b></td>");
+      list.append( "<td style=\"text-align: left\"></td>");
+      list.append( "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>");
       args.put("title1", "Invoices between: <b>"+ dayStart.getTime() +"</b> and <b>"+ dayEnd.getTime() +"</b> ");
       args.put("list1", list);
-      list="";
+      list = new StringBuilder("");
       sum = 0.0;
     }
 
     if ( ! transactionList.isEmpty() ){
-      list += "<tr><th style=\"text-align: left\">Transaction #</th>";
-      list += "<th style=\"text-align: left\">Transaction Date:</th>";
-      list += "<th style=\"text-align: left\">Payer Name:</th>";
-      list += "<th style=\"text-align: left\">Status:</th>";
-      list += "<th style=\"text-align: right\">Amount:</th></tr>";
+      list.append( "<tr><th style=\"text-align: left\">Transaction #</th>");
+      list.append( "<th style=\"text-align: left\">Transaction Date:</th>");
+      list.append( "<th style=\"text-align: left\">Payer Name:</th>");
+      list.append( "<th style=\"text-align: left\">Status:</th>");
+      list.append( "<th style=\"text-align: right\">Amount:</th></tr>");
       for (Transaction transaction : transactionList){
-        list += "<tr><td style=\"text-align: left\">"+ transaction.getId()+"</td>";
-        list += "<td style=\"text-align: left\">" + transaction.getDate() + "</td>";
-        list += "<td style=\"text-align: left\">"+userDAO.find(transaction.getPayerId()).getProperty(User.ORGANIZATION.getName())+ "</td>";
-        list += "<td style=\"text-align: left\">" + transaction.getStatus() + "</td>";
-        list += "<td style=\"text-align: right\">"+  formatter.format(transaction.getAmount()) +"</td></tr>";
+        list.append( "<tr><td style=\"text-align: left\">"+ transaction.getId()+"</td>");
+        list.append( "<td style=\"text-align: left\">" + transaction.getDate() + "</td>");
+        list.append( "<td style=\"text-align: left\">"+userDAO.find(transaction.getPayerId()).getProperty(User.ORGANIZATION.getName())+ "</td>");
+        list.append( "<td style=\"text-align: left\">" + transaction.getStatus() + "</td>");
+        list.append( "<td style=\"text-align: right\">"+  formatter.format(transaction.getAmount()) +"</td></tr>");
         sum += transaction.getAmount();
       }
-      list += "<tr><td style=\"text-align: left\"></td>";
-      list += "<td style=\"text-align: left\"></td>";
-      list += "<td style=\"text-align: left\"><b>TOTAL</b></td>";
-      list += "<td style=\"text-align: left\"></td>";
-      list += "<td style=\"text-align: right\"><b>"+  formatter.format(sum) +"</b></td></tr>";
+      list.append( "<tr><td style=\"text-align: left\"></td>");
+      list.append( "<td style=\"text-align: left\"></td>");
+      list.append( "<td style=\"text-align: left\"><b>TOTAL</b></td>");
+      list.append( "<td style=\"text-align: left\"></td>");
+      list.append( "<td style=\"text-align: right\"><b>"+  formatter.format(sum) +"</b></td></tr>");
       args.put("title2", "Transactions between: <b>"+dayStart.getTime()+"</b> and <b>"+dayEnd.getTime()+" </b> ");
       args.put("list2", list);
     }
