@@ -59,9 +59,11 @@ foam.CLASS({
       label: 'Amount',
       tableCellFormatter: function(amount) {
         var formattedAmount = amount/100;
-        this.start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
-        .add(' CAD $', formattedAmount.toFixed(2)).end()
-      },
+        this
+          .start({ class: 'foam.u2.tag.Image', data: 'images/canada.svg' })
+            .add(' CAD $', formattedAmount.toFixed(2))
+          .end();
+      }
     },
     {
       class: 'Currency',
@@ -73,8 +75,10 @@ foam.CLASS({
         return receivingAmount;
       },
       tableCellFormatter: function(receivingAmount) {
-        this.start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
+        this
+          .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
             .add(' INR ₹', ( receivingAmount/100 ).toFixed(2))
+          .end();
       }
     },
     {
