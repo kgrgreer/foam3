@@ -16,9 +16,12 @@ import java.util.Currency;
 
 
 public class S2HDailyEmailAgent
-        implements ContextAgent
+  implements ContextAgent
 {
   String [] recipients;
+  Calendar calendar = Calendar.getInstance();
+  Calendar dayStart = Calendar.getInstance();
+  Calendar dayEnd = Calendar.getInstance();
   public void execute(X x)
   {
     DAO userDAO = (DAO) x.get("userDAO");
@@ -37,10 +40,18 @@ public class S2HDailyEmailAgent
     dayEnd.setTimeInMillis(dayEnd.getTimeInMillis()- 1000);
 
     //retrieves invoices that were paid the day that passed
-    DAO paidInvoices = invoiceDAO.where(AND(EQ(Invoice.PAYEE_ID, 2), AND(GTE(Invoice.PAYMENT_DATE, dayStart.getTime()), LTE(Invoice.PAYMENT_DATE, dayEnd.getTime()))));
+    DAO paidInvoices = invoiceDAO.where(
+      AND(
+        EQ(Invoice.PAYEE_ID, 2),
+        GTE(Invoice.PAYMENT_DATE, dayStart.getTime()),
+        LTE(Invoice.PAYMENT_DATE, dayEnd.getTime())));
 
     //retrieves all Overdue invoices
-    DAO overdueInvoices = invoiceDAO.where(AND(EQ(Invoice.PAYEE_ID, 2), AND(LTE(Invoice.DUE_DATE, dayEnd.getTime()), EQ(Invoice.PAYMENT_ID, 0))));
+    DAO overdueInvoices = invoiceDAO.where(
+      AND(
+        EQ(Invoice.PAYEE_ID, 2),
+        LTE(Invoice.DUE_DATE, dayEnd.getTime()),
+        EQ(Invoice.PAYMENT_ID, 0)));
 
     //sets up an email to be sent
     EmailService email = (EmailService) x.get("email");
@@ -58,34 +69,48 @@ public class S2HDailyEmailAgent
     message.setSubject("S2H status");
 
     //makes a list of the DAO information
-    List<Invoice> paidList = (List)((ListSink)paidInvoices.select(new ListSink())).getData();
+    List<Invoice> paidList =    (List)((ListSink)   paidInvoices.select(new ListSink())).getData();
     List<Invoice> overdueList = (List)((ListSink)overdueInvoices.select(new ListSink())).getData();
 
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
     if (!paidList.isEmpty()) {
       args.put("title1", "PAID invoices as of end of day: ");
-      args.put("list1", getList(paidList, userDAO));
+      args.put("list1", getList(paidList, userDAO,""));
       args.put("date1", dayEnd.getTime());
     }
     if (!overdueList.isEmpty()) {
       args.put("title2", "OVERDUE invoices as of end of day: ");
-      args.put("list2", getList(overdueList, userDAO));
+      args.put("list2", getList(overdueList, userDAO, "Days Overdue:"));
       args.put("date2", dayEnd.getTime());
     }
 
     //sends an email following the email template
     email.sendEmailFromTemplate(message, "s2h-invoice-update", args);
   }
-  private String getList(List<Invoice> invoices, DAO user)
+  private String getList(List<Invoice> invoices, DAO user,String dayTitle)
   {
     double sum = 0.0;
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    String list="<tr><th align= \"center\">Invoice #</th><th style=\"text-align: left\">Payer Name:</th><th style=\"text-align: right\">Amount:</th></tr>";
+    String list = "";
+    list +="<tr><th style=\"text-align: left\">Invoice #</th>";
+    list +="<th style=\"text-align: left\">Payer Name:</th>";
+    if(!dayTitle.isEmpty()) list +="<th style=\"text-align: right\">"+ dayTitle +"</th>";
+    list +="<th style=\"text-align: right\">Amount:</th></tr>";
+
     for (Invoice invoice : invoices){
-      list += "<tr><td align=\"left\">"+ invoice.getInvoiceNumber()+"</td><td style=\"text-align: left\">"+user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName())+ "</td><td style=\"text-align: right\">"+  formatter.format(invoice.getAmount()) +"</td></tr>";
+      list += "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber()+"</td>";
+      list += "<td style=\"text-align: left\">"+ user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>";
+      if(!dayTitle.isEmpty())
+        list += "<td style=\"text-align: right\">"+
+          (dayEnd.getTimeInMillis() - invoice.getDueDate().getTime()) / 86400000
+          +"</td>";
+      list += "<td style=\"text-align: right\">"+ formatter.format(invoice.getAmount()) +"</td></tr>";
       sum += invoice.getAmount();
     }
-    list +="<tr><td align=\"left\"></td><td style=\"text-align: left\"><b>TOTAL</b></td><td style=\"text-align: right\"><b>"+  formatter.format(sum) +"</b></td></tr>";
+    list += "<tr><td style=\"text-align: left\"></td>";
+    list += "<td style=\"text-align: left\"><b>TOTAL</b></td>";
+    if(!dayTitle.isEmpty()) list +="<td style=\"text-align: right\"></td>";
+    list += "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>";
     return list;
   }
   public void setRecipients(String[] people)
