@@ -6,18 +6,19 @@
 # - move all java code to the root directory build folder
 
 # Remove the build folder if it exist and create a new one
-clean_build() {
+clean() {
   if [ -d "$build/" ]; then
     rm -rf build
     mkdir build
   fi
 }
-clean_build
 
+# Clean top level build folder
+clean
 
 # Generate java files from models and move to build folder
-generate_files() {
-  # Copy over directories from src
+generate_java() {
+  # Copy over directories from project/src to project/build
   for d in *; do
     if [ "$d" = 'target' ] || [ "$d" = 'gen.sh' ]; then
       continue
@@ -29,11 +30,11 @@ generate_files() {
   # Delete javascript files from ../build/
   find ../build/ -name "*.js" -type f -delete
 
-  # Generate java files to build dir
+  # Generate java files to project/build
   cwd=$(pwd)
   node ../../foam2/tools/genjava.js $cwd/../tools/classes.js $cwd/../build $cwd
 
-  # Copy java files to root build folder
+  # Copy java files from project/build to NANOPAY/build
   cd ../build/
   find . -name '*.java' | cpio -pdm ../../build/
 }
@@ -45,10 +46,10 @@ for d in *; do
      [ "$d" = 'retail' ]; then
 
     cd $d
-    clean_build
+    clean
 
     cd src/
-    generate_files
+    generate_java
 
     cd ../../
   fi
