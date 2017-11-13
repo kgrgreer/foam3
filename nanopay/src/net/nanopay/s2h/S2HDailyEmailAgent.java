@@ -73,12 +73,12 @@ public class S2HDailyEmailAgent
     List<Invoice> overdueList = (List)((ListSink)overdueInvoices.select(new ListSink())).getData();
 
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
-    if (!paidList.isEmpty()) {
+    if ( ! paidList.isEmpty() ) {
       args.put("title1", "PAID invoices as of end of day: ");
       args.put("list1", getList(paidList, userDAO,""));
       args.put("date1", dayEnd.getTime());
     }
-    if (!overdueList.isEmpty()) {
+    if ( ! overdueList.isEmpty() ) {
       args.put("title2", "OVERDUE invoices as of end of day: ");
       args.put("list2", getList(overdueList, userDAO, "Days Overdue:"));
       args.put("date2", dayEnd.getTime());
@@ -94,22 +94,28 @@ public class S2HDailyEmailAgent
     String list = "";
     list +="<tr><th style=\"text-align: left\">Invoice #</th>";
     list +="<th style=\"text-align: left\">Payer Name:</th>";
-    if(!dayTitle.isEmpty()) list +="<th style=\"text-align: right\">"+ dayTitle +"</th>";
+    if( ! dayTitle.isEmpty() ) {
+      list +="<th style=\"text-align: right\">"+ dayTitle +"</th>";
+    }
     list +="<th style=\"text-align: right\">Amount:</th></tr>";
 
     for (Invoice invoice : invoices){
       list += "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber()+"</td>";
       list += "<td style=\"text-align: left\">"+ user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>";
-      if(!dayTitle.isEmpty())
-        list += "<td style=\"text-align: right\">"+
+      if( ! dayTitle.isEmpty() ) {
+        list += "<td style=\"text-align: right\">" +
           (dayEnd.getTimeInMillis() - invoice.getDueDate().getTime()) / 86400000
-          +"</td>";
-      list += "<td style=\"text-align: right\">"+ formatter.format(invoice.getAmount()) +"</td></tr>";
+          + "</td>";
+      }
+      list += "<td style=\"text-align: right\">" + formatter.format(invoice.getAmount()) + "</td></tr>";
       sum += invoice.getAmount();
+
     }
     list += "<tr><td style=\"text-align: left\"></td>";
     list += "<td style=\"text-align: left\"><b>TOTAL</b></td>";
-    if(!dayTitle.isEmpty()) list +="<td style=\"text-align: right\"></td>";
+    if( ! dayTitle.isEmpty() ){
+      list +="<td style=\"text-align: right\"></td>";
+    }
     list += "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>";
     return list;
   }

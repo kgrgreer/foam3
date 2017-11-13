@@ -33,16 +33,18 @@ public class S2HReportingAgent
     dayStart.setTimeInMillis(dayEnd.getTimeInMillis()- 1213200000);
     dayEnd.setTimeInMillis(dayEnd.getTimeInMillis()- 1000);
   }
+
   public S2HReportingAgent(int Startyear, int Startmonth, int Startday){
     dayStart.set(Startyear, Startmonth, Startday,0,0,0);
     dayEnd.setTime(new Date());
   }
+
   public S2HReportingAgent(int Startyear, int Startmonth, int Startday, int Endyear, int Endmonth, int Endday){
     dayStart.set(Startyear, Startmonth, Startday,0,0,0);
     dayEnd.set(Endyear, Endmonth, Endday+1,0,0,0);
     dayEnd.setTimeInMillis(dayEnd.getTimeInMillis()- 1000);
-
   }
+
   public void execute(X x)
   {
     DAO userDAO = (DAO) x.get("userDAO");
@@ -87,7 +89,7 @@ public class S2HReportingAgent
     String list = "";
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
-    if (!invoicesList.isEmpty()) {
+    if ( ! invoicesList.isEmpty() ){
       list += "<tr><th style=\"text-align: left\">Invoice #</th>";
       list += "<th style=\"text-align: left\">Issue Date:</th>";
       list += "<th style=\"text-align: left\">Payer Name:</th>";
@@ -112,7 +114,7 @@ public class S2HReportingAgent
       sum = 0.0;
     }
 
-    if (!transactionList.isEmpty()) {
+    if ( ! transactionList.isEmpty() ){
       list += "<tr><th style=\"text-align: left\">Transaction #</th>";
       list += "<th style=\"text-align: left\">Transaction Date:</th>";
       list += "<th style=\"text-align: left\">Payer Name:</th>";
