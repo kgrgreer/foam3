@@ -148,11 +148,18 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/TransferReview', flags: ['web'] },
   { name: 'net/nanopay/ui/transfer/TransferDetails', flags: ['web'] },
   { name: 'net/nanopay/ui/transfer/TransferAmount', flags: ['web'] },
-  { name: 'net/nanopay/ui/transfer/TransferComplete', flags: ['web'] }, 
-  { name: 'net/nanopay/ui/transfer/TransferView', flags: ['web'] },  
-  { name: 'net/nanopay/ui/transfer/TransferUserCard', flags: ['web'] },    
-  { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },    
-  
+
+  { name: 'net/nanopay/ui/transfer/TransferComplete', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferView', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferUserCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
+
+
+  { name: 'net/nanopay/ui/transfer/TransferComplete', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferView', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/TransferUserCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
+
   //ui
   { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
   { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
@@ -169,7 +176,16 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
-  { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },  
+
+  { name: 'net/nanopay/model/Relationships'},
+
+  { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
+  { name: 'net/nanopay/model/Relationships'},
+
+  //s2h
+  { name: 'net/nanopay/s2h/model/S2HInvoice'},
+
+  { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/model/Relationships'}
 
 ]);
