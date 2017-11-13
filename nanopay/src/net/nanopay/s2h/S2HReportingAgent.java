@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.Currency;
 
 
-public class S2HInvoiceReportAgent
+public class S2HReportingAgent
   implements ContextAgent
 {
   String [] recipients;
@@ -24,7 +24,7 @@ public class S2HInvoiceReportAgent
   Calendar dayStart = Calendar.getInstance();
   Calendar dayEnd = Calendar.getInstance();
 
-  public S2HInvoiceReportAgent(){
+  public S2HReportingAgent(){
     calendar.setTime(new Date());
     int year = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
@@ -33,11 +33,11 @@ public class S2HInvoiceReportAgent
     dayStart.setTimeInMillis(dayEnd.getTimeInMillis()- 1213200000);
     dayEnd.setTimeInMillis(dayEnd.getTimeInMillis()- 1000);
   }
-  public S2HInvoiceReportAgent(int Startyear, int Startmonth, int Startday){
+  public S2HReportingAgent(int Startyear, int Startmonth, int Startday){
     dayStart.set(Startyear, Startmonth, Startday,0,0,0);
     dayEnd.setTime(new Date());
   }
-  public S2HInvoiceReportAgent(int Startyear, int Startmonth, int Startday, int Endyear, int Endmonth, int Endday){
+  public S2HReportingAgent(int Startyear, int Startmonth, int Startday, int Endyear, int Endmonth, int Endday){
     dayStart.set(Startyear, Startmonth, Startday,0,0,0);
     dayEnd.set(Endyear, Endmonth, Endday+1,0,0,0);
     dayEnd.setTimeInMillis(dayEnd.getTimeInMillis()- 1000);
