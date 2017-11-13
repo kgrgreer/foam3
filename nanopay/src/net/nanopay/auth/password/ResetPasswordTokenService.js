@@ -103,7 +103,9 @@ foam.CLASS({
   }
 
   // update user's password
-  userResult.setPassword(Password.hash(newPassword));
+  userResult.setPreviousPassword(userResult.getPassword());
+  userResult.setPasswordLastModified(Calendar.getInstance().getTime());
+  userResult.setPassword(newPassword);
   userDAO.put(userResult);
   return true;
 } catch (Throwable t) {
