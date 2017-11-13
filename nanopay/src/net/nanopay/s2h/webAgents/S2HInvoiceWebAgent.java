@@ -62,8 +62,7 @@ public class S2HInvoiceWebAgent
 
       inv = (Invoice) invoiceDAO.put(inv);
       // Output success
-      out.println("");
-      out.println("");
+
       out.println("Success");
     } catch (Throwable t) {
       out.println("Error " + t);

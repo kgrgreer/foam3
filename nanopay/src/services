@@ -31,7 +31,11 @@ p({"class":"foam.nanos.boot.NSpec", "name":"email",                       "lazy"
 p({"class":"foam.nanos.boot.NSpec", "name":"s2hInvoiceUpload",            "lazy":true,  "serve":false, "serviceClass":"net.nanopay.s2h.model.S2HInvoiceWebAgent"})
 =======
 <<<<<<< HEAD
+<<<<<<< HEAD
 p({"class":"foam.nanos.boot.NSpec", "name":"s2hInvoiceUpload",            "lazy":true,  "serve":false, "serviceClass":"net.nanopay.s2h.model.S2HInvoiceWebAgent"})
+=======
+>>>>>>> 535d55a337ca3bdcd7f34020ce7c041e85ac5114
+>>>>>>> ff13b43fb45d37027bb3c2331045be25a23b975f
 =======
 >>>>>>> 535d55a337ca3bdcd7f34020ce7c041e85ac5114
 >>>>>>> ff13b43fb45d37027bb3c2331045be25a23b975f
