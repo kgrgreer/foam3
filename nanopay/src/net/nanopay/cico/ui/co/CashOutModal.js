@@ -182,7 +182,7 @@ foam.CLASS({
           return;
         }
         if(self.amount == 0) {
-          self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than 0.00', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
           return;
         }
         X.closeDialog();

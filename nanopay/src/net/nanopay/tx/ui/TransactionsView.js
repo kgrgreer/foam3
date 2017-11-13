@@ -1,15 +1,29 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ui',
   name: 'TransactionsView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
 
   documentation: 'View displaying interac home page with list of accounts and transactions',
 
-  requires: [ 'net.nanopay.tx.model.Transaction' ],
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [ 
+    'net.nanopay.tx.model.Transaction',
+    'foam.nanos.auth.User'
+  ],
 
   imports: [
     'transactionDAO',
+    'userDAO',
     'user'
+  ],
+
+  exports: [
+    'as data',
+    'filter',
+    'filteredTransactionDAO'
   ],
 
   axioms: [
@@ -31,6 +45,7 @@ foam.CLASS({
           margin: 0;
           display: inline-block;
           vertical-align: top;
+          margin-bottom: 30px;
         }
         ^ .accountDiv {
           width: 400px;
@@ -70,6 +85,11 @@ foam.CLASS({
         }
         ^ .titleMargin {
           margin: 0;
+        }
+        ^ .searchIcon {
+          position: absolute;
+          margin-left: 20px;
+          margin-top: 8px;
         }
         ^ .net-nanopay-ui-ActionView-sendTransfer {
           width: 135px;
@@ -116,6 +136,20 @@ foam.CLASS({
           padding-left: 15px;
           height: 60px;
         }
+        .filter-search {
+          width: 225px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #ffffff;
+          display: inline-block;
+          margin-left: 15px;
+          margin-bottom: 30px;
+          vertical-align: top;
+          border: 0;
+          box-shadow:none;
+          padding: 10px 10px 10px 31px;
+          font-size: 14px;
+        }
         ^ .foam-u2-view-TableView th {
           font-family: 'Roboto';
           padding-left: 15px;
@@ -146,32 +180,80 @@ foam.CLASS({
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
+        ^ .net-nanopay-ui-ActionView-exportButton {
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          opacity: 0.01;
+          cursor: pointer;
+          z-index: 100;
+        }
+        ^ .net-nanopay-ui-ActionView-filterButton {
+          position: absolute;
+          width: 75px;
+          height: 35px;
+          opacity: 0.01;
+          cursor: pointer;
+          z-index: 100;
+        }
       */}
     })
   ],
 
   properties: [
-    { name: 'data', factory: function() { return this.transactionDAO; }}
+    {
+      class: 'String',
+      name: 'filter',
+      view: {
+        class: 'foam.u2.TextField',
+        type: 'search',
+        placeholder: 'Reference #',
+        onKey: true
+      }
+    },
+    { name: 'data', factory: function() { return this.transactionDAO; }},
+    {
+      name: 'filteredTransactionDAO',
+      expression: function(data, filter) {
+        return data.where(this.CONTAINS_IC(this.Transaction.REFERENCE_NUMBER, filter));
+      },
+      view: {
+        class: 'foam.u2.view.TableView',
+        columns: [
+          'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
+        ]
+      }
+    }
   ],
 
   messages: [
     { name: 'myAccounts', message: 'My Accounts' },
     { name: 'recentActivities', message: 'Recent Activities' },
-    { name: 'recentTransactions', message: 'Recent Transactions' },
     { name: 'placeholderText', message: 'You don\'t have any recent transactions right now.' }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
       this
         .addClass(this.myClass())
         .start()
-          .start('h3').add(this.recentTransactions).end()
-          .start()
+          .start().addClass('container')
+            .start().addClass('button-div')
+              .start().addClass('inline')
+                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).end()
+              .end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
+              .start(this.FILTER).addClass('filter-search').end()
+            .end()
+          .end()
+          .add(this.FILTERED_TRANSACTION_DAO)
+          /*.start()
             .tag({
                 class: 'foam.u2.ListCreateController',
-                dao: this.transactionDAO,
+                dao: this.filteredTransactionDAO,
                 factory: function() { return self.Transaction.create(); },
                 detailView: {
                   class: 'foam.u2.DetailView',
@@ -186,7 +268,7 @@ foam.CLASS({
                 },
               summaryView: this.TransactionTableView.create()
             })
-          .end()
+          .end()*/
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
     }
@@ -199,6 +281,12 @@ foam.CLASS({
       code: function(X) {
         // send e-Transfer functionality
         X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
+      }
+    },
+    {
+      name: 'exportButton',
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
       }
     }
   ],
