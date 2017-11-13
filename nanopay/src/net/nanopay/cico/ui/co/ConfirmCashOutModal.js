@@ -16,6 +16,7 @@ foam.CLASS({
     'closeDialog',
     'onCashOutSuccess',
     'cashOut',
+    'setBankLogo',
     'standardCICOTransactionDAO',
     'user'
   ],
@@ -185,7 +186,13 @@ foam.CLASS({
           .end()
           .start().add(this.bankLabel).addClass('label').end()
           .start('div').addClass('bankInfoDiv')
-            .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
+            .start()
+              .call(function() {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.start({ class: 'foam.u2.tag.Image', data: self.setBankLogo(bank.institutionNumber) }).addClass('bankLogo').end()
+                }.bind(this));
+              })
+            .end()
             .start()
               .addClass('bankName')
               .call(function() {

@@ -35,7 +35,8 @@ foam.CLASS({
     'confirmCashIn',
     'goToBankAccounts',
     'onCashOutSuccess',
-    'onCashInSuccess'
+    'onCashInSuccess',
+    'setBankLogo'
   ],
 
   axioms: [
@@ -249,6 +250,28 @@ foam.CLASS({
 
     function goToBankAccounts() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+    },
+
+    function setBankLogo(institutionNumber) {
+      switch(institutionNumber) {
+        case '001':
+          return 'images/bmo.svg';
+          break;
+        case '002': 
+          return 'images/scotia.svg';
+          break;
+        case '003': 
+          return 'images/rbc.svg';
+          break;
+        case '004':
+          return 'images/td.svg';
+          break;
+        case '010': 
+          return 'images/cibc.svg';
+          break;
+        default: 
+          return 'images/icon_bank_account_black.png';
+      }
     }
   ],
 

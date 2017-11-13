@@ -16,6 +16,7 @@ foam.CLASS({
     'cashIn',
     'closeDialog',
     'onCashInSuccess',
+    'setBankLogo',
     'standardCICOTransactionDAO',
     'user'
   ],
@@ -188,7 +189,13 @@ foam.CLASS({
           .end()
           .start().add(this.bankLabel).addClass('label').end()
           .start('div').addClass('bankInfoDiv')
-            .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
+            .start()
+              .call(function() {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.start({ class: 'foam.u2.tag.Image', data: self.setBankLogo(bank.institutionNumber) }).addClass('bankLogo').end()
+                }.bind(this));
+              })
+            .end()
             .start()
               .addClass('bankName')
               .call(function() {
@@ -197,12 +204,13 @@ foam.CLASS({
                 }.bind(this));
               })
             .end()
-            .start().addClass('accountNumber')
-            .call(function() {
-              self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
-              }.bind(this));
-            })
+            .start()
+              .addClass('accountNumber')
+              .call(function() {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+                }.bind(this));
+              })
             .end()
           .end()
           .br()
