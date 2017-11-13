@@ -43,6 +43,19 @@ foam.CLASS({
           padding-left: 15px;
           height: 60px;
         }
+        .foam-u2-DetailView {
+          background: #fafafa;
+          border: 1px solid grey;
+        }
+        .foam-u2-DetailView .foam-u2-DetailView {
+          width: auto;
+          margin: inherit;
+      }
+        .foam-u2-DetailView-title {
+          background: #ddd;
+          color: gray;
+          padding: 6px;
+        }
         .foam-u2-view-TableView th {
           font-family: 'Roboto';
           padding-left: 15px;
@@ -60,17 +73,17 @@ foam.CLASS({
           font-size: 12px;
           color: #093649;
         }
-        tbody > tr {
+        .foam-u2-view-TableView tbody > tr {
           height: 60px;
           background: white;
         }
-        tbody > tr:nth-child(odd) {
+        .foam-u2-view-TableView tbody > tr:nth-child(odd) {
           background: #f6f9f9;
         }
         .net-nanopay-ui-ActionView{
           border: none;
         }
-        .net-nanopay-ui-ActionView-create{
+        .net-nanopay-ui-ActionView-create {
           background: #59aadd;
           border: none;
           box-shadow: none;
@@ -79,7 +92,7 @@ foam.CLASS({
           width: 135px;
           height: 39px;
         }
-        .net-nanopay-ui-ActionView-back{
+        .net-nanopay-ui-ActionView-back {
           position: absolute;
           top: 110px;
           width: 135px;
@@ -246,7 +259,7 @@ foam.CLASS({
           opacity: 0.6;
           margin-bottom: 35px;
           display: inline-block;
-          width: 200px;
+          white-space: nowrap;
         }
         .green-border-container{
           display: inline-block;
@@ -291,8 +304,8 @@ foam.CLASS({
           display: inline-block;
         }
         .arrow-down {
-          width: 0; 
-          height: 0; 
+          width: 0;
+          height: 0;
           border-left: 10px solid transparent;
           border-right: 10px solid transparent;
           border-top: 10px solid lightgrey;
@@ -341,7 +354,7 @@ foam.CLASS({
         }
         .stepTopMargin {
           margin-top: 0;
-        }   
+        }
       */}
     })
   ]

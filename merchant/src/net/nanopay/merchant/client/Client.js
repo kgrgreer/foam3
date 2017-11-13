@@ -53,7 +53,7 @@ foam.CLASS({
             {
               "name":"Ingenico 1",
               "type":2,
-              "serialNumber":"D0905F62CBB44474",
+              "serialNumber":"EEC0535C290140A7",
               "status": this.DeviceStatus.ACTIVE,
               "password": 123456
             },

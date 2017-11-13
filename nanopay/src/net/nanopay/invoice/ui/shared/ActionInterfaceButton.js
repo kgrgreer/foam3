@@ -14,7 +14,11 @@ foam.CLASS({
     'detailActions',
     'popupMenu_',
     'openMenu',
-    'data'
+    'data',
+    {
+      name: 'activePopUp',
+      value: false
+    }
   ],
 
   exports: [
@@ -36,6 +40,7 @@ foam.CLASS({
           line-height: 2.86;
           text-align: center;
           float: right;
+          margin-right: 10px;
         }
         ^expand-button{
           width: 27px;
@@ -53,7 +58,7 @@ foam.CLASS({
           border-top: 5px solid white;
           margin-left: 9px;    
           position: relative;
-          top: 18px;
+          top: -20px;
         }
         ^top-action-buttons{
           width: 685px;
@@ -63,7 +68,6 @@ foam.CLASS({
           padding: 0;
           z-index: 1;
           width: 157px;
-          height: 60px;
           background: white;
           opacity: 1;
           box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
@@ -88,8 +92,13 @@ foam.CLASS({
           position: absolute;
           width: 75px;
           height: 35px;
-          z-index: 10;
+          z-index: 1;
           opacity: 0.01;
+        }
+        ^ .net-nanopay-ui-ActionView-PopUp{
+          position: relative;
+          width: 30px;
+          height: 40px;
         }
         ^ .net-nanopay-ui-ActionView-mainAction{
           opacity: 0.01;
@@ -116,30 +125,30 @@ foam.CLASS({
   methods: [
     function initE(){
       this.SUPER();
-
+      var self = this;
       this
         .addClass(this.myClass())
           .start().addClass(this.myClass('top-action-buttons'))
-          .start({  
-            class: 'net.nanopay.ui.ActionButton', 
-            data: {
-              image: 'images/approve.png', 
-              text: 'Approve',
-              data: this.data,
-              title: 'Approve'
-            }
-          }).addClass('import-button').add(this.APPROVE_MODAL).end()
-          .start({
-            class: 'net.nanopay.ui.ActionButton', 
-            data: {
-              image: 'images/reject.png', 
-              text: 'Reject',
-              data: this.data,
-              title: 'Dispute'
-            }
-          }).addClass('import-button').add(this.DISPUTE_MODAL).end()
-          .start(this.EMAIL_MODAL).addClass('import-button').end()
-          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
+          // .start({  
+          //   class: 'net.nanopay.ui.ActionButton', 
+          //   data: {
+          //     image: 'images/approve.png', 
+          //     text: 'Approve',
+          //     data: this.data,
+          //     title: 'Approve'
+          //   }
+          // }).addClass('import-button').add(this.APPROVE_MODAL).end()
+          // .start({
+          //   class: 'net.nanopay.ui.ActionButton', 
+          //   data: {
+          //     image: 'images/reject.png', 
+          //     text: 'Reject',
+          //     data: this.data,
+          //     title: 'Dispute'
+          //   }
+          // }).addClass('import-button').add(this.DISPUTE_MODAL).end()
+          // .start(this.EMAIL_MODAL).addClass('import-button').end()
+          // .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-assign.png', text: 'Assign'}}).addClass('import-button').end()
           .start({
             class: 'net.nanopay.ui.ActionButton', 
             data: {
@@ -149,13 +158,13 @@ foam.CLASS({
               title: 'Export'
             }
           }).addClass('import-button').add(this.EXPORT_MODAL).end()
-          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
+          // .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
           .start().addClass(this.myClass('pay-button')).add(this.detailActions.buttonLabel)
           .startContext({ data: this }).add(this.MAIN_ACTION)
-            .start('span', null, this.popupMenu_$)
-              .start().addClass(this.myClass('expand-button')).add(this.POP_UP)
+            .start().addClass(this.myClass('expand-button')).add(this.POP_UP)
               .start().addClass(this.myClass('expand-triangle')).end()
-              .end()         
+            .end()   
+            .start('span', null, this.popupMenu_$)      
             .end()
           .end()
           .end()
@@ -163,23 +172,33 @@ foam.CLASS({
     }
   ],
 
+
   actions: [
     {
       name: 'popUp',
-      code: function(X){
+      isAvailable: function(activePopUp){
+        return ! activePopUp;
+      },
+      code: function(X) {
+        this.activePopUp = true;
+        var self = this;
         var p = this.PopupView.create({
           width: 157,
-          height: 60,
           left: -117,
           top: 30
-        }, X)
+        }, X);
+        p.onunload.sub(function() { self.activePopUp = false; });
         p.addClass('optionsDropDown')
           .start('div').add(this.detailActions.subMenu1)
             .on('click', this.detailActions.subMenuAction1)
           .end()
-          .start('div').add(this.detailActions.subMenu2)
-            .on('click', this.detailActions.subMenuAction2)
-          .end()
+          .call(function(){
+            if(self.detailActions.subMenu2){
+              p.start().add(self.detailActions.subMenu2)
+                .on('click', self.detailActions.subMenuAction2)
+              .end()
+            }
+          })
         this.popupMenu_.add(p)
       }
     },
