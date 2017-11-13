@@ -29,7 +29,7 @@ public class S2HInvoiceWebAgent
     PrintWriter        out  = (PrintWriter) x.get(PrintWriter.class);
     CharBuffer         buffer_ = CharBuffer.allocate(65535);
     String             json = req.getParameter("invoice");
-    Logger             logger         = (Logger) x.get("logger");
+    Logger             logger = (Logger) x.get("logger");
 
     try {
       if ( json == null || "".equals(json) ) {
