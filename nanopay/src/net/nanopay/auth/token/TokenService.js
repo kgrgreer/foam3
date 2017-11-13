@@ -7,8 +7,6 @@ foam.INTERFACE({
   methods: [
     {
       name: 'generateToken',
-      returns: 'Promise',
-      javaReturns: 'boolean',
       args: [
         {
           name: 'user',
@@ -18,8 +16,6 @@ foam.INTERFACE({
     },
     {
       name: 'processToken',
-      returns: 'Promise',
-      javaReturns: 'boolean',
       args: [
         {
           name: 'user',
