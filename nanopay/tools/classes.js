@@ -44,7 +44,8 @@ var classes = [
   'net.nanopay.tx.model.TransactionPurpose',
   'net.nanopay.retail.model.DeviceType',
   'net.nanopay.retail.model.DeviceStatus',
-  'net.nanopay.retail.model.Device'
+  'net.nanopay.retail.model.Device',
+  'net.nanopay.s2h.model.S2HInvoice'
 ];
 
 var abstractClasses = [
