@@ -6,34 +6,34 @@
 
 package net.nanopay.s2h.model;
 
-import net.nanopay.invoice.model.Invoice;
 import foam.core.*;
 import foam.dao.DAO;
-import foam.nanos.http.WebAgent;
-import java.io.PrintWriter;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import foam.nanos.logger.Logger;
-import java.nio.CharBuffer;
 import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
+import java.io.PrintWriter;
+import java.nio.CharBuffer;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletException;
+import net.nanopay.invoice.model.Invoice;
 
+/** Support uploading of Invoices in S2H format as JSON. **/
 public class S2HInvoiceWebAgent
   implements WebAgent
 {
   public S2HInvoiceWebAgent() {}
 
   public void execute(X x) {
-    HttpServletRequest req  = (HttpServletRequest) x.get(HttpServletRequest.class);
-    PrintWriter        out  = (PrintWriter) x.get(PrintWriter.class);
+    HttpServletRequest req     = (HttpServletRequest) x.get(HttpServletRequest.class);
+    PrintWriter        out     = (PrintWriter) x.get(PrintWriter.class);
     CharBuffer         buffer_ = CharBuffer.allocate(65535);
-    String             json = req.getParameter("invoice");
-    Logger             logger = (Logger) x.get("logger");
+    String             json    = req.getParameter("invoice");
+    Logger             logger  = (Logger) x.get("logger");
 
     try {
       if ( json == null || "".equals(json) ) {
-
         out.println("<form><textarea rows=20 cols=120 name=invoice></textarea><br><button type=submit>Submit</button></form>");
         return;
       }
@@ -52,8 +52,8 @@ public class S2HInvoiceWebAgent
         return;
       }
 
-      Invoice    inv = sinv.generateNanoInvoice();
-      DAO        invoiceDAO = (DAO) x.get("invoiceDAO");
+      Invoice inv        = sinv.generateNanoInvoice();
+      DAO     invoiceDAO = (DAO) x.get("invoiceDAO");
 
       inv = (Invoice) invoiceDAO.put(inv);
 
