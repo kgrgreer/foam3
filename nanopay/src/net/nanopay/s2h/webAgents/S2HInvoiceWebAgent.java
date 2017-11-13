@@ -34,7 +34,6 @@ public class S2HInvoiceWebAgent
     try {
       out.println("invoice: " + json);
       if ( json == null || "".equals(json) ) {
-        // Output form
 
         out.println("<form><textarea rows=20 cols=120 name=invoice></textarea><br><button type=submit>Submit</button></form>");
         return;
@@ -44,11 +43,8 @@ public class S2HInvoiceWebAgent
       jsonParser.setX(x);
       S2HInvoice sinv       = (S2HInvoice) jsonParser.parseString(json, S2HInvoice.class);
 
-      out.println("sinv : " + sinv);
-
       if (sinv == null || "".equals(sinv)) {
         out.println("Parse Error");
-        // TODO: display parse error
 
         String message = getParsingError(x, buffer_.toString());
         logger.error(message + ", input: " + buffer_.toString());
@@ -61,7 +57,6 @@ public class S2HInvoiceWebAgent
       DAO        invoiceDAO = (DAO) x.get("invoiceDAO");
 
       inv = (Invoice) invoiceDAO.put(inv);
-      // Output success
 
       out.println("Success");
     } catch (Throwable t) {
