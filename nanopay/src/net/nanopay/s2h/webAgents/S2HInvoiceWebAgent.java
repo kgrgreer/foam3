@@ -40,7 +40,7 @@ public class S2HInvoiceWebAgent
 
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
-      S2HInvoice sinv       = (S2HInvoice) jsonParser.parseString(json, S2HInvoice.class);
+      S2HInvoice sinv = (S2HInvoice) jsonParser.parseString(json, S2HInvoice.class);
 
       if (sinv == null || "".equals(sinv)) {
         out.println("Parse Error");
