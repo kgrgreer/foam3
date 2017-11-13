@@ -1,15 +1,11 @@
 #!/bin/sh
 
+# Exit on first failure
+set -e
 
-# Build root and compile
+./find.sh
 ./gen.sh
 mvn clean install
-./find.sh
-
-#Copy over all required files to $CATALINA_HOME/bin/
-#cp server.xml $CATALINA_HOME/conf
-# exit on first failure
-set -e
 
 #Shutdown tomcat if already running
 /$CATALINA_HOME/bin/shutdown.sh 2> /dev/null
@@ -17,8 +13,6 @@ set -e
 #Copy over files to tomcat location
 cp target/ROOT.war $CATALINA_HOME/webapps
 cp server.xml $CATALINA_HOME/conf
-
-cd ../
 
 #Copy over all JDAO files to /bin
 cp accounts $CATALINA_HOME/bin/
@@ -56,10 +50,8 @@ cp transactions $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
 
 #Copy over NANOPAY and foam2
-rm -rf $CATALINA_HOME/bin/foam2/
-cp -r foam2/ $CATALINA_HOME/bin/foam2
-
 rm -rf $CATALINA_HOME/bin/NANOPAY/
+cd ..
 cp -r NANOPAY/ $CATALINA_HOME/bin/NANOPAY
 
 #Start the server

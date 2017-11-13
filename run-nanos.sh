@@ -2,6 +2,8 @@
 
 # Exit on first failure
 set -e
+
+# Generate files, build and run
 ./find.sh
 ./gen.sh
 mvn clean install
