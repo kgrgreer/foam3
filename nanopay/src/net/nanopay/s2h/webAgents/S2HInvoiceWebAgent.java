@@ -25,14 +25,13 @@ public class S2HInvoiceWebAgent
   public S2HInvoiceWebAgent() {}
 
   public void execute(X x) {
-    HttpServletRequest req            = (HttpServletRequest) x.get(HttpServletRequest.class);
-    PrintWriter        out            = (PrintWriter) x.get(PrintWriter.class);
-    CharBuffer         buffer_        = CharBuffer.allocate(65535);
-    String             json           = req.getParameter("invoice");
+    HttpServletRequest req  = (HttpServletRequest) x.get(HttpServletRequest.class);
+    PrintWriter        out  = (PrintWriter) x.get(PrintWriter.class);
+    CharBuffer         buffer_ = CharBuffer.allocate(65535);
+    String             json = req.getParameter("invoice");
     Logger             logger         = (Logger) x.get("logger");
 
     try {
-      out.println("invoice: " + json);
       if ( json == null || "".equals(json) ) {
 
         out.println("<form><textarea rows=20 cols=120 name=invoice></textarea><br><button type=submit>Submit</button></form>");
@@ -53,7 +52,7 @@ public class S2HInvoiceWebAgent
         return;
       }
 
-      Invoice    inv        = sinv.generateNanoInvoice();
+      Invoice    inv = sinv.generateNanoInvoice();
       DAO        invoiceDAO = (DAO) x.get("invoiceDAO");
 
       inv = (Invoice) invoiceDAO.put(inv);
