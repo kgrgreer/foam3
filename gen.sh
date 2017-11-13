@@ -55,5 +55,6 @@ for d in *; do
   fi
 done
 
+# Generate NANOPAY classes 
 cwd=$(pwd)
 node foam2/tools/genjava.js $cwd/tools/classes.js $cwd/build $cwd

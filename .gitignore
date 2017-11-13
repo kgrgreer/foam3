@@ -46,6 +46,7 @@ build/
 target/
 root/target/
 nanopay-bin.js
+nano.log*
 
 # Concatenated files
 accounts
@@ -81,3 +82,5 @@ services
 tests
 transactions
 users
+emailTemplates
+transactionLimits
