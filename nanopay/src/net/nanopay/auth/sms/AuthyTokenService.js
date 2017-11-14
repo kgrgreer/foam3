@@ -73,7 +73,7 @@ if ( phone.getVerified() ) {
 PhoneVerification phoneVerification = client.getPhoneVerification();
 Verification verification = phoneVerification.check(phone.getNumber(), "1", token);
 if ( ! verification.isOk() ) {
-  throw new RuntimeException(verification.getMessage());
+  throw new RuntimeException("Error validating code");
 }
 
 phone.setVerified(true);
