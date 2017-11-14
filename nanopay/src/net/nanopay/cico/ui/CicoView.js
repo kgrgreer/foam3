@@ -14,7 +14,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.model.Account'
+    'net.nanopay.model.Account',
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
@@ -36,7 +37,8 @@ foam.CLASS({
     'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess',
-    'setBankLogo'
+    'setBankLogo',
+    'as view'
   ],
 
   axioms: [
@@ -153,8 +155,9 @@ foam.CLASS({
     {
       name: 'bankList',
       view: function(_, X) {
+        var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountDAO,
+          dao: X.bankAccountDAO.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
           objToChoice: function(a){
             return [a.id, a.accountName];
           }
