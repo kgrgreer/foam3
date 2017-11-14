@@ -1,5 +1,7 @@
 cd /pkg/stack/stage/NANOPAY
-./run-tomcat.sh
+./find.sh
+./gen.sh
+mvn clean install
 
 cd /pkg/stack/stage/NANOPAY
 cp accounts /opt/tomcat/bin/
@@ -35,7 +37,6 @@ cp services /opt/tomcat/bin/
 cp tests /opt/tomcat/bin/
 cp transactions /opt/tomcat/bin/
 cp users /opt/tomcat/bin/
-cp -r foam2/ /opt/tomcat/bin/foam2
 cp -r $(pwd) /opt/tomcat/bin/NANOPAY
 cp target/ROOT.war /opt/tomcat/webapps
 
