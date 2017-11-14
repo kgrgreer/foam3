@@ -41,7 +41,8 @@ HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
 args.put("link", "http://localhost:8080/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
 
-email.sendEmailFromTemplate(message, "welcome-mintchip", args);`
+email.sendEmailFromTemplate(message, "welcome-mintchip", args);
+return true;`
     },
     {
       name: 'processToken',
@@ -71,7 +72,8 @@ tokenDAO.put(result);
 
 // set user email verified to true
 user.setEmailVerified(true);
-userDAO.put(user);`
+userDAO.put(user);
+return true;`
     }
   ]
 });

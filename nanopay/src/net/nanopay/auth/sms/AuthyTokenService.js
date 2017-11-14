@@ -55,7 +55,8 @@ PhoneVerification phoneVerification = client.getPhoneVerification();
 Verification verification = phoneVerification.start(phone.getNumber(), "1", "sms", new Params());
 if ( ! Boolean.parseBoolean(verification.getSuccess()) ) {
   throw new RuntimeException(verification.getMessage());
-}`
+}
+return true;`
     },
     {
       name: 'processToken',
@@ -71,11 +72,14 @@ if ( phone.getVerified() ) {
 // TODO: Remove hardcoded country code of 1
 PhoneVerification phoneVerification = client.getPhoneVerification();
 Verification verification = phoneVerification.check(phone.getNumber(), "1", token);
-if ( verification.isOk() ) {
-  phone.setVerified(true);
-  user.setPhone(phone);
-  userDAO.put(user);
-}`
+if ( ! verification.isOk() ) {
+  throw new RuntimeException(verification.getMessage());
+}
+
+phone.setVerified(true);
+user.setPhone(phone);
+userDAO.put(user);
+return true;`
     },
     {
       name: 'start',

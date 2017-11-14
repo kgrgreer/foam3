@@ -65,7 +65,8 @@ HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
 args.put("link", "http://localhost:8080/resetPassword?token=" + token.getData());
 
-email.sendEmailFromTemplate(message, "reset-password-mintchip", args);`
+email.sendEmailFromTemplate(message, "reset-password-mintchip", args);
+return true;`
     },
     {
       name: 'processToken',
@@ -105,7 +106,8 @@ if ( ! Password.isValid(newPassword) ) {
 userResult.setPasswordLastModified(Calendar.getInstance().getTime());
 userResult.setPreviousPassword(userResult.getPassword());
 userResult.setPassword(Password.hash(newPassword));
-userDAO.put(userResult);`
+userDAO.put(userResult);
+return true;`
     }
   ]
 });
