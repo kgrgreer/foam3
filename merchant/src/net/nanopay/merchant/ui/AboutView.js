@@ -13,7 +13,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
+          width: 100%;
           height: 480px;
           display: table;
           position: absolute;
