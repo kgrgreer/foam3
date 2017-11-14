@@ -27,7 +27,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
+          width: 100%;
           background-color: #2c4389;
           position: relative;
         }
@@ -40,20 +40,20 @@ foam.CLASS({
           top: 20px;
         }
         ^ .amount-div {
+          width: 100%;
           font-size: 25px;
           font-weight: 500;
           text-align: center;
           position: absolute;
           top: 220px;
-          width: 320px;
         }
         ^ .instructions-div {
+          width: 100%;
           font-size: 16px;
           line-height: 1.88;
           text-align: center;
           position: absolute;
           top: 279px;
-          width: 320px;
         }
         ^ .qr-code-div:focus {
           outline: none;
@@ -134,7 +134,7 @@ foam.CLASS({
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( key === 'Backspace' || key === 27 || key === 8  ) {
-        this.toolbarTitle = 'MintChip Home';
+        this.toolbarTitle = 'Home';
         this.toolbarIcon = 'menu';
         this.stack.back();
       }

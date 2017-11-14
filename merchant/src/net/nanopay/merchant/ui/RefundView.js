@@ -21,13 +21,13 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
-          height: 480px;
+          width: 100%;
+          height: 100%;
           background-color: #ffffff;
           position: fixed;
         }
         ^ .refund-info-wrapper {
-          width: 320px;
+          width: 100%;
           height: 180px;
           color: #252c3d;
         }
@@ -75,17 +75,18 @@ foam.CLASS({
           padding-left: 14px;
         }
         ^ .refund-buttons-wrapper {
-          width: 320px;
-          height: 60px;
+          width: 100%;
+          position: fixed;
+          bottom: 0px;
         }
         ^ .refund-cancel-button {
-          width: 160px;
-          height: 60px;
+          width: 50%;
+          height: 72px;
           background-color: #595959;
         }
         ^ .refund-accept-button {
-          width: 160px;
-          height: 60px;
+          width: 50%;
+          height: 72px;
           background-color: #f55a5a;
         }
       */}
