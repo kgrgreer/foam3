@@ -2,11 +2,12 @@ foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
 
   documentation: 'Top-level Merchant application controller.',
 
   implements: [
-    'net.nanopay.merchant.client.Client'
+    'foam.nanos.client.Client'
   ],
 
   requires: [
