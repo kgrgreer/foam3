@@ -16,7 +16,6 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           background: #2c4389;
         }
         ^ .setup-title {
@@ -44,11 +43,12 @@ foam.CLASS({
           padding-top: 66px;
         }
         ^ .setup-next-wrapper {
+          width: 100%;
           position: fixed;
           bottom: 0px;
         }
         ^ .setup-next-button {
-          width: 320px;
+          width: 100%;
           height: 72px;
           background-color: #26a96c;
         }
