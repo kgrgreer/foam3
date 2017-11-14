@@ -38,7 +38,6 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           background: #2c4389;
         }
         ^ h4{
@@ -49,6 +48,7 @@ foam.CLASS({
           margin-top: 95px;
         }
         ^ .retail-code {
+          width: 242px;
           border: none;
           margin-top: 50px;
           margin-left: 46px;
@@ -82,11 +82,12 @@ foam.CLASS({
           text-shadow: 0px 0px 0px white;
         }
         ^ .setup-next-wrapper {
+          width: 100%;
           position: fixed;
           bottom: 0px;
         }
         ^ .setup-next-button {
-          width: 320px;
+          width: 100%;
           height: 72px;
           background-color: #26a96c;
         }
@@ -174,6 +175,14 @@ foam.CLASS({
 
     function onNextClicked (e) {
       var self = this;
+
+      if ( ! this.serialNumber ) {
+        throw new Error('Invalid serial number');
+      }
+
+      if ( ! this.password ) {
+        throw new Error('Please enter a password');
+      }
 
       // look up device, set to active and save
       this.deviceDAO.where(this.AND(

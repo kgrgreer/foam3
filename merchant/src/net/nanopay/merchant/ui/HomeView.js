@@ -62,7 +62,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.toolbarTitle = 'MintChip Home';
+      this.toolbarTitle = 'Home';
       this.toolbarIcon = 'menu';
 
       this.document.addEventListener('keydown', this.onKeyPressed);
