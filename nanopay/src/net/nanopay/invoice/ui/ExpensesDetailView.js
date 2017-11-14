@@ -53,8 +53,8 @@ foam.CLASS({
             buttonAction: this.payNowPopUp, 
             subMenu1: 'Schedule a Payment', 
             subMenuAction1: this.schedulePopUp, 
-            subMenu2: 'Dispute', 
-            subMenuAction2: this.disputePopUp 
+            subMenu2: 'Void', 
+            subMenuAction2: this.voidPopUp 
           }
         })
         .start('h5').add('Invoice from ', this.data.payeeName).end()
@@ -64,14 +64,27 @@ foam.CLASS({
 
   listeners: [
     function payNowPopUp(){
+      if(this.data.paymentMethod.name != 'NONE'){
+        debugger;
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
       this.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: this.data });
     },
 
-    function disputePopUp(){
+    function voidPopUp(){
+      if(this.data.paymentMethod.name != 'NONE'){
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
     function schedulePopUp(){
+      if(this.data.paymentMethod.name != 'NONE'){
+        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
     }
   ],

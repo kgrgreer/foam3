@@ -13,9 +13,9 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
+          height: 100%;
+          width: 100%;
           background-color: #f55a5a;
-          height: 480px;
-          width: 320px;
           margin-top: -56px;
         }
         ^ .error-view-div {

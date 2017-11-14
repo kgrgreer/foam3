@@ -1,3 +1,26 @@
+foam.ENUM({
+  package: 'net.nanopay.invoice.model',
+  name: 'PaymentStatus',
+  values: [
+    {
+      name: 'NONE',
+      label: 'None'
+    },
+    {
+      name: 'NANOPAY',
+      label: 'Nanopaid'
+    },
+    {
+      name: 'CHEQUE',
+      label: 'Paid'
+    },
+    {
+      name: 'VOID',
+      label: 'Void'
+    }
+  ]
+});
+
 foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
@@ -129,6 +152,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'Enum',
+      of: 'net.nanopay.invoice.model.PaymentStatus',
+      name: 'paymentMethod'
+    },
+    {
       class: 'String',
       name: 'currencyCode',
       required: true
@@ -142,23 +170,29 @@ foam.CLASS({
       name: 'status',
       transient: true,
       aliases: [ 's' ],
-      expression: function(draft, paymentId, dueDate, paymentDate) {
+      expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
+        if ( paymentMethod.name == 'VOID' ) return 'Void';
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId ) return 'Paid';
-        if ( !dueDate ) return 'New';
-        if ( dueDate.getTime() < Date.now() ) return 'Overdue';
-        if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
-        return paymentDate ? 'Scheduled' : 'New';
+        if ( dueDate ) { 
+          if ( dueDate.getTime() < Date.now() ) return 'Overdue';
+          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
+        }
+        if ( paymentMethod.name == 'CHEQUE') return "Paid";
+        return paymentDate ? 'Scheduled' : 'Due';
       },
       javaGetter: `
         if ( getDraft() ) return "Draft";
+        if ( getPaymentMethod().toString() == "VOID" ) return "Void";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
-        if ( getDueDate() != null ) return "New";
-        if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
-        if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
-        return getPaymentDate() != null ? "Scheduled" : "New";
+        if ( getDueDate() != null ){
+          if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
+          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+        }
+        if ( getPaymentMethod().toString() == "CHEQUE") return "Paid";
+        return getPaymentDate() != null ? "Scheduled" : "Due";
       `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
       tableCellFormatter: function(state, obj, rel) {
@@ -191,7 +225,6 @@ foam.CLASS({
     }
   ]
 });
-
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
@@ -227,7 +260,7 @@ foam.RELATIONSHIP({
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payeeName = a.label();
-          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+          // if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
           self.payeeName = 'Unknown Id: ' + newValue;
         }
@@ -272,7 +305,7 @@ foam.RELATIONSHIP({
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payerName = a.label();
-          if ( a.address ) self.currencyType = a.address.countryId + 'D';
+          // if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
           self.payerName = 'Unknown Id: ' + newValue;
         }

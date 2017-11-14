@@ -2,11 +2,12 @@ foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'Controller',
   extends: 'foam.u2.Element',
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
 
   documentation: 'Top-level Merchant application controller.',
 
   implements: [
-    'net.nanopay.merchant.client.Client'
+    'foam.nanos.client.Client'
   ],
 
   requires: [
@@ -26,14 +27,14 @@ foam.CLASS({
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
-    'serialNumber'
+    'serialNumber',
+    'virtualKeyboard'
   ],
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           background-color: #2C4389;
         }
         ^ .stack-wrapper {
@@ -57,7 +58,7 @@ foam.CLASS({
           display: block;
         }
         ^ .toolbar {
-          width: 320px;
+          width: 100%;
           height: 56px;
           background-color: #4054B5;
           -webkit-box-shadow: none;
@@ -169,7 +170,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'toolbarTitle',
-      value: 'MintChip Home'
+      value: 'Home'
     },
     {
       class: 'FObjectProperty',
@@ -188,13 +189,12 @@ foam.CLASS({
       name: 'serialNumber',
       factory: function () {
         if ( ! localStorage.serialNumber ) {
-          localStorage.serialNumber = 'D224E98C71EF42CA';
-//          // remove hyphens, use 16 characters, convert to upper case
-//          localStorage.serialNumber = foam.uuid.randomGUID()
-//            .replace(/-/g, '')
-//            .substring(0, 16)
-//            .toUpperCase()
-//            .trim();
+          // remove hyphens, use 16 characters, convert to upper case
+          localStorage.serialNumber = foam.uuid.randomGUID()
+            .replace(/-/g, '')
+            .substring(0, 16)
+            .toUpperCase()
+            .trim();
         }
         return localStorage.serialNumber;
       }
@@ -254,7 +254,7 @@ foam.CLASS({
                 .attrs({ 'aria-hidden': true })
                 .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.png' })
               .end()
-              .add('MintChip Home')
+              .add('Home')
             .end()
             .on('click', this.onMenuItemClicked)
           .end()
@@ -352,7 +352,7 @@ foam.CLASS({
       this.toolbarTitle = clicked;
       this.stack.back();
       switch ( clicked ) {
-        case 'MintChip Home':
+        case 'Home':
           this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
           break;
         case 'Transactions':
