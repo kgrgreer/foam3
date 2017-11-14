@@ -33,7 +33,6 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           background-color: #2C4389;
         }
         ^ .stack-wrapper {
@@ -57,7 +56,7 @@ foam.CLASS({
           display: block;
         }
         ^ .toolbar {
-          width: 320px;
+          width: 100%;
           height: 56px;
           background-color: #4054B5;
           -webkit-box-shadow: none;

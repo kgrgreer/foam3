@@ -21,13 +21,11 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           background-color: #2c4389;
           position: relative;
         }
         ^ .amount-label {
           height: 30px;
-          width: 320px;
           font-family: Roboto;
           font-size: 16px;
           line-height: 1.88;
@@ -39,8 +37,6 @@ foam.CLASS({
           border: none;
           background-color: #2c4389;
           height: 90px;
-          width: 320px;
-          max-width: 100%;
           overflow-x: hidden;
           font-family: Roboto;
           font-size: 75px;
