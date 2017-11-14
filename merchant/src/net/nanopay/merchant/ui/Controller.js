@@ -202,13 +202,6 @@ foam.CLASS({
     {
       name: 'stack',
       factory: function () { return this.Stack.create(); }
-    },
-    {
-      class: 'Boolean',
-      name: 'virtualKeyboard',
-      factory: function () {
-        return true;
-      }
     }
   ],
 
