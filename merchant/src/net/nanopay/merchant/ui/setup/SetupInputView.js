@@ -21,7 +21,8 @@ foam.CLASS({
     'deviceDAO',
     'serialNumber',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'showAbout'
   ],
 
   implements: [
@@ -100,6 +101,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.showAbout = false;
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 

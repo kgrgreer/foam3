@@ -9,7 +9,8 @@ foam.CLASS({
     'device',
     'stack',
     'deviceDAO',
-    'serialNumber'
+    'serialNumber',
+    'showAbout'
   ],
 
   axioms: [
@@ -67,6 +68,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      this.showAbout = false;
       
       this
         .addClass(this.myClass())
