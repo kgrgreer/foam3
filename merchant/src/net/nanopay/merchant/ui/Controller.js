@@ -27,8 +27,7 @@ foam.CLASS({
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
-    'serialNumber',
-    'virtualKeyboard'
+    'serialNumber'
   ],
 
   axioms: [
