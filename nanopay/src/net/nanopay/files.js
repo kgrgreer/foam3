@@ -80,6 +80,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankInfoForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankVerificationForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/DeleteVerifyModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
 

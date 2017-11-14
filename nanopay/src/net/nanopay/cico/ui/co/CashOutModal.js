@@ -126,6 +126,9 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-goToBank:hover {
           background: transparent;
         }
+        ^ .foam-u2-tag-Select {
+          margin-top: 0;
+        }
     */}
     })
   ],
