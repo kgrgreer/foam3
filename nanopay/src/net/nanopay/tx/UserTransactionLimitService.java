@@ -10,13 +10,13 @@ import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
 import foam.nanos.auth.User;
 import net.nanopay.model.Broker;
-import net.nanopay.tx.UserTransactionLimitInterface;
+import net.nanopay.tx.UserTransactionLimit;
 import net.nanopay.tx.model.TransactionLimit;
 import net.nanopay.tx.model.TransactionLimitTimeFrame;
 import net.nanopay.tx.model.TransactionLimitType;
 import java.util.List;
 
-public class UserTransactionLimitService extends ContextAwareSupport implements UserTransactionLimitInterface {
+public class UserTransactionLimitService extends ContextAwareSupport implements UserTransactionLimit {
   protected DAO userDAO_;
   protected DAO transactionLimitDAO_;
   protected DAO brokerDAO_;
@@ -33,7 +33,7 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
       throw new RuntimeException("User not found.");
     }
 
-    for ( TransactionLimit userLimit : (TransactionLimit[]) user.getTransactionLimits() ) {
+    for ( TransactionLimit userLimit : user.getTransactionLimits() ) {
       if ( userLimit.getType() == type && userLimit.getTimeFrame() == timeFrame ) {
         return userLimit;
       }
@@ -61,7 +61,7 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
     Sink count = new Count();
     count = brokerDAO_.where(EQ(userId, Broker.USER_ID)).limit(1).select(count);
 
-    return ( ( (Count) count).getValue() > 0 ) ? true : false;
+    return ( (Count) count).getValue() > 0;
   }
 
   @Override
