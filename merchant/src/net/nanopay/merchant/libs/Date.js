@@ -15,9 +15,11 @@ Date.prototype.toString = function () {
     hours = 12;
   }
 
+
+
   return month + '/' +
     date + '/' +
     year + ', ' +
     hours + ':' +
-    minutes + ( isPm ? ' PM' : ' AM' );
+    ('0' + minutes).slice(-2) + ( isPm ? ' PM' : ' AM' );
 }
