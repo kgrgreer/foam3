@@ -17,7 +17,6 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           height: 70px;
           background-color: #ffffff;
           box-shadow: inset 0 -1px 0 0 #f2f2f2;

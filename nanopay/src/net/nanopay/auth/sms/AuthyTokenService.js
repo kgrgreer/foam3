@@ -44,47 +44,42 @@ foam.CLASS({
       name: 'generateToken',
       javaCode:
 `AuthyApiClient client = getClient();
-if ( client == null ) {
-  return false;
-}
-
 // don't send token if already verified
 Phone phone = user.getPhone();
 if ( phone.getVerified() ) {
-  return false;
+  throw new RuntimeException("Phone already verified");
 }
 
 // TODO: Remove hardcoded country code of 1
 PhoneVerification phoneVerification = client.getPhoneVerification();
 Verification verification = phoneVerification.start(phone.getNumber(), "1", "sms", new Params());
-return Boolean.parseBoolean(verification.getSuccess());`
+if ( ! Boolean.parseBoolean(verification.getSuccess()) ) {
+  throw new RuntimeException(verification.getMessage());
+}
+return true;`
     },
     {
       name: 'processToken',
       javaCode:
 `DAO userDAO = (DAO) getX().get("userDAO");
 AuthyApiClient client = getClient();
-if ( client == null ) {
-  return false;
-}
-
 // if already verified, return true
 Phone phone = user.getPhone();
 if ( phone.getVerified() ) {
-  return true;
+  throw new RuntimeException("Phone already verified");
 }
 
 // TODO: Remove hardcoded country code of 1
 PhoneVerification phoneVerification = client.getPhoneVerification();
 Verification verification = phoneVerification.check(phone.getNumber(), "1", token);
-if ( verification.isOk() ) {
-  phone.setVerified(true);
-  user.setPhone(phone);
-  userDAO.put(user);
-  return true;
-} else {
-  return false;
-}`
+if ( ! verification.isOk() ) {
+  throw new RuntimeException("Error validating code");
+}
+
+phone.setVerified(true);
+user.setPhone(phone);
+userDAO.put(user);
+return true;`
     },
     {
       name: 'start',

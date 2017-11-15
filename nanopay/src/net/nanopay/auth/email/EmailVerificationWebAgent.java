@@ -54,9 +54,7 @@ public class EmailVerificationWebAgent
         throw new Exception("Email already verified");
       }
 
-      if ( ! emailToken.processToken(user, token) ) {
-        throw new Exception("");
-      }
+      emailToken.processToken(user, token);
     } catch (Throwable t) {
       message = "Problem verifying your email.\n" + t.getMessage();
     } finally {
