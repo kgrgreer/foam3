@@ -5,7 +5,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.tx.UserTransactionLimitInterface',
+      of: 'net.nanopay.tx.UserTransactionLimit',
       name: 'delegate'
     }
   ]
