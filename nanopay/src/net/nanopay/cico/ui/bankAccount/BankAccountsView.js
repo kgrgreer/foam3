@@ -162,7 +162,7 @@ foam.CLASS({
           this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
             title: this.ActionAdd
-          }).addClass('popup-with-topnav')
+          }).addClass('popup-with-topnav addBank')
         );
       }
     }
@@ -183,28 +183,21 @@ foam.CLASS({
       ],
 
       exports: [
-        'unverifiedBank'
+        'selectedAccount',
+        'verifyAccount'
       ],
 
       properties: [
         {
-          name: 'unverifiedBank',
-          value: null
-        },
-        {
-          name: 'selectedBank',
+          name: 'selectedAccount',
           value: null
         },
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if ( newValue && newValue.status == 'Unverified' ) {
-              this.unverifiedBank = newValue;
-              this.verifyAccount();
-              return oldValue;
-            } else if ( newValue && newValue.status == 'Verified' ) {
+            if( newValue ) {
               this.selectedAccount = newValue;
-              this.deleteAccount();
+              this.manageAccount();
               return oldValue;
             }
           }
@@ -242,8 +235,8 @@ foam.CLASS({
           );
         },
 
-        function deleteAccount() {
-          this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.DeleteVerifyModal' }));
+        function manageAccount() {
+          this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal' }));
         }
       ]
     }

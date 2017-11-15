@@ -1,11 +1,20 @@
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount',
-  name: 'DeleteVerifyModal',
+  name: 'ManageAccountModal',
   extends: 'foam.u2.Controller',
 
   documentation: 'Pop up modal for verifying or deleting a bank account',
 
-  imports: [ 'closeDialog' ],
+  requires: [
+    'net.nanopay.ui.NotificationMessage'
+  ],
+
+  imports: [
+    'bankAccountDAO', 
+    'closeDialog', 
+    'selectedAccount',
+    'verifyAccount'  
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -103,6 +112,10 @@ foam.CLASS({
           background: #3783b3;
           border-color: #3783b3;
         }
+        ^ .descriptionStyle {
+          text-align: center;
+          margin-top: 90px;
+        }
       */}
     })
   ],
@@ -110,8 +123,8 @@ foam.CLASS({
   properties: [],
 
   messages: [
-    { name: 'Title', message: 'Delete/Verify' },
-    { name: 'Description', message: 'Please select if you would like to delete or verify your account.'}
+    { name: 'Title', message: 'Manage Account' },
+    { name: 'Description', message: 'Please select an option to manage your bank account.'}
   ],
 
   methods: [
@@ -126,7 +139,7 @@ foam.CLASS({
           .start().add(this.Title).addClass('popUpTitle').end()
           .add(this.CLOSE_BUTTON)
         .end()
-        .start().add(this.Description).end()
+        .start().add(this.Description).addClass('descriptionStyle').end()
         .start().addClass('modal-button-container')
           .add(this.DELETE_BUTTON)
           .add(this.VERIFY_BUTTON)
@@ -147,15 +160,23 @@ foam.CLASS({
       name: 'verifyButton',
       label: 'Verify',
       code: function(X) {
-
+        X.closeDialog();
+        X.verifyAccount();
       }
     },
     {
       name: 'deleteButton',
       label: 'Delete',
       code: function(X) {
+        var self = this;
 
+        X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
+          self.add(self.NotificationMessage.create({ message: 'Account successfully deleted!', type: '' }))
+          X.closeDialog();
+        }).catch(function(error) {
+          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+        });
       }
     }
   ]
-})
+});

@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ConfirmCashOutModal',
   extends: 'foam.u2.Controller',
 
+  documentation: 'Pop up modal for confirming cash out.',
+
   requires: [
     'net.nanopay.ui.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
@@ -20,8 +22,6 @@ foam.CLASS({
     'standardCICOTransactionDAO',
     'user'
   ],
-
-  documentation: 'Pop up modal for confirming cash out.',
 
   axioms: [
     foam.u2.CSS.create({

@@ -16,7 +16,7 @@ foam.CLASS({
     'closeDialog',
     'bankAccountVerification',
     'stack',
-    'unverifiedBank'
+    'selectedAccount'
   ],
 
   exports: [
@@ -94,10 +94,10 @@ foam.CLASS({
 
         if ( this.position == 1 ) { // On Verification screen
             var bankId;
-            if( this.unverifiedBank == undefined ) {
+            if( this.selectedAccount == undefined ) {
               bankId = this.newBankAccount.id;
             } else {
-              bankId = this.unverifiedBank.id;
+              bankId = this.selectedAccount.id;
             }
 
             this.bankAccountVerification.verify(bankId, this.verifyAmount).then(function(response) {
