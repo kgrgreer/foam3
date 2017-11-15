@@ -55,7 +55,6 @@ foam.CLASS({
           margin: 0;
           margin-top: 7px;
           margin-right: 20px;
-          cursor: pointer;
           display: inline-block;
           float: right;
           outline: 0;
@@ -68,45 +67,28 @@ foam.CLASS({
           background-color: transparent;
         }
         ^ .net-nanopay-ui-ActionView-deleteButton {
-          font-family: Roboto;
           width: 136px;
           height: 40px;
-          position: static;
           background: rgba(164, 179, 184, 0.1);
-          border-radius: 2px;
           border: solid 1px #ebebeb;
           display: inline-block;
           color: #093649;
-          text-align: center;
-          cursor: pointer;
-          font-size: 14px;
           margin: 0;
-          outline: none;
           float: left;
-          box-shadow: none;
-          font-weight: normal;
         }
         ^ .net-nanopay-ui-ActionView-deleteButton:hover {
           background: lightgray;
         }
         ^ .net-nanopay-ui-ActionView-verifyButton {
-          font-family: Roboto;
           width: 136px;
           height: 40px;
-          position: static;
-          border-radius: 2px;
           background: #59a5d5;
           border: solid 1px #59a5d5;
           display: inline-block;
           color: white;
-          text-align: center;
-          cursor: pointer;
-          font-size: 14px;
           margin: 0;
           outline: none;
           float: right;
-          box-shadow: none;
-          font-weight: normal;
         }
         ^ .net-nanopay-ui-ActionView-verifyButton:hover {
           background: #3783b3;
@@ -170,11 +152,7 @@ foam.CLASS({
       label: 'Verify',
       isAvailable: function() {
         var self = this;
-        if( self.selectedAccount.status == 'Verified' ) {
-          return false;
-        } else {
-          return true;
-        }
+        return self.selectedAccount.status != 'Verified';
       },
       code: function(X) {
         X.closeDialog();

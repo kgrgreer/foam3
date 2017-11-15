@@ -79,14 +79,9 @@ foam.CLASS({
           cursor: pointer;
           background-color: #20B1A7;
         }
-        ^ body .foam-u2-dialog-Popup.popup-with-topnav {
-          margin-top: 155px;
-          height: 420px;
-          background: none !important;
-          z-index: 100;
-        }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
+          margin-top: 65px;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
