@@ -21,12 +21,12 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 448px;
-          height: 288px;
+          height: 200px;
           margin: auto;
         }
         ^ .deleteVerifyContainer {
           width: 448px;
-          height: 288px;
+          height: 200px;
           border-radius: 2px;
           background-color: #ffffff;
           box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.02);
@@ -114,7 +114,16 @@ foam.CLASS({
         }
         ^ .descriptionStyle {
           text-align: center;
-          margin-top: 90px;
+          margin-top: 45px;
+        }
+        ^ .button-container {
+          width: 344px;
+          height: 40px;
+          position: absolute;
+          bottom: 0;
+          padding-left: 52px;
+          padding-right: 52px;
+          margin-bottom: 20px;
         }
       */}
     })
@@ -124,7 +133,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Title', message: 'Manage Account' },
-    { name: 'Description', message: 'Please select an option to manage your bank account.'}
+    { name: 'Description', message: 'Please select an option to manage your bank account.' }
   ],
 
   methods: [
@@ -140,7 +149,7 @@ foam.CLASS({
           .add(this.CLOSE_BUTTON)
         .end()
         .start().add(this.Description).addClass('descriptionStyle').end()
-        .start().addClass('modal-button-container')
+        .start().addClass('button-container')
           .add(this.DELETE_BUTTON)
           .add(this.VERIFY_BUTTON)
         .end()
@@ -159,6 +168,14 @@ foam.CLASS({
     {
       name: 'verifyButton',
       label: 'Verify',
+      isAvailable: function() {
+        var self = this;
+        if( self.selectedAccount.status == 'Verified' ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       code: function(X) {
         X.closeDialog();
         X.verifyAccount();
@@ -167,11 +184,11 @@ foam.CLASS({
     {
       name: 'deleteButton',
       label: 'Delete',
+      confirmationRequired: true,
       code: function(X) {
         var self = this;
 
         X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
-          self.add(self.NotificationMessage.create({ message: 'Account successfully deleted!', type: '' }))
           X.closeDialog();
         }).catch(function(error) {
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));

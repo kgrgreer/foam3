@@ -79,20 +79,21 @@ foam.CLASS({
           cursor: pointer;
           background-color: #20B1A7;
         }
-        ^ .foam-u2-dialog-Popup.popup-with-topnav {
+        ^ body .foam-u2-dialog-Popup.popup-with-topnav {
           margin-top: 155px;
           height: 420px;
-        }
-        ^ .foam-u2-dialog-Popup-background {
-          pointer-events: none;
-          background-color: #edf0f5;
-          opacity: 1;
+          background: none !important;
+          z-index: 100;
         }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
+        }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: #e9e9e9;
         }
       */}
     })
@@ -162,7 +163,7 @@ foam.CLASS({
           this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
             title: this.ActionAdd
-          }).addClass('popup-with-topnav addBank')
+          }).addClass('popup-with-topnav')
         );
       }
     }
@@ -236,7 +237,7 @@ foam.CLASS({
         },
 
         function manageAccount() {
-          this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal' }));
+          this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal' }).addClass('manageAccounts'));
         }
       ]
     }
