@@ -49,7 +49,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // tx
-  { name: 'net/nanopay/tx/UserTransactionLimitInterface' },
+  { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
