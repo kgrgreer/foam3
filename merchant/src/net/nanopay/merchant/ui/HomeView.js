@@ -121,7 +121,7 @@ foam.CLASS({
           // validate amount greater than 0
           var value = this.amount.replace(/\D/g, '');
           if ( value <= 0 ) {
-            throw new Error('Invalid amount');
+            return;
           }
 
           // display QR code view
@@ -157,7 +157,7 @@ foam.CLASS({
           this.amount += key;
         }
       } catch (e) {
-        this.tag(this.ErrorMessage.create({ message: e.message }));
+        
       }
     }
   ]

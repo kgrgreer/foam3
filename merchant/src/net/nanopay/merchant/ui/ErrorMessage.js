@@ -18,7 +18,7 @@ foam.CLASS({
           background: #f55a5a;
           text-align: center;
           position: fixed;
-          top: 0px;
+          top: -100px;
         }
         ^ {
           -webkit-animation-name: example;
@@ -27,10 +27,10 @@ foam.CLASS({
           animation-duration: 4s;
         }
         @keyframes slide {
-          0%  { top: 0px; }
-          10% { top: 56px; }
-          80% { top: 56px; }
-          100% { top: 0px; }
+          0%  { top: -100px; }
+          10% { top:0px; }
+          80% { top: 0px; }
+          100% { top: -100px; }
         }
         }
       */
@@ -48,9 +48,7 @@ foam.CLASS({
           .add(this.message)
         .end();
 
-        setTimeout(function() {
-          self.remove()
-        }, 4000);
+        setTimeout(function(){ self.remove() }, 4000);
     }
   ]
 });
