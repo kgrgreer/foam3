@@ -24,8 +24,10 @@ foam.CLASS({
       name: 'exchangeRate',
       factory: function () {
         return this.ClientExchangeRateService.create({
-          delegate: this.HTTPBox.create({
-            url: 'exchangeRate'
+          delegate: this.SessionClientBox.create({
+            delegate: this.HTTPBox.create({
+              url: 'exchangeRate'
+            })
           })
         })
       }
@@ -35,10 +37,13 @@ foam.CLASS({
       factory: function() {
         return this.ClientDAO.create({
           of: this.ExchangeRate,
-          delegate: this.HTTPBox.create({
-            method: 'POST',
-            url: 'http://localhost:8080/exchangeRateDAO'
-          })});
+          delegate: this.SessionClientBox.create({
+            delegate: this.HTTPBox.create({
+              method: 'POST',
+              url: 'http://localhost:8080/exchangeRateDAO'
+            })
+          })
+        });
       }
     }
   ],
