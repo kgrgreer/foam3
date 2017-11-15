@@ -10,6 +10,8 @@ foam.CLASS({
     'foam.box.swift.FileBox',
     'foam.dao.ClientDAO',
     'foam.swift.parse.json.FObjectParser',
+    'foam.swift.dao.ArrayDAO',
+    'foam.swift.dao.CachingDAO',
     'foam.nanos.auth.ClientAuthService',
     'net.nanopay.auth.token.ClientTokenService'
   ],
@@ -55,12 +57,15 @@ return ClientAuthService_create([
       class: 'foam.dao.DAOProperty',
       name: 'userDAO',
       swiftFactory: `
-return ClientDAO_create([
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
+      ])
     ])
-  ])
+  ]),
+  "cache": ArrayDAO_create(["of": User.classInfo()]),
 ])
       `,
     },
@@ -68,14 +73,17 @@ return ClientDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'transactionDAO',
       swiftFactory: `
-return ClientDAO_create([
-  "delegate": LogBox_create([
-    "delegate": SessionClientBox_create([
-      "delegate": HTTPBox_create([
-        "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": LogBox_create([
+      "delegate": SessionClientBox_create([
+        "delegate": HTTPBox_create([
+          "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
+        ])
       ])
     ])
-  ])
+  ]),
+  "cache": ArrayDAO_create(["of": Transaction.classInfo()]),
 ])
       `,
     },
