@@ -16,14 +16,13 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
-          height: 480px;
+          width: 100%;
+          height: 100%;
           background-color: #ffffff;
           position: fixed;
         }
         ^ .transaction-profile {
           display: table;
-          width: 320px;
           height: 45px;
           overflow: hidden;
           padding-left: 20px;
@@ -67,7 +66,7 @@ foam.CLASS({
           color: #252c3d;
         }
         ^ .transaction-info-wrapper {
-          width: 320px;
+          width: 100%;
           height: 40px;
           padding-left: 20px;
           padding-right: 20px;
@@ -89,11 +88,12 @@ foam.CLASS({
           padding-bottom: 12px;
         }
         ^ .transaction-refund {
+          width: 100%;
           position: fixed;
           bottom: 0px;
         }
         ^ .transaction-refund-button {
-          width: 320px;
+          width: 100%;
           height: 72px;
           background-color: #f55a5a;
         }

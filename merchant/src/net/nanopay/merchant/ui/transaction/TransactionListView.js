@@ -9,6 +9,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.merchant.ui.transaction.TransactionRowView'
   ],
 
@@ -22,7 +23,6 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 320px;
           height: 100%;
           background-color: #ffffff;
           position: relative;
@@ -38,11 +38,20 @@ foam.CLASS({
       this.toolbarTitle = 'Transactions';
       this.toolbarIcon = 'menu';
 
-      this
-        .addClass(this.myClass())
-        .select(this.transactionDAO, function (t) {
-          this.add(self.TransactionRowView.create({ data: t }));
-        });
+      this.addClass(this.myClass());
+      this.transactionDAO.orderBy(this.DESC(this.Transaction.DATE)).select().then(function (result) {
+        if ( ! result ) {
+          throw new Error('Unable to load transactions');
+        }
+
+        var a = result.array;
+        for ( var i = 0; i < a.length; i++ ) {
+          self.add(self.TransactionRowView.create({ data: a[i] }));
+        }
+      })
+      .catch(function (err) {
+        self.tag(self.ErrorMessage.create({ message: e.message }));
+      });
     }
   ]
 });
