@@ -4,8 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   requires: [
-    'net.nanopay.merchant.ui.QRCodeView',
-    'net.nanopay.merchant.ui.ErrorMessage'
+    'net.nanopay.merchant.ui.QRCodeView'
   ],
 
   imports: [
@@ -89,75 +88,71 @@ foam.CLASS({
 
   listeners: [
     function onKeyPressed (e) {
-      try {
-        var key = e.key || e.keyCode;
-        if ( ! this.focused ) {
-          this.focused = true;
-          this.amount = '$';
+      var key = e.key || e.keyCode;
+      if ( ! this.focused ) {
+        this.focused = true;
+        this.amount = '$';
+      }
+
+      // do nothing on escape key
+      if ( key === 'Escape' || key === 27 ) {
+        return;
+      }
+
+      var length = this.amount.length;
+
+      if ( key === 'Backspace' || key === 8 ) {
+        if ( length <= 1 ) return;
+        this.amount = this.amount.substring(0, length - 1);
+        return;
+      }
+
+      var decimal = this.amount.indexOf('.');
+      // handle enter key
+      if ( ( key === 'Enter' || key === 13 ) ) {
+        // append 0 if only one decimal digit is specified
+        if ( length - decimal === 2 ) {
+          this.amount += '0';
+          length += 1;
         }
 
-        // do nothing on escape key
-        if ( key === 'Escape' || key === 27 ) {
+        // validate amount greater than 0
+        var value = this.amount.replace(/\D/g, '');
+        if ( value <= 0 ) {
           return;
         }
 
-        var length = this.amount.length;
+        // display QR code view
+        this.stack.push(this.QRCodeView.create({
+          amount: ( decimal !== -1 ) ? value : value * 100
+        }));
+        return;
+      }
 
-        if ( key === 'Backspace' || key === 8 ) {
-          if ( length <= 1 ) return;
-          this.amount = this.amount.substring(0, length - 1);
-          return;
-        }
+      // only allow 2 decimal places
+      if ( decimal !== -1 && length - decimal > 2 ) {
+        return;
+      }
 
-        var decimal = this.amount.indexOf('.');
-        // handle enter key
-        if ( ( key === 'Enter' || key === 13 ) ) {
-          // append 0 if only one decimal digit is specified
-          if ( length - decimal === 2 ) {
-            this.amount += '0';
-            length += 1;
-          }
+      // if handling keycodes 0-9, subtract 48
+      if ( key >= 48 && key <= 57 ) {
+        key -= 48;
+      }
 
-          // validate amount greater than 0
-          var value = this.amount.replace(/\D/g, '');
-          if ( value <= 0 ) {
-            return;
-          }
+      // convert keycode 190 to period
+      if ( key === 190 ) {
+        key = '.';
+      }
 
-          // display QR code view
-          this.stack.push(this.QRCodeView.create({
-            amount: ( decimal !== -1 ) ? value : value * 100
-          }));
-          return;
-        }
+      // prevent adding of more than one period
+      if ( ( key === '.' ) && ( this.amount.indexOf('.') !== -1 || length === 1 ) ) {
+        return;
+      }
 
-        // only allow 2 decimal places
-        if ( decimal !== -1 && length - decimal > 2 ) {
-          return;
-        }
-
-        // if handling keycodes 0-9, subtract 48
-        if ( key >= 48 && key <= 57 ) {
-          key -= 48;
-        }
-
-        // convert keycode 190 to period
-        if ( key === 190 ) {
-          key = '.';
-        }
-
-        // prevent adding of more than one period
-        if ( ( key === '.' ) && ( this.amount.indexOf('.') !== -1 || length === 1 ) ) {
-          return;
-        }
-
-        // check if numeric
-        var isNumeric = ( ! isNaN(parseFloat(key)) && isFinite(key) );
-        if ( isNumeric || key === '.' ) {
-          this.amount += key;
-        }
-      } catch (e) {
-        
+      // check if numeric
+      var isNumeric = ( ! isNaN(parseFloat(key)) && isFinite(key) );
+      if ( isNumeric || key === '.' ) {
+        this.amount += key;
       }
     }
   ]
