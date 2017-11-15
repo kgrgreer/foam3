@@ -70,7 +70,7 @@ public class TransactionLimitCheckDAO
     Sink count = new Count();
     count = brokerDAO.where(EQ(user.getId(), Broker.USER_ID)).limit(1).select(count);
 
-    return ( ( (Count) count).getValue() > 0 ) ? true : false;
+    return ( (Count) count).getValue() > 0;
   }
 
   // Checking if user overstepped its limits
