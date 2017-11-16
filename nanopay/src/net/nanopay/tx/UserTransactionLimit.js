@@ -22,6 +22,25 @@ foam.INTERFACE({
           javaType: 'net.nanopay.tx.model.TransactionLimitType'
         }
       ]
+    },
+    {
+      name: 'getRemainingLimit',
+      javaReturns: 'long',
+      returns: 'Promise',
+      args: [
+        {
+          name: 'userId',
+          javaType: 'long'
+        },
+        {
+          name: 'timeFrame',
+          javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame'
+        },
+        {
+          name: 'type',
+          javaType: 'net.nanopay.tx.model.TransactionLimitType'
+        }
+      ]
     }
   ]
 });
