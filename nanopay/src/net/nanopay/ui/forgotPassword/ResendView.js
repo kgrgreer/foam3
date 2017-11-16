@@ -13,7 +13,8 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   requires: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   axioms: [
@@ -95,24 +96,26 @@ foam.CLASS({
 
   methods: [
     function initE(){
-    this.SUPER();
-    var self = this;
+      this.SUPER();
+      var self = this;
 
-    this
-      .addClass(this.myClass())
-      .start()
-        .start().addClass('Forgot-Password').add('Forgot Password').end()
-        .start().addClass('Message-Container')
-          .start().addClass('Instructions-Text').add(this.Instructions).end()
-          .start(this.RESEND_EMAIL).addClass('Resend-Button').end()
+      this
+        .addClass(this.myClass())
+        .start()
+          .start().addClass('Forgot-Password').add('Forgot Password').end()
+          .start().addClass('Message-Container')
+            .start().addClass('Instructions-Text').add(this.Instructions).end()
+            .start(this.RESEND_EMAIL).addClass('Resend-Button').end()
+          .end()
+          .start('p').add('Remember your password?').end()
+          .start('p').addClass('link')
+            .add('Sign in.')
+            .on('click', function() {self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
+          .end()
         .end()
-        .start('p').add('Remember your password?').end()
-        .start('p').addClass('link')
-          .add('Sign in.')
-          .on('click', function() {self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
-        .end()
-      .end()
-      }
+
+      this.add(self.NotificationMessage.create({ message: 'Password reset instructions sent to ' + self.email }));
+    }
   ],
 
   actions: [
@@ -121,15 +124,16 @@ foam.CLASS({
       label: 'Resend Email',
       code: function (X) {
         var self = this;
+
         var user = this.User.create({ email: this.email });
         this.resetPasswordToken.generateToken(user).then(function (result) {
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          // TODO: show success message
+          self.add(self.NotificationMessage.create({ message: 'Password reset instructions sent to ' + self.email }));
         })
         .catch(function (err) {
-          throw err;
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }
     }
