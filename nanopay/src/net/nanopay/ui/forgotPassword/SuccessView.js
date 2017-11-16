@@ -103,7 +103,7 @@ foam.CLASS({
           .end()
         .end()
 
-      this.add(self.NotificationMessage.create({ message: this.Instructions });
+      this.add(self.NotificationMessage.create({ message: this.Instructions }));
     }
   ]
 });

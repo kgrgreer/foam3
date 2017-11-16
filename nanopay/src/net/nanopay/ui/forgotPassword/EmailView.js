@@ -14,6 +14,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'net.nanopay.ui.NotificationMessage',
     'net.nanopay.ui.forgotPassword.ResendView'
   ],
 
@@ -176,7 +177,7 @@ foam.CLASS({
           self.stack.push(self.ResendView.create({ email: self.email }));;
         })
         .catch(function (err) {
-          throw err;
+          self.add(self.NotificationMessage.create({ message: err, type: 'error' }));
         });
       }
     }
