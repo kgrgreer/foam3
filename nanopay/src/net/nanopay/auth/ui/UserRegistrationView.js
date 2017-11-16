@@ -220,7 +220,7 @@ foam.CLASS({
       isEnabled: function(firstName, lastName, email, password, agreed){
         return firstName && lastName && email && password && agreed;
       },
-      code: function(X, obj){
+      code: function (X, obj) {
         var self = this;
         
         var user = self.User.create({
