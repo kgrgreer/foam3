@@ -63,7 +63,7 @@ message.setSubject("Your password reset instructions");
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", "http://localhost:8080/resetPassword?token=" + token.getData());
+args.put("link", "http://localhost:8080/static/NANOPAY/nanopay/src/net/nanopay/index.html#reset?token=" + token.getData());
 
 email.sendEmailFromTemplate(message, "reset-password-mintchip", args);
 return true;`
