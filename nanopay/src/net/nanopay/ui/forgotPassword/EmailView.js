@@ -177,7 +177,7 @@ foam.CLASS({
           self.stack.push(self.ResendView.create({ email: self.email }));;
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: err, type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }
     }
