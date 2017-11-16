@@ -78,20 +78,6 @@ foam.CLASS({
           cursor: pointer;
           color: #59a5d5;
         }
-
-        ^ .Change-Button{
-          width: 450px;
-          height: 40px;
-          border-radius: 2px;
-          border: solid 1px #59a5d5;
-          margin-top: 150px;
-          background: #59aadd;
-          text-align: center;
-          line-height: 40px;
-          cursor: pointer;
-          color: white;
-        }
-
       */}
     })
   ],
@@ -124,10 +110,6 @@ foam.CLASS({
         .start('p').addClass('link')
           .add('Sign in.')
           .on('click', function() {self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
-        .end()
-        .start('div')
-          .add('Change Your Password!').addClass('Change-Button')
-          .on('click', function() {self.stack.push({ class: 'net.nanopay.ui.forgotPassword.ResetView'})})
         .end()
       .end()
       }
