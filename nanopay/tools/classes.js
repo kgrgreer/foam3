@@ -31,6 +31,8 @@ var classes = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
+  'net.nanopay.tx.UserTransactionLimit',
+  'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',
@@ -53,8 +55,9 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.auth.token.TokenService',
+  'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.cico.service.BankAccountVerificationInterface'
+  'net.nanopay.tx.UserTransactionLimit'
 ];
 
 var proxies = [

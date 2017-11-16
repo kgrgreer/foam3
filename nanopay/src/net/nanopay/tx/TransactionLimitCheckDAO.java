@@ -70,7 +70,7 @@ public class TransactionLimitCheckDAO
     Sink count = new Count();
     count = brokerDAO.where(EQ(user.getId(), Broker.USER_ID)).limit(1).select(count);
 
-    return ( ( (Count) count).getValue() > 0 ) ? true : false;
+    return ( (Count) count).getValue() > 0;
   }
 
   // Checking if user overstepped its limits
@@ -91,18 +91,14 @@ public class TransactionLimitCheckDAO
         }
       }
       if ( isDefault ) {
-        DAO sumLimitDAO;
+        String limitName = DEFAULT_USER_TRANSACTION_LIMIT;
         if( isBroker ) {
-          sumLimitDAO = transactionLimitDAO.where(AND( EQ(DEFAULT_BROKER_TRANSACTION_LIMIT, TransactionLimit.NAME),
-                                         EQ(type, TransactionLimit.TYPE),
-                                         EQ(timeFrame, TransactionLimit.TIME_FRAME) )
-                                    );
-        } else {
-          sumLimitDAO = transactionLimitDAO.where(AND( EQ(DEFAULT_USER_TRANSACTION_LIMIT, TransactionLimit.NAME),
-                                         EQ(type, TransactionLimit.TYPE),
-                                         EQ(timeFrame, TransactionLimit.TIME_FRAME) )
-                                    );
+          limitName = DEFAULT_BROKER_TRANSACTION_LIMIT;
         }
+        DAO sumLimitDAO = transactionLimitDAO.where(AND( EQ(limitName, TransactionLimit.NAME),
+                                         EQ(type, TransactionLimit.TYPE),
+                                         EQ(timeFrame, TransactionLimit.TIME_FRAME) )
+                                    );
         userLimitValue = ((Double)(((Sum) sumLimitDAO.select(SUM(TransactionLimit.AMOUNT))).getValue())).longValue();
       }
       if ( isOverTimeFrameLimit(transaction, user, timeFrame, userLimitValue, isPayer) ) {
@@ -130,9 +126,7 @@ public class TransactionLimitCheckDAO
         userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
         break;
     }
-    // PRINT TO BE USED ON INTERNAL NANOPAY DEMO, after that, just remove this comments...
-    // System.out.println("User "+user.getFirstName()+" BEFORE TRANSACTION timeframe:"+timeFrame+", userTransactionAmount:"+userTransactionAmount+", DEFINED LIMIT:"+limit);
-    // System.out.println("User "+user.getFirstName()+" AFTER TRANSACTION timeframe:"+timeFrame+", userTransactionAmount:"+(userTransactionAmount+transaction.getAmount())+", DEFINED LIMIT:"+limit);
+
     return ( ( userTransactionAmount + transaction.getAmount() ) > limit);
   }
 
