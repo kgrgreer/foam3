@@ -8,10 +8,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'type',
-      expression: function(type){
-        return type == 'error' ? true : false;
-      }
+      name: 'type'
     },
     'message',
     'data'
@@ -69,7 +66,7 @@ foam.CLASS({
       var self = this;
 
       this
-        .addClass(this.myClass()).enableClass(this.myClass('error-background'), this.type$)
+        .addClass(this.myClass()).enableClass(this.myClass('error-background'), this.type === 'error')
         .start()
           .add(this.message)
         .end()
