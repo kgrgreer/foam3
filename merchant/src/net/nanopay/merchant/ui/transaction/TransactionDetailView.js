@@ -45,21 +45,18 @@ foam.CLASS({
           vertical-align: middle;
         }
         ^ .transaction-profile-name {
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1;
           text-align: left;
           color: #252c3d;
         }
         ^ .transaction-profile-datetime {
-          font-family: Roboto;
           font-size: 16px;
           text-align: left;
           color: #848484;
           padding-top: 10px;
         }
         ^ .transaction-info {
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1;
           text-align: left;

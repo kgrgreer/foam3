@@ -89,13 +89,9 @@ foam.CLASS({
         this.EQ(this.Transaction.CHALLENGE, this.challenge)
       )).listen({ put: this.onTransactionCreated });
 
-      // detach listener when view is removed
-      this.onunload.sub(function () {
-        sub.detach();
-      });
-
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.onDetach(function () {
+        sub.detach(); // detach listener when view is removed
         self.document.removeEventListener('keydown', self.onKeyPressed);
       });
 

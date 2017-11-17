@@ -33,7 +33,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
-  { name: 'net/nanopay/fx/client/Client' },
 
   // retail
   { name: 'net/nanopay/retail/model/DeviceType' },
@@ -49,6 +48,8 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // tx
+  { name: 'net/nanopay/tx/UserTransactionLimit' },
+  { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
@@ -60,6 +61,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
+
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },

@@ -38,7 +38,6 @@ foam.CLASS({
         }
         ^ .transaction-item-name {
           position: absolute;
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1;
           text-align: left;
@@ -49,7 +48,6 @@ foam.CLASS({
         }
         ^ .transaction-item-datetime {
           position: absolute;
-          font-family: Roboto;
           font-size: 10px;
           text-align: left;
           color: #666a86;
