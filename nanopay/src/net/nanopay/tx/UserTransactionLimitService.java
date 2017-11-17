@@ -8,6 +8,7 @@ import foam.dao.Sink;
 import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
+import foam.nanos.NanoService;
 import foam.nanos.auth.User;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.UserTransactionLimit;
@@ -19,7 +20,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class UserTransactionLimitService extends ContextAwareSupport implements UserTransactionLimit {
+public class UserTransactionLimitService
+    extends ContextAwareSupport
+    implements UserTransactionLimit, NanoService {
+
   protected DAO userDAO_;
   protected DAO transactionLimitDAO_;
   protected DAO transactionDAO_;
@@ -109,9 +113,9 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
     DAO list = transactionDAO_.where(AND(EQ(userId, ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
-                                        GTE(Transaction.DATE, firstDate ),
-                                        LTE(Transaction.DATE, lastDate )
-                                    ));
+        GTE(Transaction.DATE, firstDate ),
+        LTE(Transaction.DATE, lastDate )
+    ));
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 

@@ -1,7 +1,6 @@
 foam.INTERFACE({
   package: 'net.nanopay.tx',
   name: 'UserTransactionLimit',
-  extends: 'foam.nanos.NanoService',
 
   methods: [
     {
