@@ -16,7 +16,7 @@ foam.CLASS({
     'closeDialog',
     'bankAccountVerification',
     'stack',
-    'unverifiedBank'
+    'selectedAccount'
   ],
 
   exports: [
@@ -77,6 +77,16 @@ foam.CLASS({
             return;
           }
 
+          if ( ! /^[0-9]{1,35}$/.exec(accountInfo.accountNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Invalid account number.', type: 'error' }));
+            return;
+          }
+
+          if ( ! /^[0-9]{5}$/.exec(accountInfo.transitNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
+            return;
+          }
+
           var newAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
@@ -85,6 +95,7 @@ foam.CLASS({
           });
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
+            console.log(response);
             self.newBankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
           }).catch(function(error) {
@@ -94,10 +105,10 @@ foam.CLASS({
 
         if ( this.position == 1 ) { // On Verification screen
             var bankId;
-            if( this.unverifiedBank == undefined ) {
+            if( this.selectedAccount == undefined ) {
               bankId = this.newBankAccount.id;
             } else {
-              bankId = this.unverifiedBank.id;
+              bankId = this.selectedAccount.id;
             }
 
             this.bankAccountVerification.verify(bankId, this.verifyAmount).then(function(response) {
