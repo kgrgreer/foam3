@@ -5,6 +5,10 @@ foam.INTERFACE({
 
   methods: [
     {
+      name: 'start',
+      javaReturns: 'void'
+    },
+    {
       name: 'getLimit',
       javaReturns: 'net.nanopay.tx.model.TransactionLimit',
       swiftReturns: 'TransactionLimit',
