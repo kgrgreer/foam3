@@ -40,7 +40,7 @@ return MintChipSession_create()
       swiftType: 'ServiceURLs.Host',
       name: 'httpBoxUrlRoot',
       swiftFactory: `
-return ServiceURLs.Host.Localhost
+return ServiceURLs.hostRoute
       `,
     },
     {
@@ -89,6 +89,24 @@ return CachingDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'transactionLimitDAO',
+      swiftFactory: `
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": LogBox_create([
+      "delegate": SessionClientBox_create([
+        "delegate": HTTPBox_create([
+          "url": "\\(self.httpBoxUrlRoot.rawValue)transactionLimitDAO"
+        ])
+      ])
+    ])
+  ]),
+  "cache": ArrayDAO_create(["of": TransactionLimit.classInfo()]),
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'accountDAO',
       swiftFactory: `
 return ClientDAO_create([
@@ -125,6 +143,20 @@ return ClientTokenService_create([
   "delegate": SessionClientBox_create([
     "delegate": HTTPBox_create([
       "url": "\\(self.httpBoxUrlRoot.rawValue)emailToken"
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.token.ClientTokenService',
+      name: 'resetPasswordService',
+      swiftFactory: `
+return ClientTokenService_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)resetPasswordToken"
     ])
   ])
 ])

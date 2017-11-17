@@ -31,6 +31,8 @@ var classes = [
   'foam.mlang.Expr',
   'foam.mlang.predicate.Eq',
   'foam.nanos.auth.Address',
+  'foam.nanos.auth.Hours',
+  'foam.nanos.auth.DayOfWeek',
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.ClientAuthService',
   'foam.nanos.auth.Country',
@@ -48,6 +50,7 @@ var classes = [
   'foam.swift.ui.DetailView',
   'foam.u2.Visibility',
   'net.nanopay.auth.email.EmailTokenService',
+  'net.nanopay.auth.password.ResetPasswordTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.auth.token.ClientTokenService',
   'net.nanopay.auth.token.Token',
@@ -55,6 +58,8 @@ var classes = [
   'net.nanopay.model.Account',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
+  'net.nanopay.tx.model.TransactionLimitTimeFrame',
+  'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.model.TransactionPurpose'
 ];
 
