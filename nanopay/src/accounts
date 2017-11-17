@@ -4,4 +4,5 @@ p({"class":"net.nanopay.model.Account","id":999,"balance":5000000, "owner":999 }
 p({"class":"net.nanopay.model.Account","id":1000,"balance":5000, "owner":1000 })
 p({"class":"net.nanopay.model.Account","id":1001,"balance":5000000, "owner":1001 })
 p({"class":"net.nanopay.model.Account","id":1002,"balance":5000000, "owner":1002})
+p({"class":"net.nanopay.model.Account","id":1003,"balance":5000, "owner":1008 })
 p({"class":"net.nanopay.model.Account","id":1337,"balance":5000000, "owner":1337})

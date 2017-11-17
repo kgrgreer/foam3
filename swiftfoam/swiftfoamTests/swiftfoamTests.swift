@@ -155,4 +155,23 @@ class swiftfoamTests: XCTestCase {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
   }
+
+  func testGetBusinessLocations() {
+    do {
+      let pred = client.__context__.create(Eq.self, args: [
+        "arg1": User.TYPE(),
+        "arg2": "Merchant"
+        ])
+      guard let merchants = try (client.userDAO!.`where`(pred).select() as? ArraySink)?.array as? [User] else {
+        XCTFail("Could not convert returned value from select()")
+        return
+      }
+      guard merchants.count > 0 else { return }
+      for merchant in merchants {
+        print(merchant.address ?? "No address")
+      }
+    } catch let e {
+      XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
 }

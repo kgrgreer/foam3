@@ -42,7 +42,7 @@ public class UserTransactionLimitService
   }
 
   @Override
-  public TransactionLimit getLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
+  public long getLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
     User user = (User) userDAO_.find(userId);
 
     if ( user == null ) {
@@ -51,25 +51,19 @@ public class UserTransactionLimitService
 
     for ( TransactionLimit userLimit : user.getTransactionLimits() ) {
       if ( userLimit.getType() == type && userLimit.getTimeFrame() == timeFrame ) {
-        return userLimit;
+        return userLimit.getAmount();
       }
     }
     String limitName = DEFAULT_USER_TRANSACTION_LIMIT;
     if ( isBroker(userId) ) {
       limitName = DEFAULT_BROKER_TRANSACTION_LIMIT;
     }
-    Sink sink = new ListSink();
-    sink = transactionLimitDAO_.where(AND( EQ(limitName, TransactionLimit.NAME),
-        EQ(type, TransactionLimit.TYPE),
-        EQ(timeFrame, TransactionLimit.TIME_FRAME) )
-    ).limit(1).select(sink);
+    DAO tLimitDAO  = transactionLimitDAO_.where(AND( EQ(limitName, TransactionLimit.NAME),
+                                       EQ(type, TransactionLimit.TYPE),
+                                       EQ(timeFrame, TransactionLimit.TIME_FRAME) )
+                                  );
 
-    List list = ((ListSink) sink).getData();
-    if ( list == null || list.size() == 0 ) {
-      throw new RuntimeException("Transaction Limit not found.");
-    }
-
-    return (TransactionLimit) list.get(0);
+    return ((Double)(((Sum) tLimitDAO.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 
 
@@ -80,7 +74,7 @@ public class UserTransactionLimitService
     if ( user == null ) {
       throw new RuntimeException("User not found.");
     }
-    TransactionLimit userTotalLimit = getLimit(userId, timeFrame, type);
+    long userTotalLimit = getLimit(userId, timeFrame, type);
 
     boolean isPayer = ( type == TransactionLimitType.SEND );
 
@@ -101,7 +95,7 @@ public class UserTransactionLimitService
 
     long spentAmount = getTransactionAmounts(userId, calendarType, isPayer);
 
-    return userTotalLimit.getAmount() - spentAmount;
+    return userTotalLimit - spentAmount;
   }
 
 
