@@ -182,6 +182,9 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'noSpaces', message: 'Password cannot contain spaces' },
+    { name: 'noNumbers', message: 'Password must have one numeric character' },
+    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
     { name: 'emptyPassword', message: 'Please enter your password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your password' },
     { name: 'passwordMismatch', message: 'Passwords do not match' }
@@ -194,9 +197,24 @@ foam.CLASS({
       code: function (X, obj) {
         var self = this;
 
-        // check if new password enteredd
+        // check if new password entered
         if ( ! this.newPassword ) {
           this.add(self.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          return;
+        }
+
+        if ( this.newPassword.includes(' ') ) {
+          this.add(self.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
+          return;
+        }
+
+        if ( ! /\d/g.test(this.newPassword) ) {
+          this.add(self.NotificationMessage.create({ message: this.noNumbers, type: 'error' }));
+          return;
+        }
+
+        if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
+          this.add(self.NotificationMessage.create({ message: this.noSpecial, type: 'error' }));
           return;
         }
 
