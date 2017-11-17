@@ -185,9 +185,6 @@ foam.CLASS({
     {
       name: 'confirm',
       label: 'Confirm',
-      isEnabled: function (newPassword, confirmPassword) {
-        return newPassword && confirmPassword;
-      },
       code: function (X, obj) {
         var self = this;
 
