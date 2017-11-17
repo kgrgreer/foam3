@@ -181,12 +181,36 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'emptyPassword', message: 'Please enter your password' },
+    { name: 'emptyConfirmation', message: 'Please re-enter your password' },
+    { name: 'passwordMismatch', message: 'Passwords do not match' }
+  ],
+
   actions: [
     {
       name: 'confirm',
       label: 'Confirm',
       code: function (X, obj) {
         var self = this;
+
+        // check if new password enteredd
+        if ( ! this.newPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          return;
+        }
+
+        // check if confirm password entered
+        if ( ! this.confirmPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.emptyConfirmation, type: 'error' }));
+          return;
+        }
+
+        // check if passwords match
+        if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.passwordMismatch, type: 'error' }));
+          return;
+        }
 
         var user = this.User.create({
           password: this.newPassword
