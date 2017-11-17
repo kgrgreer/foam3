@@ -31,21 +31,18 @@ foam.CLASS({
           width: 76px;
         }
         ^ .success-message {
-          font-family: Roboto;
           font-size: 32px;
           font-weight: 300;
           text-align: left;
           padding-top: 30px;
         }
         ^ .success-amount {
-          font-family: Roboto;
           font-size: 32px;
           font-weight: bold;
           text-align: left;
           padding-top: 7px;
         }
         ^ .success-from-to {
-          font-family: Roboto;
           font-size: 12px;
           text-align: left;
           color: rgba(255, 255, 255, 0.7);
@@ -68,7 +65,6 @@ foam.CLASS({
           border-radius: 50%;
         }
         ^ .success-profile-name {
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1.88;
           text-align: center;

@@ -18,7 +18,6 @@ foam.CLASS({
           display: table;
           position: absolute;
           background-color: #2c4389;
-          font-family: Roboto;
           margin-top: -56px;
         }
         ^ .wrapper {

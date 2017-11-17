@@ -27,7 +27,6 @@ foam.CLASS({
           width: 76px;
         }
         ^ .success-message {
-          font-family: Roboto;
           font-size: 32px;
           font-weight: 300;
           text-align: left;
