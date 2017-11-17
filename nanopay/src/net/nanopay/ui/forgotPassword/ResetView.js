@@ -3,11 +3,21 @@ foam.CLASS({
   name: 'ResetView',
   extends: 'foam.u2.View',
 
+  documentation: 'Forgot Password Reset View',
+
   imports: [
-    'stack'
+    'stack',
+    'resetPasswordToken'
   ],
 
-  documentation: 'Forgot Password Reset View',
+  exports: [
+    'as data'
+  ],
+
+  requires: [
+    'foam.nanos.auth.User',
+    'net.nanopay.ui.NotificationMessage'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -73,7 +83,7 @@ foam.CLASS({
         margin-top: 10px;
       }
       
-      ^ .Confirm-Button{
+      ^ .net-nanopay-ui-ActionView-confirm {
         width: 450px;
         height: 40px;
         border-radius: 2px;
@@ -88,23 +98,17 @@ foam.CLASS({
         margin-top: 10px;
       }
 
-      ^ .Input-Box{
-        width: 450px;
-        height: 40px;
-        background-color: #ffffff;
-        border: solid 1px rgba(164, 179, 184, 0.5);
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-bottom: 10px;
-        margin-top: 5px;
-        padding-left: 5px;
-        padding-right: 5px;
-        font-family: Roboto;
+      ^ .net-nanopay-ui-ActionView-confirm span {
+        display: block;
         font-size: 12px;
-        text-align: left;
-        color: #093649;
-        font-weight: 300;
+        line-height: 40px;
         letter-spacing: 0.2px;
+      }
+
+      ^ .net-nanopay-ui-ActionView-confirm:hover {
+        background: none;
+        cursor: pointer;
+        background-color: #20B1A7;
       }
 
       ^ .link{
@@ -137,6 +141,16 @@ foam.CLASS({
 
         return params.token || null;
       }
+    },
+    {
+      class: 'String',
+      name: 'newPassword',
+      view: 'foam.u2.view.PasswordView'
+    },
+    {
+      class: 'String',
+      name: 'confirmPassword',
+      view: 'foam.u2.view.PasswordView'
     }
   ],
 
@@ -151,12 +165,11 @@ foam.CLASS({
         .start().addClass('Reset-Password').add("Reset Password").end()
         .start().addClass('Message-Container')
           .start().addClass('newPassword-Text').add("New Password").end()
-          .start('input').addClass('Input-Box').end()
+          .start(this.NEW_PASSWORD).addClass('full-width-input').end()
           .start().addClass('confirmPassword-Text').add("Confirm Password").end()
-          .start('input').addClass('Input-Box').end()
-          .start().addClass('Confirm-Button')
-            .add("Confirm")
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.SuccessView'})})
+          .start(this.CONFIRM_PASSWORD).addClass('full-width-input').end()
+          .start('div')
+            .tag(this.CONFIRM, { showLabel: true })
           .end()
         .end()
         .start('p').add("Remember your password?").end()
@@ -165,6 +178,29 @@ foam.CLASS({
           .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
         .end()
       .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'confirm',
+      label: 'Confirm',
+      isEnabled: function (newPassword, confirmPassword) {
+        return newPassword && confirmPassword;
+      },
+      code: function (X, obj) {
+        var self = this;
+
+        var user = this.User.create({
+          password: this.newPassword
+        });
+
+        this.resetPasswordToken.processToken(user, this.token).then(function (result) {
+          self.stack.push({ class: 'net.nanopay.ui.forgotPassword.SuccessView' });
+        }).catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
     }
   ]
 });

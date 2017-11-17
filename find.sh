@@ -13,6 +13,7 @@ find **/src -type f -name cronjobs -exec cat {} \; > cronjobs
 find **/src -type f -name currency -exec cat {} \; > currency
 find **/src -type f -name devices -exec cat {} \; > devices
 find **/src -type f -name dateofbirth -exec cat {} \; > dateofbirth
+find **/src -type f -name emailTemplates -exec cat {} \; > emailTemplates
 find **/src -type f -name exchangeRates -exec cat {} \; > exchangeRates
 find **/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
 find **/src -type f -name groups -exec cat {} \; > groups

@@ -28,7 +28,7 @@ foam.CLASS({
         {                         id: 'interac',       label: 'Transactions',       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.tx.ui.TransactionsView' } } },        
         {                         id: 'transfer',      label: 'Transfer',           handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.TransferView' } } },
         {                         id: 'devices',       label: 'Devices',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.retail.ui.devices.DevicesView' } } },
-        {                         id: 'reset',         label: 'Reset Password',     handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.forgotPassword.ResetView' } } },
+        { parent: 'hidden',       id: 'reset',         label: 'Reset Password',     handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.ui.forgotPassword.ResetView' } } },
         { /*parent: 'support',*/  id: 'invoices',      label: 'Invoices',           handler: { class: 'foam.nanos.menu.SubMenu' } },
         { parent: 'admin',        id: 'brokers',       label: 'Brokers',            handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'brokerDAO' } },
         { parent: 'admin',        id: 'servproviders', label: 'Service Providers',  handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'cicoServiceProviderDAO' } },

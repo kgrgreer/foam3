@@ -27,7 +27,6 @@ foam.CLASS({
         }
         ^ .amount-label {
           height: 30px;
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1.88;
           text-align: center;
@@ -39,7 +38,6 @@ foam.CLASS({
           background-color: #2c4389;
           height: 90px;
           overflow-x: hidden;
-          font-family: Roboto;
           font-size: 75px;
           text-align: center;
           color: #ffffff;

@@ -20,7 +20,6 @@ foam.CLASS({
         }
         ^ .no-transactions-label {
           height: 16px;
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1;
           text-align: center;

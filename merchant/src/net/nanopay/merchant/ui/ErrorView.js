@@ -27,21 +27,18 @@ foam.CLASS({
           width: 76px;
         }
         ^ .error-message {
-          font-family: Roboto;
           font-size: 32px;
           font-weight: 300;
           text-align: left;
           padding-top: 30px;
         }
         ^ .error-amount {
-          font-family: Roboto;
           font-size: 32px;
           font-weight: bold;
           text-align: left;
           padding-top: 7px;
         }
         ^ .error-from-to {
-          font-family: Roboto;
           font-size: 12px;
           text-align: left;
           color: rgba(255, 255, 255, 0.7);
@@ -64,7 +61,6 @@ foam.CLASS({
           border-radius: 50%;
         }
         ^ .error-profile-name {
-          font-family: Roboto;
           font-size: 16px;
           line-height: 1.88;
           text-align: center;
