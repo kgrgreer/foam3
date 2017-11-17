@@ -188,7 +188,7 @@ foam.CLASS({
           .end()
           .start().add(this.bankLabel).addClass('label').end()
           .start('div').addClass('bankInfoDiv')
-            .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
+            .start({ class: 'foam.u2.tag.Image', data: 'images/icon_bank_account_black.png' }).addClass('bankLogo').end()
             .start()
               .addClass('bankName')
               .call(function() {
@@ -197,12 +197,13 @@ foam.CLASS({
                 }.bind(this));
               })
             .end()
-            .start().addClass('accountNumber')
-            .call(function() {
-              self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
-              }.bind(this));
-            })
+            .start()
+              .addClass('accountNumber')
+              .call(function() {
+                self.bankAccountDAO.find(self.bankList).then(function(bank) {
+                  this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+                }.bind(this));
+              })
             .end()
           .end()
           .br()
