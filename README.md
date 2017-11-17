@@ -10,12 +10,17 @@ Repository containing b2b, retail, common, admin-portal, ingenico
 4. Git (`brew install git`)
 
 ### Setup
-Checkout `foam2` and `NANOPAY` repositories into the same directory
-
+Checkout `NANOPAY`
 ```
-git clone https://github.com/foam-framework/foam2.git
 git clone https://github.com/nanopayinc/NANOPAY.git
 git clone https://github.com/nanopayinc/iso20022.git
+```
+
+foam2 is added as a submodule.
+Initialize the submodule
+```
+git submodule init
+git submodule update
 ```
 
 ### Building ISO20022 files
@@ -27,7 +32,7 @@ npm install
 node scripts/geniso/index.js
 ./build.sh
 ```
-### Installing tomcat 
+### Installing tomcat
 
 Go into the NANOPAY/tools directory and run the following commands:
 
@@ -86,4 +91,3 @@ cd ..
 ### Loading a project
 
 Visit [http://localhost:8080/static/NANOPAY](http://localhost:8080/static/NANOPAY) and go into any of the submodules to view that project
-

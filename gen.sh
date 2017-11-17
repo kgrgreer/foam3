@@ -1,67 +1,60 @@
 #!/bin/sh
 
-#Concatenate files into one services file
-cd ../
-find foam2/src NANOPAY/**/src -type f -name accounts -exec cat {} \; > accounts
-find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
-find foam2/src NANOPAY/**/src -type f -name bankAccounts -exec cat {} \; > bankAccounts
-find foam2/src NANOPAY/**/src -type f -name branches -exec cat {} \; > branches
-find foam2/src NANOPAY/**/src -type f -name brokers -exec cat {} \; > brokers
-find foam2/src NANOPAY/**/src -type f -name businesses -exec cat {} \; > businesses
-find foam2/src NANOPAY/**/src -type f -name canadaTransactions -exec cat {} \; > canadaTransactions
-find foam2/src NANOPAY/**/src -type f -name cicoServiceProviders -exec cat {} \; > cicoServiceProviders
-find foam2/src NANOPAY/**/src -type f -name countries -exec cat {} \; > countries
-find foam2/src NANOPAY/**/src -type f -name countryAgents -exec cat {} \; > countryAgents
-find foam2/src NANOPAY/**/src -type f -name cronjobs -exec cat {} \; > cronjobs
-find foam2/src NANOPAY/**/src -type f -name currency -exec cat {} \; > currency
-find foam2/src NANOPAY/**/src -type f -name devices -exec cat {} \; > devices
-find foam2/src NANOPAY/**/src -type f -name dateofbirth -exec cat {} \; > dateofbirth
-find foam2/src NANOPAY/**/src -type f -name emailTemplates -exec cat {} \; > emailTemplates
-find foam2/src NANOPAY/**/src -type f -name exchangeRates -exec cat {} \; > exchangeRates
-find foam2/src NANOPAY/**/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
-find foam2/src NANOPAY/**/src -type f -name groups -exec cat {} \; > groups
-find foam2/src NANOPAY/**/src -type f -name historyRecords -exec cat {} \; > historyRecords
-find foam2/src NANOPAY/**/src -type f -name indiaTransactions -exec cat {} \; > indiaTransactions
-find foam2/src NANOPAY/**/src -type f -name identification -exec cat {} \; > identification
-find foam2/src NANOPAY/**/src -type f -name invoices -exec cat {} \; > invoices
-find foam2/src NANOPAY/**/src -type f -name invoiceResolutions -exec cat {} \; > invoiceResolutions
-find foam2/src NANOPAY/**/src -type f -name languages -exec cat {} \; > languages
-find foam2/src NANOPAY/**/src -type f -name menus -exec cat {} \; > menus
-find foam2/src NANOPAY/**/src -type f -name pacs8india -exec cat {} \; > pacs8india
-find foam2/src NANOPAY/**/src -type f -name pacs8iso -exec cat {} \; > pacs8iso
-find foam2/src NANOPAY/**/src -type f -name payees -exec cat {} \; > payees
-find foam2/src NANOPAY/**/src -type f -name permissions -exec cat {} \; > permissions
-find foam2/src NANOPAY/**/src -type f -name regions -exec cat {} \; > regions
-find foam2/src NANOPAY/**/src -type f -name scripts -exec cat {} \; > scripts
-find foam2/src NANOPAY/**/src -type f -name services -exec cat {} \; > services
-find foam2/src NANOPAY/**/src -type f -name tests -exec cat {} \; > tests
-find foam2/src NANOPAY/**/src -type f -name transactions -exec cat {} \; > transactions
-find foam2/src NANOPAY/**/src -type f -name users -exec cat {} \; > users
+# This file
+# - cleans build folder for all projects under NANOPAY
+# - generates the java code for all models
+# - move all java code to the root directory build folder
 
-cd NANOPAY
+# Remove the build folder if it exist and create a new one
+clean() {
+  if [ -d "$build/" ]; then
+    rm -rf build
+    mkdir build
+  fi
+}
 
-rm -r build
-mkdir build
+# Clean top level build folder
+clean
 
-echo $cwd
+# Generate java files from models and move to build folder
+generate_java() {
+  # Copy over directories from project/src to project/build
+  for d in *; do
+    if [ "$d" = 'target' ] || [ "$d" = 'gen.sh' ]; then
+      continue
+    fi
+
+    cp -r $d ../build
+  done
+
+  # Delete javascript files from ../build/
+  find ../build/ -name "*.js" -type f -delete
+
+  # Generate java files to project/build
+  cwd=$(pwd)
+  node ../../foam2/tools/genjava.js $cwd/../tools/classes.js $cwd/../build $cwd
+
+  # Copy java files from project/build to NANOPAY/build
+  cd ../build/
+  find . -name '*.java' | cpio -pdm ../../build/
+}
+
+# For each project, generate the java files
+for d in *; do
+  if [ "$d" = 'admin-portal' ]  || [ "$d" = 'b2b' ]       || [ "$d" = 'foam2' ]   ||
+     [ "$d" = 'interac' ]       || [ "$d" = 'merchant' ]  || [ "$d" = 'nanopay' ] ||
+     [ "$d" = 'retail' ]; then
+
+    cd $d
+    clean
+
+    cd src/
+    generate_java
+
+    cd ../../
+  fi
+done
+
+# Generate NANOPAY classes 
 cwd=$(pwd)
-cd ../foam2
-mkdir -p build
-cd src
-find . -name '*.java' | cpio -pdm $cwd/build/
-cd ../../NANOPAY/
-cd b2b/src
-find . -name '*.java' | cpio -pdm $cwd/build
-cd ../../
-cd interac/src
-find . -name '*.java' | cpio -pdm $cwd/build
-cd ../../
-cd nanopay/src
-find . -name '*.java' | cpio -pdm $cwd/build
-cd ../../
-cd build/
-find . -name build -type d -print0|xargs -0 rm -r --
-cd ../
-# Generate java files to build dir
-
-node ../foam2/tools/genjava.js $cwd/tools/classes.js $cwd/build $cwd
+node foam2/tools/genjava.js $cwd/tools/classes.js $cwd/build $cwd
