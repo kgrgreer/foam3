@@ -28,6 +28,17 @@ foam.CLASS({
     'java.util.UUID'
   ],
 
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: 'java.util.regex.Pattern p = java.util.regex.Pattern.compile("[^a-zA-Z0-9]");'
+        }))
+      }
+    }
+  ],
+
   methods: [
     {
       name: 'generateToken',
@@ -100,6 +111,10 @@ if ( newPassword.equals(newPassword.toLowerCase()) ) {
 
 if ( ! newPassword.matches(".*\\\\d+.*") ) {
   throw new RuntimeException("Password must have one numeric character");
+}
+
+if ( ! p.matcher(newPassword).matches() ) {
+  throw new RuntimeException("Password must not contain: !@#$%^&*()_+");
 }
 
 DAO userDAO = (DAO) getLocalUserDAO();
