@@ -7,7 +7,6 @@ foam.CLASS({
 
   imports: [
     'viewData',
-    'errors',
     'goBack',
     'goNext'
   ],
@@ -100,18 +99,12 @@ foam.CLASS({
     { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' },
     { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts. Don\'t worry, you can always change the name later.' },
     { name: 'LabelName',            message: 'Name *' },
-    { name: 'ErrorName',            message: 'Invalid name used.' },
     { name: 'Guide',                message: 'Don\'t know where to find these numbers? Check your cheque or contact your bank representative.' },
     { name: 'LabelAccount',         message: 'Account No. *' },
-    { name: 'ErrorAccount',         message: 'Invalid account number used.' },
     { name: 'LabelInstitution',     message: 'Intitution *' },
-    { name: 'ErrorInstitution',     message: 'Institution number incomplete.' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
-    { name: 'ErrorTransit',         message: 'Invalid transit number used.' },
     { name: 'LabelInstitute',       message: 'Institute No. *' },
-    { name: 'ErrorInstitute',       message: 'No institute selected' },
-    { name: 'LabelInstituteOther',  message: 'Institute No. (Other) *' },
-    { name: 'ErrorInstituteOther',  message: 'Invalid institute number used.' }
+    { name: 'LabelInstituteOther',  message: 'Institute No. (Other) *' }
   ],
 
   properties: [
@@ -120,9 +113,6 @@ foam.CLASS({
       name: 'bankName',
       postSet: function(oldValue, newValue) {
         this.viewData.accountName = newValue;
-      },
-      validateObj: function(bankName) {
-        if ( bankName.trim().length == 0 ) return this.ErrorName;
       }
     },
     {
@@ -130,9 +120,6 @@ foam.CLASS({
       name: 'accountNumber',
       postSet: function(oldValue, newValue) {
         this.viewData.accountNumber = newValue;
-      },
-      validateObj: function(accountNumber) {
-        if ( ! /^[0-9]{1,35}$/.exec(accountNumber) ) return this.ErrorAccount;
       }
     },
     {
@@ -140,9 +127,6 @@ foam.CLASS({
       name: 'transitNumber',
       postSet: function(oldValue, newValue) {
         this.viewData.transitNumber = newValue;
-      },
-      validateObj: function(transitNumber) {
-        if ( ! /^[0-9]{5}$/.exec(transitNumber) ) return this.ErrorTransit;
       }
     },
     {
@@ -213,7 +197,7 @@ foam.CLASS({
       },
       validateObj: function(institution, institutionOther) {
         if ( institution == 'Other' && ! institutionOther.trim() )
-          return this.ErrorInstitution;
+          return;
       }
     },
     {
@@ -228,17 +212,12 @@ foam.CLASS({
         this.viewData.bankNumber = newValue;
       },
       validateObj: function(institution, institutionOther) {
-        if ( ! /^[0-9]{3}$/.exec(institutionOther) &&  institution == 'Other') return this.ErrorInstituteOther;
+        if ( ! /^[0-9]{3}$/.exec(institutionOther) &&  institution == 'Other') return;
       }
     }
   ],
 
   methods: [
-    function init() {
-      this.errors_$.sub(this.errorsUpdate);
-      this.errorsUpdate();
-    },
-
     function initE() {
       this.SUPER();
       this
@@ -250,11 +229,6 @@ foam.CLASS({
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions).end()
         .start('div').addClass('row')
           .start('p').addClass('inputFieldLabel').add(this.LabelName).end()
-          .start('p')
-            .addClass('pDefault')
-            .addClass('inputErrorLabel')
-            .add(this.slot(this.BANK_NAME.validateObj))
-          .end()
         .end()
         .tag(this.BANK_NAME, {onKey: true})
         .start('div').addClass('row')
@@ -264,11 +238,6 @@ foam.CLASS({
           .start('div').addClass('col')
             .start('div').addClass('row')
               .start('p').addClass('inputFieldLabel').add(this.LabelAccount).end()
-              .start('p')
-                .addClass('pDefault')
-                .addClass('inputErrorLabel')
-                .add(this.slot(this.ACCOUNT_NUMBER.validateObj))
-              .end()
             .end()
             .tag(this.ACCOUNT_NUMBER, {onKey: true, maxLength: 35})
             .start('div').addClass('row')
@@ -282,35 +251,16 @@ foam.CLASS({
           .start('div').addClass('col')
             .start('div').addClass('row')
               .start('p').addClass('inputFieldLabel').add(this.LabelTransit).end()
-              .start('p')
-                .addClass('pDefault')
-                .addClass('inputErrorLabel')
-                .add(this.slot(this.TRANSIT_NUMBER.validateObj))
-              .end()
             .end()
             .tag(this.TRANSIT_NUMBER, {onKey: true, maxLength: 5})
             .start('div').enableClass('institutionContainerHidden', this.hideOther$)
               .start('div').addClass('row')
                 .start('p').addClass('inputFieldLabel').add(this.LabelInstituteOther).end()
-                .start('p')
-                  .addClass('pDefault')
-                  .addClass('inputErrorLabel')
-                  .add(this.slot(this.INSTITUTION_OTHER.validateObj))
-                .end()
               .end()
               .tag(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3})
             .end()
           .end()
         .end()
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });

@@ -8,6 +8,7 @@ import foam.dao.Sink;
 import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
+import foam.nanos.NanoService;
 import foam.nanos.auth.User;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.UserTransactionLimit;
@@ -19,7 +20,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class UserTransactionLimitService extends ContextAwareSupport implements UserTransactionLimit {
+public class UserTransactionLimitService
+    extends ContextAwareSupport
+    implements UserTransactionLimit, NanoService {
+
   protected DAO userDAO_;
   protected DAO transactionLimitDAO_;
   protected DAO transactionDAO_;
@@ -38,7 +42,7 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
   }
 
   @Override
-  public TransactionLimit getLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
+  public long getLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
     User user = (User) userDAO_.find(userId);
 
     if ( user == null ) {
@@ -47,25 +51,19 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
 
     for ( TransactionLimit userLimit : user.getTransactionLimits() ) {
       if ( userLimit.getType() == type && userLimit.getTimeFrame() == timeFrame ) {
-        return userLimit;
+        return userLimit.getAmount();
       }
     }
     String limitName = DEFAULT_USER_TRANSACTION_LIMIT;
     if ( isBroker(userId) ) {
       limitName = DEFAULT_BROKER_TRANSACTION_LIMIT;
     }
-    Sink sink = new ListSink();
-    sink = transactionLimitDAO_.where(AND( EQ(limitName, TransactionLimit.NAME),
+    DAO tLimitDAO  = transactionLimitDAO_.where(AND( EQ(limitName, TransactionLimit.NAME),
                                        EQ(type, TransactionLimit.TYPE),
                                        EQ(timeFrame, TransactionLimit.TIME_FRAME) )
-                                  ).limit(1).select(sink);
+                                  );
 
-    List list = ((ListSink) sink).getData();
-    if ( list == null || list.size() == 0 ) {
-      throw new RuntimeException("Transaction Limit not found.");
-    }
-
-    return (TransactionLimit) list.get(0);
+    return ((Double)(((Sum) tLimitDAO.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 
 
@@ -76,7 +74,7 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
     if ( user == null ) {
       throw new RuntimeException("User not found.");
     }
-    TransactionLimit userTotalLimit = getLimit(userId, timeFrame, type);
+    long userTotalLimit = getLimit(userId, timeFrame, type);
 
     boolean isPayer = ( type == TransactionLimitType.SEND );
 
@@ -97,7 +95,7 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
 
     long spentAmount = getTransactionAmounts(userId, calendarType, isPayer);
 
-    return userTotalLimit.getAmount() - spentAmount;
+    return userTotalLimit - spentAmount;
   }
 
 
@@ -115,9 +113,9 @@ public class UserTransactionLimitService extends ContextAwareSupport implements 
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
     DAO list = transactionDAO_.where(AND(EQ(userId, ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
-                                        GTE(Transaction.DATE, firstDate ),
-                                        LTE(Transaction.DATE, lastDate )
-                                    ));
+        GTE(Transaction.DATE, firstDate ),
+        LTE(Transaction.DATE, lastDate )
+    ));
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 

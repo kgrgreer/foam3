@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ConfirmCashOutModal',
   extends: 'foam.u2.Controller',
 
+  documentation: 'Pop up modal for confirming cash out.',
+
   requires: [
     'net.nanopay.ui.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
@@ -19,8 +21,6 @@ foam.CLASS({
     'standardCICOTransactionDAO',
     'user'
   ],
-
-  documentation: 'Pop up modal for confirming cash out.',
 
   axioms: [
     foam.u2.CSS.create({
@@ -185,7 +185,7 @@ foam.CLASS({
           .end()
           .start().add(this.bankLabel).addClass('label').end()
           .start('div').addClass('bankInfoDiv')
-            .start({class: 'foam.u2.tag.Image', data: 'images/bmo-logo.svg'}).addClass('bankLogo').end()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/icon_bank_account_black.png' }).addClass('bankLogo').end()
             .start()
               .addClass('bankName')
               .call(function() {
