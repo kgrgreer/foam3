@@ -79,20 +79,16 @@ foam.CLASS({
           cursor: pointer;
           background-color: #20B1A7;
         }
-        ^ .foam-u2-dialog-Popup.popup-with-topnav {
-          margin-top: 155px;
-          height: 420px;
-        }
-        ^ .foam-u2-dialog-Popup-background {
-          pointer-events: none;
-          background-color: #edf0f5;
-          opacity: 1;
-        }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
+          margin-top: 65px;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
+        }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: #e9e9e9;
         }
       */}
     })
@@ -183,20 +179,21 @@ foam.CLASS({
       ],
 
       exports: [
-        'unverifiedBank'
+        'selectedAccount',
+        'verifyAccount'
       ],
 
       properties: [
         {
-          name: 'unverifiedBank',
+          name: 'selectedAccount',
           value: null
         },
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if ( newValue && newValue.status == 'Unverified' ) {
-              this.unverifiedBank = newValue;
-              this.verifyAccount();
+            if( newValue ) {
+              this.selectedAccount = newValue;
+              this.manageAccount();
               return oldValue;
             }
           }
@@ -232,6 +229,10 @@ foam.CLASS({
               title: this.TitleVerification
             }).addClass('popup-with-topnav')
           );
+        },
+
+        function manageAccount() {
+          this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal' }).addClass('manageAccounts'));
         }
       ]
     }
