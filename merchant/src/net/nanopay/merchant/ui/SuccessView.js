@@ -105,7 +105,7 @@ foam.CLASS({
             .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.png' })
           .end()
           .start().addClass('success-message').add( ! this.refund ? this.paymentSuccess : this.refundSuccess ).end()
-          .start().addClass('success-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
+          .start().addClass('success-amount').add('$' + ( this.data.total / 100 ).toFixed(2)).end()
           .start().addClass('success-from-to').add( ! this.refund ? 'From' : 'To' ).end()
           .start().addClass('success-profile')
             .start().addClass('success-profile-icon')
