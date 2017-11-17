@@ -7,6 +7,7 @@ class swiftfoamTests: XCTestCase {
   let password = "Nanopay123"
 
   override func setUp() {
+    client.httpBoxUrlRoot = .Localhost
     super.setUp()
   }
 
@@ -132,6 +133,24 @@ class swiftfoamTests: XCTestCase {
       XCTAssert(madeTransaction.payeeId == newTransaction.payeeId, "Created Transaction.payeeId must match returned transaction from put()")
       XCTAssert(madeTransaction.amount == newTransaction.amount, "Created Transaction.amount must match returned transaction from put()")
       XCTAssert(madeTransaction.tip == newTransaction.tip, "Created Transaction.tip must match returned transaction from put()")
+    } catch let e {
+      XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
+
+  func testTransactionLimits() {
+    do {
+      var user: User!
+      if let prevLoggedInUser = try client.clientAuthService!.getCurrentUser(client.__context__) {
+        user = prevLoggedInUser
+      } else {
+        user = try client.clientAuthService!.loginByEmail(client.__context__, username, password)
+      }
+
+      let service = client.userTransactionLimitService!
+      let limit = try service.getLimit(user.id, .DAY, .SEND)
+      let limitLeft = try service.getRemainingLimit(user.id, .DAY, .SEND)
+      print("\(limit.timeFrame) | \(limit.type) Limit found for \(user.firstName): \(limitLeft)")
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }

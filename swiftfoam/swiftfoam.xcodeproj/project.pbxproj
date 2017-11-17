@@ -176,6 +176,8 @@
 		06AE5E691FBDFBD8008111C3 /* net_nanopay_auth_password_ResetPasswordTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AE5E681FBDFBD7008111C3 /* net_nanopay_auth_password_ResetPasswordTokenService.swift */; };
 		06AE5E6C1FBE2116008111C3 /* net_nanopay_tx_model_TransactionLimitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AE5E6A1FBE2115008111C3 /* net_nanopay_tx_model_TransactionLimitType.swift */; };
 		06AE5E6D1FBE2116008111C3 /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AE5E6B1FBE2116008111C3 /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift */; };
+		06AE5E701FBF373B008111C3 /* net_nanopay_tx_UserTransactionLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AE5E6F1FBF373B008111C3 /* net_nanopay_tx_UserTransactionLimit.swift */; };
+		06AE5E721FBF37FF008111C3 /* net_nanopay_tx_client_ClientUserTransactionLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AE5E711FBF37FF008111C3 /* net_nanopay_tx_client_ClientUserTransactionLimitService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -361,6 +363,8 @@
 		06AE5E681FBDFBD7008111C3 /* net_nanopay_auth_password_ResetPasswordTokenService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_auth_password_ResetPasswordTokenService.swift; sourceTree = "<group>"; };
 		06AE5E6A1FBE2115008111C3 /* net_nanopay_tx_model_TransactionLimitType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_model_TransactionLimitType.swift; sourceTree = "<group>"; };
 		06AE5E6B1FBE2116008111C3 /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_model_TransactionLimitTimeFrame.swift; sourceTree = "<group>"; };
+		06AE5E6F1FBF373B008111C3 /* net_nanopay_tx_UserTransactionLimit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_UserTransactionLimit.swift; sourceTree = "<group>"; };
+		06AE5E711FBF37FF008111C3 /* net_nanopay_tx_client_ClientUserTransactionLimitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_client_ClientUserTransactionLimitService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -424,6 +428,8 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				06AE5E711FBF37FF008111C3 /* net_nanopay_tx_client_ClientUserTransactionLimitService.swift */,
+				06AE5E6F1FBF373B008111C3 /* net_nanopay_tx_UserTransactionLimit.swift */,
 				06AE5E6B1FBE2116008111C3 /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift */,
 				06AE5E6A1FBE2115008111C3 /* net_nanopay_tx_model_TransactionLimitType.swift */,
 				06AE5E681FBDFBD7008111C3 /* net_nanopay_auth_password_ResetPasswordTokenService.swift */,
@@ -728,6 +734,7 @@
 				062CD3831FBDE6BA00859518 /* foam_box_HTTPBox.swift in Sources */,
 				062CD3A61FBDE6BA00859518 /* foam_swift_parse_parser_Not.swift in Sources */,
 				062CD3B71FBDE6BA00859518 /* foam_dao_LimitedDAO.swift in Sources */,
+				06AE5E701FBF373B008111C3 /* net_nanopay_tx_UserTransactionLimit.swift in Sources */,
 				062CD3731FBDE6BA00859518 /* foam_box_LoggedLookupContext.swift in Sources */,
 				062CD39B1FBDE6BA00859518 /* foam_mlang_predicate_Predicate.swift in Sources */,
 				062CD3F71FBDE6BA00859518 /* foam_dao_InternalException.swift in Sources */,
@@ -814,6 +821,7 @@
 				062CD3E61FBDE6BA00859518 /* foam_box_BoxRegistryBox.swift in Sources */,
 				062CD3691FBDE6BA00859518 /* foam_swift_parse_parser_Substring.swift in Sources */,
 				062CD3DA1FBDE6BA00859518 /* foam_core_Exception.swift in Sources */,
+				06AE5E721FBF37FF008111C3 /* net_nanopay_tx_client_ClientUserTransactionLimitService.swift in Sources */,
 				062CD37E1FBDE6BA00859518 /* foam_swift_parse_json_PropertyParser.swift in Sources */,
 				062CD3CD1FBDE6BA00859518 /* foam_dao_ProxyDAO.swift in Sources */,
 				062CD3A21FBDE6BA00859518 /* foam_u2_Visibility.swift in Sources */,

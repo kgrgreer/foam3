@@ -9,6 +9,7 @@ foam.INTERFACE({
       javaReturns: 'net.nanopay.tx.model.TransactionLimit',
       swiftReturns: 'TransactionLimit',
       returns: 'Promise',
+      swiftThrows: true,
       args: [
         {
           name: 'userId',
@@ -32,6 +33,7 @@ foam.INTERFACE({
       javaReturns: 'long',
       swiftReturns: 'Int',
       returns: 'Promise',
+      swiftThrows: true,
       args: [
         {
           name: 'userId',

@@ -13,7 +13,8 @@ foam.CLASS({
     'foam.swift.dao.ArrayDAO',
     'foam.swift.dao.CachingDAO',
     'foam.nanos.auth.ClientAuthService',
-    'net.nanopay.auth.token.ClientTokenService'
+    'net.nanopay.auth.token.ClientTokenService',
+    'net.nanopay.tx.client.ClientUserTransactionLimitService'
   ],
   properties: [
     {
@@ -94,14 +95,26 @@ return CachingDAO_create([
 return CachingDAO_create([
   "src": ClientDAO_create([
     "delegate": LogBox_create([
-      "delegate": SessionClientBox_create([
-        "delegate": HTTPBox_create([
-          "url": "\\(self.httpBoxUrlRoot.rawValue)transactionLimitDAO"
-        ])
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)transactionLimitDAO"
       ])
     ])
   ]),
   "cache": ArrayDAO_create(["of": TransactionLimit.classInfo()]),
+])
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.client.ClientUserTransactionLimitService',
+      name: 'userTransactionLimitService',
+      swiftFactory: `
+return ClientUserTransactionLimitService_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)userTransactionLimit"
+    ])
+  ])
 ])
       `,
     },
@@ -166,10 +179,13 @@ return ClientTokenService_create([
       class: 'foam.dao.DAOProperty',
       name: 'countryDAO',
       swiftFactory: `
-return ClientDAO_create([
-  "delegate": HTTPBox_create([
-    "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
-  ])
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
+      ])
+    ]),
+  "cache": ArrayDAO_create(["of": Country.classInfo()]),
 ])
       `,
     },
@@ -177,10 +193,13 @@ return ClientDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'regionDAO',
       swiftFactory: `
-return ClientDAO_create([
-  "delegate": HTTPBox_create([
-    "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
-  ])
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
+      ])
+    ]),
+  "cache": ArrayDAO_create(["of": Region.classInfo()]),
 ])
       `,
     },
