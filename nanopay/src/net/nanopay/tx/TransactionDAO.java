@@ -103,7 +103,7 @@ public class TransactionDAO
             super.put_(x, fObject);
             return fObject;
           } else {
-            throw new RuntimeException("Payer doesn't have enough balance");
+            throw new RuntimeException("You do not have enough money in your account");
           }
         } catch (Exception e) {
           throw e;

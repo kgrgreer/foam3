@@ -90,7 +90,6 @@ foam.CLASS({
           background-color: #f1f1f1;
         }
         ^ .sidenav-list-item a {
-          font-family: Roboto;
           font-size: 16px;
           font-weight: 500;
           color: #595959;

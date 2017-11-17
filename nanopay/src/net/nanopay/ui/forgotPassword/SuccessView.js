@@ -3,11 +3,15 @@ foam.CLASS({
   name: 'SuccessView',
   extends: 'foam.u2.View',
 
+  documentation: 'Forgot Password Success View',
+
   imports: [
     'stack'
   ],
 
-  documentation: 'Forgot Password Success View',
+  requires: [
+    'net.nanopay.ui.NotificationMessage'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -83,21 +87,23 @@ foam.CLASS({
 
   methods: [
     function initE(){
-    this.SUPER();
-    var self = this;
+      this.SUPER();
+      var self = this;
 
-    this
-      .addClass(this.myClass())
-      .start()
-        .start().addClass('Reset-Password').add("Reset Password").end()
-        .start().addClass('Message-Container')
-          .start().addClass('success-Text').add(this.Instructions).end()
-          .start().addClass('Back-Button')
-            .add("Back to Sign In")
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
+      this
+        .addClass(this.myClass())
+        .start()
+          .start().addClass('Reset-Password').add("Reset Password").end()
+          .start().addClass('Message-Container')
+            .start().addClass('success-Text').add(this.Instructions).end()
+            .start().addClass('Back-Button')
+              .add("Back to Sign In")
+              .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' })})
+            .end()
           .end()
         .end()
-      .end()
+
+      this.add(self.NotificationMessage.create({ message: this.Instructions }));
     }
   ]
 });
