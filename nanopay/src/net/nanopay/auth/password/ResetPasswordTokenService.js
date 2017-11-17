@@ -83,7 +83,7 @@ try {
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", host + "/static/NANOPAY/nanopay/src/net/nanopay/index.html?token=" + token.getData() + "#reset");
+args.put("link", host + "/static/nanopay/src/net/nanopay/index.html?token=" + token.getData() + "#reset");
 
 email.sendEmailFromTemplate(message, "reset-password-mintchip", args);
 return true;`
