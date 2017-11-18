@@ -49,12 +49,15 @@ foam.CLASS({
           margin: auto;
           margin-top: 95px;
         }
+        ^ .retail-code-wrapper {
+          width: 100%;
+          margin-left: 10px;
+        }
         ^ .retail-code {
+          margin: 0 auto;
+          margin-top: 50px;
           width: 242px;
           border: none;
-          margin-top: 50px;
-          margin-left: 46px;
-          margin-right: 36px;
           background:
             repeating-linear-gradient(90deg,
                 white 0,
@@ -116,9 +119,11 @@ foam.CLASS({
         .start('h4')
           .add('Enter the code showed in retail portal to finish provision.')
         .end()
-        .start('div').addClass('retail-code')
-          .attrs({ autofocus: true, tabindex: 1 })
-          .add(this.password$)
+        .start('div').addClass('retail-code-wrapper')
+          .start('div').addClass('retail-code')
+            .attrs({ autofocus: true, tabindex: 1 })
+            .add(this.password$)
+          .end()
         .end()
         .start('div').addClass('setup-next-wrapper')
           .start('button').addClass('setup-next-button')
