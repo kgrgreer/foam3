@@ -48,6 +48,49 @@ foam.CLASS({
         ^ .amount-field:focus {
           outline: none;
         }
+
+        ^ .grid {
+          width: 100%;
+          display: table;
+          position: fixed;
+          bottom: 72px;
+        }
+
+        ^ .row {
+          display: table-row;
+        }
+
+        ^ .cell {
+          width: 33.333333%;
+          width: calc(100% / 3);
+          box-shadow: -.5px -.5px #e5e5e5;
+          display: table-cell;
+          background-color: #FFFFFF;
+          color: #666666;
+          line-height: 50px;
+          text-align: center;
+
+          -o-transition:.1s;
+          -ms-transition:.1s;
+          -moz-transition:.1s;
+          -webkit-transition:.1s;
+          transition:.1s;
+        }
+
+        ^ .cell:active {
+          background-color: #e5e5e5;
+        }
+
+        ^ .amount-next-wrapper {
+          width: 100%;
+          position: fixed;
+          bottom: 0px;
+        }
+        ^ .amount-next-button {
+          width: 100%;
+          height: 72px;
+          background-color: #26a96c;
+        }
       */}
     })
   ],
@@ -78,6 +121,35 @@ foam.CLASS({
         .start('div').addClass('amount-field')
           .attrs({ autofocus: true, tabindex: 1 })
           .add(this.amount$)
+        .end()
+
+        .start('div').addClass('grid')
+          .start('div').addClass('row')
+            .start('div').addClass('cell').add('1').end()
+            .start('div').addClass('cell').add('2').end()
+            .start('div').addClass('cell').add('3').end()
+          .end()
+          .start('div').addClass('row')
+            .start('div').addClass('cell').add('4').end()
+            .start('div').addClass('cell').add('5').end()
+            .start('div').addClass('cell').add('6').end()
+          .end()
+          .start('div').addClass('row')
+            .start('div').addClass('cell').add('7').end()
+            .start('div').addClass('cell').add('8').end()
+            .start('div').addClass('cell').add('9').end()
+          .end()
+          .start('div').addClass('row')
+            .start().addClass('cell').add('00').end()
+            .start().addClass('cell').add('0').end()
+            .start().addClass('cell').add('<-').end()
+          .end()
+        .end()
+        .start('div').addClass('amount-next-wrapper')
+          .start('button').addClass('amount-next-button')
+            .add('Next')
+            .on('click', this.onNextClicked)
+          .end()
         .end()
 
       this.onload.sub(function () {
