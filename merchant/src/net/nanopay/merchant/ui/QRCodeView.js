@@ -31,13 +31,18 @@ foam.CLASS({
           background-color: #2c4389;
           position: relative;
         }
-        ^ .qr-code-wrapper-div {
+        ^ .qr-code-wrapper {
+          width: 100%;
+        }
+        ^ .qr-code {
           background-color: #2c4389;
           width: 180px;
           height: 180px;
-          position: absolute;
-          left: 70px;
-          top: 20px;
+          margin: 0 auto;
+          margin-top: 20px;
+        }
+        ^ .qr-code:focus {
+          outline: none;
         }
         ^ .amount-div {
           width: 100%;
@@ -54,9 +59,6 @@ foam.CLASS({
           text-align: center;
           position: absolute;
           top: 279px;
-        }
-        ^ .qr-code-div:focus {
-          outline: none;
         }
       */}
     })
@@ -97,11 +99,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div')
-          .addClass('qr-code-wrapper-div')
-          .start('div').addClass('qr-code-div').end()
+        .start('div').addClass('qr-code-wrapper')
+          .start('div').addClass('qr-code').end()
         .end()
-        .start('span')
         .start('div').addClass('amount-div')
           .add('$' + ( this.amount / 100 ).toFixed(2))
         .end()
@@ -113,7 +113,7 @@ foam.CLASS({
 
       var worker = new Worker('libs/qrcode/qrcode.js');
       worker.addEventListener('message', function (e) {
-        var wrapper = self.document.querySelector('.qr-code-wrapper-div');
+        var wrapper = self.document.querySelector('.qr-code');
         wrapper.innerHTML = e.data;
       }, false);
 

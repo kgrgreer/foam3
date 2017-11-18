@@ -22,6 +22,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
+          width: 100%;
           background-color: #2c4389;
           position: relative;
         }
