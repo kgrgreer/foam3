@@ -12,6 +12,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.merchant.ui.transaction.TransactionToolbar'
   ],
 
@@ -179,11 +180,13 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.serialNumber ) {
-        throw new Error('Invalid serial number');
+        this.tag(this.ErrorMessage.create({ message: 'Device not found' }));
+        return;
       }
 
       if ( ! this.password ) {
-        throw new Error('Please enter a password');
+        this.tag(this.ErrorMessage.create({ message: 'Please enter a password' }));
+        return;
       }
 
       // look up device, set to active and save
@@ -212,7 +215,7 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
+        self.tag(self.ErrorMessage.create({ message: err.message }));
       });
     }
   ]
