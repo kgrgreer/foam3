@@ -86,6 +86,35 @@ foam.CLASS({
           color: transparent;
           text-shadow: 0px 0px 0px white;
         }
+        ^ .grid {
+          width: 100%;
+          display: table;
+          position: fixed;
+          bottom: 72px;
+        }
+        ^ .row {
+          display: table-row;
+        }
+        ^ .cell {
+          width: 33.333333%;
+          width: calc(100% / 3);
+          border-left: 1px solid #e5e5e5;
+          border-bottom: 1px solid #e5e5e5;
+          display: table-cell;
+          background-color: #FFFFFF;
+          color: #666666;
+          line-height: 50px;
+          text-align: center;
+
+          -o-transition:.1s;
+          -ms-transition:.1s;
+          -moz-transition:.1s;
+          -webkit-transition:.1s;
+          transition:.1s;
+        }
+        ^ .cell:active {
+          background-color: #e5e5e5;
+        }
         ^ .setup-next-wrapper {
           width: 100%;
           position: fixed;
@@ -125,6 +154,34 @@ foam.CLASS({
             .add(this.password$)
           .end()
         .end()
+
+        .start().addClass('grid')
+          .start().addClass('row')
+            .start().addClass('cell').add('1').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('2').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('3').on('click', this.onButtonPressed).end()
+          .end()
+          .start().addClass('row')
+            .start().addClass('cell').add('4').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('5').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('6').on('click', this.onButtonPressed).end()
+          .end()
+          .start().addClass('row')
+            .start().addClass('cell').add('7').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('8').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('9').on('click', this.onButtonPressed).end()
+          .end()
+          .start().addClass('row')
+            .start().addClass('cell').end()
+            .start().addClass('cell').add('0').on('click', this.onButtonPressed).end()
+            .start().addClass('cell material-icons md-dark')
+              .attrs({ 'aria-hidden': true })
+              .add('backspace')
+              .on('click', this.onButtonPressed)
+            .end()
+          .end()
+        .end()
+
         .start('div').addClass('setup-next-wrapper')
           .start('button').addClass('setup-next-button')
             .add('Next')
@@ -135,6 +192,24 @@ foam.CLASS({
   ],
 
   listeners: [
+    function onButtonPressed (e) {
+      var key = e.target.textContent;
+
+      var length = this.password.length;
+      if ( key === 'backspace' ) {
+        if ( length <= 0 ) return;
+        this.password = this.password.substring(0, length - 1);
+        return;
+      }
+
+      if ( length >= 6 ) {
+        e.preventDefault;
+        return;
+      }
+
+      this.password += key;
+    },
+
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( ! this.focused ) {

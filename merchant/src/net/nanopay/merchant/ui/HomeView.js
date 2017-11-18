@@ -44,7 +44,6 @@ foam.CLASS({
           color: #ffffff;
           margin-top: 14px;
         }
-
         ^ .amount-field:focus {
           outline: none;
         }
@@ -55,15 +54,14 @@ foam.CLASS({
           position: fixed;
           bottom: 72px;
         }
-
         ^ .row {
           display: table-row;
         }
-
         ^ .cell {
           width: 33.333333%;
           width: calc(100% / 3);
-          box-shadow: -.5px -.5px #e5e5e5;
+          border-left: 1px solid #e5e5e5;
+          border-bottom: 1px solid #e5e5e5;
           display: table-cell;
           background-color: #FFFFFF;
           color: #666666;
@@ -76,11 +74,9 @@ foam.CLASS({
           -webkit-transition:.1s;
           transition:.1s;
         }
-
         ^ .cell:active {
           background-color: #e5e5e5;
         }
-
         ^ .amount-next-wrapper {
           width: 100%;
           position: fixed;
@@ -126,51 +122,29 @@ foam.CLASS({
 
         .start().addClass('grid')
           .start().addClass('row')
-            .start().addClass('cell')
-              .add('1')
-            .end()
-            .start().addClass('cell')
-              .add('2')
-            .end()
-            .start().addClass('cell')
-              .add('3')
-            .end()
+            .start().addClass('cell').add('1').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('2').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('3').on('click', this.onButtonPressed).end()
           .end()
           .start().addClass('row')
-            .start().addClass('cell')
-              .add('4')
-            .end()
-            .start().addClass('cell')
-              .add('5')
-            .end()
-            .start().addClass('cell')
-              .add('6')
-            .end()
+            .start().addClass('cell').add('4').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('5').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('6').on('click', this.onButtonPressed).end()
           .end()
           .start().addClass('row')
-            .start().addClass('cell')
-              .add('7')
-            .end()
-            .start().addClass('cell')
-              .add('8')
-            .end()
-            .start().addClass('cell')
-              .add('9')
-            .end()
+            .start().addClass('cell').add('7').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('8').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('9').on('click', this.onButtonPressed).end()
           .end()
           .start().addClass('row')
-            .start().addClass('cell')
-              .add('00')
-            .end()
-            .start().addClass('cell')
-              .add('0')
-            .end()
+            .start().addClass('cell').add('00').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add('0').on('click', this.onButtonPressed).end()
             .start().addClass('cell material-icons md-dark')
               .attrs({ 'aria-hidden': true })
               .add('backspace')
+              .on('click', this.onButtonPressed)
             .end()
           .end()
-          .on('click', this.onButtonPressed)
         .end()
         .start().addClass('amount-next-wrapper')
           .start('button').addClass('amount-next-button')
