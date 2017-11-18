@@ -190,7 +190,7 @@ foam.CLASS({
       var key = e.target.textContent;
       if ( ! this.focused ) {
         this.focused = true;
-        this.amount = '$';
+        this.amount = '$0.00';
       }
 
       var length = this.amount.length;
@@ -202,7 +202,10 @@ foam.CLASS({
       }
 
       this.amountInt = (this.amountInt * 10) + parseInt(key, 10);
-      this.amount = '$' + (this.amountInt / 100.0);
+      if ( key === '00' ) {
+        this.amountInt = (this.amountInt * 10) + parseInt(key, 10);
+      }
+      this.amount = '$' + (this.amountInt / 100.0).toFixed(2);
     },
 
     function onKeyPressed (e) {
@@ -273,6 +276,23 @@ foam.CLASS({
         if ( isNumeric || key === '.' ) {
           this.amount += key;
         }
+      } catch (e) {
+        this.tag(this.ErrorMessage.create({ message: e.message }));
+      }
+    },
+
+    function onNextClicked (e) {
+      try {
+        // validate amount greater than 0
+        var value = this.amount.replace(/\D/g, '');
+        if ( value <= 0 ) {
+          throw new Error('Invalid amount');
+        }
+
+        // display QR code view
+        this.stack.push(this.QRCodeView.create({
+          amount: value
+        }));
       } catch (e) {
         this.tag(this.ErrorMessage.create({ message: e.message }));
       }
