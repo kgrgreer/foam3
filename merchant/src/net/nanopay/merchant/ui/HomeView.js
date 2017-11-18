@@ -97,6 +97,7 @@ foam.CLASS({
 
   properties: [
     ['header', true],
+    { class: 'Int', name: 'amountInt', value: 0 },
     { class: 'String', name: 'amount', value: '$0.00' },
     { class: 'Boolean', name: 'focused', value: false }
   ],
@@ -123,29 +124,55 @@ foam.CLASS({
           .add(this.amount$)
         .end()
 
-        .start('div').addClass('grid')
-          .start('div').addClass('row')
-            .start('div').addClass('cell').add('1').end()
-            .start('div').addClass('cell').add('2').end()
-            .start('div').addClass('cell').add('3').end()
+        .start().addClass('grid')
+          .start().addClass('row')
+            .start().addClass('cell')
+              .add('1')
+            .end()
+            .start().addClass('cell')
+              .add('2')
+            .end()
+            .start().addClass('cell')
+              .add('3')
+            .end()
           .end()
-          .start('div').addClass('row')
-            .start('div').addClass('cell').add('4').end()
-            .start('div').addClass('cell').add('5').end()
-            .start('div').addClass('cell').add('6').end()
+          .start().addClass('row')
+            .start().addClass('cell')
+              .add('4')
+            .end()
+            .start().addClass('cell')
+              .add('5')
+            .end()
+            .start().addClass('cell')
+              .add('6')
+            .end()
           .end()
-          .start('div').addClass('row')
-            .start('div').addClass('cell').add('7').end()
-            .start('div').addClass('cell').add('8').end()
-            .start('div').addClass('cell').add('9').end()
+          .start().addClass('row')
+            .start().addClass('cell')
+              .add('7')
+            .end()
+            .start().addClass('cell')
+              .add('8')
+            .end()
+            .start().addClass('cell')
+              .add('9')
+            .end()
           .end()
-          .start('div').addClass('row')
-            .start().addClass('cell').add('00').end()
-            .start().addClass('cell').add('0').end()
-            .start().addClass('cell').add('<-').end()
+          .start().addClass('row')
+            .start().addClass('cell')
+              .add('00')
+            .end()
+            .start().addClass('cell')
+              .add('0')
+            .end()
+            .start().addClass('cell material-icons md-dark')
+              .attrs({ 'aria-hidden': true })
+              .add('backspace')
+            .end()
           .end()
+          .on('click', this.onButtonPressed)
         .end()
-        .start('div').addClass('amount-next-wrapper')
+        .start().addClass('amount-next-wrapper')
           .start('button').addClass('amount-next-button')
             .add('Next')
             .on('click', this.onNextClicked)
@@ -159,6 +186,25 @@ foam.CLASS({
   ],
 
   listeners: [
+    function onButtonPressed (e) {
+      var key = e.target.textContent;
+      if ( ! this.focused ) {
+        this.focused = true;
+        this.amount = '$';
+      }
+
+      var length = this.amount.length;
+      if ( key === 'backspace' ) {
+        if ( length <= 1 ) return;
+        this.amountInt = ( this.amountInt / 10.0);
+        this.amount = '$' + ( this.amountInt / 100.0).toFixed(2);
+        return;
+      }
+
+      this.amountInt = (this.amountInt * 10) + parseInt(key, 10);
+      this.amount = '$' + (this.amountInt / 100.0);
+    },
+
     function onKeyPressed (e) {
       try {
         var key = e.key || e.keyCode;
