@@ -5,7 +5,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.merchant.ui.QRCodeView',
-    'net.nanopay.merchant.ui.ErrorMessage'
+    'net.nanopay.merchant.ui.ErrorMessage',
+    'net.nanopay.merchant.ui.KeyboardView'
   ],
 
   imports: [
@@ -46,36 +47,6 @@ foam.CLASS({
         }
         ^ .amount-field:focus {
           outline: none;
-        }
-
-        ^ .grid {
-          width: 100%;
-          display: table;
-          position: fixed;
-          bottom: 72px;
-        }
-        ^ .row {
-          display: table-row;
-        }
-        ^ .cell {
-          width: 33.333333%;
-          width: calc(100% / 3);
-          border-left: 1px solid #e5e5e5;
-          border-bottom: 1px solid #e5e5e5;
-          display: table-cell;
-          background-color: #FFFFFF;
-          color: #666666;
-          line-height: 50px;
-          text-align: center;
-
-          -o-transition:.1s;
-          -ms-transition:.1s;
-          -moz-transition:.1s;
-          -webkit-transition:.1s;
-          transition:.1s;
-        }
-        ^ .cell:active {
-          background-color: #e5e5e5;
         }
         ^ .amount-next-wrapper {
           width: 100%;
@@ -119,33 +90,7 @@ foam.CLASS({
           .attrs({ autofocus: true, tabindex: 1 })
           .add(this.amount$)
         .end()
-
-        .start().addClass('grid')
-          .start().addClass('row')
-            .start().addClass('cell').add('1').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('2').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('3').on('click', this.onButtonPressed).end()
-          .end()
-          .start().addClass('row')
-            .start().addClass('cell').add('4').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('5').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('6').on('click', this.onButtonPressed).end()
-          .end()
-          .start().addClass('row')
-            .start().addClass('cell').add('7').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('8').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('9').on('click', this.onButtonPressed).end()
-          .end()
-          .start().addClass('row')
-            .start().addClass('cell').add('00').on('click', this.onButtonPressed).end()
-            .start().addClass('cell').add('0').on('click', this.onButtonPressed).end()
-            .start().addClass('cell material-icons md-dark')
-              .attrs({ 'aria-hidden': true })
-              .add('backspace')
-              .on('click', this.onButtonPressed)
-            .end()
-          .end()
-        .end()
+        .tag(this.KeyboardView.create())
         .start().addClass('amount-next-wrapper')
           .start('button').addClass('amount-next-button')
             .add('Next')
