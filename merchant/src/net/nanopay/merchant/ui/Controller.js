@@ -85,6 +85,7 @@ foam.CLASS({
         }
         ^ .sidenav-list-item {
           height: 90px;
+          border-bottom: 1px solid #e5e5e5;
         }
         ^ .sidenav-list-item.selected {
           background-color: #f1f1f1;
