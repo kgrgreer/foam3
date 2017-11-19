@@ -26,7 +26,7 @@ foam.CLASS({
           height: 45px;
           overflow: hidden;
           padding-left: 20px;
-          padding-top: 26px;
+          padding-top: 13px;
           padding-bottom: 26px;
         }
         ^ .transaction-profile-icon img {
