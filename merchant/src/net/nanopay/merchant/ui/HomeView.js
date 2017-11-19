@@ -48,16 +48,6 @@ foam.CLASS({
         ^ .amount-field:focus {
           outline: none;
         }
-        ^ .amount-next-wrapper {
-          width: 100%;
-          position: fixed;
-          bottom: 0px;
-        }
-        ^ .amount-next-button {
-          width: 100%;
-          height: 72px;
-          background-color: #26a96c;
-        }
       */}
     })
   ],
@@ -90,13 +80,10 @@ foam.CLASS({
           .attrs({ autofocus: true, tabindex: 1 })
           .add(this.amount$)
         .end()
-        .tag(this.KeyboardView.create())
-        .start().addClass('amount-next-wrapper')
-          .start('button').addClass('amount-next-button')
-            .add('Next')
-            .on('click', this.onNextClicked)
-          .end()
-        .end()
+        .tag(this.KeyboardView.create({
+          onButtonPressed: this.onButtonPressed,
+          onNextClicked: this.onNextClicked
+        }))
 
       this.onload.sub(function () {
         self.document.querySelector('.amount-field').focus();

@@ -10,7 +10,6 @@ foam.CLASS({
           width: 100%;
           display: table;
           position: fixed;
-          bottom: 72px;
         }
         ^ .row {
           display: table-row;
@@ -35,38 +34,79 @@ foam.CLASS({
         ^ .cell:active {
           background-color: #e5e5e5;
         }
+        ^ .amount-next-wrapper {
+          width: 100%;
+          position: fixed;
+          bottom: 0px;
+        }
+        ^ .amount-next-button {
+          width: 100%;
+          background-color: #26a96c;
+        }
 
         @media only screen and (min-height: 0px) {
+          ^ .grid {
+            bottom: 50px;
+          }
           ^ .cell {
+            height: 50px;
+          }
+          .amount-next-button {
             height: 50px;
           }
         }
 
         @media only screen and (min-height: 682px) {
+          ^ .grid {
+            bottom: 100px;
+          }
           ^ .cell {
-            height: 75px;
+            height: 100px;
             font-size: 28px;
+          }
+          .amount-next-button {
+            height: 100px;
           }
         }
 
         @media only screen and (min-height: 768px) {
+          ^ .grid {
+            bottom: 72px;
+          }
           ^ .cell {
             height: 125px;
             font-size: 32px;
           }
+          .amount-next-button {
+            height: 72px;
+          }
         }
 
         @media only screen and (min-height: 1024px) {
+          ^ .grid {
+            bottom: 100px;
+          }
           ^ .cell {
             height: 150px;
             font-size: 42px;
           }
+          .amount-next-button {
+            height: 100px;
+            font-size: 32px;
+          }
         }
 
         @media only screen and (min-height: 1366px) {
+          ^ .grid {
+            bottom: 150px;
+          }
           ^ .cell {
             height: 175px;
             font-size: 56px;
+          }
+          .amount-next-button {
+            height: 150px;
+            font-size: 42px;
           }
         }
       */}
@@ -74,6 +114,8 @@ foam.CLASS({
   ],
 
   properties: [
+    'onButtonPressed',
+    'onNextClicked',
     { class: 'Boolean', name: 'show00', value: true }
   ],
 
@@ -101,13 +143,19 @@ foam.CLASS({
             .start().addClass('cell').add('9').on('click', this.onButtonPressed).end()
           .end()
           .start().addClass('row')
-            .start().addClass('cell').add('00').on('click', this.onButtonPressed).end()
+            .start().addClass('cell').add(this.show00 ? '00' : '').on('click', this.show00 ? this.onButtonPressed : null).end()
             .start().addClass('cell').add('0').on('click', this.onButtonPressed).end()
             .start().addClass('cell material-icons md-dark')
               .attrs({ 'aria-hidden': true })
               .add('backspace')
               .on('click', this.onButtonPressed)
             .end()
+          .end()
+        .end()
+        .start().addClass('amount-next-wrapper')
+          .start('button').addClass('amount-next-button')
+            .add('Next')
+            .on('click', this.onNextClicked)
           .end()
         .end()
     }
