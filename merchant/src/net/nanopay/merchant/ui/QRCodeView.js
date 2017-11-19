@@ -28,8 +28,15 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 100%;
+          height: 100%;
+          display: table;
+          position: absolute;
           background-color: #2c4389;
-          position: relative;
+          margin-top: -56px;
+        }
+        ^ .wrapper {
+          display: table-cell;
+          vertical-align: middle;
         }
         ^ .qr-code-wrapper {
           width: 100%;
@@ -37,7 +44,6 @@ foam.CLASS({
         ^ .qr-code {
           background-color: #2c4389;
           margin: 0 auto;
-          margin-top: 20px;
         }
         ^ .qr-code:focus {
           outline: none;
@@ -157,16 +163,18 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('qr-code-wrapper')
-          .start('div').addClass('qr-code').end()
-        .end()
-        .start('div').addClass('amount-div')
-          .add('$' + ( this.amount / 100 ).toFixed(2))
-        .end()
-        .start('div').addClass('instructions-div')
-          .add(this.instruction1).br()
-          .add(this.instruction2).br()
-          .add(this.instruction3).br()
+        .start('div').addClass('wrapper')
+          .start('div').addClass('qr-code-wrapper')
+            .start('div').addClass('qr-code').end()
+          .end()
+          .start('div').addClass('amount-div')
+            .add('$' + ( this.amount / 100 ).toFixed(2))
+          .end()
+          .start('div').addClass('instructions-div')
+            .add(this.instruction1).br()
+            .add(this.instruction2).br()
+            .add(this.instruction3).br()
+          .end()
         .end()
 
       var worker = new Worker('libs/qrcode/qrcode.js');
