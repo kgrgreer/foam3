@@ -36,8 +36,6 @@ foam.CLASS({
         }
         ^ .qr-code {
           background-color: #2c4389;
-          width: 180px;
-          height: 180px;
           margin: 0 auto;
           margin-top: 20px;
         }
@@ -46,19 +44,79 @@ foam.CLASS({
         }
         ^ .amount-div {
           width: 100%;
-          font-size: 25px;
           font-weight: 500;
           text-align: center;
-          position: absolute;
-          top: 220px;
+          position: relative;
+          margin-top: 30px;
         }
         ^ .instructions-div {
           width: 100%;
-          font-size: 16px;
           line-height: 1.88;
           text-align: center;
-          position: absolute;
-          top: 279px;
+          position: relative;
+          margin-top: 20px;
+        }
+
+        @media only screen and (min-height: 0px) {
+          ^ .qr-code {
+            width: 180px;
+            height: 180px;
+          }
+          ^ .amount-div {
+            font-size: 25px;
+          }
+          ^ .instructions-div {
+            font-size: 16px;
+          }
+        }
+
+        @media only screen and (min-height: 667px) {
+          ^ .qr-code {
+            width: 240px;
+            height: 240px;
+          }
+          ^ .amount-div {
+            font-size: 35px;
+          }
+          ^ .instructions-div {
+            font-size: 21px;
+          }
+        }
+        @media only screen and (min-height: 768px) {
+          ^ .qr-code {
+            width: 300px;
+            height: 300px;
+          }
+          ^ .amount-div {
+            font-size: 45px;
+          }
+          ^ .instructions-div {
+            font-size: 26px;
+          }
+        }
+        @media only screen and (min-height: 1024px) {
+          ^ .qr-code {
+            width: 360px;
+            height: 360px;
+          }
+          ^ .amount-div {
+            font-size: 55px;
+          }
+          ^ .instructions-div {
+            font-size: 31px;
+          }
+        }
+        @media only screen and (min-height: 1366px) {
+          ^ .qr-code {
+            width: 420px;
+            height: 420px;
+          }
+          ^ .amount-div {
+            font-size: 65px;
+          }
+          ^ .instructions-div {
+            font-size: 36px;
+          }
         }
       */}
     })
