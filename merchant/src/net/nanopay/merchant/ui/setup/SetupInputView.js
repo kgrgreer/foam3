@@ -13,8 +13,7 @@ foam.CLASS({
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.merchant.ui.ErrorMessage',
-    'net.nanopay.merchant.ui.KeyboardView',
-    'net.nanopay.merchant.ui.transaction.TransactionToolbar'
+    'net.nanopay.merchant.ui.KeyboardView'
   ],
 
   imports: [

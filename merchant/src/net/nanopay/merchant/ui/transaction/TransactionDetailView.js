@@ -4,12 +4,13 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'net.nanopay.merchant.ui.RefundView',
-    'net.nanopay.merchant.ui.transaction.TransactionToolbar'
+    'net.nanopay.merchant.ui.RefundView'
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'toolbarIcon',
+    'toolbarTitle'
   ],
 
   axioms: [
@@ -180,11 +181,12 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var user = this.data.user;
+      this.toolbarTitle = 'Back';
+      this.toolbarIcon = 'arrow_back';
 
+      var user = this.data.user;
       this
         .addClass(this.myClass())
-        .add(this.TransactionToolbar.create())
         .start('div').addClass('transaction-profile')
           .start().addClass('transaction-profile-icon')
             .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
