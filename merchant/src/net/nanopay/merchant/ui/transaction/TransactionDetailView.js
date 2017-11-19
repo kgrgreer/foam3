@@ -19,7 +19,6 @@ foam.CLASS({
           width: 100%;
           height: 100%;
           background-color: #ffffff;
-          position: fixed;
         }
         ^ .transaction-profile {
           display: table;
@@ -63,7 +62,6 @@ foam.CLASS({
           color: #252c3d;
         }
         ^ .transaction-info-wrapper {
-          width: 100%;
           height: 40px;
           padding-left: 20px;
           padding-right: 20px;
@@ -75,11 +73,10 @@ foam.CLASS({
           padding-bottom: 12px;
         }
         ^ .transaction-info-value {
-          width: 175px;
           height: 16px;
           border-radius: 2px;
           border: solid 1px #f1f1f1;
-          margin-left: 75px;
+          margin-left: 76px;
           padding-left: 30px;
           padding-top: 12px;
           padding-bottom: 12px;
