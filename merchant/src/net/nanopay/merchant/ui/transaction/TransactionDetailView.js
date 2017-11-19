@@ -29,8 +29,6 @@ foam.CLASS({
           padding-bottom: 26px;
         }
         ^ .transaction-profile-icon img {
-          height: 45px;
-          width: 45px;
           display: table-cell;
           vertical-align: middle;
           border-style: solid;
@@ -42,9 +40,9 @@ foam.CLASS({
           height: 45px;
           display: table-cell;
           vertical-align: middle;
+          padding-left: 20px;
         }
         ^ .transaction-profile-name {
-          font-size: 16px;
           line-height: 1;
           text-align: left;
           color: #252c3d;
@@ -56,13 +54,11 @@ foam.CLASS({
           padding-top: 10px;
         }
         ^ .transaction-info {
-          font-size: 16px;
           line-height: 1;
           text-align: left;
           color: #252c3d;
         }
         ^ .transaction-info-wrapper {
-          height: 40px;
           padding-left: 20px;
           padding-right: 20px;
           padding-bottom: 15px;
@@ -73,10 +69,8 @@ foam.CLASS({
           padding-bottom: 12px;
         }
         ^ .transaction-info-value {
-          height: 16px;
           border-radius: 2px;
           border: solid 1px #f1f1f1;
-          margin-left: 76px;
           padding-left: 30px;
           padding-top: 12px;
           padding-bottom: 12px;
@@ -90,6 +84,90 @@ foam.CLASS({
           width: 100%;
           height: 72px;
           background-color: #f55a5a;
+        }
+        @media only screen and (min-width: 0px) {
+          ^ .transaction-profile {
+            height: 45px;
+          }
+          ^ .transaction-profile-info {
+            height: 45px;
+          }
+          ^ .transaction-profile-icon img {
+            height: 45px;
+            width: 45px;
+          }
+          ^ .transaction-profile-name {
+            font-size: 16px;
+          }
+          ^ .transaction-profile-datetime {
+            font-size: 10px;
+          }
+          ^ .transaction-info {
+            font-size: 16px;
+          }
+          ^ .transaction-info-wrapper {
+            height: 40px;
+          }
+          ^ .transaction-info-value {
+            height: 16px;
+            margin-left: 76px;
+          }
+        }
+        @media only screen and (min-width: 768px) {
+          ^ .transaction-profile {
+            height: 85px;
+          }
+          ^ .transaction-profile-info {
+            height: 85px;
+          }
+          ^ .transaction-profile-icon img {
+            height: 85px;
+            width: 85px;
+          }
+          ^ .transaction-profile-name {
+            font-size: 26px;
+          }
+          ^ .transaction-profile-datetime {
+            font-size: 20px;
+          }
+          ^ .transaction-info {
+            font-size: 26px;
+          }
+          ^ .transaction-info-wrapper {
+            height: 60px;
+          }
+          ^ .transaction-info-value {
+            height: 26px;
+            margin-left: 128px;
+          }
+        }
+        @media only screen and (min-width: 1024px) {
+          ^ .transaction-profile {
+            height: 124px;
+          }
+          ^ .transaction-profile-info {
+            height: 124px;
+          }
+          ^ .transaction-profile-icon img {
+            height: 124px;
+            width: 124px;
+          }
+          ^ .transaction-profile-name {
+            font-size: 36px;
+          }
+          ^ .transaction-profile-datetime {
+            font-size: 30px;
+          }
+          ^ .transaction-info {
+            font-size: 36px;
+          }
+          ^ .transaction-info-wrapper {
+            height: 80px;
+          }
+          ^ .transaction-info-value {
+            height: 36px;
+            margin-left: 180px;
+          }
         }
       */}
     })
