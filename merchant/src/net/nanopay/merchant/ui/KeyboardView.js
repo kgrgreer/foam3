@@ -56,29 +56,29 @@ foam.CLASS({
           }
         }
 
-        @media only screen and (min-height: 682px) {
+        @media only screen and (min-height: 667px) {
           ^ .grid {
-            bottom: 100px;
+            bottom: 75px;
           }
           ^ .cell {
-            height: 100px;
+            height: 75px;
             font-size: 28px;
           }
           .amount-next-button {
-            height: 100px;
+            height: 75px;
           }
         }
 
         @media only screen and (min-height: 768px) {
           ^ .grid {
-            bottom: 72px;
+            bottom: 75px;
           }
           ^ .cell {
-            height: 125px;
+            height: 100px;
             font-size: 32px;
           }
           .amount-next-button {
-            height: 72px;
+            height: 75px;
           }
         }
 
