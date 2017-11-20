@@ -4,6 +4,13 @@ files:
   - source: /
     destination: /pkg/stack/stage/NANOPAY
 permissions:
-#hooks:
-#  AfterInstall:
-#    - location: run-tomcat.sh
+  - object: /pkg/stack/stage/
+    pattern: "**"
+    owner: root
+    mode: 777
+    type:
+      - file
+hooks:
+  AfterInstall:
+    - location: build.sh
+      runas: root

@@ -12,7 +12,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.merchant.ui.transaction.TransactionToolbar'
+    'net.nanopay.merchant.ui.ErrorMessage',
+    'net.nanopay.merchant.ui.KeyboardView'
   ],
 
   imports: [
@@ -48,12 +49,15 @@ foam.CLASS({
           margin: auto;
           margin-top: 95px;
         }
+        ^ .retail-code-wrapper {
+          width: 100%;
+          margin-left: 10px;
+        }
         ^ .retail-code {
+          margin: 0 auto;
+          margin-top: 50px;
           width: 242px;
           border: none;
-          margin-top: 50px;
-          margin-left: 46px;
-          margin-right: 36px;
           background:
             repeating-linear-gradient(90deg,
                 white 0,
@@ -82,16 +86,6 @@ foam.CLASS({
           color: transparent;
           text-shadow: 0px 0px 0px white;
         }
-        ^ .setup-next-wrapper {
-          width: 100%;
-          position: fixed;
-          bottom: 0px;
-        }
-        ^ .setup-next-button {
-          width: 100%;
-          height: 72px;
-          background-color: #26a96c;
-        }
       */
       }
     })
@@ -115,20 +109,39 @@ foam.CLASS({
         .start('h4')
           .add('Enter the code showed in retail portal to finish provision.')
         .end()
-        .start('div').addClass('retail-code')
-          .attrs({ autofocus: true, tabindex: 1 })
-          .add(this.password$)
-        .end()
-        .start('div').addClass('setup-next-wrapper')
-          .start('button').addClass('setup-next-button')
-            .add('Next')
-            .on('click', this.onNextClicked)
+        .start('div').addClass('retail-code-wrapper')
+          .start('div').addClass('retail-code')
+            .attrs({ autofocus: true, tabindex: 1 })
+            .add(this.password$)
           .end()
         .end()
+        .tag(this.KeyboardView.create({
+          show00: false,
+          onButtonPressed: this.onButtonPressed,
+          onNextClicked: this.onNextClicked
+        }));
     }
   ],
 
   listeners: [
+    function onButtonPressed (e) {
+      var key = e.target.textContent;
+
+      var length = this.password.length;
+      if ( key === 'backspace' ) {
+        if ( length <= 0 ) return;
+        this.password = this.password.substring(0, length - 1);
+        return;
+      }
+
+      if ( length >= 6 ) {
+        e.preventDefault;
+        return;
+      }
+
+      this.password += key;
+    },
+
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( ! this.focused ) {
@@ -179,11 +192,13 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.serialNumber ) {
-        throw new Error('Invalid serial number');
+        this.tag(this.ErrorMessage.create({ message: 'Device not found' }));
+        return;
       }
 
       if ( ! this.password ) {
-        throw new Error('Please enter a password');
+        this.tag(this.ErrorMessage.create({ message: 'Please enter a password' }));
+        return;
       }
 
       // look up device, set to active and save
@@ -212,7 +227,7 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupErrorView' });
+        self.tag(self.ErrorMessage.create({ message: err.message }));
       });
     }
   ]

@@ -20,11 +20,23 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.util.Password',
+    'foam.util.SafetyUtil',
     'net.nanopay.auth.token.Token',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
     'java.util.UUID'
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: 'java.util.regex.Pattern p = java.util.regex.Pattern.compile("[^a-zA-Z0-9]");'
+        }))
+      }
+    }
   ],
 
   methods: [
@@ -71,7 +83,7 @@ try {
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", host + "/static/NANOPAY/nanopay/src/net/nanopay/index.html?token=" + token.getData() + "#reset");
+args.put("link", host + "/static/nanopay/src/net/nanopay/index.html?token=" + token.getData() + "#reset");
 
 email.sendEmailFromTemplate(message, "reset-password-mintchip", args);
 return true;`
@@ -79,7 +91,33 @@ return true;`
     {
       name: 'processToken',
       javaCode:
-`DAO userDAO = (DAO) getLocalUserDAO();
+`if ( user == null || SafetyUtil.isEmpty(user.getPassword()) ) {
+  throw new RuntimeException("Cannot leave new password field empty");
+}
+
+String newPassword = user.getPassword();
+if ( newPassword.contains(" ")) {
+  throw new RuntimeException("Password cannot contains spaces");
+}
+
+int length = newPassword.length();
+if ( length < 7 || length > 32 ) {
+  throw new RuntimeException("Password must be 7-32 characters long");
+}
+
+if ( newPassword.equals(newPassword.toLowerCase()) ) {
+  throw new RuntimeException("Password must have one capital letter");
+}
+
+if ( ! newPassword.matches(".*\\\\d+.*") ) {
+  throw new RuntimeException("Password must have one numeric character");
+}
+
+if ( ! p.matcher(newPassword).matches() ) {
+  throw new RuntimeException("Password must not contain: !@#$%^&*()_+");
+}
+
+DAO userDAO = (DAO) getLocalUserDAO();
 DAO tokenDAO = (DAO) getTokenDAO();
 Calendar calendar = Calendar.getInstance();
 
@@ -105,7 +143,6 @@ if ( userResult == null ) {
   throw new RuntimeException("User not found");
 }
 
-String newPassword = user.getPassword();
 if ( ! Password.isValid(newPassword) ) {
   throw new RuntimeException("Invalid password");
 }

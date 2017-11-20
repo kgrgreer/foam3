@@ -3,10 +3,9 @@
 # Exit on first failure
 set -e
 
+# Generate files, build and run
+./find.sh
 ./gen.sh
-# NANOPAY doesn't all build successfully at the moment
-set +e
 mvn clean install
-set -e
-
-cd .. && ./NANOPAY/tools/nanos.sh
+mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
+java -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot

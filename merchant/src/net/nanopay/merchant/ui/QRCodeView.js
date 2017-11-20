@@ -28,35 +28,101 @@ foam.CLASS({
       code: function CSS() {/*
         ^ {
           width: 100%;
-          background-color: #2c4389;
-          position: relative;
-        }
-        ^ .qr-code-wrapper-div {
-          background-color: #2c4389;
-          width: 180px;
-          height: 180px;
+          height: 100%;
+          display: table;
           position: absolute;
-          left: 70px;
-          top: 20px;
+          background-color: #2c4389;
+          margin-top: -56px;
+        }
+        ^ .wrapper {
+          display: table-cell;
+          vertical-align: middle;
+        }
+        ^ .qr-code-wrapper {
+          width: 100%;
+        }
+        ^ .qr-code {
+          background-color: #2c4389;
+          margin: 0 auto;
+        }
+        ^ .qr-code:focus {
+          outline: none;
         }
         ^ .amount-div {
           width: 100%;
-          font-size: 25px;
           font-weight: 500;
           text-align: center;
-          position: absolute;
-          top: 220px;
+          position: relative;
+          margin-top: 30px;
         }
         ^ .instructions-div {
           width: 100%;
-          font-size: 16px;
           line-height: 1.88;
           text-align: center;
-          position: absolute;
-          top: 279px;
+          position: relative;
+          margin-top: 20px;
         }
-        ^ .qr-code-div:focus {
-          outline: none;
+
+        @media only screen and (min-height: 0px) {
+          ^ .qr-code {
+            width: 180px;
+            height: 180px;
+          }
+          ^ .amount-div {
+            font-size: 25px;
+          }
+          ^ .instructions-div {
+            font-size: 16px;
+          }
+        }
+
+        @media only screen and (min-height: 667px) {
+          ^ .qr-code {
+            width: 240px;
+            height: 240px;
+          }
+          ^ .amount-div {
+            font-size: 35px;
+          }
+          ^ .instructions-div {
+            font-size: 21px;
+          }
+        }
+        @media only screen and (min-height: 768px) {
+          ^ .qr-code {
+            width: 300px;
+            height: 300px;
+          }
+          ^ .amount-div {
+            font-size: 45px;
+          }
+          ^ .instructions-div {
+            font-size: 26px;
+          }
+        }
+        @media only screen and (min-height: 1024px) {
+          ^ .qr-code {
+            width: 360px;
+            height: 360px;
+          }
+          ^ .amount-div {
+            font-size: 55px;
+          }
+          ^ .instructions-div {
+            font-size: 31px;
+          }
+        }
+        @media only screen and (min-height: 1366px) {
+          ^ .qr-code {
+            width: 420px;
+            height: 420px;
+          }
+          ^ .amount-div {
+            font-size: 65px;
+          }
+          ^ .instructions-div {
+            font-size: 36px;
+          }
         }
       */}
     })
@@ -97,23 +163,23 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div')
-          .addClass('qr-code-wrapper-div')
-          .start('div').addClass('qr-code-div').end()
-        .end()
-        .start('span')
-        .start('div').addClass('amount-div')
-          .add('$' + ( this.amount / 100 ).toFixed(2))
-        .end()
-        .start('div').addClass('instructions-div')
-          .add(this.instruction1).br()
-          .add(this.instruction2).br()
-          .add(this.instruction3).br()
+        .start('div').addClass('wrapper')
+          .start('div').addClass('qr-code-wrapper')
+            .start('div').addClass('qr-code').end()
+          .end()
+          .start('div').addClass('amount-div')
+            .add('$' + ( this.amount / 100 ).toFixed(2))
+          .end()
+          .start('div').addClass('instructions-div')
+            .add(this.instruction1).br()
+            .add(this.instruction2).br()
+            .add(this.instruction3).br()
+          .end()
         .end()
 
       var worker = new Worker('libs/qrcode/qrcode.js');
       worker.addEventListener('message', function (e) {
-        var wrapper = self.document.querySelector('.qr-code-wrapper-div');
+        var wrapper = self.document.querySelector('.qr-code');
         wrapper.innerHTML = e.data;
       }, false);
 

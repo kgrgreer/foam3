@@ -5,14 +5,14 @@ rm -r ../build/
 mkdir ../build/
 
 # Copy over directories from src
-for d in * ; do
-    if [ "$d" = 'target/' ]; then
-        continue
-    fi
-    if [ "$d" = 'gen.sh' ]; then
-        continue
-    fi
-    cp -r $d ../build
+for d in *; do
+  if [ "$d" = 'target/' ]; then
+    continue
+  fi
+  if [ "$d" = 'gen.sh' ]; then
+    continue
+  fi
+  cp -r $d ../build
 done
 
 # Delete javascript files from ../build/

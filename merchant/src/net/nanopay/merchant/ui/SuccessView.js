@@ -26,24 +26,17 @@ foam.CLASS({
           padding-top: 70px;
           padding-left: 36px;
         }
-        ^ .success-icon img {
-          height: 76px;
-          width: 76px;
-        }
         ^ .success-message {
-          font-size: 32px;
           font-weight: 300;
           text-align: left;
           padding-top: 30px;
         }
         ^ .success-amount {
-          font-size: 32px;
           font-weight: bold;
           text-align: left;
           padding-top: 7px;
         }
         ^ .success-from-to {
-          font-size: 12px;
           text-align: left;
           color: rgba(255, 255, 255, 0.7);
           padding-top: 50px;
@@ -55,8 +48,6 @@ foam.CLASS({
           padding-top: 10px;
         }
         ^ .success-profile-icon img {
-          height: 45px;
-          width: 45px;
           display: table-cell;
           vertical-align: middle;
           border-style: solid;
@@ -65,13 +56,81 @@ foam.CLASS({
           border-radius: 50%;
         }
         ^ .success-profile-name {
-          font-size: 16px;
           line-height: 1.88;
           text-align: center;
           color: #ffffff;
           display: table-cell;
           vertical-align: middle;
           padding-left: 20px;
+        }
+
+        @media only screen and (min-width: 0px) {
+          ^ .success-icon img {
+            height: 76px;
+            width: 76px;
+          }
+          ^ .success-message {
+            font-size: 32px;
+          }
+          ^ .success-amount {
+            font-size: 32px;
+          }
+          ^ .success-from-to {
+            font-size: 12px;
+          }
+          ^ .success-profile-icon img {
+            height: 45px;
+            width: 45px;
+          }
+          ^ .success-profile-name {
+            font-size: 16px;
+          }
+        }
+
+        @media only screen and (min-width: 768px) {
+          ^ .success-icon img {
+            height: 176px;
+            width: 176px;
+          }
+          ^ .success-message {
+            font-size: 42px;
+          }
+          ^ .success-amount {
+            font-size: 42px;
+          }
+          ^ .success-from-to {
+            font-size: 22px;
+          }
+          ^ .success-profile-icon img {
+            height: 85px;
+            width: 85px;
+          }
+          ^ .success-profile-name {
+            font-size: 26px;
+          }
+        }
+
+        @media only screen and (min-width: 1024px) {
+          ^ .success-icon img {
+            height: 276px;
+            width: 276px;
+          }
+          ^ .success-message {
+            font-size: 52px;
+          }
+          ^ .success-amount {
+            font-size: 52px;
+          }
+          ^ .success-from-to {
+            font-size: 32px;
+          }
+          ^ .success-profile-icon img {
+            height: 124px;
+            width: 124px;
+          }
+          ^ .success-profile-name {
+            font-size: 36px;
+          }
         }
       */}
     })
@@ -93,9 +152,12 @@ foam.CLASS({
       var self = this;
       var user = this.data.user;
 
+
       this.document.addEventListener('keydown', this.onKeyPressed);
+      this.document.addEventListener('touchstart', this.onTouchStarted);
       this.onDetach(function () {
         self.document.removeEventListener('keydown', self.onKeyPressed);
+        self.document.removeEventListener('touchstart', self.onTouchStarted);
       });
 
       this
@@ -116,6 +178,18 @@ foam.CLASS({
             .end()
           .end()
         .end();
+
+      setTimeout(function () {
+        self.showHomeView();
+      }, 4000);
+    },
+
+    function showHomeView () {
+      // reset nav items
+      var sidenavs = document.getElementsByClassName('sidenav-list-item');
+      sidenavs[1].classList.add('selected');
+      sidenavs[2].classList.remove('selected');
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }
   ],
 
@@ -123,12 +197,12 @@ foam.CLASS({
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( key === 'Enter' || key === 13 ) {
-        // reset nav items
-        var sidenavs = document.getElementsByClassName('sidenav-list-item');
-        sidenavs[1].classList.add('selected');
-        sidenavs[2].classList.remove('selected');
-        this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+        this.showHomeView()
       }
+    },
+
+    function onTouchStarted (e) {
+      this.showHomeView();
     }
   ]
 })
