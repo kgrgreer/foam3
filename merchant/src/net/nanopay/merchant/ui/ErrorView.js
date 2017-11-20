@@ -161,7 +161,7 @@ foam.CLASS({
             .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.png' })
           .end()
           .start().addClass('error-message').add( ! this.refund ? this.paymentError : this.refundError ).end()
-          .start().addClass('error-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
+          .start().addClass('error-amount').add('$' + ( this.data.total / 100 ).toFixed(2)).end()
           .start().addClass('error-from-to').add( ! this.refund ? 'From' : 'To' ).end()
           .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')

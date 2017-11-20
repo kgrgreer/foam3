@@ -9,6 +9,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.merchant.ui.ErrorView',
     'net.nanopay.merchant.ui.SuccessView',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -16,11 +17,12 @@ foam.CLASS({
   imports: [
     'user',
     'stack',
+    'userDAO',
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
     'transactionDAO',
-    'userDAO'
+    'transactionErrorDAO'
   ],
 
   axioms: [
@@ -149,15 +151,22 @@ foam.CLASS({
       var challenge = this.generateChallenge();
 
       // add a listener for the payee id and amount
-      var sub = this.transactionDAO.where(this.AND(
+      var successSub = this.transactionDAO.where(this.AND(
         this.EQ(this.Transaction.PAYEE_ID, this.user.id),
         this.EQ(this.Transaction.AMOUNT, this.amount),
         this.EQ(this.Transaction.CHALLENGE, this.challenge)
       )).listen({ put: this.onTransactionCreated });
 
+      var errorSub = this.transactionErrorDAO.where(this.AND(
+        this.EQ(this.Transaction.PAYEE_ID, this.user.id),
+        this.EQ(this.Transaction.AMOUNT, this.amount),
+        this.EQ(this.Transaction.CHALLENGE, this.challenge)
+      )).listen({ put: this.onTransactionError });
+
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.onDetach(function () {
-        sub.detach(); // detach listener when view is removed
+        successSub.detach(); // detach success listener when view is removed
+        errorSub.detach(); // detach error listener when view is removed
         self.document.removeEventListener('keydown', self.onKeyPressed);
       });
 
@@ -201,7 +210,6 @@ foam.CLASS({
         this.stack.back();
       }
     },
-
     {
       name: 'onTransactionCreated',
       code: function (obj, s) {
@@ -211,7 +219,19 @@ foam.CLASS({
         .then(function (user) {
           obj.user = user;
           self.stack.push(self.SuccessView.create({ refund: false, data: obj }));
-        })
+        });
+      }
+    },
+    {
+      name: 'onTransactionError',
+      code: function (obj, s) {
+        var self = this;
+
+        this.userDAO.find(obj.payerId)
+        .then(function (user) {
+          obj.user = user;
+          self.stack.push(self.ErrorView.create({ refund: false, data: obj }));
+        });
       }
     }
   ]
