@@ -133,7 +133,8 @@ foam.CLASS({
 
   properties: [
     ['header', false],
-    { name: 'refund', class: 'Boolean' }
+    { class: 'Boolean', name: 'refund' },
+    { class: 'Boolean', name: 'showHome', value: true }
   ],
 
   messages: [
@@ -174,8 +175,20 @@ foam.CLASS({
         .end();
 
       setTimeout(function () {
-        self.stack.back();
+        if ( self.showHome ) {
+          self.showHomeView();
+        } else {
+          self.stack.back();
+        }
       }, 4000);
+    },
+
+    function showHomeView() {
+      // reset nav items
+      var sidenavs = document.getElementsByClassName('sidenav-list-item');
+      sidenavs[1].classList.add('selected');
+      sidenavs[2].classList.remove('selected');
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }
   ],
 
@@ -189,7 +202,11 @@ foam.CLASS({
     },
 
     function onTouchStarted (e) {
-      this.stack.back();
+      if ( this.showHome ) {
+        this.showHomeView();
+      } else {
+        this.stack.back();
+      }
     }
   ]
 })

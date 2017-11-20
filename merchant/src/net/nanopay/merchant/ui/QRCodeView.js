@@ -218,7 +218,10 @@ foam.CLASS({
         this.userDAO.find(obj.payerId)
         .then(function (user) {
           obj.user = user;
-          self.stack.push(self.SuccessView.create({ refund: false, data: obj }));
+          self.stack.push(self.SuccessView.create({
+            refund: false,
+            data: obj
+          }));
         });
       }
     },
@@ -230,7 +233,11 @@ foam.CLASS({
         this.userDAO.find(obj.payerId)
         .then(function (user) {
           obj.user = user;
-          self.stack.push(self.ErrorView.create({ refund: false, data: obj }));
+          self.stack.push(self.ErrorView.create({
+            refund: false,
+            showHome: true,
+            data: obj
+          }));
         });
       }
     }
