@@ -187,6 +187,7 @@ foam.CLASS({
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
     { name: 'emptyPassword', message: 'Please enter your password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your password' },
+    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' }
   ],
 
@@ -199,12 +200,17 @@ foam.CLASS({
 
         // check if new password entered
         if ( ! this.newPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
           return;
         }
 
         if ( this.newPassword.includes(' ') ) {
-          this.add(self.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
+          return;
+        }
+
+        if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
+          this.add(this.NotificationMessage.create({ message: this.invalidLength, type: 'error' }));
           return;
         }
 
