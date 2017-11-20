@@ -3,19 +3,19 @@ foam.CLASS({
   name: 'InvoiceDetailView',
   extends: 'foam.u2.View',
 
-  imports: [ 
-    'stack', 
+  imports: [
+    'stack',
     'hideReceivableSummary',
     'recurringInvoiceDAO'
   ],
-  
+
   exports: [
     'frequency',
     'endsAfter',
     'nextInvoiceDate'
   ],
 
-  requires: [ 
+  requires: [
     'net.nanopay.invoice.model.Invoice'
   ],
 
@@ -121,8 +121,8 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
-              .start(this.Invoice.PAYER_ID, { objToChoice: function(user) { 
-                return [ user.id, user.firstName + ' ' + user.lastName ]; 
+              .start(this.Invoice.PAYER_ID, { objToChoice: function(user) {
+                return [ user.id, user.firstName + ' ' + user.lastName ];
               } }).end()
             .end()
             .start().style({ 'float' : 'right'})
@@ -143,7 +143,7 @@ foam.CLASS({
               .add('Maximum size 10MB')
             .end()
             .start()
-              .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })              
+              .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
               .add('Enable recurring payments').addClass('enable-recurring-text')
             .end()
             .startContext({data: this})
@@ -210,7 +210,7 @@ foam.CLASS({
             X.dao.put(self);
           })
         } else {
-          X.dao.put(this);          
+          X.dao.put(this);
         }
 
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
