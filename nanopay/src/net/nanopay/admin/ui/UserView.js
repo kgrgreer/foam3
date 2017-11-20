@@ -69,12 +69,12 @@ foam.CLASS({
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
-        return data.where(this.CONTAINS_IC(this.User.USER_NAME, filter));
+        return data.where(this.CONTAINS_IC(this.User.FIRST_NAME, filter));
       },
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'userName', 'email', 'mobile', 'type'
+          'id', 'firstName', 'email', 'type'
         ]
       }
     }
@@ -127,7 +127,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'userName', 'email', 'mobile', 'type'
+                'id', 'firstName', 'email', 'type'
               ]
             }).addClass(this.myClass('table')).end();
         }
