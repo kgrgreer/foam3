@@ -90,8 +90,10 @@ foam.CLASS({
       var user = this.data.user
 
       this.document.addEventListener('keydown', this.onKeyPressed);
+      this.document.addEventListener('touchstart', this.onTouchStarted);
       this.onDetach(function () {
         self.document.removeEventListener('keydown', self.onKeyPressed);
+        self.document.removeEventListener('touchstart', self.onTouchStarted);
       });
 
       this
@@ -122,6 +124,10 @@ foam.CLASS({
           key === 8 || key === 13 || key === 27 ) {
         this.stack.back();
       }
+    },
+
+    function onTouchStarted (e) {
+      this.stack.back();
     }
   ]
 })

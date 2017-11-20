@@ -93,9 +93,12 @@ foam.CLASS({
       var self = this;
       var user = this.data.user;
 
+
       this.document.addEventListener('keydown', this.onKeyPressed);
+      this.document.addEventListener('touchstart', this.onTouchStarted);
       this.onDetach(function () {
         self.document.removeEventListener('keydown', self.onKeyPressed);
+        self.document.removeEventListener('touchstart', self.onTouchStarted);
       });
 
       this
@@ -129,6 +132,14 @@ foam.CLASS({
         sidenavs[2].classList.remove('selected');
         this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
       }
+    },
+
+    function onTouchStarted (e) {
+      // reset nav items
+      var sidenavs = document.getElementsByClassName('sidenav-list-item');
+      sidenavs[1].classList.add('selected');
+      sidenavs[2].classList.remove('selected');
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }
   ]
 })
