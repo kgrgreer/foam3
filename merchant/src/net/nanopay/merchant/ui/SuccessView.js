@@ -119,6 +119,18 @@ foam.CLASS({
             .end()
           .end()
         .end();
+
+      setTimeout(function () {
+        self.showHomeView();
+      }, 4000);
+    },
+
+    function showHomeView () {
+      // reset nav items
+      var sidenavs = document.getElementsByClassName('sidenav-list-item');
+      sidenavs[1].classList.add('selected');
+      sidenavs[2].classList.remove('selected');
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }
   ],
 
@@ -126,20 +138,12 @@ foam.CLASS({
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
       if ( key === 'Enter' || key === 13 ) {
-        // reset nav items
-        var sidenavs = document.getElementsByClassName('sidenav-list-item');
-        sidenavs[1].classList.add('selected');
-        sidenavs[2].classList.remove('selected');
-        this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+        this.showHomeView()
       }
     },
 
     function onTouchStarted (e) {
-      // reset nav items
-      var sidenavs = document.getElementsByClassName('sidenav-list-item');
-      sidenavs[1].classList.add('selected');
-      sidenavs[2].classList.remove('selected');
-      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+      this.showHomeView();
     }
   ]
 })

@@ -114,6 +114,10 @@ foam.CLASS({
             .end()
           .end()
         .end();
+
+      setTimeout(function () {
+        self.stack.back();
+      }, 4000);
     }
   ],
 
