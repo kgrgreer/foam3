@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.transaction',
+  package: 'net.nanopay.admin.ui',
   name: 'TransactionView',
   extends: 'foam.u2.View',
 
