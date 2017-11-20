@@ -136,7 +136,7 @@ foam.CLASS({
           padding-left: 15px;
           height: 60px;
         }
-        .filter-search {
+        ^ .filter-search {
           width: 225px;
           height: 40px;
           border-radius: 2px;

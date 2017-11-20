@@ -70,8 +70,10 @@ FOAM_FILES([
 
   // admin
   { name: 'net/nanopay/admin/ui/SendMoneyView' },
+  { name: 'net/nanopay/admin/ui/SubMenu' },
   { name: 'net/nanopay/admin/ui/TransactionView' },
   { name: 'net/nanopay/admin/ui/UserView' },
+
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },
