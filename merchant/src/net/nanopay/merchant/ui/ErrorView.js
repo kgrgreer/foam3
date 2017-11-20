@@ -134,7 +134,7 @@ foam.CLASS({
   properties: [
     ['header', false],
     { class: 'Boolean', name: 'refund' },
-    { class: 'Boolean', name: 'showHome', value: true }
+    { class: 'Boolean', name: 'showHome', value: false }
   ],
 
   messages: [
