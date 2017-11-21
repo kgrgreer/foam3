@@ -150,7 +150,6 @@ class swiftfoamTests: XCTestCase {
       let service = client.userTransactionLimitService!
       let limit = try service.getLimit(user.id, .DAY, .SEND)
       let limitLeft = try service.getRemainingLimit(user.id, .DAY, .SEND)
-      print("\(limit.timeFrame) | \(limit.type) Limit found for \(user.firstName): \(limitLeft)")
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
@@ -168,7 +167,19 @@ class swiftfoamTests: XCTestCase {
       }
       guard merchants.count > 0 else { return }
       for merchant in merchants {
-        print(merchant.address ?? "No address")
+        guard merchant.type == "Merchant" else {
+          XCTFail("User is not type Merchant")
+          return
+        }
+        guard let address = merchant.address else {
+          XCTFail("Merchant address cannot be nil")
+          return
+        }
+        for operatingHours in address.hours {
+          XCTAssertNotNil(operatingHours.day)
+          XCTAssertNotNil(operatingHours.startTime, "Start time cannot be nil")
+          XCTAssertNotNil(operatingHours.endTime, "End time cannot be nil")
+        }
       }
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
