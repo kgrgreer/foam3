@@ -2,4 +2,4 @@
 
 ## Running
 1. Run `npm install`
-2. Run `build.sh`
+2. Run `./build.sh`
