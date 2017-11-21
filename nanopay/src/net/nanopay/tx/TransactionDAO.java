@@ -10,7 +10,7 @@ import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -45,69 +45,61 @@ public class TransactionDAO
   }
 
   @Override
-  public FObject put_(X x, FObject fObject) throws RuntimeException {
-    Transaction transaction = (Transaction) fObject;
+  public FObject put_(X x, FObject obj) {
+    Transaction transaction = (Transaction) obj;
     transaction.setDate(new Date());
 
-    long payeeId            = transaction.getPayeeId();
-    long payerId            = transaction.getPayerId();
+    long payeeId = transaction.getPayeeId();
+    long payerId = transaction.getPayerId();
 
-    if ( payerId <= 0 ) {
+    if (payerId <= 0) {
       throw new RuntimeException("Invalid Payer id");
     }
 
-    if ( payeeId <= 0 ) {
+    if (payeeId <= 0) {
       throw new RuntimeException("Invalid Payee id");
     }
 
-    if ( payeeId == payerId ) {
+    if (payeeId == payerId) {
       throw new RuntimeException("PayeeID and PayerID cannot be the same");
     }
 
-    if ( transaction.getAmount() <= 0 ) {
+    if (transaction.getAmount() <= 0) {
       throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
-    Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
+    Long firstLock = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
-    synchronized ( firstLock ) {
-      synchronized ( secondLock ) {
-        try {
-          User payee = (User) getUserDAO().find(transaction.getPayeeId());
-          User payer = (User) getUserDAO().find(transaction.getPayerId());
+    synchronized (firstLock) {
+      synchronized (secondLock) {
+        User payee = (User) getUserDAO().find(transaction.getPayeeId());
+        User payer = (User) getUserDAO().find(transaction.getPayerId());
 
-          if ( payee == null || payer == null ) {
-            throw new RuntimeException("Users not found");
-          }
-
-          Account payeeAccount = (Account) getAccountDAO().find(payee.getId());
-          if ( payeeAccount == null ) {
-            payeeAccount = createNewAccount(payee.getId());
-          }
-
-          Account payerAccount = (Account) getAccountDAO().find(payer.getId());
-          if ( payerAccount == null ) {
-            payerAccount = createNewAccount(payer.getId());
-          }
-
-          long amount = transaction.getAmount();
-
-          if ( payerAccount.getBalance() >= amount ) {
-            payerAccount.setBalance(payerAccount.getBalance() - amount);
-            payeeAccount.setBalance(payeeAccount.getBalance() + amount);
-
-            getAccountDAO().put(payerAccount);
-            getAccountDAO().put(payeeAccount);
-
-            super.put_(x, fObject);
-            return fObject;
-          } else {
-            throw new RuntimeException("You do not have enough money in your account");
-          }
-        } catch (Exception e) {
-          throw e;
+        if (payee == null || payer == null) {
+          throw new RuntimeException("Users not found");
         }
+
+        Account payeeAccount = (Account) getAccountDAO().find(payee.getId());
+        if (payeeAccount == null) {
+          payeeAccount = createNewAccount(payee.getId());
+        }
+
+        Account payerAccount = (Account) getAccountDAO().find(payer.getId());
+        if (payerAccount == null) {
+          payerAccount = createNewAccount(payer.getId());
+        }
+
+        long amount = transaction.getAmount();
+        if (payerAccount.getBalance() < amount) {
+          throw new RuntimeException("You do not have enough money in your account");
+        }
+
+        payerAccount.setBalance(payerAccount.getBalance() - amount);
+        payeeAccount.setBalance(payeeAccount.getBalance() + amount);
+        getAccountDAO().put(payerAccount);
+        getAccountDAO().put(payeeAccount);
+        return super.put_(x, obj);
       }
     }
   }

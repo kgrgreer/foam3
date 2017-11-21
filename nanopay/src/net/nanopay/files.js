@@ -68,6 +68,11 @@ FOAM_FILES([
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
+  // admin
+  { name: 'net/nanopay/admin/ui/SendMoneyView' },
+  { name: 'net/nanopay/admin/ui/TransactionView' },
+  { name: 'net/nanopay/admin/ui/UserView' },
+
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },
   { name: 'net/nanopay/cico/model/TransactionStatus' },

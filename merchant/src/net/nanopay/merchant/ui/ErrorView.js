@@ -133,7 +133,8 @@ foam.CLASS({
 
   properties: [
     ['header', false],
-    { name: 'refund', class: 'Boolean' }
+    { class: 'Boolean', name: 'refund' },
+    { class: 'Boolean', name: 'showHome', value: false }
   ],
 
   messages: [
@@ -161,7 +162,7 @@ foam.CLASS({
             .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.png' })
           .end()
           .start().addClass('error-message').add( ! this.refund ? this.paymentError : this.refundError ).end()
-          .start().addClass('error-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
+          .start().addClass('error-amount').add('$' + ( this.data.total / 100 ).toFixed(2)).end()
           .start().addClass('error-from-to').add( ! this.refund ? 'From' : 'To' ).end()
           .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')
@@ -174,8 +175,20 @@ foam.CLASS({
         .end();
 
       setTimeout(function () {
-        self.stack.back();
+        if ( self.showHome ) {
+          self.showHomeView();
+        } else {
+          self.stack.back();
+        }
       }, 4000);
+    },
+
+    function showHomeView() {
+      // reset nav items
+      var sidenavs = document.getElementsByClassName('sidenav-list-item');
+      sidenavs[1].classList.add('selected');
+      sidenavs[2].classList.remove('selected');
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     }
   ],
 
@@ -189,7 +202,11 @@ foam.CLASS({
     },
 
     function onTouchStarted (e) {
-      this.stack.back();
+      if ( this.showHome ) {
+        this.showHomeView();
+      } else {
+        this.stack.back();
+      }
     }
   ]
 })
