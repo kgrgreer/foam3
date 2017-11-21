@@ -2,10 +2,12 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
+import foam.dao.*;
+import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import java.util.Date;
+import java.util.List;
+
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
 
@@ -37,13 +39,6 @@ public class TransactionDAO
     return accountDAO_;
   }
 
-  protected Account createNewAccount(long id) {
-    Account account = new Account();
-    account.setId(id);
-    account.setBalance(0);
-    return account;
-  }
-
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
@@ -73,6 +68,10 @@ public class TransactionDAO
 
     synchronized (firstLock) {
       synchronized (secondLock) {
+        Sink sink;
+        List data;
+        Account payeeAccount;
+        Account payerAccount;
         User payee = (User) getUserDAO().find(transaction.getPayeeId());
         User payer = (User) getUserDAO().find(transaction.getPayerId());
 
@@ -80,16 +79,33 @@ public class TransactionDAO
           throw new RuntimeException("Users not found");
         }
 
-        Account payeeAccount = (Account) getAccountDAO().find(payee.getId());
-        if (payeeAccount == null) {
-          payeeAccount = createNewAccount(payee.getId());
+        // find payee account
+        sink = new ListSink();
+        sink = getAccountDAO().where(MLang.EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
+        if ( sink == null ) {
+          throw new RuntimeException("Payee account not found");
         }
 
-        Account payerAccount = (Account) getAccountDAO().find(payer.getId());
-        if (payerAccount == null) {
-          payerAccount = createNewAccount(payer.getId());
+        data = ((ListSink) sink).getData();
+        if ( data == null || data.size() < 1 ) {
+          throw new RuntimeException("Payee account not found");
+        }
+        payeeAccount = (Account) data.get(0);
+
+        // find payer account
+        sink = new ListSink();
+        sink = getAccountDAO().where(MLang.EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
+        if ( sink == null ) {
+          throw new RuntimeException("Payer account not found");
         }
 
+        data = ((ListSink) sink).getData();
+        if ( data == null || data.size() < 1 ) {
+          throw new RuntimeException("Payer account not found");
+        }
+        payerAccount = (Account) data.get(0);
+
+        // check if payer account has enough balance
         long amount = transaction.getAmount();
         if (payerAccount.getBalance() < amount) {
           throw new RuntimeException("You do not have enough money in your account");
