@@ -3,7 +3,7 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.*;
-import foam.mlang.MLang;
+import static foam.mlang.MLang.*;
 import foam.nanos.auth.User;
 import java.util.Date;
 import java.util.List;
@@ -81,7 +81,7 @@ public class TransactionDAO
 
         // find payee account
         sink = new ListSink();
-        sink = getAccountDAO().where(MLang.EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
+        sink = getAccountDAO().where(EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
         if ( sink == null ) {
           throw new RuntimeException("Payee account not found");
         }
@@ -94,7 +94,7 @@ public class TransactionDAO
 
         // find payer account
         sink = new ListSink();
-        sink = getAccountDAO().where(MLang.EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
+        sink = getAccountDAO().where(EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
         if ( sink == null ) {
           throw new RuntimeException("Payer account not found");
         }
