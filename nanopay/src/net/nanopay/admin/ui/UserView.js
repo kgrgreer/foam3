@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.nanos.auth.User'
   ],
@@ -64,7 +65,7 @@ foam.CLASS({
           margin-right: 5px;
         }
         ^ .net-nanopay-ui-ActionView-sendMoney {
-          width: 136px;
+          width: 135px;
           height: 40px;
           background: #59a5d5;
           border: solid 1px #59a5d5;
@@ -85,6 +86,30 @@ foam.CLASS({
           margin-right: 5px;
           float: right;
         }
+        ^ .popUpDropDown {
+          padding: 0;
+          z-index: 10000;
+          width: 135px;
+          height: 60px;
+          background: white;
+          opacity: 1;
+          box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
+          position: absolute;
+        }
+        ^ .popUpDropDown > div {
+          width: 135px;
+          height: 30px;
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0.2px;
+          color: #093649;
+          line-height: 30px;
+        }
+        ^ .popUpDropDown > div:hover {
+          background-color: #59a5d5;
+          color: white;
+          cursor: pointer;
+        }
       */}
     })
   ],
@@ -104,7 +129,7 @@ foam.CLASS({
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
-        return data.where(this.CONTAINS_IC(this.User.FIRST_NAME, filter));
+        return data.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
         class: 'foam.u2.view.TableView',
@@ -112,11 +137,17 @@ foam.CLASS({
           'id', 'firstName', 'email', 'type'
         ]
       }
+    },
+    {
+      name: 'addUserMenu_'
+    },
+    {
+      name: 'sendMoneyMenu_'
     }
   ],
 
   messages: [
-    { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by selecting Add Shopper or Add Merchant.' }
+    { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' }
   ],
 
   methods: [
@@ -131,8 +162,8 @@ foam.CLASS({
             .start().addClass('button-div')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .add(this.SEND_MONEY)
-              .add(this.ADD_USER)
+              .start(this.SEND_MONEY, null, this.sendMoneyMenu_$).end()
+              .start(this.ADD_USER, null, this.addUserMenu_$).end()
               .start().addClass('inline-float-right')
                 .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
               .end()
@@ -141,6 +172,22 @@ foam.CLASS({
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/member-plus.png'})
         .end();
+    },
+
+    function addShopper() {
+      console.log('Add Shopper Clicked');
+    },
+
+    function addMerchant() {
+      console.log('Add Merchant Clicked');
+    },
+
+    function sendMoneyToShopper() {
+      console.log('To Shopper Clicked');
+    },
+
+    function sendMoneyToMerchant() {
+      console.log('To Merchant Clicked');
     }
   ],
 
@@ -156,14 +203,44 @@ foam.CLASS({
       name: 'addUser',
       label: 'Add User',
       code: function(X) {
+        var self = this;
 
+        var p = foam.u2.PopupView.create({
+          width: 135,
+          height: 60,
+          x: 0,
+          y: 40
+        })
+        p.addClass('popUpDropDown')
+          .start('div').add('Add Shopper')
+            .on('click', X.addShopper)
+          .end()
+          .start('div').add('Add Merchant')
+            .on('click', X.addMerchant)
+          .end()
+        self.addUserMenu_.add(p)
       }
     },
     {
       name: 'sendMoney',
       label: 'Send Money',
       code: function(X) {
-
+        var self = this;
+        
+        var p = foam.u2.PopupView.create({
+          width: 135,
+          height: 60,
+          x: 0,
+          y: 40
+        })
+        p.addClass('popUpDropDown')
+          .start('div').add('To Shopper')
+            .on('click', X.sendMoneyToShopper)
+          .end()
+          .start('div').add('To Merchant')
+            .on('click', X.sendMoneyToMerchant)
+          .end()
+        self.sendMoneyMenu_.add(p)
       }
     }
   ]
