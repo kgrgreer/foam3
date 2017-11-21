@@ -82,10 +82,6 @@ public class TransactionDAO
         // find payee account
         sink = new ListSink();
         sink = getAccountDAO().where(EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
-        if ( sink == null ) {
-          throw new RuntimeException("Payee account not found");
-        }
-
         data = ((ListSink) sink).getData();
         if ( data == null || data.size() < 1 ) {
           throw new RuntimeException("Payee account not found");
@@ -95,10 +91,6 @@ public class TransactionDAO
         // find payer account
         sink = new ListSink();
         sink = getAccountDAO().where(EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
-        if ( sink == null ) {
-          throw new RuntimeException("Payer account not found");
-        }
-
         data = ((ListSink) sink).getData();
         if ( data == null || data.size() < 1 ) {
           throw new RuntimeException("Payer account not found");
