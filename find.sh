@@ -34,4 +34,5 @@ find **/src -type f -name services -exec cat {} \; > services
 find **/src -type f -name tests -exec cat {} \; > tests
 find **/src -type f -name tokens -exec cat {} \; > tokens
 find **/src -type f -name transactions -exec cat {} \; > transactions
+find **/src -type f -name transactionLimits -exec cat {} \; > transactionLimits
 find **/src -type f -name users -exec cat {} \; > users
