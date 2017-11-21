@@ -138,12 +138,10 @@ foam.CLASS({
         ]
       }
     },
-    {
-      name: 'addUserMenu_'
-    },
-    {
-      name: 'sendMoneyMenu_'
-    }
+    'addUserMenuBtn_',
+    'sendMoneyMenuBtn_',
+    'addUserPopUp_',
+    'sendMoneyPopUp_'
   ],
 
   messages: [
@@ -162,8 +160,8 @@ foam.CLASS({
             .start().addClass('button-div')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.SEND_MONEY, null, this.sendMoneyMenu_$).end()
-              .start(this.ADD_USER, null, this.addUserMenu_$).end()
+              .start(this.SEND_MONEY, null, this.sendMoneyMenuBtn_$).end()
+              .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
               .start().addClass('inline-float-right')
                 .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
               .end()
@@ -172,22 +170,6 @@ foam.CLASS({
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/member-plus.png'})
         .end();
-    },
-
-    function addShopper() {
-      console.log('Add Shopper Clicked');
-    },
-
-    function addMerchant() {
-      console.log('Add Merchant Clicked');
-    },
-
-    function sendMoneyToShopper() {
-      console.log('To Shopper Clicked');
-    },
-
-    function sendMoneyToMerchant() {
-      console.log('To Merchant Clicked');
     }
   ],
 
@@ -205,20 +187,20 @@ foam.CLASS({
       code: function(X) {
         var self = this;
 
-        var p = foam.u2.PopupView.create({
+        self.addUserPopUp_ = foam.u2.PopupView.create({
           width: 135,
           height: 60,
           x: 0,
           y: 40
         })
-        p.addClass('popUpDropDown')
+        self.addUserPopUp_.addClass('popUpDropDown')
           .start('div').add('Add Shopper')
-            .on('click', X.addShopper)
+            .on('click', this.addShopper)
           .end()
           .start('div').add('Add Merchant')
-            .on('click', X.addMerchant)
+            .on('click', this.addMerchant)
           .end()
-        self.addUserMenu_.add(p)
+        self.addUserMenuBtn_.add(self.addUserPopUp_)
       }
     },
     {
@@ -227,21 +209,43 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         
-        var p = foam.u2.PopupView.create({
+        self.sendMoneyPopUp_ = foam.u2.PopupView.create({
           width: 135,
           height: 60,
           x: 0,
           y: 40
         })
-        p.addClass('popUpDropDown')
+        self.sendMoneyPopUp_.addClass('popUpDropDown')
           .start('div').add('To Shopper')
-            .on('click', X.sendMoneyToShopper)
+            .on('click', this.sendMoneyToShopper)
           .end()
           .start('div').add('To Merchant')
-            .on('click', X.sendMoneyToMerchant)
+            .on('click', this.sendMoneyToMerchant)
           .end()
-        self.sendMoneyMenu_.add(p)
+        self.sendMoneyMenuBtn_.add(self.sendMoneyPopUp_)
       }
+    }
+  ],
+
+  listeners: [
+    function addShopper() {
+      var self = this;
+      self.addUserPopUp_.remove();
+    },
+
+    function addMerchant() {
+      var self = this;
+      self.addUserPopUp_.remove();
+    },
+
+    function sendMoneyToShopper() {
+      var self = this;
+      self.sendMoneyPopUp_.remove();
+    },
+
+    function sendMoneyToMerchant() {
+      var self = this;
+      self.sendMoneyPopUp_.remove();
     }
   ]
 });
