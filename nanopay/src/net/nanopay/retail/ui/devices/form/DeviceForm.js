@@ -8,10 +8,12 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus'
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   imports: [
+    'user',
     'deviceDAO'
   ],
 
@@ -100,7 +102,8 @@ foam.CLASS({
             type: deviceInfo.selectedOption - 1,
             status: this.DeviceStatus.PENDING,
             serialNumber: deviceInfo.serialNumber,
-            password: deviceInfo.password
+            password: deviceInfo.password,
+            owner: this.user.id
           });
 
           this.deviceDAO.put(newDevice)
