@@ -88,7 +88,7 @@ foam.CLASS({
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
-        text-algin: left;
+        text-align: left;
         color: #093649;
         margin-left: 20px;
         margin-bottom: 8px;

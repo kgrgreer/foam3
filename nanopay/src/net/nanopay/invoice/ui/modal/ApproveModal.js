@@ -38,7 +38,7 @@ foam.CLASS({
         font-family: Roboto;
         font-size: 14px;
         font-weight: 300;
-        text-algin: left;
+        text-align: left;
         color: #093649;
         margin: 20px 65px 10px 20px;
       }
