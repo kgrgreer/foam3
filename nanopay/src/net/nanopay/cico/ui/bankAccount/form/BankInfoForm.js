@@ -101,7 +101,7 @@ foam.CLASS({
     { name: 'LabelName',            message: 'Name *' },
     { name: 'Guide',                message: 'Don\'t know where to find these numbers? Check your cheque or contact your bank representative.' },
     { name: 'LabelAccount',         message: 'Account No. *' },
-    { name: 'LabelInstitution',     message: 'Intitution *' },
+    { name: 'LabelInstitution',     message: 'Institution *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
     { name: 'LabelInstitute',       message: 'Institute No. *' },
     { name: 'LabelInstituteOther',  message: 'Institute No. (Other) *' }

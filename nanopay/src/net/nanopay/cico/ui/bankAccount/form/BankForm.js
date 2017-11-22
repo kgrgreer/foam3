@@ -70,9 +70,10 @@ foam.CLASS({
           // data from form
           var accountInfo = this.viewData;
 
-          if ( ( accountInfo.accountName == null || accountInfo.accountName == '' ) || 
-          ( accountInfo.transitNumber == null || accountInfo.transitNumber == '' ) || 
-          ( accountInfo.accountNumber == null || accountInfo.accountNumber == '' ) ) {
+          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
+          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
+          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
+           accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
             return;
           }
@@ -84,6 +85,11 @@ foam.CLASS({
 
           if ( ! /^[0-9]{5}$/.exec(accountInfo.transitNumber) ) {
             self.add(self.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
+            return;
+          }
+
+          if ( ! /^[0-9]{3}$/.exec(accountInfo.bankNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Invalid bank number.', type: 'error' }));
             return;
           }
 

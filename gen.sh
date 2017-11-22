@@ -19,8 +19,7 @@ clean
 # For each project, grabs java code
 for d in *; do
   if [ "$d" = 'admin-portal' ]  || [ "$d" = 'b2b' ]       || [ "$d" = 'foam2' ]   ||
-     [ "$d" = 'interac' ]       || [ "$d" = 'merchant' ]  || [ "$d" = 'nanopay' ] ||
-     [ "$d" = 'retail' ]; then
+     [ "$d" = 'interac' ]       || [ "$d" = 'merchant' ]  || [ "$d" = 'nanopay' ]; then
 
     cd $d
     clean
