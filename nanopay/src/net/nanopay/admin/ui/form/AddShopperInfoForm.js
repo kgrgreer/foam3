@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 1: Fill in shopper\'s info and create a password' },
+    { name: 'Step', message: 'Step 1: Fill in shopper\'s info and create a password.' },
     { name: 'PersonalInformation', message: 'Personal Information' },
     { name: 'UploadImage', message: 'Upload Image' },
     { name: 'FirstName', message: 'First Name' },
@@ -137,7 +137,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-        .end()
+        .end();
     }
   ]
 });
