@@ -1,1 +1,0 @@
-git clone net.nanopay.retail and foam2 from parent directory of both repositories, run: $ python -m SimpleHTTPServer visit: http://localhost:8000/net.nanopay.retail/src/net/net.nanopay/net.nanopay.retail/

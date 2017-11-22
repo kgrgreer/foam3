@@ -16,12 +16,6 @@ b2b.abstractClasses = b2b.abstractClasses.map(function(element) { return [ 'b2b/
 b2b.skeletons = b2b.skeletons.map(function(element) { return [ 'b2b/src/', element ]; })
 b2b.proxies = b2b.proxies.map(function(element) { return [ 'b2b/src/', element ]; })
 
-var retail = require('../retail/tools/classes.js')
-retail.classes = retail.classes.map(function(element) { return [ 'retail/src/', element ]; })
-retail.abstractClasses = retail.abstractClasses.map(function(element) { return [ 'retail/src/', element ]; })
-retail.skeletons = retail.skeletons.map(function(element) { return [ 'retail/src/', element ]; })
-retail.proxies = retail.proxies.map(function(element) { return [ 'retail/src/', element ]; })
-
 var admin = require('../admin-portal/tools/classes.js')
 admin.classes = admin.classes.map(function(element) { return [ 'admin-portal/src/', element ]; })
 admin.abstractClasses = admin.abstractClasses.map(function(element) { return [ 'admin-portal/src/', element ]; })
@@ -29,10 +23,10 @@ admin.skeletons = admin.skeletons.map(function(element) { return [ 'admin-portal
 admin.proxies = admin.proxies.map(function(element) { return [ 'admin-portal/src/', element ]; })
 
 var merchant = require('../merchant/tools/classes.js')
-merchant.classes = retail.classes.map(function(element) { return [ 'merchant/src/', element ]; })
-merchant.abstractClasses = retail.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
-merchant.skeletons = retail.skeletons.map(function(element) { return [ 'merchant/src/', element ]; })
-merchant.proxies = retail.proxies.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.classes = merchant.classes.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.abstractClasses = merchant.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.skeletons = merchant.skeletons.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.proxies = merchant.proxies.map(function(element) { return [ 'merchant/src/', element ]; })
 
 var interac = require('../interac/tools/classes.js')
 interac.classes = interac.classes.map(function(element) { return [ 'interac/src/', element ]; })
@@ -41,16 +35,16 @@ interac.skeletons = interac.skeletons.map(function(element) { return [ 'interac/
 interac.proxies = interac.proxies.map(function(element) { return [ 'interac/src/', element ]; })
 
 var classes = [];
-classes = classes.concat(foam.classes, nanopay.classes, b2b.classes, retail.classes, admin.classes, merchant.classes, interac.classes)
+classes = classes.concat(foam.classes, nanopay.classes, b2b.classes, admin.classes, merchant.classes, interac.classes)
 
 var abstractClasses = [];
-abstractClasses = abstractClasses.concat(foam.abstractClasses, nanopay.abstractClasses, b2b.abstractClasses, retail.abstractClasses, admin.abstractClasses, merchant.abstractClasses, interac.abstractClasses)
+abstractClasses = abstractClasses.concat(foam.abstractClasses, nanopay.abstractClasses, b2b.abstractClasses, admin.abstractClasses, merchant.abstractClasses, interac.abstractClasses)
 
 var skeletons = [];
-skeletons = skeletons.concat(foam.skeletons, nanopay.skeletons, b2b.skeletons, retail.skeletons, admin.skeletons, merchant.skeletons, interac.skeletons)
+skeletons = skeletons.concat(foam.skeletons, nanopay.skeletons, b2b.skeletons, admin.skeletons, merchant.skeletons, interac.skeletons)
 
 var proxies = [];
-proxies = proxies.concat(foam.proxies, nanopay.proxies, b2b.proxies, retail.proxies, admin.proxies, merchant.proxies, interac.proxies)
+proxies = proxies.concat(foam.proxies, nanopay.proxies, b2b.proxies, admin.proxies, merchant.proxies, interac.proxies)
 
 
 module.exports = {
