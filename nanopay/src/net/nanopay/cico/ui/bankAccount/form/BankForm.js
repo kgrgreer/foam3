@@ -70,9 +70,9 @@ foam.CLASS({
           // data from form
           var accountInfo = this.viewData;
 
-          if ( ( accountInfo.accountName == null || accountInfo.accountName == '' ) || 
-          ( accountInfo.transitNumber == null || accountInfo.transitNumber == '' ) || 
-          ( accountInfo.accountNumber == null || accountInfo.accountNumber == '' ) ) {
+          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
+          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
+          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
             return;
           }
