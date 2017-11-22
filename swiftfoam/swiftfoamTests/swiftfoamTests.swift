@@ -40,6 +40,40 @@ class swiftfoamTests: XCTestCase {
     }
   }
 
+  func testChangePassword() {
+    do {
+      var user: User!
+      if let prevLoggedInUser = try client.clientAuthService!.getCurrentUser(client.__context__) {
+        user = prevLoggedInUser
+      } else {
+        user = try client.clientAuthService!.loginByEmail(client.__context__, username, password)
+      }
+
+      try client.clientAuthService!.updatePassword(client.__context__, password, "Mintchip123")
+      user = try client.clientAuthService!.loginByEmail(client.__context__, username, "Mintchip123")
+
+      //reset user back to correct password
+      try client.clientAuthService!.updatePassword(client.__context__, "Mintchip123", password)
+    } catch let e {
+      XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
+
+  func testFailedChangePassword() {
+    do {
+      var user: User!
+      if let prevLoggedInUser = try client.clientAuthService!.getCurrentUser(client.__context__) {
+        user = prevLoggedInUser
+      } else {
+        user = try client.clientAuthService!.loginByEmail(client.__context__, username, password)
+      }
+      try client.clientAuthService!.updatePassword(client.__context__, "SomeIncorrectPassword", "Mintchip123")
+      XCTFail("Old password was incorrect and should have failed.")
+    } catch let e {
+      print(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
+
   func testLogoutPart1() {
     do {
       try client.clientAuthService!.logout(client.__context__)
