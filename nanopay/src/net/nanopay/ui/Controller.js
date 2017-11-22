@@ -108,7 +108,6 @@ foam.CLASS({
       })
       .then(function (result) {
         self.account.copyFrom(result.array[0]);
-        self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
       })
       .catch(function (err) {
         self.requestLogin();
