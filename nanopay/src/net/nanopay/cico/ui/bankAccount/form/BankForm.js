@@ -88,6 +88,11 @@ foam.CLASS({
             return;
           }
 
+          if ( ! /^[0-9]*$/.exec(accountInfo.bankNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Invalid bank number.', type: 'error' }));
+            return;
+          }
+
           var newAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
