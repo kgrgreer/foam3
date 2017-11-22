@@ -182,8 +182,8 @@ class swiftfoamTests: XCTestCase {
       }
 
       let service = client.userTransactionLimitService!
-      let limit = try service.getLimit(user.id, .DAY, .SEND)
-      let limitLeft = try service.getRemainingLimit(user.id, .DAY, .SEND)
+      let _ = try service.getLimit(user.id, .DAY, .SEND)
+      let _ = try service.getRemainingLimit(user.id, .DAY, .SEND)
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
@@ -211,8 +211,10 @@ class swiftfoamTests: XCTestCase {
         }
         for operatingHours in address.hours {
           XCTAssertNotNil(operatingHours.day)
-          XCTAssertNotNil(operatingHours.startTime, "Start time cannot be nil")
-          XCTAssertNotNil(operatingHours.endTime, "End time cannot be nil")
+          if operatingHours.open {
+            XCTAssertNotNil(operatingHours.startTime, "Start time cannot be nil")
+            XCTAssertNotNil(operatingHours.endTime, "End time cannot be nil")
+          }
         }
       }
     } catch let e {
