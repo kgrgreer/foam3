@@ -69,11 +69,15 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // admin
-  { name: 'net/nanopay/admin/ui/SendMoneyView' },
-  { name: 'net/nanopay/admin/ui/SubMenu' },
-  { name: 'net/nanopay/admin/ui/TransactionView' },
-  { name: 'net/nanopay/admin/ui/UserView' },
-
+  { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperSendMoneyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperReviewForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperDoneForm', flags: ['web'] },
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },

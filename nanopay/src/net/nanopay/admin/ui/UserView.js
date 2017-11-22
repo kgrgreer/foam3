@@ -79,12 +79,30 @@ foam.CLASS({
           background: #3783b3;
           border-color: #3783b3;
         }
+        ^ .net-nanopay-ui-ActionView-sendMoney::after {
+          content: ' ';
+          position: absolute;
+          height: 0;
+          width: 0;
+          border: 6px solid transparent;
+          border-top-color: white;
+          transform: translate(5px, 5px);
+        }
         ^ .net-nanopay-ui-ActionView-addUser {
           background-color: #EDF0F5;
           border: solid 1px #59A5D5;
           color: #59A5D5;
           margin-right: 5px;
           float: right;
+        }
+        ^ .net-nanopay-ui-ActionView-addUser::after {
+          content: ' ';
+          position: absolute;
+          height: 0;
+          width: 0;
+          border: 6px solid transparent;
+          border-top-color: #59A5D5;
+          transform: translate(15px, 5px);
         }
         ^ .popUpDropDown {
           padding: 0;
@@ -230,6 +248,11 @@ foam.CLASS({
   listeners: [
     function addShopper() {
       var self = this;
+      self.add(
+        self.Popup.create().tag({
+          class: 'net.nanopay.admin.ui.form.AddShopperForm'
+        })
+      )
       self.addUserPopUp_.remove();
     },
 
