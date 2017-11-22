@@ -145,14 +145,14 @@ foam.CLASS({
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
-                dao: this.bankAccountDAO,
+                dao: this.data,
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
                 },
               summaryView: this.BankAccountTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.bankAccountDAO, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
     }
     
   ],
