@@ -24,8 +24,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.Account',
     'foam.comics.DAOCreateControllerView',
-    'net.nanopay.ui.NotificationMessage',
-    'foam.nanos.auth.WebAuthService'
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   axioms: [
