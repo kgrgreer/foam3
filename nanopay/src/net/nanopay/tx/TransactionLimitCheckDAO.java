@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TransactionLimitCheckDAO
-        extends ProxyDAO {
+    extends ProxyDAO {
 
   public TransactionLimitCheckDAO(DAO delegate) {
     setDelegate(delegate);
@@ -37,11 +37,7 @@ public class TransactionLimitCheckDAO
   public FObject put_(X x, FObject fObject) throws RuntimeException {
     Transaction transaction = (Transaction) fObject;
 
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
-    DAO transactionLimitDAO = (DAO) x.get("transactionLimitDAO");
-    DAO brokerDAO = (DAO) x.get("brokerDAO");
-
+    DAO userDAO = (DAO) getX().get("localUserDAO");
     User payee = (User) userDAO.find(transaction.getPayeeId());
     User payer = (User) userDAO.find(transaction.getPayerId());
 
@@ -55,8 +51,8 @@ public class TransactionLimitCheckDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
 
-        if ( ! limitsNotAbove(transaction, payer, isBroker(brokerDAO, payer), TransactionLimitType.SEND, true) ||
-             ! limitsNotAbove(transaction, payee, isBroker(brokerDAO, payee), TransactionLimitType.RECEIVE, false) ) {
+        if ( ! limitsNotAbove(transaction, payer, isBroker(payer), TransactionLimitType.SEND, true) ||
+            ! limitsNotAbove(transaction, payee, isBroker(payee), TransactionLimitType.RECEIVE, false) ) {
           throw new RuntimeException("Transaction Limits overstepped.");
         }
 
@@ -66,19 +62,18 @@ public class TransactionLimitCheckDAO
   }
 
   // Checking whether user is a Broker
-  private boolean isBroker(DAO brokerDAO, User user) {
+  private boolean isBroker(User user) {
     Sink count = new Count();
+    DAO brokerDAO = (DAO) getX().get("brokerDAO");
     count = brokerDAO.where(EQ(user.getId(), Broker.USER_ID)).limit(1).select(count);
-
     return ( (Count) count).getValue() > 0;
   }
 
   // Checking if user overstepped its limits
   private boolean limitsNotAbove(Transaction transaction, User user, boolean isBroker, TransactionLimitType type, boolean isPayer) {
-
     DAO transactionLimitDAO = (DAO) getX().get("transactionLimitDAO");
-
     TransactionLimit[] userLimits = (TransactionLimit[]) user.getTransactionLimits();
+
     for ( TransactionLimitTimeFrame timeFrame : TransactionLimitTimeFrame.values() ) {
       boolean isDefault = true;
       long userLimitValue = 0;
@@ -95,10 +90,11 @@ public class TransactionLimitCheckDAO
         if( isBroker ) {
           limitName = DEFAULT_BROKER_TRANSACTION_LIMIT;
         }
-        DAO sumLimitDAO = transactionLimitDAO.where(AND( EQ(limitName, TransactionLimit.NAME),
-                                         EQ(type, TransactionLimit.TYPE),
-                                         EQ(timeFrame, TransactionLimit.TIME_FRAME) )
-                                    );
+        DAO sumLimitDAO = transactionLimitDAO.where(AND(
+            EQ(limitName, TransactionLimit.NAME),
+            EQ(type, TransactionLimit.TYPE),
+            EQ(timeFrame, TransactionLimit.TIME_FRAME)));
+
         userLimitValue = ((Double)(((Sum) sumLimitDAO.select(SUM(TransactionLimit.AMOUNT))).getValue())).longValue();
       }
       if ( isOverTimeFrameLimit(transaction, user, timeFrame, userLimitValue, isPayer) ) {
@@ -132,15 +128,15 @@ public class TransactionLimitCheckDAO
 
   // Getting user amount spent given a time period
   private long getTransactionAmounts(User user, boolean isPayer, int calendarType) {
-    DAO transactionDAO = (DAO) getX().get("transactionDAO");
 
     Date firstDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN);
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
-    DAO list = transactionDAO.where(AND(EQ(user.getId(), ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
-                                        GTE(Transaction.DATE, firstDate ),
-                                        LTE(Transaction.DATE, lastDate )
-                                    ));
+    DAO list = getDelegate().where(AND(
+        EQ(user.getId(), ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
+        GTE(Transaction.DATE, firstDate ),
+        LTE(Transaction.DATE, lastDate )));
+
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
 
@@ -179,5 +175,4 @@ public class TransactionLimitCheckDAO
     calendar.set(Calendar.MILLISECOND, 0);
     return calendar.getTime();
   }
-
 }

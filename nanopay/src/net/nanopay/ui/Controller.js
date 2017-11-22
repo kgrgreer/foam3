@@ -6,30 +6,30 @@ foam.CLASS({
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.nanos.client.Client',
     'foam.mlang.Expressions',
-    'net.nanopay.util.CurrencyFormatter',
-    'net.nanopay.ui.style.AppStyles',
+    'foam.nanos.client.Client',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling',
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.util.CurrencyFormatter'
   ],
 
   requires: [
-    'net.nanopay.model.Currency',
-    'net.nanopay.model.Account',
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.Account',
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.Currency'
   ],
 
   exports: [
     'account',
-    'stack',
     'as ctrl',
-    'user',
-    'requestLogin'
+    'requestLogin',
+    'stack',
+    'user'
   ],
 
   imports: [
@@ -66,7 +66,6 @@ foam.CLASS({
       padding: 8px;
       width: auto;
     }
-
   `,
 
   properties: [

@@ -2,15 +2,17 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
+import foam.dao.*;
+import static foam.mlang.MLang.*;
 import foam.nanos.auth.User;
 import java.util.Date;
+import java.util.List;
+
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -37,77 +39,75 @@ public class TransactionDAO
     return accountDAO_;
   }
 
-  protected Account createNewAccount(long id) {
-    Account account = new Account();
-    account.setId(id);
-    account.setBalance(0);
-    return account;
-  }
-
   @Override
-  public FObject put_(X x, FObject fObject) throws RuntimeException {
-    Transaction transaction = (Transaction) fObject;
+  public FObject put_(X x, FObject obj) {
+    Transaction transaction = (Transaction) obj;
     transaction.setDate(new Date());
 
-    long payeeId            = transaction.getPayeeId();
-    long payerId            = transaction.getPayerId();
+    long payeeId = transaction.getPayeeId();
+    long payerId = transaction.getPayerId();
 
-    if ( payerId <= 0 ) {
+    if (payerId <= 0) {
       throw new RuntimeException("Invalid Payer id");
     }
 
-    if ( payeeId <= 0 ) {
+    if (payeeId <= 0) {
       throw new RuntimeException("Invalid Payee id");
     }
 
-    if ( payeeId == payerId ) {
+    if (payeeId == payerId) {
       throw new RuntimeException("PayeeID and PayerID cannot be the same");
     }
 
-    if ( transaction.getAmount() <= 0 ) {
+    if (transaction.getAmount() <= 0) {
       throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
-    Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
+    Long firstLock = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
-    synchronized ( firstLock ) {
-      synchronized ( secondLock ) {
-        try {
-          User payee = (User) getUserDAO().find(transaction.getPayeeId());
-          User payer = (User) getUserDAO().find(transaction.getPayerId());
+    synchronized (firstLock) {
+      synchronized (secondLock) {
+        Sink sink;
+        List data;
+        Account payeeAccount;
+        Account payerAccount;
+        User payee = (User) getUserDAO().find(transaction.getPayeeId());
+        User payer = (User) getUserDAO().find(transaction.getPayerId());
 
-          if ( payee == null || payer == null ) {
-            throw new RuntimeException("Users not found");
-          }
-
-          Account payeeAccount = (Account) getAccountDAO().find(payee.getId());
-          if ( payeeAccount == null ) {
-            payeeAccount = createNewAccount(payee.getId());
-          }
-
-          Account payerAccount = (Account) getAccountDAO().find(payer.getId());
-          if ( payerAccount == null ) {
-            payerAccount = createNewAccount(payer.getId());
-          }
-
-          long amount = transaction.getAmount();
-
-          if ( payerAccount.getBalance() >= amount ) {
-            payerAccount.setBalance(payerAccount.getBalance() - amount);
-            payeeAccount.setBalance(payeeAccount.getBalance() + amount);
-
-            getAccountDAO().put(payerAccount);
-            getAccountDAO().put(payeeAccount);
-
-            super.put_(x, fObject);
-            return fObject;
-          } else {
-            throw new RuntimeException("You do not have enough money in your account");
-          }
-        } catch (Exception e) {
-          throw e;
+        if (payee == null || payer == null) {
+          throw new RuntimeException("Users not found");
         }
+
+        // find payee account
+        sink = new ListSink();
+        sink = getAccountDAO().where(EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
+        data = ((ListSink) sink).getData();
+        if ( data == null || data.size() < 1 ) {
+          throw new RuntimeException("Payee account not found");
+        }
+        payeeAccount = (Account) data.get(0);
+
+        // find payer account
+        sink = new ListSink();
+        sink = getAccountDAO().where(EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
+        data = ((ListSink) sink).getData();
+        if ( data == null || data.size() < 1 ) {
+          throw new RuntimeException("Payer account not found");
+        }
+        payerAccount = (Account) data.get(0);
+
+        // check if payer account has enough balance
+        long amount = transaction.getAmount();
+        if (payerAccount.getBalance() < amount) {
+          throw new RuntimeException("You do not have enough money in your account");
+        }
+
+        payerAccount.setBalance(payerAccount.getBalance() - amount);
+        payeeAccount.setBalance(payeeAccount.getBalance() + amount);
+        getAccountDAO().put(payerAccount);
+        getAccountDAO().put(payeeAccount);
+        return super.put_(x, obj);
       }
     }
   }
