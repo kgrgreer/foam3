@@ -142,6 +142,10 @@ foam.CLASS({
 
     function requestLogin(){
       var self = this;
+      // don't go to log in screen if going to reset password screen
+      if ( location.hash != null && location.hash === '#reset' ) {
+        return;
+      }
 
       return new Promise(function(resolve, reject) {
         self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
