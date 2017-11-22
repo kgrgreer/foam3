@@ -117,12 +117,19 @@ foam.CLASS({
     {
       name: 'signIn',
       label: 'Sign In',
-      isEnabled: function(email, password){
-        return email && password;
-      },
       code: function(X){
         var self = this;
-        
+
+        if ( ! this.email ) {
+          this.add(this.NotificationMessage.create({ message: 'Please enter an email address', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.password ) {
+          this.add(this.NotificationMessage.create({ message: 'Please enter a password', type: 'error' }));
+          return;
+        }
+
         this.auth.loginByEmail(null, this.email, this.password).then(function(user){
           self.loginSuccess = user ? true : false;
           self.user.copyFrom(user);
