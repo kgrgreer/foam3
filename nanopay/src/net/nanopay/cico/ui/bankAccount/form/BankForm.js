@@ -88,7 +88,7 @@ foam.CLASS({
             return;
           }
 
-          if ( ! /^[0-9]*$/.exec(accountInfo.bankNumber) ) {
+          if ( ! /^[0-9]{3}$/.exec(accountInfo.bankNumber) ) {
             self.add(self.NotificationMessage.create({ message: 'Invalid bank number.', type: 'error' }));
             return;
           }
