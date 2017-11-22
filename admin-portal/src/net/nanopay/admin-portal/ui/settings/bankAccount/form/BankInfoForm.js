@@ -104,7 +104,7 @@ foam.CLASS({
       { name: 'Guide',                message: 'Don\'t know where to find these numbers? Check your cheque or contact your bank representative.' },
       { name: 'LabelAccount',         message: 'Account No. *' },
       { name: 'ErrorAccount',         message: 'Invalid account number used.' },
-      { name: 'LabelInstitution',     message: 'Intitution *' },
+      { name: 'LabelInstitution',     message: 'Institution *' },
       { name: 'ErrorInstitution',     message: 'Institution number incomplete.' },
       { name: 'LabelTransit',         message: 'Transit No. *' },
       { name: 'ErrorTransit',         message: 'Invalid transit number used.' },
