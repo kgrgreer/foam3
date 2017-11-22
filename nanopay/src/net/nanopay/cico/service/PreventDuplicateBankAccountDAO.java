@@ -8,6 +8,11 @@ import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import net.nanopay.model.BankAccount;
 
+/**
+ * This DAO prevents the adding of duplicate bank accounts
+ * based on the account owner, account number, transit number,
+ * and instition number
+ */
 public class PreventDuplicateBankAccountDAO
     extends ProxyDAO
 {
@@ -25,6 +30,8 @@ public class PreventDuplicateBankAccountDAO
     BankAccount account = (BankAccount) obj;
     boolean newAccount = ( getDelegate().find(account.getId()) == null );
 
+    // if new account, check to see if existing account exists
+    // with same account information
     if ( newAccount ) {
       Count count = new Count();
       DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
