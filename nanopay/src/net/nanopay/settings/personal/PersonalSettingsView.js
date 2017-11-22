@@ -262,11 +262,11 @@ foam.CLASS({
           margin-left: 20px;
           margin-right: 640px;
         }
-        ^ .resetPass-Text{
-          width: 147px;
+        ^ .changePass-Text{
+          width: 164px;
           height: 20px;
           margin-left: 20px;
-          margin-right: 638px;
+          margin-right: 621px;
         }
         ^ .tfa-Text{
           width: 211px;
@@ -395,7 +395,7 @@ foam.CLASS({
 
         .start().addClass('second-Container')
           .start('div')
-            .start('h1').add("Reset Password").addClass('resetPass-Text').end()
+            .start('h1').add("Change Password").addClass('changePass-Text').end()
             .start()
               .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$, true)
               .add(this.expandBox2$.map(function(e) { return e ? 'Expand' : "Close"; }))
