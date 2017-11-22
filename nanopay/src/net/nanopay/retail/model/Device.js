@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.retail.model',
   name: 'Device',
+
   ids: ['serialNumber'],
 
   tableColumns: ['name', 'type', 'serialNumber', 'status'],

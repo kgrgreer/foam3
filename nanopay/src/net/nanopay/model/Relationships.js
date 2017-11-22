@@ -75,10 +75,7 @@ foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.retail.model.Device',
   forwardName: 'devices',
-  inverseName: 'user',
-  sourceProperty: {
-    hidden: true
-  }
+  inverseName: 'owner',
 });
 
 foam.RELATIONSHIP({
