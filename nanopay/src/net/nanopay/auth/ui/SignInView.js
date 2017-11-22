@@ -9,9 +9,10 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  imports: [ 
-    'stack',
+  imports: [
     'auth',
+    'user',
+    'stack',
     'loginSuccess'
   ],
 
@@ -119,8 +120,9 @@ foam.CLASS({
       code: function(X){
         var self = this;
         
-        this.auth.loginByEmail(this.email, this.password).then(function(user){
+        this.auth.loginByEmail(null, this.email, this.password).then(function(user){
           self.loginSuccess = user ? true : false;
+          self.user.copyFrom(user);
         }).catch(function(a){
           self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
         });
