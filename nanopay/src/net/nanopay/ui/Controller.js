@@ -28,6 +28,7 @@ foam.CLASS({
     'account',
     'as ctrl',
     'requestLogin',
+    'loginSuccess',
     'stack',
     'user'
   ],
@@ -99,15 +100,20 @@ foam.CLASS({
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-      /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.userDAO.select().then(function(a) {
-        self.user.copyFrom(a.array[0]);
+      // get current user, else show login
+      this.auth.getCurrentUser(null).then(function (result) {
+        self.loginSuccess = result ? true : false;
+        self.user.copyFrom(result);
+        return self.accountDAO.where(self.EQ(self.Account.OWNER, self.user.id)).limit(1).select();
+      })
+      .then(function (result) {
+        self.account.copyFrom(result.array[0]);
+        self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+      })
+      .catch(function (err) {
+        self.requestLogin();
       });
 
-      /*******   Loads Account with balance for Testing Purposes (comment out if not needed)  ********/
-      this.accountDAO.select().then(function(a) {
-        self.account.copyFrom(a.array[0]);
-      });
       window.onpopstate = function(event) {
         if ( location.hash != null ) {
           var hid = location.hash.substr(1);
@@ -138,7 +144,7 @@ foam.CLASS({
     function requestLogin(){
       var self = this;
 
-      return new Promise(function(resolve, reject){
+      return new Promise(function(resolve, reject) {
         self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
