@@ -163,7 +163,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' }
+    { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' },
+    { name: 'AddShopper', message: 'Add Shopper' }
   ],
 
   methods: [
@@ -246,14 +247,16 @@ foam.CLASS({
   ],
 
   listeners: [
+
     function addShopper() {
       var self = this;
+      self.addUserPopUp_.remove();
       self.add(
         self.Popup.create().tag({
-          class: 'net.nanopay.admin.ui.form.AddShopperForm'
-        })
-      )
-      self.addUserPopUp_.remove();
+          class: 'net.nanopay.admin.ui.form.AddShopperForm',
+          title: this.AddShopper
+        }).addClass('popup-with-topnav')
+      );
     },
 
     function addMerchant() {
@@ -271,4 +274,5 @@ foam.CLASS({
       self.sendMoneyPopUp_.remove();
     }
   ]
+
 });

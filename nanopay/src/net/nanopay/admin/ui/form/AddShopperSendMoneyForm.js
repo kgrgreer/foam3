@@ -20,14 +20,17 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Input the amount of money you want to send to the user.' },
+    { name: 'Step', message: 'Step 2: Input the amount of money you want to send to the user.' },
     { name: 'Amount', message: 'Amount' }
   ],
 
   properties: [
     {
       class: 'Currency',
-      name: 'amount'
+      name: 'amount',
+      postSet: function(oldValue, newValue) {
+        this.viewData.amount = newValue;
+      }
     }
   ],
 
@@ -37,6 +40,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
+          .start('p').addClass('pDefault').add(this.Step).end()
         .end();
     }
   ]

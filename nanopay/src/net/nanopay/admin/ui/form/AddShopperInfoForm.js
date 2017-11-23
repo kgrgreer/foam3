@@ -137,6 +137,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
+          .start('p').addClass('pDefault').add(this.Step).end()
         .end();
     }
   ]
