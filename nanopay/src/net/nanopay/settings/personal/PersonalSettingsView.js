@@ -354,6 +354,26 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'firstName'
+    },
+    {
+      class: 'String',
+      name: 'lastName'
+    },
+    {
+      class: 'String',
+      name: 'jobTitle'
+    },
+    {
+      class: 'String',
+      name: 'email'
+    },
+    {
+      class: 'String',
+      name: 'phone'
+    },
+    {
+      class: 'String',
       name: 'originalPassword',
       view: 'foam.u2.view.PasswordView'
     },
@@ -394,22 +414,22 @@ foam.CLASS({
             .start('h2').add("Job Title").addClass('jobTitle-Text').end()
           .end()
           .start('div')
-            .start('input').addClass('firstName-Input').end()
-            .start('input').addClass('lastName-Input').end()
-            .start('input').addClass('jobTitle-Input').end()
+            .start(this.FIRST_NAME).addClass('firstName-Input').end()
+            .start(this.LAST_NAME).addClass('lastName-Input').end()
+            .start(this.JOB_TITLE).addClass('jobTitle-Input').end()
           .end()
           .start('div')
             .start('h2').add("Email Address").addClass('emailAddress-Text').end()
             .start('h2').add("Phone Number").end()
           .end()
           .start('div')
-            .start('input').addClass('emailAddress-Input').end()
+            .start(this.EMAIL).addClass('emailAddress-Input').end()
             .start('select').addClass('phoneNumber-Dropdown').end()
-            .start('input').addClass('phoneNumber-Input').end()
+            .start(this.PHONE).addClass('phoneNumber-Input').end()
           .end()
           .start('div')
             .tag({class: 'foam.u2.CheckBox'}).add("Make my profile visible to public").addClass('checkBox-Text').end()
-            .start().addClass('update-BTN').add("Update").end()
+            .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
           .end()
         .end()
 
@@ -508,6 +528,13 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'updateProfile',
+      label: 'Update',
+      code: function (X) {
+        var self = this;
+      }
+    },
     {
       name: 'updatePassword',
       label: 'Update',
