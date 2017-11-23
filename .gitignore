@@ -54,6 +54,8 @@ bankAccounts
 branches
 brokers
 businesses
+businessSectors
+businessTypes
 canadaTransactions
 cicoServiceProviders
 countries
@@ -80,6 +82,7 @@ regions
 scripts
 services
 tests
+tokens
 transactions
 users
 emailTemplates

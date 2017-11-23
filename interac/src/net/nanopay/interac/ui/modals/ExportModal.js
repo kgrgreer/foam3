@@ -107,7 +107,7 @@ foam.CLASS({
       ^ .paymentMethod-Text{
         width: 165px;
         height: 16px;
-        font-family: Robotol
+        font-family: Roboto
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
