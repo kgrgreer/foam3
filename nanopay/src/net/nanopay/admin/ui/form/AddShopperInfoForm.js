@@ -29,6 +29,56 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #093649;
         }
+        ^ .imageDiv {
+          margin-bottom: 20px;
+        }
+        ^ .userImage {
+          width: 80px;
+          height: 80px;
+          margin-top: 20px;
+          display: inline-block;
+        }
+        ^ .net-nanopay-ui-ActionView-uploadImage {
+          width: 136px;
+          height: 40px;
+          background: transparent;
+          border: solid 1px #59a5d5;
+          color: #59a5d5;
+          margin: 0;
+          outline: none;
+        }
+        ^ .uploadButtonContainer {
+          height: 80px;
+          display: inline-block;
+          vertical-align: text-bottom;
+          margin-left: 40px;
+        }
+        ^ .uploadDescription {
+          margin-top: 9px;
+          font-size: 10px;
+          font-weight: 300;
+          letter-spacing: 0.2px;
+          color: #093649;
+        }
+        ^ .infoLabel {
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0.2px;
+          color: #093649;
+        }
+        ^ .inputLarge {
+          width: 218px;
+          height: 40px;
+          margin-top: 8px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          outline: none;
+          padding: 10px;
+          font-size: 14px;
+        }
+        ^ .topMargin {
+          margin-top: 20px;
+        }
       */}
     })
   ],
@@ -36,21 +86,22 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 1: Fill in shopper\'s info and create a password.' },
     { name: 'PersonalInformation', message: 'Personal Information' },
-    { name: 'UploadImage', message: 'Upload Image' },
-    { name: 'FirstName', message: 'First Name' },
-    { name: 'LastName', message: 'Last Name' },
-    { name: 'EmailAddress', message: 'Email Address' },
-    { name: 'PhoneNumber', message: 'Phone Number' },
-    { name: 'Birthday', message: 'Birthday' },
-    { name: 'HomeAddress', message: 'Home Address' },
-    { name: 'StNo', message: 'St No.' },
-    { name: 'StName', message: 'St Name' },
-    { name: 'AddressLine', message: 'Address line' },
-    { name: 'City', message: 'City' },
-    { name: 'Province', message: 'Province' },
-    { name: 'PostalCode', message: 'Postal Code' },
-    { name: 'Password', message: 'Password' },
-    { name: 'CreateAPassword', message: 'Create a Password' }
+    { name: 'UploadImageLabel', message: 'Upload Image' },
+    { name: 'UploadDesc', message: 'JPG, GIF, JPEG, BMP or PNG' },
+    { name: 'FirstNameLabel', message: 'First Name' },
+    { name: 'LastNameLabel', message: 'Last Name' },
+    { name: 'EmailAddressLabel', message: 'Email Address' },
+    { name: 'PhoneNumberLabel', message: 'Phone Number' },
+    { name: 'BirthdayLabel', message: 'Birthday' },
+    { name: 'HomeAddressLabel', message: 'Home Address' },
+    { name: 'StNoLabel', message: 'St No.' },
+    { name: 'StNameLabel', message: 'St Name' },
+    { name: 'AddressLineLabel', message: 'Address line' },
+    { name: 'CityLabel', message: 'City' },
+    { name: 'ProvinceLabel', message: 'Province' },
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
+    { name: 'PasswordLabel', message: 'Password' },
+    { name: 'CreateAPasswordLabel', message: 'Create a Password' }
   ],
 
   properties: [
@@ -150,11 +201,44 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('p').addClass('pDefault').add(this.Step).end()
+          .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
             .start().addClass('labelTitle').add(this.PersonalInformation).end()
+            .start().addClass('imageDiv')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('userImage').end()
+              .start().addClass('uploadButtonContainer')
+                .add(this.UPLOAD_IMAGE)
+                .start().add(this.UploadDesc).addClass('uploadDescription').end()
+              .end()
+            .end()
+            .start().addClass('inline')
+              .start().add(this.FirstNameLabel).addClass('infoLabel').end()
+              .start(this.FIRST_NAME).addClass('inputLarge').end()
+            .end()
+            .start().addClass('inline float-right')
+              .start().add(this.LastNameLabel).addClass('infoLabel').end()
+              .start(this.LAST_NAME).addClass('inputLarge').end()
+            .end()
+            .start().addClass('inline topMargin')
+              .start().add(this.EmailAddressLabel).addClass('infoLabel').end()
+              .start(this.EMAIL_ADDRESS).addClass('inputLarge').end()
+            .end()
+            .start().addClass('inline float-right topMargin')
+              .start().add(this.PhoneNumberLabel).addClass('infoLabel').end()
+              .start(this.PHONE_NUMBER).addClass('inputLarge').end()
+            .end()
           .end()
         .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'uploadImage',
+      label: this.UploadImageLabel,
+      code: function(X) {
+        //TODO: Add image upload functionality
+      }
     }
   ]
 });

@@ -102,7 +102,7 @@ foam.CLASS({
           width: 0;
           border: 6px solid transparent;
           border-top-color: #59A5D5;
-          transform: translate(15px, 5px);
+          transform: translate(5px, 5px);
         }
         ^ .popUpDropDown {
           padding: 0;
@@ -187,7 +187,7 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/member-plus.png'})
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
         .end();
     }
   ],
