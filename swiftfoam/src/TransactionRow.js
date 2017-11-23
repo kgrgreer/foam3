@@ -50,13 +50,19 @@ return d
       class: 'String',
       name: 'amount',
       swiftView: 'foam.swift.ui.FOAMUILabel',
-      swiftExpressionArgs: ['transaction$amount'],
+      swiftExpressionArgs: ['transaction$amount', 'transaction$payerId', 'user$id'],
       swiftExpression: `
 guard let amount = transaction$amount as? Int else {
   return "ERROR " + String(describing: transaction$amount)
 }
 // TODO: Do the +/-
-return "$" + String(format: "%.2f", Float(amount)/100)
+var sign: String = ""
+if (transaction$payerId as! Int) == (user$id as! Int) {
+  sign = "- "
+} else {
+  sign = "+ "
+}
+return sign + "$" + String(format: "%.2f", Float(amount)/100)
       `,
     },
     {
@@ -75,16 +81,15 @@ return "\\(fc)\\(lc)"
     {
       swiftType: 'UIColor',
       name: 'amountColor',
-      swiftExpressionArgs: ['transaction$amount'],
+      swiftExpressionArgs: ['transaction$amount', 'transaction$payerId', 'user$id'],
       swiftExpression: `
 guard let amount = transaction$amount as? Int else {
   return UIColor.red
 }
-// TODO: Do this properly.
-if amount > 1000 {
-  return UIColor.green
-} else {
+if (transaction$payerId as! Int) == (user$id as! Int) {
   return UIColor.red
+} else {
+  return UIColor.green
 }
       `,
     },
