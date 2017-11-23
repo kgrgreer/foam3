@@ -85,7 +85,6 @@ foam.CLASS({
         }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
-          margin-top: 65px;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;

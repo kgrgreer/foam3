@@ -331,6 +331,10 @@ foam.CLASS({
           cursor: pointer;
           text-align: right !important;
         }
+        .foam-u2-dialog-Popup.popup-with-topnav {
+          margin-top: 65px;
+          z-index: 10000;
+        }
         .close-x {
           position: absolute;
           width: 32px;

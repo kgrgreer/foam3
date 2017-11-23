@@ -55,14 +55,27 @@ foam.CLASS({
         var self = this;
         if ( this.position == 0 ) {
           var shopperInfo = this.viewData;
+          if( true ) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          }
           // Add Shopper
         }
 
         if ( this.position == 1 ) {
+          if( true ) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          }
+          
           // Send Money
         }
 
         if ( this.position == 2 ) {
+          if( true ) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          }
           // Review
         }
 
