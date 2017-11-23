@@ -32,6 +32,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'password'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'owner'
     }
   ]
 });
