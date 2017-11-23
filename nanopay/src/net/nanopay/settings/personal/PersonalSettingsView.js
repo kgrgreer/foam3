@@ -408,7 +408,7 @@ foam.CLASS({
             .start('input').addClass('phoneNumber-Input').end()
           .end()
           .start('div')
-            .tag({class: 'foam.u2.CheckBox'}).add("Make my profile visable to public").addClass('checkBox-Text').end()
+            .tag({class: 'foam.u2.CheckBox'}).add("Make my profile visible to public").addClass('checkBox-Text').end()
             .start().addClass('update-BTN').add("Update").end()
           .end()
         .end()
