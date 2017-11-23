@@ -15,7 +15,20 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-
+        ^ .infoContainer {
+          width: 496px;
+          height: 350px;
+          background: white;
+          border-radius: 2px;
+          overflow-y: scroll;
+          padding: 20px;
+        }
+        ^ .labelTitle {
+          font-size: 14px;
+          font-weight: bold;
+          letter-spacing: 0.2px;
+          color: #093649;
+        }
       */}
     })
   ],
@@ -138,6 +151,9 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('p').addClass('pDefault').add(this.Step).end()
+          .start().addClass('infoContainer')
+            .start().addClass('labelTitle').add(this.PersonalInformation).end()
+          .end()
         .end();
     }
   ]

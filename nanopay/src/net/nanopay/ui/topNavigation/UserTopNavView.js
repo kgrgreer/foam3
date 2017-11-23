@@ -57,7 +57,7 @@ foam.CLASS({
         ^ .foam-nanos-menu-SubMenuView-inner {
           position: absolute;
           float: right;
-          z-index: 10000;
+          z-index: 10001;
           width: 208px;
           height: 160px;
           background: white;
