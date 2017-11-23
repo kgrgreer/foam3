@@ -55,7 +55,7 @@ return d
 guard let amount = transaction$amount as? Int else {
   return "ERROR " + String(describing: transaction$amount)
 }
-// TODO: Do the +/-
+
 var sign: String = ""
 if (transaction$payerId as! Int) == (user$id as! Int) {
   sign = "- "
