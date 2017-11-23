@@ -179,13 +179,10 @@ return ClientTokenService_create([
       class: 'foam.dao.DAOProperty',
       name: 'countryDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
-      ])
-    ]),
-  "cache": ArrayDAO_create(["of": Country.classInfo()]),
+return ClientDAO_create([
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
+  ])
 ])
       `,
     },
@@ -193,13 +190,10 @@ return CachingDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'regionDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
-      ])
-    ]),
-  "cache": ArrayDAO_create(["of": Region.classInfo()]),
+return ClientDAO_create([
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
+  ])
 ])
       `,
     },

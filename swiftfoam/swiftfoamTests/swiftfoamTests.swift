@@ -221,4 +221,32 @@ class swiftfoamTests: XCTestCase {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
   }
+
+  func testGetRegion() {
+    do {
+      let pred = client.__context__.create(Eq.self, args: [
+        "arg1": Region.COUNTRY_ID(),
+        "arg2": "CA"
+        ])
+      guard let regions = try (client.regionDAO!.`where`(pred).select() as? ArraySink)?.array as? [Region] else {
+        XCTFail("Could not convert returned value from select()")
+        return
+      }
+      XCTAssert(regions.count > 0, "Region array should not be empty.")
+    } catch let e {
+       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
+
+  func testGetCountry() {
+    do {
+      guard let countries = try (client.countryDAO!.select() as? ArraySink)?.array as? [Country] else {
+        XCTFail("Could not convert returned value from select()")
+        return
+      }
+      XCTAssert(countries.count > 0, "Country array should not be empty.")
+    } catch let e {
+      XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+  }
 }
