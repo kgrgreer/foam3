@@ -1,9 +1,10 @@
-#Concatenate JDAO files from subdirectories into one JDAO
+# Concatenate JDAO files from subdirectories into one JDAO
 find **/src -type f -name accounts -exec cat {} \; > accounts
-find **/src -type f -name branches -exec cat {} \; > branches
 find **/src -type f -name bankAccounts -exec cat {} \; > bankAccounts
 find **/src -type f -name branches -exec cat {} \; > branches
 find **/src -type f -name brokers -exec cat {} \; > brokers
+find **/src -type f -name businessSectors -exec cat {} \; > businessSectors
+find **/src -type f -name businessTypes -exec cat {} \; > businessTypes
 find **/src -type f -name businesses -exec cat {} \; > businesses
 find **/src -type f -name canadaTransactions -exec cat {} \; > canadaTransactions
 find **/src -type f -name cicoServiceProviders -exec cat {} \; > cicoServiceProviders
@@ -34,4 +35,5 @@ find **/src -type f -name services -exec cat {} \; > services
 find **/src -type f -name tests -exec cat {} \; > tests
 find **/src -type f -name tokens -exec cat {} \; > tokens
 find **/src -type f -name transactions -exec cat {} \; > transactions
+find **/src -type f -name transactionLimits -exec cat {} \; > transactionLimits
 find **/src -type f -name users -exec cat {} \; > users

@@ -3,18 +3,22 @@ foam.CLASS({
   name: 'BankAccountsView',
   extends: 'foam.u2.Controller',
 
-  requires: [
-    'net.nanopay.model.BankAccount',
-    'foam.u2.dialog.Popup'
-  ],
-
-  imports: [ 'bankAccountDAO', 'stack' ],
+  documentation: 'View displaying list of Bank Accounts added.',
 
   implements: [
     'foam.mlang.Expressions',
   ],
 
-  documentation: 'View displaying list of Bank Accounts added.',
+  imports: [
+    'user',
+    'stack',
+    'bankAccountDAO'
+  ],
+
+  requires: [
+    'foam.u2.dialog.Popup',
+    'net.nanopay.model.BankAccount'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -99,7 +103,12 @@ foam.CLASS({
     'verifiedBanksCount',
     'unverifiedBanksCount',
     'selection',
-    { name: 'data', factory: function () { return this.bankAccountDAO; } }
+    {
+      name: 'data',
+      factory: function () {
+        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+      }
+    }
   ],
 
   messages: [
@@ -136,14 +145,14 @@ foam.CLASS({
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
-                dao: this.bankAccountDAO,
+                dao: this.data,
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
                 },
               summaryView: this.BankAccountTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.bankAccountDAO, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
     }
     
   ],
@@ -175,6 +184,7 @@ foam.CLASS({
       ],
 
       imports: [
+        'user',
         'bankAccountDAO'
       ],
 
@@ -198,7 +208,12 @@ foam.CLASS({
             }
           }
         },
-        { name: 'data', factory: function() { return this.bankAccountDAO; } }
+        {
+          name: 'data',
+          factory: function() {
+            return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+          }
+        }
       ],
 
       messages: [

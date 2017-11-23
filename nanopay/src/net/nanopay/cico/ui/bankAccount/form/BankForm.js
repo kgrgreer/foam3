@@ -12,10 +12,11 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
+    'stack',
     'bankAccountDAO',
     'closeDialog',
     'bankAccountVerification',
-    'stack',
     'selectedAccount'
   ],
 
@@ -70,9 +71,10 @@ foam.CLASS({
           // data from form
           var accountInfo = this.viewData;
 
-          if ( ( accountInfo.accountName == null || accountInfo.accountName == '' ) || 
-          ( accountInfo.transitNumber == null || accountInfo.transitNumber == '' ) || 
-          ( accountInfo.accountNumber == null || accountInfo.accountNumber == '' ) ) {
+          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
+          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
+          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
+           accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
             return;
           }
@@ -87,11 +89,17 @@ foam.CLASS({
             return;
           }
 
+          if ( ! /^[0-9]{3}$/.exec(accountInfo.bankNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Invalid bank number.', type: 'error' }));
+            return;
+          }
+
           var newAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
-            accountNumber: accountInfo.accountNumber
+            accountNumber: accountInfo.accountNumber,
+            owner: this.user.id
           });
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
