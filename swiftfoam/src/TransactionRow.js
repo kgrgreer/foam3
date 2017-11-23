@@ -31,19 +31,15 @@ return f + " " + l
       swiftExpression: `
 var d: String!
 
-guard let rawD = (transaction$date as? String) else {
+guard let rawD = (transaction$date as? Date) else {
   return "Date failed to convert"
 }
 
-let baseFormatter = DateFormatter()
-baseFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 let convFormatter = DateFormatter()
 convFormatter.dateFormat = "dd MMM yyyy, hh:mma"
 
-let baseDate = baseFormatter.date(from: rawD)!
-
-let seconds = TimeZone.autoupdatingCurrent.secondsFromGMT(for: baseDate);
-let localTime = Date(timeInterval: TimeInterval(seconds), since: baseDate);
+let seconds = TimeZone.autoupdatingCurrent.secondsFromGMT(for: rawD);
+let localTime = Date(timeInterval: TimeInterval(seconds), since: rawD);
 
 d = convFormatter.string(from: localTime)
 
