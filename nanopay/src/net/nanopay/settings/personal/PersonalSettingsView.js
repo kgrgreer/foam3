@@ -516,6 +516,7 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'noInformation', message: 'Please fill out all fields.' },
     { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
@@ -533,6 +534,11 @@ foam.CLASS({
       label: 'Update',
       code: function (X) {
         var self = this;
+
+        if ( ! this.firstName || ! this.lastName || this.jobTitle || this.email || this.phoneNumber ) {
+          this.add(this.NotificationMessage.create({ message: this.noInformation, type: 'error' }));
+          return;
+        }
       }
     },
     {
