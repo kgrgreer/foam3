@@ -15,7 +15,8 @@ foam.CLASS({
     'stack',
     'account',
     'accountDAO',
-    'loginSuccess'
+    'loginSuccess',
+    'webApp'
   ],
 
   exports: [ 'as data' ],
@@ -81,12 +82,14 @@ foam.CLASS({
           .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
-          .start('p').add("Don't have an account?").end()
-          .start('p').style({ 'margin-left': '2px' }).addClass('link')
-            .add("Sign up.")
-            .on('click', this.signUp)
-          .end()
-          .start('p').style({ 'margin-left': '150px' }).addClass('link')
+          .callIf(this.webApp != 'connected-city', function(){
+            this.start('p').add("Don't have an account?").end()
+            .start('p').style({ 'margin-left': '2px' }).addClass('link')
+              .add("Sign up.")
+              .on('click', this.signUp)
+            .end()
+          })
+          .start('p').style({ 'float': 'right' }).addClass('link')
             .add("Forgot Password?")
             .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.EmailView' })})
           .end()
