@@ -12,10 +12,11 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
+    'stack',
     'bankAccountDAO',
     'closeDialog',
     'bankAccountVerification',
-    'stack',
     'selectedAccount'
   ],
 
@@ -97,7 +98,8 @@ foam.CLASS({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
-            accountNumber: accountInfo.accountNumber
+            accountNumber: accountInfo.accountNumber,
+            owner: this.user.id
           });
 
           this.bankAccountDAO.put(newAccount).then(function(response) {

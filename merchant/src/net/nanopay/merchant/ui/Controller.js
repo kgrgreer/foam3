@@ -209,25 +209,31 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      // Inject sample user
-      this.userDAO.limit(1).select().then(function (a) {
-        self.user.copyFrom(a.array[0]);
-      });
-
-      if ( localStorage.serialNumber ) {
-        this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
-          if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
-            self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-          } else {
-            self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
-          }
-        })
-        .catch(function (err) {
-          self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-        })
-      } else {
+      if ( ! localStorage.serialNumber ) {
         this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+        return;
       }
+
+      this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
+        if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
+          throw new Error('Device not active');
+        }
+
+        self.device.copyFrom(result);
+        return self.userDAO.find(result.owner);
+      })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Owner not found');
+        }
+
+        self.user.copyFrom(result);
+        self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+      })
+      .catch(function (err) {
+        console.log('err = ', err);
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
+      });
     },
 
     function initE() {
