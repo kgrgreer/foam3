@@ -3,6 +3,8 @@ require(__dirname + '/../nanopay/src/net/nanopay/files.js');
 
 var classes = [
   'MintChipClient',
+  'net.nanopay.cico.model.TransactionStatus',
+  'net.nanopay.cico.model.TransactionType',
   'MintChipSession',
   'TransactionRow',
   'TransactionRowIBView',
