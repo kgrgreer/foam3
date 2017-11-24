@@ -44,9 +44,8 @@ public class UserTransactionLimitService
   @Override
   public long getLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
     User user = (User) userDAO_.find(userId);
-
     if ( user == null ) {
-      throw new RuntimeException("User not found.");
+      throw new RuntimeException("User not found");
     }
 
     for ( TransactionLimit userLimit : user.getTransactionLimits() ) {
@@ -54,16 +53,28 @@ public class UserTransactionLimitService
         return userLimit.getAmount();
       }
     }
+
     String limitName = DEFAULT_USER_TRANSACTION_LIMIT;
     if ( isBroker(userId) ) {
       limitName = DEFAULT_BROKER_TRANSACTION_LIMIT;
     }
-    DAO tLimitDAO  = transactionLimitDAO_.where(AND( EQ(limitName, TransactionLimit.NAME),
-                                       EQ(type, TransactionLimit.TYPE),
-                                       EQ(timeFrame, TransactionLimit.TIME_FRAME) )
-                                  );
 
-    return ((Double)(((Sum) tLimitDAO.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
+    Sink sink = new ListSink();
+    sink = transactionLimitDAO_.where(AND(
+        EQ(limitName, TransactionLimit.NAME),
+        EQ(type, TransactionLimit.TYPE),
+        EQ(timeFrame, TransactionLimit.TIME_FRAME)))
+        .limit(1).select(sink);
+    if ( sink == null ) {
+      throw new RuntimeException("Limits not found");
+    }
+
+    List data = ((ListSink) sink).getData();
+    if ( data == null || data.size() < 1 ) {
+      throw new RuntimeException("Limits not found");
+    }
+
+    return ((TransactionLimit) data.get(0)).getAmount();
   }
 
 

@@ -8,10 +8,12 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus'
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   imports: [
+    'user',
     'deviceDAO'
   ],
 
@@ -87,6 +89,8 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
+        var self = this;
+
         if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
           this.viewData.password = Math.floor(Math.random() * (999999 - 100000)) + 100000;
           this.subStack.push(this.views[this.subStack.pos + 1].view);
@@ -100,7 +104,8 @@ foam.CLASS({
             type: deviceInfo.selectedOption - 1,
             status: this.DeviceStatus.PENDING,
             serialNumber: deviceInfo.serialNumber,
-            password: deviceInfo.password
+            password: deviceInfo.password,
+            owner: this.user.id
           });
 
           this.deviceDAO.put(newDevice)
@@ -108,7 +113,7 @@ foam.CLASS({
             X.stack.back();
           })
           .catch(function (err) {
-            // TODO: handle error
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
 
           return;

@@ -9,9 +9,12 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  imports: [ 
-    'stack',
+  imports: [
     'auth',
+    'user',
+    'stack',
+    'account',
+    'accountDAO',
     'loginSuccess'
   ],
 
@@ -19,9 +22,9 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'net.nanopay.model.Account',
     'foam.comics.DAOCreateControllerView',
-    'net.nanopay.ui.NotificationMessage',
-    'foam.nanos.auth.WebAuthService'
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   axioms: [
@@ -113,15 +116,27 @@ foam.CLASS({
     {
       name: 'signIn',
       label: 'Sign In',
-      isEnabled: function(email, password){
-        return email && password;
-      },
       code: function(X){
         var self = this;
-        
-        this.auth.loginByEmail(this.email, this.password).then(function(user){
+
+        if ( ! this.email ) {
+          this.add(this.NotificationMessage.create({ message: 'Please enter an email address', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.password ) {
+          this.add(this.NotificationMessage.create({ message: 'Please enter a password', type: 'error' }));
+          return;
+        }
+
+        this.auth.loginByEmail(null, this.email, this.password).then(function(user){
           self.loginSuccess = user ? true : false;
-        }).catch(function(a){
+          self.user.copyFrom(user);
+          return self.accountDAO.where(self.EQ(self.Account.OWNER, self.user.id)).limit(1).select();
+        }).then(function (result) {
+          self.account.copyFrom(result.array[0]);
+          self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+        }).catch(function(a) {
           self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
         });
       }

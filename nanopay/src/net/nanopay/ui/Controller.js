@@ -6,30 +6,31 @@ foam.CLASS({
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
-    'foam.nanos.client.Client',
     'foam.mlang.Expressions',
-    'net.nanopay.util.CurrencyFormatter',
-    'net.nanopay.ui.style.AppStyles',
+    'foam.nanos.client.Client',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling',
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.util.CurrencyFormatter'
   ],
 
   requires: [
-    'net.nanopay.model.Currency',
-    'net.nanopay.model.Account',
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.Account',
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.Currency'
   ],
 
   exports: [
     'account',
-    'stack',
     'as ctrl',
-    'user',
-    'requestLogin'
+    'requestLogin',
+    'loginSuccess',
+    'stack',
+    'user'
   ],
 
   imports: [
@@ -66,7 +67,6 @@ foam.CLASS({
       padding: 8px;
       width: auto;
     }
-
   `,
 
   properties: [
@@ -100,15 +100,19 @@ foam.CLASS({
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-      /*******   Loads User for Testing Purposes (comment out if not needed)  ********/
-      this.userDAO.select().then(function(a) {
-        self.user.copyFrom(a.array[0]);
+      // get current user, else show login
+      this.auth.getCurrentUser(null).then(function (result) {
+        self.loginSuccess = result ? true : false;
+        self.user.copyFrom(result);
+        return self.accountDAO.where(self.EQ(self.Account.OWNER, self.user.id)).limit(1).select();
+      })
+      .then(function (result) {
+        self.account.copyFrom(result.array[0]);
+      })
+      .catch(function (err) {
+        self.requestLogin();
       });
 
-      /*******   Loads Account with balance for Testing Purposes (comment out if not needed)  ********/
-      this.accountDAO.select().then(function(a) {
-        self.account.copyFrom(a.array[0]);
-      });
       window.onpopstate = function(event) {
         if ( location.hash != null ) {
           var hid = location.hash.substr(1);
@@ -138,8 +142,12 @@ foam.CLASS({
 
     function requestLogin(){
       var self = this;
+      // don't go to log in screen if going to reset password screen
+      if ( location.hash != null && location.hash === '#reset' ) {
+        return;
+      }
 
-      return new Promise(function(resolve, reject){
+      return new Promise(function(resolve, reject) {
         self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
