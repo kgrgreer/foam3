@@ -10,6 +10,7 @@ public class ServiceURLs {
   public enum Host: String {
     case Localhost = "http://localhost:8080/"
     case KennysMacBook = "http://192.168.20.54:8080/"
+    case CCDemo = "https://foam.demo.nanopay.net/"
   }
 
   static var hostRoute: Host = .Localhost
