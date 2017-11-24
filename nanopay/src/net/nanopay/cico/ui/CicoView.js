@@ -56,10 +56,10 @@ foam.CLASS({
           display: inline-block;
           vertical-align: top;
         }
-        ^ .greenBar {
+        ^ .sideBar {
           width: 6px;
           height: 100px;
-          background-color: #23c2b7;
+          background-color: %SECONDARYCOLOR%;
           float: left;
         }
         ^ .balanceBoxTitle {
@@ -88,7 +88,7 @@ foam.CLASS({
           width: 135px;
           height: 50px;
           border-radius: 2px;
-          background: #59a5d5;
+          background: %SECONDARYCOLOR%;
           color: white;
           margin: 0;
           padding: 0;
@@ -138,6 +138,9 @@ foam.CLASS({
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
+        }
+        ^ thead > tr > th{
+          background: %TABLECOLOR%;
         }
       */}
     })
@@ -197,7 +200,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('div').addClass('balanceBox')
-            .start('div').addClass('greenBar').end()
+            .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
             .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
           .end()

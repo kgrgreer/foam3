@@ -47,6 +47,7 @@ foam.CLASS({
       ^ .net-nanopay-ui-ActionView-signIn{
         width: 90%;
         margin-left: 25px;
+        background: %SECONDARYCOLOR%;
       }
     */}
     })
