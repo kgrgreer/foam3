@@ -62,7 +62,9 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
-  'net.nanopay.tx.model.TransactionPurpose'
+  'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.cico.model.TransactionStatus',
+  'net.nanopay.cico.model.TransactionType'
 ];
 
 module.exports = {

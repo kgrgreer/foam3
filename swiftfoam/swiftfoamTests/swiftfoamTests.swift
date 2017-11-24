@@ -7,7 +7,7 @@ class swiftfoamTests: XCTestCase {
   let password = "Nanopay123"
 
   override func setUp() {
-    client.httpBoxUrlRoot = .Localhost
+    client.httpBoxUrlRoot = .CCDemo
     super.setUp()
   }
 
@@ -67,7 +67,7 @@ class swiftfoamTests: XCTestCase {
       try client.clientAuthService!.updatePassword(client.__context__, "SomeIncorrectPassword", "Mintchip123")
       XCTFail("Old password was incorrect and should have failed.")
     } catch let e {
-      XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+      print(((e as? FoamError)?.toString()) ?? "Error!")
     }
   }
 
@@ -131,7 +131,19 @@ class swiftfoamTests: XCTestCase {
         user = try client.clientAuthService!.loginByEmail(client.__context__, username, password)
       }
 
-      let transactions = try (client.transactionDAO!.select() as! ArraySink).array as! [Transaction]
+      let pred = client.__context__.create(Or.self, args: [
+        "args": [
+          client.__context__.create(Eq.self, args: [
+            "arg1": Transaction.PAYER_ID(),
+            "arg2": user.id
+          ]),
+          client.__context__.create(Eq.self, args: [
+            "arg1": Transaction.PAYEE_ID(),
+            "arg2": user.id
+          ])]
+        ])
+
+      let transactions = try (client.transactionDAO!.`where`(pred).select() as! ArraySink).array as! [Transaction]
       for transaction in transactions {
         XCTAssert(transaction.payerId == user.id || transaction.payeeId == user.id, "User must have participated in the transaction")
       }
