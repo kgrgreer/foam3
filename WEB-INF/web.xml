@@ -3,6 +3,9 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
+  <welcome-file-list>
+    <welcome-file>/nanopay/src/net/nanopay/index.html</welcome-file>
+  </welcome-file-list>
   <servlet>
     <servlet-name>boot</servlet-name>
     <servlet-class>foam.nanos.tomcat.BootServlet</servlet-class>
@@ -14,14 +17,10 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>nanos</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/service/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/static/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>default</servlet-name>
-    <url-pattern>/dev/*</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 </web-app>
