@@ -53,6 +53,7 @@ cp users /opt/tomcat/bin/
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
 cp -r nanopay/ /opt/tomcat/webapps/ROOT/nanopay
+cp -r merchant/ /opt/tomcat/webapps/ROOT/merchant
 
 # Move images to ROOT/images
 cd /opt/tomcat/webapps/ROOT

@@ -60,6 +60,7 @@ cp users $CATALINA_HOME/bin/
 # Copy over static web files to ROOT
 cp -r foam2/ /Library/Tomcat/webapps/ROOT/foam2
 cp -r nanopay/ /Library/Tomcat/webapps/ROOT/nanopay
+cp -r merchant/ /Library/Tomcat/webapps/ROOT/merchant
 
 # Move images to ROOT/images
 cd /Library/Tomcat/webapps/ROOT
