@@ -33,6 +33,7 @@ foam.CLASS({
     'user',
     'logo',
     'signUpEnabled',
+    'webApp',
     'wrapCSS as installCSS'
   ],
 
@@ -100,7 +101,14 @@ foam.CLASS({
     'secondaryColor',
     'tableColor',
     'accentColor',
-    'signUpEnabled'
+    'webApp',
+    {
+      class: 'Boolean',
+      name: 'signUpEnabled',
+      adapt: function(v) {
+        return v === 'false' ? false : true;
+      }
+    }
   ],
 
   methods: [

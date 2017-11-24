@@ -81,7 +81,7 @@ foam.CLASS({
           .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
-          .callIf(JSON.parse(this.signUpEnabled), function(){
+          .callIf(this.signUpEnabled, function(){
             this.start('p').add("Don't have an account?").end()
             .start('p').style({ 'margin-left': '2px' }).addClass('link')
               .add("Sign up.")
