@@ -298,7 +298,7 @@ foam.CLASS({
           height: 70px;
           padding-top: 30px;
           border-radius: 2px;
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           text-align: center;
           color: white;
           font-weight: 16px;

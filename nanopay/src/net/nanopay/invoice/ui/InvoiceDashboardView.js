@@ -98,6 +98,9 @@ foam.CLASS({
         ^ .net-nanopay-invoice-ui-PayableSummaryView .net-nanopay-invoice-ui-SummaryCard{
           width: 15.9%;
         }
+        ^ .blue-card-title{
+          background: %SECONDARYCOLOR%;
+        }
       */}
     })
   ],
