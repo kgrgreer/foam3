@@ -14,14 +14,20 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-
+        ^ .stepTwoBottomMargin {
+          margin-bottom: 30px;
+        }
+        ^ .property-amount {
+          margin-left: 0;
+          border-radius: 0;
+        }
       */}
     })
   ],
 
   messages: [
     { name: 'Step', message: 'Step 2: Input the amount of money you want to send to the user.' },
-    { name: 'Amount', message: 'Amount' }
+    { name: 'AmountLabel', message: 'Amount' }
   ],
 
   properties: [
@@ -40,7 +46,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('p').addClass('pDefault').add(this.Step).end()
+          .start('p').add(this.Step).addClass('pDefault stepTopMargin stepTwoBottomMargin').end()
+          .start().add(this.AmountLabel).addClass('infoLabel').end()
+          .start(this.AMOUNT).addClass('inputLarge').end()
         .end();
     }
   ]

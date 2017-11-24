@@ -15,24 +15,13 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ .infoContainer {
-          width: 496px;
-          height: 350px;
-          background: white;
-          border-radius: 2px;
-          overflow-y: scroll;
-          padding: 20px;
-        }
         ^ .labelTitle {
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.2px;
           color: #093649;
         }
-        ^ .imageDiv {
-          margin-bottom: 20px;
-        }
-        ^ .userImage {
+        ^ .shopperImage {
           width: 80px;
           height: 80px;
           margin-top: 20px;
@@ -60,6 +49,7 @@ foam.CLASS({
           background-color: white;
           outline: none;
           cursor: pointer;
+          font-size: 14px;
         }
         ^ .provinceContainer {
           position: relative;
@@ -97,52 +87,6 @@ foam.CLASS({
           font-weight: 300;
           letter-spacing: 0.2px;
           color: #093649;
-        }
-        ^ .infoLabel {
-          font-size: 14px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
-        ^ .inputSmall {
-          width: 65px;
-          height: 40px;
-          margin-top: 8px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          outline: none;
-          padding: 10px;
-          font-size: 14px;
-        }
-        ^ .inputMedium {
-          width: 143px;
-          height: 40px;
-          margin-top: 8px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          outline: none;
-          padding: 10px;
-          font-size: 14px;
-        }
-        ^ .inputLarge {
-          width: 218px;
-          height: 40px;
-          margin-top: 8px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          outline: none;
-          padding: 10px;
-          font-size: 14px;
-        }
-        ^ .inputExtraLarge {
-          width: 100%;
-          height: 40px;
-          margin-top: 8px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          padding: 10px;
-          outline: none;
-          font-size: 14px;
         }
         ^ .topMargin {
           margin-top: 20px;
@@ -188,6 +132,9 @@ foam.CLASS({
       name: 'birthday',
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.birthday = newValue;
       }
     },
     {
@@ -227,6 +174,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.province = newValue;
       }
     },
     {
@@ -275,8 +225,8 @@ foam.CLASS({
           .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
             .start().add(this.PersonalInformationLabel).addClass('labelTitle').end()
-            .start().addClass('imageDiv')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('userImage').end()
+            .start().addClass('bottomMargin')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('shopperImage').end()
               .start().addClass('uploadButtonContainer')
                 .add(this.UPLOAD_IMAGE)
                 .start().add(this.UploadDesc).addClass('uploadDescription').end()
