@@ -9,10 +9,11 @@ foam.CLASS({
     'foam.box.SessionClientBox',
     'foam.box.swift.FileBox',
     'foam.dao.ClientDAO',
-    'foam.swift.parse.json.FObjectParser',
+    'foam.dao.DAOSink',
+    'foam.nanos.auth.ClientAuthService',
     'foam.swift.dao.ArrayDAO',
     'foam.swift.dao.CachingDAO',
-    'foam.nanos.auth.ClientAuthService',
+    'foam.swift.parse.json.FObjectParser',
     'net.nanopay.auth.token.ClientTokenService',
     'net.nanopay.tx.client.ClientUserTransactionLimitService'
   ],
@@ -224,6 +225,13 @@ onDetach(session$.swiftSub({ [weak self] _, _ in
   self!.onDetach(sessionSub)
   self!.onSessionChanged()
 }))
+      `,
+    },
+    {
+      name: 'refreshTransactionDAO',
+      swiftCode: `
+let dao = self.transactionDAO as! CachingDAO
+_ = try? dao.src.select(DAOSink_create(["dao": dao.cache]))
       `,
     },
   ],
