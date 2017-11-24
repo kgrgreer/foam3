@@ -80,18 +80,17 @@ foam.CLASS({
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
           }
-          // Add Shopper
         }
 
         if ( this.position == 1 ) {
-
-          if( shopperInfo.amount == 0 ) {
-            self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
-            return;
-          }
           if( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
+            if( shopperInfo.amount == 0 || shopperInfo.amount == null) {
+              self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
+              return;
+            } else {
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              return;
+            }
           }
           // Send Money
         }
@@ -120,8 +119,10 @@ foam.CLASS({
             console.log(response);
             self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            return;
           });
           // Review
         }
@@ -133,8 +134,4 @@ foam.CLASS({
       }
     }
   ]
-
-
-
-
-})
+});
