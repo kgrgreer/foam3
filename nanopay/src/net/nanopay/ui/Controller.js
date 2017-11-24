@@ -32,7 +32,7 @@ foam.CLASS({
     'stack',
     'user',
     'logo',
-    'webApp',
+    'signUpEnabled',
     'wrapCSS as installCSS'
   ],
 
@@ -100,7 +100,7 @@ foam.CLASS({
     'secondaryColor',
     'tableColor',
     'accentColor',
-    'webApp'
+    'signUpEnabled'
   ],
 
   methods: [

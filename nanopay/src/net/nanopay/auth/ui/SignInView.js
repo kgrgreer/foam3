@@ -16,7 +16,7 @@ foam.CLASS({
     'account',
     'accountDAO',
     'loginSuccess',
-    'webApp'
+    'signUpEnabled'
   ],
 
   exports: [ 'as data' ],
@@ -70,7 +70,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
       this.addClass(this.myClass())
       .start()
         .start('h1').add("Sign In").end()
@@ -82,7 +81,7 @@ foam.CLASS({
           .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
-          .callIf(this.webApp != 'connected-city', function(){
+          .callIf(JSON.parse(this.signUpEnabled), function(){
             this.start('p').add("Don't have an account?").end()
             .start('p').style({ 'margin-left': '2px' }).addClass('link')
               .add("Sign up.")
