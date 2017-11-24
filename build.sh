@@ -1,9 +1,21 @@
 cd /pkg/stack/stage/NANOPAY
-./find.sh
+
+set -e
+cwd=$(pwd)
+
 ./gen.sh
 mvn clean install
 
+cp target/ROOT.war /opt/tomcat/webapps
+
+cd /opt/tomcat/bin
+./shutdown.sh
+./startup.sh
+sleep 5
+
 cd /pkg/stack/stage/NANOPAY
+./find.sh
+
 cp accounts /opt/tomcat/bin/
 cp branches /opt/tomcat/bin/
 cp bankAccounts /opt/tomcat/bin/
@@ -37,9 +49,13 @@ cp services /opt/tomcat/bin/
 cp tests /opt/tomcat/bin/
 cp transactions /opt/tomcat/bin/
 cp users /opt/tomcat/bin/
-cp -r $(pwd) /opt/tomcat/bin/NANOPAY
-cp target/ROOT.war /opt/tomcat/webapps
 
-cd /opt/tomcat/bin
-./shutdown.sh
-./startup.sh
+# Copy over static web files to ROOT
+cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
+cp -r nanopay/ /opt/tomcat/webapps/ROOT/nanopay
+
+# Move images to ROOT/images
+cd /opt/tomcat/webapps/ROOT
+mkdir images
+cd nanopay/src/net/nanopay/
+mv images/ ../../.././../
