@@ -103,7 +103,6 @@ foam.CLASS({
           });
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
-            console.log(response);
             self.newBankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
           }).catch(function(error) {

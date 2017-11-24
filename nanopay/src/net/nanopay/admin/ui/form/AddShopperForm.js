@@ -7,12 +7,14 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Address',
     'net.nanopay.ui.NotificationMessage'
   ],
 
   imports: [
     'closeDialog',
-    'stack'
+    'stack',
+    'userDAO'
   ],
 
   exports: [],
@@ -53,8 +55,27 @@ foam.CLASS({
       },
       code: function() {
         var self = this;
-        if ( this.position == 0 ) {
-          var shopperInfo = this.viewData;
+
+        // info from form
+        var shopperInfo = this.viewData;
+
+        if ( this.position == 0 ) { // On Shopper Info Screen
+
+          if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
+          ( shopperInfo.lastName == null || shopperInfo.lastName.trim() == '' ) ||
+          ( shopperInfo.emailAddress == null || shopperInfo.emailAddress.trim() == '' ) ||
+          ( shopperInfo.phoneNumber == null || shopperInfo.phoneNumber.trim() == '' ) ||
+          ( shopperInfo.birthday == null || shopperInfo.birthday == 'yyyy-mm-dd' ) ||
+          ( shopperInfo.streetNumber == null || shopperInfo.streetNumber.trim() == '' ) ||
+          ( shopperInfo.streetName == null || shopperInfo.streetName.trim() == '' ) ||
+          ( shopperInfo.city == null || shopperInfo.city.trim() == '' ) ||
+          ( shopperInfo.postalCode == null || shopperInfo.postalCode.trim() == '' ) ||
+          ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) )
+          {
+            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            return;
+          }
+
           if( true ) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
@@ -63,19 +84,45 @@ foam.CLASS({
         }
 
         if ( this.position == 1 ) {
+
+          if( shopperInfo.amount == 0 ) {
+            self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
+            return;
+          }
           if( true ) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
           }
-          
           // Send Money
         }
 
         if ( this.position == 2 ) {
-          if( true ) {
+
+          var shopperAddress = this.Address.create({
+            address: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
+            suite: shopperInfo.addressLine,
+            city: shopperInfo.city,
+            postalCode: shopperInfo.postalCode,
+            regionId: shopperInfo.province
+          });
+
+          var newShopper = this.User.create({
+            firstName: shopperInfo.firstName,
+            lastName: shopperInfo.lastName,
+            email: shopperInfo.emailAddress,
+            type: 'Shopper',
+            birthday: shopperInfo.birthday,
+            address: shopperAddress,
+            password: shopperInfo.password,
+          });
+
+          this.userDAO.put(newShopper).then(function(response) {
+            console.log(response);
+            self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
+          }).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
           // Review
         }
 
