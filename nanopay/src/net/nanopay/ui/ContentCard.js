@@ -19,7 +19,7 @@ foam.CLASS({
         ^ .coloredColumn {
           content: '';
           position: absolute;
-          background-color: #23C2b7;
+          background-color: %SECONDARYCOLOR%;
           width: 6px;
           height: 100px;
         }

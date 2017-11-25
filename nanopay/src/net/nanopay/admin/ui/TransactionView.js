@@ -59,7 +59,7 @@ foam.CLASS({
       }
 
       ^container th {
-        background-color: rgba(94, 145, 203, 0.4);
+        background: black;
         font-family: Roboto;
         font-size: 16px;
         font-weight: normal;
