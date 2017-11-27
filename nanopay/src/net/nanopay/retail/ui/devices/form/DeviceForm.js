@@ -89,6 +89,8 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
+        var self = this;
+
         if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
           this.viewData.password = Math.floor(Math.random() * (999999 - 100000)) + 100000;
           this.subStack.push(this.views[this.subStack.pos + 1].view);
@@ -111,7 +113,7 @@ foam.CLASS({
             X.stack.back();
           })
           .catch(function (err) {
-            // TODO: handle error
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
 
           return;

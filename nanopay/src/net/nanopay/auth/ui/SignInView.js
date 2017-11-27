@@ -15,7 +15,8 @@ foam.CLASS({
     'stack',
     'account',
     'accountDAO',
-    'loginSuccess'
+    'loginSuccess',
+    'signUpEnabled'
   ],
 
   exports: [ 'as data' ],
@@ -47,6 +48,7 @@ foam.CLASS({
       ^ .net-nanopay-ui-ActionView-signIn{
         width: 90%;
         margin-left: 25px;
+        background: %SECONDARYCOLOR%;
       }
     */}
     })
@@ -68,7 +70,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
       this.addClass(this.myClass())
       .start()
         .start('h1').add("Sign In").end()
@@ -80,12 +81,14 @@ foam.CLASS({
           .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
-          .start('p').add("Don't have an account?").end()
-          .start('p').style({ 'margin-left': '2px' }).addClass('link')
-            .add("Sign up.")
-            .on('click', this.signUp)
-          .end()
-          .start('p').style({ 'margin-left': '150px' }).addClass('link')
+          .callIf(this.signUpEnabled, function(){
+            this.start('p').add("Don't have an account?").end()
+            .start('p').style({ 'margin-left': '2px' }).addClass('link')
+              .add("Sign up.")
+              .on('click', this.signUp)
+            .end()
+          })
+          .start('p').style({ 'float': 'right' }).addClass('link')
             .add("Forgot Password?")
             .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.EmailView' })})
           .end()

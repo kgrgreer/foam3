@@ -163,8 +163,21 @@ foam.CLASS({
           transition: max-height 1.2s ease;
           max-height: 600px;
         }
-       ^ .expandTrue{
+        ^ .expandTrue{
           max-height: 0;
+        }
+        ^ .net-nanopay-ui-ActionView-editProfile {
+          color: #59a5d5;
+          width: 62px;
+          height: 0px;
+          text-decoration: underline;
+          margin-left: 42px;
+        }
+        ^ .net-nanopay-ui-ActionView-editProfile:hover {
+          cursor: pointer;
+        }
+        ^ .net-nanopay-ui-ActionView-editProfile:active {
+          color: #2974a3;
         }
       */}
     })
@@ -200,6 +213,7 @@ foam.CLASS({
         .start().addClass('businessSettingsContainer')
           .start().addClass('Container')
             .start().add('Business Profile').addClass('boxTitle').end()
+            .add(this.EDIT_PROFILE)
             .start()
               .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$, true)
               .add(this.expandBox1$.map(function(e) { return e ? "Expand" : "Close"; }))
@@ -208,8 +222,6 @@ foam.CLASS({
             .end()
         
           .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox1$)
-            .add(this.EDIT_PROFILE)
-            .br()
             .start().addClass('profileImgDiv')
               .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
               .start().add('Company Name').addClass('companyName').end()
@@ -302,6 +314,16 @@ foam.CLASS({
         .end()
       .end()      
     .end()										       
+    }
+  ],
+
+  actions: [
+    {
+      name: 'editProfile',
+      label: 'Edit Profile',
+      code: function (X) {
+        X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', showCancel: true });
+      }
     }
   ]
 });

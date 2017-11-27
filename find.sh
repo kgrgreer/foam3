@@ -37,3 +37,4 @@ find **/src -type f -name tokens -exec cat {} \; > tokens
 find **/src -type f -name transactions -exec cat {} \; > transactions
 find **/src -type f -name transactionLimits -exec cat {} \; > transactionLimits
 find **/src -type f -name users -exec cat {} \; > users
+find **/src -type f -name groups -exec cat {} \; > groups

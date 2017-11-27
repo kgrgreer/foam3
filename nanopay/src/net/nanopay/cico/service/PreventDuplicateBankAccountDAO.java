@@ -21,8 +21,7 @@ public class PreventDuplicateBankAccountDAO
   }
 
   public PreventDuplicateBankAccountDAO(X x, DAO delegate) {
-    setX(x);
-    setDelegate(delegate);
+    super(x, delegate);
   }
 
   @Override
@@ -34,17 +33,27 @@ public class PreventDuplicateBankAccountDAO
     // with same account information
     if ( newAccount ) {
       Count count = new Count();
-      DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
+      DAO bankAccountDAO = getDelegate();
 
+      // prevent registration of account with same account name
+      count = (Count) bankAccountDAO.where(AND(
+          EQ(BankAccount.OWNER, account.getOwner()),
+          EQ(BankAccount.ACCOUNT_NAME, account.getAccountName())
+      )).limit(1).select(count);
+      if ( count.getValue() == 1 ) {
+        throw new RuntimeException("Bank account with same name already registered");
+      }
+
+      // prevent registration of account with same account details
+      count = new Count();
       count = (Count) bankAccountDAO.where(AND(
           EQ(BankAccount.OWNER, account.getOwner()),
           EQ(BankAccount.ACCOUNT_NUMBER, account.getAccountNumber()),
           EQ(BankAccount.TRANSIT_NUMBER, account.getTransitNumber()),
           EQ(BankAccount.INSTITUTION_NUMBER, account.getInstitutionNumber())
       )).limit(1).select(count);
-
       if ( count.getValue() == 1 ) {
-        throw new RuntimeException("Bank account already registered");
+        throw new RuntimeException("Bank account with same details already registered");
       }
     }
 
