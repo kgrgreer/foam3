@@ -183,7 +183,7 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-exportButton {
           position: absolute;
           width: 75px;
-          height: 35px;
+          height: 40px;
           opacity: 0.01;
           cursor: pointer;
           z-index: 100;
