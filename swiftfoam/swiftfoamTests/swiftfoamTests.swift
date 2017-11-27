@@ -49,11 +49,11 @@ class swiftfoamTests: XCTestCase {
         user = try client.clientAuthService!.loginByEmail(client.__context__, username, password)
       }
 
-      try client.clientAuthService!.updatePassword(client.__context__, password, "Mintchip123")
-      user = try client.clientAuthService!.loginByEmail(client.__context__, username, "Mintchip123")
+      try client.clientAuthService!.updatePassword(client.__context__, password, "Nanopay123")
+      user = try client.clientAuthService!.loginByEmail(client.__context__, username, "Nanopay123")
 
       //reset user back to correct password
-      try client.clientAuthService!.updatePassword(client.__context__, "Mintchip123", password)
+      try client.clientAuthService!.updatePassword(client.__context__, "Nanopay123", password)
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
