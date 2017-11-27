@@ -32,6 +32,7 @@ var classes = [
   'foam.mlang.Constant',
   'foam.mlang.Expr',
   'foam.mlang.predicate.Eq',
+  'foam.mlang.sink.Count',
   'foam.nanos.auth.Address',
   'foam.nanos.auth.Hours',
   'foam.nanos.auth.DayOfWeek',

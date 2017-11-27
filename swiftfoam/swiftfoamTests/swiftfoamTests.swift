@@ -3,8 +3,8 @@ import XCTest
 
 class swiftfoamTests: XCTestCase {
   var client: MintChipClient = Context.GLOBAL.create(MintChipClient.self)!
-  let username = "kenny@nanopay.net"
-  let password = "Nanopay123"
+  let username = "test@nanopay.net"
+  let password = "Mintchip123"
 
   override func setUp() {
     client.httpBoxUrlRoot = .CCDemo
