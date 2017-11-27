@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'View to display business logo and name.',
 
+  imports: [
+    'logo'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -57,7 +61,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start({ class: 'foam.u2.tag.Image', data: 'images/nanopay_logo_white.png' }).end()
+          .start({ class: 'foam.u2.tag.Image', data: this.logo }).end()
         .end();
     }
   ]

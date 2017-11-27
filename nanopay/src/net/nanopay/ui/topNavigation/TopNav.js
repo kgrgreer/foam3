@@ -11,7 +11,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          background: #093649;
+          background: %PRIMARYCOLOR%;
           width: 100%;
           min-width: 992px;
           height: 60px;
@@ -40,12 +40,12 @@ foam.CLASS({
           transition: text-shadow;
         }
         ^ .menuItem:hover {
-          border-bottom: 4px solid #1cc2b7;
+          border-bottom: 4px solid %ACCENTCOLOR%;
           padding-bottom: 5px;
           text-shadow: 0 0 0px white, 0 0 0px white;
         }
         ^ .selected {
-          border-bottom: 4px solid #1cc2b7;
+          border-bottom: 4px solid %ACCENTCOLOR%;
           padding-bottom: 5px;
           text-shadow: 0 0 0px white, 0 0 0px white;
         }

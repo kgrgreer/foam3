@@ -2,13 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.retail.model',
   name: 'Device',
 
+  ids: [ 'serialNumber' ],
+
   tableColumns: ['name', 'type', 'serialNumber', 'status'],
 
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'String',
       name: 'name',
@@ -34,6 +32,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'password'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'owner'
     }
   ]
 });

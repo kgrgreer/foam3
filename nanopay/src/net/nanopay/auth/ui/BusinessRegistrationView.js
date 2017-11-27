@@ -26,6 +26,11 @@ foam.CLASS({
 
   properties:[
     {
+      class: 'Boolean',
+      name: 'showCancel',
+      value: false
+    },
+    {
       name: 'businessName',
       validateObj: function(businessName) {
         if(!businessName) return 'Business Name required.'
@@ -126,6 +131,7 @@ foam.CLASS({
           text-align: left;
           color: #093649;
           margin-bottom: 50px;
+          display: inline-block;
         }
         ^registration-container{
           background: white;
@@ -205,6 +211,24 @@ foam.CLASS({
           background: none;
           background-color: #3783b3;
         }
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          width: 24px;
+          height: 24px;
+          margin: 0;
+          cursor: pointer;
+          display: inline-block;
+          float: right;
+          outline: 0;
+          border: none;
+          background: transparent;
+          box-shadow: none;
+          padding-top: 15px;
+
+        }
+        ^ .net-nanopay-ui-ActionView-closeButton:hover {
+          background: transparent;
+          background-color: transparent;
+        }
       */}
     })
   ],
@@ -217,6 +241,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('h2').add('Edit Business profile').end()
+          .start(this.CLOSE_BUTTON).show(this.showCancel$).end()
           .start().addClass(this.myClass('registration-container'))
             .start('h3').add('Business information').end()
             .start().addClass(this.myClass('business-image-container'))
@@ -283,6 +308,13 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'closeButton',
+      icon: 'images/ic-cancelwhite.svg',
+      code: function (X) {
+        X.stack.back();
+      }
+    },
     {
       name: 'saveBusiness',
       label: 'Save',

@@ -56,7 +56,7 @@ foam.CLASS({
           width: 218px;
           height: 100px;
           float: right;
-          background-color: #23C2b7;
+          background-color: %SECONDARYCOLOR%;
           letter-spacing: 0.3px;
           color: #FFFFFF;
           border-radius: 2px;
@@ -73,7 +73,8 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-addDevice:hover {
           background: none;
           cursor: pointer;
-          background-color: #20B1A7;
+          background: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
@@ -87,6 +88,9 @@ foam.CLASS({
           width: 1px;
           cursor: pointer;
           text-align: right;
+        }
+        ^ thead > tr > th{
+          background: %TABLECOLOR%;
         }
       */}
     })

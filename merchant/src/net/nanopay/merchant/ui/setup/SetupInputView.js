@@ -17,8 +17,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
     'device',
     'stack',
+    'userDAO',
     'deviceDAO',
     'serialNumber',
     'toolbarIcon',
@@ -224,6 +226,14 @@ foam.CLASS({
         }
 
         self.device.copyFrom(result);
+        return self.userDAO.find(result.owner);
+      })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device activation failed');
+        }
+
+        self.user.copyFrom(result);
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
