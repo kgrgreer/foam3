@@ -17,7 +17,6 @@ foam.CLASS({
           color: #373a3c;
           background: #edf0f5;
           margin: 0;
-          overflow: hidden;
         }
         table {
           border-collapse: collapse;

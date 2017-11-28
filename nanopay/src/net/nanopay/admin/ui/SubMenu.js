@@ -18,14 +18,14 @@ foam.CLASS({
           margin-top: -16px;
         }
 
-        ^ > div > ul {
+        ^ div > ul {
           padding-left: 0;
           font-weight: 100;
           letter-spacing: 0.2px;
           color: #093649;
         }
 
-        ^ > div > ul > li{
+        ^ div > ul > li{
           margin-left: 25px;
           display: inline-block;
           cursor: pointer;
@@ -37,7 +37,7 @@ foam.CLASS({
           letter-spacing: 0.3px;
         }
 
-        ^ > div > ul > li:hover {
+        ^ div > ul > li:hover {
           font-weight: bold;
         }
       */}
@@ -50,7 +50,7 @@ foam.CLASS({
 
   methods: [
     function initE(){
-      this.start({class: 'foam.nanos.menu.MenuBar', menuName: this.menuName }).addClass(this.myClass()).end()
+      this.start({class: 'foam.nanos.menu.MenuBar', menuName: this.menuName }).addClass(this.myClass()).end();
     }
   ]
 });
