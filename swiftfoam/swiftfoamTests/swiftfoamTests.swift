@@ -7,7 +7,7 @@ class swiftfoamTests: XCTestCase {
   let password = "Mintchip123"
 
   override func setUp() {
-    client.httpBoxUrlRoot = .CCDemo
+    client.httpBoxUrlRoot = .Localhost
     super.setUp()
   }
 
