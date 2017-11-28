@@ -5,27 +5,30 @@ foam.INTERFACE({
     {
       name: 'getFee',
       javaReturns: 'long',
+      swiftReturns: 'Int',
       returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
           name: 'transactionAmount',
-          javaType: 'long'
+          javaType: 'long',
+          swiftType: 'Int',
         }
       ]
     },
     {
       name: 'getTotalAmount',
       javaReturns: 'long',
+      swiftReturns: 'Int',
       returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
           name: 'transactionAmount',
-          javaType: 'long'
+          javaType: 'long',
+          swiftType: 'Int',
         }
       ]
     }
   ]
 });
-
