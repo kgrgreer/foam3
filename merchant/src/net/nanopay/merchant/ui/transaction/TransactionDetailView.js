@@ -227,7 +227,7 @@ foam.CLASS({
           .end()
         .end()
 
-      if ( ! this.data.refund ) {
+      if ( this.data.status != 'Refunded' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
@@ -240,7 +240,9 @@ foam.CLASS({
 
   listeners: [
     function onRefundClicked (e) {
-      this.stack.push(this.RefundView.create({ data: this.data }));
+      if ( this.data.status != 'Refunded' ) {
+        this.stack.push(this.RefundView.create({ data: this.data }));
+      }
     }
   ]
 });

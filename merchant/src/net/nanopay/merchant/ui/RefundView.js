@@ -138,10 +138,15 @@ foam.CLASS({
     function onRefundClicked (e) {
       var self = this;
 
+      // Update the current transaction as refunded
+      this.data.status = "Refunded";
+      this.transactionDAO.put(this.data);
+
       this.transactionDAO.put(this.Transaction.create({
         payerId: this.user.id,
         payeeId: this.data.user.id,
-        amount: this.data.amount
+        amount: this.data.amount,
+        status: "Refunded"
       }))
       .then(function () {
         self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
