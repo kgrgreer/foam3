@@ -3,7 +3,6 @@ require(__dirname + '/../nanopay/src/net/nanopay/files.js');
 
 var classes = [
   'MintChipClient',
-  'MintChipSession',
   'TransactionRow',
   'TransactionRowIBView',
   'foam.swift.ui.FOAMUILabel',

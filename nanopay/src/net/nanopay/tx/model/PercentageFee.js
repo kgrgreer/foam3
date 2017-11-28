@@ -6,7 +6,6 @@ foam.CLASS({
   properties: [
     {
       class: 'Float',
-      swiftType: 'Float',
       name: 'percentage'
     }
   ],

@@ -14,13 +14,11 @@ foam.CLASS({
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-      swiftType: 'TransactionLimitTimeFrame',
       name: 'timeFrame'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitType',
-      swiftType: 'TransactionLimitType',
       name: 'type'
     },
     {
