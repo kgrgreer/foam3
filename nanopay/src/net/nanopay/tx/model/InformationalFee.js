@@ -6,6 +6,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
+      swiftType: 'Int',
       name: 'amount'
     },
     {
@@ -22,11 +23,14 @@ foam.CLASS({
       args: [
         {
           name: 'transactionAmount',
-          javaType: 'long'
+          javaType: 'long',
+          swiftType: 'Int',
         }
       ],
       javaReturns: 'long',
+      swiftReturns: 'Int',
       javaCode: ' return this.getAmount(); ',
+      swiftCode: ' return amount ',
       code: function() {
         return this.amount;
       }
@@ -36,11 +40,14 @@ foam.CLASS({
       args: [
         {
           name: 'transactionAmount',
-          javaType: 'long'
+          javaType: 'long',
+          swiftType: 'Int',
         }
       ],
       javaReturns: 'long',
+      swiftReturns: 'Int',
       javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
+      swiftCode: ' return getFee(transactionAmount) + transactionAmount',
       code: function() {
         return getFee(transactionAmount) + transactionAmount;
       }

@@ -6,16 +6,15 @@
 //  Copyright © 2017 nanoPay Corporation. All rights reserved.
 //
 
-enum ServiceHost: String {
-  case Localhost = "http://localhost:8080/"
-}
+public class ServiceURLs {
+  public enum Host: String {
+    case Localhost = "http://localhost:8080/"
+    case CCDemo = "https://foam.demo.nanopay.net/service/"
+  }
 
-public enum ServiceURL: String {
-  case Transaction = "transactionDAO"
-  case Account = "accountDAO"
-  case User = "userDAO"
+  static var hostRoute: Host = .Localhost
 
-  func path() -> String {
-    return "\(ServiceHost.Localhost.rawValue)\(self.rawValue)"
+  public static func setHostRoute(url: Host) {
+    hostRoute = url
   }
 }

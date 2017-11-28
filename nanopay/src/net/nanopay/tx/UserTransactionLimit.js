@@ -12,6 +12,7 @@ foam.INTERFACE({
       javaReturns: 'long',
       swiftReturns: 'Int',
       returns: 'Promise',
+      swiftThrows: true,
       args: [
         {
           name: 'userId',
@@ -35,6 +36,7 @@ foam.INTERFACE({
       javaReturns: 'long',
       swiftReturns: 'Int',
       returns: 'Promise',
+      swiftThrows: true,
       args: [
         {
           name: 'userId',
