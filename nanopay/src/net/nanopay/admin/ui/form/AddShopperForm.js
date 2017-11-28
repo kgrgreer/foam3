@@ -43,6 +43,7 @@ foam.CLASS({
       label: 'Back',
       isAvailable: function() { return true; },
       code: function(X) {
+        this.closeDialog();
         X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
       }
     },
