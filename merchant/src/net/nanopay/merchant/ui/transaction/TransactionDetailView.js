@@ -240,7 +240,6 @@ foam.CLASS({
 
   listeners: [
     function onRefundClicked (e) {
-      if ( this.data.status == 'Refunded' ) return;
       this.stack.push(this.RefundView.create({ data: this.data }));
     }
   ]
