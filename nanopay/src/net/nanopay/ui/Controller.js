@@ -8,9 +8,6 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.client.Client',
-    'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles',
     'net.nanopay.util.CurrencyFormatter'
   ],
 
@@ -154,7 +151,10 @@ foam.CLASS({
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
         .br()
-        .tag({class: 'net.nanopay.ui.FooterView'});
+        .tag({class: 'net.nanopay.ui.FooterView'})
+        .tag({ class: 'net.nanopay.ui.style.AppStyles'}) 
+        .tag({ class: 'net.nanopay.invoice.ui.style.InvoiceStyles'})       
+        .tag({ class: 'net.nanopay.ui.modal.ModalStyling'});  
     },
 
     function wrapCSS(text, id) {
