@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Page to input verification amount that was deposited into the user\'s bank account provided.',
 
   requires: [
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [

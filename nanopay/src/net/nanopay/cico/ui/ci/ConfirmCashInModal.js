@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'net.nanopay.ui.NotificationMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType'
   ],

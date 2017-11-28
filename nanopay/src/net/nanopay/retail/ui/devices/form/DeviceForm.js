@@ -9,7 +9,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [

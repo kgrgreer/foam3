@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Pop up modal for confirming cash out.',
 
   requires: [
-    'net.nanopay.ui.NotificationMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType'
   ],

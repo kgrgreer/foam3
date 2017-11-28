@@ -8,7 +8,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   implements: [

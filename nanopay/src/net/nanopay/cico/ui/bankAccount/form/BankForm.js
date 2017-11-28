@@ -8,7 +8,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.model.BankAccount',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
