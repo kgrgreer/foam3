@@ -17,6 +17,7 @@ foam.CLASS({
           color: #373a3c;
           background: #edf0f5;
           margin: 0;
+          overflow: hidden;
         }
         table {
           border-collapse: collapse;
@@ -177,8 +178,7 @@ foam.CLASS({
            width: 50%;
            height: 40px;
            border: solid 1px rgba(164, 179, 184, 0.5);
-           padding-left: 5px;
-           padding-right: 5px;
+           padding: 15px;
            display: block;
            margin-top: 8px;
            outline: none;
@@ -408,7 +408,7 @@ foam.CLASS({
         }
         .infoContainer {
           width: 496px;
-          height: 350px;
+          height: 290px;
           background: white;
           border-radius: 2px;
           overflow-y: scroll;

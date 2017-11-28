@@ -94,6 +94,9 @@ foam.CLASS({
         ^ .rightMargin {
           margin-right: 10px;
         }
+        ^ .infoContainer{
+          height: 325px;
+        }
       */}
     })
   ],

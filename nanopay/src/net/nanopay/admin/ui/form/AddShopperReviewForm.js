@@ -53,14 +53,14 @@ foam.CLASS({
         }
         ^ .alignTopWithMargin {
           vertical-align: top;
-          margin-left: 60px;
+          margin-left: 180px;
         }
       */}
     })
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 3: Please review all the information details of the user.' },
+    { name: 'Step', message: 'Step 2: Please review all the information details of the user.' },
     { name: 'ShopperInfoLabel', message: 'Shopper Info' },
     { name: 'EmailLabel', message: 'Email' },
     { name: 'PhoneNumberLabel', message: 'Phone No.' },
@@ -75,7 +75,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      var formattedAmount = this.viewData.amount/100;
       var formattedBirthday = this.viewData.birthday.toISOString().substring(0, 10);
 
       this
@@ -94,9 +93,7 @@ foam.CLASS({
               .start().add(this.BirthdayLabel).addClass('boldLabel').end()
               .start().add(formattedBirthday).addClass('infoText bottomMargin').end()
               .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
-              .start().add(this.AmountLabel).addClass('boldLabel').end()
-              .start().add('$', formattedAmount.toFixed(2)).addClass('infoText').end()
+              .start().add(this.viewData.password).addClass('infoText').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.PhoneNumberLabel).addClass('boldLabel').end()

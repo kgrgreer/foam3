@@ -99,7 +99,6 @@ foam.CLASS({
           cursor: pointer;
           padding-top: 10px;
           height: 40px;
-          width: 75px;
         }
       */}
     })
