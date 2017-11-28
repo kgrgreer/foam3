@@ -14,6 +14,8 @@ var classes = [
   'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
+  'net.nanopay.cico.spi.alterna.SFTPService',
+  'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
@@ -56,6 +58,7 @@ var abstractClasses = [
 var skeletons = [
   'net.nanopay.auth.token.TokenService',
   'net.nanopay.cico.service.BankAccountVerificationInterface',
+  'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit'
 ];
