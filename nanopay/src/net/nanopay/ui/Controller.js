@@ -140,7 +140,7 @@ foam.CLASS({
          })
         }
       };
-      net.nanopay.TempMenu.create(null, this);
+
       window.onpopstate();
     },
 
@@ -173,7 +173,7 @@ foam.CLASS({
         this.installCSS(text.
           replace(/%PRIMARYCOLOR%/g, this.primaryColor).
           replace(/%SECONDARYCOLOR%/g, this.secondaryColor).
-          replace(/%TABLECOLOR%/g, this.tableColor).          
+          replace(/%TABLECOLOR%/g, this.tableColor).
           replace(/%ACCENTCOLOR%/g, this.accentColor),
           id);
       }
