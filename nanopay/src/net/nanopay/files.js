@@ -144,9 +144,6 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/ci/CashInSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
 
-  //misc
-  { name: 'net/nanopay/TempMenu' },
-
   //util
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },

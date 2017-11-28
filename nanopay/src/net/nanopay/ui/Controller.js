@@ -30,11 +30,16 @@ foam.CLASS({
     'requestLogin',
     'loginSuccess',
     'stack',
-    'user'
+    'user',
+    'logo',
+    'signUpEnabled',
+    'webApp',
+    'wrapCSS as installCSS'
   ],
 
   imports: [
-    'sessionSuccess'
+    'sessionSuccess',
+    'installCSS'
   ],
 
   css: `
@@ -90,6 +95,19 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loginSuccess',
       value: false
+    },
+    'logo',
+    'primaryColor',
+    'secondaryColor',
+    'tableColor',
+    'accentColor',
+    'webApp',
+    {
+      class: 'Boolean',
+      name: 'signUpEnabled',
+      adapt: function(v) {
+        return v === 'false' ? false : true;
+      }
     }
   ],
 
@@ -122,13 +140,12 @@ foam.CLASS({
          })
         }
       };
-      net.nanopay.TempMenu.create(null, this);
+
       window.onpopstate();
     },
 
     function initE() {
       var self = this;
-
       this
         .addClass(this.myClass())
         .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
@@ -138,6 +155,24 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function wrapCSS(text, id) {
+      if ( text ) {
+        if ( ! this.accentColor ) {
+          var self = this;
+          this.accentColor$.sub(function(s) {
+            self.wrapCSS(text, id);
+            s.detach();
+          });
+        }
+        this.installCSS(text.
+          replace(/%PRIMARYCOLOR%/g, this.primaryColor).
+          replace(/%SECONDARYCOLOR%/g, this.secondaryColor).
+          replace(/%TABLECOLOR%/g, this.tableColor).
+          replace(/%ACCENTCOLOR%/g, this.accentColor),
+          id);
+      }
     },
 
     function requestLogin(){

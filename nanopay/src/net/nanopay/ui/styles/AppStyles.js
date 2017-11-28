@@ -26,7 +26,7 @@ foam.CLASS({
         thead > tr > th {
           font-family: 'Roboto';
           font-size: 14px;
-          background-color: rgba(110, 174, 195, 0.2);
+          background-color: %TABLECOLOR%;
           color: #093649;
           line-height: 1.14;
           letter-spacing: 0.3px;
@@ -298,7 +298,7 @@ foam.CLASS({
           height: 70px;
           padding-top: 30px;
           border-radius: 2px;
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           text-align: center;
           color: white;
           font-weight: 16px;
