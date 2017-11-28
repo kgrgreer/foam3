@@ -29,6 +29,7 @@ foam.CLASS({
     'toolbarIcon',
     'toolbarTitle',
     'serialNumber',
+    'webApp',
     'wrapCSS as installCSS'    
   ],
 
@@ -93,7 +94,8 @@ foam.CLASS({
       name: 'stack',
       factory: function () { return this.Stack.create(); }
     },
-    'primaryColor'
+    'primaryColor',
+    'webApp'
   ],
 
   methods: [
