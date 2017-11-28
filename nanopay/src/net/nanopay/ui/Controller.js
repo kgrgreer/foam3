@@ -19,7 +19,9 @@ foam.CLASS({
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
-    'net.nanopay.ui.style.AppStyles'
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.invoice.ui.style.InvoiceStyles',
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   exports: [
@@ -144,6 +146,8 @@ foam.CLASS({
 
     function initE() {
       this.AppStyles.create();
+      this.InvoiceStyles.create();
+      this.ModalStyling.create();
 
       var self = this;
       this
@@ -154,9 +158,7 @@ foam.CLASS({
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
         .br()
-        .tag({ class: 'net.nanopay.ui.FooterView'})
-        .tag({ class: 'net.nanopay.invoice.ui.style.InvoiceStyles'})       
-        .tag({ class: 'net.nanopay.ui.modal.ModalStyling'});  
+        .tag({ class: 'net.nanopay.ui.FooterView'});
     },
 
     function wrapCSS(text, id) {
