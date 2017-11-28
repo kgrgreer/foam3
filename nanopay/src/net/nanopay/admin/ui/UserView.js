@@ -64,34 +64,10 @@ foam.CLASS({
           z-index: 100;
           margin-right: 5px;
         }
-        ^ .net-nanopay-ui-ActionView-sendMoney {
-          width: 135px;
-          height: 40px;
-          background: #59a5d5;
-          border: solid 1px #59a5d5;
-          display: inline-block;
-          color: white;
-          margin: 0;
-          outline: none;
-          float: right;
-        }
-        ^ .net-nanopay-ui-ActionView-sendMoney:hover {
-          background: #3783b3;
-          border-color: #3783b3;
-        }
-        ^ .net-nanopay-ui-ActionView-sendMoney::after {
-          content: ' ';
-          position: absolute;
-          height: 0;
-          width: 0;
-          border: 6px solid transparent;
-          border-top-color: white;
-          transform: translate(5px, 5px);
-        }
         ^ .net-nanopay-ui-ActionView-addUser {
-          background-color: #EDF0F5;
+          background-color: #59A5D5;
           border: solid 1px #59A5D5;
-          color: #59A5D5;
+          color: white;
           margin-right: 5px;
           float: right;
         }
@@ -101,7 +77,7 @@ foam.CLASS({
           height: 0;
           width: 0;
           border: 6px solid transparent;
-          border-top-color: #59A5D5;
+          border-top-color: white;
           transform: translate(5px, 5px);
         }
         ^ .popUpDropDown {
@@ -179,7 +155,6 @@ foam.CLASS({
             .start().addClass('button-div')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.SEND_MONEY, null, this.sendMoneyMenuBtn_$).end()
               .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
               .start().addClass('inline-float-right')
                 .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
@@ -220,28 +195,6 @@ foam.CLASS({
             .on('click', this.addMerchant)
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)
-      }
-    },
-    {
-      name: 'sendMoney',
-      label: 'Send Money',
-      code: function(X) {
-        var self = this;
-        
-        self.sendMoneyPopUp_ = foam.u2.PopupView.create({
-          width: 135,
-          height: 60,
-          x: 0,
-          y: 40
-        })
-        self.sendMoneyPopUp_.addClass('popUpDropDown')
-          .start('div').add('To Shopper')
-            .on('click', this.sendMoneyToShopper)
-          .end()
-          .start('div').add('To Merchant')
-            .on('click', this.sendMoneyToMerchant)
-          .end()
-        self.sendMoneyMenuBtn_.add(self.sendMoneyPopUp_)
       }
     }
   ],
