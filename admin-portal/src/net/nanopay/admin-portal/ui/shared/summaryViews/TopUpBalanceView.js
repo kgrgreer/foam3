@@ -7,15 +7,16 @@ foam.CLASS({
   documentation: 'View displaying top up balance',
 
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions',
+    'net.nanopay.util.CurrencyFormatter' 
   ],
-  
+
   requires: [
     'net.nanopay.admin.model.TopUp',
     'foam.u2.dialog.Popup'
   ],
 
-  imports: [ 'topUpDAO', 'currencyFormatter' ],
+  imports: [ 'topUpDAO' ],
 
   properties: [
     {

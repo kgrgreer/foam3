@@ -6,7 +6,9 @@ foam.CLASS({
 
   documentation: 'Cards for summary views',
 
-  imports: [ 'currencyFormatter' ],
+  implements: [
+    'net.nanopay.util.CurrencyFormatter'    
+  ],
 
   axioms: [
     foam.u2.CSS.create({
