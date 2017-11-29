@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form',
+  package: 'net.nanopay.admin.ui.form.shopper',
   name: 'AddShopperInfoForm',
   extends: 'foam.u2.Controller',
 

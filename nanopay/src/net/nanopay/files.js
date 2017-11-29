@@ -69,16 +69,23 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // admin
+  { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/AddShopperForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/AddShopperInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/AddShopperSendMoneyForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/AddShopperReviewForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/AddShopperDoneForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantProfileForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantSendMoneyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantReviewForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantDoneForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/shopper/AddShopperForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/shopper/AddShopperInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/shopper/AddShopperSendMoneyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/shopper/AddShopperReviewForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/shopper/AddShopperDoneForm', flags: ['web'] },
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },

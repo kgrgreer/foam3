@@ -132,9 +132,7 @@ foam.CLASS({
       }
     },
     'addUserMenuBtn_',
-    'sendMoneyMenuBtn_',
     'addUserPopUp_',
-    'sendMoneyPopUp_'
   ],
 
   messages: [
@@ -209,16 +207,7 @@ foam.CLASS({
     function addMerchant() {
       var self = this;
       self.addUserPopUp_.remove();
-    },
-
-    function sendMoneyToShopper() {
-      var self = this;
-      self.sendMoneyPopUp_.remove();
-    },
-
-    function sendMoneyToMerchant() {
-      var self = this;
-      self.sendMoneyPopUp_.remove();
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
     }
   ]
 

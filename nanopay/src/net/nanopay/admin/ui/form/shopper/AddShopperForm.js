@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form',
+  package: 'net.nanopay.admin.ui.form.shopper',
   name: 'AddShopperForm',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
@@ -26,10 +26,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        { parent: 'addShopper', id: 'form-addShopper-info',      label: 'Shopper Info', view: { class: 'net.nanopay.admin.ui.form.AddShopperInfoForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-review',    label: 'Review',       view: { class: 'net.nanopay.admin.ui.form.AddShopperReviewForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-sendMoney', label: 'Send Money',   view: { class: 'net.nanopay.admin.ui.form.AddShopperSendMoneyForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-done',      label: 'Done',         view: { class: 'net.nanopay.admin.ui.form.AddShopperDoneForm' } }
+        { parent: 'addShopper', id: 'form-addShopper-info',      label: 'Shopper Info', view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperInfoForm' } },
+        { parent: 'addShopper', id: 'form-addShopper-review',    label: 'Review',       view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperReviewForm' } },
+        { parent: 'addShopper', id: 'form-addShopper-sendMoney', label: 'Send Money',   view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperSendMoneyForm' } },
+        { parent: 'addShopper', id: 'form-addShopper-done',      label: 'Done',         view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperDoneForm' } }
       ];
       this.SUPER();
     }
@@ -54,7 +54,7 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        // info from form
+        // Info from form
         var shopperInfo = this.viewData;
 
         if ( this.position == 0 ) { 
