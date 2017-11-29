@@ -233,7 +233,7 @@ foam.CLASS({
           .end()
         .end()
 
-      if ( this.data.status != 'Refunded' ) {
+      if ( this.data.status != 'Refunded' && this.data.status != 'Refund' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')

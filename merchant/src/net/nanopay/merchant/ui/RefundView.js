@@ -144,7 +144,7 @@ foam.CLASS({
         payeeId: this.data.user.id,
         amount: this.data.amount,
         refundTransactionId: this.data.id,
-        status: 'Refunded'
+        status: 'Refund'
       }))
       .then(function () {
         self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
