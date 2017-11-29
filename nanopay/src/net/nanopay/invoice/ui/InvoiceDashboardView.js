@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'View displaying high-level Sales and Expenses SummaryViews.',
 
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions'
   ],
 
   imports: [ 

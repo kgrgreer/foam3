@@ -177,8 +177,7 @@ foam.CLASS({
            width: 50%;
            height: 40px;
            border: solid 1px rgba(164, 179, 184, 0.5);
-           padding-left: 5px;
-           padding-right: 5px;
+           padding: 15px;
            display: block;
            margin-top: 8px;
            outline: none;
@@ -293,6 +292,7 @@ foam.CLASS({
           margin: 10px 0 0 0;
         }
         .blue-card-title{
+          
           display: block;
           width: 135px;
           height: 70px;
@@ -303,6 +303,9 @@ foam.CLASS({
           color: white;
           font-weight: 16px;
           display: inline-block;
+        }
+        .net-nanopay-ui-ActionView-signIn{
+          margin-left: 25px !important;
         }
         .arrow-down {
           width: 0;
@@ -330,6 +333,10 @@ foam.CLASS({
           width: 1px;
           cursor: pointer;
           text-align: right !important;
+        }
+        .foam-u2-dialog-Popup.popup-with-topnav {
+          margin-top: 65px;
+          z-index: 10000;
         }
         .close-x {
           position: absolute;
@@ -364,6 +371,62 @@ foam.CLASS({
           top: -5px;
           z-index: 101;
           opacity: 0.01;
+        .infoLabel {
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0.2px;
+          color: #093649;
+        }
+        .inputSmall {
+          width: 65px;
+          height: 40px;
+          margin-top: 8px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          outline: none;
+          padding: 10px;
+          font-size: 14px;
+        }
+        .inputMedium {
+          width: 143px;
+          height: 40px;
+          margin-top: 8px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          outline: none;
+          padding: 10px;
+          font-size: 14px;
+        }
+        .inputLarge {
+          width: 218px;
+          height: 40px;
+          margin-top: 8px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          outline: none;
+          padding: 10px;
+          font-size: 14px;
+        }
+        .inputExtraLarge {
+          width: 100%;
+          height: 40px;
+          margin-top: 8px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+          padding: 10px;
+          outline: none;
+          font-size: 14px;
+        }
+        .infoContainer {
+          width: 496px;
+          height: 290px;
+          background: white;
+          border-radius: 2px;
+          overflow-y: scroll;
+          padding: 20px;
+        }
+        .bottomMargin {
+          margin-bottom: 20px;
         }
       */}
     })
