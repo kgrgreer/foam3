@@ -292,6 +292,7 @@ foam.CLASS({
           margin: 10px 0 0 0;
         }
         .blue-card-title{
+          
           display: block;
           width: 135px;
           height: 70px;
@@ -302,6 +303,9 @@ foam.CLASS({
           color: white;
           font-weight: 16px;
           display: inline-block;
+        }
+        .net-nanopay-ui-ActionView-signIn{
+          margin-left: 25px !important;
         }
         .arrow-down {
           width: 0;

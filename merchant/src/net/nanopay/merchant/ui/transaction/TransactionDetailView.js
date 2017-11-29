@@ -86,6 +86,12 @@ foam.CLASS({
           height: 72px;
           background-color: #f55a5a;
         }
+
+        ^ .transaction-refunded-button {
+          width: 100%;
+          height: 72px;
+          background-color: #848484;
+        }
         @media only screen and (min-width: 0px) {
           ^ .transaction-profile {
             height: 45px;
@@ -227,11 +233,17 @@ foam.CLASS({
           .end()
         .end()
 
-      if ( ! this.data.refund ) {
+      if ( this.data.status != 'Refunded' && this.data.status != 'Refund' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
             .on('click', this.onRefundClicked)
+          .end()
+        .end()
+      } else {
+        this.start('div').addClass('transaction-refund')
+          .start('button').addClass('transaction-refunded-button')
+            .add('Refunded')
           .end()
         .end()
       }
