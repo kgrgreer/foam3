@@ -338,6 +338,24 @@ foam.CLASS({
           margin-top: 65px;
           z-index: 10000;
         }
+        .net-nanopay-ui-ActionView-signUp{
+          position: relative;
+          width: 100% !important;
+          height: 40px;
+          background: none;
+          background-color: %SECONDARYCOLOR%;
+          font-size: 14px;
+          border: none;
+          color: white;
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+          filter: grayscale(0%);
+        }
+        .net-nanopay-ui-ActionView-signUp:hover{
+          background: none;
+          background-color: %SECONDARYCOLOR%;
+        }
         .close-x {
           position: absolute;
           width: 32px;
