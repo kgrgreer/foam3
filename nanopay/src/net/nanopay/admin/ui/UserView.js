@@ -68,7 +68,6 @@ foam.CLASS({
           background-color: #59A5D5;
           border: solid 1px #59A5D5;
           color: white;
-          margin-right: 5px;
           float: right;
         }
         ^ .net-nanopay-ui-ActionView-addUser::after {
