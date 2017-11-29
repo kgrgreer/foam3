@@ -7,7 +7,8 @@ foam.CLASS({
 
   requires:[
     'foam.nanos.auth.Address',
-    'net.nanopay.retail.model.Business'
+    'net.nanopay.retail.model.Business', 
+    'net.nanopay.ui.NotificationMessage'
   ],
 
   imports: [
@@ -16,7 +17,9 @@ foam.CLASS({
     'user',
     'stack',
     'countryDAO',
-    'regionDAO'
+    'regionDAO',
+    'businessSectorDAO',
+    'businessTypeDAO'
   ],
 
   exports: [
@@ -133,6 +136,18 @@ foam.CLASS({
           margin-bottom: 20px;
           margin-right: 15px;
         }
+        .input-container-quarter{
+          width: 13%;
+          display: inline-block;
+          margin-bottom: 20px;
+          margin-right: 15px;
+        }
+        .input-container-third{
+          width: 30%;
+          display: inline-block;
+          margin-bottom: 20px;
+          margin-right: 15px;
+        }
         .dropdown{
           width: 200px;
           height: 200px;
@@ -160,6 +175,24 @@ foam.CLASS({
         ^ .foam-u2-ActionView-saveBusiness:hover {
           background-color: #59aadd;
         }
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          width: 24px;
+          height: 24px;
+          margin: 0;
+          cursor: pointer;
+          display: inline-block;
+          float: right;
+          outline: 0;
+          border: none;
+          background: transparent;
+          box-shadow: none;
+          padding-top: 15px;
+          margin-right: 15px;
+        }
+        ^ .net-nanopay-ui-ActionView-closeButton:hover {
+          background: transparent;
+          background-color: transparent;
+        }
       */}
     })
   ],
@@ -171,6 +204,9 @@ foam.CLASS({
     'address',
     'city',
     'postalCode',
+    'issuingAuthority',
+    'streetNumber',
+    'streetName',
     {
       name: 'regionList',
       view: function(_, X) {
@@ -197,6 +233,7 @@ foam.CLASS({
       name: 'businessTypeList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
+          dao: X.businessTypeDAO,
           objToChoice: function(a){
             return [a.id, a.name];
           }
@@ -207,6 +244,7 @@ foam.CLASS({
       name: 'sectorList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
+          dao: X.businessSectorDAO,
           objToChoice: function(a){
             return [a.id, a.name];
           }
@@ -218,16 +256,30 @@ foam.CLASS({
   methods: [
     function initE(){
       this.SUPER();
-
+      console.log(this.user);
+      this.businessName = this.user.businessName;
+      this.businessTypeList = this.user.businessType;
+      this.sectorList = this.user.businessSector;
+      this.businessNumber = this.user.businessIdentificationNumber;
+      this.website = this.user.website;
+    
+      this.countryList = this.user.address.countryId;
+      this.regionList = this.user.address.regionId;
+      this.streetNumber = this.user.address.buildingNumber;
+      this.streetName = this.user.address.address;
+      this.address = this.user.address.suite;
+      this.city = this.user.address.city;
+      this.postalCode =this.user.address.postalCode;
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('editBusinessContainer')
             .start('h2').add('Edit Business profile').end()
+            .start(this.CLOSE_BUTTON).show(this.showCancel$).end()
             .start().addClass(this.myClass('registration-container'))
               .start('h3').add('Business information').end()
               .start().addClass(this.myClass('business-image-container'))
-                .tag({class:'foam.u2.tag.Image', data: 'ui/images/business-placeholder.png'})
+                .tag({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'})
                 .start('button').add('Upload Image').addClass(this.myClass('upload-button')).end()
                 .start('p').add('JPG, GIF, JPEG, BMP or PNG').end()
               .end()
@@ -245,13 +297,18 @@ foam.CLASS({
                   .add(this.SECTOR_LIST)
                 .end()
                 .start().addClass('input-container')
-                  .start('label').add('Business Number').end()
-                  .start(this.BUSINESS_NUMBER).end()
-                .end()
-                .start().addClass('input-container')
                   .start('label').add('Website').end()
                   .start(this.WEBSITE).end()
                 .end()
+                .start().addClass('input-container')
+                  .start('label').add('Business Identification No.').end()
+                  .start(this.BUSINESS_NUMBER).end()
+                .end()
+                .start().addClass('input-container')
+                  .start('label').add('Issuing Authority').end()
+                  .start(this.ISSUING_AUTHORITY).end()
+                .end()
+                
               .end()
               .start('h3').add('Business Address').end()
               .start().addClass(this.myClass('business-registration-input'))
@@ -259,8 +316,16 @@ foam.CLASS({
                   .start('label').add('Country').end()
                   .add(this.COUNTRY_LIST)
                 .end()
+                .start().addClass('input-container-quarter')
+                  .start('label').add('St No.').end()
+                  .start(this.STREET_NUMBER).end()
+                .end()
+                .start().addClass('input-container-third')
+                  .start('label').add('St Name').end()
+                  .start(this.STREET_NAME).end()
+                .end()
                 .start().addClass('input-container')
-                  .start('label').add('Address').end()
+                  .start('label').add('Address Line').end()
                   .start(this.ADDRESS).end()
                 .end()
                 .start().addClass('input-container')
@@ -276,41 +341,60 @@ foam.CLASS({
                   .start(this.POSTAL_CODE).end()
                 .end()
               .end()
-              .add(this.SAVE_BUSINESS)
+              .start(this.SAVE_BUSINESS).addClass('foam-u2-ActionView-saveBusiness').end()
             .end()
           .end()
         .end()
     }
   ],
-
+  messages: [
+    { name: 'noInformation', message: 'Please fill out all fields with errors.' }, 
+    { name: 'invalidPostal', message: 'Invalid postal code entry.' },    
+    
+  ],
   actions: [
+    {
+      name: 'closeButton',
+      icon: 'images/cancel-x.png',
+      code: function (X) {
+        X.stack.back();
+      }
+    },
     {
       name: 'saveBusiness',
       label: 'Save',
       code: function() {
         var self = this;
+        this.postalCode = this.postalCode.toUpperCase().replace(/\s/g, '');
+        
+        if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(this.postalCode) )
+        {
+          this.add(this.NotificationMessage.create({ message: this.invalidPostal, type: 'error' }));            
+          return;
+        }
+        
+        if ( ! this.businessName || ! this.businessTypeList || ! this.sectorList || ! this.businessNumber || ! this.countryList || ! this.regionList || ! this.streetNumber || ! this.streetName || ! this.city || ! this.postalCode ) {
+          this.add(this.NotificationMessage.create({ message: this.noInformation, type: 'error' }));            
+          return;
+        }
+       
 
-        this.userDAO.put(
-          {
-            name: self.businessName,
-            businessTypeId: self.businessTypeList,
-            sectorId: self.sectorList,
-            businessNumber: self.businessNumber,
-            website: self.website
-          }
-        ).then(function(a) {
-
-          return self.addressDAO.put(
-            {
-              countryId: self.countryList,
-              regionId: self.regionList,
-              address: self.address,
-              city: self.city,
-              postalCode: self.postalCode,
-              businessId: self.business.id
-            }
-          )
-        }).then(function(a) {
+        var newAddress = this.Address.create({
+          countryId: this.countryList,
+          buildingNumber: this.streetNumber,
+          address: this.streetName,
+          regionId: this.regionList,
+          suite: this.address,
+          city: this.city,
+          postalCode: this.postalCode
+        });
+        this.user.businessName = this.businessName;
+        this.user.businessType = this.businessTypeList;
+        this.user.businessSector = this.sectorList;
+        this.user.businessIdentificationNumber = this.businessNumber;
+        this.user.website = this.website;
+        this.user.address = newAddress;
+        this.userDAO.put(this.user).then(function(a) {
           self.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
       }

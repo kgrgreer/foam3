@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'BusinessSettingsView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack' ],
+  imports: [ 'stack', 'user' ],
 
   documentation: 'View displaying business information',
 
@@ -224,23 +224,23 @@ foam.CLASS({
           .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox1$)
             .start().addClass('profileImgDiv')
               .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
-              .start().add('Company Name').addClass('companyName').end()
+              .start().add(this.user.businessName).addClass('companyName').end()
             .end()
             .start()
               .start().addClass('inlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Company Type').addClass('labelTitle').end()
-                  .start().add('Limited Company').addClass('labelContent').end()
+                  .start().add(this.user.businessType).addClass('labelContent').end()
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Business Sector').addClass('labelTitle').end()
-                  .start().add('Tobacco & Alcohol').addClass('labelContent').end()
+                  .start().add(this.user.businessSector).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('inlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Business Identification No.').addClass('labelTitle').end()
-                  .start().add('0000000001').addClass('labelContent').end()
+                  .start().add(this.user.businessIdentificationNumber).addClass('labelContent').end()
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Issuing Authority').addClass('labelTitle').end()
@@ -250,16 +250,19 @@ foam.CLASS({
               .start().addClass('topInlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Website').addClass('labelTitle').end()
-                  .start().add('www.nanopay.net').addClass('labelContent').end()
+                  .start().add(this.user.website).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('topInlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Address').addClass('labelTitle').end()
-                  .start().add('123 Avenue').addClass('labelContent').end()
-                  .start().add('Toronto, Ontario').addClass('labelContent').end()
-                  .start().add('Canada').addClass('labelContent').end()
-                  .start().add('M2G 1K9').addClass('labelContent').end()
+                  .start().add(this.user.address.buildingNumber+" "+this.user.address.address).addClass('labelContent').end()
+                  .callIf(this.user.address.suite != " ", function(){
+                    this.start().add(self.user.address.suite).addClass('labelContent').end()
+                  })
+                  .start().add(this.user.address.city + ", "+this.user.address.regionId).addClass('labelContent').end()
+                  .start().add(this.user.address.countryId).addClass('labelContent').end()
+                  .start().add(this.user.address.postalCode).addClass('labelContent').end()
                 .end()
               .end()
             .end()
@@ -322,7 +325,7 @@ foam.CLASS({
       name: 'editProfile',
       label: 'Edit Profile',
       code: function (X) {
-        X.stack.push({ class: 'net.nanopay.auth.ui.BusinessRegistrationView', showCancel: true });
+        X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
       }
     }
   ]
