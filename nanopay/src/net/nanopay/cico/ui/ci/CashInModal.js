@@ -5,7 +5,7 @@ foam.CLASS({
 
   requires: [ 
     'net.nanopay.cico.ui.CicoView',
-    'net.nanopay.ui.NotificationMessage' 
+    'foam.u2.dialog.NotificationMessage' 
   ],
 
   imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn', 'goToBankAccounts' ],

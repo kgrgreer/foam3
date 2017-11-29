@@ -26,7 +26,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
-  { name: 'net/nanopay/ui/NotificationMessage', flags: ['web'] },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -69,9 +68,16 @@ FOAM_FILES([
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // admin
-  { name: 'net/nanopay/admin/ui/SendMoneyView' },
-  { name: 'net/nanopay/admin/ui/TransactionView' },
-  { name: 'net/nanopay/admin/ui/UserView' },
+  { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperSendMoneyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperReviewForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/AddShopperDoneForm', flags: ['web'] },
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },
@@ -80,6 +86,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/service/BankAccountVerificationInterface' },
   { name: 'net/nanopay/cico/client/ClientBankAccountVerificationService' },
+  { name: 'net/nanopay/cico/ui/bankAccount/AddBankView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },

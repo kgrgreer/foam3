@@ -15,7 +15,7 @@ foam.CLASS({
   exports: [ 'as data' ],
 
   requires: [
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [

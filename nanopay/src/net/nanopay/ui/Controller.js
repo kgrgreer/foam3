@@ -1,45 +1,27 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
-  extends: 'foam.u2.Element',
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
+  extends: 'foam.nanos.controller.ApplicationController',
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },  
   documentation: 'Nanopay Top-Level Application Controller.',
 
-  implements: [
-    'foam.mlang.Expressions',
-    'foam.nanos.client.Client',
-    'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles',
-    'net.nanopay.util.CurrencyFormatter'
-  ],
+  implements: [ 'net.nanopay.util.CurrencyFormatter' ],
 
   requires: [
-    'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
-    'net.nanopay.model.Currency'
+    'net.nanopay.model.Currency',
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.ui.modal.ModalStyling',
+    'net.nanopay.invoice.ui.style.InvoiceStyles'
   ],
 
   exports: [
     'account',
-    'as ctrl',
-    'requestLogin',
-    'loginSuccess',
-    'stack',
-    'user',
-    'logo',
-    'signUpEnabled',
-    'webApp',
-    'wrapCSS as installCSS'
-  ],
-
-  imports: [
-    'sessionSuccess',
-    'installCSS'
+    'as ctrl'
   ],
 
   css: `
@@ -76,76 +58,22 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'stack',
-      factory: function() { return this.Stack.create(); }
-    },
-    {
-      class: 'foam.core.FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'user',
-      factory: function() { return this.User.create(); }
-    },
-    {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
-    },
-    {
-      class: 'Boolean',
-      name: 'loginSuccess',
-      value: false
-    },
-    'logo',
-    'primaryColor',
-    'secondaryColor',
-    'tableColor',
-    'accentColor',
-    'webApp',
-    {
-      class: 'Boolean',
-      name: 'signUpEnabled',
-      adapt: function(v) {
-        return v === 'false' ? false : true;
-      }
     }
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
+      this.AppStyles.create();
+      this.InvoiceStyles.create();
+      this.ModalStyling.create();
 
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
-
-      // get current user, else show login
-      this.auth.getCurrentUser(null).then(function (result) {
-        self.loginSuccess = result ? true : false;
-        self.user.copyFrom(result);
-        return self.accountDAO.where(self.EQ(self.Account.OWNER, self.user.id)).limit(1).select();
-      })
-      .then(function (result) {
-        self.account.copyFrom(result.array[0]);
-      })
-      .catch(function (err) {
-        self.requestLogin();
-      });
-
-      window.onpopstate = function(event) {
-        if ( location.hash != null ) {
-          var hid = location.hash.substr(1);
-
-          hid && self.menuDAO.find(hid).then(function(menu) {
-            menu && menu.launch(this,null);
-         })
-        }
-      };
-
-      window.onpopstate();
-    },
-
-    function initE() {
-      var self = this;
+      
       this
         .addClass(this.myClass())
         .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
@@ -155,37 +83,6 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
-    },
-
-    function wrapCSS(text, id) {
-      if ( text ) {
-        if ( ! this.accentColor ) {
-          var self = this;
-          this.accentColor$.sub(function(s) {
-            self.wrapCSS(text, id);
-            s.detach();
-          });
-        }
-        this.installCSS(text.
-          replace(/%PRIMARYCOLOR%/g, this.primaryColor).
-          replace(/%SECONDARYCOLOR%/g, this.secondaryColor).
-          replace(/%TABLECOLOR%/g, this.tableColor).
-          replace(/%ACCENTCOLOR%/g, this.accentColor),
-          id);
-      }
-    },
-
-    function requestLogin(){
-      var self = this;
-      // don't go to log in screen if going to reset password screen
-      if ( location.hash != null && location.hash === '#reset' ) {
-        return;
-      }
-
-      return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
-        self.loginSuccess$.sub(resolve);
-      });
     }
   ]
 });

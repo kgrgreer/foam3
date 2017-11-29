@@ -9,7 +9,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
@@ -82,6 +82,21 @@ foam.CLASS({
 
   actions: [
     {
+      name: 'goBack',
+      label: 'Back',
+      isAvailable: function(position) {
+        if ( position == 3 ) return false;
+        return true;
+      },
+      code: function(X) {
+        if ( this.position <= 0 ) {
+          X.stack.back();
+          return;
+        }
+        this.subStack.back();
+      }
+    },
+    {
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
@@ -94,6 +109,7 @@ foam.CLASS({
         if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
           this.viewData.password = Math.floor(Math.random() * (999999 - 100000)) + 100000;
           this.subStack.push(this.views[this.subStack.pos + 1].view);
+          this.complete = true;
           return;
         }
 
