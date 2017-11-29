@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'formatCurrency',    
+    'formatCurrency',
     'user'
   ],
 
