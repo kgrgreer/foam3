@@ -14,7 +14,7 @@ foam.CLASS({
       this 
         .addClass(this.myClass())
         .start()
-          .start({ class: 'net.nanopay.cico.ui.bankAccount.form.BankForm', title: 'Add Bank Account' }).end()
+          .tag({ class: 'net.nanopay.cico.ui.bankAccount.form.BankForm', title: 'Add Bank Account' })
         .end();
     }
   ]

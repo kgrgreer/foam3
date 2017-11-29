@@ -14,7 +14,7 @@ foam.CLASS({
       this 
         .addClass(this.myClass())
         .start()
-          .start({ class: 'net.nanopay.admin.ui.form.AddShopperForm', title: 'Add Shopper' }).end()
+          .tag({ class: 'net.nanopay.admin.ui.form.AddShopperForm', title: 'Add Shopper' })
         .end();
     }
   ]

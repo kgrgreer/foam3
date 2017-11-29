@@ -6,43 +6,39 @@ foam.CLASS({
 
   documentation: 'Childrens menu dropdown',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          background-color: white;
-          padding-top: 5px;
-          padding-bottom: 10px;
-          padding-left: 5%;
-          width: 100%;
-          margin-top: -16px;
-        }
+  css: `
+    ^ {
+      background-color: white;
+      padding-top: 5px;
+      padding-bottom: 10px;
+      padding-left: 5%;
+      width: 100%;
+      margin-top: -16px;
+    }
 
-        ^ div > ul {
-          padding-left: 0;
-          font-weight: 100;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
+    ^ .div > ul {
+      padding-left: 0;
+      font-weight: 100;
+      letter-spacing: 0.2px;
+      color: #093649;
+    }
 
-        ^ div > ul > li{
-          margin-left: 25px;
-          display: inline-block;
-          cursor: pointer;
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: normal;
-          line-height: 0.86;
-          letter-spacing: 0.3px;
-        }
+    ^ .div > ul > li{
+      margin-left: 25px;
+      display: inline-block;
+      cursor: pointer;
+      opacity: 0.6;
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 0.86;
+      letter-spacing: 0.3px;
+    }
 
-        ^ div > ul > li:hover {
-          font-weight: bold;
-        }
-      */}
-    })
-  ],
+    ^ .div > ul > li:hover {
+      font-weight: bold;
+    }
+  `,
 
   properties: [
     'menuName'
