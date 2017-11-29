@@ -136,7 +136,7 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.data.refundTransactionId || this.data.status == 'Refunded' ) return;
+      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) return;
       var self = this;
 
       this.transactionDAO.put(this.Transaction.create({
