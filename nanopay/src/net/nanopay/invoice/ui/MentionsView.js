@@ -15,11 +15,16 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'invoiceDAO', 
-    'formatCurrency' 
+    'invoiceDAO'
   ],
 
   properties: [
+    {
+      name: 'currencyFormatter',
+      factory: function(){
+        return net.nanopay.util.CurrencyFormatter.create();
+      }
+    },
     {
       name: 'dao',
       factory: function() { return this.invoiceDAO; }
@@ -27,9 +32,9 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedMentionsAmount',
-      expression: function(disputedAmount, pendingAmount) { 
+      expression: function(disputedAmount, pendingAmount, currencyFormatter) { 
         var a = disputedAmount + pendingAmount;
-        return this.formatCurrency(a); 
+        return currencyFormatter.formatCurrency(a); 
       }
     },
     {
@@ -40,7 +45,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedDisputedAmount',
-      expression: function(disputedAmount) { return this.formatCurrency(disputedAmount); }
+      expression: function(disputedAmount, currencyFormatter) { return currencyFormatter.formatCurrency(disputedAmount); }
     },
     {
       class: 'Double',
@@ -50,7 +55,7 @@ foam.CLASS({
     { 
       class: 'Currency',
       name: 'formattedPendingAmount',
-      expression: function(pendingAmount) { return this.formatCurrency(pendingAmount); }
+      expression: function(pendingAmount, currencyFormatter) { return currencyFormatter.formatCurrency(pendingAmount); }
     },
     {
       class: 'Int',

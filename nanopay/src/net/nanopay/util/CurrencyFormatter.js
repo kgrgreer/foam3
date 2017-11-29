@@ -1,7 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.util',
   name: 'CurrencyFormatter',
-
+  extends: 'foam.u2.Element',
+  
   exports: [ 'formatCurrency' ],
 
   methods: [
