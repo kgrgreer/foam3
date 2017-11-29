@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'user',
-    'formatCurrency'
+    'formatCurrency',    
+    'user'
   ],
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],

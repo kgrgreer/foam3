@@ -8,7 +8,6 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.util.CurrencyFormatter' 
   ],
 
   requires: [
@@ -16,7 +15,7 @@ foam.CLASS({
     'foam.u2.dialog.Popup'
   ],
 
-  imports: [ 'topUpDAO' ],
+  imports: [ 'topUpDAO', 'currencyFormatter' ],
 
   properties: [
     {
