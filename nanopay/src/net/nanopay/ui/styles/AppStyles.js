@@ -390,6 +390,14 @@ foam.CLASS({
         .stepTopMargin {
           margin-top: 0;
         }
+        .net-nanopay-ui-ActionView-close{
+          width: 30px;
+          height: 30px;
+          position: absolute;
+          left: 0px;
+          top: -5px;
+          z-index: 101;
+          opacity: 0.01;
         .infoLabel {
           font-size: 14px;
           font-weight: 300;

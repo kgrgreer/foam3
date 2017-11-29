@@ -14,7 +14,7 @@ foam.CLASS({
     'net.nanopay.model.Account',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
@@ -120,6 +120,18 @@ foam.CLASS({
       this
       .start().addClass(this.myClass())
         .start().addClass('white-container')
+<<<<<<< HEAD
+          .startContext({ data: this})
+            .start().addClass('light-roboto-h2').add('Transfer Value').end()
+            .start().addClass('label').add('Transfer To:').end()
+            .start(this.PAYEES).end()
+            .start().addClass('label').add('Transfer Amount:').end()
+            .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
+            .start().addClass('label').add('Note:').end()
+            .start(this.NOTE).addClass('half-small-input-box').end()
+            .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
+          .endContext()
+=======
           .start().addClass('light-roboto-h2').add('Transfer Value').end()
           .start().addClass('label').add('Transfer To:').end()
           .start()
@@ -131,6 +143,7 @@ foam.CLASS({
           .start().addClass('label').add('Note:').end()
           .start(this.NOTE).addClass('half-small-input-box').end()
           .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
+>>>>>>> 325681efa4b42e6da71eb11f1eaf1b889a69e5c8
         .end()
       .end();
     }
@@ -140,9 +153,29 @@ foam.CLASS({
     {
       name: 'transferValue',
       label: 'Send',
+      confirmationRequired: true,
       code: function(X){
         var self = this;
 
+<<<<<<< HEAD
+        if(!X.user.id || !this.transferAmount) {
+          this.add(this.NotificationMessage.create({ message: 'Please complete form.', type: 'error'}));          
+          return;
+        }
+        var transaction = this.Transaction.create({
+          payeeId: this.payees,
+          payerId: X.user.id,
+          amount: this.transferAmount,
+          notes: this.note
+        });
+
+        X.transactionDAO.put(transaction).then(function(t){
+          self.add(self.NotificationMessage.create({ message: 'Transfer Successful' }));
+          self.transferAmount = null;
+        }).catch(function(err){
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+=======
         if ( self.payees == null ) {
           self.add(self.NotificationMessage.create({ message: 'Please select a user to transfer too.', type: 'error' }));
           return;
@@ -166,6 +199,7 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
         });
       
+>>>>>>> 325681efa4b42e6da71eb11f1eaf1b889a69e5c8
       }
     }
   ]
