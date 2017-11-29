@@ -109,12 +109,18 @@ foam.CLASS({
   ],
 
   properties: [
-    'amount', 
+    {
+      name: 'currencyFormatter',
+      factory: function(){
+        return net.nanopay.util.CurrencyFormatter.create();
+      }
+    },
     {
       class: 'Currency',
       name: 'formattedAmount',
-      expression: function(amount) { return this.formatCurrency(amount); }
+      expression: function(amount, currencyFormatter) { return currencyFormatter.formatCurrency(amount); }
     },
+    'amount',     
     'count',
     'status'
  ],
