@@ -136,15 +136,20 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
+      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) return;
       var self = this;
 
       this.transactionDAO.put(this.Transaction.create({
         payerId: this.user.id,
         payeeId: this.data.user.id,
-        amount: this.data.amount
+        amount: this.data.amount,
+        refundTransactionId: this.data.id,
+        status: 'Refund'
       }))
       .then(function () {
         self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
+        self.data.status = 'Refunded';
+        self.transactionDAO.put(self.data);
       })
       .catch(function (err) {
         self.stack.push(self.ErrorView.create({ refund: true, data: self.data }));

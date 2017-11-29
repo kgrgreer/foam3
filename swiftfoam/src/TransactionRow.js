@@ -1,16 +1,35 @@
 foam.CLASS({
   name: 'TransactionRow',
-
+  imports: [
+    {
+      name: 'currentUser',
+      key: 'currentUser',
+      swiftType: 'User',
+    },
+    {
+      name: 'userDAO',
+      key: 'userDAO',
+      swiftType: 'DAO',
+    },
+  ],
   properties: [
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
+      required: true,
       name: 'transaction',
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'user',
+      swiftExpressionArgs: ['transaction'],
+      swiftExpression: `
+let otherUserId = transaction.payerId == self.currentUser.id ?
+    transaction.payeeId :
+    transaction.payerId
+return (try? self.userDAO.find(otherUserId) as? User) ?? nil
+      `,
     },
     {
       class: 'String',

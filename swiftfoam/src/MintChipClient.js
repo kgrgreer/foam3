@@ -16,7 +16,22 @@ foam.CLASS({
     'net.nanopay.auth.token.ClientTokenService',
     'net.nanopay.tx.client.ClientUserTransactionLimitService'
   ],
+  exports: [
+    'userDAO',
+    'currentUser',
+    'refreshTransactionDAO',
+    'transactionDAO',
+  ],
   properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'currentUser',
+      swiftExpressionArgs: ['clientAuthService'],
+      swiftExpression: `
+return (try? clientAuthService.getCurrentUser(self.__subContext__)) ?? nil
+      `,
+    },
     {
       swiftType: 'ServiceURLs.Host',
       name: 'httpBoxUrlRoot',
@@ -28,6 +43,7 @@ return ServiceURLs.hostRoute
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.ClientAuthService',
       name: 'clientAuthService',
+      required: true,
       swiftFactory: `
 return ClientAuthService_create([
   "serviceName": "\\(self.httpBoxUrlRoot.rawValue)auth"
