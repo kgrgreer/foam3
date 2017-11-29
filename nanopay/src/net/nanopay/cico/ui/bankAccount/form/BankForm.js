@@ -15,7 +15,6 @@ foam.CLASS({
     'user',
     'stack',
     'bankAccountDAO',
-    'closeDialog',
     'bankAccountVerification',
     'selectedAccount'
   ],
@@ -55,7 +54,6 @@ foam.CLASS({
       label: 'Back',
       isAvailable: function() { return true; },
       code: function(X) {
-        this.closeDialog();
         X.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
       }
     },
@@ -141,7 +139,6 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          this.closeDialog();
           return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }

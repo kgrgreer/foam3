@@ -13,7 +13,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'closeDialog',
     'stack',
     'userDAO',
     'user',

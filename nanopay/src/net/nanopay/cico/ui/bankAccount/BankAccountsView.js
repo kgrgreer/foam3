@@ -16,7 +16,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.Popup',
     'net.nanopay.model.BankAccount'
   ],
 
@@ -162,12 +161,7 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(
-          this.Popup.create().tag({
-            class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
-            title: this.ActionAdd
-          }).addClass('popup-with-topnav')
-        );
+        this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView' });
       }
     }
   ],

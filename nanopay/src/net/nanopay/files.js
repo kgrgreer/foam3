@@ -87,6 +87,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/service/BankAccountVerificationInterface' },
   { name: 'net/nanopay/cico/client/ClientBankAccountVerificationService' },
+  { name: 'net/nanopay/cico/ui/bankAccount/AddBankView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankAccountsView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/BankCTACard', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankCashoutForm', flags: ['web'] },
