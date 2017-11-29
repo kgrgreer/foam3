@@ -7,13 +7,9 @@
     <welcome-file>/nanopay/src/net/nanopay/index.html</welcome-file>
   </welcome-file-list>
   <servlet>
-    <servlet-name>boot</servlet-name>
-    <servlet-class>foam.nanos.tomcat.BootServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet>
     <servlet-name>nanos</servlet-name>
     <servlet-class>foam.nanos.tomcat.TomcatRouter</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>nanos</servlet-name>
