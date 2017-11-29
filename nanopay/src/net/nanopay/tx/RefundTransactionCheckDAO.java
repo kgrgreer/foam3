@@ -30,12 +30,12 @@ public class RefundTransactionCheckDAO
     if ( transaction.getRefundTransactionId() > 0 ) {
       Count previouslyRefundedCount = (Count) getDelegate().where(EQ(Transaction.REFUND_TRANSACTION_ID, transaction.getRefundTransactionId())).select(new Count());
 
-      Count refundOfRefundCount = (Count) getDelegate().where(AND(EQ(Transaction.ID, transaction.getRefundTransactionId()), EQ(Transaction.REFUND_TRANSACTION_ID, 0))).select(new Count());
-
       // Transaction has been previously refunded
       if ( previouslyRefundedCount.getValue() > 0 ) {
         throw new RuntimeException("Transaction has been previously refunded.");
       }
+
+      Count refundOfRefundCount = (Count) getDelegate().where(AND(EQ(Transaction.ID, transaction.getRefundTransactionId()), EQ(Transaction.REFUND_TRANSACTION_ID, 0))).select(new Count());
 
       // Cannot refund a refund
       if ( refundOfRefundCount.getValue() == 0 ) {
