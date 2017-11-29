@@ -356,6 +356,15 @@ foam.CLASS({
           background: none;
           background-color: %SECONDARYCOLOR%;
         }
+        .net-nanopay-ui-ActionView-close{
+          width: 30px;
+          height: 30px;
+          position: absolute;
+          left: 0px;
+          top: -5px;
+          z-index: 101;
+          opacity: 0.01;
+        }
         .close-x {
           position: absolute;
           width: 32px;
