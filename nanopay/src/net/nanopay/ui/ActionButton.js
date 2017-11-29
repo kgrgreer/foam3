@@ -18,7 +18,6 @@ foam.CLASS({
           display: inline-block;
           cursor: pointer;
           margin-right: 5px;
-          padding-right: 3px;
         }
         ^ .button-image {
           padding-top: 10px;
