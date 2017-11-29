@@ -101,7 +101,9 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var self = this;
+      var self = this;    
+        
+      this.transactionDAO.remoteListenerSupport = true;
 
       if ( ! localStorage.serialNumber ) {
         this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });

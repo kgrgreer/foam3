@@ -9,7 +9,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.CountdownView',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
