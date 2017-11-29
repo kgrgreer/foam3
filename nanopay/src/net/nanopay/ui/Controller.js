@@ -5,6 +5,8 @@ foam.CLASS({
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); },  
   documentation: 'Nanopay Top-Level Application Controller.',
 
+  implements: [ 'net.nanopay.util.CurrencyFormatter' ],
+
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',

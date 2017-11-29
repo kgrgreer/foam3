@@ -10,18 +10,13 @@ foam.CLASS({
   ],
 
   imports: [ 
-    'user'
+    'user',
+    'formatCurrency'
   ],
 
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
   properties: [
-    {
-      name: 'currencyFormatter',
-      factory: function(){
-        return net.nanopay.util.CurrencyFormatter.create();
-      }
-    },
     {
       name: 'payableAmount',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
@@ -29,7 +24,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedPayableAmount',
-      expression: function(payableAmount, currencyFormatter) { return currencyFormatter.formatCurrency(payableAmount); }
+      expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
     },
     {
       name: 'receivableAmount',
@@ -38,7 +33,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount, currencyFormatter) { return currencyFormatter.formatCurrency(receivableAmount); }
+      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
     },
     {
       name: 'salesDAO',

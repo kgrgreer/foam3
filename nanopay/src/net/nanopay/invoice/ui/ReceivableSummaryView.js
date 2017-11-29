@@ -41,12 +41,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'currencyFormatter',
-      factory: function(){
-        return net.nanopay.util.CurrencyFormatter.create();
-      }
-    },
-    {
       name: 'dao',
       factory: function() { return this.user.sales; }
     },
@@ -96,7 +90,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount, currencyFormatter) { return currencyFormatter.formatCurrency(receivableAmount); }
+      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
     }
   ],
 
