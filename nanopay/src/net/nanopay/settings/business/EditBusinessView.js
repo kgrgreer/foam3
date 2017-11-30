@@ -5,10 +5,11 @@ foam.CLASS({
 
   documentation: 'Edit business view.',
 
-  requires:[
+  requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.User',
     'net.nanopay.retail.model.Business', 
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
@@ -23,12 +24,10 @@ foam.CLASS({
   ],
 
   exports: [
-    'as data'
+    'as view'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
+  css: `
         ^{
           width: 100%;
           margin: auto;
@@ -70,7 +69,7 @@ foam.CLASS({
           opacity: 1;
         }
         ^ .editBusinessContainer {
-          width: 490px;
+          width: 992px;
           margin: auto;
         }
         ^ h2{
@@ -155,7 +154,7 @@ foam.CLASS({
         }
         ^ .foam-u2-tag-Select{
           height: 40px;
-          width: 200px;
+          width: 100%;
           background: white;
           border: 1px solid lightgrey;
           margin-top: 5px;
@@ -193,89 +192,31 @@ foam.CLASS({
           background: transparent;
           background-color: transparent;
         }
-      */}
-    })
-  ],
+        ^ .input-companytype-width select {
+          width: 100% !important;
+        }
 
-  properties:[
-    'businessName',
-    'businessNumber',
-    'website',
-    'address',
-    'city',
-    'postalCode',
-    'issuingAuthority',
-    'streetNumber',
-    'streetName',
-    {
-      name: 'regionList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    },
-    {
-      name: 'countryList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    },
-    {
-      name: 'businessTypeList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessTypeDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    },
-    {
-      name: 'sectorList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessSectorDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    }
-  ],
+        ^ .input-businesssector-width select {
+          width: 100% !important;
+        }
+        ^ .input-businesssector-width select {
+          width: 100% !important;
+        }
+        ^ .
 
+       
+  `,
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
-      console.log(this.user);
-      this.businessName = this.user.businessName;
-      this.businessTypeList = this.user.businessType;
-      this.sectorList = this.user.businessSector;
-      this.businessNumber = this.user.businessIdentificationNumber;
-      this.website = this.user.website;
-    
-      this.countryList = this.user.address.countryId;
-      this.regionList = this.user.address.regionId;
-      this.streetNumber = this.user.address.buildingNumber;
-      this.streetName = this.user.address.address;
-      this.address = this.user.address.suite;
-      this.city = this.user.address.city;
-      this.postalCode =this.user.address.postalCode;
+      this.data = this.user;
+
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('editBusinessContainer')
             .start('h2').add('Edit Business profile').end()
-            .start(this.CLOSE_BUTTON).show(this.showCancel$).end()
+            .start(this.CLOSE_BUTTON).end()
             .start().addClass(this.myClass('registration-container'))
               .start('h3').add('Business information').end()
               .start().addClass(this.myClass('business-image-container'))
@@ -283,75 +224,46 @@ foam.CLASS({
                 .start('button').add('Upload Image').addClass(this.myClass('upload-button')).end()
                 .start('p').add('JPG, GIF, JPEG, BMP or PNG').end()
               .end()
-              .start().addClass(this.myClass('business-registration-input'))
-                .start().addClass('input-container')
-                  .start('label').add('Company Name').end()
-                  .start(this.BUSINESS_NAME).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Company Type').end()
-                  .start(this.BUSINESS_TYPE_LIST).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Business Sector').end()
-                  .add(this.SECTOR_LIST)
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Website').end()
-                  .start(this.WEBSITE).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Business Identification No.').end()
-                  .start(this.BUSINESS_NUMBER).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Issuing Authority').end()
-                  .start(this.ISSUING_AUTHORITY).end()
-                .end()
-                
+              .start().addClass('input-container')
+                .start('label').add('Company Name').end()
+                .start(this.User.BUSINESS_NAME).end()
+              .end()
+              .start().addClass('input-container').addClass('input-companytype-width')
+                .start('label').add('Company Type').end()
+                .start(this.User.BUSINESS_TYPE_ID).end()
+              .end()
+              .start().addClass('input-container').addClass('input-businesssector-width')
+                .start('label').add('Business Sector').end()
+                .start(this.User.BUSINESS_SECTOR_ID).end()
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Website').end()
+                .start(this.User.WEBSITE).end()
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Business Identification No.').end()
+                .start(this.User.BUSINESS_IDENTIFICATION_NUMBER).end()
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Issuing Authority').end()
+                .start(this.User.ISSUING_AUTHORITY).end()
               .end()
               .start('h3').add('Business Address').end()
-              .start().addClass(this.myClass('business-registration-input'))
-                .start().addClass('input-container')
-                  .start('label').add('Country').end()
-                  .add(this.COUNTRY_LIST)
-                .end()
-                .start().addClass('input-container-quarter')
-                  .start('label').add('St No.').end()
-                  .start(this.STREET_NUMBER).end()
-                .end()
-                .start().addClass('input-container-third')
-                  .start('label').add('St Name').end()
-                  .start(this.STREET_NAME).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Address Line').end()
-                  .start(this.ADDRESS).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('City').end()
-                  .start(this.CITY).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Province').end()
-                  .add(this.REGION_LIST)
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Postal Code').end()
-                  .start(this.POSTAL_CODE).end()
-                .end()
-              .end()
+              .tag(this.User.ADDRESS, {showVerified: false,showType: false})
               .start(this.SAVE_BUSINESS).addClass('foam-u2-ActionView-saveBusiness').end()
             .end()
           .end()
         .end()
     }
   ],
+
   messages: [
     { name: 'noInformation', message: 'Please fill out all fields with errors.' }, 
     { name: 'invalidPostal', message: 'Invalid postal code entry.' },    
-    
+    { name: 'structAddress', message: 'Enter street number and name for structured address.' },    
+    { name: 'nonStructAddress', message: 'Enter an address' },    
   ],
+
   actions: [
     {
       name: 'closeButton',
@@ -363,39 +275,41 @@ foam.CLASS({
     {
       name: 'saveBusiness',
       label: 'Save',
-      code: function() {
-        var self = this;
-        this.postalCode = this.postalCode.toUpperCase().replace(/\s/g, '');
-        
-        if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(this.postalCode) )
+      code: function(X) {
+        var view = X.view;
+        var address = this.address;
+        console.log(this.BUSINESS_SECTOR_ID);
+        console.log(this.businessSectorId);
+        address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
+        if (address.structured)
         {
-          this.add(this.NotificationMessage.create({ message: this.invalidPostal, type: 'error' }));            
+          if (! address.streetNumber || ! address.streetNumber)
+          {
+            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));            
+            return;
+          }
+        }
+        else
+        {
+          if (! address.address1)
+          {
+            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));            
+            return;
+          }
+        }
+        if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) )
+        {
+          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));            
           return;
         }
         
-        if ( ! this.businessName || ! this.businessTypeList || ! this.sectorList || ! this.businessNumber || ! this.countryList || ! this.regionList || ! this.streetNumber || ! this.streetName || ! this.city || ! this.postalCode ) {
-          this.add(this.NotificationMessage.create({ message: this.noInformation, type: 'error' }));            
+        if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
+          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));            
           return;
         }
-       
-
-        var newAddress = this.Address.create({
-          countryId: this.countryList,
-          buildingNumber: this.streetNumber,
-          address: this.streetName,
-          regionId: this.regionList,
-          suite: this.address,
-          city: this.city,
-          postalCode: this.postalCode
-        });
-        this.user.businessName = this.businessName;
-        this.user.businessType = this.businessTypeList;
-        this.user.businessSector = this.sectorList;
-        this.user.businessIdentificationNumber = this.businessNumber;
-        this.user.website = this.website;
-        this.user.address = newAddress;
-        this.userDAO.put(this.user).then(function(a) {
-          self.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
+        console.log(this);
+        X.userDAO.put(this).then(function(a) {
+          X.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
       }
     }

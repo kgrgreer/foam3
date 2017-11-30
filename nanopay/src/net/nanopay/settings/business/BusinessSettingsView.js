@@ -230,11 +230,11 @@ foam.CLASS({
               .start().addClass('inlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Company Type').addClass('labelTitle').end()
-                  .start().add(this.user.businessType).addClass('labelContent').end()
+                  .start().add(this.user.businessTypeId).addClass('labelContent').end()
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Business Sector').addClass('labelTitle').end()
-                  .start().add(this.user.businessSector).addClass('labelContent').end()
+                  .start().add(this.user.businessSectorId).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('inlineDiv')
@@ -244,7 +244,7 @@ foam.CLASS({
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Issuing Authority').addClass('labelTitle').end()
-                  .start().add('Placeholder Text').addClass('labelContent').end()
+                  .start().add(this.user.issuingAuthority).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('topInlineDiv')
@@ -256,10 +256,16 @@ foam.CLASS({
               .start().addClass('topInlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Address').addClass('labelTitle').end()
-                  .start().add(this.user.address.buildingNumber+" "+this.user.address.address).addClass('labelContent').end()
-                  .callIf(this.user.address.suite != " ", function(){
-                    this.start().add(self.user.address.suite).addClass('labelContent').end()
-                  })
+                  .startContext()
+                    .start().hide(this.user.address.structured$)
+                      .start().add(this.user.address.address1).addClass('labelContent').end()
+                      .start().add(this.user.address.address2).addClass('labelContent').end()
+                    .end()
+                    .start().show(this.user.address.structured$)
+                      .start().add(this.user.address.streetNumber +" "+this.user.address.streetName).addClass('labelContent').end()
+                      .start().add(this.user.address.suite).addClass('labelContent').end()
+                    .end()
+                  .endContext()
                   .start().add(this.user.address.city + ", "+this.user.address.regionId).addClass('labelContent').end()
                   .start().add(this.user.address.countryId).addClass('labelContent').end()
                   .start().add(this.user.address.postalCode).addClass('labelContent').end()
@@ -325,6 +331,7 @@ foam.CLASS({
       name: 'editProfile',
       label: 'Edit Profile',
       code: function (X) {
+        console.log(X);
         X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
       }
     }
