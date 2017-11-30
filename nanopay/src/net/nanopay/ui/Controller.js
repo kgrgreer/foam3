@@ -67,6 +67,10 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.AppStyles.create();
+      this.InvoiceStyles.create();
+      this.ModalStyling.create();
+
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
       
@@ -79,10 +83,6 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
-
-      this.AppStyles.create();
-      this.ModalStyling.create();
-      this.InvoiceStyles.create();
     }
   ]
 });

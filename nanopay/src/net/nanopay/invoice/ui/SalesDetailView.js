@@ -66,14 +66,14 @@ foam.CLASS({
   listeners: [
     function recordPaymentModal(){
       if(this.data.paymentMethod.name != "NONE"){
-        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
     },
     function voidPopUp(){
       if(this.data.paymentMethod.name != "NONE"){
-        this.add(net.nanopay.ui.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));

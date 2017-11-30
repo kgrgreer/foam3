@@ -338,6 +338,33 @@ foam.CLASS({
           margin-top: 65px;
           z-index: 10000;
         }
+        .net-nanopay-ui-ActionView-signUp{
+          position: relative;
+          width: 100% !important;
+          height: 40px;
+          background: none;
+          background-color: %SECONDARYCOLOR%;
+          font-size: 14px;
+          border: none;
+          color: white;
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+          filter: grayscale(0%);
+        }
+        .net-nanopay-ui-ActionView-signUp:hover{
+          background: none;
+          background-color: %SECONDARYCOLOR%;
+        }
+        .net-nanopay-ui-ActionView-close{
+          width: 30px;
+          height: 30px;
+          position: absolute;
+          left: 0px;
+          top: -5px;
+          z-index: 101;
+          opacity: 0.01;
+        }
         .close-x {
           position: absolute;
           width: 32px;
@@ -363,6 +390,14 @@ foam.CLASS({
         .stepTopMargin {
           margin-top: 0;
         }
+        .net-nanopay-ui-ActionView-close{
+          width: 30px;
+          height: 30px;
+          position: absolute;
+          left: 0px;
+          top: -5px;
+          z-index: 101;
+          opacity: 0.01;
         .infoLabel {
           font-size: 14px;
           font-weight: 300;

@@ -3,25 +3,28 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
-  <servlet>
-    <servlet-name>boot</servlet-name>
-    <servlet-class>foam.nanos.tomcat.BootServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+  <welcome-file-list>
+    <welcome-file>/nanopay/src/net/nanopay/index.html</welcome-file>
+  </welcome-file-list>
   <servlet>
     <servlet-name>nanos</servlet-name>
     <servlet-class>foam.nanos.tomcat.TomcatRouter</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>nanos</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/service/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/static/*</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>default</servlet-name>
-    <url-pattern>/dev/*</url-pattern>
-  </servlet-mapping>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/nanopay/src/net/nanopay/error.html</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/nanopay/src/net/nanopay/error.html</location>
+  </error-page>
 </web-app>

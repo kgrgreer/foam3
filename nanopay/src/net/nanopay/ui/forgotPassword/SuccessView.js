@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [

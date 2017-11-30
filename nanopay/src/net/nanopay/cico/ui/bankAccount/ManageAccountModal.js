@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Pop up modal for verifying or deleting a bank account',
 
   requires: [
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [

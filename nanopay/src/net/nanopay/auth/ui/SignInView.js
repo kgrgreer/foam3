@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.Account',
     'foam.comics.DAOCreateControllerView',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
@@ -85,7 +85,7 @@ foam.CLASS({
             this.start('p').add("Don't have an account?").end()
             .start('p').style({ 'margin-left': '2px' }).addClass('link')
               .add("Sign up.")
-              .on('click', this.signUp)
+              .on('click', self.signUp)
             .end()
           })
           .start('p').style({ 'float': 'right' }).addClass('link')
