@@ -1,14 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'Controller',
-  extends: 'foam.u2.Element',
+  extends: 'foam.nanos.controller.ApplicationController',
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
 
   documentation: 'Top-level Merchant application controller.',
-
-  implements: [
-    'foam.nanos.client.Client'
-  ],
 
   requires: [
     'foam.nanos.auth.User',
@@ -20,21 +16,13 @@ foam.CLASS({
   ],
 
   exports: [
-    'user',
     'device',
-    'stack',
     'showAbout',
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
     'serialNumber',
-    'webApp',
-    'wrapCSS as installCSS'
-  ],
-
-  imports: [
-    'installCSS'
   ],
 
   properties: [
@@ -65,12 +53,6 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'user',
-      factory: function () { return this.User.create(); }
-    },
-    {
-      class: 'FObjectProperty',
       of: 'net.nanopay.retail.model.Device',
       name: 'device',
       factory: function () { return this.Device.create(); }
@@ -89,18 +71,7 @@ foam.CLASS({
         }
         return localStorage.serialNumber;
       }
-    },
-    {
-      name: 'stack',
-      factory: function () { return this.Stack.create(); }
-    },
-    'primaryColor',
-    'webApp',
-    'logo',
-    'webApp',
-    'secondaryColor',
-    'tableColor',
-    'accentColor'
+    }
   ],
 
   methods: [
@@ -206,24 +177,6 @@ foam.CLASS({
             .on('click', this.onAboutClicked)
           .end()
         .end()
-    },
-    function wrapCSS(text, id) {
-      if ( text ) {
-        if ( ! this.accentColor ) {
-          var self = this;
-          this.accentColor$.sub(function(s) {
-            self.wrapCSS(text, id);
-            s.detach();
-          });
-        }
-
-        this.installCSS(text.
-          replace(/%PRIMARYCOLOR%/g, this.primaryColor).
-          replace(/%SECONDARYCOLOR%/g, this.secondaryColor).
-          replace(/%TABLECOLOR%/g, this.tableColor).
-          replace(/%ACCENTCOLOR%/g, this.accentColor),
-          id);
-      }
     }
   ],
 
