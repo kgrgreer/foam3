@@ -30,11 +30,11 @@ foam.CLASS({
     'toolbarTitle',
     'serialNumber',
     'webApp',
-    'wrapCSS as installCSS'    
+    'wrapCSS as installCSS'
   ],
 
   imports: [
-    'installCSS'    
+    'installCSS'
   ],
 
   properties: [
@@ -95,14 +95,19 @@ foam.CLASS({
       factory: function () { return this.Stack.create(); }
     },
     'primaryColor',
-    'webApp'
+    'webApp',
+    'logo',
+    'webApp',
+    'secondaryColor',
+    'tableColor',
+    'accentColor'
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      var self = this;    
-        
+      var self = this;
+
       this.transactionDAO.remoteListenerSupport = true;
 
       if ( ! localStorage.serialNumber ) {
@@ -135,7 +140,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.AppStyles.create();
-      
+
       this
         .addClass(this.myClass())
         // sidebar
@@ -215,7 +220,7 @@ foam.CLASS({
         this.installCSS(text.
           replace(/%PRIMARYCOLOR%/g, this.primaryColor).
           replace(/%SECONDARYCOLOR%/g, this.secondaryColor).
-          replace(/%TABLECOLOR%/g, this.tableColor).          
+          replace(/%TABLECOLOR%/g, this.tableColor).
           replace(/%ACCENTCOLOR%/g, this.accentColor),
           id);
       }
