@@ -1,148 +1,28 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'Controller',
-  extends: 'foam.u2.Element',
+  extends: 'foam.nanos.controller.ApplicationController',
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
 
   documentation: 'Top-level Merchant application controller.',
-
-  implements: [
-    'foam.nanos.client.Client'
-  ],
 
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus'
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.merchant.ui.AppStyles'
   ],
 
   exports: [
-    'user',
     'device',
-    'stack',
     'showAbout',
     'showHeader',
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
-    'serialNumber'
-  ],
-
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          background-color: #2C4389;
-        }
-        ^ .stack-wrapper {
-          padding-top: 56px;
-        }
-        ^ .sidenav {
-          display: none;
-          height: 100%;
-          width: 250px;
-          position: fixed;
-          z-index: 1;
-          top: 0;
-          left: 0;
-          background-color: #FFFFFF;
-          overflow-x: hidden;
-          box-shadow: 10px 8px 10px -5px rgba(0, 0, 0, 0.2),
-            0px 16px 24px 2px rgba(0, 0, 0, 0.14),
-            0px 6px 30px 5px rgba(0, 0, 0, 0.12);
-        }
-        ^ .sidenav.open {
-          display: block;
-        }
-        ^ .toolbar {
-          width: 100%;
-          height: 56px;
-          background-color: #4054B5;
-          -webkit-box-shadow: none;
-          box-shadow: none;
-          position: fixed;
-          top: 0;
-        }
-        ^ .toolbar-icon {
-          height: 56px;
-          padding-left: 20px;
-          padding-right: 20px;
-          float: left;
-        }
-        ^ .toolbar-icon.about {
-          height: 56px;
-          padding-left: 20px;
-          padding-right: 20px;
-          float: right;
-        }
-        ^ .toolbar-title {
-          font-size: 16px;
-          line-height: 56px;
-          position: absolute;
-          margin-left: 64px;
-        }
-        ^ .sidenav-list-item {
-          height: 90px;
-          border-bottom: 1px solid #e5e5e5;
-        }
-        ^ .sidenav-list-item.selected {
-          background-color: #f1f1f1;
-        }
-        ^ .sidenav-list-item a {
-          font-size: 16px;
-          font-weight: 500;
-          color: #595959;
-          line-height: 90px;
-          text-decoration: none;
-        }
-        ^ .sidenav-list-item.about {
-          height: 56px;
-          width: 250px;
-          position: fixed;
-          bottom: 0px;
-        }
-        ^ .sidenav-list-item.about a {
-          line-height: 56px;
-        }
-        ^ .sidenav-list-icon i {
-          display: inline-block;
-          height: 100%;
-          vertical-align: middle;
-        }
-        ^ .sidenav-list-icon img {
-          width: 40px;
-          height: 40px;
-          object-fit: contain;
-          vertical-align: middle;
-          padding-left: 20px;
-          padding-right: 10px;
-        }
-        ^ .sidenav-list-item.back {
-          height: 56px;
-          background-color: #26A96C;
-        }
-        ^ .sidenav-list-item.back a {
-          color: #FFFFFF;
-          line-height: 56px;
-          text-decoration: none;
-        }
-        ^ .sidenav-list-icon.material-icons {
-          height: 100%;
-          padding-left: 25px;
-          padding-right: 20px;
-          float: left;
-          line-height: 56px;
-        }
-        ^ .net-nanopay-ui-ToggleSwitch {
-          float: right;
-          padding-top: 33px;
-          padding-bottom: 33px;
-          padding-right: 43px;
-        }
-      */}
-    })
+    'serialNumber',
   ],
 
   properties: [
@@ -173,12 +53,6 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'user',
-      factory: function () { return this.User.create(); }
-    },
-    {
-      class: 'FObjectProperty',
       of: 'net.nanopay.retail.model.Device',
       name: 'device',
       factory: function () { return this.Device.create(); }
@@ -197,10 +71,6 @@ foam.CLASS({
         }
         return localStorage.serialNumber;
       }
-    },
-    {
-      name: 'stack',
-      factory: function () { return this.Stack.create(); }
     }
   ],
 
@@ -208,6 +78,8 @@ foam.CLASS({
     function init() {
       this.SUPER();
       var self = this;
+
+      this.transactionDAO.remoteListenerSupport = true;
 
       if ( ! localStorage.serialNumber ) {
         this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
@@ -238,6 +110,7 @@ foam.CLASS({
 
     function initE() {
       var self = this;
+      this.AppStyles.create();
 
       this
         .addClass(this.myClass())
