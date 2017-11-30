@@ -21,10 +21,10 @@
   </servlet-mapping>
   <error-page>
     <error-code>404</error-code>
-    <location>/nanopay/src/net/nanopay/index.html</location>
+    <location>/nanopay/src/net/nanopay/error.html</location>
   </error-page>
   <error-page>
     <exception-type>java.lang.Throwable</exception-type>
-    <location>/nanopay/src/net/nanopay/index.html</location>
+    <location>/nanopay/src/net/nanopay/error.html</location>
   </error-page>
 </web-app>
