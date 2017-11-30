@@ -95,11 +95,9 @@ foam.CLASS({
           width: 136px;
           height: 40px;
           border-radius: 2px;
-
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           background-color: rgba(164, 179, 184, 0.1);
-
-          font-size: 10px;
+          font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
           color: #093649;
@@ -124,11 +122,8 @@ foam.CLASS({
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-
           background-color: #59a5d5;
-
-
-          font-size: 10px;
+          font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
           color: #FFFFFF;
