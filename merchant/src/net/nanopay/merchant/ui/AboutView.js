@@ -6,7 +6,8 @@ foam.CLASS({
   imports: [
     'showAbout',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'webApp'
   ],
 
   axioms: [
@@ -17,7 +18,7 @@ foam.CLASS({
           height: 480px;
           display: table;
           position: absolute;
-          background-color: #2c4389;
+          background-color: %PRIMARYCOLOR%;
           margin-top: -56px;
         }
         ^ .wrapper {
@@ -38,9 +39,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'name', message: 'MintChip Merchant' },
     { name: 'version', message: '0.0.1' },
-    { name: 'copyright', message: '© nanopay Corporation.'},
     { name: 'rights', message: 'All rights reserved.' }
   ],
 
@@ -62,11 +61,16 @@ foam.CLASS({
           .start('div').addClass('about-mintchip')
             .start('div').addClass('mintchip-logo')
               .attrs({ 'aria-hidden': true })
-              .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-launcher/64x64.png' })
+              .callIf(this.webApp == 'nanopay', function(){
+                this.tag({ class: 'foam.u2.tag.Image', data: 'images/ic-launcher/64x64.png' })  
+              })
+              .callIf(this.webApp == 'Connected City', function(){
+                this.tag({ class: 'foam.u2.tag.Image', data: 'images/connected-logo.png' })
+              })
             .end()
-            .start('h3').add(this.name).end()
+            .start('h3').add(this.webApp,' Merchant').end()
             .start().add('Version ' + this.version).end().br()
-            .start().add(this.copyright).br().add(this.rights).end()
+            .start().add('© ' + this.webApp).br().add(this.rights).end()
           .end()
         .end()
 

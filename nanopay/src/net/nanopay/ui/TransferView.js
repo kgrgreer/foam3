@@ -14,7 +14,7 @@ foam.CLASS({
     'net.nanopay.model.Account',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
@@ -120,17 +120,16 @@ foam.CLASS({
       this
       .start().addClass(this.myClass())
         .start().addClass('white-container')
-          .start().addClass('light-roboto-h2').add('Transfer Value').end()
-          .start().addClass('label').add('Transfer To:').end()
-          .start()
-            .tag(this.PAYEES)
-            .start('div').addClass('caret').end()
-          .end()
-          .start().addClass('label').add('Transfer Amount:').end()
-          .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
-          .start().addClass('label').add('Note:').end()
-          .start(this.NOTE).addClass('half-small-input-box').end()
-          .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
+          .startContext({ data: this})
+            .start().addClass('light-roboto-h2').add('Transfer Value').end()
+            .start().addClass('label').add('Transfer To:').end()
+            .start(this.PAYEES).end()
+            .start().addClass('label').add('Transfer Amount:').end()
+            .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
+            .start().addClass('label').add('Note:').end()
+            .start(this.NOTE).addClass('half-small-input-box').end()
+            .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
+          .endContext()
         .end()
       .end();
     }
@@ -140,6 +139,7 @@ foam.CLASS({
     {
       name: 'transferValue',
       label: 'Send',
+      confirmationRequired: true,
       code: function(X){
         var self = this;
 
@@ -162,6 +162,7 @@ foam.CLASS({
 
         self.transactionDAO.put(transaction).then(function(response) {
           self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent!' }));
+          self.transferAmount = null;
         }).catch(function(error) {
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
         });

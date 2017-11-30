@@ -13,7 +13,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.LoadingSpinner',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
