@@ -6,8 +6,9 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a shopper',
 
   requires: [
-    'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
+    'foam.nanos.auth.User',
     'net.nanopay.ui.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -59,6 +60,7 @@ foam.CLASS({
 
         if ( this.position == 0 ) { 
           // Shopper Info
+
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
           ( shopperInfo.lastName == null || shopperInfo.lastName.trim() == '' ) ||
           ( shopperInfo.emailAddress == null || shopperInfo.emailAddress.trim() == '' ) ||
@@ -68,8 +70,7 @@ foam.CLASS({
           ( shopperInfo.streetName == null || shopperInfo.streetName.trim() == '' ) ||
           ( shopperInfo.city == null || shopperInfo.city.trim() == '' ) ||
           ( shopperInfo.postalCode == null || shopperInfo.postalCode.trim() == '' ) ||
-          ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) )
-          {
+          ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
@@ -83,8 +84,13 @@ foam.CLASS({
 
         if ( this.position == 1 ) {
           // Review
+
+          var shopperPhone = this.Phone.create({
+            number: shopperInfo.phoneNumber
+          });
+
           var shopperAddress = this.Address.create({
-            address: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
+            address1: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
             suite: shopperInfo.addressLine,
             city: shopperInfo.city,
             postalCode: shopperInfo.postalCode,
@@ -97,6 +103,7 @@ foam.CLASS({
             email: shopperInfo.emailAddress,
             type: 'Shopper',
             birthday: shopperInfo.birthday,
+            phone: shopperPhone,
             address: shopperAddress,
             password: shopperInfo.password
           });
@@ -129,14 +136,13 @@ foam.CLASS({
             });
 
             this.transactionDAO.put(transaction).then(function(response) {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent' }));
+              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               return;
             }).catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
               return;
             });
-
           }
         }
 
