@@ -127,7 +127,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'id', 'firstName', 'lastName', 'email', 'type'
+          'id', 'firstName', 'lastName', 'email', 'organization', 'type'
         ]
       }
     },

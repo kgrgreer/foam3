@@ -116,7 +116,7 @@ foam.CLASS({
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.CompanyTypeLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.companyType).addClass('infoText bottomMargin').end()
+              .start().add(this.viewData.businessType).addClass('infoText bottomMargin').end()
               .start().add(this.BusinessSectorLabel).addClass('boldLabel').end()
               .start().add(this.viewData.businessSector).addClass('infoText bottomMargin').end()
               .start().add(this.AddressLabel).addClass('boldLabel').end()

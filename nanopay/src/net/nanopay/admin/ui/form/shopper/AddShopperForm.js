@@ -91,6 +91,8 @@ foam.CLASS({
 
           var shopperAddress = this.Address.create({
             address1: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
+            streetNumber: shopperInfo.streetNumber,
+            streetName: shopperInfo.streetName,
             suite: shopperInfo.addressLine,
             city: shopperInfo.city,
             postalCode: shopperInfo.postalCode,
@@ -100,6 +102,7 @@ foam.CLASS({
           var newShopper = this.User.create({
             firstName: shopperInfo.firstName,
             lastName: shopperInfo.lastName,
+            organization: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Shopper',
             birthday: shopperInfo.birthday,

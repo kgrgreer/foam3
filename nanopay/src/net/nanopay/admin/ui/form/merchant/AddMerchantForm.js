@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'net.nanopay.ui.NotificationMessage',
@@ -64,7 +65,6 @@ foam.CLASS({
 
           if ( ( merchantInfo.firstName == null || merchantInfo.firstName.trim() == '' ) ||
           ( merchantInfo.lastName == null || merchantInfo.lastName.trim() == '' ) ||
-          ( merchantInfo.emailAddress == null || merchantInfo.emailAddress.trim() == '' ) ||
           ( merchantInfo.phoneNumber == null || merchantInfo.phoneNumber.trim() == '' ) ||
           ( merchantInfo.password == null || merchantInfo.password.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
@@ -108,6 +108,8 @@ foam.CLASS({
 
           var merchantAddress = this.Address.create({
             address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
+            streetNumber: merchantInfo.streetNumber,
+            streetName: merchantInfo.streetName,
             suite: merchantInfo.addressLine,
             city: merchantInfo.city,
             postalCode: merchantInfo.postalCode,
@@ -119,12 +121,11 @@ foam.CLASS({
             firstName: merchantInfo.firstName,
             lastName: merchantInfo.lastName,
             organization: merchantInfo.businessName,
-            email: merchantInfo.emailAddress,
+            email: merchantInfo.companyEmail,
             type: 'Merchant',
             phone: merchantPhone,
             address: merchantAddress,
             password: merchantInfo.password,
-            businessName: merchantInfo.businessName,
             businessIdentificationNumber: merchantInfo.registrationNumber,
             website: merchantInfo.website,
             businessType: merchantInfo.businessType,
@@ -141,8 +142,6 @@ foam.CLASS({
             return;
           });
 
-          self.subStack.push(self.views[self.subStack.pos + 1].view);
-          return;
         }
 
         if ( this.position == 3 ) {

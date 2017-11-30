@@ -28,7 +28,7 @@ foam.CLASS({
           margin-right: 10px;
         }
         ^ .infoContainer{
-          height: 272px;
+          height: 185px;
         }
       */}
     })
@@ -47,13 +47,6 @@ foam.CLASS({
       name: 'lastName',
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'emailAddress',
-      postSet: function(oldValue, newValue) {
-        this.viewData.emailAddress = newValue;
       }
     },
     {
@@ -77,9 +70,8 @@ foam.CLASS({
     { name: 'MerchantInformationLabel', message: 'Merchant Information' },
     { name: 'FirstNameLabel', message: 'First Name *' },
     { name: 'LastNameLabel', message: 'Last Name *' },
-    { name: 'EmailAddressLabel', message: 'Email Address *' },
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'CreateAPasswordLabel', message: 'Create a Password *' }
+    { name: 'PasswordLabel', message: 'Password *' }
   ],
 
   methods: [
@@ -100,16 +92,12 @@ foam.CLASS({
               .start(this.LAST_NAME).addClass('inputLarge').end()
             .end()
             .start().addClass('inline topMargin')
-              .start().add(this.EmailAddressLabel).addClass('infoLabel').end()
-              .start(this.EMAIL_ADDRESS).addClass('inputLarge').end()
-            .end()
-            .start().addClass('inline float-right topMargin')
               .start().add(this.PhoneNumberLabel).addClass('infoLabel').end()
               .start(this.PHONE_NUMBER).addClass('inputLarge').end()
             .end()
-            .start().addClass('topMargin')
-              .start().add(this.CreateAPasswordLabel).addClass('infoLabel').end()
-              .start(this.PASSWORD).addClass('inputExtraLarge').end()
+            .start().addClass('inline float-right topMargin')
+              .start().add(this.PasswordLabel).addClass('infoLabel').end()
+              .start(this.PASSWORD).addClass('inputLarge').end()
             .end()
           .end()
         .end();

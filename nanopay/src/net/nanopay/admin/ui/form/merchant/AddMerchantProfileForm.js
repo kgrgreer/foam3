@@ -142,7 +142,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'companyType',
+      name: 'businessType',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.businessTypeDAO,
@@ -152,7 +152,7 @@ foam.CLASS({
         })
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.companyType = newValue;
+        this.viewData.businessType = newValue;
       }
     },
     {
@@ -283,7 +283,7 @@ foam.CLASS({
             .end()
             .start().addClass('inline topMargin')
               .start().add(this.CompanyTypeLabel).addClass('infoLabel').end()
-              .tag(this.COMPANY_TYPE)
+              .tag(this.BUSINESS_TYPE)
               .start().addClass('caret').end()
             .end()
             .start().addClass('inline float-right')
