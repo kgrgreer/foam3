@@ -71,14 +71,29 @@ foam.CLASS({
         }
         return localStorage.serialNumber;
       }
+<<<<<<< HEAD
     }
+=======
+    },
+    {
+      name: 'stack',
+      factory: function () { return this.Stack.create(); }
+    },
+    'primaryColor',
+    'webApp',
+    'logo',
+    'webApp',
+    'secondaryColor',
+    'tableColor',
+    'accentColor'
+>>>>>>> 2e646b5d6247abf3eb72bfcaa4d4a412dd046042
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      var self = this;    
-        
+      var self = this;
+
       this.transactionDAO.remoteListenerSupport = true;
 
       if ( ! localStorage.serialNumber ) {
@@ -111,7 +126,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.AppStyles.create();
-      
+
       this
         .addClass(this.myClass())
         // sidebar
@@ -177,6 +192,27 @@ foam.CLASS({
             .on('click', this.onAboutClicked)
           .end()
         .end()
+<<<<<<< HEAD
+=======
+    },
+    function wrapCSS(text, id) {
+      if ( text ) {
+        if ( ! this.accentColor ) {
+          var self = this;
+          this.accentColor$.sub(function(s) {
+            self.wrapCSS(text, id);
+            s.detach();
+          });
+        }
+
+        this.installCSS(text.
+          replace(/%PRIMARYCOLOR%/g, this.primaryColor).
+          replace(/%SECONDARYCOLOR%/g, this.secondaryColor).
+          replace(/%TABLECOLOR%/g, this.tableColor).
+          replace(/%ACCENTCOLOR%/g, this.accentColor),
+          id);
+      }
+>>>>>>> 2e646b5d6247abf3eb72bfcaa4d4a412dd046042
     }
   ],
 
