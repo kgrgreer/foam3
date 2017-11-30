@@ -1,4 +1,0 @@
-p({"class":"net.nanopay.auth.token.Token","id":1,"userId":1338,"processed":false,"expiry":"2017-12-01T19:39:51.485Z","data":"a56c4b6d-1ec5-41f4-b91e-90768ab4ed49"})
-p({"class":"net.nanopay.auth.token.Token","id":2,"userId":1339,"processed":false,"expiry":"2017-12-01T19:42:02.580Z","data":"5bfdaa1a-8ad7-42f3-b001-6950f16d71d7"})
-p({"class":"net.nanopay.auth.token.Token","id":3,"userId":1340,"processed":false,"expiry":"2017-12-01T19:44:02.997Z","data":"6520645e-b4cb-45d7-9454-f6abc9fbba86"})
-p({"class":"net.nanopay.auth.token.Token","id":4,"userId":1341,"processed":false,"expiry":"2017-12-01T19:59:42.120Z","data":"9240a387-1e5b-4679-bcea-8e2800f4b9d1"})

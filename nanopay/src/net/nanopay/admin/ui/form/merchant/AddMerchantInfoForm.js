@@ -57,7 +57,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Password',
       name: 'password',
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
