@@ -60,3 +60,6 @@ cd /opt/tomcat/webapps/ROOT
 mkdir images
 cd nanopay/src/net/nanopay/
 mv images/ ../../.././../
+
+cd ../../../../foam2/src/
+rm -rf com
