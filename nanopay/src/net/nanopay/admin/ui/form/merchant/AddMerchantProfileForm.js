@@ -47,7 +47,8 @@ foam.CLASS({
           -webkit-appearance: none;
           -moz-appearance: none;
           appearance: none;
-          padding: 0 15px;
+          padding-left: 15px;
+          padding-right: 30px;
           border: solid 1px rgba(164, 179, 184, 0.5);
           background-color: white;
           outline: none;

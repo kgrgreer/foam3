@@ -53,7 +53,7 @@ foam.CLASS({
         }
         ^ .alignTopWithMargin {
           vertical-align: top;
-          margin-left: 180px;
+          margin-left: 160px;
         }
       */}
     })
@@ -100,9 +100,9 @@ foam.CLASS({
               .start().add(this.viewData.phoneNumber).addClass('infoText bottomMargin').end()
               .start().add(this.AddressLabel).addClass('boldLabel').end()
               .start().add(this.viewData.streetNumber + ' ' + this.viewData.streetName).addClass('infoText').end()
+              .start().add(this.viewData.postalCode).addClass('infoText').end()
               .start().add(this.viewData.addressLine).addClass('infoText').end()
               .start().add(this.viewData.city + ' ' + this.viewData.province).addClass('infoText').end()
-              .start().add(this.viewData.postalCode).addClass('infoText').end()
             .end()
           .end()
         .end();

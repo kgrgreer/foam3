@@ -44,6 +44,7 @@ foam.CLASS({
           margin-bottom: 15px;
         }
         ^ .infoText {
+          width: 150px;
           font-size: 12px;
           letter-spacing: 0.3px;
           color: #093649;
@@ -53,7 +54,7 @@ foam.CLASS({
         }
         ^ .alignTopWithMargin {
           vertical-align: top;
-          margin-left: 180px;
+          margin-left: 160px;
         }
       */}
     })
@@ -85,7 +86,7 @@ foam.CLASS({
         .start()
           .start('p').add(this.Step).addClass('pDefault stepTopMargin').end()
           .start().addClass('infoContainer')
-            .start().add(this.MerchantInfoLabel).addClass('greenLabel').end()
+            .start().add(this.MerchantInfoLabel).addClass('greenLabel bottomMargin').end()
             .start().addClass('inline')
               .start().add(this.FirstNameLabel).addClass('boldLabel').end()
               .start().add(this.viewData.firstName).addClass('infoText bottomMargin').end()
@@ -98,7 +99,7 @@ foam.CLASS({
               .start().add(this.LastNameLabel).addClass('boldLabel').end()
               .start().add(this.viewData.lastName).addClass('infoText bottomMargin').end()
               .start().add(this.PhoneLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.phone).addClass('infoText').end()
+              .start().add(this.viewData.phoneNumber).addClass('infoText').end()
             .end()
             .start().add(this.BusinessProfileLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
@@ -120,10 +121,9 @@ foam.CLASS({
               .start().add(this.viewData.businessSector).addClass('infoText bottomMargin').end()
               .start().add(this.AddressLabel).addClass('boldLabel').end()
               .start().add(this.viewData.streetNumber + ' ' + this.viewData.streetName).addClass('infoText').end()
-              .start().add(this.viewData.addressLine).addClass('infoText').end()
-              .start().add(this.viewData.city + ' ' + this.viewData.province).addClass('infoText').end()
-              .start().add(this.viewData.country).addClass('infoText').end()
               .start().add(this.viewData.postalCode).addClass('infoText').end()
+              .start().add(this.viewData.addressLine).addClass('infoText').end()
+              .start().add(this.viewData.city + ' ' + this.viewData.province + ' ' + this.viewData.country).addClass('infoText').end()
             .end()
 
           .end()
