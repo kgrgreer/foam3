@@ -24,6 +24,8 @@ import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.model.Branch;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.cico.model.TransactionType;;
 import javax.servlet.http.HttpServletResponse;
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
@@ -32,7 +34,6 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.pm.PM;
-import foam.nanos.http.WebAgent;
 import net.nanopay.cico.spi.alterna.SFTPService;
 import net.nanopay.cico.spi.alterna.AlternaWebAgent;
 import java.io.PrintWriter;
@@ -42,19 +43,27 @@ import java.util.Date;
 
 public class AlternaSFTPService extends ContextAwareSupport implements SFTPService {
 
-
-  protected WebAgent agent_;
-
   protected final String HOST = "ftp.eftcanada.com";
   protected final int PORT = 22;
   protected final String USER = "eftcadtest1";
   protected final String PASSWORD = "nLGlp8Du";
   protected final String WORKING_DIR = "/";
+  protected DAO userDAO = (DAO) getX().get("localUserDAO");
+  protected DAO branchDAO = (DAO) getX().get("branchDAO");
+  protected DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
+  protected DAO transactionDAO = (DAO) getX().get("cicoTransactionDAO");
 
   protected ThreadLocal<SimpleDateFormat> filenameSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
     protected SimpleDateFormat initialValue() {
       return new SimpleDateFormat("yyyyMMdd");
+    }
+  };
+
+  protected ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd");
     }
   };
 
@@ -91,12 +100,8 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
 
   @Override
   public void sendCICOFile() {
-    final DAO userDAO = (DAO) x.get("localUserDAO");
-    final DAO branchDAO = (DAO) x.get("branchDAO");
-    final DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
-    final DAO transactionDAO = (DAO) x.get("cicoTransactionDAO");
-    final Sink outputter = new Outputter(OutputterMode.NETWORK);
-
+    ByteArrayOutputStream  out = (ByteArrayOutputStream) getX().get(ByteArrayOutputStream.class);
+    final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
     final Date now = new Date();
 
     transactionDAO.where(MLang.EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
@@ -152,9 +157,6 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
     Channel channel = null;
     ChannelSftp channelSftp = null;
     try {
-      ByteArrayOutputStream  byteOut = new ByteArrayOutputStream();
-      byteOut.write(outputter.toString());
-      byteOut.close();
 
       JSch jsch = new JSch();
       session = jsch.getSession(USER, HOST, PORT);
@@ -168,14 +170,14 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
       channel.connect();
       channelSftp = (ChannelSftp) channel;
       channelSftp.cd(WORKING_DIR);
-      channelSftp.put(new ByteArrayInputStream(byteOut.toByteArray()), generateFilename(new Date()));
+      channelSftp.put(new ByteArrayInputStream(out.toByteArray()), generateFilename(new Date()));
       channelSftp.exit();
       channel.disconnect();
       session.disconnect();
 
     }
-    catch( JSchException | IOException | SftpException e ) {
-       System.out.println("Exception: " + e);
+    catch ( Exception e ) {
+       e.printStackTrace();
     }
     finally {
       System.out.println("Host Session disconnected.");
@@ -183,51 +185,13 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
 
   }
 
-  // @Override
-  // public void sendCICOFile() {
-  //   agent_.execute(getX());
-
-  //   String fileName = generateFilename(new Date());
-
-  //   Session session = null;
-  //   Channel channel = null;
-  //   ChannelSftp channelSftp = null;
-  //   try {
-
-  //     JSch jsch = new JSch();
-  //     session = jsch.getSession(USER, HOST, PORT);
-  //     session.setPassword(PASSWORD);
-  //     java.util.Properties config = new java.util.Properties();
-  //     config.put("StrictHostKeyChecking", "no");
-  //     session.setConfig(config);
-  //     session.connect();
-
-  //     channel = session.openChannel("sftp");
-  //     channel.connect();
-  //     channelSftp = (ChannelSftp) channel;
-  //     channelSftp.cd(WORKING_DIR);
-  //     File f = new File(fileName);
-  //     f.createNewFile();
-  //     channelSftp.put(new FileInputStream(f), generateFilename(new Date()));
-  //     channelSftp.exit();
-  //     channel.disconnect();
-  //     session.disconnect();
-
-  //   } catch( JSchException | IOException | SftpException e ) {
-  //      System.out.println("Exception: " + e);
-  //   } /*catch( IOException e ) {
-  //     System.out.println("Exception: " + e);
-  //   } catch( SftpException e ) {
-  //     System.out.println("Exception: " + e);
-  //   } */finally {
-  //     System.out.println("Host Session disconnected.");
-  //   }
-  // }
 
   @Override
   public void start() {
-    agent_ = (WebAgent) getX().get("alterna");
-
+    userDAO = (DAO) getX().get("localUserDAO");
+    branchDAO = (DAO) getX().get("branchDAO");
+    bankAccountDAO = (DAO) getX().get("bankAccountDAO");
+    transactionDAO = (DAO) getX().get("cicoTransactionDAO");
   }
 
 }
