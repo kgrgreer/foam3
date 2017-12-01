@@ -5,6 +5,8 @@ foam.CLASS({
 
   imports: [ 'stack', 'user' ],
 
+  requires: [ 'net.nanopay.model.BusinessSector' ],
+
   documentation: 'View displaying business information',
 
   axioms: [
@@ -87,6 +89,9 @@ foam.CLASS({
           font-weight: 300;
           letter-spacing: 0.2px;
           color: #093649;
+          display: flex;
+          word-wrap: initial;
+          width: 120px;
         }
         ^ .addBankButtonDiv {
           text-align: center;
@@ -200,12 +205,22 @@ foam.CLASS({
       name: "expandBox4",
       value: false
     },
+    'businessSectorName',
+    'businessTypeName'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
+
+      this.user.businessSectorId$find.then(function(sector) { 
+        self.businessSectorName = sector.name;
+      });
+      this.user.businessTypeId$find.then(function(type) { 
+        self.businessTypeName = type.name;
+      });
+
 
       this
         .addClass(this.myClass())
@@ -230,11 +245,11 @@ foam.CLASS({
               .start().addClass('inlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Company Type').addClass('labelTitle').end()
-                  .start().add(this.user.businessTypeId).addClass('labelContent').end()
+                  .start().add(this.businessTypeName$).addClass('labelContent').end()
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Business Sector').addClass('labelTitle').end()
-                  .start().add(this.user.businessSectorId).addClass('labelContent').end()
+                  .start().add(this.businessSectorName$).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('inlineDiv')

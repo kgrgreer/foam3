@@ -5,7 +5,7 @@ foam.CLASS({
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
-      of: 'net.nanopay.model.businessType',      
+      of: 'net.nanopay.model.BusinessType',      
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.businessTypeDAO,
@@ -19,7 +19,7 @@ foam.CLASS({
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',      
       name: 'businessSectorId',
-      of: 'net.nanopay.model.businessSector',            
+      of: 'net.nanopay.model.BusinessSector',            
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.businessSectorDAO,

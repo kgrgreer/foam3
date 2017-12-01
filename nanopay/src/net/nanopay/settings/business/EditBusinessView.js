@@ -278,8 +278,6 @@ foam.CLASS({
       code: function(X) {
         var view = X.view;
         var address = this.address;
-        console.log(this.BUSINESS_SECTOR_ID);
-        console.log(this.businessSectorId);
         address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
         if (address.structured)
         {
@@ -308,6 +306,7 @@ foam.CLASS({
           return;
         }
         console.log(this);
+        debugger;
         X.userDAO.put(this).then(function(a) {
           X.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
