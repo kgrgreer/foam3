@@ -29,7 +29,7 @@ foam.CLASS({
       line-height: 1.88;
       text-align: center;
       color: #ffffff;
-    }   
+    }
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -60,7 +60,7 @@ foam.CLASS({
     .toolbar {
       width: 100%;
       height: 56px;
-      background-color: #4054B5;
+      background-color: %PRIMARYCOLOR%;
       -webkit-box-shadow: none;
       box-shadow: none;
       position: fixed;

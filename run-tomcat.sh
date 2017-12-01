@@ -1,18 +1,26 @@
 #!/bin/sh
-
 # Exit on first failure
 set -e
+cwd=$(pwd)
 
-./find.sh
 ./gen.sh
 mvn clean install
 
 #Shutdown tomcat if already running
 /$CATALINA_HOME/bin/shutdown.sh 2> /dev/null
 
-#Copy over files to tomcat location
+# Copy over war and server config files.
+# These are needed before server startup
 cp target/ROOT.war $CATALINA_HOME/webapps
 cp server.xml $CATALINA_HOME/conf
+
+#Start the server
+cd $CATALINA_HOME/bin/
+./startup.sh
+sleep 5
+
+cd $cwd
+./find.sh
 
 #Copy over all JDAO files to /bin
 cp accounts $CATALINA_HOME/bin/
@@ -49,11 +57,16 @@ cp tests $CATALINA_HOME/bin/
 cp transactions $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
 
-#Copy over NANOPAY and foam2
-rm -rf $CATALINA_HOME/bin/NANOPAY/
-cd ..
-cp -r NANOPAY/ $CATALINA_HOME/bin/NANOPAY
+# Copy over static web files to ROOT
+cp -r foam2/ /Library/Tomcat/webapps/ROOT/foam2
+cp -r nanopay/ /Library/Tomcat/webapps/ROOT/nanopay
+cp -r merchant/ /Library/Tomcat/webapps/ROOT/merchant
 
-#Start the server
-cd $CATALINA_HOME/bin/
-./startup.sh
+# Move images to ROOT/images
+cd /Library/Tomcat/webapps/ROOT
+mkdir images
+cd nanopay/src/net/nanopay/
+mv images/ ../../.././../
+
+cd ../../../../foam2/src/
+rm -rf com
