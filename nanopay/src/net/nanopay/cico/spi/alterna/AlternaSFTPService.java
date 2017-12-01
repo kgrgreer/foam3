@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -49,6 +51,13 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
   protected final String PASSWORD = "nLGlp8Du";
   protected final String WORKING_DIR = "/";
 
+  protected ThreadLocal<SimpleDateFormat> filenameSdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyyMMdd");
+    }
+  };
+
   /**
    * Generates the process date based on a given date
    * @param date date used to determine the processing date
@@ -68,7 +77,7 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
    * @return the filename
    */
   public String generateFilename(Date date) {
-    return "mintchipcashout_" + filenameSdf.get().format(date) + ".csv";
+    return filenameSdf.get().format(date) + "_mintchipcashout.csv";
   }
 
   /**
@@ -79,13 +88,14 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
     return new Date().getTime() + "" + (int) (Math.random() * (99999 - 10000) + 10000);
   }
 
-  public Outputter execute(X x) {
+
+  @Override
+  public void sendCICOFile() {
     final DAO userDAO = (DAO) x.get("localUserDAO");
     final DAO branchDAO = (DAO) x.get("branchDAO");
     final DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("cicoTransactionDAO");
-    PrintWriter  out = (PrintWriter) x.get(PrintWriter.class);
-    final Sink outputter = new Outputter(out, OutputterMode.NETWORK, false);
+    final Sink outputter = new Outputter(OutputterMode.NETWORK);
 
     final Date now = new Date();
 
@@ -137,18 +147,14 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
         }
       }
     });
-  }
-
-  @Override
-  public void sendCICOFile() {
-    agent_.execute(getX());
-
-    String fileName = "test.txt";
 
     Session session = null;
     Channel channel = null;
     ChannelSftp channelSftp = null;
     try {
+      ByteArrayOutputStream  byteOut = new ByteArrayOutputStream();
+      byteOut.write(outputter.toString());
+      byteOut.close();
 
       JSch jsch = new JSch();
       session = jsch.getSession(USER, HOST, PORT);
@@ -162,23 +168,61 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
       channel.connect();
       channelSftp = (ChannelSftp) channel;
       channelSftp.cd(WORKING_DIR);
-      File f = new File(fileName);
-      f.createNewFile();
-      channelSftp.put(new FileInputStream(f), f.getName());
+      channelSftp.put(new ByteArrayInputStream(byteOut.toByteArray()), generateFilename(new Date()));
       channelSftp.exit();
       channel.disconnect();
       session.disconnect();
 
-    } catch( JSchException | IOException | SftpException e ) {
+    }
+    catch( JSchException | IOException | SftpException e ) {
        System.out.println("Exception: " + e);
-    } /*catch( IOException e ) {
-      System.out.println("Exception: " + e);
-    } catch( SftpException e ) {
-      System.out.println("Exception: " + e);
-    } */finally {
+    }
+    finally {
       System.out.println("Host Session disconnected.");
     }
+
   }
+
+  // @Override
+  // public void sendCICOFile() {
+  //   agent_.execute(getX());
+
+  //   String fileName = generateFilename(new Date());
+
+  //   Session session = null;
+  //   Channel channel = null;
+  //   ChannelSftp channelSftp = null;
+  //   try {
+
+  //     JSch jsch = new JSch();
+  //     session = jsch.getSession(USER, HOST, PORT);
+  //     session.setPassword(PASSWORD);
+  //     java.util.Properties config = new java.util.Properties();
+  //     config.put("StrictHostKeyChecking", "no");
+  //     session.setConfig(config);
+  //     session.connect();
+
+  //     channel = session.openChannel("sftp");
+  //     channel.connect();
+  //     channelSftp = (ChannelSftp) channel;
+  //     channelSftp.cd(WORKING_DIR);
+  //     File f = new File(fileName);
+  //     f.createNewFile();
+  //     channelSftp.put(new FileInputStream(f), generateFilename(new Date()));
+  //     channelSftp.exit();
+  //     channel.disconnect();
+  //     session.disconnect();
+
+  //   } catch( JSchException | IOException | SftpException e ) {
+  //      System.out.println("Exception: " + e);
+  //   } /*catch( IOException e ) {
+  //     System.out.println("Exception: " + e);
+  //   } catch( SftpException e ) {
+  //     System.out.println("Exception: " + e);
+  //   } */finally {
+  //     System.out.println("Host Session disconnected.");
+  //   }
+  // }
 
   @Override
   public void start() {
