@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'net.nanopay.ui.NotificationMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
 
