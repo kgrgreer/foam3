@@ -8,7 +8,9 @@ foam.CLASS({
   imports: [
     'viewData',
     'goBack',
-    'goNext'
+    'goNext',
+    'businessSectorDAO',
+    'businessTypeDAO'
   ],
 
   axioms: [
@@ -77,9 +79,24 @@ foam.CLASS({
     { name: 'AddressLabel', message: 'Address' }
   ],
 
+  properties: [
+    'businessTypeName',
+    'businessSectorName'
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
+
+      var self = this;
+
+      this.businessTypeDAO.find(this.viewData.businessType).then(function(a) {
+        self.businessTypeName = a.name;
+      });
+
+      this.businessSectorDAO.find(this.viewData.businessSector).then(function(a) {
+        self.businessSectorName = a.name;
+      });
 
       this
         .addClass(this.myClass())
@@ -116,9 +133,9 @@ foam.CLASS({
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.CompanyTypeLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.businessType).addClass('infoText bottomMargin').end()
+              .start().add(self.businessTypeName$).addClass('infoText bottomMargin').end()
               .start().add(this.BusinessSectorLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.businessSector).addClass('infoText bottomMargin').end()
+              .start().add(self.businessSectorName$).addClass('infoText bottomMargin').end()
               .start().add(this.AddressLabel).addClass('boldLabel').end()
               .start().add(this.viewData.streetNumber + ' ' + this.viewData.streetName).addClass('infoText').end()
               .start().add(this.viewData.postalCode).addClass('infoText').end()

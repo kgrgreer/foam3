@@ -4,9 +4,11 @@ foam.CLASS({
 
   documentation: 'Proprietor details for business/businesses',
 
-  ids: [ 'name' ],
-
   properties: [
+    {
+      class: 'Long',
+      name: 'id'
+    },
     {
       class: 'String',
       name: 'name'

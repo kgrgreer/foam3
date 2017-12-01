@@ -128,8 +128,8 @@ foam.CLASS({
             password: merchantInfo.password,
             businessIdentificationNumber: merchantInfo.registrationNumber,
             website: merchantInfo.website,
-            businessType: merchantInfo.businessType,
-            businessSector: merchantInfo.businessSector,
+            businessTypeId: merchantInfo.businessType,
+            businessSectorId: merchantInfo.businessSector
           });
 
           this.userDAO.put(newMerchant).then(function(response) {
