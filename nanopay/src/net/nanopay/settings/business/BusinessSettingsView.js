@@ -90,8 +90,8 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #093649;
           display: flex;
-          word-wrap: initial;
-          width: 120px;
+          word-wrap: break-word;
+          width: 125px;
         }
         ^ .addBankButtonDiv {
           text-align: center;
