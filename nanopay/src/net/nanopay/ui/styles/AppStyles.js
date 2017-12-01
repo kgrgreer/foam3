@@ -398,6 +398,7 @@ foam.CLASS({
           top: -5px;
           z-index: 101;
           opacity: 0.01;
+        }
         .infoLabel {
           font-size: 14px;
           font-weight: 300;
