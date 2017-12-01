@@ -1,4 +1,4 @@
-p({"class":"net.nanopay.model.BusinessSector", "id": 1,  "name":"Agriculture, Forestry, Fishing and Hunting "})
+p({"class":"net.nanopay.model.BusinessSector", "id": 1,  "name":"Agriculture, Forestry, Fishing and Hunting"})
 p({"class":"net.nanopay.model.BusinessSector", "id": 2,  "name":"Mining, Quarrying, and Oil and Gas Extraction"})
 p({"class":"net.nanopay.model.BusinessSector", "id": 3,  "name":"Utilities"})
 p({"class":"net.nanopay.model.BusinessSector", "id": 4,  "name":"Construction"})
