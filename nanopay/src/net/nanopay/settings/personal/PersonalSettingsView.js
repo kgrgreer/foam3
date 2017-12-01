@@ -397,7 +397,6 @@ foam.CLASS({
     function initE(){
     this.SUPER();
     var self = this;
-    console.log(this.user);
     if (this.user.firstName != "") 
     {
       this.firstName = this.user.firstName;

@@ -346,7 +346,6 @@ foam.CLASS({
       name: 'editProfile',
       label: 'Edit Profile',
       code: function (X) {
-        console.log(X);
         X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
       }
     }

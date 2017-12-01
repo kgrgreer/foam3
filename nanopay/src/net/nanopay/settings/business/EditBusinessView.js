@@ -305,8 +305,7 @@ foam.CLASS({
           view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));            
           return;
         }
-        console.log(this);
-        debugger;
+        
         X.userDAO.put(this).then(function(a) {
           X.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
