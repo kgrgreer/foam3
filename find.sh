@@ -32,5 +32,6 @@ find **/src -type f -name regions -exec cat {} \; > regions
 find **/src -type f -name scripts -exec cat {} \; > scripts
 find **/src -type f -name services -exec cat {} \; > services
 find **/src -type f -name tests -exec cat {} \; > tests
+find **/src -type f -name tokens -exec cat {} \; > tokens
 find **/src -type f -name transactions -exec cat {} \; > transactions
 find **/src -type f -name users -exec cat {} \; > users

@@ -16,30 +16,7 @@ clean() {
 # Clean top level build folder
 clean
 
-# Generate java files from models and move to build folder
-generate_java() {
-  # Copy over directories from project/src to project/build
-  for d in *; do
-    if [ "$d" = 'target' ] || [ "$d" = 'gen.sh' ]; then
-      continue
-    fi
-
-    cp -r $d ../build
-  done
-
-  # Delete javascript files from ../build/
-  find ../build/ -name "*.js" -type f -delete
-
-  # Generate java files to project/build
-  cwd=$(pwd)
-  node ../../foam2/tools/genjava.js $cwd/../tools/classes.js $cwd/../build $cwd
-
-  # Copy java files from project/build to NANOPAY/build
-  cd ../build/
-  find . -name '*.java' | cpio -pdm ../../build/
-}
-
-# For each project, generate the java files
+# For each project, grabs java code
 for d in *; do
   if [ "$d" = 'admin-portal' ]  || [ "$d" = 'b2b' ]       || [ "$d" = 'foam2' ]   ||
      [ "$d" = 'interac' ]       || [ "$d" = 'merchant' ]  || [ "$d" = 'nanopay' ] ||
@@ -49,12 +26,12 @@ for d in *; do
     clean
 
     cd src/
-    generate_java
+    find . -name '*.java' | cpio -pdm ../../build/
 
     cd ../../
   fi
 done
 
-# Generate NANOPAY classes 
+#Generate java files from models and move to build folderses 
 cwd=$(pwd)
 node foam2/tools/genjava.js $cwd/tools/classes.js $cwd/build $cwd
