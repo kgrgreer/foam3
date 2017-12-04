@@ -10,7 +10,7 @@ import foam.core.*;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.lib.json.*;
-//import foam.lib.xml.*;
+import foam.lib.csv.*;
 import foam.lib.parse.*;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
@@ -127,10 +127,28 @@ public class DigWebAgent
             obj = dao.put(obj);
           }
         } /*else if ( "csv".equals(format) ) {
-          FObject csvParser = x.create(foam.lib.csv.CSVParser);
-          System.out.println("csvParser : " + csvParser);
-          //csvParser.setX(x);
-          //obj = requestContext.create(foam.lib.parse.JSONParser.class).parseString(message);
+          CSVParser csvParser = new CSVParser();
+          csvParser.setX(x);
+
+          //String dataArray[] = data.split("},");
+
+          //for (int i=0; i < dataArray.length; i++) {
+            //data = dataArray[i] + "}";
+            //System.out.println("data : " + data);
+            obj = csvParser.parseString(data, objClass);
+
+            if ( obj == null || "".equals(obj) ) {
+              out.println("Parse Error : ");
+
+              String message = getParsingError(x, buffer_.toString());
+              logger.error(message + ", input: " + buffer_.toString());
+              out.println(message);
+              out.flush();
+              return;
+            }
+
+            obj = dao.put(obj);
+          //}
        }*/
 
 
@@ -144,7 +162,7 @@ public class DigWebAgent
         out.println("Select: <br><br>");
 
         if ( "json".equals(format) ) {
-          Outputter outputterJson = new foam.lib.json.Outputter();
+          foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter();
           outputterJson.output(sink.getArray().toArray());
           out.println(outputterJson.toString());
         } else if ( "xml".equals(format) ) {
@@ -152,6 +170,27 @@ public class DigWebAgent
           out.println("<textarea style=\"width:800;height:800;\">");
           out.println(xmlSupport.toXMLString(sink.getArray()));
           out.println("</textarea>");
+        } else if ( "csv".equals(format) ) {
+          List<PropertyInfo> props = cInfo.getAxiomsByClass(objClass);
+          foam.lib.csv.Outputter outputterCsv = new foam.lib.csv.Outputter();
+
+          out.println("<table>");
+          for( PropertyInfo pi : props ) {
+          out.println("<tr>");
+          out.println("<td width=200>" + outputterCsv.stringfy(pi.get((Object)sink)) + "</td>");
+          out.println("</tr>");
+        }
+          out.println("</table>");
+
+          /*foam.lib.csv.Outputter outputterCsv = new foam.lib.csv.Outputter();
+          //outputterCsv.output(sink.getArray().toArray());
+          System.out.println("csv getArray : " + sink.getArray().toArray());
+
+          out.println("<textarea style=\"width:800;height:800;\">");
+          out.println(toCSV(outputterCsv, (Object)sink));
+          out.println("</textarea>");
+          */
+          //out.println(outputterCsv.toString());
         }
       } else if ( "help".equals(command) ) {
         out.println("Help: <br><br>" );
