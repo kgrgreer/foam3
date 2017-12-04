@@ -220,7 +220,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
+          'referenceNumber', 'date', 'payeeId', 'amount', 'rate'
         ]
       }
     }
@@ -256,13 +256,13 @@ foam.CLASS({
   ],
 
   actions: [
-    {
-      name: 'sendTransfer',
-      label: 'Send e-Transfer',
-      code: function(X) {
-        X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
-      }
-    },
+    // {
+    //   name: 'sendTransfer',
+    //   label: 'Send e-Transfer',
+    //   code: function(X) {
+    //     X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
+    //   }
+    // },
     {
       name: 'exportButton',
       code: function(X) {
