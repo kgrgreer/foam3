@@ -48,10 +48,10 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
   protected final String USER = "eftcadtest1";
   protected final String PASSWORD = "nLGlp8Du";
   protected final String WORKING_DIR = "/";
-  protected DAO userDAO = (DAO) getX().get("localUserDAO");
-  protected DAO branchDAO = (DAO) getX().get("branchDAO");
-  protected DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
-  protected DAO transactionDAO = (DAO) getX().get("cicoTransactionDAO");
+  protected DAO userDAO;
+  protected DAO branchDAO;
+  protected DAO bankAccountDAO;
+  protected DAO transactionDAO;
 
   protected ThreadLocal<SimpleDateFormat> filenameSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
@@ -100,7 +100,8 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
 
   @Override
   public void sendCICOFile() {
-    ByteArrayOutputStream  out = (ByteArrayOutputStream) getX().get(ByteArrayOutputStream.class);
+    ByteArrayOutputStream  out = new ByteArrayOutputStream();
+
     final Sink outputter = new Outputter(out, OutputterMode.STORAGE, false);
     final Date now = new Date();
 
@@ -186,12 +187,17 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
   }
 
 
+  // @Override
+  // public void setContext(X x) {
+  //   super(x);
+  // }
+
   @Override
   public void start() {
     userDAO = (DAO) getX().get("localUserDAO");
     branchDAO = (DAO) getX().get("branchDAO");
     bankAccountDAO = (DAO) getX().get("bankAccountDAO");
-    transactionDAO = (DAO) getX().get("cicoTransactionDAO");
+    transactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
   }
 
 }
