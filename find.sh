@@ -1,5 +1,4 @@
 # Concatenate JDAO files from subdirectories into one JDAO
-
 find **/src -type f -name brokers -exec cat {} \; > brokers
 find **/src -type f -name businessSectors -exec cat {} \; > businessSectors
 find **/src -type f -name businessTypes -exec cat {} \; > businessTypes
