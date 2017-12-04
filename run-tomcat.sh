@@ -28,6 +28,7 @@ cp branches $CATALINA_HOME/bin/
 cp bankAccounts $CATALINA_HOME/bin/
 cp brokers $CATALINA_HOME/bin/
 cp businesses $CATALINA_HOME/bin/
+cp businessTypes $CATALINA_HOME/bin/
 cp canadaTransactions $CATALINA_HOME/bin/
 cp cicoServiceProviders $CATALINA_HOME/bin/
 cp countries $CATALINA_HOME/bin/
@@ -36,6 +37,7 @@ cp cronjobs $CATALINA_HOME/bin/
 cp currency $CATALINA_HOME/bin/
 cp devices $CATALINA_HOME/bin/
 cp dateofbirth $CATALINA_HOME/bin/
+cp emailTemplates $CATALINA_HOME/bin/
 cp exchangeRates $CATALINA_HOME/bin/
 cp exportDriverRegistrys $CATALINA_HOME/bin/
 cp groups $CATALINA_HOME/bin/
@@ -55,6 +57,7 @@ cp scripts $CATALINA_HOME/bin/
 cp services $CATALINA_HOME/bin/
 cp tests $CATALINA_HOME/bin/
 cp transactions $CATALINA_HOME/bin/
+cp transactionLimits $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
 
 # Copy over static web files to ROOT

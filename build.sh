@@ -15,25 +15,25 @@ sleep 5
 cd /pkg/stack/stage/NANOPAY
 ./find.sh
 
-cp brokers /opt/nanopay/
-cp businessSectors /opt/nanopay/
-cp businessTypes /opt/nanopay/
-cp cicoServiceProviders /opt/nanopay/
-cp countries /opt/nanopay/
-cp cronjobs /opt/nanopay/
-cp currency /opt/nanopay/
-cp emailTemplates /opt/nanopay/
-cp exportDriverRegistrys /opt/nanopay/
-cp groups /opt/nanopay/
-cp languages /opt/nanopay/
-cp menus /opt/nanopay/
-cp permissions /opt/nanopay/
-cp regions /opt/nanopay/
-cp scripts /opt/nanopay/
-cp services /opt/nanopay/
-cp tests /opt/nanopay/
-cp transactionLimits /opt/nanopay/
-cp users /opt/nanopay/
+cp brokers /opt/tomcat/bin/
+cp businessSectors /opt/tomcat/bin/
+cp businessTypes /opt/tomcat/bin/
+cp cicoServiceProviders /opt/tomcat/bin/
+cp countries /opt/tomcat/bin/
+cp cronjobs /opt/tomcat/bin/
+cp currency /opt/tomcat/bin/
+cp emailTemplates /opt/tomcat/bin/
+cp exportDriverRegistrys /opt/tomcat/bin/
+cp groups /opt/tomcat/bin/
+cp languages /opt/tomcat/bin/
+cp menus /opt/tomcat/bin/
+cp permissions /opt/tomcat/bin/
+cp regions /opt/tomcat/bin/
+cp scripts /opt/tomcat/bin/
+cp services /opt/tomcat/bin/
+cp tests /opt/tomcat/bin/
+cp transactionLimits /opt/tomcat/bin/
+cp users /opt/tomcat/bin/
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
