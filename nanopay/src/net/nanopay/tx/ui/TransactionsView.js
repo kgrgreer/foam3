@@ -256,13 +256,6 @@ foam.CLASS({
   ],
 
   actions: [
-    // {
-    //   name: 'sendTransfer',
-    //   label: 'Send e-Transfer',
-    //   code: function(X) {
-    //     X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
-    //   }
-    // },
     {
       name: 'exportButton',
       code: function(X) {
