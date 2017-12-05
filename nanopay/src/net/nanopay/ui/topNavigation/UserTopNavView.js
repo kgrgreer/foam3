@@ -120,15 +120,12 @@ foam.CLASS({
             .add( this.user.firstName$ ).addClass(this.myClass('user-name'))
           .end()
         .end()
-        .callIf( this.user.firstName, function(){
-          this.start('div')
+        .start('div')
           .addClass(this.myClass('carrot'))
             .on('click', function() {
               this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))
             }.bind(this))
-        .end()
-          });
-
+        .end();
     }
   ]
 });
