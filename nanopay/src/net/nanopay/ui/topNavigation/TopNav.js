@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: 'Top navigation bar',
 
-  imports: [ 'menuDAO', 'user', 'loginSuccess'],
+  imports: [ 'menuDAO', 'user', 'loginSuccess' ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -54,7 +54,7 @@ foam.CLASS({
           overflow: auto;
           white-space: nowrap;
           margin-left: 60px;
-        }          
+        }
       */}
     })
   ],
@@ -71,14 +71,14 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('topNavContainer')
+          .show( this.loginSuccess$)
           .start({class: 'net.nanopay.ui.topNavigation.BusinessLogoView', data: this.user })
           .end()
           .start({class: 'foam.nanos.menu.MenuBar'}).addClass('menuBar')
-          .end() 
-          .show( this.loginSuccess$)     
-            .start({class: 'net.nanopay.ui.topNavigation.UserTopNavView'})
-            .end()
-        .end()
+          .end()
+          .start({class: 'net.nanopay.ui.topNavigation.UserTopNavView'})
+          .end()
+        .end();
     }
   ]
 });
