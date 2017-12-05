@@ -12,19 +12,19 @@ foam.CLASS({
   ],
 
   css: `
-  ^ .description {
-    font-size: 12px;
-    letter-spacing: 0.3px;
-    color: #093649;
-    margin-top: 20px;
-  }
-  ^ .referenceNumber {
-    font-size: 12px;
-    letter-spacing: 0.3px;
-    color: #2cab70;
-    margin-top: 10px;
-  }
-`,
+    ^ .description {
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      color: #093649;
+      margin-top: 20px;
+    }
+    ^ .referenceNumber {
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      color: #2cab70;
+      margin-top: 10px;
+    }
+  `,
 
 messages: [
   { name: 'Step', message: 'Step 4: Done!' },
