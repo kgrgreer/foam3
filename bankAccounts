@@ -1,2 +1,0 @@
-p({"class":"net.nanopay.model.BankAccount","id":1,"accountName":"test","transitNumber":"1234567","accountNumber":"490932681376","status":"Verified","xeroId":"","currencyCode":"CAD","branchId":4,"owner":1})
-p({"class":"net.nanopay.model.BankAccount","id":2,"accountName":"test","transitNumber":"1234567","accountNumber":"923000000008465748932","status":"Verified","xeroId":"","currencyCode":"INR","branchId":8,"owner":1})

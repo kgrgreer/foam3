@@ -1,5 +1,0 @@
-p({"class":"net.nanopay.model.BusinessType", "id": 0, "name":"Sole Proprietorship"})
-p({"class":"net.nanopay.model.BusinessType", "id": 1, "name":"General Partnership"})
-p({"class":"net.nanopay.model.BusinessType", "id": 2, "name":"Limited Partnership"})
-p({"class":"net.nanopay.model.BusinessType", "id": 3, "name":"Corporation"})
-p({"class":"net.nanopay.model.BusinessType", "id": 4, "name":"Joint Venture"})
