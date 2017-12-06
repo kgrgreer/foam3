@@ -15,11 +15,13 @@ public class LiquidityCron
   {
     protected DAO    balanceAlertDAO_;
     protected DAO    thresholdDAO_;
+    protected DAO    userDAO_;
 
     public void start() {
       System.out.println("Liquidity Cron Starting...");
-      recurringInvoiceDAO_ = (DAO) getX().get("balanceAlertDAO");
-      invoiceDAO_ = (DAO) getX().get("thresholdDAO");
+      userDAO_ = (DAO) getX().get("userDAO");
+      balanceAlertDAO_ = (DAO) getX().get("balanceAlertDAO");
+      thresholdDAO_ = (DAO) getX().get("thresholdDAO");
       System.out.println("DAO's fetched...");
     }
   }
