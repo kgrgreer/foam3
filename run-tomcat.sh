@@ -12,7 +12,6 @@ mvn clean install
 # Copy over war and server config files.
 # These are needed before server startup
 cp target/ROOT.war $CATALINA_HOME/webapps
-cp server.xml $CATALINA_HOME/conf
 
 #Start the server
 cd $CATALINA_HOME/bin/
