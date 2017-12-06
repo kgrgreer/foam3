@@ -1,14 +1,17 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form',
-  name: 'AddShopperInfoForm',
+  package: 'net.nanopay.admin.ui.form.merchant',
+  name: 'AddMerchantProfileForm',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Form to input shopper information',
+  documentation: 'Form to input merchant\'s business profile information',
 
   imports: [
     'viewData',
     'goBack',
     'goNext',
+    'businessTypeDAO',
+    'businessSectorDAO',
+    'countryDAO',
     'regionDAO'
   ],
 
@@ -21,7 +24,7 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #093649;
         }
-        ^ .shopperImage {
+        ^ .merchantImage {
           width: 80px;
           height: 80px;
           margin-top: 20px;
@@ -44,7 +47,8 @@ foam.CLASS({
           -webkit-appearance: none;
           -moz-appearance: none;
           appearance: none;
-          padding: 0 15px;
+          padding-left: 15px;
+          padding-right: 30px;
           border: solid 1px rgba(164, 179, 184, 0.5);
           background-color: white;
           outline: none;
@@ -104,40 +108,72 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'firstName',
+      name: 'businessName',
       postSet: function(oldValue, newValue) {
-        this.viewData.firstName = newValue;
+        this.viewData.businessName = newValue;
       }
     },
     {
-      class: 'String',
-      name: 'lastName',
-      postSet: function(oldValue, newValue) {
-        this.viewData.lastName = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'emailAddress',
-      postSet: function(oldValue, newValue) {
-        this.viewData.emailAddress = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'phoneNumber',
-      postSet: function(oldValue, newValue) {
-        this.viewData.phoneNumber = newValue;
-      }
-    },
-    {
-      class: 'Date',
-      name: 'birthday',
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+      name: 'country',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.countryDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        })
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.birthday = newValue;
+        this.viewData.country = newValue;
+      }
+    },
+    {
+      class: 'String',
+      name: 'companyEmail',
+      postSet: function(oldValue, newValue) {
+        this.viewData.companyEmail = newValue;
+      }
+    },
+    {
+      class: 'String',
+      name: 'registrationNumber',
+      postSet: function(oldValue, newValue) {
+        this.viewData.registrationNumber = newValue;
+      }
+    },
+    {
+      name: 'businessType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessTypeDAO,
+          objToChoice: function(a){
+            return [a.id, a.name];
+          }
+        })
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessType = newValue;
+      }
+    },
+    {
+      name: 'businessSector',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessSectorDAO,
+          objToChoice: function(a){
+            return [a.id, a.name];
+          }
+        })
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessSector = newValue;
+      }
+    },
+    {
+      class: 'String',
+      name: 'website',
+      postSet: function(oldValue, newValue) {
+        this.viewData.website = newValue;
       }
     },
     {
@@ -188,35 +224,28 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
       }
-    },
-    {
-      class: 'String',
-      name: 'password',
-      postSet: function(oldValue, newValue) {
-        this.viewData.password = newValue;
-      }
     }
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 1: Fill in shopper\'s information, scroll down to continue and hit next when finished.' },
-    { name: 'PersonalInformationLabel', message: 'Personal Information' },
+    { name: 'Step', message: 'Step 2: Fill in the merchant\'s business profile. scroll down to continue and hit next when finished' },
+    { name: 'BusinessInformationLabel', message: 'Business Information' },
     { name: 'UploadImageLabel', message: 'Upload Image' },
     { name: 'UploadDesc', message: 'JPG, GIF, JPEG, BMP or PNG' },
-    { name: 'FirstNameLabel', message: 'First Name *' },
-    { name: 'LastNameLabel', message: 'Last Name *' },
-    { name: 'EmailAddressLabel', message: 'Email Address *' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'BirthdayLabel', message: 'Birthday *' },
-    { name: 'HomeAddressLabel', message: 'Home Address' },
+    { name: 'BusinessNameLabel', message: 'Business Name *' },
+    { name: 'CountryLabel', message: 'Country *' },
+    { name: 'CompanyEmailLabel', message: 'Company Email *' },
+    { name: 'RegistrationNoLabel', message: 'Registration No. *' },
+    { name: 'CompanyTypeLabel', message: 'Company Type *' },
+    { name: 'BusinessSectorLabel', message: 'Business Sector *' },
+    { name: 'WebsiteLabel', message: 'Website' },
+    { name: 'BusinessAddressLabel', message: 'Business Address' },
     { name: 'StNoLabel', message: 'St No. *' },
     { name: 'StNameLabel', message: 'St Name *' },
     { name: 'AddressLineLabel', message: 'Address line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
-    { name: 'PostalCodeLabel', message: 'Postal Code *' },
-    { name: 'PasswordLabel', message: 'Password' },
-    { name: 'CreateAPasswordLabel', message: 'Create a Password *' }
+    { name: 'PostalCodeLabel', message: 'Postal Code *' }
   ],
 
   methods: [
@@ -227,40 +256,52 @@ foam.CLASS({
         .start()
           .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
-            .start().add(this.PersonalInformationLabel).addClass('labelTitle').end()
+            .start().add(this.BusinessInformationLabel).addClass('labelTitle').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('shopperImage').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('merchantImage').end()
               .start().addClass('uploadButtonContainer')
                 .add(this.UPLOAD_IMAGE)
                 .start().add(this.UploadDesc).addClass('uploadDescription').end()
               .end()
             .end()
             .start().addClass('inline')
-              .start().add(this.FirstNameLabel).addClass('infoLabel').end()
-              .start(this.FIRST_NAME).addClass('inputLarge').end()
+              .start().add(this.BusinessNameLabel).addClass('infoLabel').end()
+              .start(this.BUSINESS_NAME).addClass('inputLarge').end()
             .end()
             .start().addClass('inline float-right')
-              .start().add(this.LastNameLabel).addClass('infoLabel').end()
-              .start(this.LAST_NAME).addClass('inputLarge').end()
+              .start().add(this.CompanyEmailLabel).addClass('infoLabel').end()
+              .start(this.COMPANY_EMAIL).addClass('inputLarge').end()
             .end()
             .start().addClass('inline topMargin')
-              .start().add(this.EmailAddressLabel).addClass('infoLabel').end()
-              .start(this.EMAIL_ADDRESS).addClass('inputLarge').end()
+              .start().add(this.CountryLabel).addClass('infoLabel').end()
+              .tag(this.COUNTRY)
+              .start().addClass('caret').end()
             .end()
-            .start().addClass('inline float-right topMargin')
-              .start().add(this.PhoneNumberLabel).addClass('infoLabel').end()
-              .start(this.PHONE_NUMBER).addClass('inputLarge').end()
+            .start().addClass('inline float-right')
+              .start().add(this.RegistrationNoLabel).addClass('infoLabel topMargin').end()
+              .start(this.REGISTRATION_NUMBER).addClass('inputLarge').end()
             .end()
-            .start().addClass('topMargin')
-              .start().add(this.BirthdayLabel).addClass('infoLabel').end()
-              .start(this.BIRTHDAY).addClass('inputLarge').end()
+            .start().addClass('inline topMargin')
+              .start().add(this.CompanyTypeLabel).addClass('infoLabel').end()
+              .tag(this.BUSINESS_TYPE)
+              .start().addClass('caret').end()
+            .end()
+            .start().addClass('inline float-right')
+              .start().add(this.BusinessSectorLabel).addClass('infoLabel topMargin').end()
+              .tag(this.BUSINESS_SECTOR)
+              .start().addClass('caret').end()
             .end()
             .start().add(this.HomeAddressLabel).addClass('labelTitle topMargin').end()
-            .start().addClass('inline rightMargin')
+            .start().addClass('topMargin')
+              .start().add(this.WebsiteLabel).addClass('infoLabel').end()
+              .start(this.WEBSITE).addClass('inputLarge').end()
+            .end()
+            .start().add(this.BusinessAddressLabel).addClass('labelTitle topMargin').end()
+            .start().addClass('inline topMargin rightMargin')
               .start().add(this.StNoLabel).addClass('infoLabel').end()
               .start(this.STREET_NUMBER).addClass('inputSmall').end()
             .end()
-            .start().addClass('inline topMargin')
+            .start().addClass('inline')
               .start().add(this.StNameLabel).addClass('infoLabel').end()
               .start(this.STREET_NAME).addClass('inputMedium').end()
             .end()
@@ -283,11 +324,6 @@ foam.CLASS({
               .start().add(this.PostalCodeLabel).addClass('infoLabel').end()
               .start(this.POSTAL_CODE).addClass('inputLarge').end()
             .end()
-            .start().add(this.PasswordLabel).addClass('labelTitle topMargin').end()
-            .start().addClass('topMargin')
-              .start().add(this.CreateAPasswordLabel).addClass('infoLabel').end()
-              .start(this.PASSWORD).addClass('inputExtraLarge').end()
-            .end()
           .end()
         .end();
     }
@@ -302,4 +338,4 @@ foam.CLASS({
       }
     }
   ]
-});
+}); 

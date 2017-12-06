@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.dao.ListSink',
     'foam.dao.Sink',
     'foam.mlang.MLang',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'net.nanopay.auth.token.Token',
@@ -24,6 +25,7 @@ foam.CLASS({
       name: 'generateToken',
       javaCode:
 `DAO tokenDAO = (DAO) getX().get("tokenDAO");
+AppConfig appConfig = (AppConfig) getX().get("appConfig");
 Token token = new Token();
 token.setUserId(user.getId());
 token.setExpiry(generateExpiryDate());
@@ -39,7 +41,7 @@ message.setSubject("MintChip email verification");
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", "http://localhost:8080/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
+args.put("link", appConfig.getUrl() + "service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
 
 email.sendEmailFromTemplate(message, "welcome-mintchip", args);
 return true;`

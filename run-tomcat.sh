@@ -28,6 +28,7 @@ cp branches $CATALINA_HOME/bin/
 cp bankAccounts $CATALINA_HOME/bin/
 cp brokers $CATALINA_HOME/bin/
 cp businesses $CATALINA_HOME/bin/
+cp businessSectors $CATALINA_HOME/bin/
 cp businessTypes $CATALINA_HOME/bin/
 cp canadaTransactions $CATALINA_HOME/bin/
 cp cicoServiceProviders $CATALINA_HOME/bin/
