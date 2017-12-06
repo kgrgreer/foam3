@@ -29,7 +29,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
-
+  { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
+  
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
