@@ -8,7 +8,8 @@ foam.CLASS({
   imports: [
     'auth',
     'user',
-    'stack'
+    'stack',
+    'userDAO'
   ],
 
   exports: [ 'as data' ],
@@ -326,9 +327,7 @@ foam.CLASS({
           top: -5;
         }
         ^ .expandTrue{
-          visibility: hidden;
           height: 0px;
-          transition: background .1s linear;
         }
       */}
     })
@@ -354,7 +353,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'firstName'
+      name: 'firstName',
     },
     {
       class: 'String',
@@ -371,6 +370,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'phone'
+    },
+    {
+      class: 'String',
+      name: 'phoneCode',
+      value: '+1'
     },
     {
       class: 'String',
@@ -393,7 +397,14 @@ foam.CLASS({
     function initE(){
     this.SUPER();
     var self = this;
-
+    if (this.user.firstName != "") 
+    {
+      this.firstName = this.user.firstName;
+      this.lastName = this.user.lastName;
+      this.jobTitle = this.user.department;
+      this.email = this.user.email;
+      this.phone = this.user.phone.number;
+    }
     this
       .addClass(this.myClass())
 
@@ -423,8 +434,8 @@ foam.CLASS({
             .start('h2').add("Phone Number").end()
           .end()
           .start('div')
-            .start(this.EMAIL).addClass('emailAddress-Input').end()
-            .start('select').addClass('phoneNumber-Dropdown').end()
+            .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
+            .start(this.PHONE_CODE).addClass('phoneNumber-Dropdown').end()
             .start(this.PHONE).addClass('phoneNumber-Input').end()
           .end()
           .start('div')
@@ -516,7 +527,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all fields.' },
+    { name: 'noInformation', message: 'Please fill out all fields.' },    
+    { name: 'invalidPhone', message: 'Phone number is invalid.' },    
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
     { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
@@ -535,10 +548,29 @@ foam.CLASS({
       code: function (X) {
         var self = this;
 
-        if ( ! this.firstName || ! this.lastName || this.jobTitle || this.email || this.phoneNumber ) {
+        if ( ! this.firstName || ! this.lastName || ! this.jobTitle || ! this.email || ! this.phone ) {
           this.add(this.NotificationMessage.create({ message: this.noInformation, type: 'error' }));
           return;
         }
+
+        if (! /^[0-9()+-]{1,30}$/.test(this.phone) )
+        {
+          this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
+          return; 
+        }
+        this.user.firstName = this.firstName;
+        this.user.lastName = this.lastName;
+        this.user.department = this.jobTitle;
+        this.user.email = this.email;
+        this.user.phone.number = this.phone;
+        this.userDAO.put(this.user).then(function (result) {
+          // copy new user, clear password fields, show success
+          self.user.copyFrom(result);
+          self.add(self.NotificationMessage.create({ message: self.informationUpdated }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
       }
     },
     {
