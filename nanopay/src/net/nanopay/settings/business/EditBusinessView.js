@@ -5,9 +5,11 @@ foam.CLASS({
 
   documentation: 'Edit business view.',
 
-  requires:[
+  requires: [
     'foam.nanos.auth.Address',
-    'net.nanopay.retail.model.Business'
+    'foam.nanos.auth.User',
+    'net.nanopay.retail.model.Business', 
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
@@ -16,16 +18,16 @@ foam.CLASS({
     'user',
     'stack',
     'countryDAO',
-    'regionDAO'
+    'regionDAO',
+    'businessSectorDAO',
+    'businessTypeDAO'
   ],
 
   exports: [
-    'as data'
+    'as view'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
+  css: `
         ^{
           width: 100%;
           margin: auto;
@@ -67,7 +69,7 @@ foam.CLASS({
           opacity: 1;
         }
         ^ .editBusinessContainer {
-          width: 490px;
+          width: 992px;
           margin: auto;
         }
         ^ h2{
@@ -133,6 +135,18 @@ foam.CLASS({
           margin-bottom: 20px;
           margin-right: 15px;
         }
+        .input-container-quarter{
+          width: 13%;
+          display: inline-block;
+          margin-bottom: 20px;
+          margin-right: 15px;
+        }
+        .input-container-third{
+          width: 30%;
+          display: inline-block;
+          margin-bottom: 20px;
+          margin-right: 15px;
+        }
         .dropdown{
           width: 200px;
           height: 200px;
@@ -140,7 +154,7 @@ foam.CLASS({
         }
         ^ .foam-u2-tag-Select{
           height: 40px;
-          width: 200px;
+          width: 100%;
           background: white;
           border: 1px solid lightgrey;
           margin-top: 5px;
@@ -160,158 +174,140 @@ foam.CLASS({
         ^ .foam-u2-ActionView-saveBusiness:hover {
           background-color: #59aadd;
         }
-      */}
-    })
-  ],
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          width: 24px;
+          height: 24px;
+          margin: 0;
+          cursor: pointer;
+          display: inline-block;
+          float: right;
+          outline: 0;
+          border: none;
+          background: transparent;
+          box-shadow: none;
+          padding-top: 15px;
+          margin-right: 15px;
+        }
+        ^ .net-nanopay-ui-ActionView-closeButton:hover {
+          background: transparent;
+          background-color: transparent;
+        }
+        ^ .input-companytype-width select {
+          width: 100% !important;
+        }
 
-  properties:[
-    'businessName',
-    'businessNumber',
-    'website',
-    'address',
-    'city',
-    'postalCode',
-    {
-      name: 'regionList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    },
-    {
-      name: 'countryList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    },
-    {
-      name: 'businessTypeList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    },
-    {
-      name: 'sectorList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      }
-    }
-  ],
+        ^ .input-businesssector-width select {
+          width: 100% !important;
+        }
+        ^ .input-businesssector-width select {
+          width: 100% !important;
+        }
+        ^ .
 
+       
+  `,
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
+      this.data = this.user;
 
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('editBusinessContainer')
             .start('h2').add('Edit Business profile').end()
+            .start(this.CLOSE_BUTTON).end()
             .start().addClass(this.myClass('registration-container'))
               .start('h3').add('Business information').end()
               .start().addClass(this.myClass('business-image-container'))
-                .tag({class:'foam.u2.tag.Image', data: 'ui/images/business-placeholder.png'})
+                .tag({class:'foam.u2.tag.Image', data: 'images/business-placeholder.png'})
                 .start('button').add('Upload Image').addClass(this.myClass('upload-button')).end()
                 .start('p').add('JPG, GIF, JPEG, BMP or PNG').end()
               .end()
-              .start().addClass(this.myClass('business-registration-input'))
-                .start().addClass('input-container')
-                  .start('label').add('Company Name').end()
-                  .start(this.BUSINESS_NAME).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Company Type').end()
-                  .start(this.BUSINESS_TYPE_LIST).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Business Sector').end()
-                  .add(this.SECTOR_LIST)
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Business Number').end()
-                  .start(this.BUSINESS_NUMBER).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Website').end()
-                  .start(this.WEBSITE).end()
-                .end()
+              .start().addClass('input-container')
+                .start('label').add('Company Name').end()
+                .start(this.User.BUSINESS_NAME).end()
+              .end()
+              .start().addClass('input-container').addClass('input-companytype-width')
+                .start('label').add('Company Type').end()
+                .start(this.User.BUSINESS_TYPE_ID).end()
+              .end()
+              .start().addClass('input-container').addClass('input-businesssector-width')
+                .start('label').add('Business Sector').end()
+                .start(this.User.BUSINESS_SECTOR_ID).end()
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Website').end()
+                .start(this.User.WEBSITE).end()
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Business Identification No.').end()
+                .start(this.User.BUSINESS_IDENTIFICATION_NUMBER).end()
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Issuing Authority').end()
+                .start(this.User.ISSUING_AUTHORITY).end()
               .end()
               .start('h3').add('Business Address').end()
-              .start().addClass(this.myClass('business-registration-input'))
-                .start().addClass('input-container')
-                  .start('label').add('Country').end()
-                  .add(this.COUNTRY_LIST)
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Address').end()
-                  .start(this.ADDRESS).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('City').end()
-                  .start(this.CITY).end()
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Province').end()
-                  .add(this.REGION_LIST)
-                .end()
-                .start().addClass('input-container')
-                  .start('label').add('Postal Code').end()
-                  .start(this.POSTAL_CODE).end()
-                .end()
-              .end()
-              .add(this.SAVE_BUSINESS)
+              .tag(this.User.ADDRESS, {showVerified: false,showType: false})
+              .start(this.SAVE_BUSINESS).addClass('foam-u2-ActionView-saveBusiness').end()
             .end()
           .end()
         .end()
     }
   ],
 
+  messages: [
+    { name: 'noInformation', message: 'Please fill out all fields with errors.' }, 
+    { name: 'invalidPostal', message: 'Invalid postal code entry.' },    
+    { name: 'structAddress', message: 'Enter street number and name for structured address.' },    
+    { name: 'nonStructAddress', message: 'Enter an address' },    
+  ],
+
   actions: [
+    {
+      name: 'closeButton',
+      icon: 'images/cancel-x.png',
+      code: function (X) {
+        X.stack.back();
+      }
+    },
     {
       name: 'saveBusiness',
       label: 'Save',
-      code: function() {
-        var self = this;
-
-        this.userDAO.put(
+      code: function(X) {
+        var view = X.view;
+        var address = this.address;
+        address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
+        if (address.structured)
+        {
+          if (! address.streetNumber || ! address.streetNumber)
           {
-            name: self.businessName,
-            businessTypeId: self.businessTypeList,
-            sectorId: self.sectorList,
-            businessNumber: self.businessNumber,
-            website: self.website
+            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));            
+            return;
           }
-        ).then(function(a) {
-
-          return self.addressDAO.put(
-            {
-              countryId: self.countryList,
-              regionId: self.regionList,
-              address: self.address,
-              city: self.city,
-              postalCode: self.postalCode,
-              businessId: self.business.id
-            }
-          )
-        }).then(function(a) {
-          self.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
+        }
+        else
+        {
+          if (! address.address1)
+          {
+            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));            
+            return;
+          }
+        }
+        if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) )
+        {
+          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));            
+          return;
+        }
+        
+        if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
+          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));            
+          return;
+        }
+        
+        X.userDAO.put(this).then(function(a) {
+          X.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
         })
       }
     }
