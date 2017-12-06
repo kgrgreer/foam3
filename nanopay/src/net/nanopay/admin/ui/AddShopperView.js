@@ -9,12 +9,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      var self = this;
-      
       this 
         .addClass(this.myClass())
         .start()
-          .tag({ class: 'net.nanopay.admin.ui.form.AddShopperForm', title: 'Add Shopper' })
+          .tag({ class: 'net.nanopay.admin.ui.form.shopper.AddShopperForm', title: 'Add Shopper' })
         .end();
     }
   ]
