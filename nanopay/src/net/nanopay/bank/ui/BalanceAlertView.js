@@ -6,7 +6,9 @@ foam.CLASS({
   documentation: 'View displaying bank balance alerts based on passed thresholds.',
 
   imports: [
-    'user'
+    'user',
+    'thresholdDAO',
+    'balanceAlertDAO'
   ],
 
   css: `
@@ -20,6 +22,28 @@ foam.CLASS({
     ^ .light-roboto-h2{
       margin: 20px 0 0 20px;
     }
+
+    ^ .foam-u2-view-TableView {
+      width: 992px;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+      
+    ^ th, td {
+      padding: 5px;
+      text-align: left;
+    }
+    
+    ^ tr {
+      display: block;
+      position: relative;
+    }
+    ^ tbody {
+      display: block;
+      overflow: auto;
+      width: 100%;
+      height: 200px;
+    }
   `,
 
   messages: [
@@ -30,6 +54,10 @@ foam.CLASS({
     function initE(){
       this.SUPER()
 
+      v = net.nanopay.model.Threshold.create({ thresholdName: 'Threshold', balance: 1000 })
+      this.thresholdDAO.put(v)
+      t = net.nanopay.model.BalanceAlert.create({ bank: this.user, threshold: 1 })
+      this.user.balanceAlerts.put(t)
       this
       .addClass(this.myClass())
       .start().addClass('float-left light-roboto-h2')

@@ -25,7 +25,7 @@ foam.CLASS({
       class: 'String',
       name: 'bankName',
       tableCellFormatter: function(value, obj, rel){
-        obj.bank$find(function(a){
+        obj.bank$find.then(function(a){
           this.add(a.organization)
         }.bind(this));
       }
@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'balance',
       tableCellFormatter: function(value, obj, rel){
         var total;
-        obj.bank$find(function(a){
+        obj.bank$find.then(function(a){
           a.accounts.forEach(function(acc){
             total = total + acc.balance
           })
@@ -47,7 +47,7 @@ foam.CLASS({
       class: 'String',
       name: 'minBalance',
       tableCellFormatter: function(value, obj, rel){
-        obj.threshold$find(function(a){
+        obj.threshold$find.then(function(a){
           this.add('$ ', a);          
         }.bind(this));
       }
@@ -56,7 +56,7 @@ foam.CLASS({
       class: 'String',
       name: 'status',
       tableCellFormatter: function(value, obj, rel){
-        obj.bank$find(function(a){
+        obj.bank$find.then(function(a){
           this.add(a);                    
         }.bind(this));
       }
