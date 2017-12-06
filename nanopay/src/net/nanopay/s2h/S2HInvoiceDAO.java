@@ -9,19 +9,14 @@ import foam.mlang.predicate.Predicate;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.s2h.model.S2HInvoice;
 
-public class S2HInvoiceGenerator
+public class S2HInvoiceDAO
   extends ProxyDAO {
 
-  public S2HInvoiceGenerator(DAO delegate) {
+  public S2HInvoiceDAO(DAO delegate) {
     setDelegate(delegate);
     setOf(net.nanopay.s2h.model.S2HInvoice.getOwnClassInfo());
   }
 
-  public S2HInvoiceGenerator(X x, DAO delegate) {
-    setX(x);
-    setDelegate(delegate);
-    setOf(net.nanopay.s2h.model.S2HInvoice.getOwnClassInfo());
-  }
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     throw new UnsupportedOperationException("Unsupported operation: select_");
