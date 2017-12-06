@@ -15,7 +15,8 @@ foam.CLASS({
     ^ {
       width: 100%;
       background: white;
-      height: 60px;
+      height: 300px;
+      padding-bottom: 25px;
       border-radius: 2px;
       margin-top: 20px;
     }
@@ -24,11 +25,38 @@ foam.CLASS({
     }
 
     ^ .foam-u2-view-TableView {
-      width: 992px;
+      width: 950px;
       table-layout: fixed;
       border-collapse: collapse;
+      position: relative;
+      top: 30px;
     }
-      
+    ^ tr {
+      display: block;
+      position: relative;
+    }
+    ^ th {
+      width: 500px;
+    }
+    ^ .foam-u2-view-TableView-th-editColumns{
+      width: 0;
+    }
+    ^ tbody {
+      display: block;
+      overflow: auto;
+      width: 100%;
+      height: 180px;
+    }
+    ^ tbody > tr > td {
+      width: 900px;
+    }
+    ^ tbody > tr > td:last-child {
+      width: 0;
+    }
+    ^ tbody > tr {
+      padding-top: 20px;
+      height: 40px;
+    }
   `,
 
   messages: [

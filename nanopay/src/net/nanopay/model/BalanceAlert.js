@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'minBalance',
       tableCellFormatter: function(value, obj, rel){
         obj.threshold$find.then(function(a){
-          this.add(a.balance ? '$ ', a.balance : '');          
+          this.add(a.balance ? '$ ' + a.balance : '');          
         }.bind(this));
       }
     },
