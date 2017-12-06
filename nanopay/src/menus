@@ -17,3 +17,4 @@ p({"class":"foam.nanos.menu.Menu","id":"set-bank","label":"Bank Account","handle
 p({"class":"foam.nanos.menu.Menu","id":"set-security","label":"Log Out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":70,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"regular","label":"Regular","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.transfer.TransferWizard","type":"regular"}},"order":1000,"parent":"transfer"})
 p({"class":"foam.nanos.menu.Menu","id":"foreign","label":"Foreign","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.transfer.TransferWizard","type":"foreign"}},"order":1000,"parent":"transfer"})
+p({"class":"foam.nanos.menu.Menu","id":"bank-dashboard","label":"CIP/Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.DashboardView"}},"order":1000,"parent":""})

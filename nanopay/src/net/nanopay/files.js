@@ -10,6 +10,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/User' },
+  { name: 'net/nanopay/model/Threshold' },
+  { name: 'net/nanopay/model/BalanceAlert' },  
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
