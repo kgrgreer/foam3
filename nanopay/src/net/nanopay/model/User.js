@@ -12,6 +12,16 @@ foam.CLASS({
       targetDAOKey: 'businessSectorDAO',      
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',            
-    }  
+    },
+    {
+      class: 'String',
+      name: 'branchId',
+      label: 'Branch ID'
+    },
+    {
+      class: 'String',
+      name: 'clearingId',
+      label: 'Clearing ID'
+    }
   ]
 });
