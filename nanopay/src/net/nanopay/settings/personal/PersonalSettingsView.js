@@ -3,13 +3,19 @@ foam.CLASS({
   name: 'PersonalSettingsView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack' ],
-
-
   documentation: 'Settings / Personal View',
 
   imports: [
-    'stack'
+    'auth',
+    'user',
+    'stack',
+    'userDAO'
+  ],
+
+  exports: [ 'as data' ],
+
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
@@ -260,13 +266,13 @@ foam.CLASS({
           width: 141px;
           height: 20px;
           margin-left: 20px;
-          margin-right: 640px;
+          margin-right: 644px;
         }
-        ^ .resetPass-Text{
-          width: 147px;
+        ^ .changePass-Text{
+          width: 164px;
           height: 20px;
           margin-left: 20px;
-          margin-right: 638px;
+          margin-right: 621px;
         }
         ^ .tfa-Text{
           width: 211px;
@@ -321,9 +327,7 @@ foam.CLASS({
           top: -5;
         }
         ^ .expandTrue{
-          visibility: hidden;
           height: 0px;
-          transition: background .1s linear;
         }
       */}
     })
@@ -346,6 +350,46 @@ foam.CLASS({
       class: 'Boolean',
       name: 'twoFactorEnabled',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'firstName',
+    },
+    {
+      class: 'String',
+      name: 'lastName'
+    },
+    {
+      class: 'String',
+      name: 'jobTitle'
+    },
+    {
+      class: 'String',
+      name: 'email'
+    },
+    {
+      class: 'String',
+      name: 'phone'
+    },
+    {
+      class: 'String',
+      name: 'phoneCode',
+      value: '+1'
+    },
+    {
+      class: 'String',
+      name: 'originalPassword',
+      view: 'foam.u2.view.PasswordView'
+    },
+    {
+      class: 'String',
+      name: 'newPassword',
+      view: 'foam.u2.view.PasswordView'
+    },
+    {
+      class: 'String',
+      name: 'confirmPassword',
+      view: 'foam.u2.view.PasswordView'
     }
   ],
 
@@ -353,7 +397,14 @@ foam.CLASS({
     function initE(){
     this.SUPER();
     var self = this;
-
+    if (this.user.firstName != "") 
+    {
+      this.firstName = this.user.firstName;
+      this.lastName = this.user.lastName;
+      this.jobTitle = this.user.department;
+      this.email = this.user.email;
+      this.phone = this.user.phone.number;
+    }
     this
       .addClass(this.myClass())
 
@@ -374,28 +425,28 @@ foam.CLASS({
             .start('h2').add("Job Title").addClass('jobTitle-Text').end()
           .end()
           .start('div')
-            .start('input').addClass('firstName-Input').end()
-            .start('input').addClass('lastName-Input').end()
-            .start('input').addClass('jobTitle-Input').end()
+            .start(this.FIRST_NAME).addClass('firstName-Input').end()
+            .start(this.LAST_NAME).addClass('lastName-Input').end()
+            .start(this.JOB_TITLE).addClass('jobTitle-Input').end()
           .end()
           .start('div')
             .start('h2').add("Email Address").addClass('emailAddress-Text').end()
             .start('h2').add("Phone Number").end()
           .end()
           .start('div')
-            .start('input').addClass('emailAddress-Input').end()
-            .start('select').addClass('phoneNumber-Dropdown').end()
-            .start('input').addClass('phoneNumber-Input').end()
+            .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
+            .start(this.PHONE_CODE).addClass('phoneNumber-Dropdown').end()
+            .start(this.PHONE).addClass('phoneNumber-Input').end()
           .end()
           .start('div')
-            .tag({class: 'foam.u2.CheckBox'}).add("Make my profile visable to public").addClass('checkBox-Text').end()
-            .start().addClass('update-BTN').add("Update").end()
+            .tag({class: 'foam.u2.CheckBox'}).add("Make my profile visible to public").addClass('checkBox-Text').end()
+            .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
           .end()
         .end()
 
         .start().addClass('second-Container')
           .start('div')
-            .start('h1').add("Reset Password").addClass('resetPass-Text').end()
+            .start('h1').add("Change Password").addClass('changePass-Text').end()
             .start()
               .addClass('expand-BTN').enableClass('close-BTN', this.expandBox2$, true)
               .add(this.expandBox2$.map(function(e) { return e ? 'Expand' : "Close"; }))
@@ -411,11 +462,11 @@ foam.CLASS({
             .start('h2').add("Confirm Password").addClass('confirmPass-Text').end()
           .end()
           .start('div')
-            .start('input').addClass('originalPass-Input').end()
-            .start('input').addClass('newPass-Input').end()
-            .start('input').addClass('confirmPass-Input').end()
+            .start(this.ORIGINAL_PASSWORD).addClass('originalPass-Input').end()
+            .start(this.NEW_PASSWORD).addClass('newPass-Input').end()
+            .start(this.CONFIRM_PASSWORD).addClass('confirmPass-Input').end()
           .end()
-          .start().addClass('update-BTN').add("Update").end()
+          .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
         .end()
 
         .start().addClass('third-Container')
@@ -430,7 +481,7 @@ foam.CLASS({
 
         .start().addClass('fourth-Container')
           .start('div')
-            .start('h1').add("Email Prefrences").addClass('emailPref-Text').end()
+            .start('h1').add("Email Preferences").addClass('emailPref-Text').end()
             .start()
               .addClass('expand-BTN').enableClass('close-BTN', this.expandBox4$, true)
               .add(this.expandBox4$.map(function(e) { return e ? 'Expand' : "Close"; }))
@@ -473,5 +524,118 @@ foam.CLASS({
           .end()
         .end()
     },
+  ],
+
+  messages: [
+    { name: 'noInformation', message: 'Please fill out all fields.' },    
+    { name: 'invalidPhone', message: 'Phone number is invalid.' },    
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
+    { name: 'noSpaces', message: 'Password cannot contain spaces' },
+    { name: 'noNumbers', message: 'Password must have one numeric character' },
+    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
+    { name: 'emptyOriginal', message: 'Please enter your original password'},
+    { name: 'emptyPassword', message: 'Please enter your new password' },
+    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
+    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
+    { name: 'passwordMismatch', message: 'Passwords do not match' },
+    { name: 'passwordSuccess', message: 'Password successfully updated' }
+  ],
+
+  actions: [
+    {
+      name: 'updateProfile',
+      label: 'Update',
+      code: function (X) {
+        var self = this;
+
+        if ( ! this.firstName || ! this.lastName || ! this.jobTitle || ! this.email || ! this.phone ) {
+          this.add(this.NotificationMessage.create({ message: this.noInformation, type: 'error' }));
+          return;
+        }
+
+        if (! /^[0-9()+-]{1,30}$/.test(this.phone) )
+        {
+          this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
+          return; 
+        }
+        this.user.firstName = this.firstName;
+        this.user.lastName = this.lastName;
+        this.user.department = this.jobTitle;
+        this.user.email = this.email;
+        this.user.phone.number = this.phone;
+        this.userDAO.put(this.user).then(function (result) {
+          // copy new user, clear password fields, show success
+          self.user.copyFrom(result);
+          self.add(self.NotificationMessage.create({ message: self.informationUpdated }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'updatePassword',
+      label: 'Update',
+      code: function (X) {
+        var self = this;
+
+        // check if original password entered
+        if ( ! this.originalPassword ) {
+          this.add(this.NotificationMessage.create({ message: this.emptyOriginal, type: 'error' }));
+          return;
+        }
+
+        // validate new password
+        if ( ! this.newPassword ) {
+          this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          return;
+        }
+
+        if ( this.newPassword.includes(' ') ) {
+          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
+          return;
+        }
+
+        if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
+          this.add(this.NotificationMessage.create({ message: this.invalidLength, type: 'error' }));
+          return;
+        }
+
+        if ( ! /\d/g.test(this.newPassword) ) {
+          this.add(self.NotificationMessage.create({ message: this.noNumbers, type: 'error' }));
+          return;
+        }
+
+        if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
+          this.add(self.NotificationMessage.create({ message: this.noSpecial, type: 'error' }));
+          return;
+        }
+
+        // check if confirmation entered
+        if ( ! this.confirmPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.emptyConfirmation, type: 'error' }));
+          return;
+        }
+
+        // check if passwords match
+        if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.passwordMismatch, type: 'error' }));
+          return;
+        }
+
+        // update password
+        this.auth.updatePassword(null, this.originalPassword, this.newPassword).then(function (result) {
+          // copy new user, clear password fields, show success
+          self.user.copyFrom(result);
+          self.originalPassword = null;
+          self.newPassword = null;
+          self.confirmPassword = null;
+          self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    }
   ]
 });

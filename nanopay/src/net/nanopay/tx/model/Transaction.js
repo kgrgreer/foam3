@@ -13,6 +13,10 @@ foam.CLASS({
       label: 'Transaction ID'
     },
     {
+      class: 'Long',
+      name: 'refundTransactionId'
+    },
+    {
       class: 'String',
       name: 'status'
     },

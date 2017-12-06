@@ -5,12 +5,18 @@ foam.CLASS({
 
   documentation: 'View displaying list of Devices provisioned.',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   imports: [
+    'user',
     'deviceDAO'
   ],
 
-  implements: [
-    'foam.mlang.Expressions'
+  requires: [
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.retail.model.Device'
   ],
 
   axioms: [
@@ -50,7 +56,7 @@ foam.CLASS({
           width: 218px;
           height: 100px;
           float: right;
-          background-color: #23C2b7;
+          background-color: %SECONDARYCOLOR%;
           letter-spacing: 0.3px;
           color: #FFFFFF;
           border-radius: 2px;
@@ -67,7 +73,8 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-addDevice:hover {
           background: none;
           cursor: pointer;
-          background-color: #20B1A7;
+          background: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .foam-u2-dialog-Popup-background {
           pointer-events: none;
@@ -82,21 +89,11 @@ foam.CLASS({
           cursor: pointer;
           text-align: right;
         }
+        ^ thead > tr > th{
+          background: %TABLECOLOR%;
+        }
       */}
     })
-  ],
-
-  imports: [
-    'deviceDAO',
-  ],
-
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
-  requires: [
-    'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.retail.model.Device'
   ],
 
   messages: [
@@ -110,7 +107,12 @@ foam.CLASS({
     'allDevicesCount',
     'activeDevicesCount',
     'disabledDevicesCount',
-    { name: 'data', factory: function () { return this.deviceDAO; } }
+    {
+      name: 'data',
+      factory: function () {
+        return this.deviceDAO.where(this.EQ(this.Device.OWNER, this.user.id));
+      }
+    }
   ],
 
   methods: [
@@ -138,7 +140,7 @@ foam.CLASS({
           .start()
             .tag({
               class: 'foam.u2.ListCreateController',
-              dao: this.deviceDAO,
+              dao: this.data,
               factory: function() { return self.Device.create(); },
               detailView: {
                 class: 'foam.u2.DetailView',
@@ -174,10 +176,19 @@ foam.CLASS({
 
       requires: [ 'net.nanopay.retail.model.Device' ],
 
-      imports: [ 'deviceDAO' ],
+      imports: [
+        'user',
+        'deviceDAO'
+      ],
+
       properties: [
         'selection',
-        { name: 'data', factory: function () { return this.deviceDAO; } }
+        {
+          name: 'data',
+          factory: function () {
+            return this.deviceDAO.where(this.EQ(this.Device.OWNER, this.user.id));
+          }
+        }
       ],
 
       methods: [

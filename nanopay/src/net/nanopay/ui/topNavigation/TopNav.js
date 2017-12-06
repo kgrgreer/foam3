@@ -5,13 +5,13 @@ foam.CLASS({
 
   documentation: 'Top navigation bar',
 
-  imports: [ 'menuDAO', 'user' ],
+  imports: [ 'menuDAO', 'user', 'loginSuccess' ],
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          background: #093649;
+          background: %PRIMARYCOLOR%;
           width: 100%;
           min-width: 992px;
           height: 60px;
@@ -40,21 +40,21 @@ foam.CLASS({
           transition: text-shadow;
         }
         ^ .menuItem:hover {
-          border-bottom: 4px solid #1cc2b7;
+          border-bottom: 4px solid %ACCENTCOLOR%;
           padding-bottom: 5px;
           text-shadow: 0 0 0px white, 0 0 0px white;
         }
         ^ .selected {
-          border-bottom: 4px solid #1cc2b7;
+          border-bottom: 4px solid %ACCENTCOLOR%;
           padding-bottom: 5px;
           text-shadow: 0 0 0px white, 0 0 0px white;
         }
         ^ .menuBar{
-          width: 50%;
+          width: 60%;
           overflow: auto;
           white-space: nowrap;
           margin-left: 60px;
-        }          
+        }
       */}
     })
   ],
@@ -71,13 +71,14 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('topNavContainer')
+          .show( this.loginSuccess$)
           .start({class: 'net.nanopay.ui.topNavigation.BusinessLogoView', data: this.user })
           .end()
           .start({class: 'foam.nanos.menu.MenuBar'}).addClass('menuBar')
           .end()
           .start({class: 'net.nanopay.ui.topNavigation.UserTopNavView'})
           .end()
-        .end()
+        .end();
     }
   ]
 });

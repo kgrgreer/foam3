@@ -9,19 +9,23 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  imports: [ 
-    'stack',
+  imports: [
     'auth',
-    'loginSuccess'
+    'user',
+    'stack',
+    'account',
+    'accountDAO',
+    'loginSuccess',
+    'signUpEnabled'
   ],
 
   exports: [ 'as data' ],
 
   requires: [
     'foam.nanos.auth.User',
+    'net.nanopay.model.Account',
     'foam.comics.DAOCreateControllerView',
-    'net.nanopay.ui.NotificationMessage',
-    'foam.nanos.auth.WebAuthService'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
@@ -44,6 +48,7 @@ foam.CLASS({
       ^ .net-nanopay-ui-ActionView-signIn{
         width: 90%;
         margin-left: 25px;
+        background: %SECONDARYCOLOR%;
       }
     */}
     })
@@ -65,7 +70,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
       this.addClass(this.myClass())
       .start()
         .start('h1').add("Sign In").end()
@@ -77,12 +81,14 @@ foam.CLASS({
           .start(this.SIGN_IN).addClass('full-width-button').end()
         .end()
         .start('div')
-          .start('p').add("Don't have an account?").end()
-          .start('p').style({ 'margin-left': '2px' }).addClass('link')
-            .add("Sign up.")
-            .on('click', this.signUp)
-          .end()
-          .start('p').style({ 'margin-left': '150px' }).addClass('link')
+          .callIf(this.signUpEnabled, function(){
+            this.start('p').add("Don't have an account?").end()
+            .start('p').style({ 'margin-left': '2px' }).addClass('link')
+              .add("Sign up.")
+              .on('click', self.signUp)
+            .end()
+          })
+          .start('p').style({ 'float': 'right' }).addClass('link')
             .add("Forgot Password?")
             .on('click', function(){ self.stack.push({ class: 'net.nanopay.ui.forgotPassword.EmailView' })})
           .end()
@@ -113,15 +119,27 @@ foam.CLASS({
     {
       name: 'signIn',
       label: 'Sign In',
-      isEnabled: function(email, password){
-        return email && password;
-      },
       code: function(X){
         var self = this;
-        
-        this.auth.loginByEmail(this.email, this.password).then(function(user){
+
+        if ( ! this.email ) {
+          this.add(this.NotificationMessage.create({ message: 'Please enter an email address', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.password ) {
+          this.add(this.NotificationMessage.create({ message: 'Please enter a password', type: 'error' }));
+          return;
+        }
+
+        this.auth.loginByEmail(null, this.email, this.password).then(function(user){
           self.loginSuccess = user ? true : false;
-        }).catch(function(a){
+          self.user.copyFrom(user);
+          return self.accountDAO.where(self.EQ(self.Account.OWNER, self.user.id)).limit(1).select();
+        }).then(function (result) {
+          self.account.copyFrom(result.array[0]);
+          self.stack.push({ class: 'net.nanopay.invoice.ui.InvoiceDashboardView' });
+        }).catch(function(a) {
           self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }))
         });
       }

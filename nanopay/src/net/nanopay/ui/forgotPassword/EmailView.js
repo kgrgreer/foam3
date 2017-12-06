@@ -14,7 +14,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.ui.NotificationMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.forgotPassword.ResendView'
   ],
 
@@ -110,7 +110,7 @@ foam.CLASS({
           width: 450px;
           height: 40px;
           border-radius: 2px;
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           margin-left: 20px;
           margin-right: 20px;
           margin-bottom: 20px;

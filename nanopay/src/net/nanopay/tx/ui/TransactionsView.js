@@ -119,7 +119,7 @@ foam.CLASS({
         ^ thead > tr > th {
           font-family: 'Roboto';
           font-size: 14px;
-          background-color: rgba(110, 174, 195, 0.2);
+          background: %TABLECOLOR%;
           color: #093649;
           line-height: 1.14;
           letter-spacing: 0.3px;
@@ -136,7 +136,7 @@ foam.CLASS({
           padding-left: 15px;
           height: 60px;
         }
-        .filter-search {
+        ^ .filter-search {
           width: 225px;
           height: 40px;
           border-radius: 2px;
@@ -183,7 +183,7 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-exportButton {
           position: absolute;
           width: 75px;
-          height: 35px;
+          height: 40px;
           opacity: 0.01;
           cursor: pointer;
           z-index: 100;
@@ -220,7 +220,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
+          'referenceNumber', 'date', 'payeeId', 'amount', 'rate'
         ]
       }
     }
@@ -250,25 +250,6 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
-          /*.start()
-            .tag({
-                class: 'foam.u2.ListCreateController',
-                dao: this.filteredTransactionDAO,
-                factory: function() { return self.Transaction.create(); },
-                detailView: {
-                  class: 'foam.u2.DetailView',
-                  properties: [
-                    this.Transaction.REFERENCE_NUMBER,
-                    this.Transaction.DATE,
-                    this.Transaction.PAYEE_ID,
-                    this.Transaction.AMOUNT,
-                    this.Transaction.RECEIVING_AMOUNT,
-                    this.Transaction.RATE
-                  ]
-                },
-              summaryView: this.TransactionTableView.create()
-            })
-          .end()*/
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
     }
@@ -276,49 +257,10 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'sendTransfer',
-      label: 'Send e-Transfer',
-      code: function(X) {
-        // send e-Transfer functionality
-        X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard' })
-      }
-    },
-    {
       name: 'exportButton',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
       }
-    }
-  ],
-
-  classes: [
-    {
-      name: 'TransactionTableView',
-      extends: 'foam.u2.View',
-
-      requires: [ 'net.nanopay.tx.model.Transaction' ],
-
-      imports: [ 'transactionDAO' ],
-
-      properties: [
-        'selection',
-        { name: 'data', factory: function() { return this.transactionDAO; }}
-      ],
-
-      methods: [
-        function initE() {
-          this
-            .start({
-              class: 'foam.u2.view.TableView',
-              selection$: this.selection$,
-              editColumnsEnabled: true,
-              data: this.data,
-              columns: [
-                'referenceNumber', 'date', 'payeeId', 'amount', 'receivingAmount', 'rate'
-              ]
-            }).addClass(this.myClass('table')).end();
-        }
-      ]
     }
   ]
 });

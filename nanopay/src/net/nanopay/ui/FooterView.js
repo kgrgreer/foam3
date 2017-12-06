@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'View to display footer, including copyright label',
 
+  imports: [
+    'webApp'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -34,20 +38,14 @@ foam.CLASS({
     })
   ],
 
-  messages: [
-    { name: 'portalLabel',    message: 'B2B Portal Powered by @nanopay' },
-    { name: 'copyrightLabel', message: 'copyright @nanopay 2017, all right reserved.' }
-  ],
-
   methods: [
     function initE(){
       this.SUPER();
-
       this
         .addClass(this.myClass())
         .start()
-          .start('h3').add(this.portalLabel).end()
-          .start('h3').addClass('copyright-label').add(this.copyrightLabel).end()
+          .start('h3').add(this.webApp + ' Portal Powered by @'+ this.webApp).end()
+          .start('h3').addClass('copyright-label').add('copyright ' + '@' + this.webApp + ' 2017, all right reserved.').end()
         .end();
     }
   ]

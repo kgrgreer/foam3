@@ -3,18 +3,21 @@ foam.CLASS({
   name: 'BankAccountsView',
   extends: 'foam.u2.Controller',
 
-  requires: [
-    'net.nanopay.model.BankAccount',
-    'foam.u2.dialog.Popup'
-  ],
-
-  imports: [ 'bankAccountDAO', 'stack' ],
+  documentation: 'View displaying list of Bank Accounts added.',
 
   implements: [
     'foam.mlang.Expressions',
   ],
 
-  documentation: 'View displaying list of Bank Accounts added.',
+  imports: [
+    'user',
+    'stack',
+    'bankAccountDAO'
+  ],
+
+  requires: [
+    'net.nanopay.model.BankAccount'
+  ],
 
   axioms: [
     foam.u2.CSS.create({
@@ -81,7 +84,6 @@ foam.CLASS({
         }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
-          margin-top: 65px;
         }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
@@ -99,7 +101,12 @@ foam.CLASS({
     'verifiedBanksCount',
     'unverifiedBanksCount',
     'selection',
-    { name: 'data', factory: function () { return this.bankAccountDAO; } }
+    {
+      name: 'data',
+      factory: function () {
+        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+      }
+    }
   ],
 
   messages: [
@@ -136,14 +143,14 @@ foam.CLASS({
           .start()
             .tag({
                 class: 'foam.u2.ListCreateController',
-                dao: this.bankAccountDAO,
+                dao: this.data,
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
                 },
               summaryView: this.BankAccountTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.bankAccountDAO, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
     }
     
   ],
@@ -154,12 +161,7 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.add(
-          this.Popup.create().tag({
-            class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
-            title: this.ActionAdd
-          }).addClass('popup-with-topnav')
-        );
+        this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView' });
       }
     }
   ],
@@ -175,6 +177,7 @@ foam.CLASS({
       ],
 
       imports: [
+        'user',
         'bankAccountDAO'
       ],
 
@@ -198,7 +201,12 @@ foam.CLASS({
             }
           }
         },
-        { name: 'data', factory: function() { return this.bankAccountDAO; } }
+        {
+          name: 'data',
+          factory: function() {
+            return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+          }
+        }
       ],
 
       messages: [

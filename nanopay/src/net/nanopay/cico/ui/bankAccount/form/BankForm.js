@@ -8,14 +8,14 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.model.BankAccount',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
-    'bankAccountDAO',
-    'closeDialog',
-    'bankAccountVerification',
+    'user',
     'stack',
+    'bankAccountDAO',
+    'bankAccountVerification',
     'selectedAccount'
   ],
 
@@ -70,9 +70,10 @@ foam.CLASS({
           // data from form
           var accountInfo = this.viewData;
 
-          if ( ( accountInfo.accountName == null || accountInfo.accountName == '' ) || 
-          ( accountInfo.transitNumber == null || accountInfo.transitNumber == '' ) || 
-          ( accountInfo.accountNumber == null || accountInfo.accountNumber == '' ) ) {
+          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
+          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
+          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
+           accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
             return;
           }
@@ -87,15 +88,20 @@ foam.CLASS({
             return;
           }
 
+          if ( ! /^[0-9]{3}$/.exec(accountInfo.bankNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Invalid bank number.', type: 'error' }));
+            return;
+          }
+
           var newAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
-            accountNumber: accountInfo.accountNumber
+            accountNumber: accountInfo.accountNumber,
+            owner: this.user.id
           });
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
-            console.log(response);
             self.newBankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
           }).catch(function(error) {
@@ -133,7 +139,6 @@ foam.CLASS({
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          this.closeDialog();
           return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }

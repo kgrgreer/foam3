@@ -72,16 +72,6 @@ foam.CLASS({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.retail.model.Device',
-  forwardName: 'devices',
-  inverseName: 'user',
-  sourceProperty: {
-    hidden: true
-  }
-});
-
-foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.cico.model.ServiceProvider',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',

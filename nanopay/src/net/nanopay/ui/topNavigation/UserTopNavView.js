@@ -57,7 +57,7 @@ foam.CLASS({
         ^ .foam-nanos-menu-SubMenuView-inner {
           position: absolute;
           float: right;
-          z-index: 10000;
+          z-index: 10001;
           width: 208px;
           height: 160px;
           background: white;
@@ -99,7 +99,6 @@ foam.CLASS({
           cursor: pointer;
           padding-top: 10px;
           height: 40px;
-          width: 75px;
         }
       */}
     })
@@ -109,10 +108,10 @@ foam.CLASS({
     function initE() {
       this
         .addClass(this.myClass())
-        .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
-          self.window.location.assign('https://nanopay.net/contact/')
-        })
-        .end()
+        // .start({class:'foam.u2.tag.Image', data: 'images/alert-exclamation.png'}).on('click', function(){
+        //   self.window.location.assign('https://nanopay.net/contact/')
+        // })
+        // .end()
         .start().addClass('profile-container')
           .on('click', function() {
             this.tag(this.SubMenuView.create({menu: this.Menu.create({id: 'settings'})}))

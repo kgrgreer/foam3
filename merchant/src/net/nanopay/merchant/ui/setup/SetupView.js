@@ -17,7 +17,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          background: #2c4389;
+          background: %PRIMARYCOLOR%;
         }
         ^ .setup-title {
           height: 30px;

@@ -16,7 +16,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.ui.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   axioms: [
@@ -76,7 +76,7 @@ foam.CLASS({
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
-        text-algin: left;
+        text-align: left;
         color: #093649;
         margin-left: 20px;
         margin-bottom: 5px;
@@ -185,8 +185,8 @@ foam.CLASS({
     { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
-    { name: 'emptyPassword', message: 'Please enter your password' },
-    { name: 'emptyConfirmation', message: 'Please re-enter your password' },
+    { name: 'emptyPassword', message: 'Please enter new your password' },
+    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
     { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' }
   ],

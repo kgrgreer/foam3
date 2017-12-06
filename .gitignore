@@ -48,39 +48,28 @@ root/target/
 nanopay-bin.js
 nano.log*
 
-# Concatenated files
+# Local Tomcat Server XML
+server.xml
+
+# Service files
 accounts
 bankAccounts
 branches
-brokers
 businesses
 canadaTransactions
-cicoServiceProviders
-countries
-countryAgents
-cronjobs
-currency
 dateofbirth
 devices
 exchangeRates
-exportDriverRegistrys
-groups
 historyRecords
 identification
 indiaTransactions
 invoiceResolutions
 invoices
-languages
-menus
 pacs8india
 pacs8iso
 payees
-permissions
-regions
-scripts
-services
-tests
+recurringInvoices
+tokens
 transactions
-users
-emailTemplates
-transactionLimits
+
+

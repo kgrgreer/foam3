@@ -3,7 +3,9 @@ foam.CLASS({
   name: 'BusinessSettingsView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack' ],
+  imports: [ 'stack', 'user' ],
+
+  requires: [ 'net.nanopay.model.BusinessSector' ],
 
   documentation: 'View displaying business information',
 
@@ -87,6 +89,9 @@ foam.CLASS({
           font-weight: 300;
           letter-spacing: 0.2px;
           color: #093649;
+          display: flex;
+          word-wrap: break-word;
+          width: 125px;
         }
         ^ .addBankButtonDiv {
           text-align: center;
@@ -163,8 +168,21 @@ foam.CLASS({
           transition: max-height 1.2s ease;
           max-height: 600px;
         }
-       ^ .expandTrue{
+        ^ .expandTrue{
           max-height: 0;
+        }
+        ^ .net-nanopay-ui-ActionView-editProfile {
+          color: #59a5d5;
+          width: 62px;
+          height: 0px;
+          text-decoration: underline;
+          margin-left: 42px;
+        }
+        ^ .net-nanopay-ui-ActionView-editProfile:hover {
+          cursor: pointer;
+        }
+        ^ .net-nanopay-ui-ActionView-editProfile:active {
+          color: #2974a3;
         }
       */}
     })
@@ -187,6 +205,8 @@ foam.CLASS({
       name: "expandBox4",
       value: false
     },
+    'businessSectorName',
+    'businessTypeName'
   ],
 
   methods: [
@@ -194,12 +214,21 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      this.user.businessSectorId$find.then(function(sector) { 
+        self.businessSectorName = sector.name;
+      });
+      this.user.businessTypeId$find.then(function(type) { 
+        self.businessTypeName = type.name;
+      });
+
+
       this
         .addClass(this.myClass())
 
         .start().addClass('businessSettingsContainer')
           .start().addClass('Container')
             .start().add('Business Profile').addClass('boxTitle').end()
+            .add(this.EDIT_PROFILE)
             .start()
               .addClass('expand-BTN').enableClass('close-BTN', this.expandBox1$, true)
               .add(this.expandBox1$.map(function(e) { return e ? "Expand" : "Close"; }))
@@ -208,46 +237,53 @@ foam.CLASS({
             .end()
         
           .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox1$)
-            .add(this.EDIT_PROFILE)
-            .br()
             .start().addClass('profileImgDiv')
               .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
-              .start().add('Company Name').addClass('companyName').end()
+              .start().add(this.user.businessName).addClass('companyName').end()
             .end()
             .start()
               .start().addClass('inlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Company Type').addClass('labelTitle').end()
-                  .start().add('Limited Company').addClass('labelContent').end()
+                  .start().add(this.businessTypeName$).addClass('labelContent').end()
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Business Sector').addClass('labelTitle').end()
-                  .start().add('Tobacco & Alcohol').addClass('labelContent').end()
+                  .start().add(this.businessSectorName$).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('inlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Business Identification No.').addClass('labelTitle').end()
-                  .start().add('0000000001').addClass('labelContent').end()
+                  .start().add(this.user.businessIdentificationNumber).addClass('labelContent').end()
                 .end()
                 .start().addClass('labelDiv')
                   .start().add('Issuing Authority').addClass('labelTitle').end()
-                  .start().add('Placeholder Text').addClass('labelContent').end()
+                  .start().add(this.user.issuingAuthority).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('topInlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Website').addClass('labelTitle').end()
-                  .start().add('www.nanopay.net').addClass('labelContent').end()
+                  .start().add(this.user.website).addClass('labelContent').end()
                 .end()
               .end()
               .start().addClass('topInlineDiv')
                 .start().addClass('labelDiv')
                   .start().add('Address').addClass('labelTitle').end()
-                  .start().add('123 Avenue').addClass('labelContent').end()
-                  .start().add('Toronto, Ontario').addClass('labelContent').end()
-                  .start().add('Canada').addClass('labelContent').end()
-                  .start().add('M2G 1K9').addClass('labelContent').end()
+                  .startContext()
+                    .start().hide(this.user.address.structured$)
+                      .start().add(this.user.address.address1).addClass('labelContent').end()
+                      .start().add(this.user.address.address2).addClass('labelContent').end()
+                    .end()
+                    .start().show(this.user.address.structured$)
+                      .start().add(this.user.address.streetNumber +" "+this.user.address.streetName).addClass('labelContent').end()
+                      .start().add(this.user.address.suite).addClass('labelContent').end()
+                    .end()
+                  .endContext()
+                  .start().add(this.user.address.city + ", "+this.user.address.regionId).addClass('labelContent').end()
+                  .start().add(this.user.address.countryId).addClass('labelContent').end()
+                  .start().add(this.user.address.postalCode).addClass('labelContent').end()
                 .end()
               .end()
             .end()
@@ -302,6 +338,16 @@ foam.CLASS({
         .end()
       .end()      
     .end()										       
+    }
+  ],
+
+  actions: [
+    {
+      name: 'editProfile',
+      label: 'Edit Profile',
+      code: function (X) {
+        X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
+      }
     }
   ]
 });

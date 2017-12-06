@@ -46,7 +46,7 @@ foam.CLASS({
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
-        text-algin: left;
+        text-align: left;
         color: #093649;
         margin-left: 20px;
         margin-top: 19.5px;
@@ -70,8 +70,8 @@ foam.CLASS({
       ^ .input-Box{
         width: 408px;
         height: 40px;
-        backgroud-color: #ffffff;
-        border: solod 1px rgba(!64, 179, 184, 0.5);
+        background-color: #ffffff;
+        border: solid 1px rgba(!64, 179, 184, 0.5);
         margin-left: 20px;
         margin-right: 20px;
         margin-bottom: 20px;
