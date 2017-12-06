@@ -16,7 +16,9 @@ public class S2HInvoiceDAO
     setDelegate(delegate);
     setOf(net.nanopay.s2h.model.S2HInvoice.getOwnClassInfo());
   }
-
+  /*
+  Overrides all functions to only allow put calls
+  */
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     throw new UnsupportedOperationException("Unsupported operation: select_");
@@ -37,7 +39,8 @@ public class S2HInvoiceDAO
   {
     throw new UnsupportedOperationException("Unsupported operation: removeAll_");
   }
-
+  // Takes an S2H formatted invoice and calls a converter method
+  // that changes it into a Nanopay formatted invoice
   @Override
   public FObject put_(X x, FObject obj) {
     S2HInvoice s2hInvoice = (S2HInvoice) obj;
