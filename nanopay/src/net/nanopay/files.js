@@ -141,6 +141,9 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/IntegrationView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
 
+  // bank
+  { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },  
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
