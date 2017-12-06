@@ -105,6 +105,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/ManageAccountModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
+  { name: 'net/nanopay/cico/spi/alterna/SFTPService' },
+  { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
