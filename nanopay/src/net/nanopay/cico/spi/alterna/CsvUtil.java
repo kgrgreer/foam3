@@ -14,7 +14,7 @@ import foam.core.Detachable;
 import foam.core.FObject;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
-import foam.mlang.MLang;
+import static foam.mlang.MLang.EQ;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 
@@ -92,7 +92,7 @@ public class CsvUtil {
       outputter = new Outputter(outWriter, mode, outputHeaders);
     }
 
-    transactionDAO.where(MLang.EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
+    transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
       @Override
       public void put(FObject obj, Detachable sub) {
         try {
