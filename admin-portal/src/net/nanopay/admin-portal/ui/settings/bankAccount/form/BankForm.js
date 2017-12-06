@@ -11,13 +11,13 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.SUPER();
       this.views = [
         { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',  view: { class: 'net.nanopay.admin.ui.settings.bankAccount.form.BankInfoForm' } },
         { parent: 'addBank', id: 'form-addBank-deposit',      label: 'Verification',  view: { class: 'net.nanopay.admin.ui.settings.bankAccount.form.BankVerifyDeposit' } },
         { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',  view: { class: 'net.nanopay.admin.ui.settings.bankAccount.form.BankVerificationForm' } },
         { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.admin.ui.settings.bankAccount.form.BankDoneForm' } }
       ];
-      this.SUPER();
     }
   ],
 

@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form',
-  name: 'AddShopperSendMoneyForm',
+  package: 'net.nanopay.admin.ui.form.merchant',
+  name: 'AddMerchantSendMoneyForm',
   extends: 'foam.u2.Controller',
 
   documentation: 'Form to input amount to be sent to the new user',
@@ -26,7 +26,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 3: Input the amount of money you want to send to the user.' },
+    { name: 'Step', message: 'Step 4: Input the amount of money you want to send to the user.' },
     { name: 'AmountLabel', message: 'Amount' }
   ],
 

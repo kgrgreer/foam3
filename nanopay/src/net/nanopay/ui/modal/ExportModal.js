@@ -130,22 +130,17 @@ foam.CLASS({
 
       if (this.dataType == 'JSON') {
         this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
-          console.log(result);
           self.note = result;
         });
-        //this.note = this.jsonDriver.exportFObject(null, this.exportData)
       } else if (this.dataType == 'XML') {
         this.xmlDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
-          console.log(result);
           self.note = result;
         });
         //this.note = this.xmlDriver.exportFObject(null, this.exportData);
       } else if (this.dataType == 'CSV') {
         this.csvDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
-          console.log(result);
           self.note = result;
         });
-        //this.note = this.csvDriver.exportFObject(null, this.exportData);
       }
     }
   ]

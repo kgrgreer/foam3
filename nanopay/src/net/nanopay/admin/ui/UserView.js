@@ -127,14 +127,12 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'id', 'firstName', 'lastName', 'email', 'type'
+          'id', 'firstName', 'lastName', 'email', 'organization', 'type'
         ]
       }
     },
     'addUserMenuBtn_',
-    'sendMoneyMenuBtn_',
     'addUserPopUp_',
-    'sendMoneyPopUp_'
   ],
 
   messages: [
@@ -209,16 +207,7 @@ foam.CLASS({
     function addMerchant() {
       var self = this;
       self.addUserPopUp_.remove();
-    },
-
-    function sendMoneyToShopper() {
-      var self = this;
-      self.sendMoneyPopUp_.remove();
-    },
-
-    function sendMoneyToMerchant() {
-      var self = this;
-      self.sendMoneyPopUp_.remove();
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
     }
   ]
 

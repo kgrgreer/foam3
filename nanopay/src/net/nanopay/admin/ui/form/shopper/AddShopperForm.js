@@ -1,14 +1,15 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form',
+  package: 'net.nanopay.admin.ui.form.shopper',
   name: 'AddShopperForm',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for adding a shopper',
 
   requires: [
-    'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
-    'net.nanopay.ui.NotificationMessage',
+    'foam.nanos.auth.Phone',
+    'foam.nanos.auth.User',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -26,10 +27,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        { parent: 'addShopper', id: 'form-addShopper-info',      label: 'Shopper Info', view: { class: 'net.nanopay.admin.ui.form.AddShopperInfoForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-review',    label: 'Review',       view: { class: 'net.nanopay.admin.ui.form.AddShopperReviewForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-sendMoney', label: 'Send Money',   view: { class: 'net.nanopay.admin.ui.form.AddShopperSendMoneyForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-done',      label: 'Done',         view: { class: 'net.nanopay.admin.ui.form.AddShopperDoneForm' } }
+        { parent: 'addShopper', id: 'form-addShopper-info',      label: 'Shopper Info', view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperInfoForm' } },
+        { parent: 'addShopper', id: 'form-addShopper-review',    label: 'Review',       view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperReviewForm' } },
+        { parent: 'addShopper', id: 'form-addShopper-sendMoney', label: 'Send Money',   view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperSendMoneyForm' } },
+        { parent: 'addShopper', id: 'form-addShopper-done',      label: 'Done',         view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperDoneForm' } }
       ];
       this.SUPER();
     }
@@ -54,11 +55,12 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        // info from form
+        // Info from form
         var shopperInfo = this.viewData;
 
         if ( this.position == 0 ) { 
           // Shopper Info
+
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
           ( shopperInfo.lastName == null || shopperInfo.lastName.trim() == '' ) ||
           ( shopperInfo.emailAddress == null || shopperInfo.emailAddress.trim() == '' ) ||
@@ -68,8 +70,7 @@ foam.CLASS({
           ( shopperInfo.streetName == null || shopperInfo.streetName.trim() == '' ) ||
           ( shopperInfo.city == null || shopperInfo.city.trim() == '' ) ||
           ( shopperInfo.postalCode == null || shopperInfo.postalCode.trim() == '' ) ||
-          ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) )
-          {
+          ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
@@ -83,8 +84,15 @@ foam.CLASS({
 
         if ( this.position == 1 ) {
           // Review
+
+          var shopperPhone = this.Phone.create({
+            number: shopperInfo.phoneNumber
+          });
+
           var shopperAddress = this.Address.create({
-            address: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
+            address1: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
+            streetNumber: shopperInfo.streetNumber,
+            streetName: shopperInfo.streetName,
             suite: shopperInfo.addressLine,
             city: shopperInfo.city,
             postalCode: shopperInfo.postalCode,
@@ -94,9 +102,11 @@ foam.CLASS({
           var newShopper = this.User.create({
             firstName: shopperInfo.firstName,
             lastName: shopperInfo.lastName,
+            organization: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Shopper',
             birthday: shopperInfo.birthday,
+            phone: shopperPhone,
             address: shopperAddress,
             password: shopperInfo.password
           });
@@ -129,14 +139,13 @@ foam.CLASS({
             });
 
             this.transactionDAO.put(transaction).then(function(response) {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent' }));
+              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               return;
             }).catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
               return;
             });
-
           }
         }
 
