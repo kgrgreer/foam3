@@ -92,3 +92,17 @@ foam.RELATIONSHIP({
   forwardName: 'invoices',
   inverseName: 'recurringInvoice'
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.model.Threshold',
+  forwardName: 'thresholds',
+  inverseName: 'owner'
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.model.BalanceAlert',
+  forwardName: 'balanceAlerts',
+  inverseName: 'owner'
+});
