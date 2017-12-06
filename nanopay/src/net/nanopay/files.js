@@ -181,7 +181,5 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
 
   //s2h
-  { name: 'net/nanopay/s2h/model/S2HInvoice'},
-  { name: 'net/nanopay/dig/model/DigModel'}
-
+  { name: 'net/nanopay/s2h/model/S2HInvoice'}
 ]);
