@@ -16,9 +16,8 @@ public class S2HInvoiceDAO
     setDelegate(delegate);
     setOf(net.nanopay.s2h.model.S2HInvoice.getOwnClassInfo());
   }
-  /*
-  Overrides all functions to only allow put calls
-  */
+  
+  // Overrides all functions to only allow put calls
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     throw new UnsupportedOperationException("Unsupported operation: select_");
