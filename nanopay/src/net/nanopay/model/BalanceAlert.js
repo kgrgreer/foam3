@@ -26,7 +26,7 @@ foam.CLASS({
       name: 'bankName',
       tableCellFormatter: function(value, obj, rel){
         obj.bank$find.then(function(a){
-          this.add(a ? a.organization : '')
+          this.add(a ? a.organization : '');
         }.bind(this));
       }
     },
@@ -38,7 +38,7 @@ foam.CLASS({
         obj.bank$find.then(function(a){
           if( a.accounts[0]){
             a.accounts.forEach(function(acc){
-              total = total + acc.balance
+              total = total + acc.balance;
             });
           }
         });

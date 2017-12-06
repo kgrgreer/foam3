@@ -19,7 +19,7 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .tag({ class: 'net.nanopay.ui.BalanceView' })
-      .tag({ class: 'net.nanopay.bank.ui.BalanceAlertView'})
+      .tag({ class: 'net.nanopay.bank.ui.BalanceAlertView'});
     }
   ]
 });

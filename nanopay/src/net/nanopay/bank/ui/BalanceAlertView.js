@@ -86,7 +86,7 @@ foam.CLASS({
 
       properties: [ 
         'selection', 
-        { name: 'data', factory: function() { return this.user.balanceAlerts }}
+        { name: 'data', factory: function() { return this.user.balanceAlerts; }}
       ],
 
       methods: [
@@ -101,7 +101,7 @@ foam.CLASS({
               columns: [
                 'bankName', 'balance', 'minBalance', 'status'
               ],
-            }).end()
+            }).end();
         }
       ]
     }
