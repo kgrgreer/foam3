@@ -1,21 +1,27 @@
 package net.nanopay.cico.spi.alterna;
 
-import foam.dao.Sink;
-import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.model.Branch;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
+
+import foam.dao.Sink;
+import foam.nanos.auth.User;
+import foam.core.X;
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
+import foam.lib.csv.Outputter;
+import foam.lib.json.OutputterMode;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.io.*;
 
 public class CsvUtil {
 
@@ -66,15 +72,25 @@ public class CsvUtil {
   }
   /**
    * fills the outputter with all CICO transactions
+   * @param X- the context
+   * @param outStream -  the outputter out format if it's a stream
+   * @param outWriter -  the outputter out format if it's a writer
    * @param outputter -  "empty" outputter
-   * @param transactionDAO - the transactionDAO
-   * @param userDAO - the userDAO
-   * @param bankAccountDAO - the bankAccountDAO
-   * @param branchDAO - the branchDAO
    * @return the outputter
    */
-  public Sink writeCsvFile(Sink outputter, DAO transactionDAO, DAO userDAO, DAO bankAccountDAO, DAO branchDAO) {
+  public Sink writeCsvFile(X x, OutputterMode mode, OutputStream outStream, Writer outWriter, boolean outputHeaders) {
     final Date now = new Date();
+    final DAO userDAO = (DAO) x.get("localUserDAO");
+    final DAO branchDAO = (DAO) x.get("branchDAO");
+    final DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
+    final DAO transactionDAO = (DAO) x.get("standardCICOTransactionDAO");
+
+    final Sink outputter;
+    if ( outStream != null ) {
+      outputter = new Outputter(outStream, mode, outputHeaders);
+    } else {
+      outputter = new Outputter(outWriter, mode, outputHeaders);
+    }
 
     transactionDAO.where(MLang.EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
       @Override
