@@ -194,5 +194,4 @@ FOAM_FILES([
 
   //s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice'}
-
 ]);
