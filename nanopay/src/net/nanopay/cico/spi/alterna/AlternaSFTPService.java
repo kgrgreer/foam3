@@ -44,17 +44,14 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
   protected final String USER = "eftcadtest1";
   protected final String PASSWORD = "nLGlp8Du";
   protected final String WORKING_DIR = "/";
-  protected DAO userDAO;
-  protected DAO branchDAO;
-  protected DAO bankAccountDAO;
-  protected DAO transactionDAO;
 
   @Override
   public void sendCICOFile() {
     ByteArrayOutputStream  out = new ByteArrayOutputStream();
 
     CsvUtil util = new CsvUtil();
-    Sink outputter = util.writeCsvFile(new Outputter(out, OutputterMode.STORAGE, false), transactionDAO, userDAO, bankAccountDAO, branchDAO);
+
+    final Sink outputter = util.writeCsvFile(getX(), OutputterMode.STORAGE, out, null, false);
 
     Session session = null;
     Channel channel = null;
@@ -88,18 +85,9 @@ public class AlternaSFTPService extends ContextAwareSupport implements SFTPServi
 
   }
 
-
-  // @Override
-  // public void setContext(X x) {
-  //   super(x);
-  // }
-
   @Override
   public void start() {
-    userDAO = (DAO) getX().get("localUserDAO");
-    branchDAO = (DAO) getX().get("branchDAO");
-    bankAccountDAO = (DAO) getX().get("bankAccountDAO");
-    transactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
+
   }
 
 }
