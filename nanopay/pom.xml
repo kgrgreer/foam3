@@ -7,7 +7,7 @@
   <packaging>jar</packaging>
   <version>0.0.1</version>
 
-  
+
   <artifactId>nanopay</artifactId>
   <name>nanoPay project</name>
 
@@ -31,6 +31,11 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+      <version>0.1.54</version>
     </dependency>
   </dependencies>
 

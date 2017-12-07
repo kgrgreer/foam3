@@ -10,6 +10,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/User' },
+  { name: 'net/nanopay/model/Threshold' },
+  { name: 'net/nanopay/model/BalanceAlert' },  
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
@@ -27,7 +29,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
-
+  { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
+  
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
@@ -105,6 +108,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/ManageAccountModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
+  { name: 'net/nanopay/cico/spi/alterna/SFTPService' },
+  { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
@@ -136,6 +141,9 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/IntegrationView', flags: ['web'] },
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
 
+  // bank
+  { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },  
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

@@ -6,28 +6,22 @@ foam.CLASS({
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',      
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessTypeDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      },
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',      
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',            
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessSectorDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
-      },
-    }  
+    },
+    {
+      class: 'String',
+      name: 'branchId',
+      label: 'Branch ID'
+    },
+    {
+      class: 'String',
+      name: 'clearingId',
+      label: 'Clearing ID'
+    }
   ]
 });
