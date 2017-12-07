@@ -10,7 +10,8 @@ foam.CLASS({
       name: 'balance'
     },
     {
-      class: 'created',
+      class: 'Date',
+      name: 'created',
       factory: function(){
         return new Date();
       }
