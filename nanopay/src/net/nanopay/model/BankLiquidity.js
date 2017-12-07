@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.model',
-  name: 'BankLiquidity',
+  name: 'Liquidity',
 
-  documentation: 'Bank Liquidity as per timing',
+  documentation: 'Liquidity as per timing',
 
   properties: [
     {
@@ -18,7 +18,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'bank'
+      name: 'user'
     }
   ]
 })

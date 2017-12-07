@@ -30,7 +30,7 @@ var classes = [
   'net.nanopay.model.Threshold',
   'net.nanopay.model.ThresholdResolve',
   'net.nanopay.model.BalanceAlert',
-  'net.nanopay.model.BankLiquidity',
+  'net.nanopay.model.Liquidity',
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
