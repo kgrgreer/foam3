@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BankLiquidity',
 
-  documentation: 'Bank Liquidity as per timing'
+  documentation: 'Bank Liquidity as per timing',
 
   properties: [
     {
@@ -10,15 +10,10 @@ foam.CLASS({
       name: 'balance'
     },
     {
-      class: 'createdAt',
+      class: 'created',
       factory: function(){
-        return new Date()
+        return new Date();
       }
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.threshold',
-      name: 'thresholdAtTime'
     },
     {
       class: 'Reference',
