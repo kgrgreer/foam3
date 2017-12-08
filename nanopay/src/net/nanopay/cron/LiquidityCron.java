@@ -92,7 +92,10 @@ public class LiquidityCron
     }
 
     public void deleteThresholdLimit(List thresholdResolveList){
-      thresholdResolveDAO_.remove(thresholdResolveList[0]);
+      for(int i = 0; i < thresholdResolveList.size(); i++) {
+        Threshold threshold = (Threshold) thresholdList.get(i);
+        thresholdResolveDAO_.remove(threshold);
+      }
     }
 
     public void checkThresholdLimit(Threshold threshold, Account account, User bank){
