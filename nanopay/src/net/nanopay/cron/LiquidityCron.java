@@ -1,7 +1,6 @@
 package net.nanopay.cron;
 
 import foam.core.ContextAwareSupport;
-import foam.nanos.pm.PM;
 import foam.mlang.MLang;
 import foam.dao.*;
 import java.util.Date;
@@ -13,6 +12,8 @@ import foam.nanos.auth.User;
 import net.nanopay.model.Liquidity;
 import net.nanopay.model.BalanceAlert;
 import net.nanopay.model.Account;
+import net.nanopay.model.Threshold;
+import net.nanopay.model.ThresholdResolve;
 
 public class LiquidityCron
   extends    ContextAwareSupport
@@ -37,7 +38,7 @@ public class LiquidityCron
           }
           for(int i = 0; i < bankList.size(); i++) {
             User bank = (User) bankList.get(i);
-            createLiquidityObj(bank);
+            createLiquidity(bank);
           }
         } catch (Throwable e) {
           e.printStackTrace();
@@ -45,20 +46,20 @@ public class LiquidityCron
         }
     }
 
-    public void createLiquidityObj(User bank){
+    public void createLiquidity(User bank){
       Account account = (Account) accountDAO_.find(bank.getId());
       Liquidity liquidity = new Liquidity();
-      liquidity.setBalance = account.getBalance();
-      liquidity.setUser = bank.getId();
+      liquidity.setBalance(account.getBalance());
+      liquidity.setUser(bank.getId());
       liquidityDAO_.put(liquidity);
-      bankThresholds(bank);
+      bankThresholds(bank, account);
     }
 
     public void bankThresholds(User bank, Account account){
       try{
         System.out.println("Finding Thresholds...");
         ListSink sink = (ListSink) thresholdDAO_.where(
-            MLang.EQ(threshold.OWNER, bank.getId())
+            MLang.EQ(Threshold.OWNER, bank.getId())
         ).select(new ListSink());
           List thresholdList = sink.getData();
           if(thresholdList.size() < 1) { 
@@ -67,7 +68,7 @@ public class LiquidityCron
           }
           for(int i = 0; i < thresholdList.size(); i++) {
             Threshold threshold = (Threshold) thresholdList.get(i);
-            checkThresholdLimit(threshold, account, bank);
+            iterateThresholdResolve(threshold, bank, account);
           }
         } catch (Throwable e) {
           e.printStackTrace();
@@ -75,11 +76,30 @@ public class LiquidityCron
         }
     }
 
+    public void iterateThresholdResolve(Threshold threshold, User bank, Account account){
+      ListSink sink = (ListSink) thresholdResolveDAO_.where(
+        MLang.AND(
+          MLang.EQ(ThresholdResolve.THRESHOLD, threshold.getId()),
+          MLang.EQ(ThresholdResolve.USER, bank.getId())
+        )
+      ).select(new ListSink());
+      List thresholdResolveList = sink.getData();
+      if(thresholdResolveList.size() < 1){
+        checkoutThresholdLimit(threshold, account, bank);
+      } else {
+        deleteThresholdLimit(thresholdResolveList);
+      }
+    }
+
+    public void deleteThresholdLimit(List thresholdResolveList){
+      thresholdResolveDAO_.remove(thresholdResolveList[0]);
+    }
+
     public void checkThresholdLimit(Threshold threshold, Account account, User bank){
       long balance = account.getBalance();
       long limit = threshold.getBalance();
-      if(balance < limit){
-        System.out.println("Creating balance alert...")
+      if( balance < limit ){
+        System.out.println("Creating balance alert...");
         BalanceAlert alert = new BalanceAlert();
         alert.setBalance(balance);
         alert.setMinBalance(limit);
@@ -88,6 +108,10 @@ public class LiquidityCron
         alert.setThreshold(threshold.getId());
         alert.setUser(bank.getId());
         balanceAlertDAO_.put(alert);
+        ThresholdResolve resolve = new ThresholdResolve();
+        resolve.setUser(bank.getId());
+        resolve.setThreshold(threshold.getId());
+        thresholdResolveDAO_.put(resolve);
       }
     }
 
