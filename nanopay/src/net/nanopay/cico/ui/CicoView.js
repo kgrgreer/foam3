@@ -84,6 +84,7 @@ foam.CLASS({
           display: inline-block;
           width: 135px;
         }
+
         ^ .net-nanopay-ui-ActionView-cashInBtn {
           width: 135px;
           height: 50px;
@@ -193,9 +194,7 @@ foam.CLASS({
 
       var self = this;
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
-
       this.formattedBalance = this.account.balance/100;
-
       this
         .addClass(this.myClass())
         .start()
@@ -205,8 +204,9 @@ foam.CLASS({
             .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
-            .add(this.CASH_IN_BTN)
-            .add(this.CASH_OUT_BUTTON)
+            .start().hide(this.user.group == "ccMerchant").add(this.CASH_IN_BTN).end()
+
+            .start().add(this.CASH_OUT_BUTTON).end()
           .end()
           .start()
             .tag({
