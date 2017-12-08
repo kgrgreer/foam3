@@ -47,11 +47,16 @@ public class LiquidityCron
     }
 
     public void createLiquidity(User bank){
+      System.out.println("Creating Liquidity...");
       Account account = (Account) accountDAO_.find(bank.getId());
-      Liquidity liquidity = new Liquidity();
-      liquidity.setBalance(account.getBalance());
-      liquidity.setUser(bank.getId());
-      liquidityDAO_.put(liquidity);
+      if( account != null ){
+        Liquidity liquidity = new Liquidity();
+        liquidity.setBalance(account.getBalance());
+        liquidity.setUser(bank.getId());
+        System.out.println(liquidity.getBalance());
+        System.out.println(liquidity.getCreated());
+        liquidityDAO_.put(liquidity);
+      }
       bankThresholds(bank, account);
     }
 
@@ -85,7 +90,7 @@ public class LiquidityCron
       ).select(new ListSink());
       List thresholdResolveList = sink.getData();
       if(thresholdResolveList.size() < 1){
-        checkoutThresholdLimit(threshold, account, bank);
+        createBalanceAlert(threshold, account, bank);
       } else {
         deleteThresholdLimit(thresholdResolveList);
       }
@@ -93,12 +98,12 @@ public class LiquidityCron
 
     public void deleteThresholdLimit(List thresholdResolveList){
       for(int i = 0; i < thresholdResolveList.size(); i++) {
-        Threshold threshold = (Threshold) thresholdList.get(i);
+        Threshold threshold = (Threshold) thresholdResolveList.get(i);
         thresholdResolveDAO_.remove(threshold);
       }
     }
 
-    public void checkThresholdLimit(Threshold threshold, Account account, User bank){
+    public void createBalanceAlert(Threshold threshold, Account account, User bank){
       long balance = account.getBalance();
       long limit = threshold.getBalance();
       if( balance < limit ){
