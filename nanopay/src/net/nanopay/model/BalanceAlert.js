@@ -31,7 +31,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Long',
       name: 'balance',
       tableCellFormatter: function(value, obj, rel){
         var total;
@@ -46,7 +46,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Long',
       name: 'minBalance',
       tableCellFormatter: function(value, obj, rel){
         obj.threshold$find.then(function(a){
