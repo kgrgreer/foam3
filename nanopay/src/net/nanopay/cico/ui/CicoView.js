@@ -204,9 +204,8 @@ foam.CLASS({
             .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
-            .start().hide(this.user.group == "ccMerchant").add(this.CASH_IN_BTN).end()
-
-            .start().add(this.CASH_OUT_BUTTON).end()
+            .add(this.CASH_IN_BTN)
+            .add(this.CASH_OUT_BUTTON)
           .end()
           .start()
             .tag({
