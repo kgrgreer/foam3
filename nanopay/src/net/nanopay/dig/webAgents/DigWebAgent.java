@@ -11,6 +11,7 @@ import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.lib.json.*;
 import foam.lib.csv.*;
+import foam.lib.html.*;
 import foam.lib.parse.*;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
@@ -91,11 +92,13 @@ public class DigWebAgent
       Class        objClass = cInfo.getObjClass();
 
       if ( "put".equals(command) ) {
+        copiedData = data;
+
         if ( "json".equals(format) ) {
           JSONParser jsonParser = new JSONParser();
           jsonParser.setX(x);
 
-          copiedData = data;
+          //copiedData = data;
           String dataArray[] = data.split("},");
 
           for (int i=0; i < dataArray.length; i++) {
@@ -129,17 +132,33 @@ public class DigWebAgent
             obj = dao.put(obj);
           }
         } /*else if ( "csv".equals(format) ) {
-          CSVParser csvParser = new CSVParser();
-          csvParser.setX(x);
+          CSVSupport csvSupport = new CSVSupport();
+
+          //csvParser.setX(x);
+
+          // convert String into InputStream
+	        InputStream is = new ByteArrayInputStream(data.getBytes());
+          ArraySink arraySink = new ArraySink();
+          csvSupport.inputCSV(is, arraySink, objClass);
+
+          list = arraySink.getArray();
+          for(int i = 0 ; i < list.size() ; i++ ){
+              dao.put(list.get(i));
+          }
+
+
+          foam.dao.DAOSink(dao);
+
+
 
           //String dataArray[] = data.split("},");
 
           //for (int i=0; i < dataArray.length; i++) {
             //data = dataArray[i] + "}";
             //System.out.println("data : " + data);
-            copiedData = data;
-            obj = csvParser.parseString(data, objClass);
-            System.out.println("obj : " + obj);
+            //copiedData = data;
+            //obj = csvParser.parseString(data, objClass);
+            //System.out.println("obj : " + obj);
 
             if ( obj == null || "".equals(obj) ) {
               out.println("Parse Error : ");
@@ -147,7 +166,7 @@ public class DigWebAgent
               /*String message = getParsingError(x, buffer_.toString());
               logger.error(message + ", input: " + buffer_.toString());
               out.println(message);
-              out.flush();******
+              out.flush();*
               return;
             }
 
@@ -176,13 +195,32 @@ public class DigWebAgent
           out.println("</textarea>");
         } else if ( "csv".equals(format) ) {
           foam.lib.csv.Outputter outputterCsv = new foam.lib.csv.Outputter();
-
+          outputterCsv.output(sink.getArray().toArray());
           List a = sink.getArray();
           for ( int i = 0 ; i < a.size() ; i++ ) {
             outputterCsv.put((FObject) a.get(i), null);
           }
+
           out.println("<textarea style=\"width:800;height:800;\">");
           out.println(outputterCsv.toString());
+          out.println("</textarea>");
+        } else if ( "html".equals(format) ) {
+          foam.lib.html.Outputter outputterHtml = new foam.lib.html.Outputter();
+
+          outputterHtml.outputStartHtml();
+          outputterHtml.outputStartTable();
+          List a = sink.getArray();
+          for ( int i = 0 ; i < a.size() ; i++ ) {
+            if ( i == 0 ) {
+              outputterHtml.outputHead((FObject) a.get(i));
+            }
+            outputterHtml.put((FObject) a.get(i), null);
+          }
+          outputterHtml.outputEndTable();
+          outputterHtml.outputEndHtml(); 
+
+          out.println("<textarea style=\"width:700;height:600;\">");
+          out.println(outputterHtml.toString());
           out.println("</textarea>");
         }
       } else if ( "help".equals(command) ) {
@@ -223,29 +261,30 @@ public class DigWebAgent
 
       System.out.println("data : " + copiedData);
       out.println("<br><br><br> URL : <br>");
-      out.print("<textarea style=\"width:700;height:200;\">http://localhost:8080/digWebAgent?");
+      out.println("<textarea style=\"width:700;height:200;\">http://localhost:8080/service/digWebAgent?");
+      //out.print("http://localhost:8080/service/digWebAgent?");
 
       if ( daoName != null && daoName != "" ) {
-        out.print("dao=" + daoName);
+        out.println("dao=" + daoName);
       }
 
       if ( format != null && format != "" ) {
-        out.print("&format=" + format);
+        out.println("&format=" + format);
       }
 
       if ( command != null && command != "" ) {
-        out.print("&cmd=" + command);
+        out.println("&cmd=" + command);
       }
 
       if ( id != null && id != "" ) {
-        out.print("&id=" + id);
+        out.println("&id=" + id);
       }
 
       if ( data != null && data != "" ) {
-        out.print("&data=" + copiedData);
+        out.println("&data=" + copiedData);
       }
 
-      out.print("</textarea>");
+      out.println("</textarea>");
       out.println();
 
       //+ daoName + "&format=" + format + "&cmd=" + command + "&id=" + id + "&data=" + data + "</textarea>");
@@ -265,7 +304,7 @@ public class DigWebAgent
    * @return the error message
    */
   protected String getParsingError(X x, String buffer) {
-    Parser        parser = new foam.lib.json.ExprParser();
+    //Parser        parser = new foam.lib.json.ExprParser();
     PStream       ps     = new StringPStream();
     ParserContext psx    = new ParserContextImpl();
 
@@ -273,7 +312,7 @@ public class DigWebAgent
     psx.set("X", x == null ? new ProxyX() : x);
 
     ErrorReportingPStream eps = new ErrorReportingPStream(ps);
-    ps = eps.apply(parser, psx);
+    //ps = eps.apply(parser, psx);
     return eps.getMessage();
   }
 }
