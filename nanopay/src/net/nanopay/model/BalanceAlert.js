@@ -49,7 +49,7 @@ foam.CLASS({
       name: 'status',
       tableCellFormatter: function(value, obj, rel){
         obj.owner$find.then(function(a){
-          this.add(a.status ? a.status : '');                    
+          this.add(a.status ? a.status : 'Unknown');                    
         }.bind(this));
       }
     }
