@@ -47,15 +47,18 @@ public class LiquidityCron
     }
 
     public void createLiquidity(User bank){
-      System.out.println("Creating Liquidity...");
       Account account = (Account) accountDAO_.find(bank.getId());
       if( account != null ){
-        Liquidity liquidity = new Liquidity();
-        liquidity.setBalance(account.getBalance());
-        liquidity.setUser(bank.getId());
-        System.out.println(liquidity.getBalance());
-        System.out.println(liquidity.getCreated());
-        liquidityDAO_.put(liquidity);
+        try{
+          Liquidity liquidity = new Liquidity();
+          liquidity.setBalance(account.getBalance());
+          liquidity.setUser(bank.getId());
+          liquidityDAO_.put(liquidity);
+          System.out.println("Creating Liquidity Snapshot...");
+        } catch (Throwable e) {
+          e.printStackTrace();
+          throw new RuntimeException(e);
+        }
       }
       bankThresholds(bank, account);
     }
