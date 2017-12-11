@@ -51,7 +51,7 @@ foam.CLASS({
         right: 20px;
         float: right;
       }
-      ^ .net-nanopay-ui-ActionView-close{
+      ^ .net-nanopay-ui-ActionView-closeModal{
         position: relative;
         right: -310px;
         width: 50px;
@@ -74,7 +74,7 @@ foam.CLASS({
           .start().addClass('container')
             .start().addClass('title').add(this.title).end()
             .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close')
-              .add(this.CLOSE)
+              .add(this.CLOSE_MODAL)
             .end()
           .end()
         .end()
@@ -84,7 +84,7 @@ foam.CLASS({
     
   actions: [
     {
-      name: 'close',
+      name: 'closeModal',
       code: function(X){
         X.closeDialog()
       }
