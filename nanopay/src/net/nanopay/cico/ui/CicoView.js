@@ -24,7 +24,8 @@ foam.CLASS({
     'bankAccountDAO',
     'stack',
     'standardCICOTransactionDAO',
-    'user'
+    'user',
+    'auth'
   ],
 
   exports: [
@@ -156,6 +157,10 @@ foam.CLASS({
       name: 'formattedBalance'
     },
     {
+      class: 'Boolean',
+      name: 'hasCashIn'
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         var self = X.view;
@@ -191,8 +196,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
       var self = this;
+      this.auth.check(null,"cico.ci").then(function(perm) { 
+        self.hasCashIn = perm;
+      });
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.formattedBalance = this.account.balance/100;
       this
@@ -204,8 +211,8 @@ foam.CLASS({
             .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
-            .add(this.CASH_IN_BTN)
-            .add(this.CASH_OUT_BUTTON)
+            .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
+            .start().add(this.CASH_OUT_BUTTON).end()           
           .end()
           .start()
             .tag({
