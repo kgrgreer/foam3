@@ -15,19 +15,20 @@ import foam.lib.html.*;
 import foam.lib.parse.*;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
-import java.io.PrintWriter;
 import java.nio.CharBuffer;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletException;
 import foam.core.PropertyInfo;
-import java.util.List;
-import java.io.StringReader;
+import java.util.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Iterator;
 import foam.dao.AbstractSink;
 import foam.nanos.boot.NSpec;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
+import java.io.*;
 
 public class DigWebAgent
   implements WebAgent
@@ -35,17 +36,19 @@ public class DigWebAgent
   public DigWebAgent() {}
 
   public void execute(X x) {
-    HttpServletRequest req      = (HttpServletRequest) x.get(HttpServletRequest.class);
-    final PrintWriter  out      = (PrintWriter) x.get(PrintWriter.class);
-    CharBuffer         buffer_  = CharBuffer.allocate(65535);
-    String             data     = req.getParameter("data");
-    String             daoName  = req.getParameter("dao");
-    String             command  = req.getParameter("cmd");
-    String             format   = req.getParameter("format");
-    String             id       = req.getParameter("id");
-    Logger             logger   = (Logger) x.get("logger");
-    DAO                nSpecDAO = (DAO) x.get("nSpecDAO");
+    HttpServletRequest req        = (HttpServletRequest) x.get(HttpServletRequest.class);
+    final PrintWriter  out        = (PrintWriter) x.get(PrintWriter.class);
+    CharBuffer         buffer_    = CharBuffer.allocate(65535);
+    String             data       = req.getParameter("data");
+    String             daoName    = req.getParameter("dao");
+    String             command    = req.getParameter("cmd");
+    String             format     = req.getParameter("format");
+    String             id         = req.getParameter("id");
+    Logger             logger     = (Logger) x.get("logger");
+    DAO                nSpecDAO   = (DAO) x.get("nSpecDAO");
     String             copiedData = "";
+    String []          email      = req.getParameterValues("email");
+    String             subject    = req.getParameter("subject");
 
     if ( command == null || "".equals(command) ) command = "put";
 
@@ -57,6 +60,7 @@ public class DigWebAgent
         out.println("<form><span>DAO:</span>");
         out.println("<span><select name=dao style=margin-left:35>");
 
+        //gets all ongoing nanopay services
         nSpecDAO.orderBy(NSpec.NAME).select(new AbstractSink() {
           public void put(FObject o, Detachable d) {
             NSpec s = (NSpec) o;
@@ -69,6 +73,8 @@ public class DigWebAgent
         out.println("</select></span>");
         out.println("<br><br><span id=formatSpan>Format:<select name=format style=margin-left:25><option value=csv>CSV</option><option value=xml>XML</option><option value=json selected>JSON</option><option value=html>HTML</option></select></span>");
         out.println("<br><br><span>Command:<select name=cmd width=150 style=margin-left:5  onchange=changeCmd(this.value)><option value=put selected>PUT</option><option value=select>SELECT</option><option value=remove>REMOVE</option><option value=help>HELP</option></select></span>");
+        out.println("<br><br><span id=emailSpan >Email:<input name=email style=margin-left:30;width:350></input></span><br>");
+        out.println("<br><br><span id=subjectSpan >Subject:<input name=subject style=margin-left:20;width:350></input></span><br>");
         out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:55></input></span><br>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span><br>");
         out.println("<br><br><button type=submit>Submit</button></form>");
@@ -81,15 +87,15 @@ public class DigWebAgent
         throw new RuntimeException("Input DaoName");
       }
 
-      DAO          dao      = (DAO) x.get(daoName);
+      DAO dao = (DAO) x.get(daoName);
 
       if ( dao == null ) {
         throw new RuntimeException("DAO not found");
       }
 
-      FObject      obj      = null;
-      ClassInfo    cInfo    = dao.getOf();
-      Class        objClass = cInfo.getObjClass();
+      FObject   obj      = null;
+      ClassInfo cInfo    = dao.getOf();
+      Class     objClass = cInfo.getObjClass();
 
       if ( "put".equals(command) ) {
         copiedData = data;
@@ -131,26 +137,21 @@ public class DigWebAgent
             obj = (FObject)i.next();
             obj = dao.put(obj);
           }
-        } /*else if ( "csv".equals(format) ) {
+        } else if ( "csv".equals(format) ) {
           CSVSupport csvSupport = new CSVSupport();
-
-          //csvParser.setX(x);
+          csvSupport.setX(x);
 
           // convert String into InputStream
 	        InputStream is = new ByteArrayInputStream(data.getBytes());
+
           ArraySink arraySink = new ArraySink();
-          csvSupport.inputCSV(is, arraySink, objClass);
 
-          list = arraySink.getArray();
-          for(int i = 0 ; i < list.size() ; i++ ){
-              dao.put(list.get(i));
+          csvSupport.inputCSV(is, arraySink, cInfo);
+
+          List list = arraySink.getArray();
+          for( int i = 0 ; i < list.size() ; i++ ){
+              dao.put((FObject) list.get(i));
           }
-
-
-          foam.dao.DAOSink(dao);
-
-
-
           //String dataArray[] = data.split("},");
 
           //for (int i=0; i < dataArray.length; i++) {
@@ -160,19 +161,19 @@ public class DigWebAgent
             //obj = csvParser.parseString(data, objClass);
             //System.out.println("obj : " + obj);
 
-            if ( obj == null || "".equals(obj) ) {
+            /*if ( obj == null || "".equals(obj) ) {
               out.println("Parse Error : ");
 
               /*String message = getParsingError(x, buffer_.toString());
               logger.error(message + ", input: " + buffer_.toString());
               out.println(message);
-              out.flush();*
+              out.flush();**
               return;
-            }
+            }*/
 
             obj = dao.put(obj);
           //}
-       }*/
+       }
 
 
         //obj = dao.put(obj);
@@ -182,17 +183,26 @@ public class DigWebAgent
         ArraySink sink = (ArraySink) dao.select(new ArraySink());
         System.err.println("objects selected: " + sink.getArray().size());
 
-        out.println("Select: <br><br>");
-
+        out.println("Select <br><br>");
         if ( "json".equals(format) ) {
           foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter();
           outputterJson.output(sink.getArray().toArray());
-          out.println(outputterJson.toString());
+
+          if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
+            output(x, outputterJson.toString());
+          } else {
+            out.println(outputterJson.toString());
+          }
         } else if ( "xml".equals(format) ) {
           XMLSupport xmlSupport = new XMLSupport();
-          out.println("<textarea style=\"width:700;height:400;\">");
-          out.println(xmlSupport.toXMLString(sink.getArray()));
-          out.println("</textarea>");
+
+          if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
+            output(x, xmlSupport.toXMLString(sink.getArray()));
+          } else {
+            out.println("<textarea style=\"width:700;height:400;\">");
+            out.println(xmlSupport.toXMLString(sink.getArray()));
+            out.println("</textarea>");
+          }
         } else if ( "csv".equals(format) ) {
           foam.lib.csv.Outputter outputterCsv = new foam.lib.csv.Outputter();
           outputterCsv.output(sink.getArray().toArray());
@@ -201,9 +211,13 @@ public class DigWebAgent
             outputterCsv.put((FObject) a.get(i), null);
           }
 
-          out.println("<textarea style=\"width:800;height:800;\">");
-          out.println(outputterCsv.toString());
-          out.println("</textarea>");
+          if ( email.length != 0 && !email[0].equals("")  && email[0] != null ) {
+            output(x, outputterCsv.toString());
+          } else {
+            out.println("<textarea style=\"width:800;height:800;\">");
+            out.println(outputterCsv.toString());
+            out.println("</textarea>");
+          }
         } else if ( "html".equals(format) ) {
           foam.lib.html.Outputter outputterHtml = new foam.lib.html.Outputter();
 
@@ -217,11 +231,16 @@ public class DigWebAgent
             outputterHtml.put((FObject) a.get(i), null);
           }
           outputterHtml.outputEndTable();
-          outputterHtml.outputEndHtml(); 
+          outputterHtml.outputEndHtml();
 
-          out.println("<textarea style=\"width:700;height:600;\">");
-          out.println(outputterHtml.toString());
-          out.println("</textarea>");
+          if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
+            output(x, outputterHtml.toString());
+          } else {
+            out.println("length2 : " + email.length);
+            out.println("<textarea style=\"width:700;height:600;\">");
+            out.println(outputterHtml.toString());
+            out.println("</textarea>");
+          }
         }
       } else if ( "help".equals(command) ) {
         out.println("Help: <br><br>" );
@@ -284,17 +303,48 @@ public class DigWebAgent
         out.println("&data=" + copiedData);
       }
 
+      if ( email.length != 0 ) {
+        out.println("&email=" + email[0]);
+      }
+
+      if ( subject != null && subject != "" ) {
+        out.println("&subject=" + subject.replaceAll(" ", ""));
+      }
+
       out.println("</textarea>");
       out.println();
-
-      //+ daoName + "&format=" + format + "&cmd=" + command + "&id=" + id + "&data=" + data + "</textarea>");
-      //out.println("<pre>http://localhost:8080/digWebAgent?dao=" + daoName + "&format=" + format + "&cmd=" + command + "&id=" + id + "&data=" + data + "</pre>");
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
         t.printStackTrace(out);
       out.println("</pre>");
       t.printStackTrace();
+    }
+  }
+
+  protected void output(X x, String data) {
+    HttpServletRequest req     = (HttpServletRequest) x.get(HttpServletRequest.class);
+    String []          email   = req.getParameterValues("email");
+    String             subject = req.getParameter("subject");
+
+    if ( email.length == 0 ) {
+      PrintWriter out = (PrintWriter) x.get(PrintWriter.class);
+
+      out.print(data);
+    } else {
+      EmailService emailService = (EmailService) x.get("email");
+      EmailMessage message      = new EmailMessage();
+
+      message.setFrom("info@nanopay.net");
+      message.setReplyTo("noreply@nanopay.net");
+      message.setTo(email);
+      message.setSubject(subject);
+
+      String newData = "<textarea style=\"width:1000;height:400;\">" + data + "</textarea>";
+
+      message.setBody(newData);
+
+      emailService.sendEmail(message);
     }
   }
 
