@@ -7,6 +7,10 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
+      name: 'id'
+    },
+    {
+      class: 'Long',
       name: 'balance'
     },
     {

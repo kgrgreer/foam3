@@ -41,6 +41,7 @@ public class LiquidityCron
             User bank = (User) bankList.get(i);
             createLiquidity(bank);
           }
+          System.out.println("Cron Completed.");
         } catch (Throwable e) {
           e.printStackTrace();
           throw new RuntimeException(e);
@@ -55,6 +56,7 @@ public class LiquidityCron
           Liquidity liquidity = new Liquidity();
           liquidity.setBalance(account.getBalance());
           liquidity.setUser(bank.getId());
+          liquidity.setCreated(new Date());
           liquidityDAO_.put(liquidity);
           System.out.println("Creating Liquidity Snapshot...");
           bankThresholds(bank, account);
@@ -92,6 +94,7 @@ public class LiquidityCron
       (balance alerts are created based on the existence of threshold resolutions.)
     */
     public void iterateThresholdResolve(Threshold threshold, User bank, Account account){
+      System.out.println("Iterating through ThresholdResolve");
       ListSink sink = (ListSink) thresholdResolveDAO_.where(
         MLang.AND(
           MLang.EQ(ThresholdResolve.THRESHOLD, threshold.getId()),
@@ -107,13 +110,15 @@ public class LiquidityCron
     }
 
     //Checks to see if account balance is higher than threshold, if so deletes the threshold resolve. (enabling future alerts to be created)
-    public void deleteThresholdLimit(List thresholdResolveList, Account account, User bank){
+    public void deleteThresholdLimit(List thresholdResolveList, Threshold threshold, Account account){
       long balance = account.getBalance();
       long limit = threshold.getBalance();
+      System.out.println("Checking Balance...");
       if( balance > limit ){
+        System.out.println("Deleting Threshold Resolve...");
         for(int i = 0; i < thresholdResolveList.size(); i++) {
-          Threshold threshold = (Threshold) thresholdResolveList.get(i);
-          thresholdResolveDAO_.remove(threshold);
+          Threshold stagedThreshold = (Threshold) thresholdResolveList.get(i);
+          thresholdResolveDAO_.remove(stagedThreshold);
         }
       }
     }
@@ -122,6 +127,7 @@ public class LiquidityCron
     public void createBalanceAlert(Threshold threshold, Account account, User bank){
       long balance = account.getBalance();
       long limit = threshold.getBalance();
+      System.out.println("Checking balance...");
       if( balance < limit ){
         System.out.println("Creating balance alert...");
         BalanceAlert alert = new BalanceAlert();
