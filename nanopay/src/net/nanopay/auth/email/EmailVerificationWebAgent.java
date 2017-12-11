@@ -25,15 +25,17 @@ public class EmailVerificationWebAgent
 
   @Override
   public void execute(X x) {
-    PrintWriter out     = (PrintWriter) x.get(PrintWriter.class);
-    String      message = "Your email has now been verified.";
+    PrintWriter        out              = (PrintWriter) x.get(PrintWriter.class);
+    String             message          = "Your email has now been verified.";
+    DAO                userDAO          = (DAO) x.get("localUserDAO");
+    EmailTokenService  emailToken       = (EmailTokenService) x.get("emailToken");
+    HttpServletRequest request          = (HttpServletRequest) x.get(HttpServletRequest.class);
+    String             token            = request.getParameter("token");
+    String             userId           = request.getParameter("userId");
+    User               user             = (User) userDAO.find(Long.valueOf(userId));
+    DAO                emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
 
     try {
-      DAO                userDAO    = (DAO) x.get("localUserDAO");
-      EmailTokenService  emailToken = (EmailTokenService) x.get("emailToken");
-      HttpServletRequest request    = (HttpServletRequest) x.get(HttpServletRequest.class);
-      String             token      = request.getParameter("token");
-      String             userId     = request.getParameter("userId");
 
       if ( token == null || "".equals(token) ) {
         throw new Exception("Token not found");
@@ -43,7 +45,7 @@ public class EmailVerificationWebAgent
         throw new Exception("User not found.");
       }
 
-      User user = (User) userDAO.find(Long.valueOf(userId));
+      
       if ( user == null ) {
         throw new Exception("User not found.");
       }
@@ -56,13 +58,12 @@ public class EmailVerificationWebAgent
     } catch (Throwable t) {
       message = "Problem verifying your email.<br>" + t.getMessage();
     } finally {
-      DAO emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
       if ( config_ == null ) {
         config_ = EnvironmentConfigurationBuilder
             .configuration()
             .resources()
             .resourceLoaders()
-            .add(new TypedResourceLoader("dao", new DAOResourceLoader(emailTemplateDAO)))
+            .add(new TypedResourceLoader("dao", new DAOResourceLoader(emailTemplateDAO, user.getGroup().toString())))
             .and().and()
             .build();
       }
