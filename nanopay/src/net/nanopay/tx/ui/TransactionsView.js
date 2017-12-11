@@ -220,7 +220,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'referenceNumber', 'date', 'payeeId', 'amount', 'rate'
+          'referenceNumber', 'date', 'payeeId', 'amount',
         ]
       }
     }

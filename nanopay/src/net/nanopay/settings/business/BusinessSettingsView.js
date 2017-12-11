@@ -120,7 +120,7 @@ foam.CLASS({
         }
         ^ .foam-u2-ActionView-editProfile {
           text-decoration: underline;
-          font-size: 12px;          
+          font-size: 12px;
           line-height: 16px;
           letter-spacing: 0.2px;
           color: #59a5d5;
@@ -214,10 +214,10 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.user.businessSectorId$find.then(function(sector) { 
+      this.user.businessSectorId$find.then(function(sector) {
         self.businessSectorName = sector.name;
       });
-      this.user.businessTypeId$find.then(function(type) { 
+      this.user.businessTypeId$find.then(function(type) {
         self.businessTypeName = type.name;
       });
 
@@ -235,7 +235,7 @@ foam.CLASS({
               .enableClass('', self.expandBox1 = (self.expandBox1 ? false : true))
               .on('click', function(){ self.expandBox1 = ( self.expandBox1 ? false : true ) })
             .end()
-        
+
           .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox1$)
             .start().addClass('profileImgDiv')
               .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
@@ -289,7 +289,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        
+
         .start().addClass('Container')
           .start().add('Bank Account').addClass('boxTitle').end()
           .start()
@@ -304,7 +304,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-         
+
         .start().addClass('Container')
           .start().add('Multi-user Management').addClass('boxTitle').end()
           .start()
@@ -314,7 +314,7 @@ foam.CLASS({
             .on('click', function(){ self.expandBox3 = ( self.expandBox3 ? false : true )})
           .end()
           .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox3$)
-            .start().addClass()
+            .start()
               .br()
               .br()
               .br()
@@ -332,12 +332,12 @@ foam.CLASS({
           .on('click', function(){ self.expandBox4 = ( self.expandBox4 ? false : true )})
         .end()
         .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox4$)
-          .start().addClass()
+          .start()
             .tag({ class: "net.nanopay.settings.business.IntegrationView"})
           .end()
         .end()
-      .end()      
-    .end()										       
+      .end()
+    .end()
     }
   ],
 

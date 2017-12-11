@@ -84,6 +84,7 @@ foam.CLASS({
           display: inline-block;
           width: 135px;
         }
+
         ^ .net-nanopay-ui-ActionView-cashInBtn {
           width: 135px;
           height: 50px;
@@ -193,9 +194,7 @@ foam.CLASS({
 
       var self = this;
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
-
       this.formattedBalance = this.account.balance/100;
-
       this
         .addClass(this.myClass())
         .start()
