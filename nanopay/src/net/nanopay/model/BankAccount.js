@@ -71,8 +71,7 @@ foam.CLASS({
 
         return randomAmountInCents;
       },
-      hidden: true,
-      transient: true
+      hidden: true
     }
   ],
 
