@@ -34,14 +34,14 @@ foam.CLASS({
       class: 'Long',
       name: 'balance',
       tableCellFormatter: function(value, obj, rel){
-        this.add('$', obj.balance);
+        this.add('$', obj.balance.toFixed(2));
       }
     },
     {
       class: 'Long',
       name: 'minBalance',
       tableCellFormatter: function(value, obj, rel){
-        this.add('$', obj.minBalance)
+        this.add('$', obj.minBalance.toFixed(2));
       }
     },
     {
