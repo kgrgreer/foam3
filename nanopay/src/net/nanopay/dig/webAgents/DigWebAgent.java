@@ -152,27 +152,6 @@ public class DigWebAgent
           for( int i = 0 ; i < list.size() ; i++ ){
               dao.put((FObject) list.get(i));
           }
-          //String dataArray[] = data.split("},");
-
-          //for (int i=0; i < dataArray.length; i++) {
-            //data = dataArray[i] + "}";
-            //System.out.println("data : " + data);
-            //copiedData = data;
-            //obj = csvParser.parseString(data, objClass);
-            //System.out.println("obj : " + obj);
-
-            /*if ( obj == null || "".equals(obj) ) {
-              out.println("Parse Error : ");
-
-              /*String message = getParsingError(x, buffer_.toString());
-              logger.error(message + ", input: " + buffer_.toString());
-              out.println(message);
-              out.flush();**
-              return;
-            }*/
-
-            obj = dao.put(obj);
-          //}
        }
 
 
