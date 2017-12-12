@@ -68,6 +68,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
@@ -142,6 +143,8 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
 
   // bank
+  { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankDetailView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },  
 

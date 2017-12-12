@@ -252,6 +252,9 @@ foam.CLASS({
           .add(this.FILTERED_TRANSACTION_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
+    },
+    function dblclick(transaction){
+      this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
     }
   ],
 

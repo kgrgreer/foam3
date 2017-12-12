@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui',
-  name: 'UserView',
+  package: 'net.nanopay.bank.ui',
+  name: 'BankView',
   extends: 'foam.u2.View',
 
-  documentation: 'View displaying a table with a list of all shoppers and merchants',
+  documentation: 'View displaying a table with a list of banks',
 
   implements: [
     'foam.mlang.Expressions'
@@ -18,7 +18,8 @@ foam.CLASS({
   exports: [ 
     'as data',
     'filter',
-    'filteredUserDAO'
+    'filteredUserDAO',
+    'dblclick'
   ],
 
   imports: [
@@ -161,6 +162,10 @@ foam.CLASS({
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
         .end();
+    },
+
+    function dblclick(user){
+      this.stack.push({ class: 'net.nanopay.ui.UserDetailView', data: user});
     }
   ],
 
