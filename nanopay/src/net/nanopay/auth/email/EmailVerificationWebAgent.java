@@ -63,7 +63,7 @@ public class EmailVerificationWebAgent
             .configuration()
             .resources()
             .resourceLoaders()
-            .add(new TypedResourceLoader("dao", new DAOResourceLoader(emailTemplateDAO, user.getGroup().toString())))
+            .add(new TypedResourceLoader("dao", new DAOResourceLoader(emailTemplateDAO, (String) user.getGroup())))
             .and().and()
             .build();
       }
