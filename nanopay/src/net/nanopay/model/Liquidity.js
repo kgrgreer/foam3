@@ -18,7 +18,8 @@ foam.CLASS({
       name: 'created',
       factory: function(){
         return new Date();
-      }
+      },
+      javaFactory: 'return new Date();'
     },
     {
       class: 'Reference',

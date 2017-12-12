@@ -90,7 +90,7 @@ public class LiquidityCron
     }
 
     /* Iterates through threshold resolutions, 
-      if exists deletes threshold resolution if not creates balance alerts.
+      if exists, deletes threshold resolution if balance is greater then limit, if not creates balance alert if balance is lower.
       (balance alerts are created based on the existence of threshold resolutions.)
     */
     public void iterateThresholdResolve(Threshold threshold, User bank, Account account){
