@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.liquidity.model',
   name: 'Liquidity',
 
   documentation: 'Liquidity as per timing',

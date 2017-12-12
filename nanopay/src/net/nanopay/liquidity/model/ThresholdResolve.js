@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.liquidity.model',
   name: 'ThresholdResolve',
 
   documentation: 'A threshold resolve reflects the creation of balance alerts. Used to not create multiple alerts on the same threshold.',

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.liquidity.model',
   name: 'BalanceAlert',
 
   tableColumns: [
