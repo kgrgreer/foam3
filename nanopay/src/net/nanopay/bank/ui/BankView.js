@@ -153,7 +153,7 @@ foam.CLASS({
             .start().addClass('button-div')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
+              .start(this.ADD_BANK, null, this.addUserMenuBtn_$).end()
               .start().addClass('inline-float-right')
                 .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
               .end()
@@ -178,42 +178,13 @@ foam.CLASS({
       }
     },
     {
-      name: 'addUser',
-      label: 'Add User',
+      name: 'addBank',
+      label: 'Add Bank',
       code: function(X) {
         var self = this;
 
-        self.addUserPopUp_ = foam.u2.PopupView.create({
-          width: 135,
-          height: 60,
-          x: 0,
-          y: 40
-        })
-        self.addUserPopUp_.addClass('popUpDropDown')
-          .start('div').add('Add Shopper')
-            .on('click', this.addShopper)
-          .end()
-          .start('div').add('Add Merchant')
-            .on('click', this.addMerchant)
-          .end()
-        self.addUserMenuBtn_.add(self.addUserPopUp_)
+        this.stack.push({ class: 'net.nanopay.admin.ui.AddShopperView' });
       }
     }
-  ],
-
-  listeners: [
-
-    function addShopper() {
-      var self = this;
-      self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddShopperView' });
-    },
-
-    function addMerchant() {
-      var self = this;
-      self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
-    }
   ]
-
 });
