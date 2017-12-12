@@ -1,0 +1,3 @@
+p({"class":"foam.nanos.auth.Permission", "id":"*",         "description":"Do anything global permission." })
+p({"class":"foam.nanos.auth.Permission", "id":"menu.auth", "description":"Perform authentication related configuration" })
+p({"class":"foam.nanos.auth.Permission","id":"cico.ci","description":"Allows the Cash-In button"})
