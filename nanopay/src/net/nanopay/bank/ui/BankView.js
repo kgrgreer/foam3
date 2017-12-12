@@ -65,20 +65,11 @@ foam.CLASS({
           z-index: 100;
           margin-right: 5px;
         }
-        ^ .net-nanopay-ui-ActionView-addUser {
+        ^ .net-nanopay-ui-ActionView-addBank {
           background-color: #59A5D5;
           border: solid 1px #59A5D5;
           color: white;
           float: right;
-        }
-        ^ .net-nanopay-ui-ActionView-addUser::after {
-          content: ' ';
-          position: absolute;
-          height: 0;
-          width: 0;
-          border: 6px solid transparent;
-          border-top-color: white;
-          transform: translate(5px, 5px);
         }
         ^ .popUpDropDown {
           padding: 0;
@@ -163,7 +154,7 @@ foam.CLASS({
     },
 
     function dblclick(user){
-      this.stack.push({ class: 'net.nanopay.ui.BankDetailView', data: user});
+      this.stack.push({ class: 'net.nanopay.bank.ui.BankDetailView', data: user});
     }
   ],
 
