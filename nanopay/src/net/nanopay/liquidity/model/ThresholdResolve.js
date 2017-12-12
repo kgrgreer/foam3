@@ -16,7 +16,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Threshold',
+      of: 'net.nanopay.liquidity.model.Threshold',
       name: 'threshold'
     }
   ]

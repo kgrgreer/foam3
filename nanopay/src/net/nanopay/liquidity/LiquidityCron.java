@@ -1,7 +1,7 @@
 package net.nanopay.cron;
 
 import foam.core.ContextAwareSupport;
-import foam.mlang.MLang.*;
+import foam.mlang.MLang;
 import foam.dao.*;
 import java.util.Date;
 import java.util.ArrayList;
@@ -9,11 +9,12 @@ import java.util.List;
 import foam.core.FObject;
 import foam.dao.AbstractSink;
 import foam.nanos.auth.User;
-import net.nanopay.model.Liquidity;
-import net.nanopay.model.BalanceAlert;
+import net.nanopay.liquidity.model.Liquidity;
+import net.nanopay.liquidity.model.BalanceAlert;
 import net.nanopay.model.Account;
-import net.nanopay.model.Threshold;
-import net.nanopay.model.ThresholdResolve;
+import net.nanopay.liquidity.model.Threshold;
+import net.nanopay.liquidity.model.ThresholdResolve;
+import static foam.mlang.MLang.*;
 
 public class LiquidityCron
   extends    ContextAwareSupport
