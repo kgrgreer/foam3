@@ -26,7 +26,7 @@ foam.CLASS({
       name: 'bankName',
       tableCellFormatter: function(value, obj, rel){
         obj.owner$find.then(function(a){
-          this.add(a ? a.firstName : '');
+          this.add(a.organization ? a.label() : '');
         }.bind(this));
       }
     },

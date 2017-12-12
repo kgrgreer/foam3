@@ -1,7 +1,7 @@
 package net.nanopay.cron;
 
 import foam.core.ContextAwareSupport;
-import foam.mlang.MLang;
+import foam.mlang.MLang.*;
 import foam.dao.*;
 import java.util.Date;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class LiquidityCron
       try{
         System.out.println("Finding users...");
         ListSink sink = (ListSink) userDAO_.where(
-            MLang.EQ(User.TYPE, "Bank")
+            EQ(User.TYPE, "Bank")
         ).select(new ListSink());
           List bankList = sink.getData();
           if(bankList.size() < 1) { 
@@ -72,7 +72,7 @@ public class LiquidityCron
       try{
         System.out.println("Finding Thresholds...");
         ListSink sink = (ListSink) thresholdDAO_.where(
-            MLang.EQ(Threshold.OWNER, bank.getId())
+            EQ(Threshold.OWNER, bank.getId())
         ).select(new ListSink());
           List thresholdList = sink.getData();
           if(thresholdList.size() < 1) { 
@@ -96,9 +96,9 @@ public class LiquidityCron
     public void iterateThresholdResolve(Threshold threshold, User bank, Account account){
       System.out.println("Iterating through ThresholdResolve");
       ListSink sink = (ListSink) thresholdResolveDAO_.where(
-        MLang.AND(
-          MLang.EQ(ThresholdResolve.THRESHOLD, threshold.getId()),
-          MLang.EQ(ThresholdResolve.USER, bank.getId())
+        AND(
+          EQ(ThresholdResolve.THRESHOLD, threshold.getId()),
+          EQ(ThresholdResolve.USER, bank.getId())
         )
       ).select(new ListSink());
       List thresholdResolveList = sink.getData();
