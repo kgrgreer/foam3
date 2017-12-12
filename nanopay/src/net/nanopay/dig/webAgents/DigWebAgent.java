@@ -78,7 +78,8 @@ public class DigWebAgent
         out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:55></input></span><br>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span><br>");
         out.println("<br><br><button type=submit onClick=performHelp()>Submit</button></form>");
-        out.println("<script>function changeCmd(cmdValue) { if ( cmdValue == 'help') { var vurl = document.location.protocol + '//' + document.location.host + '/#docs'; window.open(vurl); } if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} }</script>");
+        //out.println("<script>function changeCmd(cmdValue) { if ( cmdValue == 'help') { var vurl = document.location.protocol + '//' + document.location.host + '/path=' + + '/#docs'; window.open(vurl); } if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} }</script>");
+        out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} }</script>");
         //out.println("<script>function performHelp() { if ( cmdValue == 'help' ) { alert('dd');location.href='http://localhost:8080/#docs';} }</script>");
 
         return;
@@ -236,7 +237,8 @@ public class DigWebAgent
         }
         out.println("</table>");*/
 
-        //out.println("<a href=""> </a>)
+        out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/path=' + objClass  + '/#docs'; window.open(vurl);</script>");
+
       } else if ( "remove".equals(command) ) {
         if ( dao == null ) {
           throw new RuntimeException("Dao not found");
