@@ -49,6 +49,7 @@ cp -r merchant/ /Library/Tomcat/webapps/ROOT/merchant
 
 # Move images to ROOT/images
 cd /Library/Tomcat/webapps/ROOT
+rm -rf images
 mkdir images
 cd nanopay/src/net/nanopay/
 mv images/ ../../.././../
