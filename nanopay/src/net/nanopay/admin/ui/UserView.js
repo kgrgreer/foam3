@@ -149,8 +149,7 @@ foam.CLASS({
       name: 'accessMerchant',   
     },
     'addUserMenuBtn_',
-    'addUserPopUp_',
-    
+    'addUserPopUp_'
   ],
 
   messages: [
@@ -215,8 +214,7 @@ foam.CLASS({
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)
       }
-    },
-   
+    }
   ],
 
   listeners: [
