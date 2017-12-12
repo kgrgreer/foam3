@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack', 'userDAO'
+    'stack', 'auth', 'userDAO'
   ],
 
   axioms: [
@@ -79,11 +79,16 @@ foam.CLASS({
           border-top-color: white;
           transform: translate(5px, 5px);
         }
+        ^ .net-nanopay-ui-ActionView-addBusiness {
+          background-color: #59A5D5;
+          border: solid 1px #59A5D5;
+          color: white;
+          float: right;
+        }
         ^ .popUpDropDown {
           padding: 0;
           z-index: 10000;
           width: 135px;
-          height: 60px;
           background: white;
           opacity: 1;
           box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
@@ -131,8 +136,21 @@ foam.CLASS({
         ]
       }
     },
+    { 
+      class: 'Boolean',
+      name: 'accessShopper',   
+    },
+    { 
+      class: 'Boolean',
+      name: 'accessSubscriber',   
+    },
+    { 
+      class: 'Boolean',
+      name: 'accessMerchant',   
+    },
     'addUserMenuBtn_',
     'addUserPopUp_',
+    
   ],
 
   messages: [
@@ -144,7 +162,9 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      
+      this.auth.check(null,"user.subs").then(function(perm) { self.accessSubscriber = perm;});
+      this.auth.check(null,"user.shop").then(function(perm) { self.accessShopper = perm;});
+      this.auth.check(null,"user.merch").then(function(perm) { self.accessMerchant = perm;});
       this
         .addClass(this.myClass())
         .start()
@@ -174,26 +194,29 @@ foam.CLASS({
     },
     {
       name: 'addUser',
-      label: 'Add User',
+      label: 'Add',
       code: function(X) {
         var self = this;
 
         self.addUserPopUp_ = foam.u2.PopupView.create({
           width: 135,
-          height: 60,
           x: 0,
           y: 40
         })
         self.addUserPopUp_.addClass('popUpDropDown')
-          .start('div').add('Add Shopper')
+          .start('div').show(this.accessShopper$).add('Add Shopper')
             .on('click', this.addShopper)
           .end()
-          .start('div').add('Add Merchant')
+          .start('div').show(this.accessMerchant$).add('Add Merchant')
             .on('click', this.addMerchant)
+          .end()
+          .start('div').show(this.accessSubscriber$).add('Add Subscriber')
+            .on('click', this.addBusiness)
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)
       }
-    }
+    },
+   
   ],
 
   listeners: [
@@ -208,6 +231,12 @@ foam.CLASS({
       var self = this;
       self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
+    },
+
+    function addBusiness() {
+      var self = this;
+      self.addUserPopUp_.remove();
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
     }
   ]
 
