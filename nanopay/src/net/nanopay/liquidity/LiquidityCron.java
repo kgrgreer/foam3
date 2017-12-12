@@ -26,7 +26,7 @@ public class LiquidityCron
     protected DAO    liquidityDAO_;
     protected DAO    accountDAO_;
 
-    //fetch bank users based on on type
+    //fetch bank users based on type
     public void fetchUsers() {
       try{
         System.out.println("Finding users...");
