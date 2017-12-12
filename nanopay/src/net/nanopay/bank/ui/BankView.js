@@ -109,6 +109,7 @@ foam.CLASS({
   ],
 
   properties: [
+    //TODO filter Dao based on user type.
     {
       class: 'String',
       name: 'filter',
@@ -128,17 +129,14 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'id', 'firstName', 'lastName', 'email', 'organization', 'type'
+          'id', 'organization', 'branchId', 'clearingId', 'status'
         ]
       }
-    },
-    'addUserMenuBtn_',
-    'addUserPopUp_',
+    }
   ],
 
   messages: [
     { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' },
-    { name: 'AddShopper', message: 'Add Shopper' }
   ],
 
   methods: [
@@ -153,7 +151,7 @@ foam.CLASS({
             .start().addClass('button-div')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.ADD_BANK, null, this.addUserMenuBtn_$).end()
+              .start(this.ADD_BANK).end()
               .start().addClass('inline-float-right')
                 .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
               .end()
@@ -165,7 +163,7 @@ foam.CLASS({
     },
 
     function dblclick(user){
-      this.stack.push({ class: 'net.nanopay.ui.UserDetailView', data: user});
+      this.stack.push({ class: 'net.nanopay.ui.BankDetailView', data: user});
     }
   ],
 
