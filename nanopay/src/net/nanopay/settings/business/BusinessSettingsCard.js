@@ -1,13 +1,40 @@
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'BusinessSettingsCard',
+  extends: 'foam.u2.View',
+
   documentation: 'view which contain business information & edit link.',
 
-  properties: [
+  imports: [
+    'user'
+  ],
 
+  properties: [
+    'data'
   ],
 
   css: `
+    ^ .labelDiv {
+      margin-bottom: 30px;
+    }
+    ^ .inlineDiv {
+      display: inline-block;
+      margin-right: 100px;
+    }
+    ^ .topInlineDiv {
+      display: inline-block;
+      margin-right: 100px;
+      vertical-align: top;
+    }
+    ^ .labelTitle {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-bottom: 15px;
+    }
     ^ .labelContent {
       font-family: Roboto;
       font-size: 14px;
@@ -18,61 +45,73 @@ foam.CLASS({
       word-wrap: break-word;
       width: 125px;
     }
+    ^ .companyName {
+      font-family: 'Roboto';
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      color: #093649;
+      margin-left: 40px;
+      display: inline-block;
+      line-height: 16px;
+      position: absolute;
+      top: 40%;
+    }
   `,
 
   methods: [
     function initE(){
       var self = this;
-
+      if( !data  ){ return; }
       this
-        addClass(this.myClass())
+        .addClass(this.myClass())
         .start().addClass('profileImgDiv')
           .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
-          .start().add(this.user.businessName).addClass('companyName').end()
+          .start().add(this.data.organization).addClass('companyName').end()
         .end()
         .start()
           .start().addClass('inlineDiv')
             .start().addClass('labelDiv')
-              .start().add('Company Type').addClass('labelTitle').end()
-              .start().add(this.businessTypeName$).addClass('labelContent').end()
+              .start().add('Country Code').addClass('labelTitle').end()
+              .start().add('this.Country CODE').addClass('labelContent').end()
             .end()
             .start().addClass('labelDiv')
-              .start().add('Business Sector').addClass('labelTitle').end()
-              .start().add(this.businessSectorName$).addClass('labelContent').end()
+              .start().add('Clearing Code').addClass('labelTitle').end()
+              .start().add('this.clearingCode').addClass('labelContent').end()
             .end()
           .end()
           .start().addClass('inlineDiv')
             .start().addClass('labelDiv')
-              .start().add('Business Identification No.').addClass('labelTitle').end()
-              .start().add(this.user.businessIdentificationNumber).addClass('labelContent').end()
+              .start().add('Bank Identification No.').addClass('labelTitle').end()
+              .start().add(this.data.businessIdentificationNumber).addClass('labelContent').end()
             .end()
             .start().addClass('labelDiv')
-              .start().add('Issuing Authority').addClass('labelTitle').end()
-              .start().add(this.user.issuingAuthority).addClass('labelContent').end()
+              .start().add('Clearing ID').addClass('labelTitle').end()
+              .start().add(this.data.clearingId).addClass('labelContent').end()
             .end()
           .end()
           .start().addClass('topInlineDiv')
             .start().addClass('labelDiv')
-              .start().add('Website').addClass('labelTitle').end()
-              .start().add(this.user.website).addClass('labelContent').end()
+              .start().add('Branch ID').addClass('labelTitle').end()
+              .start().add(this.data.branchId).addClass('labelContent').end()
             .end()
           .end()
           .start().addClass('topInlineDiv')
             .start().addClass('labelDiv')
               .start().add('Address').addClass('labelTitle').end()
               .startContext()
-                .start().hide(this.user.address.structured$)
-                  .start().add(this.user.address.address1).addClass('labelContent').end()
-                  .start().add(this.user.address.address2).addClass('labelContent').end()
+                .start().hide(this.data.address.structured$)
+                  .start().add(this.data.address.address1).addClass('labelContent').end()
+                  .start().add(this.data.address.address2).addClass('labelContent').end()
                 .end()
-                .start().show(this.user.address.structured$)
-                  .start().add(this.user.address.streetNumber +" "+this.user.address.streetName).addClass('labelContent').end()
-                  .start().add(this.user.address.suite).addClass('labelContent').end()
+                .start().show(this.data.address.structured$)
+                  .start().add(this.data.address.streetNumber +" "+this.user.address.streetName).addClass('labelContent').end()
+                  .start().add(this.data.address.suite).addClass('labelContent').end()
                 .end()
               .endContext()
-              .start().add(this.user.address.city + ", "+this.user.address.regionId).addClass('labelContent').end()
-              .start().add(this.user.address.countryId).addClass('labelContent').end()
-              .start().add(this.user.address.postalCode).addClass('labelContent').end()
+              .start().add(this.data.address.city + ", "+this.user.address.regionId).addClass('labelContent').end()
+              .start().add(this.data.address.countryId).addClass('labelContent').end()
+              .start().add(this.data.address.postalCode).addClass('labelContent').end()
             .end()
           .end()
         .end()
