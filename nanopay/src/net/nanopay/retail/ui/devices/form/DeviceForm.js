@@ -19,48 +19,49 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      ^ p {
-        margin: 0;
-        font-size: 12px;
-        color: #093649;
-        line-height: 1.33;
-      }
-
-      ^ .stepRow {
-        margin-bottom: 40px;
-      }
-
-      ^ .instructionsRow {
-        margin-bottom: 40px;
-      }
-
-      ^ input {
-        width: 220px;
-        height: 40px;
-        box-sizing: border-box;
-        background-color: #ffffff;
-        border: solid 1px rgba(164, 179, 184, 0.5);
-        padding-left: 15px;
-        padding-right: 15px;
-        outline: none;
-        margin-top: 8px;
-      }
-
-      ^ .inputFieldLabel {
-        margin-right: 20px;
-        vertical-align: top;
-        margin-bottom: 8px;
-      }
-
-      ^ .inputErrorLabel {
-        display: inline-block;
-        color: red !important;
-        vertical-align: top;
-      }
-    */}})
   ],
+
+  css:
+    `
+    ^ p {
+      margin: 0;
+      font-size: 12px;
+      color: #093649;
+      line-height: 1.33;
+    }
+
+    ^ .stepRow {
+      margin-bottom: 40px;
+    }
+
+    ^ .instructionsRow {
+      margin-bottom: 40px;
+    }
+
+    ^ input {
+      width: 220px;
+      height: 40px;
+      box-sizing: border-box;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      padding-left: 15px;
+      padding-right: 15px;
+      outline: none;
+      margin-top: 8px;
+    }
+
+    ^ .inputFieldLabel {
+      margin-right: 20px;
+      vertical-align: top;
+      margin-bottom: 8px;
+    }
+
+    ^ .inputErrorLabel {
+      display: inline-block;
+      color: red !important;
+      vertical-align: top;
+    }
+  `,
 
   methods: [
     function init() {
@@ -80,7 +81,6 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function() { return true; },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
       }
@@ -88,10 +88,6 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      isAvailable: function(position) {
-        if ( position <= this.views.length - 1 ) return true;
-        return false;
-      },
       code: function(X) {
         var self = this;
 
