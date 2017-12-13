@@ -41,7 +41,7 @@ foam.CLASS({
         .add(this.title)
       .end()
       .start().addClass('account-balance')
-       .add('$ ', this.account.balance)
+       .add('$ ', this.account.balance.toFixed(2))
       .end();
     }
   ]
