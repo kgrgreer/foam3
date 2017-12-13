@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui',
+  package: 'net.nanopay.liquidity.ui',
   name: 'BalanceAlertView',
   extends: 'foam.u2.View',
 

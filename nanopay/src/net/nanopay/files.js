@@ -10,8 +10,10 @@ FOAM_FILES([
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/User' },
-  { name: 'net/nanopay/model/Threshold' },
-  { name: 'net/nanopay/model/BalanceAlert' },  
+  { name: 'net/nanopay/liquidity/model/Threshold' },
+  { name: 'net/nanopay/liquidity/model/Liquidity' },
+  { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
+  { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
@@ -145,7 +147,7 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
 
   // bank
-  { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
+  { name: 'net/nanopay/liquidity/ui/BalanceAlertView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },  
 
   // style
