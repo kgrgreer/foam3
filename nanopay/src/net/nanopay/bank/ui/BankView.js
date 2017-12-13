@@ -104,7 +104,7 @@ foam.CLASS({
     {
       name: 'data',
       factory: function(){
-        return this.userDAO.where(this.EQ(this.User.type, 'Bank'));
+        return this.userDAO.where(this.EQ(this.User.TYPE, 'Bank'));
       }
     },
     {
@@ -120,7 +120,7 @@ foam.CLASS({
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
-        return data.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
+        return this.userDAO.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
         class: 'foam.u2.view.TableView',
@@ -132,7 +132,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' },
+    { name: 'placeholderText', message: 'Looks like their aren\'t any banks registered yet. Please add banks by clicking the Add Bank button above.' },
   ],
 
   methods: [
@@ -154,7 +154,7 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/person.svg'})
         .end();
     },
 
