@@ -75,7 +75,7 @@ foam.CLASS({
             return;
           }
 
-          if( true ) {
+          if ( true ) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
           }
@@ -126,7 +126,7 @@ foam.CLASS({
         if ( this.position == 2 ) {
           // Send Money
 
-          if( true ) {
+          if ( true ) {
             if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
               self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
               return;

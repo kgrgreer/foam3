@@ -45,14 +45,10 @@ foam.CLASS({
         padding-left: 15px;
         padding-right: 15px;
         outline: none;
-      }
-
-      ^ input:focus {
-        border: solid 1px #59a5d5;
+        margin-top: 8px;
       }
 
       ^ .inputFieldLabel {
-        display: inline-block;
         margin-right: 20px;
         vertical-align: top;
         margin-bottom: 8px;
@@ -84,29 +80,60 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position) {
-        if ( position == 3 ) return false;
-        return true;
-      },
+      isAvailable: function() { return true; },
       code: function(X) {
-        if ( this.position <= 0 ) {
-          X.stack.back();
-          return;
-        }
-        this.subStack.back();
+        X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
       }
     },
     {
       name: 'goNext',
       label: 'Next',
-      isAvailable: function(position, errors) {
-        if ( errors ) return false; // Error present
-        return true;
+      isAvailable: function(position) {
+        if ( position <= this.views.length - 1 ) return true;
+        return false;
       },
       code: function(X) {
         var self = this;
 
-        if ( this.position == 2 ) { // On Device Serial Number Screen. This is when we should make API call
+        // Info from form
+        var deviceInfo = this.viewData;
+
+        if ( this.position == 0 ) {
+          // Device Name
+
+          if ( ( deviceInfo.deviceName == null || deviceInfo.deviceName.trim() == '' ) ) {
+            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            return;
+          }
+
+          if ( true ) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          }
+        }
+
+        if ( this.position == 1 ) {
+          // Device Type
+
+          if ( ! deviceInfo.selectedOption ) {
+            self.add(self.NotificationMessage.create({ message: 'Please select a device type before proceeding.', type: 'error' }));
+            return;
+          }
+
+          if ( true ) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          }
+        }
+
+        if ( this.position == 2 ) { 
+          // Device Serial Number
+
+          if ( ! /^[a-zA-Z0-9]{16}$/.exec(deviceInfo.serialNumber) ) {
+            self.add(self.NotificationMessage.create({ message: 'Please enter a valid serial number before proceeding.', type: 'error' }));
+            return;
+          }
+
           this.viewData.password = Math.floor(Math.random() * (999999 - 100000)) + 100000;
           this.subStack.push(this.views[this.subStack.pos + 1].view);
           this.complete = true;
@@ -116,7 +143,7 @@ foam.CLASS({
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page
           var deviceInfo = this.viewData;
           var newDevice = this.Device.create({
-            name: deviceInfo.name,
+            name: deviceInfo.deviceName,
             type: deviceInfo.selectedOption - 1,
             status: this.DeviceStatus.PENDING,
             serialNumber: deviceInfo.serialNumber,
@@ -124,18 +151,15 @@ foam.CLASS({
             owner: this.user.id
           });
 
-          this.deviceDAO.put(newDevice)
-          .then(function (result) {
-            X.stack.back();
-          })
-          .catch(function (err) {
+          this.deviceDAO.put(newDevice).then(function (result) {
+            X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
+          }).catch(function (err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
 
           return;
         }
 
-        this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
       }
     }
   ]
