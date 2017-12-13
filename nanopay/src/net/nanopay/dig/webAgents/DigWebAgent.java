@@ -75,7 +75,7 @@ public class DigWebAgent
         out.println("<br><br><span>Command:<select name=cmd width=150 style=margin-left:5  onchange=changeCmd(this.value)><option value=put selected>PUT</option><option value=select>SELECT</option><option value=remove>REMOVE</option><option value=help>HELP</option></select></span>");
         out.println("<br><br><span id=emailSpan >Email:<input name=email style=margin-left:30;width:350></input></span>");
         out.println("<br><br><span id=subjectSpan >Subject:<input name=subject style=margin-left:20;width:350></input></span>");
-        out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:55></input></span>");
+        out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:53></input></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
         out.println("<br><br><button type=submit onClick=performHelp()>Submit</button></form>");
         out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} }</script>");
