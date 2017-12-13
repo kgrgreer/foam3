@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.liquidity.model',
   name: 'BalanceAlert',
 
   tableColumns: [
@@ -14,52 +14,42 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'bank'
+      name: 'user'
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Threshold',
+      of: 'net.nanopay.liquidity.model.Threshold',
       name: 'threshold'
     },
     {
       class: 'String',
       name: 'bankName',
       tableCellFormatter: function(value, obj, rel){
-        obj.bank$find.then(function(a){
-          this.add(a ? a.organization : '');
+        obj.owner$find.then(function(a){
+          this.add(a.organization ? a.label() : '');
         }.bind(this));
       }
     },
     {
-      class: 'String',
+      class: 'Long',
       name: 'balance',
       tableCellFormatter: function(value, obj, rel){
-        var total;
-        obj.bank$find.then(function(a){
-          if( a.accounts[0]){
-            a.accounts.forEach(function(acc){
-              total = total + acc.balance;
-            });
-          }
-        });
-        this.add(total ? total : '');
+        this.add('$', obj.balance.toFixed(2));
       }
     },
     {
-      class: 'String',
+      class: 'Long',
       name: 'minBalance',
       tableCellFormatter: function(value, obj, rel){
-        obj.threshold$find.then(function(a){
-          this.add(a.balance ? '$ ' + a.balance : '');          
-        }.bind(this));
+        this.add('$', obj.minBalance.toFixed(2));
       }
     },
     {
       class: 'String',
       name: 'status',
       tableCellFormatter: function(value, obj, rel){
-        obj.bank$find.then(function(a){
-          this.add(a.status ? a.status : '');                    
+        obj.owner$find.then(function(a){
+          this.add(a.status ? a.status : 'Unknown');                    
         }.bind(this));
       }
     }

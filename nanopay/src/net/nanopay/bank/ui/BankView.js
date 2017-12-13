@@ -104,7 +104,7 @@ foam.CLASS({
     {
       name: 'data',
       factory: function(){
-        return this.userDAO.where(this.EQ(User.type, 'Bank'));
+        return this.userDAO.where(this.EQ(this.User.type, 'Bank'));
       }
     },
     {
@@ -117,7 +117,6 @@ foam.CLASS({
         onKey: true
       }
     },
-    { name: 'data', factory: function() { return this.userDAO; }},
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {

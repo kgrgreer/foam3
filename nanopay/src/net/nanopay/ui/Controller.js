@@ -73,6 +73,10 @@ foam.CLASS({
 
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+
+      this.accountDAO.find(this.user).then(function(a){
+        return self.account = a;
+      });
       
       this
         .addClass(this.myClass())
