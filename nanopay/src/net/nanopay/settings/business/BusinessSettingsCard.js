@@ -19,11 +19,12 @@ foam.CLASS({
     }
     ^ .inlineDiv {
       display: inline-block;
+      margin-left: 20px;
       margin-right: 100px;
     }
     ^ .topInlineDiv {
       display: inline-block;
-      margin-right: 100px;
+      margin-right: 50px;
       vertical-align: top;
     }
     ^ .labelTitle {
@@ -42,6 +43,7 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
       display: flex;
+      height: 15px;
       word-wrap: break-word;
       width: 125px;
     }
@@ -57,14 +59,34 @@ foam.CLASS({
       position: absolute;
       top: 40%;
     }
+    ^ .profileImg {
+      width: 80px;
+      height: 80px;
+    }
+    ^ .profileImgDiv {
+      padding-left: 10px;
+      margin-bottom: 20px;
+      line-height: 80px;
+      position: relative;
+    }
+    ^ .active-status{
+      color: #2cab70;
+    }
+    ^ .user-status{
+      margin: 15px;
+    }
+    ^ 
   `,
 
   methods: [
     function initE(){
       var self = this;
-      if( !data  ){ return; }
+
       this
         .addClass(this.myClass())
+        .start().addClass('user-status').enableClass('active-status', this.data.status$ == 'Active')
+          .add('Status: ', this.data.status)
+        .end()
         .start().addClass('profileImgDiv')
           .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
           .start().add(this.data.organization).addClass('companyName').end()
@@ -73,11 +95,11 @@ foam.CLASS({
           .start().addClass('inlineDiv')
             .start().addClass('labelDiv')
               .start().add('Country Code').addClass('labelTitle').end()
-              .start().add('this.Country CODE').addClass('labelContent').end()
+              .start().add(this.data.countryId).addClass('labelContent').end()
             .end()
             .start().addClass('labelDiv')
               .start().add('Clearing Code').addClass('labelTitle').end()
-              .start().add('this.clearingCode').addClass('labelContent').end()
+              .start().add(this.data.clearingId).addClass('labelContent').end()
             .end()
           .end()
           .start().addClass('inlineDiv')

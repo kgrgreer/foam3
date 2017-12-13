@@ -20,7 +20,7 @@ foam.CLASS({
       margin: 0 auto;
     }
     ^ .net-nanopay-ui-ExpandContainer{
-      margin-top: 20px;
+      margin-bottom: 20px;
     }
   `,
 
@@ -28,13 +28,14 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      var businessProfile = this.ExpandContainer.create({ title: 'Business Profile' });
+      var businessProfile = this.ExpandContainer.create({ title: this.data.organization + ' Profile' });
 
       this
         .addClass(this.myClass())
-        .tag({ class: 'net.nanopay.ui.BalanceView', data: this.account })
-        businessProfile.add(this.BusinessSettingsCard.create({ data: this.data}))
-        businessProfile.write();
+        .start(businessProfile)
+          .add(this.BusinessSettingsCard.create({ data: this.data}))
+        .end()
+        .tag({ class: 'net.nanopay.ui.BalanceView', data: this.account });
     }
   ]
 });

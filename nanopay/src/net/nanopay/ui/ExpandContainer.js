@@ -9,7 +9,8 @@ foam.CLASS({
       name: "expandBox",
       value: false
     },
-    'title'
+    'title',
+    'content'
   ],
 
   css:`
@@ -21,6 +22,7 @@ foam.CLASS({
       border-radius: 2px;
       background-color: white;
       box-sizing: border-box;
+      margin: auto;
     }
     ^ .boxTitle {
       opacity: 0.6;
@@ -82,21 +84,23 @@ foam.CLASS({
       var self = this;
       this
       .addClass(this.myClass())
-      .start().addClass('boxTitle')
-        .add(this.title)
-      .end()
       .start()
-        .addClass('expand-BTN').enableClass('close-BTN', this.expandBox$, true)
-        .add(this.expandBox$.map(function(e) { 
-          return e ? "Expand" : "Close"; 
-        }))
-        .enableClass('', self.expandBox = (self.expandBox ? false : true))
-        .on('click', function(){ self.expandBox = ( self.expandBox ? false : true ) })
+        .start().addClass('boxTitle')
+          .add(this.title)
+        .end()
+        .start()
+          .addClass('expand-BTN').enableClass('close-BTN', this.expandBox$, true)
+          .add(this.expandBox$.map(function(e) { 
+            return e ? "Expand" : "Close"; 
+          }))
+          .enableClass('', self.expandBox = (self.expandBox ? false : true))
+          .on('click', function(){ self.expandBox = ( self.expandBox ? false : true ) })
+        .end()
       .end()
 
       .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox$)
         .start('div', null, this.content$).end()
-      .end();
+      .end()
     }
   ]
 });
