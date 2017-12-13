@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.merchant',
-  name: 'AddMerchantReviewForm',
+  package: 'net.nanopay.admin.ui.form.business',
+  name: 'AddBusinessReviewForm',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Form to review merchant information to make sure its correct',
+  documentation: 'Form to review business information to make sure its correct',
 
   imports: [
     'viewData',
@@ -57,10 +57,10 @@ foam.CLASS({
       margin-left: 160px;
     }
   `,
-
+  
   messages: [
-    { name: 'Step', message: 'Step 3: Please scroll down and review all the details of the merchant.' },
-    { name: 'MerchantInfoLabel', message: 'Merchant Info' },
+    { name: 'Step', message: 'Step 3: Please scroll down and review all the details of the business.' },
+    { name: 'BusinessInfoLabel', message: 'Business Info' },
     { name: 'FirstNameLabel', message: 'First Name' },
     { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'EmailLabel', message: 'Email' },
@@ -99,7 +99,7 @@ foam.CLASS({
         .start()
           .start('p').add(this.Step).addClass('pDefault stepTopMargin').end()
           .start().addClass('infoContainer')
-            .start().add(this.MerchantInfoLabel).addClass('greenLabel bottomMargin').end()
+            .start().add(this.BusinessInfoLabel).addClass('greenLabel bottomMargin').end()
             .start().addClass('inline')
               .start().add(this.FirstNameLabel).addClass('boldLabel').end()
               .start().add(this.viewData.firstName).addClass('infoText bottomMargin').end()
