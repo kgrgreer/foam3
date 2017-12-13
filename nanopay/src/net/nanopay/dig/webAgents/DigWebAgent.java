@@ -76,7 +76,7 @@ public class DigWebAgent
         out.println("<br><br><span id=emailSpan >Email:<input name=email style=margin-left:30;width:350></input></span>");
         out.println("<br><br><span id=subjectSpan >Subject:<input name=subject style=margin-left:20;width:350></input></span>");
         out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:55></input></span>");
-        out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span><br>");
+        out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
         out.println("<br><br><button type=submit onClick=performHelp()>Submit</button></form>");
         out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} }</script>");
 
@@ -215,7 +215,6 @@ public class DigWebAgent
           if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
             output(x, outputterHtml.toString());
           } else {
-            out.println("length2 : " + email.length);
             out.println("<textarea style=\"width:700;height:600;\">");
             out.println(outputterHtml.toString());
             out.println("</textarea>");
@@ -236,7 +235,7 @@ public class DigWebAgent
         out.println("</table>");*/
 
         out.println("<input type=hidden id=classInfo style=margin-left:30;width:350 value=" + cInfo.getId() + "></input>");
-        out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/?path=' + document.getElementById('classInfo').value + '/#docs'; window.open(vurl);</script>");
+        out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/?path=' + document.getElementById('classInfo').value + '#docs'; window.open(vurl);</script>");
 
       } else if ( "remove".equals(command) ) {
         if ( dao == null ) {
@@ -262,10 +261,10 @@ public class DigWebAgent
       }
 
       System.out.println("data : " + copiedData);
+      out.println("<input type=hidden id=urlInfo style=margin-left:30;width:350 value=" + cInfo.getId() + "></input>");
       out.println("<br><br><br> URL : <br>");
       out.println("<textarea style=\"width:700;height:200;\">http://localhost:8080/service/digWebAgent?");
-      //out.print("http://localhost:8080/service/digWebAgent?");
-
+      //out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/service/digWebAgent?=';");
       if ( daoName != null && daoName != "" ) {
         out.println("dao=" + daoName);
       }
