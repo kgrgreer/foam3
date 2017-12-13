@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.merchant',
-  name: 'AddMerchantDoneForm',
+  package: 'net.nanopay.admin.ui.form.shared',
+  name: 'AddUserDoneForm',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Screen to let user know they have finished adding a merchant',
+  documentation: 'Screen to let user know they have finished adding a user',
 
   imports: [
     'viewData',
@@ -28,7 +28,7 @@ foam.CLASS({
 
 messages: [
   { name: 'Step', message: 'Step 4: Done!' },
-  { name: 'Description', message: 'An e-mail with the login information has been sent to this merchant.' },
+  { name: 'Description', message: 'An e-mail with the login information has been sent to this user.' },
   { name: 'ReferenceNumber', message: 'Reference No.' }
 ],
 

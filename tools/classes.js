@@ -46,10 +46,13 @@ skeletons = skeletons.concat(foam.skeletons, nanopay.skeletons, b2b.skeletons, a
 var proxies = [];
 proxies = proxies.concat(foam.proxies, nanopay.proxies, b2b.proxies, admin.proxies, merchant.proxies, interac.proxies)
 
+var blacklist = [];
+blacklist = blacklist.concat(foam.blacklist, nanopay.blacklist, b2b.blacklist, admin.blacklist, merchant.blacklist, interac.blacklist)
 
 module.exports = {
     classes: classes,
     abstractClasses: abstractClasses,
     skeletons: skeletons,
-    proxies: proxies
+    proxies: proxies,
+    blacklist: blacklist
 }

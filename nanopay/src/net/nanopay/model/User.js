@@ -22,6 +22,10 @@ foam.CLASS({
       class: 'String',
       name: 'clearingId',
       label: 'Clearing ID'
+    },
+    {
+      class: 'String',
+      name: 'status'
     }
   ]
 });

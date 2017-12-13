@@ -71,5 +71,23 @@ payees
 recurringInvoices
 tokens
 transactions
-
+brokers
+businessSectors
+businessTypes
+cicoServiceProviders
+countries
+cronjobs
+currency
+emailTemplates
+exportDriverRegistrys
+groups
+languages
+menus
+permissions
+regions
+scripts
+services
+tests
+transactionLimits
+users
 
