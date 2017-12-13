@@ -13,55 +13,51 @@ foam.CLASS({
     'businessTypeDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .greenLabel {
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.2px;
-          color: #2cab70;
-        }
-        ^ .businessImage {
-          width: 53px;
-          height: 53px;
-          margin-top: 20px;
-          display: inline-block;
-        }
-        ^ .businessName {
-          position: relative;
-          bottom: 20;
-          font-size: 14px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          color: #093649;
-          display: inline-block;
-          margin-left: 25px;
-        }
-        ^ .boldLabel {
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.3px;
-          color: #093649;
-          margin-bottom: 15px;
-        }
-        ^ .infoText {
-          width: 150px;
-          font-size: 12px;
-          letter-spacing: 0.3px;
-          color: #093649;
-        }
-        ^ .rightMargin {
-          margin-right: 80px;
-        }
-        ^ .alignTopWithMargin {
-          vertical-align: top;
-          margin-left: 160px;
-        }
-      */}
-    })
-  ],
-
+  css:`
+    ^ .greenLabel {
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      color: #2cab70;
+    }
+    ^ .businessImage {
+      width: 53px;
+      height: 53px;
+      margin-top: 20px;
+      display: inline-block;
+    }
+    ^ .businessName {
+      position: relative;
+      bottom: 20;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      color: #093649;
+      display: inline-block;
+      margin-left: 25px;
+    }
+    ^ .boldLabel {
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+      color: #093649;
+      margin-bottom: 15px;
+    }
+    ^ .infoText {
+      width: 150px;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      color: #093649;
+    }
+    ^ .rightMargin {
+      margin-right: 80px;
+    }
+    ^ .alignTopWithMargin {
+      vertical-align: top;
+      margin-left: 160px;
+    }
+  `,
+  
   messages: [
     { name: 'Step', message: 'Step 3: Please scroll down and review all the details of the business.' },
     { name: 'BusinessInfoLabel', message: 'Business Info' },

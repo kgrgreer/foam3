@@ -11,28 +11,24 @@ foam.CLASS({
     'goNext'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .labelTitle {
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.2px;
-          color: #093649;
-          margin-bottom: 20px;
-        }
-        ^ .topMargin {
-          margin-top: 20px;
-        }
-        ^ .rightMargin {
-          margin-right: 10px;
-        }
-        ^ .infoContainer{
-          height: 185px;
-        }
-      */}
-    })
-  ],
+  css:`
+    ^ .labelTitle {
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      color: #093649;
+      margin-bottom: 20px;
+    }
+    ^ .topMargin {
+      margin-top: 20px;
+    }
+    ^ .rightMargin {
+      margin-right: 10px;
+    }
+    ^ .infoContainer{
+      height: 185px;
+    }
+  `,
 
   properties: [
     {
