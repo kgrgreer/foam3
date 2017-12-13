@@ -65,7 +65,7 @@ foam.CLASS({
         }
         ^cashflow-summary{
           background: white;
-          width: 945px;
+          width: 953px;
           text-align: center;
         }
         ^cashflow-summary h4 {
