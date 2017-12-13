@@ -61,8 +61,12 @@ foam.CLASS({
         .start('div').addClass('settingsBar')
           .start('div').addClass('settingsBarContainer')
             .add(this.PERSONAL_PROFILE)
+            .add(this.CHANGE_PASSWORD)
+            .add(this.PREFERENCES)
             .add(this.BUSINESS_PROFILE)
-            .add(this.BANK_ACCOUNT)
+            .add(this.BANK_ACCOUNTS)
+            .add(this.MULT_USER_MANAGEMENT)
+            .add(this.INTEGRATION_MANAGEMENT)            
             .add(this.CASH_OUT)
           .end()
         .end()
@@ -74,21 +78,49 @@ foam.CLASS({
       name: 'personalProfile',
       label: 'Personal Profile',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.settings.personal.PersonalSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.PersonalProfileView' });
       }
     },
     {
       name: 'businessProfile',
       label: 'Business Profile',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.settings.business.BusinessSettingsView' });
+        X.stack.push({ class: 'net.nanopay.settings.business.BusinessProfileView' });
       }
     },
     {
-      name: 'bankAccount',
+      name: 'bankAccounts',
       label: 'Bank Account',
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.settings.bankAccount.BankAccountsView' });
+      }
+    },
+    {
+      name: 'changePassword',
+      label: 'Change Password',
+      code: function(X) {
+        X.stack.push({ class: 'net.nanopay.settings.ChangePasswordView' });
+      }
+    },
+    {
+      name: 'preferences',
+      label: 'Preferences',
+      code: function(X) {
+        X.stack.push({ class: 'net.nanopay.settings.PreferenceView' });
+      }
+    },
+    {
+      name: 'multiUserManagement',
+      label: 'Multi-User Management',
+      code: function(X) {
+        X.stack.push({ class: 'net.nanopay.settings.MultiUserManagementView' });
+      }
+    },
+    {
+      name: 'integrationManagement',
+      label: 'Integration Management',
+      code: function(X) {
+        X.stack.push({ class: 'net.nanopay.settings.IntegrationView' });
       }
     },
     {
