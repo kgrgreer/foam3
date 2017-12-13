@@ -102,6 +102,12 @@ foam.CLASS({
   properties: [
     //TODO filter Dao based on user type.
     {
+      name: 'data',
+      factory: function(){
+        return this.userDAO.where(this.EQ(User.type, 'Bank'));
+      }
+    },
+    {
       class: 'String',
       name: 'filter',
       view: {
