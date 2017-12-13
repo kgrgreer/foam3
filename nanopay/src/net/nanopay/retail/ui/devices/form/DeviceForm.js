@@ -102,10 +102,8 @@ foam.CLASS({
             return;
           }
 
-          if ( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
         }
 
         if ( this.position == 1 ) {
@@ -116,10 +114,8 @@ foam.CLASS({
             return;
           }
 
-          if ( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
         }
 
         if ( this.position == 2 ) { 
