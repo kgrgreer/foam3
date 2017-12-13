@@ -21,17 +21,13 @@ foam.CLASS({
     'transactionDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
-  ],
-
   methods: [
     function init() {
       this.views = [
         { parent: 'addBusiness', id: 'form-addBusiness-info',      label: 'User Info',        view: { class: 'net.nanopay.admin.ui.form.business.AddBusinessInfoForm' } },
         { parent: 'addBusiness', id: 'form-addBusiness-profile',   label: 'Business Profile', view: { class: 'net.nanopay.admin.ui.form.business.AddBusinessProfileForm' } },
         { parent: 'addBusiness', id: 'form-addBusiness-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.business.AddBusinessReviewForm' } },
-        { parent: 'addBusiness', id: 'form-addBusiness-done',      label: 'Done',             view: { class: 'net.nanopay.admin.ui.form.business.AddBusinessDoneForm' } }
+        { parent: 'addBusiness', id: 'form-addBusiness-done',      label: 'Done',             view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
     }
