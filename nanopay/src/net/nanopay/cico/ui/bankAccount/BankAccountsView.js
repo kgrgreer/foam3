@@ -63,7 +63,7 @@ foam.CLASS({
           width: 218px;
           height: 100px;
           float: right;
-          background-color: #23C2b7;
+          background-color: #59aadd;
           letter-spacing: 0.3px;
           color: #FFFFFF;
           border-radius: 2px;
