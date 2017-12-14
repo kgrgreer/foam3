@@ -40,7 +40,6 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function() { return true; },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
       }
@@ -48,10 +47,6 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      isAvailable: function(position) {
-        if( position <= this.views.length - 1 ) return true;
-        return false;
-      },
       code: function() {
         var self = this;
 
@@ -75,11 +70,8 @@ foam.CLASS({
             return;
           }
 
-          if ( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
-
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
         }
 
         if ( this.position == 1 ) {
@@ -120,37 +112,35 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;
           });
-
         }
 
         if ( this.position == 2 ) {
           // Send Money
 
-          if ( true ) {
-            if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
-              self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
-              return;
-            }
-
-            var transaction = this.Transaction.create({
-              payeeId: shopperInfo.shopper.id,
-              payerId: this.user.id,
-              amount: shopperInfo.amount
-            });
-
-            this.transactionDAO.put(transaction).then(function(response) {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              return;
-            }).catch(function(error) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-              return;
-            });
+          if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
+            self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
+            return;
           }
+
+          var transaction = this.Transaction.create({
+            payeeId: shopperInfo.shopper.id,
+            payerId: this.user.id,
+            amount: shopperInfo.amount
+          });
+
+          this.transactionDAO.put(transaction).then(function(response) {
+            self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          }).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            return;
+          });
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) {
           // Done
+          
           return this.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         }
 
