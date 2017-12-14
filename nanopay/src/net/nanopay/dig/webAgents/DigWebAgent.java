@@ -106,7 +106,7 @@ public class DigWebAgent
 
           //let FObjectArray parse first
           Object o = null;
-          o = jsonParser.parseString2(data, objClass);
+          o = jsonParser.parseStringForArray(data, objClass);
           if ( o != null ) {
             Object[] objs = (Object[]) o;
             for ( int j = 0 ; j < objs.length ; j++ ) {
