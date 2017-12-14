@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'TransactionsView',
   extends: 'foam.u2.Element',
 
-  documentation: 'View displaying interac home page with list of accounts and transactions',
+  documentation: 'View displaying home page with list of accounts and transactions',
 
   implements: [
     'foam.mlang.Expressions'
