@@ -104,14 +104,28 @@ public class DigWebAgent
           JSONParser jsonParser = new JSONParser();
           jsonParser.setX(x);
 
+          //let FObjectArray parse first
+          Object o = null;
+          o = jsonParser.parseString2(data, objClass);
+          if ( o != null ) {
+            Object[] objs = (Object[]) o;
+            for ( int j = 0 ; j < objs.length ; j++ ) {
+              obj = (FObject) objs[j];
+              dao.put(obj);
+            }
+            out.println("Success");
+            return;
+          }
+
           //copiedData = data;
           String dataArray[] = data.split("},");
 
+
           for (int i=0; i < dataArray.length; i++) {
             data = dataArray[i] + "}";
-            obj = jsonParser.parseString(data, objClass);
+            o = jsonParser.parseString(data, objClass);
 
-            if ( obj == null || "".equals(obj) ) {
+            if ( o == null ) {
               out.println("Parse Error : ");
 
               String message = getParsingError(x, buffer_.toString());
@@ -120,8 +134,8 @@ public class DigWebAgent
               out.flush();
               return;
             }
-
-            obj = dao.put(obj);
+            obj = (FObject) o;
+            dao.put(obj);
           }
 
         } else if ( "xml".equals(format) ) {
