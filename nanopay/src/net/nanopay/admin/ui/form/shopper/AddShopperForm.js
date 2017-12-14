@@ -20,6 +20,10 @@ foam.CLASS({
     'transactionDAO'
   ],
 
+  axioms: [
+    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+  ],
+
   methods: [
     function init() {
       this.views = [
