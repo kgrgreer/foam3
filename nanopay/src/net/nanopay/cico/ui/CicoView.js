@@ -206,6 +206,7 @@ foam.CLASS({
       });
 
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
+      this.onDAOUpdate();
       this.formattedBalance = this.account.balance/100;
     
       this
