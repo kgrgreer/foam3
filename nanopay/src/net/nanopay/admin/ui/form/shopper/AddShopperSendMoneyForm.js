@@ -11,19 +11,15 @@ foam.CLASS({
     'goNext'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .stepTwoBottomMargin {
-          margin-bottom: 30px;
-        }
-        ^ .property-amount {
-          margin-left: 0;
-          border-radius: 0;
-        }
-      */}
-    })
-  ],
+  css:`
+    ^ .stepTwoBottomMargin {
+      margin-bottom: 30px;
+    }
+    ^ .property-amount {
+      margin-left: 0;
+      border-radius: 0;
+    }
+  `,
 
   messages: [
     { name: 'Step', message: 'Step 3: Input the amount of money you want to send to the user.' },
