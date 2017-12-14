@@ -26,7 +26,6 @@ foam.CLASS({
           width: 960px;
           height: 40px;
           background-color: rgba(110, 174, 195, 0.2);
-          padding-bottom: 10px;
         }
         ^ h3{
           width: 120px;
@@ -41,7 +40,7 @@ foam.CLASS({
           width: 960px;
           height: auto;
           background: white;
-          padding: 10px 0;
+          padding-bottom: 10px;
         }
         ^ p{
           display: inline-block;
