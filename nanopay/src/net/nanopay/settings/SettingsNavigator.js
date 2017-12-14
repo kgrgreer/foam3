@@ -49,6 +49,16 @@ foam.CLASS({
           background: white;
           opacity: 1;
         }
+       ^ .foam-nanos-menu-SubMenuView-inner::after {
+          content: ' ';
+          position: absolute;
+          height: 0;
+          width: 0;
+          border: 8px solid transparent;
+          border-bottom-color: white;
+          -ms-transform: translate(130px, -175.5px);
+          transform: translate(130px, -336px);
+        }
       */}
     })
   ],
@@ -111,14 +121,14 @@ foam.CLASS({
     },
     {
       name: 'multiUserManagement',
-      label: 'Multi-User Management',
+      label: 'Multi-User',
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.settings.MultiUserManagementView' });
       }
     },
     {
       name: 'integrationManagement',
-      label: 'Integration Management',
+      label: 'Integration',
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.settings.IntegrationView' });
       }

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.settings.business',
+  package: 'net.nanopay.settings',
   name: 'IntegrationView',
   extends: 'foam.u2.View',
 
@@ -11,20 +11,19 @@ foam.CLASS({
 		foam.u2.CSS.create({
 			code: function CSS() {/*
 				^{
-					width: 100%;
-					background-color: #edf0f5;
-					margin: auto;
+					width: 1280px;
+          margin: auto;
 				}
-				^ .businessSettingsContainer {
-					width: 992px;
-					margin: auto;
+				^ .Container {
+          width: 992px;
+          min-height: 80px;
+          padding: 20px;
+          border-radius: 2px;
+          background-color: white;
+          box-sizing: border-box;
+          margin-left: 160px;
+          margin-top: 50px;
 				} 
-				^ .boxContainer {
-					width: 992px;
-					min-height: 80px;
-					border-radius: 2px;
-					background-color: white;
-				}
 				^ .boxTitle {
 					opacity: 0.6;
 					font-family: 'Roboto';
@@ -124,8 +123,8 @@ foam.CLASS({
 			this.SUPER();
 			this
 				.addClass(this.myClass())
-				.start('div').addClass('businessSettingsContainer')
-					.start('div').addClass('boxContainer')
+				.start('div').addClass('Container')
+					.start('div')
 						.start().addClass('labelContent').add("Connct to your accounting software and make your payment process seamlessly.").end()
 						.start().addClass('integrationImgDiv')
 							.start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
