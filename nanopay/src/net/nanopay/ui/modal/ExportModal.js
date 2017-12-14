@@ -62,7 +62,8 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea',
       value: ''
     },
-    'exportData'
+    'exportData',
+    'exportObj'
   ],
 
   axioms: [
@@ -128,6 +129,7 @@ foam.CLASS({
     function convert(){
       var self = this;
 
+     if(this.exportData){
       if (this.dataType == 'JSON') {
         this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
           self.note = result;
@@ -142,6 +144,15 @@ foam.CLASS({
           self.note = result;
         });
       }
+     } else {
+      if (this.dataType == 'JSON') {
+        this.note = this.jsonDriver.exportFObject(this.__context__, this.exportObj);
+      } else if (this.dataType == 'XML') {
+        this.note = this.xmlDriver.exportFObject(this.__context__, this.exportObj);
+      } else if (this.dataType == 'CSV') {
+        this.note = this.csvDriver.exportFObject(this.__context__, this.exportObj);
+      }
+     }
     }
   ]
 })
