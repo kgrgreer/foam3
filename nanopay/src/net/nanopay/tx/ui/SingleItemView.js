@@ -4,19 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   properties: [
-    'data',
-    {
-      name: 'payeeName',
-      expression: function(){
-
-      }
-    },
-    {
-      name: 'payerName',
-      expression: function(){
-        
-      }
-    }
+    'data'
   ],
 
   axioms: [
@@ -81,16 +69,12 @@ foam.CLASS({
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()
             .start('h3').add(this.data.date.toISOString().substring(0,10)).end()
-            .start('h3').add(this.payerName).end()
+            .start('h3').add(this.data.payerName).end()
             .start('h3').add(this.data.payerId).end()
             .start('h3').add('$', this.data.amount.toFixed(2)).end()
-            .start('h3').add(this.payeeName).end()
+            .start('h3').add(this.data.payeeName).end()
             .start('h3').add(this.data.payeeId).end()
             .start('h3').add(this.data.status).end()
-            // .start('h3')
-            //   .add(this.data$.dot('status').map(function(a){                    
-            //     return self.E().add(a).addClass('generic-status Invoice-Status-' + a);
-            //   }))
           .end()
         .end()
     }
