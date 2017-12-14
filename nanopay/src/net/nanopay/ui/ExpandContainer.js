@@ -9,8 +9,7 @@ foam.CLASS({
       name: "expandBox",
       value: false
     },
-    'title',
-    'content'
+    'title'
   ],
 
   css:`
@@ -34,6 +33,7 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       display: inline-block;
+      margin-top: 10px;
     }
     ^ .expand-BTN{
       width: 135px;
@@ -80,7 +80,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE(){
+    function init(){
       var self = this;
       this
       .addClass(this.myClass())
@@ -96,11 +96,11 @@ foam.CLASS({
           .enableClass('', self.expandBox = (self.expandBox ? false : true))
           .on('click', function(){ self.expandBox = ( self.expandBox ? false : true ) })
         .end()
-      .end()
+       .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox$)
+          .start('div', null, this.content$).end()
+       .end()
+      .end();
 
-      .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox$)
-        .start('div', null, this.content$).end()
-      .end()
     }
   ]
 });
