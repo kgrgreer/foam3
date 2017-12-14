@@ -103,7 +103,6 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
       })
       .catch(function (err) {
-        console.log('err = ', err);
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
       });
     },
@@ -181,6 +180,15 @@ foam.CLASS({
 
     function setDefaultMenu() {
       // NOP: not used for Merchant app
+    },
+
+    function requestLogin() {
+      var self = this;
+
+      return new Promise(function (resolve, reject) {
+        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView'});
+        self.loginSuccess$.sub(resolve);
+      });
     }
   ],
 
