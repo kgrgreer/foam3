@@ -57,6 +57,12 @@ foam.CLASS({
       padding-top: 20px;
       height: 40px;
     }
+    ^ .net-nanopay-ui-Placeholder-placeholder-container{
+      position: relative;
+      top: -100px;
+      right: -50px;
+      margin: 0;
+    }
   `,
 
   messages: [
