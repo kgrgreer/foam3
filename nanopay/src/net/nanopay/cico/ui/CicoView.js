@@ -200,8 +200,14 @@ foam.CLASS({
       this.auth.check(null,"cico.ci").then(function(perm) { 
         self.hasCashIn = perm;
       });
+
+      this.accountDAO.where(this.EQ(this.Account.OWNER, this.user.id)).select().then( function (a) {
+        self.account = a.array[0];
+      });
+
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.formattedBalance = this.account.balance/100;
+    
       this
         .addClass(this.myClass())
         .start()
