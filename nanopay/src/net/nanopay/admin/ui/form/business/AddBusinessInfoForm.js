@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.merchant',
-  name: 'AddMerchantInfoForm',
+  package: 'net.nanopay.admin.ui.form.business',
+  name: 'AddBusinessInfoForm',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Form to input merchant information',
+  documentation: 'Form to input Admin information',
 
   imports: [
     'viewData',
@@ -11,7 +11,7 @@ foam.CLASS({
     'goNext'
   ],
 
-  css:`
+  css:` 
     ^ .labelTitle {
       font-size: 14px;
       font-weight: bold;
@@ -29,7 +29,7 @@ foam.CLASS({
       height: 185px;
     }
   `,
-
+  
   properties: [
     {
       class: 'String',
@@ -62,8 +62,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 1: Fill in merchant\'s information and create a password.' },
-    { name: 'MerchantInformationLabel', message: 'Merchant Information' },
+    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
+    { name: 'BusinessInformationLabel', message: 'Business Information' },
     { name: 'FirstNameLabel', message: 'First Name *' },
     { name: 'LastNameLabel', message: 'Last Name *' },
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
@@ -78,7 +78,7 @@ foam.CLASS({
         .start()
           .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
-            .start().add(this.MerchantInformationLabel).addClass('labelTitle').end()
+            .start().add(this.BusinessInformationLabel).addClass('labelTitle').end()
             .start().addClass('inline')
               .start().add(this.FirstNameLabel).addClass('infoLabel').end()
               .start(this.FIRST_NAME).addClass('inputLarge').end()

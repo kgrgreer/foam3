@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.merchant',
-  name: 'AddMerchantProfileForm',
+  package: 'net.nanopay.admin.ui.form.business',
+  name: 'AddBusinessProfileForm',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Form to input merchant\'s business profile information',
+  documentation: 'Form to input business\'s business profile information',
 
   imports: [
     'viewData',
@@ -22,7 +22,7 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
     }
-    ^ .merchantImage {
+    ^ .businessImage {
       width: 80px;
       height: 80px;
       margin-top: 20px;
@@ -224,7 +224,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 2: Fill in the merchant\'s business profile. scroll down to continue and hit next when finished' },
+    { name: 'Step', message: 'Step 2: Fill in the business\'s business profile. scroll down to continue and hit next when finished' },
     { name: 'BusinessInformationLabel', message: 'Business Information' },
     { name: 'UploadImageLabel', message: 'Upload Image' },
     { name: 'UploadDesc', message: 'JPG, GIF, JPEG, BMP or PNG' },
@@ -254,7 +254,7 @@ foam.CLASS({
           .start().addClass('infoContainer')
             .start().add(this.BusinessInformationLabel).addClass('labelTitle').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('merchantImage').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('businessImage').end()
               .start().addClass('uploadButtonContainer')
                 .add(this.UPLOAD_IMAGE)
                 .start().add(this.UploadDesc).addClass('uploadDescription').end()

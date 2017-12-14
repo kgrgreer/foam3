@@ -12,94 +12,90 @@ foam.CLASS({
     'regionDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .labelTitle {
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
-        ^ .shopperImage {
-          width: 80px;
-          height: 80px;
-          margin-top: 20px;
-          display: inline-block;
-        }
-        ^ .net-nanopay-ui-ActionView-uploadImage {
-          width: 136px;
-          height: 40px;
-          background: transparent;
-          border: solid 1px #59a5d5;
-          color: #59a5d5;
-          margin: 0;
-          outline: none;
-        }
-        ^ .foam-u2-tag-Select {
-          width: 218px;
-          height: 40px;
-          margin-top: 8px;
-          border-radius: 0;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
-          padding: 0 15px;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          background-color: white;
-          outline: none;
-          cursor: pointer;
-          font-size: 14px;
-        }
-        ^ .provinceContainer {
-          position: relative;
-        }
-        ^ .caret {
-          position: relative;
-        }
-        ^ .caret:before {
-          content: '';
-          position: absolute;
-          top: -22px;
-          left: 190px;
-          border-top: 7px solid #a4b3b8;
-          border-left: 7px solid transparent;
-          border-right: 7px solid transparent;
-        }
-        ^ .caret:after {
-          content: '';
-          position: absolute;
-          left: 12px;
-          top: 0;
-          border-top: 0px solid #ffffff;
-          border-left: 0px solid transparent;
-          border-right: 0px solid transparent;
-        }
-        ^ .uploadButtonContainer {
-          height: 80px;
-          display: inline-block;
-          vertical-align: text-bottom;
-          margin-left: 40px;
-        }
-        ^ .uploadDescription {
-          margin-top: 9px;
-          font-size: 10px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
-        ^ .topMargin {
-          margin-top: 20px;
-        }
-        ^ .rightMargin {
-          margin-right: 10px;
-        }
-        ^ .infoContainer{
-          height: 325px;
-        }
-      */}
-    })
-  ],
+  css:`
+    ^ .labelTitle {
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      color: #093649;
+    }
+    ^ .shopperImage {
+      width: 80px;
+      height: 80px;
+      margin-top: 20px;
+      display: inline-block;
+    }
+    ^ .net-nanopay-ui-ActionView-uploadImage {
+      width: 136px;
+      height: 40px;
+      background: transparent;
+      border: solid 1px #59a5d5;
+      color: #59a5d5;
+      margin: 0;
+      outline: none;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 218px;
+      height: 40px;
+      margin-top: 8px;
+      border-radius: 0;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding: 0 15px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      background-color: white;
+      outline: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    ^ .provinceContainer {
+      position: relative;
+    }
+    ^ .caret {
+      position: relative;
+    }
+    ^ .caret:before {
+      content: '';
+      position: absolute;
+      top: -22px;
+      left: 190px;
+      border-top: 7px solid #a4b3b8;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+    }
+    ^ .caret:after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      border-top: 0px solid #ffffff;
+      border-left: 0px solid transparent;
+      border-right: 0px solid transparent;
+    }
+    ^ .uploadButtonContainer {
+      height: 80px;
+      display: inline-block;
+      vertical-align: text-bottom;
+      margin-left: 40px;
+    }
+    ^ .uploadDescription {
+      margin-top: 9px;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      color: #093649;
+    }
+    ^ .topMargin {
+      margin-top: 20px;
+    }
+    ^ .rightMargin {
+      margin-right: 10px;
+    }
+    ^ .infoContainer{
+      height: 325px;
+    }
+  `,
 
   properties: [
     {

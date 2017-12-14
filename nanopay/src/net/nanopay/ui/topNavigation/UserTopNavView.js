@@ -59,7 +59,6 @@ foam.CLASS({
           float: right;
           z-index: 10001;
           width: 208px;
-          height: 160px;
           background: white;
           box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
           top: 65px;

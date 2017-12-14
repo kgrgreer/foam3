@@ -17,6 +17,7 @@ foam.CLASS({
           background-color: #FFFFFF;
           box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
           border: solid 1px #edf0f5;
+          margin-top: 8px;
         }
 
         ^ .deviceTypeOption.selected {
@@ -88,38 +89,21 @@ foam.CLASS({
       value: -1,
       postSet: function(oldValue, newValue) {
         this.viewData.selectedOption = newValue;
-      },
-      validateObj: function(selectedOption) {
-        if ( selectedOption == -1 ) return this.Error;
       }
     }
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      if ( ! this.viewData.selectedOption ) { return; }
-      this.selectedOption = this.viewData.selectedOption;
-    },
-
     function initE() {
       this.SUPER();
       var self = this;
 
       this
         .addClass(this.myClass())
-
         .start('div').addClass('stepRow')
           .start('p').add(this.Step).end()
         .end()
-
-        .start('p').addClass('inputFieldLabel').add(this.DeviceTypeLabel).end()
-        .start('p')
-          .addClass('inputErrorLabel')
-          .add(this.slot(this.SELECTED_OPTION.validateObj))
-        .end()
-
+        .start('p').addClass('infoLabel').add(this.DeviceTypeLabel).end()
         .start('div')
           .start('div').addClass('deviceTypeOption').addClass('optionSpacer')
             .addClass(self.selectedOption$.map(function(o) { return o == 1 ? 'selected' : ''; }))

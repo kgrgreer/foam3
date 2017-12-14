@@ -177,6 +177,10 @@ foam.CLASS({
             .on('click', this.onAboutClicked)
           .end()
         .end()
+    },
+
+    function setDefaultMenu() {
+      // NOP: not used for Merchant app
     }
   ],
 
