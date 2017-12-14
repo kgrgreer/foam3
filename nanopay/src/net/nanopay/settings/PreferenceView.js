@@ -140,13 +140,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'twoFactorEnabled',
       value: false
-    },
+    }
   ],
   
   methods:[
     function initE(){
       this.SUPER();
-      var self = this;
       this
       .addClass(this.myClass())
 
@@ -199,14 +198,5 @@ foam.CLASS({
         .end()
       .end()
     }
-  ],
-
-  messages:[
-
-  ],
-
-  actions:[
-
-  ],
-
+  ]
 })

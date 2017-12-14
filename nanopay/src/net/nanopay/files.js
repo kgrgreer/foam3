@@ -144,7 +144,6 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/BusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
-  { name: 'net/nanopay/settings/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/settings/PreferenceView', flags: ['web'] },
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },

@@ -59,14 +59,9 @@ foam.CLASS({
   }
   `,
   
-  properties:[
-
-  ],
-  
   methods:[
     function initE(){
       this.SUPER();
-      var self = this;
       this
       .addClass(this.myClass())
       .start().addClass('Container')
@@ -75,14 +70,5 @@ foam.CLASS({
         .end()
       .end()
     }
-  ],
-  
-  messages:[
-
-  ],
-
-  actions:[
-
-  ],
-
+  ]
 })

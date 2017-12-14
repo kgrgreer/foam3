@@ -214,19 +214,18 @@ foam.CLASS({
 
   methods: [
     function initE(){
-    this.SUPER();
-    var self = this;
-    if (this.user.firstName != "") 
-    {
-      this.firstName = this.user.firstName;
-      this.lastName = this.user.lastName;
-      this.jobTitle = this.user.department;
-      this.email = this.user.email;
-      this.phone = this.user.phone.number;
-    }
-    this
+      this.SUPER();
+      var self = this;
+      if (this.user.firstName != "") 
+      {
+        this.firstName = this.user.firstName;
+        this.lastName = this.user.lastName;
+        this.jobTitle = this.user.department;
+        this.email = this.user.email;
+        this.phone = this.user.phone.number;
+      }
+      this
       .addClass(this.myClass())
-
       .start()
         .start().addClass('Container')
           .start('h1').add("Personal profile").addClass('personalProfile-Text').end()
@@ -255,13 +254,13 @@ foam.CLASS({
           .end()
         .end()
       .end()
-    },
+    }
   ],
 
   messages: [
     { name: 'noInformation', message: 'Please fill out all fields.' },    
     { name: 'invalidPhone', message: 'Phone number is invalid.' },    
-    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' }
   ],
 
   actions: [
