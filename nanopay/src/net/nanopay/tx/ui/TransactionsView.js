@@ -17,13 +17,15 @@ foam.CLASS({
   imports: [
     'transactionDAO',
     'userDAO',
-    'user'
+    'user',
+    'stack'
   ],
 
   exports: [
     'as data',
     'filter',
-    'filteredTransactionDAO'
+    'filteredTransactionDAO',
+    'dblclick'
   ],
 
   axioms: [

@@ -10,16 +10,45 @@ foam.CLASS({
   ],
 
   css: `
-  
+    ^ {
+      width: 992px;
+      margin: auto;
+    }
+    ^ .net-nanopay-tx-ui-SingleItemView{
+      margin-top: 25px;
+    }
+    ^ .net-nanopay-ui-ActionView-backAction{
+      border-radius: 2px;
+      border: 1px solid lightgrey;
+      background-color: rgba(164, 179, 184, 0.1);
+    }
   `,
 
   methods:[
     function initE(){
       this
       .addClass(this.myClass())
-      .start()
-        .add('transaction detail view')
-      .end();
+      .start(this.BACK_ACTION).end()
+      .start().addClass('inline')
+        .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).end()
+      .end()  
+      .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data });
+    }
+  ],
+
+  actions: [
+    {
+      name: 'backAction',
+      label: 'Back',
+      code: function(X){
+        X.stack.push({ class: 'net.nanopay.tx.ui.TransactionsView'});
+      }
+    },
+    {
+      name: 'exportButton',
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
+      }
     }
   ]
 });

@@ -72,7 +72,8 @@ FOAM_FILES([
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
-
+  { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
+  
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // admin

@@ -60,7 +60,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'title', message: 'Low Balance Alerts'}
+    { name: 'title', message: 'Low Balance Alerts'},
+    { name: 'placeholderText', message: 'You have no balance alerts.'}
   ],
 
   methods: [
@@ -73,7 +74,9 @@ foam.CLASS({
       .end()
       .start()
         .add(this.AlertTableView.create())
-      .end();
+      .end()
+      .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.balanceAlertDAO, message: this.placeholderText, image: 'images/ic-payable.png' });
+      
     }
   ],
 
