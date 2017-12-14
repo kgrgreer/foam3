@@ -36,7 +36,6 @@ foam.CLASS({
       margin-top: 8px;
     }
     ^ .filter-search {
-      -webkit-appearance: textfield;
       width: 225px;
       height: 40px;
       border-radius: 2px;
