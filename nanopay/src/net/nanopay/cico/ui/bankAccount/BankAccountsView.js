@@ -81,6 +81,7 @@ foam.CLASS({
           background: none;
           cursor: pointer;
           background-color: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
