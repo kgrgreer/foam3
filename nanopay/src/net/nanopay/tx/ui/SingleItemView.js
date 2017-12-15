@@ -71,7 +71,7 @@ foam.CLASS({
             .start('h3').add(this.data.payeeId).end()
             .start('h3').add(this.data.status).end()
           .end()
-        .end()
+        .end();
     }
   ]
 });

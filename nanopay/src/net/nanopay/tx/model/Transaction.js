@@ -52,7 +52,6 @@ foam.CLASS({
         dao.find(newValue).then(function(a) {
           if ( a ) {
             self.payerName = a.label();
-            // if ( a.address ) self.currencyType = a.address.countryId + 'D';
           } else {
             self.payerName = 'Unknown Id: ' + newValue;
           }
@@ -82,7 +81,6 @@ foam.CLASS({
         dao.find(newValue).then(function(a) {
           if ( a ) {
             self.payeeName = a.label();
-            // if ( a.address ) self.currencyType = a.address.countryId + 'D';
           } else {
             self.payeeName = 'Unknown Id: ' + newValue;
           }

@@ -136,7 +136,7 @@ foam.CLASS({
               .start().add(this.data.address.postalCode).addClass('labelContent').end()
             .end()
           .end()
-        .end()
+        .end();
     }
   ]
 });
