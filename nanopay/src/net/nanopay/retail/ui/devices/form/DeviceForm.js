@@ -146,7 +146,6 @@ foam.CLASS({
           this.deviceDAO.put(newDevice).then(function (result) {
             X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
           }).catch(function (err) {
-            console.log('here');
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
 
