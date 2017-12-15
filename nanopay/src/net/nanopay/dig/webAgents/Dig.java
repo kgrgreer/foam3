@@ -30,10 +30,10 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.io.*;
 
-public class DigWebAgent
+public class Dig
   implements WebAgent
 {
-  public DigWebAgent() {}
+  public Dig() {}
 
   public void execute(X x) {
     HttpServletRequest req        = (HttpServletRequest) x.get(HttpServletRequest.class);
@@ -229,9 +229,7 @@ public class DigWebAgent
           if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
             output(x, outputterHtml.toString());
           } else {
-            out.println("<textarea style=\"width:700;height:600;\">");
             out.println(outputterHtml.toString());
-            out.println("</textarea>");
           }
         }
       } else if ( "help".equals(command) ) {
@@ -277,8 +275,8 @@ public class DigWebAgent
       System.out.println("data : " + copiedData);
       out.println("<input type=hidden id=urlInfo style=margin-left:30;width:350 value=" + cInfo.getId() + "></input>");
       out.println("<br><br><br> URL : <br>");
-      out.println("<textarea style=\"width:700;height:200;\">http://localhost:8080/service/digWebAgent?");
-      //out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/service/digWebAgent?=';");
+      out.println("<textarea style=\"width:700;height:200;\">http://localhost:8080/service/dig?");
+      //out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/service/dig?=';");
       if ( daoName != null && daoName != "" ) {
         out.println("dao=" + daoName);
       }

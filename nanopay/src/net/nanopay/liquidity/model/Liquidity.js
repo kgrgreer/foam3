@@ -27,4 +27,4 @@ foam.CLASS({
       name: 'user'
     }
   ]
-})
+});

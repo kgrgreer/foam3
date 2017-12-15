@@ -8,8 +8,7 @@ foam.CLASS({
   messages: [
     { name: 'Step',         message: 'Step 1: Name your device.' },
     { name: 'Instructions', message: 'Please name your device to help distinguish it among other devices.\nYou can change the name at any time.' },
-    { name: 'NameLabel',    message: 'Name *' },
-    { name: 'Error',        message: 'Invalid name used.' }
+    { name: 'NameLabel',    message: 'Name *' }
   ],
 
   properties: [
@@ -17,25 +16,14 @@ foam.CLASS({
       class: 'String',
       name: 'deviceName',
       postSet: function(oldValue, newValue) {
-        this.viewData.name = newValue;
-      },
-      validateObj: function(deviceName) {
-        if ( deviceName.trim().length == 0 ) return this.Error;
+        this.viewData.deviceName = newValue;
       }
     }
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      if ( ! this.viewData.name ) { return; }
-      this.deviceName = this.viewData.name
-    },
-
     function initE() {
       this.SUPER();
-
       this
         .addClass(this.myClass())
         .start('div').addClass('stepRow')
@@ -43,12 +31,10 @@ foam.CLASS({
         .end()
         .start('p').addClass('instructionsRow').add(this.Instructions).end()
         .start('div').addClass('row')
-          .start('p').addClass('inputFieldLabel').add(this.NameLabel).end()
-          .start('p').addClass('pDefault').addClass('inputErrorLabel')
-            .add(this.slot(this.DEVICE_NAME.validateObj))
+          .start().addClass('infoLabel').add(this.NameLabel).end()
+            .start(this.DEVICE_NAME).end()
           .end()
         .end()
-        .tag(this.DEVICE_NAME, {onKey: true})
     }
   ]
 });

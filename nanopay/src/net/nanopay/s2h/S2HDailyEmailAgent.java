@@ -85,7 +85,7 @@ public class S2HDailyEmailAgent
     }
 
     //sends an email following the email template
-    email.sendEmailFromTemplate(message, "s2h-invoice-update", args);
+    email.sendEmailFromTemplate(null, message, "s2h-invoice-update", args);
   }
   private String getList(List<Invoice> invoices, DAO user,String dayTitle)
   {

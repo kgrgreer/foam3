@@ -15,102 +15,98 @@ foam.CLASS({
     'foam.nanos.auth.User'
   ],
 
-  exports: [ 
+  exports: [
     'as data',
     'filter',
-    'filteredUserDAO' 
+    'filteredUserDAO'
   ],
 
   imports: [
     'stack', 'auth', 'userDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 962px;
-          margin: 0 auto;
-        }
-        ^ .searchIcon {
-          position: absolute;
-          margin-left: 5px;
-          margin-top: 8px;
-        }
-        ^ .filter-search {
-          width: 225px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: #ffffff;
-          display: inline-block;
-          margin: 0;
-          margin-bottom: 30px;
-          vertical-align: top;
-          border: 0;
-          box-shadow:none;
-          padding: 10px 10px 10px 31px;
-          font-size: 14px;
-        }
-        ^ .inline-float-right {
-          float: right;
-          display: inline-block;
-        }
-        ^ .net-nanopay-ui-ActionView-exportButton {
-          position: absolute;
-          width: 75px;
-          height: 40px;
-          opacity: 0.01;
-          cursor: pointer;
-          z-index: 100;
-          margin-right: 5px;
-        }
-        ^ .net-nanopay-ui-ActionView-addUser {
-          background-color: #59A5D5;
-          border: solid 1px #59A5D5;
-          color: white;
-          float: right;
-        }
-        ^ .net-nanopay-ui-ActionView-addUser::after {
-          content: ' ';
-          position: absolute;
-          height: 0;
-          width: 0;
-          border: 6px solid transparent;
-          border-top-color: white;
-          transform: translate(5px, 5px);
-        }
-        ^ .net-nanopay-ui-ActionView-addBusiness {
-          background-color: #59A5D5;
-          border: solid 1px #59A5D5;
-          color: white;
-          float: right;
-        }
-        ^ .popUpDropDown {
-          padding: 0;
-          z-index: 10000;
-          width: 135px;
-          background: white;
-          opacity: 1;
-          box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
-          position: absolute;
-        }
-        ^ .popUpDropDown > div {
-          width: 135px;
-          height: 30px;
-          font-size: 14px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          color: #093649;
-          line-height: 30px;
-        }
-        ^ .popUpDropDown > div:hover {
-          background-color: #59a5d5;
-          color: white;
-          cursor: pointer;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 962px;
+      margin: 0 auto;
+    }
+    ^ .searchIcon {
+      position: absolute;
+      margin-left: 5px;
+      margin-top: 8px;
+    }
+    ^ .filter-search {
+      width: 225px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      display: inline-block;
+      margin: 0;
+      margin-bottom: 30px;
+      vertical-align: top;
+      border: 0;
+      box-shadow:none;
+      padding: 10px 10px 10px 31px;
+      font-size: 14px;
+    }
+    ^ .inline-float-right {
+      float: right;
+      display: inline-block;
+    }
+    ^ .net-nanopay-ui-ActionView-exportButton {
+      position: absolute;
+      width: 75px;
+      height: 40px;
+      opacity: 0.01;
+      cursor: pointer;
+      z-index: 100;
+      margin-right: 5px;
+    }
+    ^ .net-nanopay-ui-ActionView-addUser {
+      background-color: #59A5D5;
+      border: solid 1px #59A5D5;
+      color: white;
+      float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-addUser::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 6px solid transparent;
+      border-top-color: white;
+      transform: translate(5px, 5px);
+    }
+    ^ .net-nanopay-ui-ActionView-addBusiness {
+      background-color: #59A5D5;
+      border: solid 1px #59A5D5;
+      color: white;
+      float: right;
+    }
+    ^ .popUpDropDown {
+      padding: 0;
+      z-index: 10000;
+      width: 135px;
+      background: white;
+      opacity: 1;
+      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
+      position: absolute;
+    }
+    ^ .popUpDropDown > div {
+      width: 135px;
+      height: 30px;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      color: #093649;
+      line-height: 30px;
+    }
+    ^ .popUpDropDown > div:hover {
+      background-color: #59a5d5;
+      color: white;
+      cursor: pointer;
+    }
+  `,
 
   properties: [
     {
@@ -136,17 +132,17 @@ foam.CLASS({
         ]
       }
     },
-    { 
+    {
       class: 'Boolean',
-      name: 'accessShopper',   
+      name: 'accessShopper',
     },
-    { 
+    {
       class: 'Boolean',
-      name: 'accessSubscriber',   
+      name: 'accessSubscriber',
     },
-    { 
+    {
       class: 'Boolean',
-      name: 'accessMerchant',   
+      name: 'accessMerchant',
     },
     'addUserMenuBtn_',
     'addUserPopUp_'
@@ -237,5 +233,4 @@ foam.CLASS({
       this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
     }
   ]
-
 });
