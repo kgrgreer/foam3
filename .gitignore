@@ -49,7 +49,7 @@ nanopay-bin.js
 nano.log*
 
 # Local Tomcat Server XML
-server.xml
+/server.xml
 
 # Service files
 /accounts
