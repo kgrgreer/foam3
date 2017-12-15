@@ -13,6 +13,7 @@ import foam.nanos.session.Session;
 import foam.util.Password;
 import foam.util.SafetyUtil;
 import net.nanopay.retail.model.Device;
+import net.nanopay.retail.model.DeviceStatus;
 
 import javax.naming.AuthenticationException;
 import java.util.List;
@@ -60,6 +61,9 @@ public class DeviceAuthService
     if ( user == null ) {
       throw new AuthenticationException("Owner not found");
     }
+
+    device.setStatus(DeviceStatus.ACTIVE);
+    deviceDAO.put(device);
 
     Session session = (Session) x.get(Session.class);
     session.setUserId(user.getId());
