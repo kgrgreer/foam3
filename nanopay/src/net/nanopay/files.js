@@ -141,11 +141,13 @@ FOAM_FILES([
   // settings
   { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/BusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
-  { name: 'net/nanopay/settings/business/IntegrationView', flags: ['web'] },
-  { name: 'net/nanopay/settings/personal/PersonalSettingsView', flags: ['web'] },
-
+  { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
+  { name: 'net/nanopay/settings/PreferenceView', flags: ['web'] },
+  { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
+  { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
+  
   // bank
   { name: 'net/nanopay/liquidity/ui/BalanceAlertView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },  
