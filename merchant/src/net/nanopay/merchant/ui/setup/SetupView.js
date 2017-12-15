@@ -6,9 +6,7 @@ foam.CLASS({
   documentation: 'Setup view with serial number',
 
   imports: [
-    'device',
     'stack',
-    'deviceDAO',
     'serialNumber',
     'showAbout'
   ],
