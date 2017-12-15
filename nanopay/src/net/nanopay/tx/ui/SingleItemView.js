@@ -7,52 +7,47 @@ foam.CLASS({
     'data'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^table-header{
-          width: 960px;
-          height: 40px;
-          background-color: rgba(110, 174, 195, 0.2);
-        }
-        ^ h3{
-          width: 120px;
-          display: inline-block;
-          font-size: 12px;
-          line-height: 1;
-          font-weight: 500;
-          text-align: center;
-          color: #093649;
-        }
-        ^table-body{
-          width: 960px;
-          height: auto;
-          background: white;
-          padding-bottom: 10px;
-        }
-        ^ p{
-          display: inline-block;
-          width: 90px;
-        }
-        ^table-body h3{
-          font-weight: 300;
-          font-size: 12px;
-          margin-top: 25px;
-        }
-        ^table-body h4{
-          font-weight: 300;
-          font-size: 12px;
-          margin-top: 25px;
-        }
-        */
-      }
-    })
-  ],
+  css: `
+    ^table-header{
+      width: 960px;
+      height: 40px;
+      background-color: rgba(110, 174, 195, 0.2);
+    }
+    ^ h3{
+      width: 120px;
+      display: inline-block;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 500;
+      text-align: center;
+      color: #093649;
+    }
+    ^table-body{
+      width: 960px;
+      height: auto;
+      background: white;
+      padding-bottom: 10px;
+    }
+    ^ p{
+      display: inline-block;
+      width: 90px;
+    }
+    ^table-body h3{
+      font-weight: 300;
+      font-size: 12px;
+      margin-top: 25px;
+    }
+    ^table-body h4{
+      font-weight: 300;
+      font-size: 12px;
+      margin-top: 25px;
+    }
+  `,
 
   methods: [
     function initE(){
       var self = this;
-
+      debugger;
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
