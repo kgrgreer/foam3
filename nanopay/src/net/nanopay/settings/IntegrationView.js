@@ -7,7 +7,7 @@ foam.CLASS({
 
   documentation: 'Accounting Integration Management',
 
-	css:`
+  css:`
     ^{
       width: 1280px;
       margin: auto;
@@ -21,7 +21,7 @@ foam.CLASS({
       box-sizing: border-box;
       margin-left: 160px;
       margin-top: 50px;
-    } 
+    }
     ^ .boxTitle {
       opacity: 0.6;
       font-family: 'Roboto';
@@ -31,9 +31,9 @@ foam.CLASS({
       letter-spacing: 0.3px;
       text-align: left;
       color: #093649;
-      display: inline-block;	
-      margin: 0; 
-    }          
+      display: inline-block;
+      margin: 0;
+    }
     ^ .close-BTN {
       width: 135px;
       height: 40px;
@@ -61,7 +61,7 @@ foam.CLASS({
     ^ .integrationImgDiv{
       width: 223px;
       height: 120px;
-      border: solid 1px #dce0e7;  
+      border: solid 1px #dce0e7;
       display: inline-block;
       margin: 25px 20px 30px 0px;
       position: relative;
@@ -69,11 +69,11 @@ foam.CLASS({
     }
     ^ .integrationImg{
       display: block;
-      position: absolute;  
-      top: 0;  
-      bottom: 0;  
-      left: 0;  
-      right: 0;  
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       margin: auto;
     }
     ^ .last-integrationImgDiv{
@@ -111,9 +111,9 @@ foam.CLASS({
     }
     ^ .inputLine{
       margin-top: 20px;
-    }        
+    }
   `,
-  
+
 	methods: [
 		function initE() {
 			this.SUPER();
@@ -159,4 +159,3 @@ foam.CLASS({
 		}
 	]
 });
-  
