@@ -139,7 +139,7 @@ public class S2HReportingAgent
     }
 
     //sends an email following the email template
-    email.sendEmailFromTemplate(message, "s2h-invoice-snap", args);
+    email.sendEmailFromTemplate(null, message, "s2h-invoice-snap", args);
   }
   public void setRecipients(String[] people)
   {
