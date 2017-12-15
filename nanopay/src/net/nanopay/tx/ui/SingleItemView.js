@@ -47,7 +47,7 @@ foam.CLASS({
   methods: [
     function initE(){
       var self = this;
-      debugger;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')

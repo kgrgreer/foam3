@@ -129,7 +129,8 @@ foam.CLASS({
     function convert(){
       var self = this;
 
-     if( this.exportData ){
+    //This needs to be refactored in each driver. Driver should be able to discern from FObject & DAO.
+    if( this.exportData ){
       if ( this.dataType == 'JSON') {
         this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
           self.note = result;
