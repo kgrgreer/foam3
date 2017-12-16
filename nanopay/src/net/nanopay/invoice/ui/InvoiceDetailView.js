@@ -185,6 +185,7 @@ foam.CLASS({
     {
       name: 'saveAndPreview',
       label: 'Save & Preview',
+      isEnabled: function(amount, dueDate) { return dueDate && amount > 0; },
       code: function(X) {
         var self = this;
 
@@ -213,6 +214,6 @@ foam.CLASS({
 
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
-    },
+    }
   ]
 });
