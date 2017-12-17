@@ -49,6 +49,10 @@ public class Dig
     String             copiedData = "";
     String []          email      = req.getParameterValues("email");
     String             subject    = req.getParameter("subject");
+    String             emailTxt;
+    String             subjectTxt;
+    String             cmdTxt;
+    String             Url;
 
     if ( command == null || "".equals(command) ) command = "put";
 
@@ -58,7 +62,7 @@ public class Dig
 
       if ( "put".equals(command) && ( data == null || "".equals(data) ) ) {
         out.println("<form><span>DAO:</span>");
-        out.println("<span><select name=dao style=margin-left:35>");
+        out.println("<span><select name=dao id=dao style=margin-left:35 onchange=changeDao()>");
 
         //gets all ongoing nanopay services
         nSpecDAO.orderBy(NSpec.NAME).select(new AbstractSink() {
@@ -71,14 +75,19 @@ public class Dig
         });
 
         out.println("</select></span>");
-        out.println("<br><br><span id=formatSpan>Format:<select name=format style=margin-left:25><option value=csv>CSV</option><option value=xml>XML</option><option value=json selected>JSON</option><option value=html>HTML</option></select></span>");
-        out.println("<br><br><span>Command:<select name=cmd width=150 style=margin-left:5  onchange=changeCmd(this.value)><option value=put selected>PUT</option><option value=select>SELECT</option><option value=remove>REMOVE</option><option value=help>HELP</option></select></span>");
+        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:25><option value=csv>CSV</option><option value=xml>XML</option><option value=json selected>JSON</option><option value=html>HTML</option></select></span>");
+        out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5  onchange=changeCmd(this.value)><option value=put selected>PUT</option><option value=select>SELECT</option><option value=remove>REMOVE</option><option value=help>HELP</option></select></span>");
         out.println("<br><br><span id=emailSpan style=display:none;>Email:<input name=email style=margin-left:30;width:350></input></span>");
         out.println("<br><br><span id=subjectSpan style=display:none;>Subject:<input name=subject style=margin-left:20;width:350></input></span>");
-        out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:53></input></span>");
+        out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:52></input></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><br><button type=submit onClick=performHelp()>Submit</button></form>");
-        out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} if ( cmdValue == 'select' ) {document.getElementById('emailSpan').style.cssText = 'display: inline-block'; document.getElementById('subjectSpan').style.cssText = 'display: inline-block';}else {document.getElementById('emailSpan').style.cssText = 'display:none'; document.getElementById('subjectSpan').style.cssText = 'display:none';}}</script>");
+        out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
+        out.println("<input id=builtUrl size=600 style=margin-left:20;display:none;/ >");
+        out.println("<br><br><button type=submit >Submit</button></form>");
+        out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} if ( cmdValue == 'select' ) {document.getElementById('emailSpan').style.cssText = 'display: inline-block'; document.getElementById('subjectSpan').style.cssText = 'display: inline-block'; document.getElementById('urlSpan').style.cssText = 'display: inline-block';document.getElementById('builtUrl').style.cssText = 'display: inline-block'; var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}else {document.getElementById('emailSpan').style.cssText = 'display:none'; document.getElementById('subjectSpan').style.cssText ='display:none';document.getElementById('urlSpan').style.cssText = 'display:none';document.getElementById('builtUrl').style.cssText = 'display:none';}}</script>");
+
+        out.println("<script>function changeDao() {var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}</script>");
+        out.println();
 
         return;
       }
@@ -119,7 +128,6 @@ public class Dig
 
           //copiedData = data;
           String dataArray[] = data.split("},");
-
 
           for (int i=0; i < dataArray.length; i++) {
             data = dataArray[i] + "}";
@@ -176,7 +184,6 @@ public class Dig
         ArraySink sink = (ArraySink) dao.select(new ArraySink());
         System.err.println("objects selected: " + sink.getArray().size());
 
-        out.println("Select <br><br>");
         if ( "json".equals(format) ) {
           foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter();
           outputterJson.output(sink.getArray().toArray());
@@ -192,7 +199,7 @@ public class Dig
           if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
             output(x, xmlSupport.toXMLString(sink.getArray()));
           } else {
-            out.println("<textarea style=\"width:700;height:400;\">");
+            out.println("<textarea style=\"width:700;height:400;\" rows=10 cols=120>");
             out.println(xmlSupport.toXMLString(sink.getArray()));
             out.println("</textarea>");
           }
@@ -207,7 +214,7 @@ public class Dig
           if ( email.length != 0 && !email[0].equals("")  && email[0] != null ) {
             output(x, outputterCsv.toString());
           } else {
-            out.println("<textarea style=\"width:800;height:800;\">");
+            out.println("<textarea style=\"width:800;height:800;\" rows=10 cols=120>");
             out.println(outputterCsv.toString());
             out.println("</textarea>");
           }
@@ -274,38 +281,7 @@ public class Dig
 
       System.out.println("data : " + copiedData);
       out.println("<input type=hidden id=urlInfo style=margin-left:30;width:350 value=" + cInfo.getId() + "></input>");
-      out.println("<br><br><br> URL : <br>");
-      out.println("<textarea style=\"width:700;height:200;\">http://localhost:8080/service/dig?");
-      //out.println("<script>var vurl = document.location.protocol + '//' + document.location.host + '/service/dig?=';");
-      if ( daoName != null && daoName != "" ) {
-        out.println("dao=" + daoName);
-      }
 
-      if ( format != null && format != "" ) {
-        out.println("&format=" + format);
-      }
-
-      if ( command != null && command != "" ) {
-        out.println("&cmd=" + command);
-      }
-
-      if ( id != null && id != "" ) {
-        out.println("&id=" + id);
-      }
-
-      if ( data != null && data != "" ) {
-        out.println("&data=" + copiedData);
-      }
-
-      if ( email.length != 0 ) {
-        out.println("&email=" + email[0]);
-      }
-
-      if ( subject != null && subject != "" ) {
-        out.println("&subject=" + subject.replaceAll(" ", ""));
-      }
-
-      out.println("</textarea>");
       out.println();
     } catch (Throwable t) {
       out.println("Error " + t);
@@ -334,7 +310,7 @@ public class Dig
       message.setTo(email);
       message.setSubject(subject);
 
-      String newData = "<textarea style=\"width:1000;height:400;\">" + data + "</textarea>";
+      String newData = "<textarea style=\"width:1000;height:400;\" rows=10 cols=120>" + data + "</textarea>";
 
       message.setBody(newData);
 
