@@ -18,6 +18,7 @@ import foam.nanos.logger.Logger;
 import java.nio.CharBuffer;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import foam.core.PropertyInfo;
 import java.util.*;
@@ -36,23 +37,22 @@ public class Dig
   public Dig() {}
 
   public void execute(X x) {
-    HttpServletRequest req        = (HttpServletRequest) x.get(HttpServletRequest.class);
-    final PrintWriter  out        = (PrintWriter) x.get(PrintWriter.class);
-    CharBuffer         buffer_    = CharBuffer.allocate(65535);
-    String             data       = req.getParameter("data");
-    String             daoName    = req.getParameter("dao");
-    String             command    = req.getParameter("cmd");
-    String             format     = req.getParameter("format");
-    String             id         = req.getParameter("id");
-    Logger             logger     = (Logger) x.get("logger");
-    DAO                nSpecDAO   = (DAO) x.get("nSpecDAO");
-    String             copiedData = "";
-    String []          email      = req.getParameterValues("email");
-    String             subject    = req.getParameter("subject");
-    String             emailTxt;
-    String             subjectTxt;
-    String             cmdTxt;
-    String             Url;
+    HttpServletRequest  req        = (HttpServletRequest) x.get(HttpServletRequest.class);
+    HttpServletResponse response   = (HttpServletResponse) x.get(HttpServletResponse.class);
+    final PrintWriter   out        = (PrintWriter) x.get(PrintWriter.class);
+    CharBuffer          buffer_    = CharBuffer.allocate(65535);
+    String              data       = req.getParameter("data");
+    String              daoName    = req.getParameter("dao");
+    String              command    = req.getParameter("cmd");
+    String              format     = req.getParameter("format");
+    String              id         = req.getParameter("id");
+    Logger              logger     = (Logger) x.get("logger");
+    DAO                 nSpecDAO   = (DAO) x.get("nSpecDAO");
+    String              copiedData = "";
+    String []           email      = req.getParameterValues("email");
+    String              subject    = req.getParameter("subject");
+
+    response.setContentType("text/html");
 
     if ( command == null || "".equals(command) ) command = "put";
 
