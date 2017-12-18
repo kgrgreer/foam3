@@ -55,7 +55,7 @@ foam.CLASS({
         ^ .retail-code {
           margin: 0 auto;
           margin-top: 50px;
-          width: 242px;
+          width: 212px;
           border: none;
           background:
             repeating-linear-gradient(90deg,
@@ -74,8 +74,8 @@ foam.CLASS({
           background: none;
           color: white;
           border: none;
-          letter-spacing: 19px;
-          font: 4.25ch Roboto, monospace;
+          letter-spacing: 16px;
+          font: 4.4ch Roboto, monospace;
         }
         ^ .retail-code span:empty:before {
           content: "\200b";

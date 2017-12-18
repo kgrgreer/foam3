@@ -30,6 +30,10 @@ foam.CLASS({
       label: 'IMPS Reference Number'
     },
     {
+      class: 'String',
+      name: 'payerName'
+    },
+    {
       class: 'Long',
       name: 'payerId',
       label: 'Payer',
@@ -41,7 +45,22 @@ foam.CLASS({
             .start('p').style({ 'margin-top': 0 }).add(payer.email).end()
           .end();
         })
+      },
+      postSet: function(oldValue, newValue){
+        var self = this;
+        var dao = this.__context__.userDAO;
+        dao.find(newValue).then(function(a) {
+          if ( a ) {
+            self.payerName = a.label();
+          } else {
+            self.payerName = 'Unknown Id: ' + newValue;
+          }
+        });
       }
+    },
+    {
+      class: 'String',
+      name: 'payeeName'
     },
     {
       class: 'Long',
@@ -55,6 +74,17 @@ foam.CLASS({
             .start('p').style({ 'margin-top': 0 }).add(payee.email).end()
           .end();
         })
+      },
+      postSet: function(oldValue, newValue){
+        var self = this;
+        var dao = this.__context__.userDAO;
+        dao.find(newValue).then(function(a) {
+          if ( a ) {
+            self.payeeName = a.label();
+          } else {
+            self.payeeName = 'Unknown Id: ' + newValue;
+          }
+        });
       }
     },
     {

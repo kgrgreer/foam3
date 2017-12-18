@@ -20,3 +20,5 @@ p({"class":"foam.nanos.menu.Menu","id":"set-multi-user","label":"Multi-User","ha
 p({"class":"foam.nanos.menu.Menu","id":"set-integrate","label":"Integration","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},"order":80,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"regular","label":"Regular","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.transfer.TransferWizard","type":"regular"}},"order":1000,"parent":"transfer"})
 p({"class":"foam.nanos.menu.Menu","id":"foreign","label":"Foreign","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.transfer.TransferWizard","type":"foreign"}},"order":1000,"parent":"transfer"})
+p({"class":"foam.nanos.menu.Menu","id":"bank-dashboard","label":"CIP/Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.DashboardView"}},"order":1000,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"bank-profile","label":"Bank List","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankView"}},"order":1000,"parent":""})
