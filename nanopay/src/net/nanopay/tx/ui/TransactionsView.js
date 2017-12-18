@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'TransactionsView',
   extends: 'foam.u2.Element',
 
-  documentation: 'View displaying interac home page with list of accounts and transactions',
+  documentation: 'View displaying home page with list of accounts and transactions',
 
   implements: [
     'foam.mlang.Expressions'
@@ -17,13 +17,15 @@ foam.CLASS({
   imports: [
     'transactionDAO',
     'userDAO',
-    'user'
+    'user',
+    'stack'
   ],
 
   exports: [
     'as data',
     'filter',
-    'filteredTransactionDAO'
+    'filteredTransactionDAO',
+    'dblclick'
   ],
 
   axioms: [
@@ -252,6 +254,9 @@ foam.CLASS({
           .add(this.FILTERED_TRANSACTION_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
+    },
+    function dblclick(transaction){
+      this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
     }
   ],
 

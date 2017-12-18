@@ -137,7 +137,6 @@ foam.CLASS({
 
       this
         .addClass(view.myClass())
-        .tag({class: 'net.nanopay.admin.ui.settings.SettingsNavigator'})
         .start()
           .start()
             .add(this.BankAccountTableView.create())

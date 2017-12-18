@@ -15,6 +15,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'deviceName',
+      factory: function () {
+        return this.viewData.deviceName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.deviceName = newValue;
       }
@@ -24,6 +27,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+
       this
         .addClass(this.myClass())
         .start('div').addClass('stepRow')

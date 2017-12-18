@@ -4,19 +4,23 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.auth.User;
-import net.nanopay.tx.model.Transaction;
 import foam.dao.Sink;
-import foam.mlang.MLang;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.AuthService;
+import foam.nanos.auth.User;
+import net.nanopay.tx.model.Transaction;
+import static foam.mlang.MLang.*;
 
 public class AuthenticatedTransactionDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
+  public final static String GLOBAL_TXN_READ = "transaction.read.x";
+
   public AuthenticatedTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
+
   public AuthenticatedTransactionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -32,6 +36,8 @@ public class AuthenticatedTransactionDAO
     }
 
     if ( transaction.getPayerId() != user.getId() ) {
+      // TODO: log
+      System.err.println("Attempt for user " + user.getId() + " to create transaction from " + transaction.getPayerId());
       throw new RuntimeException("User is not allowed");
     }
 
@@ -40,7 +46,18 @@ public class AuthenticatedTransactionDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    return null;
+    User user = (User) x.get("user");
+
+    if ( user == null )
+      throw new RuntimeException("User is not logged in");
+
+    Transaction t    = (Transaction) getDelegate().find_(x, id);
+    AuthService auth = (AuthService) x.get("auth");
+
+    if ( t != null && t.getPayerId() != user.getId() && t.getPayeeId() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) )
+      return null;
+
+    return t;
   }
 
   @Override
@@ -49,17 +66,22 @@ public class AuthenticatedTransactionDAO
   {
     User user = (User) x.get("user");
 
-    if ( user == null ) {
+    if ( user == null )
       throw new RuntimeException("User is not logged in");
-    }
 
-    return getDelegate()
-        .where(
-            MLang.OR(
-                MLang.EQ(Transaction.PAYER_ID, user.getId()),
-                MLang.EQ(Transaction.PAYEE_ID, user.getId())
-            )
-        ).select_(x, sink, skip, limit, order, predicate);
+    AuthService auth   = (AuthService) x.get("auth");
+    boolean     global = auth.check(x, GLOBAL_TXN_READ);
+
+// System.err.println("AuthTxn: " + user.getId() + " " + global);
+
+    DAO dao = global ?
+      getDelegate() :
+      getDelegate().where(
+        OR(
+          EQ(Transaction.PAYER_ID, user.getId()),
+          EQ(Transaction.PAYEE_ID, user.getId())));
+
+    return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
   @Override

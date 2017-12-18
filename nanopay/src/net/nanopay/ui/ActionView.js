@@ -3,36 +3,38 @@ foam.CLASS({
   name: 'ActionView',
   extends: 'foam.u2.UnstyledActionView',
 
-  axioms: [
-    foam.u2.CSS.create({code: function() {/*
-      ^ {
-        width: 135px;
-        height: 40px;
-        border-radius: 2px;
-        text-align: center;
-        display: inline-block;
-        cursor: pointer;
-        font-size: 12px;
-        padding: 0;
-      }
+  css: `
+    ^ {
+      width: 135px;
+      height: 40px;
+      border-radius: 2px;
+      text-align: center;
+      display: inline-block;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0;
+    }
 
-      ^unavailable {
-        visibility: hidden;
-      }
+    ^unavailable {
+      visibility: hidden;
+    }
 
-      ^ img {
-        vertical-align: middle;
-      }
+    ^ img {
+      vertical-align: middle;
+    }
 
-      ^.material-icons {
-        cursor: pointer;
-      }
-      ^back {
-        display: none;
-      }
-      ^forward {
-        display: none;
-      }
-    */}})
-  ]
+    ^.material-icons {
+      cursor: pointer;
+    }
+
+    ^back {
+      display: none;
+    }
+
+    ^forward {
+      display: none;
+    }
+    
+    ^:disabled { filter: grayscale(80%); }
+  `
 });
