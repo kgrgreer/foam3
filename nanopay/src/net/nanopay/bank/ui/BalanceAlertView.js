@@ -81,7 +81,7 @@ foam.CLASS({
       .start()
         .add(this.AlertTableView.create())
       .end()
-      .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.balanceAlertDAO, message: this.placeholderText, image: 'images/ic-payable.png' });
+      .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.user.balanceAlerts, message: this.placeholderText, image: 'images/ic-payable.png' });
     }
   ],
 

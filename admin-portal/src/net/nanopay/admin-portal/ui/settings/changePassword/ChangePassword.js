@@ -90,7 +90,6 @@ foam.CLASS({
 
       this
         .addClass(view.myClass())
-        .tag({class: 'net.nanopay.admin.ui.settings.SettingsNavigator'})
 
         .start('div').addClass('contentCard')
           .start().addClass('title-container')

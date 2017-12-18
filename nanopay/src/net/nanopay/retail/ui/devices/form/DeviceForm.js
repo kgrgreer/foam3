@@ -82,7 +82,11 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
+        if ( this.position === 0 ) {
+          X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
+        } else {
+          this.subStack.back();
+        }
       }
     },
     {
