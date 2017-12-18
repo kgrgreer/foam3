@@ -28,14 +28,32 @@ public class BankAccountVerificationService
         throw new RuntimeException("Invalid Bank Account Id");
       }
 
-      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
-
-      if ( bankAccount.getStatus() == "Disabled" ) {
-        throw new RuntimeException("This account has been disabled for security reasons. Delete this account and add another or contact customer support for help.");
-      }
-
       if ( randomDepositAmount <= 0 ) {
         throw new RuntimeException("Please enter an amount between 0.00 and 1.00");
+      }
+
+      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+
+      int verificationAttempts = bankAccount.getVerificationAttempts();
+
+      if( bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() != randomDepositAmount ) {
+        verificationAttempts++;
+        bankAccount.setVerificationAttempts(verificationAttempts);
+        bankAccountDAO_.put(bankAccount);
+        if ( bankAccount.getVerificationAttempts() == 1 ) {
+          throw new RuntimeException("Invalid amount, 2 attempts left.");
+        }
+        if ( bankAccount.getVerificationAttempts() == 2 ) {
+          throw new RuntimeException("Invalid amount, 1 attempt left.");
+        }
+        if ( bankAccount.getVerificationAttempts() == 3 ) {
+          bankAccount.setStatus("Disabled");
+          throw new RuntimeException("Invalid amount, this account has been disabled for security reasons. Please contact customer support for help.");
+        }
+      }
+
+      if ( bankAccount.getStatus() == "Disabled" ) {
+        throw new RuntimeException("This account has been disabled for security reasons. Please contact customer support for help.");
       }
 
       if ( bankAccount.getStatus() == "Verified" ) {
@@ -43,10 +61,6 @@ public class BankAccountVerificationService
       }
 
       boolean isVerified = false;
-
-      if ( bankAccount.getVerificationAttempts() > 2 ) {
-        bankAccount.setStatus("Disabled");
-      }
 
       if ( bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
         bankAccount.setStatus("Verified");

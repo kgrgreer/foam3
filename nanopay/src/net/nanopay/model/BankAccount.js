@@ -75,7 +75,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'verificationAttempts'
+      name: 'verificationAttempts',
+      value: 0
     }
   ],
 
