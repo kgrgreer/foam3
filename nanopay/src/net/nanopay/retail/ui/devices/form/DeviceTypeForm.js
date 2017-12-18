@@ -87,6 +87,9 @@ foam.CLASS({
       class: 'Int',
       name: 'selectedOption',
       value: -1,
+      factory: function () {
+        return this.viewData.selectedOption;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.selectedOption = newValue;
       }

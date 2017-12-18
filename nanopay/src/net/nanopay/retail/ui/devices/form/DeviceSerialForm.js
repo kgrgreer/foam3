@@ -25,6 +25,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'serialNumber',
+      factory: function () {
+        return this.viewData.serialNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.serialNumber = newValue.toUpperCase();
       }
