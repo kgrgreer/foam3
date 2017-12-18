@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.auth.password',
   name: 'ResetPasswordTokenService',
-  extends: 'net.nanopay.auth.token.AbstractTokenService',
+  extends: 'foam.nanos.auth.token.AbstractTokenService',
 
   documentation: 'Implementation of Token Service used for reset password',
 
@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailService',
     'foam.util.Password',
     'foam.util.SafetyUtil',
-    'net.nanopay.auth.token.Token',
+    'foam.nanos.auth.token.Token',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
@@ -83,7 +83,7 @@ try {
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", host + "/static/nanopay/src/net/nanopay/index.html?token=" + token.getData() + "#reset");
+args.put("link", host + "/dev/foam2/src/foam/nanos/auth/forgotPassword/resetPassword.html?token=" + token.getData() + "#reset");
 
 email.sendEmailFromTemplate(user, message, "reset-password-mintchip", args);
 return true;`

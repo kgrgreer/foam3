@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.auth.email',
   name: 'EmailTokenService',
-  extends: 'net.nanopay.auth.token.AbstractTokenService',
+  extends: 'foam.nanos.auth.token.AbstractTokenService',
 
   documentation: 'Implementation of Token Service used for verifying email addresses',
 
@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
-    'net.nanopay.auth.token.Token',
+    'foam.nanos.auth.token.Token',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
