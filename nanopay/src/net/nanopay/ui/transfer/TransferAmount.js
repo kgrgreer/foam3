@@ -153,8 +153,8 @@ foam.CLASS({
       class: 'Double',
       name: 'fees',
       factory: function() {
-        this.viewData.fees = 1.5; // TODO: Make this dynamic eventually
-        return 1.5;
+        this.viewData.fees = 0; // TODO: Make this dynamic eventually
+        return 0;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.fees = newValue;
@@ -168,7 +168,9 @@ foam.CLASS({
         // TODO: enable input
         this.viewData.rate = newValue;
         // NOTE: This is a one way conversion. It is very lossy on certain fx rates.
-        if ( newValue ) this.toAmount = (this.fromAmount - this.fees) * newValue;
+        if ( newValue ) this.toAmount = (this.fromAmount) * newValue;
+        
+        // if ( newValue ) this.toAmount = (this.fromAmount - this.fees) * newValue;
       },
       validateObj: function(rate) {
         if ( ! rate ) {
@@ -221,6 +223,7 @@ foam.CLASS({
 
         if ( this.feedback ) return;
         this.feedback = true;
+        this.fromAmount = newValue;
         this.fromAmount = (newValue / this.rate) + this.fees;
         this.feedback = false;
       },
@@ -299,7 +302,7 @@ foam.CLASS({
               .end()
               .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin')
                 // TODO: Get Fees rates
-                .add('Fees: CAD ', self.fees.toFixed(2) , ' (included)')
+                // .add('Fees: CAD ', self.fees.toFixed(2) , ' (included)')
               .end()
               .start('p').addClass('pDetails').addClass('rateLabel').addClass('rateLabelMargin').enableClass('hidden', self.loadingSpinner.isHidden$, true)
                 // TODO: Get FX rates
@@ -351,8 +354,8 @@ foam.CLASS({
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
           .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
-            .attrs({href: this.viewData.invoiceFileUrl})
-            .add(this.PDFLabel)
+            // .attrs({href: this.viewData.invoiceFileUrl})
+            // .add(this.PDFLabel)
           .end()
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
