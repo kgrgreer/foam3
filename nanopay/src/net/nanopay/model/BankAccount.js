@@ -72,6 +72,10 @@ foam.CLASS({
         return randomAmountInCents;
       },
       hidden: true
+    },
+    {
+      class: 'Int',
+      name: 'verificationAttempts'
     }
   ],
 

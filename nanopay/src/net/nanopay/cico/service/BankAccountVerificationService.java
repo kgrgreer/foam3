@@ -23,15 +23,20 @@ public class BankAccountVerificationService
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
+
       if ( bankAccountId <= 0 ) {
         throw new RuntimeException("Invalid Bank Account Id");
       }
 
-      if ( randomDepositAmount <= 0 ) {
-        throw new RuntimeException("Invalid amount");
+      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+
+      if ( bankAccount.getStatus() == "Disabled" ) {
+        throw new RuntimeException("This account has been disabled for security reasons. Delete this account and add another or contact customer support for help.");
       }
 
-      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+      if ( randomDepositAmount <= 0 ) {
+        throw new RuntimeException("Please enter an amount between 0.00 and 1.00");
+      }
 
       if ( bankAccount.getStatus() == "Verified" ) {
         return true;
@@ -39,7 +44,11 @@ public class BankAccountVerificationService
 
       boolean isVerified = false;
 
-      if ( bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
+      if ( bankAccount.getVerificationAttempts() > 2 ) {
+        bankAccount.setStatus("Disabled");
+      }
+
+      if ( bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() == randomDepositAmount ) {
         bankAccount.setStatus("Verified");
         isVerified = true;
 
