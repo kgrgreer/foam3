@@ -31,10 +31,10 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.io.*;
 
-public class Dig
+public class DigWebAgent
   implements WebAgent
 {
-  public Dig() {}
+  public DigWebAgent() {}
 
   public void execute(X x) {
     HttpServletRequest  req        = (HttpServletRequest) x.get(HttpServletRequest.class);
@@ -84,9 +84,9 @@ public class Dig
         out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
         out.println("<input id=builtUrl size=600 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
-        out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} if ( cmdValue == 'select' ) {document.getElementById('emailSpan').style.cssText = 'display: inline-block'; document.getElementById('subjectSpan').style.cssText = 'display: inline-block'; document.getElementById('urlSpan').style.cssText = 'display: inline-block';document.getElementById('builtUrl').style.cssText = 'display: inline-block'; var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}else {document.getElementById('emailSpan').style.cssText = 'display:none'; document.getElementById('subjectSpan').style.cssText ='display:none';document.getElementById('urlSpan').style.cssText = 'display:none';document.getElementById('builtUrl').style.cssText = 'display:none';}}</script>");
+        out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} if ( cmdValue == 'select' ) {document.getElementById('emailSpan').style.cssText = 'display: inline-block'; document.getElementById('subjectSpan').style.cssText = 'display: inline-block'; document.getElementById('urlSpan').style.cssText = 'display: inline-block';document.getElementById('builtUrl').style.cssText = 'display: inline-block'; var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/digWebAgent?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}else {document.getElementById('emailSpan').style.cssText = 'display:none'; document.getElementById('subjectSpan').style.cssText ='display:none';document.getElementById('urlSpan').style.cssText = 'display:none';document.getElementById('builtUrl').style.cssText = 'display:none';}}</script>");
 
-        out.println("<script>function changeDao() {var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}</script>");
+        out.println("<script>function changeDao() {var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/digWebAgent?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}</script>");
         out.println();
 
         return;
@@ -129,7 +129,7 @@ public class Dig
           //copiedData = data;
           String dataArray[] = data.split("},");
 
-          for (int i=0; i < dataArray.length; i++) {
+          for ( int i=0; i < dataArray.length ; i++ ) {
             data = dataArray[i] + "}";
             o = jsonParser.parseString(data, objClass);
 
