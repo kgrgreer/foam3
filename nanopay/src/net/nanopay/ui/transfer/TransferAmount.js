@@ -350,10 +350,10 @@ foam.CLASS({
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
-          .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
-            .attrs({href: this.viewData.invoiceFileUrl})
-            .add(this.PDFLabel)
-          .end()
+          // .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
+          //   .attrs({href: this.viewData.invoiceFileUrl})
+          //   .add(this.PDFLabel)
+          // .end()
           // TODO: Make card based on from and to information
           .start('p').add(this.FromLabel).addClass('bold').end()
 

@@ -63,12 +63,10 @@ foam.CLASS({
         ^table-body h3{
           font-weight: 300;
           font-size: 12px;
-          margin-top: 25px;
         }
         ^table-body h4{
           font-weight: 300;
           font-size: 12px;
-          margin-top: 25px;
         }
         */
       }

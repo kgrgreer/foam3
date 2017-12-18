@@ -117,6 +117,7 @@ foam.CLASS({
 
     function createView() {
       if ( this.created_ ) return;
+      
       this
         .addClass(this.myClass())
         .start('div').addClass('userContainer')
@@ -211,9 +212,12 @@ foam.CLASS({
           if ( this.user.organization ) this.name_ = this.user.organization;
         }
         this.email_ = this.user.email;
-        this.phone_ = this.user.phone;
 
-        if( this.user.address){
+        if ( this.user.phone ) {
+          this.phone_ = this.user.phone.number;
+        }
+
+        if( this.user.address.city || this.user.address.address){
           this.address_ = this.user.address.address;
           if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
           if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
