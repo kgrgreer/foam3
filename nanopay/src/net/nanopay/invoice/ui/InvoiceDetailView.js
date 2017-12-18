@@ -192,29 +192,30 @@ foam.CLASS({
       isEnabled: function(amount, dueDate) { return amount > 0; },
       code: function(X) {
         var self = this;
+        X.dao.put(this);
+        
+        // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
+        //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
+        //     frequency: X.frequency,
+        //     endsAfter: X.endsAfter,
+        //     nextInvoiceDate: X.nextInvoiceDate,
+        //     amount: this.amount,
+        //     payeeId: this.payeeId,
+        //     payerId: this.payerId,
+        //     invoiceNumber: this.invoiceNumber,
+        //     dueDate: this.dueDate,
+        //     purchaseOrder: this.purchaseOrder,
+        //     payeeName: this.payeeName,
+        //     payerName: this.payerName
+        //   });
 
-        if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
-          var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
-            frequency: X.frequency,
-            endsAfter: X.endsAfter,
-            nextInvoiceDate: X.nextInvoiceDate,
-            amount: this.amount.toFixed(2),
-            payeeId: this.payeeId,
-            payerId: this.payerId,
-            invoiceNumber: this.invoiceNumber,
-            dueDate: this.dueDate,
-            purchaseOrder: this.purchaseOrder,
-            payeeName: this.payeeName,
-            payerName: this.payerName
-          });
-
-          X.recurringInvoiceDAO.put(recurringInvoice).then(function(a){
-            self.recurringInvoice = a;
-            X.dao.put(self);
-          });
-        } else {
-          X.dao.put(this);
-        }
+        //   X.recurringInvoiceDAO.put(recurringInvoice).then(function(a){
+        //     self.recurringInvoice = a;
+        //     X.dao.put(self);
+        //   });
+        // } else {
+        //   X.dao.put(this);
+        // }
 
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
