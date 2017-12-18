@@ -32,6 +32,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
+  { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -70,7 +71,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
-
+  { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
+  
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
   // admin
@@ -139,8 +142,9 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
 
   // settings
-  { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
+  // { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/BusinessSettingsCard', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
@@ -149,7 +153,9 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
   
   // bank
-  { name: 'net/nanopay/liquidity/ui/BalanceAlertView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankDetailView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },  
 
   // style
