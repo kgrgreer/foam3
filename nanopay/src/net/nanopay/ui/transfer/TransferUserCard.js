@@ -217,7 +217,7 @@ foam.CLASS({
           this.phone_ = this.user.phone.number;
         }
 
-        if( this.user.address.city || this.user.address.address){
+        if( this.user.address.city || this.user.address.address ){
           this.address_ = this.user.address.address;
           if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
           if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
