@@ -139,7 +139,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
 
   // settings
-  { name: 'net/nanopay/settings/SettingsNavigator', flags: ['web'] },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
