@@ -307,7 +307,7 @@ foam.CLASS({
         }
         
         X.userDAO.put(this).then(function(a) {
-          X.stack.push({ class:'net.nanopay.settings.business.BusinessSettingsView' })
+          X.stack.push({ class:'net.nanopay.settings.business.BusinessProfileView' })
         })
       }
     }

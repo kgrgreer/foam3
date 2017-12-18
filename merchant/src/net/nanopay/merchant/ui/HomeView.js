@@ -11,6 +11,7 @@ foam.CLASS({
 
   imports: [
     'stack',
+    'showAbout',
     'toolbarIcon',
     'toolbarTitle'
   ],
@@ -63,6 +64,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.showAbout = true;
       this.toolbarTitle = 'Home';
       this.toolbarIcon = 'menu';
 

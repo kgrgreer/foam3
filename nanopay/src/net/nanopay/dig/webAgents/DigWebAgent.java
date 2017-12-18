@@ -129,7 +129,7 @@ public class DigWebAgent
           //copiedData = data;
           String dataArray[] = data.split("},");
 
-          for ( int i=0; i < dataArray.length ; i++ ) {
+          for ( int i = 0 ; i < dataArray.length ; i++ ) {
             data = dataArray[i] + "}";
             o = jsonParser.parseString(data, objClass);
 
