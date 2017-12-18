@@ -57,10 +57,17 @@ foam.CLASS({
       padding-top: 20px;
       height: 40px;
     }
+    ^ .net-nanopay-ui-Placeholder-placeholder-container{
+      position: relative;
+      top: -100px;
+      right: -50px;
+      margin: 0;
+    }
   `,
 
   messages: [
-    { name: 'title', message: 'Low Balance Alerts'}
+    { name: 'title', message: 'Low Balance Alerts'},
+    { name: 'placeholderText', message: 'You have no balance alerts.'}
   ],
 
   methods: [
@@ -73,7 +80,8 @@ foam.CLASS({
       .end()
       .start()
         .add(this.AlertTableView.create())
-      .end();
+      .end()
+      .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.user.balanceAlerts, message: this.placeholderText, image: 'images/ic-payable.png' });
     }
   ],
 
