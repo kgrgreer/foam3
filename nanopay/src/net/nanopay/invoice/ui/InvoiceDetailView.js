@@ -185,16 +185,16 @@ foam.CLASS({
     {
       name: 'saveAndPreview',
       label: 'Save & Preview',
-      isEnabled: function(amount, dueDate) { return dueDate && amount > 0; },
+      isEnabled: function(amount, dueDate) { return amount > 0; },
       code: function(X) {
         var self = this;
-
-        if ( X.frequency && X.endsAfter && X.nextInvoiceDate ) {
+        
+        if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
           var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
             frequency: X.frequency,
             endsAfter: X.endsAfter,
             nextInvoiceDate: X.nextInvoiceDate,
-            amount: this.amount,
+            amount: this.amount.toFixed(2),
             payeeId: this.payeeId,
             payerId: this.payerId,
             invoiceNumber: this.invoiceNumber,
