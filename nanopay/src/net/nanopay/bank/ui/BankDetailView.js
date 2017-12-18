@@ -27,7 +27,6 @@ foam.CLASS({
   methods: [
     function initE(){
       this.SUPER();
-      var self = this;
       var businessProfile = this.ExpandContainer.create({ title: this.data.organization + ' Profile' });
 
       this

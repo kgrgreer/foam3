@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'ExpandContainer',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
   documentation: 'Provide an expandable div which take content to display inside.',
 
   properties: [
