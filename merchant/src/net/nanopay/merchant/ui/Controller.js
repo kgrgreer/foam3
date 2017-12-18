@@ -69,6 +69,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.transactionDAO.remoteListenerSupport = true;
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     },
 
     function initE() {
