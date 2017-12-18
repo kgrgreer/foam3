@@ -10,18 +10,15 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.merchant.ui.KeyboardView'
   ],
 
   imports: [
     'user',
-    'device',
     'stack',
-    'userDAO',
-    'deviceDAO',
+    'loginSuccess',
+    'deviceAuth',
     'serialNumber',
     'toolbarIcon',
     'toolbarTitle',
@@ -203,37 +200,14 @@ foam.CLASS({
         return;
       }
 
-      // look up device, set to active and save
-      this.deviceDAO.where(this.AND(
-        this.EQ(this.Device.SERIAL_NUMBER, this.serialNumber),
-        this.EQ(this.Device.PASSWORD, this.password)
-      )).select().then(function (result) {
-        if ( ! result ) {
-          throw new Error('Device not found');
-        }
-
-        if ( ! result.array || result.array.length !== 1 ) {
-          throw new Error('Device not found');
-        }
-
-        var device = result.array[0];
-        device.status = self.DeviceStatus.ACTIVE;
-        return self.deviceDAO.put(device);
-      })
-      .then(function (result) {
-        if ( ! result ) {
+      this.deviceAuth.loginByEmail(null, 'device-' + this.serialNumber, this.password)
+      .then(function (user) {
+        self.loginSuccess = !! user;
+        if ( ! user ) {
           throw new Error('Device activation failed');
         }
 
-        self.device.copyFrom(result);
-        return self.userDAO.find(result.owner);
-      })
-      .then(function (result) {
-        if ( ! result ) {
-          throw new Error('Device activation failed');
-        }
-
-        self.user.copyFrom(result);
+        self.user.copyFrom(user);
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {

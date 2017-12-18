@@ -10,13 +10,10 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.merchant.ui.AppStyles'
   ],
 
   exports: [
-    'device',
     'showAbout',
     'showHeader',
     'tipEnabled',
@@ -52,12 +49,6 @@ foam.CLASS({
       value: 'Home'
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.retail.model.Device',
-      name: 'device',
-      factory: function () { return this.Device.create(); }
-    },
-    {
       class: 'String',
       name: 'serialNumber',
       factory: function () {
@@ -77,34 +68,8 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var self = this;
-
       this.transactionDAO.remoteListenerSupport = true;
-
-      if ( ! localStorage.serialNumber ) {
-        this.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-        return;
-      }
-
-      this.deviceDAO.find(localStorage.serialNumber).then(function (result) {
-        if ( ! result || result.status !== self.DeviceStatus.ACTIVE ) {
-          throw new Error('Device not active');
-        }
-
-        self.device.copyFrom(result);
-        return self.userDAO.find(result.owner);
-      })
-      .then(function (result) {
-        if ( ! result ) {
-          throw new Error('Owner not found');
-        }
-
-        self.user.copyFrom(result);
-        self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
-      })
-      .catch(function (err) {
-        self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView' });
-      });
+      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     },
 
     function initE() {

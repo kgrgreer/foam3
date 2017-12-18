@@ -49,60 +49,56 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-   foam.u2.CSS.create({
-     code: function CSS() {/*
-      ^{
-        font-weight: 100;
-      }
-      ^ .customer-div {
-        display: inline-block;
-        margin-bottom: 20px;
-      }
-      ^ .po-amount-div {
-        margin-left: 20px;
-        position: relative;
-        right: 70px;
-      }
-      ^ .frequency-div {
-        display: inline-block;
-        margin: 0 36px 20px 0;
-      }
-      ^ .attachment-btn {
-        margin: 10px 0;
-      }
-      ^ .enable-recurring-text {
-        font-size: 12px;
-        margin: 20px 0;
-      }
-      ^ .company-card {
-        width: 480px;
-        height: 155px;
-        margin-top: 20px;
-      }
-      ^ .small-input-box{
-        margin: 20px 0;
-      }
-      ^ .label{
-        margin: 0;
-      }
-      ^ .net-nanopay-ui-ActionView-cancel {
-        margin-left: 457px;
-        margin-top: 20px;
-      }
-      ^ .input-box {
-        margin-left: 0;
-        margin-top: 15px;
-        height: 40px;
-      }
-      ^ .foam-u2-tag-Select {
-        width: 225px;
-        height: 40px;
-        margin-top: 10px;
-      }
-     */}
-   })
- ],
+  css: `
+    ^{
+      font-weight: 100;
+    }
+    ^ .customer-div {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    ^ .po-amount-div {
+      margin-left: 20px;
+      position: relative;
+      right: 70px;
+    }
+    ^ .frequency-div {
+      display: inline-block;
+      margin: 0 36px 20px 0;
+    }
+    ^ .attachment-btn {
+      margin: 10px 0;
+    }
+    ^ .enable-recurring-text {
+      font-size: 12px;
+      margin: 20px 0;
+    }
+    ^ .company-card {
+      width: 480px;
+      height: 155px;
+      margin-top: 20px;
+    }
+    ^ .small-input-box{
+      margin: 20px 0;
+    }
+    ^ .label{
+      margin: 0;
+    }
+    ^ .net-nanopay-ui-ActionView-cancel {
+      margin-left: 457px;
+      margin-top: 20px;
+    }
+    ^ .input-box {
+      margin-left: 0;
+      margin-top: 15px;
+      height: 40px;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 225px;
+      height: 40px;
+      margin-top: 10px;
+    }
+  `,
 
   methods: [
       function initE() {
@@ -147,7 +143,7 @@ foam.CLASS({
               .add('Enable recurring payments').addClass('enable-recurring-text')
             .end()
             .startContext({data: this})
-              .start().show(this.checkBoxRecurring$)              
+              .start().show(this.checkBoxRecurring$)
                 .start().addClass('frequency-div')
                   .start().addClass('label').add('Frequency').end()
                     .start(this.FREQUENCY).end()
@@ -189,9 +185,11 @@ foam.CLASS({
     {
       name: 'saveAndPreview',
       label: 'Save & Preview',
+      isEnabled: function(amount, dueDate) { return dueDate && amount > 0; },
       code: function(X) {
         var self = this;
-        if(X.frequency && X.endsAfter && X.nextInvoiceDate){
+
+        if ( X.frequency && X.endsAfter && X.nextInvoiceDate ) {
           var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
             frequency: X.frequency,
             endsAfter: X.endsAfter,
@@ -204,17 +202,18 @@ foam.CLASS({
             purchaseOrder: this.purchaseOrder,
             payeeName: this.payeeName,
             payerName: this.payerName
-          })
+          });
+
           X.recurringInvoiceDAO.put(recurringInvoice).then(function(a){
             self.recurringInvoice = a;
             X.dao.put(self);
-          })
+          });
         } else {
           X.dao.put(this);
         }
 
         X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
       }
-    },
+    }
   ]
 });

@@ -58,7 +58,7 @@ foam.CLASS({
           position: absolute;
           float: right;
           z-index: 10001;
-          width: 208px;
+          width: 215px;
           background: white;
           box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
           top: 65px;
@@ -83,15 +83,15 @@ foam.CLASS({
           color: white;
           cursor: pointer;
         }
-        ^ .foam-nanos-menu-SubMenuView-inner::after {
+        ^ .foam-nanos-menu-SubMenuView-inner::before {
           content: ' ';
           position: absolute;
           height: 0;
           width: 0;
           border: 8px solid transparent;
           border-bottom-color: white;
-          -ms-transform: translate(130px, -175.5px);
-          transform: translate(130px, -175.5px);
+          -ms-transform: translate(130px, -16.2px);
+          transform: translate(130px, -16.2px);
         }
         ^ .profile-container{
           display: inline-block;
