@@ -99,6 +99,9 @@ foam.CLASS({
       height: 40px;
       margin-top: 10px;
     }
+    ^ .small-margin{
+      margin-top: 15px;
+    }
   `,
 
   methods: [
@@ -140,8 +143,8 @@ foam.CLASS({
               .add('Maximum size 10MB')
             .end()
             .start()
-              .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
-              .add('Enable recurring payments').addClass('enable-recurring-text')
+              // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
+              // .add('Enable recurring payments').addClass('enable-recurring-text')
             .end()
             .startContext({data: this})
               .start().show(this.checkBoxRecurring$)
@@ -159,7 +162,7 @@ foam.CLASS({
                 .end()
               .end()
             .endContext()
-            .start()
+            .start().addClass('small-margin')
               .add('Note')
               .start(this.Invoice.NOTE).addClass('half-input-box').end()
             .end()
