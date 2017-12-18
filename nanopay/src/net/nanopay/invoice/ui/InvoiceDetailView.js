@@ -16,7 +16,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   properties: [
@@ -188,7 +189,7 @@ foam.CLASS({
       isEnabled: function(amount, dueDate) { return amount > 0; },
       code: function(X) {
         var self = this;
-        
+
         if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
           var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
             frequency: X.frequency,

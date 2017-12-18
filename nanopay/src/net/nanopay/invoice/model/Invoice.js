@@ -53,7 +53,7 @@ foam.CLASS({
       visibility: foam.u2.Visibility.FINAL
     },
     {
-      class: 'String',
+      class: 'Long',
       name: 'purchaseOrder',
       label: 'PO #',
       aliases: [ 'purchase', 'po', 'p' ],

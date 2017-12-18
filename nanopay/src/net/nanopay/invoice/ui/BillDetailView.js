@@ -8,7 +8,10 @@ foam.CLASS({
       'hideSaleSummary'
     ],
 
-    requires: [ 'net.nanopay.invoice.model.Invoice' ],
+    requires: [
+      'net.nanopay.invoice.model.Invoice',
+      'foam.u2.dialog.NotificationMessage'
+    ],
     
     properties: [
       {
@@ -207,7 +210,7 @@ foam.CLASS({
       {
         name: 'saveAndPreview',
         label: 'Save & Preview',
-        isEnabled: function(amount, dueDate) { return amount > 0; },
+        isEnabled: function(amount) { return amount > 0; },
         code: function(X) {
           var self = this;
 
