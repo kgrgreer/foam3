@@ -119,12 +119,12 @@ foam.CLASS({
             this.bankAccountVerification.verify(this.newBankAccount.id, this.verifyAmount).then(function(response) {
               if ( !response ) {
                 self.newBankAccount.verificationAttempts++;
-                this
                 if ( self.newBankAccount.verificationAttempts == 1 ) {
                   self.add(self.NotificationMessage.create({ message: 'Invalid amount, 2 attempts left.', type: 'error' }));
                 } else if ( self.newBankAccount.verificationAttempts == 2 ) {
                   self.add(self.NotificationMessage.create({ message: 'Invalid amount, 1 attempt left.', type: 'error' }));
                 } else if ( self.newBankAccount.verificationAttempts >= 3 ) {
+                  self.newBankAccount.status = "Disabled";
                   self.add(self.NotificationMessage.create({ message: 'This account has been disabled for security reasons. Delete this account and add another or contact customer support for help.', type: 'error' }));
                 }
               } else {
