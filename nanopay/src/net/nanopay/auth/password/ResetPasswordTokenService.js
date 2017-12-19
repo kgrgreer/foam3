@@ -25,7 +25,9 @@ foam.CLASS({
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
-    'java.util.UUID'
+    'java.util.UUID',
+    'foam.nanos.app.AppConfig',
+    
   ],
 
   axioms: [
@@ -43,7 +45,9 @@ foam.CLASS({
     {
       name: 'generateToken',
       javaCode:
-`DAO userDAO = (DAO) getLocalUserDAO();
+`
+AppConfig config = (AppConfig) getX().get("appConfig");
+DAO userDAO = (DAO) getLocalUserDAO();
 DAO tokenDAO = (DAO) getTokenDAO();
 
 Sink sink = new ListSink();
@@ -83,7 +87,9 @@ try {
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", host + "/dev/foam2/src/foam/nanos/auth/forgotPassword/resetPassword.html?token=" + token.getData() + "#reset");
+args.put("link", config.getUrl() + "resetPassword.html?token=" + token.getData() + "#reset");
+
+System.err.println("************************** LINK " + config.getUrl());
 
 email.sendEmailFromTemplate(user, message, "reset-password-mintchip", args);
 return true;`
