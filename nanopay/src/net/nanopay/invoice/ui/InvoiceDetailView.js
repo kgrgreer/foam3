@@ -113,9 +113,11 @@ foam.CLASS({
         this
           .addClass(this.myClass())
           .start().addClass('button-row')
-            .start(this.DELETE_DRAFT).end()
-            .start(this.SAVE_AND_PREVIEW).addClass('float-right').end()
-            .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
+            .startContext({data: this})
+              .start(this.DELETE_DRAFT).end()
+              .start(this.SAVE_AND_PREVIEW).addClass('float-right').end()
+              .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
+            .endContext()
           .end()
           .start().add('New Invoice').addClass('light-roboto-h2').end()
           .start().addClass('white-container')
@@ -189,10 +191,24 @@ foam.CLASS({
     {
       name: 'saveAndPreview',
       label: 'Save & Preview',
-      isEnabled: function(amount, dueDate) { return amount > 0; },
       code: function(X) {
         var self = this;
-        X.dao.put(this);
+
+        if (!this.data.amount || this.data.amount < 0){
+          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            
+          return;
+        }
+
+        var inv = this.Invoice.create({
+          payerId: this.data.payerId,
+          payeeId: this.data.payeeId,
+          amount: this.data.amount,
+          dueDate: this.data.dueDate,
+          purchaseOrder: this.data.purchaseOrder,
+          note: this.data.note
+        });
+
+        X.dao.put(inv);
         
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({

@@ -64,7 +64,7 @@ foam.CLASS({
           .add('Note:')
         .end()
         .start('br').end()
-        .start('h2').addClass('light-roboto-h2')
+        .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px'})
           .add(this.data.note)
         .end();
     }
