@@ -20,9 +20,11 @@ foam.CLASS({
     'toolbarIcon',
     'toolbarTitle',
     'serialNumber',
+    'copyright'
   ],
 
   properties: [
+    'copyright',
     {
       class: 'Boolean',
       name: 'showAbout',
