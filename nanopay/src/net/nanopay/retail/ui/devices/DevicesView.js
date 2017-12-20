@@ -97,10 +97,11 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TitleAll',       message: 'All Device(s)' },
-    { name: 'TitleActive',    message: 'Active Device(s)' },
-    { name: 'TitleDisabled',  message: 'Disabled Device(s)' },
-    { name: 'ActionAdd',      message: 'Add a new device' }
+    { name: 'TitleAll',        message: 'All Device(s)' },
+    { name: 'TitleActive',     message: 'Active Device(s)' },
+    { name: 'TitleDisabled',   message: 'Disabled Device(s)' },
+    { name: 'ActionAdd',       message: 'Add a new device' },
+    { name: 'placeholderText', message: 'You don\'t have any devices right now. Click Add a new device to add a device.' }
   ],
 
   properties: [
@@ -155,6 +156,7 @@ foam.CLASS({
               summaryView: this.DeviceTableView.create()
             })
           .end()
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
     }
   ],
 
