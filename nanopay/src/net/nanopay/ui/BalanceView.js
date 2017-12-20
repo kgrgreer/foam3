@@ -3,9 +3,8 @@ foam.CLASS({
   name: 'BalanceView',
   extends: 'foam.u2.View',
 
-  imports: [
-    'user',
-    'account'
+  properties:[
+    'data'
   ],
 
   css: `
@@ -41,7 +40,7 @@ foam.CLASS({
         .add(this.title)
       .end()
       .start().addClass('account-balance')
-       .add('$ ', this.account.balance.toFixed(2))
+       .add('$ ', this.data ? this.data.balance.toFixed(2) : '0.00')
       .end();
     }
   ]

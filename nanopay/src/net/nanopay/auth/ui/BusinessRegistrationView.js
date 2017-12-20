@@ -341,7 +341,7 @@ foam.CLASS({
         this.user.type = 'business';
 
         this.userDAO.put(this.user).then(function(a){
-          self.stack.push({ class:'net.nanopay.auth.ui.SignInView' });
+          self.stack.push({ class:'foam.nanos.auth.SignInView' });
         });
       }
     }

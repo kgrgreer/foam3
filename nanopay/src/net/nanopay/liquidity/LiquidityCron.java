@@ -148,11 +148,11 @@ public class LiquidityCron
 
     public void start() {
       System.out.println("Liquidity Cron Starting...");
-      userDAO_ = (DAO) getX().get("userDAO");
+      userDAO_ = (DAO) getX().get("localUserDAO");
       balanceAlertDAO_ = (DAO) getX().get("balanceAlertDAO");
       thresholdDAO_ = (DAO) getX().get("thresholdDAO");
       thresholdResolveDAO_ = (DAO) getX().get("thresholdResolveDAO");
-      accountDAO_ = (DAO) getX().get("accountDAO");
+      accountDAO_ = (DAO) getX().get("localAccountDAO");
       liquidityDAO_ = (DAO) getX().get("liquidityDAO");
       System.out.println("DAO's fetched...");
       fetchUsers();

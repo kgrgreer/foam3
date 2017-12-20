@@ -59,6 +59,13 @@ foam.CLASS({
         })
         .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
+        .start('h2').addClass('light-roboto-h2').style({ "margin-bottom": "0px"})
+          .add('Note:')
+        .end()
+        .start('br').end()
+        .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px'})
+          .add(this.data.note)
+        .end();
     }
   ],
 

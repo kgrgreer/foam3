@@ -7,7 +7,8 @@ foam.CLASS({
     'showAbout',
     'toolbarIcon',
     'toolbarTitle',
-    'webApp'
+    'webApp',
+    'copyright',
   ],
 
   axioms: [
@@ -68,9 +69,9 @@ foam.CLASS({
                 this.tag({ class: 'foam.u2.tag.Image', data: 'images/connected-logo.png' })
               })
             .end()
-            .start('h3').add(this.webApp,' Merchant').end()
+            .start('h3').add(this.webApp).end()
             .start().add('Version ' + this.version).end().br()
-            .start().add('© ' + this.webApp).br().add(this.rights).end()
+            .start().add('© ' + this.copyright).br().add(this.rights).end()
           .end()
         .end()
 

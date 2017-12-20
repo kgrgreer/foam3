@@ -176,8 +176,8 @@ foam.CLASS({
         .end()
         .start('div').addClass('col')
           .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)
-            .attrs({href: this.viewData.invoiceFileUrl})
-            .add(this.PDFLabel)
+            // .attrs({href: this.viewData.invoiceFileUrl})
+            // .add(this.PDFLabel)
           .end()
           .start('p').addClass('bold').add(this.ToLabel).end()
           // TODO: Make card based on from and to information
