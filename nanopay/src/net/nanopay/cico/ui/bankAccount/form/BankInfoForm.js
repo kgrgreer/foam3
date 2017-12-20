@@ -136,7 +136,7 @@ foam.CLASS({
         class: 'foam.u2.view.ChoiceView',
         choices: [
           'BMO - 001',
-          'ScotiaBank - 002',
+          'Scotiabank - 002',
           'RBC - 003',
           'TD - 004',
           'National Bank of Canada - 005',
@@ -159,7 +159,7 @@ foam.CLASS({
           case 'BMO - 001' :
             this.viewData.bankNumber = '001';
             break;
-          case 'ScotiaBank - 002' :
+          case 'Scotiabank - 002' :
             this.viewData.bankNumber = '002';
             break;
           case 'RBC - 003' :
