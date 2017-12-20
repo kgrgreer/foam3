@@ -195,7 +195,7 @@ foam.CLASS({
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if( newValue ) {
+            if( newValue && newValue.status != 'Disabled' ) {
               this.selectedAccount = newValue;
               this.manageAccount();
               return oldValue;

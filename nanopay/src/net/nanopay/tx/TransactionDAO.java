@@ -3,16 +3,15 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.*;
-import static foam.mlang.MLang.*;
 import foam.nanos.auth.User;
 import java.util.Date;
 import java.util.List;
-
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
+import static foam.mlang.MLang.*;
 
 public class TransactionDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -20,6 +19,7 @@ public class TransactionDAO
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
+
   public TransactionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);

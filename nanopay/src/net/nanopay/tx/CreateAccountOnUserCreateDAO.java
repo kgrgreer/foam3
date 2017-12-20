@@ -18,7 +18,7 @@ public class CreateAccountOnUserCreateDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) obj;
-    DAO accountDAO = (DAO) getX().get("accountDAO");
+    DAO accountDAO = (DAO) getX().get("localAccountDAO");
     boolean newUser = ( getDelegate().find(user.getId()) == null );
 
     User result = (User) super.put_(x, obj);

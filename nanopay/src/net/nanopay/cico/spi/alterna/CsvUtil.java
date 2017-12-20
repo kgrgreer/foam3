@@ -82,7 +82,7 @@ public class CsvUtil {
     final Date now = new Date();
     final DAO userDAO = (DAO) x.get("localUserDAO");
     final DAO branchDAO = (DAO) x.get("branchDAO");
-    final DAO bankAccountDAO = (DAO) x.get("bankAccountDAO");
+    final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("standardCICOTransactionDAO");
 
     final Sink outputter;
