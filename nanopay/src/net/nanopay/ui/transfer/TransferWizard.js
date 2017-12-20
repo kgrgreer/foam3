@@ -324,24 +324,25 @@ foam.CLASS({
           var transaction = this.Transaction.create({
             payerId: this.user.id,
             payeeId: this.viewData.payee.id,
-            amount: Math.round(this.viewData.fromAmount * 100),
-            rate: rate,
-            fees: Math.round(this.viewData.fees * 100),
-            purpose: this.viewData.purpose,
+            amount: Math.round(this.viewData.fromAmount),
+            // rate: rate,
+            // fees: Math.round(this.viewData.fees),
+            // purpose: this.viewData.purpose,
             notes: this.viewData.notes
           });
 
-          this.transactionDAO.put(transaction)
-          .then(function (result) {
+          this.transactionDAO.put(transaction).then(function (result) {
             if ( result ) {
               self.viewData.transaction = result;
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make Another Transfer';
+              self.viewData.transaction = result;
+              self.add(self.NotificationMessage.create({ message: "Success!" }));              
             }
           })
           .catch(function (err) {
-            self.add(self.NotificationMessage.create({ type: 'error', message: err.message }));
+            self.add(self.NotificationMessage.create({ type: 'error', message: err.message + '. Unable to process payment.' }));
             if ( err ) console.log(err.message);
           });
 
