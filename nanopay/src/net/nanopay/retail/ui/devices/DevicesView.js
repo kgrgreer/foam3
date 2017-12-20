@@ -76,11 +76,6 @@ foam.CLASS({
           background: %SECONDARYCOLOR%;
           opacity: 0.9;
         }
-        ^ .foam-u2-dialog-Popup-background {
-          pointer-events: none;
-          background-color: #edf0f5;
-          opacity: 1;
-        }
         ^ .foam-u2-dialog-Popup-inner {
           background-color: transparent !important;
         }
@@ -91,6 +86,10 @@ foam.CLASS({
         }
         ^ thead > tr > th{
           background: %TABLECOLOR%;
+        }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: #e9e9e9;
         }
       */}
     })
@@ -156,7 +155,7 @@ foam.CLASS({
               summaryView: this.DeviceTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'no-devices.svg' });
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-deviceempty.svg' });
     }
   ],
 
