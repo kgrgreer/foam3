@@ -46,6 +46,7 @@ FOAM_FILES([
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/ManageDeviceModal', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },

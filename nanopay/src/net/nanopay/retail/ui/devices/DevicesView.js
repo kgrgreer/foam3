@@ -156,7 +156,7 @@ foam.CLASS({
               summaryView: this.DeviceTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'no-devices.svg' });
     }
   ],
 
@@ -176,15 +176,35 @@ foam.CLASS({
       name: 'DeviceTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.retail.model.Device' ],
+      requires: [ 
+        'net.nanopay.retail.model.Device',
+        'foam.u2.dialog.Popup' 
+      ],
 
       imports: [
         'user',
         'deviceDAO'
       ],
 
+      exports: [
+        'selectedDevice'
+      ],
+
       properties: [
-        'selection',
+        {
+          name: 'selectedDevice',
+          value: null
+        },
+        {
+          name: 'selection',
+          preSet: function(oldValue, newValue) {
+            if ( newValue ) {
+              this.selectedDevice = newValue;
+              this.manageDevice();
+              return oldValue;
+            }
+          }
+        },
         {
           name: 'data',
           factory: function () {
@@ -204,6 +224,10 @@ foam.CLASS({
                 'name', 'type', 'status', 'serialNumber', 'password'
               ]
             }).addClass(this.myClass('table')).end();
+        },
+
+        function manageDevice() {
+          this.add(this.Popup.create().tag({ class: 'net.nanopay.retail.ui.devices.ManageDeviceModal' }));
         }
       ]
     }
