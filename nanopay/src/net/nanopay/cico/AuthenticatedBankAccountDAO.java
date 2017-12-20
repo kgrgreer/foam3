@@ -39,7 +39,7 @@ public class AuthenticatedBankAccountDAO
     }
 
     // if current user doesn't have permissions to create or update, force account's owner to be current user id
-    if ( ! auth.check(x, GLOBAL_BANK_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_BANK_ACCOUNT_UPDATE) ) {
+    if ( account.getOwner() == null || ! auth.check(x, GLOBAL_BANK_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_BANK_ACCOUNT_UPDATE) ) {
       account.setOwner(user.getId());
     }
     return super.put_(x, obj);
