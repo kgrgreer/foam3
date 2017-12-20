@@ -242,7 +242,7 @@ foam.CLASS({
       }
 
       if ( this.invoiceMode ) {
-        this.payees = this.invoice.toBusinessId;
+        this.payees = this.invoice.payeeId;
       }
 
       if ( this.viewData.purpose ) {
