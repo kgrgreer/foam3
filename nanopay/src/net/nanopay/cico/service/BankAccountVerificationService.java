@@ -40,6 +40,10 @@ public class BankAccountVerificationService
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
         bankAccountDAO_.put(bankAccount);
+        if ( bankAccount.getVerificationAttempts() == 3 ) {
+          bankAccount.setStatus("Disabled");
+          bankAccountDAO_.put(bankAccount);
+        }
         if ( bankAccount.getVerificationAttempts() == 1 ) {
           throw new RuntimeException("Invalid amount, 2 attempts left.");
         }
@@ -47,7 +51,6 @@ public class BankAccountVerificationService
           throw new RuntimeException("Invalid amount, 1 attempt left.");
         }
         if ( bankAccount.getVerificationAttempts() == 3 ) {
-          bankAccount.setStatus("Disabled");
           throw new RuntimeException("Invalid amount, this account has been disabled for security reasons. Please contact customer support for help.");
         }
       }
