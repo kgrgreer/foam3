@@ -169,6 +169,7 @@ foam.CLASS({
       name: 'payees',
       postSet: function(oldValue, newValue) {
         var self = this;
+
         this.payeeDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
           var payee = a.array[0];
           self.viewData.payee = payee;
@@ -242,7 +243,7 @@ foam.CLASS({
       }
 
       if ( this.invoiceMode ) {
-        this.payees = this.invoice.toBusinessId;
+        this.payees = this.invoice.payeeId;
       }
 
       if ( this.viewData.purpose ) {
@@ -259,7 +260,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
