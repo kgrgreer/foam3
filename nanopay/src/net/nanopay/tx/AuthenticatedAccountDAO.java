@@ -33,12 +33,12 @@ public class AuthenticatedAccountDAO
     Account account = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
 
-    if (user == null) {
+    if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
 
     // if current user doesn't have permissions to create or update, force account's owner to be current user id
-    if (!auth.check(x, GLOBAL_ACCOUNT_CREATE) || !auth.check(x, GLOBAL_ACCOUNT_UPDATE)) {
+    if ( ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
       account.setOwner(user.getId());
     }
     return super.put_(x, obj);
@@ -49,14 +49,12 @@ public class AuthenticatedAccountDAO
     User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
-    if (user == null) {
+    if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
 
     Account account = (Account) getDelegate().find_(x, id);
-    boolean global = auth.check(x, GLOBAL_ACCOUNT_READ);
-
-    if (account != null && account.getOwner().equals(user.getId()) && !global) {
+    if ( account != null && account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
       return null;
     }
     return account;
@@ -67,7 +65,7 @@ public class AuthenticatedAccountDAO
     User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
-    if (user == null) {
+    if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
 
@@ -82,12 +80,11 @@ public class AuthenticatedAccountDAO
     Account account = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
 
-    if (user == null) {
+    if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
 
-    boolean global = auth.check(x, GLOBAL_ACCOUNT_DELETE);
-    if (!account.getOwner().equals(user.getId()) && !global) {
+    if ( ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 
@@ -99,7 +96,7 @@ public class AuthenticatedAccountDAO
     User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
-    if (user == null) {
+    if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
 
