@@ -246,7 +246,7 @@ foam.CLASS({
           foam.u2.dialog.Popup.create(null, X)
             .tag({ 
               class: 'net.nanopay.ui.modal.ExportModal', 
-              exportData: X.data.data
+              exportObj: X.data.data
             })
         );
       }
