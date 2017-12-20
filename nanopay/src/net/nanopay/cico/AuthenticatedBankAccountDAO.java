@@ -55,9 +55,7 @@ public class AuthenticatedBankAccountDAO
     }
 
     BankAccount account = (BankAccount) getDelegate().find_(x, id);
-    boolean global = auth.check(x, GLOBAL_BANK_ACCOUNT_READ);
-
-    if ( account != null && account.getOwner().equals(user.getId()) && ! global ) {
+    if ( account != null && account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_READ) ) {
       return null;
     }
     return account;
@@ -87,8 +85,7 @@ public class AuthenticatedBankAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    boolean global = auth.check(x, GLOBAL_BANK_ACCOUNT_DELETE);
-    if ( ! account.getOwner().equals(user.getId()) && ! global ) {
+    if ( ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 
