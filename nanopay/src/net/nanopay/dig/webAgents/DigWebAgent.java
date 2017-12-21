@@ -114,7 +114,7 @@ public class DigWebAgent
 
           //let FObjectArray parse first
           Object o = null;
-          //o = jsonParser.parseStringForArray(data, objClass);
+          o = jsonParser.parseStringForArray(data, objClass);
           if ( o != null ) {
             Object[] objs = (Object[]) o;
             for ( int j = 0 ; j < objs.length ; j++ ) {
@@ -218,7 +218,6 @@ public class DigWebAgent
             out.println("</textarea>");
           }
         } else if ( "html".equals(format) ) {
-          /*
           foam.lib.html.Outputter outputterHtml = new foam.lib.html.Outputter();
 
           outputterHtml.outputStartHtml();
@@ -238,7 +237,6 @@ public class DigWebAgent
           } else {
             out.println(outputterHtml.toString());
           }
-          */
         }
       } else if ( "help".equals(command) ) {
         out.println("Help: <br><br>" );
