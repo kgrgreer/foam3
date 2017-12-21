@@ -170,6 +170,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
+          self.add(self.NotificationMessage.create({ message: 'Bank account successfully deleted.' }));
           X.closeDialog();
         }).catch(function(error) {
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
