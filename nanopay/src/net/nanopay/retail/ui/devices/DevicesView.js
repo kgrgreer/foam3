@@ -19,81 +19,77 @@ foam.CLASS({
     'net.nanopay.retail.model.Device'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          width: 962px;
-          margin: 0 auto;
-        }
-        ^ .devicesRow {
-          width: 100%;
-        }
-        ^ .devicesContainer {
-          width: 992px;
-          margin: auto;
-        }
-        ^ .deviceContentCard {
-          width: 218px;
-          height: 100px;
-          margin-right: 13.5px;
-          float: left;
-        }
-        ^ .actionButton {
-          width: 218px;
-          height: 100px;
-          float: right;
-          margin-bottom: 20px;
-        }
-        ^ .net-nanopay-ui-ActionView-create {
-          visibility: hidden;
-        }
-        ^ .net-nanopay-ui-ActionView-addDevice {
-          margin: 0;
-          background: none;
-          outline: none;
-          border: none;
-          width: 218px;
-          height: 100px;
-          float: right;
-          background-color: %SECONDARYCOLOR%;
-          letter-spacing: 0.3px;
-          color: #FFFFFF;
-          border-radius: 2px;
-          opacity: 1;
-          font-weight: normal;
-        }
-        ^ .net-nanopay-ui-ActionView-addDevice span {
-          display: block;
-          margin-top: 8px;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-        }
-        ^ .net-nanopay-ui-ActionView-addDevice:hover {
-          background: none;
-          cursor: pointer;
-          background: %SECONDARYCOLOR%;
-          opacity: 0.9;
-        }
-        ^ .foam-u2-dialog-Popup-inner {
-          background-color: transparent !important;
-        }
-        ^ .foam-u2-view-TableView-noselect {
-          width: 1px;
-          cursor: pointer;
-          text-align: right;
-        }
-        ^ thead > tr > th{
-          background: %TABLECOLOR%;
-        }
-        ^ .foam-u2-view-TableView-row:hover {
-          cursor: pointer;
-          background: #e9e9e9;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^{
+      width: 962px;
+      margin: 0 auto;
+    }
+    ^ .devicesRow {
+      width: 100%;
+    }
+    ^ .devicesContainer {
+      width: 992px;
+      margin: auto;
+    }
+    ^ .deviceContentCard {
+      width: 218px;
+      height: 100px;
+      margin-right: 13.5px;
+      float: left;
+    }
+    ^ .actionButton {
+      width: 218px;
+      height: 100px;
+      float: right;
+      margin-bottom: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-create {
+      visibility: hidden;
+    }
+    ^ .net-nanopay-ui-ActionView-addDevice {
+      margin: 0;
+      background: none;
+      outline: none;
+      border: none;
+      width: 218px;
+      height: 100px;
+      float: right;
+      background-color: %SECONDARYCOLOR%;
+      letter-spacing: 0.3px;
+      color: #FFFFFF;
+      border-radius: 2px;
+      opacity: 1;
+      font-weight: normal;
+    }
+    ^ .net-nanopay-ui-ActionView-addDevice span {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+    }
+    ^ .net-nanopay-ui-ActionView-addDevice:hover {
+      background: none;
+      cursor: pointer;
+      background: %SECONDARYCOLOR%;
+      opacity: 0.9;
+    }
+    ^ .foam-u2-dialog-Popup-inner {
+      background-color: transparent !important;
+    }
+    ^ .foam-u2-view-TableView-noselect {
+      width: 1px;
+      cursor: pointer;
+      text-align: right;
+    }
+    ^ thead > tr > th{
+      background: %TABLECOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      cursor: pointer;
+      background: #e9e9e9;
+    }
+  `,
 
   messages: [
     { name: 'TitleAll',        message: 'All Device(s)' },
