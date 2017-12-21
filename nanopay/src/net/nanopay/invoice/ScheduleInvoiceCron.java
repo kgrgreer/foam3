@@ -25,18 +25,18 @@ public class ScheduleInvoiceCron
         System.out.println("Finding scheduled Invoices...");
         ListSink sink = (ListSink) invoiceDAO_.where(
           AND(
-            EQ(Invoice.status, "Scheduled")
-            EQ(Invoice.)
+            EQ(Invoice.STATUS, "Scheduled")
+            EQ(Invoice.PAYMENT_ID, 0)
           )
         ).select(new ListSink());
-          List bankList = sink.getData();
-          if(bankList.size() < 1) { 
-            System.out.println("No banks found");
+          List invoiceList = sink.getData();
+          if(invoiceList.size() < 1) {
+            System.out.println("No scheduled invoices found for today.");
             return;
           }
-          for(int i = 0; i < bankList.size(); i++) {
-            User bank = (User) bankList.get(i);
-            createLiquidity(bank);
+          for(int i = 0; i < invoiceList.size(); i++) {
+            Invoice invoice = (Invoice) invoiceList.get(i);
+            sendValueTransaction(invoice);
           }
           System.out.println("Cron Completed.");
         } catch (Throwable e) {
