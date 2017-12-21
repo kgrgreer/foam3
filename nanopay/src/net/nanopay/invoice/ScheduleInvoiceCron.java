@@ -6,9 +6,11 @@ import foam.dao.*;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.SimpleDateFormat;
 import foam.core.FObject;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Account;
 import static foam.mlang.MLang.*;
 
@@ -25,24 +27,34 @@ public class ScheduleInvoiceCron
         System.out.println("Finding scheduled Invoices...");
         ListSink sink = (ListSink) invoiceDAO_.where(
           AND(
-            EQ(Invoice.STATUS, "Scheduled")
+            EQ(Invoice.STATUS, "Scheduled"),
             EQ(Invoice.PAYMENT_ID, 0)
           )
         ).select(new ListSink());
           List invoiceList = sink.getData();
-          if(invoiceList.size() < 1) {
+          if ( invoiceList.size() < 1 ) {
             System.out.println("No scheduled invoices found for today.");
             return;
           }
-          for(int i = 0; i < invoiceList.size(); i++) {
+          for ( int i = 0; i < invoiceList.size(); i++ ) {
             Invoice invoice = (Invoice) invoiceList.get(i);
-            sendValueTransaction(invoice);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            Date invPaymentDate = invoice.getPaymentDate();
+
+            if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
+              sendValueTransaction(invoice);
+            }
           }
           System.out.println("Cron Completed.");
-        } catch (Throwable e) {
+        } catch ( Throwable e ) {
           e.printStackTrace();
           throw new RuntimeException(e);
         }
+    }
+
+    public void sendValueTransaction(Invoice invoice){
+      System.out.println("Starting payment process...")
+      
     }
 
     public void start() {
