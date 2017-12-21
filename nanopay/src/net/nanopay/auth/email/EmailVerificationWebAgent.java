@@ -2,7 +2,6 @@ package net.nanopay.auth.email;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.notification.email.DAOResourceLoader;
@@ -20,7 +19,7 @@ import org.jtwig.JtwigTemplate;
 import org.jtwig.resource.loader.TypedResourceLoader;
 
 public class EmailVerificationWebAgent
-    implements WebAgent
+  implements WebAgent
 {
   protected EnvironmentConfiguration config_;
 
@@ -46,7 +45,7 @@ public class EmailVerificationWebAgent
         throw new Exception("User not found.");
       }
 
-
+      
       if ( user == null ) {
         throw new Exception("User not found.");
       }

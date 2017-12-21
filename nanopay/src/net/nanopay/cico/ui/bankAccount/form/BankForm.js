@@ -103,6 +103,7 @@ foam.CLASS({
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
             self.newBankAccount = response;
+            self.newBankAccount.status = "Unverified";
             self.subStack.push(self.views[self.subStack.pos + 1].view);
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
@@ -110,17 +111,12 @@ foam.CLASS({
         }
 
         if ( this.position == 1 ) { // On Verification screen
-            var bankId;
-            if( this.selectedAccount == undefined ) {
-              bankId = this.newBankAccount.id;
-            } else {
-              bankId = this.selectedAccount.id;
+            if ( this.selectedAccount != undefined ) {
+              this.newBankAccount = this.selectedAccount;
             }
 
-            this.bankAccountVerification.verify(bankId, this.verifyAmount).then(function(response) {
-              if( !response ) {
-                self.add(self.NotificationMessage.create({ message: 'Invalid amount', type: 'error' }));
-              } else {
+            this.bankAccountVerification.verify(this.newBankAccount.id, this.verifyAmount).then(function(response) {
+              if ( response ) {
                 self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
                 self.subStack.push(self.views[self.subStack.pos + 1].view);
               }
