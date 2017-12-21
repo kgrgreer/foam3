@@ -41,6 +41,7 @@ public class ScheduleInvoiceCron
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             Date invPaymentDate = invoice.getPaymentDate();
 
+            //Creates transaction only based on invoices scheduled for today.
             if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
               sendValueTransaction(invoice);
             }
@@ -54,7 +55,18 @@ public class ScheduleInvoiceCron
 
     public void sendValueTransaction(Invoice invoice){
       System.out.println("Starting payment process...")
-      
+      try {
+        Transaction transaction = new Transaction();
+        transaction.setPayeeId(invoice.payeeId);
+        transaction.setPayerId(invoice.payerId);
+        transaction.setAmount(invoice.amount);
+        Transaction completedTransaction = (Transaction) transactionDAO_.put(transaction);
+        invoice.setPaymentId(completedTransaction.getId());
+        invoiceDAO_.put(invoice);
+      } catch ( Throwable e ){
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
     }
 
     public void start() {
