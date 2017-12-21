@@ -7,29 +7,28 @@
 package net.nanopay.dig.model;
 
 import foam.core.*;
-import foam.dao.DAO;
+import foam.core.PropertyInfo;
+import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
-import foam.lib.json.*;
+import foam.dao.DAO;
 import foam.lib.csv.*;
-import foam.lib.html.*;
+import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.nanos.boot.NSpec;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
+import java.io.*;
 import java.nio.CharBuffer;
+import java.util.*;
+import java.util.Iterator;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
-import foam.core.PropertyInfo;
-import java.util.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import java.util.Iterator;
-import foam.dao.AbstractSink;
-import foam.nanos.boot.NSpec;
-import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
-import java.io.*;
 
 public class DigWebAgent
   implements WebAgent
@@ -115,7 +114,7 @@ public class DigWebAgent
 
           //let FObjectArray parse first
           Object o = null;
-          o = jsonParser.parseStringForArray(data, objClass);
+          //o = jsonParser.parseStringForArray(data, objClass);
           if ( o != null ) {
             Object[] objs = (Object[]) o;
             for ( int j = 0 ; j < objs.length ; j++ ) {
@@ -219,6 +218,7 @@ public class DigWebAgent
             out.println("</textarea>");
           }
         } else if ( "html".equals(format) ) {
+          /*
           foam.lib.html.Outputter outputterHtml = new foam.lib.html.Outputter();
 
           outputterHtml.outputStartHtml();
@@ -238,6 +238,7 @@ public class DigWebAgent
           } else {
             out.println(outputterHtml.toString());
           }
+          */
         }
       } else if ( "help".equals(command) ) {
         out.println("Help: <br><br>" );
