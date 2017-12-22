@@ -53,7 +53,7 @@ foam.CLASS({
         // Info from form
         var shopperInfo = this.viewData;
 
-        if ( this.position == 0 ) { 
+        if ( this.position == 0 ) {
           // Shopper Info
 
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
@@ -96,7 +96,7 @@ foam.CLASS({
             lastName: shopperInfo.lastName,
             organization: 'N/A',
             email: shopperInfo.emailAddress,
-            type: 'Shopper',
+            type: 'Personal',
             group: 'ccShopper',
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
@@ -127,7 +127,7 @@ foam.CLASS({
               payerId: this.user.id,
               amount: shopperInfo.amount
             });
-  
+
             this.transactionDAO.put(transaction).then(function(response) {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -141,7 +141,7 @@ foam.CLASS({
 
         if ( this.subStack.pos == this.views.length - 1 ) {
           // Done
-          
+
           return this.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         }
 
