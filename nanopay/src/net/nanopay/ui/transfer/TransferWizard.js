@@ -336,6 +336,7 @@ foam.CLASS({
             if ( result ) {
               if( this.invoiceMode ){
                 this.invoice.paymentId = result.id;
+                this.invoice.paymentDate = new Date();
                 this.invoiceDAO.put(this.invoice);
               }
               self.viewData.transaction = result;
