@@ -71,11 +71,8 @@ foam.CLASS({
             return;
           }
 
-          if( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
-
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
         }
 
         if ( this.position == 1 ) {
@@ -92,11 +89,8 @@ foam.CLASS({
             return;
           }
 
-          if( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
-
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
         }
 
         if ( this.position == 2 ) {
@@ -123,6 +117,7 @@ foam.CLASS({
             organization: merchantInfo.businessName,
             email: merchantInfo.companyEmail,
             type: 'Merchant',
+            group: 'ccMerchant',
             phone: merchantPhone,
             address: merchantAddress,
             password: merchantInfo.password,
@@ -141,24 +136,21 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;
           });
-
         }
 
         if ( this.position == 3 ) {
           // Send Money
 
-          if( true ) {
-            if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
-              self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
-              return;
-            }
-
+          if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          } else {
             var transaction = this.Transaction.create({
               payeeId: merchantInfo.merchant.id,
               payerId: this.user.id,
               amount: merchantInfo.amount
             });
-
+  
             this.transactionDAO.put(transaction).then(function(response) {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -174,7 +166,6 @@ foam.CLASS({
           // Done
           return this.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         }
-
       }
     }
   ]

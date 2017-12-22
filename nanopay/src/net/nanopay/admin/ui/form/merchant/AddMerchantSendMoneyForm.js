@@ -22,7 +22,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Step', message: 'Step 4: Input the amount of money you want to send to the user.' },
+    { name: 'Step', message: 'Step 4: Input the amount of money you want to send to the user or click next to skip.' },
     { name: 'AmountLabel', message: 'Amount' }
   ],
 
