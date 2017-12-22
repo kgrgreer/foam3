@@ -1,4 +1,4 @@
-package net.nanopay.cron;
+package net.nanopay.invoice;
 
 import foam.core.ContextAwareSupport;
 import foam.mlang.MLang;
@@ -18,7 +18,7 @@ public class ScheduleInvoiceCron
   extends    ContextAwareSupport
   {
     protected DAO    invoiceDAO_;
-    protected DAO    transactionDAO_;
+    protected DAO    localTransactionDAO_;
 
     public void fetchInvoices() {
       try{
@@ -35,13 +35,22 @@ public class ScheduleInvoiceCron
             return;
           }
           for ( int i = 0; i < invoiceList.size(); i++ ) {
-            Invoice invoice = (Invoice) invoiceList.get(i);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            Date invPaymentDate = invoice.getPaymentDate();
+            try {
+              Invoice invoice = (Invoice) invoiceList.get(i);
+              SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+              Date invPaymentDate = invoice.getPaymentDate();
+              System.out.println(invoice.getId().toString());
+              System.out.println(invPaymentDate.toString());
+              System.out.println(dateFormat.format(invPaymentDate));
+              System.out.println(new Date().toString());
+              System.out.println(dateFormat.format(new Date()));
 
-            //Creates transaction only based on invoices scheduled for today.
-            if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
-              sendValueTransaction(invoice);
+              //Creates transaction only based on invoices scheduled for today.
+              if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
+                sendValueTransaction(invoice);
+              }
+            } catch ( Throwable e) {
+              e.printStackTrace();
             }
           }
           System.out.println("Cron Completed.");
@@ -59,7 +68,7 @@ public class ScheduleInvoiceCron
         transaction.setPayeeId((Long) invoice.getPayeeId());
         transaction.setPayerId((Long) invoice.getPayerId());
         transaction.setAmount(invAmount);
-        Transaction completedTransaction = (Transaction) transactionDAO_.put(transaction);
+        Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
         invoice.setPaymentId((Long) completedTransaction.getId());
         invoice.setPaymentDate((Date) new Date());
         invoiceDAO_.put(invoice);
@@ -72,7 +81,7 @@ public class ScheduleInvoiceCron
 
     public void start() {
       System.out.println("Scheduled payments on Invoice Cron Starting...");
-      transactionDAO_ = (DAO) getX().get("transactionDAO");
+      localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
       System.out.println("DAO's fetched...");
       fetchInvoices();
