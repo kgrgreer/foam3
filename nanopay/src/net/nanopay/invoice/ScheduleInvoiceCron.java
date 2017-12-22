@@ -19,8 +19,6 @@ public class ScheduleInvoiceCron
   {
     protected DAO    invoiceDAO_;
     protected DAO    transactionDAO_;
-    protected DAO    userDAO_;
-    protected DAO    accountDAO_;
 
     public void fetchInvoices() {
       try{
@@ -63,6 +61,7 @@ public class ScheduleInvoiceCron
         transaction.setAmount(invAmount);
         Transaction completedTransaction = (Transaction) transactionDAO_.put(transaction);
         invoice.setPaymentId((Long) completedTransaction.getId());
+        invoice.setPaymentDate((Date) new Date());
         invoiceDAO_.put(invoice);
         System.out.println("Schedule Transaction Completed.");
       } catch ( Throwable e ){
@@ -73,9 +72,7 @@ public class ScheduleInvoiceCron
 
     public void start() {
       System.out.println("Scheduled payments on Invoice Cron Starting...");
-      userDAO_        = (DAO) getX().get("userDAO");
       transactionDAO_ = (DAO) getX().get("transactionDAO");
-      accountDAO_     = (DAO) getX().get("accountDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
       System.out.println("DAO's fetched...");
       fetchInvoices();
