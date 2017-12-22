@@ -54,15 +54,16 @@ public class ScheduleInvoiceCron
     }
 
     public void sendValueTransaction(Invoice invoice){
-      System.out.println("Starting payment process...")
+      System.out.println("Starting payment process...");
       try {
         Transaction transaction = new Transaction();
-        transaction.setPayeeId(invoice.payeeId);
-        transaction.setPayerId(invoice.payerId);
-        transaction.setAmount(invoice.amount);
+        transaction.setPayeeId((Long) invoice.getPayeeId());
+        transaction.setPayerId((Long) invoice.getPayerId());
+        transaction.setAmount((Long) invoice.getAmount());
         Transaction completedTransaction = (Transaction) transactionDAO_.put(transaction);
-        invoice.setPaymentId(completedTransaction.getId());
+        invoice.setPaymentId((Long) completedTransaction.getId());
         invoiceDAO_.put(invoice);
+        System.out.println("Schedule Transaction Completed.");
       } catch ( Throwable e ){
         e.printStackTrace();
         throw new RuntimeException(e);
