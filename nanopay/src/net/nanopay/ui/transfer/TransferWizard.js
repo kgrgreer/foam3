@@ -14,8 +14,7 @@ foam.CLASS({
 
   imports: [
     'user',
-    'transactionDAO',
-    'invoiceDAO'
+    'transactionDAO'
   ],
 
   exports: [
@@ -334,11 +333,6 @@ foam.CLASS({
 
           this.transactionDAO.put(transaction).then(function (result) {
             if ( result ) {
-              if( this.invoiceMode ){
-                this.invoice.paymentId = result.id;
-                this.invoice.paymentDate = new Date();
-                this.invoiceDAO.put(this.invoice);
-              }
               self.viewData.transaction = result;
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
