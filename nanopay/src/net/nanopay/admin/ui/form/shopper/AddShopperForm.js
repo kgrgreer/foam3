@@ -97,6 +97,7 @@ foam.CLASS({
             organization: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Shopper',
+            group: 'ccShopper',
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
@@ -118,24 +119,24 @@ foam.CLASS({
           // Send Money
 
           if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
-            self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
-            return;
-          }
-
-          var transaction = this.Transaction.create({
-            payeeId: shopperInfo.shopper.id,
-            payerId: this.user.id,
-            amount: shopperInfo.amount
-          });
-
-          this.transactionDAO.put(transaction).then(function(response) {
-            self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
-          });
+          } else {
+            var transaction = this.Transaction.create({
+              payeeId: shopperInfo.shopper.id,
+              payerId: this.user.id,
+              amount: shopperInfo.amount
+            });
+  
+            this.transactionDAO.put(transaction).then(function(response) {
+              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              return;
+            }).catch(function(error) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+              return;
+            });
+          }
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) {
