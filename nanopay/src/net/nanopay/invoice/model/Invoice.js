@@ -174,25 +174,29 @@ foam.CLASS({
         if ( draft ) return 'Draft';
         if ( paymentMethod.name == 'VOID' ) return 'Void';
         if ( paymentId === -1 ) return 'Disputed';
-        if ( paymentId ) return 'Paid';
+        if ( paymentId > 0 ) return 'Paid';
+        if ( paymentDate > Date.now() && paymentId == 0) {  return 'Scheduled' };
         if ( dueDate ) { 
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         }
         if ( paymentMethod.name == 'CHEQUE') return "Paid";
-        return paymentDate ? 'Scheduled' : 'Due';
+        return 'Due';
       },
       javaGetter: `
         if ( getDraft() ) return "Draft";
         if ( getPaymentMethod().toString() == "VOID" ) return "Void";
+        if ( getPaymentMethod().toString() == "CHEQUE" ) return "Paid";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
+        if ( getPaymentDate() != null ){
+          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 ) return "Scheduled";          
+        }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
           if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
         }
-        if ( getPaymentMethod().toString() == "CHEQUE") return "Paid";
-        return getPaymentDate() != null ? "Scheduled" : "Due";
+        return "Due";
       `,
       searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
       tableCellFormatter: function(state, obj, rel) {
