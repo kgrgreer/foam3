@@ -60,7 +60,7 @@ public class DigWebAgent
     try {
 
       if ( "put".equals(command) && ( data == null || "".equals(data) ) ) {
-        out.println("<form><span>DAO:</span>");
+        out.println("<form method=post><span>DAO:</span>");
         out.println("<span><select name=dao id=dao style=margin-left:35 onchange=changeDao()>");
 
         //gets all ongoing nanopay services
@@ -75,7 +75,7 @@ public class DigWebAgent
 
         out.println("</select></span>");
         out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:25><option value=csv>CSV</option><option value=xml>XML</option><option value=json selected>JSON</option><option value=html>HTML</option></select></span>");
-        out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5  onchange=changeCmd(this.value)><option value=put selected>PUT</option><option value=select>SELECT</option><option value=remove>REMOVE</option><option value=help>HELP</option></select></span>");
+        out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5  onchange=changeCmd(this.value)><option value=put>PUT</option><option value=select selected>SELECT</option><option value=remove>REMOVE</option><option value=help>HELP</option></select></span>");
         out.println("<br><br><span id=emailSpan style=display:none;>Email:<input name=email style=margin-left:30;width:350></input></span>");
         out.println("<br><br><span id=subjectSpan style=display:none;>Subject:<input name=subject style=margin-left:20;width:350></input></span>");
         out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:52></input></span>");
@@ -100,6 +100,8 @@ public class DigWebAgent
       if ( dao == null ) {
         throw new RuntimeException("DAO not found");
       }
+
+      dao = dao.inX(x);
 
       FObject   obj      = null;
       ClassInfo cInfo    = dao.getOf();
@@ -263,7 +265,7 @@ public class DigWebAgent
         } else if ( id == null || "".equals(id) ) {
           throw new RuntimeException("Input ID");
         } else {
-          dao.remove_(x, dao.find(id));
+          dao.remove(dao.find(id));
           out.println("Success");
         }
       } else {
