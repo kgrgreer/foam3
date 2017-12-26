@@ -148,12 +148,11 @@ public class DigWebAgent
           }
 
         } else if ( "xml".equals(format) ) {
-          XMLSupport xmlSupport = new XMLSupport();
-          XMLInputFactory factory = XMLInputFactory.newInstance();
-          StringReader reader = new StringReader(data);
-          XMLStreamReader xmlReader = factory.createXMLStreamReader(reader);
-
-          List<FObject> objList = xmlSupport.fromXML(x, xmlReader, objClass);
+          XMLSupport      xmlSupport = new XMLSupport();
+          XMLInputFactory factory    = XMLInputFactory.newInstance();
+          StringReader    reader     = new StringReader(data);
+          XMLStreamReader xmlReader  = factory.createXMLStreamReader(reader);
+          List<FObject>   objList    = xmlSupport.fromXML(x, xmlReader, objClass);
 
           Iterator i = objList.iterator();
           while ( i.hasNext() ) {
@@ -172,8 +171,8 @@ public class DigWebAgent
           csvSupport.inputCSV(is, arraySink, cInfo);
 
           List list = arraySink.getArray();
-          for( int i = 0 ; i < list.size() ; i++ ){
-              dao.put((FObject) list.get(i));
+          for ( int i = 0 ; i < list.size() ; i++ ) {
+            dao.put((FObject) list.get(i));
           }
        }
 
@@ -272,11 +271,11 @@ public class DigWebAgent
         out.println("Unknown command: " + command);
       }
 
-      if ( !"put".equals(command) ) {
+      if ( ! "put".equals(command) ) {
         data = "";
       }
 
-      if ( !"remove".equals(command) ) {
+      if ( ! "remove".equals(command) ) {
         id = "";
       }
 
