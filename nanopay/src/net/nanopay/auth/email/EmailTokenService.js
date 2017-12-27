@@ -13,11 +13,11 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
-    'net.nanopay.auth.token.Token',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
-    'java.util.UUID'
+    'java.util.UUID',
+    'net.nanopay.auth.token.Token'
   ],
 
   methods: [
