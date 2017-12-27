@@ -53,7 +53,7 @@ foam.CLASS({
         // Info from form
         var shopperInfo = this.viewData;
 
-        if ( this.position == 0 ) { 
+        if ( this.position == 0 ) {
           // Shopper Info
 
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
@@ -96,7 +96,8 @@ foam.CLASS({
             lastName: shopperInfo.lastName,
             organization: 'N/A',
             email: shopperInfo.emailAddress,
-            type: 'Shopper',
+            type: 'Personal',
+            group: 'ccShopper',
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
@@ -118,29 +119,29 @@ foam.CLASS({
           // Send Money
 
           if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
-            self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
-            return;
-          }
-
-          var transaction = this.Transaction.create({
-            payeeId: shopperInfo.shopper.id,
-            payerId: this.user.id,
-            amount: shopperInfo.amount
-          });
-
-          this.transactionDAO.put(transaction).then(function(response) {
-            self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
-          });
+          } else {
+            var transaction = this.Transaction.create({
+              payeeId: shopperInfo.shopper.id,
+              payerId: this.user.id,
+              amount: shopperInfo.amount
+            });
+
+            this.transactionDAO.put(transaction).then(function(response) {
+              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              return;
+            }).catch(function(error) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+              return;
+            });
+          }
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) {
           // Done
-          
+
           return this.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         }
 

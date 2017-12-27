@@ -152,7 +152,7 @@ foam.CLASS({
       label: 'Verify',
       isAvailable: function() {
         var self = this;
-        return self.selectedAccount.status != 'Verified';
+        return self.selectedAccount.status == 'Unverified';
       },
       code: function(X) {
         X.closeDialog();
@@ -162,11 +162,15 @@ foam.CLASS({
     {
       name: 'deleteButton',
       label: 'Delete',
+      isAvailable: function() {
+        var self = this;
+        return self.selectedAccount.status != 'Unverified';
+      },
       confirmationRequired: true,
       code: function(X) {
         var self = this;
-
         X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
+          self.add(self.NotificationMessage.create({ message: 'Bank account successfully deleted.' }));
           X.closeDialog();
         }).catch(function(error) {
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));

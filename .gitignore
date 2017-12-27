@@ -53,6 +53,7 @@ nano.log*
 
 # Service files
 /accounts
+/balanceAlerts
 /bankAccounts
 /branches
 /businesses
@@ -89,5 +90,6 @@ nano.log*
 /scripts
 /services
 /tests
+/thresholds
 /transactionLimits
 /users

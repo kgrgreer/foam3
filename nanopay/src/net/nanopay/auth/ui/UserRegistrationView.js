@@ -207,7 +207,7 @@ foam.CLASS({
           .start('p').add('Already have an account?').end()
           .start('p').addClass('link')
             .add('Sign in.')
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' }) })
+            .on('click', function(){ self.stack.push({ class: 'foam.nanos.auth.SignInView' }) })
           .end()
         .end()
       .end()
