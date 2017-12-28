@@ -243,15 +243,20 @@ public class DigWebAgent
         }  else if ( "jsonj".equals(format) ) {
           foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter();
           List a = sink.getArray();
+          String dataToString = "";
 
           for ( int i = 0 ; i < a.size() ; i++ ) {
               outputterJson.output(a.get(i));
           }
+          String dataArray[] = outputterJson.toString().split("}");
+          for ( int k = 0 ; k < dataArray.length; k++ ) {
+            dataToString += "p(" + dataArray[k] + "})\n";
+          }
 
           if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
-            output(x, "p(" + outputterJson.toString() + ")");
+            output(x, dataToString);
           } else {
-            out.println("p(" + outputterJson.toString() + ")");
+            out.println(dataToString);
           }
         }
       } else if ( "help".equals(command) ) {
