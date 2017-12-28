@@ -17,8 +17,10 @@ foam.CLASS({
   imports: [
     'user',
     'stack',
+    'device',
     'loginSuccess',
     'deviceAuth',
+    'deviceDAO',
     'serialNumber',
     'toolbarIcon',
     'toolbarTitle',
@@ -201,16 +203,25 @@ foam.CLASS({
       }
 
       this.deviceAuth.loginByEmail(null, 'device-' + this.serialNumber, this.password)
-      .then(function (user) {
-        self.loginSuccess = !! user;
-        if ( ! user ) {
+      .then(function (result) {
+        if ( ! result ) {
           throw new Error('Device activation failed');
         }
 
-        self.user.copyFrom(user);
+        self.user.copyFrom(result);
+        return self.deviceDAO.find(self.serialNumber);
+      })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device activation failed');
+        }
+
+        self.loginSuccess = true;
+        self.device.copyFrom(result);
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
+        self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });
     }

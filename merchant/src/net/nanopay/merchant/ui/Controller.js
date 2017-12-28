@@ -10,7 +10,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.merchant.ui.AppStyles'
+    'net.nanopay.merchant.ui.AppStyles',
+    'net.nanopay.retail.model.Device'
   ],
 
   exports: [
@@ -20,7 +21,8 @@ foam.CLASS({
     'toolbarIcon',
     'toolbarTitle',
     'serialNumber',
-    'copyright'
+    'copyright',
+    'device'
   ],
 
   properties: [
@@ -49,6 +51,12 @@ foam.CLASS({
       class: 'String',
       name: 'toolbarTitle',
       value: 'Home'
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.retail.model.Device',
+      name: 'device',
+      factory: function () { return this.Device.create(); }
     },
     {
       class: 'String',
@@ -147,6 +155,34 @@ foam.CLASS({
 
     function setDefaultMenu() {
       // NOP: not used for Merchant app
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user & device, else show login
+      this.auth.getCurrentUser(null).then(function (result) {
+        if ( ! result ) {
+          throw new Error('User not found');;
+        }
+
+        self.user.copyFrom(result);
+        return self.deviceDAO.find(self.serialNumber);
+      })
+      .then(function (result) {
+        if ( ! result ) {
+          throw new Error('Device not found');
+        }
+
+        self.loginSuccess = true;
+        self.device.copyFrom(result);
+      })
+      .catch(function (err) {
+        self.loginSuccess = false;
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
     },
 
     function requestLogin() {
