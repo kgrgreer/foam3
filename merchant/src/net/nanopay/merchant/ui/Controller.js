@@ -15,7 +15,8 @@ foam.CLASS({
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.merchant.ui.AppStyles',
-    'net.nanopay.retail.model.Device'
+    'net.nanopay.retail.model.Device',
+    'net.nanopay.retail.model.DeviceStatus'
   ],
 
   exports: [
@@ -176,6 +177,10 @@ foam.CLASS({
       .then(function (result) {
         if ( ! result ) {
           throw new Error('Device not found');
+        }
+
+        if ( result.status !== self.DeviceStatus.ACTIVE ) {
+          throw new Error('Device not active');
         }
 
         self.loginSuccess = true;
