@@ -172,19 +172,19 @@ foam.CLASS({
         }
 
         self.user.copyFrom(result);
-        return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).select();
+        return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).limit(1).select();
       })
       .then(function (result) {
-        if ( ! result ) {
+        if ( ! result || ! result.array || result.array.length !== 1 ) {
           throw new Error('Device not found');
         }
 
-        if ( result.status !== self.DeviceStatus.ACTIVE ) {
+        if ( result.array[0].status !== self.DeviceStatus.ACTIVE ) {
           throw new Error('Device not active');
         }
 
         self.loginSuccess = true;
-        self.device.copyFrom(result);
+        self.device.copyFrom(result.array[0]);
       })
       .catch(function (err) {
         self.loginSuccess = false;
