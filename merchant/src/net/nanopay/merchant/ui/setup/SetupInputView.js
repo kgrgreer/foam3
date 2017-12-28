@@ -12,7 +12,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.merchant.ui.KeyboardView',
-    'net.nanopay.retail.model.Device'
+    'net.nanopay.retail.model.Device',
+    'net.nanopay.retail.model.DeviceStatus'
   ],
 
   imports: [
@@ -214,6 +215,10 @@ foam.CLASS({
       })
       .then(function (result) {
         if ( ! result ) {
+          throw new Error('Device activation failed');
+        }
+
+        if ( result.status !== self.DeviceStatus.ACTIVE ) {
           throw new Error('Device activation failed');
         }
 

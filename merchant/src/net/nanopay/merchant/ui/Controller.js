@@ -187,7 +187,6 @@ foam.CLASS({
         self.device.copyFrom(result);
       })
       .catch(function (err) {
-        console.log('err =', err);
         self.loginSuccess = false;
         self.requestLogin().then(function() {
           self.getCurrentUser();
