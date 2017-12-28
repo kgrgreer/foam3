@@ -11,7 +11,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.merchant.ui.ErrorMessage',
-    'net.nanopay.merchant.ui.KeyboardView'
+    'net.nanopay.merchant.ui.KeyboardView',
+    'net.nanopay.retail.model.Device'
   ],
 
   imports: [
@@ -209,7 +210,7 @@ foam.CLASS({
         }
 
         self.user.copyFrom(result);
-        return self.deviceDAO.find(self.serialNumber);
+        return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).select();
       })
       .then(function (result) {
         if ( ! result ) {

@@ -6,6 +6,10 @@ foam.CLASS({
 
   documentation: 'Top-level Merchant application controller.',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
@@ -163,11 +167,11 @@ foam.CLASS({
       // get current user & device, else show login
       this.auth.getCurrentUser(null).then(function (result) {
         if ( ! result ) {
-          throw new Error('User not found');;
+          throw new Error('User not found');
         }
 
         self.user.copyFrom(result);
-        return self.deviceDAO.find(self.serialNumber);
+        return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).select();
       })
       .then(function (result) {
         if ( ! result ) {
@@ -178,6 +182,7 @@ foam.CLASS({
         self.device.copyFrom(result);
       })
       .catch(function (err) {
+        console.log('err =', err);
         self.loginSuccess = false;
         self.requestLogin().then(function() {
           self.getCurrentUser();
