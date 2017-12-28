@@ -50,7 +50,7 @@ foam.CLASS({
         }
       })
       .catch(function (err) {
-        self.tag(self.ErrorMessage.create({ message: e.message }));
+        self.tag(self.ErrorMessage.create({ message: err.message }));
       });
     }
   ]
