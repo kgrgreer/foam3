@@ -6,11 +6,17 @@ foam.CLASS({
 
   documentation: 'Top-level Merchant application controller.',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'net.nanopay.merchant.ui.AppStyles'
+    'net.nanopay.merchant.ui.AppStyles',
+    'net.nanopay.retail.model.Device',
+    'net.nanopay.retail.model.DeviceStatus'
   ],
 
   exports: [
@@ -20,7 +26,8 @@ foam.CLASS({
     'toolbarIcon',
     'toolbarTitle',
     'serialNumber',
-    'copyright'
+    'copyright',
+    'device'
   ],
 
   properties: [
@@ -49,6 +56,12 @@ foam.CLASS({
       class: 'String',
       name: 'toolbarTitle',
       value: 'Home'
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.retail.model.Device',
+      name: 'device',
+      factory: function () { return this.Device.create(); }
     },
     {
       class: 'String',
@@ -147,6 +160,38 @@ foam.CLASS({
 
     function setDefaultMenu() {
       // NOP: not used for Merchant app
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user & device, else show login
+      this.auth.getCurrentUser(null).then(function (result) {
+        if ( ! result ) {
+          throw new Error('User not found');
+        }
+
+        self.user.copyFrom(result);
+        return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).limit(1).select();
+      })
+      .then(function (result) {
+        if ( ! result || ! result.array || result.array.length !== 1 ) {
+          throw new Error('Device not found');
+        }
+
+        if ( result.array[0].status !== self.DeviceStatus.ACTIVE ) {
+          throw new Error('Device not active');
+        }
+
+        self.loginSuccess = true;
+        self.device.copyFrom(result.array[0]);
+      })
+      .catch(function (err) {
+        self.loginSuccess = false;
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
     },
 
     function requestLogin() {
