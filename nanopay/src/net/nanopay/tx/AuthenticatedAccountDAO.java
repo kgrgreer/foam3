@@ -16,9 +16,10 @@ import java.security.AccessControlException;
 import static foam.mlang.MLang.EQ;
 
 public class AuthenticatedAccountDAO
-    extends ProxyDAO {
+  extends ProxyDAO
+{
   public final static String GLOBAL_ACCOUNT_CREATE = "account.create.x";
-  public final static String GLOBAL_ACCOUNT_READ = "account.read.x";
+  public final static String GLOBAL_ACCOUNT_READ   = "account.read.x";
   public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.x";
   public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.x";
 
@@ -34,6 +35,7 @@ public class AuthenticatedAccountDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
+      new Exception().printStackTrace();
       throw new AccessControlException("User is not logged in");
     }
 
@@ -46,7 +48,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    User user = (User) x.get("user");
+    User        user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {

@@ -11,7 +11,6 @@ import foam.core.PropertyInfo;
 import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.JDAO;
 import foam.lib.csv.*;
 import foam.lib.json.*;
 import foam.lib.parse.*;
@@ -61,7 +60,7 @@ public class DigWebAgent
     try {
 
       if ( "put".equals(command) && ( data == null || "".equals(data) ) ) {
-        out.println("<form><span>DAO:</span>");
+        out.println("<form method=post><span>DAO:</span>");
         out.println("<span><select name=dao id=dao style=margin-left:35 onchange=changeDao()>");
 
         //gets all ongoing nanopay services
@@ -82,7 +81,7 @@ public class DigWebAgent
         out.println("<br><br><span id=idSpan style=display:none;>ID:<input name=id style=margin-left:52></input></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
         out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
-        out.println("<input id=builtUrl size=600 style=margin-left:20;display:none;/ >");
+        out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
         out.println("<script>function changeCmd(cmdValue) { if ( cmdValue != 'put' ) {document.getElementById('dataSpan').style.cssText = 'display: none'; } else { document.getElementById('dataSpan').style.cssText = 'display: inline-block'; } if ( cmdValue == 'remove' ) { document.getElementById('idSpan').style.cssText = 'display: inline-block'; document.getElementById('formatSpan').style.cssText = 'display:none';} else { document.getElementById('idSpan').style.cssText = 'display: none'; document.getElementById('formatSpan').style.cssText = 'display: inline-block';} if ( cmdValue == 'select' ) {document.getElementById('emailSpan').style.cssText = 'display: inline-block'; document.getElementById('subjectSpan').style.cssText = 'display: inline-block'; document.getElementById('urlSpan').style.cssText = 'display: inline-block';document.getElementById('builtUrl').style.cssText = 'display: inline-block'; var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}else {document.getElementById('emailSpan').style.cssText = 'display:none'; document.getElementById('subjectSpan').style.cssText ='display:none';document.getElementById('urlSpan').style.cssText = 'display:none';document.getElementById('builtUrl').style.cssText = 'display:none';}}</script>");
 
@@ -103,6 +102,8 @@ public class DigWebAgent
       if ( dao == null ) {
         throw new RuntimeException("DAO not found");
       }
+
+      dao = dao.inX(x);
 
       FObject   obj      = null;
       ClassInfo cInfo    = dao.getOf();
@@ -149,12 +150,11 @@ public class DigWebAgent
           }
 
         } else if ( "xml".equals(format) ) {
-          XMLSupport xmlSupport = new XMLSupport();
-          XMLInputFactory factory = XMLInputFactory.newInstance();
-          StringReader reader = new StringReader(data);
-          XMLStreamReader xmlReader = factory.createXMLStreamReader(reader);
-
-          List<FObject> objList = xmlSupport.fromXML(x, xmlReader, objClass);
+          XMLSupport      xmlSupport = new XMLSupport();
+          XMLInputFactory factory    = XMLInputFactory.newInstance();
+          StringReader    reader     = new StringReader(data);
+          XMLStreamReader xmlReader  = factory.createXMLStreamReader(reader);
+          List<FObject>   objList    = xmlSupport.fromXML(x, xmlReader, objClass);
 
           Iterator i = objList.iterator();
           while ( i.hasNext() ) {
@@ -173,8 +173,8 @@ public class DigWebAgent
           csvSupport.inputCSV(is, arraySink, cInfo);
 
           List list = arraySink.getArray();
-          for( int i = 0 ; i < list.size() ; i++ ){
-              dao.put((FObject) list.get(i));
+          for ( int i = 0 ; i < list.size() ; i++ ) {
+            dao.put((FObject) list.get(i));
           }
        }
 
@@ -241,17 +241,17 @@ public class DigWebAgent
             out.println(outputterHtml.toString());
           }
         }  else if ( "jsonj".equals(format) ) {
-          JDAO jdao = new JDAO(cInfo);
-
+          foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter();
           List a = sink.getArray();
+
           for ( int i = 0 ; i < a.size() ; i++ ) {
-            jdao.put_(x, (FObject) a.get(i));
+              outputterJson.output(a.get(i));
           }
 
           if ( email.length != 0 && !email[0].equals("") && email[0] != null ) {
-            output(x, jdao.toString());
+            output(x, "p(" + outputterJson.toString() + ")");
           } else {
-            out.println(jdao.toString());
+            out.println("p(" + outputterJson.toString() + ")");
           }
         }
       } else if ( "help".equals(command) ) {
@@ -279,18 +279,18 @@ public class DigWebAgent
         } else if ( id == null || "".equals(id) ) {
           throw new RuntimeException("Input ID");
         } else {
-          dao.remove_(x, dao.find(id));
+          dao.remove(dao.find(id));
           out.println("Success");
         }
       } else {
         out.println("Unknown command: " + command);
       }
 
-      if ( !"put".equals(command) ) {
+      if ( ! "put".equals(command) ) {
         data = "";
       }
 
-      if ( !"remove".equals(command) ) {
+      if ( ! "remove".equals(command) ) {
         id = "";
       }
 
