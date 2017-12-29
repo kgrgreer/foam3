@@ -192,10 +192,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
 
   //ui
-  { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/ResetView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/SuccessView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },

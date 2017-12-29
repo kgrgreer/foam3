@@ -8,7 +8,8 @@ foam.CLASS({
   imports: [
     'email',
     'tokenDAO',
-    'localUserDAO'
+    'localUserDAO',
+    'appConfig'
   ],
 
   javaImports: [
@@ -16,6 +17,7 @@ foam.CLASS({
     'foam.dao.ListSink',
     'foam.dao.Sink',
     'foam.mlang.MLang',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
@@ -45,8 +47,7 @@ foam.CLASS({
     {
       name: 'generateToken',
       javaCode:
-`
-AppConfig config = (AppConfig) getX().get("appConfig");
+`AppConfig appConfig = (AppConfig) getAppConfig();
 DAO userDAO = (DAO) getLocalUserDAO();
 DAO tokenDAO = (DAO) getTokenDAO();
 
@@ -77,19 +78,9 @@ message.setReplyTo("noreply@nanopay.net");
 message.setTo(new String[] { user.getEmail() });
 message.setSubject("Your password reset instructions");
 
-String host = null;
-try {
-  java.net.InetAddress ip = java.net.InetAddress.getLocalHost();
-  host = "http://" + ip.getHostAddress() + ":8080";
-} catch (Throwable t) {
-  host = "http://localhost:8080";
-}
-
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", config.getUrl() + "resetPassword.html?token=" + token.getData() + "#reset");
-
-System.err.println("************************** LINK " + config.getUrl());
+args.put("link", appConfig.getUrl() + "resetPassword.html?token=" + token.getData() + "#reset");
 
 email.sendEmailFromTemplate(user, message, "reset-password-mintchip", args);
 return true;`
