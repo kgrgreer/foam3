@@ -41,7 +41,7 @@ message.setSubject("MintChip email verification");
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-args.put("link", appConfig.getUrl() + "service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
+args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
 
 email.sendEmailFromTemplate(user, message, "welcome-mintchip", args);
 return true;`
