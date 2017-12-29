@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.dao.ListSink',
     'foam.dao.Sink',
     'foam.mlang.MLang',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
