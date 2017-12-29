@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ServiceProvider',
   documentation: 'Service Provider information.',
 
+  searchColumns: [],
+
   properties: [
     {
       class: 'Long',
