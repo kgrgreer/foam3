@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [ 
+  requires: [
     'net.nanopay.tx.model.Transaction',
     'foam.nanos.auth.User'
   ],
@@ -222,7 +222,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'referenceNumber', 'date', 'payeeId', 'amount',
+          'referenceNumber', 'date', 'payerId', 'payeeId', 'amount',
         ]
       }
     }
