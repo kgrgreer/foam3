@@ -159,7 +159,7 @@ return ClientTokenService_create([
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.auth.token.ClientTokenService',
+      of: 'foam.nanos.auth.token.ClientTokenService',
       name: 'resetPasswordService',
       swiftFactory: `
 return ClientTokenService_create([
