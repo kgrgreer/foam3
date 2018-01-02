@@ -230,7 +230,7 @@ foam.CLASS({
     function addBusiness() {
       var self = this;
       self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddSubscriberView' });
     }
   ]
 });

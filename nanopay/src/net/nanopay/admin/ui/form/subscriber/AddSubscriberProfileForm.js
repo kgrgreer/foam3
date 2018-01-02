@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.business',
-  name: 'AddBusinessProfileForm',
+  package: 'net.nanopay.admin.ui.form.subscriber',
+  name: 'AddSubscriberProfileForm',
   extends: 'foam.u2.Controller',
 
   documentation: 'Form to input business\'s business profile information',

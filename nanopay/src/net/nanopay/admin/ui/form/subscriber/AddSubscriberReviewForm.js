@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.business',
-  name: 'AddBusinessReviewForm',
+  package: 'net.nanopay.admin.ui.form.subscriber',
+  name: 'AddSubscriberReviewForm',
   extends: 'foam.u2.Controller',
 
   documentation: 'Form to review business information to make sure its correct',
