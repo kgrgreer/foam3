@@ -70,7 +70,7 @@ public class ServiceProviderFeeTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-          DAO tDAO = (DAO) x.get("transactionDAO");
+          DAO tDAO = (DAO) x.get("localTransactionDAO");
           serviceProviderTransaction = (Transaction) tDAO.put(serviceProviderTransaction);
 
           //Adding the created transaction to the "main" transaction

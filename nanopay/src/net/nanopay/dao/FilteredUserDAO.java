@@ -34,7 +34,7 @@ public class FilteredUserDAO
 
     // only get user if logged in user has performed transactions with that user
     long userId = user.getId();
-    DAO transactionDAO = (TransactionDAO) x.get("transactionDAO");
+    DAO transactionDAO = (TransactionDAO) x.get("localTransactionDAO");
     Sink count = new Count();
     count = transactionDAO.where(MLang.OR(
         MLang.AND(MLang.EQ(Transaction.PAYEE_ID, userId), MLang.EQ(Transaction.PAYER_ID, id)),
