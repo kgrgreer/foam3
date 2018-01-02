@@ -18,7 +18,7 @@ public class InteracTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    DAO transactionDAO          = (DAO) getX().get("transactionDAO");
+    DAO transactionDAO          = (DAO) getX().get("localTransactionDAO");
     DAO canadianTransactionDAO  = (DAO) getX().get("canadaTransactionDAO");
     DAO indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
 
