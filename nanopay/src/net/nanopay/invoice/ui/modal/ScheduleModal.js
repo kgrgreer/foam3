@@ -30,7 +30,10 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'paymentDate'
+      name: 'paymentDate',
+      expression: function(invoice) {
+        return invoice.paymentDate;
+      }
     },
     {
       name: 'note',
