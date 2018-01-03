@@ -54,6 +54,9 @@ nano.log*
 # npm
 node_modules/
 
+# xsd generated code
+nanopay/src/net/nanopay/fx/ascendantfx/model/
+
 # Service files
 /accounts
 /balanceAlerts
