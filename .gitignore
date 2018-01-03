@@ -51,6 +51,13 @@ nano.log*
 # Local Tomcat Server XML
 /server.xml
 
+# npm
+node_modules/
+
+# xsd generated code
+nanopay/src/net/nanopay/fx/ascendantfx/model/
+nanopay/src/net/nanopay/iso20022/
+
 # Service files
 /accounts
 /balanceAlerts

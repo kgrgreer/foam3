@@ -39,6 +39,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
 
+  // ascendant fx
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFX'},
+
   // retail
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
