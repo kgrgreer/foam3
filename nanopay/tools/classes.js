@@ -84,7 +84,10 @@ var classes = [
   'net.nanopay.flinks.model.FlinksRespMsg',
   'net.nanopay.flinks.model.FlinksAccount',
   //Institution model
-  'net.nanopay.model.Institution'
+  'net.nanopay.model.Institution',
+  //flinks service
+  'net.nanopay.flinks.FlinksAuth',
+  'net.nanopay.flinks.ClientFlinksAuthService',
 ];
 
 var abstractClasses = [
@@ -95,7 +98,9 @@ var skeletons = [
   'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.tx.UserTransactionLimit'
+  'net.nanopay.tx.UserTransactionLimit',
+  //flinks
+  'net.nanopay.flinks.FlinksAuth'
 ];
 
 var proxies = [

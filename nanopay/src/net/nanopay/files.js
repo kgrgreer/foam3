@@ -215,5 +215,12 @@ FOAM_FILES([
   //s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice'},
   //Institution
-  { name: 'net/nanopay/model/Institution' }
+  { name: 'net/nanopay/model/Institution' },
+  //flinks front model
+  { name: 'net/nanopay/flinks/model/FlinksAccount'},
+  { name: 'net/nanopay/flinks/model/FlinksRespMsg'},
+  { name: 'net/nanopay/flinks/model/SecurityChallengeModel'},
+  //flinks service
+  { name: 'net/nanopay/flinks/FlinksAuth'},
+  { name: 'net/nanopay/flinks/ClientFlinksAuthService'},
 ]);
