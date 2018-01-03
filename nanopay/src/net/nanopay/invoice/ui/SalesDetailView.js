@@ -44,6 +44,7 @@ foam.CLASS({
           border: 1px solid lightgrey;
           background-color: rgba(164, 179, 184, 0.1);
           vertical-align: top;
+          position: static;
         }
         ^ .net-nanopay-ui-ActionView-exportButton {
           position: absolute;
@@ -106,8 +107,7 @@ foam.CLASS({
 
   properties: [
     'voidMenuBtn_',
-    'voidPopUp_',
-    'currentInvoice'
+    'voidPopUp_'
   ],
 
   methods: [
@@ -121,7 +121,7 @@ foam.CLASS({
         .start(this.BACK_ACTION).end()
         .start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
         .start(this.RECORD_PAYMENT).end()
-        .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
+        .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' } }).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
         .start('h5').add('Bill to ', this.data.payerName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
@@ -143,7 +143,7 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView'});
+        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView' });
       }
     },
     {
@@ -171,7 +171,7 @@ foam.CLASS({
       code: function(X) {
          var self = this;
 
-         self.voidPopUp_ = foam.u2.PopupView.create({
+         self.voidPopUp_ = self.PopupView.create({
            width: 165,
            x: -137,
            y: 40
