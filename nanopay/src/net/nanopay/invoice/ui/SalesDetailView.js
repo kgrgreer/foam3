@@ -27,83 +27,78 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 962px;
-        }
-        ^ h5{
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1;
-          color: #093649;
-        }
-        ^ .net-nanopay-ui-ActionView-backAction {
-          border: 1px solid lightgrey;
-          background-color: rgba(164, 179, 184, 0.1);
-          vertical-align: top;
-          position: static;
-        }
-        ^ .net-nanopay-ui-ActionView-exportButton {
-          position: absolute;
-          width: 75px;
-          height: 40px;
-          opacity: 0.01;
-          cursor: pointer;
-          z-index: 100;
-        }
-        ^ .net-nanopay-ui-ActionView-recordPayment {
-          background-color: #59A5D5;
-          border: solid 1px #59A5D5;
-          color: white;
-          float: right;
-          margin-right: 1px;
-        }
-        ^ .net-nanopay-ui-ActionView-voidDropDown {
-          width: 30px;
-          height: 40px;
-          background-color: #59A5D5;
-          border: solid 1px #59A5D5;
-          float: right;
-        }
-        ^ .net-nanopay-ui-ActionView-voidDropDown::after {
-          content: ' ';
-          position: absolute;
-          height: 0;
-          width: 0;
-          border: 6px solid transparent;
-          border-top-color: white;
-          transform: translate(-6.5px, -1px);
-        }
-        ^ .popUpDropDown {
-          padding: 0;
-          z-index: 10000;
-          width: 165px;
-          background: white;
-          opacity: 1;
-          box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
-          position: absolute;
-        }
-        ^ .popUpDropDown > div {
-          width: 165px;
-          height: 30px;
-          font-size: 14px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          color: #093649;
-          line-height: 30px;
-        }
-        ^ .popUpDropDown > div:hover {
-          background-color: #59a5d5;
-          color: white;
-          cursor: pointer;
-        }
-        */
-      }
-    })
-  ],
+  css: `
+    ^ {
+      width: 962px;
+    }
+    ^ h5{
+      opacity: 0.6;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1;
+      color: #093649;
+    }
+    ^ .net-nanopay-ui-ActionView-backAction {
+      border: 1px solid lightgrey;
+      background-color: rgba(164, 179, 184, 0.1);
+      vertical-align: top;
+      position: static;
+    }
+    ^ .net-nanopay-ui-ActionView-exportButton {
+      position: absolute;
+      width: 75px;
+      height: 40px;
+      opacity: 0.01;
+      cursor: pointer;
+      z-index: 100;
+    }
+    ^ .net-nanopay-ui-ActionView-recordPayment {
+      background-color: #59A5D5;
+      border: solid 1px #59A5D5;
+      color: white;
+      float: right;
+      margin-right: 1px;
+    }
+    ^ .net-nanopay-ui-ActionView-voidDropDown {
+      width: 30px;
+      height: 40px;
+      background-color: #59A5D5;
+      border: solid 1px #59A5D5;
+      float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-voidDropDown::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 6px solid transparent;
+      border-top-color: white;
+      transform: translate(-6.5px, -1px);
+    }
+    ^ .popUpDropDown {
+      padding: 0;
+      z-index: 10000;
+      width: 165px;
+      background: white;
+      opacity: 1;
+      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
+      position: absolute;
+    }
+    ^ .popUpDropDown > div {
+      width: 165px;
+      height: 30px;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      color: #093649;
+      line-height: 30px;
+    }
+    ^ .popUpDropDown > div:hover {
+      background-color: #59a5d5;
+      color: white;
+      cursor: pointer;
+    }
+  `,
 
   properties: [
     'voidMenuBtn_',
