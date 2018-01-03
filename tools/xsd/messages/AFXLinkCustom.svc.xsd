@@ -4,13 +4,8 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="MethodID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Payment" nillable="true" type="ArrayOfDeal" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Payment" nillable="true" type="Deal" />
       <xs:element minOccurs="0" name="TotalNumberOfPayment" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfDeal">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="Deal" nillable="true" type="Deal" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="Deal">
@@ -44,7 +39,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
       <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Payment" nillable="true" type="ArrayOfDeal" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Payment" nillable="true" type="Deal" />
       <xs:element minOccurs="0" name="Quote" nillable="true" type="Quote" />
       <xs:element minOccurs="0" name="TotalNumberOfPayment" type="xs:int" />
     </xs:sequence>
@@ -74,14 +69,9 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="MethodID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PaymentDetail" nillable="true" type="ArrayOfDealDetail" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PaymentDetail" nillable="true" type="DealDetail" />
       <xs:element minOccurs="0" name="QuoteID" type="xs:long" />
       <xs:element minOccurs="0" name="TotalNumberOfPayment" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfDealDetail">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="DealDetail" nillable="true" type="DealDetail" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="DealDetail">
@@ -153,7 +143,7 @@
       <xs:element minOccurs="0" name="DealID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
       <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PaymentDetail" nillable="true" type="ArrayOfDealDetail" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PaymentDetail" nillable="true" type="DealDetail" />
       <xs:element minOccurs="0" name="TotalNumberOfPayment" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -161,14 +151,9 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="MethodID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PaymentDetail" nillable="true" type="ArrayOfSubmitIncomingDealDetail" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PaymentDetail" nillable="true" type="SubmitIncomingDealDetail" />
       <xs:element minOccurs="0" name="QuoteID" type="xs:long" />
       <xs:element minOccurs="0" name="TotalNumberOfPayment" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfSubmitIncomingDealDetail">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="SubmitIncomingDealDetail" nillable="true" type="SubmitIncomingDealDetail" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="SubmitIncomingDealDetail">
@@ -205,15 +190,10 @@
       <xs:element minOccurs="0" name="DealID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
       <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="InstructionToSender" nillable="true" type="ArrayOfInstructionToSender" />
-      <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PaymentDetail" nillable="true" type="ArrayOfSubmitIncomingDealDetail" />
-      <xs:element minOccurs="0" name="TotalPayment" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfInstructionToSender">
-    <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="InstructionToSender" nillable="true" type="InstructionToSender" />
+      <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PaymentDetail" nillable="true" type="SubmitIncomingDealDetail" />
+      <xs:element minOccurs="0" name="TotalPayment" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="InstructionToSender">
@@ -239,15 +219,10 @@
   </xs:complexType>
   <xs:complexType name="GetAccountBalanceResult">
     <xs:sequence>
-      <xs:element minOccurs="0" name="Account" nillable="true" type="ArrayOfAccountDetails" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Account" nillable="true" type="AccountDetails" />
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
       <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumberOfAccount" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfAccountDetails">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="AccountDetails" nillable="true" type="AccountDetails" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="AccountDetails">
@@ -286,11 +261,6 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="MethodID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PayeeDetail" nillable="true" type="ArrayOfPayeeDetail" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfPayeeDetail">
-    <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="PayeeDetail" nillable="true" type="PayeeDetail" />
     </xs:sequence>
   </xs:complexType>
@@ -357,7 +327,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="MethodID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PayeeDetail" nillable="true" type="ArrayOfPayeeDetail" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PayeeDetail" nillable="true" type="PayeeDetail" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GetPayeeInfoResult">
@@ -365,7 +335,7 @@
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
       <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumberOfPayees" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PayeeDetail" nillable="true" type="ArrayOfPayeeDetail" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PayeeDetail" nillable="true" type="PayeeDetail" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PostDealRequest">
@@ -377,15 +347,10 @@
   <xs:complexType name="PostDealResult">
     <xs:sequence>
       <xs:element minOccurs="0" name="DealPostCallID" type="xs:int" />
-      <xs:element minOccurs="0" name="Deals" nillable="true" type="ArrayOfDealDetails" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Deals" nillable="true" type="DealDetails" />
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
       <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumberOfDeals" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfDealDetails">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="DealDetails" nillable="true" type="DealDetails" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="DealDetails">
@@ -437,7 +402,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="MethodID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OrgID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PayeeDetail" nillable="true" type="ArrayOfPayeeDetail" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PayeeDetail" nillable="true" type="PayeeDetail" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PayeeInfoValidationResult">
@@ -447,24 +412,14 @@
       <xs:element minOccurs="0" name="NumberOfInValidPayees" type="xs:int" />
       <xs:element minOccurs="0" name="NumberOfPayees" type="xs:int" />
       <xs:element minOccurs="0" name="NumberOfValidPayees" type="xs:int" />
-      <xs:element minOccurs="0" name="ValidationDetail" nillable="true" type="ArrayOfValidationDetails" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfValidationDetails">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="ValidationDetails" nillable="true" type="ValidationDetails" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ValidationDetail" nillable="true" type="ValidationDetails" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ValidationDetails">
     <xs:sequence>
       <xs:element minOccurs="0" name="ErrorCode" type="xs:long" />
-      <xs:element minOccurs="0" name="ErrorDetail" nillable="true" type="ArrayOfErrorDetails" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ErrorDetail" nillable="true" type="ErrorDetails" />
       <xs:element minOccurs="0" name="PayeeDetail" nillable="true" type="PayeeDetail" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfErrorDetails">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="ErrorDetails" nillable="true" type="ErrorDetails" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ErrorDetails">
@@ -494,13 +449,8 @@
       <xs:element minOccurs="0" name="Month" type="xs:int" />
       <xs:element minOccurs="0" name="NumberOfTransaction" type="xs:int" />
       <xs:element minOccurs="0" name="OpeningBalance" type="xs:decimal" />
-      <xs:element minOccurs="0" name="Transaction" nillable="true" type="ArrayOfTransactionDetails" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Transaction" nillable="true" type="TransactionDetails" />
       <xs:element minOccurs="0" name="Year" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ArrayOfTransactionDetails">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="TransactionDetails" nillable="true" type="TransactionDetails" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TransactionDetails">
