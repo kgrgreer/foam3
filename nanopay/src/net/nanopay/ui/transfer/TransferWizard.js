@@ -215,7 +215,7 @@ foam.CLASS({
     function init() {
       if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
       else { this.title = 'Send Transfer' }
-      
+
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -334,17 +334,17 @@ foam.CLASS({
 
           this.transactionDAO.put(transaction).then(function (result) {
             if ( result ) {
-              if ( this.invoiceMode ){
-                this.invoice.paymentId = result.id;
-                this.invoice.paymentDate = new Date();
-                this.invoiceDAO.put(this.invoice);
+              if ( self.invoiceMode ){
+                self.invoice.paymentId = result.id;
+                self.invoice.paymentDate = new Date();
+                self.invoiceDAO.put(self.invoice);
               }
               self.viewData.transaction = result;
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make Another Transfer';
               self.viewData.transaction = result;
-              self.add(self.NotificationMessage.create({ message: "Success!" }));              
+              self.add(self.NotificationMessage.create({ message: "Success!" }));
             }
           })
           .catch(function (err) {
