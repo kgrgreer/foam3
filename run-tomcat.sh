@@ -41,6 +41,7 @@ cp services $CATALINA_HOME/bin/
 cp tests $CATALINA_HOME/bin/
 cp transactionLimits $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
+cp institutions $CATALINA_HOME/bin/
 
 # Copy over static web files to ROOT
 cp -r foam2/ /Library/Tomcat/webapps/ROOT/foam2
