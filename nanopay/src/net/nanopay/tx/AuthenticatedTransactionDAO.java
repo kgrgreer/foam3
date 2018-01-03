@@ -35,10 +35,19 @@ public class AuthenticatedTransactionDAO
       throw new RuntimeException("User is not logged in");
     }
 
-    if ( transaction.getPayerId() != user.getId() ) {
-      // TODO: log
-      System.err.println("Attempt for user " + user.getId() + " to create transaction from " + transaction.getPayerId());
-      throw new RuntimeException("User is not allowed");
+    if ( false /* is CICO txn */ ) {
+      if ( false /* source bank account not users */ ) {
+        // TODO: log
+        // TODO: set better message
+        throw new RuntimeException("User is not allowed");
+      }
+    } else {
+      if ( transaction.getPayerId() != user.getId() ) {
+        // TODO: log
+        System.err.println("Attempt for user " + user.getId() + " to create transaction from " + transaction.getPayerId());
+        // TODO: set better message
+        throw new RuntimeException("User is not allowed");
+      }
     }
 
     return getDelegate().put_(x, obj);

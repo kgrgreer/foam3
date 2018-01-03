@@ -36,7 +36,7 @@ public class UserTransactionLimitService
   @Override
   public void start() {
     userDAO_ = (DAO) getX().get("localUserDAO");
-    transactionDAO_ = (DAO) getX().get("transactionDAO");
+    transactionDAO_ = (DAO) getX().get("localTransactionDAO");
     transactionLimitDAO_ = (DAO) getX().get("transactionLimitDAO");
     brokerDAO_ = (DAO) getX().get("brokerDAO");
   }

@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [ 
+  requires: [
     'net.nanopay.tx.model.Transaction',
     'foam.nanos.auth.User'
   ],
@@ -209,7 +209,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
-        placeholder: 'Reference #',
+        placeholder: 'Transaction ID',
         onKey: true
       }
     },
@@ -217,12 +217,12 @@ foam.CLASS({
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return data.where(this.CONTAINS_IC(this.Transaction.REFERENCE_NUMBER, filter));
+        return filter ? data.where(this.EQ(this.Transaction.ID, filter)) : data;
       },
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'referenceNumber', 'date', 'payeeId', 'amount',
+          'id', 'date', 'payerId', 'payeeId', 'amount'
         ]
       }
     }

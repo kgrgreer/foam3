@@ -49,7 +49,7 @@ public class S2HReportingAgent
   {
     DAO userDAO = (DAO) x.get("userDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     //sets up an email to be sent
     //TODO replace with S2H's email

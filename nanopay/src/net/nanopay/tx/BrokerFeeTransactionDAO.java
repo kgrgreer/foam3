@@ -75,7 +75,7 @@ public class BrokerFeeTransactionDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
         try {
-          DAO tDAO = (DAO) x.get("transactionDAO");
+          DAO tDAO = (DAO) x.get("localTransactionDAO");
 
           brokerTransaction = (Transaction) tDAO.put(brokerTransaction);
 
