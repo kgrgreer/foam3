@@ -197,7 +197,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null,"cico.ci").then(function(perm) { 
+      this.auth.check(null,"cico.ci").then(function(perm) {
         self.hasCashIn = perm;
       });
 
@@ -208,7 +208,7 @@ foam.CLASS({
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
       this.formattedBalance = this.account.balance/100;
-    
+
       this
         .addClass(this.myClass())
         .start()
@@ -219,7 +219,7 @@ foam.CLASS({
           .end()
           .start('div').addClass('inlineDiv')
             .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
-            .start().add(this.CASH_OUT_BUTTON).end()           
+            .start().add(this.CASH_OUT_BUTTON).end()
           .end()
           .start()
             .tag({
@@ -237,7 +237,7 @@ foam.CLASS({
               },
               summaryView: this.CicoTableView.create()
             })
-          .end()      
+          .end()
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.cicoTransactions, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
         .end();
     },
@@ -326,7 +326,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.cicoTransactions,
               columns: [
-                'date', 'id', 'amount', 'type'
+                'id', 'date', 'amount', 'type'
               ]
             }).addClass(this.myClass('table')).end();
         }

@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Transaction View',
 
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions'
   ],
 
   exports: [ 'as data' ],
@@ -21,85 +21,80 @@ foam.CLASS({
   ],
 
   properties: [
-    'selection', 
+    'selection',
     {
       name: 'data',
       factory: function() { return this.transactionDAO; }
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code:
-      `
-      ^ p{
-        display: inline-block;
-      }
+  css: `
+    ^ p{
+      display: inline-block;
+    }
 
-      ^pending-top-ups {
-        opacity: 0.6;
-        font-family: Roboto;
-        font-size: 24px;
-        font-weight: 300 !important;
-        line-height: 1.0;
-        letter-spacing: 0.3px;
-        color: #093649;
-        padding-bottom: 30px;
-      }
+    ^pending-top-ups {
+      opacity: 0.6;
+      font-family: Roboto;
+      font-size: 24px;
+      font-weight: 300 !important;
+      line-height: 1.0;
+      letter-spacing: 0.3px;
+      color: #093649;
+      padding-bottom: 30px;
+    }
 
-      ^container {
-        width: 95%;
-        position: relative;
-        vertical-align: top;
-        overflow: auto;
-        z-index: 0;
-        display: block;
-        margin: auto;
-        margin-top: 30px;
-      }
+    ^container {
+      width: 95%;
+      position: relative;
+      vertical-align: top;
+      overflow: auto;
+      z-index: 0;
+      display: block;
+      margin: auto;
+      margin-top: 30px;
+    }
 
-      ^container th {
-        background: black;
-        font-family: Roboto;
-        font-size: 16px;
-        font-weight: normal;
-        line-height: 1.0;
-        letter-spacing: 0.3px;
-        color: #093649;
-        padding-left: 65px;
-        text-align: left;
-      }
+    ^container th {
+      background: black;
+      font-family: Roboto;
+      font-size: 16px;
+      font-weight: normal;
+      line-height: 1.0;
+      letter-spacing: 0.3px;
+      color: #093649;
+      padding-left: 65px;
+      text-align: left;
+    }
 
-      ^container td {
-        width: 33%;
-        padding-left: 65px;
-        text-align: left;
-        font-size: 14px;
-      }
+    ^container td {
+      width: 33%;
+      padding-left: 65px;
+      text-align: left;
+      font-size: 14px;
+    }
 
-      .foam-u2-view-TableView-th-amount {
-        text-align: left !important;
-      }
+    .foam-u2-view-TableView-th-amount {
+      text-align: left !important;
+    }
 
-      ^no-pending-transactions {
-        font-family: Roboto;
-        font-size: 14px;
-        letter-spacing: 0.2px;
-        color: #093649;
-        text-align: center;
-        display: block;
-        padding: 30px;
-      }
+    ^no-pending-transactions {
+      font-family: Roboto;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      color: #093649;
+      text-align: center;
+      display: block;
+      padding: 30px;
+    }
 
-      .profile-photo {
-        width: 35px;
-        height: 35px;
-        vertical-align: middle;
-        padding-right: 16px;
-      }
-    `
-    })
-  ],
+    .profile-photo {
+      width: 35px;
+      height: 35px;
+      vertical-align: middle;
+      padding-right: 16px;
+    }
+  `,
 
   messages: [
     {
@@ -133,12 +128,12 @@ foam.CLASS({
     {
       name: 'TransactionTableView',
       extends: 'foam.u2.View',
-      
+
       requires: [ 'net.nanopay.admin.model.Transaction' ],
       imports: [ 'transactionDAO' ],
 
-      properties: [ 
-        'selection', 
+      properties: [
+        'selection',
         { name: 'data', factory: function() { return this.transactionDAO; }}
       ],
 
@@ -152,9 +147,9 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'issueDate', 'payer', 'payee', 'amount'
+                'id', 'issueDate', 'payer', 'payee', 'amount'
               ],
-            }).end()
+            }).end();
         },
       ]
     }
