@@ -19,7 +19,8 @@ foam.CLASS({
 
   exports: [
     'as data',
-    'hideReceivableSummary' 
+    'hideReceivableSummary',
+    'openExportModal' 
   ],
   
   implements: [
@@ -42,6 +43,15 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-backAction {
           border: 1px solid lightgrey;
           background-color: rgba(164, 179, 184, 0.1);
+          vertical-align: top;
+        }
+        ^ .net-nanopay-ui-ActionView-exportButton {
+          position: absolute;
+          width: 75px;
+          height: 40px;
+          opacity: 0.01;
+          cursor: pointer;
+          z-index: 100;
         }
         ^ .net-nanopay-ui-ActionView-recordPayment {
           background-color: #59A5D5;
@@ -96,7 +106,8 @@ foam.CLASS({
 
   properties: [
     'voidMenuBtn_',
-    'voidPopUp_'
+    'voidPopUp_',
+    'currentInvoice'
   ],
 
   methods: [
@@ -110,15 +121,20 @@ foam.CLASS({
         .start(this.BACK_ACTION).end()
         .start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
         .start(this.RECORD_PAYMENT).end()
+        .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
         .start('h5').add('Bill to ', this.data.payerName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
-        .start('h2').addClass('light-roboto-h2').style({ "margin-bottom": "0px"})
+        .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
           .add('Note:')
         .end()
         .start('br').end()
         .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px'})
           .add(this.data.note)
         .end();
+    },
+
+    function openExportModal() {
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: this.data }));
     }
   ],
 
@@ -128,6 +144,14 @@ foam.CLASS({
       label: 'Back',
       code: function(X){
         X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView'});
+      }
+    },
+    {
+      name: 'exportButton',
+      label: 'Export',
+      code: function(X) {
+        X.openExportModal();
+        //X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportObj: this.data}));
       }
     },
     {
