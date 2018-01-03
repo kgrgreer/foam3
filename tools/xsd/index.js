@@ -226,18 +226,6 @@ for ( var i = 0; i < files.length; i++ ) {
     let model = models[j];
     fs.writeFileSync(outdir + model.name + '.js', model.class, 'utf8');
   }
-
-  var foamFiles = Object.keys(simpleTypes).concat(messageClasses).sort().map(function (file) {
-    if ( ! file.startsWith(packageName) ) {
-      return { name: packagePath + '/' + file }
-    } else {
-      return { name: file.replace(/\./g, '/') }
-    }
-  });
-
-  foamFiles = _.uniq(foamFiles, function (v) {
-    return v.name && v.name;
-  });
 }
 
 // generate classes.js file
@@ -264,8 +252,12 @@ module.exports = {
   blacklist: blacklist
 };`
 
-var files = simpleTypes.concat(classes).sort().map(function (file) {
-  return { name: file.replace(/\./g, '/') }
+var files = Object.keys(simpleTypes).concat(classes).sort().map(function (file) {
+  if ( ! file.startsWith(packageName) ) {
+    return { name: packagePath + '/' + file }
+  } else {
+    return { name: file.replace(/\./g, '/') }
+  }
 });
 
 // add refinements if they exist
