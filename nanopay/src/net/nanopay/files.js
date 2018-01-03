@@ -223,4 +223,13 @@ FOAM_FILES([
   //flinks service
   { name: 'net/nanopay/flinks/FlinksAuth'},
   { name: 'net/nanopay/flinks/ClientFlinksAuthService'},
+  //flinks views
+  { name: 'net/nanopay/flinks/view/FlinksView'},
+  { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksInstitutionForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksAccountForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksConnectForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/element/AccountCard', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksMFAForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksDoneForm', flags: ['web'] }
 ]);
