@@ -82,7 +82,9 @@ var classes = [
   'net.nanopay.flinks.model.FlinksAccountsSummaryResponse',
   //flinks frontend request model
   'net.nanopay.flinks.model.FlinksRespMsg',
-  'net.nanopay.flinks.model.FlinksAccount'
+  'net.nanopay.flinks.model.FlinksAccount',
+  //Institution model
+  'net.nanopay.model.Institution'
 ];
 
 var abstractClasses = [
