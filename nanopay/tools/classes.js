@@ -65,22 +65,21 @@ var classes = [
   'net.nanopay.flinks.model.FlinksAccountDetailRequest',
   'net.nanopay.flinks.model.FlinksMulAuthRequest',
   'net.nanopay.flinks.model.FlinksResponse',
-  // 'net.nanopay.flinks.model.SecurityChallengeModel',
-  // 'net.nanopay.flinks.model.FlinksResponse',
-  // 'net.nanopay.flinks.model.LoginModel',
-  // 'net.nanopay.flinks.model.FlinksInvalidResponse',
-  // 'net.nanopay.flinks.model.FlinksAuthResponse',
-  // 'net.nanopay.flinks.model.FlinksMFAResponse',
+  'net.nanopay.flinks.model.SecurityChallengeModel',
+  'net.nanopay.flinks.model.LoginModel',
+  'net.nanopay.flinks.model.FlinksInvalidResponse',
+  'net.nanopay.flinks.model.FlinksAuthResponse',
+  'net.nanopay.flinks.model.FlinksMFAResponse',
   'net.nanopay.flinks.model.BalanceModel',
   'net.nanopay.flinks.model.AccountModel',
   'net.nanopay.flinks.model.AddressModel',
   'net.nanopay.flinks.model.HolderModel',
-  // 'net.nanopay.flinks.model.AccountTransactionModel',
-  // 'net.nanopay.flinks.model.AccountWithDetailModel',
-  // 'net.nanopay.flinks.model.AccountStatementModel',
-  // 'net.nanopay.flinks.model.AccountStatementContainerModel',
-  // 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
-  // 'net.nanopay.flinks.model.FlinksAccountsSummaryResponse'
+  'net.nanopay.flinks.model.AccountTransactionModel',
+  'net.nanopay.flinks.model.AccountWithDetailModel',
+  'net.nanopay.flinks.model.AccountStatementModel',
+  'net.nanopay.flinks.model.AccountStatementContainerModel',
+  'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+  'net.nanopay.flinks.model.FlinksAccountsSummaryResponse'
 ];
 
 var abstractClasses = [
