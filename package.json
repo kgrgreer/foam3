@@ -1,0 +1,21 @@
+{
+  "name": "nanopay",
+  "version": "0.0.1",
+  "description": "NANOPAY",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nanopayinc/NANOPAY.git"
+  },
+  "author": "nanopay Corporation",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nanopayinc/NANOPAY/issues"
+  },
+  "homepage": "https://github.com/nanopayinc/NANOPAY#readme",
+  "dependencies": {
+    "json-stringify-pretty-compact": "^1.0.4",
+    "mkdirp": "^0.5.1",
+    "underscore": "^1.8.3",
+    "xmldom": "^0.1.27"
+  }
+}

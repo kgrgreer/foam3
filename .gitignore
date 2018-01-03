@@ -51,6 +51,9 @@ nano.log*
 # Local Tomcat Server XML
 /server.xml
 
+# npm
+node_modules/
+
 # Service files
 /accounts
 /balanceAlerts
