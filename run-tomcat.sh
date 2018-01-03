@@ -99,10 +99,15 @@ cp tests $CATALINA_HOME/bin/
 cp transactionLimits $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
 
+# Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
+rmdir $WEBAPPS/foam2
+rmdir $WEBAPPS/nanopay
+rmdir $WEBAPPS/merchant
+
 # Copy over static web files to ROOT
-cp -r foam2/ $WEBAPPS/ROOT/foam2
-cp -r nanopay/ $WEBAPPS/ROOT/nanopay
-cp -r merchant/ $WEBAPPS/ROOT/merchant
+cp -r foam2 $WEBAPPS/ROOT/foam2
+cp -r nanopay $WEBAPPS/ROOT/nanopay
+cp -r merchant $WEBAPPS/ROOT/merchant
 
 # Move images to ROOT/images
 rmdir $WEBAPPS/ROOT/images
