@@ -268,5 +268,10 @@ var files = simpleTypes.concat(classes).sort().map(function (file) {
   return { name: file.replace(/\./g, '/') }
 });
 
+// add refinements if they exist
+if ( fs.existsSync(outdir + 'refinements.js') ) {
+  files.push({ name: packagePath + '/refinements' });
+}
+
 fs.writeFileSync(outdir + 'files.js', 'FOAM_FILES(' + stringify(files) + ')', 'utf8');
 fs.writeFileSync(classesOutDir + 'classes.js', classesOutput, 'utf8');
