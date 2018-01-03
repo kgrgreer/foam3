@@ -24,7 +24,7 @@ var packagePath = packageName.replace(/\./g, "/");
 var indir = path.join(__dirname, '/messages/');
 var outdir = path.join(__dirname, '../../nanopay/src/' + packagePath + '/');
 
-var classesOutDir = path.join(__dirname, '../../tools/');
+var classesOutDir = path.join(__dirname, '../../nanopay/src/' + packagePath + '/');
 
 var classes = [];
 var simpleTypes = [];
