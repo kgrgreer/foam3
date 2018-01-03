@@ -247,7 +247,7 @@ if ( ! fs.existsSync(classesOutDir) ) {
 
 let classesOutput = '';
 for ( var key in simpleTypes ) {
-  classesOutput += 'require(\'../src/' + packagePath + '/' + key + '.js\');\n';
+  classesOutput += 'require(\'./' + key + '.js\');\n';
 }
 
 classesOutput += `var classes = ${modelToStr(classes)};
