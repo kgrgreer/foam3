@@ -12,28 +12,6 @@ public class AscendantFXService
     extends ContextAwareSupport
     implements AscendantFX
 {
-  protected static final ThreadLocal<MessageFactory> mf = new ThreadLocal<MessageFactory>() {
-    @Override
-    protected MessageFactory initialValue() {
-      try {
-        return MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL);
-      } catch (Throwable t) {
-        throw new RuntimeException(t);
-      }
-    }
-  };
-
-  protected static final ThreadLocal<SOAPConnectionFactory> scf = new ThreadLocal<SOAPConnectionFactory>() {
-    @Override
-    protected SOAPConnectionFactory initialValue() {
-      try {
-        return SOAPConnectionFactory.newInstance();
-      } catch (Throwable t) {
-        throw new RuntimeException(t);
-      }
-    }
-  };
-
   protected final String host_;
   protected final String username_;
   protected final String password_;
@@ -305,7 +283,7 @@ public class AscendantFXService
    */
   protected SOAPMessage createSOAPMessage(String method, FObject object) {
     try {
-      SOAPMessage message = mf.get().createMessage();
+      SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage();
       SOAPPart part = message.getSOAPPart();
 
       // get envelope, header, and body
@@ -413,7 +391,7 @@ public class AscendantFXService
     SOAPConnection conn = null;
 
     try {
-      conn = scf.get().createConnection();
+      conn = SOAPConnectionFactory.newInstance().createConnection();
       return conn.call(message, host_ + "/" + method);
     } catch (Throwable t) {
       throw new RuntimeException(t);
