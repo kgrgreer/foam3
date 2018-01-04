@@ -22,6 +22,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,22 @@ public class LianLianPayService
       StringBuilder b = super.get();
       b.setLength(0);
       return b;
+    }
+  };
+
+  // decimal formatter for scale of 2
+  protected static ThreadLocal<DecimalFormat> df2 = new ThreadLocal<DecimalFormat>() {
+    @Override
+    protected DecimalFormat initialValue() {
+      return new DecimalFormat("#.00");
+    }
+  };
+
+  // decimal formatter for scale of 8
+  protected static ThreadLocal<DecimalFormat> df8 = new ThreadLocal<DecimalFormat>() {
+    @Override
+    protected DecimalFormat initialValue() {
+      return new DecimalFormat("#.00000000");
     }
   };
 
@@ -144,9 +161,11 @@ public class LianLianPayService
       InstructionCombinedSummary summary = request.getSummary();
       builder.append(summary.getBatchId()).append("|")
           .append(summary.getSourceCurrency()).append("|")
-          .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ? summary.getDistributeMode() : "").append("|")
+          .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ?
+              df2.get().format(summary.getTotalSourceAmount()) : "").append("|")
           .append(summary.getTargetCurrency()).append("|")
-          .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ? summary.getTotalTargetAmount() : "").append("|")
+          .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ?
+              df2.get().format(summary.getTotalTargetAmount()) : "").append("|")
           .append(summary.getTotalCount()).append("|")
           .append(((DistributionMode) summary.getDistributeMode()).getOrdinal()).append("|")
           .append(((InstructionType) summary.getInstructionType()).getOrdinal()).append("\n");
@@ -167,26 +186,27 @@ public class LianLianPayService
           headersOutput = true;
         }
 
-        // append instruction
         builder.append(instruction.getOrderId()).append("|")
             .append(((InstructionType) instruction.getFundsType()).getOrdinal()).append("|")
             .append(instruction.getSourceCurrency()).append("|")
-            .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getSourceAmount() : "|")
+            .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getSourceAmount() : "").append("|")
             .append(instruction.getTargetCurrency()).append("|")
-            .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getTargetAmount() : "|")
+            .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getTargetAmount() : "").append("|")
             .append(instruction.getPayeeCompanyName()).append("|")
             .append(instruction.getPayeeContactNumber()).append("|")
-            .append(SafetyUtil.isEmpty(instruction.getPayeeSocialCreditCode()) ? instruction.getPayeeOrganizationCode() : "|")
-            .append(SafetyUtil.isEmpty(instruction.getPayeeOrganizationCode()) ? instruction.getPayeeSocialCreditCode() : "|")
-            .append(! SafetyUtil.isEmpty(instruction.getPayeeEmailAddress()) ? instruction.getPayeeEmailAddress() : "|")
-            .append(SafetyUtil.isEmpty(instruction.getPayeeBankBranchName()) ? instruction.getPayeeBankName() : "|")
-            .append(instruction.getPayeeBankName() == 0 ? instruction.getPayeeBankBranchName() : "|")
+            .append(SafetyUtil.isEmpty(instruction.getPayeeSocialCreditCode()) ? instruction.getPayeeOrganizationCode() : "").append("|")
+            .append(SafetyUtil.isEmpty(instruction.getPayeeOrganizationCode()) ? instruction.getPayeeSocialCreditCode() : "").append("|")
+            .append(! SafetyUtil.isEmpty(instruction.getPayeeEmailAddress()) ? instruction.getPayeeEmailAddress() : "").append("|")
+            .append(SafetyUtil.isEmpty(instruction.getPayeeBankBranchName()) ? instruction.getPayeeBankName() : "").append("|")
+            .append(instruction.getPayeeBankName() == 0 ? instruction.getPayeeBankBranchName() : "").append("|")
             .append(instruction.getPayeeBankAccount()).append("|")
             .append(instruction.getPayerId()).append("|")
             .append(instruction.getPayerName()).append("|")
             .append(instruction.getTradeCode()).append("|")
-            .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "\n");
+            .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
       }
+
+
 
       System.out.println(builder.toString());
     } catch (Throwable t) {
