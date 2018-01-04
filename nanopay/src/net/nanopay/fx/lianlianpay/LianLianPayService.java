@@ -171,21 +171,21 @@ public class LianLianPayService
         builder.append(instruction.getOrderId()).append("|")
             .append(((InstructionType) instruction.getFundsType()).getOrdinal()).append("|")
             .append(instruction.getSourceCurrency()).append("|")
-            .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getSourceAmount() : "").append("|")
+            .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getSourceAmount() : "|")
             .append(instruction.getTargetCurrency()).append("|")
-            .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getTargetAmount() : "").append("|")
+            .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ? instruction.getTargetAmount() : "|")
             .append(instruction.getPayeeCompanyName()).append("|")
             .append(instruction.getPayeeContactNumber()).append("|")
-            .append(SafetyUtil.isEmpty(instruction.getPayeeSocialCreditCode()) ? instruction.getPayeeOrganizationCode() : "").append("|")
-            .append(SafetyUtil.isEmpty(instruction.getPayeeOrganizationCode()) ? instruction.getPayeeSocialCreditCode() : "").append("|")
-            .append(! SafetyUtil.isEmpty(instruction.getPayeeEmailAddress()) ? instruction.getPayeeEmailAddress() : "").append("|")
-            .append(SafetyUtil.isEmpty(instruction.getPayeeBankBranchName()) ? instruction.getPayeeBankName() : "").append("|")
-            .append(instruction.getPayeeBankName() == 0 ? instruction.getPayeeBankBranchName() : "").append("|")
+            .append(SafetyUtil.isEmpty(instruction.getPayeeSocialCreditCode()) ? instruction.getPayeeOrganizationCode() : "|")
+            .append(SafetyUtil.isEmpty(instruction.getPayeeOrganizationCode()) ? instruction.getPayeeSocialCreditCode() : "|")
+            .append(! SafetyUtil.isEmpty(instruction.getPayeeEmailAddress()) ? instruction.getPayeeEmailAddress() : "|")
+            .append(SafetyUtil.isEmpty(instruction.getPayeeBankBranchName()) ? instruction.getPayeeBankName() : "|")
+            .append(instruction.getPayeeBankName() == 0 ? instruction.getPayeeBankBranchName() : "|")
             .append(instruction.getPayeeBankAccount()).append("|")
             .append(instruction.getPayerId()).append("|")
             .append(instruction.getPayerName()).append("|")
             .append(instruction.getTradeCode()).append("|")
-            .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
+            .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "\n");
       }
 
       System.out.println(builder.toString());
