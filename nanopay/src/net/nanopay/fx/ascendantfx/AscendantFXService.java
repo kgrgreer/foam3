@@ -40,9 +40,9 @@ public class AscendantFXService
 
   public AscendantFXService(X x, String host, String username, String password) {
     setX(x);
-    this.host_ = host;
-    this.username_ = username;
-    this.password_ = password;
+    host_ = host;
+    username_ = username;
+    password_ = password;
   }
 
   @Override
@@ -340,12 +340,12 @@ public class AscendantFXService
       // add username
       SOAPElement usernameToken = security.addChildElement("UsernameToken", "o");
       SOAPElement username = usernameToken.addChildElement("Username", "o");
-      username.addTextNode(this.username_);
+      username.addTextNode(username_);
 
       // add password
       SOAPElement password = usernameToken.addChildElement("Password", "o");
       password.addAttribute(new QName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-      password.addTextNode(this.password_);
+      password.addTextNode(password_);
 
       // add outer and inner wrappers and then add request body
       SOAPElement outer = body.addChildElement(method, null, "http://tempuri.org/");
