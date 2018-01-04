@@ -51,7 +51,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetQuote", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "GetQuote");
+      SOAPMessage response = sendMessage("GetQuote", message);
       // parse response
       return (GetQuoteResult) parseMessage(response, GetQuoteResult.class);
     } catch (Throwable t) {
@@ -65,7 +65,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("AcceptQuote", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "AcceptQuote");
+      SOAPMessage response = sendMessage("AcceptQuote", message);
       // parse response
       return (AcceptQuoteResult) parseMessage(response, AcceptQuoteResult.class);
     } catch (Throwable t) {
@@ -79,7 +79,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("SubmitDeal", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "SubmitDeal");
+      SOAPMessage response = sendMessage("SubmitDeal", message);
       // parse response
       return (SubmitDealResult) parseMessage(response, SubmitDealResult.class);
     } catch (Throwable t) {
@@ -93,7 +93,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("SubmitIncomingDeal", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "SubmitIncomingDeal");
+      SOAPMessage response = sendMessage("SubmitIncomingDeal", message);
       // parse response
       return (SubmitIncomingDealResult) parseMessage(response, SubmitIncomingDealResult.class);
     } catch (Throwable t) {
@@ -107,7 +107,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetAccountBalance", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "GetAccountBalance");
+      SOAPMessage response = sendMessage("GetAccountBalance", message);
       // parse response
       return (GetAccountBalanceResult) parseMessage(response, GetAccountBalanceResult.class);
     } catch (Throwable t) {
@@ -121,7 +121,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("ValidateIBAN", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "ValidateIBAN");
+      SOAPMessage response = sendMessage("ValidateIBAN", message);
       // parse response
       return (ValidateIBANResult) parseMessage(response, ValidateIBANResult.class);
     } catch (Throwable t) {
@@ -135,7 +135,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("AddPayee", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "AddPayee");
+      SOAPMessage response = sendMessage("AddPayee", message);
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -149,7 +149,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("UpdatePayee", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "UpdatePayee");
+      SOAPMessage response = sendMessage("UpdatePayee", message);
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -163,7 +163,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("DeletePayee", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "DeletePayee");
+      SOAPMessage response = sendMessage("DeletePayee", message);
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -177,7 +177,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetPayeeInfo", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "GetPayeeInfo");
+      SOAPMessage response = sendMessage("GetPayeeInfo", message);
       // parse response
       return (GetPayeeInfoResult) parseMessage(response, GetPayeeInfoResult.class);
     } catch (Throwable t) {
@@ -191,7 +191,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("PostDeal", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "PostDeal");
+      SOAPMessage response = sendMessage("PostDeal", message);
       // parse response
       return (PostDealResult) parseMessage(response, PostDealResult.class);
     } catch (Throwable t) {
@@ -205,7 +205,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("PostDealConfirmation", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "PostDealConfirmation");
+      SOAPMessage response = sendMessage("PostDealConfirmation", message);
       // parse response
       return (PostDealConfirmationResult) parseMessage(response, PostDealConfirmationResult.class);
     } catch (Throwable t) {
@@ -219,7 +219,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("PayeeInfoValidation", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "PayeeInfoValidation");
+      SOAPMessage response = sendMessage("PayeeInfoValidation", message);
       // parse response
       return (PayeeInfoValidationResult) parseMessage(response, PayeeInfoValidationResult.class);
     } catch (Throwable t) {
@@ -233,7 +233,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetAccountActivity", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "GetAccountActivity");
+      SOAPMessage response = sendMessage("GetAccountActivity", message);
       // parse response
       return (GetAccountActivityResult) parseMessage(response, GetAccountActivityResult.class);
     } catch (Throwable t) {
@@ -247,7 +247,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("IncomingFundStatusCheck", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "IncomingFundStatusCheck");
+      SOAPMessage response = sendMessage("IncomingFundStatusCheck", message);
       // parse response
       return (IncomingFundStatusCheckResult) parseMessage(response, IncomingFundStatusCheckResult.class);
     } catch (Throwable t) {
@@ -261,7 +261,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetQuoteTBA", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "GetQuoteTBA");
+      SOAPMessage response = sendMessage("GetQuoteTBA", message);
       // parse response
       return (GetQuoteTBAResult) parseMessage(response, GetQuoteTBAResult.class);
     } catch (Throwable t) {
@@ -275,7 +275,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("AcceptAndSubmitDealTBA", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "AcceptAndSubmitDealTBA");
+      SOAPMessage response = sendMessage("AcceptAndSubmitDealTBA", message);
       // parse response
       return (AcceptAndSubmitDealTBAResult) parseMessage(response, AcceptAndSubmitDealTBAResult.class);
     } catch (Throwable t) {
@@ -289,7 +289,7 @@ public class AscendantFXService
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetIncomingPaymentInstruction", request);
       // send soap message
-      SOAPMessage response = sendMessage(message, "GetIncomingPaymentInstruction");
+      SOAPMessage response = sendMessage("GetIncomingPaymentInstruction", message);
       // parse response
       return (IncomingPaymentInstructionResult) parseMessage(response, IncomingPaymentInstructionResult.class);
     } catch (Throwable t) {
@@ -405,11 +405,11 @@ public class AscendantFXService
   /**
    * Sends a SOAP message to the given method
    *
-   * @param message SOAP message to send
    * @param method url endpoint
+   * @param message SOAP message to send
    * @return SOAP message response
    */
-  protected SOAPMessage sendMessage(SOAPMessage message, String method) {
+  protected SOAPMessage sendMessage(String method, SOAPMessage message) {
     SOAPConnection conn = null;
 
     try {
