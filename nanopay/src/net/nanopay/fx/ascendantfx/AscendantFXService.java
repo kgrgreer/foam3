@@ -12,8 +12,6 @@ public class AscendantFXService
     extends ContextAwareSupport
     implements AscendantFX
 {
-  public static final String HOST = "https://afxlink-test.ascendantfx.com/AFXLinkCustom.svc";
-
   protected static final ThreadLocal<MessageFactory> mf = new ThreadLocal<MessageFactory>() {
     @Override
     protected MessageFactory initialValue() {
@@ -36,11 +34,13 @@ public class AscendantFXService
     }
   };
 
+  protected final String host_;
   protected final String username_;
   protected final String password_;
 
-  public AscendantFXService(X x, String username, String password) {
+  public AscendantFXService(X x, String host, String username, String password) {
     setX(x);
+    this.host_ = host;
     this.username_ = username;
     this.password_ = password;
   }
@@ -414,7 +414,7 @@ public class AscendantFXService
 
     try {
       conn = scf.get().createConnection();
-      return conn.call(message, HOST + "/" + method);
+      return conn.call(message, host_ + "/" + method);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
