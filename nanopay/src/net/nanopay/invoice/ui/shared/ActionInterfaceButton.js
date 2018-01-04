@@ -61,7 +61,6 @@ foam.CLASS({
           top: -20px;
         }
         ^top-action-buttons{
-          width: 685px;
           float: right;
         }
         ^ .optionsDropDown {
