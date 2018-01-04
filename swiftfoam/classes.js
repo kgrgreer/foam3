@@ -46,6 +46,7 @@ var classes = [
   'foam.nanos.auth.token.ClientTokenService',
   'foam.nanos.auth.token.Token',
   'foam.nanos.auth.token.TokenService',
+  'foam.nanos.auth.resetPassword.ResetPasswordTokenService',		
   'foam.swift.box.RPCReturnBox',
   'foam.swift.parse.StringPStream',
   'foam.swift.parse.json.output.Outputter',
