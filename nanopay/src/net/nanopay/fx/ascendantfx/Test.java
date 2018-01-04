@@ -4,7 +4,6 @@ import foam.core.ProxyX;
 import net.nanopay.fx.ascendantfx.model.Deal;
 import net.nanopay.fx.ascendantfx.model.Direction;
 import net.nanopay.fx.ascendantfx.model.GetQuoteRequest;
-import net.nanopay.fx.ascendantfx.model.OriginatorType;
 
 public class Test {
 

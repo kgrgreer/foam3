@@ -2,14 +2,9 @@ package net.nanopay.fx.ascendantfx;
 
 import foam.core.*;
 import net.nanopay.fx.ascendantfx.model.*;
-import org.apache.commons.io.IOUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,8 +52,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("GetQuote", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "GetQuote");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (GetQuoteResult) parseMessage(response, GetQuoteResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -71,8 +66,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("AcceptQuote", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "AcceptQuote");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (AcceptQuoteResult) parseMessage(response, AcceptQuoteResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -85,8 +80,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("SubmitDeal", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "SubmitDeal");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (SubmitDealResult) parseMessage(response, SubmitDealResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -99,8 +94,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("SubmitIncomingDeal", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "SubmitIncomingDeal");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (SubmitIncomingDealResult) parseMessage(response, SubmitIncomingDealResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -113,8 +108,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("GetAccountBalance", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "GetAccountBalance");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (GetAccountBalanceResult) parseMessage(response, GetAccountBalanceResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -127,8 +122,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("ValidateIBAN", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "ValidateIBAN");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (ValidateIBANResult) parseMessage(response, ValidateIBANResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -141,8 +136,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("AddPayee", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "AddPayee");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -155,8 +150,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("UpdatePayee", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "UpdatePayee");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -169,8 +164,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("DeletePayee", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "DeletePayee");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -183,8 +178,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("GetPayeeInfo", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "GetPayeeInfo");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (GetPayeeInfoResult) parseMessage(response, GetPayeeInfoResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -197,8 +192,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("PostDeal", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "PostDeal");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (PostDealResult) parseMessage(response, PostDealResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -211,8 +206,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("PostDealConfirmation", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "PostDealConfirmation");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (PostDealConfirmationResult) parseMessage(response, PostDealConfirmationResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -225,8 +220,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("PayeeInfoValidation", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "PayeeInfoValidation");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (PayeeInfoValidationResult) parseMessage(response, PayeeInfoValidationResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -239,8 +234,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("GetAccountActivity", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "GetAccountActivity");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (GetAccountActivityResult) parseMessage(response, GetAccountActivityResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -253,8 +248,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("IncomingFundStatusCheck", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "IncomingFundStatusCheck");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (IncomingFundStatusCheckResult) parseMessage(response, IncomingFundStatusCheckResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -267,8 +262,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("GetQuoteTBA", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "GetQuoteTBA");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (GetQuoteTBAResult) parseMessage(response, GetQuoteTBAResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -281,8 +276,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("AcceptAndSubmitDealTBA", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "AcceptAndSubmitDealTBA");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (AcceptAndSubmitDealTBAResult) parseMessage(response, AcceptAndSubmitDealTBAResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -295,8 +290,8 @@ public class AscendantFXService
       SOAPMessage message = createSOAPMessage("GetIncomingPaymentInstruction", request);
       // send soap message
       SOAPMessage response = sendMessage(message, "GetIncomingPaymentInstruction");
-      response.writeTo(System.out);
-      return null;
+      // parse response
+      return (IncomingPaymentInstructionResult) parseMessage(response, IncomingPaymentInstructionResult.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -409,6 +404,61 @@ public class AscendantFXService
       if ( conn != null ) {
         try { conn.close(); } catch (Throwable t) {}
       }
+    }
+  }
+
+  /**
+   * Parses the SOAP Message
+   *
+   * @param message the SOAP Message to part
+   * @param clazz the class
+   * @return the parsed response
+   */
+  protected FObject parseMessage(SOAPMessage message, Class clazz) {
+    try {
+      SOAPBody body = message.getSOAPBody();
+
+      Iterator iterator = body.getChildElements();
+      SOAPBodyElement outer = (SOAPBodyElement) iterator.next();
+      iterator = outer.getChildElements();
+      SOAPBodyElement inner = (SOAPBodyElement) iterator.next();
+
+      FObject obj = (FObject) getX().create(clazz);
+      parseBody(inner, obj);
+      return obj;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * Parses the body of the SOAP message
+   *
+   * @param element the current SOAP element
+   * @param obj the current FOBject
+   */
+  protected void parseBody(SOAPElement element, FObject obj) {
+    if ( obj == null ) return;
+
+    try {
+      List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
+      Iterator i = props.iterator();
+
+      while ( i.hasNext() ) {
+        PropertyInfo prop = (PropertyInfo) i.next();
+        Iterator children = element.getChildElements(new QName("http://www.afx.com", prop.getName(), "b"));
+
+        while ( children.hasNext() ) {
+          SOAPElement child = (SOAPElement) children.next();
+          System.out.println(child.getLocalName());
+          if ( child.getLocalName().equals(prop.getName()) ) {
+            prop.setFromString(obj, child.getValue());
+            break;
+          }
+        }
+      }
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
     }
   }
 }
