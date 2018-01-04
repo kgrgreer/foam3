@@ -35,54 +35,50 @@ foam.CLASS({
     { name: 'Title', message: 'Record Payment' }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 448px;
-          margin: auto;
-          font-family: Roboto;
-        }
-        ^ .net-nanopay-ui-ActionView-close{
-          right: -280px !important;
-        }
-        ^ .popUpHeader {
-          width: 448px;
-          height: 40px;
-          background-color: #093649;
-        }
-        ^ .popUpTitle {
-          width: 198px;
-          height: 40px;
-          font-family: Roboto;
-          font-size: 14px;
-          line-height: 40.5px;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #ffffff;
-          margin-left: 20px;
-          display: inline-block;
-        }
-        ^ .net-nanopay-ui-ActionView-closeButton {
-          width: 24px;
-          height: 24px;
-          margin: 0;
-          margin-top: 7px;
-          margin-right: 20px;
-          display: inline-block;
-          float: right;
-          outline: 0;
-          border: none;
-          background: transparent;
-          box-shadow: none;
-        }
-        ^ .net-nanopay-ui-ActionView-closeButton:hover {
-          background: transparent;
-          background-color: transparent;
-        }
-    */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 448px;
+      margin: auto;
+      font-family: Roboto;
+    }
+    ^ .net-nanopay-ui-ActionView-close{
+      right: -280px !important;
+    }
+    ^ .popUpHeader {
+      width: 448px;
+      height: 40px;
+      background-color: #093649;
+    }
+    ^ .popUpTitle {
+      width: 198px;
+      height: 40px;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 40.5px;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #ffffff;
+      margin-left: 20px;
+      display: inline-block;
+    }
+    ^ .net-nanopay-ui-ActionView-closeButton {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      margin-top: 7px;
+      margin-right: 20px;
+      display: inline-block;
+      float: right;
+      outline: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+    ^ .net-nanopay-ui-ActionView-closeButton:hover {
+      background: transparent;
+      background-color: transparent;
+    }
+  `,
   
   methods: [
     function initE(){
