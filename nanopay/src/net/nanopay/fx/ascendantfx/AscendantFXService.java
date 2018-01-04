@@ -66,87 +66,240 @@ public class AscendantFXService
 
   @Override
   public AcceptQuoteResult acceptQuote(AcceptQuoteRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("AcceptQuote", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "AcceptQuote");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public SubmitDealResult submitDeal(SubmitDealRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("SubmitDeal", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "SubmitDeal");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public SubmitIncomingDealResult submitIncomingDeal(SubmitIncomingDealRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("SubmitIncomingDeal", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "SubmitIncomingDeal");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public GetAccountBalanceResult getAccountBalance(GetAccountBalanceRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("GetAccountBalance", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "GetAccountBalance");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public ValidateIBANResult validateIBAN(ValidateIBANRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("ValidateIBAN", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "ValidateIBAN");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public PayeeOperationResult addPayee(PayeeOperationRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("AddPayee", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "AddPayee");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public PayeeOperationResult updatePayee(PayeeOperationRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("UpdatePayee", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "UpdatePayee");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public PayeeOperationResult deletePayee(PayeeOperationRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("DeletePayee", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "DeletePayee");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public GetPayeeInfoResult getPayeeInfo(GetPayeeInfoRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("GetPayeeInfo", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "GetPayeeInfo");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public PostDealResult postDeal(PostDealRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("PostDeal", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "PostDeal");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public PostDealConfirmationResult postDealConfirmation(PostDealConfirmationRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("PostDealConfirmation", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "PostDealConfirmation");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public PayeeInfoValidationResult validatePayeeInfo(PayeeInfoValidationRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("PayeeInfoValidation", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "PayeeInfoValidation");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public GetAccountActivityResult getAccountActivity(GetAccountActivityRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("GetAccountActivity", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "GetAccountActivity");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public IncomingFundStatusCheckResult checkIncomingFundsStatus(IncomingFundStatusCheckRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("IncomingFundStatusCheck", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "IncomingFundStatusCheck");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public GetQuoteTBAResult getQuoteTBA(GetQuoteTBARequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("GetQuoteTBA", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "GetQuoteTBA");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public AcceptAndSubmitDealTBAResult acceptAndSubmitDealTBA(AcceptQuoteRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("AcceptAndSubmitDealTBA", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "AcceptAndSubmitDealTBA");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
   public IncomingPaymentInstructionResult getIncomingPaymentInstruction(IncomingPaymentInstructionRequest request) {
-    return null;
+    try {
+      // initialize soap message
+      SOAPMessage message = createSOAPMessage("GetIncomingPaymentInstruction", request);
+      // send soap message
+      SOAPMessage response = sendMessage(message, "GetIncomingPaymentInstruction");
+      response.writeTo(System.out);
+      return null;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   /**
