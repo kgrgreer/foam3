@@ -6,9 +6,7 @@ import net.nanopay.fx.ascendantfx.model.*;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class AscendantFXService
     extends ContextAwareSupport
@@ -315,6 +313,8 @@ public class AscendantFXService
       SOAPHeader header = envelope.getHeader();
       SOAPBody body = envelope.getBody();
 
+      // AFX doesn't seem to accept the default namespace prefixes
+      // so override the default with the ones found in their message
       envelope.removeNamespaceDeclaration(envelope.getPrefix());
       envelope.addNamespaceDeclaration("s", "http://www.w3.org/2003/05/soap-envelope");
       envelope.addNamespaceDeclaration("a", "http://www.w3.org/2005/08/addressing");
@@ -323,25 +323,31 @@ public class AscendantFXService
       header.setPrefix("s");
       body.setPrefix("s");
 
+      // add the "action" child element
       SOAPElement action = header.addChildElement("Action", "a");
       action.addAttribute(new QName("s:mustUnderstand"), "1");
       action.addTextNode("http://tempuri.org/IAFXLinkRESTServiceCustom/" + method);
 
+      // add the "to" child element
       SOAPElement to = header.addChildElement("To", "a");
       to.addAttribute(new QName("s:mustUnderstand"), "1");
       to.addTextNode("https://afxlink-test.ascendantfx.com/AFXLinkCustom.svc");
 
+      // add "security" child element
       SOAPElement security = header.addChildElement("Security", "o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
       security.addAttribute(new QName("s:mustUnderstand"), "1");
 
+      // add username
       SOAPElement usernameToken = security.addChildElement("UsernameToken", "o");
       SOAPElement username = usernameToken.addChildElement("Username", "o");
       username.addTextNode(this.username_);
 
+      // add password
       SOAPElement password = usernameToken.addChildElement("Password", "o");
       password.addAttribute(new QName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
       password.addTextNode(this.password_);
 
+      // add outer and inner wrappers and then add request body
       SOAPElement outer = body.addChildElement(method, null, "http://tempuri.org/");
       SOAPElement inner = outer.addChildElement("request");
       inner.addAttribute(new QName("xmlns:a"), "http://www.afx.com");
@@ -363,6 +369,7 @@ public class AscendantFXService
     if ( obj == null ) return;
 
     try {
+      // walk the properties
       List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
       Iterator i = props.iterator();
 
@@ -372,13 +379,21 @@ public class AscendantFXService
         SOAPElement child = element.addChildElement(prop.getName(), "a");
 
         if ( prop instanceof AbstractFObjectPropertyInfo ) {
+          // add FObject properties
           addBody(child, (FObject) prop.get(obj));
         } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
+          // add FObjectArray properties
           FObject[] objs = (FObject[]) prop.get(obj);
           for ( FObject o : objs ) {
             addBody(child.addChildElement(o.getClass().getSimpleName(), "a"), o);
           }
+        } else if ( prop instanceof AbstractDatePropertyInfo) {
+          // add Date property
+          Calendar calendar = Calendar.getInstance();
+          calendar.setTime((Date) prop.get(obj));
+          child.addTextNode(DatatypeConverter.printDateTime(calendar));
         } else {
+          // add simple types
           child.addTextNode(String.valueOf(prop.get(obj)));
         }
       }
@@ -418,6 +433,7 @@ public class AscendantFXService
    */
   protected FObject parseMessage(SOAPMessage message, Class clazz) {
     try {
+      // parse the outer and inner message to get the body
       SOAPBody body = message.getSOAPBody();
 
       Iterator iterator = body.getChildElements();
