@@ -13,7 +13,6 @@ Repository containing b2b, retail, common, admin-portal, ingenico
 Checkout `NANOPAY`
 ```
 git clone https://github.com/nanopayinc/NANOPAY.git
-git clone https://github.com/nanopayinc/iso20022.git
 ```
 
 foam2 is added as a submodule.
@@ -23,15 +22,6 @@ git submodule init
 git submodule update
 ```
 
-### Building ISO20022 files
-
-Go into the iso20022 directory and run the following commands:
-
-```
-npm install
-node scripts/geniso/index.js
-./build.sh
-```
 ### Installing tomcat
 
 Go into the NANOPAY/tools directory and run the following commands:

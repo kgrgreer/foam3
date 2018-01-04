@@ -34,20 +34,71 @@ interac.abstractClasses = interac.abstractClasses.map(function(element) { return
 interac.skeletons = interac.skeletons.map(function(element) { return [ 'interac/src/', element ]; })
 interac.proxies = interac.proxies.map(function(element) { return [ 'interac/src/', element ]; })
 
+var iso20022 = require('../nanopay/src/net/nanopay/iso20022/classes.js');
+iso20022.classes = iso20022.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+iso20022.abstractClasses = iso20022.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+iso20022.skeletons = iso20022.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+iso20022.proxies = iso20022.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
+var afx = require('../nanopay/src/net/nanopay/fx/ascendantfx/model/classes.js');
+afx.classes = afx.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+afx.abstractClasses = afx.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+afx.skeletons = afx.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+afx.proxies = afx.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
 var classes = [];
-classes = classes.concat(foam.classes, nanopay.classes, b2b.classes, admin.classes, merchant.classes, interac.classes)
+classes = classes.concat(
+  foam.classes, nanopay.classes,
+  b2b.classes,
+  admin.classes,
+  merchant.classes,
+  interac.classes,
+  iso20022.classes,
+  afx.classes);
 
 var abstractClasses = [];
-abstractClasses = abstractClasses.concat(foam.abstractClasses, nanopay.abstractClasses, b2b.abstractClasses, admin.abstractClasses, merchant.abstractClasses, interac.abstractClasses)
+abstractClasses = abstractClasses.concat(
+  foam.abstractClasses,
+  nanopay.abstractClasses,
+  b2b.abstractClasses,
+  admin.abstractClasses,
+  merchant.abstractClasses,
+  interac.abstractClasses,
+  iso20022.abstractClasses,
+  afx.abstractClasses);
 
 var skeletons = [];
-skeletons = skeletons.concat(foam.skeletons, nanopay.skeletons, b2b.skeletons, admin.skeletons, merchant.skeletons, interac.skeletons)
+skeletons = skeletons.concat(
+  foam.skeletons,
+  nanopay.skeletons,
+  b2b.skeletons,
+  admin.skeletons,
+  merchant.skeletons,
+  interac.skeletons,
+  iso20022.skeletons,
+  afx.skeletons);
 
 var proxies = [];
-proxies = proxies.concat(foam.proxies, nanopay.proxies, b2b.proxies, admin.proxies, merchant.proxies, interac.proxies)
+proxies = proxies.concat(
+  foam.proxies,
+  nanopay.proxies,
+  b2b.proxies,
+  admin.proxies,
+  merchant.proxies,
+  interac.proxies,
+  iso20022.proxies,
+  afx.proxies);
 
 var blacklist = [];
-blacklist = blacklist.concat(foam.blacklist, nanopay.blacklist, b2b.blacklist, admin.blacklist, merchant.blacklist, interac.blacklist)
+blacklist = blacklist.concat(
+  foam.blacklist,
+  nanopay.blacklist,
+  b2b.blacklist,
+  admin.blacklist,
+  merchant.blacklist,
+  interac.blacklist,
+  iso20022.blacklist,
+  afx.blacklist);
 
 module.exports = {
     classes: classes,

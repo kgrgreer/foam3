@@ -48,7 +48,8 @@ var classes = [
   'net.nanopay.retail.model.DeviceType',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
-  'net.nanopay.s2h.model.S2HInvoice'
+  'net.nanopay.s2h.model.S2HInvoice',
+  'net.nanopay.fx.ascendantfx.AscendantFX'
 ];
 
 var abstractClasses = [

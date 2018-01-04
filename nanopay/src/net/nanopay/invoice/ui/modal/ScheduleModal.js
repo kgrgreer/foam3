@@ -30,7 +30,10 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'paymentDate'
+      name: 'paymentDate',
+      expression: function(invoice) {
+        return invoice.paymentDate;
+      }
     },
     {
       name: 'note',
@@ -39,25 +42,21 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      ^{
-        width: 448px;
-        margin: auto;
-        font-family: Roboto;
-      }
-      ^ .blue-button{
-        margin: 20px 20px;
-        float: right;
-      }
-      ^key-value{
-        margin-top: 10px;
-        margin-bottom: 25px;
-      }
-    */}
-    })
-  ],
+  css: `
+    ^{
+      width: 448px;
+      margin: auto;
+      font-family: Roboto;
+    }
+    ^ .blue-button{
+      margin: 20px 20px;
+      float: right;
+    }
+    ^key-value{
+      margin-top: 10px;
+      margin-bottom: 25px;
+    }
+  `,
   
   methods: [
     function initE(){
