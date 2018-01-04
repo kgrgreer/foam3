@@ -6,6 +6,7 @@ import net.nanopay.fx.ascendantfx.model.*;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -457,7 +458,16 @@ public class AscendantFXService
               parseBody(child, value);
               prop.set(obj, value);
             } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
-              // TODO: parse array properties
+              List list = new ArrayList();
+              Class of = Class.forName(((AbstractFObjectArrayPropertyInfo) prop).of());
+              Iterator array = child.getChildElements(new QName("http://www.afx.com", of.getSimpleName(), "b"));
+              while ( array.hasNext() ) {
+                SOAPElement arrayChild = (SOAPElement) array.next();
+                FObject value = (FObject) getX().create(of);
+                parseBody(arrayChild, value);
+                list.add(value);
+              }
+              prop.set(obj, list.toArray());
             } else if ( prop instanceof AbstractDatePropertyInfo ) {
               prop.set(obj, DatatypeConverter.parseDateTime(child.getValue()).getTime());
             } else {
