@@ -167,6 +167,12 @@ module.exports = {
       property.of = packageName + '.' + doc.getAttribute('type');
     }
 
+    // add require false if nillable="true" is set
+    var nillable = doc.getAttribute('nillable');
+    if ( nillable === null || nillable === '' ) {
+      property.required = false;
+    }
+
     // add new property
     m.properties.push(property);
   },
