@@ -54,7 +54,22 @@ var classes = [
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
-  'net.nanopay.fx.ascendantfx.AscendantFX'
+  'net.nanopay.fx.ascendantfx.AscendantFX',
+  'net.nanopay.fx.lianlianpay.LianLianPay',
+  'net.nanopay.fx.lianlianpay.model.ResultCode',
+  'net.nanopay.fx.lianlianpay.model.DistributionMode',
+  'net.nanopay.fx.lianlianpay.model.InstructionType',
+  'net.nanopay.fx.lianlianpay.model.CurrencyBalanceRecord',
+  'net.nanopay.fx.lianlianpay.model.InstructionCombined',
+  'net.nanopay.fx.lianlianpay.model.InstructionCombinedRequest',
+  'net.nanopay.fx.lianlianpay.model.InstructionCombinedSummary',
+  'net.nanopay.fx.lianlianpay.model.PreProcessResult',
+  'net.nanopay.fx.lianlianpay.model.PreProcessResultResponse',
+  'net.nanopay.fx.lianlianpay.model.PreProcessResultSummary',
+  'net.nanopay.fx.lianlianpay.model.Reconciliation',
+  'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
+  'net.nanopay.fx.lianlianpay.model.Statement',
+  'net.nanopay.fx.lianlianpay.model.StatementRecord'
 ];
 
 var abstractClasses = [
