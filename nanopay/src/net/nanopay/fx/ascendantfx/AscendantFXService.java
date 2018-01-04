@@ -3,6 +3,7 @@ package net.nanopay.fx.ascendantfx;
 import foam.core.*;
 import net.nanopay.fx.ascendantfx.model.*;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.util.Iterator;
@@ -450,10 +451,19 @@ public class AscendantFXService
 
         while ( children.hasNext() ) {
           SOAPElement child = (SOAPElement) children.next();
-          System.out.println(child.getLocalName());
           if ( child.getLocalName().equals(prop.getName()) ) {
-            prop.setFromString(obj, child.getValue());
-            break;
+            if ( prop instanceof AbstractFObjectPropertyInfo ) {
+              FObject value = (FObject) getX().create(prop.getValueClass());
+              parseBody(child, value);
+              prop.set(obj, value);
+            } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
+              // TODO: parse array properties
+            } else if ( prop instanceof AbstractDatePropertyInfo ) {
+              prop.set(obj, DatatypeConverter.parseDateTime(child.getValue()).getTime());
+            } else {
+              prop.setFromString(obj, child.getValue());
+              break;
+            }
           }
         }
       }
