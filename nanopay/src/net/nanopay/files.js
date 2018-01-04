@@ -42,6 +42,23 @@ FOAM_FILES([
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX'},
 
+  // lianlian pay
+  { name: 'net/nanopay/fx/lianlianpay/LianLianPay' },
+  { name: 'net/nanopay/fx/lianlianpay/model/ResultCode' },
+  { name: 'net/nanopay/fx/lianlianpay/model/DistributionMode' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionType' },
+  { name: 'net/nanopay/fx/lianlianpay/model/CurrencyBalanceRecord' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionCombined' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionCombinedRequest' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionCombinedSummary' },
+  { name: 'net/nanopay/fx/lianlianpay/model/PreProcessResult' },
+  { name: 'net/nanopay/fx/lianlianpay/model/PreProcessResultResponse' },
+  { name: 'net/nanopay/fx/lianlianpay/model/PreProcessResultSummary' },
+  { name: 'net/nanopay/fx/lianlianpay/model/Reconciliation' },
+  { name: 'net/nanopay/fx/lianlianpay/model/ReconciliationRecord' },
+  { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
+  { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
+
   // retail
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
