@@ -162,10 +162,10 @@ public class LianLianPayService
       builder.append(summary.getBatchId()).append("|")
           .append(summary.getSourceCurrency()).append("|")
           .append(FIXED_SOURCE_AMOUNT.equals(summary.getDistributeMode()) ?
-              df2.get().format(summary.getTotalSourceAmount()) : "").append("|")
+              df2.get().format(summary.getTotalSourceAmount()) : "|")
           .append(summary.getTargetCurrency()).append("|")
           .append(FIXED_TARGET_AMOUNT.equals(summary.getDistributeMode()) ?
-              df2.get().format(summary.getTotalTargetAmount()) : "").append("|")
+              df2.get().format(summary.getTotalTargetAmount()) : "|")
           .append(summary.getTotalCount()).append("|")
           .append(((DistributionMode) summary.getDistributeMode()).getOrdinal()).append("|")
           .append(((InstructionType) summary.getInstructionType()).getOrdinal()).append("\n");
