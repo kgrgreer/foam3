@@ -446,18 +446,24 @@ public class AscendantFXService
       List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
       Iterator i = props.iterator();
 
+      // walk object properties
       while ( i.hasNext() ) {
         PropertyInfo prop = (PropertyInfo) i.next();
+        // get all child elements
         Iterator children = element.getChildElements(new QName("http://www.afx.com", prop.getName(), "b"));
 
+        // walk the children to find correct element
         while ( children.hasNext() ) {
           SOAPElement child = (SOAPElement) children.next();
+          // check that local name equals the property name
           if ( child.getLocalName().equals(prop.getName()) ) {
             if ( prop instanceof AbstractFObjectPropertyInfo ) {
+              // parse FObjectProperty
               FObject value = (FObject) getX().create(prop.getValueClass());
               parseBody(child, value);
               prop.set(obj, value);
             } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
+              // parse FObjectArrayProperty
               List list = new ArrayList();
               Class of = Class.forName(((AbstractFObjectArrayPropertyInfo) prop).of());
               Iterator array = child.getChildElements(new QName("http://www.afx.com", of.getSimpleName(), "b"));
@@ -469,10 +475,11 @@ public class AscendantFXService
               }
               prop.set(obj, list.toArray());
             } else if ( prop instanceof AbstractDatePropertyInfo ) {
+              // Parse XSD datetime
               prop.set(obj, DatatypeConverter.parseDateTime(child.getValue()).getTime());
             } else {
+              // Parse simple type
               prop.setFromString(obj, child.getValue());
-              break;
             }
           }
         }
