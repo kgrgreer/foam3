@@ -24,7 +24,7 @@ public class Test {
     deal.setPaymentSequenceNo(1);
     deal.setRate(0);
     deal.setSettlementAmount(0);
-    deal.setSettlementCurrencyID("USD");
+    deal.setSettlementCurrencyID("CAD");
     deal.setTotalSettlementAmount(0);
 
     request.setPayment(new Deal[] { deal });
