@@ -98,13 +98,13 @@ public class TransactionDAO
         payerAccount = (Account) data.get(0);
 
         // check if payer account has enough balance
-        long amount = transaction.getAmount();
-        if (payerAccount.getBalance() < amount) {
+        long total = transaction.getTotal();
+        if (payerAccount.getBalance() < total) {
           throw new RuntimeException("You do not have enough money in your account");
         }
 
-        payerAccount.setBalance(payerAccount.getBalance() - amount);
-        payeeAccount.setBalance(payeeAccount.getBalance() + amount);
+        payerAccount.setBalance(payerAccount.getBalance() - total);
+        payeeAccount.setBalance(payeeAccount.getBalance() + total);
         getAccountDAO().put(payerAccount);
         getAccountDAO().put(payeeAccount);
         return super.put_(x, obj);
