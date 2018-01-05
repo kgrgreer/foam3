@@ -59,7 +59,7 @@ public class TransactionDAO
       throw new RuntimeException("PayeeID and PayerID cannot be the same");
     }
 
-    if (transaction.getAmount() <= 0) {
+    if (transaction.getTotal() <= 0) {
       throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
