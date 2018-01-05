@@ -6,7 +6,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Date',
       name: 'accountingDate',
       documentation: 'Accounting date, format is YYYMMDD'
     },

@@ -22,6 +22,7 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -62,6 +63,14 @@ public class LianLianPayService
     @Override
     protected DecimalFormat initialValue() {
       return new DecimalFormat("#.00000000");
+    }
+  };
+
+  // date formatter for YYYYMMDD
+  protected static ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyyMMdd");
     }
   };
 
@@ -230,7 +239,7 @@ public class LianLianPayService
     PreProcessResultSummary summary = new PreProcessResultSummary();
     List summaryProps = summary.getClassInfo().getAxiomsByClass(PropertyInfo.class);
 
-    PreProcessResultResponse[] responses = null;
+    List<PreProcessResultResponse> responses = new ArrayList<PreProcessResultResponse>();
     List responseProps = PreProcessResultResponse.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     try {
@@ -249,11 +258,6 @@ public class LianLianPayService
             prop.setFromString(summary, strings[i]);
           }
         } else if ( count > 1 ) {
-          if ( responses == null ) {
-            // initialize using original count length to get size
-            responses = new PreProcessResultResponse[summary.getOriginalCount()];
-          }
-
           // read response information
           PreProcessResultResponse response = new PreProcessResultResponse();
           String[] strings = line.split("\\|", responseProps.size());
@@ -263,14 +267,14 @@ public class LianLianPayService
             PropertyInfo prop = (PropertyInfo) responseProps.get(i);
             prop.setFromString(response, strings[i]);
           }
-          // count minus 2 to get proper index
-          responses[count - 2] = response;
+          responses.add(response);
         }
         count++;
       }
 
       result.setSummary(summary);
-      result.setResponses(responses);
+      result.setResponses(responses.toArray(
+          new PreProcessResultResponse[responses.size()]));
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
@@ -283,13 +287,75 @@ public class LianLianPayService
   public Reconciliation downloadReconciliation() {
     // TODO: download from SFTP
 
-    return null;
+    String cwd = System.getProperty("user.dir");
+    File file = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Reconciliation/20170103_201701010000000001.RESP");
+    BufferedReader br = null;
+
+    Reconciliation result = new Reconciliation();
+
+    List<ReconciliationRecord> records = new ArrayList<ReconciliationRecord>();
+    List recordProps = ReconciliationRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+
+      String line;
+      int count = 0;
+      while ( (line = br.readLine()) != null ) {
+        if ( count == 0 ) {
+          // read accounting date
+          result.setAccountingDate(sdf.get().parse(line));
+        } else if ( count > 1 ) {
+          // read reconciliation record
+          ReconciliationRecord record = new ReconciliationRecord();
+          String[] strings = line.split("\\|", recordProps.size());
+
+          for ( int i = 0; i < recordProps.size(); i++ ) {
+            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+            PropertyInfo prop = (PropertyInfo) recordProps.get(i);
+            prop.setFromString(record, strings[i]);
+          }
+          records.add(record);
+        }
+        count++;
+      }
+
+      result.setReconciliationRecords(records.toArray(
+          new ReconciliationRecord[records.size()]));
+      return result;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(br);
+    }
   }
 
   @Override
   public Statement downloadStatement() {
     // TODO: download from SFTP
 
-    return null;
+    String cwd = System.getProperty("user.dir");
+    File file = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESP");
+    BufferedReader br = null;
+
+    Statement result = new Statement();
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+
+      String line;
+      int count = 0;
+      while ( (line = br.readLine()) != null ) {
+
+      }
+
+      return result;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(br);
+    }
   }
 }
