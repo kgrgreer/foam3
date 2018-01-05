@@ -1,6 +1,7 @@
 package net.nanopay.fx.ascendantfx.test;
 
 import foam.core.ProxyX;
+import foam.lib.json.Outputter;
 import net.nanopay.fx.ascendantfx.AscendantFXService;
 import net.nanopay.fx.ascendantfx.model.Deal;
 import net.nanopay.fx.ascendantfx.model.Direction;
@@ -29,6 +30,6 @@ public class Test {
     request.setPayment(new Deal[] { deal });
 
     request.setTotalNumberOfPayment(1);
-    service.getQuote(request);
+    new Outputter().stringify(service.getQuote(request));
   }
 }
