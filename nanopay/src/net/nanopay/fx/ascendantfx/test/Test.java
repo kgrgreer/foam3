@@ -30,6 +30,6 @@ public class Test {
     request.setPayment(new Deal[] { deal });
 
     request.setTotalNumberOfPayment(1);
-    new Outputter().stringify(service.getQuote(request));
+    System.out.println(new Outputter().stringify(service.getQuote(request)));
   }
 }
