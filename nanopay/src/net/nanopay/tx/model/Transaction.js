@@ -153,7 +153,8 @@ foam.CLASS({
       transient: true,
       expression: function (amount, tip) {
         return amount + tip;
-      }
+      },
+      javaGetter: `return getAmount() + getTip();`
     },
     {
       class: 'FObjectProperty',
