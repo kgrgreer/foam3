@@ -1,6 +1,7 @@
 package net.nanopay.fx.lianlianpay;
 
 import foam.core.ContextAwareSupport;
+import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.core.X;
 import foam.util.SafetyUtil;
@@ -342,15 +343,52 @@ public class LianLianPayService
 
     Statement result = new Statement();
 
+    List<CurrencyBalanceRecord> balanceRecords = new ArrayList<CurrencyBalanceRecord>();
+    List balanceProps = CurrencyBalanceRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    List<StatementRecord> statementRecords = new ArrayList<StatementRecord>();
+    List statementProps = StatementRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
     try {
       br = new BufferedReader(new FileReader(file));
 
       String line;
-      int count = 0;
+      boolean parsingBalance = true;
       while ( (line = br.readLine()) != null ) {
+        if ( "asOfDate|currency|balance".equals(line) ) {
+          // parsing currency balance records
+          parsingBalance = true;
+          continue;
+        }
 
+        if ( "serialNumber|billTime|type|currency|amount|memo".equals(line) ) {
+          // parsing statement records
+          parsingBalance = false;
+          continue;
+        }
+
+        int size = ( parsingBalance ) ? balanceProps.size() : statementProps.size();
+        FObject record = ( parsingBalance ) ? new CurrencyBalanceRecord() : new StatementRecord();
+        String[] strings = line.split("\\|", size);
+
+        for ( int i = 0; i < size; i++ ) {
+          if (SafetyUtil.isEmpty(strings[i])) continue;
+          PropertyInfo prop = (PropertyInfo) ((parsingBalance) ?
+              balanceProps.get(i) : statementProps.get(i));
+          prop.setFromString(record, strings[i]);
+        }
+
+        if ( parsingBalance ) {
+          balanceRecords.add((CurrencyBalanceRecord) record);
+        } else {
+          statementRecords.add((StatementRecord) record);
+        }
       }
 
+      result.setCurrencyBalanceRecords(balanceRecords.toArray(
+          new CurrencyBalanceRecord[balanceRecords.size()]));
+      result.setStatementRecords(statementRecords.toArray(
+          new StatementRecord[statementRecords.size()]));
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
