@@ -1,6 +1,7 @@
 package net.nanopay.fx.lianlianpay;
 
 import foam.core.ContextAwareSupport;
+import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.core.X;
 import foam.util.SafetyUtil;
@@ -13,8 +14,7 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -23,7 +23,8 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.DecimalFormat;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,6 +63,14 @@ public class LianLianPayService
     @Override
     protected DecimalFormat initialValue() {
       return new DecimalFormat("#.00000000");
+    }
+  };
+
+  // date formatter for YYYYMMDD
+  protected static ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyyMMdd");
     }
   };
 
@@ -107,6 +116,7 @@ public class LianLianPayService
   public LianLianPayService(X x, String pubKeyFilename, String privKeyFilename, Provider provider)
       throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
   {
+    setX(x);
     provider_ = provider;
     publicKey_ = (PublicKey) readKey(pubKeyFilename, true, provider);
     privateKey_ = (PrivateKey) readKey(privKeyFilename, false, provider);
@@ -206,9 +216,9 @@ public class LianLianPayService
             .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
       }
 
-
-
-      System.out.println(builder.toString());
+      // TODO: upload to SFTP
+      // TODO: sign all of the data
+      // TODO: encrypt bank information
     } catch (Throwable t) {
       t.printStackTrace();
       throw new RuntimeException(t);
@@ -217,16 +227,172 @@ public class LianLianPayService
 
   @Override
   public PreProcessResult downloadPreProcessResult() {
-    return null;
+    // TODO: download from SFTP
+
+    String cwd = System.getProperty("user.dir");
+    File file = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.01/PreProcessResult/20170101_201701010000000001_000001.RESP");
+    BufferedReader br = null;
+
+    PreProcessResult result = new PreProcessResult();
+
+    PreProcessResultSummary summary = new PreProcessResultSummary();
+    List summaryProps = summary.getClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    List<PreProcessResultResponse> responses = new ArrayList<PreProcessResultResponse>();
+    List responseProps = PreProcessResultResponse.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+
+      String line;
+      int count = 0;
+      while ( (line = br.readLine()) != null ) {
+        if ( count == 0 ) {
+          // read summary
+          String[] strings = line.split("\\|", summaryProps.size());
+
+          for ( int i = 0; i < summaryProps.size(); i++ ) {
+            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+            PropertyInfo prop = (PropertyInfo) summaryProps.get(i);
+            prop.setFromString(summary, strings[i]);
+          }
+        } else if ( count > 1 ) {
+          // read response information
+          PreProcessResultResponse response = new PreProcessResultResponse();
+          String[] strings = line.split("\\|", responseProps.size());
+
+          for ( int i = 0; i < responseProps.size(); i++ ) {
+            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+            PropertyInfo prop = (PropertyInfo) responseProps.get(i);
+            prop.setFromString(response, strings[i]);
+          }
+          responses.add(response);
+        }
+        count++;
+      }
+
+      result.setSummary(summary);
+      result.setResponses(responses.toArray(
+          new PreProcessResultResponse[responses.size()]));
+      return result;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(br);
+    }
   }
 
   @Override
   public Reconciliation downloadReconciliation() {
-    return null;
+    // TODO: download from SFTP
+
+    String cwd = System.getProperty("user.dir");
+    File file = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Reconciliation/20170103_201701010000000001.RESP");
+    BufferedReader br = null;
+
+    Reconciliation result = new Reconciliation();
+
+    List<ReconciliationRecord> records = new ArrayList<ReconciliationRecord>();
+    List recordProps = ReconciliationRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+
+      String line;
+      int count = 0;
+      while ( (line = br.readLine()) != null ) {
+        if ( count == 0 ) {
+          // read accounting date
+          result.setAccountingDate(sdf.get().parse(line));
+        } else if ( count > 1 ) {
+          // read reconciliation record
+          ReconciliationRecord record = new ReconciliationRecord();
+          String[] strings = line.split("\\|", recordProps.size());
+
+          for ( int i = 0; i < recordProps.size(); i++ ) {
+            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+            PropertyInfo prop = (PropertyInfo) recordProps.get(i);
+            prop.setFromString(record, strings[i]);
+          }
+          records.add(record);
+        }
+        count++;
+      }
+
+      result.setReconciliationRecords(records.toArray(
+          new ReconciliationRecord[records.size()]));
+      return result;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(br);
+    }
   }
 
   @Override
   public Statement downloadStatement() {
-    return null;
+    // TODO: download from SFTP
+
+    String cwd = System.getProperty("user.dir");
+    File file = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESP");
+    BufferedReader br = null;
+
+    Statement result = new Statement();
+
+    List<CurrencyBalanceRecord> balanceRecords = new ArrayList<CurrencyBalanceRecord>();
+    List balanceProps = CurrencyBalanceRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    List<StatementRecord> statementRecords = new ArrayList<StatementRecord>();
+    List statementProps = StatementRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+
+      String line;
+      boolean parsingBalance = true;
+      while ( (line = br.readLine()) != null ) {
+        if ( "asOfDate|currency|balance".equals(line) ) {
+          // parsing currency balance records
+          parsingBalance = true;
+          continue;
+        }
+
+        if ( "serialNumber|billTime|type|currency|amount|memo".equals(line) ) {
+          // parsing statement records
+          parsingBalance = false;
+          continue;
+        }
+
+        int size = ( parsingBalance ) ? balanceProps.size() : statementProps.size();
+        FObject record = ( parsingBalance ) ? new CurrencyBalanceRecord() : new StatementRecord();
+        String[] strings = line.split("\\|", size);
+
+        for ( int i = 0; i < size; i++ ) {
+          if (SafetyUtil.isEmpty(strings[i])) continue;
+          PropertyInfo prop = (PropertyInfo) ((parsingBalance) ?
+              balanceProps.get(i) : statementProps.get(i));
+          prop.setFromString(record, strings[i]);
+        }
+
+        if ( parsingBalance ) {
+          balanceRecords.add((CurrencyBalanceRecord) record);
+        } else {
+          statementRecords.add((StatementRecord) record);
+        }
+      }
+
+      result.setCurrencyBalanceRecords(balanceRecords.toArray(
+          new CurrencyBalanceRecord[balanceRecords.size()]));
+      result.setStatementRecords(statementRecords.toArray(
+          new StatementRecord[statementRecords.size()]));
+      return result;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(br);
+    }
   }
 }
