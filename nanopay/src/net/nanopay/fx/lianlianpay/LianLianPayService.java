@@ -13,8 +13,7 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -23,6 +22,7 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -107,6 +107,7 @@ public class LianLianPayService
   public LianLianPayService(X x, String pubKeyFilename, String privKeyFilename, Provider provider)
       throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
   {
+    setX(x);
     provider_ = provider;
     publicKey_ = (PublicKey) readKey(pubKeyFilename, true, provider);
     privateKey_ = (PrivateKey) readKey(privKeyFilename, false, provider);
@@ -206,9 +207,9 @@ public class LianLianPayService
             .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
       }
 
-
-
-      System.out.println(builder.toString());
+      // TODO: upload to SFTP
+      // TODO: sign all of the data
+      // TODO: encrypt bank information
     } catch (Throwable t) {
       t.printStackTrace();
       throw new RuntimeException(t);
@@ -217,16 +218,78 @@ public class LianLianPayService
 
   @Override
   public PreProcessResult downloadPreProcessResult() {
-    return null;
+    // TODO: download from SFTP
+
+    String cwd = System.getProperty("user.dir");
+    File file = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.01/PreProcessResult/20170101_201701010000000001_000001.RESP");
+    BufferedReader br = null;
+
+    PreProcessResult result = new PreProcessResult();
+
+    PreProcessResultSummary summary = new PreProcessResultSummary();
+    List summaryProps = summary.getClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    PreProcessResultResponse[] responses = null;
+    List responseProps = PreProcessResultResponse.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+
+      String line;
+      int count = 0;
+      while ( (line = br.readLine()) != null ) {
+        if ( count == 0 ) {
+          // read summary
+          String[] strings = line.split("\\|", summaryProps.size());
+
+          for ( int i = 0; i < summaryProps.size(); i++ ) {
+            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+            PropertyInfo prop = (PropertyInfo) summaryProps.get(i);
+            prop.setFromString(summary, strings[i]);
+          }
+        } else if ( count > 1 ) {
+          if ( responses == null ) {
+            // initialize using original count length to get size
+            responses = new PreProcessResultResponse[summary.getOriginalCount()];
+          }
+
+          // read response information
+          PreProcessResultResponse response = new PreProcessResultResponse();
+          String[] strings = line.split("\\|", responseProps.size());
+
+          for ( int i = 0; i < responseProps.size(); i++ ) {
+            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+            PropertyInfo prop = (PropertyInfo) responseProps.get(i);
+            prop.setFromString(response, strings[i]);
+          }
+          // count minus 2 to get proper index
+          responses[count - 2] = response;
+        }
+        count++;
+      }
+
+      result.setSummary(summary);
+      result.setResponses(responses);
+      return result;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(br);
+    }
   }
 
   @Override
   public Reconciliation downloadReconciliation() {
+    // TODO: download from SFTP
+
     return null;
   }
 
   @Override
   public Statement downloadStatement() {
+    // TODO: download from SFTP
+
     return null;
   }
 }
