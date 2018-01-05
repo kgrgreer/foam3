@@ -15,10 +15,6 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
   { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
-  { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
-  { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
-  { name: 'net/nanopay/auth/password/ResetPasswordTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserRegistrationView', flags: ['web'] },
@@ -215,10 +211,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
 
   //ui
-  { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/ResetView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/SuccessView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },

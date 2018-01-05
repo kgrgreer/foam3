@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.auth.sms',
   name: 'AuthyTokenService',
-  extends: 'net.nanopay.auth.token.AbstractTokenService',
+  extends: 'foam.nanos.auth.token.AbstractTokenService',
 
   documentation: 'Implementation of Token Service used for verifying SMS',
 
