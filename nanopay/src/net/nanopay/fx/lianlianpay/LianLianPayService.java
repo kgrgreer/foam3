@@ -229,6 +229,7 @@ public class LianLianPayService
   @Override
   public PreProcessResult downloadPreProcessResult() {
     // TODO: download from SFTP
+    // TODO: verify signature file
 
     String cwd = System.getProperty("user.dir");
     File file = new File(cwd +
@@ -287,6 +288,7 @@ public class LianLianPayService
   @Override
   public Reconciliation downloadReconciliation() {
     // TODO: download from SFTP
+    // TODO: verify signature file
 
     String cwd = System.getProperty("user.dir");
     File file = new File(cwd +
@@ -335,6 +337,7 @@ public class LianLianPayService
   @Override
   public Statement downloadStatement() {
     // TODO: download from SFTP
+    // TODO: verify signature file
 
     String cwd = System.getProperty("user.dir");
     File file = new File(cwd +
