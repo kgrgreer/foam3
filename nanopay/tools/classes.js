@@ -2,13 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
-  'net.nanopay.auth.token.Token',
-  'net.nanopay.auth.token.TokenService',
-  'net.nanopay.auth.token.ClientTokenService',
-  'net.nanopay.auth.token.AbstractTokenService',
   'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.auth.password.ResetPasswordTokenService',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionStatus',
@@ -88,13 +83,28 @@ var classes = [
   //flinks service
   'net.nanopay.flinks.FlinksAuth',
   'net.nanopay.flinks.ClientFlinksAuthService',
+  'net.nanopay.fx.ascendantfx.AscendantFX',
+  'net.nanopay.fx.lianlianpay.LianLianPay',
+  'net.nanopay.fx.lianlianpay.model.ResultCode',
+  'net.nanopay.fx.lianlianpay.model.DistributionMode',
+  'net.nanopay.fx.lianlianpay.model.InstructionType',
+  'net.nanopay.fx.lianlianpay.model.CurrencyBalanceRecord',
+  'net.nanopay.fx.lianlianpay.model.InstructionCombined',
+  'net.nanopay.fx.lianlianpay.model.InstructionCombinedRequest',
+  'net.nanopay.fx.lianlianpay.model.InstructionCombinedSummary',
+  'net.nanopay.fx.lianlianpay.model.PreProcessResult',
+  'net.nanopay.fx.lianlianpay.model.PreProcessResultResponse',
+  'net.nanopay.fx.lianlianpay.model.PreProcessResultSummary',
+  'net.nanopay.fx.lianlianpay.model.Reconciliation',
+  'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
+  'net.nanopay.fx.lianlianpay.model.Statement',
+  'net.nanopay.fx.lianlianpay.model.StatementRecord'
 ];
 
 var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.auth.token.TokenService',
   'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

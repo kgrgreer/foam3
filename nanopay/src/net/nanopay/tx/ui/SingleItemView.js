@@ -9,9 +9,10 @@ foam.CLASS({
 
   css: `
     ^table-header{
-      width: 960px;
+      width: 962px;
       height: 40px;
       background-color: rgba(110, 174, 195, 0.2);
+      margin: 0;
     }
     ^ h3{
       width: 120px;
@@ -23,10 +24,11 @@ foam.CLASS({
       color: #093649;
     }
     ^table-body{
-      width: 960px;
+      width: 962px;
       height: auto;
       background: white;
       padding-bottom: 10px;
+      margin: 0;
     }
     ^ p{
       display: inline-block;
