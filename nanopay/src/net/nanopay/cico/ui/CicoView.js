@@ -227,13 +227,6 @@ foam.CLASS({
               dao: this.standardCICOTransactionDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
-                class: 'foam.u2.DetailView',
-                properties: [
-                  this.Transaction.DATE,
-                  this.Transaction.ID,
-                  this.Transaction.AMOUNT,
-                  this.Transaction.TYPE
-                ]
               },
               summaryView: this.CicoTableView.create()
             })
@@ -305,7 +298,14 @@ foam.CLASS({
       imports: [ 'standardCICOTransactionDAO' ],
 
       properties: [
-        'selection',
+        {
+          name: 'selection',
+          preSet: function(oldValue, newValue) {
+            if( newValue ) {
+              return oldValue;
+            }
+          }
+        },
         {
           name: 'cicoTransactions',
           expression: function(standardCICOTransactionDAO) {
