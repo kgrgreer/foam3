@@ -51,7 +51,7 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      code: function() {
+      code: function(X) {
         var self = this;
 
         // Info from form
