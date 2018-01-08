@@ -14,7 +14,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 276px;
+          height: 390px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -76,58 +76,53 @@ foam.CLASS({
           overflow:auto;
         }
         ^ .net-nanopay-ui-ActionView-closeButton {
-          display: inline-block;
+          float: right;
           margin: 0;
           box-sizing: border-box;
-          margin-right: 30px;
-          background: none;
+          background-color: #A93226;
           outline: none;
           border:none;
           width: 136px;
           height: 40px;
           border-radius: 2px;
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          background-color: rgba(164, 179, 184, 0.1);
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
-
-        ^ .net-nanopay-ui-ActionView-closeButton:disabled {
-          color: rgba(9, 54, 73, 0.5);
-        }
-
-        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
-          cursor: pointer;
-          background: none;
-          background-color: rgba(164, 179, 184, 0.4);
-        }
-
-        ^ .net-nanopay-ui-ActionView-nextButton {
-          display: inline-block;
-          margin: 0;
-          background: none;
-          outline: none;
-          border:none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: #59a5d5;
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
 
+        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+          cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton {
+          float: right;
+          margin: 0;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #148F77;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          margin-right: 40px;
+        }
+
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
-          color: rgba(88, 165, 213, 0.5);
+          background-color: #7F8C8D;
         }
 
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
-          background: none;
-          background-color: #3783b3;
+        }
+
+        ^ .sub-question {
+          width: 448px;
+          height: 28px;
+          border: 1px solid red;
         }
       */}
     })
@@ -135,17 +130,34 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'isFinish0',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isFinish1',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isFinish2',
+      value: false
+    },
+    {
       class: 'StringArray',
       name: 'answer0',
       postSet: function(oldValue, newValue) {
         console.log(newValue);
+        console.log(this.isFinish);
         this.viewData.answers[0] = newValue;
       },
       validateObj: function(answer0) {
-        if ( answer0.length == 0 ) return this.answerError;
+        if ( answer0.length == 0 ) return this.isFinish0 = false;
         for ( var o in answer0 ) {
-          if ( o.trim().length == 0) return this.answerError;
-        } 
+          if ( o.trim().length == 0 ) return this.isFinish0 = false;
+        }
+        this.isFinish0 = true;
       }
     },
     {
@@ -156,10 +168,11 @@ foam.CLASS({
         this.viewData.answers[1] = newValue;
       },
       validateObj: function(answer1) {
-        if ( answer1.length == 0 ) return this.answerError;
+        if ( answer1.length == 0 ) return this.isFinish1 = false;
         for ( var o in answer1 ) {
-          if ( o.trim().length == 0) return this.answerError;
-        } 
+          if ( o.trim().length == 0 ) return this.isFinish1 = false;
+        }
+        this.isFinish1 = true;
       }
     },
     {
@@ -170,10 +183,11 @@ foam.CLASS({
         this.viewData.answers[2] = newValue;
       },
       validateObj: function(answer2) {
-        if ( answer2.length == 0 ) return this.answerError;
+        if ( answer2.length == 0 ) return this.isFinish2 = false;
         for ( var o in answer2 ) {
-          if ( o.trim().length == 0) return this.answerError;
-        } 
+          if ( o.trim().length == 0 ) return this.isFinish2 = false;
+        }
+        this.isFinish2 = true;
       }
     }
   ],
@@ -185,10 +199,11 @@ foam.CLASS({
   ],
   methods: [
     function init() {
+      console.log(this.isFinish);
       this.SUPER();
-      this.form.isEnabledButtons(true);
+      //this.form.isEnabledButtons(true);
       this.viewData.questions = [
-        'aaaa','bbbb','cccc'
+        'What is your mother maiden name','What is your age','cccc'
       ];
       // for ( var i = 0 ; i < this.viewData.securityChallenges.length ; i++ ){
       //   this.viewData.questions[i] = this.viewData.securityChallenges[i].Prompt;
@@ -212,29 +227,28 @@ foam.CLASS({
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
           .end()
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
-          .start('div').addClass('over-wrap')
-            .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-            .start(this.ANSWER0, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-            .start('p').add(( ! this.viewData.questions[1] ) ? '' : this.viewData.questions[1]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-            .start(this.ANSWER1, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-            .start('p').add(( ! this.viewData.questions[2] ) ? '' : this.viewData.questions[2]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-            .start(this.ANSWER2, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .end()
-          .start('p').add('Forget security answer?').addClass('forgetAnswer').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .start(this.ANSWER0, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
+          .start('p').add(( ! this.viewData.questions[1] ) ? '' : this.viewData.questions[1]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .start(this.ANSWER1, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
+          .start('p').add(( ! this.viewData.questions[2] ) ? '' : this.viewData.questions[2]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .start(this.ANSWER2, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
         .end()
-        .start('div')
-          .tag(this.NEXT_BUTTON, {label: 'next'})
+        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.CLOSE_BUTTON, {label: 'close'})
+          .tag(this.NEXT_BUTTON, {label: 'next'})
         .end()
+        .start('div').style({'clear' : 'both'}).end()
+
     }
   ],
 
   actions: [
     {
       name: 'nextButton',
-      isAvalable: function() {
-        if ( this.form.errors ) return false;
-        return true;
+
+      isEnabled: function(isFinish0,isFinish1,isFinish2) {
+        return (isFinish0 && isFinish1 && isFinish2) ? true : false;
       },
       code: function(X) {
         console.log('nextButton');
