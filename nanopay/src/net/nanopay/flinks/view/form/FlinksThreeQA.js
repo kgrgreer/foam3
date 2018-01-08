@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
+    'bankImgs',
     'form'
   ],
 
@@ -70,11 +71,6 @@ foam.CLASS({
           text-align: left;
           color: #093649;    
         }
-        ^ .over-wrap {
-          height: 94px;
-          width: 100%;
-          overflow:auto;
-        }
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
           margin: 0;
@@ -117,12 +113,6 @@ foam.CLASS({
 
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
-        }
-
-        ^ .sub-question {
-          width: 448px;
-          height: 28px;
-          border: 1px solid red;
         }
       */}
     })
