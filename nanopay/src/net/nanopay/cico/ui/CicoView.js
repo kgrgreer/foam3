@@ -243,6 +243,7 @@ foam.CLASS({
     },
 
     function cashIn() {
+      this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.CashInModal' }));
     },
 
@@ -255,6 +256,7 @@ foam.CLASS({
     },
 
     function cashOut() {
+      this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutModal' }));
     },
 
