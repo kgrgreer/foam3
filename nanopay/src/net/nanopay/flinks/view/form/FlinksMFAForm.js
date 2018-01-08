@@ -15,7 +15,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 269px;
+          height: 240px;
         }
         ^ .header1 {
           font-family: Roboto;
@@ -63,11 +63,59 @@ foam.CLASS({
           text-align: right;
           color: #59a5d5;
         }
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          float: right;
+          margin: 0;
+          box-sizing: border-box;
+          background-color: #A93226;
+          outline: none;
+          border:none;
+          width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+        }
+
+        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+          cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton {
+          float: right;
+          margin: 0;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #148F77;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          margin-right: 40px;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:disabled {
+          background-color: #7F8C8D;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
+          cursor: pointer;
+        }
       */}
     })
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'isFinish0',
+      value: false
+    },
     {
       class: 'StringArray',
       name: 'answer',
@@ -76,10 +124,11 @@ foam.CLASS({
         this.viewData.answers[0] = newValue;
       },
       validateObj: function(answer) {
-        if ( answer.length == 0 ) return this.answerError;
+        if ( answer.length == 0 ) return this.isFinish0 = false;
         for ( var o in answer ) {
-          if ( o.trim().length == 0) return this.answerError;
-        } 
+          if ( o.trim().length == 0 ) return this.isFinish0 = false;
+        }
+        this.isFinish0 = true;
       }
     }
   ],
@@ -94,9 +143,12 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.form.isEnabledButtons(true);
-      for ( var i = 0 ; i < this.viewData.securityChallenges.length ; i++ ) {
-        this.viewData.questions[i] = this.viewData.securityChallenges[i].Prompt;
-      }
+      // for ( var i = 0 ; i < this.viewData.securityChallenges.length ; i++ ) {
+      //   this.viewData.questions[i] = this.viewData.securityChallenges[i].Prompt;
+      // }
+      this.viewData.questions = [
+        'What is your mother maiden name','What is your age','cccc'
+      ];
       this.nextLabel = 'Submit';
     },
 
@@ -112,14 +164,40 @@ foam.CLASS({
           .start('div').addClass('subHeader')
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
+            //.start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
           .end()
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
-          //TODO: generate Input fields depend on the length of the array
           .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start('p').add('Forget security answer?').addClass('forgetAnswer').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .start(this.ANSWER, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
         .end()
+        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .tag(this.CLOSE_BUTTON, {label: 'close'})
+        .tag(this.NEXT_BUTTON, {label: 'next'})
+        .end()
+        .start('div').style({'clear' : 'both'}).end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'nextButton',
+      label: 'next',
+      isEnabled: function(isFinish0) {
+        return (isFinish0) ? true : false;
+      },
+      code: function(X) {
+        console.log('nextButton');
+        X.form.goNext();
+      }
+    },
+    {
+      name: 'closeButton',
+      label: 'close',
+      code: function(X) {
+        console.log('close the form');
+        X.form.goBack();
+      }
     }
   ]
 })
