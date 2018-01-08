@@ -128,7 +128,16 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        this.dao.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        var payablesSumDAO = this.dao.where(
+          this.OR(
+            this.EQ(this.Invoice.STATUS, "Overdue"),
+            this.EQ(this.Invoice.STATUS, "Due"),
+            this.EQ(this.Invoice.STATUS, "Scheduled"),
+            this.EQ(this.Invoice.STATUS, "Paid")
+          )
+        );
+
+        payablesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.payableAmount = sum.value.toFixed(2);
         });
         // These two queries could be combined into a SEQ() to save on a
