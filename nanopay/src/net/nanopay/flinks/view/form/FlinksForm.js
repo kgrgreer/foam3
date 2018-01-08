@@ -7,6 +7,7 @@ foam.CLASS({
   //need different webpage to handle WFA
   exports: [
     'bankImgs',
+    'GO_BACK',
     'as form'
   ],
 
@@ -111,6 +112,9 @@ foam.CLASS({
           background-color: #ffffff;
           border: 1px solid red;
         }
+        ^ p {
+          margin: 0;
+        }
     */}})
   ],
   methods: [
@@ -120,6 +124,7 @@ foam.CLASS({
       this.viewData.questions = [];
       // this.isCustomNavigation = true;
       this.views = [
+        { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksThreeQA' } },
         { parent: 'authForm', id: 'form-authForm-institution',  label: 'Institution',   view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' } },
         { parent: 'authForm', id: 'form-authForm-Connect',      label: 'Connect',       view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' } },
         { parent: 'authForm', id: 'form-authForm-Security',     label: 'Security',      view: { class: 'net.nanopay.flinks.view.form.FlinksMFAForm' } },
