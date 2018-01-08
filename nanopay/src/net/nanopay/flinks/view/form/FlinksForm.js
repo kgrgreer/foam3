@@ -7,7 +7,6 @@ foam.CLASS({
   //need different webpage to handle WFA
   exports: [
     'bankImgs',
-    'GO_BACK',
     'as form'
   ],
 

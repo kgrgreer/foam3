@@ -4,10 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'form',
-    'goBack',
-    'goNext',
-    'wizard'
+    'form'
   ],
 
   axioms: [
@@ -17,7 +14,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 457px;
+          height: 276px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -72,6 +69,65 @@ foam.CLASS({
           letter-spacing: 0.2px;
           text-align: left;
           color: #093649;    
+        }
+        ^ .over-wrap {
+          height: 94px;
+          width: 100%;
+          overflow:auto;
+        }
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          display: inline-block;
+          margin: 0;
+          box-sizing: border-box;
+          margin-right: 30px;
+          background: none;
+          outline: none;
+          border:none;
+          width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+          background-color: rgba(164, 179, 184, 0.1);
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #093649;
+        }
+
+        ^ .net-nanopay-ui-ActionView-closeButton:disabled {
+          color: rgba(9, 54, 73, 0.5);
+        }
+
+        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+          cursor: pointer;
+          background: none;
+          background-color: rgba(164, 179, 184, 0.4);
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton {
+          display: inline-block;
+          margin: 0;
+          background: none;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #59a5d5;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:disabled {
+          color: rgba(88, 165, 213, 0.5);
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
+          cursor: pointer;
+          background: none;
+          background-color: #3783b3;
         }
       */}
     })
@@ -153,25 +209,44 @@ foam.CLASS({
           .start('div').addClass('subHeader')
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            //.start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
           .end()
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
-          .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER0, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start('p').add(( ! this.viewData.questions[1] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER1, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start('p').add(( ! this.viewData.questions[2] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER2, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .start('div').addClass('over-wrap')
+            .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+            .start(this.ANSWER0, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+            .start('p').add(( ! this.viewData.questions[1] ) ? '' : this.viewData.questions[1]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+            .start(this.ANSWER1, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+            .start('p').add(( ! this.viewData.questions[2] ) ? '' : this.viewData.questions[2]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+            .start(this.ANSWER2, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'20px'}).end()
+          .end()
           .start('p').add('Forget security answer?').addClass('forgetAnswer').style({'margin-left':'20px', 'margin-top':'20px'}).end()
         .end()
-        .start(this.GO_BACK).end()
-        //.startContext({data: this.wizard})
-          //.tag(this.GO_NEXT, {label$: this.nextLabel$})
-        //.endContext()
-        //.startContext({data: this.wizard})
-          .tag(this.GO_BACK, {label$: this.backLabel$})
-        //.endContext()
+        .start('div')
+          .tag(this.NEXT_BUTTON, {label: 'next'})
+          .tag(this.CLOSE_BUTTON, {label: 'close'})
+        .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'nextButton',
+      isAvalable: function() {
+        if ( this.form.errors ) return false;
+        return true;
+      },
+      code: function(X) {
+        console.log('nextButton');
+        X.form.goNext();
+      }
+    },
+    {
+      name: 'closeButton',
+      code: function(X) {
+        console.log('close the form');
+        X.form.goBack();
+      }
     }
   ]
 })

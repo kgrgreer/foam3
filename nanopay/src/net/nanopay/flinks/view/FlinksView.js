@@ -64,7 +64,7 @@ foam.CLASS({
       name: 'authForm',
       label: 'auth a new bank account',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm'})
+        X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true})
       }
     },
     {
