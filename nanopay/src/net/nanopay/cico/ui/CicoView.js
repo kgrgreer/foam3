@@ -35,6 +35,7 @@ foam.CLASS({
     'cashIn',
     'confirmCashOut',
     'confirmCashIn',
+    'dblclick',
     'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess',
@@ -235,6 +236,10 @@ foam.CLASS({
         .end();
     },
 
+    function dblclick(transaction) {
+      this.stack.push({ class: 'net.nanopay.cico.ui.CicoTransactionDetailView', data: transaction });
+    },
+
     function cashIn() {
       this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.CashInModal' }));
@@ -299,14 +304,6 @@ foam.CLASS({
 
       properties: [
         {
-          name: 'selection',
-          preSet: function(oldValue, newValue) {
-            if( newValue ) {
-              return oldValue;
-            }
-          }
-        },
-        {
           name: 'cicoTransactions',
           expression: function(standardCICOTransactionDAO) {
             return standardCICOTransactionDAO.where(
@@ -324,13 +321,12 @@ foam.CLASS({
           this
             .start({
               class: 'foam.u2.view.TableView',
-              selection$: this.selection$,
               editColumnsEnabled: true,
               data: this.cicoTransactions,
               columns: [
                 'id', 'date', 'amount', 'type'
               ]
-            }).addClass(this.myClass('table')).end();
+            });
         }
       ]
     }
