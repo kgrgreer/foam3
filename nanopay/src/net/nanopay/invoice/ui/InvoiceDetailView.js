@@ -116,7 +116,7 @@ foam.CLASS({
             .startContext({data: this})
               .start(this.DELETE_DRAFT).end()
               .start(this.SAVE_AND_PREVIEW).addClass('float-right').end()
-              .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
+              // .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
             .endContext()
           .end()
           .start().add('New Invoice').addClass('light-roboto-h2').end()
