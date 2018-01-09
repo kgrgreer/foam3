@@ -43,11 +43,11 @@ foam.CLASS({
       .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data })
       .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
           .add('Note:')
-        .end()
-        .start('br').end()
-        .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px'})
-          .add(this.data.notes)
-        .end();
+      .end()
+      .start('br').end()
+      .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px'})
+        .add(this.data.notes)
+      .end();
     }
   ],
 
