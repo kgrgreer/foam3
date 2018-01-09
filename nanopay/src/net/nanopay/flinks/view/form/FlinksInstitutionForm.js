@@ -52,6 +52,21 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'isFinish0',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isFinish1',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isFinish2',
+      value: false
+    },
+    {
       //decide which bank will connect
       class: 'Int',
       name: 'selectedOption',

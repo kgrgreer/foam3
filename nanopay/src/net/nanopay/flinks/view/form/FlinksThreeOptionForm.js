@@ -1,11 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
-  name: 'FlinksThreeQA',
+  name: 'FlinksThreeOptionForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  imports: [
-    'bankImgs',
-    'form'
+  requires: [
+    'foam.u2.view.ChoiceView',
+    'foam.u2.view.StringArrayView',
+    'foam.u2.tag.Input'
   ],
 
   axioms: [
@@ -15,7 +16,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 390px;
+          height: 405px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -28,37 +29,13 @@ foam.CLASS({
           text-align: left;
           color: #093649;
         }
-        ^ .input {
+        ^ .foam-u2-view-StringArrayView {
           width: 450px;
-          height: 40px;
+          height: 30px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
           outline: none;
-          padding: 10px;
-        }
-        ^ .question {
-          height: 14px;
-          font-family: Roboto;
-          font-size: 12px;
-          font-weight: normal;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .forgetAnswer {
-          width: 450px;
-          font-family: Roboto;
-          font-size: 12px;
-          font-weight: normal;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: right;
-          color: #59a5d5;
+          padding: 5px;
         }
         ^ .header1 {
           font-family: Roboto;
@@ -114,87 +91,61 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
+
+        ^ .foam-u2-tag-Select {
+          width: 450px;
+          height: 30px;
+          background-color: #ffffff;
+          border: solid 1px rgba(164, 179, 184, 0.5);
+        }
       */}
     })
   ],
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'isFinish0',
-      value: false
+      Class: 'Array',
+      name: 'answerCheck',
     },
     {
-      class: 'Boolean',
-      name: 'isFinish1',
-      value: false
+      Class: 'Array',
+      name: 'questionCheck',
     },
     {
-      class: 'Boolean',
-      name: 'isFinish2',
-      value: false
-    },
-    {
-      class: 'StringArray',
-      name: 'answer0',
-      postSet: function(oldValue, newValue) {
-        console.log(newValue);
-        console.log(this.isFinish);
-        this.viewData.answers[0] = newValue;
-      },
-      validateObj: function(answer0) {
-        if ( answer0.length == 0 ) return this.isFinish0 = false;
-        for ( var o in answer0 ) {
-          if ( o.trim().length == 0 ) return this.isFinish0 = false;
-        }
-        this.isFinish0 = true;
-      }
-    },
-    {
-      class: 'StringArray',
-      name: 'answer1',
-      postSet: function(oldValue, newValue) {
-        console.log(newValue);
-        this.viewData.answers[1] = newValue;
-      },
-      validateObj: function(answer1) {
-        if ( answer1.length == 0 ) return this.isFinish1 = false;
-        for ( var o in answer1 ) {
-          if ( o.trim().length == 0 ) return this.isFinish1 = false;
-        }
-        this.isFinish1 = true;
-      }
-    },
-    {
-      class: 'StringArray',
-      name: 'answer2',
-      postSet: function(oldValue, newValue) {
-        console.log(newValue);
-        this.viewData.answers[2] = newValue;
-      },
-      validateObj: function(answer2) {
-        if ( answer2.length == 0 ) return this.isFinish2 = false;
-        for ( var o in answer2 ) {
-          if ( o.trim().length == 0 ) return this.isFinish2 = false;
-        }
-        this.isFinish2 = true;
-      }
+      Class: 'Int',
+      name: 'tick',
+      value: -10000000
     }
   ],
 
   messages: [
     { name: 'Step', message: 'Step3: Please response below security challenges' },
-    { name: 'header1', message: 'Please answer the security question: '},
+    { name: 'header1', message: 'Please reset the security questions: '},
     { name: 'answerError', message: 'Invalid answer'}
   ],
+
   methods: [
     function init() {
-      console.log(this.isFinish);
       this.SUPER();
       //this.form.isEnabledButtons(true);
       this.viewData.questions = [
         'What is your mother maiden name','What is your age','cccc'
       ];
+      console.log(this.institution);
+      console.log(this.INSTITUTION);
+      this.iters = [
+        ['aaaaa',
+        'bbbbb',
+        'ccccc'],
+        ['aaaaa1',
+        'bbbbb1',
+        'ccccc1'],
+        ['aaaaa2',
+        'bbbbb2',
+        'ccccc2'],
+      ];
+      this.questionCheck = new Array(this.iters.length).fill(false);
+      this.answerCheck = new Array(this.iters.length).fill(false);
       // for ( var i = 0 ; i < this.viewData.securityChallenges.length ; i++ ){
       //   this.viewData.questions[i] = this.viewData.securityChallenges[i].Prompt;
       // }
@@ -202,6 +153,7 @@ foam.CLASS({
     },
     function initE() {
       this.SUPER();
+      var self = this;
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
@@ -214,28 +166,55 @@ foam.CLASS({
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
           .end()
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
-          .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER0, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
-          .start('p').add(( ! this.viewData.questions[1] ) ? '' : this.viewData.questions[1]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER1, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
-          .start('p').add(( ! this.viewData.questions[2] ) ? '' : this.viewData.questions[2]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
-          .start(this.ANSWER2, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()
+          .forEach(this.iters, function(data, index){
+
+            var view = self.ChoiceView.create({choices : data, placeholder: 'Please select a question'});
+            var input = self.StringArrayView.create({onKey: true, data:[]});
+            //var input = self.Input.create({onKey: true});
+            view.data$.sub(function(){
+              if ( ! view.data ) { 
+                self.questionCheck[index] = false;
+              } else {
+                self.questionCheck[index] = true;
+              }
+              self.tick++;
+            });
+            input.data$.sub(function(){
+              if ( input.data.length == 0 ) {
+                self.answerCheck[index] = false;
+              } else {
+                self.answerCheck[index]  = true
+              }
+              self.tick++;
+              // for ( var o in input.data ) {
+              //   if ( o.trim().length == 0 ) return self.answerCheck[index] = false;
+              // }
+              
+            });
+            this.start(view).style({ 'margin-left':'20px', 'margin-top':'20px'}).end()
+            this.start(input).style({ 'margin-left':'20px', 'margin-top':'10px'}).end()
+          })
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.CLOSE_BUTTON, {label: 'close'})
           .tag(this.NEXT_BUTTON, {label: 'next'})
         .end()
         .start('div').style({'clear' : 'both'}).end()
-
     }
   ],
-
   actions: [
     {
       name: 'nextButton',
-
-      isEnabled: function(isFinish0,isFinish1,isFinish2) {
-        return (isFinish0 && isFinish1 && isFinish2) ? true : false;
+      label: 'next',
+      isEnabled: function(tick, answerCheck, questionCheck) {
+        console.log('question', questionCheck);
+        console.log('answer', answerCheck);
+        for ( var i = 0 ; i < questionCheck.length ; i++ ) {
+          if ( questionCheck[i] == false || answerCheck[i] == false ) {
+            return false;
+          }
+        }
+        return true;
       },
       code: function(X) {
         console.log('nextButton');
@@ -244,6 +223,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
+      label: 'close',
       code: function(X) {
         console.log('close the form');
         X.form.goBack();

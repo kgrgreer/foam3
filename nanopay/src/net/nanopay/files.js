@@ -244,5 +244,6 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/element/AccountCard', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksMFAForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksDoneForm', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/form/FlinksThreeQA', flags: ['web'] }
+  { name: 'net/nanopay/flinks/view/form/FlinksThreeQA', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksThreeOptionForm', flags: ['web'] }
 ]);
