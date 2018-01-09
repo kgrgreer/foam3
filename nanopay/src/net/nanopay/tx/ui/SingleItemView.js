@@ -15,7 +15,7 @@ foam.CLASS({
       margin: 0;
     }
     ^ h3{
-      width: 137px;
+      width: 120px;
       display: inline-block;
       font-size: 12px;
       line-height: 1;
@@ -61,6 +61,7 @@ foam.CLASS({
             .start('h3').add('Amount').end()
             .start('h3').add('Recieving Bank').end()
             .start('h3').add('Recieving ID').end()
+            .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()
@@ -70,6 +71,7 @@ foam.CLASS({
             .start('h3').add('$', this.data.amount.toFixed(2)).end()
             .start('h3').add(this.data.payeeName).end()
             .start('h3').add(this.data.payeeId).end()
+            .start('h3').add(this.data.status || 'Completed').end()
           .end()
         .end();
     }
