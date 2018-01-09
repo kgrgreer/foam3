@@ -147,7 +147,6 @@ foam.CLASS({
         newDAO.select(this.COUNT()).then(function(count) {
           self.newCount = count.value;
         });
-
         newDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.newAmount = sum.value.toFixed(2);
         });
@@ -157,7 +156,6 @@ foam.CLASS({
         overDueDAO.select(this.COUNT()).then(function(count) {
           self.overDueCount = count.value;
         });
-
         overDueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.overDueAmount = sum.value.toFixed(2);
         });
