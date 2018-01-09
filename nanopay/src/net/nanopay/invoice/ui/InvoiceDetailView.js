@@ -3,10 +3,16 @@ foam.CLASS({
   name: 'InvoiceDetailView',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   imports: [
     'stack',
     'hideReceivableSummary',
-    'recurringInvoiceDAO'
+    'recurringInvoiceDAO',
+    'userDAO',
+    'user'
   ],
 
   exports: [
@@ -17,7 +23,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.auth.User'
   ],
 
   properties: [
@@ -47,6 +54,18 @@ foam.CLASS({
         ]
       },
       value: 'Daily'
+    },
+    {
+      name: 'userList',
+      view: function(_,X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
+          objToChoice: function(user) {
+            var username = user.firstName + ' ' + user.lastName;
+            return [user.id, username + ' - (' + user.email + ')'];
+          }
+        });
+      }
     }
   ],
 
@@ -123,9 +142,9 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('customer-div')
               .start().addClass('label').add('Customer').end()
-              .start(this.Invoice.PAYER_ID, { objToChoice: function(user) {
-                return [ user.id, user.firstName + ' ' + user.lastName ];
-              } }).end()
+              .startContext({data: this})
+                .start(this.USER_LIST).end()
+              .endContext()
             .end()
             .start().style({ 'float' : 'right'})
               .start().addClass('po-amount-div float-right')
