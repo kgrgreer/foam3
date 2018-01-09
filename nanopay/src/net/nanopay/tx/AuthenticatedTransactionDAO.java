@@ -45,7 +45,7 @@ public class AuthenticatedTransactionDAO
     /* is CICO txn? */
     if ( transaction.getBrokerId() != null ) {
 
-      if ( ! isBankAccountFromUser(transaction.getBankAccountId(), payee) || ! isBankAccountFromUser(transaction.getBankAccountId(), payer) ) {
+      if ( ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payee) || ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payer) ) {
         throw new RuntimeException("Attempt for user " + payee.getId() + " to create transaction with an unregistered Bank Account");
       }
     } else {
@@ -60,14 +60,13 @@ public class AuthenticatedTransactionDAO
     return getDelegate().put_(x, obj);
   }
 
-  protected boolean isBankAccountFromUser(Object bankAccountId, User user) {
-    BankAccount[] userBankAccounts = (BankAccount[]) user.getBankAccounts();
-
-    for ( BankAccount bankAccount : userBankAccounts ) {
-      if ( bankAccount.getId().equals(bankAccountId) ) {
-        return true;
-      }
+  protected boolean isBankAccountFromUser(Long bankAccountId, User user) {
+    DAO bankAccountDAO = (DAO) user.getBankAccounts();
+    BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
+    if ( bankAccount != null ) {
+      return true;
     }
+
     return false;
   }
 
