@@ -34,12 +34,13 @@ foam.CLASS({
 
   methods:[
     function initE(){
+
       this
       .addClass(this.myClass())
       .start(this.BACK_ACTION).end()
       .start().addClass('inline')
         .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export', data: this.data}}).add(this.EXPORT_BUTTON).end()
-      .end()  
+      .end()
       .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data });
     }
   ],
