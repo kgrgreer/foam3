@@ -238,7 +238,7 @@ foam.CLASS({
     },
 
     function dblclick(transaction) {
-      this.stack.push({ class: 'net.nanopay.cico.ui.CicoTransactionDetailView', data: transaction });
+      this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
     },
 
     function cashIn() {

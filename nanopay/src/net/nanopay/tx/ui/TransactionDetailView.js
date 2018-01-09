@@ -57,7 +57,7 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X){
-        X.stack.push({ class: 'net.nanopay.tx.ui.TransactionsView'});
+        X.stack.back();
       }
     },
     {
