@@ -154,7 +154,8 @@ foam.CLASS({
       name: 'amount'
     },
     {
-      name: 'formattedBalance'
+      name: 'formattedBalance',
+      value: 0
     },
     {
       class: 'Boolean',
@@ -197,17 +198,17 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null,"cico.ci").then(function(perm) {
+      this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
       });
 
-      this.accountDAO.where(this.EQ(this.Account.OWNER, this.user.id)).select().then( function (a) {
-        self.account = a.array[0];
+      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function (a) {
+        self.account.copyFrom(a);
+        self.onDAOUpdate();
       });
 
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
-      this.formattedBalance = this.account.balance/100;
 
       this
         .addClass(this.myClass())
@@ -286,7 +287,21 @@ foam.CLASS({
         X.cashOut();
       }
     }
+  ],
 
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: true,
+      code: function onDAOUpdate() {
+        var self = this;
+
+        this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function (account) {
+          self.account.copyFrom(account);
+          self.formattedBalance = account.balance/100;
+        });
+      }
+    }
   ],
 
   classes: [
@@ -331,20 +346,6 @@ foam.CLASS({
             }).addClass(this.myClass('table')).end();
         }
       ]
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onDAOUpdate',
-      isMerged: true,
-      code: function onDAOUpdate() {
-        var self = this;
-        this.accountDAO.find(this.account.id).then(function(account) {
-          self.account = account;
-          self.formattedBalance = account.balance/100;
-        });
-      }
     }
   ]
 });

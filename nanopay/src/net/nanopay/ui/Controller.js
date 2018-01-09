@@ -77,9 +77,7 @@ foam.CLASS({
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function(a) {
-        return self.account.copyFrom(a);
-      });
+      this.findAccount();
 
       this
         .addClass(this.myClass())
@@ -90,6 +88,19 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function findAccount() {
+      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function(a) {
+        return this.account.copyFrom(a);
+      }.bind(this));
+    }
+  ],
+
+  listeners: [
+    function onUserUpdate() {
+      this.SUPER();
+      this.findAccount();
     }
   ]
 });
