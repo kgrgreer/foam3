@@ -146,7 +146,7 @@ foam.CLASS({
 
           // add to deviceDAO
           this.deviceDAO.put(newDevice).then(function (result) {
-            self.subStack.push(this.views[this.subStack.pos + 1].view);
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.complete = true;
           })
           .catch(function (err) {
