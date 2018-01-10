@@ -40,6 +40,15 @@ foam.CLASS({
           text-align: left;
           color: #093649;    
         }
+        ^ .qa-block {
+          border: 2px solid #778899;
+          width: 436px;
+          height: 246px;
+          margin-left:20px;
+          margin-top: 10px;
+          overflow: auto;
+          padding: 5px;
+        }
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
           margin: 0;
@@ -94,6 +103,10 @@ foam.CLASS({
           letter-spacing: 0.3px;
           text-align: left;
           color: #093649;
+          margin-top: 10px;
+        }
+        ^ .question:first-child {
+          margin-top: 0px;
         }
       */}
     })
@@ -146,19 +159,21 @@ foam.CLASS({
           .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
         .end()
         .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
-        .forEach(this.iters, function(data, index){
-          var radio = self.RadioView.create({choices : data});
-          var checkBox = net.nanopay.flinks.view.element.CheckBoxes.create({choices: data})
-          radio.data$.sub(function(){
-            console.log('radio.data', radio.data);
-          });
-          checkBox.data$.sub(function(){
-            console.log('checkboxes', checkBox.data);
+        .start('div').addClass('qa-block')
+          .forEach(this.iters, function(data, index){
+            var radio = self.RadioView.create({choices : data});
+            var checkBox = net.nanopay.flinks.view.element.CheckBoxes.create({choices: data})
+            radio.data$.sub(function(){
+              console.log('radio.data', radio.data);
+            });
+            checkBox.data$.sub(function(){
+              console.log('checkboxes', checkBox.data);
+            })
+            this.start('p').addClass('question').add(self.viewData.questions[index]).end();
+            //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
+            this.start(checkBox).style({'margin-top':'5px'}).end();
           })
-          this.start('p').style({ 'margin-left':'20px', 'margin-top':'20px'} ).addClass('question').add(self.viewData.questions[index]).end();
-          //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
-          this.start(checkBox).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
-        })
+        .end()
       .end()
       .start('div').style({'margin-top' : '15px', 'height' : '40px'})
         .tag(this.CLOSE_BUTTON, {label: 'close'})
