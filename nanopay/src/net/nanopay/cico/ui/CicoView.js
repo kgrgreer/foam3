@@ -168,11 +168,17 @@ foam.CLASS({
       name: 'hasCashIn'
     },
     {
+      name: 'userBankAccounts',
+      factory: function() {
+        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+      }
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountDAO.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
+          dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
           objToChoice: function(a){
             return [a.id, a.accountName];
           }
