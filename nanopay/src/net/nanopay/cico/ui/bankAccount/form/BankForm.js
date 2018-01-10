@@ -110,7 +110,6 @@ foam.CLASS({
 
         if ( this.position == 1 ) { 
           // On Verification screen
-          console.log(this.selectedAccount);
           if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
             this.newBankAccount = this.selectedAccount;
           }
