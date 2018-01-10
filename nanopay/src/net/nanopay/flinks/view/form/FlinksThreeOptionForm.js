@@ -8,7 +8,9 @@ foam.CLASS({
     'foam.u2.view.StringArrayView',
     'foam.u2.tag.Input'
   ],
-
+  imports: [
+    'isConnecting'
+  ],
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -126,13 +128,12 @@ foam.CLASS({
 
   methods: [
     function init() {
+      var self = this;
       this.SUPER();
       //this.form.isEnabledButtons(true);
       this.viewData.questions = [
         'What is your mother maiden name','What is your age','cccc'
       ];
-      console.log(this.institution);
-      console.log(this.INSTITUTION);
       this.iters = [
         ['aaaaa',
         'bbbbb',
@@ -172,6 +173,7 @@ foam.CLASS({
             var input = self.StringArrayView.create({onKey: true, data:[]});
             //var input = self.Input.create({onKey: true});
             view.data$.sub(function(){
+              console.log(view.choices);
               if ( ! view.data ) { 
                 self.questionCheck[index] = false;
               } else {
@@ -180,6 +182,7 @@ foam.CLASS({
               self.tick++;
             });
             input.data$.sub(function(){
+              console.log(input.data);
               if ( input.data.length == 0 ) {
                 self.answerCheck[index] = false;
               } else {
@@ -206,9 +209,8 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'next',
-      isEnabled: function(tick, answerCheck, questionCheck) {
-        console.log('question', questionCheck);
-        console.log('answer', answerCheck);
+      isEnabled: function(isConnecting, tick, answerCheck, questionCheck) {
+        if ( isConnecting == true ) return false;
         for ( var i = 0 ; i < questionCheck.length ; i++ ) {
           if ( questionCheck[i] == false || answerCheck[i] == false ) {
             return false;
@@ -218,7 +220,8 @@ foam.CLASS({
       },
       code: function(X) {
         console.log('nextButton');
-        X.form.goNext();
+        this.isConnecting = true;
+        //X.form.goNext();
       }
     },
     {
