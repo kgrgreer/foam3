@@ -27,10 +27,11 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^table-header{
-          width: 960px;
+          width: 962px;
           height: 40px;
           background-color: rgba(110, 174, 195, 0.2);
           padding-bottom: 10px;
+          margin: 0;
         }
         ^ h3{
           width: 150px;
@@ -51,10 +52,11 @@ foam.CLASS({
           color: #093649;
         }
         ^table-body{
-          width: 960px;
+          width: 962px;
           height: auto;
           background: white;
           padding: 10px 0;
+          margin: 0;
         }
         ^ p{
           display: inline-block;

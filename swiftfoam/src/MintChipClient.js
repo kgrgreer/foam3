@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.swift.dao.ArrayDAO',
     'foam.swift.dao.CachingDAO',
     'foam.swift.parse.json.FObjectParser',
-    'net.nanopay.auth.token.ClientTokenService',
+    'foam.nanos.auth.token.ClientTokenService',
     'net.nanopay.tx.client.ClientUserTransactionLimitService'
   ],
   exports: [
@@ -131,7 +131,7 @@ return ClientDAO_create([
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.auth.token.ClientTokenService',
+      of: 'foam.nanos.auth.token.ClientTokenService',
       name: 'smsService',
       swiftFactory: `
 return ClientTokenService_create([
@@ -145,7 +145,7 @@ return ClientTokenService_create([
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.auth.token.ClientTokenService',
+      of: 'foam.nanos.auth.token.ClientTokenService',
       name: 'emailService',
       swiftFactory: `
 return ClientTokenService_create([
@@ -159,7 +159,7 @@ return ClientTokenService_create([
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.auth.token.ClientTokenService',
+      of: 'foam.nanos.auth.token.ClientTokenService',
       name: 'resetPasswordService',
       swiftFactory: `
 return ClientTokenService_create([

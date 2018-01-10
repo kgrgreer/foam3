@@ -43,7 +43,11 @@ foam.CLASS({
       label: 'Back',
       isAvailable: function() { return true; },
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
+        if ( this.position === 0 ) {
+          X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
+        } else {
+          this.subStack.back();
+        }
       }
     },
     {

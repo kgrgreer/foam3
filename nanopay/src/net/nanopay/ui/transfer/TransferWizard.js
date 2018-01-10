@@ -325,7 +325,7 @@ foam.CLASS({
           var transaction = this.Transaction.create({
             payerId: this.user.id,
             payeeId: this.viewData.payee.id,
-            amount: Math.round(this.viewData.fromAmount),
+            amount: Math.round(this.viewData.fromAmount*100),
             // rate: rate,
             // fees: Math.round(this.viewData.fees),
             // purpose: this.viewData.purpose,
@@ -342,7 +342,7 @@ foam.CLASS({
               self.viewData.transaction = result;
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
-              self.nextLabel = 'Make Another Transfer';
+              self.nextLabel = 'Make New Transfer';
               self.viewData.transaction = result;
               self.add(self.NotificationMessage.create({ message: "Success!" }));              
             }

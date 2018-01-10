@@ -9,9 +9,10 @@ foam.CLASS({
 
   css: `
     ^table-header{
-      width: 960px;
+      width: 962px;
       height: 40px;
       background-color: rgba(110, 174, 195, 0.2);
+      margin: 0;
     }
     ^ h3{
       width: 120px;
@@ -23,10 +24,11 @@ foam.CLASS({
       color: #093649;
     }
     ^table-body{
-      width: 960px;
+      width: 962px;
       height: auto;
       background: white;
       padding-bottom: 10px;
+      margin: 0;
     }
     ^ p{
       display: inline-block;
@@ -66,10 +68,10 @@ foam.CLASS({
             .start('h3').add(this.data.date.toISOString().substring(0,10)).end()
             .start('h3').add(this.data.payerName).end()
             .start('h3').add(this.data.payerId).end()
-            .start('h3').add('$', this.data.amount.toFixed(2)).end()
+            .start('h3').add('$', (this.data.amount/100).toFixed(2)).end()
             .start('h3').add(this.data.payeeName).end()
             .start('h3').add(this.data.payeeId).end()
-            .start('h3').add(this.data.status).end()
+            .start('h3').add(this.data.status || 'Completed').end()
           .end()
         .end();
     }

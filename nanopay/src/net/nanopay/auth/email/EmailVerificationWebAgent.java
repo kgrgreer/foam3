@@ -19,7 +19,7 @@ import org.jtwig.JtwigTemplate;
 import org.jtwig.resource.loader.TypedResourceLoader;
 
 public class EmailVerificationWebAgent
-  implements WebAgent
+    implements WebAgent
 {
   protected EnvironmentConfiguration config_;
 
@@ -45,7 +45,7 @@ public class EmailVerificationWebAgent
         throw new Exception("User not found.");
       }
 
-      
+
       if ( user == null ) {
         throw new Exception("User not found.");
       }
@@ -68,7 +68,7 @@ public class EmailVerificationWebAgent
             .build();
       }
 
-      EmailTemplate emailTemplate = (EmailTemplate) emailTemplateDAO.find("verify-email-link");
+      EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "verify-email-link", (String) user.getGroup());
       JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
       JtwigModel model = JtwigModel.newModel(Collections.<String, Object>singletonMap("msg", message));
       out.write(template.render(model));

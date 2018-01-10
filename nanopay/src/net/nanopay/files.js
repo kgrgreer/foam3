@@ -15,10 +15,6 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
   { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/token/TokenService', flags: ['web'] },
-  { name: 'net/nanopay/auth/token/ClientTokenService', flags: ['web']},
-  { name: 'net/nanopay/auth/token/AbstractTokenService', flags: ['web'] },
-  { name: 'net/nanopay/auth/password/ResetPasswordTokenService', flags: ['web']},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/BusinessRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserRegistrationView', flags: ['web'] },
@@ -38,6 +34,26 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
+
+  // ascendant fx
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFX'},
+
+  // lianlian pay
+  { name: 'net/nanopay/fx/lianlianpay/LianLianPay' },
+  { name: 'net/nanopay/fx/lianlianpay/model/ResultCode' },
+  { name: 'net/nanopay/fx/lianlianpay/model/DistributionMode' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionType' },
+  { name: 'net/nanopay/fx/lianlianpay/model/CurrencyBalanceRecord' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionCombined' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionCombinedRequest' },
+  { name: 'net/nanopay/fx/lianlianpay/model/InstructionCombinedSummary' },
+  { name: 'net/nanopay/fx/lianlianpay/model/PreProcessResult' },
+  { name: 'net/nanopay/fx/lianlianpay/model/PreProcessResultResponse' },
+  { name: 'net/nanopay/fx/lianlianpay/model/PreProcessResultSummary' },
+  { name: 'net/nanopay/fx/lianlianpay/model/Reconciliation' },
+  { name: 'net/nanopay/fx/lianlianpay/model/ReconciliationRecord' },
+  { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
+  { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
   // retail
   { name: 'net/nanopay/retail/model/DeviceType' },
@@ -195,10 +211,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
 
   //ui
-  { name: 'net/nanopay/ui/forgotPassword/EmailView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/ResendView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/ResetView', flags: ['web'] },
-  { name: 'net/nanopay/ui/forgotPassword/SuccessView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },

@@ -16,6 +16,9 @@ clean() {
 # Clean top level build folder
 clean
 
+node tools/xsd/index.js net.nanopay.iso20022 pacs.008.001.06.xsd
+node tools/xsd/index.js net.nanopay.fx.ascendantfx.model AFXLinkCustom.svc.xsd
+
 # For each project, grabs java code
 for d in *; do
   if [ "$d" = 'admin-portal' ]  || [ "$d" = 'b2b' ]       || [ "$d" = 'foam2' ]   ||
