@@ -41,13 +41,17 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
+        if ( this.position === 0 ) {
+          X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
+        } else {
+          this.subStack.back();
+        }
       }
     },
     {
       name: 'goNext',
       label: 'Next',
-      code: function() {
+      code: function(X) {
         var self = this;
 
         // Info from form
