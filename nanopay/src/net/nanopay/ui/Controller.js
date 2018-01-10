@@ -2,10 +2,13 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.nanos.controller.ApplicationController',
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },  
+  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
   documentation: 'Nanopay Top-Level Application Controller.',
 
-  implements: [ 'net.nanopay.util.CurrencyFormatter' ],
+  implements: [
+    'foam.mlang.Expressions',
+    'net.nanopay.util.CurrencyFormatter'
+  ],
 
   requires: [
     'foam.nanos.auth.User',
@@ -74,10 +77,8 @@ foam.CLASS({
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-      this.accountDAO.find(this.user).then(function(a){
-        return self.account = a;
-      });
-      
+      this.findAccount();
+
       this
         .addClass(this.myClass())
         .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
@@ -87,6 +88,19 @@ foam.CLASS({
         .end()
         .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function findAccount() {
+      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function(a) {
+        return this.account.copyFrom(a);
+      }.bind(this));
+    }
+  ],
+
+  listeners: [
+    function onUserUpdate() {
+      this.SUPER();
+      this.findAccount();
     }
   ]
 });

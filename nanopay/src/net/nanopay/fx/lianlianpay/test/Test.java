@@ -2,6 +2,7 @@ package net.nanopay.fx.lianlianpay.test;
 
 import com.jcraft.jsch.ChannelSftp;
 import foam.core.ProxyX;
+import foam.lib.json.Outputter;
 import net.nanopay.fx.lianlianpay.LianLianPayService;
 import net.nanopay.fx.lianlianpay.model.*;
 
@@ -48,6 +49,11 @@ public class Test {
 
       ic.setRequests(new InstructionCombinedRequest[]{ instruction });
       service.uploadInstructionCombined(ic);
+
+      Outputter outputter = new Outputter();
+      System.out.println(outputter.stringify(service.downloadPreProcessResult()));
+      System.out.println(outputter.stringify(service.downloadReconciliation()));
+      System.out.println(outputter.stringify(service.downloadStatement()));
     } catch (Throwable t) {
       t.printStackTrace();
     }

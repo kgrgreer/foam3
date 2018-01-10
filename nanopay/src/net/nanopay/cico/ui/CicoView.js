@@ -35,6 +35,7 @@ foam.CLASS({
     'cashIn',
     'confirmCashOut',
     'confirmCashIn',
+    'dblclick',
     'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess',
@@ -154,7 +155,8 @@ foam.CLASS({
       name: 'amount'
     },
     {
-      name: 'formattedBalance'
+      name: 'formattedBalance',
+      value: 0
     },
     {
       class: 'Boolean',
@@ -197,17 +199,17 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null,"cico.ci").then(function(perm) {
+      this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
       });
 
-      this.accountDAO.where(this.EQ(this.Account.OWNER, this.user.id)).select().then( function (a) {
-        self.account = a.array[0];
+      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function (a) {
+        self.account.copyFrom(a);
+        self.onDAOUpdate();
       });
 
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
-      this.formattedBalance = this.account.balance/100;
 
       this
         .addClass(this.myClass())
@@ -227,13 +229,6 @@ foam.CLASS({
               dao: this.standardCICOTransactionDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
-                class: 'foam.u2.DetailView',
-                properties: [
-                  this.Transaction.DATE,
-                  this.Transaction.ID,
-                  this.Transaction.AMOUNT,
-                  this.Transaction.TYPE
-                ]
               },
               summaryView: this.CicoTableView.create()
             })
@@ -242,7 +237,12 @@ foam.CLASS({
         .end();
     },
 
+    function dblclick(transaction) {
+      this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
+    },
+
     function cashIn() {
+      this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.CashInModal' }));
     },
 
@@ -255,6 +255,7 @@ foam.CLASS({
     },
 
     function cashOut() {
+      this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutModal' }));
     },
 
@@ -286,7 +287,21 @@ foam.CLASS({
         X.cashOut();
       }
     }
+  ],
 
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isMerged: true,
+      code: function onDAOUpdate() {
+        var self = this;
+
+        this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function (account) {
+          self.account.copyFrom(account);
+          self.formattedBalance = account.balance/100;
+        });
+      }
+    }
   ],
 
   classes: [
@@ -303,7 +318,6 @@ foam.CLASS({
       imports: [ 'standardCICOTransactionDAO' ],
 
       properties: [
-        'selection',
         {
           name: 'cicoTransactions',
           expression: function(standardCICOTransactionDAO) {
@@ -322,29 +336,14 @@ foam.CLASS({
           this
             .start({
               class: 'foam.u2.view.TableView',
-              selection$: this.selection$,
               editColumnsEnabled: true,
               data: this.cicoTransactions,
               columns: [
                 'id', 'date', 'amount', 'type'
               ]
-            }).addClass(this.myClass('table')).end();
+            });
         }
       ]
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onDAOUpdate',
-      isMerged: true,
-      code: function onDAOUpdate() {
-        var self = this;
-        this.accountDAO.find(this.account.id).then(function(account) {
-          self.account = account;
-          self.formattedBalance = account.balance/100;
-        });
-      }
     }
   ]
 });
