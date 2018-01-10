@@ -46,7 +46,6 @@ public class S2HDailyEmailAgent
     message.setFrom("info@nanopay.net");
     message.setReplyTo("noreply@nanopay.net");
     message.setTo(recipients);
-    message.setSubject("S2H status");
 
     //set to the day that just passed
     dayStart.set(year, month, day-1, 0, 0, 0);
