@@ -39,6 +39,7 @@ foam.CLASS({
     'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess',
+    'resetCicoAmount',
     'as view'
   ],
 
@@ -233,7 +234,7 @@ foam.CLASS({
               summaryView: this.CicoTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.cicoTransactions, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.cicoTransactions, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
     },
 
@@ -242,7 +243,6 @@ foam.CLASS({
     },
 
     function cashIn() {
-      this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.ci.CashInModal' }));
     },
 
@@ -255,7 +255,6 @@ foam.CLASS({
     },
 
     function cashOut() {
-      this.amount = 0;
       this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.co.CashOutModal' }));
     },
 
@@ -269,6 +268,10 @@ foam.CLASS({
 
     function goToBankAccounts() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+    },
+
+    function resetCicoAmount() {
+      this.amount = 0;
     }
   ],
 
@@ -277,6 +280,7 @@ foam.CLASS({
       name : 'cashInBtn',
       label : 'Cash In',
       code: function(X) {
+        X.resetCicoAmount();
         X.cashIn();
       }
     },
@@ -284,6 +288,7 @@ foam.CLASS({
       name: 'cashOutButton',
       label: 'Cash Out',
       code: function(X) {
+        X.resetCicoAmount();
         X.cashOut();
       }
     }
