@@ -206,7 +206,7 @@ foam.CLASS({
             .on('click', this.addMerchant)
           .end()
           .start('div').show(this.accessSubscriber$).add('Add Subscriber')
-            .on('click', this.addBusiness)
+            .on('click', this.addSubscriber)
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)
       }
@@ -227,7 +227,7 @@ foam.CLASS({
       this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
     },
 
-    function addBusiness() {
+    function addSubscriber() {
       var self = this;
       self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddSubscriberView' });
