@@ -140,6 +140,10 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
         }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: #e9e9e9;
+        }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
