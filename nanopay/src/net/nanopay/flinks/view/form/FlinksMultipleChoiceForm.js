@@ -93,9 +93,9 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .question {
-          height: 14px;
+          height: 15px;
           font-family: Roboto;
-          font-size: 12px;
+          font-size: 14px;
           font-weight: normal;
           font-style: normal;
           font-stretch: normal;
