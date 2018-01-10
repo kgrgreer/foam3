@@ -65,7 +65,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.title = 'Add a Device';
+      this.title = 'Add Device';
       // this.isCustomNavigation = true;
       this.views = [
         { parent: 'addDevice', id: 'form-addDevice-name',     label: 'Name',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceNameForm' } },
