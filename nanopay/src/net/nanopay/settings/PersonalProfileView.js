@@ -275,7 +275,7 @@ foam.CLASS({
           return;
         }
 
-        if (! /^[0-9()+-]{1,30}$/.test(this.phone) )
+        if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.phone) )
         {
           this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
           return; 
