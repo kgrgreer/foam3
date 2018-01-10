@@ -40,8 +40,15 @@ foam.CLASS({
       .start(this.BACK_ACTION).end()
       .start().addClass('inline')
         .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export', data: this.data}}).add(this.EXPORT_BUTTON).end()
+      .end()  
+      .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data })
+      .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
+          .add('Note:')
       .end()
-      .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data });
+      .start('br').end()
+      .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px'})
+        .add(this.data.notes)
+      .end();
     }
   ],
 
