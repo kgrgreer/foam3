@@ -45,7 +45,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('h3').add(this.webApp + ' Portal Powered by ©'+ this.webApp).end()
-          .start('h3').addClass('copyright-label').add('copyright ' + '©' + this.webApp + ' 2018, all right reserved.').end()
+          .start('h3').addClass('copyright-label').add('copyright ' + '© 2018 ' + this.webApp + '. All right reserved.').end()
         .end();
     }
   ]
