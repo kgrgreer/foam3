@@ -168,7 +168,7 @@ foam.CLASS({
             });
             checkBox.data$.sub(function(){
               console.log('checkboxes', checkBox.data);
-            })
+            });
             this.start('p').addClass('question').add(self.viewData.questions[index]).end();
             //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
             this.start(checkBox).style({'margin-top':'5px'}).end();
@@ -179,7 +179,7 @@ foam.CLASS({
         .tag(this.CLOSE_BUTTON, {label: 'close'})
         .tag(this.NEXT_BUTTON, {label: 'next'})
       .end()
-      .start('div').style({'clear' : 'both'}).end()
+      .start('div').style({'clear' : 'both'}).end();
     }
   ],
   actions: [
