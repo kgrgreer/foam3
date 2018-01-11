@@ -5,7 +5,9 @@ foam.CLASS({
 
   imports: [
     'bankImgs',
-    'form'
+    'form',
+    'viewData',
+    'isConnecting'
   ],
 
   axioms: [
@@ -41,6 +43,49 @@ foam.CLASS({
           text-align: left;
           color: #093649;
         }
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          float: right;
+          margin: 0;
+          box-sizing: border-box;
+          background-color: #A93226;
+          outline: none;
+          border:none;
+          width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+        }
+
+        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+          cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton {
+          float: right;
+          margin: 0;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #148F77;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          margin-right: 40px;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:disabled {
+          background-color: #7F8C8D;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
+          cursor: pointer;
+        }
       */}
     })
   ],
@@ -51,9 +96,6 @@ foam.CLASS({
       name: 'username',
       postSet: function(oldValue, newValue) {
         this.viewData.username = newValue;
-      },
-      validateObj: function(username) {
-        if ( username.trim().length == 0 ) return this.errorUsername;
       }
     },
     {
@@ -62,9 +104,6 @@ foam.CLASS({
       view: 'foam.u2.view.PasswordView',
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
-      },
-      validateObj: function(password) {
-        if ( password.trim().length == 0 ) return this.errorPassword;
       }
     },
     {
@@ -123,11 +162,39 @@ foam.CLASS({
                 .add('Terms & Conditions')
               .end()
             .end()
-            .start('span').addClass('conditionText').style({'color':'#59a5d5', 'margin-left':'168px'})
-              .add('Forgot password?')
-            .end()
           .end()
-        .end();
+        .end()
+        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+          .tag(this.CLOSE_BUTTON)
+          .tag(this.NEXT_BUTTON)
+        .end()
+        .start('div').style({'clear' : 'both'}).end();
+    }
+  ],
+  actions: [
+    {
+      name: 'nextButton',
+      label: 'Sign In',
+      isEnabled: function(isConnecting, username, password, conditionAgree) {
+        if ( isConnecting == true ) return false;
+        if ( username.trim().length == 0 ) return false;
+        if ( password.trim().length == 0 ) return false;
+        if ( conditionAgree == false ) return false;
+        return true;
+      },
+      code: function(X) {
+        console.log('nextButton');
+        this.isConnecting = true;
+        X.form.goNext();
+      }
+    },
+    {
+      name: 'closeButton',
+      label: 'Back',
+      code: function(X) {
+        console.log('close the form');
+        X.form.goBack();
+      }
     }
   ]
 })
