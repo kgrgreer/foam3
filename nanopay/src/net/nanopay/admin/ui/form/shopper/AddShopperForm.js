@@ -148,7 +148,7 @@ foam.CLASS({
                 money: shopperInfo.amount,
               });
             })
-            .then(function (result) {
+            .then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             })
