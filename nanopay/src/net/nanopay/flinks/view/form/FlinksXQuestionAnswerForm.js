@@ -6,7 +6,8 @@ foam.CLASS({
   imports: [
     'bankImgs',
     'form',
-    'isConnecting'
+    'isConnecting',
+    'viewData'
   ],
   requires: [
     'foam.u2.view.StringArrayView',
@@ -124,6 +125,22 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    {
+      Class: 'Array',
+      name: 'answerCheck',
+    },
+    {
+      Class: 'Array',
+      name: 'questionCheck',
+    },
+    {
+      Class: 'Int',
+      name: 'tick',
+      value: -10000000
+    }
+  ],
+
   messages: [
     { name: 'Step', message: 'Step3: Please response below security challenges' },
     { name: 'header1', message: 'Please answer the security question: '},
@@ -137,6 +154,10 @@ foam.CLASS({
       this.viewData.questions = [
         'What is your mother maiden name','What is your age','cccc','dddd ddddd ddddddd dddddd'
       ];
+      this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
+      this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
+      this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
+      this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
     },
     
     function initE() {
@@ -155,12 +176,21 @@ foam.CLASS({
           .end()
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
-            .forEach(this.viewData.questions, function(data, index){
+            .forEach(this.viewData.SecurityChallenges, function(data, index){
+              self.viewData.questions[index] = data.Prompt;
               var text = self.Input.create({'onKey':true});
               text.data$.sub(function(){
                 console.log('stringArray.data', text.data);
+                self.viewData.answers[index] = new Array(1).fill(text.data);
+                console.log(self.viewData);
+                if ( text.data.trim().length === 0 ) {
+                  self.answerCheck[index] = false;
+                } else {
+                  self.answerCheck[index] = true;
+                }
+                self.tick++;
               });
-              this.start('p').addClass('question').add('Q' + (index+1) + ': ').add(data).end();
+              this.start('p').addClass('question').add('Q' + (index+1) + ': ').add(data.Prompt).end();
               this.start(text).style({'margin-top':'10px'}).addClass('input').end();
             })
           .end()
@@ -176,14 +206,17 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'next',
-      isEnabled: function(isConnecting) {
+      isEnabled: function(tick, isConnecting, answerCheck) {
+        for ( var x in answerCheck ) {
+          if ( answerCheck[x] === false ) return false;
+        }
         if ( isConnecting == true ) return false;
         return true;
       },
       code: function(X) {
         console.log('nextButton');
         this.isConnecting = true;
-        //X.form.goNext();
+        X.form.goNext();
       }
     },
     {
