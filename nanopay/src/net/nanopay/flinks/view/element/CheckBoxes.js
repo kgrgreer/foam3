@@ -1,11 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.view.element',
   name: 'CheckBoxes',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.view.ChoiceView',
 
   documentation: 'view for account and balance',
-
-  extends: 'foam.u2.view.ChoiceView',
 
   axioms: [
     foam.u2.CSS.create({
