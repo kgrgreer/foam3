@@ -19,7 +19,8 @@ foam.CLASS({
     'user',
     'email',
     'userDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'currencyFormatter'
   ],
 
   axioms: [
@@ -145,7 +146,7 @@ foam.CLASS({
               return self.email.sendEmailFromTemplate(shopper, emailMessage, 'cc-template-invite/shopper', {
                 name: shopper.firstName,
                 email: shopper.email,
-                money: shopperInfo.amount,
+                money: self.currencyFormatter.format(shopperInfo.amount),
               });
             })
             .then(function () {
