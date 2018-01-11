@@ -115,7 +115,7 @@ foam.CLASS({
       code: function() {
         var self = this;
         this.invoiceDAO.find(this.data.id).then(function(invoice) {
-          self.data = invoice;
+          self.data.status = invoice.status;
         });
       }
     }
