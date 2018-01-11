@@ -10,15 +10,18 @@ foam.CLASS({
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
     'stack',
-    'userDAO',
     'user',
-    'transactionDAO'
+    'email',
+    'userDAO',
+    'transactionDAO',
+    'currencyFormatter'
   ],
 
   axioms: [
@@ -151,13 +154,25 @@ foam.CLASS({
             });
   
             this.transactionDAO.put(transaction).then(function(response) {
+              var merchant = merchantInfo.merchant;
+              var emailMessage = self.EmailMessage.create({
+                from: 'info@nanopay.net',
+                replyTo: 'noreply@nanopay.net',
+                to: [ merchant.email ]
+              });
+
+              return self.email.sendEmailFromTemplate(merchant, emailMessage, 'cc-template-invite/merc1', {
+                name: merchant.firstName,
+                email: merchant.email,
+                money: self.currencyFormatter.format(merchantInfo.amount)
+              });
+            }).then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
-              return;
             }).catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-              return;
             });
+            return;
           }
         }
 

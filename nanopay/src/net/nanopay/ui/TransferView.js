@@ -143,7 +143,7 @@ foam.CLASS({
       code: function(X){
         var self = this;
 
-        if ( self.payees == null ) {
+        if ( self.userList == null ) {
           self.add(self.NotificationMessage.create({ message: 'Please select a user to transfer too.', type: 'error' }));
           return;
         }
@@ -154,7 +154,7 @@ foam.CLASS({
         }
 
         var transaction = self.Transaction.create({
-          payeeId: self.payees,
+          payeeId: self.userList,
           payerId: self.user.id,
           amount:  self.transferAmount,
           notes:   self.note

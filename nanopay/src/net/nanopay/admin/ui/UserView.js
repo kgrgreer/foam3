@@ -106,6 +106,10 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ .foam-u2-view-TableView-row:hover {
+      cursor: pointer;
+      background: #e9e9e9;
+    }
   `,
 
   properties: [
