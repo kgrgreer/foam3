@@ -137,13 +137,13 @@ foam.CLASS({
           return;
         }
 
-        // if handling keycodes 0-9, subtract 48
+        // subtract keycode
         if ( key >= 48 && key <= 57 ) {
           key -= 48;
         }
 
-        // don't handle characters that aren't 0-9
-        if ( key < 0 || key > 9 ) {
+        // check if not a number
+        if ( Number.isNaN(parseInt(key, 10)) ) {
           return;
         }
 

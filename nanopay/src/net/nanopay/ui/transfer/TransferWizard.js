@@ -215,7 +215,7 @@ foam.CLASS({
     function init() {
       if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
       else { this.title = 'Send Transfer' }
-      
+
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -343,7 +343,7 @@ foam.CLASS({
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make New Transfer';
               self.viewData.transaction = result;
-              self.add(self.NotificationMessage.create({ message: "Success!" }));              
+              self.add(self.NotificationMessage.create({ message: "Success!" }));
             }
           })
           .catch(function (err) {
