@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a device',
   //need different webpage to handle WFA
   exports: [
+    'isConnecting',
     'bankImgs',
     'as form'
   ],
@@ -49,6 +50,11 @@ foam.CLASS({
           {index: 15,institution: 'FlinksCapital', image: 'images/banks/flinks.svg'}
         ]; 
       }
+    },
+    {
+      Class: 'Boolean',
+      name: 'isConnecting',
+      value: false
     },
     {
       class: 'Boolean',
@@ -122,11 +128,14 @@ foam.CLASS({
       this.viewData.answers = [];
       this.viewData.questions = [];
       // this.isCustomNavigation = true;
+      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' } },
+      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' } },
+      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' } },
+      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksThreeOptionForm' } },
       this.views = [
-        { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksThreeOptionForm' } },
         { parent: 'authForm', id: 'form-authForm-institution',  label: 'Institution',   view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' } },
         { parent: 'authForm', id: 'form-authForm-Connect',      label: 'Connect',       view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' } },
-        { parent: 'authForm', id: 'form-authForm-Security',     label: 'Security',      view: { class: 'net.nanopay.flinks.view.form.FlinksMFAForm' } },
+        { parent: 'authForm', id: 'form-authForm-Security',     label: 'Security',      view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' } },
         { parent: 'authForm', id: 'form-authForm-Account',      label: 'Account',       view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' } }
       ];
       this.SUPER();
@@ -173,6 +182,7 @@ foam.CLASS({
       code: function(X) {
         console.log(X);
         var self = this;
+        //sign in
         if ( this.position == 1 ) {
           console.log('this.viewData.check: ', this.viewData.check);
           if ( this.viewData.check != true ) {
@@ -183,14 +193,12 @@ foam.CLASS({
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
+            console.log('return authorize msg', msg);
+            console.log('type of return', typeof msg);
+
             if ( self.position != 1 ) return;
-            
-            if ( ! msg || ! msg.httpStatus ) {
-              //If return message is null, stay in the same page
-              self.add(self.NotificationMessage.create({ message: 'Server Problem. Try again letter', type: 'error'}));
-              return;
-            }
-            var status = msg.httpStatus;
+
+            var status = msg.HttpStatusCode;
             
             if ( status == 200 ) {
               //get account infos, forward to account page
@@ -198,63 +206,65 @@ foam.CLASS({
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
-              self.viewData.requestId = msg.requestId;
-              self.viewData.securityChallenges = msg.securityChallenges;
-              self.add(self.NotificationMessage.create({ message: 'username and password correct'}));              
+              self.viewData.requestId = msg.RequestId;
+              self.viewData.SecurityChallenges = msg.SecurityChallenges; 
+              if ( !! self.viewData.SecurityChallenges[0].Type ) {
+                //To different view
+                console.log(self.viewData.SecurityChallenges[0].Type)
+              }       
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
-              if ( !! msg.errorMessage ) {
-                self.add(self.NotificationMessage.create({ message: msg.errorMessage, type: 'error'}));
-              } else {
-                self.add(self.NotificationMessage.create({ message: 'Server Problem. Try again letter', type: 'error'}));
-              }
+              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
+            self.isConnecting = false;
             self.isEnabledButtons(true);
           });
           return;
         }
-
+        //security challenge
         if ( this.position == 2 ) {
           //disable button, prevent double click
           self.isEnabledButtons(false);
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, this.viewData.questions, this.viewData.answers).then( function(msg) {
+            console.log('return challengeQuestion msg', msg);            
             if ( self.position != 2 ) return;
             
-            if ( ! msg || ! msg.httpStatus ) {
-              //If return message is null, stay in the same page
-              self.add(self.NotificationMessage.create({ message: 'Server Problem. Try again letter', type: 'error'}));
-              return;
-            }
-            var status = msg.httpStatus;
+            var status = msg.HttpStatusCode;
 
             if ( status == 200 ) {
               //go to account view
-              self.viewData.accounts = msg.accounts;
+              self.viewData.accounts = msg.Accounts;
               self.subStack.push(self.views[3].view);
+            } else if (status == 203) {
+              //continue on the MFA, refresh//or push a new view
+
             } else if ( status == 401 ) {
-              //reload the page
-              self.add(self.NotificationMessage.create({ message: msg.errorMessage, type: 'error' }));
+              //MFA response error
+              self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
               self.viewData.securityChallenges = msg.securityChallenges;
+            } else {
+              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
             self.isEnabledButtons(true);
+            self.isConnecting = false;
           });
           return;
         }
-
+        //fetch account
         if ( this.subStack.pos == 3 ) {
           X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, 'FlinksCapital')).select().then(function(institution){
             var inNumber = institution.array[0].institutionNumber;
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
                 X.bankAccountDAO.put(self.BankAccount.create({
-                  accountName: item.accountName,
-                  accountNumber: item.accountNo,
+                  accountName: item.Title,
+                  accountNumber: item.AccountNUmber,
                   institutionNumber: inNumber,
                   status: 'Verified'
                 })).catch(function(a) {
