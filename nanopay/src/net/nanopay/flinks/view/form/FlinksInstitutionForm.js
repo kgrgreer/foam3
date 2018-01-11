@@ -5,7 +5,8 @@ foam.CLASS({
 
   imports: [
     'bankImgs',
-    'form'
+    'form',
+    'isConnecting'
   ],
   
   axioms: [
@@ -46,26 +47,54 @@ foam.CLASS({
           width: 120px;
           height: 65px;
         }
+        ^ .net-nanopay-ui-ActionView-closeButton {
+          float: right;
+          margin: 0;
+          box-sizing: border-box;
+          background-color: #A93226;
+          outline: none;
+          border:none;
+          width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+        }
+
+        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+          cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton {
+          float: right;
+          margin: 0;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: #148F77;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          margin-right: 40px;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:disabled {
+          background-color: #7F8C8D;
+        }
+
+        ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
+          cursor: pointer;
+        }
       */}
     })
   ],
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'isFinish0',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'isFinish1',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'isFinish2',
-      value: false
-    },
     {
       //decide which bank will connect
       class: 'Int',
@@ -73,9 +102,6 @@ foam.CLASS({
       value: -1,
       postSet: function(oldValue, newValue) {
         this.viewData.selectedOption = newValue;
-      },
-      validateObj: function(selectedOption) {
-        if ( selectedOption == -1 ) return this.Error;
       }
     }
   ],
@@ -114,10 +140,35 @@ foam.CLASS({
             .end()
           })
         .end()
-        // .start('p')
-        //     .addClass('inputErrorLabel')
-        //     .add(this.slot(this.SELECTED_OPTION.validateObj))
-        // .end()
+        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+          .tag(this.CLOSE_BUTTON)
+          .tag(this.NEXT_BUTTON)
+        .end()
+        .start('div').style({'clear' : 'both'}).end()
+    }
+  ],
+  actions: [
+    {
+      name: 'nextButton',
+      label: 'next',
+      isEnabled: function(isConnecting, selectedOption) {
+        console.log(isConnecting, selectedOption);
+        if ( isConnecting === true ) return false;
+        if ( selectedOption === -1 ) return false;
+        return true;
+      },
+      code: function(X) {
+        console.log('nextButton');
+        X.form.goNext();
+      }
+    },
+    {
+      name: 'closeButton',
+      label: 'close',
+      code: function(X) {
+        console.log('close the form');
+        X.form.goBack();
+      }
     }
   ]
 })
