@@ -70,6 +70,11 @@ foam.CLASS({
             return;
           }
 
+          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(merchantInfo.phoneNumber) ) {
+            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
+            return; 
+          }
+
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }
