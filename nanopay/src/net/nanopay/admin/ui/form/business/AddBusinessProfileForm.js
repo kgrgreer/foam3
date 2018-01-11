@@ -123,7 +123,11 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.viewData.country;
+        if (this.viewData.country == 'undefined' || this.viewData.country == null) {
+          return 'CA';
+        } else {
+          return this.viewData.country;
+        }
       },
       postSet: function(oldValue, newValue) {
         this.viewData.country = newValue;
