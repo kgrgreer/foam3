@@ -12,6 +12,10 @@ import java.util.*;
 import net.nanopay.flinks.model.*;
 import foam.nanos.NanoService;
 import javax.naming.AuthenticationException;
+import org.apache.commons.io.IOUtils;
+import java.util.Base64;
+import java.util.Date;
+import java.io.*;
 
 public class FlinksAuthService
   extends ContextAwareSupport
@@ -32,7 +36,7 @@ public class FlinksAuthService
     flinksService.setX(getX());
   }
 
-  public FlinksRespMsg authorize(X x, String institution, String username, String password) throws AuthenticationException {
+  public FlinksResponse authorize(X x, String institution, String username, String password) throws AuthenticationException {
     //TODO: security check
     ResponseMsg respMsg = null;
     RequestMsg reqMsg = FlinksRequestGenerator.getAuthRequest(getX(), institution, username, password);
@@ -46,34 +50,22 @@ public class FlinksAuthService
     }
     
     int httpCode = respMsg.getHttpStatusCode();
-    FlinksRespMsg front = new FlinksRespMsg();
-
+    FlinksResponse feedback;
     System.out.println(respMsg.getJson());
     if ( httpCode == 200 ) {
       //TODO: forward to fetch account;
+      feedback = null;
     } else if ( httpCode == 203 ) {
-      //forward MFA to the client, might have different kinds of MFA response code, forward to another view to handle different MFA might be better
       FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
-      //SecurityChallengeModel[] securityChallengeModels = resp.getSecurityChallenges();
-      // String[] questions = new String[securityChallengeModels.length];
-      // for ( int i = 0 ; i < securityChallengeModels.length ; i++ ) {
-      //   questions[i] = securityChallengeModels[i].getPrompt();
-      // }
-      //front.setQuestions(questions);
-      front.setHttpStatus(httpCode);
-      front.setSecurityChallenges(resp.getSecurityChallenges());
-      front.setRequestId(resp.getRequestId());
+      feedback = (FlinksMFAResponse) respMsg.getModel();
     } else {
-      //if connect error forward error to the client
-      FlinksInvalidResponse resp = (FlinksInvalidResponse) respMsg.getModel();
-      // front.setHttpStatus(httpCode);
-      // front.setErrorMessage(resp.getMessage());
-      throw new AuthenticationException(resp.getMessage());
+      feedback = (FlinksInvalidResponse) respMsg.getModel();
+      throw new AuthenticationException(feedback.getMessage());
     }
-    return front;
+    return feedback;
   }
 
-  public FlinksRespMsg challengeQuestion(X x, String institution, String username, String requestId, String[] questions, Object[] answers) throws AuthenticationException {
+  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, String[] questions, Object[] answers) throws AuthenticationException {
     //TODO: security check
     Map map = new HashMap<>(questions.length);
     ResponseMsg respMsg = null;
@@ -89,27 +81,35 @@ public class FlinksAuthService
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
     
+    FlinksResponse feedback;
     int httpCode = respMsg.getHttpStatusCode();
-    FlinksRespMsg front = new FlinksRespMsg();
 
     if ( httpCode == 200 ) {
       //forward to get account info
       FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
       return getAccountSummary(x, resp.getRequestId());
+    } else if ( httpCode == 203 ) {
+      FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
+      feedback = (FlinksMFAResponse) respMsg.getModel();
+      //check if MFA is image(Laurentienne)
+      if ( resp.getSecurityChallenges()[0].getType().equals("ImageSelection") ) {
+        String relativePath = resp.getRequestId();
+        String[] images = resp.getSecurityChallenges()[0].getIterables();
+        for ( int i = 0 ; i < images.length ; i++ ) {
+          images[i] = storeToFile(relativePath, i + ".jpg", images[i]);
+        }
+      }
     } else if ( httpCode == 401 ) {
       FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
-      front.setHttpStatus(httpCode);
-      front.setSecurityChallenges(resp.getSecurityChallenges());
-      front.setRequestId(resp.getRequestId());
-      front.setErrorMessage(resp.getMessage());
-    } else {
-      FlinksInvalidResponse resp = (FlinksInvalidResponse) respMsg.getModel();      
-      throw new AuthenticationException(resp.getMessage());
+      feedback = (FlinksMFAResponse) respMsg.getModel();
+    } else {     
+      feedback = (FlinksInvalidResponse) respMsg.getModel();      
+      throw new AuthenticationException(feedback.getMessage());
     }
-    return front; 
+    return feedback; 
   }
 
-  public FlinksRespMsg getAccountSummary(X x, String requestId) throws AuthenticationException {
+  public FlinksResponse getAccountSummary(X x, String requestId) throws AuthenticationException {
     RequestMsg reqMsg = FlinksRequestGenerator.getAccountSummaryRequest(getX(), requestId);
     ResponseMsg respMsg = null;
     //catch any Exception that happen when connect to Flinks
@@ -122,28 +122,58 @@ public class FlinksAuthService
 
     int httpCode = respMsg.getHttpStatusCode();
     FlinksRespMsg front = new FlinksRespMsg();
-
+    FlinksResponse feedback;
     if ( httpCode == 200 ) {
       //send accounts to the client
       FlinksAccountsSummaryResponse resp = (FlinksAccountsSummaryResponse) respMsg.getModel();
-      String Institution = resp.getInstitution();
-      AccountModel[] accounts = resp.getAccounts();
-      int length = accounts.length;
-      FlinksAccount[] faccounts = new FlinksAccount[length];
-      front.setHttpStatus(httpCode);
-      for ( int i = 0 ; i < length ; i++ ) {
-        faccounts[i] = new FlinksAccount();
-        faccounts[i].setInstitution(Institution);
-        faccounts[i].setAccountName(accounts[i].getTitle());
-        faccounts[i].setAccountNo(accounts[i].getAccountNumber());
-        faccounts[i].setBalance(accounts[i].getBalance().getCurrent());
-        faccounts[i].setIsSelected(false);
-      }
-      front.setAccounts(faccounts);
+      feedback = (FlinksAccountsSummaryResponse) respMsg.getModel();
     } else {
-      FlinksInvalidResponse resp = (FlinksInvalidResponse) respMsg.getModel();      
-      throw new AuthenticationException(resp.getMessage());
+      feedback = (FlinksInvalidResponse) respMsg.getModel();      
+      throw new AuthenticationException(feedback.getMessage());
     }
-    return front;
+    return feedback;
+  }
+
+  //TODO: ? thread issue
+  protected String storeToFile(String relativePath, String fileName, String encode) {
+    String cwd = System.getProperty("user.dir");
+    String path = cwd + File.separator + relativePath;
+    File directory = new File(path);
+    if ( ! directory.exists() ) {
+      directory.mkdirs();
+    }
+    FileOutputStream out = null;
+    String fileLocation = directory + File.separator + fileName;
+    try {
+      byte[] encodeBytes = encode.getBytes("UTF-8");
+      byte[] decodeBytes = Base64.getDecoder().decode(encodeBytes);
+      File file = new File(fileLocation);
+      out = new FileOutputStream(file);
+      out.write(decodeBytes);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(out);
+    }
+
+    return fileLocation;
+  }
+  //TODO: ? thread issue
+  protected String fetchFromFIle(String path) {
+    FileInputStream in = null;
+    String ret = null;
+    try {
+      File file = new File(path);
+      byte fileContent[] = new byte[(int) file.length()];
+      in = new FileInputStream(path);
+      in.read(fileContent);
+      byte[] bytes2 = Base64.getEncoder().encode(fileContent);
+      ret = new String(bytes2, "UTF-8");
+    } catch ( Throwable t ) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(in);
+    }
+    return ret;
   }
 }
