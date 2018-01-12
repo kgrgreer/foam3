@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 import static foam.mlang.MLang.*;
 
 public class TransactionDAO
@@ -15,6 +17,7 @@ public class TransactionDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
+  protected DAO invoiceDAO_;
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -30,6 +33,13 @@ public class TransactionDAO
       userDAO_ = (DAO) getX().get("localUserDAO");
     }
     return userDAO_;
+  }
+
+  protected DAO getInvoiceDAO() {
+    if ( invoiceDAO_ == null ) {
+      invoiceDAO_ = (DAO) getX().get("invoiceDAO");
+    }
+    return invoiceDAO_;
   }
 
   protected DAO getAccountDAO() {
@@ -107,6 +117,22 @@ public class TransactionDAO
         payeeAccount.setBalance(payeeAccount.getBalance() + total);
         getAccountDAO().put(payerAccount);
         getAccountDAO().put(payeeAccount);
+
+        //find invoice
+        Long invoiceId = transaction.getInvoiceId();
+        if( invoiceId != null ) {
+          sink = new ListSink();
+          sink = getInvoiceDAO().where(EQ(Invoice.ID, transaction.getInvoiceId())).limit(1).select(sink);
+          data = ((ListSink) sink).getData();
+          if ( data == null || data.size() < 1 ){
+            throw new RuntimeException("Could not find invoice");
+          }
+          Invoice invoice = (Invoice) data.get(0);
+          invoice.setPaymentId(transaction.getId());
+          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
+          getInvoiceDAO().put(invoice);
+        }
         return super.put_(x, obj);
       }
     }
