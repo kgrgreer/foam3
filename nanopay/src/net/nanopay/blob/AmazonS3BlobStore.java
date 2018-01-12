@@ -18,8 +18,6 @@ import java.util.UUID;
 public class AmazonS3BlobStore
     extends AbstractBlobService
 {
-  public static final int BUFFER_SIZE = 8192;
-
   protected String bucket_;
   protected AmazonS3 s3Client_ = null;
 
