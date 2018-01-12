@@ -10,9 +10,10 @@ import foam.core.X;
 import org.apache.commons.io.IOUtils;
 import org.apache.geronimo.mail.util.Hex;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.UUID;
 
 public class AmazonS3BlobStore
@@ -41,26 +42,35 @@ public class AmazonS3BlobStore
       return blob;
     }
 
-    if ( !(blob instanceof InputStreamBlob) ) {
-      throw new RuntimeException("Invalid blob");
+    HashingOutputStream os = null;
+
+    try {
+      File tmp = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+      os = new HashingOutputStream(new FileOutputStream(tmp));
+      blob.read(os, 0, blob.getSize());
+      os.close();
+
+      // generate digest, create input stream, create metadata
+      String key = new String(Hex.encode(os.digest()));
+      InputStream is = new FileInputStream(tmp);
+      ObjectMetadata metadata = new ObjectMetadata();
+      metadata.setContentLength(tmp.length());
+
+      // send file
+      PutObjectRequest request = new PutObjectRequest(bucket_, key, is, metadata)
+          .withCannedAcl(CannedAccessControlList.PublicRead);
+      s3Client_.putObject(request);
+
+      // create identified blob with the key as the id
+      IdentifiedBlob ret = new IdentifiedBlob();
+      ret.setId(key);
+      ret.setX(getX());
+      return ret;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(os);
     }
-
-    // generate random key, get input stream, create metadata
-    String key = UUID.randomUUID().toString();
-    InputStream is = ((InputStreamBlob) blob).getInputStream();
-    ObjectMetadata metadata = new ObjectMetadata();
-    metadata.setContentLength(blob.getSize());
-
-    // send file
-    PutObjectRequest request = new PutObjectRequest(bucket_, key, is, metadata)
-        .withCannedAcl(CannedAccessControlList.PublicRead);
-    s3Client_.putObject(request);
-
-    // create identified blob with the key as the id
-    IdentifiedBlob ret = new IdentifiedBlob();
-    ret.setId(key);
-    ret.setX(getX());
-    return ret;
   }
 
   @Override
