@@ -94,7 +94,7 @@ FOAM_FILES([
 
   // admin
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/AddSubscriberView', flags: ['web'] },  
+  { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },  
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
@@ -109,10 +109,10 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperInfoForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperSendMoneyForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperReviewForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/subscriber/AddSubscriberForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/subscriber/AddSubscriberProfileForm', flags: ['web'] },  
-  { name: 'net/nanopay/admin/ui/form/subscriber/AddSubscriberInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/subscriber/AddSubscriberReviewForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyProfileForm', flags: ['web'] },  
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyReviewForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shared/AddUserDoneForm', flags: ['web'] },
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },

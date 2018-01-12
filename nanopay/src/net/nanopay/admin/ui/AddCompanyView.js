@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
-  name: 'AddSubscriberView',
+  name: 'AddCompanyView',
   extends: 'foam.u2.View',
 
-  documentation: 'View for adding a Subscriber through the wizard view flow',
+  documentation: 'View for adding a Company through the wizard view flow',
 
   methods: [
     function initE() {
@@ -12,7 +12,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .tag({ class: 'net.nanopay.admin.ui.form.subscriber.AddSubscriberForm', title: 'Add Subscriber' })
+          .tag({ class: 'net.nanopay.admin.ui.form.company.AddCompanyForm', title: 'Add Company' })
         .end();
     }
   ]
