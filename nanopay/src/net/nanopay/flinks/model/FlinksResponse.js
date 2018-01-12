@@ -26,9 +26,9 @@ foam.CLASS({
       name: 'Links'
     },
     {
-      javaType: 'foam.lib.json.UnknownFObjectArray',
+      javaType: 'foam.lib.json.UnknownFObject',
       javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
-      javaJSONParser: 'new foam.lib.json.UnknownFObjectArrayParser()',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjecParser()',
       name: 'ValidationDetails'
     },
     {
