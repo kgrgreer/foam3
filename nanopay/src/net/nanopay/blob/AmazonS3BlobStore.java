@@ -76,6 +76,9 @@ public class AmazonS3BlobStore
 
   @Override
   public String urlFor_(X x, Blob blob) {
-    throw new UnsupportedOperationException("Unsupported operation: urlFor_");
+    if ( !(blob instanceof IdentifiedBlob) ) {
+      return null;
+    }
+    return s3Client_.getUrl(bucket_, ((IdentifiedBlob) blob).getId()).toString();
   }
 }
