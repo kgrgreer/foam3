@@ -28,7 +28,7 @@ foam.CLASS({
     {
       javaType: 'foam.lib.json.UnknownFObject',
       javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
-      javaJSONParser: 'new foam.lib.json.UnknownFObjecParser()',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       name: 'ValidationDetails'
     },
     {
