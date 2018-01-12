@@ -177,7 +177,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.payeeDAO.where(X.data.NEQ(X.data.User.ID, 1)),
+          dao: X.data.payeeDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
             if ( X.data.invoiceMode ) {

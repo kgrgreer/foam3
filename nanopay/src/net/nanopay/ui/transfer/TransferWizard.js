@@ -312,20 +312,24 @@ foam.CLASS({
       // },
       code: function() {
         var self = this;
+        var invoiceId;
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
           var rate;
-          if(this.type == 'foreign'){
+          if( this.type == 'foreign' ){
             rate = this.viewData.rate.toString();
           }
-
+          if ( this.invoiceMode ){
+            var invoiceId = this.invoice.id;
+          }
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
             payerId: this.user.id,
             payeeId: this.viewData.payee.id,
             amount: Math.round(this.viewData.fromAmount*100),
+            invoiceId: invoiceId,
             // rate: rate,
             // fees: Math.round(this.viewData.fees),
             // purpose: this.viewData.purpose,
@@ -334,11 +338,6 @@ foam.CLASS({
 
           this.transactionDAO.put(transaction).then(function (result) {
             if ( result ) {
-              if ( self.invoiceMode ){
-                self.invoice.paymentId = result.id;
-                self.invoice.paymentDate = new Date();
-                self.invoiceDAO.put(self.invoice);
-              }
               self.viewData.transaction = result;
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';

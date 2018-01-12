@@ -1,4 +1,4 @@
 p({"class":"foam.nanos.auth.Permission","id":"cico.ci","description":"Allows the Cash-In button"})
 p({"class":"foam.nanos.auth.Permission","id":"user.merch","description":"Allows the Adding of Merchant"})
 p({"class":"foam.nanos.auth.Permission","id":"user.shop","description":"Allows the Adding of Shopper"})
-p({"class":"foam.nanos.auth.Permission","id":"user.subs","description":"Allows the Adding of Subscriber"})
+p({"class":"foam.nanos.auth.Permission","id":"user.comp","description":"Allows the Adding of Company"})
