@@ -142,7 +142,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'accessSubscriber',
+      name: 'accessCompany',
     },
     {
       class: 'Boolean',
@@ -161,7 +161,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null,"user.subs").then(function(perm) { self.accessSubscriber = perm;});
+      this.auth.check(null,"user.comp").then(function(perm) { self.accessCompany = perm;});
       this.auth.check(null,"user.shop").then(function(perm) { self.accessShopper = perm;});
       this.auth.check(null,"user.merch").then(function(perm) { self.accessMerchant = perm;});
       this
@@ -209,8 +209,8 @@ foam.CLASS({
           .start('div').show(this.accessMerchant$).add('Add Merchant')
             .on('click', this.addMerchant)
           .end()
-          .start('div').show(this.accessSubscriber$).add('Add Subscriber')
-            .on('click', this.addBusiness)
+          .start('div').show(this.accessCompany$).add('Add Company')
+            .on('click', this.addCompany)
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)
       }
@@ -231,10 +231,10 @@ foam.CLASS({
       this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
     },
 
-    function addBusiness() {
+    function addCompany() {
       var self = this;
       self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddCompanyView' });
     }
   ]
 });
