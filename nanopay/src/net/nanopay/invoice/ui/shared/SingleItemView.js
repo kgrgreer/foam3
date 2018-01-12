@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'SingleItemView',
   extends: 'foam.u2.View',
 
-  requires: [
-    'foam.dao.FnSink',
-  ],
-
   imports: [
     'user',
     'invoiceDAO',
