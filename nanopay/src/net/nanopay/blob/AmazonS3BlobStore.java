@@ -14,13 +14,15 @@ import com.amazonaws.services.s3.model.*;
 import foam.blob.*;
 import foam.core.X;
 import org.apache.commons.io.IOUtils;
+import org.apache.geronimo.mail.util.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class AmazonS3BlobStore
-  extends AbstractBlobService
+    extends AbstractBlobService
 {
   public static final int BUFFER_SIZE = 8192;
 
@@ -43,21 +45,22 @@ public class AmazonS3BlobStore
 
   @Override
   public Blob put_(X x, Blob blob) {
-    // check if instance of AmazonS3Blob
-    if ( !(blob instanceof AmazonS3Blob) ) {
+    if ( blob instanceof IdentifiedBlob ) {
+      return blob;
+    }
+
+    if ( !(blob instanceof InputStreamBlob) ) {
       throw new RuntimeException("Invalid blob");
     }
 
-    // Check if delegate instance of FileBlob
-    AmazonS3Blob s3Blob = (AmazonS3Blob) blob;
-    if ( !(s3Blob.getDelegate() instanceof FileBlob) ) {
-      throw new RuntimeException("Invalid blob");
-    }
+    // generate random key, get input stream, create metadata
+    String key = UUID.randomUUID().toString();
+    InputStream is = ((InputStreamBlob) blob).getInputStream();
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentLength(blob.getSize());
 
-    // upload file to S3
-    FileBlob fileBlob = (FileBlob) s3Blob.getDelegate();
-    String key = s3Blob.getKey() + "/" + fileBlob.getFile().getName();
-    PutObjectRequest request = new PutObjectRequest(bucket_, key, fileBlob.getFile())
+    // send file
+    PutObjectRequest request = new PutObjectRequest(bucket_, key, is, metadata)
         .withCannedAcl(CannedAccessControlList.PublicRead);
     s3Client_.putObject(request);
 
@@ -70,36 +73,11 @@ public class AmazonS3BlobStore
 
   @Override
   public Blob find_(X x, Object id) {
-    InputStream is = null;
-    ByteArrayOutputStream os = null;
-
-    try {
-      String key = (String) id;
-      GetObjectRequest request = new GetObjectRequest(bucket_, key);
-      S3Object result = s3Client_.getObject(request);
-      ObjectMetadata metadata = result.getObjectMetadata();
-
-      is = result.getObjectContent();
-      os = new ByteArrayOutputStream();
-
-      int read = 0;
-      int count = 0;
-      long length = metadata.getContentLength();
-
-      byte[] buffer = new byte[BUFFER_SIZE];
-      while ( (read = is.read(buffer, 0, BUFFER_SIZE) ) != -1 && count <= length ) {
-        os.write(buffer, 0, read);
-        count += read;
-      }
-
-      return new ByteArrayBlob(os.toByteArray());
-    } catch (Throwable t) {
-      t.printStackTrace();
-      throw new RuntimeException(t);
-    } finally {
-      IOUtils.closeQuietly(os);
-      IOUtils.closeQuietly(is);
-    }
+    String key = (String) id;
+    GetObjectRequest request = new GetObjectRequest(bucket_, key);
+    S3Object result = s3Client_.getObject(request);
+    ObjectMetadata metadata = result.getObjectMetadata();
+    return new InputStreamBlob(result.getObjectContent(), metadata.getContentLength());
   }
 
   @Override
