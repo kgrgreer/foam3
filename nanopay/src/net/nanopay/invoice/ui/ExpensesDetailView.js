@@ -151,7 +151,7 @@ foam.CLASS({
       label: 'Pay Now',
       code: function (X) {
         var self = this;
-        if(this.data.paymentMethod.name != 'NONE'){
+        if(this.data.paymentMethod.name != 'NONE' || this.data.status == 'Paid'){
           self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }
