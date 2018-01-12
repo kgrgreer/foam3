@@ -50,7 +50,7 @@ public class AmazonS3BlobStore
     HashingOutputStream os = null;
 
     try {
-      File tmp = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+      File tmp = File.createTempFile("blob", ".tmp");
       os = new HashingOutputStream(new FileOutputStream(tmp));
       blob.read(os, 0, blob.getSize());
       os.close();
