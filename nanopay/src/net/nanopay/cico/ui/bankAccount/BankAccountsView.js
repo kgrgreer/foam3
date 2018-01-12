@@ -162,7 +162,7 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView' });
+        this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this);
       }
     }
   ],
@@ -178,8 +178,9 @@ foam.CLASS({
       ],
 
       imports: [
-        'user',
-        'bankAccountDAO'
+        'bankAccountDAO',
+        'stack',
+        'user'
       ],
 
       exports: [
@@ -189,8 +190,7 @@ foam.CLASS({
 
       properties: [
         {
-          name: 'selectedAccount',
-          value: null
+          name: 'selectedAccount'
         },
         {
           name: 'selection',
@@ -231,13 +231,7 @@ foam.CLASS({
         },
 
         function verifyAccount() {
-          this.add(
-            this.Popup.create().tag({
-              class: 'net.nanopay.cico.ui.bankAccount.form.BankForm',
-              startAt: 1,
-              title: this.TitleVerification
-            }).addClass('popup-with-topnav')
-          );
+          this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Verification', startAtValue: 1, nextLabelValue: 'Verify', backLabelValue: 'Come back later' }, this);
         },
 
         function manageAccount() {

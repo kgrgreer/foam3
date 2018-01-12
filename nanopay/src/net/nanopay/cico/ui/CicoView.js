@@ -35,9 +35,11 @@ foam.CLASS({
     'cashIn',
     'confirmCashOut',
     'confirmCashIn',
+    'dblclick',
     'goToBankAccounts',
     'onCashOutSuccess',
     'onCashInSuccess',
+    'resetCicoAmount',
     'as view'
   ],
 
@@ -138,6 +140,10 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-create {
           visibility: hidden;
         }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: #e9e9e9;
+        }
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
@@ -162,11 +168,17 @@ foam.CLASS({
       name: 'hasCashIn'
     },
     {
+      name: 'userBankAccounts',
+      factory: function() {
+        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+      }
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountDAO.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
+          dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
           objToChoice: function(a){
             return [a.id, a.accountName];
           }
@@ -228,19 +240,16 @@ foam.CLASS({
               dao: this.standardCICOTransactionDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
-                class: 'foam.u2.DetailView',
-                properties: [
-                  this.Transaction.DATE,
-                  this.Transaction.ID,
-                  this.Transaction.AMOUNT,
-                  this.Transaction.TYPE
-                ]
               },
               summaryView: this.CicoTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.cicoTransactions, message: this.placeholderText, image: 'images/icon_bank_account_black.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.cicoTransactions, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
+    },
+
+    function dblclick(transaction) {
+      this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
     },
 
     function cashIn() {
@@ -269,6 +278,10 @@ foam.CLASS({
 
     function goToBankAccounts() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+    },
+
+    function resetCicoAmount() {
+      this.amount = 0;
     }
   ],
 
@@ -277,6 +290,7 @@ foam.CLASS({
       name : 'cashInBtn',
       label : 'Cash In',
       code: function(X) {
+        X.resetCicoAmount();
         X.cashIn();
       }
     },
@@ -284,6 +298,7 @@ foam.CLASS({
       name: 'cashOutButton',
       label: 'Cash Out',
       code: function(X) {
+        X.resetCicoAmount();
         X.cashOut();
       }
     }
@@ -318,7 +333,6 @@ foam.CLASS({
       imports: [ 'standardCICOTransactionDAO' ],
 
       properties: [
-        'selection',
         {
           name: 'cicoTransactions',
           expression: function(standardCICOTransactionDAO) {
@@ -337,13 +351,12 @@ foam.CLASS({
           this
             .start({
               class: 'foam.u2.view.TableView',
-              selection$: this.selection$,
               editColumnsEnabled: true,
               data: this.cicoTransactions,
               columns: [
                 'id', 'date', 'amount', 'type'
               ]
-            }).addClass(this.myClass('table')).end();
+            });
         }
       ]
     }

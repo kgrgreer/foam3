@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: "View to Transfer Amounts From User to User",
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   imports: [
     'user',
     'transactionDAO'
@@ -95,10 +99,10 @@ foam.CLASS({
       view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 80 }
     },
     {
-      name: 'payees',
+      name: 'userList',
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.userDAO,
+          dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
           objToChoice: function(user) {
             var username = user.firstName + ' ' + user.lastName;
             return [user.id, username + ' - (' + user.email + ')'];
@@ -119,7 +123,7 @@ foam.CLASS({
           .startContext({ data: this})
             .start().addClass('light-roboto-h2').add('Transfer Value').end()
             .start().addClass('label').add('Transfer To:').end()
-            .start(this.PAYEES).end()
+            .start(this.USER_LIST).end()
             .start().addClass('label').add('Transfer Amount:').end()
             .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
             .start().addClass('label').add('Note:').end()
@@ -139,7 +143,7 @@ foam.CLASS({
       code: function(X){
         var self = this;
 
-        if ( self.payees == null ) {
+        if ( self.userList == null ) {
           self.add(self.NotificationMessage.create({ message: 'Please select a user to transfer too.', type: 'error' }));
           return;
         }
@@ -150,7 +154,7 @@ foam.CLASS({
         }
 
         var transaction = self.Transaction.create({
-          payeeId: self.payees,
+          payeeId: self.userList,
           payerId: self.user.id,
           amount:  self.transferAmount,
           notes:   self.note

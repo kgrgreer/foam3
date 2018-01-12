@@ -128,7 +128,11 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        this.dao.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        var payablesSumDAO = this.dao.where(
+          this.NEQ(this.Invoice.STATUS, "Void")
+        );
+
+        payablesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.payableAmount = sum.value.toFixed(2);
         });
         // These two queries could be combined into a SEQ() to save on a
@@ -138,7 +142,6 @@ foam.CLASS({
         newDAO.select(this.COUNT()).then(function(count) {
           self.newCount = count.value;
         });
-
         newDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.newAmount = sum.value.toFixed(2);
         });
@@ -148,7 +151,6 @@ foam.CLASS({
         overDueDAO.select(this.COUNT()).then(function(count) {
           self.overDueCount = count.value;
         });
-
         overDueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.overDueAmount = sum.value.toFixed(2);
         });

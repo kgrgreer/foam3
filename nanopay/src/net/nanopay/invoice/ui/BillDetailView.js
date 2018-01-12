@@ -3,14 +3,21 @@ foam.CLASS({
     name: 'BillDetailView',
     extends: 'foam.u2.View',
 
+    implements: [
+      'foam.mlang.Expressions',
+    ],
+
     imports: [ 
       'stack', 
-      'hideSaleSummary'
+      'hideSaleSummary',
+      'userDAO',
+      'user'
     ],
 
     requires: [
       'net.nanopay.invoice.model.Invoice',
-      'foam.u2.dialog.NotificationMessage'
+      'foam.u2.dialog.NotificationMessage',
+      'foam.nanos.auth.User'
     ],
 
     properties: [
@@ -39,6 +46,18 @@ foam.CLASS({
           ]
         },
         value: 'Daily'       
+      },
+      {
+        name: 'userList',
+        view: function(_,X) {
+          return foam.u2.view.ChoiceView.create({
+            dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
+            objToChoice: function(user) {
+              var username = user.firstName + ' ' + user.lastName;
+              return [user.id, username + ' - (' + user.email + ')'];
+            }
+          });
+        }
       }
     ],
 
@@ -137,14 +156,16 @@ foam.CLASS({
               .startContext({data: this})
                 .start(this.DELETE_DRAFT).end()
                 .start(this.SAVE_AND_PREVIEW).addClass('float-right').end()
-                .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
+                // .start(this.SAVE_AS_DRAFT).addClass('float-right').end()
               .endContext()
             .end()
             .start().add('New Bill').addClass('light-roboto-h2').end()
             .start().addClass('white-container')
               .start().addClass('customer-div')
               .start().addClass('label').add('Vendor').end()              
-                .start(this.Invoice.PAYEE_ID, { objToChoice: function(user) { return [ user.id, user.firstName + ' ' + user.lastName ]; } }).end()
+                .startContext({data: this})
+                  .start(this.USER_LIST).end()
+                .endContext()
               .end()
               .start().addClass('input-container-1')
                 .start().addClass('float-right')
@@ -219,8 +240,8 @@ foam.CLASS({
           }
 
           var inv = this.Invoice.create({
-            payerId: this.data.payerId,
-            payeeId: this.data.payeeId,
+            payerId: this.user.id,
+            payeeId: this.userList,
             amount: this.data.amount,
             dueDate: this.data.dueDate,
             purchaseOrder: this.data.purchaseOrder,

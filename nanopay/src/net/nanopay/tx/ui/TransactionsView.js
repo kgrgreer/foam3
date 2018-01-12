@@ -169,6 +169,10 @@ foam.CLASS({
           font-size: 12px;
           color: #093649;
         }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: #e9e9e9;
+        }
         ^ tbody > tr {
           height: 60px;
           background: white;
