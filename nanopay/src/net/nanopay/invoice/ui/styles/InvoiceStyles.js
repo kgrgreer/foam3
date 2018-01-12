@@ -62,17 +62,17 @@ foam.CLASS({
         .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice tbody tr {
           height: 40px;
         }
-        .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; min-width: 80px; }
-        .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; min-width: 80px; }
-        .foam-u2-view-TableView-th-payerName { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-payeeName   { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-payerId { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-payeeId   { width: 150px; min-width: 150px; }
-        .foam-u2-view-TableView-th-paymentDate      { width: 90px; min-width: 90px; }
-        .foam-u2-view-TableView-th-issueDate      { width: 90px; min-width: 90px; }
-        .foam-u2-view-TableView-th-dueDate      { width: 90px; min-width: 90px; }
-        .foam-u2-view-TableView-th-amount         { width: 90px; min-width: 90px; padding-right:20px; }
-        .foam-u2-view-TableView-th-status         { width: 80px; min-width: 80px; }
+        .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; }
+        .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; }
+        .foam-u2-view-TableView-th-payerName { width: 150px; }
+        .foam-u2-view-TableView-th-payeeName   { width: 150px; }
+        .foam-u2-view-TableView-th-payerId { width: 150px; }
+        .foam-u2-view-TableView-th-payeeId   { width: 150px; }
+        .foam-u2-view-TableView-th-paymentDate      { width: 90px; }
+        .foam-u2-view-TableView-th-issueDate      { width: 90px; }
+        .foam-u2-view-TableView-th-dueDate      { width: 90px; }
+        .foam-u2-view-TableView-th-amount         { width: 90px; padding-right:20px; }
+        .foam-u2-view-TableView-th-status         { width: 80px; }
       */}
     })
   ]
