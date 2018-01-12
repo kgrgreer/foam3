@@ -100,7 +100,7 @@ public class TransactionDAO
         // check if payer account has enough balance
         long total = transaction.getTotal();
         if (payerAccount.getBalance() < total) {
-          throw new RuntimeException("You do not have enough money in your account");
+          throw new RuntimeException("An error occurred while cashing in. Please contact customer service.");
         }
 
         payerAccount.setBalance(payerAccount.getBalance() - total);
