@@ -42,6 +42,11 @@ public class AmazonS3BlobStore
       return blob;
     }
 
+    // TODO: add a BlobInputStream as an adapter which
+    // implements the InputStream interface against the
+    // Blob interface. Then we can easily interface with
+    // any existing APIs that expect streams.
+
     HashingOutputStream os = null;
 
     try {
