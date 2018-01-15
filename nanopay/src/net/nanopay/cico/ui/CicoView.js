@@ -214,7 +214,7 @@ foam.CLASS({
         self.hasCashIn = perm;
       });
 
-      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function (a) {
+      this.accountDAO.find(this.user.id).then(function (a) {
         self.account.copyFrom(a);
         self.onDAOUpdate();
       });
@@ -311,9 +311,9 @@ foam.CLASS({
       code: function onDAOUpdate() {
         var self = this;
 
-        this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function (account) {
-          self.account.copyFrom(account);
-          self.formattedBalance = account.balance/100;
+        this.accountDAO.find(this.user.id).then(function (a) {
+          self.account.copyFrom(a);
+          self.formattedBalance = a.balance / 100;
         });
       }
     }

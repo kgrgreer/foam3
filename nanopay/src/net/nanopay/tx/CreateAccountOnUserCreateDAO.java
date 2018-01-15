@@ -25,7 +25,7 @@ public class CreateAccountOnUserCreateDAO
     // create new account if new user
     if ( result != null && newUser ) {
       Account account = new Account();
-      account.setOwner(result.getId());
+      account.setId(result.getId());
       account.setBalance(0);
       accountDAO.put(account);
     }
