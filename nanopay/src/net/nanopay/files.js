@@ -55,20 +55,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
-  // retail
-  { name: 'net/nanopay/retail/model/DeviceType' },
-  { name: 'net/nanopay/retail/model/DeviceStatus' },
-  { name: 'net/nanopay/retail/model/Device' },
-
-  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/ManageDeviceModal', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
-
   // tx
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
@@ -91,6 +77,21 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
   
   { name: 'net/nanopay/util/ChallengeGenerator' },
+
+  // retail
+  { name: 'net/nanopay/retail/model/DeviceType' },
+  { name: 'net/nanopay/retail/model/DeviceStatus' },
+  { name: 'net/nanopay/retail/model/Device' },
+  { name: 'net/nanopay/retail/model/Transaction' },
+
+  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/ManageDeviceModal', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // admin
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
