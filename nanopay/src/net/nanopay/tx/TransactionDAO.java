@@ -120,13 +120,11 @@ public class TransactionDAO
 
         //find invoice
         if ( transaction.getInvoiceId() != 0 ) {
-          sink = new ListSink();
-          sink = getInvoiceDAO().where(EQ(Invoice.ID, transaction.getInvoiceId())).limit(1).select(sink);
-          data = ((ListSink) sink).getData();
-          if ( data == null || data.size() < 1 ){
-            throw new RuntimeException("Could not find invoice");
+          Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
+          if ( invoice == null ) {
+            throw new RuntimeException("Invoice not found");
           }
-          Invoice invoice = (Invoice) data.get(0);
+
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
