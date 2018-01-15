@@ -107,14 +107,12 @@ foam.CLASS({
           margin-bottom: 8px;
         }
         .foam-u2-search-TextSearchView input {
-          width: 340px;
-          font-size: 10pt;
+          width: 288px;
           padding: 3px;
         }
         .foam-u2-search-GroupBySearchView select {
           font-family: monospace;
-          font-size: 10pt;
-          width: 340px;
+          font-size: 9pt;
         }
         .net-nanopay-ui-ActionView {
           padding: 4px 16px;

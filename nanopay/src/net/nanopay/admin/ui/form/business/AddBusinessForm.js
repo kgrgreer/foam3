@@ -74,6 +74,11 @@ foam.CLASS({
             return;
           }
 
+          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(businessInfo.phoneNumber) ) {
+            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
+            return; 
+          }
+
           if( true ) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
