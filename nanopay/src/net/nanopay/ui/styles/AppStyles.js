@@ -335,8 +335,12 @@ foam.CLASS({
         }
         .foam-u2-view-TableView-noselect {
           width: 1px;
+          font-size: 25px !important;
           cursor: pointer;
           text-align: right !important;
+        }
+        .foam-u2-view-TableView-noselect:hover {
+          opacity: 0.9;
         }
         .foam-u2-dialog-Popup.popup-with-topnav {
           margin-top: 65px;

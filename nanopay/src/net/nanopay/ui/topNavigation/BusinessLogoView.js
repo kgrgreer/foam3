@@ -20,7 +20,8 @@ foam.CLASS({
           padding-left: 25px;
         }
         ^ img {
-          height: 30px;
+          width: 205px;
+          height: auto;
           padding-top: 10px;
         }
         ^ span{

@@ -46,7 +46,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        if ( this.position === 0 ) {
+        if ( this.position === 0 || this.position > 2 ) {
           X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         } else {
           this.subStack.back();
@@ -150,6 +150,7 @@ foam.CLASS({
 
           if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.nextLabel = 'Done';
             return;
           } else {
             var transaction = this.Transaction.create({
@@ -174,6 +175,7 @@ foam.CLASS({
             }).then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.nextLabel = 'Done';
             }).catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             });

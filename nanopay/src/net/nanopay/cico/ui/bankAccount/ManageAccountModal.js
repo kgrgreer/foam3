@@ -82,8 +82,8 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-verifyButton {
           width: 136px;
           height: 40px;
-          background: #59a5d5;
-          border: solid 1px #59a5d5;
+          background: %SECONDARYCOLOR%;
+          border: solid 1px %SECONDARYCOLOR%;
           display: inline-block;
           color: white;
           margin: 0;
@@ -91,8 +91,9 @@ foam.CLASS({
           float: right;
         }
         ^ .net-nanopay-ui-ActionView-verifyButton:hover {
-          background: #3783b3;
-          border-color: #3783b3;
+          background: %SECONDARYCOLOR%;
+          border-color: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .descriptionStyle {
           text-align: center;
