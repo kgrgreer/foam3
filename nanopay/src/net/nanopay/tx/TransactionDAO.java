@@ -119,8 +119,7 @@ public class TransactionDAO
         getAccountDAO().put(payeeAccount);
 
         //find invoice
-        Long invoiceId = transaction.getInvoiceId();
-        if( invoiceId != null ) {
+        if ( transaction.getInvoiceId() != 0 ) {
           sink = new ListSink();
           sink = getInvoiceDAO().where(EQ(Invoice.ID, transaction.getInvoiceId())).limit(1).select(sink);
           data = ((ListSink) sink).getData();
