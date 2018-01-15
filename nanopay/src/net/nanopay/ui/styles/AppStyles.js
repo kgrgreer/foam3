@@ -207,6 +207,9 @@ foam.CLASS({
           margin: 20px 20px;
           float: right;
         }
+        .blue-button:hover{
+          opacity: 0.9;
+        }
         .grey-button{
           background-color: rgba(164, 179, 184, 0.1);
           border: solid 1px #8C92AC;
