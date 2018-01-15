@@ -63,8 +63,8 @@ foam.CLASS({
       margin-right: 5px;
     }
     ^ .net-nanopay-ui-ActionView-addUser {
-      background-color: #59A5D5;
-      border: solid 1px #59A5D5;
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
       color: white;
       float: right;
     }
@@ -76,12 +76,6 @@ foam.CLASS({
       border: 6px solid transparent;
       border-top-color: white;
       transform: translate(5px, 5px);
-    }
-    ^ .net-nanopay-ui-ActionView-addBusiness {
-      background-color: #59A5D5;
-      border: solid 1px #59A5D5;
-      color: white;
-      float: right;
     }
     ^ .popUpDropDown {
       padding: 0;
@@ -102,7 +96,7 @@ foam.CLASS({
       line-height: 30px;
     }
     ^ .popUpDropDown > div:hover {
-      background-color: #59a5d5;
+      background-color: %SECONDARYCOLOR%;
       color: white;
       cursor: pointer;
     }

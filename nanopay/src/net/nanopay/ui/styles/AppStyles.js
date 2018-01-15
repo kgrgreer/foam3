@@ -85,7 +85,7 @@ foam.CLASS({
           outline: none;
         }
         .net-nanopay-ui-ActionView-create {
-          background: #59aadd;
+          background: %SECONDARYCOLOR%;
           border: none;
           box-shadow: none;
           color: white;
@@ -125,11 +125,14 @@ foam.CLASS({
           font-size: 14px;
         }
         .net-nanopay-ui-ActionView-saveAndPreview {
-          background-color: #59AADD;
+          background-color: %SECONDARYCOLOR%;
           color: white;
           font-size: 14px;
           float: right;
-          border: 1px solid #59AADD;
+          border: 1px solid %SECONDARYCOLOR%;
+        }
+        .net-nanopay-ui-ActionView-saveAndPreview:hover {
+          opacity: 0.9;
         }
         .net-nanopay-ui-ActionView-saveAsDraft {
           background-color: #EDF0F5;
@@ -199,7 +202,7 @@ foam.CLASS({
           line-height: 2.86;
         }
         .blue-button{
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           color: #ffffff;
           margin: 20px 20px;
           float: right;
@@ -210,17 +213,17 @@ foam.CLASS({
           color: #093649;
         }
         .white-blue-button{
-          border: solid 1px #59A5D5;
-          color: #59A5D5;
+          border: solid 1px %SECONDARYCOLOR%;
+          color: %SECONDARYCOLOR%;
           background: none;
         }
         .full-width-button{
           width: 90%;
           height: 40px;
           border-radius: 2px;
-          border: solid 1px #59a5d5;
+          border: solid 1px %SECONDARYCOLOR%;
           margin: 0 auto;
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           text-align: center;
           line-height: 40px;
           cursor: pointer;

@@ -105,7 +105,8 @@ foam.CLASS({
           box-shadow: none;
         }
         ^ .net-nanopay-ui-ActionView-cashInBtn:hover {
-          background: #3783b3;
+          background: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .net-nanopay-ui-ActionView-cashOutButton {
           width: 135px;
