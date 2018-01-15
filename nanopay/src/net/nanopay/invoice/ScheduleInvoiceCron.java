@@ -39,10 +39,10 @@ public class ScheduleInvoiceCron
               Invoice invoice = (Invoice) invoiceList.get(i);
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
               Date invPaymentDate = invoice.getPaymentDate();
-              System.out.println(invoice.getId().toString());
-              System.out.println(invPaymentDate.toString());
+              System.out.println(invoice.getId());
+              System.out.println(invPaymentDate);
               System.out.println(dateFormat.format(invPaymentDate));
-              System.out.println(new Date().toString());
+              System.out.println(new Date());
               System.out.println(dateFormat.format(new Date()));
 
               //Creates transaction only based on invoices scheduled for today.
