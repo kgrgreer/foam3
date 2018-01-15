@@ -41,7 +41,7 @@ foam.CLASS({
           margin-top: 20px;
         }
         ^ .bankContentCard {
-          width: 218px;
+          width: 165px;
           height: 100px;
           margin-right: 13.5px;
           float: left;
@@ -101,6 +101,7 @@ foam.CLASS({
     'allBanksCount',
     'verifiedBanksCount',
     'unverifiedBanksCount',
+    'disabledBanksCount',
     'selection',
     {
       name: 'data',
@@ -114,6 +115,7 @@ foam.CLASS({
     { name: 'TitleAll',         message: 'Total Bank Accounts' },
     { name: 'TitleVerified',    message: 'Verified Account(s)' },
     { name: 'TitleUnverified',  message: 'Unverified Account(s)' },
+    { name: 'TitleDisabled', message: 'Disabled Account(s)' },
     { name: 'ActionAdd',        message: 'Add a new bank account' },
     { name: 'MyBankAccounts',   message: 'My Bank Accounts' },
     { name: 'placeholderText',  message: 'You don\'t have any bank accounts right now. Click the Add a bank account button to add a new bank account.' }
@@ -136,6 +138,9 @@ foam.CLASS({
             .end()
             .start('div').addClass('spacer')
               .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleUnverified, content$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
+            .end()
+            .start('div').addClass('spacer')
+              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledBanksCount$ }).addClass('bankContentCard')
             .end()
             .start('div')
               .tag(this.ADD_BANK, { showLabel: true })
@@ -259,6 +264,11 @@ foam.CLASS({
         var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Unverified"));
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
+        });
+
+        var disabledBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Disabled"));
+        disabledBanksDAO.select(this.COUNT()).then(function(count) {
+          self.disabledBanksCount = count.value;
         });
       }
     }

@@ -312,7 +312,7 @@ foam.CLASS({
       // },
       code: function() {
         var self = this;
-        var invoiceId;
+        var invoiceId = 0;
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
@@ -322,7 +322,7 @@ foam.CLASS({
             rate = this.viewData.rate.toString();
           }
           if ( this.invoiceMode ){
-            var invoiceId = this.invoice.id;
+            invoiceId = this.invoice.id;
           }
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({

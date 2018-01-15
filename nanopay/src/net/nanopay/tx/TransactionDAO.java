@@ -110,7 +110,7 @@ public class TransactionDAO
         // check if payer account has enough balance
         long total = transaction.getTotal();
         if (payerAccount.getBalance() < total) {
-          throw new RuntimeException("You do not have enough money in your account");
+          throw new RuntimeException("An error occurred while cashing in. Please contact customer service.");
         }
 
         payerAccount.setBalance(payerAccount.getBalance() - total);
@@ -119,8 +119,7 @@ public class TransactionDAO
         getAccountDAO().put(payeeAccount);
 
         //find invoice
-        Long invoiceId = transaction.getInvoiceId();
-        if( invoiceId != null ) {
+        if ( transaction.getInvoiceId() != 0 ) {
           sink = new ListSink();
           sink = getInvoiceDAO().where(EQ(Invoice.ID, transaction.getInvoiceId())).limit(1).select(sink);
           data = ((ListSink) sink).getData();
