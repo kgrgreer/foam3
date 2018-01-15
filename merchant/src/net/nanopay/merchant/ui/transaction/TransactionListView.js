@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'device',
     'toolbarIcon',
     'toolbarTitle',
     'transactionDAO'
@@ -39,7 +40,9 @@ foam.CLASS({
       this.toolbarIcon = 'menu';
 
       this.addClass(this.myClass());
-      this.transactionDAO.orderBy(this.DESC(this.Transaction.DATE)).select().then(function (result) {
+      this.transactionDAO
+      .where(this.EQ(this.Transaction.DEVICE_ID, this.device.id))
+      .orderBy(this.DESC(this.Transaction.DATE)).select().then(function (result) {
         if ( ! result ) {
           throw new Error('Unable to load transactions');
         }
