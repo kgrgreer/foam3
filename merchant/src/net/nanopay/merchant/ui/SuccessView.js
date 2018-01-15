@@ -160,6 +160,11 @@ foam.CLASS({
         self.document.removeEventListener('touchstart', self.onTouchStarted);
       });
 
+      // if not a refund, use the total; else use amount
+      var amount = ( ! this.refund ) ?
+        this.data.total :
+        this.data.amount;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('success-view-div')
@@ -167,7 +172,7 @@ foam.CLASS({
             .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.png' })
           .end()
           .start().addClass('success-message').add( ! this.refund ? this.paymentSuccess : this.refundSuccess ).end()
-          .start().addClass('success-amount').add('$' + ( this.data.total / 100 ).toFixed(2)).end()
+          .start().addClass('success-amount').add('$' + ( amount / 100 ).toFixed(2)).end()
           .start().addClass('success-from-to').add( ! this.refund ? 'From' : 'To' ).end()
           .start().addClass('success-profile')
             .start().addClass('success-profile-icon')
