@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.EmailMessage'
   ],
 
   css: `
