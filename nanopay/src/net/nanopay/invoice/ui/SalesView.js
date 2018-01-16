@@ -55,7 +55,7 @@ foam.CLASS({
         }
         ^ .foam-u2-view-TableView-row:hover {
           cursor: pointer;
-          background: #e9e9e9;
+          background: %TABLEHOVERCOLOR%;
         }
         ^ .button-div{
           height: 40px;
