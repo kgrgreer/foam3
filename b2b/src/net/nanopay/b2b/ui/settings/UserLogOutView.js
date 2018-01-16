@@ -40,7 +40,7 @@ foam.CLASS({
       location.reload();
       // this.user.copyFrom(this.emptyUser);
       // this.business.copyFrom(this.emptyBusiness);
-      // this.stack.push({ class: 'net.nanopay.b2b.ui.signin.SignInView' })
+      // this.stack.push({ class: 'foam.nanos.auth.SignInView' })
     }
   ],
 });
