@@ -147,7 +147,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'id', 'issueDate', 'payer', 'payee', 'amount'
+                'id', 'issueDate', 'payer', 'payee', 'total'
               ],
             }).end();
         },
