@@ -13,7 +13,7 @@ import net.nanopay.invoice.model.PaymentStatus;
 import static foam.mlang.MLang.*;
 
 public class TransactionDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -90,22 +90,16 @@ public class TransactionDAO
         }
 
         // find payee account
-        sink = new ListSink();
-        sink = getAccountDAO().where(EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
-        data = ((ListSink) sink).getData();
-        if ( data == null || data.size() < 1 ) {
+        payeeAccount = (Account) getAccountDAO().find(payee.getId());
+        if ( payeeAccount == null ) {
           throw new RuntimeException("Payee account not found");
         }
-        payeeAccount = (Account) data.get(0);
 
         // find payer account
-        sink = new ListSink();
-        sink = getAccountDAO().where(EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
-        data = ((ListSink) sink).getData();
-        if ( data == null || data.size() < 1 ) {
+        payerAccount = (Account) getAccountDAO().find(payer.getId());
+        if ( payerAccount == null ) {
           throw new RuntimeException("Payer account not found");
         }
-        payerAccount = (Account) data.get(0);
 
         // check if payer account has enough balance
         long total = transaction.getTotal();
@@ -120,13 +114,11 @@ public class TransactionDAO
 
         //find invoice
         if ( transaction.getInvoiceId() != 0 ) {
-          sink = new ListSink();
-          sink = getInvoiceDAO().where(EQ(Invoice.ID, transaction.getInvoiceId())).limit(1).select(sink);
-          data = ((ListSink) sink).getData();
-          if ( data == null || data.size() < 1 ){
-            throw new RuntimeException("Could not find invoice");
+          Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
+          if ( invoice == null ) {
+            throw new RuntimeException("Invoice not found");
           }
-          Invoice invoice = (Invoice) data.get(0);
+
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);

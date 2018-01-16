@@ -17,18 +17,16 @@ public class CreateAccountOnUserCreateDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) obj;
-    DAO accountDAO = (DAO) getX().get("localAccountDAO");
-    boolean newUser = ( getDelegate().find(user.getId()) == null );
-
     User result = (User) super.put_(x, obj);
-    // create new account if new user
-    if ( result != null && newUser ) {
+    DAO accountDAO = (DAO) getX().get("localAccountDAO");
+
+    if ( accountDAO.find(result.getId()) == null ) {
       Account account = new Account();
-      account.setOwner(result.getId());
+      account.setId(result.getId());
       account.setBalance(0);
       accountDAO.put(account);
     }
+
     return result;
   }
 }

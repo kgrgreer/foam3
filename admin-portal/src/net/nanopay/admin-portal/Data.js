@@ -58,7 +58,7 @@ foam.CLASS({
           id: 'change-password',
           label: 'Change Password',
           order: 20,
-          handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.admin.ui.settings.changePassword.ChangePassword' } }
+          handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'foam.nanos.auth.ChangePasswordView' } }
         },
 
         // User Account Sub-Menu

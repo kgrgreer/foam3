@@ -128,7 +128,7 @@ foam.CLASS({
 
       this.user.sub(this.userChange);
 
-      this.stack.push({ class: 'net.nanopay.b2b.ui.signin.SignInView' });
+      this.stack.push({ class: 'foam.nanos.auth.SignInView' });
     },
 
     function initE() {

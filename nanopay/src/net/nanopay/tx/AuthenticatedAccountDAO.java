@@ -16,7 +16,7 @@ import java.security.AccessControlException;
 import static foam.mlang.MLang.EQ;
 
 public class AuthenticatedAccountDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   public final static String GLOBAL_ACCOUNT_CREATE = "account.create.x";
   public final static String GLOBAL_ACCOUNT_READ   = "account.read.x";
@@ -40,8 +40,8 @@ public class AuthenticatedAccountDAO
     }
 
     // if current user doesn't have permissions to create or update, force account's owner to be current user id
-    if ( account.getOwner() == null || ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
-      account.setOwner(user.getId());
+    if ( account.getId() == 0 || ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+      account.setId(user.getId());
     }
     return super.put_(x, obj);
   }
@@ -56,7 +56,7 @@ public class AuthenticatedAccountDAO
     }
 
     Account account = (Account) getDelegate().find_(x, id);
-    if ( account != null && account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
+    if ( account != null && account.getId() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
       return null;
     }
     return account;
@@ -72,7 +72,7 @@ public class AuthenticatedAccountDAO
     }
 
     boolean global = auth.check(x, GLOBAL_ACCOUNT_READ);
-    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Account.OWNER, user.getId()));
+    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Account.ID, user.getId()));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
@@ -86,7 +86,7 @@ public class AuthenticatedAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    if ( ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
+    if ( account != null && account.getId() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 
@@ -103,7 +103,7 @@ public class AuthenticatedAccountDAO
     }
 
     boolean global = auth.check(x, GLOBAL_ACCOUNT_DELETE);
-    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Account.OWNER, user.getId()));
+    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Account.ID, user.getId()));
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 }

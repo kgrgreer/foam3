@@ -91,8 +91,9 @@ foam.CLASS({
     },
 
     function findAccount() {
-      this.accountDAO.limit(1).where(this.EQ(this.Account.OWNER, this.user.id)).select(function(a) {
-        return this.account.copyFrom(a);
+      var self = this;
+      this.accountDAO.find(this.user.id).then(function (a) {
+        return self.account.copyFrom(a);
       }.bind(this));
     }
   ],

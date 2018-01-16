@@ -15,7 +15,7 @@ foam.CLASS({
       this.SUPER();
 
       foam.json.parse([
-        {                         id: 'sign-in',          label: 'Sign in',                        handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.signin.SignInView' } } },
+        {                         id: 'sign-in',          label: 'Sign in',                        handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'foam.nanos.auth.SignInView' } } },
         {                         id: 'popup-Demo',       label: 'Pop-Up-Demo',                    handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.payables.popUpDemo' } } },
         {                         id: 'dashboard',        label: 'Dashboard',                      handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.dashboard.DashboardView' } } },
         {                         id: 'sales',            label: 'Receivable',                        handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.receivables.SalesView' } } },
@@ -25,7 +25,7 @@ foam.CLASS({
         { parent: 'settings',     id: 'set-account',      label: 'Personal Settings', order: 10,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.AccountSettingsView' } } },
         { parent: 'settings',     id: 'set-bus',          label: 'Company Settings',  order: 20,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.BusinessSettingsView' } } },
         { parent: 'settings',     id: 'set-bank',         label: 'Fee/Plan',          order: 30,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.BankAccountSettingsView' } } },
-        { parent: 'settings',     id: 'set-security',     label: 'Log Out',           order: 40,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.UserLogOutView'}  } },
+        { parent: 'settings',     id: 'set-security',     label: 'Log Out',           order: 40,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'foam.nanos.auth.SignOutView'}  } },
         { /*parent: 'support',*/  id: 'aaainvoices',      label: 'Invoices',                       handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'invoiceDAO' } },
  //       { parent: 'support',  id: 'data',         label: 'View Data',            handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.DebugView' } } }
       ], foam.nanos.menu.Menu, this.__context__).forEach(this.menuDAO.put.bind(this.menuDAO));
