@@ -50,7 +50,7 @@ foam.CLASS({
         .foam-u2-DetailView .foam-u2-DetailView {
           width: auto;
           margin: inherit;
-      }
+        }
         .foam-u2-DetailView-title {
           background: #ddd;
           color: gray;
