@@ -21,7 +21,7 @@ foam.CLASS({
     'email',
     'userDAO',
     'transactionDAO',
-    'currencyFormatter'
+    'formatCurrency'
   ],
 
   axioms: [
@@ -169,7 +169,7 @@ foam.CLASS({
               return self.email.sendEmailFromTemplate(merchant, emailMessage, 'cc-template-invite/merc1', {
                 name: merchant.firstName,
                 email: merchant.email,
-                money: self.currencyFormatter.format(merchantInfo.amount)
+                money: self.formatCurrency(merchantInfo.amount)
               });
             }).then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
