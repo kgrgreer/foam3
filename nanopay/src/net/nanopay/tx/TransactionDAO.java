@@ -103,11 +103,10 @@ public class TransactionDAO
 
         // check if payer account has enough balance
         long total = transaction.getTotal();
-        if ( payerAccount.getBalance() + 0.000000001 < total) {
+        if ( payerAccount.getBalance() < total) {
           throw new RuntimeException("Insufficient balance to complete transaction.");
         }
 
-        // TODO: round balance to precision
         payerAccount.setBalance(payerAccount.getBalance() - total);
         payeeAccount.setBalance(payeeAccount.getBalance() + total);
         getAccountDAO().put(payerAccount);
