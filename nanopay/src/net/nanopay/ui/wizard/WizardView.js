@@ -122,7 +122,7 @@ foam.CLASS({
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #59a5d5;
+          background-color: %SECONDARYCOLOR%;
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;

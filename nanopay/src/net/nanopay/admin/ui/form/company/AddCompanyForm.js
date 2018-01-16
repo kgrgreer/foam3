@@ -41,9 +41,8 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function() { return true; },
       code: function(X) {
-        if ( this.position === 0 ) {
+        if ( this.position === 0 || this.position > 2 ) {
           X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         } else {
           this.subStack.back();
@@ -53,10 +52,6 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      isAvailable: function(position) {
-        if( position <= this.views.length - 1 ) return true;
-        return false;
-      },
       code: function() {
         var self = this;
 
@@ -140,6 +135,7 @@ foam.CLASS({
             companyInfo.business = response;
             self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.firstName + ' ' + companyInfo.lastName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.nextLabel = 'Done';
             return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));

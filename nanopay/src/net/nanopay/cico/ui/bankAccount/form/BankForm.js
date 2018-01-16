@@ -50,17 +50,12 @@ foam.CLASS({
   actions: [
     {
       name: 'goBack',
-      isAvailable: function() { return true; },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
       }
     },
     {
       name: 'goNext',
-      isAvailable: function(position) {
-        if ( position <= this.views.length - 1 ) return true;
-        return false; // Not in dialog
-      },
       code: function() {
         var self = this;
         if ( this.position == 0 ) { // On Submission screen.

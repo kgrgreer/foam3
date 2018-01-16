@@ -82,7 +82,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        if ( this.position === 0 ) {
+        if ( this.position === 0 || this.position > 2 ) {
           X.stack.push({ class: 'net.nanopay.retail.ui.devices.DevicesView' });
         } else {
           this.subStack.back();
@@ -148,6 +148,7 @@ foam.CLASS({
           this.deviceDAO.put(newDevice).then(function (result) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.complete = true;
+            self.nextLabel = 'Done';
           })
           .catch(function (err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
