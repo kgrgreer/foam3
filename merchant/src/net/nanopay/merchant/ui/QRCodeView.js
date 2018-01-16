@@ -16,6 +16,7 @@ foam.CLASS({
 
   imports: [
     'user',
+    'device',
     'stack',
     'userDAO',
     'tipEnabled',
@@ -194,6 +195,7 @@ foam.CLASS({
 
       worker.postMessage(JSON.stringify({
         payeeId: self.user.id,
+        deviceId: self.device.id,
         amount: self.amount,
         challenge: challenge,
         tip: self.tipEnabled

@@ -186,6 +186,7 @@
 		1090EF03200025CD0043941E /* foam_mlang_Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EE55200025CD0043941E /* foam_mlang_Constant.swift */; };
 		1090EF04200025CD0043941E /* foam_u2_Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EE56200025CD0043941E /* foam_u2_Visibility.swift */; };
 		1090EF05200025CD0043941E /* foam_dao_DAOSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EE57200025CD0043941E /* foam_dao_DAOSink.swift */; };
+		4A0D725B200D79CF00BF9503 /* foam_box_AnonymousBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0D725A200D79CF00BF9503 /* foam_box_AnonymousBox.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -381,6 +382,7 @@
 		1090EE55200025CD0043941E /* foam_mlang_Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_mlang_Constant.swift; sourceTree = "<group>"; };
 		1090EE56200025CD0043941E /* foam_u2_Visibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_u2_Visibility.swift; sourceTree = "<group>"; };
 		1090EE57200025CD0043941E /* foam_dao_DAOSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_DAOSink.swift; sourceTree = "<group>"; };
+		4A0D725A200D79CF00BF9503 /* foam_box_AnonymousBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_box_AnonymousBox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -444,6 +446,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				4A0D725A200D79CF00BF9503 /* foam_box_AnonymousBox.swift */,
 				1090EDD9200025C30043941E /* foam_blob_Blob.swift */,
 				1090EE54200025CD0043941E /* foam_box_Box.swift */,
 				1090EDE8200025C40043941E /* foam_box_BoxRegistry.swift */,
@@ -866,6 +869,7 @@
 				1090EEE9200025CD0043941E /* foam_dao_LimitedSink.swift in Sources */,
 				1090EEF6200025CD0043941E /* foam_swift_parse_json_DateParser.swift in Sources */,
 				1090EE6F200025CD0043941E /* foam_mlang_predicate_Eq.swift in Sources */,
+				4A0D725B200D79CF00BF9503 /* foam_box_AnonymousBox.swift in Sources */,
 				1090EE78200025CD0043941E /* foam_box_InvalidMessageException.swift in Sources */,
 				1090EEFF200025CD0043941E /* foam_nanos_auth_EnabledAware.swift in Sources */,
 				1090EEED200025CD0043941E /* foam_mlang_predicate_Nary.swift in Sources */,
