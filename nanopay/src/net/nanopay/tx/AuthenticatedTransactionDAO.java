@@ -10,6 +10,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.model.BankAccount;
 import static foam.mlang.MLang.*;
 
 public class AuthenticatedTransactionDAO
@@ -35,11 +36,17 @@ public class AuthenticatedTransactionDAO
       throw new RuntimeException("User is not logged in");
     }
 
-    if ( false /* is CICO txn */ ) {
-      if ( false /* source bank account not users */ ) {
-        // TODO: log
-        // TODO: set better message
-        throw new RuntimeException("User is not allowed");
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO brokerDAO = (DAO) x.get("brokerDAO");
+
+    User payee = (User) userDAO.find(transaction.getPayeeId());
+    User payer = (User) userDAO.find(transaction.getPayerId());
+
+    /* is CICO txn? */
+    if ( transaction.getBrokerId() != null ) {
+
+      if ( ! isBankAccountFromUser((long) transaction.getBankAccountId(), payee) || ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payer) ) {
+        throw new RuntimeException("Attempt for user " + payee.getId() + " to create transaction with an unregistered Bank Account");
       }
     } else {
       if ( transaction.getPayerId() != user.getId() ) {
@@ -51,6 +58,11 @@ public class AuthenticatedTransactionDAO
     }
 
     return getDelegate().put_(x, obj);
+  }
+
+  protected boolean isBankAccountFromUser(long bankAccountId, User user) {
+    DAO bankAccountDAO = (DAO) user.getBankAccounts();
+    return bankAccountDAO.find(bankAccountId) != null;
   }
 
   @Override
