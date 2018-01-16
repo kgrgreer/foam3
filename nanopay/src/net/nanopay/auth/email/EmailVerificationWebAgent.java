@@ -2,51 +2,51 @@ package net.nanopay.auth.email;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.jtwig.environment.EnvironmentConfiguration;
-import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
+import org.jtwig.environment.EnvironmentConfiguration;
+import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.jtwig.resource.loader.TypedResourceLoader;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
 public class EmailVerificationWebAgent
-    implements WebAgent
+  implements WebAgent
 {
   protected EnvironmentConfiguration config_;
 
   @Override
   public void execute(X x) {
-    PrintWriter        out              = (PrintWriter) x.get(PrintWriter.class);
     String             message          = "Your email has now been verified.";
+    PrintWriter        out              = x.get(PrintWriter.class);
+
+    DAO                groupDAO         = (DAO) x.get("groupDAO");
     DAO                userDAO          = (DAO) x.get("localUserDAO");
+    AppConfig          config           = (AppConfig) x.get("appConfig");
     EmailTokenService  emailToken       = (EmailTokenService) x.get("emailToken");
-    HttpServletRequest request          = (HttpServletRequest) x.get(HttpServletRequest.class);
+
+    HttpServletRequest request          = x.get(HttpServletRequest.class);
     String             token            = request.getParameter("token");
     String             userId           = request.getParameter("userId");
     User               user             = (User) userDAO.find(Long.valueOf(userId));
-    DAO                emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
+    Group              group            = (Group) groupDAO.find(user.getGroup());
 
     try {
-
       if ( token == null || "".equals(token) ) {
         throw new Exception("Token not found");
       }
 
-      if ( userId == null || "".equals(userId) || ! StringUtils.isNumeric(userId) ) {
-        throw new Exception("User not found.");
-      }
-
-
-      if ( user == null ) {
+      if ( "".equals(userId) || !StringUtils.isNumeric(userId) ) {
         throw new Exception("User not found.");
       }
 
@@ -68,9 +68,14 @@ public class EmailVerificationWebAgent
             .build();
       }
 
+      String link = config.getUrl() + "/" + group.getLogo();
+      Map<String, Object> args = new HashMap<>();
+      args.put("msg", message);
+      args.put("link", link);
+
       EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "verify-email-link", (String) user.getGroup());
       JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
-      JtwigModel model = JtwigModel.newModel(Collections.<String, Object>singletonMap("msg", message));
+      JtwigModel model = JtwigModel.newModel(args);
       out.write(template.render(model));
     }
   }
