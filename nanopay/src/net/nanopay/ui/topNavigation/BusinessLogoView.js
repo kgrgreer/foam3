@@ -6,8 +6,7 @@ foam.CLASS({
   documentation: 'View to display business logo and name.',
 
   imports: [
-    'logo',
-    'user'
+    'logo'
   ],
 
   axioms: [
@@ -58,23 +57,13 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
+      var self = this;
 
-      this.user.group$.sub(this.onGroupChange);
-      
       this
         .addClass(this.myClass())
         .start()
-          .start({ class: 'foam.u2.tag.Image', data: this.logo$ }).end()
+          .start({ class: 'foam.u2.tag.Image', data: this.logo }).end()
         .end();
-    }
-  ],
-
-  listeners: [
-    function onGroupChange() {
-      if ( this.user.group == 'ccShopper' ) {
-        this.logo = 'images/connected-shopper.svg';
-      }
     }
   ]
 });
