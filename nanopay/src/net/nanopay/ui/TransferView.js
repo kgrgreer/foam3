@@ -11,6 +11,8 @@ foam.CLASS({
 
   imports: [
     'user',
+    'email',
+    'formatCurrency',
     'transactionDAO'
   ],
 
@@ -18,7 +20,8 @@ foam.CLASS({
     'net.nanopay.model.Account',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.notification.email.EmailMessage'
   ],
 
   css: `
@@ -161,9 +164,27 @@ foam.CLASS({
         });
 
         self.transactionDAO.put(transaction).then(function(response) {
+          return self.userDAO.find(self.userList);
+        })
+        .then(function (result) {
+          var template = ( result.type === 'Merchant' ) ? 'cc-template-invite/merc1' : 'cc-template-invite/shopper';
+          var emailMessage = self.EmailMessage.create({
+            from: 'info@nanopay.net',
+            replyTo: 'noreply@nanopay.net',
+            to: [ result.email ]
+          });
+
+          return self.email.sendEmailFromTemplate(result, emailMessage, template, {
+            name: result.firstName,
+            email: result.email,
+            money: self.formatCurrency(self.transferAmount)
+          });
+        })
+        .then(function () {
           self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent!' }));
           self.transferAmount = null;
-        }).catch(function(error) {
+        })
+        .catch(function(error) {
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
         });
       }
