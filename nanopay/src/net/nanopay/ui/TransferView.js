@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'user',
     'email',
+    'userDAO',
     'formatCurrency',
     'transactionDAO'
   ],
