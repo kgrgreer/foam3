@@ -160,7 +160,7 @@ foam.CLASS({
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
-      tableCellFormatter: function(amount) {
+      tableCellFormatter: function(total) {
         var formattedAmount = total / 100;
         this
           .start()
