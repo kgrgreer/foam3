@@ -46,45 +46,54 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'dueCount'
+      name: 'dueCount',
+      value: '...'
     },
     {
       class: 'Double',
       name: 'dueAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
       class: 'Int',
-      name: 'overDueCount'
+      name: 'overDueCount',
+      value: '...'
     },
     {
       class: 'Double',
       name: 'overDueAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
 
     {
       class: 'Int',
-      name: 'scheduledCount'
+      name: 'scheduledCount',
+      value: '...'
     },
     {
       class: 'Double',
       name: 'scheduledAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
 
     {
       class: 'Int',
-      name: 'paidCount'
+      name: 'paidCount',
+      value: '...'
     },
     {
       class: 'Double',
       name: 'paidAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
       class: 'Double',
       name: 'receivableAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {

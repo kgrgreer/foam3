@@ -261,7 +261,7 @@ foam.CLASS({
           line-height: 1;
           color: #093649;
           opacity: 0.6;
-          margin-bottom: 35px;
+          margin-bottom: 30px;
           display: inline-block;
           white-space: nowrap;
         }

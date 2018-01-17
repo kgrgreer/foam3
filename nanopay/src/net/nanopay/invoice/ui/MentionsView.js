@@ -35,6 +35,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'disputedAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     {
@@ -45,6 +46,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'pendingAmount',
+      value: '',
       view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     },
     { 
@@ -54,15 +56,18 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'pendingCount'
+      name: 'pendingCount',
+      value: '...'
     },
     {
       class: 'Int',
-      name: 'draftCount'
+      name: 'draftCount',
+      value: '...'
     },
     {
       class: 'Int',
       name: 'disputedCount',
+      value: '...'
     }
   ],
 
