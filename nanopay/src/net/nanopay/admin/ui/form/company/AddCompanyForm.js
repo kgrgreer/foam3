@@ -119,6 +119,7 @@ foam.CLASS({
             firstName: companyInfo.firstName,
             lastName: companyInfo.lastName,
             organization: companyInfo.businessName,
+            businessName: companyInfo.businessName,
             email: companyInfo.companyEmail,
             type: 'Business',
             group: 's2hCustomer',
@@ -133,7 +134,7 @@ foam.CLASS({
 
           this.userDAO.put(newBusiness).then(function(response) {
             companyInfo.business = response;
-            self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.firstName + ' ' + companyInfo.lastName + ' successfully added!', type: '' }));
+            self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.businessName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.nextLabel = 'Done';
             return;

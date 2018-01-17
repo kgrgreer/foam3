@@ -53,7 +53,7 @@ foam.CLASS({
           return foam.u2.view.ChoiceView.create({
             dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
             objToChoice: function(user) {
-              var username = user.firstName + ' ' + user.lastName;
+              var username = user.businessName || user.organization;
               return [user.id, username + ' - (' + user.email + ')'];
             }
           });

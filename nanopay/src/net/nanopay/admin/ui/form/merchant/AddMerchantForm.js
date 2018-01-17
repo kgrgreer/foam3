@@ -122,6 +122,7 @@ foam.CLASS({
             firstName: merchantInfo.firstName,
             lastName: merchantInfo.lastName,
             organization: merchantInfo.businessName,
+            businessName: merchantInfo.businessName,
             email: merchantInfo.companyEmail,
             type: 'Merchant',
             group: 'ccMerchant',
@@ -136,7 +137,7 @@ foam.CLASS({
 
           this.userDAO.put(newMerchant).then(function(response) {
             merchantInfo.merchant = response;
-            self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.firstName + ' ' + merchantInfo.lastName + ' successfully added!', type: '' }));
+            self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
           }).catch(function(error) {

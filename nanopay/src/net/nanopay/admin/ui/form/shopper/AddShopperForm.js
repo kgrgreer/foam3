@@ -107,6 +107,7 @@ foam.CLASS({
             firstName: shopperInfo.firstName,
             lastName: shopperInfo.lastName,
             organization: 'N/A',
+            businessName: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Personal',
             group: 'ccShopper',
