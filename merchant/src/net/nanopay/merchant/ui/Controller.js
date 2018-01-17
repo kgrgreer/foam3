@@ -79,17 +79,6 @@ foam.CLASS({
         }
         return localStorage.serialNumber;
       }
-    },
-    {
-      name: 'transactionDAO',
-      factory: function () {
-        return this.EasyDAO.create({
-          daoType: 'CLIENT',
-          of: this.Transaction,
-          serviceName: 'service/transactionDAO',
-          remoteListenerSupport: true
-        });
-      }
     }
   ],
 

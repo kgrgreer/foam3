@@ -22,7 +22,7 @@ foam.CLASS({
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
-    'transactionDAO',
+    'transactionSuccessDAO',
     'transactionErrorDAO'
   ],
 
@@ -152,7 +152,7 @@ foam.CLASS({
       var challenge = this.generateChallenge();
 
       // add a listener for the payee id and amount
-      var successSub = this.transactionDAO.where(this.AND(
+      var successSub = this.transactionSuccessDAO.where(this.AND(
         this.EQ(this.Transaction.PAYEE_ID, this.user.id),
         this.EQ(this.Transaction.AMOUNT, this.amount),
         this.EQ(this.Transaction.CHALLENGE, this.challenge)
