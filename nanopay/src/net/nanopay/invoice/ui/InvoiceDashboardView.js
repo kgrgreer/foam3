@@ -114,7 +114,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('light-roboto-h2').add('Weekly Summary').end()
+        .start().addClass('light-roboto-h2').style({ 'margin-top': '15px' }).add('Weekly Summary').end()
         // .start().addClass('green-border-container')
         //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
         //   .start().addClass('resize-button').add('Team').end()
