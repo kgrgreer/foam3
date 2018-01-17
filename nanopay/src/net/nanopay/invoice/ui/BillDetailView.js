@@ -242,10 +242,10 @@ foam.CLASS({
           }
 
           //Fix for safari & mozilla
-          if( !Object.prototype.toString.call(dueDate) === '[object Date]' ){
+          if( !Object.prototype.toString.call(dueDate) === '[object Date]' && dueDate != null ){
             dueDate = new Date(dueDate);
             if(!dueDate){
-              this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date 2.', type: 'error' }));            
+              this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
               return;
             }
           }
