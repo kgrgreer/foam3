@@ -49,40 +49,8 @@ var classes = [
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
-  //Flinks Rest model
-  'net.nanopay.flinks.model.FlinksCall',
-  'net.nanopay.flinks.model.FlinksRequest',
-  'net.nanopay.flinks.model.FlinksAuthRequest',
-  'net.nanopay.flinks.model.FlinksTransactionRequest',
-  'net.nanopay.flinks.model.FlinksAccountRequest',
-  'net.nanopay.flinks.model.FlinksAccountSummaryRequest',
-  'net.nanopay.flinks.model.RefreshDeltaModel',
-  'net.nanopay.flinks.model.FlinksAccountDetailRequest',
-  'net.nanopay.flinks.model.FlinksMulAuthRequest',
-  'net.nanopay.flinks.model.FlinksResponse',
-  'net.nanopay.flinks.model.SecurityChallengeModel',
-  'net.nanopay.flinks.model.LoginModel',
-  'net.nanopay.flinks.model.FlinksInvalidResponse',
-  'net.nanopay.flinks.model.FlinksAuthResponse',
-  'net.nanopay.flinks.model.FlinksMFAResponse',
-  'net.nanopay.flinks.model.BalanceModel',
-  'net.nanopay.flinks.model.AccountModel',
-  'net.nanopay.flinks.model.AddressModel',
-  'net.nanopay.flinks.model.HolderModel',
-  'net.nanopay.flinks.model.AccountTransactionModel',
-  'net.nanopay.flinks.model.AccountWithDetailModel',
-  'net.nanopay.flinks.model.AccountStatementModel',
-  'net.nanopay.flinks.model.AccountStatementContainerModel',
-  'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
-  'net.nanopay.flinks.model.FlinksAccountsSummaryResponse',
-  //flinks frontend request model
-  'net.nanopay.flinks.model.FlinksRespMsg',
-  'net.nanopay.flinks.model.FlinksAccount',
   //Institution model
   'net.nanopay.model.Institution',
-  //flinks service
-  'net.nanopay.flinks.FlinksAuth',
-  'net.nanopay.flinks.ClientFlinksAuthService',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
@@ -108,9 +76,7 @@ var skeletons = [
   'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.tx.UserTransactionLimit',
-  //flinks
-  'net.nanopay.flinks.FlinksAuth'
+  'net.nanopay.tx.UserTransactionLimit'
 ];
 
 var proxies = [
