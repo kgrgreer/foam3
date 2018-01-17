@@ -21,7 +21,8 @@ public class PreventDuplicateBankAccountDAO
   }
 
   public PreventDuplicateBankAccountDAO(X x, DAO delegate) {
-    super(x, delegate);
+    super(x);
+    setDelegate(delegate);
   }
 
   @Override
