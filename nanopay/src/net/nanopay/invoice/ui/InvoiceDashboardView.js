@@ -55,7 +55,6 @@ foam.CLASS({
         ^{
           width: 992px;
           margin: auto;
-          margin-left: 160px;
         }
         .resize-button{
           height: 30px;
