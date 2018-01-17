@@ -22,10 +22,10 @@ public class TransactionNotificationDAO
   public FObject put_(X x, FObject obj) {
     try {
       FObject result = super.put_(x, obj);
-      transactionSuccessDAO_.put_(x, result);
+      transactionSuccessDAO_.put(result);
       return result;
     } catch (Throwable t) {
-      transactionErrorDAO_.put_(x, obj);
+      transactionErrorDAO_.put(obj);
       throw t;
     }
   }
