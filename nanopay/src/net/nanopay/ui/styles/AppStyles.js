@@ -249,7 +249,7 @@ foam.CLASS({
           text-align: left;
           color: #093649;
           margin-bottom: 8px;
-          margin-left: 25px;
+          margin-left: 15px;
         }
         .link{
           color: #59a5d5;
