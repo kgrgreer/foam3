@@ -212,10 +212,19 @@ foam.CLASS({
       label: 'Save & Preview',
       code: function(X) {
         var self = this;
+        var dueDate = this.data.dueDate;
 
         if (!this.data.amount || this.data.amount < 0){
           this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            
           return;
+        }
+
+        if( !Object.prototype.toString.call(dueDate) === '[object Date]' ){
+          dueDate = new Date(dueDate);
+          if(!dueDate){
+            this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date 2.', type: 'error' }));            
+            return;
+          }
         }
 
         var inv = this.Invoice.create({
