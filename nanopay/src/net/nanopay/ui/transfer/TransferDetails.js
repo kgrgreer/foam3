@@ -65,6 +65,7 @@ foam.CLASS({
 
         ^ .foam-u2-tag-Select:disabled {
           cursor: default;
+          background: white;
         }
 
         ^ .foam-u2-tag-Select:focus {
@@ -155,8 +156,9 @@ foam.CLASS({
         });
       },
       view: function(_,X) {
+        var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.user.bankAccounts,
+          dao: X.bankAccountDAO.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
@@ -263,16 +265,14 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .callIf(this.type == 'foreign', function() {
-            this.start()
-              .start('p').add(self.TransferFromLabel).addClass('bold').end()
-              .start('p').add(self.AccountLabel).end()
-              .start('div').addClass('dropdownContainer')
-                .add(self.ACCOUNTS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-          })
+          .start('p').add(self.TransferFromLabel).addClass('bold').end()
+          .start('p').add(self.AccountLabel).end()
+          .start('div').addClass('dropdownContainer')
+            .start(self.ACCOUNTS, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
+            .callIf( ! self.invoiceMode , function() {
+              this.start('div').addClass('caret').end()
+            })
+          .end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
           .start('div').addClass('dropdownContainer')

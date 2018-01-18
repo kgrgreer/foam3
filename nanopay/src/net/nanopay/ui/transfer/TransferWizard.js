@@ -173,6 +173,7 @@ foam.CLASS({
         vertical-align: top;
 
         font-size: 12px;
+        padding-top: 2px;
         letter-spacing: 0.2px;
         color: #093649;
         margin: 0;
