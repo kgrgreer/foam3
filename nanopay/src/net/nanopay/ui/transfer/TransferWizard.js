@@ -332,6 +332,8 @@ foam.CLASS({
             invoiceId = this.invoice.id;
           }
 
+          var txAmount = Math.round(self.viewData.fromAmount*100);
+
           // Get payer's bank account
           this.bankAccountDAO.where(
             this.AND(
@@ -342,18 +344,18 @@ foam.CLASS({
             // Perform a cash-in operation
             var cashInTransaction = self.Transaction.create({
               payeeId: self.user.id,
-              amount: self.viewData.fromAmount,
-              bankAccountId: cashInBankAccount,
+              amount: txAmount,
+              bankAccountId: cashInBankAccount.id,
               type: self.TransactionType.CASHIN
             });
 
-            return self.standardCICOTransactionDAO.put(cashInBankAccount);
+            return self.standardCICOTransactionDAO.put(cashInTransaction);
           }).then(function(response) {
             // NOTE: payerID, payeeID, amount in cents, rate, purpose
             var transaction = self.Transaction.create({
               payerId: self.user.id,
               payeeId: self.viewData.payee.id,
-              amount: Math.round(self.viewData.fromAmount*100),
+              amount: txAmount,
               invoiceId: invoiceId,
               notes: self.viewData.notes
             });
@@ -366,17 +368,20 @@ foam.CLASS({
             }
 
             return self.bankAccountDAO.where(
-              self.AND(
-                self.EQ(self.BankAccount.OWNER, self.user.id),
-                self.EQ(self.BankAccount.STATUS, 'Verified')
-              )
+              self.EQ(self.BankAccount.OWNER, self.viewData.payee.id)
             ).limit(1).select();
           }).then(function(cashOutBankAccount) {
+            var bankAcc = cashOutBankAccount
+
+            if (cashOutBankAccount.array) {
+              bankAcc = cashOutBankAccount.array[0];
+            }
+
             // Perform a cash-out operation
             var cashOutTransaction = self.Transaction.create({
               payerId: self.viewData.payee.id,
-              amount: self.viewData.fromAmount,
-              bankAccountId: cashOutBankAccount,
+              amount: txAmount,
+              bankAccountId: bankAcc.id,
               type: self.TransactionType.CASHOUT
             });
 
