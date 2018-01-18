@@ -10,7 +10,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.BankAccount',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.notification.email.EmailMessage'
   ],
 
   implements: [
@@ -22,7 +23,8 @@ foam.CLASS({
     'bankAccountDAO',
     'transactionDAO',
     'invoiceDAO',
-    'standardCICOTransactionDAO'
+    'standardCICOTransactionDAO',
+    'email'
   ],
 
   exports: [
@@ -372,6 +374,18 @@ foam.CLASS({
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
             self.add(self.NotificationMessage.create({ message: "Success!" }));
+
+            var emailMessage = self.EmailMessage.create({
+              from: 'info@nanopay.net',
+              replyTo: 'noreply@nanopay.net',
+              to: [ self.user.email ]
+            });
+            
+            self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
+              amount: self.formatCurrency(self.invoice.amount),
+              number: self.invoice.invoiceNumber,
+              link: self.invoice.invoiceFileUrl
+            });
           }).catch(function (err) {
             console.error(err);
 
