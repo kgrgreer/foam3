@@ -45,7 +45,7 @@ foam.CLASS({
       this.removeAllChildren();
 
       this.add(this.choices.map(function(c) {
-        console.log('this.id: ', this.id);
+       // console.log('this.id: ', this.id);
         return this.E('div').
           addClass(this.myClass()).
           start('input').
@@ -70,9 +70,9 @@ foam.CLASS({
                 }
               }
               self.data = na;
-              console.log('evt check: ', evt.srcElement.checked);
-              console.log('evt: ', evt);
-              console.log('evt.srcElement.value: ', evt.srcElement.value);
+              // console.log('evt check: ', evt.srcElement.checked);
+              // console.log('evt: ', evt);
+              // console.log('evt.srcElement.value: ', evt.srcElement.value);
             }).
           end().
           start('label').addClass('label').style({'margin-left':'3px'}).
