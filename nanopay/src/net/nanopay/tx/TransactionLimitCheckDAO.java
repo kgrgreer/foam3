@@ -53,10 +53,10 @@ public class TransactionLimitCheckDAO
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
 
-        if ( ! limitsNotAbove(transaction, payer, isBroker(payer), TransactionLimitType.SEND,    true) ||
-             ! limitsNotAbove(transaction, payee, isBroker(payee), TransactionLimitType.RECEIVE, false) ) {
-          throw new RuntimeException("Transaction Limits overstepped.");
-        }
+        // if ( ! limitsNotAbove(transaction, payer, isBroker(payer), TransactionLimitType.SEND,    true) ||
+        //      ! limitsNotAbove(transaction, payee, isBroker(payee), TransactionLimitType.RECEIVE, false) ) {
+        //   throw new RuntimeException("Transaction Limits overstepped.");
+        // }
 
         return getDelegate().put_(x, transaction);
       }

@@ -130,18 +130,20 @@ public class TransactionDAO
         //For cash in, just increment balance, payer and payee will be the same
         if ( transactionType == TransactionType.CASHIN ) {
           payerAccount.setBalance(payerAccount.getBalance() + total);
+          getAccountDAO().put(payerAccount);
         }
         //For cash out, decrement balance, payer and payee will be the same
         else if ( transactionType == TransactionType.CASHOUT ) {
           payerAccount.setBalance(payerAccount.getBalance() - total);
+          getAccountDAO().put(payerAccount);
         }
         else {
           payerAccount.setBalance(payerAccount.getBalance() - total);
           payeeAccount.setBalance(payeeAccount.getBalance() + total);
+          getAccountDAO().put(payerAccount);
+          getAccountDAO().put(payeeAccount);
         }
 
-        getAccountDAO().put(payerAccount);
-        getAccountDAO().put(payeeAccount);
 
         // find invoice
         if ( transaction.getInvoiceId() != 0 ) {
