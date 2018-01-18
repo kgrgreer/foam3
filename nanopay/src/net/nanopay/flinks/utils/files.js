@@ -1,7 +1,7 @@
 FOAM_FILES([
   //flinks front model(add all model)
-  { name: 'net/nanopay/flinks/model/FlinksAccount'},
-  { name: 'net/nanopay/flinks/model/FlinksRespMsg'},
+  //{ name: 'net/nanopay/flinks/model/FlinksAccount'},
+  //{ name: 'net/nanopay/flinks/model/FlinksRespMsg'},
   //
   { name: 'net/nanopay/flinks/model/FlinksCall'},
   { name: 'net/nanopay/flinks/model/FlinksRequest'},
