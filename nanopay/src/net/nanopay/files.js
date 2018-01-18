@@ -55,20 +55,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
-  // retail
-  { name: 'net/nanopay/retail/model/DeviceType' },
-  { name: 'net/nanopay/retail/model/DeviceStatus' },
-  { name: 'net/nanopay/retail/model/Device' },
-
-  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/ManageDeviceModal', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
-  { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
-
   // tx
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
@@ -92,9 +78,24 @@ FOAM_FILES([
   
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
+  // retail
+  { name: 'net/nanopay/retail/model/DeviceType' },
+  { name: 'net/nanopay/retail/model/DeviceStatus' },
+  { name: 'net/nanopay/retail/model/Device' },
+  { name: 'net/nanopay/retail/model/Transaction' },
+
+  { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/ManageDeviceModal', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceNameForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceTypeForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DeviceSerialForm', flags: ['web'] },
+  { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
+
   // admin
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/AddBusinessView', flags: ['web'] },  
+  { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },  
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
@@ -109,10 +110,10 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperInfoForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperSendMoneyForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperReviewForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/business/AddBusinessForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/business/AddBusinessProfileForm', flags: ['web'] },  
-  { name: 'net/nanopay/admin/ui/form/business/AddBusinessInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/form/business/AddBusinessReviewForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyProfileForm', flags: ['web'] },  
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddCompanyReviewForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shared/AddUserDoneForm', flags: ['web'] },
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },

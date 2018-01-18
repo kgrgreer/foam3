@@ -86,34 +86,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.admin.model',
-  name: 'Document',
-
-  documentation: 'Unknown, TODO.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'name',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'fileUrl',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'note'
-    },
-    {
-      class: 'Boolean',
-      name: 'required'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.admin.model',
   name: 'Invoice',
 
   documentation: 'Invoice information.',

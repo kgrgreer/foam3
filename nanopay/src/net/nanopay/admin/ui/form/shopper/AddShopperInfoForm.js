@@ -101,6 +101,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      factory: function() {
+        return this.viewData.firstName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
       }
@@ -108,6 +111,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'lastName',
+      factory: function() {
+        return this.viewData.lastName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
       }
@@ -115,6 +121,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'emailAddress',
+      factory: function() {
+        return this.viewData.emailAddress;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.emailAddress = newValue;
       }
@@ -122,6 +131,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'phoneNumber',
+      factory: function() {
+        return this.viewData.phoneNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
       }
@@ -132,6 +144,9 @@ foam.CLASS({
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
       },
+      factory: function() {
+        return this.viewData.birthday;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.birthday = newValue;
       }
@@ -139,6 +154,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetNumber',
+      factory: function() {
+        return this.viewData.streetNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.streetNumber = newValue;
       }
@@ -146,6 +164,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetName',
+      factory: function() {
+        return this.viewData.streetName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.streetName = newValue;
       }
@@ -153,6 +174,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'addressLine',
+      factory: function() {
+        return this.viewData.addressLine;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
       }
@@ -160,6 +184,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'city',
+      factory: function() {
+        return this.viewData.city;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
       }
@@ -174,6 +201,9 @@ foam.CLASS({
           }
         })
       },
+      factory: function() {
+        return this.viewData.province;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
       }
@@ -181,6 +211,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'postalCode',
+      factory: function() {
+        return this.viewData.postalCode;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
       }
@@ -188,6 +221,9 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'password',
+      factory: function() {
+        return this.viewData.password;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
       }

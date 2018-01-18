@@ -5,7 +5,6 @@ import foam.dao.DAO;
 import foam.dao.ListSink;
 import foam.dao.Sink;
 import foam.mlang.MLang;
-import foam.mlang.predicate.Eq;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.ProxyAuthService;
 import foam.nanos.auth.User;
@@ -19,7 +18,7 @@ import javax.naming.AuthenticationException;
 import java.util.List;
 
 public class DeviceAuthService
-    extends ProxyAuthService
+  extends ProxyAuthService
 {
   public DeviceAuthService(X x, AuthService delegate) {
     setX(x);
@@ -65,9 +64,9 @@ public class DeviceAuthService
     device.setStatus(DeviceStatus.ACTIVE);
     deviceDAO.put(device);
 
-    Session session = (Session) x.get(Session.class);
+    Session session = x.get(Session.class);
     session.setUserId(user.getId());
-    session.setX(getX().put("user", user));
+    session.setX(session.getContext().put("user", user));
     sessionDAO.put(session);
     return (User) Password.sanitize(user);
   }

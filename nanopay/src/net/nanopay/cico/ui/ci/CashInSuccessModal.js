@@ -85,8 +85,8 @@ foam.CLASS({
           height: 40px;
           position: static;
           border-radius: 2px;
-          background: #59a5d5;
-          border: solid 1px #59a5d5;
+          background: %SECONDARYCOLOR%;
+          border: solid 1px %SECONDARYCOLOR%;
           display: inline-block;
           color: white;
           text-align: center;
@@ -98,8 +98,9 @@ foam.CLASS({
           font-weight: normal;
         }
         ^ .net-nanopay-ui-ActionView-okButton:hover {
-          background: #3783b3;
-          border-color: #3783b3;
+          background: %SECONDARYCOLOR%;
+          border-color: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .amount {
           width: 100px;

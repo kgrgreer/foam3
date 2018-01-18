@@ -9,15 +9,18 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
     'stack',
-    'userDAO',
     'user',
-    'transactionDAO'
+    'email',
+    'userDAO',
+    'transactionDAO',
+    'formatCurrency'
   ],
 
   axioms: [
@@ -41,13 +44,17 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
+        if ( this.position === 0 || this.position > 2 ) {
+          X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
+        } else {
+          this.subStack.back();
+        }
       }
     },
     {
       name: 'goNext',
       label: 'Next',
-      code: function() {
+      code: function(X) {
         var self = this;
 
         // Info from form
@@ -68,6 +75,11 @@ foam.CLASS({
           ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
+          }
+
+          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(shopperInfo.phoneNumber) ) {
+            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
+            return; 
           }
 
           self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -120,6 +132,7 @@ foam.CLASS({
 
           if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.nextLabel = 'Done';
             return;
           } else {
             var transaction = this.Transaction.create({
@@ -129,13 +142,28 @@ foam.CLASS({
             });
 
             this.transactionDAO.put(transaction).then(function(response) {
+              var shopper = shopperInfo.shopper;
+              var emailMessage = self.EmailMessage.create({
+                from: 'info@nanopay.net',
+                replyTo: 'noreply@nanopay.net',
+                to: [ shopper.email ]
+              })
+
+              return self.email.sendEmailFromTemplate(shopper, emailMessage, 'cc-template-invite/shopper', {
+                name: shopper.firstName,
+                email: shopper.email,
+                money: self.formatCurrency(shopperInfo.amount),
+              });
+            })
+            .then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
-              return;
-            }).catch(function(error) {
+              self.nextLabel = 'Done';
+            })
+            .catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-              return;
             });
+            return;
           }
         }
 

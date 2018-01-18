@@ -8,13 +8,16 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 import static foam.mlang.MLang.*;
 
 public class TransactionDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   protected DAO userDAO_;
   protected DAO accountDAO_;
+  protected DAO invoiceDAO_;
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -30,6 +33,13 @@ public class TransactionDAO
       userDAO_ = (DAO) getX().get("localUserDAO");
     }
     return userDAO_;
+  }
+
+  protected DAO getInvoiceDAO() {
+    if ( invoiceDAO_ == null ) {
+      invoiceDAO_ = (DAO) getX().get("invoiceDAO");
+    }
+    return invoiceDAO_;
   }
 
   protected DAO getAccountDAO() {
@@ -80,33 +90,40 @@ public class TransactionDAO
         }
 
         // find payee account
-        sink = new ListSink();
-        sink = getAccountDAO().where(EQ(Account.OWNER, payee.getId())).limit(1).select(sink);
-        data = ((ListSink) sink).getData();
-        if ( data == null || data.size() < 1 ) {
+        payeeAccount = (Account) getAccountDAO().find(payee.getId());
+        if ( payeeAccount == null ) {
           throw new RuntimeException("Payee account not found");
         }
-        payeeAccount = (Account) data.get(0);
 
         // find payer account
-        sink = new ListSink();
-        sink = getAccountDAO().where(EQ(Account.OWNER, payer.getId())).limit(1).select(sink);
-        data = ((ListSink) sink).getData();
-        if ( data == null || data.size() < 1 ) {
+        payerAccount = (Account) getAccountDAO().find(payer.getId());
+        if ( payerAccount == null ) {
           throw new RuntimeException("Payer account not found");
         }
-        payerAccount = (Account) data.get(0);
 
         // check if payer account has enough balance
         long total = transaction.getTotal();
-        if (payerAccount.getBalance() < total) {
-          throw new RuntimeException("You do not have enough money in your account");
+        if ( payerAccount.getBalance() < total) {
+          throw new RuntimeException("Insufficient balance to complete transaction.");
         }
 
         payerAccount.setBalance(payerAccount.getBalance() - total);
         payeeAccount.setBalance(payeeAccount.getBalance() + total);
         getAccountDAO().put(payerAccount);
         getAccountDAO().put(payeeAccount);
+
+        // find invoice
+        if ( transaction.getInvoiceId() != 0 ) {
+          Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
+          if ( invoice == null ) {
+            throw new RuntimeException("Invoice not found");
+          }
+
+          invoice.setPaymentId(transaction.getId());
+          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
+          getInvoiceDAO().put(invoice);
+        }
         return super.put_(x, obj);
       }
     }

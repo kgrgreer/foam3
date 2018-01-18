@@ -13,6 +13,7 @@ foam.CLASS({
 
   imports: [
     'user',
+    'device',
     'stack',
     'transactionDAO'
   ],
@@ -143,6 +144,7 @@ foam.CLASS({
         payerId: this.user.id,
         payeeId: this.data.user.id,
         amount: this.data.amount,
+        deviceId: this.device.id,
         refundTransactionId: this.data.id,
         status: 'Refund'
       }))

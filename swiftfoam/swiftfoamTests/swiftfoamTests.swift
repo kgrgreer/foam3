@@ -101,7 +101,7 @@ class swiftfoamTests: XCTestCase {
       }
 
       let pred = client.__context__.create(Eq.self, args: [
-        "arg1": Account.OWNER(),
+        "arg1": Account.ID(),
         "arg2": user.id,
         ])
 

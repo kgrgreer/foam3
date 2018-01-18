@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.business',
-  name: 'AddBusinessInfoForm',
+  package: 'net.nanopay.admin.ui.form.company',
+  name: 'AddCompanyInfoForm',
   extends: 'foam.u2.Controller',
 
   documentation: 'Form to input Admin information',
@@ -34,6 +34,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      factory: function() {
+        return this.viewData.firstName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
       }
@@ -41,6 +44,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'lastName',
+      factory: function() {
+        return this.viewData.lastName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
       }
@@ -48,6 +54,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'phoneNumber',
+      factory: function() {
+        return this.viewData.phoneNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
       }
@@ -55,6 +64,9 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'password',
+      factory: function() {
+        return this.viewData.password;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
       }

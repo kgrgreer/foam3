@@ -33,7 +33,7 @@ cp scripts /opt/tomcat/bin/
 cp services /opt/tomcat/bin/
 cp tests /opt/tomcat/bin/
 cp transactionLimits /opt/tomcat/bin/
-cp users /opt/tomcat/bin/
+cp -n users /opt/tomcat/bin/
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2

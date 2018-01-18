@@ -17,6 +17,10 @@ foam.CLASS({
       name: 'refundTransactionId'
     },
     {
+      class: 'Long',
+      name: 'invoiceId'
+    },
+    {
       class: 'String',
       name: 'status'
     },
@@ -150,11 +154,19 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'total',
+      label: 'Amount',
       transient: true,
       expression: function (amount, tip) {
         return amount + tip;
       },
-      javaGetter: `return getAmount() + getTip();`
+      javaGetter: `return getAmount() + getTip();`,
+      tableCellFormatter: function(total) {
+        var formattedAmount = total / 100;
+        this
+          .start()
+            .add(' CAD $', formattedAmount.toFixed(2))
+          .end();
+      }
     },
     {
       class: 'FObjectProperty',

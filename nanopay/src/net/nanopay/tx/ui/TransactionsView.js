@@ -169,6 +169,10 @@ foam.CLASS({
           font-size: 12px;
           color: #093649;
         }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: %TABLEHOVERCOLOR%;
+        }
         ^ tbody > tr {
           height: 60px;
           background: white;
@@ -222,7 +226,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'id', 'date', 'payerId', 'payeeId', 'amount'
+          'id', 'date', 'payerId', 'payeeId', 'total'
         ]
       }
     }

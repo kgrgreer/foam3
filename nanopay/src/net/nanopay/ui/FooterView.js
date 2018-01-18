@@ -44,8 +44,8 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('h3').add(this.webApp + ' Portal Powered by @'+ this.webApp).end()
-          .start('h3').addClass('copyright-label').add('copyright ' + '@' + this.webApp + ' 2017, all right reserved.').end()
+          .start('h3').add('Powered by nanopay').end()
+          .start('h3').addClass('copyright-label').add('Copyright © 2018 ' + this.webApp + '. All right reserved.').end()
         .end();
     }
   ]

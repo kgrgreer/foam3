@@ -105,7 +105,7 @@ foam.CLASS({
       if ( key === 'backspace' ) {
         if ( length <= 1 ) return;
         this.amountInt = ( this.amountInt / 10.0);
-        this.amount = '$' + ( this.amountInt / 100.0).toFixed(2);
+        this.amount = '$' + (this.amountInt / 100.0).toFixed(2);
         return;
       }
 
@@ -121,69 +121,34 @@ foam.CLASS({
         var key = e.key || e.keyCode;
         if ( ! this.focused ) {
           this.focused = true;
-          this.amount = '$';
-        }
-
-        // do nothing on escape key
-        if ( key === 'Escape' || key === 27 ) {
-          return;
+          this.amount = '$0.00';
         }
 
         var length = this.amount.length;
-
         if ( key === 'Backspace' || key === 8 ) {
           if ( length <= 1 ) return;
-          this.amount = this.amount.substring(0, length - 1);
+          this.amountInt = ( this.amountInt / 10.0 );
+          this.amount = '$' + (this.amountInt / 100.0).toFixed(2);
           return;
         }
 
-        var decimal = this.amount.indexOf('.');
-        // handle enter key
-        if ( ( key === 'Enter' || key === 13 ) ) {
-          // append 0 if only one decimal digit is specified
-          if ( length - decimal === 2 ) {
-            this.amount += '0';
-            length += 1;
-          }
-
-          // validate amount greater than 0
-          var value = this.amount.replace(/\D/g, '');
-          if ( value <= 0 ) {
-            throw new Error('Invalid amount');
-          }
-
-          // display QR code view
-          this.stack.push(this.QRCodeView.create({
-            amount: ( decimal !== -1 ) ? value : value * 100
-          }));
+        if ( key === 'Enter' || key === 13 ) {
+          this.onNextClicked(e);
           return;
         }
 
-        // only allow 2 decimal places
-        if ( decimal !== -1 && length - decimal > 2 ) {
-          return;
-        }
-
-        // if handling keycodes 0-9, subtract 48
+        // subtract keycode
         if ( key >= 48 && key <= 57 ) {
           key -= 48;
         }
 
-        // convert keycode 190 to period
-        if ( key === 190 ) {
-          key = '.';
-        }
-
-        // prevent adding of more than one period
-        if ( ( key === '.' ) && ( this.amount.indexOf('.') !== -1 || length === 1 ) ) {
+        // check if not a number
+        if ( Number.isNaN(parseInt(key, 10)) ) {
           return;
         }
 
-        // check if numeric
-        var isNumeric = ( ! isNaN(parseFloat(key)) && isFinite(key) );
-        if ( isNumeric || key === '.' ) {
-          this.amount += key;
-        }
+        this.amountInt = (this.amountInt * 10) + parseInt(key, 10);
+        this.amount = '$' + (this.amountInt / 100.0).toFixed(2);
       } catch (e) {
         this.tag(this.ErrorMessage.create({ message: e.message }));
       }

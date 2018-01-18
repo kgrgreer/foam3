@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.business',
-  name: 'AddBusinessProfileForm',
+  package: 'net.nanopay.admin.ui.form.company',
+  name: 'AddCompanyProfileForm',
   extends: 'foam.u2.Controller',
 
   documentation: 'Form to input business\'s business profile information',
@@ -105,6 +105,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessName',
+      factory: function() {
+        return this.viewData.businessName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.businessName = newValue;
       }
@@ -119,6 +122,9 @@ foam.CLASS({
           }
         })
       },
+      factory: function() {
+        return this.viewData.country || 'CA';
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.country = newValue;
       }
@@ -126,6 +132,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'companyEmail',
+      factory: function() {
+        return this.viewData.companyEmail;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.companyEmail = newValue;
       }
@@ -133,6 +142,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'registrationNumber',
+      factory: function() {
+        return this.viewData.registrationNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.registrationNumber = newValue;
       }
@@ -146,6 +158,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
+      },
+      factory: function() {
+        return this.viewData.businessType;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.businessType = newValue;
@@ -161,6 +176,9 @@ foam.CLASS({
           }
         })
       },
+      factory: function() {
+        return this.viewData.businessSector;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.businessSector = newValue;
       }
@@ -168,6 +186,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'website',
+      factory: function() {
+        return this.viewData.website;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.website = newValue;
       }
@@ -175,6 +196,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetNumber',
+      factory: function() {
+        return this.viewData.streetNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.streetNumber = newValue;
       }
@@ -182,6 +206,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetName',
+      factory: function() {
+        return this.viewData.streetName;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.streetName = newValue;
       }
@@ -189,6 +216,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'addressLine',
+      factory: function() {
+        return this.viewData.addressLine;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
       }
@@ -196,6 +226,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'city',
+      factory: function() {
+        return this.viewData.city;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
       }
@@ -210,6 +243,9 @@ foam.CLASS({
           }
         })
       },
+      factory: function() {
+        return this.viewData.province;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
       }
@@ -217,6 +253,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'postalCode',
+      factory: function() {
+        return this.viewData.postalCode;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
       }

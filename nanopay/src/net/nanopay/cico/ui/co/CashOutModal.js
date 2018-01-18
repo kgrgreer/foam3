@@ -87,8 +87,8 @@ foam.CLASS({
           width: 136px;
           height: 40px;
           border-radius: 2px;
-          background: #59a5d5;
-          border: solid 1px #59a5d5;
+          background: %SECONDARYCOLOR%;
+          border: solid 1px %SECONDARYCOLOR%;
           display: inline-block;
           color: white;
           text-align: center;
@@ -102,8 +102,9 @@ foam.CLASS({
           font-weight: normal;
         }
         ^ .net-nanopay-ui-ActionView-nextButton:hover {
-          background: #3783b3;
-          border-color: #3783b3;
+          background: %SECONDARYCOLOR%;
+          border-color: %SECONDARYCOLOR%;
+          opacity: 0.9;
         }
         ^ .net-nanopay-ui-ActionView-goToBank {
           width: 118.3px;
@@ -112,7 +113,7 @@ foam.CLASS({
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.3px;
-          color: #5e91cb;
+          color: %SECONDARYCOLOR%;
           text-decoration: underline;
           display: inline-block;
           margin: 0;

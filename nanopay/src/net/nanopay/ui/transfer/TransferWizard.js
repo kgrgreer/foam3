@@ -215,7 +215,7 @@ foam.CLASS({
     function init() {
       if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
       else { this.title = 'Send Transfer' }
-      
+
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
         this.viewData.purchaseOrder = this.invoice.purchaseOrder;
@@ -312,20 +312,24 @@ foam.CLASS({
       // },
       code: function() {
         var self = this;
+        var invoiceId = 0;
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
           var rate;
-          if(this.type == 'foreign'){
+          if( this.type == 'foreign' ){
             rate = this.viewData.rate.toString();
           }
-
+          if ( this.invoiceMode ){
+            invoiceId = this.invoice.id;
+          }
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
             payerId: this.user.id,
             payeeId: this.viewData.payee.id,
             amount: Math.round(this.viewData.fromAmount*100),
+            invoiceId: invoiceId,
             // rate: rate,
             // fees: Math.round(this.viewData.fees),
             // purpose: this.viewData.purpose,
@@ -334,17 +338,12 @@ foam.CLASS({
 
           this.transactionDAO.put(transaction).then(function (result) {
             if ( result ) {
-              if ( this.invoiceMode ){
-                this.invoice.paymentId = result.id;
-                this.invoice.paymentDate = new Date();
-                this.invoiceDAO.put(this.invoice);
-              }
               self.viewData.transaction = result;
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make New Transfer';
               self.viewData.transaction = result;
-              self.add(self.NotificationMessage.create({ message: "Success!" }));              
+              self.add(self.NotificationMessage.create({ message: "Success!" }));
             }
           })
           .catch(function (err) {

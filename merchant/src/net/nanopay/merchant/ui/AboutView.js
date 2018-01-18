@@ -71,7 +71,7 @@ foam.CLASS({
             .end()
             .start('h3').add(this.webApp).end()
             .start().add('Version ' + this.version).end().br()
-            .start().add('© ' + this.copyright).br().add(this.rights).end()
+            .start().add('© 2018 ' + this.copyright).br().add(this.rights).end()
           .end()
         .end()
 

@@ -131,9 +131,12 @@ foam.CLASS({
       text-align: center;
       color: #ffffff;
       cursor: pointer;
-      background-color: #59aadd;
+      background-color: %SECONDARYCOLOR%;
       margin-left: 20px;
       margin-top: 19px;
+    }
+    ^ .update-BTN:hover {
+      opacity: 0.9;
     }
     ^ .check-Box{
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -275,11 +278,11 @@ foam.CLASS({
           return;
         }
 
-        if (! /^[0-9()+-]{1,30}$/.test(this.phone) )
-        {
+        if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.phone) ) {
           this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
           return; 
         }
+        
         this.user.firstName = this.firstName;
         this.user.lastName = this.lastName;
         this.user.department = this.jobTitle;

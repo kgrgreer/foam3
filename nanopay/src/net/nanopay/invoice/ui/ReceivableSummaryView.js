@@ -119,7 +119,11 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        this.dao.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        var receivablesSumDAO = this.dao.where(
+          this.NEQ(this.Invoice.STATUS, "Void")
+        );
+
+        receivablesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.receivableAmount = sum.value.toFixed(2);
         });
 

@@ -1,4 +1,0 @@
-p({"class":"net.nanopay.retail.model.Device","id":1,"name":"Ingenico 1","type":2,"serialNumber":"D224E98C71EF42CA","status":1,"password":"123456","owner":1000})
-p({"class":"net.nanopay.retail.model.Device","id":2,"name":"Ciao Tablet","type":1,"serialNumber":"59GS8F8A3L5FAQ1","status":1,"password":"123456","owner":1000})
-p({"class":"net.nanopay.retail.model.Device","id":3,"name":"Merci Pad","type":0,"serialNumber":"0A3H70K5HLA82E4","status":2,"password":"123456","owner":1000})
-p({"class":"net.nanopay.retail.model.Device","id":4,"name":"Ingenico 2","type":2,"serialNumber":"8488E3D311144DB1","status":1,"password":"123456","owner":1000})

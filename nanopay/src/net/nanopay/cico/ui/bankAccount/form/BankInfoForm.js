@@ -33,7 +33,7 @@ foam.CLASS({
 
         ^ .foam-u2-tag-Select {
           width: 302px;
-          height: 44px;
+          height: 40px;
           border-radius: 0;
 
           -webkit-appearance: none;
@@ -71,7 +71,7 @@ foam.CLASS({
         ^ .caret:before {
           content: '';
           position: absolute;
-          top: -24px;
+          top: -22px;
           left: 272px;
           border-top: 7px solid #a4b3b8;
           border-left: 7px solid transparent;
@@ -90,6 +90,10 @@ foam.CLASS({
 
         ^ .institutionContainerHidden {
           display: none;
+        }
+
+        ^ .instituteOtherMargin {
+          margin-left: 56px;
         }
       */}
     })
@@ -240,25 +244,21 @@ foam.CLASS({
               .start('p').addClass('inputFieldLabel').add(this.LabelAccount).end()
             .end()
             .tag(this.ACCOUNT_NUMBER, {onKey: true, maxLength: 35})
-            .start('div').addClass('row')
-              .start('p').addClass('inputFieldLabel').add(this.LabelInstitution).end()
-            .end()
-            .start('div').addClass('institutionContainer')
-              .tag(this.INSTITUTION)
-              .start('div').addClass('caret').end()
-            .end()
           .end()
           .start('div').addClass('col')
             .start('div').addClass('row')
               .start('p').addClass('inputFieldLabel').add(this.LabelTransit).end()
             .end()
             .tag(this.TRANSIT_NUMBER, {onKey: true, maxLength: 5})
-            .start('div').enableClass('institutionContainerHidden', this.hideOther$)
-              .start('div').addClass('row')
-                .start('p').addClass('inputFieldLabel').add(this.LabelInstituteOther).end()
-              .end()
-              .tag(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3})
-            .end()
+          .end()
+          .start().addClass('inline')
+            .start('p').add(this.LabelInstitution).addClass('inputFieldLabel').end()
+            .start(this.INSTITUTION).end()
+            .start('div').addClass('caret').end()
+          .end()
+          .start().addClass('inline instituteOtherMargin').enableClass('institutionContainerHidden', this.hideOther$)
+            .start('p').add(this.LabelInstituteOther).addClass('inputFieldLabel').end()
+            .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
         .end()
     }

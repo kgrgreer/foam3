@@ -41,7 +41,6 @@ foam.CLASS({
       this.views = [
         { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankInfoForm' } },
         { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
-        { parent: 'addBank', id: 'form-addBank-cashout',      label: 'Cashout plan',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankCashoutForm' } },
         { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
       this.SUPER();
@@ -51,19 +50,12 @@ foam.CLASS({
   actions: [
     {
       name: 'goBack',
-      label: 'Back',
-      isAvailable: function() { return true; },
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
       }
     },
     {
       name: 'goNext',
-      label: 'Next',
-      isAvailable: function(position) {
-        if ( position <= this.views.length - 1 ) return true;
-        return false; // Not in dialog
-      },
       code: function() {
         var self = this;
         if ( this.position == 0 ) { // On Submission screen.
@@ -103,35 +95,30 @@ foam.CLASS({
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
             self.newBankAccount = response;
-            self.newBankAccount.status = "Unverified";
             self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.backLabel = 'Come back later';
+            self.nextLabel = 'Verify';
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
         }
 
-        if ( this.position == 1 ) { // On Verification screen
-            if ( this.selectedAccount != undefined ) {
-              this.newBankAccount = this.selectedAccount;
-            }
+        if ( this.position == 1 ) { 
+          // On Verification screen
+          if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
+            this.newBankAccount = this.selectedAccount;
+          }
 
-            this.bankAccountVerification.verify(this.newBankAccount.id, this.verifyAmount).then(function(response) {
-              if ( response ) {
-                self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
-                self.subStack.push(self.views[self.subStack.pos + 1].view);
-              }
-            }).catch(function(error) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            });
-        }
-
-        if ( this.position == 2 ) { // On Cashout Plan Selection
-          //TODO: MAKE API CALL TO SELECT DEFAULT CASHOUT PLAN
-            // TODO: CHECK IF SUCCESS OR FAILURE
-            if ( true ) {
-              this.subStack.push(this.views[this.subStack.pos + 1].view);
-              return;
+          this.bankAccountVerification.verify(this.newBankAccount.id, this.verifyAmount).then(function(response) {
+            if ( response ) {
+              self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.backLabel = 'Back';
+              self.nextLabel = 'Done';
             }
+          }).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) { // If last page

@@ -11,12 +11,14 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.merchant.ui.AppStyles',
     'net.nanopay.retail.model.Device',
-    'net.nanopay.retail.model.DeviceStatus'
+    'net.nanopay.retail.model.DeviceStatus',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   exports: [
@@ -83,7 +85,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.transactionDAO.remoteListenerSupport = true;
       this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
     },
 

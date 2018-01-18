@@ -50,7 +50,7 @@ foam.CLASS({
         .foam-u2-DetailView .foam-u2-DetailView {
           width: auto;
           margin: inherit;
-      }
+        }
         .foam-u2-DetailView-title {
           background: #ddd;
           color: gray;
@@ -85,7 +85,7 @@ foam.CLASS({
           outline: none;
         }
         .net-nanopay-ui-ActionView-create {
-          background: #59aadd;
+          background: %SECONDARYCOLOR%;
           border: none;
           box-shadow: none;
           color: white;
@@ -107,14 +107,12 @@ foam.CLASS({
           margin-bottom: 8px;
         }
         .foam-u2-search-TextSearchView input {
-          width: 340px;
-          font-size: 10pt;
+          width: 288px;
           padding: 3px;
         }
         .foam-u2-search-GroupBySearchView select {
           font-family: monospace;
-          font-size: 10pt;
-          width: 340px;
+          font-size: 9pt;
         }
         .net-nanopay-ui-ActionView {
           padding: 4px 16px;
@@ -127,11 +125,14 @@ foam.CLASS({
           font-size: 14px;
         }
         .net-nanopay-ui-ActionView-saveAndPreview {
-          background-color: #59AADD;
+          background-color: %SECONDARYCOLOR%;
           color: white;
           font-size: 14px;
           float: right;
-          border: 1px solid #59AADD;
+          border: 1px solid %SECONDARYCOLOR%;
+        }
+        .net-nanopay-ui-ActionView-saveAndPreview:hover {
+          opacity: 0.9;
         }
         .net-nanopay-ui-ActionView-saveAsDraft {
           background-color: #EDF0F5;
@@ -201,10 +202,13 @@ foam.CLASS({
           line-height: 2.86;
         }
         .blue-button{
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           color: #ffffff;
           margin: 20px 20px;
           float: right;
+        }
+        .blue-button:hover{
+          opacity: 0.9;
         }
         .grey-button{
           background-color: rgba(164, 179, 184, 0.1);
@@ -212,17 +216,17 @@ foam.CLASS({
           color: #093649;
         }
         .white-blue-button{
-          border: solid 1px #59A5D5;
-          color: #59A5D5;
+          border: solid 1px %SECONDARYCOLOR%;
+          color: %SECONDARYCOLOR%;
           background: none;
         }
         .full-width-button{
           width: 90%;
           height: 40px;
           border-radius: 2px;
-          border: solid 1px #59a5d5;
+          border: solid 1px %SECONDARYCOLOR%;
           margin: 0 auto;
-          background-color: #59aadd;
+          background-color: %SECONDARYCOLOR%;
           text-align: center;
           line-height: 40px;
           cursor: pointer;
@@ -331,8 +335,12 @@ foam.CLASS({
         }
         .foam-u2-view-TableView-noselect {
           width: 1px;
+          font-size: 25px !important;
           cursor: pointer;
           text-align: right !important;
+        }
+        .foam-u2-view-TableView-noselect:hover {
+          opacity: 0.9;
         }
         .foam-u2-dialog-Popup.popup-with-topnav {
           margin-top: 65px;

@@ -63,7 +63,6 @@ public class S2HReportingAgent
     message.setFrom("info@nanopay.net");
     message.setReplyTo("noreply@nanopay.net");
     message.setTo(recipients);
-    message.setSubject("S2H status");
 
     //retrieves invoices that were paid the day that passed
     DAO timeInvoice = invoiceDAO.where(AND(
