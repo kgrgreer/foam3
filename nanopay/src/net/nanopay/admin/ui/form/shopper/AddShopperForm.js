@@ -153,7 +153,7 @@ foam.CLASS({
               return self.email.sendEmailFromTemplate(shopper, emailMessage, 'cc-template-invite/shopper', {
                 name: shopper.firstName,
                 email: shopper.email,
-                money: self.formatCurrency(shopperInfo.amount),
+                money: self.formatCurrency(shopperInfo.amount/100),
               });
             })
             .then(function () {
