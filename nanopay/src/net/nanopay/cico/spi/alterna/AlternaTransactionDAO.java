@@ -22,7 +22,6 @@ public class AlternaTransactionDAO
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
     transaction.setProviderId(ALTERNA_ID);
-    System.out.println("returning ALTERNA transaction");
     return getDelegate().put_(x, transaction);
   }
 }

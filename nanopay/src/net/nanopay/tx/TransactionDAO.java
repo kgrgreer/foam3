@@ -67,9 +67,11 @@ public class TransactionDAO
       throw new RuntimeException("Invalid Payee id");
     }
 
-    //For cico transactions payer and payee can be the same
-    if ( payeeId == payerId && ( transactionType != TransactionType.CASHOUT || transactionType != TransactionType.CASHIN ) ) {
-      throw new RuntimeException("PayeeID and PayerID cannot be the same");
+    //For cico transactions payer and payee are the same
+    if ( payeeId == payerId ) {
+      if ( transactionType != TransactionType.CASHOUT || transactionType != TransactionType.CASHIN ) {
+        throw new RuntimeException("PayeeID and PayerID cannot be the same");
+      }
     }
 
     if ( transaction.getTotal() <= 0 ) {
@@ -78,7 +80,7 @@ public class TransactionDAO
 
     Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-    System.out.println("ORDINARY TransactionDAO before synchronized");
+
     synchronized (firstLock) {
       synchronized (secondLock) {
         Sink sink;
@@ -107,17 +109,19 @@ public class TransactionDAO
         // check if payer account has enough balance
         long total = transaction.getTotal();
 
-        //Cashin does not require balance checks
-        if ( payerAccount.getBalance() < total && transactionType != TransactionType.CASHIN ) {
-          throw new RuntimeException("Insufficient balance to complete transaction.");
+        // cashin does not require balance checks
+        if ( payerAccount.getBalance() < total ) {
+          if ( transactionType != TransactionType.CASHIN ) {
+            throw new RuntimeException("Insufficient balance to complete transaction.");
+          }
         }
-        
+
         //For cash in, just increment balance, payer and payee will be the same
         if ( transactionType == TransactionType.CASHIN ) {
           payerAccount.setBalance(payerAccount.getBalance() + total);
         }
+        //For cash out, decrement balance, payer and payee will be the same
         else if ( transactionType == TransactionType.CASHOUT ) {
-          //For cash out, decrement balance, payer and payee will be the same
           payerAccount.setBalance(payerAccount.getBalance() - total);
         }
         else {
@@ -140,7 +144,6 @@ public class TransactionDAO
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
         }
-        System.out.println("returning TransactionDAO done");
         return super.put_(x, obj);
       }
     }

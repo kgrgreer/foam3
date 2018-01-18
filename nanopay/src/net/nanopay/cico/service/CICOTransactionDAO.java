@@ -27,11 +27,10 @@ public class CICOTransactionDAO
       throw new RuntimeException("Invalid bank account");
     }
 
+    //For cico, there is a transaction between the same acccount
     if ( transaction.getPayeeId() == 0 &&  transaction.getPayerId() != 0 ) {
-      System.out.println("IF CICOTransactionDAO");
       transaction.setPayeeId(transaction.getPayerId());
     } else if ( transaction.getPayerId() == 0 &&  transaction.getPayeeId() != 0 ) {
-      System.out.println("ELSE CICOTransactionDAO");
       transaction.setPayerId(transaction.getPayeeId());
     }
 
@@ -44,12 +43,6 @@ public class CICOTransactionDAO
         transaction.setType(TransactionType.CASHOUT);
       }
 
-      if ( transaction.getType() == TransactionType.CASHOUT ) {
-
-      } else if ( transaction.getType() == TransactionType.CASHIN ) {
-
-      }
-      System.out.println("returning CICO transaction");
       return getDelegate().put_(x, transaction);
 
     } catch (RuntimeException e) {
