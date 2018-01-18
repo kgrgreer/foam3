@@ -49,7 +49,7 @@ foam.CLASS({
           color: #c82e2e;
         }
         ^ .Paid{
-          width: 40px;
+          width: 35px;
           height: 15px;
           padding: 3px 3px 3px 15px;
           border-radius: 100px;
@@ -58,7 +58,7 @@ foam.CLASS({
         }
         ^ .Scheduled{
           color: #2cab70;
-          width: 70px;
+          width: 66px;
           height: 18px;
           border: 1px solid #2cab70;
           border-radius: 100px;
