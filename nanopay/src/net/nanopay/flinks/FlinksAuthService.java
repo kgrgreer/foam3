@@ -156,19 +156,19 @@ public class FlinksAuthService
   }
   //TODO: ? thread issue
   protected String fetchFromFIle(String path) {
-    FileInputStream in = null;
+    BufferedInputStream bffin = null;
     String ret = null;
     try {
       File file = new File(path);
       byte fileContent[] = new byte[(int) file.length()];
-      in = new FileInputStream(path);
-      in.read(fileContent);
+      bffin = new BufferedInputStream(new FileInputStream(path));
+      bffin.read(fileContent);
       byte[] bytes2 = Base64.getEncoder().encode(fileContent);
       ret = new String(bytes2, "UTF-8");
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(in);
+      IOUtils.closeQuietly(bffin);
     }
     return ret;
   }
