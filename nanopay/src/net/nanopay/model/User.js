@@ -26,6 +26,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status'
+    },
+    {
+      class: 'String',
+      name: 'jobTitle',
+      label: 'Job Title'
     }
   ]
 });
