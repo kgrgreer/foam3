@@ -4,21 +4,12 @@ import foam.core.*;
 import net.nanopay.flinks.model.*;
 
 public abstract class Msg 
-  implements ContextAware 
+  extends ContextAwareSupport 
 {
   protected String json_;
   protected FlinksCall model_;
-  protected X x_;
   protected ClassInfo modelInfo_;
 
-  @Override
-  public void setX(X x) {
-    x_ = x;
-  }
-  @Override
-  public X getX() {
-    return x_;
-  }
   public void setJson(String json) {
     json_ = json;
   }
