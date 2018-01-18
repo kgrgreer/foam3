@@ -13,7 +13,7 @@ import foam.lib.json.OutputterMode;
 public class RequestMsg 
   extends Msg
 {
-  private static Outputter jsonOutputter = new Outputter(OutputterMode.SIMPLE);
+  private static Outputter jsonOutputter = new Outputter();
   private String requestInfo_;
   private String httpMethod_;
   private boolean isJsonSet_ = false;
