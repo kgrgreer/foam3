@@ -51,37 +51,6 @@ foam.CLASS({
         //X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true})
         X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true})
       }
-    },
-    {
-      name: 'test',
-      label: 'Enable test',
-      isEnabled: function() {
-        return this.p2;
-      },
-      code: function(X) {
-        X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm'})
-      }
-    },
-    {
-      name: 'tackle',
-      label: 'controller',
-      code: function(X) {
-        this.p2 = ! this.p2;
-        console.log(this.p2);
-      }
-    },
-    {
-      name: 'sslot',
-      label: 'add',
-      code: function(X) {
-        console.log(this);
-        var a = this.p1;
-        console.log(this.p1);
-        var b = this.p4;
-        this.p1 = this.p1 + 'a';
-        console.log(this.p1);
-        console.log(this);
-      }
     }
   ]
 });
