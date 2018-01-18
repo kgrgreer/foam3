@@ -93,24 +93,17 @@ public class TransactionDAO
         if ( payee == null || payer == null ) {
           throw new RuntimeException("Users not found");
         }
-        System.out.println("11111 ORDINARY TransactionDAO before validations synchronized");
         // find payee account
         payeeAccount = (Account) getAccountDAO().find(payee.getId());
         if ( payeeAccount == null ) {
           throw new RuntimeException("Payee account not found");
         }
-        System.out.println("222222 ORDINARY TransactionDAO before validations synchronized");
         // find payer account
         payerAccount = (Account) getAccountDAO().find(payer.getId());
         if ( payerAccount == null ) {
           throw new RuntimeException("Payer account not found");
         }
-        System.out.println("33333 ORDINARY TransactionDAO before validations synchronized");
-        System.out.println("payer account ID:"+payerAccount.getId());
-        System.out.println("payer account balance:"+payerAccount.getBalance());
-        System.out.println("payee account ID:"+payeeAccount.getId());
-        System.out.println("payee account balance:"+payeeAccount.getBalance());
-        System.out.println("33333 ORDINARY TransactionDAO before validations synchronized");
+
         // check if payer account has enough balance
         long total = transaction.getTotal();
         // cashin does not require balance checks
@@ -136,7 +129,7 @@ public class TransactionDAO
           getAccountDAO().put(payerAccount);
           getAccountDAO().put(payeeAccount);
         }
-        
+
         // find invoice
         if ( transaction.getInvoiceId() != 0 ) {
           Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
