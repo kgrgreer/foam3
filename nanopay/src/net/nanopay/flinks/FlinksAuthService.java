@@ -65,14 +65,15 @@ public class FlinksAuthService
     return feedback;
   }
 
-  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, String[] questions, Object[] answers) throws AuthenticationException {
+  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, String[] questions, Object[] answers, java.util.Map map1) throws AuthenticationException {
     //TODO: security check
-    Map map = new HashMap<>(questions.length);
+    // Map map = new HashMap<>(questions.length);
     ResponseMsg respMsg = null;
-    for ( int i = 0 ; i < questions.length ; i++ ) {
-      map.put(questions[i], answers[i]);
-    } 
-    RequestMsg reqMsg = FlinksRequestGenerator.getMFARequest(getX(), institution, username, requestId, map);
+    // for ( int i = 0 ; i < questions.length ; i++ ) {
+    //   map.put(questions[i], answers[i]);
+    // } 
+    RequestMsg reqMsg = FlinksRequestGenerator.getMFARequest(getX(), institution, username, requestId, map1);
+    System.out.println(reqMsg.getJson());
     //catch any Exception that happen when connect to Flinks
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.CHALLENGE);

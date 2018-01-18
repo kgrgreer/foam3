@@ -55,6 +55,10 @@ foam.INTERFACE({
       {
         name: 'answers',
         javaType: 'Object[]'
+      },
+      {
+        name: 'map1',
+        javaType: 'java.util.Map'
       }
     ]
   },

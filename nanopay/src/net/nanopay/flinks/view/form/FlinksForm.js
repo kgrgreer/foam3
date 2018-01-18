@@ -228,7 +228,11 @@ foam.CLASS({
         if ( this.position == 2 ) {
           //disable button, prevent double click
           self.isEnabledButtons(false);
-          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, this.viewData.questions, this.viewData.answers).then( function(msg) {
+          var map ={};
+          for ( var i = 0 ; this.viewData.questions ; i++ ) {
+            map[this.viewData.questions[i]] = this.viewData.answers[i]; 
+          }
+          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, this.viewData.questions, this.viewData.answers, map).then( function(msg) {
             console.log('return challengeQuestion msg', msg);            
             if ( self.position != 2 ) return;
             
