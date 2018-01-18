@@ -154,7 +154,7 @@ foam.CLASS({
                     e.isSelected = false;
                   }
                   self.selectTick++;
-                  console.log(self.viewData.accounts);
+                  //console.log(self.viewData.accounts);
                 })
               .end()
             })
@@ -172,12 +172,12 @@ foam.CLASS({
       name: 'nextButton',
       label: 'Add Account',
       isEnabled: function(isConnecting) {
-        console.log(isConnecting);
+        //console.log(isConnecting);
         if ( isConnecting === true ) return false;
         return true;
       },
       code: function(X) {
-        console.log('nextButton');
+        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
@@ -186,9 +186,9 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        console.log('close');
-        console.log('close the form');
-        console.log(X.form.goBack);
+        //console.log('close');
+        //console.log('close the form');
+        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }
