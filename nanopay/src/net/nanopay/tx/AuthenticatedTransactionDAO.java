@@ -76,8 +76,6 @@ public class AuthenticatedTransactionDAO
     AuthService auth   = (AuthService) x.get("auth");
     boolean     global = auth.check(x, GLOBAL_TXN_READ);
 
-// System.err.println("AuthTxn: " + user.getId() + " " + global);
-
     DAO dao = global ?
       getDelegate() :
       getDelegate().where(

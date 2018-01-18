@@ -2,7 +2,6 @@ package net.nanopay.cico.spi.alterna;
 
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
-import net.nanopay.model.Branch;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
@@ -81,9 +80,11 @@ public class CsvUtil {
   public Sink writeCsvFile(X x, OutputterMode mode, OutputStream outStream, Writer outWriter, boolean outputHeaders) {
     final Date now = new Date();
     final DAO userDAO = (DAO) x.get("localUserDAO");
-    final DAO branchDAO = (DAO) x.get("branchDAO");
+
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
-    final DAO transactionDAO = (DAO) x.get("standardCICOTransactionDAO");
+    final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+
+    User user               = (User) x.get("user");
 
     final Sink outputter;
     if ( outStream != null ) {
@@ -115,14 +116,13 @@ public class CsvUtil {
 
           // get bank account
           BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
-          Branch branch = (Branch) branchDAO.find(bankAccount.getBranchId());
 
           AlternaFormat alternaFormat = new AlternaFormat();
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
           alternaFormat.setTransitNumber(bankAccount.getTransitNumber());
-          alternaFormat.setBankNumber(branch.getFinancialId());
+          alternaFormat.setBankNumber(bankAccount.getInstitutionNumber());
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
