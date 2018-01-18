@@ -121,7 +121,7 @@ foam.CLASS({
       .addClass(this.myClass())
       .start('div').addClass('Container')
         .start('div')
-          .start().addClass('labelContent').add("Connct to your accounting software and make your payment process seamlessly.").end()
+          .start().addClass('labelContent').add("Connect to your accounting software and make your payment process seamlessly.").end()
           .start().addClass('integrationImgDiv')
             .start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
             .attrs({
