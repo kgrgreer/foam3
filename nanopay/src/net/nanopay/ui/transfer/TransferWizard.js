@@ -368,26 +368,6 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
-            return self.bankAccountDAO.where(
-              self.EQ(self.BankAccount.OWNER, self.viewData.payee.id)
-            ).limit(1).select();
-          }).then(function(cashOutBankAccount) {
-            var bankAcc = cashOutBankAccount
-
-            if (cashOutBankAccount.array) {
-              bankAcc = cashOutBankAccount.array[0];
-            }
-
-            // Perform a cash-out operation
-            var cashOutTransaction = self.Transaction.create({
-              payerId: self.viewData.payee.id,
-              amount: txAmount,
-              bankAccountId: bankAcc.id,
-              type: self.TransactionType.CASHOUT
-            });
-
-            return self.standardCICOTransactionDAO.put(cashOutTransaction);
-          }).then(function(response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
