@@ -209,7 +209,8 @@ foam.CLASS({
               //QuestionAndAnswer, with Iterables
               //QuestionAndAnswer, without Iterables
               self.viewData.requestId = msg.RequestId;
-              self.viewData.SecurityChallenges = msg.SecurityChallenges; 
+              self.viewData.SecurityChallenges = msg.SecurityChallenges;
+              //TODO: redirect to different MFA handle page
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
                 //To different view
                 //console.log(self.viewData.SecurityChallenges[0].Type)
@@ -247,7 +248,7 @@ foam.CLASS({
               //console.log('account', msg.Accounts);
               self.subStack.push(self.views[3].view);
             } else if (status == 203) {
-              //continue on the MFA, refresh//or push a new view
+              //TODO: continue on the MFA, refresh//or push a new view
 
             } else if ( status == 401 ) {
               //MFA response error and forwar to another security challenge
