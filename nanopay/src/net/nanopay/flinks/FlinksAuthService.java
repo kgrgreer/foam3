@@ -40,7 +40,7 @@ public class FlinksAuthService
     //TODO: security check
     ResponseMsg respMsg = null;
     RequestMsg reqMsg = FlinksRequestGenerator.getAuthRequest(getX(), institution, username, password);
-    
+    System.out.println(reqMsg.getJson());
     //catch any Exception that happen when connect to Flinks
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.AUTHORIZE);
@@ -116,6 +116,7 @@ public class FlinksAuthService
     //catch any Exception that happen when connect to Flinks
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_SUMMARY);
+      System.out.println(respMsg.getJson());
     } catch ( Throwable t ) {
       t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
