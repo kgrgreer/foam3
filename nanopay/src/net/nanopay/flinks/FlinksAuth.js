@@ -5,7 +5,6 @@ foam.INTERFACE({
   methods: [
   {
     name: 'authorize',
-    //javaReturns: 'net.nanopay.flinks.model.FlinksRespMsg',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
     javaThrows: [ 'javax.naming.AuthenticationException'],
     args: [
@@ -56,7 +55,6 @@ foam.INTERFACE({
   },
   {
     name: 'getAccountSummary',
-    //javaReturns: 'net.nanopay.flinks.model.FlinksRespMsg',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
     javaThrows: [ 'javax.naming.AuthenticationException' ],
     args: [
