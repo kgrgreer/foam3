@@ -4,12 +4,12 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import foam.core.ContextAware;
+import foam.core.ContextAwareSupport;
 import foam.core.X;
 import net.nanopay.flinks.model.*;
 
 public class FlinksRestService 
-  implements ContextAware
+  extends ContextAwareSupport
 {
   public static final String REST_GET = "GET";
   public static final String REST_POST = "POST";
@@ -22,7 +22,6 @@ public class FlinksRestService
   public static final String CHALLENGE = "Challenge";
 
   private String address_;
-  private X x_;
 
   public FlinksRestService() {
     this(null, "8bc4718b-3780-46d0-82fd-b217535229f1");
@@ -33,16 +32,6 @@ public class FlinksRestService
   public FlinksRestService(X x, String url, String customerId) {
     address_ = url + "/" + customerId + "/" + "BankingServices";
     setX(x);
-  }
-
-  @Override
-  public X getX() {
-    return x_;
-  }
-
-  @Override 
-  public void setX(X x) {
-    x_ = x;
   }
 
   public ResponseMsg serve(RequestMsg msg, String RequestInfo) {
