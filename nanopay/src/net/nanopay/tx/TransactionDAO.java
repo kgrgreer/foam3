@@ -69,7 +69,10 @@ public class TransactionDAO
 
     //For cico transactions payer and payee are the same
     if ( payeeId == payerId ) {
-      if ( transactionType != TransactionType.CASHOUT || transactionType != TransactionType.CASHIN ) {
+      if ( transactionType == TransactionType.CASHOUT || transactionType == TransactionType.CASHIN ) {
+
+      }
+      else {
         throw new RuntimeException("PayeeID and PayerID cannot be the same");
       }
     }
@@ -81,6 +84,7 @@ public class TransactionDAO
     Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
+    System.out.println("Just before sync");
     synchronized (firstLock) {
       synchronized (secondLock) {
         Sink sink;
@@ -111,7 +115,10 @@ public class TransactionDAO
 
         // cashin does not require balance checks
         if ( payerAccount.getBalance() < total ) {
-          if ( transactionType != TransactionType.CASHIN ) {
+          if ( transactionType == TransactionType.CASHIN ) {
+
+          }
+          else {
             throw new RuntimeException("Insufficient balance to complete transaction.");
           }
         }
@@ -144,6 +151,7 @@ public class TransactionDAO
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
         }
+        System.out.println("Just before put");
         return super.put_(x, obj);
       }
     }
