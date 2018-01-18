@@ -1,3 +1,4 @@
+//Test View only
 foam.CLASS({
   package: 'net.nanopay.flinks.view',
   name: 'FlinksView',
@@ -23,9 +24,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.slot('p1').sub(function(){
-      });
-      //this.TACKLE.createIsEnabled$(this.p2$);
+
     },
 
     function initE(){
