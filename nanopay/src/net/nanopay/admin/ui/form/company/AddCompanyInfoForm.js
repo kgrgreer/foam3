@@ -26,7 +26,20 @@ foam.CLASS({
       margin-right: 10px;
     }
     ^ .infoContainer{
-      height: 185px;
+      height: 330px;
+    }
+    ^ .full-width-input-1{
+      width: 555px;
+      left: -30px;
+      position: relative;
+    }
+    ^ .inputLarge{
+      margin-bottom: 20px;
+    }
+    ^ .position-label{
+      margin-bottom: 10px;
+      position: relative;
+      left: 30px;
     }
   `,
   
@@ -62,6 +75,26 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'jobTitle',
+      factory: function() {
+        return this.viewData.jobTitle;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.jobTitle = newValue;
+      }
+    },
+    {
+      class: 'String',
+      name: 'email',
+      factory: function() {
+        return this.viewData.email;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.email = newValue;
+      }
+    },
+    {
       class: 'Password',
       name: 'password',
       factory: function() {
@@ -75,10 +108,11 @@ foam.CLASS({
 
   messages: [
     { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
-    { name: 'BusinessInformationLabel', message: 'Business Information' },
     { name: 'FirstNameLabel', message: 'First Name *' },
     { name: 'LastNameLabel', message: 'Last Name *' },
+    { name: 'JobTitleLabel', message: 'Job Title *' },
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
+    { name: 'EmailLabel', message: 'Email *' },
     { name: 'PasswordLabel', message: 'Password *' }
   ],
 
@@ -90,7 +124,6 @@ foam.CLASS({
         .start()
           .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
-            .start().add(this.BusinessInformationLabel).addClass('labelTitle').end()
             .start().addClass('inline')
               .start().add(this.FirstNameLabel).addClass('infoLabel').end()
               .start(this.FIRST_NAME).addClass('inputLarge').end()
@@ -99,13 +132,21 @@ foam.CLASS({
               .start().add(this.LastNameLabel).addClass('infoLabel').end()
               .start(this.LAST_NAME).addClass('inputLarge').end()
             .end()
-            .start().addClass('inline topMargin')
-              .start().add(this.PhoneNumberLabel).addClass('infoLabel').end()
-              .start(this.PHONE_NUMBER).addClass('inputLarge').end()
+            .start().addClass('inline')
+              .start().add(this.JobTitleLabel).addClass('infoLabel').end()
+              .start(this.JOB_TITLE).addClass('inputLarge').end()
             .end()
-            .start().addClass('inline float-right topMargin')
-              .start().add(this.PasswordLabel).addClass('infoLabel').end()
-              .start(this.PASSWORD).addClass('inputLarge').end()
+            .start().addClass('inline float-right')
+              .start().add(this.EmailLabel).addClass('infoLabel').end()
+              .start(this.EMAIL).addClass('inputLarge').end()
+            .end()
+            .start().addClass('full-width-input-1')
+              .start().add(this.PhoneNumberLabel).addClass('infoLabel position-label').end()
+              .start(this.PHONE_NUMBER).addClass('full-width-input').end()
+            .end()
+            .start().addClass('full-width-input-1')
+              .start().add(this.PasswordLabel).addClass('infoLabel position-label').end()
+              .start(this.PASSWORD).addClass('full-width-input').end()
             .end()
           .end()
         .end();

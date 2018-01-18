@@ -141,6 +141,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'issueAuthority',
+      factory: function() {
+        return this.viewData.issueAuthority;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.issueAuthority = newValue;
+      }
+    },
+    {
+      class: 'String',
       name: 'registrationNumber',
       factory: function() {
         return this.viewData.registrationNumber;
@@ -271,9 +281,10 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country *' },
     { name: 'CompanyEmailLabel', message: 'Company Email *' },
     { name: 'RegistrationNoLabel', message: 'Registration No. *' },
+    { name: 'IssueAuthorityLabel', message: 'Issuing Authority '},
     { name: 'CompanyTypeLabel', message: 'Company Type *' },
     { name: 'BusinessSectorLabel', message: 'Business Sector *' },
-    { name: 'WebsiteLabel', message: 'Website' },
+    { name: 'WebsiteLabel', message: 'Website ' },
     { name: 'BusinessAddressLabel', message: 'Business Address' },
     { name: 'StNoLabel', message: 'St No. *' },
     { name: 'StNameLabel', message: 'St Name *' },
@@ -327,9 +338,13 @@ foam.CLASS({
               .start().addClass('caret').end()
             .end()
             .start().add(this.HomeAddressLabel).addClass('labelTitle topMargin').end()
-            .start().addClass('topMargin')
+            .start().addClass('float-right')
               .start().add(this.WebsiteLabel).addClass('infoLabel').end()
               .start(this.WEBSITE).addClass('inputLarge').end()
+            .end()
+            .start().addClass('topMargin')
+              .start().add(this.IssueAuthorityLabel).addClass('infoLabel').end()
+              .start(this.ISSUE_AUTHORITY).addClass('inputLarge').end()
             .end()
             .start().add(this.BusinessAddressLabel).addClass('labelTitle topMargin').end()
             .start().addClass('inline topMargin rightMargin')
