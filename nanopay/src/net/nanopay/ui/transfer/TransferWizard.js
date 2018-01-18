@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'TransferWizard',
@@ -9,13 +8,15 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.CountdownView',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.cico.model.TransactionType',
     'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
     'user',
     'transactionDAO',
-    'invoiceDAO'
+    'invoiceDAO',
+    'standardCICOTransactionDAO'
   ],
 
   exports: [
@@ -310,7 +311,7 @@ foam.CLASS({
       //   if ( errors ) return false; // Error present
       //   return true; // Not in dialog
       // },
-      code: function() {
+      code: function(X) {
         var self = this;
         var invoiceId = 0;
         if ( this.position == 2 ) { // On Review Transfer page.
@@ -324,30 +325,59 @@ foam.CLASS({
           if ( this.invoiceMode ){
             invoiceId = this.invoice.id;
           }
-          // NOTE: payerID, payeeID, amount in cents, rate, purpose
-          var transaction = this.Transaction.create({
-            payerId: this.user.id,
-            payeeId: this.viewData.payee.id,
-            amount: Math.round(this.viewData.fromAmount*100),
-            invoiceId: invoiceId,
-            // rate: rate,
-            // fees: Math.round(this.viewData.fees),
-            // purpose: this.viewData.purpose,
-            notes: this.viewData.notes
+
+          // Perform a cash-in operation
+          var cashInTransaction = this.Transaction.create({
+            payeeId: this.user.id,
+            amount: this.viewData.fromAmount,
+            // FIX: PICK THE FIRST BANK ACCOUNT
+            bankAccountId: X.bankList,
+            type: this.TransactionType.CASHIN
           });
 
-          this.transactionDAO.put(transaction).then(function (result) {
+          this.standardCICOTransactionDAO.put(cashInTransaction).then(function(response) {
+            // NOTE: payerID, payeeID, amount in cents, rate, purpose
+            var transaction = self.Transaction.create({
+              payerId: self.user.id,
+              payeeId: self.viewData.payee.id,
+              amount: Math.round(self.viewData.fromAmount*100),
+              invoiceId: invoiceId,
+              // rate: rate,
+              // fees: Math.round(self.viewData.fees),
+              // purpose: self.viewData.purpose,
+              notes: self.viewData.notes
+            });
+
+            // Make the transfer
+            return self.transactionDAO.put(transaction);
+          }).then(function (result) {
             if ( result ) {
               self.viewData.transaction = result;
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = 'Back to Home';
-              self.nextLabel = 'Make New Transfer';
-              self.viewData.transaction = result;
-              self.add(self.NotificationMessage.create({ message: "Success!" }));
             }
-          })
-          .catch(function (err) {
-            self.add(self.NotificationMessage.create({ type: 'error', message: err.message + '. Unable to process payment.' }));
+
+            // Perform a cash-out operation
+            var cashOutTransaction = self.Transaction.create({
+              payerId: self.viewData.payee.id,
+              amount: self.viewData.fromAmount,
+              // FIX: PICK THE FIRST BANK ACCOUNT
+              bankAccountId: X.bankList,
+              type: self.TransactionType.CASHOUT
+            });
+
+            return self.standardCICOTransactionDAO.put(cashOutTransaction);
+          }).then(function(response) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.backLabel = 'Back to Home';
+            self.nextLabel = 'Make New Transfer';
+            self.add(self.NotificationMessage.create({ message: "Success!" }));
+          }).catch(function (err) {
+            console.error(err);
+
+            self.add(self.NotificationMessage.create({
+              type: 'error',
+              message: err.message + '. Unable to process payment...'
+            }));
+
             if ( err ) console.log(err.message);
           });
 
