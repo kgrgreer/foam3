@@ -63,9 +63,7 @@ public class AuthenticatedTransactionDAO
   }
 
   protected boolean isBankAccountFromUser(long bankAccountId, User user) {
-    System.out.println("isBankAccountFromUser");
     DAO bankAccountDAO = (DAO) user.getBankAccounts();
-    System.out.println("bankAccountDAO:"+bankAccountDAO);
     return bankAccountDAO != null ? bankAccountDAO.find(bankAccountId) != null : false;
   }
 

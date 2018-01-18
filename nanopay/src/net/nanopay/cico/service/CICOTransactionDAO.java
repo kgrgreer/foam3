@@ -22,7 +22,6 @@ public class CICOTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
-
     if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
@@ -34,21 +33,7 @@ public class CICOTransactionDAO
       transaction.setPayerId(transaction.getPayeeId());
     }
 
-    try {
-      if ( transaction.getCicoStatus() == null ) {
-        transaction.setCicoStatus(TransactionStatus.NEW);
-      }
-      // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...
-      if ( transaction.getType() == null ) {
-        transaction.setType(TransactionType.CASHOUT);
-      }
-
-      System.out.println("CICOTransactionDAO calling delegate");
-      return getDelegate().put_(x, transaction);
-
-    } catch (RuntimeException e) {
-      throw e;
-    }
+    return getDelegate().put_(x, transaction);
 
   }
 }
