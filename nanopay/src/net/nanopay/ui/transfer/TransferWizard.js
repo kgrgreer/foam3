@@ -24,7 +24,8 @@ foam.CLASS({
     'transactionDAO',
     'invoiceDAO',
     'standardCICOTransactionDAO',
-    'email'
+    'email',
+    'formatCurrency'
   ],
 
   exports: [
@@ -383,13 +384,12 @@ foam.CLASS({
               var emailMessage = self.EmailMessage.create({
                 from: 'info@nanopay.net',
                 replyTo: 'noreply@nanopay.net',
-                to: [ self.user.email ]
+                to: [ self.viewData.payee.email ]
               });
 
               self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
                 amount: self.formatCurrency(self.invoice.amount),
-                number: self.invoice.invoiceNumber,
-                link: self.invoice.invoiceFileUrl
+                number: self.invoice.invoiceNumber
               });
             }
           }).catch(function (err) {
