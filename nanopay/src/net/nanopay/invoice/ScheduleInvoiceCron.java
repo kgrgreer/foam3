@@ -11,6 +11,7 @@ import foam.core.FObject;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Account;
 import static foam.mlang.MLang.*;
 
@@ -26,7 +27,8 @@ public class ScheduleInvoiceCron
         ListSink sink = (ListSink) invoiceDAO_.where(
           AND(
             EQ(Invoice.STATUS, "Scheduled"),
-            EQ(Invoice.PAYMENT_ID, 0)
+            EQ(Invoice.PAYMENT_ID, 0),
+            EQ(Invoice.PAYMENT_METHOD, PaymentStatus.NONE)
           )
         ).select(new ListSink());
           List invoiceList = sink.getData();

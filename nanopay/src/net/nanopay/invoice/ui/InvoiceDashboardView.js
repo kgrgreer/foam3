@@ -98,7 +98,7 @@ foam.CLASS({
           margin-left: 100px;
         }
         ^ .net-nanopay-invoice-ui-PayableSummaryView .net-nanopay-invoice-ui-SummaryCard{
-          width: 15.9%;
+          width: 20%;
         }
         ^ .blue-card-title{
           background: %SECONDARYCOLOR%;
@@ -121,7 +121,7 @@ foam.CLASS({
           //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
           //   .start().addClass('resize-button').add('Team').end()
           // .end()
-          .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
+          // .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
           .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
           .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
           .start().addClass(this.myClass('cashflow-summary'))
