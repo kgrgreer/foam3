@@ -138,18 +138,18 @@ public class FlinksAuthService
     if ( ! directory.exists() ) {
       directory.mkdirs();
     }
-    FileOutputStream out = null;
+    BufferedOutputStream bffout = null;
     String fileLocation = directory + File.separator + fileName;
     try {
       byte[] encodeBytes = encode.getBytes("UTF-8");
       byte[] decodeBytes = Base64.getDecoder().decode(encodeBytes);
       File file = new File(fileLocation);
-      out = new FileOutputStream(file);
-      out.write(decodeBytes);
+      bffout = new BufferedOutputStream(new FileOutputStream(file));
+      bffout.write(decodeBytes);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(out);
+      IOUtils.closeQuietly(bffout);
     }
 
     return fileLocation;
