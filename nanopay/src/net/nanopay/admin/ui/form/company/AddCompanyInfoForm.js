@@ -35,11 +35,15 @@ foam.CLASS({
     }
     ^ .inputLarge{
       margin-bottom: 20px;
+      font-size: 10px;
     }
     ^ .position-label{
       margin-bottom: 10px;
       position: relative;
       left: 30px;
+    }
+    ^ .margin-left{
+      margin-left: 60px;
     }
   `,
   

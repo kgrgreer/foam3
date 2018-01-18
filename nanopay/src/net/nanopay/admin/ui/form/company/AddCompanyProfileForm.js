@@ -99,6 +99,9 @@ foam.CLASS({
     ^ .infoContainer{
       height: 325px;
     }
+    ^ .margin-left{
+      margin-left: 60px;
+    }
   `,
 
   properties: [
@@ -314,25 +317,20 @@ foam.CLASS({
               .start().add(this.BusinessNameLabel).addClass('infoLabel').end()
               .start(this.BUSINESS_NAME).addClass('inputLarge').end()
             .end()
-            .start().addClass('inline float-right')
-              .start().add(this.CompanyEmailLabel).addClass('infoLabel').end()
-              .start(this.COMPANY_EMAIL).addClass('inputLarge').end()
-            .end()
-            .start().addClass('inline topMargin')
-              .start().add(this.CountryLabel).addClass('infoLabel').end()
-              .tag(this.COUNTRY)
-              .start().addClass('caret').end()
-            .end()
-            .start().addClass('inline float-right')
+            // .start().addClass('inline float-right')
+            //   .start().add(this.CompanyEmailLabel).addClass('infoLabel').end()
+            //   .start(this.COMPANY_EMAIL).addClass('inputLarge').end()
+            // .end()
+            .start().addClass('inline margin-left')
               .start().add(this.RegistrationNoLabel).addClass('infoLabel topMargin').end()
               .start(this.REGISTRATION_NUMBER).addClass('inputLarge').end()
             .end()
-            .start().addClass('inline topMargin')
+            .start().addClass('inline')
               .start().add(this.CompanyTypeLabel).addClass('infoLabel').end()
               .tag(this.BUSINESS_TYPE)
               .start().addClass('caret').end()
             .end()
-            .start().addClass('inline float-right')
+            .start().addClass('inline topMargin margin-left')
               .start().add(this.BusinessSectorLabel).addClass('infoLabel topMargin').end()
               .tag(this.BUSINESS_SECTOR)
               .start().addClass('caret').end()
@@ -370,10 +368,15 @@ foam.CLASS({
                 .start().addClass('caret').end()
               .end()
             .end()
-            .start().addClass('topMargin')
+            .start().addClass('topMargin float-right')
               .start().add(this.PostalCodeLabel).addClass('infoLabel').end()
               .start(this.POSTAL_CODE).addClass('inputLarge').end()
             .end()
+            .start().addClass('inline topMargin')
+              .start().add(this.CountryLabel).addClass('infoLabel').end()
+              .tag(this.COUNTRY)
+            .start().addClass('caret').end()
+          .end()
           .end()
         .end();
     }

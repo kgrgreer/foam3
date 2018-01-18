@@ -122,7 +122,7 @@ foam.CLASS({
             lastName: companyInfo.lastName,
             organization: companyInfo.businessName,
             businessName: companyInfo.businessName,
-            email: companyInfo.companyEmail,
+            email: companyInfo.email,
             issuingAuthority: companyInfo.issuingAuthority,
             jobTitle: companyInfo.jobTitle,
             type: 'Business',
