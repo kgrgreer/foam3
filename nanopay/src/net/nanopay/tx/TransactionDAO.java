@@ -21,9 +21,10 @@ public class TransactionDAO
   extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
-  protected final Set<String> STATUS_BLACKLIST = new HashSet<String>() {{
-    add("Refunded");
-  }};
+  protected final Set<String> STATUS_BLACKLIST =
+      Collections.unmodifiableSet(new HashSet<String>() {{
+        add("Refunded");
+      }});
 
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -120,7 +121,11 @@ public class TransactionDAO
 
         // check if payer account has enough balance
         long total = transaction.getTotal();
-        // cashin does not require balance checks
+        // cashin does not require balance checks// blacklist of status where balance transfer is not performed
+        protected final Set<String> STATUS_BLACKLIST =
+            Collections.unmodifiableSet(new HashSet<String>() {{
+              add("Refunded");
+            }});
         if ( payerAccount.getBalance() < total ) {
           if ( transactionType != TransactionType.CASHIN ) {
             throw new RuntimeException("Insufficient balance to complete transaction.");
