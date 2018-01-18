@@ -39,7 +39,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.slot('p1').sub(function(){
-        console.log('subing: ');
+        //console.log('subing: ');
       });
       //this.TACKLE.createIsEnabled$(this.p2$);
     },
