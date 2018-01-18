@@ -375,17 +375,19 @@ foam.CLASS({
             self.nextLabel = 'Make New Transfer';
             self.add(self.NotificationMessage.create({ message: "Success!" }));
 
-            var emailMessage = self.EmailMessage.create({
-              from: 'info@nanopay.net',
-              replyTo: 'noreply@nanopay.net',
-              to: [ self.user.email ]
-            });
-            
-            self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
-              amount: self.formatCurrency(self.invoice.amount),
-              number: self.invoice.invoiceNumber,
-              link: self.invoice.invoiceFileUrl
-            });
+            if ( self.invoice ) {
+              var emailMessage = self.EmailMessage.create({
+                from: 'info@nanopay.net',
+                replyTo: 'noreply@nanopay.net',
+                to: [ self.user.email ]
+              });
+
+              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
+                amount: self.formatCurrency(self.invoice.amount),
+                number: self.invoice.invoiceNumber,
+                link: self.invoice.invoiceFileUrl
+              });
+            }
           }).catch(function (err) {
             console.error(err);
 
