@@ -40,32 +40,11 @@ public class AuthenticatedTransactionDAO
     User payee  = (User) userDAO.find(transaction.getPayeeId());
     User payer  = (User) userDAO.find(transaction.getPayerId());
 
-    // System.out.println("AuthTrans Is Cico???");
-    /* is CICO txn? */
-    // if ( transaction.getPayeeId() == transaction.getPayerId() ) {
-    //   System.out.println("IF AuthTrans Is Cico???");
-    //   // if ( ! isBankAccountFromUser((long) transaction.getBankAccountId(), payee) || ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payer) ) {
-    //   //   throw new RuntimeException("Attempt for user " + payee.getId() + " to create transaction with an unregistered Bank Account");
-    //   // }
-    // } else {
-    //   System.out.println("payer id:"+transaction.getPayerId());
-    //   System.out.println("payee id:"+transaction.getPayeeId());
-    //   if ( transaction.getPayerId() != user.getId() ) {
-    //     // TODO: log
-    //     System.err.println("Attempt for user " + user.getId() + " to create transaction from " + transaction.getPayerId());
-    //     // TODO: set better message
-    //     throw new RuntimeException("User is not allowed");
-    //   }
-    // }
-    // System.out.println("returning AUTHENTICATION TransactionDAO done");
-    System.out.println("AuthenticatedTransactionDAO calling delegate");
     return getDelegate().put_(x, obj);
   }
 
   protected boolean isBankAccountFromUser(long bankAccountId, User user) {
-    System.out.println("isBankAccountFromUser");
     DAO bankAccountDAO = (DAO) user.getBankAccounts();
-    System.out.println("bankAccountDAO:"+bankAccountDAO);
     return bankAccountDAO != null ? bankAccountDAO.find(bankAccountId) != null : false;
   }
 

@@ -43,12 +43,9 @@ public class CICOTransactionDAO
         transaction.setType(TransactionType.CASHOUT);
       }
 
-      System.out.println("CICOTransactionDAO calling delegate");
       return getDelegate().put_(x, transaction);
-
     } catch (RuntimeException e) {
       throw e;
     }
-
   }
 }
