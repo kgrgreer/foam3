@@ -37,32 +37,15 @@ public class AuthenticatedTransactionDAO
     }
 
     DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO brokerDAO = (DAO) x.get("brokerDAO");
-
-    User payee = (User) userDAO.find(transaction.getPayeeId());
-    User payer = (User) userDAO.find(transaction.getPayerId());
-
-    /* is CICO txn? */
-    if ( transaction.getBrokerId() != null ) {
-
-      if ( ! isBankAccountFromUser((long) transaction.getBankAccountId(), payee) || ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payer) ) {
-        throw new RuntimeException("Attempt for user " + payee.getId() + " to create transaction with an unregistered Bank Account");
-      }
-    } else {
-      if ( transaction.getPayerId() != user.getId() ) {
-        // TODO: log
-        System.err.println("Attempt for user " + user.getId() + " to create transaction from " + transaction.getPayerId());
-        // TODO: set better message
-        throw new RuntimeException("User is not allowed");
-      }
-    }
+    User payee  = (User) userDAO.find(transaction.getPayeeId());
+    User payer  = (User) userDAO.find(transaction.getPayerId());
 
     return getDelegate().put_(x, obj);
   }
 
   protected boolean isBankAccountFromUser(long bankAccountId, User user) {
     DAO bankAccountDAO = (DAO) user.getBankAccounts();
-    return bankAccountDAO.find(bankAccountId) != null;
+    return bankAccountDAO != null ? bankAccountDAO.find(bankAccountId) != null : false;
   }
 
   @Override
@@ -92,8 +75,6 @@ public class AuthenticatedTransactionDAO
 
     AuthService auth   = (AuthService) x.get("auth");
     boolean     global = auth.check(x, GLOBAL_TXN_READ);
-
-// System.err.println("AuthTxn: " + user.getId() + " " + global);
 
     DAO dao = global ?
       getDelegate() :

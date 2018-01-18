@@ -3,16 +3,16 @@ foam.CLASS({
   name: 'ExpensesDetailView',
   extends: 'foam.u2.View',
 
-  requires: [ 
+  requires: [
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage'
   ],
 
-  imports: [ 
-    'stack', 
-    'hideSaleSummary', 
-    'invoiceDAO', 
+  imports: [
+    'stack',
+    'hideSaleSummary',
+    'invoiceDAO',
     'ctrl'
   ],
 
@@ -20,9 +20,9 @@ foam.CLASS({
     'as data',
     'openExportModal'
   ],
-  
+
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions',
   ],
 
   css: `

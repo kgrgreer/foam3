@@ -116,12 +116,12 @@ foam.CLASS({
           margin-left: 100px;
           margin-bottom: 13px;
         }
-        
+
         ^ .from-amount {
           float: none;
           margin-bottom: 20px;
         }
-        
+
         ^ .label{
           margin-left: 0;
         }
@@ -169,7 +169,7 @@ foam.CLASS({
         this.viewData.rate = newValue;
         // NOTE: This is a one way conversion. It is very lossy on certain fx rates.
         if ( newValue ) this.toAmount = (this.fromAmount) * newValue;
-        
+
         // if ( newValue ) this.toAmount = (this.fromAmount - this.fees) * newValue;
       },
       validateObj: function(rate) {
@@ -328,7 +328,7 @@ foam.CLASS({
             .callIf(this.type == 'regular' && !this.invoice, function() {
               this.start().addClass('label').add('Enter Amount:').end()
               .start(self.FROM_AMOUNT, { onKey: true, mode: self.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).addClass('from-amount').end()
-            })          
+            })
           .end()
           .start()
             .callIf(this.type == 'regular' && this.invoiceMode, function(){
@@ -387,7 +387,7 @@ foam.CLASS({
         self.startTimer();
         self.viewData.rateLocked = true;
       });
-      
+
     },
 
     function startTimer() {
