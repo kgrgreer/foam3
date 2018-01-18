@@ -127,8 +127,7 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Please select a payment date.', type: 'error' }));
           return;
         }
-
-        this.invoice.status = 'Paid';
+        this.invoice.status = X.data.paymentDate > new Date() ? 'Scheduled' : 'Paid';
         this.invoice.paymentDate = X.data.paymentDate;
         this.invoice.paymentMethod = 'CHEQUE';
         this.invoice.note = X.data.note;
