@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'FlinksMulAuthRequest',
   extends: 'net.nanopay.flinks.model.FlinksCall',
 
-  documentation: 'model for Flinks multiple authrize request',
+  documentation: 'model for Flinks multiple authorize request',
 
   properties: [
     {
