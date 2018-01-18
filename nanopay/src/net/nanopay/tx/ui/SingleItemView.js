@@ -58,7 +58,7 @@ foam.CLASS({
             .start('h3').add('Date').end()
             .start('h3').add('Sender ID').end()
             .start('h3').add('Amount').end()
-            .start('h3').add('Recieving ID').end()
+            .start('h3').add('Receiving ID').end()
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
