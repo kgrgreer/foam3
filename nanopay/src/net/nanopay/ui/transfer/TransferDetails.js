@@ -252,7 +252,7 @@ foam.CLASS({
       if ( this.viewData.notes ) {
         this.notes = this.viewData.notes;
       }
-      
+
       this.SUPER()
     },
 
@@ -286,7 +286,7 @@ foam.CLASS({
           //       .add(self.PURPOSE)
           //       .start('div').addClass('caret').end()
           //     .end()
-          //   .end()      
+          //   .end()
           // })
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
