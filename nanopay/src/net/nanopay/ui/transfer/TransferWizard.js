@@ -9,11 +9,17 @@ foam.CLASS({
     'net.nanopay.ui.CountdownView',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.model.BankAccount',
     'foam.u2.dialog.NotificationMessage'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
   ],
 
   imports: [
     'user',
+    'bankAccountDAO',
     'transactionDAO',
     'invoiceDAO',
     'standardCICOTransactionDAO'
@@ -326,25 +332,29 @@ foam.CLASS({
             invoiceId = this.invoice.id;
           }
 
-          // Perform a cash-in operation
-          var cashInTransaction = this.Transaction.create({
-            payeeId: this.user.id,
-            amount: this.viewData.fromAmount,
-            // FIX: PICK THE FIRST BANK ACCOUNT
-            bankAccountId: X.bankList,
-            type: this.TransactionType.CASHIN
-          });
+          // Get payer's bank account
+          this.bankAccountDAO.where(
+            this.AND(
+              this.EQ(this.BankAccount.OWNER, this.user.id),
+              this.EQ(this.BankAccount.STATUS, 'Verified')
+            )
+          ).limit(1).select(function(cashInBankAccount) {
+            // Perform a cash-in operation
+            var cashInTransaction = self.Transaction.create({
+              payeeId: self.user.id,
+              amount: self.viewData.fromAmount,
+              bankAccountId: cashInBankAccount,
+              type: self.TransactionType.CASHIN
+            });
 
-          this.standardCICOTransactionDAO.put(cashInTransaction).then(function(response) {
+            return self.standardCICOTransactionDAO.put(cashInBankAccount);
+          }).then(function(response) {
             // NOTE: payerID, payeeID, amount in cents, rate, purpose
             var transaction = self.Transaction.create({
               payerId: self.user.id,
               payeeId: self.viewData.payee.id,
               amount: Math.round(self.viewData.fromAmount*100),
               invoiceId: invoiceId,
-              // rate: rate,
-              // fees: Math.round(self.viewData.fees),
-              // purpose: self.viewData.purpose,
               notes: self.viewData.notes
             });
 
@@ -355,12 +365,18 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
+            return self.bankAccountDAO.where(
+              self.AND(
+                self.EQ(self.BankAccount.OWNER, self.user.id),
+                self.EQ(self.BankAccount.STATUS, 'Verified')
+              )
+            ).limit(1).select();
+          }).then(function(cashOutBankAccount) {
             // Perform a cash-out operation
             var cashOutTransaction = self.Transaction.create({
               payerId: self.viewData.payee.id,
               amount: self.viewData.fromAmount,
-              // FIX: PICK THE FIRST BANK ACCOUNT
-              bankAccountId: X.bankList,
+              bankAccountId: cashOutBankAccount,
               type: self.TransactionType.CASHOUT
             });
 
