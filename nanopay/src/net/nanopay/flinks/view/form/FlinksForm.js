@@ -236,7 +236,7 @@ foam.CLASS({
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
           //console.log('map', map);
-          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, this.viewData.questions, this.viewData.answers, map).then( function(msg) {
+          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map).then( function(msg) {
             //console.log('return challengeQuestion msg', msg);            
             if ( self.position != 2 ) return;
             

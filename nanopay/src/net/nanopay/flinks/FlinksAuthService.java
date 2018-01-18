@@ -65,7 +65,7 @@ public class FlinksAuthService
     return feedback;
   }
 
-  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, String[] questions, Object[] answers, java.util.Map map1) throws AuthenticationException {
+  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1) throws AuthenticationException {
     //TODO: security check
     // Map map = new HashMap<>(questions.length);
     ResponseMsg respMsg = null;

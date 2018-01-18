@@ -49,14 +49,6 @@ foam.INTERFACE({
         javaType: 'String'
       },
       {
-        name: 'questions',
-        javaType: 'String[]',
-      },
-      {
-        name: 'answers',
-        javaType: 'Object[]'
-      },
-      {
         name: 'map1',
         javaType: 'java.util.Map'
       }
