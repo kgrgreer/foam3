@@ -15,6 +15,8 @@ foam.CLASS({
     'user',
     'device',
     'stack',
+    'toolbarIcon',
+    'toolbarTitle',
     'transactionDAO'
   ],
 
@@ -100,6 +102,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var user = this.data.user;
+      this.toolbarIcon = 'arrow_back';
+      this.toolbarTitle = 'Back';
 
       this
         .addClass(this.myClass())
