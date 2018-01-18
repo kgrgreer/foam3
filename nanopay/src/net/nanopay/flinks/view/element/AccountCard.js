@@ -62,7 +62,10 @@ foam.CLASS({
     'accountNo',
     {
       class: 'Double',
-      name: 'balance'
+      name: 'balance',
+      adapt: function(oldValue, newValue) {
+        return (newValue * 1.0).toFixed(2);
+      }
     }
   ],
 
