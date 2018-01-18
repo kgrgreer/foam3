@@ -12,19 +12,15 @@ import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TransactionDAO
   extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
-  protected final Set<String> STATUS_BLACKLIST =
-      Collections.unmodifiableSet(new HashSet<String>() {{
-        add("Refunded");
-      }});
+  protected final Set<String> STATUS_BLACKLIST = new HashSet<String>() {{
+    add("Refunded");
+  }};
 
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -121,11 +117,7 @@ public class TransactionDAO
 
         // check if payer account has enough balance
         long total = transaction.getTotal();
-        // cashin does not require balance checks// blacklist of status where balance transfer is not performed
-        protected final Set<String> STATUS_BLACKLIST =
-            Collections.unmodifiableSet(new HashSet<String>() {{
-              add("Refunded");
-            }});
+        // cashin does not require balance checks
         if ( payerAccount.getBalance() < total ) {
           if ( transactionType != TransactionType.CASHIN ) {
             throw new RuntimeException("Insufficient balance to complete transaction.");
