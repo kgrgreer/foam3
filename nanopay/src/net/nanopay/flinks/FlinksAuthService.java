@@ -40,7 +40,7 @@ public class FlinksAuthService
     //TODO: security check
     ResponseMsg respMsg = null;
     RequestMsg reqMsg = FlinksRequestGenerator.getAuthRequest(getX(), institution, username, password);
-    System.out.println(reqMsg.getJson());
+    //System.out.println(reqMsg.getJson());
     //catch any Exception that happen when connect to Flinks
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.AUTHORIZE);
@@ -51,7 +51,7 @@ public class FlinksAuthService
     
     int httpCode = respMsg.getHttpStatusCode();
     FlinksResponse feedback;
-    System.out.println(respMsg.getJson());
+    //System.out.println(respMsg.getJson());
     if ( httpCode == 200 ) {
       //TODO: forward to fetch account;
       feedback = null;
