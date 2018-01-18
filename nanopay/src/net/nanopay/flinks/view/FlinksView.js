@@ -4,21 +4,6 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
   
   documentation: 'View displaying bank Selection',
-  
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          width: 992px;
-          height: 694px;
-          margin: auto;
-        }
-        ^ .Header-Title {
-          margin: 40px 0 0 180px;
-        }
-      */}
-    })
-  ],
 
   messages: [
     { name: 'title', message: 'Connect a new bank account'}
@@ -39,7 +24,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.slot('p1').sub(function(){
-        //console.log('subing: ');
       });
       //this.TACKLE.createIsEnabled$(this.p2$);
     },
