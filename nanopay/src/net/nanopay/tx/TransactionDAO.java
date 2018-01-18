@@ -148,6 +148,7 @@ public class TransactionDAO
           t.setPayerId(payeeId);
           t.setAmount(total);
           t.setType(TransactionType.CASHOUT);
+          t.setDate(new Date());
 
           super.put_(x, t);
         }
