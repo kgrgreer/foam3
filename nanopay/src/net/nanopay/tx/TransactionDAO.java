@@ -2,20 +2,27 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.*;
+import foam.dao.DAO;
+import foam.dao.ProxyDAO;
+import foam.dao.Sink;
 import foam.nanos.auth.User;
-import java.util.Date;
-import java.util.List;
-import net.nanopay.model.Account;
-import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import static foam.mlang.MLang.*;
+import net.nanopay.model.Account;
+import net.nanopay.tx.model.Transaction;
+
+import java.util.*;
 
 public class TransactionDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
+  // blacklist of status where balance transfer is not performed
+  protected final Set<String> STATUS_BLACKLIST =
+      Collections.unmodifiableSet(new HashSet<String>() {{
+        add("Refunded");
+      }});
+
   protected DAO userDAO_;
   protected DAO accountDAO_;
   protected DAO invoiceDAO_;
@@ -76,6 +83,11 @@ public class TransactionDAO
 
     if ( transaction.getTotal() <= 0 ) {
       throw new RuntimeException("Transaction amount must be greater than 0");
+    }
+
+    // don't perform balance transfer if status in blacklist
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) ) {
+      return super.put_(x, obj);
     }
 
     Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
