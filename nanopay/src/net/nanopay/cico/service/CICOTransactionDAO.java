@@ -22,7 +22,6 @@ public class CICOTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
-
     if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
