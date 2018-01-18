@@ -51,6 +51,7 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    System.out.println("beginning ORDINARY TransactionDAO done");
     Transaction transaction = (Transaction) obj;
     transaction.setDate(new Date());
 
@@ -75,7 +76,7 @@ public class TransactionDAO
 
     Long firstLock = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-
+    System.out.println("ORDINARY TransactionDAO before synchronized");
     synchronized (firstLock) {
       synchronized (secondLock) {
         Sink sink;
@@ -84,7 +85,7 @@ public class TransactionDAO
         Account payerAccount;
         User payee = (User) getUserDAO().find(transaction.getPayeeId());
         User payer = (User) getUserDAO().find(transaction.getPayerId());
-
+        System.out.println("ORDINARY TransactionDAO before validations synchronized");
         if (payee == null || payer == null) {
           throw new RuntimeException("Users not found");
         }
@@ -106,7 +107,7 @@ public class TransactionDAO
         if ( payerAccount.getBalance() < total) {
           throw new RuntimeException("Insufficient balance to complete transaction.");
         }
-
+        System.out.println("ORDINARY TransactionDAO after validations synchronized");
         payerAccount.setBalance(payerAccount.getBalance() - total);
         payeeAccount.setBalance(payeeAccount.getBalance() + total);
         getAccountDAO().put(payerAccount);
@@ -124,6 +125,7 @@ public class TransactionDAO
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
         }
+        System.out.println("returning TransactionDAO done");
         return super.put_(x, obj);
       }
     }
