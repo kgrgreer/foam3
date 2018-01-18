@@ -241,7 +241,8 @@ foam.CLASS({
             return;
           }
 
-          //Fix for safari & mozilla
+          // By pass for safari & mozilla type='date' on input support
+          // Operator checking if dueDate is a date object if not, makes it so or throws notification.
           if( !Object.prototype.toString.call(dueDate) === '[object Date]' && dueDate != null ){
             dueDate = new Date(dueDate);
             if(!dueDate){
