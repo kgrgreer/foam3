@@ -60,7 +60,10 @@ foam.CLASS({
   properties: [
     'accountName',
     'accountNo',
-    'balance'
+    {
+      class: 'Double',
+      name: 'balance'
+    }
   ],
 
   methods: [

@@ -6,7 +6,8 @@ foam.CLASS({
   imports: [
     'bankImgs',
     'form',
-    'isConnecting'
+    'isConnecting',
+    'complete'
   ],
   requires: [
     'net.nanopay.model.BankAccount',
@@ -116,6 +117,7 @@ foam.CLASS({
       this.SUPER();
       this.nextLabel = 'Add Account';
       this.form.isEnabledButtons(true);
+      this.complete = true;
       this.accountsCheck = new Array(this.viewData.accounts.length).fill(false);
     },
 
@@ -135,7 +137,7 @@ foam.CLASS({
           .end()
           .start('div').addClass('accountView')
             .forEach(this.viewData.accounts, function(e, index){
-              this.start({class: 'net.nanopay.flinks.view.element.AccountCard', accountName : e.Title, accountNo : e.AccountNUmber, balance : e.Balance.Current})
+              this.start({class: 'net.nanopay.flinks.view.element.AccountCard', accountName : e.Title, accountNo : e.AccountNumber, balance : e.Balance.Current})
                 .style({'margin-left':'20px'})
                 .addClass('spacer')
                 .addClass('account')
@@ -146,7 +148,6 @@ foam.CLASS({
                   return 'selected';
                 }))
                 .on('click', function() {
-                  console.log('asdfasd', e);
                   if (  ! e.isSelected && e.isSelected == false ) {
                     e.isSelected = true;
                   } else {
@@ -177,6 +178,7 @@ foam.CLASS({
       },
       code: function(X) {
         console.log('nextButton');
+        this.isConnecting = true;
         X.form.goNext();
       }
     },
@@ -184,7 +186,9 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
+        console.log('close');
         console.log('close the form');
+        console.log(X.form.goBack);
         X.form.goBack();
       }
     }

@@ -180,9 +180,9 @@ foam.CLASS({
               self.viewData.questions[index] = data.Prompt;
               var text = self.Input.create({'onKey':true});
               text.data$.sub(function(){
-                console.log('stringArray.data', text.data);
+                //console.log('stringArray.data', text.data);
                 self.viewData.answers[index] = new Array(1).fill(text.data);
-                console.log(self.viewData);
+                //console.log(self.viewData);
                 if ( text.data.trim().length === 0 ) {
                   self.answerCheck[index] = false;
                 } else {
@@ -214,7 +214,7 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        console.log('nextButton');
+        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
@@ -223,7 +223,8 @@ foam.CLASS({
       name: 'closeButton',
       label: 'close',
       code: function(X) {
-        console.log('close the form');
+        //console.log('close the form');
+        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }

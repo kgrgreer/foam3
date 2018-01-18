@@ -111,7 +111,7 @@ foam.CLASS({
       name: 'conditionAgree',
       value: false,
       postSet: function(oldValue, newValue) {
-        console.log(newValue);
+        //console.log(newValue);
         this.viewData.check = newValue;
       },
     }
@@ -183,7 +183,7 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        console.log('nextButton');
+        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
@@ -192,7 +192,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Back',
       code: function(X) {
-        console.log('close the form');
+        //console.log('close the form');
         X.form.goBack();
       }
     }

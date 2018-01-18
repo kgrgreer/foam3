@@ -152,13 +152,13 @@ foam.CLASS({
       name: 'nextButton',
       label: 'next',
       isEnabled: function(isConnecting, selectedOption) {
-        console.log(isConnecting, selectedOption);
+        //console.log(isConnecting, selectedOption);
         if ( isConnecting === true ) return false;
         if ( selectedOption === -1 ) return false;
         return true;
       },
       code: function(X) {
-        console.log('nextButton');
+        //console.log('nextButton');
         X.form.goNext();
       }
     },
@@ -166,7 +166,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'close',
       code: function(X) {
-        console.log('close the form');
+        //console.log('close the form');
         X.form.goBack();
       }
     }

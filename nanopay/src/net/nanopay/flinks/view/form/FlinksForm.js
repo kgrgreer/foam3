@@ -115,7 +115,6 @@ foam.CLASS({
           height: 307px;
           border-radius: 2px;
           background-color: #ffffff;
-          border: 1px solid red;
         }
         ^ p {
           margin: 0;
@@ -158,11 +157,12 @@ foam.CLASS({
         return this.isEnabledGoBack;
       },
       isAvailable: function(position) {
-        if ( position == 3 || position == this.views.length - 1 ) return false;
+        //if ( position == 3 || position == this.views.length - 1 ) return false;
         return true;
       },
       code: function(X) {
-        if ( this.position <= 0 ) {
+        //console.log(this.position);
+        if ( this.position <= 0 || this.position == 2 || this.position == 3) {
           X.stack.back();
           return;
         }
@@ -180,11 +180,11 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        console.log(X);
+        //console.log(X);
         var self = this;
         //sign in
         if ( this.position == 1 ) {
-          console.log('this.viewData.check: ', this.viewData.check);
+          //console.log('this.viewData.check: ', this.viewData.check);
           if ( this.viewData.check != true ) {
             this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
             return;
@@ -193,8 +193,8 @@ foam.CLASS({
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
-            console.log('return authorize msg', msg);
-            console.log('type of return', typeof msg);
+            //console.log('return authorize msg', msg);
+            //console.log('type of return', typeof msg);
 
             if ( self.position != 1 ) return;
 
@@ -206,11 +206,13 @@ foam.CLASS({
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
+              //QuestionAndAnswer, with Iterables
+              //QuestionAndAnswer, without Iterables
               self.viewData.requestId = msg.RequestId;
               self.viewData.SecurityChallenges = msg.SecurityChallenges; 
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
                 //To different view
-                console.log(self.viewData.SecurityChallenges[0].Type)
+                //console.log(self.viewData.SecurityChallenges[0].Type)
               }       
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
@@ -229,11 +231,12 @@ foam.CLASS({
           //disable button, prevent double click
           self.isEnabledButtons(false);
           var map ={};
-          for ( var i = 0 ; this.viewData.questions ; i++ ) {
+          for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
+          //console.log('map', map);
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, this.viewData.questions, this.viewData.answers, map).then( function(msg) {
-            console.log('return challengeQuestion msg', msg);            
+            //console.log('return challengeQuestion msg', msg);            
             if ( self.position != 2 ) return;
             
             var status = msg.HttpStatusCode;
@@ -241,12 +244,13 @@ foam.CLASS({
             if ( status == 200 ) {
               //go to account view
               self.viewData.accounts = msg.Accounts;
+              //console.log('account', msg.Accounts);
               self.subStack.push(self.views[3].view);
             } else if (status == 203) {
               //continue on the MFA, refresh//or push a new view
 
             } else if ( status == 401 ) {
-              //MFA response error
+              //MFA response error and forwar to another security challenge
               self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
               self.viewData.securityChallenges = msg.securityChallenges;
             } else {
@@ -262,22 +266,24 @@ foam.CLASS({
         }
         //fetch account
         if ( this.subStack.pos == 3 ) {
-          X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, 'FlinksCapital')).select().then(function(institution){
+          X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution){
             var inNumber = institution.array[0].institutionNumber;
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
                 X.bankAccountDAO.put(self.BankAccount.create({
                   accountName: item.Title,
-                  accountNumber: item.AccountNUmber,
+                  accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
                   status: 'Verified'
                 })).catch(function(a) {
-                  console.log('error: ', a);
+                  self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+                  //console.log('error: ', a);
                 });
               }
             })
           });
-          X.stack.back();
+          //X.stack.back();
+          self.isConnecting = false;
           return;
         }
 

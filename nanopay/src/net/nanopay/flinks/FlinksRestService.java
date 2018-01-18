@@ -140,8 +140,8 @@ public class FlinksRestService
       connection = (HttpURLConnection) url.openConnection();
 
       //configure HttpURLConnection
-      connection.setConnectTimeout(10 * 1000);
-      connection.setReadTimeout(10 * 1000);
+      connection.setConnectTimeout(300 * 1000);
+      connection.setReadTimeout(300 * 1000);
       connection.setDoOutput(true);
       connection.setUseCaches(false);
 

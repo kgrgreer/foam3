@@ -199,7 +199,7 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        console.log('nextButton');
+        //console.log('nextButton');
         this.isConnecting = true;
         //X.form.goNext();
       }
@@ -208,7 +208,8 @@ foam.CLASS({
       name: 'closeButton',
       label: 'close',
       code: function(X) {
-        console.log('close the form');
+        //console.log('close the form');
+        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }
