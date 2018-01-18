@@ -49,21 +49,21 @@ foam.CLASS({
       name: 'generateBankAccount',
       javaReturns: 'net.nanopay.model.BankAccount',
       javaCode:
-`DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
-BankAccount account = new BankAccount();
-Random rand = new Random();
-account.setId(rand.nextLong());
-account.setX(getX());
-account.setAccountNumber(getAccountNumber());
-account.setCurrencyCode(getCurrency());
-account.setAccountName(getTitle());
-try {
-  bankAccountDAO.put(account);
-} catch ( Throwable t ) {
-  System.out.println("bank account same name");
-}
-return account;
-`
+        `DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
+        BankAccount account = new BankAccount();
+        Random rand = new Random();
+        account.setId(rand.nextLong());
+        account.setX(getX());
+        account.setAccountNumber(getAccountNumber());
+        account.setCurrencyCode(getCurrency());
+        account.setAccountName(getTitle());
+        try {
+          bankAccountDAO.put(account);
+        } catch ( Throwable t ) {
+          System.out.println("bank account same name");
+        }
+        return account;
+        `
     }
   ]
 });
