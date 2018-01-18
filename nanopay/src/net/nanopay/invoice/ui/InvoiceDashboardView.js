@@ -55,6 +55,7 @@ foam.CLASS({
         ^{
           width: 992px;
           margin: auto;
+
         }
         .resize-button{
           height: 30px;
@@ -66,7 +67,7 @@ foam.CLASS({
         ^cashflow-summary{
           border-radius: 3px;
           background: white;
-          width: 953px;
+          width: 929px;
           text-align: center;
         }
         ^cashflow-summary h4 {
@@ -114,25 +115,27 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('light-roboto-h2').style({ 'margin-top': '15px' }).add('Weekly Summary').end()
-        // .start().addClass('green-border-container')
-        //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
-        //   .start().addClass('resize-button').add('Team').end()
-        // .end()
-        .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
-        .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
-        .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
-        .start().addClass(this.myClass('cashflow-summary'))
-          .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
-          .start().addClass('overall-receivables inline').add()
-            .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
-            .start('h4').add('+', this.formattedReceivableAmount$).end()
+        .start().style({ 'margin-left': '30px' })
+          .start().addClass('light-roboto-h2').style({ 'margin-top': '15px' }).add('Weekly Summary').end()
+          // .start().addClass('green-border-container')
+          //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
+          //   .start().addClass('resize-button').add('Team').end()
+          // .end()
+          .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
+          .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
+          .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
+          .start().addClass(this.myClass('cashflow-summary'))
+            .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
+            .start().addClass('overall-receivables inline').add()
+              .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
+              .start('h4').add('+', this.formattedReceivableAmount$).end()
+            .end()
+            .start().addClass('overall-payables inline').add()
+              .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
+              .start('h4').add('-', this.formattedPayableAmount$).end()
+            .end()
           .end()
-          .start().addClass('overall-payables inline').add()
-            .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
-            .start('h4').add('-', this.formattedPayableAmount$).end()
-          .end()
-        .end()
+        .end();
     }
   ],
 

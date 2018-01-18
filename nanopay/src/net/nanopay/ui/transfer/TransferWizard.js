@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'TransferWizard',
@@ -9,13 +8,21 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.CountdownView',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.model.BankAccount',
     'foam.u2.dialog.NotificationMessage'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
   ],
 
   imports: [
     'user',
+    'bankAccountDAO',
     'transactionDAO',
-    'invoiceDAO'
+    'invoiceDAO',
+    'standardCICOTransactionDAO'
   ],
 
   exports: [
@@ -310,7 +317,7 @@ foam.CLASS({
       //   if ( errors ) return false; // Error present
       //   return true; // Not in dialog
       // },
-      code: function() {
+      code: function(X) {
         var self = this;
         var invoiceId = 0;
         if ( this.position == 2 ) { // On Review Transfer page.
@@ -324,30 +331,69 @@ foam.CLASS({
           if ( this.invoiceMode ){
             invoiceId = this.invoice.id;
           }
-          // NOTE: payerID, payeeID, amount in cents, rate, purpose
-          var transaction = this.Transaction.create({
-            payerId: this.user.id,
-            payeeId: this.viewData.payee.id,
-            amount: Math.round(this.viewData.fromAmount*100),
-            invoiceId: invoiceId,
-            // rate: rate,
-            // fees: Math.round(this.viewData.fees),
-            // purpose: this.viewData.purpose,
-            notes: this.viewData.notes
-          });
 
-          this.transactionDAO.put(transaction).then(function (result) {
+          // Get payer's bank account
+          this.bankAccountDAO.where(
+            this.AND(
+              this.EQ(this.BankAccount.OWNER, this.user.id),
+              this.EQ(this.BankAccount.STATUS, 'Verified')
+            )
+          ).limit(1).select(function(cashInBankAccount) {
+            // Perform a cash-in operation
+            var cashInTransaction = self.Transaction.create({
+              payeeId: self.user.id,
+              amount: self.viewData.fromAmount,
+              bankAccountId: cashInBankAccount,
+              type: self.TransactionType.CASHIN
+            });
+
+            return self.standardCICOTransactionDAO.put(cashInBankAccount);
+          }).then(function(response) {
+            // NOTE: payerID, payeeID, amount in cents, rate, purpose
+            var transaction = self.Transaction.create({
+              payerId: self.user.id,
+              payeeId: self.viewData.payee.id,
+              amount: Math.round(self.viewData.fromAmount*100),
+              invoiceId: invoiceId,
+              notes: self.viewData.notes
+            });
+
+            // Make the transfer
+            return self.transactionDAO.put(transaction);
+          }).then(function (result) {
             if ( result ) {
               self.viewData.transaction = result;
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = 'Back to Home';
-              self.nextLabel = 'Make New Transfer';
-              self.viewData.transaction = result;
-              self.add(self.NotificationMessage.create({ message: "Success!" }));
             }
-          })
-          .catch(function (err) {
-            self.add(self.NotificationMessage.create({ type: 'error', message: err.message + '. Unable to process payment.' }));
+
+            return self.bankAccountDAO.where(
+              self.AND(
+                self.EQ(self.BankAccount.OWNER, self.user.id),
+                self.EQ(self.BankAccount.STATUS, 'Verified')
+              )
+            ).limit(1).select();
+          }).then(function(cashOutBankAccount) {
+            // Perform a cash-out operation
+            var cashOutTransaction = self.Transaction.create({
+              payerId: self.viewData.payee.id,
+              amount: self.viewData.fromAmount,
+              bankAccountId: cashOutBankAccount,
+              type: self.TransactionType.CASHOUT
+            });
+
+            return self.standardCICOTransactionDAO.put(cashOutTransaction);
+          }).then(function(response) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.backLabel = 'Back to Home';
+            self.nextLabel = 'Make New Transfer';
+            self.add(self.NotificationMessage.create({ message: "Success!" }));
+          }).catch(function (err) {
+            console.error(err);
+
+            self.add(self.NotificationMessage.create({
+              type: 'error',
+              message: err.message + '. Unable to process payment...'
+            }));
+
             if ( err ) console.log(err.message);
           });
 
