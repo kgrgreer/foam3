@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import static foam.mlang.MLang.*;
@@ -51,29 +52,31 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Transaction transaction = (Transaction) obj;
+    Transaction transaction         = (Transaction) obj;
+    TransactionType transactionType = (TransactionType) transaction.getType();
     transaction.setDate(new Date());
 
     long payeeId = transaction.getPayeeId();
     long payerId = transaction.getPayerId();
 
-    if (payerId <= 0) {
+    if ( payerId <= 0 ) {
       throw new RuntimeException("Invalid Payer id");
     }
 
-    if (payeeId <= 0) {
+    if ( payeeId <= 0 ) {
       throw new RuntimeException("Invalid Payee id");
     }
 
-    if (payeeId == payerId) {
+    //For cico transactions payer and payee can be the same
+    if ( payeeId == payerId && ( transactionType != TransactionType.CASHOUT || transactionType != TransactionType.CASHIN ) ) {
       throw new RuntimeException("PayeeID and PayerID cannot be the same");
     }
 
-    if (transaction.getTotal() <= 0) {
+    if ( transaction.getTotal() <= 0 ) {
       throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
-    Long firstLock = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
+    Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
     synchronized (firstLock) {
@@ -85,7 +88,7 @@ public class TransactionDAO
         User payee = (User) getUserDAO().find(transaction.getPayeeId());
         User payer = (User) getUserDAO().find(transaction.getPayerId());
 
-        if (payee == null || payer == null) {
+        if ( payee == null || payer == null ) {
           throw new RuntimeException("Users not found");
         }
 
@@ -103,12 +106,25 @@ public class TransactionDAO
 
         // check if payer account has enough balance
         long total = transaction.getTotal();
-        if ( payerAccount.getBalance() < total) {
+
+        //Cashin does not require balance checks
+        if ( payerAccount.getBalance() < total && transactionType != TransactionType.CASHIN ) {
           throw new RuntimeException("Insufficient balance to complete transaction.");
         }
 
-        payerAccount.setBalance(payerAccount.getBalance() - total);
-        payeeAccount.setBalance(payeeAccount.getBalance() + total);
+        //For cash in, just increment balance, payer and payee will be the same
+        if ( transactionType == TransactionType.CASHIN ) {
+          payerAccount.setBalance(payerAccount.getBalance() + total);
+        }
+        else if ( transactionType == TransactionType.CASHOUT ) {
+          //For cash out, decrement balance, payer and payee will be the same
+          payerAccount.setBalance(payerAccount.getBalance() - total);
+        }
+        else {
+          payerAccount.setBalance(payerAccount.getBalance() - total);
+          payeeAccount.setBalance(payeeAccount.getBalance() + total);
+        }
+
         getAccountDAO().put(payerAccount);
         getAccountDAO().put(payeeAccount);
 
