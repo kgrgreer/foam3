@@ -154,12 +154,14 @@ foam.CLASS({
       // add a listener for the payee id and amount
       var successSub = this.transactionSuccessDAO.where(this.AND(
         this.EQ(this.Transaction.PAYEE_ID, this.user.id),
+        this.EQ(this.Transaction.DEVICE_ID, this.device.id),
         this.EQ(this.Transaction.AMOUNT, this.amount),
         this.EQ(this.Transaction.CHALLENGE, this.challenge)
       )).listen({ put: this.onTransactionCreated });
 
       var errorSub = this.transactionErrorDAO.where(this.AND(
         this.EQ(this.Transaction.PAYEE_ID, this.user.id),
+        this.EQ(this.Transaction.DEVICE_ID, this.device.id),
         this.EQ(this.Transaction.AMOUNT, this.amount),
         this.EQ(this.Transaction.CHALLENGE, this.challenge)
       )).listen({ put: this.onTransactionError });
