@@ -21,20 +21,8 @@ public class AlternaTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
-
-    Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
-    Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
-
-    synchronized ( firstLock ) {
-      synchronized ( secondLock ) {
-        try {
-          transaction.setProviderId(ALTERNA_ID);
-          return getDelegate().put_(x, transaction);
-
-        } catch (RuntimeException e) {
-          throw e;
-        }
-      }
-    }
+    transaction.setProviderId(ALTERNA_ID);
+    System.out.println("returning ALTERNA transaction");
+    return getDelegate().put_(x, transaction);
   }
 }

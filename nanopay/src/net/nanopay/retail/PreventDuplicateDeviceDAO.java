@@ -17,7 +17,8 @@ public class PreventDuplicateDeviceDAO
   }
 
   public PreventDuplicateDeviceDAO(X x, DAO delegate) {
-    super(x, delegate);
+    super(x);
+    setDelegate(delegate);
   }
 
   @Override

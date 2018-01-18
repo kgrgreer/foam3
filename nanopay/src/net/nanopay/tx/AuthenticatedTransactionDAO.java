@@ -31,24 +31,26 @@ public class AuthenticatedTransactionDAO
   public FObject put_(X x, FObject obj) throws RuntimeException {
     User user               = (User) x.get("user");
     Transaction transaction = (Transaction) obj;
-
+    System.out.println("beginning AUTHENTICATION TransactionDAO done");
     if ( user == null ) {
       throw new RuntimeException("User is not logged in");
     }
 
     DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO brokerDAO = (DAO) x.get("brokerDAO");
 
     User payee = (User) userDAO.find(transaction.getPayeeId());
     User payer = (User) userDAO.find(transaction.getPayerId());
 
+    System.out.println("AuthTrans Is Cico???");
     /* is CICO txn? */
-    if ( transaction.getBrokerId() != null ) {
-
-      if ( ! isBankAccountFromUser((long) transaction.getBankAccountId(), payee) || ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payer) ) {
-        throw new RuntimeException("Attempt for user " + payee.getId() + " to create transaction with an unregistered Bank Account");
-      }
+    if ( transaction.getPayeeId() == transaction.getPayerId() ) {
+      System.out.println("IF AuthTrans Is Cico???");
+      // if ( ! isBankAccountFromUser((long) transaction.getBankAccountId(), payee) || ! isBankAccountFromUser((Long) transaction.getBankAccountId(), payer) ) {
+      //   throw new RuntimeException("Attempt for user " + payee.getId() + " to create transaction with an unregistered Bank Account");
+      // }
     } else {
+      System.out.println("payer id:"+transaction.getPayerId());
+      System.out.println("payee id:"+transaction.getPayeeId());
       if ( transaction.getPayerId() != user.getId() ) {
         // TODO: log
         System.err.println("Attempt for user " + user.getId() + " to create transaction from " + transaction.getPayerId());
@@ -56,13 +58,15 @@ public class AuthenticatedTransactionDAO
         throw new RuntimeException("User is not allowed");
       }
     }
-
+    System.out.println("returning AUTHENTICATION TransactionDAO done");
     return getDelegate().put_(x, obj);
   }
 
   protected boolean isBankAccountFromUser(long bankAccountId, User user) {
+    System.out.println("isBankAccountFromUser");
     DAO bankAccountDAO = (DAO) user.getBankAccounts();
-    return bankAccountDAO.find(bankAccountId) != null;
+    System.out.println("bankAccountDAO:"+bankAccountDAO);
+    return bankAccountDAO != null ? bankAccountDAO.find(bankAccountId) != null : false;
   }
 
   @Override

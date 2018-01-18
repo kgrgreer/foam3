@@ -78,7 +78,7 @@ public class TransactionDAO
 
     Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-
+    System.out.println("ORDINARY TransactionDAO before synchronized");
     synchronized (firstLock) {
       synchronized (secondLock) {
         Sink sink;
@@ -111,7 +111,7 @@ public class TransactionDAO
         if ( payerAccount.getBalance() < total && transactionType != TransactionType.CASHIN ) {
           throw new RuntimeException("Insufficient balance to complete transaction.");
         }
-
+        
         //For cash in, just increment balance, payer and payee will be the same
         if ( transactionType == TransactionType.CASHIN ) {
           payerAccount.setBalance(payerAccount.getBalance() + total);
@@ -140,6 +140,7 @@ public class TransactionDAO
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
         }
+        System.out.println("returning TransactionDAO done");
         return super.put_(x, obj);
       }
     }
