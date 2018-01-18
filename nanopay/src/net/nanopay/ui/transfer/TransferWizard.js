@@ -322,7 +322,9 @@ foam.CLASS({
       // },
       code: function(X) {
         var self = this;
+        var transaction = null;
         var invoiceId = 0;
+
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
@@ -355,7 +357,7 @@ foam.CLASS({
             return self.standardCICOTransactionDAO.put(cashInTransaction);
           }).then(function(response) {
             // NOTE: payerID, payeeID, amount in cents, rate, purpose
-            var transaction = self.Transaction.create({
+            transaction = self.Transaction.create({
               payerId: self.user.id,
               payeeId: self.viewData.payee.id,
               amount: txAmount,
@@ -370,6 +372,8 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
+            return self.standardCICOTransactionDAO.addInvoiceCashout(transaction);
+          }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
