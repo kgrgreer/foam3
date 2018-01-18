@@ -6,6 +6,8 @@ foam.CLASS({
 
   documentation: 'Summary View of Sales Invoices.',
 
+  implements: [ 'foam.mlang.Expressions' ],
+
   requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
   imports: [ 'user', 'stack' ],
@@ -92,7 +94,7 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.salesDAO,
+            dao: this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
             factory: function() { return self.Invoice.create({ payeeId: self.user.id, payeeName: self.user.name }); },
             createLabel: 'New Invoice',
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },

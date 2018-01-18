@@ -141,6 +141,16 @@ public class TransactionDAO
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
+
+          // Cashout invoice payee
+          Transaction t = new Transaction();
+          t.setPayeeId(payeeId);
+          t.setPayerId(payeeId);
+          t.setAmount(total);
+          t.setType(TransactionType.CASHOUT);
+          t.setDate(new Date());
+
+          super.put_(x, t);
         }
 
         return super.put_(x, obj);
