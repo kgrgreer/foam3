@@ -171,7 +171,7 @@ foam.CLASS({
               return self.email.sendEmailFromTemplate(merchant, emailMessage, 'cc-template-invite/merc1', {
                 name: merchant.firstName,
                 email: merchant.email,
-                money: self.formatCurrency(merchantInfo.amount)
+                money: self.formatCurrency(merchantInfo.amount/100)
               });
             }).then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
