@@ -94,6 +94,7 @@ public class TransactionDAO
         User payee = (User) getUserDAO().find(transaction.getPayeeId());
         User payer = (User) getUserDAO().find(transaction.getPayerId());
 
+        System.out.println("Inside sync, just before checks");
         if ( payee == null || payer == null ) {
           throw new RuntimeException("Users not found");
         }
@@ -113,6 +114,7 @@ public class TransactionDAO
         // check if payer account has enough balance
         long total = transaction.getTotal();
 
+        System.out.println("At account check");
         // cashin does not require balance checks
         if ( payerAccount.getBalance() < total ) {
           if ( transactionType == TransactionType.CASHIN ) {
@@ -123,6 +125,7 @@ public class TransactionDAO
           }
         }
 
+        System.out.println("After account checks");
         //For cash in, just increment balance, payer and payee will be the same
         if ( transactionType == TransactionType.CASHIN ) {
           payerAccount.setBalance(payerAccount.getBalance() + total);
