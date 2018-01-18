@@ -26,7 +26,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      console.log('CheckBox: ', this.data);
+      //console.log('CheckBox: ', this.data);
       this.addClass(this.myClass());
       if ( ! this.data && ! this.index ) {
         this.index = 0;
