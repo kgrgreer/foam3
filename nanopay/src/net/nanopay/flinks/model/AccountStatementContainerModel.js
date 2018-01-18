@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.flinks.model',
   name: 'AccountStatementContainerModel',
 
-  documentation: 'model for the Flinks account statment container model',
+  documentation: 'model for the Flinks account statement container model',
 
   properties: [
     {
