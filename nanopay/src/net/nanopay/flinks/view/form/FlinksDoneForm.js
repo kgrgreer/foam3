@@ -6,14 +6,7 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step5: You\'re all set! Connection is successful.'}
   ],
-
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      
-      */}
-    })
-  ],
+  
   methods: [
     function init() {
       this.SUPER();
