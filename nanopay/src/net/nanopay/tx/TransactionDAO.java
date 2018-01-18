@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import static foam.mlang.MLang.*;
@@ -57,26 +58,32 @@ public class TransactionDAO
 
     long payeeId = transaction.getPayeeId();
     long payerId = transaction.getPayerId();
-
+    System.out.println("-1-1-1-1-1-1-1-1-1-1-1 ORDINARY TransactionDAO before synchronized");
     if (payerId <= 0) {
+      System.out.println("if (payerId <= 0) {");
       throw new RuntimeException("Invalid Payer id");
     }
 
     if (payeeId <= 0) {
+      System.out.println("if (payeeId <= 0) {");
       throw new RuntimeException("Invalid Payee id");
     }
 
-    if (payeeId == payerId) {
+    if ( payeeId == payerId && !( ((TransactionType)transaction.getType()) != TransactionType.CASHOUT || ((TransactionType)transaction.getType()) != TransactionType.CASHIN ) ) {
+      System.out.println("if (payeeId == payerId) {");
+      System.out.println("transaction.getType():"+transaction.getType());
+
       throw new RuntimeException("PayeeID and PayerID cannot be the same");
     }
 
     if (transaction.getTotal() <= 0) {
+      System.out.println("if (transaction.getTotal() <= 0) {");
       throw new RuntimeException("Transaction amount must be greater than 0");
     }
-
+    System.out.println("0000 ORDINARY TransactionDAO before synchronized");
     Long firstLock = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-    System.out.println("ORDINARY TransactionDAO before synchronized");
+    System.out.println("1111 ORDINARY TransactionDAO before synchronized");
     synchronized (firstLock) {
       synchronized (secondLock) {
         Sink sink;
@@ -85,34 +92,46 @@ public class TransactionDAO
         Account payerAccount;
         User payee = (User) getUserDAO().find(transaction.getPayeeId());
         User payer = (User) getUserDAO().find(transaction.getPayerId());
-        System.out.println("ORDINARY TransactionDAO before validations synchronized");
+        System.out.println("00000 ORDINARY TransactionDAO before validations synchronized");
         if (payee == null || payer == null) {
           throw new RuntimeException("Users not found");
         }
-
+        System.out.println("11111 ORDINARY TransactionDAO before validations synchronized");
         // find payee account
         payeeAccount = (Account) getAccountDAO().find(payee.getId());
         if ( payeeAccount == null ) {
           throw new RuntimeException("Payee account not found");
         }
-
+        System.out.println("222222 ORDINARY TransactionDAO before validations synchronized");
         // find payer account
         payerAccount = (Account) getAccountDAO().find(payer.getId());
         if ( payerAccount == null ) {
           throw new RuntimeException("Payer account not found");
         }
-
+        System.out.println("33333 ORDINARY TransactionDAO before validations synchronized");
+        System.out.println("payer account ID:"+payerAccount.getId());
+        System.out.println("payer account balance:"+payerAccount.getBalance());
+        System.out.println("payee account ID:"+payeeAccount.getId());
+        System.out.println("payee account balance:"+payeeAccount.getBalance());
+        System.out.println("33333 ORDINARY TransactionDAO before validations synchronized");
         // check if payer account has enough balance
         long total = transaction.getTotal();
-        if ( payerAccount.getBalance() < total) {
-          throw new RuntimeException("Insufficient balance to complete transaction.");
-        }
-        System.out.println("ORDINARY TransactionDAO after validations synchronized");
-        payerAccount.setBalance(payerAccount.getBalance() - total);
-        payeeAccount.setBalance(payeeAccount.getBalance() + total);
-        getAccountDAO().put(payerAccount);
-        getAccountDAO().put(payeeAccount);
-
+        System.out.println("4444444 ORDINARY TransactionDAO after validations synchronized");
+          //For cash in, just increment balance, payer and payee will be the same
+         if ( ((TransactionType)transaction.getType()) == TransactionType.CASHIN ) {
+          System.out.println("4-1 cashin");
+           payerAccount.setBalance(payerAccount.getBalance() + total);
+         }
+         else if ( ((TransactionType)transaction.getType()) == TransactionType.CASHOUT ) {
+           //For cash out, decrement balance, payer and payee will be the same
+          System.out.println("4-1 cashout");
+           payerAccount.setBalance(payerAccount.getBalance() - total);
+         }
+         else {
+           payerAccount.setBalance(payerAccount.getBalance() - total);
+           payeeAccount.setBalance(payeeAccount.getBalance() + total);
+         }
+         System.out.println("5555");
         // find invoice
         if ( transaction.getInvoiceId() != 0 ) {
           Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
