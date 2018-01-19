@@ -15,7 +15,8 @@ foam.CLASS({
     'hideSaleSummary',
     'invoiceDAO',
     'ctrl',
-    'bankAccountDAO'
+    'bankAccountDAO',
+    'user'
   ],
 
   exports: [
@@ -158,7 +159,7 @@ foam.CLASS({
           return;
         }
 
-        this.bankAccountDAO.where(this.EQ(this.BankAccount.STATUS, 'Verified')).limit(1).select().then(function(account) {
+        this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.STATUS, 'Verified'), this.EQ(this.BankAccount.OWNER, this.user.id))).limit(1).select().then(function(account) {
           if ( account.array.length === 0 ) {
             self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account.', type: 'error' }));
             return;
