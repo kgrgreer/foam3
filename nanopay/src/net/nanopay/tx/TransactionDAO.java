@@ -68,7 +68,9 @@ public class TransactionDAO
   public FObject put_(X x, FObject obj) {
     Transaction transaction         = (Transaction) obj;
     TransactionType transactionType = (TransactionType) transaction.getType();
-    transaction.setDate(new Date());
+    if ( transaction.getDate() == null ) {
+      transaction.setDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+    }
 
     long payeeId = transaction.getPayeeId();
     long payerId = transaction.getPayerId();
