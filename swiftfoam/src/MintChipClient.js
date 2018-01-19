@@ -163,10 +163,8 @@ return ClientTokenService_create([
       name: 'resetPasswordService',
       swiftFactory: `
 return ClientTokenService_create([
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)resetPasswordToken"
-    ])
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)resetPasswordToken"
   ])
 ])
       `,
