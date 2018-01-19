@@ -25,7 +25,7 @@ foam.CLASS({
     'invoiceDAO',
     'standardCICOTransactionDAO',
     'email',
-    'formatCurrency'
+    'invoiceCashout',
   ],
 
   exports: [
@@ -373,6 +373,9 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
+            // return self.standardCICOTransactionDAO.addInvoiceCashout(transaction);
+            self.invoiceCashout.addCashout(transaction);
+          }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
@@ -382,12 +385,13 @@ foam.CLASS({
               var emailMessage = self.EmailMessage.create({
                 from: 'info@nanopay.net',
                 replyTo: 'noreply@nanopay.net',
-                to: [ self.viewData.payee.email ]
+                to: [ self.user.email ]
               });
 
               self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
                 amount: self.formatCurrency(self.invoice.amount),
-                number: self.invoice.invoiceNumber
+                number: self.invoice.invoiceNumber,
+                link: self.invoice.invoiceFileUrl
               });
             }
           }).catch(function (err) {
