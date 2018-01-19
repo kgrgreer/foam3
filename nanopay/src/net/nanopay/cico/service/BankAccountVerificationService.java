@@ -125,6 +125,8 @@ public class BankAccountVerificationService
     t.setPayerId(payeeId);
     t.setBankAccountId(bankAccountPayee.getId());
     t.setInvoiceId(0);
+    t.setCicoStatus(TransactionStatus.NEW);
+    t.setType(TransactionType.CASHOUT);
     t.setAmount(total);
     t.setDate(new Date());
 
@@ -135,7 +137,7 @@ public class BankAccountVerificationService
 
   @Override
   public void start() {
-    standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
+    standardCICOTransactionDAO = (DAO) getX().get("localTransactionDAO");
     bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
     userDAO = (DAO) getX().get("localUserDAO");
   }

@@ -21,11 +21,12 @@ foam.CLASS({
   imports: [
     'user',
     'bankAccountDAO',
+    'bankAccountVerification',
     'transactionDAO',
     'invoiceDAO',
     'standardCICOTransactionDAO',
     'email',
-    'invoiceCashout',
+    'formatCurrency'
   ],
 
   exports: [
@@ -373,8 +374,7 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
-            // return self.standardCICOTransactionDAO.addInvoiceCashout(transaction);
-            self.invoiceCashout.addCashout(transaction);
+            self.bankAccountVerification.addCashout(transaction);
           }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
