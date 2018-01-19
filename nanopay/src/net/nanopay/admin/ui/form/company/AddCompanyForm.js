@@ -87,7 +87,6 @@ foam.CLASS({
           ( companyInfo.streetName == null || companyInfo.streetName.trim() == '' ) ||
           ( companyInfo.city == null || companyInfo.city.trim() == '' ) ||
           ( companyInfo.postalCode == null || companyInfo.postalCode.trim() == '' ) ) {
-            console.log('hit')
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
