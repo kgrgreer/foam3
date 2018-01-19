@@ -82,12 +82,12 @@ foam.CLASS({
           // Business Profile
 
           if ( ( companyInfo.businessName == null || companyInfo.businessName.trim() == '' ) ||
-          ( companyInfo.companyEmail == null || companyInfo.companyEmail.trim() == '' ) ||
           ( companyInfo.registrationNumber == null || companyInfo.registrationNumber.trim() == '' ) ||
           ( companyInfo.streetNumber == null || companyInfo.streetNumber.trim() == '' ) ||
           ( companyInfo.streetName == null || companyInfo.streetName.trim() == '' ) ||
           ( companyInfo.city == null || companyInfo.city.trim() == '' ) ||
           ( companyInfo.postalCode == null || companyInfo.postalCode.trim() == '' ) ) {
+            console.log('hit')
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
