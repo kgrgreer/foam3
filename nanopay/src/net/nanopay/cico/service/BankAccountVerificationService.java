@@ -9,12 +9,30 @@ import foam.mlang.MLang;
 import foam.nanos.pm.PM;
 import java.io.IOException;
 import net.nanopay.model.BankAccount;
+import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.dao.ProxyDAO;
+import foam.dao.Sink;
+import foam.nanos.auth.User;
+import foam.dao.ListSink;
+import foam.dao.Sink;
+import foam.mlang.MLang;
+import java.util.Date;
+import java.util.List;
+import net.nanopay.model.Account;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 
 public class BankAccountVerificationService
     extends    ContextAwareSupport
     implements BankAccountVerificationInterface
 {
-  protected DAO bankAccountDAO_;
+  protected DAO bankAccountDAO;
+  protected DAO standardCICOTransactionDAO;
+  protected DAO userDAO;
 
   @Override
   public boolean verify(long bankAccountId, long randomDepositAmount)
@@ -32,17 +50,17 @@ public class BankAccountVerificationService
         throw new RuntimeException("Please enter an amount between 0.00 and 1.00");
       }
 
-      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+      BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
 
       int verificationAttempts = bankAccount.getVerificationAttempts();
 
       if( bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() != randomDepositAmount ) {
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
-        bankAccountDAO_.put(bankAccount);
+        bankAccountDAO.put(bankAccount);
         if ( bankAccount.getVerificationAttempts() == 3 ) {
           bankAccount.setStatus("Disabled");
-          bankAccountDAO_.put(bankAccount);
+          bankAccountDAO.put(bankAccount);
         }
         if ( bankAccount.getVerificationAttempts() == 1 ) {
           throw new RuntimeException("Invalid amount, 2 attempts left.");
@@ -69,14 +87,14 @@ public class BankAccountVerificationService
         bankAccount.setStatus("Verified");
         isVerified = true;
 
-        bankAccountDAO_.put(bankAccount);
+        bankAccountDAO.put(bankAccount);
       }
 
       return isVerified;*/
 
-      BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(bankAccountId);
+      BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
       bankAccount.setStatus("Verified");
-      bankAccountDAO_.put(bankAccount);
+      bankAccountDAO.put(bankAccount);
       return true;
     } finally {
       pm.log(getX());
@@ -84,7 +102,41 @@ public class BankAccountVerificationService
   }
 
   @Override
+  public boolean addCashout(FObject obj)
+      throws RuntimeException
+  {
+
+    Transaction transaction = (Transaction) obj;
+    long payeeId = transaction.getPayeeId();
+    long payerId = transaction.getPayerId();
+    User payee = (User) userDAO.find(transaction.getPayeeId());
+    long total = transaction.getTotal();
+    payee.setX(getX());
+
+    Sink sinkBank = new ListSink();
+    sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
+
+    List dataBank = ((ListSink) sinkBank).getData();
+    BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
+
+    // Cashout invoice payee
+    Transaction t = new Transaction();
+    t.setPayeeId(payeeId);
+    t.setPayerId(payeeId);
+    t.setBankAccountId(bankAccountPayee.getId());
+    t.setInvoiceId(0);
+    t.setAmount(total);
+    t.setDate(new Date());
+
+    standardCICOTransactionDAO.put(t);
+    return true;
+
+  }
+
+  @Override
   public void start() {
-    bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
+    standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
+    bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
+    userDAO = (DAO) getX().get("localUserDAO");
   }
 }
