@@ -99,7 +99,11 @@ foam.CLASS({
         if(!X.data.paymentDate){
           this.add(this.NotificationMessage.create({ message: 'Please select a Schedule Date.', type: 'error' }));
           return;
+        } else if (X.data.paymentDate < Date.now()){
+          this.add(this.NotificationMessage.create({ message: 'Cannot schedule a payment date for the past. Please try again.', type: 'error' }));
+          return;
         }
+
         
         this.invoice.paymentDate = this.paymentDate;
         this.invoice.note = this.note;

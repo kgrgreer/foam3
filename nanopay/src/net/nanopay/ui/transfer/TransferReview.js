@@ -132,7 +132,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
@@ -165,14 +165,15 @@ foam.CLASS({
           .start().addClass('transferRateContainer')
             .callIf(this.type == 'regular', function() {
               this.start('p').addClass('currencyAmount-L').add('$ ', parseFloat(self.viewData.fromAmount).toFixed(2)).end()
+              this.start('p').add('Paid from Account Number: ' + '***' + self.viewData.account.accountNumber.substring(self.viewData.account.accountNumber.length - 4, self.viewData.account.accountNumber.length)).end()
             })
           .end()
-          .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
-          .end()
-          .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add('Near Real Time (IMPS)').end()
-          .end()
+          // .start('div').addClass('pricingCol')
+          //   .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
+          // .end()
+          // .start('div').addClass('pricingCol')
+          //   .start('p').addClass('pPricing').add('Near Real Time (IMPS)').end()
+          // .end()
         .end()
         .start('div').addClass('col')
           .start('a').addClass('invoiceLink').enableClass('hidden', this.invoice$, true)

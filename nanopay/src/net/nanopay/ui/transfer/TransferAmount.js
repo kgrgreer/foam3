@@ -25,6 +25,10 @@ foam.CLASS({
           margin-bottom: 30px;
         }
 
+        ^ .invoiceMarginOverride {
+          margin-bottom: 0px;
+        }
+
         ^ .currencyContainer {
           box-sizing: border-box;
           width: 320px;
@@ -116,12 +120,12 @@ foam.CLASS({
           margin-left: 100px;
           margin-bottom: 13px;
         }
-        
+
         ^ .from-amount {
           float: none;
           margin-bottom: 20px;
         }
-        
+
         ^ .label{
           margin-left: 0;
         }
@@ -169,7 +173,7 @@ foam.CLASS({
         this.viewData.rate = newValue;
         // NOTE: This is a one way conversion. It is very lossy on certain fx rates.
         if ( newValue ) this.toAmount = (this.fromAmount) * newValue;
-        
+
         // if ( newValue ) this.toAmount = (this.fromAmount - this.fees) * newValue;
       },
       validateObj: function(rate) {
@@ -286,7 +290,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start('div').addClass('transferRateContainer')
+          .start('div').addClass('transferRateContainer').enableClass('invoiceMarginOverride', this.invoiceMode)
             .callIf(this.type == 'foreign', function() {
               this.start('div').addClass('currencyContainer')
                 // TODO: Get currency & total
@@ -328,7 +332,7 @@ foam.CLASS({
             .callIf(this.type == 'regular' && !this.invoice, function() {
               this.start().addClass('label').add('Enter Amount:').end()
               .start(self.FROM_AMOUNT, { onKey: true, mode: self.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).addClass('from-amount').end()
-            })          
+            })
           .end()
           .start()
             .callIf(this.type == 'regular' && this.invoiceMode, function(){
@@ -336,13 +340,13 @@ foam.CLASS({
               .start().addClass('invoice-amount').add('$ ', self.fromAmount.toFixed(2)).end()
             })
           .end()
-          .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
-          .end()
-          .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$, true).add('Near Real Time (IMPS)').end()
-            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$).add('Next Business Days (NEFT)').end()
-          .end()
+          // .start('div').addClass('pricingCol')
+          //   .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
+          // .end()
+          // .start('div').addClass('pricingCol')
+          //   .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$, true).add('Near Real Time (IMPS)').end()
+          //   .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$).add('Next Business Days (NEFT)').end()
+          // .end()
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
@@ -387,7 +391,7 @@ foam.CLASS({
         self.startTimer();
         self.viewData.rateLocked = true;
       });
-      
+
     },
 
     function startTimer() {

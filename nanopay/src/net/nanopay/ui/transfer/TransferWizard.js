@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'TransferWizard',
@@ -9,13 +8,25 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.CountdownView',
     'net.nanopay.tx.model.Transaction',
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.model.BankAccount',
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.notification.email.EmailMessage'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
   ],
 
   imports: [
     'user',
+    'bankAccountDAO',
+    'bankAccountVerification',
     'transactionDAO',
-    'invoiceDAO'
+    'invoiceDAO',
+    'standardCICOTransactionDAO',
+    'email',
+    'formatCurrency'
   ],
 
   exports: [
@@ -166,6 +177,7 @@ foam.CLASS({
         vertical-align: top;
 
         font-size: 12px;
+        padding-top: 2px;
         letter-spacing: 0.2px;
         color: #093649;
         margin: 0;
@@ -310,9 +322,11 @@ foam.CLASS({
       //   if ( errors ) return false; // Error present
       //   return true; // Not in dialog
       // },
-      code: function() {
+      code: function(X) {
         var self = this;
+        var transaction = null;
         var invoiceId = 0;
+
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
@@ -324,30 +338,70 @@ foam.CLASS({
           if ( this.invoiceMode ){
             invoiceId = this.invoice.id;
           }
-          // NOTE: payerID, payeeID, amount in cents, rate, purpose
-          var transaction = this.Transaction.create({
-            payerId: this.user.id,
-            payeeId: this.viewData.payee.id,
-            amount: Math.round(this.viewData.fromAmount*100),
-            invoiceId: invoiceId,
-            // rate: rate,
-            // fees: Math.round(this.viewData.fees),
-            // purpose: this.viewData.purpose,
-            notes: this.viewData.notes
-          });
 
-          this.transactionDAO.put(transaction).then(function (result) {
+          var txAmount = Math.round(self.viewData.fromAmount*100);
+
+          // Get payer's bank account
+          this.bankAccountDAO.where(
+            this.AND(
+              this.EQ(this.BankAccount.OWNER, this.user.id),
+              this.EQ(this.BankAccount.STATUS, 'Verified')
+            )
+          ).limit(1).select(function(cashInBankAccount) {
+            // Perform a cash-in operation
+            var cashInTransaction = self.Transaction.create({
+              payeeId: self.user.id,
+              amount: txAmount,
+              bankAccountId: cashInBankAccount.id,
+              type: self.TransactionType.CASHIN
+            });
+
+            return self.standardCICOTransactionDAO.put(cashInTransaction);
+          }).then(function(response) {
+            // NOTE: payerID, payeeID, amount in cents, rate, purpose
+            transaction = self.Transaction.create({
+              payerId: self.user.id,
+              payeeId: self.viewData.payee.id,
+              amount: txAmount,
+              invoiceId: invoiceId,
+              notes: self.viewData.notes
+            });
+
+            // Make the transfer
+            return self.transactionDAO.put(transaction);
+          }).then(function (result) {
             if ( result ) {
               self.viewData.transaction = result;
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = 'Back to Home';
-              self.nextLabel = 'Make New Transfer';
-              self.viewData.transaction = result;
-              self.add(self.NotificationMessage.create({ message: "Success!" }));
             }
-          })
-          .catch(function (err) {
-            self.add(self.NotificationMessage.create({ type: 'error', message: err.message + '. Unable to process payment.' }));
+
+            self.bankAccountVerification.addCashout(transaction);
+          }).then(function (response) {
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            self.backLabel = 'Back to Home';
+            self.nextLabel = 'Make New Transfer';
+            self.add(self.NotificationMessage.create({ message: "Success!" }));
+
+            if ( self.invoice ) {
+              var emailMessage = self.EmailMessage.create({
+                from: 'info@nanopay.net',
+                replyTo: 'noreply@nanopay.net',
+                to: [ self.user.email ]
+              });
+
+              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
+                amount: self.formatCurrency(self.invoice.amount),
+                number: self.invoice.invoiceNumber,
+                link: self.invoice.invoiceFileUrl
+              });
+            }
+          }).catch(function (err) {
+            console.error(err);
+
+            self.add(self.NotificationMessage.create({
+              type: 'error',
+              message: err.message + '. Unable to process payment...'
+            }));
+
             if ( err ) console.log(err.message);
           });
 

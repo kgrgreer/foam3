@@ -25,6 +25,18 @@ foam.INTERFACE({
           javaType: 'long'
         }
       ]
+    },
+    {
+      name: 'addCashout',
+      javaReturns: 'boolean',
+      returns: 'Promise',
+      javaThrows: [ 'java.lang.RuntimeException' ],
+      args: [
+        {
+          name: 'obj',
+          javaType: 'foam.core.FObject'
+        }
+      ]
     }
   ]
 });
