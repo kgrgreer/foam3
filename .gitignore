@@ -100,3 +100,4 @@ nanopay/src/net/nanopay/iso20022/
 /thresholds
 /transactionLimits
 /users
+/institutions

@@ -91,30 +91,33 @@ To build Swift code run the following command
 ### Deployments
 For each deployment to the servers, they are tagged with a specific version.
 Steps to build:
-1. Checkout the latest tag for the server.
+1. Fetch latest tags
+   eg. git fetch --tags
+   
+2. Checkout the latest tag for the server.
    eg. git checkout cc-staging-v1.0.6
 
-2. Pull latest code
+3. Pull latest code
    eg. git pull origin master
 
-3. Create a new tag with the updated code. Increment the previous tag version
+4. Create a new tag with the updated code. Increment the previous tag version
    eg. git tag -a cc-staging-v1.0.7 -m "Some tag message"
 
-4. Push new tag to remote
+5. Push new tag to remote
   eg git push origin cc-staging-v1.0.7
 
-5. Open Jenkins https://jenkins.prod.nanopay.net
+6. Open Jenkins https://jenkins.prod.nanopay.net
 
-6. Find the project to build
+7. Find the project to build
 
-7. Open project and click build now
+8. Open project and click build now
 
-8. Click on Console Output of the build to ensure that the latest tag was built
+9. Click on Console Output of the build to ensure that the latest tag was built
 
-9. Open AWS CodeDeploy
+10. Open AWS CodeDeploy
 
-10. Find the application and the deployment group
+11. Find the application and the deployment group
 
-11. On the deployment group you can see success or failures for each build.
+12. On the deployment group you can see success or failures for each build.
 
-12. If there is a failure, a stack trace will be provided.  
+13. If there is a failure, a stack trace will be provided.  
