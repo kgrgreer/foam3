@@ -389,9 +389,10 @@ foam.CLASS({
               });
 
               self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
+                name: self.user.businessName,
+                email: self.user.email,
                 amount: self.formatCurrency(self.invoice.amount),
-                number: self.invoice.invoiceNumber,
-                link: self.invoice.invoiceFileUrl
+                number: self.invoice.invoiceNumber
               });
             }
           }).catch(function (err) {
