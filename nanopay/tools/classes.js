@@ -12,7 +12,6 @@ var classes = [
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerificationInterface',
-  'net.nanopay.cico.service.InvoiceCashoutInterface',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -72,7 +71,6 @@ var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.cico.service.InvoiceCashoutInterface',
   'net.nanopay.cico.service.BankAccountVerificationInterface',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
