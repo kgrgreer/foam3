@@ -82,7 +82,6 @@ foam.CLASS({
           // Business Profile
 
           if ( ( companyInfo.businessName == null || companyInfo.businessName.trim() == '' ) ||
-          ( companyInfo.companyEmail == null || companyInfo.companyEmail.trim() == '' ) ||
           ( companyInfo.registrationNumber == null || companyInfo.registrationNumber.trim() == '' ) ||
           ( companyInfo.streetNumber == null || companyInfo.streetNumber.trim() == '' ) ||
           ( companyInfo.streetName == null || companyInfo.streetName.trim() == '' ) ||

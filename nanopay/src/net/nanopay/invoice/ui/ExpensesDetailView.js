@@ -15,7 +15,8 @@ foam.CLASS({
     'hideSaleSummary',
     'invoiceDAO',
     'ctrl',
-    'bankAccountDAO'
+    'bankAccountDAO',
+    'user'
   ],
 
   exports: [
@@ -158,7 +159,7 @@ foam.CLASS({
           return;
         }
 
-        this.bankAccountDAO.where(this.EQ(this.BankAccount.STATUS, 'Verified')).limit(1).select().then(function(account) {
+        this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.STATUS, 'Verified'), this.EQ(this.BankAccount.OWNER, this.user.id))).limit(1).select().then(function(account) {
           if ( account.array.length === 0 ) {
             self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account.', type: 'error' }));
             return;
@@ -175,6 +176,7 @@ foam.CLASS({
       label: '',
       code: function (X) {
         var self = this;
+        var invoice = X.data.data;
 
         self.payNowPopUp_ = self.PopupView.create({
           width: 165,
@@ -185,9 +187,12 @@ foam.CLASS({
           .start('div').add('Schedule A Payment')
             .on('click', this.schedulePopUp)
           .end()
-          .start('div').add('Void')
-            .on('click', this.voidPopUp)
-          .end()
+          .callIf(invoice.createdBy == this.user.id, function(){
+            this.start('div').add('Void')
+              .on('click', this.voidPopUp)
+            .end()
+          })
+
         self.payNowMenuBtn_.add(self.payNowPopUp_)
       }
     }
