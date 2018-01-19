@@ -47,8 +47,9 @@ public class FlinksAuthService
     FlinksResponse feedback;
     //System.out.println(respMsg.getJson());
     if ( httpCode == 200 ) {
-      //TODO: forward to fetch account;
-      feedback = null;
+      //forward to fetch account
+      FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
+      return getAccountSummary(x, resp.getRequestId());
     } else if ( httpCode == 203 ) {
       FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
       feedback = (FlinksMFAResponse) respMsg.getModel();
