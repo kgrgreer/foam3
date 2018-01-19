@@ -385,12 +385,12 @@ foam.CLASS({
               var emailMessage = self.EmailMessage.create({
                 from: 'info@nanopay.net',
                 replyTo: 'noreply@nanopay.net',
-                to: [ self.user.email ]
+                to: [ self.viewData.payee.email ]
               });
 
-              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
-                name: self.user.businessName,
-                email: self.user.email,
+              self.email.sendEmailFromTemplate(self.viewData.payee, emailMessage, 'nanopay-paid', {
+                name: self.viewData.payee.businessName,
+                email: self.viewData.payee.email,
                 amount: self.formatCurrency(self.invoice.amount),
                 number: self.invoice.invoiceNumber
               });
