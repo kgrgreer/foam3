@@ -2,20 +2,34 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.*;
+import foam.dao.DAO;
+import foam.dao.ProxyDAO;
+import foam.dao.Sink;
 import foam.nanos.auth.User;
+import foam.mlang.MLang;
 import java.util.Date;
 import java.util.List;
 import net.nanopay.model.Account;
+import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
+import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import static foam.mlang.MLang.*;
+import net.nanopay.model.Account;
+import net.nanopay.tx.model.Transaction;
+
+import java.util.*;
 
 public class TransactionDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
+  // blacklist of status where balance transfer is not performed
+  protected final Set<String> STATUS_BLACKLIST =
+      Collections.unmodifiableSet(new HashSet<String>() {{
+        add("Refunded");
+      }});
+
   protected DAO userDAO_;
   protected DAO accountDAO_;
   protected DAO invoiceDAO_;
@@ -78,6 +92,11 @@ public class TransactionDAO
       throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
+    // don't perform balance transfer if status in blacklist
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) ) {
+      return super.put_(x, obj);
+    }
+
     Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
 
@@ -130,6 +149,9 @@ public class TransactionDAO
           getAccountDAO().put(payeeAccount);
         }
 
+
+        FObject ret = super.put_(x, obj);
+        // 416 721-3776
         // find invoice
         if ( transaction.getInvoiceId() != 0 ) {
           Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
@@ -141,9 +163,10 @@ public class TransactionDAO
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
+          // addInvoiceCashout( x, payee, total, payeeId, payerId );
         }
 
-        return super.put_(x, obj);
+        return ret;
       }
     }
   }
