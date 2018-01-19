@@ -250,10 +250,10 @@ foam.CLASS({
               return;
             }
           }
-
           var inv = this.Invoice.create({
             payerId: this.user.id,
             payeeId: this.userList,
+            createdBy: this.user.id,
             amount: this.data.amount,
             dueDate: this.data.dueDate,
             purchaseOrder: this.data.purchaseOrder,
