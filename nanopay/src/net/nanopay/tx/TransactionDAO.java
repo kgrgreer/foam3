@@ -6,7 +6,14 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
+import foam.mlang.MLang;
+import java.util.Date;
+import java.util.List;
+import net.nanopay.model.Account;
+import net.nanopay.model.BankAccount;
+import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
+import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Account;
@@ -142,6 +149,9 @@ public class TransactionDAO
           getAccountDAO().put(payeeAccount);
         }
 
+
+        FObject ret = super.put_(x, obj);
+        // 416 721-3776
         // find invoice
         if ( transaction.getInvoiceId() != 0 ) {
           Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
@@ -153,19 +163,10 @@ public class TransactionDAO
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.CHEQUE);
           getInvoiceDAO().put(invoice);
-
-          // Cashout invoice payee
-          Transaction t = new Transaction();
-          t.setPayeeId(payeeId);
-          t.setPayerId(payeeId);
-          t.setAmount(total);
-          t.setType(TransactionType.CASHOUT);
-          t.setDate(new Date());
-
-          super.put_(x, t);
+          // addInvoiceCashout( x, payee, total, payeeId, payerId );
         }
 
-        return super.put_(x, obj);
+        return ret;
       }
     }
   }
