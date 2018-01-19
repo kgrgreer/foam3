@@ -63,6 +63,8 @@ foam.CLASS({
     { name: 'BusinessInfoLabel', message: 'Business Info' },
     { name: 'FirstNameLabel', message: 'First Name' },
     { name: 'LastNameLabel', message: 'Last Name' },
+    { name: 'JobTitleLabel', message: 'Job Title' },
+    { name: 'IssuingLabel', message: 'Issuing Authority' },
     { name: 'EmailLabel', message: 'Email' },
     { name: 'PhoneLabel', message: 'Phone' },
     { name: 'PasswordLabel', message: 'Password' },
@@ -112,7 +114,9 @@ foam.CLASS({
               .start().add(this.LastNameLabel).addClass('boldLabel').end()
               .start().add(this.viewData.lastName).addClass('infoText bottomMargin').end()
               .start().add(this.PhoneLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.phoneNumber).addClass('infoText').end()
+              .start().add(this.viewData.phoneNumber).addClass('infoText bottomMargin').end()
+              .start().add(this.JobTitleLabel).addClass('boldLabel').end()
+              .start().add(this.viewData.jobTitle).addClass('infoText').end()
             .end()
             .start().add(this.BusinessProfileLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
@@ -120,6 +124,10 @@ foam.CLASS({
               .start().add(this.viewData.businessName).addClass('businessName').end()
             .end()
             .start().addClass('inline')
+              // .start().add(this.CompanyEmailLabel).addClass('boldLabel').end()
+              // .start().add(this.viewData.companyEmail).addClass('infoText bottomMargin').end()
+              .start().add(this.IssuingLabel).addClass('boldLabel').end()
+              .start().add(this.viewData.issueAuthority).addClass('infoText bottomMargin').end()
               .start().add(this.RegistrationNumberLabel).addClass('boldLabel').end()
               .start().add(this.viewData.registrationNumber).addClass('infoText bottomMargin').end()
               .start().add(this.WebsiteLabel).addClass('boldLabel').end()
