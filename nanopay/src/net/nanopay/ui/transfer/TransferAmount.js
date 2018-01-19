@@ -25,6 +25,10 @@ foam.CLASS({
           margin-bottom: 30px;
         }
 
+        ^ .invoiceMarginOverride {
+          margin-bottom: 0px;
+        }
+
         ^ .currencyContainer {
           box-sizing: border-box;
           width: 320px;
@@ -286,7 +290,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
-          .start('div').addClass('transferRateContainer')
+          .start('div').addClass('transferRateContainer').enableClass('invoiceMarginOverride', this.invoiceMode)
             .callIf(this.type == 'foreign', function() {
               this.start('div').addClass('currencyContainer')
                 // TODO: Get currency & total
@@ -336,13 +340,13 @@ foam.CLASS({
               .start().addClass('invoice-amount').add('$ ', self.fromAmount.toFixed(2)).end()
             })
           .end()
-          .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
-          .end()
-          .start('div').addClass('pricingCol')
-            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$, true).add('Near Real Time (IMPS)').end()
-            .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$).add('Next Business Days (NEFT)').end()
-          .end()
+          // .start('div').addClass('pricingCol')
+          //   .start('p').addClass('pPricing').add(this.EstimatedDeliveryLabel).end()
+          // .end()
+          // .start('div').addClass('pricingCol')
+          //   .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$, true).add('Near Real Time (IMPS)').end()
+          //   .start('p').addClass('pPricing').enableClass('hidden', this.isNearRealTime$).add('Next Business Days (NEFT)').end()
+          // .end()
         .end()
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')

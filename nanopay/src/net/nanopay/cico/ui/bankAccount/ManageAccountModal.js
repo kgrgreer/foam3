@@ -35,7 +35,7 @@ foam.CLASS({
         ^ .popUpHeader {
           width: 448px;
           height: 40px;
-          background-color: #093649;
+          background-color: %PRIMARYCOLOR%;
         }
         ^ .popUpTitle {
           width: 198px;

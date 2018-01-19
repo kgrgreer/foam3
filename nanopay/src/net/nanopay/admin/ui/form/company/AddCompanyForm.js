@@ -62,7 +62,9 @@ foam.CLASS({
           // Merchant Info
 
           if ( ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
-          ( companyInfo.lastName == null || companyInfo.lastName.trim() == '' ) ||
+          ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) || 
+          ( companyInfo.jobTitle == null || companyInfo.jobTitle.trim() == '' ) ||
+          ( companyInfo.email == null || companyInfo.email.trim() == '' ) ||
           ( companyInfo.phoneNumber == null || companyInfo.phoneNumber.trim() == '' ) ||
           ( companyInfo.password == null || companyInfo.password.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
@@ -120,7 +122,9 @@ foam.CLASS({
             lastName: companyInfo.lastName,
             organization: companyInfo.businessName,
             businessName: companyInfo.businessName,
-            email: companyInfo.companyEmail,
+            email: companyInfo.email,
+            issuingAuthority: companyInfo.issuingAuthority,
+            jobTitle: companyInfo.jobTitle,
             type: 'Business',
             group: 's2hCustomer',
             phone: businessPhone,

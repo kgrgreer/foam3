@@ -10,7 +10,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.BankAccount',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.notification.email.EmailMessage'
   ],
 
   implements: [
@@ -20,9 +21,12 @@ foam.CLASS({
   imports: [
     'user',
     'bankAccountDAO',
+    'bankAccountVerification',
     'transactionDAO',
     'invoiceDAO',
-    'standardCICOTransactionDAO'
+    'standardCICOTransactionDAO',
+    'email',
+    'formatCurrency'
   ],
 
   exports: [
@@ -173,6 +177,7 @@ foam.CLASS({
         vertical-align: top;
 
         font-size: 12px;
+        padding-top: 2px;
         letter-spacing: 0.2px;
         color: #093649;
         margin: 0;
@@ -319,7 +324,9 @@ foam.CLASS({
       // },
       code: function(X) {
         var self = this;
+        var transaction = null;
         var invoiceId = 0;
+
         if ( this.position == 2 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
@@ -352,7 +359,7 @@ foam.CLASS({
             return self.standardCICOTransactionDAO.put(cashInTransaction);
           }).then(function(response) {
             // NOTE: payerID, payeeID, amount in cents, rate, purpose
-            var transaction = self.Transaction.create({
+            transaction = self.Transaction.create({
               payerId: self.user.id,
               payeeId: self.viewData.payee.id,
               amount: txAmount,
@@ -367,10 +374,26 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
+            self.bankAccountVerification.addCashout(transaction);
+          }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
             self.add(self.NotificationMessage.create({ message: "Success!" }));
+
+            if ( self.invoice ) {
+              var emailMessage = self.EmailMessage.create({
+                from: 'info@nanopay.net',
+                replyTo: 'noreply@nanopay.net',
+                to: [ self.user.email ]
+              });
+
+              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
+                amount: self.formatCurrency(self.invoice.amount),
+                number: self.invoice.invoiceNumber,
+                link: self.invoice.invoiceFileUrl
+              });
+            }
           }).catch(function (err) {
             console.error(err);
 

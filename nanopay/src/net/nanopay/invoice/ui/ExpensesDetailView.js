@@ -6,14 +6,16 @@ foam.CLASS({
   requires: [
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
     'stack',
     'hideSaleSummary',
     'invoiceDAO',
-    'ctrl'
+    'ctrl',
+    'bankAccountDAO'
   ],
 
   exports: [
@@ -152,10 +154,20 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         if(this.data.paymentMethod.name != 'NONE' || this.data.status == 'Paid'){
-          self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+          this.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }
-        X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: this.data });
+
+        this.bankAccountDAO.where(this.EQ(this.BankAccount.STATUS, 'Verified')).limit(1).select().then(function(account) {
+          if ( account.array.length === 0 ) {
+            self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account.', type: 'error' }));
+            return;
+          }
+          X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+        }).catch(function (err) {
+          console.error(err);
+          self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+        });
       }
     },
     {
