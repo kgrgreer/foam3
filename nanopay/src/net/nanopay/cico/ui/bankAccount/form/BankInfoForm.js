@@ -6,9 +6,9 @@ foam.CLASS({
   documentation: 'Form to input bank account details.',
 
   imports: [
-    'viewData',
     'goBack',
-    'goNext'
+    'goNext',
+    'viewData'
   ],
 
   axioms: [
@@ -107,8 +107,8 @@ foam.CLASS({
     { name: 'LabelAccount',         message: 'Account No. *' },
     { name: 'LabelInstitution',     message: 'Institution *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
-    { name: 'LabelInstitute',       message: 'Institute No. *' },
-    { name: 'LabelInstituteOther',  message: 'Institute No. (Other) *' }
+    { name: 'LabelInstitute',       message: 'Institution No. *' },
+    { name: 'LabelInstituteOther',  message: 'Institution No. (Other) *' }
   ],
 
   properties: [

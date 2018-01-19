@@ -6,9 +6,9 @@ foam.CLASS({
   documentation: '',
 
   imports: [
-    'viewData',
     'errors',
-    'goNext'
+    'goNext',
+    'viewData'
   ],
 
   axioms: [
@@ -89,7 +89,7 @@ foam.CLASS({
         ^ .institutionContainerHidden {
           display: none;
         }
-        
+
         ^ .inputErrorLabel {
           color: #d81e05;
         }`
@@ -108,9 +108,9 @@ foam.CLASS({
       { name: 'ErrorInstitution',     message: 'Institution number incomplete.' },
       { name: 'LabelTransit',         message: 'Transit No. *' },
       { name: 'ErrorTransit',         message: 'Invalid transit number used.' },
-      { name: 'LabelInstitute',       message: 'Institute No. *' },
+      { name: 'LabelInstitute',       message: 'Institution No. *' },
       { name: 'ErrorInstitute',       message: 'No institute selected' },
-      { name: 'LabelInstituteOther',  message: 'Institute No. (Other) *' },
+      { name: 'LabelInstituteOther',  message: 'Institution No. (Other) *' },
       { name: 'ErrorInstituteOther',  message: 'Invalid institute number used.' }
     ],
 
