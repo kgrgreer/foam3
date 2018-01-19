@@ -114,7 +114,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
-        .start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
+        .callIf(this.data.createdBy == this.user.id, function(){
+          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
+        })
         .start(this.RECORD_PAYMENT).end()
         .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' } }).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
         .start('h5').add('Bill to ', this.data.payerName).end()

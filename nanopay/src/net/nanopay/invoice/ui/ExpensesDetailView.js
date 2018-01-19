@@ -176,6 +176,7 @@ foam.CLASS({
       label: '',
       code: function (X) {
         var self = this;
+        var invoice = X.data.data;
 
         self.payNowPopUp_ = self.PopupView.create({
           width: 165,
@@ -186,9 +187,12 @@ foam.CLASS({
           .start('div').add('Schedule A Payment')
             .on('click', this.schedulePopUp)
           .end()
-          .start('div').add('Void')
-            .on('click', this.voidPopUp)
-          .end()
+          .callIf(invoice.createdBy == this.user.id, function(){
+            this.start('div').add('Void')
+              .on('click', this.voidPopUp)
+            .end()
+          })
+
         self.payNowMenuBtn_.add(self.payNowPopUp_)
       }
     }
