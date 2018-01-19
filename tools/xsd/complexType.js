@@ -18,7 +18,7 @@ module.exports = {
    * @returns {String}    The computed type.
    */
   getPropType: function (baseType) {
-      if ( simpleTypes[baseType] ) return 'net.nanopay.iso20022.' + baseType;
+      if ( simpleTypes[baseType] ) return packageName + '.' + baseType;
       return types[baseType] || 'FObjectProperty';
   },
 
