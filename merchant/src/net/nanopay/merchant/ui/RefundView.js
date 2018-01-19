@@ -144,21 +144,22 @@ foam.CLASS({
       if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) return;
       var self = this;
 
-      this.transactionDAO.put(this.Transaction.create({
+      var refund = this.Transaction.create({
         payerId: this.user.id,
         payeeId: this.data.user.id,
         amount: this.data.amount,
         deviceId: this.device.id,
         refundTransactionId: this.data.id,
         status: 'Refund'
-      }))
-      .then(function () {
-        self.stack.push(self.SuccessView.create({ refund: true, data: self.data }));
+      });
+
+      this.transactionDAO.put(refund).then(function () {
+        self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
         self.data.status = 'Refunded';
         self.transactionDAO.put(self.data);
       })
       .catch(function (err) {
-        self.stack.push(self.ErrorView.create({ refund: true, data: self.data }));
+        self.stack.push(self.ErrorView.create({ refund: true, data: refund }));
       });
     }
   ]
