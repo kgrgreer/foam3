@@ -54,7 +54,7 @@ foam.CLASS({
           background-color: #59a5d5;
           color: #ffffff;
         }
-        ^ .net-nanopay-ui-ActionView-closeButton {
+        ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
           box-sizing: border-box;
@@ -74,7 +74,7 @@ foam.CLASS({
           cursor: pointer;
         }
 
-        ^ .net-nanopay-ui-ActionView-nextButton {
+        ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
           margin: 0;
           outline: none;
@@ -161,8 +161,8 @@ foam.CLASS({
           .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-          .tag(this.CLOSE_BUTTON)
           .tag(this.NEXT_BUTTON)
+          .tag(this.CLOSE_BUTTON)
         .end()
         .start('div').style({'clear' : 'both'}).end();
     }
