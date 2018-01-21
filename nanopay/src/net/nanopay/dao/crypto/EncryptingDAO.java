@@ -30,14 +30,16 @@ class DecryptingSink
   extends ProxySink
 {
   protected final AbstractDAO dao_;
+  protected final X           x_;
 
-  public DecryptingSink(AbstractDAO dao, Sink delegate) {
+  public DecryptingSink(X x, AbstractDAO dao, Sink delegate) {
     super(delegate);
+    x_   = x;
     dao_ = dao;
   }
 
   public void put(FObject obj, Detachable sub) {
-    super.put(dao_.find(dao_.getPK(obj)), sub);
+    super.put(dao_.find_(x_, dao_.getPK(obj)), sub);
   }
 }
 
@@ -260,7 +262,7 @@ public class EncryptingDAO
       return super.select_(x, sink, skip, limit, order, predicate);
     }
 
-    super.inX(x).select(decorateSink_(new DecryptingSink(this, sink), skip, limit, order, predicate));
+    getDelegate().inX(x).select(new DecryptingSink(x, this, decorateSink_(sink, skip, limit, order, predicate)));
 
     return sink;
   }
