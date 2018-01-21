@@ -72,6 +72,12 @@ public class EncryptingDAO
   protected JSONParser      jsonParser_;
   protected final Outputter outputter_ = new Outputter();
 
+  public EncryptingDAO(X x, ClassInfo classInfo, DAO delegate)
+    throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
+  {
+    this(x, "keystore.jks", classInfo, delegate);
+  }
+
   public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate)
     throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
   {
