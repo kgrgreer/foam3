@@ -2,10 +2,13 @@ package net.nanopay.dao.crypto;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
+import foam.core.Detachable;
 import foam.core.X;
+import foam.dao.AbstractDAO;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.dao.ProxySink;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.mlang.order.Comparator;
@@ -23,18 +26,18 @@ import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-public class DecryptingSink
+class DecryptingSink
   extends ProxySink
 {
-  protected final DAO dao_;
+  protected final AbstractDAO dao_;
 
-  public DecryptingSink(DAO dao, Sink delegate) {
+  public DecryptingSink(AbstractDAO dao, Sink delegate) {
     super(delegate);
     dao_ = dao;
   }
 
   public void put(FObject obj, Detachable sub) {
-    super.put(obj.getId(), sub);
+    super.put(dao_.find(dao_.getPK(obj)), sub);
   }
 }
 
@@ -257,6 +260,8 @@ public class EncryptingDAO
       return super.select_(x, sink, skip, limit, order, predicate);
     }
 
-    super.inX(x).select(new DecryptingSink(decorateSink_(sink, skip, limit, order, predicate));
+    super.inX(x).select(decorateSink_(new DecryptingSink(this, sink), skip, limit, order, predicate));
+
+    return sink;
   }
 }
