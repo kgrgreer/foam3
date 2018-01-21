@@ -12,10 +12,6 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Max;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import javax.crypto.*;
-import javax.crypto.spec.GCMParameterSpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,9 +19,13 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import javax.crypto.*;
+import javax.crypto.spec.GCMParameterSpec;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+/** Adapt objects into EncryptedObject's before being stored. **/
 public class EncryptingDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   // TODO: allow support for additional crypto providers
   static {
@@ -37,10 +37,10 @@ public class EncryptingDAO
   }
 
   // TODO: think of a better alias
-  protected static final String ALIAS = "keypair";
-  protected static final int AES_KEY_SIZE = 256;
-  protected static final int GCM_NONCE_LENGTH = 12;
-  protected static final int GCM_TAG_LENGTH = 16;
+  protected static final String ALIAS            = "keypair";
+  protected static final int    AES_KEY_SIZE     = 256;
+  protected static final int    GCM_NONCE_LENGTH = 12;
+  protected static final int    GCM_TAG_LENGTH   = 16;
 
   private static SecureRandom random;
   private static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
@@ -50,13 +50,15 @@ public class EncryptingDAO
     return random;
   }
 
-  protected File file_;
-  protected SecretKey key_;
-  protected KeyStore keystore_;
-  protected JSONParser jsonParser_;
+  protected File            file_;
+  protected SecretKey       key_;
+  protected KeyStore        keystore_;
+  protected JSONParser      jsonParser_;
   protected final Outputter outputter_ = new Outputter();
 
-  public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate) throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException {
+  public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate)
+    throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
+  {
     setX(x);
     setOf(classInfo);
     setDelegate(delegate);
