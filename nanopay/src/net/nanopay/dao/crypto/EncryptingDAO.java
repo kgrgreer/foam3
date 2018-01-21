@@ -23,6 +23,22 @@ import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+public class DecryptingSink
+  extends ProxySink
+{
+  protected final DAO dao_;
+
+  public DecryptingSink(DAO dao, Sink delegate) {
+    super(delegate);
+    dao_ = dao;
+  }
+
+  public void put(FObject obj, Detachable sub) {
+    super.put(obj.getId(), sub);
+  }
+}
+
+
 /** Adapt objects into EncryptedObject's before being stored. **/
 public class EncryptingDAO
   extends ProxyDAO
@@ -234,6 +250,7 @@ public class EncryptingDAO
     if ( predicate == null && ( sink instanceof Count || sink instanceof Max ) ) {
       return super.select_(x, sink, skip, limit, order, predicate);
     }
-    throw new UnsupportedOperationException("Unsupported operation: select_");
+
+    super.inX(x).select(new DecryptingSink(decorateSink_(sink, skip, limit, order, predicate));
   }
 }
