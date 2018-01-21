@@ -39,7 +39,8 @@ class DecryptingSink
   }
 
   public void put(FObject obj, Detachable sub) {
-    super.put(dao_.find_(x_, dao_.getPK(obj)), sub);
+    EncryptedObject eo = (EncryptedObject) obj;
+    super.put(dao_.find_(x_, eo.getId()), sub);
   }
 }
 
