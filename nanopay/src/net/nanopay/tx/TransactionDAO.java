@@ -18,7 +18,6 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
-
 import java.util.*;
 
 public class TransactionDAO
@@ -153,7 +152,7 @@ public class TransactionDAO
 
 
         FObject ret = super.put_(x, obj);
-        // 416 721-3776
+
         // find invoice
         if ( transaction.getInvoiceId() != 0 ) {
           Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());

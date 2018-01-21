@@ -6,109 +6,105 @@ foam.CLASS({
   documentation: 'Form to input bank account details.',
 
   imports: [
-    'viewData',
     'goBack',
-    'goNext'
+    'goNext',
+    'viewData'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .col {
-          display: inline-block;
-          width: 357px;
+  css: `
+    ^ .col {
+      display: inline-block;
+      width: 357px;
 
-          vertical-align: top;
-        }
+      vertical-align: top;
+    }
 
-        ^ .colSpacer {
-          margin-left: 30px;
-        }
+    ^ .colSpacer {
+      margin-left: 30px;
+    }
 
-        ^ input[type=number]::-webkit-inner-spin-button,
-          input[type=number]::-webkit-outer-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
+    ^ input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
-        ^ .foam-u2-tag-Select {
-          width: 302px;
-          height: 40px;
-          border-radius: 0;
+    ^ .foam-u2-tag-Select {
+      width: 302px;
+      height: 40px;
+      border-radius: 0;
 
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
 
-          padding: 0 15px;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          background-color: white;
-          outline: none;
-        }
+      padding: 0 15px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      background-color: white;
+      outline: none;
+    }
 
-        ^ .institutionContainer {
-          position: relative;
-        }
+    ^ .institutionContainer {
+      position: relative;
+    }
 
-        ^ .foam-u2-tag-Select:hover {
-          cursor: pointer;
-        }
+    ^ .foam-u2-tag-Select:hover {
+      cursor: pointer;
+    }
 
-        ^ .foam-u2-tag-Select:focus {
-          border: solid 1px #59A5D5;
-        }
+    ^ .foam-u2-tag-Select:focus {
+      border: solid 1px #59A5D5;
+    }
 
-        ^ .foam-u2-TextField {
-          outline: none;
-          height: 40px;
-          padding: 10px;
-        }
+    ^ .foam-u2-TextField {
+      outline: none;
+      height: 40px;
+      padding: 10px;
+    }
 
-        ^ .caret {
-          position: relative;
-        }
+    ^ .caret {
+      position: relative;
+    }
 
-        ^ .caret:before {
-          content: '';
-          position: absolute;
-          top: -22px;
-          left: 272px;
-          border-top: 7px solid #a4b3b8;
-          border-left: 7px solid transparent;
-          border-right: 7px solid transparent;
-        }
+    ^ .caret:before {
+      content: '';
+      position: absolute;
+      top: -22px;
+      left: 272px;
+      border-top: 7px solid #a4b3b8;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+    }
 
-        ^ .caret:after {
-          content: '';
-          position: absolute;
-          left: 12px;
-          top: 0;
-          border-top: 0px solid #ffffff;
-          border-left: 0px solid transparent;
-          border-right: 0px solid transparent;
-        }
+    ^ .caret:after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      border-top: 0px solid #ffffff;
+      border-left: 0px solid transparent;
+      border-right: 0px solid transparent;
+    }
 
-        ^ .institutionContainerHidden {
-          display: none;
-        }
+    ^ .institutionContainerHidden {
+      display: none;
+    }
 
-        ^ .instituteOtherMargin {
-          margin-left: 56px;
-        }
-      */}
-    })
-  ],
+    ^ .instituteOtherMargin {
+      margin-left: 56px;
+    }
+  `,
 
   messages: [
-    { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' },
-    { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts. Don\'t worry, you can always change the name later.' },
-    { name: 'LabelName',            message: 'Name *' },
     { name: 'Guide',                message: 'Don\'t know where to find these numbers? Check your cheque or contact your bank representative.' },
+    { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts. Don\'t worry, you can always change the name later.' },
     { name: 'LabelAccount',         message: 'Account No. *' },
+    { name: 'LabelInstitute',       message: 'Institution No. *' },
+    { name: 'LabelInstituteOther',  message: 'Institution No. (Other) *' },
     { name: 'LabelInstitution',     message: 'Institution *' },
+    { name: 'LabelName',            message: 'Name *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
-    { name: 'LabelInstitute',       message: 'Institute No. *' },
-    { name: 'LabelInstituteOther',  message: 'Institute No. (Other) *' }
+    { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' }
   ],
 
   properties: [
