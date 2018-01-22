@@ -30,7 +30,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-tag-Select {
-      width: 302px;
+      width: 209px;
       height: 40px;
       border-radius: 0;
 
@@ -62,36 +62,8 @@ foam.CLASS({
       padding: 10px;
     }
 
-    ^ .caret {
-      position: relative;
-    }
-
-    ^ .caret:before {
-      content: '';
-      position: absolute;
-      top: -22px;
-      left: 272px;
-      border-top: 7px solid #a4b3b8;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-    }
-
-    ^ .caret:after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      top: 0;
-      border-top: 0px solid #ffffff;
-      border-left: 0px solid transparent;
-      border-right: 0px solid transparent;
-    }
-
-    ^ .institutionContainerHidden {
-      display: none;
-    }
-
     ^ .instituteOtherMargin {
-      margin-left: 56px;
+      margin-left: 150px;
     }
   `,
 
@@ -130,80 +102,16 @@ foam.CLASS({
       }
     },
     {
-      // TODO: create a DAO to store these values so they can be more easily extended.
       name: 'institution',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          'BMO - 001',
-          'Scotiabank - 002',
-          'RBC - 003',
-          'TD - 004',
-          'National Bank of Canada - 005',
-          'CIBC - 010',
-          'HSBC - 016',
-          'Bank of Canada - 177',
-          'Citibank Canada - 260',
-          'Citizens Bank of Canada - 309',
-          'ING Bank of Canada - 614',
           'Other'
         ],
       },
-      factory: function() {
-        this.viewData.bankNumber = '001';
-        return 'BMO - 001'
-      },
       postSet: function(oldValue, newValue) {
-        this.hideOther = true;
-        switch(newValue) {
-          case 'BMO - 001' :
-            this.viewData.bankNumber = '001';
-            break;
-          case 'Scotiabank - 002' :
-            this.viewData.bankNumber = '002';
-            break;
-          case 'RBC - 003' :
-            this.viewData.bankNumber = '003';
-            break;
-          case 'TD - 004' :
-            this.viewData.bankNumber = '004';
-            break;
-          case 'National Bank of Canada - 005' :
-            this.viewData.bankNumber = '005';
-            break;
-          case 'CIBC - 010' :
-            this.viewData.bankNumber = '010';
-            break;
-          case 'HSBC - 016' :
-            this.viewData.bankNumber = '016';
-            break;
-          case 'Bank of Canada - 177' :
-            this.viewData.bankNumber = '177';
-            break;
-          case 'Citibank Canada - 260' :
-            this.viewData.bankNumber = '260';
-            break;
-          case 'Citizens Bank of Canada - 309' :
-            this.viewData.bankNumber = '309';
-            break;
-          case 'ING Bank of Canada - 614' :
-            this.viewData.bankNumber = '614';
-            break;
-          case 'Other' :
-            this.viewData.bankNumber = '';
-            this.hideOther = false;
-            break;
-        }
-      },
-      validateObj: function(institution, institutionOther) {
-        if ( institution == 'Other' && ! institutionOther.trim() )
-          return;
+        this.viewData.bankNumber = newValue;
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'hideOther',
-      value: true
     },
     {
       class: 'String',
@@ -212,7 +120,7 @@ foam.CLASS({
         this.viewData.bankNumber = newValue;
       },
       validateObj: function(institution, institutionOther) {
-        if ( ! /^[0-9]{3}$/.exec(institutionOther) &&  institution == 'Other') return;
+        if ( ! /^[0-9]{3}$/.exec(institutionOther)) return;
       }
     }
   ],
@@ -250,9 +158,8 @@ foam.CLASS({
           .start().addClass('inline')
             .start('p').add(this.LabelInstitution).addClass('inputFieldLabel').end()
             .start(this.INSTITUTION).end()
-            .start('div').addClass('caret').end()
           .end()
-          .start().addClass('inline instituteOtherMargin').enableClass('institutionContainerHidden', this.hideOther$)
+          .start().addClass('inline instituteOtherMargin')
             .start('p').add(this.LabelInstituteOther).addClass('inputFieldLabel').end()
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
