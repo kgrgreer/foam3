@@ -102,25 +102,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'institution',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Other'
-        ],
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.bankNumber = newValue;
-      }
-    },
-    {
       class: 'String',
       name: 'institutionOther',
       postSet: function(oldValue, newValue) {
         this.viewData.bankNumber = newValue;
-      },
-      validateObj: function(institution, institutionOther) {
-        if ( ! /^[0-9]{3}$/.exec(institutionOther)) return;
       }
     }
   ],
@@ -156,10 +141,6 @@ foam.CLASS({
             .tag(this.TRANSIT_NUMBER, {onKey: true, maxLength: 5})
           .end()
           .start().addClass('inline')
-            .start('p').add(this.LabelInstitution).addClass('inputFieldLabel').end()
-            .start(this.INSTITUTION).end()
-          .end()
-          .start().addClass('inline instituteOtherMargin')
             .start('p').add(this.LabelInstituteOther).addClass('inputFieldLabel').end()
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
