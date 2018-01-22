@@ -33,6 +33,7 @@ FOAM_FILES([
   //flinks views
   { name: 'net/nanopay/flinks/view/FlinksView'},
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksForm1', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksInstitutionForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksAccountForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksConnectForm', flags: ['web'] },
@@ -44,5 +45,6 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/form/FlinksThreeOptionForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksMultipleChoiceForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksXQuestionAnswerForm', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/form/FlinksXSelectionAnswerForm', flags: ['web'] }
+  { name: 'net/nanopay/flinks/view/form/FlinksXSelectionAnswerForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/element/JumpWizardView', flags: ['web'] }
 ])
