@@ -90,6 +90,7 @@ foam.CLASS({
       display: flex;
       word-wrap: break-word;
       width: 125px;
+      min-height: 15px;
     }
     ^ .foam-u2-ActionView-editProfile {
       text-decoration: underline;
@@ -102,12 +103,13 @@ foam.CLASS({
       cursor: pointer;
       opacity: 1;
     }
-    ^ .net-nanopay-ui-ActionView-editProfile {
+    ^ .link {
       color: #59a5d5;
-      width: 62px;
+      width: 100px;
       height: 0px;
-      text-decoration: underline;
+      display:inline-block;
       margin-left: 42px;
+      text-decoration: underline;
     }
     ^ .net-nanopay-ui-ActionView-editProfile:hover {
       cursor: pointer;
@@ -134,14 +136,16 @@ foam.CLASS({
         self.businessTypeName = type.name;
       });
 
-
       this
       .addClass(this.myClass())
 
       .start().addClass('businessSettingsContainer')
         .start().addClass('Container')
           .start().add('Business Profile').addClass('boxTitle').end()
-          .add(this.EDIT_PROFILE)
+          .start('p').addClass('link')		
+            .add("Edit Profile")		
+            .on('click', function(){ self.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView' })})		
+          .end()
           .start().addClass('profileImgDiv')
             .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
             .start().add(this.user.businessName).addClass('companyName').end()
@@ -197,13 +201,13 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'editProfile',
-      label: 'Edit Profile',
-      code: function (X) {
-        X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
-      }
-    }
-  ]
+  // actions: [
+  //   {
+  //     name: 'editProfile',
+  //     label: 'Edit Profile',
+  //     code: function (X) {
+  //       X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
+  //     }
+  //   }
+  // ]
 });

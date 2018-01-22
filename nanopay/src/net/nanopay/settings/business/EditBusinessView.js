@@ -176,7 +176,7 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-ActionView-closeButton {
           width: 24px;
-          height: 24px;
+          height: 35px;
           margin: 0;
           cursor: pointer;
           display: inline-block;

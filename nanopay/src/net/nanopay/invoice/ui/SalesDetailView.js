@@ -13,7 +13,8 @@ foam.CLASS({
   imports: [ 
     'stack', 
     'hideReceivableSummary', 
-    'invoiceDAO', 
+    'invoiceDAO',
+    'user',
     'ctrl'
   ],
 
