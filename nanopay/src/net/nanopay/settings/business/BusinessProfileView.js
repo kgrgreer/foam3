@@ -90,7 +90,7 @@ foam.CLASS({
       display: flex;
       word-wrap: break-word;
       width: 125px;
-      min-height: 15px;
+      height: 15px;
     }
     ^ .foam-u2-ActionView-editProfile {
       text-decoration: underline;
@@ -103,13 +103,11 @@ foam.CLASS({
       cursor: pointer;
       opacity: 1;
     }
-    ^ .link {
+    ^ .net-nanopay-ui-ActionView-editProfile {
       color: #59a5d5;
-      width: 100px;
-      height: 0px;
-      display:inline-block;
-      margin-left: 42px;
+      background-color: white;
       text-decoration: underline;
+      margin-left: 42px;
     }
     ^ .net-nanopay-ui-ActionView-editProfile:hover {
       cursor: pointer;
@@ -136,16 +134,14 @@ foam.CLASS({
         self.businessTypeName = type.name;
       });
 
+
       this
       .addClass(this.myClass())
 
       .start().addClass('businessSettingsContainer')
         .start().addClass('Container')
           .start().add('Business Profile').addClass('boxTitle').end()
-          .start('p').addClass('link')		
-            .add("Edit Profile")		
-            .on('click', function(){ self.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView' })})		
-          .end()
+          .add(this.EDIT_PROFILE)
           .start().addClass('profileImgDiv')
             .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
             .start().add(this.user.businessName).addClass('companyName').end()
@@ -198,6 +194,16 @@ foam.CLASS({
           .end()
         .end()
       .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'editProfile',
+      label: 'Edit Profile',
+      code: function (X) {
+        X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
+      }
     }
   ]
 });
