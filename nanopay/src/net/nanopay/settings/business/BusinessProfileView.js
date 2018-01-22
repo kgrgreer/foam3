@@ -199,15 +199,5 @@ foam.CLASS({
         .end()
       .end()
     }
-  ],
-
-  // actions: [
-  //   {
-  //     name: 'editProfile',
-  //     label: 'Edit Profile',
-  //     code: function (X) {
-  //       X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
-  //     }
-  //   }
-  // ]
+  ]
 });
