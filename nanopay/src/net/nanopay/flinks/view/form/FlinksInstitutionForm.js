@@ -6,7 +6,8 @@ foam.CLASS({
   imports: [
     'bankImgs',
     'form',
-    'isConnecting'
+    'isConnecting',
+    'stack'
   ],
   
   axioms: [
@@ -50,6 +51,7 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
+          margin-right: 8px;
           box-sizing: border-box;
           background-color: #148F77;
           outline: none;
@@ -89,6 +91,23 @@ foam.CLASS({
 
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-otherButton {
+          float: left;
+          margin: 0;
+          margin-left: 1px;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: %SECONDARYCOLOR%;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          margin-right: 40px;
         }
       */}
     })
@@ -143,6 +162,7 @@ foam.CLASS({
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
+          .tag(this.OTHER_BUTTON)
         .end()
         .start('div').style({'clear' : 'both'}).end()
     }
@@ -150,7 +170,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
+      label: 'Next',
       isEnabled: function(isConnecting, selectedOption) {
         //console.log(isConnecting, selectedOption);
         if ( isConnecting === true ) return false;
@@ -164,10 +184,17 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Close',
       code: function(X) {
         //console.log('close the form');
         X.form.goBack();
+      }
+    },
+    {
+      name: 'otherButton',
+      label: 'Other bank',
+      code: function(X) {
+        X.form.otherBank();
       }
     }
   ]

@@ -17,7 +17,8 @@ foam.CLASS({
   
   imports: [
     'flinksAuth',
-    'institutionDAO'
+    'institutionDAO',
+    'stack'
   ],
 
   requires: [
@@ -147,6 +148,9 @@ foam.CLASS({
         this.isEnabledGoNext = false;
         this.isEnabledGoBack = false;
       }
+    },
+    function otherBank() {
+      this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this.parentNode);
     }
   ],
   actions: [
