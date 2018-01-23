@@ -152,7 +152,6 @@ foam.CLASS({
       var self = this;
       var user = this.data.user;
 
-
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.document.addEventListener('touchstart', this.onTouchStarted);
       this.onDetach(function () {
