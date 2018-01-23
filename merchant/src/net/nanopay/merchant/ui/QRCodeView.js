@@ -133,7 +133,17 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { class: 'Currency', name: 'amount' }
+    {
+      class: 'Currency',
+      name: 'amount'
+    },
+    {
+      class: 'String',
+      name: 'challenge',
+      factory: function () {
+        return this.generateChallenge();
+      }
+    }
   ],
 
   messages: [
@@ -148,8 +158,6 @@ foam.CLASS({
       var self = this;
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
-
-      var challenge = this.generateChallenge();
 
       // add a listener for the payee id and amount
       var successSub = this.transactionSuccessDAO.where(this.AND(
