@@ -13,8 +13,15 @@ foam.CLASS({
         ^ {
           background: %PRIMARYCOLOR%;
           height: 65px;
+          width: 100%;
           margin-bottom: 20px;
           margin-top: 20px;
+          display: table;
+        }
+
+        ^ .verticalCenter {
+          display: table-cell;
+          vertical-align: middle;
         }
 
         ^ .icConnected {
@@ -37,8 +44,10 @@ foam.CLASS({
 
         ^ .secondImg {
           display: inline-block;
-          width: 120px;
-          height: 65px;
+          max-width: 120px;
+          max-height: 65px;
+          width: auto;
+          height: auto;
           margin-left: 30px;
           vertical-align: middle;
         }
@@ -57,10 +66,15 @@ foam.CLASS({
       var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this
       .addClass(this.myClass())
-      .start('div')
+      .start('div').addClass('verticalCenter')
         .start({class: 'foam.u2.tag.Image', data$: logoSlot}).addClass('firstImg').end()
         .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-        .start({class: 'foam.u2.tag.Image', data$: this.secondImg$}).addClass('secondImg').end()
+        .callIf(self.secondImg, function() {
+          this.start({class: 'foam.u2.tag.Image', data$: self.secondImg$}).addClass('secondImg').end()
+        })
+        .callIf(!self.secondImg, function() {
+          this.start({class: 'foam.u2.tag.Image', data$: logoSlot}).addClass('secondImg').end()
+        })
       .end()
     }
   ]

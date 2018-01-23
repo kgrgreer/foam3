@@ -4,9 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'isConnecting',
-    'group',
-    'logo'
+    'isConnecting'
   ],
   requires: [
     'foam.u2.view.RadioView'
@@ -149,14 +147,13 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this
       .addClass(this.myClass())
       .start('div').addClass('subTitle')
         .add(this.Step)
       .end()
       .start('div').addClass('subContent')
-        .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg$: logoSlot})
+        .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
         .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
         .start('div').addClass('qa-block')
           .forEach(this.iters, function(data, index){

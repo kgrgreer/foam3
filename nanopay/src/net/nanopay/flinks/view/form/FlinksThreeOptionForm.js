@@ -9,9 +9,7 @@ foam.CLASS({
     'foam.u2.tag.Input'
   ],
   imports: [
-    'isConnecting',
-    'group',
-    'logo'
+    'isConnecting'
   ],
   axioms: [
     foam.u2.CSS.create({
@@ -157,14 +155,13 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg$: logoSlot})
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .forEach(this.iters, function(data, index){
 
