@@ -217,9 +217,8 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
             return;
           }
-          //show loading spinner 
-          this.loadingSpinner.show();
           //disable button, prevent double click
+          this.loadingSpinner.show();
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
@@ -233,7 +232,7 @@ foam.CLASS({
             if ( status == 200 ) {
               //get account infos, forward to account page
               self.viewData.accounts = msg.accounts;
-              self.loadingSpinner.hide();
+              
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
@@ -245,26 +244,23 @@ foam.CLASS({
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
                 //To different view
                 //console.log(self.viewData.SecurityChallenges[0].Type)
-              }
-              self.loadingSpinner.hide();       
+              }   
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
-              self.loadingSpinner.hide();
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
-            self.loadingSpinner.hide();
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
-            self.loadingSpinner.hide();
             self.isConnecting = false;
+            self.loadingSpinner.hide();
             self.isEnabledButtons(true);
           });
           return;
         }
         //security challenge
         if ( this.position == 2 ) {
-          //disable button, prevent double click
+          //disable button, prevent double click, show loading indicator
           self.loadingSpinner.show();
           self.isEnabledButtons(false);
           var map ={};
@@ -282,22 +278,18 @@ foam.CLASS({
               //go to account view
               self.viewData.accounts = msg.Accounts;
               //console.log('account', msg.Accounts);
-              self.loadingSpinner.hide();
               self.subStack.push(self.views[3].view);
             } else if (status == 203) {
               //TODO: continue on the MFA, refresh//or push a new view
 
             } else if ( status == 401 ) {
               //MFA response error and forwar to another security challenge
-              self.loadingSpinner.hide();
               self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
               self.viewData.securityChallenges = msg.securityChallenges;
             } else {
-              self.loadingSpinner.hide();
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
-            self.loadingSpinner.hide();
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
             self.loadingSpinner.hide();
