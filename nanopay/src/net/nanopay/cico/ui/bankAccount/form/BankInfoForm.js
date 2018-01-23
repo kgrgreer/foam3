@@ -72,8 +72,6 @@ foam.CLASS({
     { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts. Don\'t worry, you can always change the name later.' },
     { name: 'LabelAccount',         message: 'Account No. *' },
     { name: 'LabelInstitute',       message: 'Institution No. *' },
-    { name: 'LabelInstituteOther',  message: 'Institution No. (Other) *' },
-    { name: 'LabelInstitution',     message: 'Institution *' },
     { name: 'LabelName',            message: 'Name *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
     { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' }
@@ -141,7 +139,7 @@ foam.CLASS({
             .tag(this.TRANSIT_NUMBER, {onKey: true, maxLength: 5})
           .end()
           .start().addClass('inline')
-            .start('p').add(this.LabelInstituteOther).addClass('inputFieldLabel').end()
+            .start('p').add(this.LabelInstitute).addClass('inputFieldLabel').end()
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
         .end()

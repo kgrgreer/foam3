@@ -144,7 +144,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step3: Please response below security challenges' },
+    { name: 'Step', message: 'Step 3: Please respond to the security challenges below.' },
     { name: 'header1', message: 'Please answer the security question: '},
     { name: 'answerError', message: 'Invalid answer'}
   ],
@@ -195,8 +195,8 @@ foam.CLASS({
           .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-          .tag(this.NEXT_BUTTON, {label: 'next'})
-          .tag(this.CLOSE_BUTTON, {label: 'close'})
+          .tag(this.NEXT_BUTTON, {label: 'Next'})
+          .tag(this.CLOSE_BUTTON, {label: 'Close'})
         .end()
         .start('div').style({'clear' : 'both'}).end()
     }
@@ -204,7 +204,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
+      label: 'Next',
       isEnabled: function(tick, isConnecting, answerCheck) {
         for ( var x in answerCheck ) {
           if ( answerCheck[x] === false ) return false;
@@ -220,7 +220,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Close',
       code: function(X) {
         //console.log('close the form');
         //console.log(X.form.goBack);

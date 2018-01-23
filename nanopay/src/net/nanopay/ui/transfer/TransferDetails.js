@@ -316,7 +316,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.user })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.user$ })
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();

@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   properties: [
@@ -66,6 +67,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isEnabledGoBack',
       value: true
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
     }
   ],
 
@@ -122,6 +129,11 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
         }
+        ^ .loadingSpinner {
+          position: relative;
+          left: 725px;
+          bottom: 18.5px;
+        }
         ^ p {
           margin: 0;
         }
@@ -144,6 +156,18 @@ foam.CLASS({
         { parent: 'authForm', id: 'form-authForm-Account',      label: 'Account',       view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' } }
       ];
       this.SUPER();
+    },
+    function initE() {
+      this.SUPER();
+
+      this.loadingSpinner.hide();
+      
+      this
+        .addClass(this.myClass())
+        .start()
+          .add(this.loadingSpinner).addClass('loadingSpinner')
+        .end();
+
     },
     function isEnabledButtons(check) {
       if ( check == true ) {
@@ -199,6 +223,7 @@ foam.CLASS({
             return;
           }
           //disable button, prevent double click
+          this.loadingSpinner.show();
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
@@ -212,6 +237,7 @@ foam.CLASS({
             if ( status == 200 ) {
               //get account infos, forward to account page
               self.viewData.accounts = msg.accounts;
+              
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
@@ -232,13 +258,15 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
             self.isConnecting = false;
+            self.loadingSpinner.hide();
             self.isEnabledButtons(true);
           });
           return;
         }
         //security challenge
         if ( this.position == 2 ) {
-          //disable button, prevent double click
+          //disable button, prevent double click, show loading indicator
+          self.loadingSpinner.show();
           self.isEnabledButtons(false);
           var map ={};
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
@@ -269,6 +297,7 @@ foam.CLASS({
           }).catch( function(a) {
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
+            self.loadingSpinner.hide();
             self.isEnabledButtons(true);
             self.isConnecting = false;
           });

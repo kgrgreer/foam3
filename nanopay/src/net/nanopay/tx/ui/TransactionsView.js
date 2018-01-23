@@ -217,11 +217,11 @@ foam.CLASS({
         onKey: true
       }
     },
-    { name: 'data', factory: function() { return this.transactionDAO; }},
+    { name: 'data', factory: function() { return this.transactionDAO.orderBy(this.DESC(this.Transaction.DATE)); }},
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)) : data;
+        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.DATE)) : data;
       },
       view: {
         class: 'foam.u2.view.TableView',
