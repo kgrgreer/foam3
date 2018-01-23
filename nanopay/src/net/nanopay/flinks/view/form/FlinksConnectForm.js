@@ -7,7 +7,9 @@ foam.CLASS({
     'bankImgs',
     'form',
     'viewData',
-    'isConnecting'
+    'isConnecting',
+    'group',
+    'logo'
   ],
 
   axioms: [
@@ -134,18 +136,13 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('p').addClass('text').style({ 'margin-left':'20px'})
             .add(this.LoginName)
           .end()
