@@ -72,7 +72,6 @@ foam.CLASS({
     { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts. Don\'t worry, you can always change the name later.' },
     { name: 'LabelAccount',         message: 'Account No. *' },
     { name: 'LabelInstitute',       message: 'Institution No. *' },
-    { name: 'LabelInstitution',     message: 'Institution *' },
     { name: 'LabelName',            message: 'Name *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
     { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' }
