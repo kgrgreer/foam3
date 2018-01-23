@@ -126,8 +126,8 @@ foam.CLASS({
         }
         ^ .loadingSpinner {
           position: relative;
-          left: 730px;
-          bottom: 19px;
+          left: 725px;
+          bottom: 18.5px;
         }
         ^ p {
           margin: 0;
@@ -265,6 +265,7 @@ foam.CLASS({
         //security challenge
         if ( this.position == 2 ) {
           //disable button, prevent double click
+          self.loadingSpinner.show();
           self.isEnabledButtons(false);
           var map ={};
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
@@ -281,20 +282,25 @@ foam.CLASS({
               //go to account view
               self.viewData.accounts = msg.Accounts;
               //console.log('account', msg.Accounts);
+              self.loadingSpinner.hide();
               self.subStack.push(self.views[3].view);
             } else if (status == 203) {
               //TODO: continue on the MFA, refresh//or push a new view
 
             } else if ( status == 401 ) {
               //MFA response error and forwar to another security challenge
+              self.loadingSpinner.hide();
               self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
               self.viewData.securityChallenges = msg.securityChallenges;
             } else {
+              self.loadingSpinner.hide();
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
+            self.loadingSpinner.hide();
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
+            self.loadingSpinner.hide();
             self.isEnabledButtons(true);
             self.isConnecting = false;
           });
