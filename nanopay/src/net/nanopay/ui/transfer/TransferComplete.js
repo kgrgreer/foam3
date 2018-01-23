@@ -111,7 +111,7 @@ foam.CLASS({
         .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
         .start().addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 3 }) )
           .start('h2').add(this.name, ' has received CAD ', this.viewData.fromAmount.toFixed(2), '.').end()
-          .start('h3').add('Reference No. ', this.viewData.transaction? this.viewData.transaction.id : '').end()
+          .start('h3').add('Transaction ID ', this.viewData.transaction? this.viewData.transaction.id : '').end()
           .start()
             .start('p')
               .add('The transaction is successfully finished, you can check the status of the payment from home screen at any time.')
