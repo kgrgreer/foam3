@@ -19,9 +19,11 @@ foam.CLASS({
 
         ^ .optionSpacer {
           display: inline-block;
-          width: 120px;
-          height: 65px;
+          width: 122px;
+          height: 67px;
           margin-right: 10px;
+          box-sizing: border-box;
+          border: solid 1px white;
         }
 
         ^ .optionSpacer:last-child {
@@ -35,12 +37,11 @@ foam.CLASS({
         ^ .institution:hover {
           cursor: pointer;
         }
-        ^ .institution.selected {
+        ^ .optionSpacer.selected {
           border: solid 1px #1CC2B7;
         }
         ^ .subContent {
-          width: 522px;
-          height: 292px;
+          width: 528px;
           background-color: #edf0f5;
           border: 1px solid #edf0f5;
         }
@@ -51,9 +52,8 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
-          margin-right: 8px;
           box-sizing: border-box;
-          background-color: #148F77;
+          background-color: #1CC2B7;
           outline: none;
           border:none;
           width: 136px;
