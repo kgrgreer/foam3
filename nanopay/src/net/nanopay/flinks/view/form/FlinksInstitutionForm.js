@@ -9,7 +9,7 @@ foam.CLASS({
     'isConnecting',
     'stack'
   ],
-  
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*

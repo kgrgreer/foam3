@@ -7,7 +7,9 @@ foam.CLASS({
     'bankImgs',
     'form',
     'viewData',
-    'isConnecting'
+    'isConnecting',
+    'group',
+    'logo'
   ],
 
   axioms: [
@@ -134,7 +136,8 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
+      var self     = this;
+      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
@@ -142,7 +145,7 @@ foam.CLASS({
         .end()
         .start('div').addClass('subContent')
           .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
+            .start({class: 'foam.u2.tag.Image', data$: logoSlot}).addClass('firstImg').end()
             .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
             .start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
           .end()
