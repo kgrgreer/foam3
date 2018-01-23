@@ -207,7 +207,7 @@ foam.CLASS({
         payeeId: self.user.id,
         deviceId: self.device.id,
         amount: self.amount,
-        challenge: challenge,
+        challenge: self.challenge,
         tip: self.tipEnabled
       }));
     }
