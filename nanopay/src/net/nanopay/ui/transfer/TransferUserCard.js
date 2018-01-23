@@ -96,7 +96,30 @@ foam.CLASS({
     'email_',
     'phone_',
     'flagURL_',
-    'address_',
+    {
+      name: 'suite_',
+      value: ''
+    },
+    {
+      name: 'address1_',
+      value: ''
+    },
+    {
+      name: 'address2_',
+      value: ''
+    },
+    {
+      name: 'city_',
+      value: ''
+    },
+    {
+      name: 'postalCode_',
+      value: ''
+    },
+    {
+      name: 'regionCountry_',
+      value: ''
+    },
     'nationality_',
     {
       name: 'created_',
@@ -116,8 +139,9 @@ foam.CLASS({
     },
 
     function createView() {
+      var self = this;
+
       if ( this.created_ ) return;
-      
       this
         .addClass(this.myClass())
         .start('div').addClass('userContainer')
@@ -130,7 +154,12 @@ foam.CLASS({
           .end()
           .start('p').addClass('pDetails').add(this.email_$).end()
           .start('p').addClass('pDetails').add(this.phone_$).end()
-          .start('p').addClass('pDetails').add(this.address_$).end()
+          .start('p').addClass('pDetails').add(this.suite_$).end()
+          .start('p').addClass('pDetails').add(this.address1_$).end()
+          .start('p').addClass('pDetails').add(this.address2_$).end()
+          .start('p').addClass('pDetails').add(this.city_$).end()
+          .start('p').addClass('pDetails').add(this.postalCode_$).end()
+          .start('p').addClass('pDetails').add(this.regionCountry_$).end()
           .start('div').addClass('bankInfoContainer').show(this.accountNo_$ && this.type == 'foreign')
             .start('div').addClass('bankInfoRow')
               .start('p').addClass('pDetails').addClass('bankInfoText').addClass('bankInfoLabel').addClass('bold')
@@ -165,7 +194,7 @@ foam.CLASS({
     function setBankInfo(account){
       var self = this;
       self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
-      self.branchDAO.find(account.branchId).then(function(bank){        
+      self.branchDAO.find(account.branchId).then(function(bank){
         switch( self.user.address.countryId ) {
           case 'CA' :
             self.flagURL_ = 'images/canada.svg';
@@ -185,14 +214,19 @@ foam.CLASS({
     },
 
     function resetUser() {
-      this.address_ = null;
+      this.suite_ = '';
+      this.address1_ = '';
+      this.address2_ = '';
+      this.city_ = '';
+      this.postalCode_ = '';
+      this.regionCountry_ = '';
       this.name_ = null;
       this.idLabel_ = null;
       this.accountId_ = null;
       this.accountNo_ = null;
       this.bankName_ = null;
       this.flagURL_ = null;
-      this.nationality_ = null; 
+      this.nationality_ = null;
       this.idLabel_= null;
     }
   ],
@@ -217,15 +251,24 @@ foam.CLASS({
           this.phone_ = this.user.phone.number;
         }
 
-        if( this.user.address.city || this.user.address.address ){
-          this.address_ = this.user.address.address;
-          if ( this.user.address.suite ) this.address_ += ', Suite/Unit ' + this.user.address.suite;
-          if ( this.user.address.city ) this.address_ += ', ' + this.user.address.city;
-          if ( this.user.address.postalCode ) this.address_ += ', ' + this.user.address.postalCode;
-          if ( this.user.address.regionId ) this.address_ += ', ' + this.user.address.regionId;
-          this.address_ += ', ' + this.user.address.countryId; 
+        if ( this.user.address ) {
+          var address = this.user.address;
+
+          if ( address.structured ) {
+            if ( address.suite ) this.suite_ = 'Suite/Unit ' + address.suite;
+            if ( address.streetNumber ) this.address1_ = address.streetNumber + ' ';
+            if ( address.streetName ) this.address1_ += address.streetName;
+          } else {
+            if ( address.address1 ) this.address1_ = address.address1;
+            if ( address.address2 ) this.address2_ = address.address2;
+          }
+
+          if ( address.city ) this.city_ = address.city;
+          if ( address.postalCode ) this.postalCode_ = address.postalCode;
+          if ( address.regionId ) this.regionCountry_ = address.regionId;
+          if ( address.countryId ) this.regionCountry_ += ', ' + address.countryId;
         }
-        
+
         if(this.user.defaultBankAccountId){
           this.user.bankAccounts.find(this.user.defaultBankAccountId).then(function(a){
             if(!a) return;
@@ -238,8 +281,8 @@ foam.CLASS({
             self.setBankInfo(account)
           });
         }
-        
-        this.createView();        
+
+        this.createView();
       }
     }
   ]
