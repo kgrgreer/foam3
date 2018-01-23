@@ -159,7 +159,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('error-view-div')
           .start('div').addClass('error-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.png' })
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.svg' })
           .end()
           .start().addClass('error-message').add( ! this.refund ? this.paymentError : this.refundError ).end()
           .start().addClass('error-amount').add('$' + ( this.data.total / 100 ).toFixed(2)).end()
