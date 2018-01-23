@@ -118,7 +118,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 2: Log in your bank account and securely connect with nanopay.'},
+    { name: 'Step', message: 'Step 2: Login to your bank account and securely connect with nanopay.'},
     { name: 'LoginName', message: 'Access Card No. / Username'},
     { name: 'LoginPassword', message: 'Password'},
     { name: 'errorUsername', message: 'Invalid Username'},
