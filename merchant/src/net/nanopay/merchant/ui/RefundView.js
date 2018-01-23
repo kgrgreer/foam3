@@ -157,10 +157,12 @@ foam.CLASS({
       });
 
       this.transactionDAO.put(refund).then(function () {
+        self.data.status = 'Refunded';
+        return self.transactionDAO.put(self.data);
+      })
+      .then(function () {
         refund.user = self.data.user;
         self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
-        self.data.status = 'Refunded';
-        self.transactionDAO.put(self.data);
       })
       .catch(function (err) {
         refund.user = self.data.user;
