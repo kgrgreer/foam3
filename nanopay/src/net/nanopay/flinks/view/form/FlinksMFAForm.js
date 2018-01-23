@@ -2,12 +2,12 @@ foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksMFAForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
-  
+
   imports: [
     'bankImgs',
     'form'
   ],
-  
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -154,19 +154,13 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            //.start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
           .start(this.ANSWER, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()

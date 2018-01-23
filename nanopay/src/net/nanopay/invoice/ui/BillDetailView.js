@@ -243,13 +243,11 @@ foam.CLASS({
 
           // By pass for safari & mozilla type='date' on input support
           // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-          if( !foam.Date.isInstance(dueDate) && dueDate != null ){
-            dueDate = new Date(dueDate);
-            if(!dueDate){
-              this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
-              return;
-            }
+          if( isNaN(dueDate) && dueDate != null ){
+            this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
+            return;  
           }
+          
           var inv = this.Invoice.create({
             payerId: this.user.id,
             payeeId: this.userList,

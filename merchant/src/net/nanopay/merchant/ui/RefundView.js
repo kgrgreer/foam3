@@ -101,9 +101,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var user = this.data.user;
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
+
+      var user = this.data.user;
 
       this
         .addClass(this.myClass())
@@ -141,9 +142,11 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) return;
-      var self = this;
+      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) {
+        return;
+      }
 
+      var self = this;
       var refund = this.Transaction.create({
         payerId: this.user.id,
         payeeId: this.data.user.id,
@@ -154,11 +157,15 @@ foam.CLASS({
       });
 
       this.transactionDAO.put(refund).then(function () {
-        self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
         self.data.status = 'Refunded';
-        self.transactionDAO.put(self.data);
+        return self.transactionDAO.put(self.data);
+      })
+      .then(function () {
+        refund.user = self.data.user;
+        self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
       })
       .catch(function (err) {
+        refund.user = self.data.user;
         self.stack.push(self.ErrorView.create({ refund: true, data: refund }));
       });
     }

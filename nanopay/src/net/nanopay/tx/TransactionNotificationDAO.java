@@ -14,7 +14,7 @@ public class TransactionNotificationDAO
   public TransactionNotificationDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    transactionSuccessDAO_ = (DAO) x.get("transactionSuccessDAO");
+    transactionSuccessDAO_ = (DAO) getX().get("transactionSuccessDAO");
     transactionErrorDAO_ = (DAO) getX().get("transactionErrorDAO");
   }
 

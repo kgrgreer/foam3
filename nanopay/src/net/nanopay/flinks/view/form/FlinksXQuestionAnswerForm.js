@@ -76,7 +76,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;    
+          color: #093649;
         }
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
@@ -142,11 +142,11 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step3: Please response below security challenges' },
+    { name: 'Step', message: 'Step 3: Please respond to the security challenges below.' },
     { name: 'header1', message: 'Please answer the security question: '},
     { name: 'answerError', message: 'Invalid answer'}
   ],
-  
+
   methods: [
     function init() {
       var self = this;
@@ -159,7 +159,7 @@ foam.CLASS({
       this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
       this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
     },
-    
+
     function initE() {
       var self = this;
       this.SUPER();
@@ -169,11 +169,7 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
@@ -196,8 +192,8 @@ foam.CLASS({
           .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-          .tag(this.NEXT_BUTTON, {label: 'next'})
-          .tag(this.CLOSE_BUTTON, {label: 'close'})
+          .tag(this.NEXT_BUTTON, {label: 'Next'})
+          .tag(this.CLOSE_BUTTON, {label: 'Close'})
         .end()
         .start('div').style({'clear' : 'both'}).end()
     }
@@ -205,7 +201,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
+      label: 'Next',
       isEnabled: function(tick, isConnecting, answerCheck) {
         for ( var x in answerCheck ) {
           if ( answerCheck[x] === false ) return false;
@@ -221,7 +217,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Close',
       code: function(X) {
         //console.log('close the form');
         //console.log(X.form.goBack);

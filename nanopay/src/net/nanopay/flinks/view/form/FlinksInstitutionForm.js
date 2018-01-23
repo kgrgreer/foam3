@@ -6,9 +6,10 @@ foam.CLASS({
   imports: [
     'bankImgs',
     'form',
-    'isConnecting'
+    'isConnecting',
+    'stack'
   ],
-  
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -18,9 +19,11 @@ foam.CLASS({
 
         ^ .optionSpacer {
           display: inline-block;
-          width: 120px;
-          height: 65px;
+          width: 122px;
+          height: 67px;
           margin-right: 10px;
+          box-sizing: border-box;
+          border: solid 1px white;
         }
 
         ^ .optionSpacer:last-child {
@@ -34,12 +37,11 @@ foam.CLASS({
         ^ .institution:hover {
           cursor: pointer;
         }
-        ^ .institution.selected {
+        ^ .optionSpacer.selected {
           border: solid 1px #1CC2B7;
         }
         ^ .subContent {
-          width: 522px;
-          height: 292px;
+          width: 528px;
           background-color: #edf0f5;
           border: 1px solid #edf0f5;
         }
@@ -51,7 +53,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #148F77;
+          background-color: #1CC2B7;
           outline: none;
           border:none;
           width: 136px;
@@ -89,6 +91,23 @@ foam.CLASS({
 
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-otherButton {
+          float: left;
+          margin: 0;
+          margin-left: 1px;
+          outline: none;
+          border:none;
+          min-width: 136px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: %SECONDARYCOLOR%;
+          font-size: 12px;
+          font-weight: lighter;
+          letter-spacing: 0.2px;
+          color: #FFFFFF;
+          margin-right: 40px;
         }
       */}
     })
@@ -143,6 +162,7 @@ foam.CLASS({
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
+          .tag(this.OTHER_BUTTON)
         .end()
         .start('div').style({'clear' : 'both'}).end()
     }
@@ -150,7 +170,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
+      label: 'Next',
       isEnabled: function(isConnecting, selectedOption) {
         //console.log(isConnecting, selectedOption);
         if ( isConnecting === true ) return false;
@@ -164,10 +184,17 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Close',
       code: function(X) {
         //console.log('close the form');
         X.form.goBack();
+      }
+    },
+    {
+      name: 'otherButton',
+      label: 'Other bank',
+      code: function(X) {
+        X.form.otherBank();
       }
     }
   ]

@@ -46,6 +46,7 @@ foam.CLASS({
       height: 15px;
       word-wrap: break-word;
       width: 125px;
+      min-height: 15px;
     }
     ^ .companyName {
       font-family: 'Roboto';

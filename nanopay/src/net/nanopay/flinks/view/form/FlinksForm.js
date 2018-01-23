@@ -14,10 +14,11 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions'
   ],
-  
+
   imports: [
     'flinksAuth',
-    'institutionDAO'
+    'institutionDAO',
+    'stack'
   ],
 
   requires: [
@@ -25,12 +26,13 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
+    'net.nanopay.ui.LoadingSpinner'
   ],
-  
+
   properties: [
     {
       name: 'bankImgs',
-      factory: function() { 
+      factory: function() {
         return [
           {index: 0, institution: 'ATB', image: 'images/banks/atb.svg'},
           {index: 1,institution: 'BMO', image: 'images/banks/bmo.svg'},
@@ -48,7 +50,7 @@ foam.CLASS({
           {index: 13,institution: 'TD', image: 'images/banks/td.svg'},
           {index: 14,institution: 'Vancity', image: 'images/banks/vancity.svg'},
           {index: 15,institution: 'FlinksCapital', image: 'images/banks/flinks.svg'}
-        ]; 
+        ];
       }
     },
     {
@@ -65,13 +67,19 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isEnabledGoBack',
       value: true
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
     }
   ],
 
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
-      code: function CSS() {/*     
+      code: function CSS() {/*
         ^ .subTitle {
           width: 490px;
           height: 16px;
@@ -91,12 +99,15 @@ foam.CLASS({
           width: 24px;
           height: 24px;
           margin-left: 30px;
-          vertical-align: 20px;
+          vertical-align: middle;
         }
         ^ .firstImg {
           display: inline-block;
-          width: 120px;
-          height: 65px;
+          max-width: 120px;
+          max-height: 65px;
+          width: auto;
+          height: auto;
+          vertical-align: middle;
           margin-left: 82px;
         }
         ^ .secondImg {
@@ -104,8 +115,10 @@ foam.CLASS({
           width: 120px;
           height: 65px;
           margin-left: 30px;
+          vertical-align: middle;
         }
         ^ .subHeader {
+          background: %PRIMARYCOLOR%;
           height: 65px;
           margin-bottom: 20px;
           margin-top: 20px;
@@ -115,6 +128,11 @@ foam.CLASS({
           height: 307px;
           border-radius: 2px;
           background-color: #ffffff;
+        }
+        ^ .loadingSpinner {
+          position: relative;
+          left: 725px;
+          bottom: 18.5px;
         }
         ^ p {
           margin: 0;
@@ -139,6 +157,18 @@ foam.CLASS({
       ];
       this.SUPER();
     },
+    function initE() {
+      this.SUPER();
+
+      this.loadingSpinner.hide();
+      
+      this
+        .addClass(this.myClass())
+        .start()
+          .add(this.loadingSpinner).addClass('loadingSpinner')
+        .end();
+
+    },
     function isEnabledButtons(check) {
       if ( check == true ) {
         this.isEnabledGoNext = true;
@@ -147,6 +177,9 @@ foam.CLASS({
         this.isEnabledGoNext = false;
         this.isEnabledGoBack = false;
       }
+    },
+    function otherBank() {
+      this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this.parentNode);
     }
   ],
   actions: [
@@ -190,6 +223,7 @@ foam.CLASS({
             return;
           }
           //disable button, prevent double click
+          this.loadingSpinner.show();
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
@@ -199,10 +233,11 @@ foam.CLASS({
             if ( self.position != 1 ) return;
 
             var status = msg.HttpStatusCode;
-            
+
             if ( status == 200 ) {
               //get account infos, forward to account page
               self.viewData.accounts = msg.accounts;
+              
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
@@ -214,7 +249,7 @@ foam.CLASS({
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
                 //To different view
                 //console.log(self.viewData.SecurityChallenges[0].Type)
-              }       
+              }
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
@@ -223,23 +258,25 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
             self.isConnecting = false;
+            self.loadingSpinner.hide();
             self.isEnabledButtons(true);
           });
           return;
         }
         //security challenge
         if ( this.position == 2 ) {
-          //disable button, prevent double click
+          //disable button, prevent double click, show loading indicator
+          self.loadingSpinner.show();
           self.isEnabledButtons(false);
           var map ={};
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
-            map[this.viewData.questions[i]] = this.viewData.answers[i]; 
+            map[this.viewData.questions[i]] = this.viewData.answers[i];
           }
           //console.log('map', map);
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map).then( function(msg) {
-            //console.log('return challengeQuestion msg', msg);            
+            //console.log('return challengeQuestion msg', msg);
             if ( self.position != 2 ) return;
-            
+
             var status = msg.HttpStatusCode;
 
             if ( status == 200 ) {
@@ -260,6 +297,7 @@ foam.CLASS({
           }).catch( function(a) {
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
+            self.loadingSpinner.hide();
             self.isEnabledButtons(true);
             self.isConnecting = false;
           });

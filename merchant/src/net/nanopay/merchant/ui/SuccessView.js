@@ -152,7 +152,6 @@ foam.CLASS({
       var self = this;
       var user = this.data.user;
 
-
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.document.addEventListener('touchstart', this.onTouchStarted);
       this.onDetach(function () {
@@ -169,7 +168,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('success-view-div')
           .start('div').addClass('success-icon')
-            .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.png' })
+            .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.svg' })
           .end()
           .start().addClass('success-message').add( ! this.refund ? this.paymentSuccess : this.refundSuccess ).end()
           .start().addClass('success-amount').add('$' + ( amount / 100 ).toFixed(2)).end()

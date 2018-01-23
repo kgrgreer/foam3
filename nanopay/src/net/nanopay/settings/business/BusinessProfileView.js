@@ -90,6 +90,7 @@ foam.CLASS({
       display: flex;
       word-wrap: break-word;
       width: 125px;
+      height: 15px;
     }
     ^ .foam-u2-ActionView-editProfile {
       text-decoration: underline;
@@ -104,8 +105,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-editProfile {
       color: #59a5d5;
-      width: 62px;
-      height: 0px;
+      background-color: white;
       text-decoration: underline;
       margin-left: 42px;
     }
