@@ -36,25 +36,12 @@ methods: [
   function initE() {
     this.SUPER();
 
-    var referenceNumber = this.generateReferenceNumber();
-
     this
       .addClass(this.myClass())
       .start()
         .start('p').add(this.Step).addClass('pDefault stepTopMargin').end()
         .start('p').add(this.Description).addClass('description').end()
-        .start('p').add(this.ReferenceNumber + ' ' + referenceNumber).addClass('referenceNumber').end()
       .end();
-  },
-
-  function generateReferenceNumber() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  
-    for (var i = 0; i < 14; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  
-    return text;
   }
 ]
 
