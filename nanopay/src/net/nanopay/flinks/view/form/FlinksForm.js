@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
+    'net.nanopay.ui.LoadingSpinner'
   ],
   
   properties: [
@@ -66,6 +67,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isEnabledGoBack',
       value: true
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
     }
   ],
 
@@ -117,6 +124,11 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
         }
+        ^ .loadingSpinner {
+          position: relative;
+          left: 730px;
+          bottom: 19px;
+        }
         ^ p {
           margin: 0;
         }
@@ -139,6 +151,18 @@ foam.CLASS({
         { parent: 'authForm', id: 'form-authForm-Account',      label: 'Account',       view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' } }
       ];
       this.SUPER();
+    },
+    function initE() {
+      this.SUPER();
+
+      this.loadingSpinner.hide();
+      
+      this
+        .addClass(this.myClass())
+        .start()
+          .add(this.loadingSpinner).addClass('loadingSpinner')
+        .end();
+
     },
     function isEnabledButtons(check) {
       if ( check == true ) {
@@ -193,6 +217,8 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
             return;
           }
+          //show loading spinner 
+          this.loadingSpinner.show();
           //disable button, prevent double click
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
@@ -207,6 +233,7 @@ foam.CLASS({
             if ( status == 200 ) {
               //get account infos, forward to account page
               self.viewData.accounts = msg.accounts;
+              self.loadingSpinner.hide();
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
@@ -218,14 +245,18 @@ foam.CLASS({
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
                 //To different view
                 //console.log(self.viewData.SecurityChallenges[0].Type)
-              }       
+              }
+              self.loadingSpinner.hide();       
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
+              self.loadingSpinner.hide();
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
+            self.loadingSpinner.hide();
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
+            self.loadingSpinner.hide();
             self.isConnecting = false;
             self.isEnabledButtons(true);
           });
