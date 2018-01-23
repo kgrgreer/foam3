@@ -5,7 +5,9 @@ foam.CLASS({
 
   imports: [
     'bankImgs',
-    'form'
+    'form',
+    'group',
+    'logo'
   ],
 
   axioms: [
@@ -69,7 +71,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;    
+          color: #093649;
         }
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
@@ -202,17 +204,15 @@ foam.CLASS({
     },
     function initE() {
       this.SUPER();
+      var self = this;
+      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg$: logoSlot})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('p').add(( ! this.viewData.questions[0] ) ? '' : this.viewData.questions[0]).addClass('question').style({'margin-left':'20px', 'margin-top':'20px'}).end()
           .start(this.ANSWER0, {onKey: true}).addClass('input').style({'margin-left':'20px', 'margin-top':'10px'}).end()

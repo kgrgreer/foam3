@@ -4,9 +4,11 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'isConnecting'
+    'isConnecting',
+    'group',
+    'logo'
   ],
-  
+
   requires: [
     'foam.u2.view.ChoiceView',
     'foam.u2.view.StringArrayView',
@@ -60,7 +62,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;    
+          color: #093649;
         }
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
@@ -152,9 +154,10 @@ foam.CLASS({
         'ccccc2'],
       ];
     },
-    
+
     function initE() {
       var self = this;
+      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -162,11 +165,7 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg$: logoSlot})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.iters, function(data, index){

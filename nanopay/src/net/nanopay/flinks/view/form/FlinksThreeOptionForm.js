@@ -9,7 +9,9 @@ foam.CLASS({
     'foam.u2.tag.Input'
   ],
   imports: [
-    'isConnecting'
+    'isConnecting',
+    'group',
+    'logo'
   ],
   axioms: [
     foam.u2.CSS.create({
@@ -48,7 +50,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;    
+          color: #093649;
         }
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
@@ -155,17 +157,14 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg$: logoSlot})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .forEach(this.iters, function(data, index){
 
@@ -174,7 +173,7 @@ foam.CLASS({
             //var input = self.Input.create({onKey: true});
             view.data$.sub(function(){
               console.log(view.choices);
-              if ( ! view.data ) { 
+              if ( ! view.data ) {
                 self.questionCheck[index] = false;
               } else {
                 self.questionCheck[index] = true;
@@ -192,7 +191,7 @@ foam.CLASS({
               // for ( var o in input.data ) {
               //   if ( o.trim().length == 0 ) return self.answerCheck[index] = false;
               // }
-              
+
             });
             this.start(view).style({ 'margin-left':'20px', 'margin-top':'20px'}).end()
             this.start(input).style({ 'margin-left':'20px', 'margin-top':'10px'}).end()

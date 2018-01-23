@@ -7,7 +7,9 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'viewData'
+    'viewData',
+    'group',
+    'logo'
   ],
   requires: [
     'foam.u2.view.StringArrayView',
@@ -76,7 +78,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;    
+          color: #093649;
         }
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
@@ -146,7 +148,7 @@ foam.CLASS({
     { name: 'header1', message: 'Please answer the security question: '},
     { name: 'answerError', message: 'Invalid answer'}
   ],
-  
+
   methods: [
     function init() {
       var self = this;
@@ -159,9 +161,10 @@ foam.CLASS({
       this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
       this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
     },
-    
+
     function initE() {
       var self = this;
+      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -169,11 +172,7 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg$: logoSlot})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
