@@ -126,8 +126,16 @@ foam.CLASS({
         }
         ^ .loadingSpinner {
           position: relative;
-          left: 725px;
-          bottom: 18.5px;
+          left: 602px;
+          margin-top: 20px;
+        }
+        ^ .spinnerText {
+          vertical-align: top;
+          margin: 0;
+          margin-top: 3px;
+          margin-right: 3px;
+          display: inline-block;
+          font-size: 13px;
         }
         ^ p {
           margin: 0;
@@ -160,9 +168,10 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .add(this.loadingSpinner).addClass('loadingSpinner')
+          .start(this.loadingSpinner).addClass('loadingSpinner')
+            .start('h6').add('Waiting for verification...').addClass('spinnerText').end()
+          .end()
         .end();
-
     },
     function isEnabledButtons(check) {
       if ( check == true ) {
@@ -219,6 +228,7 @@ foam.CLASS({
           }
           //disable button, prevent double click
           this.loadingSpinner.show();
+          this.nextLabel = "Verifying...";
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
@@ -254,6 +264,7 @@ foam.CLASS({
           }).finally( function() {
             self.isConnecting = false;
             self.loadingSpinner.hide();
+            self.nextLabel = "Sign In";
             self.isEnabledButtons(true);
           });
           return;
