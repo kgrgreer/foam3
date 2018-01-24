@@ -161,6 +161,7 @@ foam.CLASS({
         .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
         .start('div').addClass('qa-block')
           .forEach(this.iters, function(data, index){
+            //select which view to create;
             var radio = self.RadioView.create({choices : data});
             var checkBox = net.nanopay.flinks.view.element.CheckBoxes.create({choices: data})
             radio.data$.sub(function(){
