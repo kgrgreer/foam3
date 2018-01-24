@@ -151,9 +151,6 @@ foam.CLASS({
     function init() {
       var self = this;
       this.SUPER();
-      this.viewData.questions = [
-        'What is your mother maiden name','What is your age','cccc','dddd ddddd ddddddd dddddd'
-      ];
       this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
       this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
       this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
