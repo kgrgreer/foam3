@@ -166,10 +166,8 @@ foam.CLASS({
 
       var user = this.transactionUser;
       // if not a refund, use the total; else use amount
-      var refund = ( this.transaction.status === 'Refund' );
-      var amount = ( ! refund ) ?
-        this.transaction.total :
-        this.transaction.amount;
+      var refund = ( this.transaction.status === 'Refund' || this.transaction.status === 'Refunded' );
+      var amount = ( ! refund ) ? this.transaction.total : this.transaction.amount;
 
       this
         .addClass(this.myClass())

@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.nanos.auth.User',
     'net.nanopay.merchant.ui.transaction.TransactionDetailView'
   ],
 
@@ -122,25 +123,39 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'transaction'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'transactionUser',
+      factory: function () { return this.User.create(); }
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
+      var refund = ( this.transaction.status === 'Refund' );
 
-      self
-        .addClass(self.myClass())
-        .on('click', self.onClick)
+      this
+        .addClass(this.myClass())
+        .on('click', this.onClick)
         .call(function () {
           Promise.resolve().then(function () {
-            if ( self.data.payerId === self.user.id ) {
-              self.data.refund = true;
-              return self.userDAO.find(self.data.payeeId);
-            } else if ( self.data.payeeId === self.user.id ) {
-              return self.userDAO.find(self.data.payerId);
+            if ( self.transaction.payerId === self.user.id ) {
+              return self.userDAO.find(self.transaction.payeeId);
+            } else if ( self.transaction.payeeId === self.user.id ) {
+              return self.userDAO.find(self.transaction.payerId);
             }
           })
           .then(function (user) {
-            self.data.user = user;
+            self.transactionUser.copyFrom(user);
             self.start('div').addClass('transaction-item')
               .start().addClass('transaction-item-icon')
                 .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
@@ -149,10 +164,10 @@ foam.CLASS({
                 .add(user.firstName + ' ' + user.lastName)
               .end()
               .start().addClass('transaction-item-datetime')
-                .add(self.data.date.toString())
+                .add(self.transaction.date.toString())
               .end()
-              .start().addClass('transaction-item-amount').addClass( self.data.refund ? 'refund' : '')
-                .add( '$' + ( self.data.total / 100 ).toFixed(2))
+              .start().addClass('transaction-item-amount').addClass( refund ? 'refund' : '')
+                .add( '$' + ( self.transaction.total / 100 ).toFixed(2))
               .end()
             .end();
           });
@@ -162,7 +177,10 @@ foam.CLASS({
 
   listeners: [
     function onClick (e) {
-      this.stack.push(this.TransactionDetailView.create({ data: this.data }));
+      this.stack.push(this.TransactionDetailView.create({
+        transaction: this.transaction,
+        transactionUser: this.transactionUser
+      }));
     }
   ]
 })

@@ -46,7 +46,9 @@ foam.CLASS({
 
         var a = result.array;
         for ( var i = 0; i < a.length; i++ ) {
-          self.add(self.TransactionRowView.create({ data: a[i] }));
+          self.add(self.TransactionRowView.create({
+            transaction: a[i]
+          }));
         }
       })
       .catch(function (err) {

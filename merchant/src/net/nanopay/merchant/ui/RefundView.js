@@ -91,7 +91,17 @@ foam.CLASS({
   `,
 
   properties: [
-    ['header', true]
+    ['header', true],
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'transaction'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'transactionUser'
+    }
   ],
 
   methods: [
@@ -100,14 +110,14 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
-      var user = this.data.user;
+      var user = this.transactionUser;
 
       this
         .addClass(this.myClass())
         .start('div').addClass('refund-info-wrapper')
           .start().addClass('refund-message')
             .add('Refund ')
-            .start('span').addClass('refund-amount').add('$' + ( this.data.amount / 100 ).toFixed(2)).end()
+            .start('span').addClass('refund-amount').add('$' + ( this.transaction.amount / 100 ).toFixed(2)).end()
             .add(' to')
           .end()
           .start().addClass('refund-profile')
@@ -138,34 +148,33 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) {
+      if ( this.transaction.refundTransactionId || this.transaction.status == 'Refunded' || this.transaction.status == 'Refund' ) {
         return;
       }
 
       var self = this;
-      var refund = this.Transaction.create({
+      this.transactionDAO.put(this.Transaction.create({
         payerId: this.user.id,
-        payeeId: this.data.user.id,
-        amount: this.data.amount,
+        payeeId: this.transactionUser.id,
+        amount: this.transaction.amount,
         deviceId: this.device.id,
-        refundTransactionId: this.data.id,
+        refundTransactionId: this.transaction.id,
         status: 'Refund'
-      });
-
-      this.transactionDAO.put(refund).then(function () {
-        self.data.status = 'Refunded';
-        return self.transactionDAO.put(self.data);
+      })).then(function () {
+        self.transaction.status = 'Refunded';
+        return self.transactionDAO.put(self.transaction);
       })
-      .then(function () {
+      .then(function (result) {
+        self.transaction.copyFrom(result);
         self.stack.push(self.SuccessView.create({
-          transaction: refund,
-          transactionUser: self.data.user
+          transaction: self.transaction,
+          transactionUser: self.transactionUser
         }));
       })
       .catch(function (err) {
         self.stack.push(self.ErrorView.create({
-          transaction: refund,
-          transactionUser: self.data.user
+          transaction: self.transaction,
+          transactionUser: self.transactionUser
         }));
       });
     }

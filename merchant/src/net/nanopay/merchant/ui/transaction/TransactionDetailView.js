@@ -176,13 +176,27 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'transaction'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'transactionUser'
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       this.toolbarTitle = 'Back';
       this.toolbarIcon = 'arrow_back';
 
-      var user = this.data.user;
+      var user = this.transactionUser;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('transaction-profile')
@@ -194,7 +208,7 @@ foam.CLASS({
               .add(user.firstName + ' ' + user.lastName)
             .end()
             .start().addClass('transaction-profile-datetime')
-              .add(this.data.date.toString())
+              .add(this.transaction.date.toString())
             .end()
           .end()
         .end()
@@ -204,7 +218,7 @@ foam.CLASS({
               .add('Amount')
             .end()
             .start().addClass('transaction-info-value')
-              .add('$' + ( this.data.amount / 100 ).toFixed(2))
+              .add('$' + ( this.transaction.amount / 100 ).toFixed(2))
             .end()
           .end()
           .start('div').addClass('transaction-info-wrapper')
@@ -212,7 +226,7 @@ foam.CLASS({
               .add('Tip')
             .end()
             .start().addClass('transaction-info-value')
-              .add('$' + ( this.data.tip / 100).toFixed(2))
+              .add('$' + ( this.transaction.tip / 100).toFixed(2))
             .end()
           .end()
           .start('div').addClass('transaction-info-wrapper')
@@ -220,12 +234,12 @@ foam.CLASS({
               .add('Total')
             .end()
             .start().addClass('transaction-info-value')
-              .add('$' + ( this.data.total / 100).toFixed(2))
+              .add('$' + ( this.transaction.total / 100).toFixed(2))
             .end()
           .end()
         .end()
 
-      if ( this.data.status != 'Refunded' && this.data.status != 'Refund' ) {
+      if ( this.transaction.status != 'Refunded' && this.transaction.status != 'Refund' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
@@ -244,7 +258,10 @@ foam.CLASS({
 
   listeners: [
     function onRefundClicked (e) {
-      this.stack.push(this.RefundView.create({ data: this.data }));
+      this.stack.push(this.RefundView.create({
+        transaction: this.transaction,
+        transactionUser: this.transactionUser
+      }));
     }
   ]
 });
