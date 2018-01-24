@@ -47,7 +47,8 @@ foam.CLASS({
         self.start()
           .add(status || 'Completed')
         .end();
-      }
+      },
+      value: 'Completed'
     },
     {
       class: 'String',
@@ -185,10 +186,10 @@ foam.CLASS({
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
-      tableCellFormatter: function(total) {
+      tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         this
-          .start()
+          .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
             .add('$', formattedAmount.toFixed(2))
           .end();
       }
