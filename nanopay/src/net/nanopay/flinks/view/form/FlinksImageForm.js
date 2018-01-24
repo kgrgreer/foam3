@@ -176,11 +176,7 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges[0].Iterables, function(item, index){
