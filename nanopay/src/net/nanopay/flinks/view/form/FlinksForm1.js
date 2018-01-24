@@ -53,16 +53,6 @@ foam.CLASS({
       Class: 'Boolean',
       name: 'isConnecting',
       value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'isEnabledGoNext',
-      value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'isEnabledGoBack',
-      value: true
     }
   ],
 
@@ -138,7 +128,8 @@ foam.CLASS({
         FlinksXQuestionAnswerForm:    { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' }},
         FlinksXSelectionAnswerForm:   { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' }},
         FlinksMultipleChoiceForm:     { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' }},
-        FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true}
+        FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
+        FlinksFailForm:        { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
       }
       this.SUPER();
     },
@@ -146,13 +137,12 @@ foam.CLASS({
       this.stack.back();
       this.stack.push(view, this.parent);
     },
-    function isEnabledButtons(check) {
-      this.isEnabledGoNext = true;
-      this.isEnabledGoBack = true;
-    },
     {
       name: 'MFADisparcher',
       code: function(msg) {
+        msg.SecurityChallenges[0].Type ='11';
+        msg.SecurityChallenges[0].Iterables = ['aaaaaa', 'bbbbbb', 'ccccccc'];
+        console.log(msg.SecurityChallenges);
         if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
           if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
             this.pushView('FlinksXSelectionAnswerForm');
@@ -164,7 +154,7 @@ foam.CLASS({
         } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
           //TODO
         } else {
-          //TODO: redirectly to the error view
+          this.fail();
         }
       }
     }
@@ -174,9 +164,11 @@ foam.CLASS({
     {
       name: 'goBack',
       code: function(X) {
-        if ( this.currentViewId === 'FlinksInstitutionForm') {
+        if ( this.currentViewId === 'InstitutionView') {
           X.stack.back();
         } else if ( this.currentViewId === 'FlinksAccountForm' ) {
+          X.stack.back();
+        } else if ( this.currentViewId === 'FlinksFailForm' ) {
           X.stack.back();
         } else {
           this.rollBackView();
@@ -199,7 +191,6 @@ foam.CLASS({
             if ( self.currentViewId != 'FlinksConnectForm' ) return;
 
             var status = msg.HttpStatusCode;
-            
             if ( status == 200 ) {
               //get account infos, forward to account page
               self.viewData.accounts = msg.Accounts;
@@ -211,11 +202,10 @@ foam.CLASS({
               self.MFADisparcher(msg);
             } else {
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
-              //TODO: redirectly to the error view
+              self.fail();
             }
           }).catch( function(a) {
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-            //TODO: redirectly to the error view
           }).finally( function() {
             self.isConnecting = false;
           });
@@ -227,6 +217,7 @@ foam.CLASS({
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
+          console.log('map: ', map);
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map).then( function(msg) {         
             if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' ) return;
             var status = msg.HttpStatusCode;
@@ -236,7 +227,7 @@ foam.CLASS({
               self.viewData.accounts = msg.Accounts;
               self.success();
             } else if (status == 203) {
-              //TODO: continue on the MFA, refresh//or push a new view
+              //push a new security view
               self.viewData.requestId = msg.RequestId;
               self.viewData.SecurityChallenges = msg.SecurityChallenges;
               self.MFADisparcher(msg);
@@ -248,11 +239,10 @@ foam.CLASS({
               self.MFADisparcher(msg);
             } else {
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
-              //TODO: redirectly to the error view
+              self.fail();
             }
           }).catch( function(a) {
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-            //TODO: redirectly to the error view
           }).finally( function() {
             self.isConnecting = false;
           });
