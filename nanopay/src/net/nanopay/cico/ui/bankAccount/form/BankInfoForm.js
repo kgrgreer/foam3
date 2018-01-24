@@ -69,7 +69,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Guide',                message: 'Don\'t know where to find these numbers? Check your cheque or contact your bank representative.' },
-    { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts. Don\'t worry, you can always change the name later.' },
+    { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts.' },
     { name: 'LabelAccount',         message: 'Account No. *' },
     { name: 'LabelInstitute',       message: 'Institution No. *' },
     { name: 'LabelName',            message: 'Name *' },
