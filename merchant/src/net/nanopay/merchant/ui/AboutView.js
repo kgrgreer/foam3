@@ -11,29 +11,25 @@ foam.CLASS({
     'copyright',
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 100%;
-          height: 480px;
-          display: table;
-          position: absolute;
-          background-color: %PRIMARYCOLOR%;
-          margin-top: -56px;
-        }
-        ^ .wrapper {
-          display: table-cell;
-          vertical-align: middle;
-        }
-        ^ .about-mintchip {
-          margin-left: auto;
-          margin-right: auto;
-          text-align: center;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 100%;
+      height: 480px;
+      display: table;
+      position: absolute;
+      background-color: %PRIMARYCOLOR%;
+      margin-top: -56px;
+    }
+    ^ .wrapper {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    ^ .about-mintchip {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+  `,
 
   properties: [
     ['header', true]

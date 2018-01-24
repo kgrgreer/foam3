@@ -3,121 +3,117 @@ foam.CLASS({
   name: 'KeyboardView',
   extends: 'foam.u2.View',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .grid {
-          width: 100%;
-          display: table;
-          position: fixed;
-        }
-        ^ .row {
-          display: table-row;
-        }
-        ^ .cell {
-          width: 33.333333%;
-          width: calc(100% / 3);
-          border-left: 1px solid #e5e5e5;
-          border-bottom: 1px solid #e5e5e5;
-          display: table-cell;
-          background-color: #FFFFFF;
-          color: #666666;
-          vertical-align: middle;
-          text-align: center;
+  css: `
+    ^ .grid {
+      width: 100%;
+      display: table;
+      position: fixed;
+    }
+    ^ .row {
+      display: table-row;
+    }
+    ^ .cell {
+      width: 33.333333%;
+      width: calc(100% / 3);
+      border-left: 1px solid #e5e5e5;
+      border-bottom: 1px solid #e5e5e5;
+      display: table-cell;
+      background-color: #FFFFFF;
+      color: #666666;
+      vertical-align: middle;
+      text-align: center;
 
-          -o-transition:.1s;
-          -ms-transition:.1s;
-          -moz-transition:.1s;
-          -webkit-transition:.1s;
-          transition:.1s;
-        }
-        ^ .cell:active {
-          background-color: #e5e5e5;
-        }
-        ^ .amount-next-wrapper {
-          width: 100%;
-          position: fixed;
-          bottom: 0px;
-        }
-        ^ .amount-next-button {
-          width: 100%;
-          background-color: #26a96c;
-        }
+      -o-transition:.1s;
+      -ms-transition:.1s;
+      -moz-transition:.1s;
+      -webkit-transition:.1s;
+      transition:.1s;
+    }
+    ^ .cell:active {
+      background-color: #e5e5e5;
+    }
+    ^ .amount-next-wrapper {
+      width: 100%;
+      position: fixed;
+      bottom: 0px;
+    }
+    ^ .amount-next-button {
+      width: 100%;
+      background-color: #26a96c;
+    }
 
-        @media only screen and (max-height: 568px) {
-          ^ {
-            visibility: hidden;
-          }
-        }
+    @media only screen and (max-height: 568px) {
+      ^ {
+        visibility: hidden;
+      }
+    }
 
-        @media only screen and (min-height: 568px) {
-          ^ .grid {
-            bottom: 50px;
-          }
-          ^ .cell {
-            height: 50px;
-          }
-          .amount-next-button {
-            height: 50px;
-          }
-        }
+    @media only screen and (min-height: 568px) {
+      ^ .grid {
+        bottom: 50px;
+      }
+      ^ .cell {
+        height: 50px;
+      }
+      .amount-next-button {
+        height: 50px;
+      }
+    }
 
-        @media only screen and (min-height: 667px) {
-          ^ .grid {
-            bottom: 75px;
-          }
-          ^ .cell {
-            height: 75px;
-            font-size: 28px;
-          }
-          .amount-next-button {
-            height: 75px;
-          }
-        }
+    @media only screen and (min-height: 667px) {
+      ^ .grid {
+        bottom: 75px;
+      }
+      ^ .cell {
+        height: 75px;
+        font-size: 28px;
+      }
+      .amount-next-button {
+        height: 75px;
+      }
+    }
 
-        @media only screen and (min-height: 768px) {
-          ^ .grid {
-            bottom: 75px;
-          }
-          ^ .cell {
-            height: 100px;
-            font-size: 32px;
-          }
-          .amount-next-button {
-            height: 75px;
-          }
-        }
+    @media only screen and (min-height: 768px) {
+      ^ .grid {
+        bottom: 75px;
+      }
+      ^ .cell {
+        height: 100px;
+        font-size: 32px;
+      }
+      .amount-next-button {
+        height: 75px;
+      }
+    }
 
-        @media only screen and (min-height: 1024px) {
-          ^ .grid {
-            bottom: 100px;
-          }
-          ^ .cell {
-            height: 150px;
-            font-size: 42px;
-          }
-          .amount-next-button {
-            height: 100px;
-            font-size: 32px;
-          }
-        }
+    @media only screen and (min-height: 1024px) {
+      ^ .grid {
+        bottom: 100px;
+      }
+      ^ .cell {
+        height: 150px;
+        font-size: 42px;
+      }
+      .amount-next-button {
+        height: 100px;
+        font-size: 32px;
+      }
+    }
 
-        @media only screen and (min-height: 1366px) {
-          ^ .grid {
-            bottom: 150px;
-          }
-          ^ .cell {
-            height: 175px;
-            font-size: 56px;
-          }
-          .amount-next-button {
-            height: 150px;
-            font-size: 42px;
-          }
-        }
-      */}
-    })
-  ],
+    @media only screen and (min-height: 1366px) {
+      ^ .grid {
+        bottom: 150px;
+      }
+      ^ .cell {
+        height: 175px;
+        font-size: 56px;
+      }
+      .amount-next-button {
+        height: 150px;
+        font-size: 42px;
+      }
+    }
+  `,
 
   properties: [
     'onButtonPressed',
