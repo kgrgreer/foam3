@@ -93,6 +93,10 @@ foam.CLASS({
       console.log('rollbackPoints: ', this.rollBackPoints);
     },
     function rollBackView() {
+      if ( this.rollBackPoints.length === 0 ) {
+        this.stack.back();
+        return;
+      }
       var point = this.rollBackPoints[this.rollBackPoints.length - 1];
       if ( point === this.subStack.pos ) {
         this.rollBackPoints.pop();
