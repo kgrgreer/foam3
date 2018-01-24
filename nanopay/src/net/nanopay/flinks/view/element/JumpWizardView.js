@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.view.element',
   name: 'JumpWizardView',
-  extends: 'net.nanopay.ui.wizard',
+  extends: 'net.nanopay.ui.wizard.WizardView',
   abstract: true,
 
   documentation: 'View that handles unpredictable multi step procedures.',
@@ -38,13 +38,12 @@ foam.CLASS({
 
       //notice WizardOverview to change the label position
       this.currentViewId$.sub(function() {
-        self.position = self.views[self.currentViewId].step;
+        self.position = self.views[self.currentViewId].step - 1;
       });
       
       //record start, error, and success view
       for ( var j in this.views ) {
         if ( this.views.hasOwnProperty(j) ) {
-          console.log('view id: ', this.views[j]);
           if ( !! this.views[j].start && this.views[j].start === true ) {
             this.startView = j;
           } else if ( !! this.views[j].error && this.views[j].error === true ) {
@@ -55,10 +54,10 @@ foam.CLASS({
         }
       }
 
-      if ( ! this.startView || ! this.errorView || ! this.successView ) {
-        console.error('[JumpWizardView] : no startView, errorView, successView define');
-        return;
-      }
+      // if ( ! this.startView || ! this.errorView || ! this.successView ) {
+      //   console.error('[JumpWizardView] : no startView, errorView, successView define');
+      //   return;
+      // }
 
       //inital start view
       this.pushView(this.startView, true);
@@ -71,11 +70,12 @@ foam.CLASS({
 
     //go the successView
     function success() {
-      pushView(this.successView);
+      console.log('success');
+      this.pushView(this.successView);
     },
     //go to failView
     function fail() {
-      pushView(this.errorView);
+      this.pushView(this.errorView);
     },
     //push view into subStack and set rollBack point if needs
     function pushView(viewId, rollBack) {
@@ -87,21 +87,27 @@ foam.CLASS({
       this.sequenceViewIds.push(viewId);
       this.subStack.push(this.views[viewId].view);
       if ( rollBack === true ) {
-        this.rollBackPoints.push(this.subStack.depth - 1);
+        this.rollBackPoints.push(this.subStack.pos);
       }
+      console.log('push-subStack: ', this.subStack.pos);
+      console.log('rollbackPoints: ', this.rollBackPoints);
     },
     function rollBackView() {
-      if ( this.rollBackPoints.length <= 0 ) {
-        this.stack.back();
-        return;
+      var point = this.rollBackPoints[this.rollBackPoints.length - 1];
+      if ( point === this.subStack.pos ) {
+        this.rollBackPoints.pop();
+        if ( this.rollBackPoints.length === 0 ) {
+          this.stack.back();
+          return;
+        }
+        point = this.rollBackPoints[this.rollBackPoints.length - 1];
       }
-      var point = this.rollBackPoints.pop();
-      while ( ( this.subStack.depth - 1 ) != point ) {
+      while ( this.subStack.pos != point ) {
         this.subStack.back();
         this.sequenceViewIds.pop();
       }
       this.currentViewId = this.sequenceViewIds[this.sequenceViewIds.length-1];
-
+      console.log('currentViewId: ', this.currentViewId);
     }
   ],
 
@@ -114,7 +120,7 @@ foam.CLASS({
       }
     },
     {
-      name: goNext(),
+      name: 'goNext',
       code: function() {
         console.log('override');
       }
