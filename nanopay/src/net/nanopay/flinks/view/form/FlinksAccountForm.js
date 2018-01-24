@@ -115,9 +115,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.nextLabel = 'Add Account';
       this.complete = true;
-      this.accountsCheck = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {

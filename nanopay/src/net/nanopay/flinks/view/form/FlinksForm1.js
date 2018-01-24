@@ -140,8 +140,6 @@ foam.CLASS({
     {
       name: 'MFADisparcher',
       code: function(msg) {
-        msg.SecurityChallenges[0].Type ='11';
-        msg.SecurityChallenges[0].Iterables = ['aaaaaa', 'bbbbbb', 'ccccccc'];
         console.log(msg.SecurityChallenges);
         if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
           if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
