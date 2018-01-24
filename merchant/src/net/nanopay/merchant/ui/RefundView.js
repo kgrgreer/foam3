@@ -161,7 +161,6 @@ foam.CLASS({
         return self.transactionDAO.put(self.data);
       })
       .then(function () {
-        console.log('REFUND = ', refund);
         self.stack.push(self.SuccessView.create({
           transaction: refund,
           transactionUser: self.data.user
