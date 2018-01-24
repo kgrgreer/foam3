@@ -132,6 +132,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'refresh',
     ['header', false],
     ['showHome', false],
     {
@@ -156,11 +157,11 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.document.addEventListener('keydown', this.onKeyPressed);
-      this.document.addEventListener('touchstart', this.onTouchStarted);
+      this.document.addEventListener('keyup', this.onKeyPressed);
+      this.document.addEventListener('touchend', this.onTouchStarted);
       this.onDetach(function () {
-        self.document.removeEventListener('keydown', self.onKeyPressed);
-        self.document.removeEventListener('touchstart', self.onTouchStarted);
+        self.document.removeEventListener('keyup', self.onKeyPressed);
+        self.document.removeEventListener('touchend', self.onTouchStarted);
       });
 
       var user = this.transactionUser;
@@ -188,6 +189,14 @@ foam.CLASS({
             .end()
           .end()
         .end();
+
+      this.refresh = setTimeout(function () {
+        if ( self.showHome ) {
+          self.showHomeView();
+        } else {
+          self.stack.back();
+        }
+      }, 4000);
     },
 
     function showHomeView() {
@@ -202,13 +211,20 @@ foam.CLASS({
   listeners: [
     function onKeyPressed (e) {
       var key = e.key || e.keyCode;
-      if ( key === 'Backspace' || key === 'Enter' || key === 'Escape' ||
-          key === 8 || key === 13 || key === 27 ) {
-        this.stack.back();
+      if ( key === 'Backspace' || key === 'Enter' || key === 'Escape' || key === 8 || key === 13 || key === 27 ) {
+        e.preventDefault();
+        clearTimeout(self.refresh);
+        if ( this.showHome ) {
+          this.showHomeView();
+        } else {
+          this.stack.back();
+        }
       }
     },
 
     function onTouchStarted (e) {
+      e.preventDefault();
+      clearTimeout(this.refresh);
       if ( this.showHome ) {
         this.showHomeView();
       } else {
