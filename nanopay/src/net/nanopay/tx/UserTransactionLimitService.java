@@ -77,7 +77,6 @@ public class UserTransactionLimitService
     return ((TransactionLimit) data.get(0)).getAmount();
   }
 
-
   @Override
   public long getRemainingLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
     User user = (User) userDAO_.find(userId);
@@ -108,7 +107,6 @@ public class UserTransactionLimitService
 
     return userTotalLimit - spentAmount;
   }
-
 
   // Checking whether user is a Broker
   private boolean isBroker(long userId) {

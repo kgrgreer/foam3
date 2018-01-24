@@ -180,10 +180,6 @@ foam.CLASS({
     })
   ],
 
-  properties: [
-    'user'
-  ],
-
   methods: [
     function initE() {
       this.SUPER();

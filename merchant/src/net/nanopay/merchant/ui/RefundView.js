@@ -157,14 +157,20 @@ foam.CLASS({
       });
 
       this.transactionDAO.put(refund).then(function () {
-        refund.user = self.data.user;
-        self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
         self.data.status = 'Refunded';
-        self.transactionDAO.put(self.data);
+        return self.transactionDAO.put(self.data);
+      })
+      .then(function () {
+        self.stack.push(self.SuccessView.create({
+          transaction: refund,
+          transactionUser: self.data.user
+        }));
       })
       .catch(function (err) {
-        refund.user = self.data.user;
-        self.stack.push(self.ErrorView.create({ refund: true, data: refund }));
+        self.stack.push(self.ErrorView.create({
+          transaction: refund,
+          transactionUser: self.data.user
+        }));
       });
     }
   ]
