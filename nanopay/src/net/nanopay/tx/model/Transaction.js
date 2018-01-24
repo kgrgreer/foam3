@@ -209,6 +209,9 @@ foam.CLASS({
       ],
       javaReturns: 'void',
       javaCode: `
+        // TODO: change interface so execute returns List of account incr/decr
+        // amounts rather than having transaction do locking itself
+
         // don't perform balance transfer if status in blacklist
         // TODO:
         // if ( STATUS_BLACKLIST.contains(getStatus()) ) return;
