@@ -219,7 +219,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'basicTransactions',
+      name: 'data',
       factory: function() {
         return this.transactionDAO.where(
           this.AND(
@@ -227,12 +227,6 @@ foam.CLASS({
             this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
           )
         );
-      }
-    },
-    { 
-      name: 'data', 
-      expression: function(basicTransactions) {
-        return basicTransactions.orderBy(this.DESC(this.Transaction.DATE)); 
       }
     },
     {
@@ -273,7 +267,7 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.basicTransactions, message: this.placeholderText, image: 'images/ic-payable.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
     },
     function dblclick(transaction){
