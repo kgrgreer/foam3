@@ -227,7 +227,6 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        console.log(err);
         self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });

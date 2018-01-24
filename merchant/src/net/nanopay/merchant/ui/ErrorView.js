@@ -133,8 +133,17 @@ foam.CLASS({
 
   properties: [
     ['header', false],
-    { class: 'Boolean', name: 'refund' },
-    { class: 'Boolean', name: 'showHome', value: false }
+    ['showHome', false],
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'transaction'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'transactionUser'
+    }
   ],
 
   messages: [
@@ -146,7 +155,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var user = this.data.user
 
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.document.addEventListener('touchstart', this.onTouchStarted);
@@ -155,15 +163,22 @@ foam.CLASS({
         self.document.removeEventListener('touchstart', self.onTouchStarted);
       });
 
+      var user = this.transactionUser;
+      // if not a refund, use the total; else use amount
+      var refund = ( this.transaction.status === 'Refund' );
+      var amount = ( ! refund ) ?
+        this.transaction.total :
+        this.transaction.amount;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('error-view-div')
           .start('div').addClass('error-icon')
             .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.svg' })
           .end()
-          .start().addClass('error-message').add( ! this.refund ? this.paymentError : this.refundError ).end()
-          .start().addClass('error-amount').add('$' + ( this.data.total / 100 ).toFixed(2)).end()
-          .start().addClass('error-from-to').add( ! this.refund ? 'From' : 'To' ).end()
+          .start().addClass('error-message').add( ! refund ? this.paymentError : this.refundError ).end()
+          .start().addClass('error-amount').add('$' + ( amount / 100 ).toFixed(2)).end()
+          .start().addClass('error-from-to').add( ! refund ? 'From' : 'To' ).end()
           .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')
               .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
@@ -173,14 +188,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-
-      setTimeout(function () {
-        if ( self.showHome ) {
-          self.showHomeView();
-        } else {
-          self.stack.back();
-        }
-      }, 4000);
     },
 
     function showHomeView() {

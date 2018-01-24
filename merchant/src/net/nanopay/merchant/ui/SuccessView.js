@@ -138,7 +138,16 @@ foam.CLASS({
 
   properties: [
     ['header', false],
-    { name: 'refund', class: 'Boolean' }
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'transaction'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'transactionUser'
+    }
   ],
 
   messages: [
@@ -150,7 +159,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var user = this.data.user;
 
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.document.addEventListener('touchstart', this.onTouchStarted);
@@ -159,10 +167,12 @@ foam.CLASS({
         self.document.removeEventListener('touchstart', self.onTouchStarted);
       });
 
+      var user = this.transactionUser;
       // if not a refund, use the total; else use amount
-      var amount = ( ! this.refund ) ?
-        this.data.total :
-        this.data.amount;
+      var refund = ( this.transaction.status === 'Refund' );
+      var amount = ( ! refund ) ?
+        this.transaction.total :
+        this.transaction.amount;
 
       this
         .addClass(this.myClass())
@@ -170,9 +180,9 @@ foam.CLASS({
           .start('div').addClass('success-icon')
             .tag({class: 'foam.u2.tag.Image', data: 'images/ic-success.svg' })
           .end()
-          .start().addClass('success-message').add( ! this.refund ? this.paymentSuccess : this.refundSuccess ).end()
+          .start().addClass('success-message').add( ! refund ? this.paymentSuccess : this.refundSuccess ).end()
           .start().addClass('success-amount').add('$' + ( amount / 100 ).toFixed(2)).end()
-          .start().addClass('success-from-to').add( ! this.refund ? 'From' : 'To' ).end()
+          .start().addClass('success-from-to').add( ! refund ? 'From' : 'To' ).end()
           .start().addClass('success-profile')
             .start().addClass('success-profile-icon')
               .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
@@ -182,10 +192,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-
-      setTimeout(function () {
-        self.showHomeView();
-      }, 4000);
     },
 
     function showHomeView () {
