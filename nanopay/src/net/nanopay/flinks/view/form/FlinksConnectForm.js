@@ -128,7 +128,6 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Connect';
-      this.form.isEnabledButtons(true);
       this.conditionAgree = false;
     },
 
