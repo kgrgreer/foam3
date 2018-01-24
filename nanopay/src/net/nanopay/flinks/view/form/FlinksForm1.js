@@ -128,8 +128,9 @@ foam.CLASS({
         FlinksXQuestionAnswerForm:    { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' }},
         FlinksXSelectionAnswerForm:   { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' }},
         FlinksMultipleChoiceForm:     { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' }},
+        FlinksImageForm:              { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' }},
         FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
-        FlinksFailForm:        { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
+        FlinksFailForm:               { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true}
       }
       this.SUPER();
     },
@@ -245,6 +246,14 @@ foam.CLASS({
             self.isConnecting = false;
           });
           return;
+        }
+        //image security
+        if ( this.currentViewId === 'FlinksImageForm' ) {
+          var map ={};
+          map[this.viewData.questions[0]] = this.viewData.answers;
+          console.log('hello')
+          console.log(map);
+          console.log('need to implement');
         }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
