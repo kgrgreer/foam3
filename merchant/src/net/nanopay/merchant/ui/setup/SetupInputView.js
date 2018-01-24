@@ -29,69 +29,60 @@ foam.CLASS({
     'showAbout'
   ],
 
-  implements: [
-    'foam.mlang.Expressions',
-  ],
+  css: `
+    ^ {
+      background: %PRIMARYCOLOR%;
+    }
+    ^ h4{
+      width: 259px;
+      font-weight: 300;
+      text-align: center;
+      margin: auto;
+      margin-top: 95px;
+    }
+    ^ .retail-code-wrapper {
+      width: 100%;
+      margin-left: 10px;
+    }
+    ^ .retail-code {
+      margin: 0 auto;
+      margin-top: 50px;
+      width: 212px;
+      border: none;
+      background:
+        repeating-linear-gradient(90deg,
+            white 0,
+            white 2.5ch,
+            transparent 0,
+            transparent 4.5ch)
+          0 100%/100% 2px no-repeat;
+    }
+    ^ .retail-code:focus {
+      outline: none;
+    }
+    ^ .retail-code span {
+      width: 320px;
+      height: 44px;
+      background: none;
+      color: white;
+      border: none;
+      letter-spacing: 16px;
+      font: 4.4ch Roboto, monospace;
+    }
+    ^ .retail-code span:empty:before {
+      content: "\x20\x0B";
+    }
+    ^ input:focus{
+      outline: none;
+      color: transparent;
+      text-shadow: 0px 0px 0px white;
+    }
+  `,
 
   properties: [
     ['header', true],
     { class: 'String', name: 'password', value: '' },
     { class: 'Boolean', name: 'focused', value: false }
-  ],
-
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          background: %PRIMARYCOLOR%;
-        }
-        ^ h4{
-          width: 259px;
-          font-weight: 300;
-          text-align: center;
-          margin: auto;
-          margin-top: 95px;
-        }
-        ^ .retail-code-wrapper {
-          width: 100%;
-          margin-left: 10px;
-        }
-        ^ .retail-code {
-          margin: 0 auto;
-          margin-top: 50px;
-          width: 212px;
-          border: none;
-          background:
-            repeating-linear-gradient(90deg,
-                white 0,
-                white 2.5ch,
-                transparent 0,
-                transparent 4.5ch)
-              0 100%/100% 2px no-repeat;
-        }
-        ^ .retail-code:focus {
-          outline: none;
-        }
-        ^ .retail-code span {
-          width: 320px;
-          height: 44px;
-          background: none;
-          color: white;
-          border: none;
-          letter-spacing: 16px;
-          font: 4.4ch Roboto, monospace;
-        }
-        ^ .retail-code span:empty:before {
-          content: "\200b";
-        }
-        ^ input:focus{
-          outline: none;
-          color: transparent;
-          text-shadow: 0px 0px 0px white;
-        }
-      */
-      }
-    })
   ],
 
   methods: [
@@ -227,7 +218,6 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        console.log(err);
         self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });

@@ -57,6 +57,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
+      min-height: 15px;
     }
     ^ .integrationImgDiv{
       width: 223px;

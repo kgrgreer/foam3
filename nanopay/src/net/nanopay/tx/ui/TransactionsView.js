@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.cico.model.TransactionType',
     'foam.nanos.auth.User'
   ],
 
@@ -217,16 +218,26 @@ foam.CLASS({
         onKey: true
       }
     },
-    { name: 'data', factory: function() { return this.transactionDAO; }},
+    {
+      name: 'data',
+      factory: function() {
+        return this.transactionDAO.where(
+          this.AND(
+            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
+            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
+          )
+        );
+      }
+    },
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)) : data;
+        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.DATE)) : data;
       },
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
-          'id', 'date', 'payerId', 'payeeId', 'total'
+          'id', 'date', 'payerId', 'payeeId', 'total', 'status'
         ]
       }
     }
@@ -256,7 +267,7 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.transactionDAO, message: this.placeholderText, image: 'images/ic-payable.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-payable.png' })
         .end();
     },
     function dblclick(transaction){

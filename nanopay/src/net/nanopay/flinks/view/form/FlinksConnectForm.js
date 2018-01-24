@@ -7,7 +7,9 @@ foam.CLASS({
     'bankImgs',
     'form',
     'viewData',
-    'isConnecting'
+    'isConnecting',
+    'group',
+    'logo'
   ],
 
   axioms: [
@@ -118,7 +120,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 2: Log in your bank account and securely connect with nanopay.'},
+    { name: 'Step', message: 'Step 2: Login to your bank account and securely connect with nanopay.'},
     { name: 'LoginName', message: 'Access Card No. / Username'},
     { name: 'LoginPassword', message: 'Password'},
     { name: 'errorUsername', message: 'Invalid Username'},
@@ -133,18 +135,13 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .start('div').addClass('subHeader')
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/nanopay.svg'}).addClass('firstImg').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/banks/ic-connected.svg'}).addClass('icConnected').end()
-            .start({class: 'foam.u2.tag.Image', data: this.bankImgs[this.viewData.selectedOption].image}).addClass('secondImg').end()
-          .end()
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('p').addClass('text').style({ 'margin-left':'20px'})
             .add(this.LoginName)
           .end()

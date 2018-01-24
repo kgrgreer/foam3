@@ -20,79 +20,75 @@ foam.CLASS({
     'transactionDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 100%;
-          height: 100%;
-          background-color: #ffffff;
-          position: fixed;
-        }
-        ^ .refund-info-wrapper {
-          width: 100%;
-          height: 180px;
-          color: #252c3d;
-        }
-        ^ .refund-message {
-          height: 16px;
-          font-size: 16px;
-          line-height: 1;
-          text-align: left;
-          color: #252c3d;
+  css: `
+    ^ {
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      position: fixed;
+    }
+    ^ .refund-info-wrapper {
+      width: 100%;
+      height: 180px;
+      color: #252c3d;
+    }
+    ^ .refund-message {
+      height: 16px;
+      font-size: 16px;
+      line-height: 1;
+      text-align: left;
+      color: #252c3d;
 
-          padding-left: 83px;
-          padding-top: 48px;
-        }
-        ^ .refund-amount {
-          font-size: 25px;
-          line-height: 0.64;
-          color: #26a96c;
-        }
-        ^ .refund-profile {
-          display: table;
-          height: 45px;
-          overflow: hidden;
-          padding-left: 77px;
-          padding-top: 20px;
-        }
-        ^ .refund-profile-icon img {
-          height: 45px;
-          width: 45px;
-          display: table-cell;
-          vertical-align: middle;
-          border-style: solid;
-          border-width: 1px;
-          border-color: #f1f1f1;
-          border-radius: 50%;
-        }
-        ^ .refund-profile-name {
-          font-size: 16px;
-          line-height: 1;
-          text-align: left;
-          color: #252c3d;
-          display: table-cell;
-          vertical-align: middle;
-          padding-left: 14px;
-        }
-        ^ .refund-buttons-wrapper {
-          width: 100%;
-          position: fixed;
-          bottom: 0px;
-        }
-        ^ .refund-cancel-button {
-          width: 50%;
-          height: 72px;
-          background-color: #595959;
-        }
-        ^ .refund-accept-button {
-          width: 50%;
-          height: 72px;
-          background-color: #f55a5a;
-        }
-      */}
-    })
-  ],
+      padding-left: 83px;
+      padding-top: 48px;
+    }
+    ^ .refund-amount {
+      font-size: 25px;
+      line-height: 0.64;
+      color: #26a96c;
+    }
+    ^ .refund-profile {
+      display: table;
+      height: 45px;
+      overflow: hidden;
+      padding-left: 77px;
+      padding-top: 20px;
+    }
+    ^ .refund-profile-icon img {
+      height: 45px;
+      width: 45px;
+      display: table-cell;
+      vertical-align: middle;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #f1f1f1;
+      border-radius: 50%;
+    }
+    ^ .refund-profile-name {
+      font-size: 16px;
+      line-height: 1;
+      text-align: left;
+      color: #252c3d;
+      display: table-cell;
+      vertical-align: middle;
+      padding-left: 14px;
+    }
+    ^ .refund-buttons-wrapper {
+      width: 100%;
+      position: fixed;
+      bottom: 0px;
+    }
+    ^ .refund-cancel-button {
+      width: 50%;
+      height: 72px;
+      background-color: #595959;
+    }
+    ^ .refund-accept-button {
+      width: 50%;
+      height: 72px;
+      background-color: #f55a5a;
+    }
+  `,
 
   properties: [
     ['header', true]
@@ -101,9 +97,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var user = this.data.user;
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
+
+      var user = this.data.user;
 
       this
         .addClass(this.myClass())
@@ -141,9 +138,11 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) return;
-      var self = this;
+      if ( this.data.refundTransactionId || this.data.status == 'Refunded' || this.data.status == 'Refund' ) {
+        return;
+      }
 
+      var self = this;
       var refund = this.Transaction.create({
         payerId: this.user.id,
         payeeId: this.data.user.id,
@@ -154,12 +153,20 @@ foam.CLASS({
       });
 
       this.transactionDAO.put(refund).then(function () {
-        self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
         self.data.status = 'Refunded';
-        self.transactionDAO.put(self.data);
+        return self.transactionDAO.put(self.data);
+      })
+      .then(function () {
+        self.stack.push(self.SuccessView.create({
+          transaction: refund,
+          transactionUser: self.data.user
+        }));
       })
       .catch(function (err) {
-        self.stack.push(self.ErrorView.create({ refund: true, data: refund }));
+        self.stack.push(self.ErrorView.create({
+          transaction: refund,
+          transactionUser: self.data.user
+        }));
       });
     }
   ]
