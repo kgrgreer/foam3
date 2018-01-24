@@ -132,6 +132,12 @@ foam.CLASS({
         FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
         FlinksFailForm:               { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true}
       }
+      // this.viewData.SecurityChallenges = [];
+      // this.viewData.SecurityChallenges[0] = {};
+      // this.viewData.SecurityChallenges[0].Type = 'MultipleChoiceMultipleAnswers';
+      // this.viewData.SecurityChallenges[0].Prompt = 'asdf';
+      // this.viewData.SecurityChallenges[0].Iterables = ['asdfa','fdsa','fdsgsdf'];
+      // this.viewData.selectedOption = 2;
       this.SUPER();
     },
     function closeTo(view) {
@@ -251,12 +257,28 @@ foam.CLASS({
         if ( this.currentViewId === 'FlinksImageForm' ) {
           var map ={};
           map[this.viewData.questions[0]] = this.viewData.answers;
-          console.log('hello')
-          console.log(map);
           console.log('need to implement');
         }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
+          //TODO: email notification
+          X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution){
+            var inNumber = institution.array[0].institutionNumber;
+            self.viewData.accounts.forEach(function(item) {
+              if ( item.isSelected == true ) {
+                X.bankAccountDAO.put(self.BankAccount.create({
+                  accountName: item.Title,
+                  accountNumber: item.AccountNumber,
+                  institutionNumber: inNumber,
+                  status: 'Verified'
+                })).catch(function(a) {
+                  self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+                });
+              }
+            })
+          });
+          //X.stack.back();
+          self.isConnecting = false;
           return;
         }
       }
