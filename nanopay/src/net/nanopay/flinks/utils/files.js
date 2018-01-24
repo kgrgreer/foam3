@@ -47,5 +47,6 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/form/FlinksXQuestionAnswerForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksXSelectionAnswerForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/element/JumpWizardView', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/form/FlinksFailForm', flags: ['web']}
+  { name: 'net/nanopay/flinks/view/form/FlinksFailForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksImageForm', flages: ['web'] }
 ])
