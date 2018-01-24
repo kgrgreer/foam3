@@ -233,7 +233,6 @@ foam.CLASS({
           }
           //disable button, prevent double click
           this.loadingSpinner.show();
-          this.nextLabel = "Verifying...";
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
@@ -269,7 +268,6 @@ foam.CLASS({
           }).finally( function() {
             self.isConnecting = false;
             self.loadingSpinner.hide();
-            self.nextLabel = "Sign In";
             self.isEnabledButtons(true);
           });
           return;
