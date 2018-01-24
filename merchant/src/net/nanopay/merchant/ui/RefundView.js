@@ -161,12 +161,17 @@ foam.CLASS({
         return self.transactionDAO.put(self.data);
       })
       .then(function () {
-        refund.user = self.data.user;
-        self.stack.push(self.SuccessView.create({ refund: true, data: refund }));
+        console.log('REFUND = ', refund);
+        self.stack.push(self.SuccessView.create({
+          transaction: refund,
+          transactionUser: self.data.user
+        }));
       })
       .catch(function (err) {
-        refund.user = self.data.user;
-        self.stack.push(self.ErrorView.create({ refund: true, data: refund }));
+        self.stack.push(self.ErrorView.create({
+          transaction: refund,
+          transactionUser: self.data.user
+        }));
       });
     }
   ]
