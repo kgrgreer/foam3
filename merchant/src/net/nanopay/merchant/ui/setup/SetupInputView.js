@@ -20,6 +20,7 @@ foam.CLASS({
     'user',
     'stack',
     'device',
+    'password',
     'loginSuccess',
     'deviceAuth',
     'deviceDAO',
@@ -81,7 +82,6 @@ foam.CLASS({
 
   properties: [
     ['header', true],
-    { class: 'String', name: 'password', value: '' },
     { class: 'Boolean', name: 'focused', value: false }
   ],
 
