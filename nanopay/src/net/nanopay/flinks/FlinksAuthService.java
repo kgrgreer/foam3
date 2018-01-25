@@ -140,10 +140,8 @@ public class FlinksAuthService
     java.util.Iterator keys = map.keySet().iterator();
     while ( keys.hasNext() ) {
       Object key   = keys.next();
-      System.out.println(key.toString());
       String[] as = (String[]) map.get(key);
       for ( int i = 0 ; i < as.length ; i++ ) {
-        System.out.println(as[i]);
         as[i] = fetchFromFile(as[i]);
       }
     }
