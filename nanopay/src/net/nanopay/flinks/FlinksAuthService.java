@@ -20,6 +20,8 @@ public class FlinksAuthService
   protected DAO bankAccountDAO_;
   protected DAO institutionDAO_;
   protected FlinksRestService flinksService = new FlinksRestService();
+  protected String sep = System.getProperty("file.separator");
+  protected String storeRoot_ = System.getProperty("catalina.home") + sep + "webapps" + sep + "ROOT";
 
   @Override
   public void start() {
@@ -53,6 +55,10 @@ public class FlinksAuthService
     } else if ( httpCode == 203 ) {
       FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
       feedback = (FlinksMFAResponse) respMsg.getModel();
+      //check if it is image selection
+      if ( ((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType().equals("ImageSelection")) {
+        decodeMsg((FlinksMFAResponse) feedback);
+      }
     } else {
       feedback = (FlinksInvalidResponse) respMsg.getModel();
       throw new AuthenticationException(feedback.getMessage());
@@ -60,15 +66,13 @@ public class FlinksAuthService
     return feedback;
   }
 
-  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1) throws AuthenticationException {
+  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1, String type) throws AuthenticationException {
     //TODO: security check
-    // Map map = new HashMap<>(questions.length);
     ResponseMsg respMsg = null;
-    // for ( int i = 0 ; i < questions.length ; i++ ) {
-    //   map.put(questions[i], answers[i]);
-    // } 
+    if ( type.equals("ImageSelection") ) {
+      encodeMsg(map1);
+    }
     RequestMsg reqMsg = FlinksRequestGenerator.getMFARequest(getX(), institution, username, requestId, map1);
-    System.out.println(reqMsg.getJson());
     //catch any Exception that happen when connect to Flinks
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.CHALLENGE);
@@ -76,28 +80,19 @@ public class FlinksAuthService
       t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
-    
     FlinksResponse feedback;
     int httpCode = respMsg.getHttpStatusCode();
-
     if ( httpCode == 200 ) {
       //forward to get account info
       FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
       return getAccountSummary(x, resp.getRequestId());
-    } else if ( httpCode == 203 ) {
+    } else if ( httpCode == 203 || httpCode == 401) {
       FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
       feedback = (FlinksMFAResponse) respMsg.getModel();
       //check if MFA is image(Laurentienne)
-      if ( resp.getSecurityChallenges()[0].getType().equals("ImageSelection") ) {
-        String relativePath = resp.getRequestId();
-        String[] images = resp.getSecurityChallenges()[0].getIterables();
-        for ( int i = 0 ; i < images.length ; i++ ) {
-          images[i] = storeToFile(relativePath, i + ".jpg", images[i]);
-        }
+      if ( ((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType().equals("ImageSelection")) {
+        decodeMsg((FlinksMFAResponse) feedback);
       }
-    } else if ( httpCode == 401 ) {
-      FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
-      feedback = (FlinksMFAResponse) respMsg.getModel();
     } else {     
       feedback = (FlinksInvalidResponse) respMsg.getModel();      
       throw new AuthenticationException(feedback.getMessage());
@@ -111,7 +106,7 @@ public class FlinksAuthService
     //catch any Exception that happen when connect to Flinks
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_SUMMARY);
-      System.out.println(respMsg.getJson());
+      //System.out.println(respMsg.getJson());
     } catch ( Throwable t ) {
       t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
@@ -131,16 +126,40 @@ public class FlinksAuthService
     return feedback;
   }
 
+  protected void decodeMsg(FlinksMFAResponse response) {
+    String relativePath;
+    relativePath = "" + new Date().getTime() + "_" + response.getRequestId();
+    String[] images = response.getSecurityChallenges()[0].getIterables();
+    for ( int i = 0 ; i < images.length ; i++ ) {
+      images[i] = storeToFile(relativePath, "" + i + ".jpg", images[i]);
+    }
+  }
+
+  protected void encodeMsg(Map map) {
+    //Should only have one entry
+    java.util.Iterator keys = map.keySet().iterator();
+    while ( keys.hasNext() ) {
+      Object key   = keys.next();
+      System.out.println(key.toString());
+      String[] as = (String[]) map.get(key);
+      for ( int i = 0 ; i < as.length ; i++ ) {
+        System.out.println(as[i]);
+        as[i] = fetchFromFile(as[i]);
+      }
+    }
+  }
+
   //TODO: ? thread issue
   protected String storeToFile(String relativePath, String fileName, String encode) {
-    String cwd = System.getProperty("user.dir");
-    String path = cwd + File.separator + relativePath;
+    relativePath = "temp" + sep + relativePath;
+    String path = storeRoot_ + sep + relativePath;
     File directory = new File(path);
     if ( ! directory.exists() ) {
       directory.mkdirs();
     }
     BufferedOutputStream bffout = null;
-    String fileLocation = directory + File.separator + fileName;
+    relativePath =  relativePath + sep + fileName;
+    String fileLocation = storeRoot_ + sep + relativePath;
     try {
       byte[] encodeBytes = encode.getBytes("UTF-8");
       byte[] decodeBytes = Base64.getDecoder().decode(encodeBytes);
@@ -152,17 +171,18 @@ public class FlinksAuthService
     } finally {
       IOUtils.closeQuietly(bffout);
     }
-
-    return fileLocation;
+    //relative path
+    return relativePath;
   }
   //TODO: ? thread issue
-  protected String fetchFromFIle(String path) {
+  protected String fetchFromFile(String path) {
+    String filePath = storeRoot_ + sep + path;
     BufferedInputStream bffin = null;
     String ret = null;
     try {
-      File file = new File(path);
+      File file = new File(filePath);
       byte fileContent[] = new byte[(int) file.length()];
-      bffin = new BufferedInputStream(new FileInputStream(path));
+      bffin = new BufferedInputStream(new FileInputStream(file));
       bffin.read(fileContent);
       byte[] bytes2 = Base64.getEncoder().encode(fileContent);
       ret = new String(bytes2, "UTF-8");
