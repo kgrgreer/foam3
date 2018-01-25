@@ -333,6 +333,12 @@ foam.CLASS({
           border-radius: 5px;
           padding: 10px;
         }
+        .amount-Color-Green {
+          color: #2cab70;
+        }
+        .amount-Color-Red {
+          color: #f33d3d;
+        }
         .foam-u2-view-TableView-noselect {
           width: 1px;
           font-size: 25px !important;
