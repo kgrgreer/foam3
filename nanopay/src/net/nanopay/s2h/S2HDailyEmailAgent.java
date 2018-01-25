@@ -43,8 +43,6 @@ public class S2HDailyEmailAgent
     EmailService email = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     HashMap<String, Object> args = new HashMap<>();
-    message.setFrom("info@nanopay.net");
-    message.setReplyTo("noreply@nanopay.net");
     message.setTo(recipients);
 
     //set to the day that just passed
