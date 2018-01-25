@@ -42,12 +42,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      tableCellFormatter: function(status) {
-        var self = this;
-        self.start()
-          .add(status || 'Completed')
-        .end();
-      },
       value: 'Completed'
     },
     {
