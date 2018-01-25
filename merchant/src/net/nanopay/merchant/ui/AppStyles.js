@@ -7,6 +7,9 @@ foam.CLASS({
   documentation: 'Generic CSS that is used through out the Nanopay platform. Please Reference when styling views. Implements to class use.',
 
   css: `
+    body, html {
+      height: 100%;
+    }
     body {
       font-family: 'Roboto';
       color: #FFFFFF;
@@ -14,6 +17,7 @@ foam.CLASS({
       margin: 0;
       min-width: 320px;
       min-height: 480px;
+      overflow: hidden;
       -moz-user-select: none;
       -ms-user-select: none;
       -khtml-user-select: none;

@@ -41,7 +41,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status'
+      name: 'status',
+      tableCellFormatter: function(status) {
+        var self = this;
+        self.start()
+          .add(status || 'Completed')
+        .end();
+      }
     },
     {
       class: 'String',
@@ -118,7 +124,7 @@ foam.CLASS({
         var formattedAmount = amount/100;
         this
           .start()
-            .add(' CAD $', formattedAmount.toFixed(2))
+            .add('$', formattedAmount.toFixed(2))
           .end();
       }
     },
@@ -183,7 +189,7 @@ foam.CLASS({
         var formattedAmount = total / 100;
         this
           .start()
-            .add(' CAD $', formattedAmount.toFixed(2))
+            .add('$', formattedAmount.toFixed(2))
           .end();
       }
     },

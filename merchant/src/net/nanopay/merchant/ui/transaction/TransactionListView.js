@@ -20,17 +20,14 @@ foam.CLASS({
     'transactionDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          height: 100%;
-          background-color: #ffffff;
-          position: relative;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      height: 100%;
+      background-color: #ffffff;
+      position: relative;
+      overflow: scroll;
+    }
+  `,
 
   methods: [
     function initE() {
@@ -42,14 +39,16 @@ foam.CLASS({
       this.addClass(this.myClass());
       this.transactionDAO
       .where(this.EQ(this.Transaction.DEVICE_ID, this.device.id))
-      .orderBy(this.DESC(this.Transaction.DATE)).select().then(function (result) {
+      .select().then(function (result) {
         if ( ! result ) {
           throw new Error('Unable to load transactions');
         }
 
         var a = result.array;
         for ( var i = 0; i < a.length; i++ ) {
-          self.add(self.TransactionRowView.create({ data: a[i] }));
+          self.add(self.TransactionRowView.create({
+            transaction: a[i]
+          }));
         }
       })
       .catch(function (err) {

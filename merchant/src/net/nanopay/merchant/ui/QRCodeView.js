@@ -26,110 +26,106 @@ foam.CLASS({
     'transactionErrorDAO'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 100%;
-          height: 100%;
-          display: table;
-          position: absolute;
-          background-color: %PRIMARYCOLOR%;
-          margin-top: -56px;
-        }
-        ^ .wrapper {
-          display: table-cell;
-          vertical-align: middle;
-        }
-        ^ .qr-code-wrapper {
-          width: 100%;
-        }
-        ^ .qr-code {
-          background-color: %PRIMARYCOLOR%;
-          margin: 0 auto;
-        }
-        ^ .qr-code:focus {
-          outline: none;
-        }
-        ^ .amount-div {
-          width: 100%;
-          font-weight: 500;
-          text-align: center;
-          position: relative;
-          margin-top: 30px;
-        }
-        ^ .instructions-div {
-          width: 100%;
-          line-height: 1.88;
-          text-align: center;
-          position: relative;
-          margin-top: 20px;
-        }
+  css: `
+    ^ {
+      width: 100%;
+      height: 100%;
+      display: table;
+      position: absolute;
+      background-color: %PRIMARYCOLOR%;
+      margin-top: -56px;
+    }
+    ^ .wrapper {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    ^ .qr-code-wrapper {
+      width: 100%;
+    }
+    ^ .qr-code {
+      background-color: %PRIMARYCOLOR%;
+      margin: 0 auto;
+    }
+    ^ .qr-code:focus {
+      outline: none;
+    }
+    ^ .amount-div {
+      width: 100%;
+      font-weight: 500;
+      text-align: center;
+      position: relative;
+      margin-top: 30px;
+    }
+    ^ .instructions-div {
+      width: 100%;
+      line-height: 1.88;
+      text-align: center;
+      position: relative;
+      margin-top: 20px;
+    }
 
-        @media only screen and (min-height: 0px) {
-          ^ .qr-code {
-            width: 180px;
-            height: 180px;
-          }
-          ^ .amount-div {
-            font-size: 25px;
-          }
-          ^ .instructions-div {
-            font-size: 16px;
-          }
-        }
+    @media only screen and (min-height: 0px) {
+      ^ .qr-code {
+        width: 180px;
+        height: 180px;
+      }
+      ^ .amount-div {
+        font-size: 25px;
+      }
+      ^ .instructions-div {
+        font-size: 16px;
+      }
+    }
 
-        @media only screen and (min-height: 667px) {
-          ^ .qr-code {
-            width: 240px;
-            height: 240px;
-          }
-          ^ .amount-div {
-            font-size: 35px;
-          }
-          ^ .instructions-div {
-            font-size: 21px;
-          }
-        }
-        @media only screen and (min-height: 768px) {
-          ^ .qr-code {
-            width: 300px;
-            height: 300px;
-          }
-          ^ .amount-div {
-            font-size: 45px;
-          }
-          ^ .instructions-div {
-            font-size: 26px;
-          }
-        }
-        @media only screen and (min-height: 1024px) {
-          ^ .qr-code {
-            width: 360px;
-            height: 360px;
-          }
-          ^ .amount-div {
-            font-size: 55px;
-          }
-          ^ .instructions-div {
-            font-size: 31px;
-          }
-        }
-        @media only screen and (min-height: 1366px) {
-          ^ .qr-code {
-            width: 420px;
-            height: 420px;
-          }
-          ^ .amount-div {
-            font-size: 65px;
-          }
-          ^ .instructions-div {
-            font-size: 36px;
-          }
-        }
-      */}
-    })
-  ],
+    @media only screen and (min-height: 667px) {
+      ^ .qr-code {
+        width: 240px;
+        height: 240px;
+      }
+      ^ .amount-div {
+        font-size: 35px;
+      }
+      ^ .instructions-div {
+        font-size: 21px;
+      }
+    }
+    @media only screen and (min-height: 768px) {
+      ^ .qr-code {
+        width: 300px;
+        height: 300px;
+      }
+      ^ .amount-div {
+        font-size: 45px;
+      }
+      ^ .instructions-div {
+        font-size: 26px;
+      }
+    }
+    @media only screen and (min-height: 1024px) {
+      ^ .qr-code {
+        width: 360px;
+        height: 360px;
+      }
+      ^ .amount-div {
+        font-size: 55px;
+      }
+      ^ .instructions-div {
+        font-size: 31px;
+      }
+    }
+    @media only screen and (min-height: 1366px) {
+      ^ .qr-code {
+        width: 420px;
+        height: 420px;
+      }
+      ^ .amount-div {
+        font-size: 65px;
+      }
+      ^ .instructions-div {
+        font-size: 36px;
+      }
+    }
+  `,
 
   properties: [
     ['header', true],
@@ -229,10 +225,9 @@ foam.CLASS({
 
         this.userDAO.find(obj.payerId)
         .then(function (user) {
-          obj.user = user;
           self.stack.push(self.SuccessView.create({
-            refund: false,
-            data: obj
+            transaction: obj,
+            transactionUser: user
           }));
         });
       }
@@ -244,11 +239,10 @@ foam.CLASS({
 
         this.userDAO.find(obj.payerId)
         .then(function (user) {
-          obj.user = user;
           self.stack.push(self.ErrorView.create({
-            refund: false,
             showHome: true,
-            data: obj
+            transaction: obj,
+            transactionUser: user
           }));
         });
       }

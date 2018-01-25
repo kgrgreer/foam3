@@ -11,49 +11,45 @@ foam.CLASS({
     'showAbout'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          background: %PRIMARYCOLOR%;
-        }
-        ^ .setup-title {
-          height: 30px;
-          font-size: 16px;
-          line-height: 1.88;
-          text-align: center;
-          color: #ffffff;
-          padding-top: 20px;
-        }
-        ^ .serial-number-label {
-          height: 29px;
-          font-size: 25px;
-          font-weight: 500;
-          text-align: center;
-          color: #ffffff;
-          padding-top: 44px;
-        }
-        ^ .setup-instructions {
-          height: 60px;
-          font-size: 16px;
-          line-height: 1.25;
-          text-align: center;
-          color: #ffffff;
-          padding-top: 66px;
-        }
-        ^ .setup-next-wrapper {
-          width: 100%;
-          position: fixed;
-          bottom: 0px;
-        }
-        ^ .setup-next-button {
-          width: 100%;
-          height: 72px;
-          background-color: #26a96c;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      background: %PRIMARYCOLOR%;
+    }
+    ^ .setup-title {
+      height: 30px;
+      font-size: 16px;
+      line-height: 1.88;
+      text-align: center;
+      color: #ffffff;
+      padding-top: 20px;
+    }
+    ^ .serial-number-label {
+      height: 29px;
+      font-size: 25px;
+      font-weight: 500;
+      text-align: center;
+      color: #ffffff;
+      padding-top: 44px;
+    }
+    ^ .setup-instructions {
+      height: 60px;
+      font-size: 16px;
+      line-height: 1.25;
+      text-align: center;
+      color: #ffffff;
+      padding-top: 66px;
+    }
+    ^ .setup-next-wrapper {
+      width: 100%;
+      position: fixed;
+      bottom: 0px;
+    }
+    ^ .setup-next-button {
+      width: 100%;
+      height: 72px;
+      background-color: #26a96c;
+    }
+  `,
 
   properties: [
     ['header', false]

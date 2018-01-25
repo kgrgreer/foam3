@@ -9,41 +9,37 @@ foam.CLASS({
     'stack'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 100%;
-          height: 100%;
-          background: #35c38d;
-          margin-top: -56px;
-        }
-        ^ .success-view-div {
-          padding-top: 70px;
-          padding-left: 36px;
-        }
-        ^ .success-icon img {
-          height: 76px;
-          width: 76px;
-        }
-        ^ .success-message {
-          font-size: 32px;
-          font-weight: 300;
-          text-align: left;
-          padding-top: 30px;
-        }
-        ^ .success-button-wrapper {
-          padding-top: 50px;
-        }
-        ^ .success-next-button {
-          height: 20px;
-          font-size: 16px;
-          line-height: 1.25;
-          text-align: center;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 100%;
+      height: 100%;
+      background: #35c38d;
+      margin-top: -56px;
+    }
+    ^ .success-view-div {
+      padding-top: 70px;
+      padding-left: 36px;
+    }
+    ^ .success-icon img {
+      height: 76px;
+      width: 76px;
+    }
+    ^ .success-message {
+      font-size: 32px;
+      font-weight: 300;
+      text-align: left;
+      padding-top: 30px;
+    }
+    ^ .success-button-wrapper {
+      padding-top: 50px;
+    }
+    ^ .success-next-button {
+      height: 20px;
+      font-size: 16px;
+      line-height: 1.25;
+      text-align: center;
+    }
+  `,
 
   properties: [
     ['header', false]
