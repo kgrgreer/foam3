@@ -172,7 +172,7 @@ foam.CLASS({
         } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' ||  msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
           this.pushView('FlinksMultipleChoiceForm');
         } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
-          //TODO
+          this.pushView('FlinksImageForm');
         } else {
           this.fail();
         }
@@ -232,14 +232,14 @@ foam.CLASS({
           return;
         }
         //security challenge
-        if ( this.currentViewId === 'FlinksXQuestionAnswerForm' || this.currentViewId === 'FlinksXSelectionAnswerForm' || this.currentViewId === 'FlinksMultipleChoiceForm' ) {
+        if ( this.currentViewId === 'FlinksXQuestionAnswerForm' || this.currentViewId === 'FlinksXSelectionAnswerForm' || this.currentViewId === 'FlinksMultipleChoiceForm' || this.currentViewId === 'FlinksImageForm') {
           var map ={};
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
           console.log('map: ', map);
-          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map).then( function(msg) {         
-            if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' ) return;
+          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {         
+            if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' && self.currentViewId != 'FlinksImageForm' ) return;
             var status = msg.HttpStatusCode;
 
             if ( status == 200 ) {
@@ -267,12 +267,6 @@ foam.CLASS({
             self.isConnecting = false;
           });
           return;
-        }
-        //image security
-        if ( this.currentViewId === 'FlinksImageForm' ) {
-          var map ={};
-          map[this.viewData.questions[0]] = this.viewData.answers;
-          console.log('need to implement');
         }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
