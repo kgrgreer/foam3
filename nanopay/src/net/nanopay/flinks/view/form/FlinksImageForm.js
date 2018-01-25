@@ -138,31 +138,8 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.iter = [
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb',
-        'aaaa',
-        'bbbb'
-      ];
-      this.viewData.SecurityChallenges = [];
-      this.viewData.SecurityChallenges[0] = {};
-
       this.viewData.questions = new Array(1);
-      this.viewData.questions[0] = this.viewData.SecurityChallenges[0].Prompt = 'asdfadsf';
-
-      this.viewData.SecurityChallenges[0].Iterables = this.iter;
+      this.viewData.questions[0] = this.viewData.SecurityChallenges[0].Prompt;
       this.imageSelection = new Array(this.viewData.SecurityChallenges[0].Iterables.length).fill(false);
     },
 
@@ -180,7 +157,7 @@ foam.CLASS({
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges[0].Iterables, function(item, index){
-              var image = self.Image.create({data: 'images/banks/nanopay.svg'});
+              var image = self.Image.create({data: item});
               this.start(image).addClass('image').addClass(self.tick$.map(function(){
                 if ( self.imageSelection[index] ) {
                   return 'image-select';
@@ -212,14 +189,16 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        this.viewData.answers = [];
+        this.viewData.answers = new Array(1);
+        this.viewData.answers[0] = [];
         for ( var i = 0 ; i < this.imageSelection.length ; i++ ) {
           if ( this.imageSelection[i] === true ) {
-            this.viewData.answers.push(this.viewData.SecurityChallenges[0].Iterables[i]);
+            this.viewData.answers[0].push(this.viewData.SecurityChallenges[0].Iterables[i]);
           }
         }
         console.log(this.viewData.answers);
         console.log(this.viewData.questions);
+        this.isConnecting = true;
         X.form.goNext();
       }
     },
