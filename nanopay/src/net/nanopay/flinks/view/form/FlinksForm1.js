@@ -15,7 +15,10 @@ foam.CLASS({
   
   imports: [
     'flinksAuth',
-    'institutionDAO'
+    'institutionDAO',
+    'user',
+    'userDAO',
+    'email'
   ], 
 
   requires: [
@@ -23,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
+    'foam.nanos.notification.email.EmailMessage'
   ],
 
   properties: [
@@ -53,6 +57,13 @@ foam.CLASS({
       Class: 'Boolean',
       name: 'isConnecting',
       value: false
+    },
+    {
+      Class: 'FObjectProperty',
+      name: 'customer',
+      postSet: function(o, n) {
+        console.log('user', n);
+      }
     }
   ],
 
@@ -112,6 +123,11 @@ foam.CLASS({
 
   methods: [
     function init() {
+      var self = this;
+      //fetch current user info;
+      this.userDAO.find(this.user.id).then(function(response){
+        self.customer = response;
+      });
       this.title = 'Connect to a new bank account';
       this.viewData.answers = [];
       this.viewData.questions = [];
@@ -147,7 +163,6 @@ foam.CLASS({
     {
       name: 'MFADisparcher',
       code: function(msg) {
-        console.log(msg.SecurityChallenges);
         if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
           if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
             this.pushView('FlinksXSelectionAnswerForm');
@@ -271,13 +286,23 @@ foam.CLASS({
                   accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
                   status: 'Verified'
-                })).catch(function(a) {
+                })).then(function(res) {
+                  console.log(self.customer);
+                  var emailMessage = self.EmailMessage.create({
+                    from: 'info@nanopay.net',
+                    replyTo: 'noreply@nanopay.net',
+                    to: [ self.customer.email ]
+                  });
+                  self.email.sendEmailFromTemplate(self.customer, emailMessage, 'nanopay-addBank', {
+                    name: self.customer.firstName,
+                    account: res.accountNumber.substring(res.accountNumber.length - 4)
+                  });
+                }).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
                 });
               }
             })
           });
-          //X.stack.back();
           self.isConnecting = false;
           return;
         }
