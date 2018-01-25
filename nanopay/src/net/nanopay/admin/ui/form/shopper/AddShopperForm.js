@@ -145,8 +145,6 @@ foam.CLASS({
             this.transactionDAO.put(transaction).then(function(response) {
               var shopper = shopperInfo.shopper;
               var emailMessage = self.EmailMessage.create({
-                from: 'info@nanopay.net',
-                replyTo: 'noreply@nanopay.net',
                 to: [ shopper.email ]
               })
 
