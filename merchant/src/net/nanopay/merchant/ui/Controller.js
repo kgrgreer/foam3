@@ -85,6 +85,10 @@ foam.CLASS({
       class: 'String',
       name: 'password',
       value: '',
+      factory: function () {
+        return ( localStorage.password ) ?
+          localStorage.password : '';
+      },
       postSet: function(oldValue, newValue) {
         localStorage.password = newValue;
       }
@@ -184,7 +188,7 @@ foam.CLASS({
           throw new Error('Invalid password');
         }
 
-        return this.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
+        return self.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
       })
       .then(function (result) {
         if ( ! result ) {
