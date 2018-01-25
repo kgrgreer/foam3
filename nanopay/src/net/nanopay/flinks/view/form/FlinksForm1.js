@@ -26,7 +26,8 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
-    'foam.nanos.notification.email.EmailMessage'
+    'foam.nanos.notification.email.EmailMessage',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   properties: [
@@ -63,6 +64,12 @@ foam.CLASS({
       name: 'customer',
       postSet: function(o, n) {
         console.log('user', n);
+      }
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
       }
     }
   ],
@@ -115,6 +122,19 @@ foam.CLASS({
           border-radius: 2px;
           background-color: #ffffff;
         }
+        ^ .loadingSpinner {
+          position: relative;
+          left: 602px;
+          margin-top: 20px;
+        }
+        ^ .spinnerText {
+          vertical-align: top;
+          margin: 0;
+          margin-top: 3px;
+          margin-right: 3px;
+          display: inline-block;
+          font-size: 13px;
+        }
         ^ p {
           margin: 0;
         }
@@ -155,6 +175,22 @@ foam.CLASS({
       // this.viewData.SecurityChallenges[0].Iterables = ['asdfa','fdsa','fdsgsdf'];
       // this.viewData.selectedOption = 2;
       this.SUPER();
+    },
+    function initE() {
+      this.SUPER();
+
+      this.loadingSpinner.hide();
+      
+      this
+        .addClass(this.myClass())
+        .start()
+          .start(this.loadingSpinner).addClass('loadingSpinner')
+            .start('h6').add('Waiting for verification...').addClass('spinnerText').end()
+          .end()
+        .end();
+    },
+    function otherBank() {
+      this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this.parentNode);
     },
     function closeTo(view) {
       this.stack.back();
@@ -206,6 +242,7 @@ foam.CLASS({
         //connect to the Bank
         if ( this.currentViewId === 'FlinksConnectForm' ) {
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
+          this.loadingSpinner.show();
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
 
             if ( self.currentViewId != 'FlinksConnectForm' ) return;
@@ -228,6 +265,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
             self.isConnecting = false;
+            self.loadingSpinner.hide();
           });
           return;
         }
@@ -238,6 +276,7 @@ foam.CLASS({
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
           console.log('map: ', map);
+          this.loadingSpinner.show();
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {         
             if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' && self.currentViewId != 'FlinksImageForm' ) return;
             var status = msg.HttpStatusCode;
@@ -265,6 +304,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           }).finally( function() {
             self.isConnecting = false;
+            self.loadingSpinner.hide();
           });
           return;
         }
