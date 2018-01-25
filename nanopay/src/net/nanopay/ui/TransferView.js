@@ -178,7 +178,7 @@ foam.CLASS({
           return self.email.sendEmailFromTemplate(result, emailMessage, template, {
             name: result.firstName,
             email: result.email,
-            money: self.formatCurrency(self.transferAmount)
+            money: self.formatCurrency(self.transferAmount/100)
           });
         })
         .then(function () {
