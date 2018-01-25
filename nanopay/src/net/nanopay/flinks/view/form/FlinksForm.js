@@ -62,9 +62,6 @@ foam.CLASS({
     {
       Class: 'FObjectProperty',
       name: 'customer',
-      postSet: function(o, n) {
-        console.log('user', n);
-      }
     },
     {
       name: 'loadingSpinner',
@@ -275,7 +272,7 @@ foam.CLASS({
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
-          console.log('map: ', map);
+          //console.log('map: ', map);
           this.loadingSpinner.show();
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {         
             if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' && self.currentViewId != 'FlinksImageForm' ) return;
@@ -321,7 +318,6 @@ foam.CLASS({
                   institutionNumber: inNumber,
                   status: 'Verified'
                 })).then(function(res) {
-                  console.log(self.customer);
                   var emailMessage = self.EmailMessage.create({
                     from: 'info@nanopay.net',
                     replyTo: 'noreply@nanopay.net',
