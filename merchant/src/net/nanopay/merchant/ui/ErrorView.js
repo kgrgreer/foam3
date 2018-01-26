@@ -173,7 +173,7 @@ foam.CLASS({
           .end()
           .start().addClass('error-message').add( ! refund ? this.paymentError : this.refundError ).end()
           .start().addClass('error-amount').add('$' + ( amount / 100 ).toFixed(2)).end()
-          .start().addClass('error-from-to').add( ! refund ? 'To' : 'From' ).end()
+          .start().addClass('error-from-to').add( ! refund ? 'From' : 'To' ).end()
           .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')
               .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
