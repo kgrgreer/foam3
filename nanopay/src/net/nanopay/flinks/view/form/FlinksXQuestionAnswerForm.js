@@ -21,7 +21,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 385px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -35,7 +35,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ .input {
-          width: 400px;
+          width: 100%;
           height: 40px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
