@@ -39,6 +39,7 @@ message.setTo(new String[]{user.getEmail()});
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", user.getFirstName());
 args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
+
 email.sendEmailFromTemplate(user, message, "welcome-email", args);
 return true;`
     },
