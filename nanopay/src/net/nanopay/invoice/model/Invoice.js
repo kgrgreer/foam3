@@ -221,9 +221,7 @@ foam.CLASS({
       class: 'File',
       name: 'invoiceFile',
       documentation: 'Original invoice file',
-      view: {
-        class: 'net.nanopay.invoice.ui.InvoiceFileView'
-      }
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileView' }
     }
   ],
 
