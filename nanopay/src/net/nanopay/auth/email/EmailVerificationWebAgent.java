@@ -14,6 +14,9 @@ import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.jtwig.resource.loader.TypedResourceLoader;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
 
@@ -31,8 +34,11 @@ public class EmailVerificationWebAgent
     EmailTokenService  emailToken       = (EmailTokenService) x.get("emailToken");
 
     HttpServletRequest request          = x.get(HttpServletRequest.class);
+    HttpServletResponse response        = x.get(HttpServletResponse.class);
+    
     String             token            = request.getParameter("token");
     String             userId           = request.getParameter("userId");
+    String             redirect         = request.getParameter("redirect");
     User               user             = (User) userDAO.find(Long.valueOf(userId));
 
     try {
@@ -66,6 +72,13 @@ public class EmailVerificationWebAgent
       JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
       JtwigModel model = JtwigModel.newModel(Collections.<String, Object>singletonMap("msg", message));
       out.write(template.render(model));
+      if (!redirect.equals("null")){
+        try {
+          response.addHeader("REFRESH","2;URL="+redirect);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 }

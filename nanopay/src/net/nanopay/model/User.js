@@ -31,6 +31,15 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title'
+    },
+    {
+      class: 'String',
+      name: 'emailedAmount'
+    },
+    {
+      class: 'Boolean',
+      name: 'adminCreated',
+      value: false,
     }
   ]
 });

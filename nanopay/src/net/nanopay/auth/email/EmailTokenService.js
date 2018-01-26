@@ -40,11 +40,23 @@ message.setTo(new String[]{user.getEmail()});
 
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", user.getFirstName());
-args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData());
 args.put("email", user.getEmail());
+args.put("amount", user.getEmailedAmount());
+if (user.getType().equals("Business") || user.getType().equals("Merchant")){
+  args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
+}
+if (user.getType().equals("Personal")){
+  if (user.getAdminCreated()) {
+    args.put("applink", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://www.apple.com/lae/ios/app-store/");
+    args.put("playlink", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://play.google.com/store?hl=en");
+  }
+  else{
+    args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=null" );
+  }
+}
 email.sendEmailFromTemplate(user, message, "welcome-email", args);
 return true;`
-    },
+  },
     {
       name: 'processToken',
       javaCode:
