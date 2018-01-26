@@ -20,7 +20,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'nnet.nanopay.model.Currency',
+      of: 'net.nanopay.model.Currency',
       name: 'currencies',
       required: true
     }
