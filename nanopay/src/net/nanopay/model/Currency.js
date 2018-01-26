@@ -12,7 +12,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'code',
+      name: 'name',
+      required: true
+    },
+    {
+      class: 'String',
+      name: 'alphabeticCode',
+      required: true
+    },
+    {
+      class: 'Long',
+      name: 'numericCode',
       required: true
     },
     {
