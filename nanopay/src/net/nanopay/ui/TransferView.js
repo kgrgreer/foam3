@@ -170,15 +170,13 @@ foam.CLASS({
         .then(function (result) {
           var template = ( result.type === 'Merchant' ) ? 'cc-template-invite/merc1' : 'cc-template-invite/shopper';
           var emailMessage = self.EmailMessage.create({
-            from: 'info@nanopay.net',
-            replyTo: 'noreply@nanopay.net',
             to: [ result.email ]
           });
 
           return self.email.sendEmailFromTemplate(result, emailMessage, template, {
             name: result.firstName,
             email: result.email,
-            money: self.formatCurrency(self.transferAmount)
+            money: self.formatCurrency(self.transferAmount/100)
           });
         })
         .then(function () {
