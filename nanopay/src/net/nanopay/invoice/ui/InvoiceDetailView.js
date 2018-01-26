@@ -158,11 +158,12 @@ foam.CLASS({
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
-            .start()
-              .add('Attachments')
-              .start().add('Add Attachment').addClass('attachment-btn white-blue-button btn').end()
-              .add('Maximum size 10MB')
-            .end()
+            .start(this.Invoice.INVOICE_FILE).end()
+//            .start()
+//              .add('Attachments')
+//              .start().add('Add Attachment').addClass('attachment-btn white-blue-button btn').end()
+//              .add('Maximum size 10MB')
+//            .end()
             .start()
               // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
               // .add('Enable recurring payments').addClass('enable-recurring-text')
@@ -214,6 +215,8 @@ foam.CLASS({
         var self = this;
         var dueDate = this.data.dueDate;
 
+        console.log(this.data);
+
         if (!this.data.amount || this.data.amount < 0){
           this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            
           return;
@@ -233,7 +236,8 @@ foam.CLASS({
           amount: this.data.amount,
           dueDate: this.data.dueDate,
           purchaseOrder: this.data.purchaseOrder,
-          note: this.data.note
+          note: this.data.note,
+          invoiceFile: this.data.invoiceFile
         });
 
         X.dao.put(inv);

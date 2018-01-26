@@ -146,6 +146,7 @@ foam.CLASS({
             .start().addClass('label').add('Due Date').end()
             .start(this.RecurringInvoice.DUE_DATE).addClass('small-input-box').end()
           .end()
+          .start(this.Invoice.INVOICE_FILE).end()
           // .start()
           //   .add('Attachments')
           //   .start().add('Add Attachment').addClass('attachment-btn white-blue-button btn').end()
