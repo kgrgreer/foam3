@@ -70,7 +70,6 @@ foam.CLASS({
 
     //go the successView
     function success() {
-      console.log('success');
       this.pushView(this.successView);
     },
     //go to failView
@@ -89,8 +88,6 @@ foam.CLASS({
       if ( rollBack === true ) {
         this.rollBackPoints.push(this.subStack.pos);
       }
-      console.log('push-subStack: ', this.subStack.pos);
-      console.log('rollbackPoints: ', this.rollBackPoints);
     },
     function rollBackView() {
       if ( this.rollBackPoints.length === 0 ) {
@@ -111,7 +108,6 @@ foam.CLASS({
         this.sequenceViewIds.pop();
       }
       this.currentViewId = this.sequenceViewIds[this.sequenceViewIds.length-1];
-      console.log('currentViewId: ', this.currentViewId);
     }
   ],
 
@@ -126,7 +122,6 @@ foam.CLASS({
     {
       name: 'goNext',
       code: function() {
-        console.log('override');
       }
     }
   ]

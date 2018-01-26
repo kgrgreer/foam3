@@ -165,12 +165,6 @@ foam.CLASS({
         FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
         FlinksFailForm:               { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true}
       }
-      // this.viewData.SecurityChallenges = [];
-      // this.viewData.SecurityChallenges[0] = {};
-      // this.viewData.SecurityChallenges[0].Type = 'MultipleChoiceMultipleAnswers';
-      // this.viewData.SecurityChallenges[0].Prompt = 'asdf';
-      // this.viewData.SecurityChallenges[0].Iterables = ['asdfa','fdsa','fdsgsdf'];
-      // this.viewData.selectedOption = 2;
       this.SUPER();
     },
     function initE() {
@@ -272,7 +266,7 @@ foam.CLASS({
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i]; 
           }
-          //console.log('map: ', map);
+
           this.loadingSpinner.show();
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {         
             if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' && self.currentViewId != 'FlinksImageForm' ) return;
@@ -307,7 +301,6 @@ foam.CLASS({
         }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
-          //TODO: email notification
           X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution){
             var inNumber = institution.array[0].institutionNumber;
             self.viewData.accounts.forEach(function(item) {

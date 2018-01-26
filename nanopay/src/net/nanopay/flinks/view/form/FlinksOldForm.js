@@ -199,11 +199,9 @@ foam.CLASS({
         return this.isEnabledGoBack;
       },
       isAvailable: function(position) {
-        //if ( position == 3 || position == this.views.length - 1 ) return false;
         return true;
       },
       code: function(X) {
-        //console.log(this.position);
         if ( this.position <= 0 || this.position == 2 || this.position == 3) {
           X.stack.back();
           return;
@@ -222,11 +220,9 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        //console.log(X);
         var self = this;
         //sign in
         if ( this.position == 1 ) {
-          //console.log('this.viewData.check: ', this.viewData.check);
           if ( this.viewData.check != true ) {
             this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
             return;
@@ -236,8 +232,6 @@ foam.CLASS({
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
-            //console.log('return authorize msg', msg);
-            //console.log('type of return', typeof msg);
 
             if ( self.position != 1 ) return;
 
@@ -257,7 +251,6 @@ foam.CLASS({
               //TODO: redirect to different MFA handle page
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
                 //To different view
-                //console.log(self.viewData.SecurityChallenges[0].Type)
               }
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
@@ -281,9 +274,7 @@ foam.CLASS({
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i];
           }
-          //console.log('map', map);
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, '').then( function(msg) {
-            //console.log('return challengeQuestion msg', msg);
             if ( self.position != 2 ) return;
 
             var status = msg.HttpStatusCode;
@@ -291,7 +282,6 @@ foam.CLASS({
             if ( status == 200 ) {
               //go to account view
               self.viewData.accounts = msg.Accounts;
-              //console.log('account', msg.Accounts);
               self.subStack.push(self.views[3].view);
             } else if (status == 203) {
               //TODO: continue on the MFA, refresh//or push a new view
@@ -325,20 +315,13 @@ foam.CLASS({
                   status: 'Verified'
                 })).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
-                  //console.log('error: ', a);
                 });
               }
             })
           });
-          //X.stack.back();
           self.isConnecting = false;
           return;
         }
-
-        // if ( this.subStack.pos == this.views.length - 1 ) {
-        //   X.stack.back();
-        //   return;
-        // }
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
     }
