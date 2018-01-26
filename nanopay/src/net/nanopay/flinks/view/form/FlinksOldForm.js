@@ -152,11 +152,6 @@ foam.CLASS({
       this.title = 'Connect to a new bank account';
       this.viewData.answers = [];
       this.viewData.questions = [];
-      // this.isCustomNavigation = true;
-      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' } },
-      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' } },
-      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' } },
-      // { parent: 'authForm', id: 'form-authForm-institution',  label: 'MFA',   view: { class: 'net.nanopay.flinks.view.form.FlinksThreeOptionForm' } },
       this.views = [
         { parent: 'authForm', id: 'form-authForm-institution',  label: 'Institution',   view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' } },
         { parent: 'authForm', id: 'form-authForm-Connect',      label: 'Connect',       view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' } },
