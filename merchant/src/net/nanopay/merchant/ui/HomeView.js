@@ -20,38 +20,34 @@ foam.CLASS({
     'as data'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 100%;
-          background-color: %PRIMARYCOLOR%;
-          position: relative;
-        }
-        ^ .amount-label {
-          height: 30px;
-          font-size: 16px;
-          line-height: 1.88;
-          text-align: center;
-          color: #ffffff;
-          padding-top: 58px;
-        }
-        ^ .amount-field {
-          border: none;
-          background-color: %PRIMARYCOLOR%;
-          height: 90px;
-          overflow-x: hidden;
-          font-size: 75px;
-          text-align: center;
-          color: #ffffff;
-          margin-top: 14px;
-        }
-        ^ .amount-field:focus {
-          outline: none;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 100%;
+      background-color: %PRIMARYCOLOR%;
+      position: relative;
+    }
+    ^ .amount-label {
+      height: 30px;
+      font-size: 16px;
+      line-height: 1.88;
+      text-align: center;
+      color: #ffffff;
+      padding-top: 58px;
+    }
+    ^ .amount-field {
+      border: none;
+      background-color: %PRIMARYCOLOR%;
+      height: 90px;
+      overflow-x: hidden;
+      font-size: 75px;
+      text-align: center;
+      color: #ffffff;
+      margin-top: 14px;
+    }
+    ^ .amount-field:focus {
+      outline: none;
+    }
+  `,
 
   properties: [
     ['header', true],

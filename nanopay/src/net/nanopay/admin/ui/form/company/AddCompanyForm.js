@@ -71,10 +71,13 @@ foam.CLASS({
             return;
           }
 
-          if( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
+          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(companyInfo.phoneNumber) ) {
+            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
+            return; 
           }
+
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
 
         }
 
@@ -91,10 +94,8 @@ foam.CLASS({
             return;
           }
 
-          if( true ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
 
         }
 
@@ -123,7 +124,7 @@ foam.CLASS({
             businessName: companyInfo.businessName,
             email: companyInfo.email,
             issuingAuthority: companyInfo.issuingAuthority,
-            jobTitle: companyInfo.jobTitle,
+            department: companyInfo.jobTitle,
             type: 'Business',
             group: 's2hCustomer',
             phone: businessPhone,

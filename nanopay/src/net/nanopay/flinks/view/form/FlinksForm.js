@@ -131,8 +131,16 @@ foam.CLASS({
         }
         ^ .loadingSpinner {
           position: relative;
-          left: 725px;
-          bottom: 18.5px;
+          left: 602px;
+          margin-top: 20px;
+        }
+        ^ .spinnerText {
+          vertical-align: top;
+          margin: 0;
+          margin-top: 3px;
+          margin-right: 3px;
+          display: inline-block;
+          font-size: 13px;
         }
         ^ p {
           margin: 0;
@@ -165,9 +173,10 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .add(this.loadingSpinner).addClass('loadingSpinner')
+          .start(this.loadingSpinner).addClass('loadingSpinner')
+            .start('h6').add('Waiting for verification...').addClass('spinnerText').end()
+          .end()
         .end();
-
     },
     function isEnabledButtons(check) {
       if ( check == true ) {

@@ -41,7 +41,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status'
+      name: 'status',
+      value: 'Completed'
     },
     {
       class: 'String',
@@ -118,7 +119,7 @@ foam.CLASS({
         var formattedAmount = amount/100;
         this
           .start()
-            .add(' CAD $', formattedAmount.toFixed(2))
+            .add('$', formattedAmount.toFixed(2))
           .end();
       }
     },
@@ -179,11 +180,11 @@ foam.CLASS({
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
-      tableCellFormatter: function(total) {
+      tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         this
-          .start()
-            .add(' CAD $', formattedAmount.toFixed(2))
+          .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
+            .add('$', formattedAmount.toFixed(2))
           .end();
       }
     },

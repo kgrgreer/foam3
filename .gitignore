@@ -101,4 +101,5 @@ nanopay/src/net/nanopay/iso20022/
 /transactionLimits
 /users
 /institutions
+/files
 /encryptedRegions
