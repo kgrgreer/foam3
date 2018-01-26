@@ -383,8 +383,6 @@ foam.CLASS({
 
             if ( self.invoice ) {
               var emailMessage = self.EmailMessage.create({
-                from: 'info@nanopay.net',
-                replyTo: 'noreply@nanopay.net',
                 to: [ self.viewData.payee.email ]
               });
 
