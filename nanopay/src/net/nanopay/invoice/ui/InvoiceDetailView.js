@@ -86,9 +86,6 @@ foam.CLASS({
       display: inline-block;
       margin: 0 36px 20px 0;
     }
-    ^ .attachment-btn {
-      margin: 10px 0;
-    }
     ^ .enable-recurring-text {
       font-size: 12px;
       margin: 20px 0;
@@ -159,11 +156,6 @@ foam.CLASS({
               .end()
             .end()
             .start(this.Invoice.INVOICE_FILE).end()
-//            .start()
-//              .add('Attachments')
-//              .start().add('Add Attachment').addClass('attachment-btn white-blue-button btn').end()
-//              .add('Maximum size 10MB')
-//            .end()
             .start()
               // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
               // .add('Enable recurring payments').addClass('enable-recurring-text')
