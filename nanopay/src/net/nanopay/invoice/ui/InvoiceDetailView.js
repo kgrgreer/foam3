@@ -207,8 +207,6 @@ foam.CLASS({
         var self = this;
         var dueDate = this.data.dueDate;
 
-        console.log(this.data);
-
         if (!this.data.amount || this.data.amount < 0){
           this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            
           return;
