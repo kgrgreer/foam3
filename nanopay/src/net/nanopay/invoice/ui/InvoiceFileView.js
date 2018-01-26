@@ -126,6 +126,7 @@ foam.CLASS({
 
       this.data = this.File.create({
         filename: file.name,
+        filesize: file.size,
         mimeType: file.type,
         data: this.BlobBlob.create({
           blob: file
