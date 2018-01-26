@@ -24,7 +24,8 @@ foam.CLASS({
     {
       name: 'generateToken',
       javaCode:
-`DAO tokenDAO = (DAO) getX().get("tokenDAO");
+`try {
+DAO tokenDAO = (DAO) getX().get("tokenDAO");
 AppConfig appConfig = (AppConfig) getX().get("appConfig");
 Token token = new Token();
 token.setUserId(user.getId());
@@ -53,7 +54,11 @@ if (user.getType().equals("Personal")){
   }
 }
 email.sendEmailFromTemplate(user, message, "welcome-email", args);
-return true;`
+return true;
+} catch(Throwable t) {
+  t.printStackTrace();
+  return false;
+}`
   },
     {
       name: 'processToken',
