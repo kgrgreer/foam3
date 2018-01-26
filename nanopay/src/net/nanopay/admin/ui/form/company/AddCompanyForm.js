@@ -124,7 +124,7 @@ foam.CLASS({
             businessName: companyInfo.businessName,
             email: companyInfo.email,
             issuingAuthority: companyInfo.issuingAuthority,
-            jobTitle: companyInfo.jobTitle,
+            department: companyInfo.jobTitle,
             type: 'Business',
             group: 's2hCustomer',
             phone: businessPhone,

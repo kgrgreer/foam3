@@ -179,7 +179,7 @@ foam.CLASS({
         if ( paymentMethod.name == 'VOID' ) return 'Void';
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId > 0 ) return 'Paid';
-        if ( paymentDate > Date.now() && paymentId == 0) {  return 'Scheduled' };
+        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == -2) {  return 'Scheduled' };
         if ( dueDate ) { 
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
@@ -194,7 +194,7 @@ foam.CLASS({
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
         if ( getPaymentDate() != null ){
-          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 ) return "Scheduled";          
+          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 || getPaymentDate().after(new Date()) && getPaymentId() == -2 ) return "Scheduled";          
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";

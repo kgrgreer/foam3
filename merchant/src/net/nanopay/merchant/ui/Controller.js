@@ -28,6 +28,7 @@ foam.CLASS({
     'toolbarIcon',
     'toolbarTitle',
     'serialNumber',
+    'password',
     'copyright',
     'device'
   ],
@@ -78,6 +79,18 @@ foam.CLASS({
             .trim();
         }
         return localStorage.serialNumber;
+      }
+    },
+    {
+      class: 'String',
+      name: 'password',
+      value: '',
+      factory: function () {
+        return ( localStorage.password ) ?
+          localStorage.password : '';
+      },
+      postSet: function(oldValue, newValue) {
+        localStorage.password = newValue;
       }
     }
   ],
@@ -166,22 +179,34 @@ foam.CLASS({
     function getCurrentUser() {
       var self = this;
 
-      // get current user & device, else show login
-      this.auth.getCurrentUser(null).then(function (result) {
+      Promise.resolve().then(function () {
+        if ( ! self.serialNumber ) {
+          throw new Error('Invalid serial number');
+        }
+
+        if ( ! self.password ) {
+          throw new Error('Invalid password');
+        }
+
+        return self.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
+      })
+      .then(function (result) {
         if ( ! result ) {
-          throw new Error('User not found');
+          throw new Error('Device login failed');
         }
 
         self.user.copyFrom(result);
-        return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).limit(1).select();
+        return self.deviceDAO.where(
+          self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)
+        ).limit(1).select();
       })
       .then(function (result) {
         if ( ! result || ! result.array || result.array.length !== 1 ) {
-          throw new Error('Device not found');
+          throw new Error('Device login failed');
         }
 
         if ( result.array[0].status !== self.DeviceStatus.ACTIVE ) {
-          throw new Error('Device not active');
+          throw new Error('Device login failed');
         }
 
         self.loginSuccess = true;
@@ -189,7 +214,7 @@ foam.CLASS({
       })
       .catch(function (err) {
         self.loginSuccess = false;
-        self.requestLogin().then(function() {
+        self.requestLogin().then(function () {
           self.getCurrentUser();
         });
       });
