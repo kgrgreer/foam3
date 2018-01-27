@@ -133,7 +133,8 @@ foam.CLASS({
             businessIdentificationNumber: companyInfo.registrationNumber,
             website: companyInfo.website,
             businessTypeId: companyInfo.businessType,
-            businessSectorId: companyInfo.businessSector
+            businessSectorId: companyInfo.businessSector,
+            adminCreated:true
           });
 
           this.userDAO.put(newBusiness).then(function(response) {

@@ -114,7 +114,8 @@ foam.CLASS({
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
-            password: shopperInfo.password
+            password: shopperInfo.password,
+            adminCreated: true            
           });
 
           this.userDAO.put(newShopper).then(function(response) {

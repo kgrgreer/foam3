@@ -33,8 +33,8 @@ foam.CLASS({
       this.views = [
         { parent: 'addMerchant', id: 'form-addMerchant-info',      label: 'Merchant Info',    view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantInfoForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-profile',   label: 'Business Profile', view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantProfileForm' } },
-        { parent: 'addMerchant', id: 'form-addMerchant-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantReviewForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-sendMoney', label: 'Send Money',       view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantSendMoneyForm' } },
+        { parent: 'addMerchant', id: 'form-addMerchant-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantReviewForm' } },        
         { parent: 'addMerchant', id: 'form-addMerchant-done',      label: 'Done',             view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
@@ -100,87 +100,83 @@ foam.CLASS({
           return;
         }
 
+        
         if ( this.position == 2 ) {
-          // Review
-
-          var merchantPhone = this.Phone.create({
-            number: merchantInfo.phoneNumber
-          });
-
-          var merchantAddress = this.Address.create({
-            address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
-            streetNumber: merchantInfo.streetNumber,
-            streetName: merchantInfo.streetName,
-            suite: merchantInfo.addressLine,
-            city: merchantInfo.city,
-            postalCode: merchantInfo.postalCode,
-            countryId: merchantInfo.country,
-            regionId: merchantInfo.province
-          });
-
-          var newMerchant = this.User.create({
-            firstName: merchantInfo.firstName,
-            lastName: merchantInfo.lastName,
-            organization: merchantInfo.businessName,
-            businessName: merchantInfo.businessName,
-            email: merchantInfo.companyEmail,
-            type: 'Merchant',
-            group: 'ccMerchant',
-            phone: merchantPhone,
-            address: merchantAddress,
-            password: merchantInfo.password,
-            businessIdentificationNumber: merchantInfo.registrationNumber,
-            website: merchantInfo.website,
-            businessTypeId: merchantInfo.businessType,
-            businessSectorId: merchantInfo.businessSector
-          });
-
-          this.userDAO.put(newMerchant).then(function(response) {
-            merchantInfo.merchant = response;
-            self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
-          });
-        }
-
-        if ( this.position == 3 ) {
           // Send Money
 
           if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
+            merchantInfo.amount = -1;            
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          } 
+          this.user.amount
+          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          
+        }
+        if ( this.position == 3 ) {
+          // Review
+
+        var merchantPhone = this.Phone.create({
+          number: merchantInfo.phoneNumber
+        });
+
+        var merchantAddress = this.Address.create({
+          address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
+          streetNumber: merchantInfo.streetNumber,
+          streetName: merchantInfo.streetName,
+          suite: merchantInfo.addressLine,
+          city: merchantInfo.city,
+          postalCode: merchantInfo.postalCode,
+          countryId: merchantInfo.country,
+          regionId: merchantInfo.province
+        });
+
+        var newMerchant = this.User.create({
+          firstName: merchantInfo.firstName,
+          lastName: merchantInfo.lastName,
+          organization: merchantInfo.businessName,
+          businessName: merchantInfo.businessName,
+          email: merchantInfo.companyEmail,
+          type: 'Merchant',
+          group: 'ccMerchant',
+          phone: merchantPhone,
+          address: merchantAddress,
+          password: merchantInfo.password,
+          businessIdentificationNumber: merchantInfo.registrationNumber,
+          website: merchantInfo.website,
+          businessTypeId: merchantInfo.businessType,
+          businessSectorId: merchantInfo.businessSector,
+          emailedAmount: merchantInfo.amount,
+          adminCreated: true
+        });
+        this.userDAO.put(newMerchant).then(function(response) {
+          merchantInfo.merchant = response;
+          self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
+          return;
+        }).then(function(){
+          var transaction = this.Transaction.create({
+            payeeId: merchantInfo.merchant.id,
+            payerId: this.user.id,
+            amount: merchantInfo.amount
+          });
+          this.transactionDAO.put(transaction).then(function(response) {
+            var merchant = merchantInfo.merchant;
+            
+          }).then(function () {
+            self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.nextLabel = 'Done';
-            return;
-          } else {
-            var transaction = this.Transaction.create({
-              payeeId: merchantInfo.merchant.id,
-              payerId: this.user.id,
-              amount: merchantInfo.amount
-            });
-  
-            this.transactionDAO.put(transaction).then(function(response) {
-              var merchant = merchantInfo.merchant;
-              var emailMessage = self.EmailMessage.create({
-                to: [ merchant.email ]
-              });
-
-              return self.email.sendEmailFromTemplate(merchant, emailMessage, 'cc-template-invite/merc1', {
-                name: merchant.firstName,
-                email: merchant.email,
-                money: self.formatCurrency(merchantInfo.amount/100)
-              });
-            }).then(function () {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.nextLabel = 'Done';
-            }).catch(function(error) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            });
-            return;
-          }
-        }
+          }).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
+         
+        }).catch(function(error) {
+          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          return;
+        });
+        self.subStack.push(self.views[self.subStack.pos + 1].view);            
+        return;
+      }
 
         if ( this.subStack.pos == this.views.length - 1 ) {
           // Done

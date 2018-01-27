@@ -34,7 +34,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'emailedAmount'
+      name: 'emailedAmount',
+      value: -1
     },
     {
       class: 'Boolean',
