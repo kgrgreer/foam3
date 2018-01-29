@@ -53,7 +53,10 @@ foam.CLASS({
       color: #59a5d5;
       padding-left: 12px;
     }
-    ^ .attachment-item-size {
+    ^ .attachment-footer {
+      float: right;
+    }
+    ^ .attachment-filesize {
       width: 16.7px;
       height: 8px;
       font-size: 6px;
@@ -61,12 +64,12 @@ foam.CLASS({
       letter-spacing: 0.1px;
       text-align: left;
       color: #a4b3b8;
+      padding-top: 6px;
     }
     ^ .net-nanopay-ui-ActionView-remove {
       width: 12px;
       height: 12px;
       object-fit: contain;
-      float: right;
     }
   `,
 
@@ -91,12 +94,21 @@ foam.CLASS({
             })
             .add(this.data.filename)
           .end()
-          .add(this.REMOVE)
+          .start().addClass('attachment-footer')
+            .add(this.REMOVE)
+            .start().addClass('attachment-filesize')
+              .add(this.formatFileSize())
+            .end()
+          .end()
         .end()
     },
 
     function formatFileNumber() {
       return ('000' + this.fileNumber).slice(-3);
+    },
+
+    function formatFileSize() {
+      return Math.ceil(this.data.filesize / 1000) + 'K';
     }
   ],
 

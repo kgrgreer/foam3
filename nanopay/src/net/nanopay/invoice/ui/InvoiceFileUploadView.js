@@ -18,7 +18,10 @@ foam.CLASS({
   ],
 
   properties: [
-    'data',
+    {
+      class: 'FileArray',
+      name: 'data'
+    }
   ],
 
   css: `
