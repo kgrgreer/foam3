@@ -158,6 +158,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/InvoiceFileView', flags: ['web'] },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
