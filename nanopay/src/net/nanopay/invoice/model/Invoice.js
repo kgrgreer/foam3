@@ -216,6 +216,12 @@ foam.CLASS({
 
         this.start().addClass('generic-status Invoice-Status-' + state).add(label).end();
       }
+    },
+    {
+      class: 'File',
+      name: 'invoiceFile',
+      documentation: 'Original invoice file',
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileView' }
     }
   ],
 
