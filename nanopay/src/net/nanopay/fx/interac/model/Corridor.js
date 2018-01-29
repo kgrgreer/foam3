@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.crossborder.model',
+  package: 'net.nanopay.fx.interac.model',
   name: 'Corridor',
   properties: [
     {
