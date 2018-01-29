@@ -111,7 +111,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.hideSaleSummary = true;
-
+      
       this
         .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
@@ -177,7 +177,6 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var invoice = X.data.data;
-
         self.payNowPopUp_ = self.PopupView.create({
           width: 165,
           x: -137,
@@ -187,11 +186,10 @@ foam.CLASS({
           .start('div').add('Schedule A Payment')
             .on('click', this.schedulePopUp)
           .end()
-          .callIf(invoice.createdBy == this.user.id, function(){
-            this.start('div').add('Void')
-              .on('click', this.voidPopUp)
-            .end()
-          })
+          .start().show(invoice.createdBy == this.user.id)
+            .add('Void')
+            .on('click', this.voidPopUp)
+          .end()
 
         self.payNowMenuBtn_.add(self.payNowPopUp_)
       }
