@@ -40,7 +40,7 @@ foam.CLASS({
         .add(this.title)
       .end()
       .start().addClass('account-balance')
-       .add('$ ', this.data ? (this.data.balance/100).toFixed(2) : '0.00')
+       .add('$ ', this.data ? (this.data.balance/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0.00')
       .end();
     }
   ]
