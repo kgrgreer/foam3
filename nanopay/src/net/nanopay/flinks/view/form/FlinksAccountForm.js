@@ -115,10 +115,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.nextLabel = 'Add Account';
-      this.form.isEnabledButtons(true);
       this.complete = true;
-      this.accountsCheck = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {
@@ -144,7 +141,7 @@ foam.CLASS({
                   return 'selected';
                 }))
                 .on('click', function() {
-                  if (  ! e.isSelected && e.isSelected == false ) {
+                  if ( ! e.isSelected || e.isSelected == false ) {
                     e.isSelected = true;
                   } else {
                     e.isSelected = false;

@@ -134,7 +134,6 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Next';
-      this.form.isEnabledButtons(true);
       if ( ! this.viewData.selectedOption ) { return; }
       this.selectedOption = this.viewData.selectedOption;
     },
