@@ -337,7 +337,7 @@ foam.CLASS({
           .start()
             .callIf(this.type == 'regular' && this.invoiceMode, function(){
               this.start().addClass('label').add('Amount:').end()
-              .start().addClass('invoice-amount').add('$ ', self.fromAmount.toFixed(2)).end()
+              .start().addClass('invoice-amount').add('$ ', self.fromAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")).end()
             })
           .end()
           // .start('div').addClass('pricingCol')
