@@ -27,6 +27,8 @@ foam.CLASS({
 
   documentation: 'Invoice model. Amount is set to double type.',
 
+  imports: [ 'addCommas' ],
+
   ids: [ 'invoiceNumber' ],
 
   searchColumns: [
@@ -153,8 +155,8 @@ foam.CLASS({
       aliases: [ 'a' ],
       precision: 2,
       required: true,
-      tableCellFormatter: function(a) {
-        this.start().style({'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
+      tableCellFormatter: function(a, X) {
+        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas(a.toFixed(2))).end();
       }
     },
     {

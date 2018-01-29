@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'Transaction',
 
   imports: [
+    'addCommas',
     'userDAO'
   ],
 
@@ -115,11 +116,11 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
-      tableCellFormatter: function(amount) {
+      tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
           .start()
-            .add('$', formattedAmount.toFixed(2))
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
     },
@@ -132,10 +133,10 @@ foam.CLASS({
         var receivingAmount = amount * rate;
         return receivingAmount;
       },
-      tableCellFormatter: function(receivingAmount) {
+      tableCellFormatter: function(receivingAmount, X) {
         this
           .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-            .add(' INR ₹', ( receivingAmount/100 ).toFixed(2))
+            .add(' INR ₹', X.addCommas(( receivingAmount/100 ).toFixed(2)))
           .end();
       }
     },
@@ -184,7 +185,7 @@ foam.CLASS({
         var formattedAmount = total / 100;
         this
           .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
-            .add('$', formattedAmount.toFixed(2))
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
     },

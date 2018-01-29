@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Transfer amount details',
 
   imports: [
+    'addCommas',
     'exchangeRate',
     'type',
     'user'
@@ -337,7 +338,7 @@ foam.CLASS({
           .start()
             .callIf(this.type == 'regular' && this.invoiceMode, function(){
               this.start().addClass('label').add('Amount:').end()
-              .start().addClass('invoice-amount').add('$ ', self.fromAmount.toFixed(2)).end()
+              .start().addClass('invoice-amount').add('$ ', self.addCommas(self.fromAmount.toFixed(2))).end()
             })
           .end()
           // .start('div').addClass('pricingCol')
