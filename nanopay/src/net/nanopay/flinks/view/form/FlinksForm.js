@@ -80,6 +80,9 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
       code: function CSS() {/*
+        ^ {
+          height: 620px;
+        }
         ^ .subTitle {
           width: 490px;
           height: 16px;
@@ -89,7 +92,7 @@ foam.CLASS({
           letter-spacing: 0.3px;
           text-align: left;
           color: #093649;
-          margin-bottom: 30px;
+          margin-bottom: 20px;
         }
         ^ .inputErrorLabel {
           display: none;
