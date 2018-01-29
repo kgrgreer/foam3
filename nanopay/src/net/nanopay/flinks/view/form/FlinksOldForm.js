@@ -76,77 +76,74 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .subTitle {
-          width: 490px;
-          height: 16px;
-          font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-          margin-bottom: 30px;
-        }
-        ^ .inputErrorLabel {
-          display: none;
-        }
-        ^ .icConnected {
-          display: inline-block;
-          width: 24px;
-          height: 24px;
-          margin-left: 30px;
-          vertical-align: middle;
-        }
-        ^ .firstImg {
-          display: inline-block;
-          max-width: 120px;
-          max-height: 65px;
-          width: auto;
-          height: auto;
-          vertical-align: middle;
-          margin-left: 82px;
-        }
-        ^ .secondImg {
-          display: inline-block;
-          width: 120px;
-          height: 65px;
-          margin-left: 30px;
-          vertical-align: middle;
-        }
-        ^ .subHeader {
-          background: %PRIMARYCOLOR%;
-          height: 65px;
-          margin-bottom: 20px;
-          margin-top: 20px;
-        }
-        ^ .subContent {
-          width: 490px;
-          height: 307px;
-          border-radius: 2px;
-          background-color: #ffffff;
-        }
-        ^ .loadingSpinner {
-          position: relative;
-          left: 602px;
-          margin-top: 20px;
-        }
-        ^ .spinnerText {
-          vertical-align: top;
-          margin: 0;
-          margin-top: 3px;
-          margin-right: 3px;
-          display: inline-block;
-          font-size: 13px;
-        }
-        ^ p {
-          margin: 0;
-        }
-    */}})
-  ],
+  css:`
+    ^ .subTitle {
+      width: 490px;
+      height: 16px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #093649;
+      margin-bottom: 30px;
+    }
+    ^ .inputErrorLabel {
+      display: none;
+    }
+    ^ .icConnected {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      margin-left: 30px;
+      vertical-align: middle;
+    }
+    ^ .firstImg {
+      display: inline-block;
+      max-width: 120px;
+      max-height: 65px;
+      width: auto;
+      height: auto;
+      vertical-align: middle;
+      margin-left: 82px;
+    }
+    ^ .secondImg {
+      display: inline-block;
+      width: 120px;
+      height: 65px;
+      margin-left: 30px;
+      vertical-align: middle;
+    }
+    ^ .subHeader {
+      background: %PRIMARYCOLOR%;
+      height: 65px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    ^ .subContent {
+      width: 490px;
+      height: 307px;
+      border-radius: 2px;
+      background-color: #ffffff;
+    }
+    ^ .loadingSpinner {
+      position: relative;
+      left: 602px;
+      margin-top: 20px;
+    }
+    ^ .spinnerText {
+      vertical-align: top;
+      margin: 0;
+      margin-top: 3px;
+      margin-right: 3px;
+      display: inline-block;
+      font-size: 13px;
+    }
+    ^ p {
+      margin: 0;
+    }
+  `,
+
   methods: [
     function init() {
       this.title = 'Connect to a new bank account';
