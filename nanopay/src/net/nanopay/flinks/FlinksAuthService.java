@@ -128,7 +128,7 @@ public class FlinksAuthService
     relativePath = "" + new Date().getTime() + "_" + response.getRequestId();
     String[] images = response.getSecurityChallenges()[0].getIterables();
     for ( int i = 0 ; i < images.length ; i++ ) {
-      images[i] = storeToFile(relativePath, "" + i + ".jpg", images[i]);
+      images[i] = storeToFile(relativePath, i + ".jpg", images[i]);
     }
   }
 

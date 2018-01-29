@@ -141,7 +141,7 @@ foam.CLASS({
                   return 'selected';
                 }))
                 .on('click', function() {
-                  if (  ! e.isSelected || e.isSelected == false ) {
+                  if ( ! e.isSelected || e.isSelected == false ) {
                     e.isSelected = true;
                   } else {
                     e.isSelected = false;
