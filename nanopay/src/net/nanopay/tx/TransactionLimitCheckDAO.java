@@ -47,6 +47,12 @@ public class TransactionLimitCheckDAO
       throw new RuntimeException("No Payer or Payee.");
     }
 
+    // If It's CICO transaction, ignore transaction limits.
+    if ( transaction.getPayeeId() == transaction.getPayerId() ) {
+      return getDelegate().put_(x, transaction);
+    }
+
+
     Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
     Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
 
@@ -126,7 +132,6 @@ public class TransactionLimitCheckDAO
         userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
         break;
     }
-
     return ( ( userTransactionAmount + transaction.getAmount() ) > limit);
   }
 
