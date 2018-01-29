@@ -22,5 +22,7 @@ public class FreshBook
       "<HEAD><TITLE>FRESH</TITLE></HEAD>\n" +
       "<H1>YOU MADE IT</H1>\n" +
       "</HTML>");
+    FreshConfig config = new FreshConfig();
+    config.setCode(req.getHeader("code"));
   }
 }
