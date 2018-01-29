@@ -21,6 +21,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'account',
+    'addCommas',
     'bankAccountDAO',
     'stack',
     'standardCICOTransactionDAO',
@@ -230,7 +231,7 @@ foam.CLASS({
             .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
             .start().add('$', this.formattedBalance$.map(function(b) {
-              return b.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              return self.addCommas(b.toFixed(2).toString());
             })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')

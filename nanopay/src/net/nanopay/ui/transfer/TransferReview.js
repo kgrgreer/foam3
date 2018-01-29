@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Interac transfer review',
 
   imports: [
+    'addCommas',
     'pacs008IndiaPurposeDAO',
     'user',
     'type'
@@ -151,20 +152,20 @@ foam.CLASS({
             .callIf(this.type == 'foreign', function() {
               this.start('div').addClass('currencyContainer')
                 .start({class: 'foam.u2.tag.Image', data: 'images/canada.svg'}).addClass('currencyFlag').end()
-                .start('p').addClass('currencyAmount').add('CAD ', parseFloat(self.viewData.fromAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")).end()
+                .start('p').addClass('currencyAmount').add('CAD ', self.addCommas(parseFloat(self.viewData.fromAmount).toFixed(2))).end()
               .end()
               // .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Fees: CAD ', this.viewData.fees.toFixed(2)).end() // TODO: Get from viewData
               .start('p').addClass('pDetails').addClass('rateLabelMargin').add('Rate: ', self.rate$).end() // TODO: Get FX rates
               .start('div').addClass('currencyContainer')
                 .start({class: 'foam.u2.tag.Image', data: 'images/india.svg'}).addClass('currencyFlag').end()
-                .start('p').addClass('currencyAmount').add('INR ', parseFloat(self.viewData.toAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")).end()
+                .start('p').addClass('currencyAmount').add('INR ', self.addCommas(parseFloat(self.viewData.toAmount).toFixed(2))).end()
               .end()
               .start('div').addClass('rateDivider').end()
             })
           .end()
           .start().addClass('transferRateContainer')
             .callIf(this.type == 'regular', function() {
-              this.start('p').addClass('currencyAmount-L').add('$ ', parseFloat(self.viewData.fromAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")).end()
+              this.start('p').addClass('currencyAmount-L').add('$ ', self.addCommas(parseFloat(self.viewData.fromAmount).toFixed(2))).end()
               this.start('p').add('Paid from Account Number: ' + '***' + self.viewData.account.accountNumber.substring(self.viewData.account.accountNumber.length - 4, self.viewData.account.accountNumber.length)).end()
             })
           .end()

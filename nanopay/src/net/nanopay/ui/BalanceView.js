@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'BalanceView',
   extends: 'foam.u2.View',
 
+  imports: [ 'addCommas' ],
+
   properties:[
     'data'
   ],
@@ -40,7 +42,7 @@ foam.CLASS({
         .add(this.title)
       .end()
       .start().addClass('account-balance')
-       .add('$ ', (this.data.balance/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+       .add('$ ', this.addCommas((this.data.balance/100).toFixed(2)))
       .end();
     }
   ]

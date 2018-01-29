@@ -200,6 +200,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
 
   //util
+  { name: 'net/nanopay/util/AddCommaFormatter' },
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
 
