@@ -327,9 +327,10 @@ foam.CLASS({
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
                 });
               }
-            })
+            });
           });
           self.isConnecting = false;
+          X.stack.back();
           return;
         }
       }
