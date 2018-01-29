@@ -47,7 +47,7 @@ foam.CLASS({
       max-width: 342px;
       height: 16px;
       font-size: 12px;
-      line-height: 1.33;
+      line-height: 1.66;
       letter-spacing: 0.2px;
       text-align: left;
       color: #59a5d5;
