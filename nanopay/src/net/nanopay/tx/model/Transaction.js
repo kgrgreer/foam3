@@ -119,7 +119,7 @@ foam.CLASS({
         var formattedAmount = amount/100;
         this
           .start()
-            .add('$', formattedAmount.toFixed(2))
+            .add('$', formattedAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
           .end();
       }
     },
@@ -135,7 +135,7 @@ foam.CLASS({
       tableCellFormatter: function(receivingAmount) {
         this
           .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-            .add(' INR ₹', ( receivingAmount/100 ).toFixed(2))
+            .add(' INR ₹', ( receivingAmount/100 ).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
           .end();
       }
     },
@@ -184,7 +184,7 @@ foam.CLASS({
         var formattedAmount = total / 100;
         this
           .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
-            .add('$', formattedAmount.toFixed(2))
+            .add('$', formattedAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
           .end();
       }
     },

@@ -64,7 +64,7 @@ foam.CLASS({
       class: 'Double',
       name: 'balance',
       adapt: function(oldValue, newValue) {
-        return (newValue * 1.0).toFixed(2);
+        return (newValue * 1.0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
     }
   ],

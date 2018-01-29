@@ -229,7 +229,9 @@ foam.CLASS({
           .start('div').addClass('balanceBox')
             .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$', this.formattedBalance$.map(function(b) { return b.toFixed(2); })).addClass('balance').end()
+            .start().add('$', this.formattedBalance$.map(function(b) {
+              return b.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
