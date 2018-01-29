@@ -38,7 +38,7 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .optionSpacer.selected {
-          border: solid 1px #1CC2B7;
+          border: solid 1px %ACCENTCOLOR%;
         }
         ^ .subContent {
           width: 528px;

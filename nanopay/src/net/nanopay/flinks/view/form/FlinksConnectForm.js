@@ -36,6 +36,9 @@ foam.CLASS({
           outline: none;
           padding: 10px;
         }
+        ^ .subContent {
+          height: 285px;
+        }
         ^ .conditionText {
           height: 16px;
           font-family: Roboto;
