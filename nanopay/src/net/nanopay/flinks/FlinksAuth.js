@@ -50,6 +50,10 @@ foam.INTERFACE({
       {
         name: 'map1',
         javaType: 'java.util.Map'
+      },
+      {
+        name: 'type',
+        javaType: 'String'
       }
     ]
   },
