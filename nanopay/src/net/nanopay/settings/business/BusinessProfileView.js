@@ -136,11 +136,22 @@ foam.CLASS({
       border-color: %SECONDARYCOLOR%;
       opacity: 0.9;
     }
+    ^ .toggleDiv {
+      position: relative;
+      display: inline-block;
+      float: right;
+      top: 5;
+    }
   `,
 
   properties: [
     'businessSectorName',
-    'businessTypeName'
+    'businessTypeName',
+    {
+      class: 'Boolean',
+      name: 'businessHoursEnabled',
+      value: false
+    }
   ],
 
   methods: [
@@ -216,6 +227,9 @@ foam.CLASS({
         .end()
         .start().addClass('Container')
           .start().add('Business Hours').addClass('boxTitle').end()
+          .start('div').addClass('toggleDiv')
+            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.businessHoursEnabled$ })
+          .end()
           .start().addClass('dayOfWeekDiv')
             .start().add('Mon.').addClass('labelTitle').end()
           .end()
