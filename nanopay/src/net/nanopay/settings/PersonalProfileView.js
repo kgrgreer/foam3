@@ -25,7 +25,7 @@ foam.CLASS({
     }
     ^ .Container{
       width: 960px;
-      height: 368px;
+      padding-bottom: 13px;
       border-radius: 2px;
       background-color: #ffffff;
       margin-top: 50px;
@@ -221,7 +221,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      if (this.user.firstName != "") 
+      if (this.user.firstName != "")
       {
         this.firstName = this.user.firstName;
         this.lastName = this.user.lastName;
@@ -263,8 +263,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all fields.' },    
-    { name: 'invalidPhone', message: 'Phone number is invalid.' },    
+    { name: 'noInformation', message: 'Please fill out all fields.' },
+    { name: 'invalidPhone', message: 'Phone number is invalid.' },
     { name: 'informationUpdated', message: 'Information has been successfully changed.' }
   ],
 
@@ -282,9 +282,9 @@ foam.CLASS({
 
         if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.phone) ) {
           this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
-          return; 
+          return;
         }
-        
+
         this.user.firstName = this.firstName;
         this.user.lastName = this.lastName;
         this.user.department = this.jobTitle;
@@ -298,7 +298,7 @@ foam.CLASS({
         .catch(function (err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
-      }  
+      }
     }
   ]
 });
