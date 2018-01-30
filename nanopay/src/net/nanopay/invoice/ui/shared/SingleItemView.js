@@ -10,7 +10,13 @@ foam.CLASS({
     'stack'
   ],
 
+  requires: [
+    'foam.nanos.menu.Menu',
+    'foam.nanos.menu.SubMenuView'
+  ],
+
   properties: [
+    [ 'hidden', true ],
     {
       name: 'type',
       expression: function(data, user){
@@ -76,6 +82,22 @@ foam.CLASS({
           width: 20px;
           height: 20px;
           object-fit: contain;
+          cursor: pointer;
+        }
+        ^ .dropdown {
+          position: relative;
+          display: inline-block;
+        }
+        ^ .dropdown-content {
+          display: block;
+          position: absolute;
+          background-color: #ffffff;
+          min-width: 175px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+        ^ .hidden {
+          display: none;
         }
         */
       }
@@ -104,7 +126,18 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('table-body'))
             .start().addClass('table-attachment')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' }).end()
+              .start().addClass('dropdown')
+                .start({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
+                  .on('click', function () {
+                    this.hidden = ! this.hidden;
+                    this.document.querySelector('.dropdown-content')
+                      .classList.toggle('hidden', this.hidden);
+                  }.bind(this))
+                .end()
+                .start().addClass('dropdown-content hidden')
+                  .add('HELLO')
+                .end()
+              .end()
             .end()
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
