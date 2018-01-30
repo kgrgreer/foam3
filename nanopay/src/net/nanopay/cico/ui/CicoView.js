@@ -15,8 +15,7 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
