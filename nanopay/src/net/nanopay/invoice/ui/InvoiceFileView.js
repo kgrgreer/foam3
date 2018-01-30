@@ -20,7 +20,7 @@ foam.CLASS({
   properties: [
     'data',
     'fileNumber',
-    'onRemove'
+    [ 'removeHidden', false ]
   ],
 
   css: `
@@ -85,17 +85,18 @@ foam.CLASS({
         .start()
           .start('a').addClass('attachment-filename')
             .attrs({
-              href: this.data.data$.map(function (data) {
-                return self.BlobBlob.isInstance(data) ?
-                  URL.createObjectURL(data.blob) :
-                  ( self.blobService.urlFor(data) || '' );
+              href: this.data$.map(function (data) {
+                var blob = data.data;
+                return self.BlobBlob.isInstance(blob) ?
+                  URL.createObjectURL(blob.blob) :
+                  ( "/service/httpFileService/" + data.id );
               }),
               target: '_blank'
             })
             .add(this.data.filename)
           .end()
           .start().addClass('attachment-footer')
-            .add(this.REMOVE)
+            .start().add(this.REMOVE).hide(this.removeHidden).end()
             .start().addClass('attachment-filesize')
               .add(this.formatFileSize())
             .end()

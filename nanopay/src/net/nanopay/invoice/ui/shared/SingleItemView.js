@@ -11,11 +11,12 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.menu.Menu',
-    'foam.nanos.menu.SubMenuView'
+    'foam.u2.PopupView',
+    'net.nanopay.invoice.ui.InvoiceFileSubView'
   ],
 
   properties: [
+    'popupMenu_',
     [ 'hidden', true ],
     {
       name: 'type',
@@ -89,10 +90,8 @@ foam.CLASS({
           display: inline-block;
         }
         ^ .dropdown-content {
-          display: block;
           position: absolute;
           background-color: #ffffff;
-          min-width: 175px;
           box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
           z-index: 1;
         }
@@ -126,17 +125,9 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('table-body'))
             .start().addClass('table-attachment')
-              .start().addClass('dropdown')
-                .start({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
-                  .on('click', function () {
-                    this.hidden = ! this.hidden;
-                    this.document.querySelector('.dropdown-content')
-                      .classList.toggle('hidden', this.hidden);
-                  }.bind(this))
-                .end()
-                .start().addClass('dropdown-content hidden')
-                  .add('HELLO')
-                .end()
+              .start('span', null, this.popupMenu_$)
+                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
+                .on('click', this.onAttachmentButtonClick)
               .end()
             .end()
             .start('h3').add(this.data.invoiceNumber).end()
@@ -163,6 +154,33 @@ foam.CLASS({
           self.data.status = invoice.status;
           self.data.paymentMethod = invoice.paymentMethod;
         });
+      }
+    },
+    {
+      name: 'onAttachmentButtonClick',
+      code: function (e) {
+        var p = this.PopupView.create({
+          minWidth: 175,
+          width: 450,
+          padding: 0.1,
+          x: 0.1,
+          y: 20
+        });
+
+        p.addClass('dropdown-content')
+        .call(function () {
+          var files = this.data.invoiceFile;
+          for ( var i = 0 ; i < files.length ; i++ ) {
+            p.tag({
+              class: 'net.nanopay.invoice.ui.InvoiceFileView',
+              data: files[i],
+              fileNumber: i + 1,
+              removeHidden: true
+            })
+          }
+        }.bind(this));
+
+        this.popupMenu_.add(p);
       }
     }
   ]
