@@ -5,8 +5,6 @@ foam.CLASS({
 
   imports: [ 'stack', 'user' ],
 
-  exports: [ 'as data' ],
-
   documentation: 'View displaying business information',
 
   css: `
@@ -127,81 +125,6 @@ foam.CLASS({
     ^ .dayOfWeekDiv {
       margin-top: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton {
-      width: 136px;
-      height: 40px;
-      border-radius: 2px;
-      background: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
-      color: white;
-      text-align: center;
-      cursor: pointer;
-      font-size: 14px;
-      padding: 0;
-      margin: 0;
-      outline: none;
-      font-weight: normal;
-      margin-top: 30px;
-    }
-    ^ .net-nanopay-ui-ActionView-saveButton:hover {
-      background: %SECONDARYCOLOR%;
-      border-color: %SECONDARYCOLOR%;
-      opacity: 0.9;
-    }
-    ^ .toggleDiv {
-      position: relative;
-      display: inline-block;
-      float: right;
-      top: 4;
-    }
-    ^ .show {
-      visibility: visible;
-    }
-    ^ .hide {
-      visibility: hidden;
-    }
-    ^ .foam-u2-tag-Select {
-      width: 70px;
-      height: 30px;
-      border-radius: 0;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      padding: 0 15px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
-      outline: none;
-    }
-    ^ .property-hours {
-      margin-left: 20px;
-      margin-right: 5px;
-      display: inline-block;
-    }
-    ^ .property-periods {
-      margin-right: 20px;
-      display: inline-block;
-    }
-    ^ .caret {
-      position: relative;
-    }
-    .caret:before {
-      content: '';
-      position: absolute;
-      top: 12px;
-      left: 49px;
-      border-top: 7px solid #a4b3b8;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-    }
-    .caret:after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      top: 0;
-      border-top: 0px solid #ffffff;
-      border-left: 0px solid transparent;
-      border-right: 0px solid transparent;
-    }
   `,
 
   properties: [
@@ -211,36 +134,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'businessHoursEnabled',
       value: false
-    },
-    {
-      name: 'hours',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          '1:00','1:30',
-          '2:00','2:30',
-          '3:00','3:30',
-          '4:00','4:30',
-          '5:00','5:30',
-          '6:00','6:30',
-          '7:00','7:30',
-          '8:00','8:30',
-          '9:00','9:30',
-          '10:00','10:30',
-          '11:00','11:30',
-          '12:00','12:30'
-        ]
-      }
-    },
-    {
-      name: 'periods',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'AM',
-          'PM'
-        ]
-      }
     }
   ],
 
@@ -277,10 +170,8 @@ foam.CLASS({
         self.businessTypeName = type.name;
       });
 
-
       this
       .addClass(this.myClass())
-
       .start().addClass('businessSettingsContainer')
         .start().addClass('Container')
           .start().add('Business Profile').addClass('boxTitle').end()
@@ -336,127 +227,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().addClass('Container')
-          .start().add('Business Hours').addClass('boxTitle').end()
-          .start('div').addClass('toggleDiv')
-            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.businessHoursEnabled$ })
-          .end()
-          .start().addClass(this.businessHoursEnabled$.map(function(e) { return e ? 'show' : 'hide' }))
-            .start().addClass('dayOfWeekDiv')
-              .start().add(this.MondayLabel).addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().addClass('dayOfWeekDiv')
-              .start().add(this.TuesdayLabel).addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().addClass('dayOfWeekDiv')
-              .start().add(this.WednesdayLabel).addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().addClass('dayOfWeekDiv')
-              .start().add(this.ThursdayLabel).addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().addClass('dayOfWeekDiv')
-              .start().add(this.FridayLabel).addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().addClass('dayOfWeekDiv')
-              .start().add('Sat.').addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().addClass('dayOfWeekDiv')
-              .start().add('Sun.').addClass('businessHourLabels').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start().add(this.ToLabel).addClass('labelTitle inline').end()
-              .start(this.HOURS)
-                .start('div').addClass('caret').end()
-              .end()
-              .start(this.PERIODS)
-                .start('div').addClass('caret').end()
-              .end()
-            .end()
-            .start().add(this.SAVE_BUTTON).end()
-          .end()
-        .end()
+        .tag({ class: 'net.nanopay.settings.business.BusinessHoursView' })
       .end()
     }
   ],
@@ -467,13 +238,6 @@ foam.CLASS({
       label: 'Edit Profile',
       code: function (X) {
         X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
-      }
-    },
-    {
-      name: 'saveButton',
-      label: 'Save',
-      code: function (X) {
-        // Save business hours
       }
     }
   ]
