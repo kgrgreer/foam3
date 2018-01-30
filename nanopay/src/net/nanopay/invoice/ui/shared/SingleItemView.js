@@ -49,7 +49,7 @@ foam.CLASS({
         }
         ^table-body{
           width: 962px;
-          height: auto;
+          height: 40px;
           background: white;
           padding: 10px 0;
           margin: 0;
@@ -66,6 +66,17 @@ foam.CLASS({
           font-weight: 300;
           font-size: 12px;
         }
+        ^ .table-attachment {
+          width: 20px;
+          height: 20px;
+          padding: 10px;
+          float: left;
+        }
+        ^ .table-attachment img {
+          width: 20px;
+          height: 20px;
+          object-fit: contain;
+        }
         */
       }
     })
@@ -81,6 +92,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
+            .start().addClass('table-attachment').end()
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function(){
@@ -91,6 +103,9 @@ foam.CLASS({
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
+            .start().addClass('table-attachment')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' }).end()
+            .end()
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
