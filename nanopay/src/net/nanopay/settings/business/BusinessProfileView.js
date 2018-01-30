@@ -112,6 +112,30 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-editProfile:active {
       color: #2974a3;
     }
+    ^ .dayOfWeekDiv {
+      margin-top: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-saveButton {
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      background: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      margin: 0;
+      outline: none;
+      font-weight: normal;
+      margin-top: 30px;
+    }
+    ^ .net-nanopay-ui-ActionView-saveButton:hover {
+      background: %SECONDARYCOLOR%;
+      border-color: %SECONDARYCOLOR%;
+      opacity: 0.9;
+    }
   `,
 
   properties: [
@@ -191,7 +215,29 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass('Container')
-        .start().add('Business Hours').addClass('boxTitle').end()
+          .start().add('Business Hours').addClass('boxTitle').end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Mon.').addClass('labelTitle').end()
+          .end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Tue.').addClass('labelTitle').end()
+          .end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Wed.').addClass('labelTitle').end()
+          .end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Thu.').addClass('labelTitle').end()
+          .end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Fri.').addClass('labelTitle').end()
+          .end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Sat.').addClass('labelTitle').end()
+          .end()
+          .start().addClass('dayOfWeekDiv')
+            .start().add('Sun.').addClass('labelTitle').end()
+          .end()
+          .start().add(this.SAVE_BUTTON).end()
         .end()
       .end()
     }
@@ -203,6 +249,13 @@ foam.CLASS({
       label: 'Edit Profile',
       code: function (X) {
         X.stack.push({ class: 'net.nanopay.settings.business.EditBusinessView', showCancel: true });
+      }
+    },
+    {
+      name: 'saveButton',
+      label: 'Save',
+      code: function (X) {
+        // Save business hours
       }
     }
   ]
