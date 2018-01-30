@@ -10,7 +10,14 @@ foam.CLASS({
     'stack'
   ],
 
+  requires: [
+    'foam.u2.PopupView',
+    'net.nanopay.invoice.ui.InvoiceFileSubView'
+  ],
+
   properties: [
+    'popupMenu_',
+    [ 'hidden', true ],
     {
       name: 'type',
       expression: function(data, user){
@@ -49,7 +56,7 @@ foam.CLASS({
         }
         ^table-body{
           width: 962px;
-          height: auto;
+          height: 40px;
           background: white;
           padding: 10px 0;
           margin: 0;
@@ -66,6 +73,31 @@ foam.CLASS({
           font-weight: 300;
           font-size: 12px;
         }
+        ^ .table-attachment {
+          width: 20px;
+          height: 20px;
+          padding: 10px;
+          float: left;
+        }
+        ^ .table-attachment img {
+          width: 20px;
+          height: 20px;
+          object-fit: contain;
+          cursor: pointer;
+        }
+        ^ .dropdown {
+          position: relative;
+          display: inline-block;
+        }
+        ^ .dropdown-content {
+          position: absolute;
+          background-color: #ffffff;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+        ^ .hidden {
+          display: none;
+        }
         */
       }
     })
@@ -81,6 +113,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
+            .start().addClass('table-attachment').end()
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function(){
@@ -91,6 +124,12 @@ foam.CLASS({
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
+            .start().addClass('table-attachment')
+              .start('span', null, this.popupMenu_$)
+                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
+                .on('click', this.onAttachmentButtonClick)
+              .end()
+            .end()
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
@@ -115,6 +154,33 @@ foam.CLASS({
           self.data.status = invoice.status;
           self.data.paymentMethod = invoice.paymentMethod;
         });
+      }
+    },
+    {
+      name: 'onAttachmentButtonClick',
+      code: function (e) {
+        var p = this.PopupView.create({
+          minWidth: 175,
+          width: 275,
+          padding: 0.1,
+          x: 0.1,
+          y: 20
+        });
+
+        p.addClass('dropdown-content')
+        .call(function () {
+          var files = this.data.invoiceFile;
+          for ( var i = 0 ; i < files.length ; i++ ) {
+            p.tag({
+              class: 'net.nanopay.invoice.ui.InvoiceFileView',
+              data: files[i],
+              fileNumber: i + 1,
+              removeHidden: true
+            })
+          }
+        }.bind(this));
+
+        this.popupMenu_.add(p);
       }
     }
   ]

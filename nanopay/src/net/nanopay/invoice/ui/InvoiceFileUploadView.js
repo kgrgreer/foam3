@@ -9,6 +9,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
     'blobService'
   ],
 
@@ -90,6 +91,7 @@ foam.CLASS({
       var files = e.target.files;
       for ( var i = 0 ; i < files.length ; i++ ) {
         this.data.push(this.File.create({
+          ownerId: this.user.id,
           filename: files[i].name,
           filesize: files[i].size,
           mimeType: files[i].type,
