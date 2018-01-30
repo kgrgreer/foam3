@@ -45,3 +45,4 @@ p({"class":"foam.nanos.boot.NSpec", "name":"flinksAuth",                  "lazy"
 p({"class":"foam.nanos.boot.NSpec", "name":"appConfig",                   "lazy":false, "serve":false, "service":{"class":"foam.nanos.app.AppConfig","url":"http://localhost:8080","mode":0}})
 // TODO: remove encrypted region dao after demo
 p({"class":"foam.nanos.boot.NSpec", "name":"encryptedRegionDAO",          "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new net.nanopay.dao.crypto.EncryptingDAO(x, foam.nanos.auth.Region.getOwnClassInfo(), new foam.dao.JDAO(x, net.nanopay.dao.crypto.EncryptedObject.getOwnClassInfo(), \"encryptedRegions\"))).orderBy(foam.nanos.auth.Region.NAME);","client":"{\"of\":\"foam.nanos.auth.Region\"}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"blobService",                 "lazy":true,  "serve":true,  "client": "{ \"class\":\"foam.blob.RestBlobService\", \"serviceName\":\"service/httpFileService\" }"})
