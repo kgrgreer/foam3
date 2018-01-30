@@ -65,11 +65,10 @@ foam.CLASS({
     }
     ^ .inlineDiv {
       display: inline-block;
-      margin-right: 100px;
+      margin-right: 80px;
     }
     ^ .topInlineDiv {
       display: inline-block;
-      margin-right: 100px;
       vertical-align: top;
     }
     ^ .labelTitle {
@@ -88,9 +87,7 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
       display: flex;
-      word-wrap: break-word;
-      width: 125px;
-      height: 15px;
+      width: 185px;
     }
     ^ .foam-u2-ActionView-editProfile {
       text-decoration: underline;
@@ -192,6 +189,9 @@ foam.CLASS({
               .end()
             .end()
           .end()
+        .end()
+        .start().addClass('Container')
+        .start().add('Business Hours').addClass('boxTitle').end()
         .end()
       .end()
     }
