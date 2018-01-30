@@ -161,7 +161,7 @@ foam.CLASS({
       code: function (e) {
         var p = this.PopupView.create({
           minWidth: 175,
-          width: 450,
+          width: 275,
           padding: 0.1,
           x: 0.1,
           y: 20

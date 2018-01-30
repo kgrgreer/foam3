@@ -26,7 +26,7 @@ foam.CLASS({
   css: `
     ^ {
       min-width: 175px;
-      max-width: 450px;
+      max-width: 275px;
       height: 40px;
       background-color: #ffffff;
       padding-left: 10px;
@@ -45,6 +45,12 @@ foam.CLASS({
     }
     ^ .attachment-filename {
       max-width: 342px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      float: left;
+    }
+    ^ .attachment-filename a {
       height: 16px;
       font-size: 12px;
       line-height: 1.66;
@@ -82,8 +88,8 @@ foam.CLASS({
         .start().addClass('attachment-number')
           .add(this.formatFileNumber())
         .end()
-        .start()
-          .start('a').addClass('attachment-filename')
+        .start().addClass('attachment-filename')
+          .start('a')
             .attrs({
               href: this.data$.map(function (data) {
                 var blob = data.data;
@@ -93,13 +99,17 @@ foam.CLASS({
               }),
               target: '_blank'
             })
-            .add(this.data.filename)
+            .add(this.slot(function (filename) {
+              var len = filename.length;
+              return ( len > 35 ) ? (filename.substr(0, 20) +
+                '...' + filename.substr(len - 10, len)) : filename;
+            }, this.data.filename$))
           .end()
-          .start().addClass('attachment-footer')
-            .start().add(this.REMOVE).hide(this.removeHidden).end()
-            .start().addClass('attachment-filesize')
-              .add(this.formatFileSize())
-            .end()
+        .end()
+        .start().addClass('attachment-footer')
+          .start().add(this.REMOVE).hide(this.removeHidden).end()
+          .start().addClass('attachment-filesize')
+            .add(this.formatFileSize())
           .end()
         .end()
     },
