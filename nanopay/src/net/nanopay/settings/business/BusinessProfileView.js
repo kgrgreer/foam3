@@ -5,6 +5,8 @@ foam.CLASS({
 
   imports: [ 'stack', 'user' ],
 
+  exports: [ 'as data' ],
+
   documentation: 'View displaying business information',
 
   css: `
@@ -140,7 +142,13 @@ foam.CLASS({
       position: relative;
       display: inline-block;
       float: right;
-      top: 5;
+      top: 4;
+    }
+    ^ .show {
+      visibility: visible;
+    }
+    ^ .hide {
+      visibility: hidden;
     }
   `,
 
@@ -230,28 +238,30 @@ foam.CLASS({
           .start('div').addClass('toggleDiv')
             .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.businessHoursEnabled$ })
           .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Mon.').addClass('labelTitle').end()
+          .start().addClass(this.businessHoursEnabled$.map(function(e) { return e ? 'show' : 'hide' }))
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Mon.').addClass('labelTitle').end()
+            .end()
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Tue.').addClass('labelTitle').end()
+            .end()
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Wed.').addClass('labelTitle').end()
+            .end()
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Thu.').addClass('labelTitle').end()
+            .end()
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Fri.').addClass('labelTitle').end()
+            .end()
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Sat.').addClass('labelTitle').end()
+            .end()
+            .start().addClass('dayOfWeekDiv')
+              .start().add('Sun.').addClass('labelTitle').end()
+            .end()
+            .start().add(this.SAVE_BUTTON).end()
           .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Tue.').addClass('labelTitle').end()
-          .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Wed.').addClass('labelTitle').end()
-          .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Thu.').addClass('labelTitle').end()
-          .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Fri.').addClass('labelTitle').end()
-          .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Sat.').addClass('labelTitle').end()
-          .end()
-          .start().addClass('dayOfWeekDiv')
-            .start().add('Sun.').addClass('labelTitle').end()
-          .end()
-          .start().add(this.SAVE_BUTTON).end()
         .end()
       .end()
     }
