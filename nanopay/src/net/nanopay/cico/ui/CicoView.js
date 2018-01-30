@@ -15,7 +15,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   imports: [
@@ -52,6 +53,7 @@ foam.CLASS({
           margin: 0 auto;
         }
         ^ .balanceBox {
+          position: relative;
           width: 330px;
           height: 100px;
           border-radius: 2px;
@@ -152,6 +154,12 @@ foam.CLASS({
         ^ thead > tr > th{
           background: %TABLECOLOR%;
         }
+
+        ^ .loadingSpinner {
+          position: absolute;
+          top: 11px;
+          left: 95px;
+        }
       */}
     })
   ],
@@ -197,6 +205,12 @@ foam.CLASS({
           )
         );
       }
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
     }
   ],
 
@@ -223,13 +237,14 @@ foam.CLASS({
 
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
-
+      this.loadingSpinner.show();
       this
         .addClass(this.myClass())
         .start()
           .start('div').addClass('balanceBox')
             .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
+            .start(this.loadingSpinner).addClass('loadingSpinner').end()
             .start().add('$', this.formattedBalance$.map(function(b) {
               return self.addCommas(b.toFixed(2).toString());
             })).addClass('balance').end()
@@ -314,10 +329,13 @@ foam.CLASS({
       isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-
+        self.loadingSpinner.show();
         this.accountDAO.find(this.user.id).then(function (a) {
           self.account.copyFrom(a);
           self.formattedBalance = a.balance / 100;
+        })
+        .finally( function() {
+          self.loadingSpinner.hide();
         });
       }
     }
