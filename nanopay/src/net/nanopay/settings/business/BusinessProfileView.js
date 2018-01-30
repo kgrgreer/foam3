@@ -82,6 +82,16 @@ foam.CLASS({
       color: #093649;
       margin-bottom: 15px;
     }
+    ^ .businessHourLabels {
+      width: 30px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
     ^ .labelContent {
       font-family: Roboto;
       font-size: 14px;
@@ -333,7 +343,7 @@ foam.CLASS({
           .end()
           .start().addClass(this.businessHoursEnabled$.map(function(e) { return e ? 'show' : 'hide' }))
             .start().addClass('dayOfWeekDiv')
-              .start().add(this.MondayLabel).addClass('labelTitle inline').end()
+              .start().add(this.MondayLabel).addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
@@ -349,7 +359,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('dayOfWeekDiv')
-              .start().add(this.TuesdayLabel).addClass('labelTitle inline').end()
+              .start().add(this.TuesdayLabel).addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
@@ -365,7 +375,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('dayOfWeekDiv')
-              .start().add(this.WednesdayLabel).addClass('labelTitle inline').end()
+              .start().add(this.WednesdayLabel).addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
@@ -381,7 +391,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('dayOfWeekDiv')
-              .start().add(this.ThursdayLabel).addClass('labelTitle inline').end()
+              .start().add(this.ThursdayLabel).addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
@@ -397,7 +407,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('dayOfWeekDiv')
-              .start().add(this.FridayLabel).addClass('labelTitle inline').end()
+              .start().add(this.FridayLabel).addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
@@ -413,7 +423,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('dayOfWeekDiv')
-              .start().add('Sat.').addClass('labelTitle inline').end()
+              .start().add('Sat.').addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
@@ -429,7 +439,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('dayOfWeekDiv')
-              .start().add('Sun.').addClass('labelTitle inline').end()
+              .start().add('Sun.').addClass('businessHourLabels').end()
               .start(this.HOURS)
                 .start('div').addClass('caret').end()
               .end()
