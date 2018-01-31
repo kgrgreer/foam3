@@ -5,6 +5,8 @@ foam.CLASS({
 
   documentation: 'view for account and balance',
 
+  imports: [ 'addCommas' ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -64,7 +66,7 @@ foam.CLASS({
       class: 'Double',
       name: 'balance',
       adapt: function(oldValue, newValue) {
-        return (newValue * 1.0).toFixed(2);
+        return this.addCommas((newValue * 1.0).toFixed(2));
       }
     }
   ],
@@ -80,11 +82,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('leftPart').style({'margin-left':'44px'})
-          .start('p').addClass('accountName').style({'margin-top':'8px'}).add(this.accountName$).end()
+          .start('p').addClass('accountName').style({'margin-top':'12px'}).add(this.accountName$).end()
           .start('p').addClass('accountNo').style({'margin-top':'4px'}).add('Account No. ').add(this.accountNo$).end()
         .end()
         .start('div').addClass('rightPart').style({'margin-left':'22px'})
-          .start('p').addClass('balance').style({'margin-top':'11px'}).add('$').add(this.balance$).end()
+          .start('p').addClass('balance').style({'margin-top':'13.5px'}).add('$').add(this.balance$).end()
         .end()
     }
   ]
