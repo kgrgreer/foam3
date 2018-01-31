@@ -36,6 +36,9 @@ foam.CLASS({
           outline: none;
           padding: 10px;
         }
+        ^ .subContent {
+          height: 285px;
+        }
         ^ .conditionText {
           height: 16px;
           font-family: Roboto;
@@ -130,7 +133,6 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Connect';
-      this.form.isEnabledButtons(true);
       this.conditionAgree = false;
     },
 

@@ -21,7 +21,7 @@ foam.CLASS({
         }
         ^ .accountView {
           width: 100%;
-          height: 197px;
+          height: 270px;
           overflow:auto;
         }
         ^ .spacer {
@@ -32,7 +32,7 @@ foam.CLASS({
         }
         ^ .subContent {
           width: 495px;
-          height: 320px;
+          height: 360px;
         }
         ^ .account {
           cursor: pointer;
@@ -115,10 +115,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.nextLabel = 'Add Account';
-      this.form.isEnabledButtons(true);
       this.complete = true;
-      this.accountsCheck = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {
@@ -144,7 +141,7 @@ foam.CLASS({
                   return 'selected';
                 }))
                 .on('click', function() {
-                  if (  ! e.isSelected && e.isSelected == false ) {
+                  if ( ! e.isSelected || e.isSelected == false ) {
                     e.isSelected = true;
                   } else {
                     e.isSelected = false;

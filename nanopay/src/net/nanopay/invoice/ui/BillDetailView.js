@@ -7,17 +7,17 @@ foam.CLASS({
       'foam.mlang.Expressions',
     ],
 
-    imports: [ 
-      'stack', 
+    imports: [
       'hideSaleSummary',
-      'userDAO',
-      'user'
+      'stack',
+      'user',
+      'userDAO'
     ],
 
     requires: [
-      'net.nanopay.invoice.model.Invoice',
+      'foam.nanos.auth.User',
       'foam.u2.dialog.NotificationMessage',
-      'foam.nanos.auth.User'
+      'net.nanopay.invoice.model.Invoice'
     ],
 
     properties: [
@@ -45,7 +45,7 @@ foam.CLASS({
             'Monthly'
           ]
         },
-        value: 'Daily'       
+        value: 'Daily'
       },
       {
         name: 'userList',
@@ -143,6 +143,9 @@ foam.CLASS({
       ^ .small-margin{
         margin-top: 15px;
       }
+      ^ .information {
+        height: 200px;
+      }
     `,
 
     methods: [
@@ -161,31 +164,33 @@ foam.CLASS({
             .end()
             .start().add('New Bill').addClass('light-roboto-h2').end()
             .start().addClass('white-container')
-              .start().addClass('customer-div')
-              .start().addClass('label').add('Vendor').end()              
-                .startContext({data: this})
-                  .start(this.USER_LIST).end()
-                .endContext()
-              .end()
-              .start().addClass('input-container-1')
-                .start().addClass('float-right')
-                  .start().addClass('label').add('PO #').end()
-                  .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
+              .start().addClass('information')
+                .start().addClass('customer-div')
+                .start().addClass('label').add('Vendor').end()
+                  .startContext({data: this})
+                    .start(this.USER_LIST).end()
+                  .endContext()
                 .end()
-                .start().addClass('')
-                  .start().addClass('label').add('Due Date').end()
-                  .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
-                  .start().addClass('label').add('Amount').end()
-                  .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
+                .start().addClass('input-container-1')
+                  .start().addClass('float-right')
+                    .start().addClass('label').add('PO #').end()
+                    .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
+                  .end()
+                  .start().addClass('')
+                    .start().addClass('label').add('Due Date').end()
+                    .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
+                    .start().addClass('label').add('Amount').end()
+                    .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
+                  .end()
                 .end()
               .end()
               .start(this.Invoice.INVOICE_FILE).end()
-              .start()
+//              .start()
                 // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
                 // .add('Enable recurring payments').addClass('enable-recurring-text')
-              .end()
+//              .end()
               // .startContext({data: this})
-              //   .start().show(this.checkBoxRecurring$)              
+              //   .start().show(this.checkBoxRecurring$)
               //     .start().addClass('frequency-div')
               //       .start().addClass('label').add('Frequency').end()
               //         .start(this.FREQUENCY).end()
@@ -205,7 +210,7 @@ foam.CLASS({
                 .start(this.Invoice.NOTE).addClass('half-input-box').end()
               .end()
             .end();
-            
+
         }
     ],
 
@@ -233,17 +238,17 @@ foam.CLASS({
           var dueDate = this.data.dueDate;
 
           if ( !this.data.amount || this.data.amount < 0 ){
-            this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            
+            this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));
             return;
           }
 
           // By pass for safari & mozilla type='date' on input support
           // Operator checking if dueDate is a date object if not, makes it so or throws notification.
           if( isNaN(dueDate) && dueDate != null ){
-            this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
-            return;  
+            this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));
+            return;
           }
-          
+
           var inv = this.Invoice.create({
             payerId: this.user.id,
             payeeId: this.userList,
@@ -256,7 +261,7 @@ foam.CLASS({
           });
 
           X.dao.put(inv);
-          
+
           // if(X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount){
           //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
           //     frequency: X.frequency,
@@ -281,7 +286,6 @@ foam.CLASS({
 
           X.stack.push({class: 'net.nanopay.invoice.ui.ExpensesView'});
         }
-      },
-
+      }
     ]
 });

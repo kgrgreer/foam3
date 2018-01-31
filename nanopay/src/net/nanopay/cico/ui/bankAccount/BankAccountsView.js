@@ -41,7 +41,7 @@ foam.CLASS({
           margin-top: 20px;
         }
         ^ .bankContentCard {
-          width: 165px;
+          width: 234px;
           height: 100px;
           margin-right: 13.5px;
           float: left;
@@ -139,9 +139,9 @@ foam.CLASS({
             .start('div').addClass('spacer')
               .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleUnverified, content$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
             .end()
-            .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledBanksCount$ }).addClass('bankContentCard')
-            .end()
+            // .start('div').addClass('spacer')
+            //   .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledBanksCount$ }).addClass('bankContentCard')
+            // .end()
             .start('div')
               .tag(this.ADD_BANK, { showLabel: true })
             .end()
@@ -158,7 +158,7 @@ foam.CLASS({
           .end()
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
     }
-    
+
   ],
 
   actions: [
@@ -178,9 +178,9 @@ foam.CLASS({
       name: 'BankAccountTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 
-        'net.nanopay.model.BankAccount', 
-        'foam.u2.dialog.Popup' 
+      requires: [
+        'net.nanopay.model.BankAccount',
+        'foam.u2.dialog.Popup'
       ],
 
       imports: [

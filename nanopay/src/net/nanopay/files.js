@@ -159,6 +159,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/InvoiceFileUploadView', flags: ['web'] },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
@@ -200,6 +201,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
 
   //util
+  { name: 'net/nanopay/util/AddCommaFormatter' },
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
 
