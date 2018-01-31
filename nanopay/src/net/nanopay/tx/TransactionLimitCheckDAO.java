@@ -44,9 +44,6 @@ public class TransactionLimitCheckDAO
     User payee  = (User) userDAO.find(transaction.getPayeeId());
     User payer  = (User) userDAO.find(transaction.getPayerId());
 
-    System.out.println("payer id:"+transaction.getPayerId());
-    System.out.println("payee id:"+transaction.getPayeeId());
-
     if ( payee == null || payer == null ) {
       throw new RuntimeException("No Payer or Payee.");
     }
@@ -136,11 +133,6 @@ public class TransactionLimitCheckDAO
         userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
         break;
     }
-    System.out.println("USER ID:"+user.getId());
-    System.out.println("userTransactionAmount:"+userTransactionAmount);
-    System.out.println("transaction.getAmount():"+transaction.getAmount());
-    System.out.println("( userTransactionAmount + transaction.getAmount() ):"+( userTransactionAmount + transaction.getAmount() ));
-    System.out.println("limit:"+limit);
     return ( ( userTransactionAmount + transaction.getAmount() ) > limit);
   }
 
