@@ -5,6 +5,8 @@ foam.CLASS({
 
   documentation: 'view for account and balance',
 
+  imports: [ 'addCommas' ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -64,7 +66,7 @@ foam.CLASS({
       class: 'Double',
       name: 'balance',
       adapt: function(oldValue, newValue) {
-        return (newValue * 1.0).toFixed(2);
+        return this.addCommas((newValue * 1.0).toFixed(2));
       }
     }
   ],

@@ -27,6 +27,8 @@ foam.CLASS({
 
   documentation: 'Invoice model. Amount is set to double type.',
 
+  imports: [ 'addCommas' ],
+
   ids: [ 'invoiceNumber' ],
 
   searchColumns: [
@@ -146,13 +148,15 @@ foam.CLASS({
       name: 'invoiceImageUrl'
     },
     {
-      // TODO: make Currency class
+      // TODO: switch to Currency
+      // class: 'Currency',
       class: 'Double',
       name: 'amount',
       aliases: [ 'a' ],
+      precision: 2,
       required: true,
-      tableCellFormatter: function(a) {
-        this.start().style({'padding-right': '20px'}).add('$' + a.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')).end();
+      tableCellFormatter: function(a, X) {
+        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas(a.toFixed(2))).end();
       }
     },
     {
@@ -180,7 +184,7 @@ foam.CLASS({
         if ( paymentId === -1 ) return 'Disputed';
         if ( paymentId > 0 ) return 'Paid';
         if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == -2) {  return 'Scheduled' };
-        if ( dueDate ) { 
+        if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
         }
@@ -194,7 +198,7 @@ foam.CLASS({
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
         if ( getPaymentDate() != null ){
-          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 || getPaymentDate().after(new Date()) && getPaymentId() == -2 ) return "Scheduled";          
+          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 || getPaymentDate().after(new Date()) && getPaymentId() == -2 ) return "Scheduled";
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
@@ -218,10 +222,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'File',
+      class: 'FileArray',
       name: 'invoiceFile',
       documentation: 'Original invoice file',
-      view: { class: 'net.nanopay.invoice.ui.InvoiceFileView' }
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
     }
   ],
 

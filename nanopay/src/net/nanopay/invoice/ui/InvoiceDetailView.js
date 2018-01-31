@@ -118,6 +118,9 @@ foam.CLASS({
     ^ .small-margin{
       margin-top: 15px;
     }
+    ^ .information {
+      height: 200px;
+    }
   `,
 
   methods: [
@@ -137,29 +140,31 @@ foam.CLASS({
           .end()
           .start().add('New Invoice').addClass('light-roboto-h2').end()
           .start().addClass('white-container')
-            .start().addClass('customer-div')
-              .start().addClass('label').add('Customer').end()
-              .startContext({data: this})
-                .start(this.USER_LIST).end()
-              .endContext()
-            .end()
-            .start().style({ 'float' : 'right'})
-              .start().addClass('po-amount-div float-right')
-                .start().addClass('label').add('PO #').end()
-                .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
+            .start().addClass('information')
+              .start().addClass('customer-div')
+                .start().addClass('label').add('Customer').end()
+                .startContext({data: this})
+                  .start(this.USER_LIST).end()
+                .endContext()
               .end()
-              .start().addClass('float-right')
-                .start().addClass('label').add('Due Date').end()
-                .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
-                .start().addClass('label').add('Amount').end()
-                .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
+              .start().style({ 'float' : 'right'})
+                .start().addClass('po-amount-div float-right')
+                  .start().addClass('label').add('PO #').end()
+                  .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
+                .end()
+                .start().addClass('float-right')
+                  .start().addClass('label').add('Due Date').end()
+                  .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
+                  .start().addClass('label').add('Amount').end()
+                  .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
+                .end()
               .end()
             .end()
             .start(this.Invoice.INVOICE_FILE).end()
-            .start()
+//            .start()
               // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
               // .add('Enable recurring payments').addClass('enable-recurring-text')
-            .end()
+//            .end()
             .startContext({data: this})
               .start().show(this.checkBoxRecurring$)
                 .start().addClass('frequency-div')

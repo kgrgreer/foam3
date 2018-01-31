@@ -151,9 +151,6 @@ foam.CLASS({
     function init() {
       var self = this;
       this.SUPER();
-      this.viewData.questions = [
-        'What is your mother maiden name','What is your age','cccc','dddd ddddd ddddddd dddddd'
-      ];
       this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
       this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
       this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
@@ -169,7 +166,7 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
