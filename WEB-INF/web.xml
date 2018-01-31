@@ -27,4 +27,14 @@
     <exception-type>java.lang.Throwable</exception-type>
     <location>/nanopay/src/net/nanopay/error.html</location>
   </error-page>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Automatic Forward to HTTPS/SSL
+      </web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
 </web-app>
