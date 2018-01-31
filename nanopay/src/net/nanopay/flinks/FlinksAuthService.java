@@ -99,31 +99,6 @@ public class FlinksAuthService
   }
 
   public FlinksResponse getAccountSummary(X x, String requestId) throws AuthenticationException {
-    RequestMsg reqMsg = FlinksRequestGenerator.getAccountSummaryRequest(getX(), requestId);
-    ResponseMsg respMsg = null;
-    //catch any Exception that happen when connect to Flinks
-    try {
-      respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_SUMMARY);
-    } catch ( Throwable t ) {
-      t.printStackTrace();
-      throw new AuthenticationException("Exception throw when connect to the Flinks");
-    }
-
-    int httpCode = respMsg.getHttpStatusCode();
-    FlinksRespMsg front = new FlinksRespMsg();
-    FlinksResponse feedback;
-    if ( httpCode == 200 ) {
-      //send accounts to the client
-      FlinksAccountsSummaryResponse resp = (FlinksAccountsSummaryResponse) respMsg.getModel();
-      feedback = (FlinksAccountsSummaryResponse) respMsg.getModel();
-    } else {
-      feedback = (FlinksInvalidResponse) respMsg.getModel();      
-      throw new AuthenticationException(feedback.getMessage());
-    }
-    return feedback;
-  }
-
-  public FlinksResponse getAccountDetails(String requestId) throws AuthenticationException {
     RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
     ResponseMsg respMsg = null;
     try {
@@ -144,7 +119,7 @@ public class FlinksAuthService
       throw new AuthenticationException(feedback.getMessage());
     }
     return feedback;
-  } 
+  }
 
   protected void decodeMsg(FlinksMFAResponse response) {
     String relativePath;
