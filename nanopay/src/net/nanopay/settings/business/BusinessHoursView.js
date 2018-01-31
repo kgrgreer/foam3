@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'BusinessHoursView',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.View',
 
   documentation: 'View displaying business hours',
 
@@ -9,6 +9,8 @@ foam.CLASS({
     'user',
     'userDAO'
   ],
+
+  exports: [ 'as data' ],
 
   requires: [
     'foam.nanos.auth.Address',
@@ -167,101 +169,59 @@ foam.CLASS({
     },
     {
       class: 'Time',
-      name: 'mondayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'mondayStartTime'
     },
     {
       class: 'Time',
-      name: 'mondayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'mondayEndTime'
     },
     {
       class: 'Time',
-      name: 'tuesdayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'tuesdayStartTime'
     },
     {
       class: 'Time',
-      name: 'tuesdayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'tuesdayEndTime'
     },
     {
       class: 'Time',
-      name: 'wednesdayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'wednesdayStartTime'
     },
     {
       class: 'Time',
-      name: 'wednesdayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'wednesdayEndTime'
     },
     {
       class: 'Time',
-      name: 'thursdayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'thursdayStartTime'
     },
     {
       class: 'Time',
-      name: 'thursdayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'thursdayEndTime'
     },
     {
       class: 'Time',
-      name: 'fridayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'fridayStartTime'
     },
     {
       class: 'Time',
-      name: 'fridayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'fridayEndTime'
     },
     {
       class: 'Time',
-      name: 'saturdayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'saturdayStartTime'
     },
     {
       class: 'Time',
-      name: 'saturdayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'saturdayEndTime'
     },
     {
       class: 'Time',
-      name: 'sundayStartTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'sundayStartTime'
     },
     {
       class: 'Time',
-      name: 'sundayEndTime',
-      postSet: function(oldValue, newValue) {
-        return newValue;
-      }
+      name: 'sundayEndTime'
     }
   ],
 
@@ -444,7 +404,7 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: 'Business hours sucessfully saved.', type: '' }));
         }).catch(function (error) {
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-        })
+        });
       }
 
     }
