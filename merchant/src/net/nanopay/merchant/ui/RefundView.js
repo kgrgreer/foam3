@@ -172,8 +172,12 @@ foam.CLASS({
         }));
       })
       .catch(function (err) {
+        // clone transaction and set status to refunded
+        var failed = self.transaction.clone();
+        failed.status = 'Refunded';
+
         self.stack.push(self.ErrorView.create({
-          transaction: self.transaction,
+          transaction: failed,
           transactionUser: self.transactionUser
         }));
       });
