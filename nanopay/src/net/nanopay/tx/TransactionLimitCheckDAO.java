@@ -12,6 +12,7 @@ import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.TransactionLimit;
 import net.nanopay.tx.model.TransactionLimitTimeFrame;
 import net.nanopay.tx.model.TransactionLimitType;
@@ -42,6 +43,9 @@ public class TransactionLimitCheckDAO
     DAO userDAO = (DAO)  getX().get("localUserDAO");
     User payee  = (User) userDAO.find(transaction.getPayeeId());
     User payer  = (User) userDAO.find(transaction.getPayerId());
+
+    System.out.println("payer id:"+transaction.getPayerId());
+    System.out.println("payee id:"+transaction.getPayeeId());
 
     if ( payee == null || payer == null ) {
       throw new RuntimeException("No Payer or Payee.");
@@ -132,6 +136,11 @@ public class TransactionLimitCheckDAO
         userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
         break;
     }
+    System.out.println("USER ID:"+user.getId());
+    System.out.println("userTransactionAmount:"+userTransactionAmount);
+    System.out.println("transaction.getAmount():"+transaction.getAmount());
+    System.out.println("( userTransactionAmount + transaction.getAmount() ):"+( userTransactionAmount + transaction.getAmount() ));
+    System.out.println("limit:"+limit);
     return ( ( userTransactionAmount + transaction.getAmount() ) > limit);
   }
 
@@ -143,6 +152,8 @@ public class TransactionLimitCheckDAO
 
     DAO list = getDelegate().where(AND(
         EQ(user.getId(), ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
+        NEQ(Transaction.TYPE, TransactionType.CASHOUT ),
+        NEQ(Transaction.TYPE, TransactionType.CASHIN ),
         GTE(Transaction.DATE, firstDate ),
         LTE(Transaction.DATE, lastDate )));
 
