@@ -135,6 +135,7 @@ foam.CLASS({
             businessTypeId: companyInfo.businessType,
             businessSectorId: companyInfo.businessSector
           });
+          
           this.userDAO.put(newBusiness).then(function(response) {
             companyInfo.business = response;
             self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.businessName + ' successfully added!', type: '' }));
