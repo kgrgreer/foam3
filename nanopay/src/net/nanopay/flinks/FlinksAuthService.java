@@ -123,6 +123,29 @@ public class FlinksAuthService
     return feedback;
   }
 
+  public FlinksResponse getAccountDetails(String requestId) throws AuthenticationException {
+    RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
+    ResponseMsg respMsg = null;
+    try {
+      respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
+    } catch ( Throwable t ) {
+      t.printStackTrace();
+      throw new AuthenticationException("Exception throw when connect to the Flinks");
+    }
+    int httpCode = respMsg.getHttpStatusCode();
+    FlinksRespMsg front = new FlinksRespMsg();
+    FlinksResponse feedback;
+    if ( httpCode == 200 ) {
+      //send accounts to the client
+      FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
+      feedback = (FlinksAccountsDetailResponse) respMsg.getModel();
+    } else {
+      feedback = (FlinksInvalidResponse) respMsg.getModel();      
+      throw new AuthenticationException(feedback.getMessage());
+    }
+    return feedback;
+  } 
+
   protected void decodeMsg(FlinksMFAResponse response) {
     String relativePath;
     relativePath = "" + new Date().getTime() + "_" + response.getRequestId();
