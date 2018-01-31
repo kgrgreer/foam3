@@ -25,7 +25,7 @@ foam.CLASS({
     }
     ^ .Container{
       width: 960px;
-      height: 368px;
+      padding-bottom: 13px;
       border-radius: 2px;
       background-color: #ffffff;
       margin-top: 50px;
