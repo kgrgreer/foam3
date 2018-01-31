@@ -40,7 +40,6 @@ public class FlinksAuthService
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.AUTHORIZE);
     } catch ( Throwable t ) {
-      t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
     
@@ -75,7 +74,6 @@ public class FlinksAuthService
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.CHALLENGE);
     } catch ( Throwable t ) {
-      t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
     FlinksResponse feedback;
@@ -104,7 +102,6 @@ public class FlinksAuthService
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
     } catch ( Throwable t ) {
-      t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
     int httpCode = respMsg.getHttpStatusCode();
