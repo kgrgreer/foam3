@@ -162,7 +162,7 @@ foam.CLASS({
   ],
   listeners: [  
     function addFresh() {
-      window.location = "https://my.freshbooks.com/service/auth/oauth/authorize?client_id=36cfa4683f7996a1e042552a768e23840a36c66eb266a7251fbacdc17be8ef81&response_type=code&redirect_uri=https://localhost:8080/services/fresh";
+      window.location = "https://my.freshbooks.com/service/auth/oauth/authorize?client_id=36cfa4683f7996a1e042552a768e23840a36c66eb266a7251fbacdc17be8ef81&response_type=code&redirect_uri=https://localhost:8080/service/fresh";
     },
   ]
 });

@@ -15,7 +15,7 @@ foam.CLASS({
     {
       class: 'String',
       name:'redirect_uri',
-      value: 'http://localhost:8080/service/fresh'
+      value: 'https://localhost:8080/service/fresh'
     },
     {
       class: 'String',

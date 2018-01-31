@@ -30,6 +30,7 @@ var classes = [
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.fresh.FreshConfig',  
+  'net.nanopay.fresh.model.FreshToken',  
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
