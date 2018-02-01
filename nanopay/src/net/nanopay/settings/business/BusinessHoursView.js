@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   exports: [ 
-    'as data'
+    'as data',
+    'setDaysClosed'
   ],
 
   requires: [
@@ -129,31 +130,80 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedSunday'
+      name: 'checkBoxClosedSunday',
+      factory: function() {
+        var storeHours = this.user.address.hours[0];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedMonday'
+      name: 'checkBoxClosedMonday',
+      factory: function() {
+        var storeHours = this.user.address.hours[1];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedTuesday'
+      name: 'checkBoxClosedTuesday',
+      factory: function() {
+        var storeHours = this.user.address.hours[2];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedWednesday'
+      name: 'checkBoxClosedWednesday',
+      factory: function() {
+        var storeHours = this.user.address.hours[3];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedThursday'
+      name: 'checkBoxClosedThursday',
+      factory: function() {
+        var storeHours = this.user.address.hours[4];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedFriday'
+      name: 'checkBoxClosedFriday',
+      factory: function() {
+        var storeHours = this.user.address.hours[5];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedSaturday'
+      name: 'checkBoxClosedSaturday',
+      factory: function() {
+        var storeHours = this.user.address.hours[6];
+        if ( storeHours != undefined && (storeHours.startTime == '' && storeHours.endTime == '') ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       class: 'Time',
@@ -371,6 +421,36 @@ foam.CLASS({
         .end()
       .end();
     },
+    function setDaysClosed() {
+      if( this.checkBoxClosedSunday ) {
+        this.sundayStartTime = '';
+        this.sundayEndTime = '';
+      } 
+      if ( this.checkBoxClosedMonday ) {
+        this.mondayStartTime = '';
+        this.mondayEndTime = '';
+      } 
+      if ( this.checkBoxClosedTuesday ) {
+        this.tuesdayStartTime = '';
+        this.tuesdayEndTime = '';
+      }
+      if ( this.checkBoxClosedWednesday ) {
+        this.wednesdayStartTime= '';
+        this.wednesdayEndTime = '';
+      }
+      if ( this.checkBoxClosedThursday ) {
+        this.thursdayStartTime = '';
+        this.thursdayEndTime = '';
+      }
+      if ( this.checkBoxClosedFriday ) {
+        this.fridayStartTime = '';
+        this.fridayEndTime = '';
+      }
+      if ( this.checkBoxClosedSaturday ) {
+        this.saturdayStartTime = '';
+        this.saturdayEndTime = '';
+      }
+    }
   ],
 
   actions: [
@@ -383,6 +463,8 @@ foam.CLASS({
         var self = this;
 
         var businessHoursArray = [];
+
+        X.setDaysClosed();
 
         var sundayHours = this.Hours.create({
           day: this.DayOfWeek.SUNDAY,
