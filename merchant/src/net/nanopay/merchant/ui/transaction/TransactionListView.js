@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
     'device',
     'toolbarIcon',
     'toolbarTitle',
