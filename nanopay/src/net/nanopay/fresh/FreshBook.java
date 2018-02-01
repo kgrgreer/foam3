@@ -1,11 +1,14 @@
 package net.nanopay.fresh;
 
 import foam.core.*;
+import foam.lib.json.Outputter;
 import foam.mlang.sink.Map;
+import net.nanopay.b2b.model.Business;
 import net.nanopay.fresh.FreshConfig;
 import foam.nanos.http.WebAgent;
-import net.nanopay.fresh.model.FreshToken;
+import net.nanopay.fresh.model.*;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +42,7 @@ public class FreshBook
     config.setCode(req.getParameter("code"));
 
     try {
+      //Sends the client info to FreshBooks to retrieve the access Token
       HttpClient httpclient = HttpClients.createDefault();
       HttpPost httppost = new HttpPost("https://api.freshbooks.com/auth/oauth/token");
       httppost.setHeader("Content-Type","application/json");
@@ -49,20 +54,56 @@ public class FreshBook
         "\"client_id\": \""+config.getClient_id()+"\",\n" +
         "\"redirect_uri\": \""+config.getRedirect_uri()+"\"\n" +
         "}";
-//// Request parameters and other properties.
       System.out.println(body);
       httppost.setEntity(new StringEntity(body, ContentType.APPLICATION_FORM_URLENCODED));
-
-//Execute and get the response.
       HttpResponse response = httpclient.execute(httppost);
+
+      //Reads in the response
       BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
       String line;
       line = rd.readLine();
       JSONParser parser = new JSONParser();
       FreshToken token = new FreshToken();
-      parser.parseString(line,token.getClassInfo().getObjClass());
+
+      //Parses the response and sets to a model that matches
+      token = (FreshToken) parser.parseString(line,token.getClassInfo().getObjClass());
       System.out.println(line);
       System.out.println(token.getAccess_token());
+
+      //Second call to api to retrieve the user using the accessToken
+      HttpGet httpget =  new HttpGet("https://api.freshbooks.com/auth/api/v1/users/me");
+      httpget.setHeader("Authorization", "Bearer "+token.getAccess_token());
+      httpget.setHeader("Content-Type","application/json");
+      httpget.setHeader("Api-Version","alpha");
+      response = httpclient.execute(httpget);
+      rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+      line = rd.readLine();
+      System.out.println(line);
+      FreshResponse fResponse = new FreshResponse();
+
+      //Parses the response and sets to a model that matches
+      Outputter jout = new Outputter();
+      fResponse = (FreshResponse) parser.parseString(line,fResponse.getClassInfo().getObjClass());
+      System.out.println("aaaaaaa");
+      System.out.println(jout.stringify(fResponse));
+      //System.out.println((FreshResponse) fResponse.getJson());
+//      FreshCurrent current = (FreshCurrent) fResponse.getResponse();
+//      FreshBusiness business = (FreshBusiness) current.getBusiness_memberships()[0].getBusiness();
+//      System.out.println(business);
+//      System.out.println( business.getAccount_id());
+
+     /*
+      String accountId = //TO BE DONE
+      httpget =  new HttpGet("https://api.freshbooks.com/accounting/account/"+accountId+"/invoices/invoices");
+      httpget.setHeader("Authorization", "Bearer "+token.getAccess_token());
+      httpget.setHeader("Content-Type","application/json");
+      httpget.setHeader("Api-Version","alpha");
+      response = httpclient.execute(httpget);
+      rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+      line = rd.readLine();
+      System.out.println(line);
+
+    */
       out.println("<HTML>" +
         "<H1> MADE IT</H1>"+
 
