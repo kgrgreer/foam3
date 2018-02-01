@@ -318,10 +318,14 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-      // isAvailable: function(position, errors) {
-      //   if ( errors ) return false; // Error present
-      //   return true; // Not in dialog
-      // },
+       isAvailable: function(position, errors) {
+         if ( this.position === 3 ) {
+           return false;
+         }
+         else{
+           return true;
+         }
+      },
       code: function(X) {
         var self = this;
         var transaction = null;
