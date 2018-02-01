@@ -124,6 +124,10 @@ foam.CLASS({
     ^ .box-width {
       width: 600px;
     }
+    ^ .alignClosedBoxLeft {
+      position: relative;
+      right: 268;
+    }
   `,
 
   properties: [
@@ -270,7 +274,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.MONDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedMonday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedMonday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -280,7 +284,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.TUESDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedTuesday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedTuesday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -290,7 +294,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.WEDNESDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedWednesday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedWednesday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -300,7 +304,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.THURSDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedThursday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedThursday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -310,7 +314,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.FRIDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedFriday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedFriday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -320,7 +324,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.SATURDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedSaturday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedSaturday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -330,7 +334,7 @@ foam.CLASS({
             .start().add(this.ToLabel).addClass('labelTitle inline').end()
             .start(this.SUNDAY_END_TIME).end()
           .end()
-          .start().addClass('inline')
+          .start().addClass('inline').addClass(this.checkBoxClosedSunday$.map(function(e) { return e ? 'alignClosedBoxLeft' : '' }))
             .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxClosedSunday$ })
             .add('Closed').addClass('closed-text')
           .end()
@@ -352,37 +356,37 @@ foam.CLASS({
         var businessHoursArray = [];
 
         var mondayHours = this.Hours.create({
-          day : this.DayOfWeek.MONDAY,
+          day: this.DayOfWeek.MONDAY,
           startTime: this.mondayStartTime,
           endTime: this.mondayEndTime
         });
         var tuesdayHours = this.Hours.create({
-          day : this.DayOfWeek.TUESDAY,
+          day: this.DayOfWeek.TUESDAY,
           startTime: this.tuesdayStartTime,
           endTime: this.tuesdayEndTime
         });
         var wednesdayHours = this.Hours.create({
-          day : this.DayOfWeek.WEDNESDAY,
+          day: this.DayOfWeek.WEDNESDAY,
           startTime: this.wednesdayStartTime,
           endTime: this.wednesdayEndTime
         });
         var thursdayHours = this.Hours.create({
-          day : this.DayOfWeek.THURSDAY,
+          day: this.DayOfWeek.THURSDAY,
           startTime: this.thursdayStartTime,
           endTime: this.thursdayEndTime
         });
         var fridayHours = this.Hours.create({
-          day : this.DayOfWeek.FRIDAY,
+          day: this.DayOfWeek.FRIDAY,
           startTime: this.fridayStartTime,
           endTime: this.fridayEndTime
         });
         var saturdayHours = this.Hours.create({
-          day : this.DayOfWeek.SATURDAY,
+          day: this.DayOfWeek.SATURDAY,
           startTime: this.saturdayStartTime,
           endTime: this.saturdayEndTime
         });
         var sundayHours = this.Hours.create({
-          day : this.DayOfWeek.SUNDAY,
+          day: this.DayOfWeek.SUNDAY,
           startTime: this.sundayStartTime,
           endTime: this.sundayEndTime
         });
