@@ -159,7 +159,7 @@ foam.CLASS({
             .add(this.LoginPassword)
           .end()
           .start(this.PASSWORD, {onKey: true}).style({'margin-left':'20px', 'margin-top':'8px'}).addClass('input').end()
-          .start('div').style({'margin-top':'7px'})
+          .start('div').style({'margin-top':'2px'})
             .start('div').style({'display':'inline-block','vertical-align':'top'})
               .start(this.CONDITION_AGREE).style({'height':'14px', 'width':'14px', 'margin-left':'20px', 'margin-right':'8px', 'margin-top':'15px'}).end()
             .end()
