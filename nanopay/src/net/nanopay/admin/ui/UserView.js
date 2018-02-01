@@ -78,7 +78,7 @@ foam.CLASS({
       transform: translate(5px, 5px);
     }
     ^ .popUpDropDown {
-      padding: 0;
+      padding: 0 !important;
       z-index: 10000;
       width: 135px;
       background: white;

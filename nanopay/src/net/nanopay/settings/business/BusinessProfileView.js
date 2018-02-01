@@ -27,17 +27,6 @@ foam.CLASS({
       background-color: white;
       box-sizing: border-box;
     }
-    ^ .boxTitle {
-      opacity: 0.6;
-      font-family: 'Roboto';
-      font-size: 20px;
-      font-weight: 300;
-      line-height: 20px;
-      letter-spacing: 0.3px;
-      text-align: left;
-      color: #093649;
-      display: inline-block;
-    }
     ^ .profileImg {
       width: 80px;
       height: 80px;
@@ -115,6 +104,7 @@ foam.CLASS({
       background-color: white;
       text-decoration: underline;
       margin-left: 42px;
+      height: 15px;
     }
     ^ .net-nanopay-ui-ActionView-editProfile:hover {
       cursor: pointer;

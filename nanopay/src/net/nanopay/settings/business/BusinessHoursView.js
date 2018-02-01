@@ -10,7 +10,9 @@ foam.CLASS({
     'userDAO'
   ],
 
-  exports: [ 'as data' ],
+  exports: [ 
+    'as data'
+  ],
 
   requires: [
     'foam.nanos.auth.Address',
@@ -29,17 +31,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: white;
       box-sizing: border-box;
-    }
-    ^ .boxTitle {
-      opacity: 0.6;
-      font-family: 'Roboto';
-      font-size: 20px;
-      font-weight: 300;
-      line-height: 20px;
-      letter-spacing: 0.3px;
-      text-align: left;
-      color: #093649;
-      display: inline-block;
     }
     ^ .labelTitle {
       font-family: Roboto;
@@ -138,140 +129,136 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedMonday',
-      value: false
+      name: 'checkBoxClosedSunday'
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedTuesday',
-      value: false
+      name: 'checkBoxClosedMonday'
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedWednesday',
-      value: false
+      name: 'checkBoxClosedTuesday'
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedThursday',
-      value: false
+      name: 'checkBoxClosedWednesday'
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedFriday',
-      value: false
+      name: 'checkBoxClosedThursday'
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedSaturday',
-      value: false
+      name: 'checkBoxClosedFriday'
     },
     {
       class: 'Boolean',
-      name: 'checkBoxClosedSunday',
-      value: false
-    },
-    {
-      class: 'Time',
-      name: 'mondayStartTime',
-      factory: function() {
-        return this.user.address.hours[0].startTime ? this.user.address.hours[0].startTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'mondayEndTime',
-      factory: function() {
-        return this.user.address.hours[0].endTime ? this.user.address.hours[0].endTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'tuesdayStartTime',
-      factory: function() {
-        return this.user.address.hours[1].startTime ? this.user.address.hours[1].startTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'tuesdayEndTime',
-      factory: function() {
-        return this.user.address.hours[1].endTime ? this.user.address.hours[1].endTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'wednesdayStartTime',
-      factory: function() {
-        return this.user.address.hours[2].startTime ? this.user.address.hours[2].startTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'wednesdayEndTime',
-      factory: function() {
-        return this.user.address.hours[2].endTime ? this.user.address.hours[2].endTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'thursdayStartTime',
-      factory: function() {
-        return this.user.address.hours[3].startTime ? this.user.address.hours[3].startTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'thursdayEndTime',
-      factory: function() {
-        return this.user.address.hours[3].endTime ? this.user.address.hours[3].endTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'fridayStartTime',
-      factory: function() {
-        return this.user.address.hours[4].startTime ? this.user.address.hours[4].startTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'fridayEndTime',
-      factory: function() {
-        return this.user.address.hours[4].endTime ? this.user.address.hours[4].endTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'saturdayStartTime',
-      factory: function() {
-        return this.user.address.hours[5].startTime ? this.user.address.hours[5].startTime : '';
-      }
-    },
-    {
-      class: 'Time',
-      name: 'saturdayEndTime',
-      factory: function() {
-        return this.user.address.hours[5].endTime ? this.user.address.hours[5].endTime : '';
-      }
+      name: 'checkBoxClosedSaturday'
     },
     {
       class: 'Time',
       name: 'sundayStartTime',
       factory: function() {
-        return this.user.address.hours[6].startTime ? this.user.address.hours[6].startTime : '';
+        return this.user.address.hours[0] != undefined ? this.user.address.hours[0].startTime : '';
       }
     },
     {
       class: 'Time',
       name: 'sundayEndTime',
       factory: function() {
-        return this.user.address.hours[6].endTime ? this.user.address.hours[6].endTime : '';
+        return this.user.address.hours[0] != undefined ? this.user.address.hours[0].endTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'mondayStartTime',
+      factory: function() {
+        return this.user.address.hours[1] != undefined ? this.user.address.hours[1].startTime : ''; 
+      }
+    },
+    {
+      class: 'Time',
+      name: 'mondayEndTime',
+      factory: function() {
+        return this.user.address.hours[1] != undefined ? this.user.address.hours[1].endTime : ''; 
+      }
+    },
+    {
+      class: 'Time',
+      name: 'tuesdayStartTime',
+      factory: function() {
+        return this.user.address.hours[2] != undefined ? this.user.address.hours[2].startTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'tuesdayEndTime',
+      factory: function() {
+        return this.user.address.hours[2] != undefined ? this.user.address.hours[2].endTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'wednesdayStartTime',
+      factory: function() {
+        return this.user.address.hours[3] != undefined ? this.user.address.hours[3].startTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'wednesdayEndTime',
+      factory: function() {
+        return this.user.address.hours[3] != undefined ? this.user.address.hours[3].endTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'thursdayStartTime',
+      factory: function() {
+        return this.user.address.hours[4] != undefined ? this.user.address.hours[4].startTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'thursdayEndTime',
+      factory: function() {
+        return this.user.address.hours[4] != undefined ? this.user.address.hours[4].endTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'fridayStartTime',
+      factory: function() {
+        return this.user.address.hours[5] != undefined ? this.user.address.hours[5].startTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'fridayEndTime',
+      factory: function() {
+        return this.user.address.hours[5] != undefined ? this.user.address.hours[5].endTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'saturdayStartTime',
+      factory: function() {
+        return this.user.address.hours[6] != undefined ? this.user.address.hours[6].startTime : '';
+      }
+    },
+    {
+      class: 'Time',
+      name: 'saturdayEndTime',
+      factory: function() {
+        return this.user.address.hours[6] != undefined ? this.user.address.hours[6].endTime : '';
       }
     }
   ],
 
   messages: [
+    {
+      name: 'Title', message: 'Business Hours'
+    },
     {
       name: 'MondayLabel', message: 'Mon.'
     },
@@ -305,7 +292,7 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .start().addClass('Container')
-        .start().add('Business Hours').addClass('boxTitle').end()
+        .start().add(this.Title).addClass('boxTitle').end()
         .start('div').addClass('toggleDiv')
           .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.businessHoursEnabled$ })
         .end()
@@ -383,7 +370,7 @@ foam.CLASS({
           .start().add(this.SAVE_BUTTON).end()
         .end()
       .end();
-    }
+    },
   ],
 
   actions: [
@@ -397,6 +384,11 @@ foam.CLASS({
 
         var businessHoursArray = [];
 
+        var sundayHours = this.Hours.create({
+          day: this.DayOfWeek.SUNDAY,
+          startTime: this.sundayStartTime,
+          endTime: this.sundayEndTime
+        });
         var mondayHours = this.Hours.create({
           day: this.DayOfWeek.MONDAY,
           startTime: this.mondayStartTime,
@@ -427,20 +419,15 @@ foam.CLASS({
           startTime: this.saturdayStartTime,
           endTime: this.saturdayEndTime
         });
-        var sundayHours = this.Hours.create({
-          day: this.DayOfWeek.SUNDAY,
-          startTime: this.sundayStartTime,
-          endTime: this.sundayEndTime
-        });
 
         businessHoursArray.push(
+          sundayHours,
           mondayHours, 
           tuesdayHours, 
           wednesdayHours,
           thursdayHours,
           fridayHours,
-          saturdayHours,
-          sundayHours
+          saturdayHours
         );
         
         this.user.address.hours = businessHoursArray;
