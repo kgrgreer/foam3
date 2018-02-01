@@ -75,7 +75,7 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -87,6 +87,7 @@ foam.CLASS({
           font-weight: lighter;
           letter-spacing: 0.2px;
           margin-right: 40px;
+          margin-left: 1px;
         }
 
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
