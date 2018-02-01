@@ -30,9 +30,9 @@ public class SignatureGenerationBenchmark
   @Override
   public void execute(X x) {
     try {
-      // sign using SHA256 with RSA
+      // sign using algorithm and private key
       int n = (int) (Math.random() * transactions_.size());
-      ((Transaction) transactions_.get(n)).sign("SHA256withRSA", keypair_.getPrivate());
+      ((Transaction) transactions_.get(n)).sign(sigAlgo_, keypair_.getPrivate());
     } catch (Throwable t) {
       t.printStackTrace();
     }

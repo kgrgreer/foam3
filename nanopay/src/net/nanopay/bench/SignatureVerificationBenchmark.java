@@ -30,6 +30,8 @@ public class SignatureVerificationBenchmark
     Sink sink = new ListSink();
     sink = transactionDAO_.select(sink);
     List data = ((ListSink) sink).getData();
+
+    // generate signatures in setup to properly benchmark verification
     Iterator i = data.iterator();
     while ( i.hasNext() ) {
       Transaction t = (Transaction) i.next();
@@ -40,6 +42,7 @@ public class SignatureVerificationBenchmark
   @Override
   public void execute(X x) {
     try {
+      // verify signatures using public key and signature generated in setup
       int n = (int) (Math.random() * transactions_.size());
       SimpleEntry<Transaction, byte[]> entry = transactions_.get(n);
       entry.getKey().verify(entry.getValue(), sigAlgo_, keypair_.getPublic());
