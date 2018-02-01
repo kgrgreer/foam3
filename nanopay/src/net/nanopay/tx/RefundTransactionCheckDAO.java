@@ -38,12 +38,7 @@ public class RefundTransactionCheckDAO
       if ( refunded == null ) {
         throw new RuntimeException("Unable to find transaction to refund");
       }
-
-      // check if original transaction is a refund
-      if ( "Refund".equals(transaction.getStatus()) ) {
-        throw new RuntimeException("Cannot refund a refund");
-      }
-
+      
       // check if original transaction is already refunded
       if ( "Refunded".equals(transaction.getStatus()) ) {
         throw new RuntimeException("Transaction already refunded");
