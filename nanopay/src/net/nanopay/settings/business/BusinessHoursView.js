@@ -395,8 +395,6 @@ foam.CLASS({
 
         var self = this;
 
-        console.log(this.sundayStartTime);
-
         var businessHoursArray = [];
 
         var mondayHours = this.Hours.create({
