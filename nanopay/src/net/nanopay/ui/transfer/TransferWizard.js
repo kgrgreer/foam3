@@ -318,13 +318,8 @@ foam.CLASS({
     {
       name: 'goNext',
       label: 'Next',
-       isAvailable: function(position, errors) {
-         if ( this.position === 3 ) {
-           return false;
-         }
-         else{
-           return true;
-         }
+      isAvailable: function(position, errors) {
+        return (this.position !== 3);
       },
       code: function(X) {
         var self = this;
