@@ -173,59 +173,101 @@ foam.CLASS({
     },
     {
       class: 'Time',
-      name: 'mondayStartTime'
+      name: 'mondayStartTime',
+      factory: function() {
+        return this.user.address.hours[0].startTime ? this.user.address.hours[0].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'mondayEndTime'
+      name: 'mondayEndTime',
+      factory: function() {
+        return this.user.address.hours[0].endTime ? this.user.address.hours[0].endTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'tuesdayStartTime'
+      name: 'tuesdayStartTime',
+      factory: function() {
+        return this.user.address.hours[1].startTime ? this.user.address.hours[1].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'tuesdayEndTime'
+      name: 'tuesdayEndTime',
+      factory: function() {
+        return this.user.address.hours[1].endTime ? this.user.address.hours[1].endTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'wednesdayStartTime'
+      name: 'wednesdayStartTime',
+      factory: function() {
+        return this.user.address.hours[2].startTime ? this.user.address.hours[2].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'wednesdayEndTime'
+      name: 'wednesdayEndTime',
+      factory: function() {
+        return this.user.address.hours[2].endTime ? this.user.address.hours[2].endTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'thursdayStartTime'
+      name: 'thursdayStartTime',
+      factory: function() {
+        return this.user.address.hours[3].startTime ? this.user.address.hours[3].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'thursdayEndTime'
+      name: 'thursdayEndTime',
+      factory: function() {
+        return this.user.address.hours[3].endTime ? this.user.address.hours[3].endTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'fridayStartTime'
+      name: 'fridayStartTime',
+      factory: function() {
+        return this.user.address.hours[4].startTime ? this.user.address.hours[4].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'fridayEndTime'
+      name: 'fridayEndTime',
+      factory: function() {
+        return this.user.address.hours[4].endTime ? this.user.address.hours[4].endTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'saturdayStartTime'
+      name: 'saturdayStartTime',
+      factory: function() {
+        return this.user.address.hours[5].startTime ? this.user.address.hours[5].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'saturdayEndTime'
+      name: 'saturdayEndTime',
+      factory: function() {
+        return this.user.address.hours[5].endTime ? this.user.address.hours[5].endTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'sundayStartTime'
+      name: 'sundayStartTime',
+      factory: function() {
+        return this.user.address.hours[6].startTime ? this.user.address.hours[6].startTime : '';
+      }
     },
     {
       class: 'Time',
-      name: 'sundayEndTime'
+      name: 'sundayEndTime',
+      factory: function() {
+        return this.user.address.hours[6].endTime ? this.user.address.hours[6].endTime : '';
+      }
     }
   ],
 
@@ -352,6 +394,8 @@ foam.CLASS({
         // Save business hours
 
         var self = this;
+
+        console.log(this.sundayStartTime);
 
         var businessHoursArray = [];
 
