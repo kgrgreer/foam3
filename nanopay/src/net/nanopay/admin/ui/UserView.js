@@ -124,7 +124,7 @@ foam.CLASS({
         return data.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
-        class: 'foam.u2.view.TableView',
+        class: 'foam.u2.view.ScrollTableView',
         columns: [
           'id', 'firstName', 'lastName', 'email', 'organization', 'type'
         ]
