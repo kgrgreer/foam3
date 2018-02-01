@@ -51,6 +51,11 @@ foam.CLASS({
 
         var a = result.array;
         for ( var i = 0; i < a.length; i++ ) {
+          // skip transactions that don't apply
+          if ( a[i].payeeId !== self.user.id && a[i].payerId !== self.user.id ) {
+            continue;
+          }
+
           self.add(self.TransactionRowView.create({
             transaction: a[i]
           }));
