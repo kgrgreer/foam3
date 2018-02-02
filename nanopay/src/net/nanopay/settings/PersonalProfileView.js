@@ -25,7 +25,7 @@ foam.CLASS({
     }
     ^ .Container{
       width: 960px;
-      height: 368px;
+      padding-bottom: 13px;
       border-radius: 2px;
       background-color: #ffffff;
       margin-top: 50px;
@@ -115,6 +115,7 @@ foam.CLASS({
       margin-left: 20px;
       margin-right: 20px;
       margin-bottom: 19px;
+      padding: 0;
     }
     ^ .phoneNumber-Input{
       width: 360px;
@@ -187,6 +188,10 @@ foam.CLASS({
       display: inline-block;
       top: -5;
     }
+
+    ^ .disabled {
+      color: lightgray;
+    }
   `,
 
   properties: [
@@ -221,7 +226,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      if (this.user.firstName != "") 
+      if (this.user.firstName != "")
       {
         this.firstName = this.user.firstName;
         this.lastName = this.user.lastName;
@@ -254,7 +259,8 @@ foam.CLASS({
             .start(this.PHONE).addClass('phoneNumber-Input').end()
           .end()
           .start('div')
-            .tag({class: 'foam.u2.CheckBox'}).add("Make my profile visible to public").addClass('checkBox-Text').end()
+            .start({class: 'foam.u2.CheckBox'}, {mode: foam.u2.DisplayMode.DISABLED}).end()
+            .add("Make my profile visible to public").addClass('checkBox-Text').addClass('disabled').end()
             .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
           .end()
         .end()
@@ -263,8 +269,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all fields.' },    
-    { name: 'invalidPhone', message: 'Phone number is invalid.' },    
+    { name: 'noInformation', message: 'Please fill out all fields.' },
+    { name: 'invalidPhone', message: 'Phone number is invalid.' },
     { name: 'informationUpdated', message: 'Information has been successfully changed.' }
   ],
 
@@ -282,9 +288,9 @@ foam.CLASS({
 
         if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.phone) ) {
           this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
-          return; 
+          return;
         }
-        
+
         this.user.firstName = this.firstName;
         this.user.lastName = this.lastName;
         this.user.department = this.jobTitle;
@@ -298,7 +304,7 @@ foam.CLASS({
         .catch(function (err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
-      }  
+      }
     }
   ]
 });

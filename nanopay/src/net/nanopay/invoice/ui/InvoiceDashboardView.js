@@ -116,7 +116,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().style({ 'margin-left': '30px' })
-          .start().addClass('light-roboto-h2').style({ 'margin-top': '15px' }).add('Weekly Summary').end()
+          .start().addClass('light-roboto-h2').style({ 'margin-top': '15px' }).add('Summary').end()
           // .start().addClass('green-border-container')
           //   .start().addClass('resize-button').style({ 'background': '#1cc2b7','color' : 'white'}).add('Me').end()
           //   .start().addClass('resize-button').add('Team').end()
@@ -148,11 +148,19 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        this.expensesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
+        var expensesSumDAO = this.expensesDAO.where(
+          this.NEQ(this.Invoice.STATUS, "Void")
+        );
+
+        var salesSumDAO = this.salesDAO.where(
+          this.NEQ(this.Invoice.STATUS, "Void")
+        );
+
+        expensesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.payableAmount = sum.value;
         });
 
-        this.salesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        salesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.receivableAmount = sum.value;
         })
       }

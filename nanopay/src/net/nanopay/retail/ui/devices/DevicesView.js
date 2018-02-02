@@ -32,7 +32,7 @@ foam.CLASS({
       margin: auto;
     }
     ^ .deviceContentCard {
-      width: 218px;
+      width: 358px;
       height: 100px;
       margin-right: 13.5px;
       float: left;
@@ -121,9 +121,9 @@ foam.CLASS({
             .start('div').addClass('spacer')
               .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleActive, content$: this.activeDevicesCount$ }).addClass('deviceContentCard')
             .end()
-            .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledDevicesCount$ }).addClass('deviceContentCard')
-            .end()
+            // .start('div').addClass('spacer')
+            //   .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledDevicesCount$ }).addClass('deviceContentCard')
+            // .end()
             .start('div')
               .tag(this.ADD_DEVICE, { showLabel: true })
             .end()
@@ -166,9 +166,9 @@ foam.CLASS({
       name: 'DeviceTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 
+      requires: [
         'net.nanopay.retail.model.Device',
-        'foam.u2.dialog.Popup' 
+        'foam.u2.dialog.Popup'
       ],
 
       imports: [

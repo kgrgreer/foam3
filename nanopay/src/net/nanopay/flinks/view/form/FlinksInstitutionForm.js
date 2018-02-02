@@ -38,7 +38,7 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .optionSpacer.selected {
-          border: solid 1px #1CC2B7;
+          border: solid 1px %ACCENTCOLOR%;
         }
         ^ .subContent {
           width: 528px;
@@ -53,7 +53,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #1CC2B7;
+          background-color: #59a5d5;
           outline: none;
           border:none;
           width: 136px;
@@ -73,15 +73,14 @@ foam.CLASS({
           float: right;
           margin: 0;
           outline: none;
-          border:none;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #A93226;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          color: #FFFFFF;
           margin-right: 40px;
         }
 
@@ -134,7 +133,6 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Next';
-      this.form.isEnabledButtons(true);
       if ( ! this.viewData.selectedOption ) { return; }
       this.selectedOption = this.viewData.selectedOption;
     },

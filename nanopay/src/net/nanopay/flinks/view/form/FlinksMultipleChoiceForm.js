@@ -4,10 +4,14 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'isConnecting'
+    'bankImgs',
+    'form',
+    'isConnecting',
+    'viewData'
   ],
   requires: [
-    'foam.u2.view.RadioView'
+    'foam.u2.view.RadioView',
+    'net.nanopay.flinks.view.element.CheckBoxes'
   ],
   axioms: [
     foam.u2.CSS.create({
@@ -49,11 +53,11 @@ foam.CLASS({
           overflow: auto;
           padding: 5px;
         }
-        ^ .net-nanopay-ui-ActionView-closeButton {
+        ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #A93226;
+          background-color: #59a5d5;
           outline: none;
           border:none;
           width: 136px;
@@ -69,19 +73,18 @@ foam.CLASS({
           cursor: pointer;
         }
 
-        ^ .net-nanopay-ui-ActionView-nextButton {
+        ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
           margin: 0;
           outline: none;
-          border:none;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #148F77;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          color: #FFFFFF;
           margin-right: 40px;
         }
 
@@ -115,7 +118,16 @@ foam.CLASS({
   properties: [
     {
       Class: 'Array',
-      name: 'answerCheck'
+      name: 'answerCheck',
+    },
+    {
+      Class: 'Array',
+      name: 'questionCheck',
+    },
+    {
+      Class: 'Int',
+      name: 'tick',
+      value: -10000000
     }
   ],
 
@@ -129,20 +141,10 @@ foam.CLASS({
     function init() {
       var self = this;
       this.SUPER();
-      this.viewData.questions = [
-        'What is your mother maiden name','What is your age','cccc'
-      ];
-      this.iters = [
-        ['aaaaa',
-        'bbbbb',
-        'ccccc'],
-        ['aaaaa1',
-        'bbbbb1',
-        'ccccc1'],
-        ['aaaaa2',
-        'bbbbb2',
-        'ccccc2'],
-      ];
+      this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
+      this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
+      this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
+      this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
     },
     function initE() {
       this.SUPER();
@@ -153,27 +155,44 @@ foam.CLASS({
         .add(this.Step)
       .end()
       .start('div').addClass('subContent')
-        .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
+        .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
         .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
         .start('div').addClass('qa-block')
-          .forEach(this.iters, function(data, index){
-            var radio = self.RadioView.create({choices : data});
-            var checkBox = net.nanopay.flinks.view.element.CheckBoxes.create({choices: data})
-            radio.data$.sub(function(){
-              console.log('radio.data', radio.data);
-            });
-            checkBox.data$.sub(function(){
-              console.log('checkboxes', checkBox.data);
-            });
+          .forEach(this.viewData.SecurityChallenges, function(item, index){
+            self.viewData.questions[index] = item.Prompt;
+            var attachElement;
+            if ( item.Type === 'MultipleChoice' ) {
+              attachElement = self.RadioView.create({choices : item.Iterables});
+              attachElement.data$.sub(function(){
+                self.viewData.answers[index] = new Array(1).fill(attachElement.data);
+                if ( ! attachElement.data || attachElement.data.trim().length === 0 ) {
+                  self.answerCheck[index] = false;
+                } else {
+                  self.answerCheck[index] = true;
+                }
+                self.tick++;
+              });
+            } else {
+              attachElement = self.CheckBoxes.create({choices : item.Iterables});
+              attachElement.data$.sub(function(){
+                self.viewData.answers[index] = attachElement.data;
+                if ( attachElement.data.length === 0 ) {
+                  self.answerCheck[index] = false;
+                } else {
+                  self.answerCheck[index] = true;
+                }
+                self.tick++;
+              })
+            }
             this.start('p').addClass('question').add(self.viewData.questions[index]).end();
             //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
-            this.start(checkBox).style({'margin-top':'5px'}).end();
+            this.start(attachElement).style({'margin-top':'5px'}).end();
           })
         .end()
       .end()
       .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-        .tag(this.CLOSE_BUTTON, {label: 'close'})
-        .tag(this.NEXT_BUTTON, {label: 'next'})
+        .tag(this.NEXT_BUTTON)
+        .tag(this.CLOSE_BUTTON)
       .end()
       .start('div').style({'clear' : 'both'}).end();
     }
@@ -181,22 +200,23 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
-      isEnabled: function(isConnecting) {
+      label: 'Next',
+      isEnabled: function(tick, isConnecting, answerCheck) {
+        for ( var x in answerCheck ) {
+          if ( answerCheck[x] === false ) return false;
+        }
         if ( isConnecting == true ) return false;
         return true;
       },
       code: function(X) {
-        console.log('nextButton');
         this.isConnecting = true;
-        //X.form.goNext();
+        X.form.goNext();
       }
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Close',
       code: function(X) {
-        console.log('close the form');
         X.form.goBack();
       }
     }

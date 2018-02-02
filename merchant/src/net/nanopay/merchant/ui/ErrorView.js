@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Error screen after payment / refund',
 
   imports: [
-    'stack'
+    'stack',
+    'showHeader'
   ],
 
   css: `
@@ -188,6 +189,7 @@ foam.CLASS({
         if ( self.showHome ) {
           self.showHomeView();
         } else {
+          self.showHeader = true;
           self.stack.back();
         }
       }, 4000);
@@ -207,10 +209,11 @@ foam.CLASS({
       var key = e.key || e.keyCode;
       if ( key === 'Backspace' || key === 'Enter' || key === 'Escape' || key === 8 || key === 13 || key === 27 ) {
         e.preventDefault();
-        clearTimeout(self.refresh);
+        clearTimeout(this.refresh);
         if ( this.showHome ) {
           this.showHomeView();
         } else {
+          this.showHeader = true;
           this.stack.back();
         }
       }
@@ -222,6 +225,7 @@ foam.CLASS({
       if ( this.showHome ) {
         this.showHomeView();
       } else {
+        this.showHeader = true;
         this.stack.back();
       }
     }

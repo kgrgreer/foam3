@@ -4,7 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'isConnecting'
+    'bankImgs',
+    'form',
+    'isConnecting',
+    'viewData'
   ],
 
   requires: [
@@ -62,11 +65,11 @@ foam.CLASS({
           text-align: left;
           color: #093649;
         }
-        ^ .net-nanopay-ui-ActionView-closeButton {
+        ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #A93226;
+          background-color: #59a5d5;
           outline: none;
           border:none;
           width: 136px;
@@ -82,19 +85,18 @@ foam.CLASS({
           cursor: pointer;
         }
 
-        ^ .net-nanopay-ui-ActionView-nextButton {
+        ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
           margin: 0;
           outline: none;
-          border:none;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #148F77;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          color: #FFFFFF;
           margin-right: 40px;
         }
 
@@ -127,6 +129,22 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    {
+      Class: 'Array',
+      name: 'answerCheck',
+    },
+    {
+      Class: 'Array',
+      name: 'questionCheck',
+    },
+    {
+      Class: 'Int',
+      name: 'tick',
+      value: -10000000
+    }
+  ],
+
   messages: [
     { name: 'Step', message: 'Step3: Please response below security challenges' },
     { name: 'header1', message: 'Please reset the security question: '},
@@ -137,20 +155,11 @@ foam.CLASS({
     function init() {
       var self = this;
       this.SUPER();
-      this.viewData.questions = [
-        'What is your mother maiden name','What is your age','cccc','dddd ddddd ddddddd dddddd'
-      ];
-      this.iters = [
-        ['aaaaa',
-        'bbbbb',
-        'ccccc'],
-        ['aaaaa1',
-        'bbbbb1',
-        'ccccc1'],
-        ['aaaaa2',
-        'bbbbb2',
-        'ccccc2'],
-      ];
+
+      this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
+      this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
+      this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
+      this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
     },
 
     function initE() {
@@ -162,17 +171,32 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
-            .forEach(this.iters, function(data, index){
-              var selection = self.ChoiceView.create({choices: data, placeholder: 'Q'+(index+1)+': Please select a question'});
+            .forEach(this.viewData.SecurityChallenges, function(item, index){
+              var selection = self.ChoiceView.create({choices: item.Iterables, placeholder: 'Q'+(index+1)+': Please select a question'});
               var input = self.Input.create({onKey: true});
               selection.data$.sub(function(){
-                console.log('XSelection: ', selection.data);
+                // console.log('XSelection: ', selection.data);
+                // console.log(selection.index);
+                self.viewData.questions[index] = selection.data;
+                if ( selection.index == -1 ) {
+                  self.questionCheck[index] = false;
+                } else {
+                  self.questionCheck[index] = true;
+                }
+                self.tick++;
               });
               input.data$.sub(function(){
-                console.log('XSelection: ', input.data);
+                //console.log('XSelection: ', input.data);
+                self.viewData.answers[index] = new Array(1).fill(input.data);
+                if ( input.data.trim().length == 0 ) {
+                  self.answerCheck[index] = false;
+                } else {
+                  self.answerCheck[index] = true;
+                }
+                self.tick++;
               });
               this.start(selection).addClass('select').end();
               this.start(input).style({'margin-top':'10px'}).end();
@@ -180,8 +204,8 @@ foam.CLASS({
           .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-          .tag(this.CLOSE_BUTTON, {label: 'close'})
-          .tag(this.NEXT_BUTTON, {label: 'next'})
+          .tag(this.NEXT_BUTTON)
+          .tag(this.CLOSE_BUTTON)
         .end()
         .start('div').style({'clear' : 'both'}).end()
     }
@@ -189,20 +213,26 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
-      isEnabled: function(isConnecting) {
+      label: 'Next',
+      isEnabled: function(tick, isConnecting, questionCheck, answerCheck) {
+        for ( var x in answerCheck ) {
+          if ( answerCheck[x] === false ) return false;
+        }
+        for ( var x in questionCheck ) {
+          if ( questionCheck[x] === false ) return false;
+        }
         if ( isConnecting == true ) return false;
         return true;
       },
       code: function(X) {
         //console.log('nextButton');
         this.isConnecting = true;
-        //X.form.goNext();
+        X.form.goNext();
       }
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Close',
       code: function(X) {
         //console.log('close the form');
         //console.log(X.form.goBack);

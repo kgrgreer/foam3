@@ -21,7 +21,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 385px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -35,7 +35,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ .input {
-          width: 400px;
+          width: 100%;
           height: 40px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
@@ -82,7 +82,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #A93226;
+          background-color: #59a5d5;
           outline: none;
           border:none;
           width: 136px;
@@ -102,15 +102,14 @@ foam.CLASS({
           float: right;
           margin: 0;
           outline: none;
-          border:none;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #148F77;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          color: #FFFFFF;
           margin-right: 40px;
         }
 
@@ -151,9 +150,6 @@ foam.CLASS({
     function init() {
       var self = this;
       this.SUPER();
-      this.viewData.questions = [
-        'What is your mother maiden name','What is your age','cccc','dddd ddddd ddddddd dddddd'
-      ];
       this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
       this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
       this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
@@ -169,7 +165,7 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader'})
+          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){

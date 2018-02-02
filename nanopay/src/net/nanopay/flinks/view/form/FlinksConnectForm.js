@@ -9,7 +9,8 @@ foam.CLASS({
     'viewData',
     'isConnecting',
     'group',
-    'logo'
+    'logo',
+    'window'
   ],
 
   axioms: [
@@ -36,12 +37,15 @@ foam.CLASS({
           outline: none;
           padding: 10px;
         }
+        ^ .subContent {
+          height: 285px;
+        }
         ^ .conditionText {
           height: 16px;
           font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.3px;
+          font-size: 11px;
+          line-height: 0.1;
+          letter-spacing: 0.1px;
           text-align: left;
           color: #093649;
         }
@@ -49,7 +53,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #148F77;
+          background-color: #59a5d5;
           outline: none;
           border:none;
           width: 136px;
@@ -69,15 +73,14 @@ foam.CLASS({
           float: right;
           margin: 0;
           outline: none;
-          border:none;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #A93226;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          color: #FFFFFF;
           margin-right: 40px;
         }
 
@@ -87,6 +90,12 @@ foam.CLASS({
 
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
+        }
+
+        ^ .net-nanopay-ui-ActionView-goToTerm {
+          text-decoration: underline;
+          background: transparent;
+          color: #59a5d5;
         }
       */}
     })
@@ -130,7 +139,6 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Connect';
-      this.form.isEnabledButtons(true);
       this.conditionAgree = false;
     },
 
@@ -151,13 +159,14 @@ foam.CLASS({
             .add(this.LoginPassword)
           .end()
           .start(this.PASSWORD, {onKey: true}).style({'margin-left':'20px', 'margin-top':'8px'}).addClass('input').end()
-          .start('div').style({'margin-top':'20px'})
-            .start(this.CONDITION_AGREE).style({'height':'14px', 'width':'14px', 'margin-left':'20px', 'margin-right':'8px'}).end()
-            .start('span').addClass('conditionText')
-              .add('Agree to ')
-              .start('span').style({'color':'#59a5d5'})
-                .add('Terms & Conditions')
-              .end()
+          .start('div').style({'margin-top':'2px'})
+            .start('div').style({'display':'inline-block','vertical-align':'top'})
+              .start(this.CONDITION_AGREE).style({'height':'14px', 'width':'14px', 'margin-left':'20px', 'margin-right':'8px', 'margin-top':'15px'}).end()
+            .end()
+            .start('div').style({'display':'inline-block','width':'420px','vertical-align':'top'}).addClass('conditionText')
+              .add('I agree to the')
+              .tag(this.GO_TO_TERM)
+              .add('and authorize the release of my Bank information to nanopay.')
             .end()
           .end()
         .end()
@@ -191,6 +200,16 @@ foam.CLASS({
       code: function(X) {
         //console.log('close the form');
         X.form.goBack();
+      }
+    },
+    {
+      name: 'goToTerm',
+      label: 'terms and conditions',
+      code: function(X) {
+        var self = this;
+        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"
+        var alternaUrl = 'https://nanopay.net/termsandconditions/';
+        self.window.location.assign(alternaUrl);
       }
     }
   ]

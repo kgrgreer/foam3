@@ -21,7 +21,7 @@ foam.CLASS({
         }
         ^ .accountView {
           width: 100%;
-          height: 197px;
+          height: 270px;
           overflow:auto;
         }
         ^ .spacer {
@@ -32,7 +32,7 @@ foam.CLASS({
         }
         ^ .subContent {
           width: 495px;
-          height: 320px;
+          height: 360px;
         }
         ^ .account {
           cursor: pointer;
@@ -58,7 +58,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #148F77;
+          background-color: #59a5d5;
           outline: none;
           border:none;
           width: 136px;
@@ -78,15 +78,14 @@ foam.CLASS({
           float: right;
           margin: 0;
           outline: none;
-          border:none;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: #A93226;
+          background-color: rgba(164, 179, 184, 0.1);
+          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          color: #FFFFFF;
           margin-right: 40px;
         }
 
@@ -115,10 +114,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.nextLabel = 'Add Account';
-      this.form.isEnabledButtons(true);
       this.complete = true;
-      this.accountsCheck = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {
@@ -144,7 +140,7 @@ foam.CLASS({
                   return 'selected';
                 }))
                 .on('click', function() {
-                  if (  ! e.isSelected && e.isSelected == false ) {
+                  if ( ! e.isSelected || e.isSelected == false ) {
                     e.isSelected = true;
                   } else {
                     e.isSelected = false;

@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'SingleItemView',
   extends: 'foam.u2.View',
 
+  imports: [ 'addCommas' ],
+
   properties: [
     'data'
   ],
@@ -65,7 +67,7 @@ foam.CLASS({
             .start('h3').add(this.data.id).end()
             .start('h3').add(this.data.date.toISOString().substring(0,10)).end()
             .start('h3').add(this.data.payerId).end()
-            .start('h3').add('$', (this.data.total/100).toFixed(2)).end()
+            .start('h3').add('$', this.addCommas((this.data.total/100).toFixed(2))).end()
             .start('h3').add(this.data.payeeId).end()
             .start('h3').add(this.data.status).end()
           .end()

@@ -45,6 +45,7 @@ if (!user.getEmailedAmount().equals("-1")){
 }
 if (user.getType().equals("Business") || user.getType().equals("Merchant")){
   args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
+  
 }
 if (user.getType().equals("Personal")){
   if (user.getAdminCreated()) {
