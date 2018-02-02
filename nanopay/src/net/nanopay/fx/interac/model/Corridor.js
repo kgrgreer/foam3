@@ -9,7 +9,13 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
-      name: 'country',
+      name: 'sourceCountry',
+      required: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'targetCountry',
       required: true
     },
     {
@@ -19,8 +25,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'Array',
-      of: 'Long',
+      class: 'StringArray',
       name: 'currencies',
       required: true
     }
