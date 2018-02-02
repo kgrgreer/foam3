@@ -71,7 +71,6 @@ public class FlinksRestService
 
   public ResponseMsg challengeService(RequestMsg msg) {
     ResponseMsg resp = request(msg);
-    System.out.println(resp.getHttpStatusCode());
     if ( resp.getHttpStatusCode() == 203 ) {
       //MFA challenge
       resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());

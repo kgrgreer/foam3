@@ -40,6 +40,7 @@ cp institutions /opt/tomcat/bin/
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
 cp -r nanopay/ /opt/tomcat/webapps/ROOT/nanopay
 cp -r merchant/ /opt/tomcat/webapps/ROOT/merchant
+cp -r favicon/ /opt/tomcat/webapps/ROOT/favicon
 
 # Move images to ROOT/images
 cd /opt/tomcat/webapps/ROOT

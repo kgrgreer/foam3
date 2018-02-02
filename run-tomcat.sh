@@ -109,6 +109,7 @@ rmdir $WEBAPPS/merchant
 cp -r foam2 $WEBAPPS/ROOT/foam2
 cp -r nanopay $WEBAPPS/ROOT/nanopay
 cp -r merchant $WEBAPPS/ROOT/merchant
+cp -r favicon $WEBAPPS/ROOT/favicon
 
 # Move images to ROOT/images
 rmdir $WEBAPPS/ROOT/images

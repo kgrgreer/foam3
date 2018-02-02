@@ -20,8 +20,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ExchangeRateService
-    extends    ContextAwareSupport
-    implements ExchangeRateInterface
+  extends    ContextAwareSupport
+  implements ExchangeRateInterface
 {
   protected DAO    exchangeRateDAO_;
   protected Double feeAmount = new Double(150);

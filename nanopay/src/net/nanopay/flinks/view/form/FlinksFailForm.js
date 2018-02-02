@@ -22,15 +22,14 @@ foam.CLASS({
       float: left;
       margin: 0;
       outline: none;
-      border:none;
       min-width: 136px;
       height: 40px;
       border-radius: 2px;
-      background-color: #A93226;
+      background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-size: 12px;
       font-weight: lighter;
       letter-spacing: 0.2px;
-      color: #FFFFFF;
       margin-right: 40px;
     }
   `,

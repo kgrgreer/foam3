@@ -42,8 +42,10 @@ public class FlinksRequestGenerator {
   }
 
   public static RequestMsg getAccountDetailRequest(X x, String requestId) {
-    FlinksAccountSummaryRequest request = new FlinksAccountSummaryRequest();
+    FlinksAccountDetailRequest request = new FlinksAccountDetailRequest();
     request.setRequestId(requestId);
+    request.setWithTransactions(false);
+    request.setWithAccountIdentity(true);
     RequestMsg msg = new RequestMsg(x, request);
     msg.setHttpMethod("POST");
     msg.setRequestInfo("GetAccountsDetail");
