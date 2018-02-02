@@ -1,11 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.fresh.model',
-  name: 'FreshResponse',
+  name: 'FreshInvoiceResult',
   properties: [
     {
       class:'FObjectProperty',
-      of: 'net.nanopay.fresh.model.FreshCurrent',
-      name: 'response'
+      of: 'net.nanopay.fresh.model.FreshInvoicePages',
+      name: 'result'
     }
   ]
 })

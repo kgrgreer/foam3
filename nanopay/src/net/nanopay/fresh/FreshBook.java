@@ -84,17 +84,19 @@ public class FreshBook
       //Parses the response and sets to a model that matches
       Outputter jout = new Outputter();
       fResponse = (FreshResponse) parser.parseString(line,fResponse.getClassInfo().getObjClass());
-      System.out.println("aaaaaaa");
       System.out.println(jout.stringify(fResponse));
-      //System.out.println((FreshResponse) fResponse.getJson());
-//      FreshCurrent current = (FreshCurrent) fResponse.getResponse();
-//      FreshBusiness business = (FreshBusiness) current.getBusiness_memberships()[0].getBusiness();
-//      System.out.println(business);
-//      System.out.println( business.getAccount_id());
+      System.out.println((FreshCurrent) fResponse.getResponse());
+      FreshCurrent current = (FreshCurrent) fResponse.getResponse();
+      FreshBusiness business = (FreshBusiness) current.getBusiness_memberships()[0].getBusiness();
 
-     /*
-      String accountId = //TO BE DONE
+      //Get the account id to start grabbing invoices
+      String accountId = business.getAccount_id();
+      System.out.println(accountId);
+
+
+      httpclient = HttpClients.createDefault();
       httpget =  new HttpGet("https://api.freshbooks.com/accounting/account/"+accountId+"/invoices/invoices");
+      System.out.println(httpget.getURI());
       httpget.setHeader("Authorization", "Bearer "+token.getAccess_token());
       httpget.setHeader("Content-Type","application/json");
       httpget.setHeader("Api-Version","alpha");
@@ -103,7 +105,10 @@ public class FreshBook
       line = rd.readLine();
       System.out.println(line);
 
-    */
+      fResponse = (FreshResponse) parser.parseString(line,fResponse.getClassInfo().getObjClass());
+
+
+
       out.println("<HTML>" +
         "<H1> MADE IT</H1>"+
 

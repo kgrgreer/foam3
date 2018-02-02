@@ -4,7 +4,7 @@ foam.CLASS({
   properties: [
     {
       class:'FObjectProperty',
-      of: 'net.nanopay.fresh.model.Business',
+      of: 'net.nanopay.fresh.model.FreshBusiness',
       name: 'business'
     }
   ]
