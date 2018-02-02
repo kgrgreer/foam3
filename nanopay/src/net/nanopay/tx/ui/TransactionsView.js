@@ -235,7 +235,7 @@ foam.CLASS({
         return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.DATE)) : data;
       },
       view: {
-        class: 'foam.u2.view.TableView',
+        class: 'foam.u2.view.ScrollTableView',
         columns: [
           'id', 'date', 'payerId', 'payeeId', 'total', 'status'
         ]

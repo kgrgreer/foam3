@@ -312,6 +312,7 @@ foam.CLASS({
                   accountName: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
+                  transitNumber: item.TransitNumber,
                   status: 'Verified'
                 })).then(function(res) {
                   var emailMessage = self.EmailMessage.create({

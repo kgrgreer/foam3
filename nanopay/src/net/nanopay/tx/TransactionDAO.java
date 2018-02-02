@@ -63,14 +63,10 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Transaction transaction         = (Transaction) obj;
+    Transaction     transaction     = (Transaction) obj;
     TransactionType transactionType = (TransactionType) transaction.getType();
-    if ( transaction.getDate() == null ) {
-      transaction.setDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
-    }
-
-    long payeeId = transaction.getPayeeId();
-    long payerId = transaction.getPayerId();
+    long            payeeId         = transaction.getPayeeId();
+    long            payerId         = transaction.getPayerId();
 
     if ( payerId <= 0 ) {
       throw new RuntimeException("Invalid Payer id");
