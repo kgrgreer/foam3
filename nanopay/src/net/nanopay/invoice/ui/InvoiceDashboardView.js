@@ -148,11 +148,19 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        this.expensesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
+        var expensesSumDAO = this.expensesDAO.where(
+          this.NEQ(this.Invoice.STATUS, "Void")
+        );
+
+        var salesSumDAO = this.salesDAO.where(
+          this.NEQ(this.Invoice.STATUS, "Void")
+        );
+
+        expensesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
           self.payableAmount = sum.value;
         });
 
-        this.salesDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
+        salesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
           self.receivableAmount = sum.value;
         })
       }
