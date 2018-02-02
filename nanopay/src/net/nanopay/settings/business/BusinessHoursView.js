@@ -88,19 +88,10 @@ foam.CLASS({
     ^ .hide {
       visibility: hidden;
     }
-    ^ .foam-u2-tag-Select {
-      width: 70px;
-      height: 30px;
-      border-radius: 0;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      padding: 0 15px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
-      outline: none;
-    }
     ^ .foam-u2-TimeView {
+      font-family: Roboto;
+      font-size: 12px;
+      color: #093649;
       height: 30px;
       outline: none;
       margin-left: 20px;
