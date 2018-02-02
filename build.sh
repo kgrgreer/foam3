@@ -22,6 +22,7 @@ cp cicoServiceProviders /opt/tomcat/bin/
 cp countries /opt/tomcat/bin/
 cp cronjobs /opt/tomcat/bin/
 cp currency /opt/tomcat/bin/
+cp corridors /opt/tomcat/bin/
 cp emailTemplates /opt/tomcat/bin/
 cp exportDriverRegistrys /opt/tomcat/bin/
 cp groups /opt/tomcat/bin/

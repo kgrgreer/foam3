@@ -19,8 +19,8 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'FObjectArray',
-      of: 'net.nanopay.model.Currency',
+      class: 'Array',
+      of: 'Long',
       name: 'currencies',
       required: true
     }
