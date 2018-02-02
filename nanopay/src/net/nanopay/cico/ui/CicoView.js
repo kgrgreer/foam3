@@ -52,6 +52,7 @@ foam.CLASS({
           margin: 0 auto;
         }
         ^ .balanceBox {
+          position: relative;
           width: 330px;
           height: 100px;
           border-radius: 2px;
@@ -152,6 +153,12 @@ foam.CLASS({
         ^ thead > tr > th{
           background: %TABLECOLOR%;
         }
+
+        ^ .loadingSpinner {
+          position: absolute;
+          top: 11px;
+          left: 95px;
+        }
       */}
     })
   ],
@@ -197,6 +204,11 @@ foam.CLASS({
           )
         );
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isLoading',
+      value: true
     }
   ],
 
@@ -230,8 +242,9 @@ foam.CLASS({
           .start('div').addClass('balanceBox')
             .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add('$', this.formattedBalance$.map(function(b) {
-              return self.addCommas(b.toFixed(2).toString());
+            .start().add(this.formattedBalance$.map(function(b) {
+              if ( self.isLoading ) return '...';
+              return '$' + self.addCommas(b.toFixed(2).toString());
             })).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
@@ -314,10 +327,13 @@ foam.CLASS({
       isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-
+        self.isLoading = true;
         this.accountDAO.find(this.user.id).then(function (a) {
           self.account.copyFrom(a);
           self.formattedBalance = a.balance / 100;
+        })
+        .finally( function() {
+          self.isLoading = false;
         });
       }
     }

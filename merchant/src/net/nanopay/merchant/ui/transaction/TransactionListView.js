@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
     'device',
     'toolbarIcon',
     'toolbarTitle',
@@ -37,15 +38,24 @@ foam.CLASS({
       this.toolbarIcon = 'menu';
 
       this.addClass(this.myClass());
-      this.transactionDAO
-      .where(this.EQ(this.Transaction.DEVICE_ID, this.device.id))
-      .select().then(function (result) {
+
+      this.transactionDAO.where(this.AND(
+        this.EQ(this.Transaction.DEVICE_ID, this.device.id)),
+        this.OR(
+          this.EQ(this.Transaction.PAYER_ID, this.user.id),
+          this.EQ(this.Transaction.PAYEE_ID, this.user.id))
+      ).select().then(function (result) {
         if ( ! result ) {
           throw new Error('Unable to load transactions');
         }
 
         var a = result.array;
         for ( var i = 0; i < a.length; i++ ) {
+          // skip transactions that don't apply
+          if ( a[i].payeeId !== self.user.id && a[i].payerId !== self.user.id ) {
+            continue;
+          }
+
           self.add(self.TransactionRowView.create({
             transaction: a[i]
           }));

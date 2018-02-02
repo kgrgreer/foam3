@@ -40,7 +40,6 @@ public class FlinksAuthService
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.AUTHORIZE);
     } catch ( Throwable t ) {
-      t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
     
@@ -75,7 +74,6 @@ public class FlinksAuthService
     try {
       respMsg = flinksService.serve(reqMsg, FlinksRestService.CHALLENGE);
     } catch ( Throwable t ) {
-      t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
     FlinksResponse feedback;
@@ -99,23 +97,20 @@ public class FlinksAuthService
   }
 
   public FlinksResponse getAccountSummary(X x, String requestId) throws AuthenticationException {
-    RequestMsg reqMsg = FlinksRequestGenerator.getAccountSummaryRequest(getX(), requestId);
+    RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
     ResponseMsg respMsg = null;
-    //catch any Exception that happen when connect to Flinks
     try {
-      respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_SUMMARY);
+      respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
     } catch ( Throwable t ) {
-      t.printStackTrace();
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
-
     int httpCode = respMsg.getHttpStatusCode();
     FlinksRespMsg front = new FlinksRespMsg();
     FlinksResponse feedback;
     if ( httpCode == 200 ) {
       //send accounts to the client
-      FlinksAccountsSummaryResponse resp = (FlinksAccountsSummaryResponse) respMsg.getModel();
-      feedback = (FlinksAccountsSummaryResponse) respMsg.getModel();
+      FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
+      feedback = (FlinksAccountsDetailResponse) respMsg.getModel();
     } else {
       feedback = (FlinksInvalidResponse) respMsg.getModel();      
       throw new AuthenticationException(feedback.getMessage());
