@@ -105,9 +105,15 @@ public class FreshBook
       line = rd.readLine();
       System.out.println(line);
 
-      fResponse = (FreshResponse) parser.parseString(line,fResponse.getClassInfo().getObjClass());
+      FreshInvoiceResponse fLResponse = new FreshInvoiceResponse();
+      fLResponse = (FreshInvoiceResponse) parser.parseString(line,fLResponse.getClassInfo().getObjClass());
+      FreshInvoice[] invoices = (FreshInvoice[]) fLResponse.getResponse().getResult().getInvoices();
+      System.out.println(invoices[0]);
+      System.out.println(jout.stringify(invoices[0]));
 
-
+      DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
+      Invoice account = new Invoice();
+      account
 
       out.println("<HTML>" +
         "<H1> MADE IT</H1>"+

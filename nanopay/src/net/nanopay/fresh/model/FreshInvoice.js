@@ -1,6 +1,12 @@
 foam.CLASS({
-	package:  'net.nanopay.fresh',
-	name:  'FreshInvoice',
+	package:  'net.nanopay.fresh.model',
+  name:  'FreshInvoice',
+  imports: [ 'invoiceDAO' ],
+  
+  javaImports: [
+    'foam.dao.DAO',
+    'net.nanopay.model.Invoice',
+  ],
 	properties:  [
 		{
 			class:  'Int',
@@ -206,5 +212,17 @@ foam.CLASS({
 			class:  'String',
 			name:  'accountid'
 		}
-	]
+  ],
+  methods: [
+    {
+      name: 'generateInvoice',
+      javaReturns: 'net.nanopay.model.Invoice',
+      javaCode:
+      `
+      DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
+      Invoice account = new Invoice();
+      account
+      `
+    }
+  ]
 });
