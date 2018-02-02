@@ -40,6 +40,7 @@ FOAM_FILES([
 
   // interac
   { name: 'net/nanopay/fx/interac/model/Corridor'},
+  { name: 'net/nanopay/fx/interac/model/PurposeOfTransfer'},
 
   // lianlian pay
   { name: 'net/nanopay/fx/lianlianpay/LianLianPay' },

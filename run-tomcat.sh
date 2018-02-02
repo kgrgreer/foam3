@@ -87,6 +87,7 @@ cp countries $CATALINA_HOME/bin/
 cp cronjobs $CATALINA_HOME/bin/
 cp currency $CATALINA_HOME/bin/
 cp corridors $CATALINA_HOME/bin/
+cp purposesOfTransfer $CATALINA_HOME/bin/
 cp emailTemplates $CATALINA_HOME/bin/
 cp exportDriverRegistrys $CATALINA_HOME/bin/
 cp groups $CATALINA_HOME/bin/

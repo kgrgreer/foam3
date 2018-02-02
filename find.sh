@@ -7,6 +7,7 @@ find **/src -type f -name countries -exec cat {} \; > countries
 find **/src -type f -name cronjobs -exec cat {} \; > cronjobs
 find **/src -type f -name currency -exec cat {} \; > currency
 find **/src -type f -name corridors -exec cat {} \; > corridors
+find **/src -type f -name purposesOfTransfer -exec cat {} \; > purposesOfTransfer
 find **/src -type f -name emailTemplates -exec cat {} \; > emailTemplates
 find **/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
 find **/src -type f -name groups -exec cat {} \; > groups
