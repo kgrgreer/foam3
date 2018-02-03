@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  imports: [ 
+  imports: [
     'formatCurrency',
     'user'
   ],
@@ -49,68 +49,64 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          width: 992px;
-          margin: auto;
+  css: `
+    ^{
+      width: 992px;
+      margin: auto;
 
-        }
-        .resize-button{
-          height: 30px;
-          width: 60px;
-          display: inline-block;
-          text-align: center;
-          line-height: 30px;
-        }
-        ^cashflow-summary{
-          border-radius: 3px;
-          background: white;
-          width: 929px;
-          text-align: center;
-        }
-        ^cashflow-summary h4 {
-          font-weight: 300;
-          display: inline-block;
-        }
-        .overall-receivables{
-          color: #2cab70;
-          margin-left: 150px;
-        }
-        .overall-payables{
-          color: #c82e2e;
-          text-align: center;
-          width: 200px;
-        }
-        .overall-receivables img{
-          top: 8px;
-          right: 5px;
-          transform: rotate(180deg);
-          position: relative;
-        }
-        .overall-payables img{
-          position: relative;
-          top: 5px;
-          right: 5px;
-        }
-        .overall-label{
-          margin-left: 100px;
-        }
-        ^ .net-nanopay-invoice-ui-PayableSummaryView .net-nanopay-invoice-ui-SummaryCard{
-          width: 20%;
-        }
-        ^ .blue-card-title{
-          background: %SECONDARYCOLOR%;
-        }
-      */}
-    })
-  ],
+    }
+    .resize-button{
+      height: 30px;
+      width: 60px;
+      display: inline-block;
+      text-align: center;
+      line-height: 30px;
+    }
+    ^cashflow-summary{
+      border-radius: 3px;
+      background: white;
+      width: 929px;
+      text-align: center;
+    }
+    ^cashflow-summary h4 {
+      font-weight: 300;
+      display: inline-block;
+    }
+    .overall-receivables{
+      color: #2cab70;
+      margin-left: 150px;
+    }
+    .overall-payables{
+      color: #c82e2e;
+      text-align: center;
+      width: 200px;
+    }
+    .overall-receivables img{
+      top: 8px;
+      right: 5px;
+      transform: rotate(180deg);
+      position: relative;
+    }
+    .overall-payables img{
+      position: relative;
+      top: 5px;
+      right: 5px;
+    }
+    .overall-label{
+      margin-left: 100px;
+    }
+    ^ .net-nanopay-invoice-ui-PayableSummaryView .net-nanopay-invoice-ui-SummaryCard{
+      width: 20%;
+    }
+    ^ .blue-card-title{
+      background: %SECONDARYCOLOR%;
+    }
+  `,
 
   methods: [
     function initE() {
       this.expensesDAO.on.sub(this.onDAOUpdate);
-      this.salesDAO.on.sub(this.onDAOUpdate);      
+      this.salesDAO.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
 
       this
@@ -138,8 +134,6 @@ foam.CLASS({
         .end();
     }
   ],
-
-
 
   listeners: [
     {
