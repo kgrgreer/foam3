@@ -40,8 +40,8 @@ message.setTo(new String[]{user.getEmail()});
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", user.getFirstName());
 args.put("email", user.getEmail());
-if (!user.getEmailedAmount().equals("-1")){
-  args.put("amount", user.getEmailedAmount());
+if (!user.getEmailedAmount().equals("$0.00")){
+  args.put("money", user.getEmailedAmount());
 }
 if (user.getType().equals("Business") || user.getType().equals("Merchant")){
   args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");

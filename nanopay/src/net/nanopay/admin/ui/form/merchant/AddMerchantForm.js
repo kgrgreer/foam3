@@ -20,6 +20,7 @@ foam.CLASS({
     'user',
     'email',
     'userDAO',
+    'accountDAO',
     'transactionDAO',
     'formatCurrency'
   ],
@@ -61,7 +62,7 @@ foam.CLASS({
 
         // Info from form
         var merchantInfo = this.viewData;
-
+      
         if ( this.position == 0 ) { 
           // Merchant Info
 
@@ -103,80 +104,86 @@ foam.CLASS({
         
         if ( this.position == 2 ) {
           // Send Money
-
-          if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
-            merchantInfo.amount = -1;            
+          this.accountDAO.find(this.user.id).then(function(response){
+            var account = response;
+            if ( merchantInfo.amount > account.balance ){
+              self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
+              return;
+            }
+            if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
+              merchantInfo.amount = 0;            
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              return;
+            } 
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
-          } 
-          this.user.amount
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          
+          });
         }
+
         if ( this.position == 3 ) {
           // Review
 
-        var merchantPhone = this.Phone.create({
-          number: merchantInfo.phoneNumber
-        });
-
-        var merchantAddress = this.Address.create({
-          address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
-          streetNumber: merchantInfo.streetNumber,
-          streetName: merchantInfo.streetName,
-          suite: merchantInfo.addressLine,
-          city: merchantInfo.city,
-          postalCode: merchantInfo.postalCode,
-          countryId: merchantInfo.country,
-          regionId: merchantInfo.province
-        });
-
-        var newMerchant = this.User.create({
-          firstName: merchantInfo.firstName,
-          lastName: merchantInfo.lastName,
-          organization: merchantInfo.businessName,
-          businessName: merchantInfo.businessName,
-          email: merchantInfo.companyEmail,
-          type: 'Merchant',
-          group: 'ccMerchant',
-          phone: merchantPhone,
-          address: merchantAddress,
-          password: merchantInfo.password,
-          businessIdentificationNumber: merchantInfo.registrationNumber,
-          website: merchantInfo.website,
-          businessTypeId: merchantInfo.businessType,
-          businessSectorId: merchantInfo.businessSector,
-          emailedAmount: merchantInfo.amount,
-          adminCreated: true
-        });
-        this.userDAO.put(newMerchant).then(function(response) {
-          merchantInfo.merchant = response;
-          self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
-          return;
-        }).then(function(){
-          var transaction = this.Transaction.create({
-            payeeId: merchantInfo.merchant.id,
-            payerId: this.user.id,
-            amount: merchantInfo.amount
+          var merchantPhone = this.Phone.create({
+            number: merchantInfo.phoneNumber
           });
-          this.transactionDAO.put(transaction).then(function(response) {
-            var merchant = merchantInfo.merchant;
-            
-          }).then(function () {
-            self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.nextLabel = 'Done';
+
+          var merchantAddress = this.Address.create({
+            address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
+            streetNumber: merchantInfo.streetNumber,
+            streetName: merchantInfo.streetName,
+            suite: merchantInfo.addressLine,
+            city: merchantInfo.city,
+            postalCode: merchantInfo.postalCode,
+            countryId: merchantInfo.country,
+            regionId: merchantInfo.province
+          });
+
+          var newMerchant = this.User.create({
+            firstName: merchantInfo.firstName,
+            lastName: merchantInfo.lastName,
+            organization: merchantInfo.businessName,
+            businessName: merchantInfo.businessName,
+            email: merchantInfo.companyEmail,
+            type: 'Merchant',
+            group: 'ccMerchant',
+            phone: merchantPhone,
+            address: merchantAddress,
+            password: merchantInfo.password,
+            businessIdentificationNumber: merchantInfo.registrationNumber,
+            website: merchantInfo.website,
+            businessTypeId: merchantInfo.businessType,
+            businessSectorId: merchantInfo.businessSector,
+            emailedAmount: self.formatCurrency(merchantInfo.amount/100),
+            adminCreated: true
+          });
+          this.userDAO.put(newMerchant).then(function(response) {
+            merchantInfo.merchant = response;
+            self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
+            return;
+          }).then(function(){
+            var transaction = this.Transaction.create({
+              payeeId: merchantInfo.merchant.id,
+              payerId: this.user.id,
+              amount: merchantInfo.amount
+            });
+            this.transactionDAO.put(transaction).then(function(response) {
+              var merchant = merchantInfo.merchant;
+              
+            }).then(function () {
+              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.nextLabel = 'Done';
+            }).catch(function(error) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            });
+          
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            return;
           });
-         
-        }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          self.subStack.push(self.views[self.subStack.pos + 1].view);            
           return;
-        });
-        self.subStack.push(self.views[self.subStack.pos + 1].view);            
-        return;
-      }
+        }
 
         if ( this.subStack.pos == this.views.length - 1 ) {
           // Done
