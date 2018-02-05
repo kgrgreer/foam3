@@ -4,6 +4,7 @@ import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.core.X;
+import foam.crypto.sign.SigningInputStream;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.lianlianpay.model.*;
 import org.apache.commons.io.IOUtils;
@@ -232,7 +233,12 @@ public class LianLianPayService
     String cwd = System.getProperty("user.dir");
     File file = new File(cwd +
         "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.01/PreProcessResult/20170101_201701010000000001_000001.RESP");
+    File sigFile = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.01/PreProcessResult/20170101_201701010000000001_000001.RESPSIG");
+
     BufferedReader br = null;
+    LineNumberReader lnr = null;
+    SigningInputStream sis = null;
 
     PreProcessResult result = new PreProcessResult();
 
@@ -243,7 +249,9 @@ public class LianLianPayService
     List responseProps = PreProcessResultResponse.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     try {
-      br = new BufferedReader(new FileReader(file));
+      sis = new SigningInputStream("SHA1withRSA", publicKey_, new FileInputStream(file));
+      br = new BufferedReader(new InputStreamReader(sis));
+      lnr = new LineNumberReader(new FileReader(sigFile));
 
       String line;
       int count = 0;
@@ -272,6 +280,9 @@ public class LianLianPayService
         count++;
       }
 
+      // verify signature using signing input stream
+      sis.verify(Base64.decode(lnr.readLine()));
+
       result.setSummary(summary);
       result.setResponses(responses.toArray(
           new PreProcessResultResponse[responses.size()]));
@@ -279,7 +290,9 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
+      IOUtils.closeQuietly(sis);
       IOUtils.closeQuietly(br);
+      IOUtils.closeQuietly(lnr);
     }
   }
 
@@ -290,7 +303,12 @@ public class LianLianPayService
     String cwd = System.getProperty("user.dir");
     File file = new File(cwd +
         "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Reconciliation/20170103_201701010000000001.RESP");
+    File sigFile = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESPSIG");
+
     BufferedReader br = null;
+    LineNumberReader lnr = null;
+    SigningInputStream sis = null;
 
     Reconciliation result = new Reconciliation();
 
@@ -298,7 +316,9 @@ public class LianLianPayService
     List recordProps = ReconciliationRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     try {
-      br = new BufferedReader(new FileReader(file));
+      sis = new SigningInputStream("SHA1withRSA", publicKey_, new FileInputStream(file));
+      br = new BufferedReader(new InputStreamReader(sis));
+      lnr = new LineNumberReader(new FileReader(sigFile));
 
       String line;
       int count = 0;
@@ -321,13 +341,18 @@ public class LianLianPayService
         count++;
       }
 
+      // verify signature using signing input stream
+      sis.verify(Base64.decode(lnr.readLine()));
+
       result.setReconciliationRecords(records.toArray(
           new ReconciliationRecord[records.size()]));
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
+      IOUtils.closeQuietly(sis);
       IOUtils.closeQuietly(br);
+      IOUtils.closeQuietly(lnr);
     }
   }
 
@@ -338,7 +363,12 @@ public class LianLianPayService
     String cwd = System.getProperty("user.dir");
     File file = new File(cwd +
         "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESP");
+    File sigFile = new File(cwd +
+        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESPSIG");
+
     BufferedReader br = null;
+    LineNumberReader lnr = null;
+    SigningInputStream sis = null;
 
     Statement result = new Statement();
 
@@ -349,7 +379,9 @@ public class LianLianPayService
     List statementProps = StatementRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
     try {
-      br = new BufferedReader(new FileReader(file));
+      sis = new SigningInputStream("SHA1withRSA", publicKey_, new FileInputStream(file));
+      br = new BufferedReader(new InputStreamReader(sis));
+      lnr = new LineNumberReader(new FileReader(sigFile));
 
       String line;
       boolean parsingBalance = true;
@@ -384,6 +416,9 @@ public class LianLianPayService
         }
       }
 
+      // verify signature using signing input stream
+      sis.verify(Base64.decode(lnr.readLine()));
+
       result.setCurrencyBalanceRecords(balanceRecords.toArray(
           new CurrencyBalanceRecord[balanceRecords.size()]));
       result.setStatementRecords(statementRecords.toArray(
@@ -392,7 +427,9 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
+      IOUtils.closeQuietly(sis);
       IOUtils.closeQuietly(br);
+      IOUtils.closeQuietly(lnr);
     }
   }
 }
