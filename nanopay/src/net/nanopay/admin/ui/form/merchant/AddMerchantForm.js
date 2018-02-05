@@ -7,8 +7,8 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',    
     'foam.nanos.auth.Phone',
-    'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
@@ -16,13 +16,13 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack',
-    'user',
+    'accountDAO',    
     'email',
+    'formatCurrency',    
+    'stack',
+    'transactionDAO',    
+    'user',
     'userDAO',
-    'accountDAO',
-    'transactionDAO',
-    'formatCurrency'
   ],
 
   axioms: [
@@ -62,7 +62,7 @@ foam.CLASS({
 
         // Info from form
         var merchantInfo = this.viewData;
-      
+
         if ( this.position == 0 ) { 
           // Merchant Info
 
@@ -101,7 +101,6 @@ foam.CLASS({
           return;
         }
 
-        
         if ( this.position == 2 ) {
           // Send Money
           this.accountDAO.find(this.user.id).then(function(response){
@@ -168,7 +167,6 @@ foam.CLASS({
             });
             this.transactionDAO.put(transaction).then(function(response) {
               var merchant = merchantInfo.merchant;
-              
             }).then(function () {
               self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -176,7 +174,6 @@ foam.CLASS({
             }).catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             });
-          
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;

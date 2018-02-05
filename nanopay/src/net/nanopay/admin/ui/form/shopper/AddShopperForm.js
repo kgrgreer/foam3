@@ -16,12 +16,12 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'stack',
-    'user',
     'email',
-    'userDAO',
-    'transactionDAO',
-    'formatCurrency'
+    'formatCurrency',    
+    'stack',
+    'transactionDAO',    
+    'user',
+    'userDAO'
   ],
 
   axioms: [
