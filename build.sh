@@ -21,7 +21,7 @@ cp businessTypes /opt/tomcat/bin/
 cp cicoServiceProviders /opt/tomcat/bin/
 cp countries /opt/tomcat/bin/
 cp cronjobs /opt/tomcat/bin/
-cp currency /opt/tomcat/bin/
+cp currencies /opt/tomcat/bin/
 cp corridors /opt/tomcat/bin/
 cp purposesOfTransfer /opt/tomcat/bin/
 cp emailTemplates /opt/tomcat/bin/

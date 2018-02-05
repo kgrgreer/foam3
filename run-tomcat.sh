@@ -85,7 +85,7 @@ cp businessTypes $CATALINA_HOME/bin/
 cp cicoServiceProviders $CATALINA_HOME/bin/
 cp countries $CATALINA_HOME/bin/
 cp cronjobs $CATALINA_HOME/bin/
-cp currency $CATALINA_HOME/bin/
+cp currencies $CATALINA_HOME/bin/
 cp corridors $CATALINA_HOME/bin/
 cp purposesOfTransfer $CATALINA_HOME/bin/
 cp emailTemplates $CATALINA_HOME/bin/

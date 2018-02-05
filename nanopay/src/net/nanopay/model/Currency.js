@@ -4,12 +4,9 @@ foam.CLASS({
 
   documentation: 'Currency information.',
 
+  ids: [ 'alphabeticCode' ],
+
   properties: [
-    {
-      class: 'Long',
-      name: 'id',
-      required: true
-    },
     {
       class: 'String',
       name: 'name',
@@ -28,11 +25,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'precision',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'symbol',
       required: true
     },
     {
