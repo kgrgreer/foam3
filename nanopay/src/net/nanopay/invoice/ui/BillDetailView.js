@@ -260,7 +260,7 @@ foam.CLASS({
             this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));
             return;
           }
-          debugger;
+
           var inv = this.Invoice.create({
             payerId: this.user.id,
             payeeId: this.userList,
