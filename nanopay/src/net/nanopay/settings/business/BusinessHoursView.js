@@ -117,7 +117,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'businessHoursEnabled',
-      value: false
+      factory: function() {
+        return this.user.businessHoursEnabled;
+      }
     },
     {
       class: 'Boolean',
@@ -329,6 +331,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
       .addClass(this.myClass())
@@ -336,6 +339,9 @@ foam.CLASS({
         .start().add(this.Title).addClass('boxTitle').end()
         .start('div').addClass('toggleDiv')
           .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.businessHoursEnabled$ })
+          .on('click', function() {
+            return !self.businessHoursEnabled ? self.user.businessHoursEnabled = true : self.user.businessHoursEnabled = false;
+          })
         .end()
         .start().addClass(this.businessHoursEnabled$.map(function(e) { return e ? 'show' : 'hide' })).addClass('box-width')
           .start().addClass('dayOfWeekDiv').addClass(this.checkBoxClosedMonday$.map(function(e) { return e ? 'hide' : 'show' }))
