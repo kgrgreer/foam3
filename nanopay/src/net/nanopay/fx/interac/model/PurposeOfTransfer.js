@@ -10,6 +10,12 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'formatType',
+      documentation: 'Determines if ISO20022 or proprietary',
+      required: true
+    }
+    {
+      class: 'String',
       name: 'classificationName'
     },
     {

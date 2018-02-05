@@ -6,7 +6,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
+      class: 'String',
       name: 'proprietary',
       documentation: 'Whether the purpose code is proprietary or not. Used for ISO20022'
     },
