@@ -1,7 +1,9 @@
 package net.nanopay.fx.lianlianpay;
 
-import com.amazonaws.services.dynamodbv2.xspec.B;
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
@@ -10,8 +12,6 @@ import foam.crypto.sign.SigningInputStream;
 import foam.crypto.sign.SigningOutputStream;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.lianlianpay.model.*;
-import org.apache.commons.io.IOUtils;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
 
 import javax.crypto.Cipher;
