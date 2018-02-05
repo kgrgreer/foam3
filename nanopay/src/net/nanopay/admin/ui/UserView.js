@@ -104,6 +104,9 @@ foam.CLASS({
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
     }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
+    }
   `,
 
   properties: [
