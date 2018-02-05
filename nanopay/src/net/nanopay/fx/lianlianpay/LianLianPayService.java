@@ -7,6 +7,7 @@ import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.core.X;
 import foam.crypto.sign.SigningInputStream;
+import foam.crypto.sign.SigningOutputStream;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.lianlianpay.model.*;
 import org.apache.commons.io.IOUtils;
@@ -295,37 +296,65 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      channel.disconnect();
-      session.disconnect();
+      IOUtils.closeQuietly(sis);
+      if ( channel != null ) channel.disconnect();
+      if ( session != null ) session.disconnect();
     }
   }
 
   @Override
-  public PreProcessResult downloadPreProcessResult() {
-    // TODO: download from SFTP
-
-    String cwd = System.getProperty("user.dir");
-    File file = new File(cwd +
-        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.01/PreProcessResult/20170101_201701010000000001_000001.RESP");
-    File sigFile = new File(cwd +
-        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.01/PreProcessResult/20170101_201701010000000001_000001.RESPSIG");
+  public PreProcessResult downloadPreProcessResult(Date date, String merchantId, String batchId) {
+    Session session = null;
+    ChannelSftp channel = null;
+    SigningOutputStream sos = null;
 
     BufferedReader br = null;
     LineNumberReader lnr = null;
     SigningInputStream sis = null;
-
-    PreProcessResult result = new PreProcessResult();
-
-    PreProcessResultSummary summary = new PreProcessResultSummary();
-    List summaryProps = summary.getClassInfo().getAxiomsByClass(PropertyInfo.class);
-
-    List<PreProcessResultResponse> responses = new ArrayList<PreProcessResultResponse>();
-    List responseProps = PreProcessResultResponse.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+    ByteArrayOutputStream baos = null;
 
     try {
-      sis = new SigningInputStream("SHA1withRSA", publicKey_, new FileInputStream(file));
-      br = new BufferedReader(new InputStreamReader(sis));
-      lnr = new LineNumberReader(new FileReader(sigFile));
+      StringBuilder builder = sb.get();
+      String filename = builder.append(sdf.get().format(date))
+          .append("_").append(merchantId).append("_")
+          .append(batchId).append(".RESP").toString();
+      String sigfilename = filename + "SIG";
+
+      // establish new sftp session
+      JSch jsch = new JSch();
+      session = jsch.getSession(username_, host_, port_);
+      if ( ! SafetyUtil.isEmpty(password_) ) {
+        session.setPassword(password_);
+      }
+      session.setConfig(config);
+      session.connect(5 * 1000);
+
+      // create a new connection
+      channel = (ChannelSftp) session.openChannel("sftp");
+      channel.connect(5 * 1000);
+      channel.cd(directory_ + "/PreProcessResult");
+
+      // download file and create buffered reader
+      baos = new ByteArrayOutputStream();
+      sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
+      channel.get(filename, sos);
+      br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // read signature file and verify signature
+      baos = new ByteArrayOutputStream();
+      channel.get(sigfilename, baos);
+      lnr = new LineNumberReader(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+      byte[] signature = Base64.decode(lnr.readLine());
+      if ( ! sos.verify(signature) ) {
+        throw new SignatureException("Signature verification failed");
+      }
+
+      // initialize data structire and get property info
+      PreProcessResult result = new PreProcessResult();
+      PreProcessResultSummary summary = new PreProcessResultSummary();
+      List summaryProps = summary.getClassInfo().getAxiomsByClass(PropertyInfo.class);
+      List<PreProcessResultResponse> responses = new ArrayList<PreProcessResultResponse>();
+      List responseProps = PreProcessResultResponse.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
       String line;
       int count = 0;
@@ -354,9 +383,6 @@ public class LianLianPayService
         count++;
       }
 
-      // verify signature using signing input stream
-      sis.verify(Base64.decode(lnr.readLine()));
-
       result.setSummary(summary);
       result.setResponses(responses.toArray(
           new PreProcessResultResponse[responses.size()]));
@@ -367,11 +393,13 @@ public class LianLianPayService
       IOUtils.closeQuietly(sis);
       IOUtils.closeQuietly(br);
       IOUtils.closeQuietly(lnr);
+      if ( channel != null ) channel.disconnect();
+      if ( session != null ) session.disconnect();
     }
   }
 
   @Override
-  public Reconciliation downloadReconciliation() {
+  public Reconciliation downloadReconciliation(Date date, String merchantId) {
     // TODO: download from SFTP
 
     String cwd = System.getProperty("user.dir");
@@ -431,7 +459,7 @@ public class LianLianPayService
   }
 
   @Override
-  public Statement downloadStatement() {
+  public Statement downloadStatement(Date date, String merchantId) {
     // TODO: download from SFTP
 
     String cwd = System.getProperty("user.dir");

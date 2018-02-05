@@ -11,6 +11,9 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class Test {
 
@@ -63,10 +66,15 @@ public class Test {
       ic.setRequests(new InstructionCombinedRequest[]{ instruction });
       service.uploadInstructionCombined("123456789", "000000001", ic);
 
+      Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+      calendar.set(Calendar.YEAR, 2017);
+      calendar.set(2017, 0, 3, 0, 0, 0);
+      Date date = calendar.getTime();
+
       Outputter outputter = new Outputter();
-      System.out.println(outputter.stringify(service.downloadPreProcessResult()));
-      System.out.println(outputter.stringify(service.downloadReconciliation()));
-      System.out.println(outputter.stringify(service.downloadStatement()));
+      System.out.println(outputter.stringify(service.downloadPreProcessResult(date, "123456789", "000000001")));
+      System.out.println(outputter.stringify(service.downloadReconciliation(date, "123456789")));
+      System.out.println(outputter.stringify(service.downloadStatement(date, "123456789")));
     } catch (Throwable t) {
       t.printStackTrace();
     }
