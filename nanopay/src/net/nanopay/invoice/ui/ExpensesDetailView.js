@@ -176,7 +176,7 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var invoice = X.data.data;
-        
+
         self.payNowPopUp_ = self.PopupView.create({
           width: 165,
           x: -137,

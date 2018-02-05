@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'invoiceNumber',
       label: 'Invoice #',
       aliases: [ 'invoice', 'i' ],
