@@ -9,7 +9,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'blobService'
+    'blobService',
+    'onInvoiceFileRemoved'
   ],
 
   exports: [
@@ -17,36 +18,51 @@ foam.CLASS({
   ],
 
   properties: [
-    'data'
+    'data',
+    'fileNumber',
+    [ 'removeHidden', false ]
   ],
 
   css: `
-    ^ .attachment-input {
-      width: 0.1px;
-      height: 0.1px;
-      opacity: 0;
-      overflow: hidden;
-      position: absolute;
-      z-index: -1;
-    }
-    ^ .attachment-btn {
-      margin: 10px 0;
-    }
-    ^ .attachment-item {
-      width: 175px;
+    ^ {
+      min-width: 175px;
+      max-width: 275px;
       height: 40px;
       background-color: #ffffff;
-      padding: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 5px;
+    }
+    ^ .attachment-number {
+      float: left;
+      width: 21px;
+      height: 20px;
+      font-size: 12px;
+      line-height: 1.67;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
     }
     ^ .attachment-filename {
+      max-width: 342px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      float: left;
+    }
+    ^ .attachment-filename a {
       height: 16px;
       font-size: 12px;
-      line-height: 1.33;
+      line-height: 1.66;
       letter-spacing: 0.2px;
       text-align: left;
       color: #59a5d5;
+      padding-left: 12px;
     }
-    ^ .attachment-item-size {
+    ^ .attachment-footer {
+      float: right;
+    }
+    ^ .attachment-filesize {
       width: 16.7px;
       height: 8px;
       font-size: 6px;
@@ -54,12 +70,12 @@ foam.CLASS({
       letter-spacing: 0.1px;
       text-align: left;
       color: #a4b3b8;
+      padding-top: 6px;
     }
     ^ .net-nanopay-ui-ActionView-remove {
       width: 12px;
       height: 12px;
       object-fit: contain;
-      float: right;
     }
   `,
 
@@ -68,41 +84,42 @@ foam.CLASS({
       var self = this;
 
       this
-        .setNodeName('span')
         .addClass(this.myClass())
-        .start()
-          .add('Attachments')
-          .start('input').addClass('attachment-input')
-            .attrs({ type: 'file', accept: 'application/pdf' })
-            .on('change', this.onChange)
-          .end()
-          .add(this.slot(function(data) {
-            var file = data && data.data;
-            if ( ! file ) {
-              return this.E().start()
-                .addClass('attachment-btn white-blue-button btn')
-                .add('Add Attachment')
-                .on('click', self.onAddAttachmentClicked)
-                .end()
-            } else {
-              return this.E()
-                .addClass('attachment-item')
-                .start('a').addClass('attachment-filename')
-                  .attrs({
-                    href: self.data.data$.map(function (data) {
-                      return self.BlobBlob.isInstance(data) ?
-                        URL.createObjectURL(data.blob) :
-                        ( self.blobService.urlFor(data) || '');
-                    }),
-                    target: '_blank'
-                  })
-                  .add(data.filename)
-                .end()
-                .add(this.REMOVE);
-            }
-          }, this.data$))
-          .add('Maximum size 10MB')
+        .start().addClass('attachment-number')
+          .add(this.formatFileNumber())
         .end()
+        .start().addClass('attachment-filename')
+          .start('a')
+            .attrs({
+              href: this.data$.map(function (data) {
+                var blob = data.data;
+                return self.BlobBlob.isInstance(blob) ?
+                  URL.createObjectURL(blob.blob) :
+                  ( "/service/httpFileService/" + data.id );
+              }),
+              target: '_blank'
+            })
+            .add(this.slot(function (filename) {
+              var len = filename.length;
+              return ( len > 35 ) ? (filename.substr(0, 20) +
+                '...' + filename.substr(len - 10, len)) : filename;
+            }, this.data.filename$))
+          .end()
+        .end()
+        .start().addClass('attachment-footer')
+          .start().add(this.REMOVE).hide(this.removeHidden).end()
+          .start().addClass('attachment-filesize')
+            .add(this.formatFileSize())
+          .end()
+        .end()
+    },
+
+    function formatFileNumber() {
+      return ('000' + this.fileNumber).slice(-3);
+    },
+
+    function formatFileSize() {
+      return Math.ceil(this.data.filesize / 1000) + 'K';
     }
   ],
 
@@ -111,27 +128,8 @@ foam.CLASS({
       name: 'remove',
       icon: 'images/ic-delete.svg',
       code: function (X) {
-        this.data = null;
+        this.onInvoiceFileRemoved(X.data.fileNumber);
       }
-    }
-  ],
-
-  listeners: [
-    function onAddAttachmentClicked (e) {
-      this.document.querySelector('.attachment-input').click();
-    },
-
-    function onChange (e) {
-      var file = e.target.files[0];
-
-      this.data = this.File.create({
-        filename: file.name,
-        filesize: file.size,
-        mimeType: file.type,
-        data: this.BlobBlob.create({
-          blob: file
-        })
-      });
     }
   ]
 });

@@ -42,7 +42,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.fx.lianlianpay.model.DistributionMode',
       name: 'distributeMode',
-      documentation: 'Distrubution mode'
+      documentation: 'Distribution mode'
     },
     {
       class: 'Enum',

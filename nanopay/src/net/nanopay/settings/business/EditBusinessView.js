@@ -123,6 +123,7 @@ foam.CLASS({
           width: 100%;
           height: 40px;
           margin-top: 7px;
+          padding: 10px;
         }
         ^ label{
           font-weight: 300;
