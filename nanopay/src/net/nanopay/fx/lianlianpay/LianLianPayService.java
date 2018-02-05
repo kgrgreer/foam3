@@ -328,24 +328,8 @@ public class LianLianPayService
       channel.connect(5 * 1000);
       channel.cd(directory_ + "/PreProcessResult");
 
-      // download file and create buffered reader
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
-      channel.get(filename, sos);
-      BufferedReader br = new BufferedReader(
-          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-
-      // read signature file
-      baos = new ByteArrayOutputStream();
-      channel.get(sigfilename, baos);
-      LineNumberReader lnr = new LineNumberReader(
-          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-
-      // verify signature
-      byte[] signature = Base64.decode(lnr.readLine());
-      if ( ! sos.verify(signature) ) {
-        throw new SignatureException("Signature verification failed");
-      }
+      // download the file and verify the signature
+      BufferedReader br = downloadFile(channel, filename, sigfilename);
 
       // initialize data structure and get property info
       PreProcessResult result = new PreProcessResult();
@@ -420,24 +404,8 @@ public class LianLianPayService
       channel.connect(5 * 1000);
       channel.cd(directory_ + "/Reconciliation");
 
-      // download file and create buffered reader
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
-      channel.get(filename, sos);
-      BufferedReader br = new BufferedReader(
-          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-
-      // read signature file
-      baos = new ByteArrayOutputStream();
-      channel.get(sigfilename, baos);
-      LineNumberReader lnr = new LineNumberReader(
-          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-
-      // verify signature
-      byte[] signature = Base64.decode(lnr.readLine());
-      if ( ! sos.verify(signature) ) {
-        throw new SignatureException("Signature verification failed");
-      }
+      // download the file and verify the signature
+      BufferedReader br = downloadFile(channel, filename, sigfilename);
 
       // initialize data structure and get property info
       Reconciliation result = new Reconciliation();
@@ -503,24 +471,8 @@ public class LianLianPayService
       channel.connect(5 * 1000);
       channel.cd(directory_ + "/Statement");
 
-      // download file and create buffered reader
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
-      channel.get(filename, sos);
-      BufferedReader br = new BufferedReader(
-          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-
-      // read signature file
-      baos = new ByteArrayOutputStream();
-      channel.get(sigfilename, baos);
-      LineNumberReader lnr = new LineNumberReader(
-          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-
-      // verify signature
-      byte[] signature = Base64.decode(lnr.readLine());
-      if ( ! sos.verify(signature) ) {
-        throw new SignatureException("Signature verification failed");
-      }
+      // download the file and verify the signature
+      BufferedReader br = downloadFile(channel, filename, sigfilename);
 
       // Initialize data structures
       Statement result = new Statement();
@@ -570,6 +522,43 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
+      if ( channel != null ) channel.disconnect();
+      if ( session != null ) session.disconnect();
     }
+  }
+
+  /**
+   * Downloads the file from the SFTP service and verifies the signature
+   *
+   * @param channel sftp channel
+   * @param filename filename
+   * @param sigfilename signature filename
+   * @return a BufferedReader ready to read the downloaded file
+   * @throws SftpException
+   * @throws IOException
+   * @throws SignatureException
+   */
+  protected BufferedReader downloadFile(ChannelSftp channel, String filename, String sigfilename)
+      throws SftpException, IOException, SignatureException
+  {
+    // download file and create buffered reader
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
+    channel.get(filename, sos);
+    BufferedReader br = new BufferedReader(
+        new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+    // read signature file
+    baos = new ByteArrayOutputStream();
+    channel.get(sigfilename, baos);
+    LineNumberReader lnr = new LineNumberReader(
+        new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+    // verify signature
+    byte[] signature = Base64.decode(lnr.readLine());
+    if ( ! sos.verify(signature) ) {
+      throw new SignatureException("Signature verification failed");
+    }
+    return br;
   }
 }
