@@ -12,6 +12,14 @@ foam.INTERFACE({
       javaReturns: '',
       args: [
         {
+          name: 'merchantId',
+          javaType: 'String'
+        },
+        {
+          name: 'batchId',
+          javaType: 'String'
+        },
+        {
           name: 'request',
           javaType: 'net.nanopay.fx.lianlianpay.model.InstructionCombined'
         }

@@ -83,7 +83,6 @@ public class LianLianPayService
     return random_;
   }
 
-  protected Provider provider_;
   protected PublicKey publicKey_;
   protected PrivateKey privateKey_;
 
@@ -100,27 +99,9 @@ public class LianLianPayService
   public LianLianPayService(X x, String pubKeyFilename, String privKeyFilename)
       throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
   {
-    this(x, pubKeyFilename, privKeyFilename, new BouncyCastleProvider());
-  }
-
-  /**
-   * Creates a new instance of LianLianPayService
-   *
-   * @param x context
-   * @param pubKeyFilename public key filename
-   * @param privKeyFilename private key filename
-   * @param provider crypto provider
-   * @throws IOException
-   * @throws InvalidKeySpecException
-   * @throws NoSuchAlgorithmException
-   */
-  public LianLianPayService(X x, String pubKeyFilename, String privKeyFilename, Provider provider)
-      throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
-  {
     setX(x);
-    provider_ = provider;
-    publicKey_ = (PublicKey) readKey(pubKeyFilename, true, provider);
-    privateKey_ = (PrivateKey) readKey(privKeyFilename, false, provider);
+    publicKey_ = (PublicKey) readKey(pubKeyFilename, true);
+    privateKey_ = (PrivateKey) readKey(privKeyFilename, false);
   }
 
   /**
@@ -128,35 +109,32 @@ public class LianLianPayService
    *
    * @param filename file to read
    * @param isPublicKey flag to determine if public key or private key
-   * @param provider crypto provider
    * @return a private key or public key
    * @throws IOException
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
    */
-  protected Key readKey(String filename, boolean isPublicKey, Provider provider)
+  protected Key readKey(String filename, boolean isPublicKey)
       throws IOException, NoSuchAlgorithmException, InvalidKeySpecException
   {
     byte[] keyBytes = Base64.decode(Files.readAllBytes(Paths.get(filename)));
-    KeySpec spec = ( isPublicKey ) ?
-        new X509EncodedKeySpec(keyBytes) :
-        new PKCS8EncodedKeySpec(keyBytes);
-    KeyFactory kf = KeyFactory.getInstance("RSA", provider);
+    KeySpec spec = ( isPublicKey ) ? new X509EncodedKeySpec(keyBytes) : new PKCS8EncodedKeySpec(keyBytes);
+    KeyFactory kf = KeyFactory.getInstance("RSA");
     return ( isPublicKey ) ? kf.generatePublic(spec) : kf.generatePrivate(spec);
   }
 
   @Override
-  public void uploadInstructionCombined(InstructionCombined request) {
+  public void uploadInstructionCombined(String merchantId, String batchId, InstructionCombined request) {
     try {
       StringBuilder builder = sb.get();
 
       // generate random AES256 key
-      KeyGenerator keygen = KeyGenerator.getInstance("AES", provider_);
+      KeyGenerator keygen = KeyGenerator.getInstance("AES");
       keygen.init(AES_KEY_SIZE, getSecureRandom());
       SecretKey key = keygen.generateKey();
 
       // generate cipher in encrypt mode using the public key
-      Cipher cipher = Cipher.getInstance("RSA", provider_);
+      Cipher cipher = Cipher.getInstance("RSA");
       cipher.init(Cipher.ENCRYPT_MODE, publicKey_);
 
       // encrypt aes256 key using public key
