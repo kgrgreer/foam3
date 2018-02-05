@@ -29,8 +29,6 @@ foam.CLASS({
 
   imports: [ 'addCommas' ],
 
-  ids: [ 'invoiceNumber' ],
-
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
@@ -49,9 +47,13 @@ foam.CLASS({
     },
     {
       class: 'Long',
+      name: 'id'
+    },
+    {
+      class: 'Long',
       name: 'invoiceNumber',
       label: 'Invoice #',
-      aliases: [ 'id', 'invoice', 'i' ],
+      aliases: [ 'invoice', 'i' ],
       visibility: foam.u2.Visibility.FINAL
     },
     {
