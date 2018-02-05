@@ -303,9 +303,6 @@ public class LianLianPayService
 
   @Override
   public PreProcessResult downloadPreProcessResult(Date date, String merchantId, String batchId) {
-    Session session = null;
-    ChannelSftp channel = null;
-
     try {
       StringBuilder builder = sb.get();
       String filename = builder.append(sdf.get().format(date))
@@ -314,22 +311,8 @@ public class LianLianPayService
       String sigfilename = filename + "SIG";
       builder.setLength(0);
 
-      // establish new sftp session
-      JSch jsch = new JSch();
-      session = jsch.getSession(username_, host_, port_);
-      if ( ! SafetyUtil.isEmpty(password_) ) {
-        session.setPassword(password_);
-      }
-      session.setConfig(config);
-      session.connect(5 * 1000);
-
-      // create a new connection
-      channel = (ChannelSftp) session.openChannel("sftp");
-      channel.connect(5 * 1000);
-      channel.cd(directory_ + "/PreProcessResult");
-
       // download the file and verify the signature
-      BufferedReader br = downloadFile(channel, filename, sigfilename);
+      BufferedReader br = downloadAndVerifyFile("/PreProcessResult", filename, sigfilename);
 
       // initialize data structure and get property info
       PreProcessResult result = new PreProcessResult();
@@ -371,17 +354,11 @@ public class LianLianPayService
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
-    } finally {
-      if ( channel != null ) channel.disconnect();
-      if ( session != null ) session.disconnect();
     }
   }
 
   @Override
   public Reconciliation downloadReconciliation(Date date, String merchantId) {
-    Session session = null;
-    ChannelSftp channel = null;
-
     try {
       StringBuilder builder = sb.get();
       String filename = builder.append(sdf.get().format(date))
@@ -390,22 +367,8 @@ public class LianLianPayService
       String sigfilename = filename + "SIG";
       builder.setLength(0);
 
-      // establish new sftp session
-      JSch jsch = new JSch();
-      session = jsch.getSession(username_, host_, port_);
-      if ( ! SafetyUtil.isEmpty(password_) ) {
-        session.setPassword(password_);
-      }
-      session.setConfig(config);
-      session.connect(5 * 1000);
-
-      // create a new connection
-      channel = (ChannelSftp) session.openChannel("sftp");
-      channel.connect(5 * 1000);
-      channel.cd(directory_ + "/Reconciliation");
-
       // download the file and verify the signature
-      BufferedReader br = downloadFile(channel, filename, sigfilename);
+      BufferedReader br = downloadAndVerifyFile("/Reconciliation", filename, sigfilename);
 
       // initialize data structure and get property info
       Reconciliation result = new Reconciliation();
@@ -414,17 +377,17 @@ public class LianLianPayService
 
       String line;
       int count = 0;
-      while ( (line = br.readLine()) != null ) {
-        if ( count == 0 ) {
+      while ((line = br.readLine()) != null) {
+        if (count == 0) {
           // read accounting date
           result.setAccountingDate(sdf.get().parse(line));
-        } else if ( count > 1 ) {
+        } else if (count > 1) {
           // read reconciliation record
           ReconciliationRecord record = new ReconciliationRecord();
           String[] strings = line.split("\\|", recordProps.size());
 
-          for ( int i = 0; i < recordProps.size(); i++ ) {
-            if ( SafetyUtil.isEmpty(strings[i]) ) continue;
+          for (int i = 0; i < recordProps.size(); i++) {
+            if (SafetyUtil.isEmpty(strings[i])) continue;
             PropertyInfo prop = (PropertyInfo) recordProps.get(i);
             prop.setFromString(record, strings[i]);
           }
@@ -438,17 +401,11 @@ public class LianLianPayService
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
-    } finally {
-      if ( channel != null ) channel.disconnect();
-      if ( session != null ) session.disconnect();
     }
   }
 
   @Override
   public Statement downloadStatement(Date date, String merchantId) {
-    Session session = null;
-    ChannelSftp channel = null;
-
     try {
       StringBuilder builder = sb.get();
       String filename = builder.append(sdf.get().format(date))
@@ -457,22 +414,8 @@ public class LianLianPayService
       String sigfilename = filename + "SIG";
       builder.setLength(0);
 
-      // establish new sftp session
-      JSch jsch = new JSch();
-      session = jsch.getSession(username_, host_, port_);
-      if ( ! SafetyUtil.isEmpty(password_) ) {
-        session.setPassword(password_);
-      }
-      session.setConfig(config);
-      session.connect(5 * 1000);
-
-      // create a new connection
-      channel = (ChannelSftp) session.openChannel("sftp");
-      channel.connect(5 * 1000);
-      channel.cd(directory_ + "/Statement");
-
-      // download the file and verify the signature
-      BufferedReader br = downloadFile(channel, filename, sigfilename);
+      // download the file
+      BufferedReader br = downloadAndVerifyFile("/Statement", filename, sigfilename);
 
       // Initialize data structures
       Statement result = new Statement();
@@ -521,16 +464,13 @@ public class LianLianPayService
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
-    } finally {
-      if ( channel != null ) channel.disconnect();
-      if ( session != null ) session.disconnect();
     }
   }
 
   /**
    * Downloads the file from the SFTP service and verifies the signature
    *
-   * @param channel sftp channel
+   * @param path location path
    * @param filename filename
    * @param sigfilename signature filename
    * @return a BufferedReader ready to read the downloaded file
@@ -538,27 +478,51 @@ public class LianLianPayService
    * @throws IOException
    * @throws SignatureException
    */
-  protected BufferedReader downloadFile(ChannelSftp channel, String filename, String sigfilename)
+  protected BufferedReader downloadAndVerifyFile(String path, String filename, String sigfilename)
       throws SftpException, IOException, SignatureException
   {
-    // download file and create buffered reader
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
-    channel.get(filename, sos);
-    BufferedReader br = new BufferedReader(
-        new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+    Session session = null;
+    ChannelSftp channel = null;
 
-    // read signature file
-    baos = new ByteArrayOutputStream();
-    channel.get(sigfilename, baos);
-    LineNumberReader lnr = new LineNumberReader(
-        new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+    try {
+      // establish new sftp session
+      JSch jsch = new JSch();
+      session = jsch.getSession(username_, host_, port_);
+      if (!SafetyUtil.isEmpty(password_)) {
+        session.setPassword(password_);
+      }
+      session.setConfig(config);
+      session.connect(5 * 1000);
 
-    // verify signature
-    byte[] signature = Base64.decode(lnr.readLine());
-    if ( ! sos.verify(signature) ) {
-      throw new SignatureException("Signature verification failed");
+      // create a new connection
+      channel = (ChannelSftp) session.openChannel("sftp");
+      channel.connect(5 * 1000);
+      channel.cd(directory_ + path);
+
+      // download file and create buffered reader
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
+      channel.get(filename, sos);
+      BufferedReader br = new BufferedReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // read signature file
+      baos = new ByteArrayOutputStream();
+      channel.get(sigfilename, baos);
+      LineNumberReader lnr = new LineNumberReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // verify signature
+      byte[] signature = Base64.decode(lnr.readLine());
+      if (!sos.verify(signature)) {
+        throw new SignatureException("Signature verification failed");
+      }
+      return br;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      if ( channel != null ) channel.disconnect();
+      if ( session != null ) session.disconnect();
     }
-    return br;
   }
 }
