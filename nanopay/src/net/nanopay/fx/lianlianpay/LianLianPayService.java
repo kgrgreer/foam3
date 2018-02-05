@@ -187,9 +187,6 @@ public class LianLianPayService
 
   @Override
   public void uploadInstructionCombined(String merchantId, String batchId, InstructionCombined request) {
-    Session session = null;
-    ChannelSftp channel = null;
-
     try {
       StringBuilder builder = sb.get();
       Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
@@ -271,33 +268,9 @@ public class LianLianPayService
             .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
       }
 
-      // create signing input stream with private key using SHA1 as the algorithm
-      SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
-          new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)));
-
-      // establish new sftp session
-      JSch jsch = new JSch();
-      session = jsch.getSession(username_, host_, port_);
-      if ( ! SafetyUtil.isEmpty(password_) ) {
-        session.setPassword(password_);
-      }
-      session.setConfig(config);
-      session.connect(5 * 1000);
-
-      // create new connection
-      channel = (ChannelSftp) session.openChannel("sftp");
-      channel.connect(5 * 1000);
-      channel.cd(directory_ + "/InstructionCombined");
-
-      // upload file and upload signature file
-      channel.put(sis, filename);
-      channel.put(new ByteArrayInputStream(Base64.encode(sis.sign())), sigfilename);
-      channel.exit();
+      uploadAndSignFile("/InstructionCombined", filename, builder.toString());
     } catch (Throwable t) {
       throw new RuntimeException(t);
-    } finally {
-      if ( channel != null ) channel.disconnect();
-      if ( session != null ) session.disconnect();
     }
   }
 
@@ -308,11 +281,10 @@ public class LianLianPayService
       String filename = builder.append(sdf.get().format(date))
           .append("_").append(merchantId).append("_")
           .append(batchId).append(".RESP").toString();
-      String sigfilename = filename + "SIG";
       builder.setLength(0);
 
       // download the file and verify the signature
-      BufferedReader br = downloadAndVerifyFile("/PreProcessResult", filename, sigfilename);
+      BufferedReader br = downloadAndVerifyFile("/PreProcessResult", filename);
 
       // initialize data structure and get property info
       PreProcessResult result = new PreProcessResult();
@@ -364,11 +336,10 @@ public class LianLianPayService
       String filename = builder.append(sdf.get().format(date))
           .append("_").append(merchantId).append(".RESP")
           .toString();
-      String sigfilename = filename + "SIG";
       builder.setLength(0);
 
       // download the file and verify the signature
-      BufferedReader br = downloadAndVerifyFile("/Reconciliation", filename, sigfilename);
+      BufferedReader br = downloadAndVerifyFile("/Reconciliation", filename);
 
       // initialize data structure and get property info
       Reconciliation result = new Reconciliation();
@@ -411,11 +382,10 @@ public class LianLianPayService
       String filename = builder.append(sdf.get().format(date))
           .append("_").append(merchantId).append(".RESP")
           .toString();
-      String sigfilename = filename + "SIG";
       builder.setLength(0);
 
       // download the file
-      BufferedReader br = downloadAndVerifyFile("/Statement", filename, sigfilename);
+      BufferedReader br = downloadAndVerifyFile("/Statement", filename);
 
       // Initialize data structures
       Statement result = new Statement();
@@ -468,18 +438,57 @@ public class LianLianPayService
   }
 
   /**
+   * Uploads a file to the SFTP service and signs it
+   * @param path location path
+   * @param filename filename
+   * @param data data to upload
+   */
+  protected void uploadAndSignFile(String path, String filename, String data) {
+    Session session = null;
+    ChannelSftp channel = null;
+
+    try {
+      // create signing input stream with private key using SHA1 as the algorithm
+      SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
+          new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)));
+
+      // establish new sftp session
+      JSch jsch = new JSch();
+      session = jsch.getSession(username_, host_, port_);
+      if ( ! SafetyUtil.isEmpty(password_) ) {
+        session.setPassword(password_);
+      }
+      session.setConfig(config);
+      session.connect(5 * 1000);
+
+      // create new connection
+      channel = (ChannelSftp) session.openChannel("sftp");
+      channel.connect(5 * 1000);
+      channel.cd(directory_ + path);
+
+      // upload file and upload signature file
+      channel.put(sis, filename);
+      channel.put(new ByteArrayInputStream(Base64.encode(sis.sign())), filename + "SIG");
+      channel.exit();
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    } finally {
+      if ( channel != null ) channel.disconnect();
+      if ( session != null ) session.disconnect();
+    }
+  }
+
+  /**
    * Downloads the file from the SFTP service and verifies the signature
    *
    * @param path location path
    * @param filename filename
-   * @param sigfilename signature filename
    * @return a BufferedReader ready to read the downloaded file
    * @throws SftpException
    * @throws IOException
    * @throws SignatureException
    */
-  protected BufferedReader downloadAndVerifyFile(String path, String filename, String sigfilename)
-      throws SftpException, IOException, SignatureException
+  protected BufferedReader downloadAndVerifyFile(String path, String filename)
   {
     Session session = null;
     ChannelSftp channel = null;
@@ -508,7 +517,7 @@ public class LianLianPayService
 
       // read signature file
       baos = new ByteArrayOutputStream();
-      channel.get(sigfilename, baos);
+      channel.get(filename + "SIG", baos);
       LineNumberReader lnr = new LineNumberReader(
           new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
 
@@ -517,6 +526,8 @@ public class LianLianPayService
       if (!sos.verify(signature)) {
         throw new SignatureException("Signature verification failed");
       }
+
+      channel.exit();
       return br;
     } catch (Throwable t) {
       throw new RuntimeException(t);
