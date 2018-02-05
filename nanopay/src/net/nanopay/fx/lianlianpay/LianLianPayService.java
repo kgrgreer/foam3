@@ -188,6 +188,7 @@ public class LianLianPayService
   public void uploadInstructionCombined(String merchantId, String batchId, InstructionCombined request) {
     Session session = null;
     ChannelSftp channel = null;
+    SigningInputStream sis = null;
 
     try {
       StringBuilder builder = sb.get();
@@ -269,10 +270,11 @@ public class LianLianPayService
             .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
       }
 
-      SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
+      // create signing input stream with private key using SHA1 as the algorithm
+      sis = new SigningInputStream("SHA1withRSA", privateKey_,
           new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)));
 
-      // establish new session
+      // establish new sftp session
       JSch jsch = new JSch();
       session = jsch.getSession(username_, host_, port_);
       if ( ! SafetyUtil.isEmpty(password_) ) {
@@ -285,16 +287,16 @@ public class LianLianPayService
       channel = (ChannelSftp) session.openChannel("sftp");
       channel.connect(5 * 1000);
       channel.cd(directory_ + "/InstructionCombined");
-      channel.put(sis, filename);
 
+      // upload file and upload signature file
+      channel.put(sis, filename);
       channel.put(new ByteArrayInputStream(Base64.encode(sis.sign())), sigfilename);
       channel.exit();
-      channel.disconnect();
-      session.disconnect();
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      channel
+      channel.disconnect();
+      session.disconnect();
     }
   }
 
