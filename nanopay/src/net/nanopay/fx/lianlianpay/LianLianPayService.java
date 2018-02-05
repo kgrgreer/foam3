@@ -1,6 +1,7 @@
 package net.nanopay.fx.lianlianpay;
 
 import com.amazonaws.services.dynamodbv2.xspec.B;
+import com.jcraft.jsch.*;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
@@ -17,6 +18,7 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -26,9 +28,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static net.nanopay.fx.lianlianpay.model.DistributionMode.FIXED_SOURCE_AMOUNT;
 import static net.nanopay.fx.lianlianpay.model.DistributionMode.FIXED_TARGET_AMOUNT;
@@ -82,6 +82,11 @@ public class LianLianPayService
       random_ = SecureRandom.getInstance("SHA1PRNG");
     }
     return random_;
+  }
+
+  private Properties config = new Properties();
+  {
+    config.setProperty("StrictHostKeyChecking", "no");
   }
 
   protected String host_;
@@ -181,8 +186,16 @@ public class LianLianPayService
 
   @Override
   public void uploadInstructionCombined(String merchantId, String batchId, InstructionCombined request) {
+    Session session = null;
+    ChannelSftp channel = null;
+
     try {
       StringBuilder builder = sb.get();
+      Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
+      String filename = builder.append(sdf.get().format(date))
+          .append("_").append(merchantId).append("_")
+          .append(batchId).append(".REQ").toString();
+      String sigfilename = builder.append("SIG").toString();
 
       // generate random AES256 key
       KeyGenerator keygen = KeyGenerator.getInstance("AES");
@@ -243,20 +256,45 @@ public class LianLianPayService
             .append(SafetyUtil.isEmpty(instruction.getPayeeOrganizationCode()) ? instruction.getPayeeSocialCreditCode() : "").append("|")
             .append(! SafetyUtil.isEmpty(instruction.getPayeeEmailAddress()) ? instruction.getPayeeEmailAddress() : "").append("|")
             .append(SafetyUtil.isEmpty(instruction.getPayeeBankBranchName()) ? instruction.getPayeeBankName() : "").append("|")
-            .append(instruction.getPayeeBankName() == 0 ? instruction.getPayeeBankBranchName() : "").append("|")
-            .append(instruction.getPayeeBankAccount()).append("|")
+            .append(instruction.getPayeeBankName() == 0 ? instruction.getPayeeBankBranchName() : "").append("|");
+
+        // encrypt payee bank account information using aes key
+        String payeeBankAccount = instruction.getPayeeBankAccount();
+        byte[] ciphertext = cipher.doFinal(payeeBankAccount.getBytes(StandardCharsets.UTF_8));
+
+        builder.append(Base64.toBase64String(ciphertext)).append("|")
             .append(instruction.getPayerId()).append("|")
             .append(instruction.getPayerName()).append("|")
             .append(instruction.getTradeCode()).append("|")
             .append(! SafetyUtil.isEmpty(instruction.getMemo()) ? instruction.getMemo() : "").append("\n");
       }
 
-      // TODO: upload to SFTP
-      // TODO: sign all of the data
-      // TODO: encrypt bank information
+      SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
+          new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)));
+
+      // establish new session
+      JSch jsch = new JSch();
+      session = jsch.getSession(username_, host_, port_);
+      if ( ! SafetyUtil.isEmpty(password_) ) {
+        session.setPassword(password_);
+      }
+      session.setConfig(config);
+      session.connect(5 * 1000);
+
+      // create new connection
+      channel = (ChannelSftp) session.openChannel("sftp");
+      channel.connect(5 * 1000);
+      channel.cd(directory_ + "/InstructionCombined");
+      channel.put(sis, filename);
+
+      channel.put(new ByteArrayInputStream(Base64.encode(sis.sign())), sigfilename);
+      channel.exit();
+      channel.disconnect();
+      session.disconnect();
     } catch (Throwable t) {
-      t.printStackTrace();
       throw new RuntimeException(t);
+    } finally {
+      channel
     }
   }
 

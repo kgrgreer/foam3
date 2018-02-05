@@ -7,6 +7,11 @@ import foam.lib.json.Outputter;
 import net.nanopay.fx.lianlianpay.LianLianPayService;
 import net.nanopay.fx.lianlianpay.model.*;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
+
 public class Test {
 
   public static void main(String[] args) {
@@ -56,7 +61,7 @@ public class Test {
       instruction.setMemo("Memo Content");
 
       ic.setRequests(new InstructionCombinedRequest[]{ instruction });
-//      service.uploadInstructionCombined(ic);
+      service.uploadInstructionCombined("123456789", "000000001", ic);
 
       Outputter outputter = new Outputter();
       System.out.println(outputter.stringify(service.downloadPreProcessResult()));
