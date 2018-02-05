@@ -2,6 +2,7 @@ package net.nanopay.fx.lianlianpay.test;
 
 import com.jcraft.jsch.ChannelSftp;
 import foam.core.ProxyX;
+import foam.core.X;
 import foam.lib.json.Outputter;
 import net.nanopay.fx.lianlianpay.LianLianPayService;
 import net.nanopay.fx.lianlianpay.model.*;
@@ -16,8 +17,15 @@ public class Test {
       String privKeyFilename =
           cwd + "/nanopay/src/net/nanopay/fx/lianlianpay/test/TestKey/Test_Private_Key.pem";
 
-      LianLianPayService service =
-          new LianLianPayService(new ProxyX(), pubKeyFilename, privKeyFilename);
+      X x = new ProxyX();
+      LianLianPayService service = new LianLianPayService.Builder(x)
+          .setHost("192.168.22.84")
+          .setPort(22)
+          .setDirectory("LLP")
+          .setUsername("kirk")
+          .setPrivateKeyFilename(privKeyFilename)
+          .setPublicKeyFilename(pubKeyFilename)
+          .build();
 
       InstructionCombined ic = new InstructionCombined();
       InstructionCombinedSummary summary = new InstructionCombinedSummary();
@@ -48,7 +56,7 @@ public class Test {
       instruction.setMemo("Memo Content");
 
       ic.setRequests(new InstructionCombinedRequest[]{ instruction });
-      service.uploadInstructionCombined(ic);
+//      service.uploadInstructionCombined(ic);
 
       Outputter outputter = new Outputter();
       System.out.println(outputter.stringify(service.downloadPreProcessResult()));

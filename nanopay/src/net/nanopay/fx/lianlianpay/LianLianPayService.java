@@ -1,5 +1,6 @@
 package net.nanopay.fx.lianlianpay;
 
+import com.amazonaws.services.dynamodbv2.xspec.B;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
@@ -83,25 +84,69 @@ public class LianLianPayService
     return random_;
   }
 
+  protected String host_;
+  protected int port_;
+  protected String username_;
+  protected String password_;
   protected PublicKey publicKey_;
   protected PrivateKey privateKey_;
 
-  /**
-   * Creates a new instance of LianLianPayService
-   *
-   * @param x context
-   * @param pubKeyFilename public key filename
-   * @param privKeyFilename private key filename
-   * @throws IOException
-   * @throws InvalidKeySpecException
-   * @throws NoSuchAlgorithmException
-   */
-  public LianLianPayService(X x, String pubKeyFilename, String privKeyFilename)
-      throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
+  public static class Builder
+      extends ContextAwareSupport
   {
+    private String host = null;
+    private int port = 22;
+    private String username = null;
+    private String password = null;
+    private String publicKeyFilename = null;
+    private String privateKeyFilename = null;
+
+    public Builder(X x) {
+      setX(x);
+    }
+
+    public Builder setHost(String host) {
+      this.host = host;
+      return this;
+    }
+
+    public Builder setPort(int port) {
+      this.port = port;
+      return this;
+    }
+
+    public Builder setUsername(String username) {
+      this.username = username;
+      return this;
+    }
+
+    public Builder setPassword(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public Builder setPublicKeyFilename(String publicKeyFilename) {
+      this.publicKeyFilename = publicKeyFilename;
+      return this;
+    }
+
+    public Builder setPrivateKeyFilename(String privateKeyFilename) {
+      this.privateKeyFilename = privateKeyFilename;
+      return this;
+    }
+
+    public LianLianPayService build() {
+      return new LianLianPayService(getX(), this);
+    }
+  }
+
+  private LianLianPayService(X x, Builder builder) {
     setX(x);
-    publicKey_ = (PublicKey) readKey(pubKeyFilename, true);
-    privateKey_ = (PrivateKey) readKey(privKeyFilename, false);
+    host_ = builder.host;
+    username_ = builder.username;
+    password_ = builder.password;
+    publicKey_ = (PublicKey) readKey(builder.publicKeyFilename, true);
+    privateKey_ = (PrivateKey) readKey(builder.privateKeyFilename, false);
   }
 
   /**
@@ -114,13 +159,15 @@ public class LianLianPayService
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
    */
-  protected Key readKey(String filename, boolean isPublicKey)
-      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException
-  {
-    byte[] keyBytes = Base64.decode(Files.readAllBytes(Paths.get(filename)));
-    KeySpec spec = ( isPublicKey ) ? new X509EncodedKeySpec(keyBytes) : new PKCS8EncodedKeySpec(keyBytes);
-    KeyFactory kf = KeyFactory.getInstance("RSA");
-    return ( isPublicKey ) ? kf.generatePublic(spec) : kf.generatePrivate(spec);
+  protected Key readKey(String filename, boolean isPublicKey) {
+    try {
+      byte[] keyBytes = Base64.decode(Files.readAllBytes(Paths.get(filename)));
+      KeySpec spec = (isPublicKey) ? new X509EncodedKeySpec(keyBytes) : new PKCS8EncodedKeySpec(keyBytes);
+      KeyFactory kf = KeyFactory.getInstance("RSA");
+      return (isPublicKey) ? kf.generatePublic(spec) : kf.generatePrivate(spec);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   @Override
