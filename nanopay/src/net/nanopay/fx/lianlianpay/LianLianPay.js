@@ -8,9 +8,15 @@ foam.INTERFACE({
     {
       name: 'uploadInstructionCombined',
       documentation: '',
-      returns: 'Promise',
-      javaReturns: '',
       args: [
+        {
+          name: 'merchantId',
+          javaType: 'String'
+        },
+        {
+          name: 'batchId',
+          javaType: 'String'
+        },
         {
           name: 'request',
           javaType: 'net.nanopay.fx.lianlianpay.model.InstructionCombined'
@@ -20,8 +26,21 @@ foam.INTERFACE({
     {
       name: 'downloadPreProcessResult',
       documentation: '',
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.fx.lianlianpay.model.PreProcessResult'
+      javaReturns: 'net.nanopay.fx.lianlianpay.model.PreProcessResult',
+      args: [
+        {
+          name: 'date',
+          javaType: 'java.util.Date'
+        },
+        {
+          name: 'merchantId',
+          javaType: 'String'
+        },
+        {
+          name: 'batchId',
+          javaType: 'String'
+        }
+      ]
     },
     {
       name: 'downloadReconciliation',
@@ -30,8 +49,17 @@ foam.INTERFACE({
          period (aka previous accounting date) every day and upload the generated file to SFTP server.
          Note: reconciliation file may contain final result for instructions not uploaded on previous day due
          to processing delay.`,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.fx.lianlianpay.model.Reconciliation'
+      javaReturns: 'net.nanopay.fx.lianlianpay.model.Reconciliation',
+      args: [
+        {
+          name: 'date',
+          javaType: 'java.util.Date'
+        },
+        {
+          name: 'merchantId',
+          javaType: 'String'
+        }
+      ]
     },
     {
       name: 'downloadStatement',
@@ -39,8 +67,17 @@ foam.INTERFACE({
         `LianLian Pay will generate a list of account fund in / out records which occurred during prior
          accounting period (aka previous accounting date) every day and upload the generated file to SFTP
          server.`,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.fx.lianlianpay.model.Statement'
+      javaReturns: 'net.nanopay.fx.lianlianpay.model.Statement',
+      args: [
+        {
+          name: 'date',
+          javaType: 'java.util.Date'
+        },
+        {
+          name: 'merchantId',
+          javaType: 'String'
+        }
+      ]
     }
   ]
 });

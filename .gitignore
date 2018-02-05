@@ -106,6 +106,8 @@ sha256/
 /institutions
 /files
 /encryptedRegions
+/hashedTxns
+/rollingHashedTxns
 /currencies
 /purposesOfTransfer
 /corridors
