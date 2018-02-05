@@ -130,6 +130,7 @@ foam.CLASS({
           .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('div').addClass('accountView')
             .forEach(this.viewData.accounts, function(e, index){
+              if ( (! e.TransitNumber && e.TransitNumber === '') || e.Currency !== 'CAD') return; 
               this.start({class: 'net.nanopay.flinks.view.element.AccountCard', accountName : e.Title, accountNo : e.AccountNumber, balance : e.Balance.Current})
                 .style({'margin-left':'20px'})
                 .addClass('spacer')
