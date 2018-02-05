@@ -296,7 +296,6 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(sis);
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();
     }
@@ -390,9 +389,6 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(sis);
-      IOUtils.closeQuietly(br);
-      IOUtils.closeQuietly(lnr);
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();
     }
@@ -452,9 +448,6 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(sis);
-      IOUtils.closeQuietly(br);
-      IOUtils.closeQuietly(lnr);
     }
   }
 
@@ -529,9 +522,6 @@ public class LianLianPayService
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(sis);
-      IOUtils.closeQuietly(br);
-      IOUtils.closeQuietly(lnr);
     }
   }
 }
