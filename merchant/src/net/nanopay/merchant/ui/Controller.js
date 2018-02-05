@@ -7,7 +7,9 @@ foam.CLASS({
   documentation: 'Top-level Merchant application controller.',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'net.nanopay.util.CurrencyFormatter',
+    'net.nanopay.util.AddCommaFormatter'
   ],
 
   requires: [

@@ -106,3 +106,6 @@ sha256/
 /institutions
 /files
 /encryptedRegions
+/hashedTxns
+/rollingHashedTxns
+

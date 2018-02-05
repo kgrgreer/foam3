@@ -78,7 +78,7 @@ foam.CLASS({
       transform: translate(5px, 5px);
     }
     ^ .popUpDropDown {
-      padding: 0;
+      padding: 0 !important;
       z-index: 10000;
       width: 135px;
       background: white;
@@ -104,6 +104,9 @@ foam.CLASS({
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
     }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
+    }
   `,
 
   properties: [
@@ -124,7 +127,7 @@ foam.CLASS({
         return data.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
-        class: 'foam.u2.view.TableView',
+        class: 'foam.u2.view.ScrollTableView',
         columns: [
           'id', 'firstName', 'lastName', 'email', 'organization', 'type'
         ]
