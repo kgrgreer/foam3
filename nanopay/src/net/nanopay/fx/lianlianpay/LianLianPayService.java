@@ -86,6 +86,7 @@ public class LianLianPayService
 
   protected String host_;
   protected int port_;
+  protected String directory_;
   protected String username_;
   protected String password_;
   protected PublicKey publicKey_;
@@ -96,6 +97,7 @@ public class LianLianPayService
   {
     private String host = null;
     private int port = 22;
+    private String directory = null;
     private String username = null;
     private String password = null;
     private String publicKeyFilename = null;
@@ -112,6 +114,11 @@ public class LianLianPayService
 
     public Builder setPort(int port) {
       this.port = port;
+      return this;
+    }
+
+    public Builder setDirectory(String directory) {
+      this.directory = directory;
       return this;
     }
 
@@ -143,6 +150,8 @@ public class LianLianPayService
   private LianLianPayService(X x, Builder builder) {
     setX(x);
     host_ = builder.host;
+    port_ = builder.port;
+    directory_ = builder.directory;
     username_ = builder.username;
     password_ = builder.password;
     publicKey_ = (PublicKey) readKey(builder.publicKeyFilename, true);
