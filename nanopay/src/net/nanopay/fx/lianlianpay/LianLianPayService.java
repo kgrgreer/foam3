@@ -189,7 +189,6 @@ public class LianLianPayService
   public void uploadInstructionCombined(String merchantId, String batchId, InstructionCombined request) {
     Session session = null;
     ChannelSftp channel = null;
-    SigningInputStream sis = null;
 
     try {
       StringBuilder builder = sb.get();
@@ -198,6 +197,7 @@ public class LianLianPayService
           .append("_").append(merchantId).append("_")
           .append(batchId).append(".REQ").toString();
       String sigfilename = builder.append("SIG").toString();
+      builder.setLength(0);
 
       // generate random AES256 key
       KeyGenerator keygen = KeyGenerator.getInstance("AES");
@@ -272,7 +272,7 @@ public class LianLianPayService
       }
 
       // create signing input stream with private key using SHA1 as the algorithm
-      sis = new SigningInputStream("SHA1withRSA", privateKey_,
+      SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
           new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)));
 
       // establish new sftp session
@@ -305,12 +305,6 @@ public class LianLianPayService
   public PreProcessResult downloadPreProcessResult(Date date, String merchantId, String batchId) {
     Session session = null;
     ChannelSftp channel = null;
-    SigningOutputStream sos = null;
-
-    BufferedReader br = null;
-    LineNumberReader lnr = null;
-    SigningInputStream sis = null;
-    ByteArrayOutputStream baos = null;
 
     try {
       StringBuilder builder = sb.get();
@@ -318,6 +312,7 @@ public class LianLianPayService
           .append("_").append(merchantId).append("_")
           .append(batchId).append(".RESP").toString();
       String sigfilename = filename + "SIG";
+      builder.setLength(0);
 
       // establish new sftp session
       JSch jsch = new JSch();
@@ -334,21 +329,25 @@ public class LianLianPayService
       channel.cd(directory_ + "/PreProcessResult");
 
       // download file and create buffered reader
-      baos = new ByteArrayOutputStream();
-      sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
       channel.get(filename, sos);
-      br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+      BufferedReader br = new BufferedReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
 
-      // read signature file and verify signature
+      // read signature file
       baos = new ByteArrayOutputStream();
       channel.get(sigfilename, baos);
-      lnr = new LineNumberReader(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+      LineNumberReader lnr = new LineNumberReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // verify signature
       byte[] signature = Base64.decode(lnr.readLine());
       if ( ! sos.verify(signature) ) {
         throw new SignatureException("Signature verification failed");
       }
 
-      // initialize data structire and get property info
+      // initialize data structure and get property info
       PreProcessResult result = new PreProcessResult();
       PreProcessResultSummary summary = new PreProcessResultSummary();
       List summaryProps = summary.getClassInfo().getAxiomsByClass(PropertyInfo.class);
@@ -396,27 +395,54 @@ public class LianLianPayService
 
   @Override
   public Reconciliation downloadReconciliation(Date date, String merchantId) {
-    // TODO: download from SFTP
-
-    String cwd = System.getProperty("user.dir");
-    File file = new File(cwd +
-        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Reconciliation/20170103_201701010000000001.RESP");
-    File sigFile = new File(cwd +
-        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESPSIG");
-
-    BufferedReader br = null;
-    LineNumberReader lnr = null;
-    SigningInputStream sis = null;
-
-    Reconciliation result = new Reconciliation();
-
-    List<ReconciliationRecord> records = new ArrayList<ReconciliationRecord>();
-    List recordProps = ReconciliationRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+    Session session = null;
+    ChannelSftp channel = null;
 
     try {
-      sis = new SigningInputStream("SHA1withRSA", publicKey_, new FileInputStream(file));
-      br = new BufferedReader(new InputStreamReader(sis));
-      lnr = new LineNumberReader(new FileReader(sigFile));
+      StringBuilder builder = sb.get();
+      String filename = builder.append(sdf.get().format(date))
+          .append("_").append(merchantId).append(".RESP")
+          .toString();
+      String sigfilename = filename + "SIG";
+      builder.setLength(0);
+
+      // establish new sftp session
+      JSch jsch = new JSch();
+      session = jsch.getSession(username_, host_, port_);
+      if ( ! SafetyUtil.isEmpty(password_) ) {
+        session.setPassword(password_);
+      }
+      session.setConfig(config);
+      session.connect(5 * 1000);
+
+      // create a new connection
+      channel = (ChannelSftp) session.openChannel("sftp");
+      channel.connect(5 * 1000);
+      channel.cd(directory_ + "/Reconciliation");
+
+      // download file and create buffered reader
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
+      channel.get(filename, sos);
+      BufferedReader br = new BufferedReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // read signature file
+      baos = new ByteArrayOutputStream();
+      channel.get(sigfilename, baos);
+      LineNumberReader lnr = new LineNumberReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // verify signature
+      byte[] signature = Base64.decode(lnr.readLine());
+      if ( ! sos.verify(signature) ) {
+        throw new SignatureException("Signature verification failed");
+      }
+
+      // initialize data structure and get property info
+      Reconciliation result = new Reconciliation();
+      List<ReconciliationRecord> records = new ArrayList<ReconciliationRecord>();
+      List recordProps = ReconciliationRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
       String line;
       int count = 0;
@@ -439,44 +465,69 @@ public class LianLianPayService
         count++;
       }
 
-      // verify signature using signing input stream
-      sis.verify(Base64.decode(lnr.readLine()));
-
       result.setReconciliationRecords(records.toArray(
           new ReconciliationRecord[records.size()]));
       return result;
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
+      if ( channel != null ) channel.disconnect();
+      if ( session != null ) session.disconnect();
     }
   }
 
   @Override
   public Statement downloadStatement(Date date, String merchantId) {
-    // TODO: download from SFTP
-
-    String cwd = System.getProperty("user.dir");
-    File file = new File(cwd +
-        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESP");
-    File sigFile = new File(cwd +
-        "/nanopay/src/net/nanopay/fx/lianlianpay/test/B2BSend_CombinedMode/2017.01.04/Statement/20170103_201701010000000001.RESPSIG");
-
-    BufferedReader br = null;
-    LineNumberReader lnr = null;
-    SigningInputStream sis = null;
-
-    Statement result = new Statement();
-
-    List<CurrencyBalanceRecord> balanceRecords = new ArrayList<CurrencyBalanceRecord>();
-    List balanceProps = CurrencyBalanceRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
-
-    List<StatementRecord> statementRecords = new ArrayList<StatementRecord>();
-    List statementProps = StatementRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+    Session session = null;
+    ChannelSftp channel = null;
 
     try {
-      sis = new SigningInputStream("SHA1withRSA", publicKey_, new FileInputStream(file));
-      br = new BufferedReader(new InputStreamReader(sis));
-      lnr = new LineNumberReader(new FileReader(sigFile));
+      StringBuilder builder = sb.get();
+      String filename = builder.append(sdf.get().format(date))
+          .append("_").append(merchantId).append(".RESP")
+          .toString();
+      String sigfilename = filename + "SIG";
+      builder.setLength(0);
+
+      // establish new sftp session
+      JSch jsch = new JSch();
+      session = jsch.getSession(username_, host_, port_);
+      if ( ! SafetyUtil.isEmpty(password_) ) {
+        session.setPassword(password_);
+      }
+      session.setConfig(config);
+      session.connect(5 * 1000);
+
+      // create a new connection
+      channel = (ChannelSftp) session.openChannel("sftp");
+      channel.connect(5 * 1000);
+      channel.cd(directory_ + "/Statement");
+
+      // download file and create buffered reader
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      SigningOutputStream sos = new SigningOutputStream("SHA1withRSA", publicKey_, baos);
+      channel.get(filename, sos);
+      BufferedReader br = new BufferedReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // read signature file
+      baos = new ByteArrayOutputStream();
+      channel.get(sigfilename, baos);
+      LineNumberReader lnr = new LineNumberReader(
+          new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
+
+      // verify signature
+      byte[] signature = Base64.decode(lnr.readLine());
+      if ( ! sos.verify(signature) ) {
+        throw new SignatureException("Signature verification failed");
+      }
+
+      // Initialize data structures
+      Statement result = new Statement();
+      List<CurrencyBalanceRecord> balanceRecords = new ArrayList<CurrencyBalanceRecord>();
+      List balanceProps = CurrencyBalanceRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
+      List<StatementRecord> statementRecords = new ArrayList<StatementRecord>();
+      List statementProps = StatementRecord.getOwnClassInfo().getAxiomsByClass(PropertyInfo.class);
 
       String line;
       boolean parsingBalance = true;
@@ -510,9 +561,6 @@ public class LianLianPayService
           statementRecords.add((StatementRecord) record);
         }
       }
-
-      // verify signature using signing input stream
-      sis.verify(Base64.decode(lnr.readLine()));
 
       result.setCurrencyBalanceRecords(balanceRecords.toArray(
           new CurrencyBalanceRecord[balanceRecords.size()]));
