@@ -32,13 +32,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isB2B',
       required: true,
-      value: true
+      factory: function() {
+        return true;
+      }
     },
     {
       class: 'Boolean',
       name: 'isP2P',
       required: true,
-      value: true
+      factory: function() {
+        return true;
+      }
     }
   ]
 });
