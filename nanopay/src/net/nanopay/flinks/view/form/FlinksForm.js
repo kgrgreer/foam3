@@ -12,14 +12,14 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions'
   ],
-  
+
   imports: [
     'flinksAuth',
     'institutionDAO',
     'user',
     'userDAO',
     'email'
-  ], 
+  ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
@@ -33,7 +33,7 @@ foam.CLASS({
   properties: [
     {
       name: 'bankImgs',
-      factory: function() { 
+      factory: function() {
         return [
           {index: 0, institution: 'ATB', image: 'images/banks/atb.svg'},
           {index: 1,institution: 'BMO', image: 'images/banks/bmo.svg'},
@@ -51,7 +51,7 @@ foam.CLASS({
           {index: 13,institution: 'TD', image: 'images/banks/td.svg'},
           {index: 14,institution: 'Vancity', image: 'images/banks/vancity.svg'},
           {index: 15,institution: 'FlinksCapital', image: 'images/banks/flinks.svg'}
-        ]; 
+        ];
       }
     },
     {
@@ -74,7 +74,7 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
     foam.u2.CSS.create({
-      code: function CSS() {/*     
+      code: function CSS() {/*
         ^ {
           height: 620px;
         }
@@ -174,7 +174,7 @@ foam.CLASS({
       this.SUPER();
 
       this.loadingSpinner.hide();
-      
+
       this
         .addClass(this.myClass())
         .start()
@@ -239,6 +239,10 @@ foam.CLASS({
           this.loadingSpinner.show();
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
 
+            // Repeated as .finally is not supported in Safari/Edge/IE
+            self.isConnecting = false;
+            self.loadingSpinner.hide();
+
             if ( self.currentViewId != 'FlinksConnectForm' ) return;
 
             var status = msg.HttpStatusCode;
@@ -256,10 +260,11 @@ foam.CLASS({
               self.fail();
             }
           }).catch( function(a) {
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-          }).finally( function() {
+            // Repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
+
+            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           });
           return;
         }
@@ -267,11 +272,16 @@ foam.CLASS({
         if ( this.currentViewId === 'FlinksXQuestionAnswerForm' || this.currentViewId === 'FlinksXSelectionAnswerForm' || this.currentViewId === 'FlinksMultipleChoiceForm' || this.currentViewId === 'FlinksImageForm') {
           var map ={};
           for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
-            map[this.viewData.questions[i]] = this.viewData.answers[i]; 
+            map[this.viewData.questions[i]] = this.viewData.answers[i];
           }
 
           this.loadingSpinner.show();
-          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {         
+          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {
+
+            // Repeated as .finally is not supported in Safari/Edge/IE
+            self.isConnecting = false;
+            self.loadingSpinner.hide();
+
             if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' && self.currentViewId != 'FlinksImageForm' ) return;
             var status = msg.HttpStatusCode;
 
@@ -295,10 +305,11 @@ foam.CLASS({
               self.fail();
             }
           }).catch( function(a) {
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-          }).finally( function() {
+            // Repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
+            
+            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           });
           return;
         }
