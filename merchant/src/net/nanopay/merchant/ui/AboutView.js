@@ -9,6 +9,7 @@ foam.CLASS({
     'toolbarTitle',
     'webApp',
     'copyright',
+    'logo'
   ],
 
   css: `
@@ -58,12 +59,7 @@ foam.CLASS({
           .start('div').addClass('about-mintchip')
             .start('div').addClass('mintchip-logo')
               .attrs({ 'aria-hidden': true })
-              .callIf(this.webApp == 'nanopay Merchant', function(){
-                this.tag({ class: 'foam.u2.tag.Image', data: 'images/ic-launcher/64x64.png' })  
-              })
-              .callIf(this.webApp == 'ConnectedMerchant™', function(){
-                this.tag({ class: 'foam.u2.tag.Image', data: 'images/connected-logo.png' })
-              })
+              .tag({ class: 'foam.u2.tag.Image', data: this.logo })
             .end()
             .start('h3').add(this.webApp).end()
             .start().add('Version ' + this.version).end().br()
