@@ -135,7 +135,8 @@ foam.CLASS({
             address: shopperAddress,
             password: shopperInfo.password,
             initialEmailedAmount: self.formatCurrency(shopperInfo.amount/100),
-            portalAdminCreated: true
+            portalAdminCreated: true,
+            profilePicture: shopperInfo.profilePicture
           });
 
           this.userDAO.put(newShopper).then(function(response) {

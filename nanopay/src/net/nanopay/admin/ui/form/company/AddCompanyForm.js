@@ -130,6 +130,7 @@ foam.CLASS({
             phone: businessPhone,
             address: businessAddress,
             password: companyInfo.password,
+            profilePicture: companyInfo.profilePicture,
             businessIdentificationNumber: companyInfo.registrationNumber,
             website: companyInfo.website,
             businessTypeId: companyInfo.businessType,

@@ -22,7 +22,7 @@ foam.CLASS({
     ^ .shopperImage {
       width: 53px;
       height: 53px;
-      margin-top: 20px;
+      margin-top: 10px;
       display: inline-block;
     }
     ^ .shopperName {
@@ -81,7 +81,13 @@ foam.CLASS({
           .start().addClass('infoContainer')
             .start().add(this.ShopperInfoLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('shopperImage').end()
+              .start().addClass('shopperImage')
+                .tag({
+                  class: 'foam.nanos.auth.ProfilePictureView',
+                  data: this.viewData.profilePicture,
+                  uploadHidden: true
+                })
+              .end()
               .start().add(this.viewData.firstName + ' ' + this.viewData.lastName).addClass('shopperName').end()
             .end()
             .start().addClass('inline')

@@ -23,7 +23,16 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.tx.Transfer'
+  ],
+
+  constants: [
+    {
+      name: 'STATUS_BLACKLIST',
+      type: 'Set<String>',
+      value: 'Collections.unmodifiableSet(new HashSet<String>() {{ add("Refunded"); }});'
+    }
   ],
 
   properties: [
@@ -204,127 +213,19 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'execute',
+      name: 'createTransfers',
       args: [
-        { name: 'x',   javaType: 'foam.core.X' },
-        { name: 'dao', javaType: 'DAO' }
+        { name: 'x', javaType: 'foam.core.X' },
       ],
-      javaReturns: 'void',
+      javaReturns: 'Transfer[]',
       javaCode: `
-        // TODO: change interface so execute returns List of account incr/decr
-        // amounts rather than having transaction do locking itself
+        // Don't perform balance transfer if status in blacklist
+        if ( STATUS_BLACKLIST.contains(getStatus()) ) return new Transfer[] {};
 
-        // don't perform balance transfer if status in blacklist
-        // TODO:
-        // if ( STATUS_BLACKLIST.contains(getStatus()) ) return;
-
-        DAO             accountDAO      = (DAO) x.get("localAccountDAO");
-        DAO             userDAO         = (DAO) x.get("localUserDAO");
-        DAO             invoiceDAO      = (DAO) x.get("invoiceDAO");
-        TransactionType transactionType = (TransactionType) getType();
-
-        // TODO: move out of transaction to own decorator
-        if ( getDate() == null ) {
-          setDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
-        }
-
-        long payeeId = getPayeeId();
-        long payerId = getPayerId();
-
-        if ( payerId <= 0 ) {
-          throw new RuntimeException("Invalid Payer id");
-        }
-
-        if ( payeeId <= 0 ) {
-          throw new RuntimeException("Invalid Payee id");
-        }
-
-        // For cico transactions payer and payee are the same
-        if ( payeeId == payerId ) {
-          if ( transactionType != TransactionType.CASHOUT && transactionType != TransactionType.CASHIN ) {
-            throw new RuntimeException("PayeeID and PayerID cannot be the same");
-          }
-        }
-
-        if ( getTotal() <= 0 ) {
-          throw new RuntimeException("Transaction amount must be greater than 0");
-        }
-
-        Long firstLock  = payerId < payeeId ? payerId : payeeId;
-        Long secondLock = payerId > payeeId ? payerId : payeeId;
-
-        synchronized (firstLock) {
-          synchronized (secondLock) {
-            Sink sink;
-            List data;
-            Account payeeAccount;
-            Account payerAccount;
-            User payee = (User) userDAO.find(payeeId);
-            User payer = (User) userDAO.find(payerId);
-
-            if ( payee == null || payer == null ) {
-              throw new RuntimeException("Users not found");
-            }
-
-            // find payee account
-            payeeAccount = (Account) accountDAO.find(payeeId);
-            if ( payeeAccount == null ) {
-              throw new RuntimeException("Payee account not found");
-            }
-
-            // find payer account
-            payerAccount = (Account) accountDAO.find(payerId);
-            if ( payerAccount == null ) {
-              throw new RuntimeException("Payer account not found");
-            }
-
-            // check if payer account has enough balance
-            long total = getTotal();
-
-            // cashin does not require balance checks
-            if ( payerAccount.getBalance() < total ) {
-              if ( transactionType != TransactionType.CASHIN ) {
-                throw new RuntimeException("Insufficient balance to complete transaction.");
-              }
-            }
-
-            // For cash in, just increment balance, payer and payee will be the same
-            if ( transactionType == TransactionType.CASHIN ) {
-              payerAccount.setBalance(payerAccount.getBalance() + total);
-              accountDAO.put(payerAccount);
-            }
-            // For cash out, decrement balance, payer and payee will be the same
-            else if ( transactionType == TransactionType.CASHOUT ) {
-              payerAccount.setBalance(payerAccount.getBalance() - total);
-              accountDAO.put(payerAccount);
-            }
-            else {
-              payerAccount.setBalance(payerAccount.getBalance() - total);
-              payeeAccount.setBalance(payeeAccount.getBalance() + total);
-              accountDAO.put(payerAccount);
-              accountDAO.put(payeeAccount);
-            }
-
-            // TODO: move to separate decorator
-            FObject ret = dao.put_(x, this);
-
-            // find invoice
-            if ( getInvoiceId() != 0 ) {
-              Invoice invoice = (Invoice) invoiceDAO.find(getInvoiceId());
-              if ( invoice == null ) {
-                throw new RuntimeException("Invoice not found");
-              }
-
-              invoice.setPaymentId(getId());
-              invoice.setPaymentDate(getDate());
-              invoice.setPaymentMethod(PaymentStatus.CHEQUE);
-              invoiceDAO.put(invoice);
-              // addInvoiceCashout( x, payee, total, payeeId, payerId );
-            }
-
-            //return ret;
-          }
-        }
+        return new Transfer[] {
+            new Transfer(getPayerId(), -getTotal()),
+            new Transfer(getPayeeId(),  getTotal())
+        };
       `
     }
   ]

@@ -11,8 +11,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.PopupView',
-    'net.nanopay.invoice.ui.InvoiceFileSubView'
+    'foam.u2.PopupView'
   ],
 
   properties: [

@@ -19,21 +19,6 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
     }
-    ^ .shopperImage {
-      width: 80px;
-      height: 80px;
-      margin-top: 20px;
-      display: inline-block;
-    }
-    ^ .net-nanopay-ui-ActionView-uploadImage {
-      width: 136px;
-      height: 40px;
-      background: transparent;
-      border: solid 1px #59a5d5;
-      color: #59a5d5;
-      margin: 0;
-      outline: none;
-    }
     ^ .foam-u2-tag-Select {
       width: 218px;
       height: 40px;
@@ -73,21 +58,11 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
-    ^ .uploadButtonContainer {
-      height: 80px;
-      display: inline-block;
-      vertical-align: text-bottom;
-      margin-left: 40px;
-    }
-    ^ .uploadDescription {
-      margin-top: 9px;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: 0.2px;
-      color: #093649;
-    }
     ^ .topMargin {
       margin-top: 20px;
+    }
+    ^ .bottomMargin {
+      margin-botton: 20px;
     }
     ^ .rightMargin {
       margin-right: 10px;
@@ -98,6 +73,17 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'File',
+      name: 'profilePicture',
+      view: { class: 'foam.nanos.auth.ProfilePictureView' },
+      factory: function () {
+        return this.viewData.profilePicture;
+      },
+      postSet: function (oldValue, newValue) {
+        this.viewData.profilePicture = newValue;
+      }
+    },
     {
       class: 'String',
       name: 'firstName',
@@ -233,8 +219,6 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 1: Fill in shopper\'s information, scroll down to continue and hit next when finished.' },
     { name: 'PersonalInformationLabel', message: 'Personal Information' },
-    { name: 'UploadImageLabel', message: 'Upload Image' },
-    { name: 'UploadDesc', message: 'JPG, GIF, JPEG, BMP or PNG' },
     { name: 'FirstNameLabel', message: 'First Name *' },
     { name: 'LastNameLabel', message: 'Last Name *' },
     { name: 'EmailAddressLabel', message: 'Email Address *' },
@@ -260,12 +244,8 @@ foam.CLASS({
           .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
             .start().add(this.PersonalInformationLabel).addClass('labelTitle').end()
-            .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('shopperImage').end()
-              .start().addClass('uploadButtonContainer')
-                .add(this.UPLOAD_IMAGE)
-                .start().add(this.UploadDesc).addClass('uploadDescription').end()
-              .end()
+            .start().addClass('topMargin bottomMargin')
+              .add(this.PROFILE_PICTURE)
             .end()
             .start().addClass('inline')
               .start().add(this.FirstNameLabel).addClass('infoLabel').end()
@@ -322,16 +302,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'uploadImage',
-      label: this.UploadImageLabel,
-      code: function(X) {
-        //TODO: Add image upload functionality
-      }
     }
   ]
 });

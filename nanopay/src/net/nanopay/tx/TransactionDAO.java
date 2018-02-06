@@ -166,6 +166,61 @@ public class TransactionDAO
     }
   }
 
+  void executeTransaction(X x, Transaction t) {
+    Transfer[] ts = t.createTransfers(x);
+
+    // TODO: disallow or merge duplicate accounts
+    validateTransfers(ts);
+    lockAndExecute(x, t, ts, 0);
+  }
+
+  void validateTransfers(Transfer[] ts)
+    throws RuntimeException
+  {
+    long c = 0, d = 0;
+    for ( int i = 0 ; i < ts.length ; i++ ) {
+      Transfer t = ts[i];
+      if ( t.getAmount() > 0 ) {
+        c += t.getAmount();
+      } else {
+        d += t.getAmount();
+      }
+    }
+    if ( c != d ) throw new RuntimeException("Debits and credits don't match.");
+    if ( c == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+  }
+
+  /** Lock each trasnfer's account then execute the transfers. **/
+  void lockAndExecute(X x, Transaction txn, Transfer[] ts, int i) {
+    // sort to avoid deadlock
+    java.util.Arrays.sort(ts);
+
+    lockAndExecute_(x, txn, ts, i);
+  }
+
+  void lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
+    if ( i > ts.length ) {
+      execute(x, txn, ts);
+    } else {
+      synchronized ( ts[i].getLock() ) {
+        lockAndExecute_(x, txn, ts, i+1);
+      }
+    }
+  }
+
+  /** Called once all locks are locked. **/
+  void execute(X x, Transaction txn, Transfer[] ts) {
+    for ( int i = 0 ; i < ts.length ; i++ ) {
+      ts[i].validate(x);
+    }
+
+    for ( int i = 0 ; i < ts.length ; i++ ) {
+      ts[i].execute(x);
+    }
+
+    getDelegate().put_(x, txn);
+  }
+
   @Override
   public FObject remove_(X x, FObject fObject) {
     return null;
