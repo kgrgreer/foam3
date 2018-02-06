@@ -1,19 +1,42 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'TransactionPurpose',
-
   documentation: 'Purpose of the transaction',
-
+  ids: [ 'purposeCode' ],
   properties: [
     {
       class: 'String',
-      name: 'proprietary',
-      documentation: 'Whether the purpose code is proprietary or not. Used for ISO20022'
+      name: 'purposeCode',
+      required: true
     },
     {
       class: 'String',
-      name: 'code',
-      documentation: 'Purpose code'
+      name: 'formatType',
+      documentation: 'Determines if ISO20022 or proprietary',
+      required: true
+    }
+    {
+      class: 'String',
+      name: 'classificationName'
+    },
+    {
+      class: 'String',
+      name: 'classificationNumber'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      required: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isB2B',
+      required: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isP2P',
+      required: true
     }
   ]
 });
