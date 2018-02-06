@@ -373,7 +373,7 @@ foam.CLASS({
               self.viewData.transaction = result;
             }
 
-            self.bankAccountVerification.addCashout(transaction);
+            return self.bankAccountVerification.addCashout(transaction);
           }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
