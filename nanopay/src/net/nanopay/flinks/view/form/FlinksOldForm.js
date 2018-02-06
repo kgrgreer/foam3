@@ -161,7 +161,7 @@ foam.CLASS({
       this.SUPER();
 
       this.loadingSpinner.hide();
-      
+
       this
         .addClass(this.myClass())
         .start()
@@ -225,6 +225,11 @@ foam.CLASS({
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
           this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
 
+            // repeated as .finally is not supported in Safari/Edge/IE
+            self.isConnecting = false;
+            self.loadingSpinner.hide();
+            self.isEnabledButtons(true);
+
             if ( self.position != 1 ) return;
 
             var status = msg.HttpStatusCode;
@@ -232,7 +237,7 @@ foam.CLASS({
             if ( status == 200 ) {
               //get account infos, forward to account page
               self.viewData.accounts = msg.accounts;
-              
+
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
               //If http response is 203, forward to MFA page.
@@ -249,11 +254,12 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-          }).finally( function() {
+            // repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
             self.isEnabledButtons(true);
+
+            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           });
           return;
         }
@@ -267,6 +273,11 @@ foam.CLASS({
             map[this.viewData.questions[i]] = this.viewData.answers[i];
           }
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, '').then( function(msg) {
+            // repeated as .finally is not supported in Safari/Edge/IE
+            self.loadingSpinner.hide();
+            self.isEnabledButtons(true);
+            self.isConnecting = false;
+
             if ( self.position != 2 ) return;
 
             var status = msg.HttpStatusCode;
@@ -286,11 +297,12 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
             }
           }).catch( function(a) {
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-          }).finally( function() {
+            // repeated as .finally is not supported in Safari/Edge/IE
             self.loadingSpinner.hide();
             self.isEnabledButtons(true);
             self.isConnecting = false;
+
+            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
           });
           return;
         }

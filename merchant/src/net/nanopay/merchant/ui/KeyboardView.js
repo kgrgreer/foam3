@@ -42,12 +42,6 @@ foam.CLASS({
       background-color: #26a96c;
     }
 
-    @media only screen and (max-height: 568px) {
-      ^ {
-        visibility: hidden;
-      }
-    }
-
     @media only screen and (min-height: 568px) {
       ^ .grid {
         bottom: 50px;

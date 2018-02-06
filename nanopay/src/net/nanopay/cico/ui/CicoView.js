@@ -329,10 +329,10 @@ foam.CLASS({
         var self = this;
         self.isLoading = true;
         this.accountDAO.find(this.user.id).then(function (a) {
+          self.isLoading = false;
           self.account.copyFrom(a);
           self.formattedBalance = a.balance / 100;
-        })
-        .finally( function() {
+        }).catch(function (e) {
           self.isLoading = false;
         });
       }

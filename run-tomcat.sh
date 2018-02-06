@@ -113,7 +113,9 @@ cp -r favicon $WEBAPPS/ROOT/favicon
 
 # Move images to ROOT/images
 rmdir $WEBAPPS/ROOT/images
-mv $WEBAPPS/ROOT/nanopay/src/net/nanopay/images $WEBAPPS/ROOT
+mkdir $WEBAPPS/ROOT/images
+cp -r $WEBAPPS/ROOT/nanopay/src/net/nanopay/images $WEBAPPS/ROOT
+cp -r $WEBAPPS/ROOT/merchant/src/net/nanopay/merchant/images $WEBAPPS/ROOT
 
 rmdir $WEBAPPS/ROOT/foam2/src/com
 
