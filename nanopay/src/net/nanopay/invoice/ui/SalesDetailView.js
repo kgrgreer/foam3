@@ -78,7 +78,7 @@ foam.CLASS({
     }
     ^ .popUpDropDown {
       padding: 0 !important;
-      z-index: 10000;
+      z-index: 100;
       width: 165px;
       background: white;
       opacity: 1;
@@ -172,7 +172,7 @@ foam.CLASS({
          self.voidPopUp_ = self.PopupView.create({
            width: 165,
            x: -137,
-           y: 40
+           y: 40,
          })
          self.voidPopUp_.addClass('popUpDropDown')
           .start('div').add('Void')
