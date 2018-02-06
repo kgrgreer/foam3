@@ -1,12 +1,14 @@
 package net.nanopay.fresh;
 
 import foam.core.*;
+import foam.dao.DAO;
 import foam.lib.json.Outputter;
 import foam.mlang.sink.Map;
 import net.nanopay.b2b.model.Business;
 import net.nanopay.fresh.FreshConfig;
 import foam.nanos.http.WebAgent;
 import net.nanopay.fresh.model.*;
+import net.nanopay.invoice.model.Invoice;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -110,11 +112,14 @@ public class FreshBook
       FreshInvoice[] invoices = (FreshInvoice[]) fLResponse.getResponse().getResult().getInvoices();
       System.out.println(invoices[0]);
       System.out.println(jout.stringify(invoices[0]));
-
-      DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
+      FreshInvoice fInvoice = invoices[0];
+      DAO invoiceDAO = (DAO) x.get("invoiceDAO");
       Invoice account = new Invoice();
-      account
-
+//      account.setAmount(fInvoice.getAmount().getAmount());
+      account.setIssueDate(fInvoice.getCreate_date());
+      account.setDueDate(fInvoice.getDue_date());
+      account.setFreshbooksInvoiceNumber(fInvoice.getInvoice_number());
+      account.setCurrencyCode(fInvoice.getAmount().getCode());
       out.println("<HTML>" +
         "<H1> MADE IT</H1>"+
 
