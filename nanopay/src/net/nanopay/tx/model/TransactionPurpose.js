@@ -31,12 +31,14 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isB2B',
-      required: true
+      required: true,
+      value: true
     },
     {
       class: 'Boolean',
       name: 'isP2P',
-      required: true
+      required: true,
+      value: true
     }
   ]
 });
