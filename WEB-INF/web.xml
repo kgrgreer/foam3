@@ -6,6 +6,11 @@
   <welcome-file-list>
     <welcome-file>/nanopay/src/net/nanopay/index.html</welcome-file>
   </welcome-file-list>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>nanos</servlet-name>
     <servlet-class>foam.nanos.tomcat.TomcatRouter</servlet-class>
@@ -15,10 +20,22 @@
     <servlet-name>nanos</servlet-name>
     <url-pattern>/service/*</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>merchant</servlet-name>
+    <servlet-class>foam.nanos.tomcat.SubdomainRouter</servlet-class>
+
+    <init-param>
+      <param-name>path</param-name>
+      <param-value>/merchant/src/net/nanopay/merchant/index.html</param-value>
+    </init-param>
+  </servlet>
+
   <servlet-mapping>
-    <servlet-name>default</servlet-name>
-    <url-pattern>/</url-pattern>
+    <servlet-name>merchant</servlet-name>
+    <url-pattern>/pos</url-pattern>
   </servlet-mapping>
+
   <error-page>
     <error-code>404</error-code>
     <location>/nanopay/src/net/nanopay/error.html</location>
