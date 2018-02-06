@@ -95,11 +95,9 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
               return;
             }
-            if( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
-              shopperInfo.amount = 0;            
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              return;
-            } 
+            if ( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
+              shopperInfo.amount = 0;
+            }
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
           });
@@ -141,33 +139,28 @@ foam.CLASS({
 
           this.userDAO.put(newShopper).then(function(response) {
             shopperInfo.shopper = response;
-            self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added!', type: '' }));
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
-          }).then(function(){
-            var transaction = this.Transaction.create({
-              payeeId: shopperInfo.shopper.id,
-              payerId: this.user.id,
-              amount: shopperInfo.amount
-            });
-            this.transactionDAO.put(transaction).then(function(response) {
-              var shopper = shopperInfo.shopper;
-          
-            }).then(function () {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
+          }).then(function() {
+            if( shopperInfo.amount > 0 ) {
+              var transaction = self.Transaction.create({
+                payeeId: shopperInfo.shopper.id,
+                payerId: self.user.id,
+                amount: shopperInfo.amount
+              });
+              return self.transactionDAO.put(transaction).then(function (response) {
+                self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + 'successfully added and value transfer sent.' }));
+                self.subStack.push(self.views[self.subStack.pos + 1].view);
+                self.nextLabel = 'Done';
+              });
+            } else {
+              self.add(self.NotificationMessage.create({ message: 'New shopper ' + merchantInfo.businessName + ' successfully added.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
-            })
-            .catch(function(error) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            });
-            return;
+              return
+            }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;
           });
-          self.subStack.push(self.views[self.subStack.pos + 1].view);            
-          return;
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) {

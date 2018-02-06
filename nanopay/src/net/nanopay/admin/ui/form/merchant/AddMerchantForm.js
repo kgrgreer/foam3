@@ -109,11 +109,9 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
               return;
             }
-            if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
-              merchantInfo.amount = 0;            
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              return;
-            } 
+            if ( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
+              merchantInfo.amount = 0;
+            }
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             return;
           });
@@ -156,31 +154,31 @@ foam.CLASS({
             initialEmailedAmount: self.formatCurrency(merchantInfo.amount/100),
             portalAdminCreated: true
           });
+
           this.userDAO.put(newMerchant).then(function(response) {
             merchantInfo.merchant = response;
-            self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
-            return;
-          }).then(function(){
-            var transaction = this.Transaction.create({
-              payeeId: merchantInfo.merchant.id,
-              payerId: this.user.id,
-              amount: merchantInfo.amount
-            });
-            this.transactionDAO.put(transaction).then(function(response) {
-              var merchant = merchantInfo.merchant;
-            }).then(function () {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
+          }).then(function() {
+            if( merchantInfo.amount > 0 ) {
+              var transaction = self.Transaction.create({
+                payeeId: merchantInfo.merchant.id,
+                payerId: self.user.id,
+                amount: merchantInfo.amount
+              });
+              return self.transactionDAO.put(transaction).then(function (response) {
+                self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added and value transfer sent.' }));
+                self.subStack.push(self.views[self.subStack.pos + 1].view);
+                self.nextLabel = 'Done';
+              });
+            } else {
+              self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
-            }).catch(function(error) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            });
+              return
+            }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;
           });
-          self.subStack.push(self.views[self.subStack.pos + 1].view);            
-          return;
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) {

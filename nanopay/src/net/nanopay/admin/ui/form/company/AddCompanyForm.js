@@ -139,14 +139,11 @@ foam.CLASS({
           });
 
           this.userDAO.put(newBusiness).then(function(response) {
-            companyInfo.business = response;
             self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.businessName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.nextLabel = 'Done';
-            return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
           });
 
         }

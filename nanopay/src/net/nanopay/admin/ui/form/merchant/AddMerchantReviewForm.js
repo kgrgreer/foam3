@@ -8,7 +8,6 @@ foam.CLASS({
   imports: [
     'businessSectorDAO',
     'businessTypeDAO',
-    'formatCurrency',   
     'goBack',
     'goNext', 
     'viewData',
@@ -29,13 +28,13 @@ foam.CLASS({
     }
     ^ .businessName {
       position: relative;
-      bottom: 20;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
       display: inline-block;
-      margin-left: 25px;
+      bottom: 35;
+      left: 45;
     }
     ^ .boldLabel {
       font-size: 14px;
@@ -149,7 +148,7 @@ foam.CLASS({
             .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()            
             .start().addClass('inline')
               .start().add(this.AmountLabel).addClass('boldLabel').end()
-              .start().add(self.formatCurrency(this.viewData.amount/100)).addClass('infoText bottomMargin').end()              
+              .start().add('$',(this.viewData.amount/100).toFixed(2)).addClass('infoText bottomMargin').end()              
             .end()
           .end()
         .end();
