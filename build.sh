@@ -23,7 +23,6 @@ cp countries /opt/tomcat/bin/
 cp cronjobs /opt/tomcat/bin/
 cp currencies /opt/tomcat/bin/
 cp corridors /opt/tomcat/bin/
-cp purposesOfTransfer /opt/tomcat/bin/
 cp emailTemplates /opt/tomcat/bin/
 cp exportDriverRegistrys /opt/tomcat/bin/
 cp groups /opt/tomcat/bin/
@@ -35,6 +34,7 @@ cp scripts /opt/tomcat/bin/
 cp services /opt/tomcat/bin/
 cp tests /opt/tomcat/bin/
 cp transactionLimits /opt/tomcat/bin/
+cp transactionPurposes /opt/tomcat/bin/
 cp -n users /opt/tomcat/bin/
 cp institutions /opt/tomcat/bin/
 
