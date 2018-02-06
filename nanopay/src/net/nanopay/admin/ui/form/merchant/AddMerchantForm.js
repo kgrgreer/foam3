@@ -152,8 +152,8 @@ foam.CLASS({
             website: merchantInfo.website,
             businessTypeId: merchantInfo.businessType,
             businessSectorId: merchantInfo.businessSector,
-            emailedAmount: self.formatCurrency(merchantInfo.amount/100),
-            adminCreated: true
+            initialEmailedAmount: self.formatCurrency(merchantInfo.amount/100),
+            portalAdminCreated: true
           });
           this.userDAO.put(newMerchant).then(function(response) {
             merchantInfo.merchant = response;

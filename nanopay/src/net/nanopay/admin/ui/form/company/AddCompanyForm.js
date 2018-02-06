@@ -134,7 +134,7 @@ foam.CLASS({
             website: companyInfo.website,
             businessTypeId: companyInfo.businessType,
             businessSectorId: companyInfo.businessSector,
-            adminCreated:true
+            portalAdminCreated:true
           });
 
           this.userDAO.put(newBusiness).then(function(response) {
