@@ -3,10 +3,7 @@ package net.nanopay.fresh;
 import foam.core.*;
 import foam.dao.DAO;
 import foam.lib.json.Outputter;
-import foam.mlang.sink.Map;
 import foam.nanos.auth.User;
-import net.nanopay.b2b.model.Business;
-import net.nanopay.fresh.FreshConfig;
 import foam.nanos.http.WebAgent;
 import net.nanopay.fresh.model.*;
 import net.nanopay.invoice.model.Invoice;
@@ -18,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.HttpClient;
 import foam.lib.json.JSONParser;
-import org.json.JSONObject;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class FreshBook
@@ -43,7 +40,16 @@ public class FreshBook
 
     FreshConfig config = new FreshConfig();
     config.setCode(req.getParameter("code"));
-
+    out.println(
+      "<HTML>" +
+        "<BODY>" +
+        "<div  style=\" position: absolute; display: block; left: 40%; top: 40%;\">\n" +
+        "<p>\n" +
+        "FreshBooks Syncing in Progress Please wait......\n" +
+        "</p>\n" +
+        "</div> " +
+        "</BODY>"+
+        "</HTML>");
     try {
       //Sends the client info to FreshBooks to retrieve the access Token
       HttpClient httpclient = HttpClients.createDefault();
@@ -111,10 +117,35 @@ public class FreshBook
       FreshInvoiceResponse fLResponse = new FreshInvoiceResponse();
       fLResponse = (FreshInvoiceResponse) parser.parseString(line,fLResponse.getClassInfo().getObjClass());
       FreshInvoice[] invoices = (FreshInvoice[]) fLResponse.getResponse().getResult().getInvoices();
-
+      System.out.println(jout.stringify(invoices[0]));
+      Calendar cal = Calendar.getInstance();
       for (int i = 0; i<invoices.length; i++)
       {
-        invoices[i].generateInvoice();
+        FreshInvoice invoice = invoices[i];
+        User user = (User) x.get("user");
+        DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+        Invoice account = new Invoice();
+        account.setAmount(Double.parseDouble(invoice.getAmount().getAmount()));
+        Date date;
+        if(!invoice.getCreate_date().equals("")) {
+          date = new SimpleDateFormat("yyyy-MM-dd").parse(invoice.getCreate_date());
+          account.setIssueDate(date);
+        }
+        if(!invoice.getDue_date().equals("")) {
+          date = new SimpleDateFormat("yyyy-MM-dd").parse(invoice.getDue_date());
+          account.setDueDate(date);
+        }
+        if(!invoice.getDate_paid().equals("")) {
+          date = new SimpleDateFormat("yyyy-MM-dd").parse(invoice.getDate_paid());
+          account.setPaymentDate(date);
+        }
+        account.setFreshbooksInvoiceNumber(invoice.getInvoice_number());
+        account.setCurrencyCode(invoice.getAmount().getCode());
+        account.setPayeeId(user.getId());
+        account.setPayerId(1350);
+        account.setFreshbooksInvoiceId(invoice.getInvoiceid());
+        if(invoice.getStatus() == 1) { account.setDraft(true);}
+        invoiceDAO.put(account);
       }
       resp.sendRedirect("/");
 

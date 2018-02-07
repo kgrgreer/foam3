@@ -3,18 +3,13 @@ foam.CLASS({
   name:  'FreshInvoice',
   imports: [ 'invoiceDAO' ],
   
-  javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'net.nanopay.invoice.model.Invoice',
-  ],
 	properties:  [
 		{
 			class:  'Int',
 			name:  'status'
 		},
 		{
-			class:  'Date',
+			class:  'String',
 			name:  'create_date'
 		},
 		{
@@ -27,7 +22,7 @@ foam.CLASS({
 			name:  'payment_status'
 		},
 		{
-			class:  'Date',
+			class:  'String',
 			name:  'code'
 		},
 		{
@@ -103,7 +98,7 @@ foam.CLASS({
 			name:  'province'
 		},
 		{
-			class:  'Date',
+			class:  'String',
 			name:  'due_date'
 		},
 		{
@@ -111,7 +106,7 @@ foam.CLASS({
 			name:  'updated'
     },
     {
-			class:  'Date',
+			class:  'String',
 			name:  'date_paid'
 		},
 		{
@@ -186,7 +181,7 @@ foam.CLASS({
 			name:  'amount'
 		},
 		{
-			class:  'Date',
+			class:  'String',
 			name:  'street'
 		},
 		{
@@ -206,7 +201,7 @@ foam.CLASS({
 			name:  'fname'
 		},
 		{
-			class:  'Date',
+			class:  'String',
 			name:  'created_at'
 		},
 		{
@@ -218,27 +213,4 @@ foam.CLASS({
 			name:  'accountid'
 		}
   ],
-  methods: [
-    {
-      name: 'generateInvoice',
-      javaReturns: 'net.nanopay.invoice.model.Invoice',
-      javaCode:
-      `
-      User user = (User) getX().get("user");      
-      DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
-      Invoice account = new Invoice();
-      account.setAmount(Double.parseDouble(getAmount().getAmount()));
-      account.setIssueDate(getCreate_date());
-      account.setDueDate(getDue_date());
-      account.setFreshbooksInvoiceNumber(getInvoice_number());
-      account.setCurrencyCode(getAmount().getCode());
-      account.setPayerId(user.getId());
-      account.setFreshbooksInvoiceId(getInvoiceid());
-      account.setPaymentDate(getDate_paid());
-      if(getStatus() == 1) { account.setDraft(true);}
-      invoiceDAO.put(account);
-      return account;
-      `
-    }
-  ]
 });
