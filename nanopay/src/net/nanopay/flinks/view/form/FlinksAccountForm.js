@@ -11,7 +11,7 @@ foam.CLASS({
   ],
   requires: [
     'net.nanopay.model.BankAccount',
-    'net.nanopay.model.Institution',
+    'net.nanopay.model.Institution'
   ],
   axioms: [
     foam.u2.CSS.create({
@@ -106,6 +106,10 @@ foam.CLASS({
       class: 'Int',
       name: 'selectTick',
       value: -1000000,
+    },
+    {
+      Class: 'Array',
+      name: 'selectBank'
     }
   ],
 
@@ -116,6 +120,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.complete = true;
+      this.selectBank = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {
@@ -144,8 +149,12 @@ foam.CLASS({
                 .on('click', function() {
                   if ( ! e.isSelected || e.isSelected == false ) {
                     e.isSelected = true;
+                    self.selectBank[index] = true;
+                    self.selectBank = foam.Array.clone(self.selectBank);
                   } else {
                     e.isSelected = false;
+                    self.selectBank[index] = false;
+                    self.selectBank = foam.Array.clone(self.selectBank);
                   }
                   self.selectTick++;
                   //console.log(self.viewData.accounts);
@@ -165,13 +174,14 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'Add Account',
-      isEnabled: function(isConnecting) {
-        //console.log(isConnecting);
+      isEnabled: function(isConnecting, selectBank) {
         if ( isConnecting === true ) return false;
-        return true;
+        for ( var x in selectBank ) {
+          if ( selectBank[x] === true ) return true;
+        }
+        return false;
       },
       code: function(X) {
-        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
