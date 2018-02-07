@@ -46,16 +46,13 @@ if (!user.getInitialEmailedAmount().equals("$0.00")){
 }
 if (user.getType().equals("Business") || user.getType().equals("Merchant")){
   args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
-  
 }
 if (user.getType().equals("Personal")){
   if (user.getPortalAdminCreated()) {
     args.put("applink", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://www.apple.com/lae/ios/app-store/");
     args.put("playlink", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://play.google.com/store?hl=en");
   }
-  else{
-    args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=null" );
-  }
+  args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=null" );
   user.setPortalAdminCreated(false);
   user.setInitialEmailedAmount("$0.00");
   userDAO.put(user);
