@@ -20,23 +20,12 @@ foam.CLASS({
     ^ .Container {
       width: 992px;
       min-height: 80px;
-      margin-top: 50px;
+      margin-top: 30px;
       margin-bottom: 20px;
       padding: 20px;
       border-radius: 2px;
       background-color: white;
       box-sizing: border-box;
-    }
-    ^ .boxTitle {
-      opacity: 0.6;
-      font-family: 'Roboto';
-      font-size: 20px;
-      font-weight: 300;
-      line-height: 20px;
-      letter-spacing: 0.3px;
-      text-align: left;
-      color: #093649;
-      display: inline-block;
     }
     ^ .profileImg {
       width: 80px;
@@ -54,7 +43,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
-      margin-left: 40px;
+      padding-left: 100px;
       display: inline-block;
       line-height: 16px;
       position: absolute;
@@ -65,11 +54,10 @@ foam.CLASS({
     }
     ^ .inlineDiv {
       display: inline-block;
-      margin-right: 100px;
+      margin-right: 80px;
     }
     ^ .topInlineDiv {
       display: inline-block;
-      margin-right: 100px;
       vertical-align: top;
     }
     ^ .labelTitle {
@@ -81,6 +69,16 @@ foam.CLASS({
       color: #093649;
       margin-bottom: 15px;
     }
+    ^ .businessHourLabels {
+      width: 30px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
     ^ .labelContent {
       font-family: Roboto;
       font-size: 14px;
@@ -88,9 +86,7 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
       display: flex;
-      word-wrap: break-word;
-      width: 125px;
-      height: 15px;
+      width: 185px;
     }
     ^ .foam-u2-ActionView-editProfile {
       text-decoration: underline;
@@ -108,6 +104,7 @@ foam.CLASS({
       background-color: white;
       text-decoration: underline;
       margin-left: 42px;
+      height: 15px;
     }
     ^ .net-nanopay-ui-ActionView-editProfile:hover {
       cursor: pointer;
@@ -115,11 +112,40 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-editProfile:active {
       color: #2974a3;
     }
+    ^ .dayOfWeekDiv {
+      margin-top: 20px;
+    }
   `,
 
   properties: [
     'businessSectorName',
-    'businessTypeName'
+    'businessTypeName',
+    {
+      class: 'Boolean',
+      name: 'businessHoursEnabled',
+      value: false
+    }
+  ],
+
+  messages: [
+    {
+      name: 'MondayLabel', message: 'Mon.'
+    },
+    {
+      name: 'TuesdayLabel', message: 'Tue.'
+    },
+    {
+      name: 'WednesdayLabel', message: 'Wed.'
+    },
+    {
+      name: 'ThursdayLabel', message: 'Thu.'
+    },
+    {
+      name: 'FridayLabel', message: 'Fri.'
+    },
+    {
+      name: 'ToLabel', message: 'To'
+    }
   ],
 
   methods: [
@@ -134,16 +160,18 @@ foam.CLASS({
         self.businessTypeName = type.name;
       });
 
-
       this
       .addClass(this.myClass())
-
       .start().addClass('businessSettingsContainer')
         .start().addClass('Container')
           .start().add('Business Profile').addClass('boxTitle').end()
           .add(this.EDIT_PROFILE)
           .start().addClass('profileImgDiv')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
+            .tag({
+              class: 'foam.nanos.auth.ProfilePictureView',
+              data: this.user.profilePicture,
+              uploadHidden: true
+            })
             .start().add(this.user.businessName).addClass('companyName').end()
           .end()
           .start()
@@ -193,6 +221,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
+        .tag({ class: 'net.nanopay.settings.business.BusinessHoursView' })
       .end()
     }
   ],

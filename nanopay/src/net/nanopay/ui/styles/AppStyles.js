@@ -470,6 +470,18 @@ foam.CLASS({
         .bottomMargin {
           margin-bottom: 20px;
         }
+        .boxTitle {
+          opacity: 0.6;
+          font-family: 'Roboto';
+          font-size: 20px;
+          font-weight: 300;
+          line-height: 20px;
+          letter-spacing: 0.3px;
+          text-align: left;
+          color: #093649;
+          display: inline-block;
+          vertical-align: top;
+        }
       */}
     })
   ]
