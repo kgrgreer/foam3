@@ -1,4 +1,5 @@
 cd /pkg/stack/stage/NANOPAY
+npm install
 
 set -e
 cwd=$(pwd)
