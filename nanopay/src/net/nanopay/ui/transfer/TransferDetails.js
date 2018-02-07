@@ -269,9 +269,7 @@ foam.CLASS({
           .start('p').add(self.AccountLabel).end()
           .start('div').addClass('dropdownContainer')
             .start(self.ACCOUNTS).end()
-            .callIf(true, function() {
-              this.start('div').addClass('caret').end()
-            })
+            .start('div').addClass('caret').end()
           .end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()

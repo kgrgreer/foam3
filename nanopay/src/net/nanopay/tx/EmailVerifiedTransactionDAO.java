@@ -18,7 +18,7 @@ public class EmailVerifiedTransactionDAO
   public FObject put_(X x, FObject obj) {
     DAO userDAO = (DAO) x.get("userDAO");
     Transaction transaction = (Transaction) obj;
-    User user = (User) userDAO.find(transaction.getPayeeId());
+    User user = (User) userDAO.find(transaction.getPayerId());
     if ( user == null ) {
       throw new RuntimeException("User is not logged in");
     }
