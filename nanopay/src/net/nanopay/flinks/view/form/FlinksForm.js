@@ -123,17 +123,25 @@ foam.CLASS({
           background-color: #ffffff;
         }
         ^ .loadingSpinner {
+          background-color: #ffffff;
+          width: 490px;
+          height: 210px;
           position: relative;
-          left: 602px;
-          margin-top: 20px;
+          bottom: 290;
+          left: 248;
+          text-align: center;
+        }
+        ^ .loadingSpinner > img {
+          display: block;
+          margin: auto;
+          width: 75px;
+          height: 75px;
         }
         ^ .spinnerText {
-          vertical-align: top;
-          margin: 0;
-          margin-top: 3px;
-          margin-right: 3px;
+          margin-top: 40px;
+          margin-bottom: 15px;
           display: inline-block;
-          font-size: 13px;
+          font-size: 14px;
         }
         ^ p {
           margin: 0;
@@ -179,7 +187,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start(this.loadingSpinner).addClass('loadingSpinner')
-            .start('h6').add('Waiting for verification...').addClass('spinnerText').end()
+            .start('h6').add('Waiting for verification').addClass('spinnerText').end()
           .end()
         .end();
     },

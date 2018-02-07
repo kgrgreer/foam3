@@ -12,7 +12,7 @@
         </g>
     </g>
 
-    <animateTransform
+    <!--<animateTransform
         attributeType="xml"
         attributeName="transform"
         type="rotate"
@@ -20,5 +20,5 @@
         to="360 10 10"
         dur="1.5s"
         repeatCount="indefinite"
-    />
+    />-->
 </svg>

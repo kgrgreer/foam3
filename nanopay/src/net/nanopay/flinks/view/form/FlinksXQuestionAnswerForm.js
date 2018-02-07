@@ -21,7 +21,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 385px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -45,7 +45,7 @@ foam.CLASS({
         ^ .qa-block {
           border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 160px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
