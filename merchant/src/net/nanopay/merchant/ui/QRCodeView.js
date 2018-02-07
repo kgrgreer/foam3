@@ -193,7 +193,7 @@ foam.CLASS({
           .end()
         .end()
 
-      var worker = new Worker('libs/qrcode/qrcode.js');
+      var worker = new Worker('../../../../../merchant/src/net/nanopay/merchant/libs/qrcode/qrcode.js');
       worker.addEventListener('message', function (e) {
         var wrapper = self.document.querySelector('.qr-code');
         wrapper.innerHTML = e.data;

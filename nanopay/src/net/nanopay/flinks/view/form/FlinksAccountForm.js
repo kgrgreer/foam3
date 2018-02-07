@@ -11,7 +11,7 @@ foam.CLASS({
   ],
   requires: [
     'net.nanopay.model.BankAccount',
-    'net.nanopay.model.Institution',
+    'net.nanopay.model.Institution'
   ],
   axioms: [
     foam.u2.CSS.create({
@@ -75,7 +75,7 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -87,6 +87,7 @@ foam.CLASS({
           font-weight: lighter;
           letter-spacing: 0.2px;
           margin-right: 40px;
+          margin-left: 1px;
         }
 
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
@@ -105,6 +106,10 @@ foam.CLASS({
       class: 'Int',
       name: 'selectTick',
       value: -1000000,
+    },
+    {
+      Class: 'Array',
+      name: 'selectBank'
     }
   ],
 
@@ -115,6 +120,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.complete = true;
+      this.selectBank = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {
@@ -129,6 +135,7 @@ foam.CLASS({
           .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
           .start('div').addClass('accountView')
             .forEach(this.viewData.accounts, function(e, index){
+              if ( (! e.TransitNumber && e.TransitNumber === '') || e.Currency !== 'CAD') return; 
               this.start({class: 'net.nanopay.flinks.view.element.AccountCard', accountName : e.Title, accountNo : e.AccountNumber, balance : e.Balance.Current})
                 .style({'margin-left':'20px'})
                 .addClass('spacer')
@@ -142,8 +149,12 @@ foam.CLASS({
                 .on('click', function() {
                   if ( ! e.isSelected || e.isSelected == false ) {
                     e.isSelected = true;
+                    self.selectBank[index] = true;
+                    self.selectBank = foam.Array.clone(self.selectBank);
                   } else {
                     e.isSelected = false;
+                    self.selectBank[index] = false;
+                    self.selectBank = foam.Array.clone(self.selectBank);
                   }
                   self.selectTick++;
                   //console.log(self.viewData.accounts);
@@ -163,13 +174,14 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'Add Account',
-      isEnabled: function(isConnecting) {
-        //console.log(isConnecting);
+      isEnabled: function(isConnecting, selectBank) {
         if ( isConnecting === true ) return false;
-        return true;
+        for ( var x in selectBank ) {
+          if ( selectBank[x] === true ) return true;
+        }
+        return false;
       },
       code: function(X) {
-        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }

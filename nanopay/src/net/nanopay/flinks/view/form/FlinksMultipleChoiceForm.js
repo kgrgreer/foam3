@@ -45,7 +45,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ .qa-block {
-          border: 2px solid #778899;
+          border: 2px solid #ffffff;
           width: 436px;
           height: 246px;
           margin-left:20px;
@@ -74,7 +74,7 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -86,6 +86,7 @@ foam.CLASS({
           font-weight: lighter;
           letter-spacing: 0.2px;
           margin-right: 40px;
+          margin-left: 1px;
         }
 
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {

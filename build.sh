@@ -1,4 +1,5 @@
 cd /pkg/stack/stage/NANOPAY
+npm install
 
 set -e
 cwd=$(pwd)
@@ -45,8 +46,8 @@ cp -r favicon/ /opt/tomcat/webapps/ROOT/favicon
 # Move images to ROOT/images
 cd /opt/tomcat/webapps/ROOT
 mkdir images
-cd nanopay/src/net/nanopay/
-mv images/ ../../.././../
+cp -r nanopay/src/net/nanopay/images .
+cp -r merchant/src/net/nanopay/merchant/images .
 
-cd ../../../../foam2/src/
-rm -rf com
+# delete com
+rm -rf foam2/src/com
