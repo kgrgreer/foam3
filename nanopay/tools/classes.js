@@ -31,6 +31,7 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.interac.model.Corridor',
+  'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.UserTransactionLimit',

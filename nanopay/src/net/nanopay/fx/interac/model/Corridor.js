@@ -28,6 +28,11 @@ foam.CLASS({
       class: 'StringArray',
       name: 'currencies',
       required: true
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.fx.interac.model.PayoutOptions',
+      name: 'payoutOptions'
     }
   ]
 });
