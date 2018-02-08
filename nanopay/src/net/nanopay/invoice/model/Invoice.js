@@ -184,7 +184,7 @@ foam.CLASS({
         if ( draft ) return 'Draft';
         if ( paymentMethod.name == 'VOID' ) return 'Void';
         if ( paymentId === -1 ) return 'Disputed';
-        if ( paymentId > 0 ) return 'Paid';
+        if ( paymentId > 0 || paymentDate < Date.now() && paymentId == -2) return 'Paid';
         if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == -2) {  return 'Scheduled' };
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
