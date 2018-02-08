@@ -327,11 +327,9 @@ foam.CLASS({
                   status: 'Verified'
                 })).then(function(res) {
                   var emailMessage = self.EmailMessage.create({
-                    from: 'info@nanopay.net',
-                    replyTo: 'noreply@nanopay.net',
                     to: [ self.customer.email ]
                   });
-                  self.email.sendEmailFromTemplate(self.customer, emailMessage, 'nanopay-addBank', {
+                  self.email.sendEmailFromTemplate(self.customer, emailMessage, 'addBank', {
                     name: self.customer.firstName,
                     account: res.accountNumber.substring(res.accountNumber.length - 4)
                   });
