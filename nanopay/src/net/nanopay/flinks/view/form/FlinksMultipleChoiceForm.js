@@ -197,6 +197,7 @@ foam.CLASS({
       .start('div').style({'clear' : 'both'}).end();
     }
   ],
+  
   actions: [
     {
       name: 'nextButton',
@@ -221,4 +222,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

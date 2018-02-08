@@ -119,6 +119,7 @@ foam.CLASS({
     { name: 'Error', message: 'Invalid Institution'},
     { name: 'NameLabel', message: 'Institution *'}
   ],
+
   methods: [
     function init() {
       this.SUPER();
@@ -155,6 +156,7 @@ foam.CLASS({
         .start('div').style({'clear' : 'both'}).end()
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
@@ -183,4 +185,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

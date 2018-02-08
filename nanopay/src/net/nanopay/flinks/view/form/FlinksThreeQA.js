@@ -179,6 +179,7 @@ foam.CLASS({
     { name: 'header1', message: 'Please answer the security question: '},
     { name: 'answerError', message: 'Invalid answer'}
   ],
+
   methods: [
     function init() {
       this.SUPER();
@@ -231,4 +232,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

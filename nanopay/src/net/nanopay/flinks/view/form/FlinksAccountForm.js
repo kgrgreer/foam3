@@ -112,6 +112,7 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 3: Please choose the account you want to connect with nanopay.'}
   ],
+
   methods: [
     function init() {
       this.SUPER();
@@ -165,6 +166,7 @@ foam.CLASS({
         .start('div').style({'clear' : 'both'}).end();
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
@@ -189,4 +191,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

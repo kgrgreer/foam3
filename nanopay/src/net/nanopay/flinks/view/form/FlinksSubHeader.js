@@ -7,6 +7,7 @@ foam.CLASS({
     'group',
     'logo'
   ],
+  
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -78,4 +79,4 @@ foam.CLASS({
       .end()
     }
   ]
-})
+});
