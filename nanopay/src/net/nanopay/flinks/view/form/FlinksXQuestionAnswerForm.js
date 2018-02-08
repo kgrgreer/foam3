@@ -11,7 +11,8 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.view.StringArrayView',
-    'foam.u2.tag.Input'
+    'foam.u2.tag.Input',
+    'net.nanopay.flinks.view.element.StringArrayInput'
   ],
 
   axioms: [
@@ -171,12 +172,13 @@ foam.CLASS({
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
               self.viewData.questions[index] = data.Prompt;
-              var text = self.Input.create({'onKey':true});
+              var text = self.StringArrayInput.create({max: 10, isPassword: true});
               text.data$.sub(function(){
-                //console.log('stringArray.data', text.data);
-                self.viewData.answers[index] = new Array(1).fill(text.data);
-                //console.log(self.viewData);
-                if ( text.data.trim().length === 0 ) {
+                console.log('stringArray.data', text.data);
+                //self.viewData.answers[index] = new Array(1).fill(text.data);
+                //console.log(self.viewData)
+                self.viewData.answers[index] = text.data;
+                if ( text.data[0].trim().length === 0 ) {
                   self.answerCheck[index] = false;
                 } else {
                   self.answerCheck[index] = true;
@@ -184,7 +186,8 @@ foam.CLASS({
                 self.tick++;
               });
               this.start('p').addClass('question').add('Q' + (index+1) + ': ').add(data.Prompt).end();
-              this.start(text).style({'margin-top':'10px'}).addClass('input').end();
+              //this.start(text).style({'margin-top':'10px'}).addClass('input').end();
+              this.start(text).style({'margin-top':'10px'}).end();
             })
           .end()
         .end()
