@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.u2.view.StringArrayView',
     'foam.u2.tag.Input'
   ],
+  
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
