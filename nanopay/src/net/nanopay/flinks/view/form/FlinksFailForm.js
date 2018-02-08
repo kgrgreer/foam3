@@ -61,7 +61,7 @@ foam.CLASS({
   actions: [
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
         X.form.goBack();
       }

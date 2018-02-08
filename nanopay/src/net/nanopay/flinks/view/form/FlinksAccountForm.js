@@ -188,7 +188,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
         //console.log('close');
         //console.log('close the form');

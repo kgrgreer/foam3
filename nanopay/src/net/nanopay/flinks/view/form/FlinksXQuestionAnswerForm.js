@@ -201,7 +201,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'Next',
+      label: 'Continue',
       isEnabled: function(tick, isConnecting, answerCheck) {
         for ( var x in answerCheck ) {
           if ( answerCheck[x] === false ) return false;
@@ -217,7 +217,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
         //console.log('close the form');
         //console.log(X.form.goBack);

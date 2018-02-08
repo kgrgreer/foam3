@@ -180,7 +180,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'Sign In',
+      label: 'Continue',
       isEnabled: function(isConnecting, username, password, conditionAgree) {
         if ( isConnecting == true ) return false;
         if ( username.trim().length == 0 ) return false;
