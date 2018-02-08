@@ -43,7 +43,8 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: static;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
       position: absolute;
@@ -59,6 +60,8 @@ foam.CLASS({
       color: white;
       float: right;
       margin-right: 1px;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-payNowDropDown {
       width: 30px;
@@ -110,8 +113,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideSaleSummary = true;
-
+      this.hideSaleSummary = true;     
       this
         .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
@@ -187,11 +189,10 @@ foam.CLASS({
           .start('div').add('Schedule A Payment')
             .on('click', this.schedulePopUp)
           .end()
-          .callIf(invoice.createdBy == this.user.id, function(){
-            this.start('div').add('Void')
-              .on('click', this.voidPopUp)
-            .end()
-          })
+          .start().show(invoice.createdBy == this.user.id)
+            .add('Void')
+            .on('click', this.voidPopUp)
+          .end()
 
         self.payNowMenuBtn_.add(self.payNowPopUp_)
       }
