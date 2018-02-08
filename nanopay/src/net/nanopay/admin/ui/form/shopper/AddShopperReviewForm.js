@@ -6,9 +6,10 @@ foam.CLASS({
   documentation: 'Form to review shopper information to make sure its correct',
 
   imports: [
-    'viewData',
+    'formatCurrency',        
     'goBack',
-    'goNext'
+    'goNext',
+    'viewData'
   ],
 
   css:`
@@ -95,7 +96,7 @@ foam.CLASS({
               .start().add(this.BirthdayLabel).addClass('boldLabel').end()
               .start().add(formattedBirthday).addClass('infoText bottomMargin').end()
               .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText').end()
+              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.PhoneNumberLabel).addClass('boldLabel').end()
@@ -105,6 +106,11 @@ foam.CLASS({
               .start().add(this.viewData.postalCode).addClass('infoText').end()
               .start().add(this.viewData.addressLine).addClass('infoText').end()
               .start().add(this.viewData.city + ' ' + this.viewData.province).addClass('infoText').end()
+            .end()
+            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()            
+            .start().addClass('inline')
+              .start().add(this.AmountLabel).addClass('boldLabel').end()
+              .start().add(this.formatCurrency(this.viewData.amount/100)).addClass('infoText bottomMargin').end()              
             .end()
           .end()
         .end();

@@ -7,8 +7,8 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',    
     'foam.nanos.auth.Phone',
-    'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
@@ -16,12 +16,13 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack',
-    'user',
+    'accountDAO',    
     'email',
+    'formatCurrency',    
+    'stack',
+    'transactionDAO',    
+    'user',
     'userDAO',
-    'transactionDAO',
-    'formatCurrency'
   ],
 
   axioms: [
@@ -33,8 +34,8 @@ foam.CLASS({
       this.views = [
         { parent: 'addMerchant', id: 'form-addMerchant-info',      label: 'Merchant Info',    view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantInfoForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-profile',   label: 'Business Profile', view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantProfileForm' } },
-        { parent: 'addMerchant', id: 'form-addMerchant-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantReviewForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-sendMoney', label: 'Send Money',       view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantSendMoneyForm' } },
+        { parent: 'addMerchant', id: 'form-addMerchant-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantReviewForm' } },        
         { parent: 'addMerchant', id: 'form-addMerchant-done',      label: 'Done',             view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
@@ -101,6 +102,22 @@ foam.CLASS({
         }
 
         if ( this.position == 2 ) {
+          // Send Money
+          this.accountDAO.find(this.user.id).then(function(response){
+            var account = response;
+            if ( merchantInfo.amount > account.balance ){
+              self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
+              return;
+            }
+            if ( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
+              merchantInfo.amount = 0;
+            }
+            self.subStack.push(self.views[self.subStack.pos + 1].view);
+            return;
+          });
+        }
+
+        if ( this.position == 3 ) {
           // Review
 
           var merchantPhone = this.Phone.create({
@@ -133,54 +150,35 @@ foam.CLASS({
             businessIdentificationNumber: merchantInfo.registrationNumber,
             website: merchantInfo.website,
             businessTypeId: merchantInfo.businessType,
-            businessSectorId: merchantInfo.businessSector
+            businessSectorId: merchantInfo.businessSector,
+            initialEmailedAmount: self.formatCurrency(merchantInfo.amount/100),
+            portalAdminCreated: true
           });
 
           this.userDAO.put(newMerchant).then(function(response) {
             merchantInfo.merchant = response;
-            self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added!', type: '' }));
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            return;
+          }).then(function() {
+            if( merchantInfo.amount > 0 ) {
+              var transaction = self.Transaction.create({
+                payeeId: merchantInfo.merchant.id,
+                payerId: self.user.id,
+                amount: merchantInfo.amount
+              });
+              return self.transactionDAO.put(transaction).then(function (response) {
+                self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added and value transfer sent.' }));
+                self.subStack.push(self.views[self.subStack.pos + 1].view);
+                self.nextLabel = 'Done';
+              });
+            } else {
+              self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added.' }));
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.nextLabel = 'Done';
+              return
+            }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;
           });
-        }
-
-        if ( this.position == 3 ) {
-          // Send Money
-
-          if( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.nextLabel = 'Done';
-            return;
-          } else {
-            var transaction = this.Transaction.create({
-              payeeId: merchantInfo.merchant.id,
-              payerId: this.user.id,
-              amount: merchantInfo.amount
-            });
-  
-            this.transactionDAO.put(transaction).then(function(response) {
-              var merchant = merchantInfo.merchant;
-              var emailMessage = self.EmailMessage.create({
-                to: [ merchant.email ]
-              });
-
-              return self.email.sendEmailFromTemplate(merchant, emailMessage, 'cc-template-invite/merc1', {
-                name: merchant.firstName,
-                email: merchant.email,
-                money: self.formatCurrency(merchantInfo.amount/100)
-              });
-            }).then(function () {
-              self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent.' }));
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.nextLabel = 'Done';
-            }).catch(function(error) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            });
-            return;
-          }
         }
 
         if ( this.subStack.pos == this.views.length - 1 ) {
