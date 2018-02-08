@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.fx.interac.model',
   name: 'PayoutOptions',
+  requires: [ 'net.nanopay.fx.interac.model.RequiredUserFields' ],
   properties: [
     {
       class: 'Long',
@@ -19,12 +20,25 @@ foam.CLASS({
       name: 'owner'
     },
     {
-      class: 'String', // For now
-      name: 'requiredSenderFields'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.interac.model.RequiredUserFields',
+      name: 'requiredSenderFields',
+      factory: function() {
+        var fields = this.RequiredUserFields.create();
+        fields.userType = 'Sender';
+        return fields;
+      }
     },
     {
-      class: 'String', // For now
-      name: 'requiredRecipientFields'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.interac.model.RequiredUserFields',
+      name: 'requiredReceiverFields',
+      factory: function() {
+        var fields = this.RequiredUserFields.create();
+        fields.userType = 'Receiver';
+        fields.linkedReferenceNumber = true;
+        return fields;
+      }
     }
   ]
 });
