@@ -32,7 +32,6 @@ foam.CLASS({
     ^ .inputArray {
       width: 100%;
       min-width: 240px;
-      border: 1px red solid;
     }
     ^ .imageRow {
     }
@@ -56,7 +55,6 @@ foam.CLASS({
         return 1;
       },
       preSet: function(oldValue, newValue) {
-        console.log(newValue);
         if ( newValue <= 1 ) return 1;
         if ( newValue > this.max) return this.max;
         return newValue;
@@ -102,15 +100,13 @@ foam.CLASS({
           .start('div').addClass('row')
             .start(input).addClass('inputField').addClass('firstField').end()
             .start({class: 'foam.u2.tag.Image', data: 'images/plus.svg'}).addClass('Image').on('click', function() {
-              console.log('plus');
-              if ( self.count == 1 ) {
+              if ( self.count == 1 && self.count < self.max ) {
                 self.count++;
                 var index = self.count-1;
                 self.data = self.extendArray(self.data);
                 var text = (self.isPassword === true ? self.Input.create({type: 'password', onKey: true}) : self.Input.create({type: 'text', onKey: true}));
                 text.addClass('inputField').addClass('firstField');
                 text.data$.sub(function() {
-                  console.log('input: ' + index);
                   self.data[index] = text.data;
                   self.data = foam.Array.clone(self.data);
                 });
@@ -118,7 +114,6 @@ foam.CLASS({
                   .start('div').addClass('row')
                     .start(text).end()
                     .start({class: 'foam.u2.tag.Image', data: 'images/minus.svg'}).addClass('Image').on('click', function() {
-                      console.log('minus');
                       if ( self.count >= 1) {
                         self.count--;
                         var element = self.inputFields.pop();
@@ -138,7 +133,6 @@ foam.CLASS({
                 var input1 = (self.isPassword === true ? self.Input.create({type: 'password', onKey: true}) : self.Input.create({type: 'text', onKey: true}));
                 input1.addClass('inputField');
                 input1.data$.sub(function() {
-                  console.log('input: ' + index);
                   self.data[index] = input1.data;
                   self.data = foam.Array.clone(self.data);
                 });
@@ -165,14 +159,7 @@ foam.CLASS({
       for ( var i = 0 ; i < b.length ; i++ ) {
         b[i] = a[i];
       }
-      console.log(b);
       return b;
-    }, 
-    function createInput() {
-      return ;
-    },
-    function addInput() {
-
     }
   ]
 })
