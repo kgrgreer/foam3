@@ -16,7 +16,6 @@ foam.CLASS({
         ^ {
           width: 520px;
         }
-
         ^ .optionSpacer {
           display: inline-block;
           width: 122px;
@@ -25,15 +24,12 @@ foam.CLASS({
           box-sizing: border-box;
           border: solid 1px white;
         }
-
         ^ .optionSpacer:last-child {
           margin-right: 0;
         }
-
         ^ .institution {
           margin-bottom: 10px
         }
-
         ^ .institution:hover {
           cursor: pointer;
         }
@@ -64,11 +60,9 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: right;
           margin: 0;
@@ -83,15 +77,12 @@ foam.CLASS({
           letter-spacing: 0.2px;
           margin-right: 40px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-otherButton {
           float: left;
           margin: 0;
@@ -114,7 +105,6 @@ foam.CLASS({
 
   properties: [
     {
-      //decide which bank will connect
       class: 'Int',
       name: 'selectedOption',
       value: -1,
@@ -147,9 +137,9 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .forEach(this.bankImgs, function(e){
+          .forEach(this.bankImgs, function(e) {
             this.start('div').addClass('optionSpacer').addClass('institution')
-              .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : '';}))
+              .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
               .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
               .on('click', function() {
                 self.selectedOption = e.index;
@@ -170,13 +160,11 @@ foam.CLASS({
       name: 'nextButton',
       label: 'Next',
       isEnabled: function(isConnecting, selectedOption) {
-        //console.log(isConnecting, selectedOption);
         if ( isConnecting === true ) return false;
         if ( selectedOption === -1 ) return false;
         return true;
       },
       code: function(X) {
-        //console.log('nextButton');
         X.form.goNext();
       }
     },
@@ -184,7 +172,6 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        //console.log('close the form');
         X.form.goBack();
       }
     },

@@ -38,7 +38,7 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .account:hover{
-          border: solid 1px #00FFFF;
+          border: solid 1px %ACCENTCOLOR%;
         }
         ^ .account.selected {
           border: solid 1px red;
@@ -69,11 +69,9 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: left;
           margin: 0;
@@ -89,11 +87,9 @@ foam.CLASS({
           margin-right: 40px;
           margin-left: 1px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
