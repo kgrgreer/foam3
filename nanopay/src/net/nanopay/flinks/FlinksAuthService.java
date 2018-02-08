@@ -76,6 +76,7 @@ public class FlinksAuthService
     } catch ( Throwable t ) {
       throw new AuthenticationException("Exception throw when connect to the Flinks");
     }
+    System.out.println(reqMsg.getJson());
     FlinksResponse feedback;
     int httpCode = respMsg.getHttpStatusCode();
     if ( httpCode == 200 ) {
@@ -90,7 +91,8 @@ public class FlinksAuthService
         decodeMsg((FlinksMFAResponse) feedback);
       }
     } else {     
-      feedback = (FlinksInvalidResponse) respMsg.getModel();      
+      feedback = (FlinksInvalidResponse) respMsg.getModel();
+      System.out.println("challenge question: " + respMsg.getJson());    
       throw new AuthenticationException(feedback.getMessage());
     }
     return feedback; 
@@ -112,7 +114,8 @@ public class FlinksAuthService
       FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
       feedback = (FlinksAccountsDetailResponse) respMsg.getModel();
     } else {
-      feedback = (FlinksInvalidResponse) respMsg.getModel();      
+      feedback = (FlinksInvalidResponse) respMsg.getModel();
+      System.out.println("getAccountSummary: " + respMsg.getJson());      
       throw new AuthenticationException(feedback.getMessage());
     }
     return feedback;
