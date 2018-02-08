@@ -21,7 +21,7 @@
  *   Software.
  */
 
-package net.nanopay.retail.qrcode;
+package io.nayuki.qrcodegen;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
