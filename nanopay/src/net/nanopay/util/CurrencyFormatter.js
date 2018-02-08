@@ -10,7 +10,7 @@ foam.CLASS({
         return a;
       }
       if ( a >= 1000000000 ) {
-          return '$' + (a / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+          return '$' + (a / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
       }
       if ( a >= 1000000 ) {
           return '$' + (a / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
