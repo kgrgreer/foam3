@@ -186,7 +186,6 @@ foam.CLASS({
               })
             }
             this.start('p').addClass('question').add(self.viewData.questions[index]).end();
-            //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
             this.start(attachElement).style({'margin-top':'5px'}).end();
           })
         .end()

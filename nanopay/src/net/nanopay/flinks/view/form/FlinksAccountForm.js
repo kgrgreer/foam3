@@ -153,7 +153,6 @@ foam.CLASS({
                     self.selectBank = foam.Array.clone(self.selectBank);
                   }
                   self.selectTick++;
-                  //console.log(self.viewData.accounts);
                 })
               .end()
             })
@@ -186,9 +185,6 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        //console.log('close');
-        //console.log('close the form');
-        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }

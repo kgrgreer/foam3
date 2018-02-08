@@ -1,4 +1,3 @@
-//Test View only
 foam.CLASS({
   package: 'net.nanopay.flinks.view',
   name: 'FlinksView',
@@ -47,7 +46,6 @@ foam.CLASS({
       name: 'authForm',
       label: 'auth a new bank account',
       code: function(X) {
-        //X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true})
         X.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true})
       }
     }

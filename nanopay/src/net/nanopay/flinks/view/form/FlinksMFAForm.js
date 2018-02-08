@@ -78,11 +78,9 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
@@ -98,11 +96,9 @@ foam.CLASS({
           color: #FFFFFF;
           margin-right: 40px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
@@ -143,9 +139,6 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.form.isEnabledButtons(true);
-      // for ( var i = 0 ; i < this.viewData.securityChallenges.length ; i++ ) {
-      //   this.viewData.questions[i] = this.viewData.securityChallenges[i].Prompt;
-      // }
       this.viewData.questions = [
         'What is your mother maiden name','What is your age','cccc'
       ];
@@ -181,7 +174,6 @@ foam.CLASS({
         return (isFinish0) ? true : false;
       },
       code: function(X) {
-        console.log('nextButton');
         X.form.goNext();
       }
     },
@@ -189,7 +181,6 @@ foam.CLASS({
       name: 'closeButton',
       label: 'close',
       code: function(X) {
-        console.log('close the form');
         X.form.goBack();
       }
     }
