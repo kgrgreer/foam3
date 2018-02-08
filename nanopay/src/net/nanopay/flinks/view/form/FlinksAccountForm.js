@@ -21,7 +21,7 @@ foam.CLASS({
         }
         ^ .accountView {
           width: 100%;
-          height: 270px;
+          height: 190px;
           overflow:auto;
         }
         ^ .spacer {
@@ -32,7 +32,7 @@ foam.CLASS({
         }
         ^ .subContent {
           width: 495px;
-          height: 360px;
+          height: 285px;
         }
         ^ .account {
           cursor: pointer;

@@ -23,7 +23,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -37,7 +37,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ .foam-u2-tag-Input {
-          width: 400px;
+          width: 100%;
           height: 30px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
@@ -49,7 +49,7 @@ foam.CLASS({
         ^ .qa-block {
           border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -107,7 +107,7 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ select {
-          width: 400px;
+          width: 100%;
           height: 30px;
           background-color: #ffffff;
           border: solid 1px rgba(29, 100, 123, 0.5);
@@ -116,7 +116,7 @@ foam.CLASS({
           margin-top: 0px;
         }
         ^ .select {
-          width: 400px;
+          width: 100%;
           height: 30px;
           background-color: #ffffff;
           margin-top: 15px;

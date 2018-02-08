@@ -20,7 +20,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -47,7 +47,7 @@ foam.CLASS({
         ^ .qa-block {
           border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -197,7 +197,7 @@ foam.CLASS({
       .start('div').style({'clear' : 'both'}).end();
     }
   ],
-  
+
   actions: [
     {
       name: 'nextButton',

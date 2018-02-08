@@ -45,7 +45,7 @@ foam.CLASS({
         ^ .qa-block {
           border: 2px solid #ffffff;
           width: 436px;
-          height: 160px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;

@@ -11,6 +11,7 @@ foam.CLASS({
 
   css: `
     ^ {
+      padding-left: 2px;
       width: 497px;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
