@@ -32,10 +32,11 @@ foam.CLASS({
       width: 555px;
       left: -30px;
       position: relative;
+      font-size: 14px;
     }
     ^ .inputLarge{
       margin-bottom: 20px;
-      font-size: 10px;
+      font-size: 14px;
     }
     ^ .position-label{
       margin-bottom: 10px;

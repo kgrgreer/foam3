@@ -43,7 +43,8 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: static;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
       position: absolute;
@@ -59,6 +60,8 @@ foam.CLASS({
       color: white;
       float: right;
       margin-right: 1px;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-payNowDropDown {
       width: 30px;
