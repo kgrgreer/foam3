@@ -8,11 +8,10 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.model.Currency;
 import net.nanopay.tx.model.Transaction;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Map;
 
 public class TransferEmailDAO
   extends ProxyDAO
@@ -32,6 +31,7 @@ public class TransferEmailDAO
       if (transaction.getInvoiceId() != 0)     return getDelegate().put_(x, obj);
       System.out.println("HIT EXPLOSUIN****************************************");
       AppConfig config = (AppConfig) x.get("appConfig");
+      NumberFormat formatter = NumberFormat.getCurrencyInstance();
       User user = (User) userDAO_.find_(x, transaction.getPayeeId());
       EmailService email = (EmailService) x.get("email");
       EmailMessage message = new EmailMessage();
@@ -39,7 +39,7 @@ public class TransferEmailDAO
       HashMap<String, Object> args = new HashMap<>();
       args.put("name", user.getFirstName());
       args.put("email", user.getEmail());
-      args.put("money", transaction.getAmount());
+      args.put("money", formatter.format(transaction.getAmount()/100));
       args.put("link" , config.getUrl());
       args.put("applink" , config.getAppLink());
       args.put("playlink" , config.getPlayLink());
