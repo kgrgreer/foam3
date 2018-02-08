@@ -10,6 +10,10 @@ foam.CLASS({
     'stack'
   ],
 
+  requires: [
+    'net.nanopay.flinks.view.element.StringArrayInput'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -140,7 +144,11 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
+      var arrays = this.StringArrayInput.create({max: 6, isPassword: true});
+      arrays.data$.sub(function(){
+        console.log('arrays.data: ', arrays.data);
+      });
+      this.tag(arrays);
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
@@ -162,7 +170,7 @@ foam.CLASS({
           .tag(this.CLOSE_BUTTON)
           .tag(this.OTHER_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end()
+        .start('div').style({'clear' : 'both'}).end();
     }
   ],
   actions: [
