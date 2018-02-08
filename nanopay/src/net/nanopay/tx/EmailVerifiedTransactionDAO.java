@@ -16,13 +16,13 @@ public class EmailVerifiedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
-    // if ( user == null ) {
-    //   throw new RuntimeException("User is not logged in");
-    // }
+    if ( user == null ) {
+      throw new RuntimeException("User is not logged in");
+    }
 
-    // if ( ! user.getEmailVerified() ) {
-    //   throw new RuntimeException("You must verify your email to send money");
-    // }
+    if ( ! user.getEmailVerified() ) {
+      throw new RuntimeException("You must verify your email to send money");
+    }
 
     return super.put_(x, obj);
   }
