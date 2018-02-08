@@ -158,7 +158,7 @@ foam.CLASS({
       view: function(_,X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountDAO.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
+          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
@@ -268,10 +268,8 @@ foam.CLASS({
           .start('p').add(self.TransferFromLabel).addClass('bold').end()
           .start('p').add(self.AccountLabel).end()
           .start('div').addClass('dropdownContainer')
-            .start(self.ACCOUNTS, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
-            .callIf( ! self.invoiceMode , function() {
-              this.start('div').addClass('caret').end()
-            })
+            .start(self.ACCOUNTS).end()
+            .start('div').addClass('caret').end()
           .end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()

@@ -240,6 +240,7 @@ foam.CLASS({
           margin-bottom: 15px;
           outline: none;
           padding: 10px;
+          font-size: 14px;
         }
         .label{
           height: 16px;
