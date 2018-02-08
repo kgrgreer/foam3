@@ -212,7 +212,8 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
-      }
+      },
+      view: { class: 'foam.u2.view.PasswordView' }
     }
   ],
 
