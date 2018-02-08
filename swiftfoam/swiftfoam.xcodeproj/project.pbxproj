@@ -186,6 +186,7 @@
 		1090EF03200025CD0043941E /* foam_mlang_Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EE55200025CD0043941E /* foam_mlang_Constant.swift */; };
 		1090EF04200025CD0043941E /* foam_u2_Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EE56200025CD0043941E /* foam_u2_Visibility.swift */; };
 		1090EF05200025CD0043941E /* foam_dao_DAOSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EE57200025CD0043941E /* foam_dao_DAOSink.swift */; };
+		4A08A8EC202C89F9002562E1 /* foam_nanos_fs_File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A08A8EB202C89F8002562E1 /* foam_nanos_fs_File.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -381,6 +382,7 @@
 		1090EE55200025CD0043941E /* foam_mlang_Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_mlang_Constant.swift; sourceTree = "<group>"; };
 		1090EE56200025CD0043941E /* foam_u2_Visibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_u2_Visibility.swift; sourceTree = "<group>"; };
 		1090EE57200025CD0043941E /* foam_dao_DAOSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_DAOSink.swift; sourceTree = "<group>"; };
+		4A08A8EB202C89F8002562E1 /* foam_nanos_fs_File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_fs_File.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -444,6 +446,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				4A08A8EB202C89F8002562E1 /* foam_nanos_fs_File.swift */,
 				1090EDD9200025C30043941E /* foam_blob_Blob.swift */,
 				1090EE54200025CD0043941E /* foam_box_Box.swift */,
 				1090EDE8200025C40043941E /* foam_box_BoxRegistry.swift */,
@@ -886,6 +889,7 @@
 				1090EEF2200025CD0043941E /* foam_nanos_auth_Country.swift in Sources */,
 				1090EE83200025CD0043941E /* foam_swift_parse_parser_Substring.swift in Sources */,
 				1090EF01200025CD0043941E /* foam_nanos_auth_Region.swift in Sources */,
+				4A08A8EC202C89F9002562E1 /* foam_nanos_fs_File.swift in Sources */,
 				1090EE65200025CD0043941E /* net_nanopay_tx_model_Transaction.swift in Sources */,
 				1090EE80200025CD0043941E /* foam_box_SubBox.swift in Sources */,
 				1090EEEA200025CD0043941E /* foam_dao_OrderedDAO.swift in Sources */,
