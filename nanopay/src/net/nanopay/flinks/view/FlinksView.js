@@ -22,10 +22,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-
-    },
-
     function initE(){
       this.SUPER();
       var self = this;
