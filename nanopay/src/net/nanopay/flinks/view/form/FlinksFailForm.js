@@ -31,6 +31,7 @@ foam.CLASS({
       font-weight: lighter;
       letter-spacing: 0.2px;
       margin-right: 40px;
+      margin-left: 1px;
     }
   `,
 
