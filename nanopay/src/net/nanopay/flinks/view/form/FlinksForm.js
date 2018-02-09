@@ -123,17 +123,29 @@ foam.CLASS({
           background-color: #ffffff;
         }
         ^ .loadingSpinner {
+          background-color: #ffffff;
+          width: 490px;
+          height: 210px;
           position: relative;
-          left: 602px;
-          margin-top: 20px;
+          bottom: 290;
+          left: 248;
+          text-align: center;
+        }
+        ^ .loadingSpinner > img {
+          position: absolute;
+          display: block;
+          width: 50px;
+          height: 50px;
+          top: 50;
+          right: 219;
         }
         ^ .spinnerText {
-          vertical-align: top;
-          margin: 0;
-          margin-top: 3px;
-          margin-right: 3px;
-          display: inline-block;
-          font-size: 13px;
+          position: absolute;
+          left: 180;
+          top: 95;
+          font-weight: normal;
+          font-size: 12px;
+          color: rgba(9, 54, 73, 0.7);
         }
         ^ p {
           margin: 0;
@@ -179,7 +191,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start(this.loadingSpinner).addClass('loadingSpinner')
-            .start('h6').add('Waiting for verification...').addClass('spinnerText').end()
+            .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
           .end()
         .end();
     },
@@ -338,4 +350,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});
