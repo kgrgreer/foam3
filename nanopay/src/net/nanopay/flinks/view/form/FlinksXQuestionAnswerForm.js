@@ -11,7 +11,7 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.view.StringArrayView',
-    'foam.u2.tag.Input'
+    'foam.u2.view.PasswordView'
   ],
 
   axioms: [
@@ -167,7 +167,7 @@ foam.CLASS({
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
               self.viewData.questions[index] = data.Prompt;
-              var text = self.Input.create({'onKey':true});
+              var text = self.PasswordView.create({'onKey':true});
               text.data$.sub(function() {
                 self.viewData.answers[index] = new Array(1).fill(text.data);
                 if ( text.data.trim().length === 0 ) {
