@@ -39,7 +39,7 @@ public class TransactionLimitCheckDAO
   // @Override
   public FObject put_(X x, FObject fObject) throws RuntimeException {
     Transaction transaction = (Transaction) fObject;
-
+    System.out.println("test");
     DAO userDAO = (DAO)  getX().get("localUserDAO");
     User payee  = (User) userDAO.find(transaction.getPayeeId());
     User payer  = (User) userDAO.find(transaction.getPayerId());
