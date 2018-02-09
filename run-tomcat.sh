@@ -88,6 +88,7 @@ cp cronjobs $CATALINA_HOME/bin/
 cp currencies $CATALINA_HOME/bin/
 cp corridors $CATALINA_HOME/bin/
 cp payoutOptions $CATALINA_HOME/bin/
+cp dugs $CATALINA_HOME/bin/
 cp emailTemplates $CATALINA_HOME/bin/
 cp exportDriverRegistrys $CATALINA_HOME/bin/
 cp groups $CATALINA_HOME/bin/

@@ -35,7 +35,7 @@ foam.CLASS({
       z-index: -1;
     }
     ^ .attachment-btn {
-      margin: 10px 0;
+      margin: 10px 0 50px;
     }
   `,
 
@@ -71,7 +71,6 @@ foam.CLASS({
             .add('Add Attachment')
             .on('click', self.onAddAttachmentClicked)
           .end()
-          .add('Maximum size 10MB')
         .end();
     },
 
