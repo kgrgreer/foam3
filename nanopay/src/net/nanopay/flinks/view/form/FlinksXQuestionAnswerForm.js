@@ -11,7 +11,7 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.view.StringArrayView',
-    'foam.u2.tag.Input'
+    'foam.u2.view.PasswordView'
   ],
 
   axioms: [
@@ -21,7 +21,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 385px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -45,7 +45,7 @@ foam.CLASS({
         ^ .qa-block {
           border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -93,11 +93,9 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: left;
           margin: 0;
@@ -113,11 +111,9 @@ foam.CLASS({
           margin-right: 40px;
           margin-left: 1px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
@@ -171,11 +167,9 @@ foam.CLASS({
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
               self.viewData.questions[index] = data.Prompt;
-              var text = self.Input.create({'onKey':true});
-              text.data$.sub(function(){
-                //console.log('stringArray.data', text.data);
+              var text = self.PasswordView.create({'onKey':true});
+              text.data$.sub(function() {
                 self.viewData.answers[index] = new Array(1).fill(text.data);
-                //console.log(self.viewData);
                 if ( text.data.trim().length === 0 ) {
                   self.answerCheck[index] = false;
                 } else {
@@ -195,6 +189,7 @@ foam.CLASS({
         .start('div').style({'clear' : 'both'}).end()
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
@@ -207,7 +202,6 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
@@ -216,10 +210,8 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        //console.log('close the form');
-        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }
   ]
-})
+});
