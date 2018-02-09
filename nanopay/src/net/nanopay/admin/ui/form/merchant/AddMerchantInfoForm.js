@@ -26,7 +26,7 @@ foam.CLASS({
       margin-right: 10px;
     }
     ^ .infoContainer{
-      height: 185px;
+      height: 285px;
     }
   `,
 
