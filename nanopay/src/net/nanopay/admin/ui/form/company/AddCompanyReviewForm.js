@@ -107,8 +107,6 @@ foam.CLASS({
               .start().add(this.viewData.firstName).addClass('infoText bottomMargin').end()
               .start().add(this.EmailLabel).addClass('boldLabel').end()
               .start().add(this.viewData.email).addClass('infoText bottomMargin').end()
-              .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.LastNameLabel).addClass('boldLabel').end()
