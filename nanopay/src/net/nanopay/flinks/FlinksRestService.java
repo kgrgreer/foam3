@@ -8,6 +8,19 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import net.nanopay.flinks.model.*;
 
+//apach
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.client.config.RequestConfig;
+
 public class FlinksRestService 
   extends ContextAwareSupport
 {
@@ -109,7 +122,7 @@ public class FlinksRestService
     return resp;
   }
 
-  private ResponseMsg request(RequestMsg req) {
+  private ResponseMsg request1(RequestMsg req) {
 
     HttpURLConnection connection = null;
     OutputStream os = null;
@@ -164,6 +177,46 @@ public class FlinksRestService
       throw new RuntimeException(t);
     } finally {
       closeSource(is, os, connection);
+    }
+  }
+
+  private ResponseMsg request(RequestMsg req) {
+    BufferedReader rd = null;
+    HttpEntity responseEntity = null;
+    HttpResponse response = null;
+    HttpClient client = null;
+    ResponseMsg msg = null;
+    try {
+      int timeout = 300;
+      RequestConfig config = RequestConfig.custom()
+        .setConnectTimeout(timeout*1000)
+        .setConnectionRequestTimeout(timeout*1000).build();
+      client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+      client = HttpClientBuilder.create().build();
+      HttpPost post = new HttpPost(address_ + "/" + req.getRequestInfo());
+      post.setHeader("Connection","keep-alive");
+      post.setHeader("Content-Type","application/json");
+      HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
+      post.setEntity(entity);
+      response = client.execute(post);
+      int statusCode =  response.getStatusLine().getStatusCode();
+      responseEntity = response.getEntity();
+      rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()));
+      StringBuilder res = builders.get();
+      String line = "";
+      while ((line = rd.readLine()) != null) {
+        res.append(line);
+      }
+      msg = new ResponseMsg(getX(), res.toString());
+      msg.setHttpStatusCode(statusCode);
+      System.out.println(msg.getJson());
+    } catch ( Throwable t ) {
+      throw new RuntimeException(t);
+    } finally {
+      IOUtils.closeQuietly(rd);
+      HttpClientUtils.closeQuietly(response);
+      HttpClientUtils.closeQuietly(client);
+      return msg;
     }
   }
 

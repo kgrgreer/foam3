@@ -24,7 +24,7 @@ public class FlinksRequestGenerator {
     authRequest.setUsername(username);
     authRequest.setRequestId(requestId);
     authRequest.setSecurityResponses(MFA);
-    authRequest.setSave(true);
+    authRequest.setSave(false);
     authRequest.setMostRecentCached(false);
     RequestMsg msg = new RequestMsg(x, authRequest);
     msg.setHttpMethod("POST");
