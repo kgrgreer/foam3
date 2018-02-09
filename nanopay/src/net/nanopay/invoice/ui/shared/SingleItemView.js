@@ -83,6 +83,8 @@ foam.CLASS({
           height: 20px;
           object-fit: contain;
           cursor: pointer;
+          position: sticky;
+          z-index: 10;
         }
         ^ .dropdown {
           position: relative;

@@ -129,6 +129,9 @@ foam.CLASS({
       position: relative;
       top: 25px;
     }
+    ^ .note-div {
+      height:
+    }
   `,
 
   methods: [
@@ -193,8 +196,8 @@ foam.CLASS({
                 .end()
               .end()
             .endContext()
-            .start().addClass('small-margin')
-              .add('Note')
+            .start()
+              .start().addClass('label').add('Note').end()
               .start(this.Invoice.NOTE).addClass('half-input-box').end()
             .end()
           .end();
