@@ -39,7 +39,6 @@ public class PaidEmailDAO
       message.setTo(new String[]{user.getEmail()});
       HashMap<String, Object> args = new HashMap<>();
       args.put("amount", formatter.format(transaction.getAmount()/100));
-
       //Arguments for transfer Paid template
       args.put("name", user.getFirstName());
       args.put("email", user.getEmail());
