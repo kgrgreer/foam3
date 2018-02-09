@@ -340,35 +340,17 @@ foam.CLASS({
 
           var txAmount = Math.round(self.viewData.fromAmount*100);
 
-          // Get payer's bank account
-          this.bankAccountDAO.where(
-            this.AND(
-              this.EQ(this.BankAccount.OWNER, this.user.id),
-              this.EQ(this.BankAccount.STATUS, 'Verified')
-            )
-          ).limit(1).select(function(cashInBankAccount) {
-            // Perform a cash-in operation
-            var cashInTransaction = self.Transaction.create({
-              payeeId: self.user.id,
-              amount: txAmount,
-              bankAccountId: cashInBankAccount.id,
-              type: self.TransactionType.CASHIN
-            });
+          transaction = self.Transaction.create({
+            payerId: self.user.id,
+            payeeId: self.viewData.payee.id,
+            amount: txAmount,
+            invoiceId: invoiceId,
+            notes: self.viewData.notes
+          });
 
-            return self.standardCICOTransactionDAO.put(cashInTransaction);
-          }).then(function(response) {
-            // NOTE: payerID, payeeID, amount in cents, rate, purpose
-            transaction = self.Transaction.create({
-              payerId: self.user.id,
-              payeeId: self.viewData.payee.id,
-              amount: txAmount,
-              invoiceId: invoiceId,
-              notes: self.viewData.notes
-            });
-
-            // Make the transfer
-            return self.transactionDAO.put(transaction);
-          }).then(function (result) {
+          // Make the transfer
+          return self.transactionDAO.put(transaction)
+          .then(function (result) {
             if ( result ) {
               self.viewData.transaction = result;
             }

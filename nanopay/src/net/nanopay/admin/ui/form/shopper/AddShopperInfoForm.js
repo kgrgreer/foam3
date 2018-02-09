@@ -213,6 +213,16 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
       }
+    },
+    {
+      class: 'String',
+      name: 'confirmPassword',
+      factory: function() {
+        return this.viewData.confirmPassword;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.confirmPassword = newValue;
+      }
     }
   ],
 
@@ -232,7 +242,8 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'PasswordLabel', message: 'Password' },
-    { name: 'CreateAPasswordLabel', message: 'Create a Password *' }
+    { name: 'CreateAPasswordLabel', message: 'Create a Password *' },
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
@@ -299,6 +310,10 @@ foam.CLASS({
             .start().addClass('topMargin')
               .start().add(this.CreateAPasswordLabel).addClass('infoLabel').end()
               .start(this.PASSWORD).addClass('inputExtraLarge').end()
+            .end()
+            .start().addClass('topMargin')
+              .start().add(this.ConfirmPasswordLabel).addClass('infoLabel').end()
+              .start(this.CONFIRM_PASSWORD).addClass('inputExtraLarge').end()
             .end()
           .end()
         .end();

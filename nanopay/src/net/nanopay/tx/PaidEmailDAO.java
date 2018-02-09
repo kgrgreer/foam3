@@ -38,16 +38,22 @@ public class PaidEmailDAO
       EmailMessage message = new EmailMessage();
       message.setTo(new String[]{user.getEmail()});
       HashMap<String, Object> args = new HashMap<>();
+      args.put("amount", formatter.format(transaction.getAmount()/100));
+
+      //Arguments for transfer Paid template
       args.put("name", user.getFirstName());
       args.put("email", user.getEmail());
-      args.put("fromEmail", sender.getEmail());
-      args.put("fromName", sender.getEmail());
-      args.put("amount", formatter.format(transaction.getAmount()/100));
       args.put("link" , config.getUrl());
       args.put("applink" , config.getAppLink());
       args.put("playlink" , config.getPlayLink());
+
+      //Arguments for invoice Paid template
+      args.put("fromEmail", sender.getEmail());
+      args.put("fromName", sender.getEmail());
       args.put("number" , transaction.getInvoiceId());
-      String template = (transaction.getInvoiceId() == 0) ? "transfer-paid" : "nanopay-paid";
+
+
+      String template = (transaction.getInvoiceId() == 0) ? "transfer-paid" : "invoice-paid";
       System.out.println(template);
       email.sendEmailFromTemplate(user, message, template, args);
     } catch(Throwable t) {
