@@ -62,6 +62,7 @@ foam.CLASS({
         .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice tbody tr {
           height: 40px;
         }
+        .foam-u2-view-TableView-th-id  {width: 80px;}
         .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; }
         .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; }
         .foam-u2-view-TableView-th-payerName { width: 150px; }
