@@ -10,7 +10,7 @@ public class FlinksRequestGenerator {
     authRequest.setInstitution(institution);
     authRequest.setUsername(username);
     authRequest.setPassword(password);
-    authRequest.setSave(true);
+    authRequest.setSave(false);
     authRequest.setMostRecentCached(false);
     RequestMsg msg = new RequestMsg(x, authRequest);
     msg.setHttpMethod("POST");
