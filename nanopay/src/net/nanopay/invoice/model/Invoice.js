@@ -39,6 +39,11 @@ foam.CLASS({
 
   javaImports: [ 'java.util.Date' ],
 
+  constants: {
+    RECORDED_PAYMENT: -2,
+    DISPUTED_INVOICE: -1
+  },
+
   properties: [
     {
       name: 'search',
@@ -183,9 +188,9 @@ foam.CLASS({
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
         if ( paymentMethod.name == 'VOID' ) return 'Void';
-        if ( paymentId === -1 ) return 'Disputed';
-        if ( paymentId > 0 ) return 'Paid';
-        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == -2) {  return 'Scheduled' };
+        if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
+        if ( paymentId > 0 || paymentDate < Date.now() && paymentId == this.RECORDED_PAYMENT) return 'Paid';
+        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) {  return 'Scheduled' };
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
