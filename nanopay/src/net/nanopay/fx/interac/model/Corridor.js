@@ -21,18 +21,27 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Region',
-      name: 'region',
+      name: 'targetCountrySubDivision',
       required: true
-    },
-    {
-      class: 'StringArray',
-      name: 'currencies',
-      required: true
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.fx.interac.model.PayoutOptions',
-      name: 'payoutOptions'
     }
   ]
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.fx.interac.model.Corridor',
+  targetModel: 'net.nanopay.model.Currency',
+  forwardName: 'currencies',
+  inverseName: 'corridors',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.fx.interac.model.Corridor',
+  targetModel: 'net.nanopay.fx.interac.model.PayoutOptions',
+  forwardName: 'payoutOptions',
+  inverseName: 'corridors',
+  cardinality: '1:*'
 });
