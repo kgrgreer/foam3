@@ -71,6 +71,11 @@ foam.CLASS({
             return;
           }
 
+          if ( companyInfo.password != companyInfo.confirmPassword ){
+            self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+            return;
+          }
+
           if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(companyInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return; 
