@@ -209,7 +209,6 @@ public class FlinksRestService
       }
       msg = new ResponseMsg(getX(), res.toString());
       msg.setHttpStatusCode(statusCode);
-      System.out.println(msg.getJson());
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
     } finally {

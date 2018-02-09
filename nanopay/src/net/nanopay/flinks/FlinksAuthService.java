@@ -60,7 +60,6 @@ public class FlinksAuthService
         }
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
-        System.out.print(respMsg.getJson());
         Logger logger = (Logger) x.get("logger");
         logger.error("Flinks Authorize: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
       }
@@ -86,7 +85,6 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         throw new AuthenticationException("Exception throw when connect to the Flinks");
       }
-      System.out.println(reqMsg.getJson());
       FlinksResponse feedback;
       int httpCode = respMsg.getHttpStatusCode();
       if ( httpCode == 200 ) {
