@@ -23,7 +23,7 @@ foam.CLASS({
     ^ .businessImage {
       width: 53px;
       height: 53px;
-      margin-top: 20px;
+      margin-top: 10px;
       display: inline-block;
     }
     ^ .businessName {
@@ -120,7 +120,13 @@ foam.CLASS({
             .end()
             .start().add(this.BusinessProfileLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('businessImage').end()
+              .start().addClass('businessImage')
+                .tag({
+                  class: 'foam.nanos.auth.ProfilePictureView',
+                  data: this.viewData.profilePicture,
+                  uploadHidden: true
+                })
+              .end()
               .start().add(this.viewData.businessName).addClass('businessName').end()
             .end()
             .start().addClass('inline')

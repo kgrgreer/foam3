@@ -67,7 +67,6 @@ foam.CLASS({
       }
       ^ .customer-div {
         display: inline-block;
-        margin-bottom: 20px;
       }
       ^ .frequency-div {
         display: inline-block;
@@ -146,6 +145,15 @@ foam.CLASS({
       ^ .information {
         height: 200px;
       }
+      ^ .invoice-num{
+        position: relative;
+        top: 25px;
+      }
+      ^ .invoice-input{
+        float: right;
+        position: relative;
+        top: -168px;
+      }
     `,
 
     methods: [
@@ -171,7 +179,11 @@ foam.CLASS({
                     .start(this.USER_LIST).end()
                   .endContext()
                 .end()
-                .start().addClass('input-container-1')
+                .start().addClass('invoice-num')
+                  .start().addClass('label').add('Invoice #').end()
+                  .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+                .end()
+                .start().addClass('input-container-1').addClass('invoice-input')
                   .start().addClass('float-right')
                     .start().addClass('label').add('PO #').end()
                     .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
@@ -257,7 +269,8 @@ foam.CLASS({
             dueDate: this.data.dueDate,
             purchaseOrder: this.data.purchaseOrder,
             note: this.data.note,
-            invoiceFile: this.data.invoiceFile
+            invoiceFile: this.data.invoiceFile,
+            invoiceNumber: this.data.invoiceNumber
           });
 
           X.dao.put(inv);

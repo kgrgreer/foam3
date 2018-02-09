@@ -93,6 +93,9 @@ foam.CLASS({
     ^ .topMargin {
       margin-top: 20px;
     }
+    ^ .bottomMargin {
+      margin-botton: 20px;
+    }
     ^ .rightMargin {
       margin-right: 10px;
     }
@@ -102,6 +105,17 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'File',
+      name: 'profilePicture',
+      view: { class: 'foam.nanos.auth.ProfilePictureView' },
+      factory: function () {
+        return this.viewData.profilePicture;
+      },
+      postSet: function (oldValue, newValue) {
+        this.viewData.profilePicture = newValue;
+      }
+    },
     {
       class: 'String',
       name: 'businessName',
@@ -265,8 +279,6 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 2: Fill in the merchant\'s business profile. scroll down to continue and hit next when finished' },
     { name: 'BusinessInformationLabel', message: 'Business Information' },
-    { name: 'UploadImageLabel', message: 'Upload Image' },
-    { name: 'UploadDesc', message: 'JPG, GIF, JPEG, BMP or PNG' },
     { name: 'BusinessNameLabel', message: 'Business Name *' },
     { name: 'CountryLabel', message: 'Country *' },
     { name: 'CompanyEmailLabel', message: 'Company Email *' },
@@ -292,12 +304,8 @@ foam.CLASS({
           .start('p').addClass('pDefault stepTopMargin').add(this.Step).end()
           .start().addClass('infoContainer')
             .start().add(this.BusinessInformationLabel).addClass('labelTitle').end()
-            .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('merchantImage').end()
-              .start().addClass('uploadButtonContainer')
-                .add(this.UPLOAD_IMAGE)
-                .start().add(this.UploadDesc).addClass('uploadDescription').end()
-              .end()
+            .start().addClass('topMargin bottomMargin')
+              .add(this.PROFILE_PICTURE)
             .end()
             .start().addClass('inline')
               .start().add(this.BusinessNameLabel).addClass('infoLabel').end()

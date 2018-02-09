@@ -43,7 +43,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
-      margin-left: 40px;
+      padding-left: 100px;
       display: inline-block;
       line-height: 16px;
       position: absolute;
@@ -167,7 +167,11 @@ foam.CLASS({
           .start().add('Business Profile').addClass('boxTitle').end()
           .add(this.EDIT_PROFILE)
           .start().addClass('profileImgDiv')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png'}).addClass('profileImg').end()
+            .tag({
+              class: 'foam.nanos.auth.ProfilePictureView',
+              data: this.user.profilePicture,
+              uploadHidden: true
+            })
             .start().add(this.user.businessName).addClass('companyName').end()
           .end()
           .start()

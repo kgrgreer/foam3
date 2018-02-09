@@ -129,6 +129,7 @@ foam.CLASS({
             phone: merchantPhone,
             address: merchantAddress,
             password: merchantInfo.password,
+            profilePicture: merchantInfo.profilePicture,
             businessIdentificationNumber: merchantInfo.registrationNumber,
             website: merchantInfo.website,
             businessTypeId: merchantInfo.businessType,
