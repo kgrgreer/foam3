@@ -256,7 +256,7 @@ foam.CLASS({
               self.viewData.SecurityChallenges = msg.SecurityChallenges;
               self.MFADisparcher(msg);
             } else {
-              if ( msg.FlinksCode && msg.FlinksCode === 'INVALID_LOGIN' && msg.FlinksCode === 'INVALID_USERNAME' && msg.FlinksCode === 'INVALID_PASSWORD' ) {
+              if ( msg.FlinksCode && (msg.FlinksCode === 'INVALID_LOGIN' || msg.FlinksCode === 'INVALID_USERNAME' || msg.FlinksCode === 'INVALID_PASSWORD') ) {
                 if ( msg.Message && msg.Message !== '' ) {
                   self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
                 } else {
