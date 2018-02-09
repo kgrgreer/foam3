@@ -152,7 +152,7 @@ foam.CLASS({
                 self.nextLabel = 'Done';
               });
             } else {
-              self.add(self.NotificationMessage.create({ message: 'New shopper ' + merchantInfo.businessName + ' successfully added.' }));
+              self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
               return
