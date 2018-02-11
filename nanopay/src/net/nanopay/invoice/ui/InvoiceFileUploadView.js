@@ -35,7 +35,7 @@ foam.CLASS({
       z-index: -1;
     }
     ^ .attachment-btn {
-      margin: 10px 0;
+      margin: 10px 0 50px;
     }
   `,
 
@@ -71,7 +71,6 @@ foam.CLASS({
             .add('Add Attachment')
             .on('click', self.onAddAttachmentClicked)
           .end()
-          .add('Maximum size 10MB')
         .end();
     },
 
@@ -91,7 +90,7 @@ foam.CLASS({
       var files = e.target.files;
       for ( var i = 0 ; i < files.length ; i++ ) {
         this.data.push(this.File.create({
-          ownerId: this.user.id,
+          owner: this.user.id,
           filename: files[i].name,
           filesize: files[i].size,
           mimeType: files[i].type,

@@ -240,6 +240,7 @@ foam.CLASS({
           margin-bottom: 15px;
           outline: none;
           padding: 10px;
+          font-size: 14px;
         }
         .label{
           height: 16px;
@@ -269,6 +270,16 @@ foam.CLASS({
           display: inline-block;
           border-radius: 4px;
           border: solid 1px #1cc2b7;
+        }
+        .property-password{
+          text-security:disc;
+          -webkit-text-security:disc;
+          -mox-text-security:disc;
+        }
+        .property-confirmPassword{
+          text-security:disc;
+          -webkit-text-security:disc;
+          -mox-text-security:disc;
         }
          .button-row {
            width: 1004px;

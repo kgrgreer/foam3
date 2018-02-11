@@ -23,7 +23,7 @@ foam.CLASS({
     ^ .businessImage {
       width: 53px;
       height: 53px;
-      margin-top: 20px;
+      margin-top: 10px;
       display: inline-block;
     }
     ^ .businessName {
@@ -107,8 +107,6 @@ foam.CLASS({
               .start().add(this.viewData.firstName).addClass('infoText bottomMargin').end()
               .start().add(this.EmailLabel).addClass('boldLabel').end()
               .start().add(this.viewData.email).addClass('infoText bottomMargin').end()
-              .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.LastNameLabel).addClass('boldLabel').end()
@@ -120,7 +118,13 @@ foam.CLASS({
             .end()
             .start().add(this.BusinessProfileLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('businessImage').end()
+              .start().addClass('businessImage')
+                .tag({
+                  class: 'foam.nanos.auth.ProfilePictureView',
+                  data: this.viewData.profilePicture,
+                  uploadHidden: true
+                })
+              .end()
               .start().add(this.viewData.businessName).addClass('businessName').end()
             .end()
             .start().addClass('inline')

@@ -34,7 +34,7 @@ foam.CLASS({
       name: 'companyName'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'invoiceNum'
     },
     {

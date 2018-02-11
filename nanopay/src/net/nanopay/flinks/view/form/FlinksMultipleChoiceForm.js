@@ -20,7 +20,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -45,9 +45,9 @@ foam.CLASS({
           color: #093649;
         }
         ^ .qa-block {
-          border: 2px solid #778899;
+          border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -74,7 +74,7 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -86,6 +86,7 @@ foam.CLASS({
           font-weight: lighter;
           letter-spacing: 0.2px;
           margin-right: 40px;
+          margin-left: 1px;
         }
 
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
@@ -185,7 +186,6 @@ foam.CLASS({
               })
             }
             this.start('p').addClass('question').add(self.viewData.questions[index]).end();
-            //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
             this.start(attachElement).style({'margin-top':'5px'}).end();
           })
         .end()
@@ -197,6 +197,7 @@ foam.CLASS({
       .start('div').style({'clear' : 'both'}).end();
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
@@ -221,4 +222,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

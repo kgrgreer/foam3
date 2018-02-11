@@ -6,11 +6,11 @@ foam.CLASS({
   documentation: 'Form to review merchant information to make sure its correct',
 
   imports: [
-    'viewData',
-    'goBack',
-    'goNext',
     'businessSectorDAO',
-    'businessTypeDAO'
+    'businessTypeDAO',
+    'goBack',
+    'goNext', 
+    'viewData',
   ],
 
   css:`
@@ -28,13 +28,13 @@ foam.CLASS({
     }
     ^ .businessName {
       position: relative;
-      bottom: 20;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
       display: inline-block;
-      margin-left: 25px;
+      bottom: 35;
+      left: 45;
     }
     ^ .boldLabel {
       font-size: 14px;
@@ -72,7 +72,9 @@ foam.CLASS({
     { name: 'RegistrationNumberLabel', message: 'Registration Number' },
     { name: 'BusinessSectorLabel', message: 'Business Sector' },
     { name: 'WebsiteLabel', message: 'Website' },
-    { name: 'AddressLabel', message: 'Address' }
+    { name: 'AddressLabel', message: 'Address' },
+    { name: 'SendMoneyLabel', message: 'Send Money' },
+    { name: 'AmountLabel', message: 'Amount' }
   ],
 
   properties: [
@@ -93,7 +95,6 @@ foam.CLASS({
       this.businessSectorDAO.find(this.viewData.businessSector).then(function(a) {
         self.businessSectorName = a.name;
       });
-
       this
         .addClass(this.myClass())
         .start()
@@ -105,8 +106,6 @@ foam.CLASS({
               .start().add(this.viewData.firstName).addClass('infoText bottomMargin').end()
               .start().add(this.EmailLabel).addClass('boldLabel').end()
               .start().add(this.viewData.companyEmail).addClass('infoText bottomMargin').end()
-              .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.LastNameLabel).addClass('boldLabel').end()
@@ -116,7 +115,13 @@ foam.CLASS({
             .end()
             .start().add(this.BusinessProfileLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('businessImage').end()
+              .start().addClass('businessImage')
+                .tag({
+                  class: 'foam.nanos.auth.ProfilePictureView',
+                  data: this.viewData.profilePicture,
+                  uploadHidden: true
+                })
+              .end()
               .start().add(this.viewData.businessName).addClass('businessName').end()
             .end()
             .start().addClass('inline')
@@ -138,7 +143,11 @@ foam.CLASS({
               .start().add(this.viewData.addressLine).addClass('infoText').end()
               .start().add(this.viewData.city + ' ' + this.viewData.province + ' ' + this.viewData.country).addClass('infoText').end()
             .end()
-
+            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()            
+            .start().addClass('inline')
+              .start().add(this.AmountLabel).addClass('boldLabel').end()
+              .start().add('$',(this.viewData.amount/100).toFixed(2)).addClass('infoText bottomMargin').end()              
+            .end()
           .end()
         .end();
     }

@@ -9,10 +9,8 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
-import net.nanopay.model.Account;
-
 import java.security.AccessControlException;
-
+import net.nanopay.model.Account;
 import static foam.mlang.MLang.EQ;
 
 public class AuthenticatedAccountDAO
@@ -30,9 +28,9 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
-    Account account = (Account) obj;
-    AuthService auth = (AuthService) x.get("auth");
+    User        user    = (User) x.get("user");
+    Account     account = (Account) obj;
+    AuthService auth    = (AuthService) x.get("auth");
 
     if ( user == null ) {
       new Exception().printStackTrace();
@@ -64,7 +62,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User        user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -78,9 +76,9 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    User user = (User) x.get("user");
-    Account account = (Account) obj;
-    AuthService auth = (AuthService) x.get("auth");
+    User        user    = (User) x.get("user");
+    Account     account = (Account) obj;
+    AuthService auth    = (AuthService) x.get("auth");
 
     if ( user == null ) {
       throw new AccessControlException("User is not logged in");
@@ -95,7 +93,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User        user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {

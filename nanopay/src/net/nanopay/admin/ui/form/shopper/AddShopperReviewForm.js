@@ -6,9 +6,10 @@ foam.CLASS({
   documentation: 'Form to review shopper information to make sure its correct',
 
   imports: [
-    'viewData',
+    'formatCurrency',        
     'goBack',
-    'goNext'
+    'goNext',
+    'viewData'
   ],
 
   css:`
@@ -21,7 +22,7 @@ foam.CLASS({
     ^ .shopperImage {
       width: 53px;
       height: 53px;
-      margin-top: 20px;
+      margin-top: 10px;
       display: inline-block;
     }
     ^ .shopperName {
@@ -80,7 +81,13 @@ foam.CLASS({
           .start().addClass('infoContainer')
             .start().add(this.ShopperInfoLabel).addClass('greenLabel').end()
             .start().addClass('bottomMargin')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/person.svg' }).addClass('shopperImage').end()
+              .start().addClass('shopperImage')
+                .tag({
+                  class: 'foam.nanos.auth.ProfilePictureView',
+                  data: this.viewData.profilePicture,
+                  uploadHidden: true
+                })
+              .end()
               .start().add(this.viewData.firstName + ' ' + this.viewData.lastName).addClass('shopperName').end()
             .end()
             .start().addClass('inline')
@@ -88,8 +95,6 @@ foam.CLASS({
               .start().add(this.viewData.emailAddress).addClass('infoText bottomMargin').end()
               .start().add(this.BirthdayLabel).addClass('boldLabel').end()
               .start().add(formattedBirthday).addClass('infoText bottomMargin').end()
-              .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.PhoneNumberLabel).addClass('boldLabel').end()
@@ -99,6 +104,11 @@ foam.CLASS({
               .start().add(this.viewData.postalCode).addClass('infoText').end()
               .start().add(this.viewData.addressLine).addClass('infoText').end()
               .start().add(this.viewData.city + ' ' + this.viewData.province).addClass('infoText').end()
+            .end()
+            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()            
+            .start().addClass('inline')
+              .start().add(this.AmountLabel).addClass('boldLabel').end()
+              .start().add(this.formatCurrency(this.viewData.amount/100)).addClass('infoText bottomMargin').end()              
             .end()
           .end()
         .end();

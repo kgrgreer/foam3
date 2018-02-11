@@ -28,6 +28,10 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
+  constants: {
+    RECORDED_PAYMENT: -2
+  },
+
   css: `
     ^ {
       width: 962px;
@@ -43,7 +47,8 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: static;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
       position: absolute;
@@ -59,6 +64,8 @@ foam.CLASS({
       color: white;
       float: right;
       margin-right: 1px;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-voidDropDown {
       width: 30px;
@@ -78,7 +85,7 @@ foam.CLASS({
     }
     ^ .popUpDropDown {
       padding: 0 !important;
-      z-index: 10000;
+      z-index: 100;
       width: 165px;
       background: white;
       opacity: 1;
@@ -156,7 +163,7 @@ foam.CLASS({
       label: 'Record Payment',
       code: function(X) {
         var self = this;
-        if(this.data.paymentMethod.name != "NONE"){
+        if(this.data.paymentMethod.name != "NONE" || this.data.paymentId != this.RECORDED_PAYMENT && this.data.paymentDate < Date.now() ){
           self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }
@@ -172,7 +179,7 @@ foam.CLASS({
          self.voidPopUp_ = self.PopupView.create({
            width: 165,
            x: -137,
-           y: 40
+           y: 40,
          })
          self.voidPopUp_.addClass('popUpDropDown')
           .start('div').add('Void')

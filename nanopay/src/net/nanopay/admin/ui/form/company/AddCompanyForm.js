@@ -71,6 +71,11 @@ foam.CLASS({
             return;
           }
 
+          if ( companyInfo.password != companyInfo.confirmPassword ){
+            self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+            return;
+          }
+
           if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(companyInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return; 
@@ -130,21 +135,20 @@ foam.CLASS({
             phone: businessPhone,
             address: businessAddress,
             password: companyInfo.password,
+            profilePicture: companyInfo.profilePicture,
             businessIdentificationNumber: companyInfo.registrationNumber,
             website: companyInfo.website,
             businessTypeId: companyInfo.businessType,
-            businessSectorId: companyInfo.businessSector
+            businessSectorId: companyInfo.businessSector,
+            portalAdminCreated:true
           });
 
           this.userDAO.put(newBusiness).then(function(response) {
-            companyInfo.business = response;
             self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.businessName + ' successfully added!', type: '' }));
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.nextLabel = 'Done';
-            return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
           });
 
         }

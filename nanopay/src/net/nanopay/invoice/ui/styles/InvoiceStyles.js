@@ -54,6 +54,9 @@ foam.CLASS({
         .Invoice-Status-Draft {
           color: #666666;
         }
+        .property-userList{
+          height: 50px;
+        }
         .generic-status{
           border-radius: 30px;
           padding: 3px 7px;

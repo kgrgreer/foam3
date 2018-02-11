@@ -11,8 +11,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.PopupView',
-    'net.nanopay.invoice.ui.InvoiceFileSubView'
+    'foam.u2.PopupView'
   ],
 
   properties: [
@@ -58,7 +57,7 @@ foam.CLASS({
           width: 962px;
           height: 40px;
           background: white;
-          padding: 10px 0;
+          padding: 10px 0 20px 0;
           margin: 0;
         }
         ^ p{
@@ -76,14 +75,16 @@ foam.CLASS({
         ^ .table-attachment {
           width: 20px;
           height: 20px;
-          padding: 10px;
           float: left;
+          padding: 10px 0 0 20px;
         }
         ^ .table-attachment img {
           width: 20px;
           height: 20px;
           object-fit: contain;
           cursor: pointer;
+          position: sticky;
+          z-index: 10;
         }
         ^ .dropdown {
           position: relative;
@@ -113,7 +114,9 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
-            .start().addClass('table-attachment').end()
+            .callIf(this.data.invoiceFile[0], function(){
+              this.start().addClass('table-attachment').end()
+            })
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function(){
@@ -124,12 +127,14 @@ foam.CLASS({
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
-            .start().addClass('table-attachment')
-              .start('span', null, this.popupMenu_$)
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
-                .on('click', this.onAttachmentButtonClick)
+            .callIf(this.data.invoiceFile[0], function(){
+              this.start().addClass('table-attachment')
+                .start('span', null, self.popupMenu_$)
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
+                  .on('click', self.onAttachmentButtonClick)
+                .end()
               .end()
-            .end()
+            })
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()

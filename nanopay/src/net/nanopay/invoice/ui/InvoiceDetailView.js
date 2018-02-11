@@ -75,7 +75,6 @@ foam.CLASS({
     }
     ^ .customer-div {
       display: inline-block;
-      margin-bottom: 20px;
     }
     ^ .po-amount-div {
       margin-left: 20px;
@@ -121,6 +120,18 @@ foam.CLASS({
     ^ .information {
       height: 200px;
     }
+    ^ .invoice-input{
+      float: right;
+      position: relative;
+      top: -168px;
+    }
+    ^ .invoice-num{
+      position: relative;
+      top: 25px;
+    }
+    ^ .note-div {
+      height:
+    }
   `,
 
   methods: [
@@ -147,7 +158,11 @@ foam.CLASS({
                   .start(this.USER_LIST).end()
                 .endContext()
               .end()
-              .start().style({ 'float' : 'right'})
+              .start().addClass('invoice-num')
+                .start().addClass('label').add('Invoice #').end()
+                .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+              .end()
+              .start().style({ 'float' : 'right'}).addClass('invoice-input')
                 .start().addClass('po-amount-div float-right')
                   .start().addClass('label').add('PO #').end()
                   .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
@@ -181,8 +196,8 @@ foam.CLASS({
                 .end()
               .end()
             .endContext()
-            .start().addClass('small-margin')
-              .add('Note')
+            .start()
+              .start().addClass('label').add('Note').end()
               .start(this.Invoice.NOTE).addClass('half-input-box').end()
             .end()
           .end();
@@ -231,6 +246,7 @@ foam.CLASS({
           amount: this.data.amount,
           dueDate: this.data.dueDate,
           purchaseOrder: this.data.purchaseOrder,
+          invoiceNumber: this.data.invoiceNumber,
           note: this.data.note,
           invoiceFile: this.data.invoiceFile
         });
