@@ -452,7 +452,7 @@ foam.CLASS({
     function timeRegex() {
       var self = this;
 
-      var regex = new RegExp('((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))');
+      var regex = new RegExp('\([0-2][0-9]):([0-5][0-9])$');
 
       if ( this.sundayStartTime != ''    && ! regex.test(this.sundayStartTime)     ||
            this.sundayEndTime != ''      && ! regex.test(this.sundayEndTime)       ||
@@ -485,10 +485,12 @@ foam.CLASS({
 
         var businessHoursArray = [];
 
+        console.log(this.mondayStartTime);
+
         if( ! X.timeRegex() ) {
-          self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: 'Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', type: 'error' }));
           return;
-        };
+        }
 
         X.setDaysClosed();
 
