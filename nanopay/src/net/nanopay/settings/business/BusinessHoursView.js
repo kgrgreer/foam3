@@ -472,7 +472,7 @@ foam.CLASS({
            this.fridayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayStartTime)     ||
            this.fridayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayEndTime)       ||
            this.saturdayStartTime != ''  && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayStartTime)   ||
-           this.saturdayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayEndTime)      ) {
+           this.saturdayEndTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayEndTime)      ) {
         self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
         return;
       }
