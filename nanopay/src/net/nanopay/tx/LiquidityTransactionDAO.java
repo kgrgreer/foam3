@@ -87,7 +87,7 @@ public class LiquidityTransactionDAO
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payeeAccount.getBalance() >= total ) {
       if ( payeeBankAccountList.getArray().size() == 0 )
-        throw new RuntimeException("The payee don't have bank account, so the cashout will not success!");
+        throw new RuntimeException("The payee doesn't have a verified bank account.");
       Transaction transaction = new Transaction.Builder(x)
           .setPayeeId(payeeAccount.getId())
           .setPayerId(payeeAccount.getId())
