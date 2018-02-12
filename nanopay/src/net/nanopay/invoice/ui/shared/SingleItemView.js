@@ -114,7 +114,9 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
-            .start().addClass('table-attachment').end()
+            .callIf(this.data.invoiceFile[0], function(){
+              this.start().addClass('table-attachment').end()
+            })
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function(){

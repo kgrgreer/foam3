@@ -108,6 +108,7 @@ sha256/
 /encryptedRegions
 /hashedTxns
 /rollingHashedTxns
+/signedTxns
 /currencies
 /corridors
 /transactionPurposes
