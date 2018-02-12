@@ -11,12 +11,9 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.view.StringArrayView',
-<<<<<<< HEAD
     'foam.u2.tag.Input',
-    'net.nanopay.flinks.view.element.StringArrayInput'
-=======
+    'net.nanopay.flinks.view.element.StringArrayInput',
     'foam.u2.view.PasswordView'
->>>>>>> master
   ],
 
   axioms: [
