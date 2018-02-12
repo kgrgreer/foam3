@@ -34,7 +34,6 @@ public class LiquidityTransactionDAO
     Transaction txn = (Transaction) obj;
 
     // initialize our DAO
-    standardCICOTransactionDAO_ = (DAO) x.get("standardCICOTransactionDAO");
     bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
     accountDAO_ = (DAO) x.get("localAccountDAO");
 
@@ -50,54 +49,57 @@ public class LiquidityTransactionDAO
     Account payerAccount = (Account) accountDAO_.find(txn.getPayerId());
 
     // get payer and payee bank account
-    BankAccount payerBankAccount = (BankAccount) ( (ArraySink) bankAccountDAO_.where(
+    ArraySink payerBankAccountList = new ArraySink();
+    ArraySink payeeBankAccountList = new ArraySink();
+
+    bankAccountDAO_.where(
         AND(
             EQ(BankAccount.OWNER, payerAccount.getId()),
             EQ(BankAccount.STATUS, "Verified")
         ))
-        .limit(1).select(new ArraySink()) ).getArray().get(0);
-    BankAccount payeeBankAccount = (BankAccount) ( (ArraySink) bankAccountDAO_.where(
+        .limit(1).select(payerBankAccountList);
+    bankAccountDAO_.where(
         AND(
             EQ(BankAccount.OWNER, payeeAccount.getId()),
             EQ(BankAccount.STATUS, "Verified")
         ))
-        .limit(1).select(new ArraySink()) ).getArray().get(0);
+        .limit(1).select(payeeBankAccountList);
 
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payerAccount.getBalance() < total ) {
-      long cashinAmount = total - payerAccount.getBalance();
-      Transaction transaction = new Transaction();
-      transaction.setPayerId(payerAccount.getId());
-      transaction.setPayeeId(payerAccount.getId());
-      transaction.setAmount(cashinAmount);
-      transaction.setType(TransactionType.CASHIN);
-      transaction.setBankAccountId(payerBankAccount.getId());
-      standardCICOTransactionDAO_.put(transaction);
+      if ( payerBankAccountList.getArray().size() == 0 )
+        throw new RuntimeException("The payer don't have bank account and the balance is Insufficient");
+      long cashInAmount = total - payerAccount.getBalance();
+      Transaction transaction = new Transaction.Builder(x)
+          .setPayeeId(payerAccount.getId())
+          .setPayerId(payerAccount.getId())
+          .setAmount(cashInAmount)
+          .setType(TransactionType.CASHIN)
+          .setBankAccountId(( (BankAccount) payerBankAccountList.getArray().get(0) ).getId())
+          .build();
+      super.put_(x, transaction);
     }
 
     // Make a payment
     FObject originalTx = null;
-    try {
-      originalTx = super.put_(x, obj);
+    originalTx = super.put_(x, obj);
 
-      // if the user's balance is not enough to make the payment, do cash in first
-      if ( payeeAccount.getBalance() >= total ) {
-
-        Transaction transaction = new Transaction();
-        transaction.setPayerId(payeeAccount.getId());
-        transaction.setPayeeId(payeeAccount.getId());
-        transaction.setAmount(total);
-        transaction.setType(TransactionType.CASHOUT);
-        transaction.setBankAccountId(payeeBankAccount.getId());
-        standardCICOTransactionDAO_.put(transaction);
-      }
-
-    } catch ( RuntimeException exception ) {
-      throw new RuntimeException("Transaction already refunded");
+    // if the user's balance is not enough to make the payment, do cash in first
+    if ( payeeAccount.getBalance() >= total ) {
+      if ( payeeBankAccountList.getArray().size() == 0 )
+        throw new RuntimeException("The payee don't have bank account, so the cashout will not success!");
+      Transaction transaction = new Transaction.Builder(x)
+          .setPayeeId(payeeAccount.getId())
+          .setPayerId(payeeAccount.getId())
+          .setAmount(total)
+          .setType(TransactionType.CASHOUT)
+          .setBankAccountId(( (BankAccount) payeeBankAccountList.getArray().get(0) ).getId())
+          .build();
+      super.put_(x, transaction);
+    } else {
+      throw new RuntimeException("Transaction is not success");
     }
 
     return originalTx;
-    //
-
   }
 }
