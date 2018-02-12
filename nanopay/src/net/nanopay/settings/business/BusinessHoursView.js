@@ -12,7 +12,8 @@ foam.CLASS({
 
   exports: [ 
     'as data',
-    'setDaysClosed'
+    'setDaysClosed',
+    'timeRegex'
   ],
 
   requires: [
@@ -447,6 +448,29 @@ foam.CLASS({
         this.saturdayStartTime = '';
         this.saturdayEndTime = '';
       }
+    },
+    function timeRegex() {
+      var self = this;
+
+      var regex = new RegExp('((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))');
+
+      if ( this.sundayStartTime != ''    && ! regex.test(this.sundayStartTime)     ||
+           this.sundayEndTime != ''      && ! regex.test(this.sundayEndTime)       ||
+           this.mondayStartTime != ''    && ! regex.test(this.mondayStartTime)     ||
+           this.mondayEndTime != ''      && ! regex.test(this.mondayEndTime)       ||
+           this.tuesdayStartTime != ''   && ! regex.test(this.tuesdayStartTime)    ||
+           this.tuesdayEndTime != ''     && ! regex.test(this.tuesdayEndTime)      ||
+           this.wednesdayStartTime != '' && ! regex.test(this.wednesdayStartTime)  ||
+           this.wednesdayEndTime != ''   && ! regex.test(this.wednesdayEndTime)    ||
+           this.thursdayStartTime != ''  && ! regex.test(this.thursdayStartTime)   ||
+           this.thursdayEndTime != ''    && ! regex.test(this.thursdayEndTime)     ||
+           this.fridayStartTime != ''    && ! regex.test(this.fridayStartTime)     ||
+           this.fridayEndTime != ''      && ! regex.test(this.fridayEndTime)       ||
+           this.saturdayStartTime != ''  && ! regex.test(this.saturdayStartTime)   ||
+           this.saturdayEndTime != ''    && ! regex.test(this.saturdayEndTime)      ) {
+        return false;
+      }
+      return true;
     }
   ],
 
@@ -459,25 +483,12 @@ foam.CLASS({
 
         var self = this;
 
-      if ( this.sundayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.sundayStartTime)     ||
-           this.sundayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.sundayEndTime)       ||
-           this.mondayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.mondayStartTime)     ||
-           this.mondayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.mondayEndTime)       ||
-           this.tuesdayStartTime != ''   && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.tuesdayStartTime)    ||
-           this.tuesdayEndTime != ''     && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.tuesdayEndTime)      ||
-           this.wednesdayStartTime != '' && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.wednesdayStartTime)  ||
-           this.wednesdayEndTime != ''   && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.wednesdayEndTime)    ||
-           this.thursdayStartTime != ''  && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.thursdayStartTime)   ||
-           this.thursdayEndTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.thursdayEndTime)     ||
-           this.fridayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayStartTime)     ||
-           this.fridayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayEndTime)       ||
-           this.saturdayStartTime != ''  && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayStartTime)   ||
-           this.saturdayEndTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayEndTime)      ) {
-        self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
-        return;
-      }
-
         var businessHoursArray = [];
+
+        if( ! X.timeRegex() ) {
+          self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
+          return;
+        };
 
         X.setDaysClosed();
 
