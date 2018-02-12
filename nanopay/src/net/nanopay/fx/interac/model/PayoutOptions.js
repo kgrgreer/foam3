@@ -20,24 +20,14 @@ foam.CLASS({
       name: 'owner'
     },
     {
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'net.nanopay.fx.interac.model.RequiredUserFields',
-      name: 'requiredSenderFields',
+      name: 'requiredUserFields',
       factory: function() {
-        var fields = this.RequiredUserFields.create();
-        fields.userType = 'Sender';
-        return fields;
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.fx.interac.model.RequiredUserFields',
-      name: 'requiredReceiverFields',
-      factory: function() {
-        var fields = this.RequiredUserFields.create();
-        fields.userType = 'Receiver';
-        fields.linkedReferenceNumber = true;
-        return fields;
+        return [
+          this.RequiredUserFields.create({userType: 'Sender'}),
+          this.RequiredUserFields.create({userType: 'Receiver', linkedReferenceNumber: true})
+        ];
       }
     }
   ]
