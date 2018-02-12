@@ -77,7 +77,7 @@ public class LiquidityTransactionDAO
           .setType(TransactionType.CASHIN)
           .setBankAccountId(( (BankAccount) payerBankAccountList.getArray().get(0) ).getId())
           .build();
-      super.put(transaction);
+      super.put_(x, transaction);
     }
 
     // Make a payment
@@ -95,13 +95,11 @@ public class LiquidityTransactionDAO
           .setType(TransactionType.CASHOUT)
           .setBankAccountId(( (BankAccount) payeeBankAccountList.getArray().get(0) ).getId())
           .build();
-      super.put(transaction);
+      super.put_(x, transaction);
     } else {
       throw new RuntimeException("Transaction is not success");
     }
 
     return originalTx;
-    //
-
   }
 }
