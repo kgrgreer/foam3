@@ -108,4 +108,5 @@ sha256/
 /encryptedRegions
 /hashedTxns
 /rollingHashedTxns
+/signedTxns
 /dugs
