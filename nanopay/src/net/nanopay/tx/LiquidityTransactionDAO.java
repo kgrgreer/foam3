@@ -97,7 +97,7 @@ public class LiquidityTransactionDAO
           .build();
       super.put_(x, transaction);
     } else {
-      throw new RuntimeException("Transaction is not success");
+      throw new RuntimeException("Transaction Failed");
     }
 
     return originalTx;
