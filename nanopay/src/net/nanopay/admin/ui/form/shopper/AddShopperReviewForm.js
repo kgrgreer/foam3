@@ -95,8 +95,6 @@ foam.CLASS({
               .start().add(this.viewData.emailAddress).addClass('infoText bottomMargin').end()
               .start().add(this.BirthdayLabel).addClass('boldLabel').end()
               .start().add(formattedBirthday).addClass('infoText bottomMargin').end()
-              .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.PhoneNumberLabel).addClass('boldLabel').end()

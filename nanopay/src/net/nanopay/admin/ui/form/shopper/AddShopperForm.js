@@ -78,6 +78,11 @@ foam.CLASS({
             return;
           }
 
+          if ( shopperInfo.password != shopperInfo.confirmPassword ){
+            self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+            return;
+          }
+
           if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(shopperInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return; 
@@ -152,7 +157,7 @@ foam.CLASS({
                 self.nextLabel = 'Done';
               });
             } else {
-              self.add(self.NotificationMessage.create({ message: 'New shopper ' + merchantInfo.businessName + ' successfully added.' }));
+              self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
               return

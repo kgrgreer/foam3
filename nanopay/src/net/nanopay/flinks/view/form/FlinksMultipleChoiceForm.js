@@ -20,7 +20,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -47,7 +47,7 @@ foam.CLASS({
         ^ .qa-block {
           border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -186,7 +186,6 @@ foam.CLASS({
               })
             }
             this.start('p').addClass('question').add(self.viewData.questions[index]).end();
-            //this.start(radio).style({ 'margin-left':'20px', 'margin-top':'10px'}).end();
             this.start(attachElement).style({'margin-top':'5px'}).end();
           })
         .end()
@@ -198,6 +197,7 @@ foam.CLASS({
       .start('div').style({'clear' : 'both'}).end();
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
@@ -222,4 +222,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

@@ -26,7 +26,7 @@ foam.CLASS({
       margin-right: 10px;
     }
     ^ .infoContainer{
-      height: 185px;
+      height: 285px;
     }
   `,
 
@@ -70,6 +70,16 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
       }
+    },
+    {
+      class: 'String',
+      name: 'confirmPassword',
+      factory: function() {
+        return this.viewData.confirmPassword;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.confirmPassword = newValue;
+      }
     }
   ],
 
@@ -79,7 +89,8 @@ foam.CLASS({
     { name: 'FirstNameLabel', message: 'First Name *' },
     { name: 'LastNameLabel', message: 'Last Name *' },
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'PasswordLabel', message: 'Password *' }
+    { name: 'PasswordLabel', message: 'Password *' },
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
@@ -106,6 +117,10 @@ foam.CLASS({
             .start().addClass('inline float-right topMargin')
               .start().add(this.PasswordLabel).addClass('infoLabel').end()
               .start(this.PASSWORD).addClass('inputLarge').end()
+            .end()
+            .start().addClass('topMargin')
+              .start().add(this.ConfirmPasswordLabel).addClass('infoLabel').end()
+              .start(this.CONFIRM_PASSWORD).addClass('inputLarge').end()
             .end()
           .end()
         .end();

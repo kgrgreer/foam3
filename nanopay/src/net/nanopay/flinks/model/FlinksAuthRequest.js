@@ -12,11 +12,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'Username'
+      name: 'Username',
+      hidden: true
     },
     {
       class: 'String',
-      name: 'Password'
+      name: 'Password',
+      hidden: true
     },
     {
       class: 'String',
@@ -29,7 +31,8 @@ foam.CLASS({
     {
       //key: MFA, value: MFA answer 
       class: 'Map',
-      name: 'SecurityResponses'
+      name: 'SecurityResponses',
+      hidden: true
     },
     {
       class: 'Boolean',

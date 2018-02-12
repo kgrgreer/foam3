@@ -73,6 +73,11 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
+          
+          if ( merchantInfo.password != merchantInfo.confirmPassword ){
+            self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+            return;
+          }
 
           if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(merchantInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
@@ -85,7 +90,6 @@ foam.CLASS({
 
         if ( this.position == 1 ) {
           // Business Profile
-
           if ( ( merchantInfo.businessName == null || merchantInfo.businessName.trim() == '' ) ||
           ( merchantInfo.companyEmail == null || merchantInfo.companyEmail.trim() == '' ) ||
           ( merchantInfo.registrationNumber == null || merchantInfo.registrationNumber.trim() == '' ) ||

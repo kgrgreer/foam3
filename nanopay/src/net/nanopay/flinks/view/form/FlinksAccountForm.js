@@ -21,7 +21,7 @@ foam.CLASS({
         }
         ^ .accountView {
           width: 100%;
-          height: 270px;
+          height: 190px;
           overflow:auto;
         }
         ^ .spacer {
@@ -32,13 +32,13 @@ foam.CLASS({
         }
         ^ .subContent {
           width: 495px;
-          height: 360px;
+          height: 285px;
         }
         ^ .account {
           cursor: pointer;
         }
         ^ .account:hover{
-          border: solid 1px #00FFFF;
+          border: solid 1px %ACCENTCOLOR%;
         }
         ^ .account.selected {
           border: solid 1px red;
@@ -69,11 +69,9 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
           float: left;
           margin: 0;
@@ -89,11 +87,9 @@ foam.CLASS({
           margin-right: 40px;
           margin-left: 1px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
@@ -116,6 +112,7 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 3: Please choose the account you want to connect with nanopay.'}
   ],
+
   methods: [
     function init() {
       this.SUPER();
@@ -157,7 +154,6 @@ foam.CLASS({
                     self.selectBank = foam.Array.clone(self.selectBank);
                   }
                   self.selectTick++;
-                  //console.log(self.viewData.accounts);
                 })
               .end()
             })
@@ -170,6 +166,7 @@ foam.CLASS({
         .start('div').style({'clear' : 'both'}).end();
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
@@ -190,11 +187,8 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        //console.log('close');
-        //console.log('close the form');
-        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }
   ]
-})
+});

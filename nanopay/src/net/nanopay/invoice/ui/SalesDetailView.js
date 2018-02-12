@@ -28,6 +28,10 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
+  constants: {
+    RECORDED_PAYMENT: -2
+  },
+
   css: `
     ^ {
       width: 962px;
@@ -159,7 +163,7 @@ foam.CLASS({
       label: 'Record Payment',
       code: function(X) {
         var self = this;
-        if(this.data.paymentMethod.name != "NONE"){
+        if(this.data.paymentMethod.name != "NONE" || this.data.paymentId != this.RECORDED_PAYMENT && this.data.paymentDate < Date.now() ){
           self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }
