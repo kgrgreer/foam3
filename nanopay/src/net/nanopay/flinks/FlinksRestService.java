@@ -122,7 +122,7 @@ public class FlinksRestService
     return resp;
   }
 
-  private ResponseMsg request(RequestMsg req) {
+  private ResponseMsg request1(RequestMsg req) {
 
     HttpURLConnection connection = null;
     OutputStream os = null;
@@ -181,7 +181,7 @@ public class FlinksRestService
     }
   }
 
-  private ResponseMsg request1(RequestMsg req) {
+  private ResponseMsg request(RequestMsg req) {
     BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
@@ -197,6 +197,7 @@ public class FlinksRestService
       HttpPost post = new HttpPost(address_ + "/" + req.getRequestInfo());
       post.setHeader("Connection","keep-alive");
       post.setHeader("Content-Type","application/json");
+      //System.out.println("Send: " + req.getJson());
       HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
       post.setEntity(entity);
       response = client.execute(post);
@@ -208,6 +209,7 @@ public class FlinksRestService
       while ((line = rd.readLine()) != null) {
         res.append(line);
       }
+      System.out.println("Receive: " + res.toString());
       msg = new ResponseMsg(getX(), res.toString());
       msg.setHttpStatusCode(statusCode);
     } catch ( Throwable t ) {
