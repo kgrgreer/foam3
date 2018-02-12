@@ -459,20 +459,20 @@ foam.CLASS({
 
         var self = this;
 
-      if ( ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.sundayStartTime)     ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.sundayEndTime)       ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.mondayStartTime)     ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.mondayEndTime)       ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.tuesdayStartTime)    ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.tuesdayEndTime)      ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.wednesdayStartTime)  ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.wednesdayEndTime)    ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.thursdayStartTime)   ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.thursdayEndTime)     ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayStartTime)     ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayEndTime)       ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayStartTime)   ||
-           ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayEndTime)      ) {
+      if ( this.sundayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.sundayStartTime)     ||
+           this.sundayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.sundayEndTime)       ||
+           this.mondayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.mondayStartTime)     ||
+           this.mondayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.mondayEndTime)       ||
+           this.tuesdayStartTime != ''   && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.tuesdayStartTime)    ||
+           this.tuesdayEndTime != ''     && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.tuesdayEndTime)      ||
+           this.wednesdayStartTime != '' && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.wednesdayStartTime)  ||
+           this.wednesdayEndTime != ''   && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.wednesdayEndTime)    ||
+           this.thursdayStartTime != ''  && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.thursdayStartTime)   ||
+           this.thursdayEndTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.thursdayEndTime)     ||
+           this.fridayStartTime != ''    && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayStartTime)     ||
+           this.fridayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.fridayEndTime)       ||
+           this.saturdayStartTime != ''  && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayStartTime)   ||
+           this.saturdayEndTime != ''      && ! /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g.test(this.saturdayEndTime)      ) {
         self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
         return;
       }
