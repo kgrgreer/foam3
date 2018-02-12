@@ -17,12 +17,6 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country',
       name: 'targetCountry',
       required: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Region',
-      name: 'targetCountrySubDivision',
-      required: true
     }
   ]
 });

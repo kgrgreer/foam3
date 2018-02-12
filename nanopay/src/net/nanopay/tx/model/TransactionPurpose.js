@@ -11,6 +11,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'country',
+      documentation: 'If the format type is "Proprietary", assign it to the country it belongs to'
+    },
+    {
+      class: 'String',
       name: 'formatType',
       documentation: 'Determines if ISO20022 or proprietary',
       required: true
