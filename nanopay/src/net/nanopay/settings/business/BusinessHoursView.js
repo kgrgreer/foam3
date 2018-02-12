@@ -420,7 +420,25 @@ foam.CLASS({
     },
     function setDaysClosed() {
 
-      var timeRegex = /\b((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))/g; 
+      var timeRegex = /\b((1[0-2]|0?[0-9]):([0-5][0-9]) ([AaPp][Mm]))/g; 
+
+      if ( ! timeRegex.exec(this.sundayStartTime) && !this.checkBoxClosedSunday       ||
+           ! timeRegex.exec(this.sundayEndTime) && !this.checkBoxClosedSunday         ||
+           ! timeRegex.exec(this.mondayStartTime) && !this.checkBoxClosedMonday       ||
+           ! timeRegex.exec(this.mondayEndTime) && !this.checkBoxClosedMonday         ||
+           ! timeRegex.exec(this.tuesdayStartTime) && !this.checkBoxClosedTuesday     ||
+           ! timeRegex.exec(this.tuesdayEndTime) && !this.checkBoxClosedTuesday       ||
+           ! timeRegex.exec(this.wednesdayStartTime) && !this.checkBoxClosedWednesday ||
+           ! timeRegex.exec(this.wednesdayEndTime) && !this.checkBoxClosedWednesday   ||
+           ! timeRegex.exec(this.thursdayStartTime) && !this.checkBoxClosedThursday   ||
+           ! timeRegex.exec(this.thursdayEndTime) && !this.checkBoxClosedThursday     ||
+           ! timeRegex.exec(this.fridayStartTime) && !this.checkBoxClosedFriday       ||
+           ! timeRegex.exec(this.fridayEndTime) && !this.checkBoxClosedFriday         ||
+           ! timeRegex.exec(this.saturdayStartTime) && !this.checkBoxClosedSaturday   ||
+           ! timeRegex.exec(this.saturdayEndTime) && !this.checkBoxClosedSaturday      ) {
+        self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
+        return;
+      }
 
       if( this.checkBoxClosedSunday ) {
         this.sundayStartTime = '';
@@ -449,24 +467,6 @@ foam.CLASS({
       if ( this.checkBoxClosedSaturday ) {
         this.saturdayStartTime = '';
         this.saturdayEndTime = '';
-      }
-
-      if ( ! timeRegex.exec(this.sundayStartTime)    ||
-           ! timeRegex.exec(this.sundayEndTime)      ||
-           ! timeRegex.exec(this.mondayStartTime)    ||
-           ! timeRegex.exec(this.mondayEndTime)      ||
-           ! timeRegex.exec(this.tuesdayStartTime)   ||
-           ! timeRegex.exec(this.tuesdayEndTime)     ||
-           ! timeRegex.exec(this.wednesdayStartTime) ||
-           ! timeRegex.exec(this.wednesdayEndTime)   ||
-           ! timeRegex.exec(this.thursdayStartTime)  ||
-           ! timeRegex.exec(this.thursdayEndTime)    ||
-           ! timeRegex.exec(this.fridayStartTime)    ||
-           ! timeRegex.exec(this.fridayEndTime)      ||
-           ! timeRegex.exec(this.saturdayStartTime)  ||
-           ! timeRegex.exec(this.saturdayEndTime)     ) {
-        self.add(self.NotificationMessage.create({ message: 'Invalid time, please make sure the time is of format HH:MM AM or PM and not 00:00.', type: 'error' }));
-        return;
       }
     }
   ],
