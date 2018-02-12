@@ -496,36 +496,43 @@ foam.CLASS({
 
         var sundayHours = this.Hours.create({
           day: this.DayOfWeek.SUNDAY,
+          open: ! this.checkBoxClosedSunday,
           startTime: this.sundayStartTime,
           endTime: this.sundayEndTime
         });
         var mondayHours = this.Hours.create({
           day: this.DayOfWeek.MONDAY,
+          open: ! this.checkBoxClosedMonday,
           startTime: this.mondayStartTime,
           endTime: this.mondayEndTime
         });
         var tuesdayHours = this.Hours.create({
           day: this.DayOfWeek.TUESDAY,
+          open: ! this.checkBoxClosedTuesday,
           startTime: this.tuesdayStartTime,
           endTime: this.tuesdayEndTime
         });
         var wednesdayHours = this.Hours.create({
           day: this.DayOfWeek.WEDNESDAY,
+          open: ! this.checkBoxClosedWednesday,
           startTime: this.wednesdayStartTime,
           endTime: this.wednesdayEndTime
         });
         var thursdayHours = this.Hours.create({
           day: this.DayOfWeek.THURSDAY,
+          open: ! this.checkBoxClosedThursday,
           startTime: this.thursdayStartTime,
           endTime: this.thursdayEndTime
         });
         var fridayHours = this.Hours.create({
           day: this.DayOfWeek.FRIDAY,
+          open: ! this.checkBoxClosedFriday,
           startTime: this.fridayStartTime,
           endTime: this.fridayEndTime
         });
         var saturdayHours = this.Hours.create({
           day: this.DayOfWeek.SATURDAY,
+          open: ! this.checkBoxClosedSaturday,
           startTime: this.saturdayStartTime,
           endTime: this.saturdayEndTime
         });
