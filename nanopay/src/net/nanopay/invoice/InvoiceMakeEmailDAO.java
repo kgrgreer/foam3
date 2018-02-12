@@ -31,7 +31,11 @@ public class InvoiceMakeEmailDAO
       NumberFormat formatter = NumberFormat.getCurrencyInstance();
       User payee = (User) userDAO_.find_(x, invoice.getPayeeId());
       User payer = (User) userDAO_.find_(x, invoice.getPayerId());
-      if ( payee.getId() == invoice.getCreatedBy() )
+      if ( find(invoice.getId()) != null )
+      {
+        return getDelegate().put_(x, obj);
+      }
+      if ( payer.getId() == invoice.getCreatedBy() )
       {
         return getDelegate().put_(x, obj);
       }
@@ -39,9 +43,9 @@ public class InvoiceMakeEmailDAO
       EmailMessage message = new EmailMessage();
       message.setTo(new String[]{payer.getEmail()});
       HashMap<String, Object> args = new HashMap<>();
-      args.put("amount", formatter.format(invoice.getAmount()/100));
+      args.put("amount", formatter.format(invoice.getAmount()));
       args.put("fromEmail", payee.getEmail());
-      args.put("fromName", payee.getEmail());
+      args.put("fromName", payee.getFirstName());
       args.put("date", invoice.getDueDate());
       args.put("link", config.getUrl());
       email.sendEmailFromTemplate(payer, message, "newInvoice", args);
