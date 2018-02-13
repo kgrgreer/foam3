@@ -20,7 +20,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FileArray',
+      class: 'foam.nanos.fs.FileArray',
       name: 'data'
     }
   ],

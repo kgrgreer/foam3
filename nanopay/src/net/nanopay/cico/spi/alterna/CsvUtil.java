@@ -95,7 +95,7 @@ public class CsvUtil {
 
     transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
       @Override
-      public void put(FObject obj, Detachable sub) {
+      public void put(Object obj, Detachable sub) {
         try {
           User user = null;
           String txnType = null;
