@@ -34,7 +34,7 @@ function rmfile {
 }
 
 function shutdown_tomcat {
-    $CATALINA_HOME/bin/shutdown.sh &> /dev/null
+    $CATALINA_HOME/bin/shutdown.sh > /dev/null 2>&1
 }
 
 function build_NANOPAY_into_tomcat {
@@ -69,13 +69,13 @@ function build_NANOPAY_into_tomcat {
     cp groups $CATALINA_HOME/bin/
     cp languages $CATALINA_HOME/bin/
     cp menus $CATALINA_HOME/bin/
-    cp permissions $CATALINA_HOME/bin/
+    cp -n permissions $CATALINA_HOME/bin/ &
     cp regions $CATALINA_HOME/bin/
     cp scripts $CATALINA_HOME/bin/
     cp services $CATALINA_HOME/bin/
     cp tests $CATALINA_HOME/bin/
     cp transactionLimits $CATALINA_HOME/bin/
-    cp users $CATALINA_HOME/bin/
+    cp -n users $CATALINA_HOME/bin/ &
     cp institutions $CATALINA_HOME/bin/
 
     # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
