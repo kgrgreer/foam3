@@ -207,11 +207,14 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this;
-        X.selectedAccount.setAsDefault = true;
 
         self.userVerifiedAccounts.select().then( function(a) {
-          a.array.forEach( function(t) { t.setAsDefault = false; });
+          a.array.forEach( function(t) { 
+            t.setAsDefault = false; 
+          });
         });
+
+        X.selectedAccount.setAsDefault = true;
 
         X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
           X.manageAccountNotification('Bank account set as default for cashing in and out.', '');

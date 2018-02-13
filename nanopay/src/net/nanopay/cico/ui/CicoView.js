@@ -194,7 +194,9 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.userBankAccounts.where(this.EQ(this.BankAccount.SET_AS_DEFAULT, true));
+        this.userBankAccounts.where(this.EQ(this.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+          return a.array[0].id;
+        });
       }
     },
     {
