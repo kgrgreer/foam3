@@ -450,8 +450,6 @@ foam.CLASS({
       }
     },
     function timeRegex() {
-      var self = this;
-
       var regex = new RegExp('\([0-2][0-9]):([0-5][0-9])$');
 
       if ( this.sundayStartTime != ''    && ! regex.test(this.sundayStartTime)     ||
