@@ -483,8 +483,6 @@ foam.CLASS({
 
         var businessHoursArray = [];
 
-        console.log(this.mondayStartTime);
-
         if( ! X.timeRegex() ) {
           self.add(self.NotificationMessage.create({ message: 'Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', type: 'error' }));
           return;
