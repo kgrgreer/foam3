@@ -53,7 +53,6 @@ public class PaidEmailDAO
 
 
       String template = (transaction.getInvoiceId() == 0) ? "transfer-paid" : "invoice-paid";
-      System.out.println(template);
       email.sendEmailFromTemplate(user, message, template, args);
     } catch(Throwable t) {
       t.printStackTrace();
