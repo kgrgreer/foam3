@@ -122,65 +122,6 @@ public class FlinksRestService
     return resp;
   }
 
-  private ResponseMsg request1(RequestMsg req) {
-
-    HttpURLConnection connection = null;
-    OutputStream os = null;
-    InputStream is = null;
-    StringBuilder res = null;
-
-    try {
-      //TODO: url for the PUT is different
-      URL url = new URL(address_ + "/" + req.getRequestInfo());
-      connection = (HttpURLConnection) url.openConnection();
-
-      //configure HttpURLConnection
-      connection.setConnectTimeout(3000 * 1000);
-      connection.setReadTimeout(3000 * 1000);
-      connection.setDoOutput(true);
-      connection.setUseCaches(false);
-
-      //set request method
-      connection.setRequestMethod(req.getHttpMethod());
-
-      //configure http header
-      connection.setRequestProperty("Connection", "keep-alive");
-      connection.setRequestProperty("Content-Type", "application/json");
-      System.out.println("send: " + req.getJson());
-      //write to the outputStream only when POST
-      if( req.getHttpMethod().equals(REST_POST) ) {
-        os = connection.getOutputStream();
-        PrintStream printStream = new PrintStream(os, false, "UTF-8");
-        printStream.print(req.getJson());
-        printStream.flush();
-      }
-
-      int httpCode = connection.getResponseCode();
-      if ( httpCode / 100 == 2 ) {
-        is = connection.getInputStream();
-      } else {
-        is = connection.getErrorStream();
-      }
-
-      BufferedReader  reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-      res = builders.get();
-      String line = null;
-      while ( (line = reader.readLine()) != null ) {
-        res.append(line);
-      }
-      System.out.println("receive: " + res.toString());
-      //remember to set X
-      ResponseMsg msg = new ResponseMsg(getX(), res.toString());
-      msg.setHttpStatusCode(httpCode);
-      return msg;
-    } catch ( Throwable t ) {
-      //TODO: return an error message to front end, otherwise will break frontend
-      throw new RuntimeException(t);
-    } finally {
-      closeSource(is, os, connection);
-    }
-  }
-
   private ResponseMsg request(RequestMsg req) {
     BufferedReader rd = null;
     HttpEntity responseEntity = null;
@@ -188,7 +129,7 @@ public class FlinksRestService
     HttpClient client = null;
     ResponseMsg msg = null;
     try {
-      int timeout = 300;
+      int timeout = 30;
       RequestConfig config = RequestConfig.custom()
         .setConnectTimeout(timeout*1000)
         .setConnectionRequestTimeout(timeout*1000).build();
