@@ -20,3 +20,4 @@ find **/src -type f -name tests -exec cat {} \; > tests
 find **/src -type f -name transactionLimits -exec cat {} \; > transactionLimits
 find **/src -type f -name users -exec cat {} \; > users
 find **/src -type f -name institutions -exec cat {} \; > institutions
+find **/src -type f -name spids -exec cat {} \; > spids
