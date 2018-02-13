@@ -68,7 +68,7 @@ public class LiquidityTransactionDAO
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payerAccount.getBalance() < total ) {
       if ( payerBankAccountList.getArray().size() == 0 )
-        throw new RuntimeException("The payer don't have bank account and the balance is Insufficient");
+        throw new RuntimeException("Please add and verify your bank account to cash in from; balance is Insufficient");
       long cashInAmount = total - payerAccount.getBalance();
       Transaction transaction = new Transaction.Builder(x)
           .setPayeeId(payerAccount.getId())
@@ -87,7 +87,7 @@ public class LiquidityTransactionDAO
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payeeAccount.getBalance() >= total ) {
       if ( payeeBankAccountList.getArray().size() == 0 )
-        throw new RuntimeException("The payee don't have bank account, so the cashout will not success!");
+        throw new RuntimeException("The payee doesn't have a verified bank account.");
       Transaction transaction = new Transaction.Builder(x)
           .setPayeeId(payeeAccount.getId())
           .setPayerId(payeeAccount.getId())
@@ -97,7 +97,7 @@ public class LiquidityTransactionDAO
           .build();
       super.put_(x, transaction);
     } else {
-      throw new RuntimeException("Transaction is not success");
+      throw new RuntimeException("Transaction Failed");
     }
 
     return originalTx;
