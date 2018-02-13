@@ -226,6 +226,8 @@ foam.CLASS({
     {
       name: 'goBack',
       code: function(X) {
+        this.loadingSpinner.hide();
+        this.isConnecting = false;
         if ( this.currentViewId === 'InstitutionView') {
           X.stack.back();
         } else if ( this.currentViewId === 'FlinksAccountForm' ) {
