@@ -21,6 +21,9 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.config.RequestConfig;
 
+/**
+ * The FlinksRestService is used to make a call to the Flinks
+ */
 public class FlinksRestService 
   extends ContextAwareSupport
 {

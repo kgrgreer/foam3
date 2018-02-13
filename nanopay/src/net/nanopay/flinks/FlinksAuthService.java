@@ -12,6 +12,10 @@ import java.util.Date;
 import java.io.*;
 import foam.nanos.logger.Logger;
 
+/**
+ * The FlinksAuthService is used as service that will be delegated into the Skeleton Box.
+ * Handle the requests from the front end
+ */
 public class FlinksAuthService
   extends ContextAwareSupport
   implements FlinksAuth, NanoService
