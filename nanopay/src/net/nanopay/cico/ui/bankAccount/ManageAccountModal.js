@@ -5,15 +5,21 @@ foam.CLASS({
 
   documentation: 'Pop up modal for verifying or deleting a bank account',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
     'bankAccountDAO', 
     'closeDialog', 
+    'manageAccountNotification',
     'selectedAccount',
-    'verifyAccount'  
+    'verifyAccount',
+    'user'  
   ],
 
   axioms: [
@@ -95,6 +101,24 @@ foam.CLASS({
           border-color: %SECONDARYCOLOR%;
           opacity: 0.9;
         }
+        ^ .net-nanopay-ui-ActionView-setDefaultButton {
+          position: relative;
+          bottom: 41;
+          width: 136px;
+          height: 40px;
+          background: %SECONDARYCOLOR%;
+          border: solid 1px %SECONDARYCOLOR%;
+          display: inline-block;
+          color: white;
+          margin: 0;
+          outline: none;
+          float: right;
+        }
+        ^ .net-nanopay-ui-ActionView-setDefaultButton:hover {
+          background: %SECONDARYCOLOR%;
+          border-color: %SECONDARYCOLOR%;
+          opacity: 0.9;
+        }
         ^ .descriptionStyle {
           text-align: center;
           margin-top: 45px;
@@ -112,7 +136,19 @@ foam.CLASS({
     })
   ],
 
-  properties: [],
+  properties: [
+    {
+      name: 'userVerifiedAccounts',
+      factory: function() {
+        return this.bankAccountDAO.where(
+          this.AND(
+            this.EQ(this.BankAccount.OWNER, this.user.id),
+            this.EQ(this.BankAccount.STATUS, "Verified")
+          )
+        );
+      }
+    }
+  ],
 
   messages: [
     { name: 'Title', message: 'Manage Account' },
@@ -135,6 +171,7 @@ foam.CLASS({
         .start().addClass('button-container')
           .add(this.DELETE_BUTTON)
           .add(this.VERIFY_BUTTON)
+          .add(this.SET_DEFAULT_BUTTON)
         .end()
       .end();
     }
@@ -161,20 +198,44 @@ foam.CLASS({
       }
     },
     {
+      name: 'setDefaultButton',
+      label: 'Set as Default',
+      confirmationRequired: true,
+      isAvailable: function() {
+        var self = this;
+        return self.selectedAccount.status == "Verified"
+      },
+      code: function(X) {
+        var self = this;
+        X.selectedAccount.setAsDefault = true;
+
+        self.userVerifiedAccounts.select().then( function(a) {
+          a.array.forEach( function(t) { t.setAsDefault = false; });
+        });
+
+        X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
+          X.manageAccountNotification('Bank account set as default for cashing in and out.', '');
+          X.closeDialog();
+        }).catch(function(error) {
+          X.manageAccountNotification(error.message, 'error');
+        });
+      }
+    },
+    {
       name: 'deleteButton',
       label: 'Delete',
+      confirmationRequired: true,
       isAvailable: function() {
         var self = this;
         return self.selectedAccount.status != 'Unverified';
       },
-      confirmationRequired: true,
       code: function(X) {
         var self = this;
         X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
-          self.add(self.NotificationMessage.create({ message: 'Bank account successfully deleted.' }));
+          X.manageAccountNotification('Bank account successfully deleted', '');
           X.closeDialog();
         }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.manageAccountNotification(error.message, 'error');
         });
       }
     }

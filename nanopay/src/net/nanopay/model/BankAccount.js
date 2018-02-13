@@ -77,6 +77,11 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       value: 0
+    },
+    {
+      class: 'Boolean',
+      name: 'setAsDefault',
+      value: false
     }
   ],
 

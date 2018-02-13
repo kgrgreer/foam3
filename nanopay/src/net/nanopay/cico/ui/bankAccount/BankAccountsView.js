@@ -180,7 +180,8 @@ foam.CLASS({
 
       requires: [
         'net.nanopay.model.BankAccount',
-        'foam.u2.dialog.Popup'
+        'foam.u2.dialog.Popup',
+        'foam.u2.dialog.NotificationMessage'
       ],
 
       imports: [
@@ -191,7 +192,8 @@ foam.CLASS({
 
       exports: [
         'selectedAccount',
-        'verifyAccount'
+        'verifyAccount',
+        'manageAccountNotification'
       ],
 
       properties: [
@@ -242,6 +244,10 @@ foam.CLASS({
 
         function manageAccount() {
           this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal' }).addClass('manageAccounts'));
+        },
+
+        function manageAccountNotification(_message, _type) {
+          this.add(this.NotificationMessage.create({ message: _message, type: _type }));
         }
       ]
     }

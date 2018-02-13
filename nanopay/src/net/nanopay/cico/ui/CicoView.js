@@ -192,6 +192,9 @@ foam.CLASS({
             return [a.id, a.accountName];
           }
         })
+      },
+      factory: function() {
+        return this.userBankAccounts.where(this.EQ(this.BankAccount.SET_AS_DEFAULT, true));
       }
     },
     {
