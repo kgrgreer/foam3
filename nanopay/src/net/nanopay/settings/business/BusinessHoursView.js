@@ -12,7 +12,8 @@ foam.CLASS({
 
   exports: [ 
     'as data',
-    'setDaysClosed'
+    'setDaysClosed',
+    'timeRegex'
   ],
 
   requires: [
@@ -447,6 +448,27 @@ foam.CLASS({
         this.saturdayStartTime = '';
         this.saturdayEndTime = '';
       }
+    },
+    function timeRegex() {
+      var regex = new RegExp('\([0-2][0-9]):([0-5][0-9])$');
+
+      if ( this.sundayStartTime != ''    && ! regex.test(this.sundayStartTime)     ||
+           this.sundayEndTime != ''      && ! regex.test(this.sundayEndTime)       ||
+           this.mondayStartTime != ''    && ! regex.test(this.mondayStartTime)     ||
+           this.mondayEndTime != ''      && ! regex.test(this.mondayEndTime)       ||
+           this.tuesdayStartTime != ''   && ! regex.test(this.tuesdayStartTime)    ||
+           this.tuesdayEndTime != ''     && ! regex.test(this.tuesdayEndTime)      ||
+           this.wednesdayStartTime != '' && ! regex.test(this.wednesdayStartTime)  ||
+           this.wednesdayEndTime != ''   && ! regex.test(this.wednesdayEndTime)    ||
+           this.thursdayStartTime != ''  && ! regex.test(this.thursdayStartTime)   ||
+           this.thursdayEndTime != ''    && ! regex.test(this.thursdayEndTime)     ||
+           this.fridayStartTime != ''    && ! regex.test(this.fridayStartTime)     ||
+           this.fridayEndTime != ''      && ! regex.test(this.fridayEndTime)       ||
+           this.saturdayStartTime != ''  && ! regex.test(this.saturdayStartTime)   ||
+           this.saturdayEndTime != ''    && ! regex.test(this.saturdayEndTime)      ) {
+        return false;
+      }
+      return true;
     }
   ],
 
@@ -461,40 +483,52 @@ foam.CLASS({
 
         var businessHoursArray = [];
 
+        if( ! X.timeRegex() ) {
+          self.add(self.NotificationMessage.create({ message: 'Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', type: 'error' }));
+          return;
+        }
+
         X.setDaysClosed();
 
         var sundayHours = this.Hours.create({
           day: this.DayOfWeek.SUNDAY,
+          open: ! this.checkBoxClosedSunday,
           startTime: this.sundayStartTime,
           endTime: this.sundayEndTime
         });
         var mondayHours = this.Hours.create({
           day: this.DayOfWeek.MONDAY,
+          open: ! this.checkBoxClosedMonday,
           startTime: this.mondayStartTime,
           endTime: this.mondayEndTime
         });
         var tuesdayHours = this.Hours.create({
           day: this.DayOfWeek.TUESDAY,
+          open: ! this.checkBoxClosedTuesday,
           startTime: this.tuesdayStartTime,
           endTime: this.tuesdayEndTime
         });
         var wednesdayHours = this.Hours.create({
           day: this.DayOfWeek.WEDNESDAY,
+          open: ! this.checkBoxClosedWednesday,
           startTime: this.wednesdayStartTime,
           endTime: this.wednesdayEndTime
         });
         var thursdayHours = this.Hours.create({
           day: this.DayOfWeek.THURSDAY,
+          open: ! this.checkBoxClosedThursday,
           startTime: this.thursdayStartTime,
           endTime: this.thursdayEndTime
         });
         var fridayHours = this.Hours.create({
           day: this.DayOfWeek.FRIDAY,
+          open: ! this.checkBoxClosedFriday,
           startTime: this.fridayStartTime,
           endTime: this.fridayEndTime
         });
         var saturdayHours = this.Hours.create({
           day: this.DayOfWeek.SATURDAY,
+          open: ! this.checkBoxClosedSaturday,
           startTime: this.saturdayStartTime,
           endTime: this.saturdayEndTime
         });

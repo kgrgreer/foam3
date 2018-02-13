@@ -54,19 +54,21 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
   // tx
-  { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
-  { name: 'net/nanopay/tx/model/TransactionPurpose' },
-  { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
-  { name: 'net/nanopay/tx/model/TransactionLimitType' },
-  { name: 'net/nanopay/tx/model/TransactionLimit' },
-  { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/model/CashOutFrequency' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
   { name: 'net/nanopay/tx/model/FeeType' },
-  { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/FixedFee' },
+  { name: 'net/nanopay/tx/model/InformationalFee' },
+  { name: 'net/nanopay/tx/model/LiquiditySettings' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
+  { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/model/TransactionLimit' },
+  { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
+  { name: 'net/nanopay/tx/model/TransactionLimitType' },
+  { name: 'net/nanopay/tx/model/TransactionPurpose' },
+  { name: 'net/nanopay/tx/UserTransactionLimit' },
 
   { name: 'net/nanopay/model/Broker' },
 
