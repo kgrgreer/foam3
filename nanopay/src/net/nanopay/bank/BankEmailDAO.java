@@ -26,6 +26,10 @@ public class BankEmailDAO
     try {
       BankAccount account = (BankAccount) obj;
       User user = (User) userDAO_.find_(x, account.getOwner());
+      if ( find(account.getId()) != null )
+      {
+        return getDelegate().put_(x, obj);
+      }
       EmailService email = (EmailService) x.get("email");
       EmailMessage message = new EmailMessage();
       message.setTo(new String[]{user.getEmail()});
