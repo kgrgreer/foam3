@@ -8,8 +8,8 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'net.nanopay.util.CurrencyFormatter',
-    'net.nanopay.util.AddCommaFormatter'
-
+    'net.nanopay.util.AddCommaFormatter',
+    'net.nanopay.util.FormValidation'
   ],
 
   requires: [

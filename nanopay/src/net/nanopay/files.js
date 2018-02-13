@@ -201,6 +201,7 @@ FOAM_FILES([
 
   //util
   { name: 'net/nanopay/util/AddCommaFormatter' },
+  { name: 'net/nanopay/util/FormValidation' },
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
 
