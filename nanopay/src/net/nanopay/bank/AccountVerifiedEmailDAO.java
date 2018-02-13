@@ -29,14 +29,10 @@ public class AccountVerifiedEmailDAO
   public FObject put_(X x, FObject obj) {
     try{
       BankAccount account = (BankAccount) obj;
-      AppConfig config = (AppConfig) x.get("appConfig");
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-      User owner = (User) account.getOwner();
+      User owner = (User) userDAO_.find_(x, account.getOwner());
       if (! account.getStatus().equals("Verified")){
-        System.out.println("----------MVP-------");
         return getDelegate().put_(x, obj);
       }
-      System.out.println("----------BOMBER-------");
       EmailService email = (EmailService) x.get("email");
       EmailMessage message = new EmailMessage();
       message.setTo(new String[]{owner.getEmail()});
@@ -45,7 +41,6 @@ public class AccountVerifiedEmailDAO
       email.sendEmailFromTemplate(owner, message, "verifiedBank", args);
 
     } catch(Throwable t) {
-      System.out.println("----------SCARLETTE-------");
       t.printStackTrace();
     }
     return getDelegate().put_(x, obj);

@@ -31,14 +31,8 @@ public class InvoiceVoidEmailDAO
       NumberFormat formatter = NumberFormat.getCurrencyInstance();
       User payer = (User) userDAO_.find_(x, invoice.getPayerId());
       if (! invoice.getPaymentMethod().name().equals("VOID")){
-        System.out.println("----------MVP-------");
-        System.out.println(invoice.getPaymentMethod().name());
-        System.out.println(invoice.getPaymentMethod().ordinal());
-        System.out.println(invoice.getPaymentMethod().toString());
-
         return getDelegate().put_(x, obj);
       }
-      System.out.println("----------BOMBER-------");
       EmailService email = (EmailService) x.get("email");
       EmailMessage message = new EmailMessage();
       message.setTo(new String[]{payer.getEmail()});
@@ -49,7 +43,6 @@ public class InvoiceVoidEmailDAO
       email.sendEmailFromTemplate(payer, message, "voidInvoice", args);
 
     } catch(Throwable t) {
-      System.out.println("----------SCARLETTE-------");
       t.printStackTrace();
     }
     return getDelegate().put_(x, obj);
