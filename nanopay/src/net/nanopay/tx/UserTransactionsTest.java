@@ -129,7 +129,7 @@ public class UserTransactionsTest {
     final AtomicLong ai = new AtomicLong(0);
     userDao.select(new AbstractSink() {
       @Override
-      public void put(FObject obj, Detachable sub) {
+      public void put(Object obj, Detachable sub) {
         User user = (User) obj;
         Account acc = ((Account)user.getAccounts()[0]);
         if (PRINT_USER_BALANCES) {
@@ -176,7 +176,7 @@ public class UserTransactionsTest {
     ai.set(0);
     userDao.select(new AbstractSink() {
       @Override
-      public void put(FObject obj, Detachable sub) {
+      public void put(Object obj, Detachable sub) {
         User user = (User) obj;
         Account acc = (Account)user.getAccounts()[0];
         if (PRINT_USER_BALANCES) {
