@@ -337,17 +337,7 @@ foam.CLASS({
                   institutionNumber: inNumber,
                   transitNumber: item.TransitNumber,
                   status: 'Verified'
-                })).then(function(res) {
-                  var emailMessage = self.EmailMessage.create({
-                    from: 'info@nanopay.net',
-                    replyTo: 'noreply@nanopay.net',
-                    to: [ self.customer.email ]
-                  });
-                  self.email.sendEmailFromTemplate(self.customer, emailMessage, 'nanopay-addBank', {
-                    name: self.customer.firstName,
-                    account: res.accountNumber.substring(res.accountNumber.length - 4)
-                  });
-                }).catch(function(a) {
+                })).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
                 });
               }
