@@ -167,18 +167,6 @@ foam.CLASS({
         self.transactionDAO.put(transaction).then(function(response) {
           return self.userDAO.find(self.userList);
         })
-        .then(function (result) {
-          var template = ( result.type === 'Merchant' ) ? 'cc-template-invite/merc1' : 'cc-template-invite/shopper';
-          var emailMessage = self.EmailMessage.create({
-            to: [ result.email ]
-          });
-
-          return self.email.sendEmailFromTemplate(result, emailMessage, template, {
-            name: result.firstName,
-            email: result.email,
-            money: self.formatCurrency(self.transferAmount/100)
-          });
-        })
         .then(function () {
           self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent!' }));
           self.transferAmount = null;
