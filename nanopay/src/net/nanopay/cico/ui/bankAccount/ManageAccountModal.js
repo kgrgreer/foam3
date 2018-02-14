@@ -200,7 +200,6 @@ foam.CLASS({
     {
       name: 'setDefaultButton',
       label: 'Set as Default',
-      confirmationRequired: true,
       isAvailable: function() {
         var self = this;
         return self.selectedAccount.status == "Verified"
@@ -210,15 +209,15 @@ foam.CLASS({
 
         self.userVerifiedAccounts.select().then( function(a) {
           a.array.forEach( function(t) { 
-            t.setAsDefault = false; 
+            t.setAsDefault = false;
+            X.bankAccountDAO.put(t).then(function(response) {
+              X.selectedAccount.setAsDefault = true;
+              X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
+                X.manageAccountNotification('Bank account set as default for cashing in and out.', '');
+                X.closeDialog();
+              }); 
+            });
           });
-        });
-
-        X.selectedAccount.setAsDefault = true;
-
-        X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
-          X.manageAccountNotification('Bank account set as default for cashing in and out.', '');
-          X.closeDialog();
         }).catch(function(error) {
           X.manageAccountNotification(error.message, 'error');
         });

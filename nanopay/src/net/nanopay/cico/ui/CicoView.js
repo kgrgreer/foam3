@@ -41,6 +41,7 @@ foam.CLASS({
     'onCashOutSuccess',
     'onCashInSuccess',
     'resetCicoAmount',
+    'setDefaultBank',
     'as view'
   ],
 
@@ -188,14 +189,9 @@ foam.CLASS({
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
           dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
-          objToChoice: function(a){
+          objToChoice: function(a) {
             return [a.id, a.accountName];
           }
-        })
-      },
-      factory: function() {
-        this.userBankAccounts.where(this.EQ(this.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
-          return a.array[0].id;
         });
       }
     },
@@ -304,6 +300,14 @@ foam.CLASS({
 
     function resetCicoAmount() {
       this.amount = 0;
+    },
+
+    function setDefaultBank() {
+      var self = this;
+      self.userBankAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+        if( a.array.length == 0 ) return;
+        self.bankList = a.array[0].id;
+      });
     }
   ],
 
