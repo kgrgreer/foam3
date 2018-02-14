@@ -26,10 +26,6 @@ public class AccountDeletedEmailDAO
   }
 
   @Override
-  public FObject put_(X x, FObject obj) {
-    return getDelegate().put_(x, obj);
-  }
-
   public FObject remove_(X x, FObject obj) {
     try{
       BankAccount account = (BankAccount) obj;
