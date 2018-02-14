@@ -27,12 +27,12 @@ public class InvoiceVoidEmailDAO
   public FObject put_(X x, FObject obj) {
     try{
       Invoice invoice = (Invoice) obj;
-      AppConfig config = (AppConfig) x.get("appConfig");
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-      User payer = (User) userDAO_.find_(x, invoice.getPayerId());
       if (! invoice.getPaymentMethod().name().equals("VOID")){
         return getDelegate().put_(x, obj);
       }
+      AppConfig config = (AppConfig) x.get("appConfig");
+      NumberFormat formatter = NumberFormat.getCurrencyInstance();
+      User payer = (User) userDAO_.find_(x, invoice.getPayerId());
       EmailService email = (EmailService) x.get("email");
       EmailMessage message = new EmailMessage();
       message.setTo(new String[]{payer.getEmail()});
