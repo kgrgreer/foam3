@@ -31,8 +31,11 @@ public class AccountVerifiedEmailDAO
       BankAccount account = (BankAccount) obj;
       User owner = (User) userDAO_.find_(x, account.getOwner());
       AppConfig config = (AppConfig) x.get("appConfig");
-
+      BankAccount oldAccount = (BankAccount) find_(x, account.getId());
       if (! account.getStatus().equals("Verified")){
+        return getDelegate().put_(x, obj);
+      }
+      if(oldAccount.getStatus().equals(account.getStatus())){
         return getDelegate().put_(x, obj);
       }
       EmailService email = (EmailService) x.get("email");
