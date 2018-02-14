@@ -213,7 +213,7 @@ foam.CLASS({
             X.bankAccountDAO.put(t).then(function(response) {
               X.selectedAccount.setAsDefault = true;
               X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
-                X.manageAccountNotification('Bank account set as default for cashing in and out.', '');
+                X.manageAccountNotification('Bank account successfully set as default.', '');
                 X.closeDialog();
               }); 
             });
