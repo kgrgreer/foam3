@@ -226,6 +226,8 @@ foam.CLASS({
     {
       name: 'goBack',
       code: function(X) {
+        this.loadingSpinner.hide();
+        this.isConnecting = false;
         if ( this.currentViewId === 'InstitutionView') {
           X.stack.back();
         } else if ( this.currentViewId === 'FlinksAccountForm' ) {
@@ -268,8 +270,20 @@ foam.CLASS({
               self.viewData.SecurityChallenges = msg.SecurityChallenges;
               self.MFADisparcher(msg);
             } else {
-              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
-              self.fail();
+              if ( msg.FlinksCode && (msg.FlinksCode === 'INVALID_LOGIN' || msg.FlinksCode === 'INVALID_USERNAME' || msg.FlinksCode === 'INVALID_PASSWORD') ) {
+                if ( msg.Message && msg.Message !== '' ) {
+                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
+                } else {
+                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.FlinksCode, type: 'error'}));
+                }
+              } else {
+                if ( msg.Message && msg.Message !== '' ) {
+                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
+                } else {
+                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.FlinksCode, type: 'error'}));
+                }
+                self.fail();
+              }
             }
           }).catch( function(a) {
             // Repeated as .finally is not supported in Safari/Edge/IE
@@ -277,6 +291,7 @@ foam.CLASS({
             self.loadingSpinner.hide();
 
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
+            self.fail();
           });
           return;
         }
@@ -313,7 +328,6 @@ foam.CLASS({
               self.viewData.SecurityChallenges = msg.SecurityChallenges;
               self.MFADisparcher(msg);
             } else {
-              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
               self.fail();
             }
           }).catch( function(a) {
@@ -322,6 +336,7 @@ foam.CLASS({
             self.loadingSpinner.hide();
             
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
+            self.fail();
           });
           return;
         }
@@ -339,6 +354,7 @@ foam.CLASS({
                   status: 'Verified'
                 })).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+                  self.fail();
                 });
               }
             });

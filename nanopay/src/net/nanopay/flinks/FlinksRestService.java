@@ -8,6 +8,22 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import net.nanopay.flinks.model.*;
 
+//apach
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.client.config.RequestConfig;
+
+/**
+ * The FlinksRestService is used to make a call to the Flinks
+ */
 public class FlinksRestService 
   extends ContextAwareSupport
 {
@@ -110,60 +126,43 @@ public class FlinksRestService
   }
 
   private ResponseMsg request(RequestMsg req) {
-
-    HttpURLConnection connection = null;
-    OutputStream os = null;
-    InputStream is = null;
-    StringBuilder res = null;
-
+    BufferedReader rd = null;
+    HttpEntity responseEntity = null;
+    HttpResponse response = null;
+    HttpClient client = null;
+    ResponseMsg msg = null;
     try {
-      //TODO: url for the PUT is different
-      URL url = new URL(address_ + "/" + req.getRequestInfo());
-      connection = (HttpURLConnection) url.openConnection();
-
-      //configure HttpURLConnection
-      connection.setConnectTimeout(300 * 1000);
-      connection.setReadTimeout(300 * 1000);
-      connection.setDoOutput(true);
-      connection.setUseCaches(false);
-
-      //set request method
-      connection.setRequestMethod(req.getHttpMethod());
-
-      //configure http header
-      connection.setRequestProperty("Connection", "keep-alive");
-      connection.setRequestProperty("Content-Type", "application/json");
-
-      //write to the outputStream only when POST
-      if( req.getHttpMethod().equals(REST_POST) ) {
-        os = connection.getOutputStream();
-        PrintStream printStream = new PrintStream(os, false, "UTF-8");
-        printStream.print(req.getJson());
-        printStream.flush();
-      }
-
-      int httpCode = connection.getResponseCode();
-      if ( httpCode / 100 == 2 ) {
-        is = connection.getInputStream();
-      } else {
-        is = connection.getErrorStream();
-      }
-
-      BufferedReader  reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-      res = builders.get();
-      String line = null;
-      while ( (line = reader.readLine()) != null ) {
+      int timeout = 30;
+      RequestConfig config = RequestConfig.custom()
+        .setConnectTimeout(timeout*1000)
+        .setConnectionRequestTimeout(timeout*1000).build();
+      client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+      client = HttpClientBuilder.create().build();
+      HttpPost post = new HttpPost(address_ + "/" + req.getRequestInfo());
+      post.setHeader("Connection","keep-alive");
+      post.setHeader("Content-Type","application/json");
+      //System.out.println("Send: " + req.getJson());
+      HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
+      post.setEntity(entity);
+      response = client.execute(post);
+      int statusCode =  response.getStatusLine().getStatusCode();
+      responseEntity = response.getEntity();
+      rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()));
+      StringBuilder res = builders.get();
+      String line = "";
+      while ((line = rd.readLine()) != null) {
         res.append(line);
       }
-      //remember to set X
-      ResponseMsg msg = new ResponseMsg(getX(), res.toString());
-      msg.setHttpStatusCode(httpCode);
-      return msg;
+      System.out.println("Receive: " + res.toString());
+      msg = new ResponseMsg(getX(), res.toString());
+      msg.setHttpStatusCode(statusCode);
     } catch ( Throwable t ) {
-      //TODO: return an error message to front end, otherwise will break frontend
       throw new RuntimeException(t);
     } finally {
-      closeSource(is, os, connection);
+      IOUtils.closeQuietly(rd);
+      HttpClientUtils.closeQuietly(response);
+      HttpClientUtils.closeQuietly(client);
+      return msg;
     }
   }
 
