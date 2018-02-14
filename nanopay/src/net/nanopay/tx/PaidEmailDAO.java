@@ -24,7 +24,7 @@ public class PaidEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    try {
+    /*try {
       Transaction transaction = (Transaction) obj;
       AppConfig config = (AppConfig) x.get("appConfig");
       NumberFormat formatter = NumberFormat.getCurrencyInstance();
@@ -57,7 +57,7 @@ public class PaidEmailDAO
       email.sendEmailFromTemplate(user, message, template, args);
     } catch(Throwable t) {
       t.printStackTrace();
-    }
+    }*/
     return getDelegate().put_(x, obj);
 
   }
