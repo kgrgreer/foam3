@@ -14,22 +14,14 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice'
   ],
 
-  imports: [ 
+  imports: [
     'formatCurrency',
     'user'
   ],
 
   exports: [ 'as data' ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          margin-bottom: 20px;
-        }
-      */}
-    })
-  ],
+  css: '^{ margin-bottom: 20px; }',
 
   messages: [
     { name: 'title',          message: 'Receivables' },
@@ -52,8 +44,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'dueAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
     {
       class: 'Int',
@@ -63,8 +54,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'overDueAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
 
     {
@@ -75,8 +65,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'scheduledAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
 
     {
@@ -87,14 +76,12 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'paidAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
     {
       class: 'Double',
       name: 'receivableAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
     {
       class: 'Currency',
@@ -103,7 +90,7 @@ foam.CLASS({
     }
   ],
 
-  methods: [ 
+  methods: [
     function initE() {
       this.dao.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -112,7 +99,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('blue-card-title')
           .add(this.title)
-          .start().addClass('thin-align').add(this.formattedReceivableAmount$).end() 
+          .start().addClass('thin-align').add(this.formattedReceivableAmount$).end()
         .end()
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
