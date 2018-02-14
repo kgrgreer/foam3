@@ -340,17 +340,35 @@ foam.CLASS({
 
           var txAmount = Math.round(self.viewData.fromAmount*100);
 
-          transaction = self.Transaction.create({
-            payerId: self.user.id,
-            payeeId: self.viewData.payee.id,
-            amount: txAmount,
-            invoiceId: invoiceId,
-            notes: self.viewData.notes
-          });
+          // Get payer's bank account
+          this.bankAccountDAO.where(
+            this.AND(
+              this.EQ(this.BankAccount.OWNER, this.user.id),
+              this.EQ(this.BankAccount.STATUS, 'Verified')
+            )
+          ).limit(1).select(function(cashInBankAccount) {
+            // Perform a cash-in operation
+            var cashInTransaction = self.Transaction.create({
+              payeeId: self.user.id,
+              amount: txAmount,
+              bankAccountId: cashInBankAccount.id,
+              type: self.TransactionType.CASHIN
+            });
 
-          // Make the transfer
-          return self.transactionDAO.put(transaction)
-          .then(function (result) {
+            return self.standardCICOTransactionDAO.put(cashInTransaction);
+          }).then(function(response) {
+            // NOTE: payerID, payeeID, amount in cents, rate, purpose
+            transaction = self.Transaction.create({
+              payerId: self.user.id,
+              payeeId: self.viewData.payee.id,
+              amount: txAmount,
+              invoiceId: invoiceId,
+              notes: self.viewData.notes
+            });
+
+            // Make the transfer
+            return self.transactionDAO.put(transaction);
+          }).then(function (result) {
             if ( result ) {
               self.viewData.transaction = result;
             }
@@ -362,18 +380,6 @@ foam.CLASS({
             self.nextLabel = 'Make New Transfer';
             self.add(self.NotificationMessage.create({ message: "Success!" }));
 
-            if ( self.invoice ) {
-              var emailMessage = self.EmailMessage.create({
-                to: [ self.viewData.payee.email ]
-              });
-
-              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
-                fromName: self.user.businessName,
-                fromEmail: self.user.email,
-                amount: self.formatCurrency(self.invoice.amount),
-                number: self.invoice.invoiceNumber
-              });
-            }
           }).catch(function (err) {
             console.error(err);
 
