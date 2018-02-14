@@ -44,16 +44,19 @@ foam.CLASS({
       value: ''
     },
     {
+      name: 'selectedAccount'
+    },
+    {
       name: 'accounts',
       postSet: function(oldValue, newValue) {
         var self = this;
         this.bankAccountDAO.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
-          var account = a.array[0];
+          self.selectedAccount = a.array[0];
         });
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
+          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.OWNER, X.data.user.id)),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
@@ -136,7 +139,7 @@ foam.CLASS({
           return;
         }
 
-        
+        this.invoice.accountId = this.accounts
         this.invoice.paymentDate = this.paymentDate;
         this.invoice.note = this.note;
 
