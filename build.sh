@@ -19,7 +19,7 @@ cd /opt/tomcat/bin
 # backup journals in event of file incompatiblity between versions
 DATE=$(date +%Y%m%d_%H%M%S)
 mkdir -p /opt/backup/$DATE
-cp -r /opt/backup/bin/* /opt/backup/$DATE/
+cp -r /opt/tomcat/bin/* /opt/backup/$DATE/
 
 ./startup.sh
 sleep 5
