@@ -36,7 +36,7 @@ cp cronjobs /opt/tomcat/bin/
 cp currency /opt/tomcat/bin/
 cp emailTemplates /opt/tomcat/bin/
 cp exportDriverRegistrys /opt/tomcat/bin/
-cp groups /opt/tomcat/bin/
+cp -n groups /opt/tomcat/bin/
 cp languages /opt/tomcat/bin/
 cp menus /opt/tomcat/bin/
 cp permissions /opt/tomcat/bin/
