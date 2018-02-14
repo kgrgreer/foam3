@@ -54,7 +54,7 @@ public class LiquidityTransactionDAO
     Account payerAccount = (Account) accountDAO_.find(txn.getPayerId());
     long payerId = payerAccount.getId();
 
-    //get user payer anf payee
+    //get user payer and payee
     User payer = (User) userDAO_.find(payerId);
     User payee = (User) userDAO_.find(payeeId);
 
@@ -88,7 +88,7 @@ public class LiquidityTransactionDAO
         long cashInAmount = total - payerAccount.getBalance();
         addCashInTransaction(payerId, cashInAmount, x);
       }else{
-        throw new RuntimeException("You balance is not enough and cashIn status is not enable");
+        throw new RuntimeException("balance is insufficient");
       }
     }
 
@@ -117,7 +117,7 @@ public class LiquidityTransactionDAO
         ))
         .limit(1).select(userBankAccount);
     if ( userBankAccount.getArray().size() == 0 )
-      throw new RuntimeException("Please add and verify your bank account to cash in from; balance is Insufficient");
+      throw new RuntimeException("Please add and verify your bank account to cash in");
     Transaction transaction = new Transaction.Builder(x)
         .setPayeeId(userId)
         .setPayerId(userId)
