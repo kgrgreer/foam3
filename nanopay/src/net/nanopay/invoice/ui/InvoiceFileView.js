@@ -119,7 +119,7 @@ foam.CLASS({
     },
 
     function formatFileSize() {
-      return Math.ceil(this.data.filesize / 1000) + 'K';
+      return Math.ceil(this.data.filesize / 1024) + 'K';
     }
   ],
 
