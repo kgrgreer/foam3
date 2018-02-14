@@ -4,12 +4,23 @@ npm install
 set -e
 cwd=$(pwd)
 
+# build
 ./gen.sh
 mvn clean install
 
+# FIXME: can't have this kind of stop/start cycle for production
+
+# shutdown
 cp target/ROOT.war /opt/tomcat/webapps
 cd /opt/tomcat/bin
 ./shutdown.sh
+# REVIEW: wait for shutdown
+
+# backup journals in event of file incompatiblity between versions
+DATE=$(date +%Y%m%d_%H%M%S)
+mkdir -p /opt/backup/$DATE
+cp -r /opt/backup/bin/* /opt/backup/$DATE/
+
 ./startup.sh
 sleep 5
 
