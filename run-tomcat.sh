@@ -100,6 +100,7 @@ cp tests $CATALINA_HOME/bin/
 cp transactionLimits $CATALINA_HOME/bin/
 cp users $CATALINA_HOME/bin/
 cp institutions $CATALINA_HOME/bin/
+cp spids $CATALINA_HOME/bin/
 
 # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
 rmdir $WEBAPPS/foam2

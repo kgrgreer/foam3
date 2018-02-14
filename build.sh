@@ -4,12 +4,23 @@ npm install
 set -e
 cwd=$(pwd)
 
+# build
 ./gen.sh
 mvn clean install
 
+# FIXME: can't have this kind of stop/start cycle for production
+
+# shutdown
 cp target/ROOT.war /opt/tomcat/webapps
 cd /opt/tomcat/bin
 ./shutdown.sh
+# REVIEW: wait for shutdown
+
+# backup journals in event of file incompatiblity between versions
+DATE=$(date +%Y%m%d_%H%M%S)
+mkdir -p /opt/backup/$DATE
+cp -r /opt/tomcat/bin/* /opt/backup/$DATE/
+
 ./startup.sh
 sleep 5
 
@@ -36,6 +47,7 @@ cp tests /opt/tomcat/bin/
 cp transactionLimits /opt/tomcat/bin/
 cp -n users /opt/tomcat/bin/
 cp institutions /opt/tomcat/bin/
+cp spids /opt/tomcat/bin/
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2

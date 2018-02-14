@@ -109,7 +109,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'File',
+      class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       factory: function () {
@@ -399,4 +399,4 @@ foam.CLASS({
       }
     }
   ]
-}); 
+});

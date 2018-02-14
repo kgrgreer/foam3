@@ -229,7 +229,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'FileArray',
+      class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
       documentation: 'Original invoice file',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
