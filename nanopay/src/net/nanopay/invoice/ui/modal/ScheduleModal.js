@@ -8,16 +8,19 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.model.BankAccount'
   ],
 
   implements: [
-    'net.nanopay.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling',
+    'foam.mlang.Expressions'
   ],
 
   imports: [
     'user',
-    'invoiceDAO'
+    'invoiceDAO',
+    'bankAccountDAO'
   ],
 
   properties: [
@@ -39,7 +42,26 @@ foam.CLASS({
       name: 'note',
       view: 'foam.u2.tag.TextArea',
       value: ''
-    }
+    },
+    {
+      name: 'accounts',
+      postSet: function(oldValue, newValue) {
+        var self = this;
+        this.bankAccountDAO.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
+          var account = a.array[0];
+        });
+      },
+      view: function(_,X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
+          objToChoice: function(account) {
+            return [account.id, 'Account No. ' +
+                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
+                    ];
+          }
+        });
+      }
+    },
   ],
 
   css: `
@@ -55,6 +77,11 @@ foam.CLASS({
     ^key-value{
       margin-top: 10px;
       margin-bottom: 25px;
+    }
+    ^ .foam-u2-tag-Select{
+      width: 90%;
+      margin: 0 0 20px 20px;
+      height: 40px;
     }
   `,
   
@@ -81,6 +108,11 @@ foam.CLASS({
           .end()
           // .start().addClass('label').add("Payment Method").end()
           // .start('select').addClass('full-width-input').end()
+          .start().addClass('label').add("Payment Method").end()
+          .start('div').addClass('dropdownContainer')
+            .add(this.ACCOUNTS)
+            .start('div').addClass('caret').end()
+          .end()
           .start().addClass('label').add("Schedule a Date").end()
           .start(this.PAYMENT_DATE).addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
