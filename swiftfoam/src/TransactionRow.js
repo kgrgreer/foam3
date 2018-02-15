@@ -118,7 +118,16 @@ return "\\(fc)\\(lc)"
 guard let amount = transaction$amount as? Int else {
   return UIColor.red
 }
-if (transaction$payerId as! Int) == (user$id as! Int) {
+
+guard let userId = user$id as? Int {
+  return UIColor.red
+}
+
+guard let payerId = transaction$payerId as? Int {
+  return UIColor.red
+}
+
+if ( payerId == userId ) {
   return UIColor.green
 } else {
   return UIColor.red
