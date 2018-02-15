@@ -12,7 +12,10 @@ import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.model.BankAccount;
 import net.nanopay.model.Account;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.cico.service.BankAccountVerificationService;
 import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
@@ -20,6 +23,9 @@ public class ScheduleInvoiceCron
   {
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
+    protected DAO    bankAccountDAO_;
+    protected DAO    standardCICOTransactionDAO_;
+    protected BankAccountVerificationService bankAccountVerification;
 
     public void fetchInvoices() {
       try{
@@ -41,14 +47,13 @@ public class ScheduleInvoiceCron
               Invoice invoice = (Invoice) invoiceList.get(i);
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
               Date invPaymentDate = invoice.getPaymentDate();
-              System.out.println(invoice.getId());
-              System.out.println(invPaymentDate);
-              System.out.println(dateFormat.format(invPaymentDate));
-              System.out.println(new Date());
-              System.out.println(dateFormat.format(new Date()));
 
               //Creates transaction only based on invoices scheduled for today.
               if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
+                if ( invoice.getAccountId() != 0 ) {
+                  cicoTransaction(invoice);
+                  return;
+                }
                 sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
@@ -60,6 +65,25 @@ public class ScheduleInvoiceCron
           e.printStackTrace();
           throw new RuntimeException(e);
         }
+    }
+
+    public void cicoTransaction(Invoice invoice){
+      try {
+        BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(invoice.getAccountId());
+
+        //Create cash in transaction.
+        Transaction cashInTransaction = new Transaction();
+        Long invAmount = Math.round(invoice.getAmount());
+        cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
+        cashInTransaction.setAmount(invAmount);
+        cashInTransaction.setBankAccountId(invoice.getAccountId());
+        cashInTransaction.setType(TransactionType.CASHIN);
+        standardCICOTransactionDAO_.put(cashInTransaction);
+        sendValueTransaction(invoice);
+      } catch (Throwable e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
     }
 
     public void sendValueTransaction(Invoice invoice){
@@ -74,17 +98,31 @@ public class ScheduleInvoiceCron
         invoice.setPaymentId((Long) completedTransaction.getId());
         invoice.setPaymentDate((Date) new Date());
         invoiceDAO_.put(invoice);
-        System.out.println("Schedule Transaction Completed.");
+        // Checks to see if cico transaction and sets cashout.
+        if(invoice.getAccountId() != 0) {
+          bankAccountVerification.addCashout(completedTransaction);
+          System.out.println("Schedule CICO Transaction Completed.");
+        } else {
+          System.out.println("Schedule Transaction Completed.");
+        }
+
       } catch ( Throwable e ){
         e.printStackTrace();
         throw new RuntimeException(e);
       }
     }
 
+    public void addCashout(Invoice invoice){
+      
+    }
+
     public void start() {
       System.out.println("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
+      bankAccountDAO_     = (DAO) getX().get("bankAccountDAO");
+      standardCICOTransactionDAO_ = (DAO) getX().get("standardCICOTransactionDAO");
+      bankAccountVerification = (BankAccountVerificationService) getX().get("bankAccountVerification");
       System.out.println("DAO's fetched...");
       fetchInvoices();
     }
