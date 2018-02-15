@@ -139,7 +139,7 @@ foam.CLASS({
           return;
         }
 
-        var offsetDate = this.paymentDate.setHours(this.paymentDate.getHours() + new Date().getTimezoneOffset());
+        var offsetDate = this.paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
         this.invoice.accountId = this.accounts
         this.invoice.paymentDate = offsetDate;
         this.invoice.note = this.note;
