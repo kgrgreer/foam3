@@ -84,7 +84,7 @@ public class LiquidityTransactionDAO
 
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payerAccount.getBalance() < total ) {
-      if ( checkCashInStatus(payerId) ) {
+      if ( checkCashInStatus(payerLiquiditySetting) ) {
         long cashInAmount = total - payerAccount.getBalance();
         addCashInTransaction(payerId, cashInAmount, x);
       }else{
@@ -98,7 +98,7 @@ public class LiquidityTransactionDAO
 
     // if the user's balance bigger than the liquidity maxbalance, do cash out
     if ( payeeAccount.getBalance() > payeeMaxBalance ) {
-      if ( checkCashOutStatus(payeeId) ) {
+      if ( checkCashOutStatus(payeeLiquiditySetting) ) {
         long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance;
         addCashOutTransaction(payeeId, cashOutAmount, x);
       }
@@ -149,15 +149,15 @@ public class LiquidityTransactionDAO
     }
   }
 
-  public boolean checkCashInStatus(long userId) {
-    if ( liquiditySettingsDAO_.find(userId) != null )
-      return ( (LiquiditySettings) liquiditySettingsDAO_.find(userId) ).getEnableCashIn();
+  public boolean checkCashInStatus(LiquiditySettings liquiditySettings) {
+    if ( liquiditySettings!= null )
+      return liquiditySettings.getEnableCashIn();
     return false;
   }
 
-  public boolean checkCashOutStatus(long userId) {
-    if ( liquiditySettingsDAO_.find(userId) != null )
-      return ( (LiquiditySettings) liquiditySettingsDAO_.find(userId) ).getEnableCashOut();
+  public boolean checkCashOutStatus(LiquiditySettings liquiditySettings) {
+    if ( liquiditySettings != null )
+      return liquiditySettings.getEnableCashOut();
     return false;
   }
 }
