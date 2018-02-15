@@ -180,7 +180,12 @@ foam.CLASS({
     {
       name: 'userBankAccounts',
       factory: function() {
-        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+        return this.bankAccountDAO.where(
+          this.AND(
+            this.EQ(this.BankAccount.OWNER, this.user.id),
+            this.EQ(this.BankAccount.STATUS, "Verified")
+          )
+        );
       }
     },
     {
@@ -188,7 +193,7 @@ foam.CLASS({
       view: function(_, X) {
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
+          dao: self.userBankAccounts,
           objToChoice: function(a) {
             return [a.id, a.accountName];
           }
