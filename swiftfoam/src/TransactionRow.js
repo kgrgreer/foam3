@@ -75,13 +75,21 @@ guard let amount = transaction$amount as? Int else {
   return "ERROR " + String(describing: transaction$amount)
 }
 
+guard let userId = user$id as? Int else {
+  return String(describing: amount)
+}
+
+guard let payerId = transaction$payerId as? Int else {
+  return String(describing: amount)
+}
+
 var tip = 0
 if let tipAmount = transaction$tip as? Int {
   tip = tipAmount
 }
 
 var sign: String = ""
-if (transaction$payerId as! Int) == (user$id as! Int) {
+if ( payerId == userId ) {
   sign = "+ "
 } else {
   sign = "- "
@@ -110,7 +118,16 @@ return "\\(fc)\\(lc)"
 guard let amount = transaction$amount as? Int else {
   return UIColor.red
 }
-if (transaction$payerId as! Int) == (user$id as! Int) {
+
+guard let userId = user$id as? Int else {
+  return UIColor.red
+}
+
+guard let payerId = transaction$payerId as? Int else {
+  return UIColor.red
+}
+
+if ( payerId == userId ) {
   return UIColor.green
 } else {
   return UIColor.red

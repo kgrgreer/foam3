@@ -52,7 +52,7 @@ foam.CLASS({
     },
     {
       class: 'Double',
-      name: 'scheduledAmount'
+      name: 'scheduledAmount',
       value: ''
     },
     {

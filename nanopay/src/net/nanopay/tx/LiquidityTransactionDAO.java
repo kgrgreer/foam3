@@ -5,28 +5,25 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-
-import java.util.Date;
-
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import java.util.Date;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
-
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-
 public class LiquidityTransactionDAO
-    extends ProxyDAO {
-  protected DAO userDAO_;
-  protected DAO liquiditySettingsDAO_;
+    extends ProxyDAO
+{
   protected DAO accountDAO_;
   protected DAO bankAccountDAO_;
   protected DAO groupDAO_;
+  protected DAO liquiditySettingsDAO_;
+  protected DAO userDAO_;
 
   public LiquidityTransactionDAO(X x, DAO delegate) {
     setDelegate(delegate);
