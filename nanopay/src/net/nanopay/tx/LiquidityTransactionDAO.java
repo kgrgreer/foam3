@@ -66,7 +66,7 @@ public class LiquidityTransactionDAO
     Group payeeGroup = (Group) groupDAO_.find(payee.getGroup());
 
     long total = txn.getTotal();
-    //get payer and payee liquidity settings
+    //get payer and payee group's liquidity settings
     LiquiditySettings payerLiquiditySetting = payerGroup.getLiquiditySettings();
     LiquiditySettings payeeLiquiditySetting = payeeGroup.getLiquiditySettings();
     long payerMinBalance = 0;
@@ -96,7 +96,7 @@ public class LiquidityTransactionDAO
     FObject originalTx = null;
     originalTx = super.put_(x, obj);
 
-    // if the user's balance big than the liquidity maxbalance, do cash out
+    // if the user's balance bigger than the liquidity maxbalance, do cash out
     if ( payeeAccount.getBalance() > payeeMaxBalance ) {
       if ( checkCashOutStatus(payeeId) ) {
         long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance;
