@@ -17,25 +17,37 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country',
       name: 'targetCountry',
       required: true
+    },
+    {
+      class: 'StringArray',
+      name: 'currencies'
+    },
+    {
+      class: 'StringArray',
+      name: 'payoutOptions'
     }
   ]
 });
 
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.fx.interac.model.Corridor',
-  targetModel: 'net.nanopay.model.Currency',
-  forwardName: 'currencies',
-  inverseName: 'corridors',
-  cardinality: '1:*',
-  targetProperty: {
-    hidden: true
-  }
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.fx.interac.model.Corridor',
-  targetModel: 'net.nanopay.fx.interac.model.PayoutOptions',
-  forwardName: 'payoutOptions',
-  inverseName: 'corridors',
-  cardinality: '1:*'
-});
+// NOTE: Commented out until relationships are supported on DIG
+// foam.RELATIONSHIP({
+//   sourceModel: 'net.nanopay.fx.interac.model.Corridor',
+//   targetModel: 'net.nanopay.model.Currency',
+//   forwardName: 'currencies',
+//   inverseName: 'corridors',
+//   cardinality: '1:*',
+//   targetProperty: {
+//     hidden: true
+//   }
+// });
+//
+// foam.RELATIONSHIP({
+//   sourceModel: 'net.nanopay.fx.interac.model.Corridor',
+//   targetModel: 'net.nanopay.fx.interac.model.PayoutOptions',
+//   forwardName: 'payoutOptions',
+//   inverseName: 'corridors',
+//   cardinality: '1:*',
+//   targetProperty: {
+//     hidden: true
+//   }
+// });
