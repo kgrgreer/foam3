@@ -27,37 +27,31 @@ public class PaidTransferDAO
   public FObject put_(X x, FObject obj) {
     FObject     ret         = super.put_(x, obj);
     Transaction transaction = (Transaction) obj;
+    User user = (User) userDAO_.find_(x, transaction.getPayeeId());
+    User sender = (User) userDAO_.find_(x, transaction.getPayerId());
+    if (transaction.getInvoiceId() != 0) {
+      return ret;
+    }
+    if ( transaction.getPayeeId() == transaction.getPayerId() ) {
+      return ret;
+    }
+    if (sender.getGroup().equals("ccShopper") && user.getGroup().equals("ccMerchant")) {
+      return ret;
+    }
+    AppConfig config = (AppConfig) x.get("appConfig");
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
+    EmailService email = (EmailService) x.get("email");
+    EmailMessage message = new EmailMessage();
+    message.setTo(new String[]{user.getEmail()});
+    HashMap<String, Object> args = new HashMap<>();
+    args.put("amount", formatter.format(transaction.getAmount()/100));
+    args.put("name", user.getFirstName());
+    args.put("email", user.getEmail());
+    args.put("link" , config.getUrl());
+    args.put("applink" , config.getAppLink());
+    args.put("playlink" , config.getPlayLink());
     try {
-      User user = (User) userDAO_.find_(x, transaction.getPayeeId());
-      User sender = (User) userDAO_.find_(x, transaction.getPayerId());
-      if (transaction.getInvoiceId() != 0) {
-        return ret;
-      }
-      if ( transaction.getPayeeId() == transaction.getPayerId() ) {
-        return ret;
-      }
-      if (sender.getGroup().equals("ccMerchant") && user.getGroup().equals("ccShopper")) {
-        return ret;
-      }
-      if (sender.getGroup().equals("ccShopper") && user.getGroup().equals("ccMerchant")) {
-        return ret;
-      }
-      AppConfig config = (AppConfig) x.get("appConfig");
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-
-
-
-      EmailService email = (EmailService) x.get("email");
-      EmailMessage message = new EmailMessage();
-      message.setTo(new String[]{user.getEmail()});
-      HashMap<String, Object> args = new HashMap<>();
-      args.put("amount", formatter.format(transaction.getAmount()/100));
-      args.put("name", user.getFirstName());
-      args.put("email", user.getEmail());
-      args.put("link" , config.getUrl());
-      args.put("applink" , config.getAppLink());
-      args.put("playlink" , config.getPlayLink());
-
       email.sendEmailFromTemplate(user, message, "transfer-paid", args);
     } catch(Throwable t) {
       t.printStackTrace();
