@@ -23,7 +23,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'Long',
+      class: 'Int',
       name: 'precision',
       required: true
     },

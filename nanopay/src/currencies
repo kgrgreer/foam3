@@ -1,4 +1,4 @@
-p({"class":"net.nanopay.model.Currency","id":1,"name":"US Dollar","alphabeticCode":"USD","numericCode":840,"precision":2,"country":"US","owner":1})
-p({"class":"net.nanopay.model.Currency","id":2,"name":"Canadian Dollar","alphabeticCode":"CAD","numericCode":124,"precision":2,"country":"CA","owner":1})
-p({"class":"net.nanopay.model.Currency","id":3,"name":"Yuan Renminbi","alphabeticCode":"CNY","numericCode":156,"precision":2,"country":"CN","owner":1})
-p({"class":"net.nanopay.model.Currency","id":4,"name":"India Rupee","alphabeticCode":"INR","numericCode":356,"precision":2,"country":"IN","owner":1})
+p({"class":"net.nanopay.model.Currency","name":"US Dollar","alphabeticCode":"USD","numericCode":840,"precision":2,"country":"US","owner":1})
+p({"class":"net.nanopay.model.Currency","name":"Canadian Dollar","alphabeticCode":"CAD","numericCode":124,"precision":2,"country":"CA","owner":1})
+p({"class":"net.nanopay.model.Currency","name":"Yuan Renminbi","alphabeticCode":"CNY","numericCode":156,"precision":2,"country":"CN","owner":1})
+p({"class":"net.nanopay.model.Currency","name":"India Rupee","alphabeticCode":"INR","numericCode":356,"precision":2,"country":"IN","owner":1})
