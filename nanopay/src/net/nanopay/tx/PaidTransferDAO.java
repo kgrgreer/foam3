@@ -25,21 +25,22 @@ public class PaidTransferDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    FObject     ret         = super.put_(x, obj);
+    Transaction transaction = (Transaction) obj;
     try {
-      Transaction transaction = (Transaction) obj;
       User user = (User) userDAO_.find_(x, transaction.getPayeeId());
       User sender = (User) userDAO_.find_(x, transaction.getPayerId());
       if (transaction.getInvoiceId() != 0) {
-        return getDelegate().put_(x, obj);
+        return ret;
       }
       if ( transaction.getPayeeId() == transaction.getPayerId() ) {
-        return getDelegate().put_(x, obj);
+        return ret;
       }
       if (sender.getGroup().equals("ccMerchant") && user.getGroup().equals("ccShopper")) {
-        return getDelegate().put_(x, obj);
+        return ret;
       }
       if (sender.getGroup().equals("ccShopper") && user.getGroup().equals("ccMerchant")) {
-        return getDelegate().put_(x, obj);
+        return ret;
       }
       AppConfig config = (AppConfig) x.get("appConfig");
       NumberFormat formatter = NumberFormat.getCurrencyInstance();
@@ -61,7 +62,7 @@ public class PaidTransferDAO
     } catch(Throwable t) {
       t.printStackTrace();
     }
-    return getDelegate().put_(x, obj);
-
+    return ret;
+    
   }
 }
