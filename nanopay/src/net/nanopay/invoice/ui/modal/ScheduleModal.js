@@ -139,9 +139,11 @@ foam.CLASS({
           return;
         }
 
+        var offsetDate = this.paymentDate.setHours(this.paymentDate.getHours() + new Date().getTimezoneOffset());
         this.invoice.accountId = this.accounts
-        this.invoice.paymentDate = this.paymentDate;
+        this.invoice.paymentDate = offsetDate;
         this.invoice.note = this.note;
+
 
         this.invoiceDAO.put(this.invoice);
         ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment has been scheduled.', type: ''}));

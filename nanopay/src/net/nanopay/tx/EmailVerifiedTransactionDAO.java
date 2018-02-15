@@ -21,6 +21,7 @@ public class EmailVerifiedTransactionDAO
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
     User user = (User) userDAO_.find_(x, transaction.getPayerId());
+
     if ( user == null || ! user.getEmailVerified() ) {
       throw new RuntimeException("You must verify your email to send money");
     }

@@ -78,11 +78,10 @@ public class ScheduleInvoiceCron
         cashInTransaction.setAmount(invAmount);
         cashInTransaction.setBankAccountId(invoice.getAccountId());
         cashInTransaction.setType(TransactionType.CASHIN);
-        standardCICOTransactionDAO_.put(cashInTransaction);
+        Transaction cicoTransaction = (Transaction) standardCICOTransactionDAO_.put(cashInTransaction);
         sendValueTransaction(invoice);
       } catch (Throwable e) {
         e.printStackTrace();
-        throw new RuntimeException(e);
       }
     }
 
@@ -108,7 +107,6 @@ public class ScheduleInvoiceCron
 
       } catch ( Throwable e ){
         e.printStackTrace();
-        throw new RuntimeException(e);
       }
     }
 
