@@ -8,7 +8,9 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
 
-public class UpdateInvoiceTransactionDAO extends ProxyDAO {
+public class UpdateInvoiceTransactionDAO
+  extends ProxyDAO
+{
   protected DAO invoiceDAO_;
 
   public UpdateInvoiceTransactionDAO(X x, DAO delegate) {
@@ -19,9 +21,9 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    FObject ret = super.put_(x, obj);
-
+    FObject     ret         = super.put_(x, obj);
     Transaction transaction = (Transaction) obj;
+
     // find invoice
     if ( transaction.getPayerId() != transaction.getPayeeId() ) {
       if ( transaction.getInvoiceId() != 0 ) {
