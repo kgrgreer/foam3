@@ -55,7 +55,7 @@ public class ResponseMsg
       
       obj = jsonParser_.parseString(getJson(), modelInfo_.getObjClass());
       if ( obj == null ) {
-        throw new RuntimeException("Json Parser Error");
+        throw new RuntimeException("Json Parser Error: " + getJson());
       }
       setModel((FlinksCall) obj);
       return (FlinksCall) obj;

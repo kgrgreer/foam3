@@ -131,7 +131,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
@@ -153,7 +152,7 @@ foam.CLASS({
           .tag(this.CLOSE_BUTTON)
           .tag(this.OTHER_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end()
+        .start('div').style({'clear' : 'both'}).end();
     }
   ],
 
