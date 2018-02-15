@@ -119,11 +119,11 @@ guard let amount = transaction$amount as? Int else {
   return UIColor.red
 }
 
-guard let userId = user$id as? Int {
+guard let userId = user$id as? Int else {
   return UIColor.red
 }
 
-guard let payerId = transaction$payerId as? Int {
+guard let payerId = transaction$payerId as? Int else {
   return UIColor.red
 }
 
