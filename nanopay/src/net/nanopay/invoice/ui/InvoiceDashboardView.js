@@ -18,8 +18,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'payableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      name: 'payableAmount'
     },
     {
       class: 'Currency',
@@ -27,8 +26,7 @@ foam.CLASS({
       expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
     },
     {
-      name: 'receivableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      name: 'receivableAmount'
     },
     {
       class: 'Currency',
