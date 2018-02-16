@@ -231,6 +231,7 @@ foam.CLASS({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
               editColumnsEnabled: true,
+              editRowsEnabled: true,
               data: this.data,
               columns: [
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
