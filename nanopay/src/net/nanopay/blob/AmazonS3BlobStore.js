@@ -34,14 +34,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accessKeyId',
-      documentation: 'S3 access key id',
-      transient: true
+      documentation: 'S3 access key id'
     },
     {
       class: 'String',
       name: 'secretKeyId',
-      documentation: 'S3 secret key id',
-      transient: true
+      documentation: 'S3 secret key id'
     },
     {
       class: 'Object',
