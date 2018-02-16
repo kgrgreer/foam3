@@ -32,9 +32,9 @@ public class ScheduleInvoiceCron
         System.out.println("Finding scheduled Invoices...");
         ListSink sink = (ListSink) invoiceDAO_.where(
           AND(
-            EQ(Invoice.STATUS, "Scheduled"),
             EQ(Invoice.PAYMENT_ID, 0),
-            EQ(Invoice.PAYMENT_METHOD, PaymentStatus.NONE)
+            EQ(Invoice.PAYMENT_METHOD, PaymentStatus.NONE),
+            NEQ(Invoice.PAYMENT_DATE, null)
           )
         ).select(new ListSink());
           List invoiceList = sink.getData();
@@ -47,9 +47,11 @@ public class ScheduleInvoiceCron
               Invoice invoice = (Invoice) invoiceList.get(i);
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
               Date invPaymentDate = invoice.getPaymentDate();
-
+              System.out.println(dateFormat.format(invPaymentDate));
+              System.out.println(dateFormat.format(new Date()));
               //Creates transaction only based on invoices scheduled for today.
               if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
+                System.out.println("Scheduled Invoice for today found.");
                 if ( invoice.getAccountId() != 0 ) {
                   cicoTransaction(invoice);
                   return;
@@ -75,11 +77,22 @@ public class ScheduleInvoiceCron
         Transaction cashInTransaction = new Transaction();
         Long invAmount = Math.round(invoice.getAmount());
         cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
+        cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
         cashInTransaction.setAmount(invAmount);
+        cashInTransaction.setInvoiceId(invoice.getId());
         cashInTransaction.setBankAccountId(invoice.getAccountId());
         cashInTransaction.setType(TransactionType.CASHIN);
-        Transaction cicoTransaction = (Transaction) standardCICOTransactionDAO_.put(cashInTransaction);
+
+        try {
+          Transaction cicoTransaction = (Transaction) standardCICOTransactionDAO_.put(cashInTransaction);
+          System.out.println("Starting cash in process...");
+        } catch (Throwable e) {
+          e.printStackTrace();
+          throw new RuntimeException(e);
+        }
+        
         sendValueTransaction(invoice);
+
       } catch (Throwable e) {
         e.printStackTrace();
       }
@@ -92,26 +105,30 @@ public class ScheduleInvoiceCron
         Long invAmount = Math.round(invoice.getAmount());
         transaction.setPayeeId((Long) invoice.getPayeeId());
         transaction.setPayerId((Long) invoice.getPayerId());
+        transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
-        Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
-        invoice.setPaymentId((Long) completedTransaction.getId());
-        invoice.setPaymentDate((Date) new Date());
-        invoiceDAO_.put(invoice);
-        // Checks to see if cico transaction and sets cashout.
-        if(invoice.getAccountId() != 0) {
-          bankAccountVerification.addCashout(completedTransaction);
-          System.out.println("Schedule CICO Transaction Completed.");
-        } else {
-          System.out.println("Schedule Transaction Completed.");
+        try {
+          Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
+          invoice.setPaymentId(completedTransaction.getId());
+          invoice.setPaymentDate((Date) new Date());
+          invoiceDAO_.put(invoice);
+          // Checks to see if cico transaction and sets cashout.
+          if(invoice.getAccountId() != 0) {
+            completedTransaction.setBankAccountId(invoice.getAccountId());
+            completedTransaction.setInvoiceId(invoice.getId());
+            bankAccountVerification.addCashout(completedTransaction);
+            System.out.println("Schedule CICO Transaction Completed.");
+          } else {
+            System.out.println("Schedule Transaction Completed.");
+          }
+        } catch (Throwable e) {
+          e.printStackTrace();
+          throw new RuntimeException(e);
         }
 
       } catch ( Throwable e ){
         e.printStackTrace();
       }
-    }
-
-    public void addCashout(Invoice invoice){
-      
     }
 
     public void start() {
