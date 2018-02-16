@@ -44,7 +44,7 @@ public class PaidTransactionDAO
       HashMap<String, Object> args = new HashMap<>();
       args.put("amount", formatter.format(transaction.getAmount()/100));
       args.put("fromEmail", sender.getEmail());
-      args.put("fromName", sender.getEmail());
+      args.put("fromName", sender.getFirstName());
       args.put("number" , transaction.getInvoiceId());
       email.sendEmailFromTemplate(user, message, "invoice-paid", args);
 
