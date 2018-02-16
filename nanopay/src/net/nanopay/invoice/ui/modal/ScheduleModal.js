@@ -131,13 +131,13 @@ foam.CLASS({
       name: 'schedule',
       label: 'Confirm',
       code: function(X){        
-        // if(!this.paymentDate){
-        //   this.add(this.NotificationMessage.create({ message: 'Please select a Schedule Date.', type: 'error' }));
-        //   return;
-        // } else if (this.paymentDate < Date.now()){
-        //   this.add(this.NotificationMessage.create({ message: 'Cannot schedule a payment date for the past. Please try again.', type: 'error' }));
-        //   return;
-        // }
+        if(!this.paymentDate){
+          this.add(this.NotificationMessage.create({ message: 'Please select a Schedule Date.', type: 'error' }));
+          return;
+        } else if (this.paymentDate < Date.now()){
+          this.add(this.NotificationMessage.create({ message: 'Cannot schedule a payment date for the past. Please try again.', type: 'error' }));
+          return;
+        }
 
         var offsetDate = this.paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
         this.invoice.accountId = this.accounts

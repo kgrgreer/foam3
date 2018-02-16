@@ -75,7 +75,7 @@ public class ScheduleInvoiceCron
 
         //Create cash in transaction.
         Transaction cashInTransaction = new Transaction();
-        Long invAmount = Math.round(invoice.getAmount());
+        int invAmount = Math.round(invoice.getAmount());
         cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
         cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
         cashInTransaction.setAmount(invAmount);
@@ -102,7 +102,7 @@ public class ScheduleInvoiceCron
       System.out.println("Starting payment process...");
       try {
         Transaction transaction = new Transaction();
-        Long invAmount = Math.round(invoice.getAmount());
+        int invAmount = Math.round(invoice.getAmount());
         transaction.setPayeeId((Long) invoice.getPayeeId());
         transaction.setPayerId((Long) invoice.getPayerId());
         transaction.setInvoiceId(invoice.getId());
