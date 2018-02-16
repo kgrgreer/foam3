@@ -47,8 +47,7 @@ public class ScheduleInvoiceCron
               Invoice invoice = (Invoice) invoiceList.get(i);
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
               Date invPaymentDate = invoice.getPaymentDate();
-              System.out.println(dateFormat.format(invPaymentDate));
-              System.out.println(dateFormat.format(new Date()));
+
               //Creates transaction only based on invoices scheduled for today.
               if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
                 System.out.println("Scheduled Invoice for today found.");
@@ -73,7 +72,7 @@ public class ScheduleInvoiceCron
       try {
         BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(invoice.getAccountId());
 
-        //Create cash in transaction.
+        //Create cash in transaction if accountId is present.
         Transaction cashInTransaction = new Transaction();
         int invAmount = Math.round(invoice.getAmount());
         cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
@@ -112,6 +111,7 @@ public class ScheduleInvoiceCron
           invoice.setPaymentId(completedTransaction.getId());
           invoice.setPaymentDate((Date) new Date());
           invoiceDAO_.put(invoice);
+          
           // Checks to see if cico transaction and sets cashout.
           if(invoice.getAccountId() != 0) {
             completedTransaction.setBankAccountId(invoice.getAccountId());
