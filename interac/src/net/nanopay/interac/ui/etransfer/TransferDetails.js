@@ -154,7 +154,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.OWNER, X.data.user.id)),
+          dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1),
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)

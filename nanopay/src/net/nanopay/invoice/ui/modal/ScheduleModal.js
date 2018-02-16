@@ -109,8 +109,6 @@ foam.CLASS({
               .start().addClass('value').add(this.invoice.currencyType, ' ', this.invoice.amount.toFixed(2)).end()
             .end()
           .end()
-          // .start().addClass('label').add("Payment Method").end()
-          // .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Payment Method").end()
           .start('div').addClass('dropdownContainer')
             .add(this.ACCOUNTS)
