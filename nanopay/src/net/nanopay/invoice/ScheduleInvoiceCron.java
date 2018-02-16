@@ -54,9 +54,9 @@ public class ScheduleInvoiceCron
                 System.out.println("Scheduled Invoice for today found.");
                 if ( invoice.getAccountId() != 0 ) {
                   cicoTransaction(invoice);
-                  return;
+                } else {
+                  sendValueTransaction(invoice);
                 }
-                sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
               e.printStackTrace();
@@ -88,7 +88,7 @@ public class ScheduleInvoiceCron
           System.out.println("Starting cash in process...");
         } catch (Throwable e) {
           e.printStackTrace();
-          throw new RuntimeException(e);
+          return;
         }
         
         sendValueTransaction(invoice);
