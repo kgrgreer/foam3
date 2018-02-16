@@ -110,3 +110,5 @@ sha256/
 /rollingHashedTxns
 /signedTxns
 /dugs
+/spids
+/liquiditySettings

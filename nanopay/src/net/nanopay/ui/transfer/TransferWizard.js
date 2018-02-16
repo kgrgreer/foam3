@@ -350,30 +350,16 @@ foam.CLASS({
 
           // Make the transfer
           return self.transactionDAO.put(transaction)
-          .then(function (result) {
-            if ( result ) {
-              self.viewData.transaction = result;
-            }
-
-            return self.bankAccountVerification.addCashout(transaction);
-          }).then(function (response) {
+            .then(function (result) {
+              if ( result ) {
+                self.viewData.transaction = result;
+              }
+            }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
             self.add(self.NotificationMessage.create({ message: "Success!" }));
 
-            if ( self.invoice ) {
-              var emailMessage = self.EmailMessage.create({
-                to: [ self.viewData.payee.email ]
-              });
-
-              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
-                fromName: self.user.businessName,
-                fromEmail: self.user.email,
-                amount: self.formatCurrency(self.invoice.amount),
-                number: self.invoice.invoiceNumber
-              });
-            }
           }).catch(function (err) {
             console.error(err);
 

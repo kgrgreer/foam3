@@ -17,6 +17,9 @@ foam.CLASS({
   imports: [
     'stack',
     'userDAO',
+    'validateEmail',
+    'validatePostalCode',
+    'validatePhone',
     'user',
     'transactionDAO'
   ],
@@ -71,12 +74,17 @@ foam.CLASS({
             return;
           }
 
+          if ( !this.validateEmail(companyInfo.email) ){
+            self.add(self.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
+            return;
+          }
+
           if ( companyInfo.password != companyInfo.confirmPassword ){
             self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
             return;
           }
 
-          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(companyInfo.phoneNumber) ) {
+          if ( !this.validatePhone(companyInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return; 
           }
@@ -96,6 +104,11 @@ foam.CLASS({
           ( companyInfo.city == null || companyInfo.city.trim() == '' ) ||
           ( companyInfo.postalCode == null || companyInfo.postalCode.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            return;
+          }
+          
+          if ( !this.validatePostalCode(companyInfo.postalCode) ){
+            self.add(self.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
             return;
           }
 

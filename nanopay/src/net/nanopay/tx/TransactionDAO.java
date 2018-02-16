@@ -144,22 +144,7 @@ public class TransactionDAO
           getAccountDAO().put(payeeAccount);
         }
 
-
         FObject ret = super.put_(x, obj);
-
-        // find invoice
-        if ( transaction.getInvoiceId() != 0 ) {
-          Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
-          if ( invoice == null ) {
-            throw new RuntimeException("Invoice not found");
-          }
-
-          invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
-          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
-          getInvoiceDAO().put(invoice);
-          // addInvoiceCashout( x, payee, total, payeeId, payerId );
-        }
 
         return ret;
       }

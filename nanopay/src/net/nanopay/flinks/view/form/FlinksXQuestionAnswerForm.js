@@ -11,6 +11,8 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.view.StringArrayView',
+    'foam.u2.tag.Input',
+    'net.nanopay.flinks.view.element.StringArrayInput',
     'foam.u2.view.PasswordView'
   ],
 
@@ -167,10 +169,11 @@ foam.CLASS({
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
               self.viewData.questions[index] = data.Prompt;
-              var text = self.PasswordView.create({'onKey':true});
-              text.data$.sub(function() {
-                self.viewData.answers[index] = new Array(1).fill(text.data);
-                if ( text.data.trim().length === 0 ) {
+              var text = self.StringArrayInput.create({max: 3, isPassword: true});
+              text.data$.sub(function(){
+                self.viewData.answers[index] = text.data;
+                if ( text.data[0].trim().length === 0 ) {
+
                   self.answerCheck[index] = false;
                 } else {
                   self.answerCheck[index] = true;
@@ -178,7 +181,8 @@ foam.CLASS({
                 self.tick++;
               });
               this.start('p').addClass('question').add('Q' + (index+1) + ': ').add(data.Prompt).end();
-              this.start(text).style({'margin-top':'10px'}).addClass('input').end();
+              //this.start(text).style({'margin-top':'10px'}).addClass('input').end();
+              this.start(text).style({'margin-top':'10px'}).end();
             })
           .end()
         .end()
@@ -193,7 +197,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'Next',
+      label: 'Continue',
       isEnabled: function(tick, isConnecting, answerCheck) {
         for ( var x in answerCheck ) {
           if ( answerCheck[x] === false ) return false;
@@ -208,7 +212,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
         X.form.goBack();
       }

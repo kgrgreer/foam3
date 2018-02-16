@@ -29,7 +29,9 @@ foam.INTERFACE({
           javaType: 'long'
         }
       ]
-    }, {
+    },
+    // void bookRate(quoteId)
+    {
       name: 'fetchRates',
       javaReturns: 'void',
       javaThrows: [ 'java.lang.RuntimeException' ],

@@ -1,6 +1,7 @@
 foam.INTERFACE({
   package: 'net.nanopay.tx.model',
   name: 'FeeInterface',
+
   methods: [
     {
       name: 'getFee',
@@ -12,7 +13,7 @@ foam.INTERFACE({
         {
           name: 'transactionAmount',
           javaType: 'long',
-          swiftType: 'Int',
+          swiftType: 'Int'
         }
       ]
     },
@@ -26,7 +27,7 @@ foam.INTERFACE({
         {
           name: 'transactionAmount',
           javaType: 'long',
-          swiftType: 'Int',
+          swiftType: 'Int'
         }
       ]
     }
