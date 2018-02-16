@@ -41,8 +41,7 @@ public class BankAccountVerificationService
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
-
-      /*if ( bankAccountId <= 0 ) {
+      if ( bankAccountId <= 0 ) {
         throw new RuntimeException("Invalid Bank Account Id");
       }
 
@@ -90,12 +89,7 @@ public class BankAccountVerificationService
         bankAccountDAO.put(bankAccount);
       }
 
-      return isVerified;*/
-
-      BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
-      bankAccount.setStatus("Verified");
-      bankAccountDAO.put(bankAccount);
-      return true;
+      return isVerified;
     } finally {
       pm.log(getX());
     }
