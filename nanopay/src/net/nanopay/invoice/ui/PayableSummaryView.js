@@ -14,7 +14,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice'
   ],
 
-  imports: [ 
+  imports: [
     'formatCurrency',
     'user'
   ],
@@ -53,7 +53,6 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'scheduledAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView',
       value: ''
     },
     {
@@ -64,7 +63,6 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'paidAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView',
       value: ''
     },
     {
@@ -75,9 +73,8 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'dueAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView',
       value: ''
-    },   
+    },
     {
       class: 'Int',
       name: 'overDueCount',
@@ -86,7 +83,6 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'overDueAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView',
       value: ''
     },
     {
@@ -97,12 +93,10 @@ foam.CLASS({
     // {
     //   class: 'Double',
     //   name: 'newAmount',
-    //   view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
     // },
     {
       class: 'Double',
       name: 'payableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView',
       value: ''
     },
     {
@@ -112,7 +106,7 @@ foam.CLASS({
     }
   ],
 
-  methods: [ 
+  methods: [
     function initE() {
       this.dao.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -121,7 +115,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('blue-card-title')
           .add(this.title)
-          .start().addClass('thin-align').add(this.formattedPayableAmount$).end() 
+          .start().addClass('thin-align').add(this.formattedPayableAmount$).end()
         .end()
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
         .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })

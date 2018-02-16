@@ -5,7 +5,8 @@ foam.CLASS({
 
   requires: [
     'foam.blob.BlobBlob',
-    'foam.nanos.fs.File'
+    'foam.nanos.fs.File',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
@@ -38,6 +39,10 @@ foam.CLASS({
       margin: 10px 0 50px;
     }
   `,
+
+  messages: [
+    { name: 'ErrorMessage', message: 'One or more file(s) were not uploaded as they exceeded the file size limit of 10MB' }
+  ],
 
   methods: [
     function initE() {
@@ -87,8 +92,15 @@ foam.CLASS({
     },
 
     function onChange (e) {
+      var errors = false;
       var files = e.target.files;
       for ( var i = 0 ; i < files.length ; i++ ) {
+        // skip files that exceed limit
+        if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
+          if ( ! errors ) errors = true;
+          continue;
+        }
+
         this.data.push(this.File.create({
           owner: this.user.id,
           filename: files[i].name,
@@ -100,6 +112,10 @@ foam.CLASS({
         }));
       }
       this.data = Array.from(this.data);
+
+      if ( errors ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorMessage, type: 'error' }));
+      }
     }
   ]
 });

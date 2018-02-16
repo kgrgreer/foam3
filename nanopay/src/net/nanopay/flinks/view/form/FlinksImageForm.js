@@ -183,7 +183,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
+      label: 'Continue',
       isEnabled: function(isConnecting) {
         if ( isConnecting === true ) return false;
         return true;
@@ -204,7 +204,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Cancel',
       code: function(X) {
         X.form.goBack();
       }

@@ -1,4 +1,5 @@
 FOAM_FILES([
+  { name: 'net/nanopay/blob/AmazonS3BlobStore' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/Branch' },
@@ -203,6 +204,7 @@ FOAM_FILES([
 
   //util
   { name: 'net/nanopay/util/AddCommaFormatter' },
+  { name: 'net/nanopay/util/FormValidation' },
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
 

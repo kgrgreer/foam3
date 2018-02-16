@@ -17,7 +17,10 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'email',
-    'formatCurrency',    
+    'formatCurrency', 
+    'validateEmail',
+    'validatePostalCode',
+    'validatePhone',   
     'stack',
     'transactionDAO',    
     'user',
@@ -63,7 +66,6 @@ foam.CLASS({
 
         if ( this.position == 0 ) {
           // Shopper Info
-
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
           ( shopperInfo.lastName == null || shopperInfo.lastName.trim() == '' ) ||
           ( shopperInfo.emailAddress == null || shopperInfo.emailAddress.trim() == '' ) ||
@@ -78,12 +80,22 @@ foam.CLASS({
             return;
           }
 
+          if ( !this.validateEmail(shopperInfo.emailAddress) ){
+            self.add(self.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
+            return;
+          }
+
+          if ( !this.validatePostalCode(shopperInfo.postalCode) ){
+            self.add(self.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
+            return;
+          }
+
           if ( shopperInfo.password != shopperInfo.confirmPassword ){
             self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
             return;
           }
 
-          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(shopperInfo.phoneNumber) ) {
+          if ( !this.validatePhone(shopperInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return; 
           }
