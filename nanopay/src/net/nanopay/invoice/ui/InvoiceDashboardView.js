@@ -149,11 +149,11 @@ foam.CLASS({
         );
 
         expensesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.payableAmount = sum.value;
+          self.payableAmount = (sum.value/100);
         });
 
         salesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.receivableAmount = sum.value;
+          self.receivableAmount = (sum.value/100);
         })
       }
     }
