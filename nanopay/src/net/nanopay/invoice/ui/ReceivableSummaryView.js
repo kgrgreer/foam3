@@ -86,7 +86,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
+      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount/100); }
     }
   ],
 
@@ -120,7 +120,7 @@ foam.CLASS({
         );
 
         receivablesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.receivableAmount = (sum.value/100).toFixed(2);
+          self.receivableAmount = sum.value.toFixed(2);
         });
 
         // These two queries could be combined into a SEQ() to save on a
@@ -132,7 +132,7 @@ foam.CLASS({
         });
 
         overDueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.overDueAmount = (sum.value/100).toFixed(2);
+          self.overDueAmount = sum.value.toFixed(2);
         });
 
         var dueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Due'));
@@ -141,7 +141,7 @@ foam.CLASS({
           self.dueCount = count.value;
         });
         dueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.dueAmount = (sum.value/100).toFixed(2);
+          self.dueAmount = sum.value.toFixed(2);
         });
 
         var scheduledDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Scheduled'));
@@ -150,7 +150,7 @@ foam.CLASS({
           self.scheduledCount = count.value;
         });
         scheduledDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.scheduledAmount = (sum.value/100).toFixed(2);
+          self.scheduledAmount = sum.value.toFixed(2);
         });
 
         var paidDAO = this.dao.where(this.EQ(this.Invoice.STATUS,'Paid'));
@@ -159,7 +159,7 @@ foam.CLASS({
           self.paidCount = count.value;
         });
         paidDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.paidAmount = (sum.value/100).toFixed(2);
+          self.paidAmount = sum.value.toFixed(2);
         });
       }
     }

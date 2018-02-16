@@ -23,7 +23,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedPayableAmount',
-      expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
+      expression: function(payableAmount) { return this.formatCurrency(payableAmount/100); }
     },
     {
       name: 'receivableAmount'
@@ -31,7 +31,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
+      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount/100); }
     },
     {
       name: 'salesDAO',
@@ -149,11 +149,11 @@ foam.CLASS({
         );
 
         expensesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.payableAmount = (sum.value/100);
+          self.payableAmount = sum.value;
         });
 
         salesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.receivableAmount = (sum.value/100);
+          self.receivableAmount = sum.value;
         })
       }
     }
