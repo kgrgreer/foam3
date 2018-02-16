@@ -86,6 +86,8 @@ function build_NANOPAY_into_tomcat {
 
     # Copy over static web files to ROOT
     cp -r foam2 "$WEBAPPS/ROOT/foam2"
+    cp -r interac/src/net "$WEBAPPS/ROOT/foam2/src/"
+    cp -r b2b/src/net "$WEBAPPS/ROOT/foam2/src/"
     cp -r nanopay "$WEBAPPS/ROOT/nanopay"
     cp -r merchant "$WEBAPPS/ROOT/merchant"
     cp -r favicon "$WEBAPPS/ROOT/favicon"
