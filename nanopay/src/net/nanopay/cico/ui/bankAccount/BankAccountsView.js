@@ -251,12 +251,25 @@ foam.CLASS({
         function initE() {
           var self = this;
 
+          var p = foam.u2.PopupView.create({
+            width: 152,
+            x: -130,
+            y: -7
+          })
+          p.start('div').add('Set As Default')
+            .end()
+            .start('div').add('Verify Account')
+            .end()
+            .start('div').add('Delete Account')
+            .end();
+
           this
             .start({
               class: 'foam.u2.view.TableView',
               selection$: this.selection$,
               editColumnsEnabled: true,
               editRowsEnabled: true,
+              editRowsPopup: p, 
               data: this.data,
               columns: [
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
