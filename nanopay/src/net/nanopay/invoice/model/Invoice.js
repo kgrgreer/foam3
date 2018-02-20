@@ -157,7 +157,7 @@ foam.CLASS({
     {
       // TODO: switch to Currency
       // class: 'Currency',
-      class: 'Double',
+      class: 'Currency',
       name: 'amount',
       aliases: [ 'a' ],
       precision: 2,
@@ -165,6 +165,10 @@ foam.CLASS({
       tableCellFormatter: function(a, X) {
         this.start().style({'padding-right': '20px'}).add('$' + X.addCommas(a.toFixed(2))).end();
       }
+    },
+    {
+      class: 'Long',
+      name: 'sourceAccountId'
     },
     {
       class: 'Enum',
