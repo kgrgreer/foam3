@@ -2,8 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'TransactionPurpose',
   documentation: 'Purpose of the transaction',
-  ids: [ 'purposeCode' ],
   properties: [
+    {
+      class: 'String',
+      name: 'id'
+    },
     {
       class: 'String',
       name: 'purposeCode',
