@@ -54,7 +54,7 @@ var classes = [
   'foam.swift.ui.DAOTableViewSource',
   'foam.swift.ui.DetailView',
   'foam.u2.Visibility',
-  'net.nanopay.auth.email.EmailTokenService',
+  'foam.nanos.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.model.Account',
   'net.nanopay.tx.UserTransactionLimit',

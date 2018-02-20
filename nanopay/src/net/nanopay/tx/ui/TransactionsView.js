@@ -151,33 +151,12 @@ foam.CLASS({
       padding: 10px 10px 10px 31px;
       font-size: 14px;
     }
-    ^ .foam-u2-view-TableView th {
-      font-family: 'Roboto';
-      padding-left: 15px;
-      font-size: 14px;
-      line-height: 1;
-      letter-spacing: 0.4px;
-      color: #093649;
-    }
-    ^ .foam-u2-view-TableView td {
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      padding-left: 15px;
-      font-size: 12px;
-      color: #093649;
-    }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
     }
-    ^ tbody > tr {
-      height: 60px;
-      background: white;
-    }
-    ^ tbody > tr:nth-child(odd) {
-      background: #f6f9f9;
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
     }
     ^ .net-nanopay-ui-ActionView-create {
       visibility: hidden;
@@ -200,9 +179,6 @@ foam.CLASS({
       opacity: 0.01;
       cursor: pointer;
       z-index: 100;
-    }
-    ^ .foam-u2-view-TableView-row {
-      height: 40px;
     }
   `,
 
