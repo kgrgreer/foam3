@@ -353,7 +353,7 @@ foam.CLASS({
                   transitNumber: item.TransitNumber,
                   status: 'Verified'
                 })).catch(function(a) {
-                  self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+                  self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
                   self.fail();
                 });
               }
