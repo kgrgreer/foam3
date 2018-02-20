@@ -13,6 +13,7 @@ import foam.nanos.auth.User;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
+import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 
@@ -96,26 +97,30 @@ public class LiquidityTransactionDAO
     // Make a payment
     FObject originalTx = null;
     originalTx = super.put_(x, obj);
-//   TODO: liquidity range implementation
-//    if ( payerAccount.getBalance() < payerMinBalance ) {
-//      if ( checkCashInStatus(payerLiquiditySetting) ) {
-//        addCashInTransaction(payerId, payerMinBalance - payerAccount.getBalance(), x);
-//      }
-//    }
-//
-//    if ( payerAccount.getBalance() > payerMaxBalance ) {
-//      if ( checkCashOutStatus(payerLiquiditySetting) ) {
-//        addCashOutTransaction(payerId, payerAccount.getBalance() - payerMaxBalance, x);
-//      }
-//    }
 
-    // if the user's balance bigger than the liquidity maxbalance, do cash out
-    if ( payeeAccount.getBalance() > payeeMaxBalance ) {
-      if ( checkCashOutStatus(payeeLiquiditySetting) ) {
-        long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance;
-        addCashOutTransaction(payeeId, cashOutAmount, x);
+    if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
+      if ( payerAccount.getBalance() < payerMinBalance ) {
+        if ( checkCashInStatus(payerLiquiditySetting) ) {
+          addCashInTransaction(payerId, payerMinBalance - payerAccount.getBalance(), x);
+        }
+      }
+
+      if ( payerAccount.getBalance() > payerMaxBalance ) {
+        if ( checkCashOutStatus(payerLiquiditySetting) ) {
+          addCashOutTransaction(payerId, payerAccount.getBalance() - payerMaxBalance, x);
+        }
       }
     }
+    // if the user's balance bigger than the liquidity maxbalance, do cash out
+    if ( ifCheckRangePerTransaction(payeeLiquiditySetting) ) {
+      if ( payeeAccount.getBalance() > payeeMaxBalance ) {
+        if ( checkCashOutStatus(payeeLiquiditySetting) ) {
+          long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance;
+          addCashOutTransaction(payeeId, cashOutAmount, x);
+        }
+      }
+    }
+
 
     return originalTx;
   }
@@ -136,7 +141,8 @@ public class LiquidityTransactionDAO
         .setType(TransactionType.CASHIN)
         .setBankAccountId(userBankAccount.getId())
         .build();
-    super.put_(x, transaction);
+    DAO txnDAO = (DAO) x.get("transactionDAO");
+    txnDAO.put_(x, transaction);
   }
 
   public void addCashOutTransaction(long userId, long amount, X x) throws RuntimeException {
@@ -154,7 +160,8 @@ public class LiquidityTransactionDAO
           .setType(TransactionType.CASHOUT)
           .setBankAccountId(userBankAccount.getId())
           .build();
-      super.put_(x, transaction);
+      DAO txnDAO = (DAO) x.get("transactionDAO");
+      txnDAO.put_(x, transaction);
     }
   }
 
@@ -167,6 +174,12 @@ public class LiquidityTransactionDAO
   public boolean checkCashOutStatus(LiquiditySettings liquiditySettings) {
     if ( liquiditySettings != null )
       return liquiditySettings.getEnableCashOut();
+    return false;
+  }
+
+  public boolean ifCheckRangePerTransaction(LiquiditySettings liquiditySettings) {
+    if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION)
+      return true;
     return false;
   }
 }
