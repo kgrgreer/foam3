@@ -88,6 +88,9 @@ public class LiquidityTransactionDAO
     if ( payerAccount.getBalance() < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
         long cashInAmount = total - payerAccount.getBalance();
+        if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
+          cashInAmount += payerMinBalance;
+        }
         addCashInTransaction(payerId, cashInAmount, x);
       } else {
         throw new RuntimeException("balance is insufficient");
@@ -99,11 +102,6 @@ public class LiquidityTransactionDAO
     originalTx = super.put_(x, obj);
 
     if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
-      if ( payerAccount.getBalance() < payerMinBalance ) {
-        if ( checkCashInStatus(payerLiquiditySetting) ) {
-          addCashInTransaction(payerId, payerMinBalance - payerAccount.getBalance(), x);
-        }
-      }
 
       if ( payerAccount.getBalance() > payerMaxBalance ) {
         if ( checkCashOutStatus(payerLiquiditySetting) ) {
@@ -178,7 +176,7 @@ public class LiquidityTransactionDAO
   }
 
   public boolean ifCheckRangePerTransaction(LiquiditySettings liquiditySettings) {
-    if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION)
+    if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
       return true;
     return false;
   }
