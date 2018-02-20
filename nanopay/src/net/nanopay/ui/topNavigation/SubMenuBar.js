@@ -6,27 +6,23 @@ foam.CLASS({
 
   documentation: 'Childrens menu dropdown',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 100px;
-          vertical-align: top;
-        }
-        ^ ul{
-          margin-top: 20px;
-          font-size: 13px;
-          list-style-type: none;
-        }
-        ^ li{
-          margin-top: 25px;
-        }
-        .highlight{
-          background: blue;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 100px;
+      vertical-align: top;
+    }
+    ^ ul{
+      margin-top: 20px;
+      font-size: 13px;
+      list-style-type: none;
+    }
+    ^ li{
+      margin-top: 25px;
+    }
+    .highlight{
+      background: blue;
+    }
+  `,
 
   properties: [
     'data',
@@ -47,7 +43,7 @@ foam.CLASS({
                   this.start('li')
                     .add(i.label)
                     .on('click', function() {
-                      if(!i.selected){
+                      if ( ! i.selected ) {
                         self.selected = true;
                         self.tag({class: 'net.nanopay.ui.topNavigation.SubMenuBar', data: menus, parent: i })
                       }
