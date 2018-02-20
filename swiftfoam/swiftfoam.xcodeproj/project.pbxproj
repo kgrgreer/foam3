@@ -91,7 +91,6 @@
 		1090EEA4200025CD0043941E /* foam_dao_ClientSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDF6200025C50043941E /* foam_dao_ClientSink.swift */; };
 		1090EEA5200025CD0043941E /* foam_nanos_auth_token_AbstractTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDF7200025C50043941E /* foam_nanos_auth_token_AbstractTokenService.swift */; };
 		1090EEA6200025CD0043941E /* net_nanopay_tx_model_PercentageFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDF8200025C50043941E /* net_nanopay_tx_model_PercentageFee.swift */; };
-		1090EEA7200025CD0043941E /* net_nanopay_auth_email_EmailTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDF9200025C50043941E /* net_nanopay_auth_email_EmailTokenService.swift */; };
 		1090EEA8200025CD0043941E /* foam_swift_core_ConstantSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDFA200025C60043941E /* foam_swift_core_ConstantSlot.swift */; };
 		1090EEA9200025CD0043941E /* net_nanopay_tx_model_FeeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDFB200025C60043941E /* net_nanopay_tx_model_FeeType.swift */; };
 		1090EEAA200025CD0043941E /* RegisterClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1090EDFC200025C60043941E /* RegisterClasses.swift */; };
@@ -189,6 +188,7 @@
 		4A08A8EC202C89F9002562E1 /* foam_nanos_fs_File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A08A8EB202C89F8002562E1 /* foam_nanos_fs_File.swift */; };
 		4A08A8EE202C8AD3002562E1 /* foam_box_AnonymousBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A08A8ED202C8AD3002562E1 /* foam_box_AnonymousBox.swift */; };
 		4A1A259E2031F532003EA0B4 /* net_nanopay_tx_model_TransactionLimitId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1A259D2031F532003EA0B4 /* net_nanopay_tx_model_TransactionLimitId.swift */; };
+		4A6D839620372F26001B71E7 /* foam_nanos_auth_email_EmailTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6D839520372F26001B71E7 /* foam_nanos_auth_email_EmailTokenService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -289,7 +289,6 @@
 		1090EDF6200025C50043941E /* foam_dao_ClientSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_ClientSink.swift; sourceTree = "<group>"; };
 		1090EDF7200025C50043941E /* foam_nanos_auth_token_AbstractTokenService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_auth_token_AbstractTokenService.swift; sourceTree = "<group>"; };
 		1090EDF8200025C50043941E /* net_nanopay_tx_model_PercentageFee.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_model_PercentageFee.swift; sourceTree = "<group>"; };
-		1090EDF9200025C50043941E /* net_nanopay_auth_email_EmailTokenService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_auth_email_EmailTokenService.swift; sourceTree = "<group>"; };
 		1090EDFA200025C60043941E /* foam_swift_core_ConstantSlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_core_ConstantSlot.swift; sourceTree = "<group>"; };
 		1090EDFB200025C60043941E /* net_nanopay_tx_model_FeeType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_model_FeeType.swift; sourceTree = "<group>"; };
 		1090EDFC200025C60043941E /* RegisterClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterClasses.swift; sourceTree = "<group>"; };
@@ -387,6 +386,7 @@
 		4A08A8EB202C89F8002562E1 /* foam_nanos_fs_File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_fs_File.swift; sourceTree = "<group>"; };
 		4A08A8ED202C8AD3002562E1 /* foam_box_AnonymousBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_box_AnonymousBox.swift; sourceTree = "<group>"; };
 		4A1A259D2031F532003EA0B4 /* net_nanopay_tx_model_TransactionLimitId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_tx_model_TransactionLimitId.swift; sourceTree = "<group>"; };
+		4A6D839520372F26001B71E7 /* foam_nanos_auth_email_EmailTokenService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_auth_email_EmailTokenService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -450,6 +450,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				4A6D839520372F26001B71E7 /* foam_nanos_auth_email_EmailTokenService.swift */,
 				4A1A259D2031F532003EA0B4 /* net_nanopay_tx_model_TransactionLimitId.swift */,
 				4A08A8ED202C8AD3002562E1 /* foam_box_AnonymousBox.swift */,
 				4A08A8EB202C89F8002562E1 /* foam_nanos_fs_File.swift */,
@@ -606,7 +607,6 @@
 				1090EE56200025CD0043941E /* foam_u2_Visibility.swift */,
 				1090EE2C200025C90043941E /* FOAMSupport.swift */,
 				1090EDCF200025C20043941E /* MintChipClient.swift */,
-				1090EDF9200025C50043941E /* net_nanopay_auth_email_EmailTokenService.swift */,
 				1090EE41200025CB0043941E /* net_nanopay_auth_sms_AuthyTokenService.swift */,
 				1090EDCC200025C20043941E /* net_nanopay_cico_model_TransactionStatus.swift */,
 				1090EE2D200025CA0043941E /* net_nanopay_cico_model_TransactionType.swift */,
@@ -743,7 +743,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1090EEE1200025CD0043941E /* net_nanopay_tx_client_ClientUserTransactionLimitService.swift in Sources */,
-				1090EEA7200025CD0043941E /* net_nanopay_auth_email_EmailTokenService.swift in Sources */,
 				1090EEB2200025CD0043941E /* foam_mlang_predicate_True.swift in Sources */,
 				1090EE58200025CD0043941E /* foam_swift_parse_parser_Parser.swift in Sources */,
 				1090EEBF200025CD0043941E /* foam_swift_parse_parser_Not.swift in Sources */,
@@ -876,6 +875,7 @@
 				1090EEE9200025CD0043941E /* foam_dao_LimitedSink.swift in Sources */,
 				1090EEF6200025CD0043941E /* foam_swift_parse_json_DateParser.swift in Sources */,
 				1090EE6F200025CD0043941E /* foam_mlang_predicate_Eq.swift in Sources */,
+				4A6D839620372F26001B71E7 /* foam_nanos_auth_email_EmailTokenService.swift in Sources */,
 				1090EE78200025CD0043941E /* foam_box_InvalidMessageException.swift in Sources */,
 				1090EEFF200025CD0043941E /* foam_nanos_auth_EnabledAware.swift in Sources */,
 				1090EEED200025CD0043941E /* foam_mlang_predicate_Nary.swift in Sources */,
