@@ -35,21 +35,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'referenceNumber',
-      documentation: 'Reference Number (User ID) at the sending system to identify a user. (The sending system can quote only the reference number in case nanopay has already received the details in an earlier call. Only updates and mandatory fields can be sent in a subsequent call)',
-      visibility: foam.u2.Visibility.RO,
-      factory: function() { return true; }
-    },
-    {
-      class: 'Boolean',
       name: 'name',
       documentation: 'Name of user',
-    },
-    {
-      class: 'Boolean',
-      name: 'linkedReferenceNumber',
-      documentation: 'Must be populated in case of Receiver & Must be left blank in case of sender. For receiver, this field must contain the sender Reference Number',
-      visibility: foam.u2.Visibility.RO,
     },
     {
       class: 'FObjectProperty',

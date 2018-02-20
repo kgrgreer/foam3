@@ -26,7 +26,7 @@ foam.CLASS({
       factory: function() {
         return [
           this.RequiredUserFields.create({userType: 'Sender'}),
-          this.RequiredUserFields.create({userType: 'Receiver', linkedReferenceNumber: true})
+          this.RequiredUserFields.create({userType: 'Receiver'})
         ];
       }
     }
