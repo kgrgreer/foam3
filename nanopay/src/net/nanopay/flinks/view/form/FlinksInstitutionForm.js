@@ -145,20 +145,7 @@ foam.CLASS({
 
   listeners: [
     function otherBank() {
-      // var self = this;
-      // var view = foam.u2.ListCreateController.CreateController.create(
-      //   null,
-      //   this.__context__.createSubContext({
-      //     detailView: foam.nanos.auth.BankAccountView,
-      //     back: this.stack.back.bind(this.stack),
-      //     dao: this.bankDAO,
-      //     factory: function() {
-      //       return self.bankAccount.create();
-      //     },
-      //     showActions: false
-      //   }));
-      // this.stack.push(view);
-      this.form.otherBank();
+    this.form.otherBank();
     }
   ],
 
