@@ -155,8 +155,6 @@ foam.CLASS({
       name: 'invoiceImageUrl'
     },
     {
-      // TODO: switch to Currency
-      // class: 'Currency',
       class: 'Currency',
       name: 'amount',
       aliases: [ 'a' ],
