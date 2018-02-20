@@ -64,8 +64,8 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
-          margin: 0;
+          float: left;
+          margin-left : 2px;
           outline: none;
           min-width: 136px;
           height: 40px;
@@ -82,22 +82,6 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
-        }
-        ^ .net-nanopay-ui-ActionView-otherButton {
-          float: left;
-          margin: 0;
-          margin-left: 1px;
-          outline: none;
-          border:none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: %SECONDARYCOLOR%;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-          margin-right: 40px;
         }
       */}
     })
@@ -150,16 +134,38 @@ foam.CLASS({
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
-          .tag(this.OTHER_BUTTON)
+        .end()
+        .start('p').style({ 'margin-top': '30px' }).addClass('link')
+          .add("Can't find your institution? Click here.")
+          .on('click', self.otherBank)
         .end()
         .start('div').style({'clear' : 'both'}).end();
+    }
+  ],
+
+  listeners: [
+    function otherBank() {
+      // var self = this;
+      // var view = foam.u2.ListCreateController.CreateController.create(
+      //   null,
+      //   this.__context__.createSubContext({
+      //     detailView: foam.nanos.auth.BankAccountView,
+      //     back: this.stack.back.bind(this.stack),
+      //     dao: this.bankDAO,
+      //     factory: function() {
+      //       return self.bankAccount.create();
+      //     },
+      //     showActions: false
+      //   }));
+      // this.stack.push(view);
+      this.form.otherBank();
     }
   ],
 
   actions: [
     {
       name: 'nextButton',
-      label: 'Next',
+      label: 'Continue',
       isEnabled: function(isConnecting, selectedOption) {
         if ( isConnecting === true ) return false;
         if ( selectedOption === -1 ) return false;
@@ -174,14 +180,7 @@ foam.CLASS({
       label: 'Close',
       code: function(X) {
         X.form.goBack();
-      }
-    },
-    {
-      name: 'otherButton',
-      label: 'Other bank',
-      code: function(X) {
-        X.form.otherBank();
-      }
+      },
     }
   ]
 });
