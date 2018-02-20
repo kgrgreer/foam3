@@ -74,7 +74,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'foam.nano.fs.FileProperty',
+      class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       factory: function () {

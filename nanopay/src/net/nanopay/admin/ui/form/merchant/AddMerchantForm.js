@@ -18,7 +18,10 @@ foam.CLASS({
   imports: [
     'accountDAO',    
     'email',
-    'formatCurrency',    
+    'formatCurrency',
+    'validateEmail',
+    'validatePostalCode',
+    'validatePhone',
     'stack',
     'transactionDAO',    
     'user',
@@ -73,13 +76,13 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
-          
+
           if ( merchantInfo.password != merchantInfo.confirmPassword ){
             self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
             return;
           }
 
-          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(merchantInfo.phoneNumber) ) {
+          if ( !this.validatePhone(merchantInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return; 
           }
@@ -98,6 +101,16 @@ foam.CLASS({
           ( merchantInfo.city == null || merchantInfo.city.trim() == '' ) ||
           ( merchantInfo.postalCode == null || merchantInfo.postalCode.trim() == '' ) ) {
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            return;
+          }
+
+          if ( !this.validateEmail(merchantInfo.companyEmail) ){
+            self.add(self.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
+            return;
+          }
+
+          if ( !this.validatePostalCode(merchantInfo.postalCode) ){
+            self.add(self.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
             return;
           }
 
