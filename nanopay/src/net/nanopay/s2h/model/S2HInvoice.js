@@ -68,7 +68,7 @@ foam.CLASS({
       name: 'tax2'
     },
     {
-      class: 'Double',
+      class: 'Currency',
       name: 'total'
     },
     {

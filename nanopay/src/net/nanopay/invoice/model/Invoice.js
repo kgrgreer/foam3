@@ -163,7 +163,7 @@ foam.CLASS({
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
-        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas(a.toFixed(2))).end();
+        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas((a/100).toFixed(2))).end();
       }
     },
     {
