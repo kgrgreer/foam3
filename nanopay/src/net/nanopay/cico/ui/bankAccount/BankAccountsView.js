@@ -89,9 +89,38 @@ foam.CLASS({
         ^ .foam-u2-md-OverlayDropdown {
           width: 175px;
         }
-        ^ .foam-u2-view-TableView-row:hover {
+        ^ .foam-u2-PopupView {
+          padding: 0 !important;
+          z-index: 10000;
+          width: 152px;
+          background: white;
+          opacity: 1;
+          box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
+          position: absolute;
+        }
+        ^ .foam-u2-PopupView > div {
+          height: 30px;
+          text-align: left;
+          padding-left: 29px;
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0.2px;
+          color: #093649;
+          line-height: 30px;
+        }
+        ^ .foam-u2-PopupView > div:hover {
+          background-color: #59aadd;
+          color: white;
           cursor: pointer;
-          background: %TABLEHOVERCOLOR%;
+        }
+        ^ .foam-u2-PopupView::after {
+          content: ' ';
+          position: absolute;
+          height: 0;
+          width: 0;
+          border: 8px solid transparent;
+          border-bottom-color: white;
+          transform: translate(-24px, -106px);
         }
       */}
     })
@@ -203,11 +232,7 @@ foam.CLASS({
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if( newValue && newValue.status != 'Disabled' ) {
-              this.selectedAccount = newValue;
-              this.manageAccount();
-              return oldValue;
-            }
+            return oldValue;
           }
         },
         {
