@@ -122,6 +122,13 @@ foam.CLASS({
           border-bottom-color: white;
           transform: translate(-24px, -106px);
         }
+        ^ .foam-u2-view-TableView-row:hover {
+          cursor: pointer;
+          background: %TABLEHOVERCOLOR%;
+        }
+        ^ .foam-u2-view-TableView-row {
+          height: 40px;
+        }
       */}
     })
   ],
@@ -265,12 +272,12 @@ foam.CLASS({
 
           this
             .start({
-              class: 'foam.u2.view.TableView',
+              class: 'foam.u2.view.ScrollTableView',
+              data: this.data,
               selection$: this.selection$,
               editColumnsEnabled: true,
               editRowsEnabled: true,
-              editRowsPopup: p, 
-              data: this.data,
+              editRowsPopup: p,
               columns: [
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
               ]
