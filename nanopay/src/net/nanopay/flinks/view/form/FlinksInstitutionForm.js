@@ -135,7 +135,7 @@ foam.CLASS({
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
         .end()
-        .start('p').style({ 'margin-top': '30px' }).addClass('link')
+        .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
           .add("Can't find your institution? Click here.")
           .on('click', self.otherBank)
         .end()
