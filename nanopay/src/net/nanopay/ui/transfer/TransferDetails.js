@@ -128,6 +128,12 @@ foam.CLASS({
           font-size: 12px;
           cursor: pointer;
         }
+        ^ .property-accounts{
+          margin-top: 20px;
+        }
+        ^ .choice{
+          margin-bottom: 20px;
+        }
       */}
     })
   ],
@@ -233,6 +239,20 @@ foam.CLASS({
       validateObj: function(notThirdParty, invoiceMode) {
         if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'digitalCash',
+      value: true,
+      postSet: function(oldValue, newValue) {
+        console.log(this.accountCheck)
+        console.log(this.accountCheck)
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'accountCheck',
+      value: false
     }
   ],
 
@@ -267,8 +287,36 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
           .start('p').add(self.TransferFromLabel).addClass('bold').end()
-          .start('p').add(self.AccountLabel).end()
-          .start('div').addClass('dropdownContainer')
+          // .start('p').add(self.AccountLabel).end()
+          .start().addClass("choice")
+            .start('div').addClass('confirmationContainer')
+              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
+              .on('click', function() {
+                self.accountCheck = !self.accountCheck;
+                self.digitalCash = ! self.digitalCash;
+              })
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance')
+                .on('click', function() {
+                  self.accountCheck = !self.accountCheck;
+                  self.digitalCash = ! self.digitalCash;
+                })
+              .end()
+            .end()
+            .start('div').addClass('confirmationContainer')
+              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
+              .on('click', function() {
+                self.digitalCash = ! self.digitalCash;
+                self.accountCheck = ! self.accountCheck;
+              })
+              .start('p').addClass('confirmationLabel').add('Pay from account')
+                .on('click', function() {
+                  self.digitalCash = ! self.digitalCash;
+                  self.accountCheck = ! self.accountCheck;
+                })
+              .end()
+            .end()
+          .end()
+          .start('div').addClass('dropdownContainer').show(this.accountCheck$)
             .start(self.ACCOUNTS).end()
             .start('div').addClass('caret').end()
           .end()
