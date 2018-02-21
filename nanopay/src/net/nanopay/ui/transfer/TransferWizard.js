@@ -324,6 +324,7 @@ foam.CLASS({
         var self = this;
         var transaction = null;
         var invoiceId = 0;
+        var bankAccountId = self.viewData.bankAccountId;
 
         if ( this.position == 1 ) { // On Review Transfer page.
           this.countdownView.stop();
@@ -341,6 +342,7 @@ foam.CLASS({
             payerId: self.user.id,
             payeeId: self.viewData.payee.id,
             amount: self.viewData.fromAmount,
+            bankAccountId: bankAccountId,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });

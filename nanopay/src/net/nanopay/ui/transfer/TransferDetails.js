@@ -170,7 +170,7 @@ foam.CLASS({
           objToChoice: function(account) {
             return [account.id, 'Account No. ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
-                    ]; // TODO: Grab amount and display
+                    ];
           }
         });
       }
@@ -269,6 +269,7 @@ foam.CLASS({
 
       if ( this.invoiceMode ) {
         this.payees = this.invoice.payeeId;
+        this.viewData.fromAmount = this.invoice.amount;
       }
 
       if ( this.viewData.purpose ) {
@@ -278,6 +279,9 @@ foam.CLASS({
       if ( this.viewData.notes ) {
         this.notes = this.viewData.notes;
       }
+
+      this.digitalCash = this.viewData.digitalCash;
+      this.accountCheck = this.viewData.accountCheck;
 
       this.SUPER()
     },
@@ -295,10 +299,10 @@ foam.CLASS({
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
               .on('click', function() {
-                self.accountCheck = !self.accountCheck;
+                self.accountCheck = ! self.accountCheck;
                 self.digitalCash = ! self.digitalCash;
               })
-              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: ', (this.account.balance/100).toFixed(2), '$')
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', (this.account.balance/100).toFixed(2))
               .end()
             .end()
             .start('div').addClass('confirmationContainer')
