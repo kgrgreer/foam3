@@ -13,8 +13,7 @@ foam.CLASS({
     'bankList', 
     'closeDialog', 
     'confirmCashIn', 
-    'goToBankAccounts',
-    'setDefaultBank' 
+    'goToBankAccounts'
   ],
 
   documentation: 'Pop up modal for cashing out.',
@@ -166,8 +165,6 @@ foam.CLASS({
           .end()
         .end()
       .end();
-
-      this.setDefaultBank();
     }
   ],
 

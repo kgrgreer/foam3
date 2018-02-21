@@ -231,6 +231,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.setDefaultBank();
+
       this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
       });
