@@ -88,7 +88,7 @@ foam.CLASS({
       }))
       .addClass(this.myClass())
         .start().addClass('s2-input-container')
-          .start('label').add('Company Name').end()
+          .start('label').add('Business Name').end()
           .start(this.COMPANY_NAME).end()
         .end()
         .start().addClass('s2-input-container')
