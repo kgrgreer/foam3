@@ -66,7 +66,7 @@ foam.CLASS({
           ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
           ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
            accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
 
