@@ -337,12 +337,10 @@ foam.CLASS({
             invoiceId = this.invoice.id;
           }
 
-          var txAmount = Math.round(self.viewData.fromAmount*100);
-
           transaction = self.Transaction.create({
             payerId: self.user.id,
             payeeId: self.viewData.payee.id,
-            amount: txAmount,
+            amount: self.viewData.fromAmount,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });

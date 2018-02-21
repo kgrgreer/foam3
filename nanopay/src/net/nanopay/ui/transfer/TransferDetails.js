@@ -20,6 +20,7 @@ foam.CLASS({
   imports: [
     // 'pacs008ISOPurposeDAO',
     // 'pacs008IndiaPurposeDAO',
+    'formatCurrency',
     'bankAccountDAO',
     'payeeDAO',
     'account',
@@ -244,15 +245,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'digitalCash',
       value: true,
-      postSet: function(oldValue, newValue) {
-        console.log(this.accountCheck)
-        console.log(this.accountCheck)
+      postSet: function(oldValue, newValue){
+        this.viewData.digitalCash = newValue;
       }
     },
     {
       class: 'Boolean',
       name: 'accountCheck',
-      value: false
+      value: false,
+      postSet: function(oldValue, newValue){
+        this.viewData.accountCheck = newValue;
+      }
     }
   ],
 
@@ -295,11 +298,7 @@ foam.CLASS({
                 self.accountCheck = !self.accountCheck;
                 self.digitalCash = ! self.digitalCash;
               })
-              .start('p').addClass('confirmationLabel').add('Digital Cash Balance')
-                .on('click', function() {
-                  self.accountCheck = !self.accountCheck;
-                  self.digitalCash = ! self.digitalCash;
-                })
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: ', (this.account.balance/100).toFixed(2), '$')
               .end()
             .end()
             .start('div').addClass('confirmationContainer')
@@ -309,10 +308,6 @@ foam.CLASS({
                 self.accountCheck = ! self.accountCheck;
               })
               .start('p').addClass('confirmationLabel').add('Pay from account')
-                .on('click', function() {
-                  self.digitalCash = ! self.digitalCash;
-                  self.accountCheck = ! self.accountCheck;
-                })
               .end()
             .end()
           .end()
