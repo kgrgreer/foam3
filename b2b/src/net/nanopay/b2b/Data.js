@@ -22,7 +22,7 @@ foam.CLASS({
         {                         id: 'expenses',         label: 'Payable',                     handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.payables.ExpensesView'} } },
         {                         id: 'partners',         label: 'Partners',                       handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.partners.PartnersView'} } },
         { parent: 'settings',     id: 'set-account',      label: 'Personal Settings', order: 10,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.AccountSettingsView' } } },
-        { parent: 'settings',     id: 'set-bus',          label: 'Company Settings',  order: 20,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.BusinessSettingsView' } } },
+        { parent: 'settings',     id: 'set-bus',          label: 'Business Settings',  order: 20,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.BusinessSettingsView' } } },
         { parent: 'settings',     id: 'set-bank',         label: 'Fee/Plan',          order: 30,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'net.nanopay.b2b.ui.settings.BankAccountSettingsView' } } },
         { parent: 'settings',     id: 'set-security',     label: 'Log Out',           order: 40,   handler: { class: 'foam.nanos.menu.ViewMenu', view: { class: 'foam.nanos.auth.SignOutView'}  } },
         { /*parent: 'support',*/  id: 'aaainvoices',      label: 'Invoices',                       handler: { class: 'foam.nanos.menu.DAOMenu',  daoKey: 'invoiceDAO' } },
