@@ -211,7 +211,6 @@ foam.CLASS({
             a.array.forEach( function(t) { 
               t.setAsDefault = false;
               if (t.accountName.includes("(Default)")) {
-                console.log('Contains Default');
                 t.accountName = t.accountName.replace("(Default)", "");
               }
               X.bankAccountDAO.put(t);
