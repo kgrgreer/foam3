@@ -234,9 +234,11 @@ foam.CLASS({
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            this.selectedAccount = newValue;
-            console.log(this.selectedAccount);
-            return oldValue;
+            if ( newValue && newValue.status != 'Disabled' ) {
+              this.selectedAccount = newValue;
+              this.manageAccount();
+              return oldValue;
+            }
           }
         },
         {
@@ -261,7 +263,7 @@ foam.CLASS({
               data: this.data,
               selection$: this.selection$,
               columns: [
-                'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status', 'actionsMenu'
+                'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         },

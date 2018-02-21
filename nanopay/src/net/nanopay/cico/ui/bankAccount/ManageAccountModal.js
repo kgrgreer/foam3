@@ -199,7 +199,7 @@ foam.CLASS({
     },
     {
       name: 'toggleDefaultButton',
-      label: 'Toggle Default',
+      label: 'Set As Default',
       isAvailable: function() {
         var self = this;
         return self.selectedAccount.status == "Verified"
@@ -210,25 +210,24 @@ foam.CLASS({
           self.userVerifiedAccounts.select().then( function(a) {
             a.array.forEach( function(t) { 
               t.setAsDefault = false;
-              X.bankAccountDAO.put(t).then(function(response) {
-                X.selectedAccount.setAsDefault = true;
-                X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
-                  X.manageAccountNotification('Bank account successfully set as default.', '');
-                  X.closeDialog();
-                }); 
-              });
+              if (t.accountName.includes("(Default)")) {
+                console.log('Contains Default');
+                t.accountName = t.accountName.replace("(Default)", "");
+              }
+              X.bankAccountDAO.put(t);
+            });
+            X.selectedAccount.setAsDefault = true;
+            X.selectedAccount.accountName += '(Default)';
+            X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
+              X.manageAccountNotification('Bank account successfully set as default.', '');
+              X.closeDialog();
             });
           }).catch(function(error) {
             X.manageAccountNotification(error.message, 'error');
           });
         } else {
-          X.selectedAccount.setAsDefault = false;
-          X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
-            X.manageAccountNotification('Bank account removed as default.', '');
-            X.closeDialog();
-          }).catch(function(error) {
-            X.manageAccountNotification(error.message, 'error');
-          });
+          X.manageAccountNotification('Bank account already set as default.', 'error');
+          X.closeDialog();
         }
       }
     },
