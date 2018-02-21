@@ -12,6 +12,8 @@ if [[ "${SUB}" = *"b2b.prod"* ]]; then
     SUB = "portal"
 elif [[ "${SUB}" = *"cc.demo"* ]]; then
     SUB = "sandbox"
+elif [[ "${SUB}" = *"prod"* ]]; then
+    SUB=`echo $SUB | sed 's/\.prod//g'`
 elif [[ "${SUB}" = *"integration"* ]]; then
     SUB=`echo ${SUB} | sed 's/\./-/g'`
     # replace integration with staging?
