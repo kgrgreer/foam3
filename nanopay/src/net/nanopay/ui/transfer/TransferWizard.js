@@ -324,7 +324,8 @@ foam.CLASS({
         var self = this;
         var transaction = null;
         var invoiceId = 0;
-        var bankAccountId = self.viewData.bankAccountId;
+        var bankAccountId;
+        if (self.viewData.accountCheck) bankAccountId = self.viewData.account.id;
 
         if ( this.position == 1 ) { // On Review Transfer page.
           this.countdownView.stop();

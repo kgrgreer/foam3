@@ -244,6 +244,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'digitalCash',
+      documentation: 'Toggle for digital cash for payments',
       value: true,
       postSet: function(oldValue, newValue){
         this.viewData.digitalCash = newValue;
@@ -252,6 +253,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'accountCheck',
+      documentation: 'Toggle for bank accounts for payments',
       value: false,
       postSet: function(oldValue, newValue){
         this.viewData.accountCheck = newValue;
