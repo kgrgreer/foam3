@@ -318,7 +318,7 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        return (this.position !== 2);
+        return this.position !== 2;
       },
       code: function(X) {
         var self = this;
