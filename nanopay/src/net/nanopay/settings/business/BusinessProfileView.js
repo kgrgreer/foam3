@@ -177,7 +177,7 @@ foam.CLASS({
           .start()
             .start().addClass('inlineDiv')
               .start().addClass('labelDiv')
-                .start().add('Company Type').addClass('labelTitle').end()
+                .start().add('Business Type').addClass('labelTitle').end()
                 .start().add(this.businessTypeName$).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')

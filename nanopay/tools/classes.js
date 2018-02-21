@@ -2,8 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
-  'net.nanopay.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.blob.AmazonS3BlobStore',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionStatus',
@@ -51,7 +51,7 @@ var classes = [
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
-  //Institution model
+  // Institution model
   'net.nanopay.model.Institution',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
