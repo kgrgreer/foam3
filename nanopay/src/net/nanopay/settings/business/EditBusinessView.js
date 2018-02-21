@@ -299,12 +299,13 @@ foam.CLASS({
           view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));            
           return;
         }
-        
+
         if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
           view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));            
           return;
         }
-        
+
+        this.organization = this.businessName;
         X.userDAO.put(this).then(function(a) {
           X.stack.push({ class:'net.nanopay.settings.business.BusinessProfileView' })
         })
