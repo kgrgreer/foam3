@@ -1,10 +1,27 @@
 foam.CLASS({
   package: 'net.nanopay.model',
+  name: 'BankSubMenuAction',
+  documentation: 'Action for Table Row options pop up.',
+
+  properties: [ 
+    'popupOrigin'
+  ],
+
+  methods: [
+    function toE(args, X) {
+      var optionsIcon = foam.u2.ViewSpec.createView({ class: 'foam.u2.tag.Image', data: 'images/ic-options.svg' }, args, this.popupOrigin$, X);
+      return optionsIcon;
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.model',
   name: 'BankAccount',
 
   documentation: 'Bank account information.',
 
-  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status', 'actionsMenu'],
 
   properties: [
     {
@@ -91,6 +108,30 @@ foam.CLASS({
       icon: 'images/ic-options-hover.svg',
       code: function() {
         foam.nanos.menu.SubMenuView.create({menu: foam.nanos.menu.Menu.create({id: 'accountSettings'})});
+      }
+    },
+    {
+      class: 'net.nanopay.model.BankSubMenuAction',
+      name: 'actionsMenu',
+      label: '',
+      code: function(X) {
+        var self = this;
+        var p = foam.u2.PopupView.create({
+          width: 152,
+          x: -130,
+          y: -7
+        });
+
+        p.start('div').add('Set As Default')
+        .end()
+        .start('div').add('Verify Account')
+        .end()
+        .start('div').add('Delete Account')
+        .end();
+
+        //self.popupOrigin.add(p);
+        
+        console.log('actionsMenu');
       }
     }
   ]

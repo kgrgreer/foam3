@@ -234,6 +234,8 @@ foam.CLASS({
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
+            this.selectedAccount = newValue;
+            console.log(this.selectedAccount);
             return oldValue;
           }
         },
@@ -253,27 +255,13 @@ foam.CLASS({
         function initE() {
           var self = this;
 
-          var p = foam.u2.PopupView.create({
-            width: 152,
-            x: -130,
-            y: -7
-          })
-          p.start('div').add('Set As Default')
-            .end()
-            .start('div').add('Verify Account')
-            .end()
-            .start('div').add('Delete Account')
-            .end();
-
           this
             .start({
               class: 'foam.u2.view.ScrollTableView',
               data: this.data,
               selection$: this.selection$,
-              editRowsEnabled: true,
-              editRowsPopup: p,
               columns: [
-                'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
+                'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status', 'actionsMenu'
               ]
             }).addClass(this.myClass('table')).end();
         },
