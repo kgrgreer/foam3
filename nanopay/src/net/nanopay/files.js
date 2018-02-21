@@ -16,7 +16,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
   { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/email/EmailTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/email/EmailTokenService'},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
