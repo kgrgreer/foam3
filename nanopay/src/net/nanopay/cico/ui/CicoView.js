@@ -42,7 +42,6 @@ foam.CLASS({
     'onCashOutSuccess',
     'onCashInSuccess',
     'resetCicoAmount',
-    'setDefaultBank',
     'as view'
   ],
 
