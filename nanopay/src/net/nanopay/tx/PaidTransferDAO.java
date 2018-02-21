@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import net.nanopay.tx.model.Transaction;
 
+// Sends an email when an transfer has gone through 
 public class PaidTransferDAO
   extends ProxyDAO
 {

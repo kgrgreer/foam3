@@ -11,7 +11,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import net.nanopay.tx.model.Transaction;
 
-
+// Sends an email when an invoice is PAID
 public class PaidTransactionDAO
   extends ProxyDAO
 {
