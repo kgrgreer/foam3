@@ -52,11 +52,6 @@ foam.CLASS({
   refines: 'foam.nanos.auth.User',
   properties: [
     {
-      class: 'Boolean',
-      name: 'emailVerified',
-      documentation: 'Email verified flag'
-    },
-    {
       class: 'FObjectArray',
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit'

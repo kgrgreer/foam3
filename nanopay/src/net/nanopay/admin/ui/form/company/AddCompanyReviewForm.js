@@ -69,8 +69,8 @@ foam.CLASS({
     { name: 'PhoneLabel', message: 'Phone' },
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'BusinessProfileLabel', message: 'Business Profile' },
-    { name: 'CompanyEmailLabel', message: 'Company Email' },
-    { name: 'CompanyTypeLabel', message: 'Company Type' },
+    { name: 'CompanyEmailLabel', message: 'Business Email' },
+    { name: 'CompanyTypeLabel', message: 'Business Type' },
     { name: 'RegistrationNumberLabel', message: 'Registration Number' },
     { name: 'BusinessSectorLabel', message: 'Business Sector' },
     { name: 'WebsiteLabel', message: 'Website' },
@@ -131,7 +131,7 @@ foam.CLASS({
               // .start().add(this.CompanyEmailLabel).addClass('boldLabel').end()
               // .start().add(this.viewData.companyEmail).addClass('infoText bottomMargin').end()
               .start().add(this.IssuingLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.issueAuthority).addClass('infoText bottomMargin').end()
+              .start().add(this.viewData.issuingAuthority).addClass('infoText bottomMargin').end()
               .start().add(this.RegistrationNumberLabel).addClass('boldLabel').end()
               .start().add(this.viewData.registrationNumber).addClass('infoText bottomMargin').end()
               .start().add(this.WebsiteLabel).addClass('boldLabel').end()
