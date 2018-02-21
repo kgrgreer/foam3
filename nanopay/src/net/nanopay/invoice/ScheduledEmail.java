@@ -19,21 +19,24 @@ import java.util.Currency;
 public class ScheduledEmail
   implements ContextAgent {
   Calendar today = Calendar.getInstance();
+  Calendar startTime = Calendar.getInstance();
   Calendar endTime = Calendar.getInstance();
 
   public void execute(X x) {
 
     today.setTime(new Date());
-    endTime.setTimeInMillis(today.getTimeInMillis() + 172740000);
-    System.out.println(today);
-    System.out.println(endTime);
+    startTime.setTimeInMillis(today.getTimeInMillis() + (1000*60*60*24) );
+    endTime.setTimeInMillis(startTime.getTimeInMillis() + ((1000*60*60*24)-1) );
+    System.out.println("~~~~~~~~~~~~~~~~"+today.getTime().toString());
+    System.out.println("~~~~~~~~~~~~~~~~"+startTime.getTime().toString());
+    System.out.println("~~~~~~~~~~~~~~~~"+endTime.getTime().toString());
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     DAO userDAO = (DAO) x.get("userDAO");
 
     invoiceDAO = invoiceDAO.where(
       AND(
-        GTE(Invoice.DUE_DATE,today.getTime()),
-        LTE(Invoice.DUE_DATE,endTime.getTime())
+        GTE(Invoice.PAYMENT_DATE,startTime.getTime()),
+        LTE(Invoice.PAYMENT_DATE,endTime.getTime())
       )
     );
     List<Invoice> invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
@@ -47,7 +50,6 @@ public class ScheduledEmail
       args.put("amount", invoice.getAmount());
       args.put("account", invoice.getId());
       email.sendEmailFromTemplate(user, message, "invoiceNotification", args);
-
     }
   }
 }
