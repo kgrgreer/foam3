@@ -2,7 +2,9 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
   extends: 'foam.nanos.controller.ApplicationController',
+
   arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
+
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
