@@ -7,27 +7,26 @@ sed -i -e "s/name: 'version'/name: 'version', value: '${VERSION}'/g" foam2/src/f
 HTTP="https"
 DOMAIN=".nanopay.net"
 SUB=`echo ${VERSION} | sed 's/.*\///' | sed 's/-v.*//'`
-
-if [[ $SUB = *"b2b.prod"* ]]; then
+echo
+if [[ "${SUB}" = *"b2b.prod"* ]]; then
     SUB = "portal"
-elif [[ $SUB = *"cc.demo"* ]]; then
+elif [[ "${SUB}" = *"cc.demo"* ]]; then
     SUB = "sandbox"
-elif [[ $SUB = *"integration"* ]]; then
-    SUB=`echo ${SUB} | sed 's/./-/g'`
+elif [[ "${SUB}" = *"integration"* ]]; then
+    SUB=`echo ${SUB} | sed 's/\./-/g'`
     # replace integration with staging?
     #SUB=`echo ${SUB} | sed 's/staging/integration/g'`
-elif [[ $SUB = *"staging"* ]]; then
+elif [[ "${SUB}" = *"staging"* ]]; then
     HTTP="http"
     SUB=`echo ${SUB} | sed 's/-/./g'`
 elif [[ $SUB = *"demo"* ]]; then
-    SUB=`echo ${SUB} | sed 's/./-/g'`
+    SUB=`echo ${SUB} | sed 's/\./-/g'`
 else
     HTTP="http"
     SUB="localhost:8080"
     DOMAIN=""
 fi
-SUB="${SUB}${DOMAIN}"
-URL=${HTTP}://${SUB}
+URL="${HTTP}://${SUB}${DOMAIN}"
 echo URL=${URL}
 sed -i -e "s,http://localhost:8080,${URL}," foam2/src/foam/nanos/app/AppConfig.js
 
