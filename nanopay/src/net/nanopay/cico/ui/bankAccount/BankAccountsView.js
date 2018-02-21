@@ -19,119 +19,114 @@ foam.CLASS({
     'net.nanopay.model.BankAccount'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 962px;
-          margin: 0 auto;
-        }
-        ^ h3 {
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-          display: inline-block;
-          vertical-align: top;
-          margin: 0;
-          margin-top: 20px;
-        }
-        ^ .bankContentCard {
-          width: 234px;
-          height: 100px;
-          margin-right: 13.5px;
-          float: left;
-        }
-        ^ .actionButton {
-          width: 218px;
-          height: 100px;
-          float: right;
-          margin-bottom: 20px;
-        }
-        ^ .net-nanopay-ui-ActionView-create {
-          visibility: hidden;
-        }
-        ^ .net-nanopay-ui-ActionView-addBank {
-          margin: 0;
-          background: none;
-          outline: none;
-          border: none;
-          width: 218px;
-          height: 100px;
-          float: right;
-          background-color: %SECONDARYCOLOR%;
-          letter-spacing: 0.3px;
-          color: #FFFFFF;
-          border-radius: 2px;
-          opacity: 1;
-          font-weight: normal;
-        }
-        ^ .net-nanopay-ui-ActionView-addBank span {
-          display: block;
-          margin-top: 8px;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-        }
-        ^ .net-nanopay-ui-ActionView-addBank:hover {
-          background: none;
-          cursor: pointer;
-          background-color: %SECONDARYCOLOR%;
-          opacity: 0.9;
-        }
-        ^ .foam-u2-dialog-Popup-inner {
-          background-color: transparent !important;
-        }
-        ^ .foam-u2-md-OverlayDropdown {
-          width: 175px;
-        }
-        ^ .foam-u2-PopupView {
-          padding: 0 !important;
-          z-index: 10000;
-          width: 152px;
-          background: white;
-          opacity: 1;
-          box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
-          position: absolute;
-        }
-        ^ .foam-u2-PopupView > div {
-          height: 30px;
-          text-align: left;
-          padding-left: 29px;
-          font-size: 14px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          color: #093649;
-          line-height: 30px;
-        }
-        ^ .foam-u2-PopupView > div:hover {
-          background-color: #59aadd;
-          color: white;
-          cursor: pointer;
-        }
-        ^ .foam-u2-PopupView::after {
-          content: ' ';
-          position: absolute;
-          height: 0;
-          width: 0;
-          border: 8px solid transparent;
-          border-bottom-color: white;
-          transform: translate(-24px, -106px);
-        }
-        ^ .foam-u2-view-TableView-row:hover {
-          cursor: pointer;
-          background: %TABLEHOVERCOLOR%;
-        }
-        ^ .foam-u2-view-TableView-row {
-          height: 40px;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 962px;
+      margin: 0 auto;
+    }
+    ^ h3 {
+      opacity: 0.6;
+      font-family: Roboto;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #093649;
+      display: inline-block;
+      vertical-align: top;
+      margin: 0;
+      margin-top: 20px;
+    }
+    ^ .bankContentCard {
+      width: 234px;
+      height: 100px;
+      margin-right: 13.5px;
+      float: left;
+    }
+    ^ .actionButton {
+      width: 218px;
+      height: 100px;
+      float: right;
+      margin-bottom: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-create {
+      visibility: hidden;
+    }
+    ^ .net-nanopay-ui-ActionView-addBank {
+      margin: 0;
+      background: none;
+      outline: none;
+      border: none;
+      width: 218px;
+      height: 100px;
+      float: right;
+      background-color: %SECONDARYCOLOR%;
+      letter-spacing: 0.3px;
+      color: #FFFFFF;
+      border-radius: 2px;
+      opacity: 1;
+      font-weight: normal;
+    }
+    ^ .net-nanopay-ui-ActionView-addBank span {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+    }
+    ^ .net-nanopay-ui-ActionView-addBank:hover {
+      background: none;
+      cursor: pointer;
+      background-color: %SECONDARYCOLOR%;
+      opacity: 0.9;
+    }
+    ^ .foam-u2-dialog-Popup-inner {
+      background-color: transparent !important;
+    }
+    ^ .foam-u2-md-OverlayDropdown {
+      width: 175px;
+    }
+    ^ .foam-u2-PopupView {
+      padding: 0 !important;
+      z-index: 10000;
+      width: 152px;
+      background: white;
+      opacity: 1;
+      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
+      position: absolute;
+    }
+    ^ .foam-u2-PopupView > div {
+      height: 30px;
+      text-align: left;
+      padding-left: 29px;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      color: #093649;
+      line-height: 30px;
+    }
+    ^ .foam-u2-PopupView > div:hover {
+      background-color: #59aadd;
+      color: white;
+      cursor: pointer;
+    }
+    ^ .foam-u2-PopupView::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 8px solid transparent;
+      border-bottom-color: white;
+      transform: translate(-24px, -106px);
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
+    }
+  `,
 
   properties: [
     'allBanksCount',
@@ -275,7 +270,6 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               data: this.data,
               selection$: this.selection$,
-              editColumnsEnabled: true,
               editRowsEnabled: true,
               editRowsPopup: p,
               columns: [
