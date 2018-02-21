@@ -4,14 +4,13 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.app.AppConfig;
-import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.tx.model.Transaction;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import net.nanopay.tx.model.Transaction;
+
 
 public class PaidTransactionDAO
   extends ProxyDAO
@@ -25,14 +24,21 @@ public class PaidTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+
+    //Sets the decorator to run on the return phase of the DAO call
     Transaction transaction = (Transaction) super.put_(x, obj);
+
+    //Returns if transaction is a transfer
     if (transaction.getInvoiceId() == 0) {
       return transaction;
     }
+
+    //Returns if transaction is a cico transaction
     if ( transaction.getPayeeId() == transaction.getPayerId() ) {
       return transaction;
     }
-    AppConfig config = (AppConfig) x.get("appConfig");
+
+    //Sends an email when an invoice is paid
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     User user = (User) userDAO_.find_(x, transaction.getPayeeId());
     User sender = (User) userDAO_.find_(x, transaction.getPayerId());
@@ -41,10 +47,13 @@ public class PaidTransactionDAO
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{user.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
+
+    //loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount()/100));
     args.put("fromEmail", sender.getEmail());
     args.put("fromName", sender.getFirstName());
     args.put("number" , transaction.getInvoiceId());
+
     try {
       email.sendEmailFromTemplate(user, message, "invoice-paid", args);
     } catch(Throwable t) {
