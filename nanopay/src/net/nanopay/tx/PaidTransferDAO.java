@@ -25,18 +25,17 @@ public class PaidTransferDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    FObject     ret         = super.put_(x, obj);
-    Transaction transaction = (Transaction) obj;
+    Transaction transaction = (Transaction) super.put_(x, obj);
     User user = (User) userDAO_.find_(x, transaction.getPayeeId());
     User sender = (User) userDAO_.find_(x, transaction.getPayerId());
     if (transaction.getInvoiceId() != 0) {
-      return ret;
+      return transaction;
     }
     if ( transaction.getPayeeId() == transaction.getPayerId() ) {
-      return ret;
+      return transaction;
     }
     if (sender.getGroup().equals("ccShopper") && user.getGroup().equals("ccMerchant")) {
-      return ret;
+      return transaction;
     }
     AppConfig config = (AppConfig) x.get("appConfig");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
@@ -56,7 +55,6 @@ public class PaidTransferDAO
     } catch(Throwable t) {
       t.printStackTrace();
     }
-    return ret;
-    
+    return transaction;
   }
 }
