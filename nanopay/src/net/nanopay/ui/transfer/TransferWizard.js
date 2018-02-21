@@ -242,7 +242,6 @@ foam.CLASS({
 
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
-        { parent: 'etransfer', id: 'etransfer-transfer-amount',   label: 'Amount',          view: { class: 'net.nanopay.ui.transfer.TransferAmount'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
@@ -307,7 +306,7 @@ foam.CLASS({
           this.viewData.rateLocked = false;
         }
 
-        if ( this.position == 3 ) {
+        if ( this.position == 2 ) {
           X.stack.back();
           return;
         }
@@ -319,14 +318,14 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        return (this.position !== 3);
+        return this.position !== 2;
       },
       code: function(X) {
         var self = this;
         var transaction = null;
         var invoiceId = 0;
 
-        if ( this.position == 2 ) { // On Review Transfer page.
+        if ( this.position == 1 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -358,7 +357,6 @@ foam.CLASS({
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
-            self.add(self.NotificationMessage.create({ message: "Success!" }));
 
           }).catch(function (err) {
             console.error(err);
@@ -374,7 +372,7 @@ foam.CLASS({
           return;
         }
 
-        if ( this.position == 3 ) {
+        if ( this.position == 2 ) {
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';

@@ -158,12 +158,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'issueAuthority',
+      name: 'issuingAuthority',
       factory: function() {
-        return this.viewData.issueAuthority;
+        return this.viewData.issuingAuthority;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.issueAuthority = newValue;
+        this.viewData.issuingAuthority = newValue;
       }
     },
     {
@@ -350,7 +350,7 @@ foam.CLASS({
             .end()
             .start().addClass('topMargin')
               .start().add(this.IssueAuthorityLabel).addClass('infoLabel').end()
-              .start(this.ISSUE_AUTHORITY).addClass('inputLarge').end()
+              .start(this.ISSUING_AUTHORITY).addClass('inputLarge').end()
             .end()
             .start().add(this.BusinessAddressLabel).addClass('labelTitle topMargin').end()
             .start().addClass('inline topMargin rightMargin')

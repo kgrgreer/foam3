@@ -131,7 +131,7 @@ foam.CLASS({
               // .start().add(this.CompanyEmailLabel).addClass('boldLabel').end()
               // .start().add(this.viewData.companyEmail).addClass('infoText bottomMargin').end()
               .start().add(this.IssuingLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.issueAuthority).addClass('infoText bottomMargin').end()
+              .start().add(this.viewData.issuingAuthority).addClass('infoText bottomMargin').end()
               .start().add(this.RegistrationNumberLabel).addClass('boldLabel').end()
               .start().add(this.viewData.registrationNumber).addClass('infoText bottomMargin').end()
               .start().add(this.WebsiteLabel).addClass('boldLabel').end()
