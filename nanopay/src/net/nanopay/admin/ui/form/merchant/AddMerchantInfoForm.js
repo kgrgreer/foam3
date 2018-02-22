@@ -39,6 +39,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
+      },
+      validateObj: function(firstName) {
+        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
+
+        if ( ! firstName || ! hasOkLength ) {
+          return this.FormError;
+        }
       }
     },
     {
@@ -49,6 +56,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
+      },
+      validateObj: function(lastName) {
+        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
+
+        if ( ! lastName || ! hasOkLength ) {
+          return this.FormError;
+        }
       }
     },
     {
@@ -90,7 +104,8 @@ foam.CLASS({
     { name: 'LastNameLabel', message: 'Last Name *' },
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
     { name: 'PasswordLabel', message: 'Password *' },
-    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
   ],
 
   methods: [

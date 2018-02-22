@@ -198,10 +198,24 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      validateObj: function(firstName) {
+        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
+
+        if ( ! firstName || ! hasOkLength ) {
+          return this.FormError;
+        }
+      }
     },
     {
       class: 'String',
-      name: 'lastName'
+      name: 'lastName',
+      validateObj: function(lastName) {
+        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
+
+        if ( ! lastName || ! hasOkLength ) {
+          return this.FormError;
+        }
+      }
     },
     {
       class: 'String',
@@ -271,7 +285,8 @@ foam.CLASS({
   messages: [
     { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'invalidPhone', message: 'Phone number is invalid.' },
-    { name: 'informationUpdated', message: 'Information has been successfully changed.' }
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
   ],
 
   actions: [

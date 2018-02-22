@@ -11,7 +11,7 @@ foam.CLASS({
     'goNext'
   ],
 
-  css:` 
+  css:`
     ^ .labelTitle {
       font-size: 14px;
       font-weight: bold;
@@ -47,7 +47,19 @@ foam.CLASS({
       margin-left: 60px;
     }
   `,
-  
+
+  messages: [
+    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
+    { name: 'FirstNameLabel', message: 'First Name *' },
+    { name: 'LastNameLabel', message: 'Last Name *' },
+    { name: 'JobTitleLabel', message: 'Job Title *' },
+    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
+    { name: 'EmailLabel', message: 'Email *' },
+    { name: 'PasswordLabel', message: 'Password *' },
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -57,6 +69,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
+      },
+      validateObj: function(firstName) {
+        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
+
+        if ( ! firstName || ! hasOkLength ) {
+          return this.FormError;
+        }
       }
     },
     {
@@ -67,6 +86,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
+      },
+      validateObj: function(lastName) {
+        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
+
+        if ( ! lastName || ! hasOkLength ) {
+          return this.FormError;
+        }
       }
     },
     {
@@ -119,17 +145,6 @@ foam.CLASS({
         this.viewData.confirmPassword = newValue;
       }
     }
-  ],
-
-  messages: [
-    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
-    { name: 'FirstNameLabel', message: 'First Name *' },
-    { name: 'LastNameLabel', message: 'Last Name *' },
-    { name: 'JobTitleLabel', message: 'Job Title *' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'EmailLabel', message: 'Email *' },
-    { name: 'PasswordLabel', message: 'Password *' },
-    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
