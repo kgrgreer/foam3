@@ -8,30 +8,44 @@ foam.CLASS({
   package: 'net.nanopay.fx.model',
   name: 'ExchangeRateQuote',
 
+  requires: [
+     'net.nanopay.fx.model.ExchangeRateFields',
+     'net.nanopay.fx.model.FeesFields',
+     'net.nanopay.fx.model.DeliveryTimeFields'
+  ],
+
   properties: [
+    {
+      class: 'String',
+      name: 'code'
+    },
     {
       class: 'Long',
       name: 'exchangeRateId'
     },
     {
-      class: 'String',
-      name: 'fromCurrency'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.model.ExchangeRateFields',
+      name: 'exchangeRate',
+      factory: function() {
+        return this.ExchangeRateFields.create();
+      }
     },
     {
-      class: 'String',
-      name: 'toCurrency'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.model.FeesFields',
+      name: 'fee',
+      factory: function() {
+        return this.FeesFields.create();
+      }
     },
     {
-      class: 'Double',
-      name: 'fromAmount'
-    },
-    {
-      class: 'Double',
-      name: 'toAmount'
-    },
-    {
-      class: 'Double',
-      name: 'rate'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.model.DeliveryTimeFields',
+      name: 'deliveryTime',
+      factory: function() {
+        return this.DeliveryTimeFields.create();
+      }
     },
     {
       class: 'Double',
@@ -42,8 +56,87 @@ foam.CLASS({
       name: 'feesPercentage'
     },
     {
+      class: 'Long',
+      name: 'amount',
+      value: 0
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'net.nanopay.fx.model',
+  name: 'ExchangeRateFields',
+
+  properties: [
+      {
+        class: 'Double',
+        name: 'rate'
+      },
+      {
+        class: 'String',
+        name: 'dealReferenceNumber',
+        javaFactory: 'return java.util.UUID.randomUUID().toString().replace("-", "");'
+      },
+      {
+        class: 'String',
+        name: 'fxStatus',
+        value: 'Quoted'
+      },
+      {
+        class: 'DateTime',
+        name: 'expirationTime'
+      },
+      {
+        class: 'DateTime',
+        name: 'valueDate'
+      },
+      {
+        class: 'String',
+        name: 'sourceCurrency'
+      },
+      {
+        class: 'String',
+        name: 'targetCurrency'
+      },
+      {
+        class: 'Double',
+        name: 'sourceAmount',
+        value: 0
+      },
+      {
+        class: 'Double',
+        name: 'targetAmount',
+        value: 0
+      }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'net.nanopay.fx.model',
+  name: 'FeesFields',
+
+  properties: [
+    {
+      class: 'Double',
+      name: 'totalFees'
+    },
+    {
+      class: 'String',
+      name: 'totalFeesCurrency'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.fx.model',
+  name: 'DeliveryTimeFields',
+
+  properties: [
+    {
       class: 'DateTime',
-      name: 'expirationDate'
+      name: 'processDate'
     }
   ]
 });
