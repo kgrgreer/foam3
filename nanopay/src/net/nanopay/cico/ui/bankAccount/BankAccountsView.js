@@ -261,6 +261,7 @@ foam.CLASS({
             .start({
               class: 'foam.u2.view.ScrollTableView',
               data: this.data,
+              editRowsEnabled: true,
               selection$: this.selection$,
               columns: [
                 'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'

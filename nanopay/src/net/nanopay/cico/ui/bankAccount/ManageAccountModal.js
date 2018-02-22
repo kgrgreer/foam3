@@ -202,21 +202,23 @@ foam.CLASS({
       label: 'Set As Default',
       isAvailable: function() {
         var self = this;
-        return self.selectedAccount.status == "Verified"
+        return self.selectedAccount.status == "Verified";
       },
       code: function(X) {
         var self = this;
         if ( ! X.selectedAccount.setAsDefault ) {
           self.userVerifiedAccounts.select().then( function(a) {
-            a.array.forEach( function(t) { 
-              t.setAsDefault = false;
-              if (t.accountName.includes("(Default)")) {
-                t.accountName = t.accountName.replace("(Default)", "");
+            a.array.forEach( function(t) {
+              if ( t.setAsDefault ) {
+                t.setAsDefault = false;
+              } 
+              if (t.accountName.includes(' (Default)')) {
+                t.accountName = t.accountName.replace(' (Default)', '');
               }
               X.bankAccountDAO.put(t);
             });
             X.selectedAccount.setAsDefault = true;
-            X.selectedAccount.accountName += '(Default)';
+            X.selectedAccount.accountName += ' (Default)';
             X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
               X.manageAccountNotification('Bank account successfully set as default.', '');
               X.closeDialog();
