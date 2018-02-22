@@ -110,11 +110,7 @@ public class BankAccountVerificationService
     Transaction t = new Transaction();
 
     if (transaction.getBankAccountId() == null){
-      Sink sinkBank = new ListSink();
-      sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
-
-      List dataBank = ((ListSink) sinkBank).getData();
-      BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
+      BankAccount bankAccountPayee = (BankAccount) bankAccountDAO.find(payee.getId());
       t.setBankAccountId(bankAccountPayee.getId());
     } else {
       t.setBankAccountId(transaction.getBankAccountId());
