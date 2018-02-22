@@ -12,10 +12,6 @@ import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.model.BankAccount;
-import net.nanopay.model.Account;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.cico.service.BankAccountVerificationService;
 import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
@@ -23,9 +19,6 @@ public class ScheduleInvoiceCron
   {
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
-    protected DAO    bankAccountDAO_;
-    protected DAO    standardCICOTransactionDAO_;
-    protected BankAccountVerificationService bankAccountVerification;
 
     public void fetchInvoices() {
       try{
@@ -51,11 +44,7 @@ public class ScheduleInvoiceCron
               //Creates transaction only based on invoices scheduled for today.
               if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
                 System.out.println("Scheduled Invoice for today found.");
-                if ( invoice.getAccountId() != 0 ) {
-                  cicoTransaction(invoice);
-                } else {
-                  sendValueTransaction(invoice);
-                }
+                sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
               e.printStackTrace();
@@ -68,59 +57,28 @@ public class ScheduleInvoiceCron
         }
     }
 
-    public void cicoTransaction(Invoice invoice){
-      try {
-        BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(invoice.getAccountId());
-
-        //Create cash in transaction if accountId is present.
-        Transaction cashInTransaction = new Transaction();
-        int invAmount = Math.round(invoice.getAmount());
-        cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
-        cashInTransaction.setPayeeId((Long) invoice.getPayeeId());
-        cashInTransaction.setAmount(invAmount);
-        cashInTransaction.setInvoiceId(invoice.getId());
-        cashInTransaction.setBankAccountId(invoice.getAccountId());
-        cashInTransaction.setType(TransactionType.CASHIN);
-
-        try {
-          Transaction cicoTransaction = (Transaction) standardCICOTransactionDAO_.put(cashInTransaction);
-          System.out.println("Starting cash in process...");
-        } catch (Throwable e) {
-          e.printStackTrace();
-          return;
-        }
-        
-        sendValueTransaction(invoice);
-
-      } catch (Throwable e) {
-        e.printStackTrace();
-      }
-    }
-
     public void sendValueTransaction(Invoice invoice){
       System.out.println("Starting payment process...");
       try {
         Transaction transaction = new Transaction();
-        int invAmount = Math.round(invoice.getAmount());
+        System.out.println(invoice.getAccountId());
+        // sets accountId to be used for CICO transaction 
+        if ( invoice.getAccountId() != 0 ) {
+          transaction.setBankAccountId(invoice.getAccountId());
+        }
+                
+        long invAmount = invoice.getAmount();
         transaction.setPayeeId((Long) invoice.getPayeeId());
         transaction.setPayerId((Long) invoice.getPayerId());
         transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
+
         try {
           Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
           invoice.setPaymentId(completedTransaction.getId());
           invoice.setPaymentDate((Date) new Date());
           invoiceDAO_.put(invoice);
-          
-          // Checks to see if cico transaction and sets cashout.
-          if(invoice.getAccountId() != 0) {
-            completedTransaction.setBankAccountId(invoice.getAccountId());
-            completedTransaction.setInvoiceId(invoice.getId());
-            bankAccountVerification.addCashout(completedTransaction);
-            System.out.println("Schedule CICO Transaction Completed.");
-          } else {
-            System.out.println("Schedule Transaction Completed.");
-          }
+          System.out.println("Schedule Transaction Completed.");
         } catch (Throwable e) {
           e.printStackTrace();
           throw new RuntimeException(e);
@@ -135,9 +93,6 @@ public class ScheduleInvoiceCron
       System.out.println("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
-      bankAccountDAO_     = (DAO) getX().get("bankAccountDAO");
-      standardCICOTransactionDAO_ = (DAO) getX().get("standardCICOTransactionDAO");
-      bankAccountVerification = (BankAccountVerificationService) getX().get("bankAccountVerification");
       System.out.println("DAO's fetched...");
       fetchInvoices();
     }
