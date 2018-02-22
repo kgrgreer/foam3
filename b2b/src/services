@@ -1,5 +1,0 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"tokenStorage",                "lazy":true,  "serve":false, "serviceClass":"net.nanopay.b2b.xero.TokenStorage"})
-p({"class":"foam.nanos.boot.NSpec", "name":"xero",                        "lazy":true,  "serve":false, "serviceClass":"net.nanopay.b2b.xero.XeroService"})
-p({"class":"foam.nanos.boot.NSpec", "name":"xeroComplete",                "lazy":true,  "serve":false, "serviceClass":"net.nanopay.b2b.xero.XeroComplete"})
-p({"class":"foam.nanos.boot.NSpec", "name":"xeroCallback",                "lazy":true,  "serve":false, "serviceClass":"net.nanopay.b2b.xero.XeroCallback"})
-p({"class":"foam.nanos.boot.NSpec", "name":"businessDAO",                 "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(x, net.nanopay.b2b.model.Business.getOwnClassInfo(), \"businesses\"));","client":"{\"of\":\"net.nanopay.b2b.model.Business\"}"})

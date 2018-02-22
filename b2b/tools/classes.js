@@ -3,14 +3,12 @@ require('../../nanopay/src/net/nanopay/model/BusinessType');
 
 var classes = [
   'net.nanopay.b2b.model.Invoice',
-  'net.nanopay.b2b.xero.TokenStorage',
   'net.nanopay.b2b.dao.Storage',
   'net.nanopay.b2b.model.Business',
   'net.nanopay.b2b.model.Invoice'
 ];
 
 var abstractClasses = [
-  'net.nanopay.b2b.xero.AbstractXeroService'
 ];
 
 var skeletons = [
