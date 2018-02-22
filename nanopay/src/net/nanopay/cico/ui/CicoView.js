@@ -167,7 +167,7 @@ foam.CLASS({
     },
     {
       name: 'formattedBalance',
-      value: 0
+      value: '...'
     },
     {
       class: 'Boolean',
@@ -229,11 +229,6 @@ foam.CLASS({
         self.hasCashIn = perm;
       });
 
-      this.accountDAO.find(this.user.id).then(function (a) {
-        self.account.copyFrom(a);
-        self.onDAOUpdate();
-      });
-
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
 
@@ -243,10 +238,7 @@ foam.CLASS({
           .start('div').addClass('balanceBox')
             .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add(this.formattedBalance$.map(function(b) {
-              if ( ! b && self.isLoading ) return '...';
-              return '$' + self.addCommas(b.toFixed(2).toString());
-            })).addClass('balance').end()
+            .start().add(this.formattedBalance$).addClass('balance').end()
           .end()
           .start('div').addClass('inlineDiv')
             .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
@@ -325,16 +317,12 @@ foam.CLASS({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isMerged: true,
+      // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        self.isLoading = true;
         this.accountDAO.find(this.user.id).then(function (a) {
-          self.isLoading = false;
           self.account.copyFrom(a);
-          self.formattedBalance = a.balance / 100;
-        }).catch(function (e) {
-          self.isLoading = false;
+          self.formattedBalance = '$' + (a.balance / 100).toFixed(2);
         });
       }
     }
