@@ -21,51 +21,8 @@ foam.CLASS({
     'historyDAO',
     'addressDAO',
     'businessBusinessJunctionDAO',		
-    'invoiceResolutionDAO',
   ],
 
-//   classes: [
-//       {
-//         name: 'InvoiceDecorator',
-//         extends: 'foam.dao.AbstractDAODecorator',
-//
-//         imports: [ 'businessDAO' ],
-//
-//         methods: [
-//           function write(X, dao, obj, existing) {
-//             var self = this;
-// //            console.log('.');
-//             return new Promise(function(resolve, reject) {
-//               self.businessDAO.find(obj.toBusinessId)
-//               .then(function (b) {
-//                 obj.toBusinessName = b.name;
-//               })
-//               .then(function() {
-//                 self.businessDAO.find(obj.fromBusinessId).then(function (b) {
-//                   obj.fromBusinessName = b.name;
-//                   resolve(obj);
-//               })})});
-//           }
-//           /*
-//           function read(X, dao, obj) {
-//             var self = this;
-//             console.log('.');
-//             return new Promise(function(resolve, reject) {
-//               self.businessDAO.find(obj.toBusinessId)
-//               .then(function (b) {
-//                 obj.toBusinessName = b.name;
-//               })
-//               .then(function() {
-//                 self.businessDAO.find(obj.fromBusinessId).then(function (b) {
-//                   obj.fromBusinessName = b.name;
-//                   resolve(obj);
-//               })})});
-//           }
-//           */
-//         ]
-//       }
-//   ],
-//
   properties: [
     {
       name: 'businessDAO',
