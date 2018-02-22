@@ -9,11 +9,11 @@ DOMAIN=".nanopay.net"
 SUB=`echo ${VERSION} | sed 's/.*\///' | sed 's/-v.*//'`
 echo
 if [[ "${SUB}" = *"b2b-prod"* ]]; then
-    SUB = "portal"
+    SUB="portal"
 elif [[ "${SUB}" = *"cc-demo"* ]]; then
-    SUB = "sandbox"
+    SUB="sandbox"
 elif [[ "${SUB}" = *"cc-integration"* ]]; then
-    SUB = "sandbox"
+    SUB="sandbox"
 elif [[ "${SUB}" = *"prod"* ]]; then
     SUB=`echo $SUB | sed 's/\.prod//g'`
 elif [[ "${SUB}" = *"integration"* ]]; then
