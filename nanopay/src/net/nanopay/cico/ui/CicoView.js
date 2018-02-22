@@ -244,7 +244,7 @@ foam.CLASS({
             .start('div').addClass('sideBar').end()
             .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
             .start().add(this.formattedBalance$.map(function(b) {
-              if ( self.isLoading ) return '...';
+              if ( ! b && self.isLoading ) return '...';
               return '$' + self.addCommas(b.toFixed(2).toString());
             })).addClass('balance').end()
           .end()
