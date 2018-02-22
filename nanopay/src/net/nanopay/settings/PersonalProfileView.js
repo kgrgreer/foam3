@@ -269,7 +269,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all fields.' },
+    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'invalidPhone', message: 'Phone number is invalid.' },
     { name: 'informationUpdated', message: 'Information has been successfully changed.' }
   ],

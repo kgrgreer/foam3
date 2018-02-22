@@ -224,11 +224,11 @@ foam.CLASS({
                 .start(this.User.PROFILE_PICTURE).end()
               .end()
               .start().addClass('input-container')
-                .start('label').add('Company Name').end()
+                .start('label').add('Business Name *').end()
                 .start(this.User.BUSINESS_NAME).end()
               .end()
               .start().addClass('input-container').addClass('input-companytype-width')
-                .start('label').add('Company Type').end()
+                .start('label').add('Business Type').end()
                 .start(this.User.BUSINESS_TYPE_ID).end()
               .end()
               .start().addClass('input-container').addClass('input-businesssector-width')
@@ -240,14 +240,14 @@ foam.CLASS({
                 .start(this.User.WEBSITE).end()
               .end()
               .start().addClass('input-container')
-                .start('label').add('Business Identification No.').end()
+                .start('label').add('Business Identification No. *').end()
                 .start(this.User.BUSINESS_IDENTIFICATION_NUMBER).end()
               .end()
               .start().addClass('input-container')
-                .start('label').add('Issuing Authority').end()
+                .start('label').add('Issuing Authority *').end()
                 .start(this.User.ISSUING_AUTHORITY).end()
               .end()
-              .start('h3').add('Business Address').end()
+              .start('h3').add('Business Address *').end()
               .tag(this.User.ADDRESS, {showVerified: false,showType: false})
               .start(this.SAVE_BUSINESS).addClass('foam-u2-ActionView-saveBusiness').end()
             .end()
@@ -257,7 +257,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all fields with errors.' }, 
+    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'invalidPostal', message: 'Invalid postal code entry.' },    
     { name: 'structAddress', message: 'Enter street number and name for structured address.' },    
     { name: 'nonStructAddress', message: 'Enter an address' },    
@@ -278,33 +278,29 @@ foam.CLASS({
         var view = X.view;
         var address = this.address;
         address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
-        if (address.structured)
-        {
-          if (! address.streetNumber || ! address.streetNumber)
-          {
+        if ( address.structured ) {
+          if ( ! address.streetNumber || ! address.streetNumber ) {
             view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));            
             return;
           }
-        }
-        else
-        {
-          if (! address.address1)
-          {
+        } else {
+          if ( ! address.address1 ) {
             view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));            
             return;
           }
         }
-        if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) )
-        {
+
+        if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) ) {
           view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));            
           return;
         }
-        
+
         if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
           view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));            
           return;
         }
-        
+
+        this.organization = this.businessName;
         X.userDAO.put(this).then(function(a) {
           X.stack.push({ class:'net.nanopay.settings.business.BusinessProfileView' })
         })

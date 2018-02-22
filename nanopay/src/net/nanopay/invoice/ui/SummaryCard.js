@@ -112,7 +112,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedAmount',
-      expression: function(amount) { return this.formatCurrency(amount); }
+      expression: function(amount) { return this.formatCurrency(amount/100); }
     },
     'amount',     
     'count',
