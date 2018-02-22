@@ -41,6 +41,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'portalAdminCreated',
       value: false,
+    },
+    {
+      class: 'Boolean',
+      name: 'welcomeEmailSent',
+      value: false,
     }
   ]
 });

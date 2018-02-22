@@ -155,16 +155,18 @@ foam.CLASS({
       name: 'invoiceImageUrl'
     },
     {
-      // TODO: switch to Currency
       class: 'Currency',
-      // class: 'Double',
       name: 'amount',
       aliases: [ 'a' ],
       precision: 2,
       required: true,
-      tableCellFormatter: function(a, X) {     
+      tableCellFormatter: function(a, X) {
         this.start().style({'padding-right': '20px'}).add('$' + X.addCommas((a/100).toFixed(2))).end();
       }
+    },
+    {
+      class: 'Long',
+      name: 'sourceAccountId'
     },
     {
       class: 'Enum',

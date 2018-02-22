@@ -1,4 +1,5 @@
 FOAM_FILES([
+  { name: 'net/nanopay/blob/AmazonS3BlobStore' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/Branch' },
@@ -15,6 +16,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
   { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/auth/email/EmailTokenService'},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
@@ -184,6 +186,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
+
+  // history
+  { name: 'net/nanopay/ui/history/InvoiceHistoryView', flags: [ 'web' ] },
+  { name: 'net/nanopay/ui/history/InvoiceHistoryItemView', flags: [ 'web' ] },
 
   // modal
   { name: 'net/nanopay/invoice/ui/modal/ApproveModal', flags: ['web'] },

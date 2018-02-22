@@ -61,7 +61,7 @@ public class ScheduleInvoiceCron
       System.out.println("Starting payment process...");
       try {
         Transaction transaction = new Transaction();
-        System.out.println(invoice.getAccountId());
+
         // sets accountId to be used for CICO transaction 
         if ( invoice.getAccountId() != 0 ) {
           transaction.setBankAccountId(invoice.getAccountId());
