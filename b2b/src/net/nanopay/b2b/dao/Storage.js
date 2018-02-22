@@ -340,16 +340,6 @@ foam.CLASS({
       }		
     },
     {
-      name: 'invoiceResolutionDAO',
-      factory: function() {
-        return this.EasyDAO.create({
-          daoType: 'CLIENT',
-          of: net.nanopay.b2b.model.InvoiceResolution,
-          serviceName: 'invoiceResolutionDAO'
-        });
-      }
-    },
-    {
       name: 'invoiceDAO',
       factory: function() {
         /*this.DecoratedDAO.create({

@@ -88,10 +88,3 @@ foam.RELATIONSHIP({
     hidden: true
   }
 });
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.b2b.model.Invoice',
-  targetModel: 'net.nanopay.b2b.model.InvoiceResolution',
-  forwardName: 'invoiceResolutions',
-  inverseName: 'invoiceId',
-});
