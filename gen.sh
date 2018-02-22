@@ -21,7 +21,7 @@ node tools/xsd/index.js net.nanopay.fx.ascendantfx.model AFXLinkCustom.svc.xsd
 
 # For each project, grabs java code
 for d in *; do
-  if [ "$d" = 'admin-portal' ]  || [ "$d" = 'b2b' ]       || [ "$d" = 'foam2' ]   ||
+  if [ "$d" = 'admin-portal' ]  || [ "$d" = 'foam2' ]   ||
      [ "$d" = 'interac' ]       || [ "$d" = 'merchant' ]  || [ "$d" = 'nanopay' ]; then
 
     cd $d

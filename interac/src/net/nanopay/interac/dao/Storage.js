@@ -8,7 +8,6 @@ foam.CLASS({
     'foam.dao.DecoratedDAO',
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
-    'net.nanopay.b2b.model.Business',
     'net.nanopay.interac.model.Identification',
     'net.nanopay.interac.model.Pacs008ISOPurpose',
     'net.nanopay.interac.model.Pacs008IndiaPurpose',
