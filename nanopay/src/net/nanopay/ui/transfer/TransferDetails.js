@@ -22,6 +22,7 @@ foam.CLASS({
     // 'pacs008IndiaPurposeDAO',
     'bankAccountDAO',
     'payeeDAO',
+    'account',
     'user',
     'type'
   ],

@@ -165,7 +165,7 @@ foam.CLASS({
           .end()
           .start().addClass('transferRateContainer')
             .callIf(this.type == 'regular', function() {
-              this.start('p').addClass('currencyAmount-L').add('$ ', self.addCommas(parseFloat(self.viewData.fromAmount).toFixed(2))).end()
+              this.start('p').addClass('currencyAmount-L').add('$ ', self.addCommas((self.viewData.fromAmount/100).toFixed(2))).end()
               this.start('p').add('Paid from Account Number: ' + '***' + self.viewData.account.accountNumber.substring(self.viewData.account.accountNumber.length - 4, self.viewData.account.accountNumber.length)).end()
             })
           .end()
