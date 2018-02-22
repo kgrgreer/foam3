@@ -16,12 +16,6 @@ b2b.abstractClasses = b2b.abstractClasses.map(function(element) { return [ 'b2b/
 b2b.skeletons = b2b.skeletons.map(function(element) { return [ 'b2b/src/', element ]; })
 b2b.proxies = b2b.proxies.map(function(element) { return [ 'b2b/src/', element ]; })
 
-var admin = require('../admin-portal/tools/classes.js')
-admin.classes = admin.classes.map(function(element) { return [ 'admin-portal/src/', element ]; })
-admin.abstractClasses = admin.abstractClasses.map(function(element) { return [ 'admin-portal/src/', element ]; })
-admin.skeletons = admin.skeletons.map(function(element) { return [ 'admin-portal/src/', element ]; })
-admin.proxies = admin.proxies.map(function(element) { return [ 'admin-portal/src/', element ]; })
-
 var merchant = require('../merchant/tools/classes.js')
 merchant.classes = merchant.classes.map(function(element) { return [ 'merchant/src/', element ]; })
 merchant.abstractClasses = merchant.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
@@ -56,7 +50,6 @@ var classes = [];
 classes = classes.concat(
   foam.classes, nanopay.classes,
   b2b.classes,
-  admin.classes,
   merchant.classes,
   interac.classes,
   iso20022.classes,
@@ -68,7 +61,6 @@ abstractClasses = abstractClasses.concat(
   foam.abstractClasses,
   nanopay.abstractClasses,
   b2b.abstractClasses,
-  admin.abstractClasses,
   merchant.abstractClasses,
   interac.abstractClasses,
   iso20022.abstractClasses,
@@ -80,7 +72,6 @@ skeletons = skeletons.concat(
   foam.skeletons,
   nanopay.skeletons,
   b2b.skeletons,
-  admin.skeletons,
   merchant.skeletons,
   interac.skeletons,
   iso20022.skeletons,
@@ -92,7 +83,6 @@ proxies = proxies.concat(
   foam.proxies,
   nanopay.proxies,
   b2b.proxies,
-  admin.proxies,
   merchant.proxies,
   interac.proxies,
   iso20022.proxies,
@@ -104,7 +94,6 @@ blacklist = blacklist.concat(
   foam.blacklist,
   nanopay.blacklist,
   b2b.blacklist,
-  admin.blacklist,
   merchant.blacklist,
   interac.blacklist,
   iso20022.blacklist,
