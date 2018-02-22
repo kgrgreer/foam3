@@ -84,7 +84,7 @@ foam.CLASS({
       value: ''
     },
     {
-      class: 'Currency',
+      class: 'String',
       name: 'formattedReceivableAmount',
       expression: function(receivableAmount) { return this.formatCurrency(receivableAmount/100); }
     }
