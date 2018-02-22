@@ -10,12 +10,6 @@ nanopay.abstractClasses = nanopay.abstractClasses.map(function(element) { return
 nanopay.skeletons = nanopay.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 nanopay.proxies = nanopay.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
-var admin = require('../admin-portal/tools/classes.js')
-admin.classes = admin.classes.map(function(element) { return [ 'admin-portal/src/', element ]; })
-admin.abstractClasses = admin.abstractClasses.map(function(element) { return [ 'admin-portal/src/', element ]; })
-admin.skeletons = admin.skeletons.map(function(element) { return [ 'admin-portal/src/', element ]; })
-admin.proxies = admin.proxies.map(function(element) { return [ 'admin-portal/src/', element ]; })
-
 var merchant = require('../merchant/tools/classes.js')
 merchant.classes = merchant.classes.map(function(element) { return [ 'merchant/src/', element ]; })
 merchant.abstractClasses = merchant.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
@@ -49,7 +43,6 @@ flinks.proxies = flinks.proxies.map(function(element) { return [ 'nanopay/src/',
 var classes = [];
 classes = classes.concat(
   foam.classes, nanopay.classes,
-  admin.classes,
   merchant.classes,
   interac.classes,
   iso20022.classes,
@@ -60,7 +53,6 @@ var abstractClasses = [];
 abstractClasses = abstractClasses.concat(
   foam.abstractClasses,
   nanopay.abstractClasses,
-  admin.abstractClasses,
   merchant.abstractClasses,
   interac.abstractClasses,
   iso20022.abstractClasses,
@@ -71,7 +63,6 @@ var skeletons = [];
 skeletons = skeletons.concat(
   foam.skeletons,
   nanopay.skeletons,
-  admin.skeletons,
   merchant.skeletons,
   interac.skeletons,
   iso20022.skeletons,
@@ -82,7 +73,6 @@ var proxies = [];
 proxies = proxies.concat(
   foam.proxies,
   nanopay.proxies,
-  admin.proxies,
   merchant.proxies,
   interac.proxies,
   iso20022.proxies,
@@ -93,7 +83,6 @@ var blacklist = [];
 blacklist = blacklist.concat(
   foam.blacklist,
   nanopay.blacklist,
-  admin.blacklist,
   merchant.blacklist,
   interac.blacklist,
   iso20022.blacklist,
