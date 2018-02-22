@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.ui.twoauth',
+  package: 'net.nanopay.auth.ui',
   name: 'TwoAuthView',
   extends: 'foam.u2.View',
 
@@ -117,7 +117,7 @@ foam.CLASS({
   methods: [
     function initE(){
       this.SUPER();
-      
+
       this
         .addClass(this.myClass())
         .start()
@@ -138,7 +138,7 @@ foam.CLASS({
             .end()
           .end()
           .start('h4').add('Download the authenticator for').end()
-          .start('p').add('iOS').style({color: '#59a5d5', 'cursor': 'pointer', 'margin-left':'2px'}).end() 
+          .start('p').add('iOS').style({color: '#59a5d5', 'cursor': 'pointer', 'margin-left':'2px'}).end()
           .start('p').add('or').style({'margin-right':'0'}).end()
           .start('p').add('Android').style({color: '#59a5d5', 'cursor': 'pointer', 'margin-left':'2px'}).end()
           .start('p').add('or').style({'margin-right':'0'}).end()
