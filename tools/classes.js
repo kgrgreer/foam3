@@ -10,12 +10,6 @@ nanopay.abstractClasses = nanopay.abstractClasses.map(function(element) { return
 nanopay.skeletons = nanopay.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 nanopay.proxies = nanopay.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
-var b2b = require('../b2b/tools/classes.js')
-b2b.classes = b2b.classes.map(function(element) { return [ 'b2b/src/', element ]; })
-b2b.abstractClasses = b2b.abstractClasses.map(function(element) { return [ 'b2b/src/', element ]; })
-b2b.skeletons = b2b.skeletons.map(function(element) { return [ 'b2b/src/', element ]; })
-b2b.proxies = b2b.proxies.map(function(element) { return [ 'b2b/src/', element ]; })
-
 var merchant = require('../merchant/tools/classes.js')
 merchant.classes = merchant.classes.map(function(element) { return [ 'merchant/src/', element ]; })
 merchant.abstractClasses = merchant.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
@@ -49,7 +43,6 @@ flinks.proxies = flinks.proxies.map(function(element) { return [ 'nanopay/src/',
 var classes = [];
 classes = classes.concat(
   foam.classes, nanopay.classes,
-  b2b.classes,
   merchant.classes,
   interac.classes,
   iso20022.classes,
@@ -60,7 +53,6 @@ var abstractClasses = [];
 abstractClasses = abstractClasses.concat(
   foam.abstractClasses,
   nanopay.abstractClasses,
-  b2b.abstractClasses,
   merchant.abstractClasses,
   interac.abstractClasses,
   iso20022.abstractClasses,
@@ -71,7 +63,6 @@ var skeletons = [];
 skeletons = skeletons.concat(
   foam.skeletons,
   nanopay.skeletons,
-  b2b.skeletons,
   merchant.skeletons,
   interac.skeletons,
   iso20022.skeletons,
@@ -82,7 +73,6 @@ var proxies = [];
 proxies = proxies.concat(
   foam.proxies,
   nanopay.proxies,
-  b2b.proxies,
   merchant.proxies,
   interac.proxies,
   iso20022.proxies,
@@ -93,7 +83,6 @@ var blacklist = [];
 blacklist = blacklist.concat(
   foam.blacklist,
   nanopay.blacklist,
-  b2b.blacklist,
   merchant.blacklist,
   interac.blacklist,
   iso20022.blacklist,
