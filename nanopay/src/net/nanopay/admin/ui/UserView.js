@@ -206,7 +206,7 @@ foam.CLASS({
           .start('div').show(this.accessMerchant$).add('Add Merchant')
             .on('click', this.addMerchant)
           .end()
-          .start('div').show(this.accessCompany$).add('Add Company')
+          .start('div').show(this.accessCompany$).add('Add Business')
             .on('click', this.addCompany)
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)

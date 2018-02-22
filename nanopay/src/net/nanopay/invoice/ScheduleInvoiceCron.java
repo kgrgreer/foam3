@@ -66,7 +66,7 @@ public class ScheduleInvoiceCron
       System.out.println("Starting payment process...");
       try {
         Transaction transaction = new Transaction();
-        Long invAmount = Math.round(invoice.getAmount());
+        long invAmount = invoice.getAmount();
         transaction.setPayeeId((Long) invoice.getPayeeId());
         transaction.setPayerId((Long) invoice.getPayerId());
         transaction.setAmount(invAmount);
