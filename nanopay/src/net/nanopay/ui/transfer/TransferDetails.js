@@ -244,7 +244,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'digitalCash',
-      documentation: 'Toggle for digital cash for payments.',
+      documentation: 'UI toggle choice between payments using account or digital cash.',
       value: true,
       postSet: function(oldValue, newValue){
         this.viewData.digitalCash = newValue;
@@ -253,7 +253,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'accountCheck',
-      documentation: 'Toggle for bank accounts for payments.',
+      documentation: 'UI toggle choice between payments using account or digital cash. Used to set bankAccountId on transaction on create.',
       value: false,
       postSet: function(oldValue, newValue){
         this.viewData.accountCheck = newValue;
