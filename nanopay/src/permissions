@@ -281,8 +281,6 @@ p({"class":"foam.nanos.auth.Permission","id":"service.execute.recurringInvoiceDA
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.userDAO"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
-p({"class":"foam.nanos.auth.Permission","id":"service.execute.invoiceResolutionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.balanceAlertDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.read.*"})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.write.*"})

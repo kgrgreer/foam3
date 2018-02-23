@@ -5,10 +5,8 @@
 .idea/
 *.iml
 ingenico/ingenico.iml
-b2b/b2b.iml
 interac/interac.iml
 nanopay/nanopay.iml
-admin-portal/admin-portal.iml
 retail/retail.iml
 
 # CMake
@@ -116,3 +114,4 @@ sha256/
 /dugs
 /spids
 /liquiditySettings
+/invoiceHistory
