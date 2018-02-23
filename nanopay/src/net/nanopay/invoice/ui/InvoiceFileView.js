@@ -97,8 +97,12 @@ foam.CLASS({
                 if ( self.BlobBlob.isInstance(blob) ) {
                   return URL.createObjectURL(blob.blob);
                 } else {
-                  return '/service/httpFileService/' +
-                    data.id + '?sessionId=' + sessionId;
+                  var url = '/service/httpFileService/' + data.id;
+                  // attach session id if available
+                  if ( sessionId ) {
+                    url += '?sessionId=' + sessionId;
+                  }
+                  return url;
                 }
               }),
               target: '_blank'
