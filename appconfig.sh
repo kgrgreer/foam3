@@ -57,7 +57,7 @@ sed -i -e "s/name: 'version'/name: 'version', value: '${VERSION}'/g" foam2/src/f
 
 sed -i -e "s/name: 'copyright'/name: 'copyright', value: '${COPYRIGHT}'/g" foam2/src/foam/nanos/app/AppConfig.js
 
-sed -i -e "s,value: 'http:\/\/localhost:8080/','${URL}/'," foam2/src/foam/nanos/app/AppConfig.js
+sed -i -e "s,value: 'http:\/\/localhost:8080/', url: '${URL}/'," foam2/src/foam/nanos/app/AppConfig.js
 
 sed -i -e "s/name: 'mode'/name: 'mode', value: '${MODE}'/g" foam2/src/foam/nanos/app/AppConfig.js
 
