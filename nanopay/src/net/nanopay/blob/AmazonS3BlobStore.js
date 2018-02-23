@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.blob.HashingOutputStream',
     'foam.blob.IdentifiedBlob',
     'foam.blob.InputStreamBlob',
+    'foam.nanos.app.AppConfig',
     'org.apache.commons.io.IOUtils',
     'org.apache.geronimo.mail.util.Hex',
 
