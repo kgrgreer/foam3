@@ -21,9 +21,6 @@ message.setTo(new String[]{user.getEmail()});
 HashMap<String, Object> args = new HashMap<>();
 args.put("name", user.getFirstName());
 args.put("email", user.getEmail());
-if (!user.getInitialEmailedAmount().equals("$0.00")){
-  args.put("amount", user.getInitialEmailedAmount());
-}
 if (user.getType().equals("Business") || user.getType().equals("Merchant")){
   args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
 }
@@ -37,7 +34,6 @@ if (user.getType().equals("Personal")){
 String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
 email.sendEmailFromTemplate(user, message, template, args);
 user.setPortalAdminCreated(false);
-user.setInitialEmailedAmount("$0.00");
 user.setWelcomeEmailSent(true);
 userDAO.put(user);
 return true;
