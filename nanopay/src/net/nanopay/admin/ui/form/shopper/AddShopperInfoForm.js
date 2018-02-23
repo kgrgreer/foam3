@@ -126,6 +126,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.emailAddress = newValue;
+      },
+      validateObj: function(email) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if ( ! emailRegex.test(email) ) {
+          return this.EmailError;
+        }
       }
     },
     {
@@ -258,7 +265,8 @@ foam.CLASS({
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'CreateAPasswordLabel', message: 'Create a Password *' },
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'EmailError', message: 'Invalid email address' }
   ],
 
   methods: [

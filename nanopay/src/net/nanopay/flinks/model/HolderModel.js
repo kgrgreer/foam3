@@ -19,11 +19,22 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'Email'
+      name: 'Email',
+      validateObj: function(email) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if ( ! emailRegex.test(email) ) {
+          return this.EmailError;
+        }
+      }
     },
     {
       class: 'String',
       name: 'PhoneNumber'
     }
+  ],
+
+  messages: [
+    { name: 'EmailError', message: 'Invalid email address' }
   ]
 });

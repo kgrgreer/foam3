@@ -232,7 +232,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'email'
+      name: 'email',
+      validateObj: function(email) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if ( ! emailRegex.test(email) ) {
+          return this.EmailError;
+        }
+      }
     },
     {
       class: 'String',
@@ -297,7 +304,8 @@ foam.CLASS({
     { name: 'informationUpdated', message: 'Information has been successfully changed.' },
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
-    { name: 'JobTitleLengthError', message: 'Job title is too long' }
+    { name: 'JobTitleLengthError', message: 'Job title is too long' },
+    { name: 'EmailError', message: 'Invalid email address' }
   ],
 
   actions: [
