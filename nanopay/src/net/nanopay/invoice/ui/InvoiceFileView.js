@@ -93,9 +93,13 @@ foam.CLASS({
             .attrs({
               href: this.data$.map(function (data) {
                 var blob = data.data;
-                return self.BlobBlob.isInstance(blob) ?
-                  URL.createObjectURL(blob.blob) :
-                  ( "/service/httpFileService/" + data.id );
+                var sessionId = localStorage['defaultSession'];
+                if ( self.BlobBlob.isInstance(blob) ) {
+                  return URL.createObjectURL(blob.blob);
+                } else {
+                  return '/service/httpFileService/' +
+                    data.id + '?sessionId=' + sessionId;
+                }
               }),
               target: '_blank'
             })
