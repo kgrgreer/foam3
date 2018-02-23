@@ -1,37 +1,64 @@
-# Set AppConfig.version
-VERSION=`echo ${GIT_BRANCH} | sed 's/.*\///'`
-echo VERSION=${VERSION}
-sed -i -e "s/name: 'version'/name: 'version', value: '${VERSION}'/g" foam2/src/foam/nanos/app/AppConfig.js
+#!/bin/bash
+# Set AppConfig values
 
-# Set AppConfig.url
+RELEASE=`echo ${GIT_BRANCH} | sed 's/.*\///'`
 HTTP="https"
 DOMAIN=".nanopay.net"
-SUB=`echo ${VERSION} | sed 's/.*\///' | sed 's/-v.*//'`
+NAME=`echo ${RELEASE} | sed 's/.*\///' | sed 's/-v.*//'`
+VERSION=`echo ${RELEASE} | sed 's/.*\///' | sed 's/.*-v//'`
+MODE="DEVELOPMENT"
+YEAR=`date +%Y`
+COPYRIGHT="(c) Copyright ${YEAR} nanopay Corporation. All Rights Reserved"
+
 echo
-if [[ "${SUB}" = *"b2b-prod"* ]]; then
-    SUB="portal"
-elif [[ "${SUB}" = *"cc-demo"* ]]; then
-    SUB="sandbox"
-elif [[ "${SUB}" = *"cc-integration"* ]]; then
-    SUB="sandbox"
-elif [[ "${SUB}" = *"prod"* ]]; then
-    SUB=`echo $SUB | sed 's/\.prod//g'`
-elif [[ "${SUB}" = *"integration"* ]]; then
-    SUB=`echo ${SUB} | sed 's/\./-/g'`
-    # replace integration with staging?
-    #SUB=`echo ${SUB} | sed 's/staging/integration/g'`
-elif [[ "${SUB}" = *"staging"* ]]; then
+if [[ "${NAME}" = *"b2b-prod"* ]]; then
+    NAME="portal"
+    MODE="PRODUCTION"
+elif [[ "${NAME}" = *"cc-demo"* ]]; then
+    NAME="sandbox"
+    MODE="DEMO"
+elif [[ "${NAME}" = *"cc-integration"* ]]; then
+    NAME="sandbox"
+    MODE="DEMO"
+elif [[ "${NAME}" = *"test"* ]]; then
     HTTP="http"
-    SUB=`echo ${SUB} | sed 's/-/./g'`
-elif [[ $SUB = *"demo"* ]]; then
-    SUB=`echo ${SUB} | sed 's/\./-/g'`
+    NAME=`echo ${NAME} | sed 's/-/./g'`
+    MODE="TEST"
+elif [[ "${NAME}" = *"prod"* ]]; then
+    NAME=`echo $NAME | sed 's/\.prod//g'`
+    MODE="PRODUCTION"
+elif [[ "${NAME}" = *"integration"* ]]; then
+    NAME=`echo ${NAME} | sed 's/\./-/g'`
+    MODE="DEMO"
+elif [[ "${NAME}" = *"demo"* ]]; then
+    NAME=`echo ${NAME} | sed 's/\./-/g'`
+    MODE="DEMO"
+elif [[ "${NAME}" = *"staging"* ]]; then
+    HTTP="http"
+    MODE="STAGING"
+    NAME=`echo ${NAME} | sed 's/-/./g'`
 else
     HTTP="http"
-    SUB="localhost:8080"
+    NAME="localhost:8080"
     DOMAIN=""
 fi
-URL="${HTTP}://${SUB}${DOMAIN}"
+
+URL="${HTTP}://${NAME}${DOMAIN}"
+
+echo RELEASE=${RELEASE}
+echo NAME=${NAME}
+echo VERSION=${VERSION}
 echo URL=${URL}
-sed -i -e "s,http://localhost:8080,${URL}," foam2/src/foam/nanos/app/AppConfig.js
+echo MODE=${MODE}
+
+sed -i -e "s/name: 'name'/name: 'name', value: '${NAME}'/g" foam2/src/foam/nanos/app/AppConfig.js
+
+sed -i -e "s/name: 'version'/name: 'version', value: '${VERSION}'/g" foam2/src/foam/nanos/app/AppConfig.js
+
+sed -i -e "s/name: 'copyright'/name: 'copyright', value: '${COPYRIGHT}'/g" foam2/src/foam/nanos/app/AppConfig.js
+
+sed -i -e "s,value: 'http:\/\/localhost:8080/','${URL}/'," foam2/src/foam/nanos/app/AppConfig.js
+
+sed -i -e "s/name: 'mode'/name: 'mode', value: '${MODE}'/g" foam2/src/foam/nanos/app/AppConfig.js
 
 exit 0
