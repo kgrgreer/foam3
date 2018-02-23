@@ -127,6 +127,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.businessName = newValue;
+      },
+      validateObj: function(businessName) {
+        var hasOkLength = businessName.length >= 1 && businessName.length <= 35;
+
+        if ( ! businessName || ! hasOkLength ) {
+          return this.BusinessNameError;
+        }
       }
     },
     {
@@ -306,7 +313,8 @@ foam.CLASS({
     { name: 'AddressLineLabel', message: 'Address line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
-    { name: 'PostalCodeLabel', message: 'Postal Code *' }
+    { name: 'PostalCodeLabel', message: 'Postal Code *' },
+    { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' }
   ],
 
   methods: [
