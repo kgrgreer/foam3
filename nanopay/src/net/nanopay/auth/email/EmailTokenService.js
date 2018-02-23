@@ -6,7 +6,7 @@ foam.CLASS({
       javaCode:
 `try {
 DAO tokenDAO = (DAO) getX().get("tokenDAO");
-DAO userDAO = (DAO) getX().get("userDAO");
+DAO userDAO = (DAO) getX().get("localUserDAO");
 AppConfig appConfig = (AppConfig) getX().get("appConfig");
 Token token = new Token();
 token.setUserId(user.getId());
