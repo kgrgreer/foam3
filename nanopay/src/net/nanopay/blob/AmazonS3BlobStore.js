@@ -79,7 +79,8 @@ try {
   os.close();
 
   // generate digest, create input stream, create metadata
-  String key = new String(Hex.encode(os.digest()));
+  AppConfig config = (AppConfig) getX().get("appConfig");
+  String key = config.getMode().name() + "/" + new String(Hex.encode(os.digest()));
   InputStream is = new FileInputStream(tmp);
   ObjectMetadata metadata = new ObjectMetadata();
   metadata.setContentLength(tmp.length());
