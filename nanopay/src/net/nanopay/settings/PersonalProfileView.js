@@ -219,7 +219,16 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'jobTitle'
+      name: 'jobTitle',
+      validateObj: function(jobTitle) {
+        if ( ! jobTitle ) {
+          return this.JobTitleEmptyError;
+        }
+
+        if ( jobTitle.length > 35 ) {
+          return this.JobTitleLengthError;
+        }
+      }
     },
     {
       class: 'String',
@@ -286,7 +295,9 @@ foam.CLASS({
     { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'invalidPhone', message: 'Phone number is invalid.' },
     { name: 'informationUpdated', message: 'Information has been successfully changed.' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' }
   ],
 
   actions: [

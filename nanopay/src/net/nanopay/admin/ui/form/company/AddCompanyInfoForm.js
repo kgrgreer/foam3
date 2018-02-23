@@ -57,7 +57,9 @@ foam.CLASS({
     { name: 'EmailLabel', message: 'Email *' },
     { name: 'PasswordLabel', message: 'Password *' },
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' }
   ],
 
   properties: [
@@ -113,6 +115,15 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.jobTitle = newValue;
+      },
+      validateObj: function(jobTitle) {
+        if ( ! jobTitle ) {
+          return this.JobTitleEmptyError;
+        }
+
+        if ( jobTitle.length > 35 ) {
+          return this.JobTitleLengthError;
+        }
       }
     },
     {
