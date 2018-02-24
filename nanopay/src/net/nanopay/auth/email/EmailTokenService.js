@@ -37,7 +37,6 @@ if (user.getType().equals("Personal")){
 String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
 email.sendEmailFromTemplate(user, message, template, args);
 user.setPortalAdminCreated(false);
-user.setInitialEmailedAmount("$0.00");
 user.setWelcomeEmailSent(true);
 userDAO.put(user);
 return true;
