@@ -12,6 +12,7 @@ import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.invoice.model.PaymentStatus;
+import foam.nanos.logger.Logger;
 import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
@@ -19,10 +20,11 @@ public class ScheduleInvoiceCron
   {
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
+    protected Logger logger;
 
     public void fetchInvoices() {
       try{
-        System.out.println("Finding scheduled Invoices...");
+        logger.log("Finding scheduled Invoices...");
         ListSink sink = (ListSink) invoiceDAO_.where(
           AND(
             EQ(Invoice.PAYMENT_ID, 0),
@@ -32,6 +34,7 @@ public class ScheduleInvoiceCron
         ).select(new ListSink());
           List invoiceList = sink.getData();
           if ( invoiceList.size() < 1 ) {
+            logger.log("No scheduled invoices found for today. ", new Date());
             System.out.println("No scheduled invoices found for today.");
             return;
           }
@@ -43,14 +46,13 @@ public class ScheduleInvoiceCron
 
               //Creates transaction only based on invoices scheduled for today.
               if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
-                System.out.println("Scheduled Invoice for today found.");
                 sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
               e.printStackTrace();
             }
           }
-          System.out.println("Cron Completed.");
+          logger.log("Cron Completed");
         } catch ( Throwable e ) {
           e.printStackTrace();
           throw new RuntimeException(e);
@@ -58,7 +60,7 @@ public class ScheduleInvoiceCron
     }
 
     public void sendValueTransaction(Invoice invoice){
-      System.out.println("Starting payment process...");
+      logger.log("Starting payment process...");
       try {
         Transaction transaction = new Transaction();
 
@@ -78,7 +80,7 @@ public class ScheduleInvoiceCron
           invoice.setPaymentId(completedTransaction.getId());
           invoice.setPaymentDate((Date) new Date());
           invoiceDAO_.put(invoice);
-          System.out.println("Schedule Transaction Completed.");
+          logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
           e.printStackTrace();
           throw new RuntimeException(e);
@@ -89,11 +91,12 @@ public class ScheduleInvoiceCron
       }
     }
 
-    public void start() {
-      System.out.println("Scheduled payments on Invoice Cron Starting...");
+    public void start() {      
+      logger = (Logger) x.get("logger");
+      logger.log("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
-      System.out.println("DAO's fetched...");
+      logger.log("DAO's fetched...");
       fetchInvoices();
     }
   }
