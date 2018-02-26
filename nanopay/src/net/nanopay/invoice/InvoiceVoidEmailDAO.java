@@ -35,17 +35,17 @@ public class InvoiceVoidEmailDAO
       return getDelegate().put_(x, obj);
 
     invoice = (Invoice) super.put_(x , obj);
-    AppConfig          config = (AppConfig) x.get("appConfig");
-    User                payer = (User) userDAO_.find_(x, invoice.getPayerId() );
-    EmailService        email = (EmailService) x.get("email");
-    EmailMessage      message = new EmailMessage();
+    AppConfig       config    = (AppConfig) x.get("appConfig");
+    User            payer     = (User) userDAO_.find_(x, invoice.getPayerId() );
+    EmailService    email     = (EmailService) x.get("email");
+    EmailMessage    message   = new EmailMessage();
     NumberFormat    formatter = NumberFormat.getCurrencyInstance();
 
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("account", invoice.getId());
-    args.put("amount", formatter.format(invoice.getAmount()/100.00));
-    args.put("link", config.getUrl());
+    args.put("amount",  formatter.format(invoice.getAmount()/100.00));
+    args.put("link",    config.getUrl());
 
     try{
       email.sendEmailFromTemplate(payer, message, "voidInvoice", args);

@@ -39,21 +39,21 @@ public class PaidTransactionDAO
       return transaction;
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    AppConfig       config = (AppConfig) x.get("appConfig");
-    User              user = (User) userDAO_.find_(x, transaction.getPayeeId());
-    User            sender = (User) userDAO_.find_(x, transaction.getPayerId());
-    EmailService     email = (EmailService) x.get("email");
-    EmailMessage   message = new EmailMessage();
+    AppConfig    config    = (AppConfig) x.get("appConfig");
+    User         user      = (User) userDAO_.find_(x, transaction.getPayeeId());
+    User         sender    = (User) userDAO_.find_(x, transaction.getPayerId());
+    EmailService email     = (EmailService) x.get("email");
+    EmailMessage message   = new EmailMessage();
 
     message.setTo(new String[]{user.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
 
     // Loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount()/100.00));
+    args.put("amount",    formatter.format(transaction.getAmount()/100.00));
     args.put("fromEmail", sender.getEmail());
-    args.put("fromName", sender.getFirstName());
-    args.put("account" , transaction.getInvoiceId());
-    args.put("link", config.getUrl());
+    args.put("fromName",  sender.getFirstName());
+    args.put("account" ,  transaction.getInvoiceId());
+    args.put("link",      config.getUrl());
 
     try {
       email.sendEmailFromTemplate(user, message, "invoice-paid", args);

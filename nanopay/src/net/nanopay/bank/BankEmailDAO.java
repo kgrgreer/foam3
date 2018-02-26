@@ -36,12 +36,12 @@ public class BankEmailDAO
     account = (BankAccount) super.put_(x, obj);
     EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
-    AppConfig     config = (AppConfig) x.get("appConfig");
+    AppConfig    config  = (AppConfig) x.get("appConfig");
     message.setTo(new String[]{user.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("name", user.getFirstName());
+    args.put("name",    user.getFirstName());
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-    args.put("link", config.getUrl());
+    args.put("link",    config.getUrl());
 
     try {
       email.sendEmailFromTemplate(user, message, "addBank", args);

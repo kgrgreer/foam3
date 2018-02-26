@@ -38,28 +38,28 @@ public class PaidTransferDAO
     if ( transaction.getPayeeId() == transaction.getPayerId() )
       return transaction;
 
-    User         user = (User) userDAO_.find_(x, transaction.getPayeeId());
-    User       sender = (User) userDAO_.find_(x, transaction.getPayerId());
+    User user   = (User) userDAO_.find_(x, transaction.getPayeeId());
+    User sender = (User) userDAO_.find_(x, transaction.getPayerId());
 
     // Returns if transaction is a payment from a CCShopper to a CCMerchant
     if (sender.getGroup().equals("ccShopper") && user.getGroup().equals("ccMerchant"))
       return transaction;
 
     // Sends an email when an transfer has gone through
-    AppConfig        config = (AppConfig) x.get("appConfig");
-    NumberFormat  formatter = NumberFormat.getCurrencyInstance();
-    EmailService      email = (EmailService) x.get("email");
-    EmailMessage    message = new EmailMessage();
+    AppConfig    config    = (AppConfig) x.get("appConfig");
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    EmailService email     = (EmailService) x.get("email");
+    EmailMessage message   = new EmailMessage();
 
     message.setTo(new String[]{user.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
 
     // Loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount()/100.00));
-    args.put("name", user.getFirstName());
-    args.put("email", user.getEmail());
-    args.put("link" , config.getUrl());
-    args.put("applink" , config.getAppLink());
+    args.put("amount",    formatter.format(transaction.getAmount()/100.00));
+    args.put("name",      user.getFirstName());
+    args.put("email",     user.getEmail());
+    args.put("link" ,     config.getUrl());
+    args.put("applink" ,  config.getAppLink());
     args.put("playlink" , config.getPlayLink());
 
     try {

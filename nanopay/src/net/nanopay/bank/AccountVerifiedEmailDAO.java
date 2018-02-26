@@ -43,9 +43,9 @@ public class AccountVerifiedEmailDAO
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x , obj);
-    EmailService           email = (EmailService) x.get("email");
-    EmailMessage         message = new EmailMessage();
-    HashMap<String, Object> args = new HashMap<>();
+    EmailService            email   = (EmailService) x.get("email");
+    EmailMessage            message = new EmailMessage();
+    HashMap<String, Object> args    = new HashMap<>();
 
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());

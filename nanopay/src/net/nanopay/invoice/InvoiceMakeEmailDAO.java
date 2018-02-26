@@ -30,8 +30,8 @@ public class InvoiceMakeEmailDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    User      payee = (User) userDAO_.find_(x, invoice.getPayeeId());
-    User      payer = (User) userDAO_.find_(x, invoice.getPayerId());
+    User    payee   = (User) userDAO_.find_(x, invoice.getPayeeId());
+    User    payer   = (User) userDAO_.find_(x, invoice.getPayerId());
 
     // Makes sure an email isn't sent if the creator is the payer of the invoice
     if ( payer.getId() == invoice.getCreatedBy() )
@@ -43,19 +43,19 @@ public class InvoiceMakeEmailDAO
 
     // Sends email after the invoice was put to the DAO
     invoice = (Invoice) super.put_(x,obj);
-    AppConfig            config = (AppConfig) x.get("appConfig");
-    EmailService          email = (EmailService) x.get("email");
-    EmailMessage        message = new EmailMessage();
-    NumberFormat      formatter = NumberFormat.getCurrencyInstance();
+    AppConfig        config     = (AppConfig) x.get("appConfig");
+    EmailService     email      = (EmailService) x.get("email");
+    EmailMessage     message    = new EmailMessage();
+    NumberFormat     formatter  = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("amount", formatter.format(invoice.getAmount()/100.00));
+    args.put("amount",    formatter.format(invoice.getAmount()/100.00));
     args.put("fromEmail", payee.getEmail());
-    args.put("fromName", payee.getFirstName());
-    args.put("date", dateFormat.format(invoice.getDueDate()));
-    args.put("link", config.getUrl());
+    args.put("fromName",  payee.getFirstName());
+    args.put("date",      dateFormat.format(invoice.getDueDate()));
+    args.put("link",      config.getUrl());
 
     try {
       email.sendEmailFromTemplate(payer, message, "newInvoice", args);
