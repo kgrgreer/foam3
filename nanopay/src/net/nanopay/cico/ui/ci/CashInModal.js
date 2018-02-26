@@ -3,12 +3,22 @@ foam.CLASS({
   name: 'CashInModal',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [ 
     'net.nanopay.cico.ui.CicoView',
     'foam.u2.dialog.NotificationMessage' 
   ],
 
-  imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn', 'goToBankAccounts' ],
+  imports: [ 
+    'amount', 
+    'bankList', 
+    'closeDialog', 
+    'confirmCashIn', 
+    'goToBankAccounts'
+   ],
 
   documentation: 'Pop up modal for cashing In.',
 
@@ -134,9 +144,6 @@ foam.CLASS({
     })
   ],
 
-  properties: [
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
@@ -158,7 +165,7 @@ foam.CLASS({
             .add(this.GO_TO_BANK)
           .end()
         .end()
-      .end()
+      .end();
     }
   ],
 
