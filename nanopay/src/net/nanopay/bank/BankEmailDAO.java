@@ -24,15 +24,15 @@ public class BankEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+
     BankAccount account = (BankAccount) obj;
     User        user    = (User) userDAO_.find_(x, account.getOwner());
 
-    //Don't send an email if the account already exists
+    // Don't send an email if the account already exists
     if ( find(account.getId()) != null )
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x, obj);
-
     EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 

@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.text.NumberFormat;
@@ -25,28 +26,28 @@ public class PaidTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
 
-    //Sets the decorator to run on the return phase of the DAO call
+    // Sets the decorator to run on the return phase of the DAO call
     Transaction transaction = (Transaction) super.put_(x, obj);
 
-    //Returns if transaction is a transfer
-    if (transaction.getInvoiceId() == 0) {
+    // Returns if transaction is a transfer
+    if ( transaction.getInvoiceId() == 0 )
       return transaction;
-    }
 
-    //Returns if transaction is a cico transaction
-    if ( transaction.getPayeeId() == transaction.getPayerId() ) {
+    // Returns if transaction is a cico transaction
+    if ( transaction.getPayeeId() == transaction.getPayerId() )
       return transaction;
-    }
+
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    User user = (User) userDAO_.find_(x, transaction.getPayeeId());
-    User sender = (User) userDAO_.find_(x, transaction.getPayerId());
-    EmailService email = (EmailService) x.get("email");
-    EmailMessage message = new EmailMessage();
+    User              user = (User) userDAO_.find_(x, transaction.getPayeeId());
+    User            sender = (User) userDAO_.find_(x, transaction.getPayerId());
+    EmailService     email = (EmailService) x.get("email");
+    EmailMessage   message = new EmailMessage();
+
     message.setTo(new String[]{user.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
 
-    //loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount()/100));
+    // Loads variables that will be represented in the email received
+    args.put("amount", formatter.format(transaction.getAmount()));
     args.put("fromEmail", sender.getEmail());
     args.put("fromName", sender.getFirstName());
     args.put("number" , transaction.getInvoiceId());
@@ -54,7 +55,7 @@ public class PaidTransactionDAO
     try {
       email.sendEmailFromTemplate(user, message, "invoice-paid", args);
     } catch(Throwable t) {
-      t.printStackTrace();
+      ((Logger) x.get(Logger.class)).error("Error sending invoice paid email.", t);
     }
     return transaction;
   }

@@ -31,19 +31,16 @@ public class AccountVerifiedEmailDAO
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
     // Doesn't send email if the status of the account isn't verified
-    if ( ! account.getStatus().equals("Verified") ) {
+    if ( ! account.getStatus().equals("Verified") )
       return getDelegate().put_(x, obj);
-    }
 
     // Doesn't send email if account has been previously verified
-    if ( oldAccount.getStatus().equals(account.getStatus()) ) {
+    if ( oldAccount.getStatus().equals(account.getStatus()) )
       return getDelegate().put_(x, obj);
-    }
 
     account = (BankAccount) super.put_(x , obj);
-
-    EmailService            email = (EmailService) x.get("email");
-    EmailMessage            message = new EmailMessage();
+    EmailService           email = (EmailService) x.get("email");
+    EmailMessage         message = new EmailMessage();
     HashMap<String, Object> args = new HashMap<>();
 
     message.setTo(new String[]{owner.getEmail()});
