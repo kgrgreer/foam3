@@ -101,7 +101,7 @@ foam.CLASS({
           border-color: %SECONDARYCOLOR%;
           opacity: 0.9;
         }
-        ^ .net-nanopay-ui-ActionView-toggleDefaultButton {
+        ^ .net-nanopay-ui-ActionView-defaultButton {
           position: relative;
           bottom: 41;
           width: 136px;
@@ -114,7 +114,7 @@ foam.CLASS({
           outline: none;
           float: right;
         }
-        ^ .net-nanopay-ui-ActionView-toggleDefaultButton:hover {
+        ^ .net-nanopay-ui-ActionView-defaultButton:hover {
           background: %SECONDARYCOLOR%;
           border-color: %SECONDARYCOLOR%;
           opacity: 0.9;
@@ -171,27 +171,35 @@ foam.CLASS({
         .start().addClass('button-container')
           .add(this.DELETE_BUTTON)
           .add(this.VERIFY_BUTTON)
-          .add(this.TOGGLE_DEFAULT_BUTTON)
+          .add(this.DEFAULT_BUTTON)
         .end()
       .end();
     },
 
-    function setDefaultBank() {
+    function setNewDefaultBank() {
       var self = this;
-      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
-        if ( a.array.length == 0 ) return;
-        a.array[0].setAsDefault = false;
-        a.array[0].accountName = a.array[0].accountName.replace(' (Default)', '');
-        self.bankAccountDAO.put(a.array[0]);
-      });
-
       self.selectedAccount.setAsDefault = true;
       self.selectedAccount.accountName += ' (Default)';
       self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
         self.manageAccountNotification('Bank account successfully set as default.', '');
         self.closeDialog();
-      }).catch( function(error) {
-        self.manageAccountNotification(error.message, 'error');
+      });
+    },
+
+    function switchDefaultBank() {
+      var self = this;
+      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+        if ( a.array.length == 0 ) {
+          self.setNewDefaultBank();
+        } else {
+          a.array[0].setAsDefault = false;
+          a.array[0].accountName = a.array[0].accountName.replace(' (Default)', '');
+          self.bankAccountDAO.put(a.array[0]).then( function(a) {
+            self.setNewDefaultBank();
+          }).catch( function( error ) {
+            self.manageAccountNotification(error.message, 'error');
+          });
+        }
       });
     }
   ],
@@ -217,7 +225,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'toggleDefaultButton',
+      name: 'defaultButton',
       label: 'Set As Default',
       isAvailable: function() {
         var self = this;
@@ -225,7 +233,7 @@ foam.CLASS({
       },
       code: function(X) {
         if ( ! X.selectedAccount.setAsDefault ) {
-          this.setDefaultBank();
+          this.switchDefaultBank();
         } else {
           X.manageAccountNotification('Bank account already set as default.', 'error');
           X.closeDialog();
