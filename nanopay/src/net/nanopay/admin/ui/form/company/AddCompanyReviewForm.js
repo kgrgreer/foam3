@@ -21,20 +21,21 @@ foam.CLASS({
       color: #2cab70;
     }
     ^ .businessImage {
-      width: 53px;
-      height: 53px;
+      width: inherit;
+      height: inherit;
       margin-top: 10px;
       display: inline-block;
+      vertical-align: middle;
     }
     ^ .businessName {
       position: relative;
-      bottom: 20;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
       display: inline-block;
       margin-left: 25px;
+      vertical-align: middle;
     }
     ^ .boldLabel {
       font-size: 14px;
@@ -57,7 +58,7 @@ foam.CLASS({
       margin-left: 160px;
     }
   `,
-  
+
   messages: [
     { name: 'Step', message: 'Step 3: Please scroll down and review all the details of the business.' },
     { name: 'BusinessInfoLabel', message: 'Business Info' },
@@ -121,7 +122,7 @@ foam.CLASS({
               .start().addClass('businessImage')
                 .tag({
                   class: 'foam.nanos.auth.ProfilePictureView',
-                  data$: this.viewData.profilePicture$,
+                  data: this.viewData.profilePicture,
                   uploadHidden: true
                 })
               .end()
@@ -153,4 +154,4 @@ foam.CLASS({
         .end();
     }
   ]
-}); 
+});
