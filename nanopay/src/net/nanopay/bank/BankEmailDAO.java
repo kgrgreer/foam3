@@ -48,7 +48,6 @@ public class BankEmailDAO
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending bank account created email.", t);
     }
-
     return account;
   }
 }
