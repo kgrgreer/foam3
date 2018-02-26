@@ -52,3 +52,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"qrcode",                      "lazy"
 p({"class":"foam.nanos.boot.NSpec", "name":"liquiditySettingsDAO",        "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(x, net.nanopay.tx.model.LiquiditySettings.getOwnClassInfo(), \"liquiditySettings\"));", "client":"{\"of\":\"net.nanopay.tx.model.LiquiditySettings\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"blobStore",                   "lazy":true,  "serve":false, "service":{"class":"net.nanopay.blob.AmazonS3BlobStore","region":"","bucket":"","accessKeyId":"","secretKeyId":""}})
 p({"class":"foam.nanos.boot.NSpec", "name":"invoiceHistoryDAO",           "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new foam.dao.JDAO(x, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"invoiceHistory\"));","client":"{\"of\":\"foam.dao.history.HistoryRecord\"}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"tokenStorage",                "lazy":true,  "serve":false, "serviceClass":"net.nanopay.invoice.xero.TokenStorage"})
+p({"class":"foam.nanos.boot.NSpec", "name":"xero",                        "lazy":true,  "serve":false, "serviceClass":"net.nanopay.invoice.xero.XeroService"})
+p({"class":"foam.nanos.boot.NSpec", "name":"xeroComplete",                "lazy":true,  "serve":false, "serviceClass":"net.nanopay.invoice.xero.XeroComplete"})
+p({"class":"foam.nanos.boot.NSpec", "name":"xeroCallback",                "lazy":true,  "serve":false, "serviceClass":"net.nanopay.invoice.xero.XeroCallback"})

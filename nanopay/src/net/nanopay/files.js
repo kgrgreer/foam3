@@ -198,7 +198,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/modal/PayNowModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/ScheduleModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/RecordPaymentModal', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/modal/SingleResolutionModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/EmailModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalHeader', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/ConfirmCashInModal', flags: ['web'] },
