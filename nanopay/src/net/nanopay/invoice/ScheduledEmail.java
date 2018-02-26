@@ -2,18 +2,15 @@ package net.nanopay.invoice;
 
 import foam.core.*;
 import foam.dao.DAO;
+import foam.dao.ListSink;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
-import net.nanopay.invoice.model.Invoice;
-import static foam.mlang.MLang.*;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import foam.dao.ListSink;
-import net.nanopay.model.*;
-import net.nanopay.tx.model.Transaction;
-
-import java.text.NumberFormat;
 import java.util.*;
-import java.util.Currency;
+import net.nanopay.invoice.model.Invoice;
+import static foam.mlang.MLang.*;
+
 
 
 public class ScheduledEmail
@@ -27,9 +24,6 @@ public class ScheduledEmail
     today.setTime(new Date());
     startTime.setTimeInMillis(today.getTimeInMillis() + (1000*60*60*24) );
     endTime.setTimeInMillis(startTime.getTimeInMillis() + ((1000*60*60*24)-1) );
-    System.out.println("~~~~~~~~~~~~~~~~"+today.getTime().toString());
-    System.out.println("~~~~~~~~~~~~~~~~"+startTime.getTime().toString());
-    System.out.println("~~~~~~~~~~~~~~~~"+endTime.getTime().toString());
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     DAO userDAO = (DAO) x.get("userDAO");
 
@@ -41,15 +35,22 @@ public class ScheduledEmail
     );
     List<Invoice> invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
     EmailService email = (EmailService) x.get("email");
+    AppConfig config = (AppConfig) x.get("appConfig");
     EmailMessage message = new EmailMessage();
     HashMap<String, Object> args;
     User user;
+    User payee;
     for (Invoice invoice: invoicesList){
       args = new HashMap<>();
       user = (User) userDAO.find(invoice.getPayerId());
-      args.put("amount", invoice.getAmount());
+      payee = (User) userDAO.find(invoice.getPayeeId());
       args.put("account", invoice.getId());
-      email.sendEmailFromTemplate(user, message, "invoiceNotification", args);
+      args.put("amount", invoice.getAmount());
+      args.put("date", invoice.getPaymentDate());
+      args.put("link", config.getUrl());
+      args.put("name", user.getFirstName());
+      args.put("toEmail", payee.getEmail());
+      email.sendEmailFromTemplate(user, message, "schedule-paid", args);
     }
   }
 }
