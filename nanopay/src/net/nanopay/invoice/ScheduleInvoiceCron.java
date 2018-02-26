@@ -48,12 +48,12 @@ public class ScheduleInvoiceCron
                 sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
-              logger.error(this.getClass(), e.getMessage()););
+              logger.error(this.getClass(), e.getMessage());
             }
           }
           logger.log("Cron Completed");
         } catch ( Throwable e ) {
-          logger.error(this.getClass(), e.getMessage()););
+          logger.error(this.getClass(), e.getMessage());
           // e.printStackTrace();
           throw new RuntimeException(e);
         }
@@ -82,17 +82,17 @@ public class ScheduleInvoiceCron
           invoiceDAO_.put(invoice);
           logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
-          logger.error(this.getClass(), e.getMessage()););
+          logger.error(this.getClass(), e.getMessage());
           throw new RuntimeException(e);
         }
 
       } catch ( Throwable e ){
-        logger.error(this.getClass(), e.getMessage()););
+        logger.error(this.getClass(), e.getMessage());
       }
     }
 
     public void start() {      
-      logger = (Logger) x.get("logger");
+      logger = (Logger) getX().get("logger");
       logger.log("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
