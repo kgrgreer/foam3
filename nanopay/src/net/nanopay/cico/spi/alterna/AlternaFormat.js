@@ -41,7 +41,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'txnCode',
-      value: '450-Misc. Payments'
+      value: '729'
     },
     {
       class: 'String',
