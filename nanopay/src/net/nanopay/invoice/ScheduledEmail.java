@@ -24,8 +24,12 @@ public class ScheduledEmail
     today.setTime(new Date());
     startTime.setTimeInMillis(today.getTimeInMillis() + (1000*60*60*24) );
     endTime.setTimeInMillis(startTime.getTimeInMillis() + ((1000*60*60*24)-1) );
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO userDAO = (DAO) x.get("userDAO");
+    DAO   invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO      userDAO = (DAO) x.get("userDAO");
+    System.out.println("HIT 1");
+    System.out.println(today.getTime());
+    System.out.println(startTime.getTime());
+    System.out.println(endTime.getTime());
 
     invoiceDAO = invoiceDAO.where(
       AND(
@@ -34,12 +38,13 @@ public class ScheduledEmail
       )
     );
     List<Invoice> invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
-    EmailService email = (EmailService) x.get("email");
-    AppConfig config = (AppConfig) x.get("appConfig");
-    EmailMessage message = new EmailMessage();
+    EmailService         email = (EmailService) x.get("email");
+    AppConfig           config = (AppConfig) x.get("appConfig");
+    EmailMessage       message = new EmailMessage();
     HashMap<String, Object> args;
     User user;
     User payee;
+    System.out.println(invoicesList.size());
     for (Invoice invoice: invoicesList){
       args = new HashMap<>();
       user = (User) userDAO.find(invoice.getPayerId());
@@ -50,6 +55,7 @@ public class ScheduledEmail
       args.put("link", config.getUrl());
       args.put("name", user.getFirstName());
       args.put("toEmail", payee.getEmail());
+      System.out.println("Sent");
       email.sendEmailFromTemplate(user, message, "schedule-paid", args);
     }
   }
