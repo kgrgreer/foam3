@@ -19,12 +19,12 @@ public class ScheduledEmail
   implements ContextAgent {
 
   public void execute(X x) {
-    Calendar     today = Calendar.getInstance();
-    Calendar startTime = Calendar.getInstance();
-    Calendar   endTime = Calendar.getInstance();
-    Calendar   dueDate = Calendar.getInstance();
-    DAO     invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO        userDAO = (DAO) x.get("userDAO");
+    Calendar today      = Calendar.getInstance();
+    Calendar startTime  = Calendar.getInstance();
+    Calendar endTime    = Calendar.getInstance();
+    Calendar dueDate    = Calendar.getInstance();
+    DAO      invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO      userDAO    = (DAO) x.get("userDAO");
 
     // Get todays date and captures the time period of tomorrow.
     today.setTime(new Date());
@@ -38,16 +38,16 @@ public class ScheduledEmail
         LTE(Invoice.PAYMENT_DATE,endTime.getTime())
       )
     );
-    List<Invoice> invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
-    EmailService           email = (EmailService) x.get("email");
-    AppConfig             config = (AppConfig) x.get("appConfig");
-    NumberFormat       formatter = NumberFormat.getCurrencyInstance();
-    SimpleDateFormat  dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+    List<Invoice>    invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
+    EmailService     email        = (EmailService) x.get("email");
+    AppConfig        config       = (AppConfig) x.get("appConfig");
+    NumberFormat     formatter    = NumberFormat.getCurrencyInstance();
+    SimpleDateFormat dateFormat   = new SimpleDateFormat("dd-MMM-YYYY");
 
-    EmailMessage       message;
+    EmailMessage            message;
     HashMap<String, Object> args;
-    User user;
-    User payee;
+    User                    user;
+    User                    payee;
 
     // Goes to each invoice and sends the payer an email about the payment coming
     for (Invoice invoice: invoicesList){
