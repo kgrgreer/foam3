@@ -58,10 +58,10 @@ public class ScheduledEmail
       message.setTo(new String[]{user.getEmail()});
       dueDate.setTime(invoice.getPaymentDate());
       args.put("account", invoice.getId());
-      args.put("amount", formatter.format(invoice.getAmount()/100.00));
-      args.put("date", dateFormat.format(invoice.getPaymentDate()));
-      args.put("link", config.getUrl());
-      args.put("name", user.getFirstName());
+      args.put("amount",  formatter.format(invoice.getAmount()/100.00));
+      args.put("date",    dateFormat.format(invoice.getPaymentDate()));
+      args.put("link",    config.getUrl());
+      args.put("name",    user.getFirstName());
       args.put("toEmail", payee.getEmail());
       email.sendEmailFromTemplate(user, message, "schedule-paid", args);
     }
