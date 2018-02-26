@@ -224,7 +224,9 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .tag({ class: 'net.nanopay.settings.business.BusinessHoursView' })
+        .callIf( this.user.type == 'Merchant', function() {
+          this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' })
+        }) 
       .end()
     }
   ],
