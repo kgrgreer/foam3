@@ -105,21 +105,20 @@ public class BankAccountVerificationService
     long payerId = transaction.getPayerId();
     User payee = (User) userDAO.find(transaction.getPayeeId());
     long total = transaction.getTotal();
-    long invoiceId = transaction.getInvoiceId();
     payee.setX(getX());
-    Transaction t = new Transaction();
 
-    if (transaction.getBankAccountId() == null){
-      BankAccount bankAccountPayee = (BankAccount) bankAccountDAO.find(payee.getId());
-      t.setBankAccountId(bankAccountPayee.getId());
-    } else {
-      t.setBankAccountId(transaction.getBankAccountId());
-    }
+    Sink sinkBank = new ListSink();
+    sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
+
+    List dataBank = ((ListSink) sinkBank).getData();
+    BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
 
     // Cashout invoice payee
+    Transaction t = new Transaction();
     t.setPayeeId(payeeId);
     t.setPayerId(payeeId);
-    t.setInvoiceId(invoiceId);
+    t.setBankAccountId(bankAccountPayee.getId());
+    t.setInvoiceId(0);
     t.setCicoStatus(TransactionStatus.NEW);
     t.setType(TransactionType.CASHOUT);
     t.setAmount(total);
@@ -136,3 +135,4 @@ public class BankAccountVerificationService
     bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
     userDAO = (DAO) getX().get("localUserDAO");
   }
+}
