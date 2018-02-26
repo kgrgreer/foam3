@@ -38,9 +38,11 @@ public class ScheduledEmail
       )
     );
     List<Invoice> invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
-    EmailService         email = (EmailService) x.get("email");
-    AppConfig           config = (AppConfig) x.get("appConfig");
-    NumberFormat     formatter = NumberFormat.getCurrencyInstance();
+    EmailService           email = (EmailService) x.get("email");
+    AppConfig             config = (AppConfig) x.get("appConfig");
+    NumberFormat       formatter = NumberFormat.getCurrencyInstance();
+    SimpleDateFormat  dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+
     EmailMessage       message;
     HashMap<String, Object> args;
     User user;
@@ -52,7 +54,6 @@ public class ScheduledEmail
       payee   = (User) userDAO.find(invoice.getPayeeId());
       message.setTo(new String[]{user.getEmail()});
       dueDate.setTime(invoice.getPaymentDate());
-      SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
       args.put("account", invoice.getId());
       args.put("amount", formatter.format(invoice.getAmount()/100.00));
       args.put("date", dateFormat.format(invoice.getPaymentDate()));
