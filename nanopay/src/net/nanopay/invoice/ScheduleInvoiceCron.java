@@ -35,7 +35,6 @@ public class ScheduleInvoiceCron
           List invoiceList = sink.getData();
           if ( invoiceList.size() < 1 ) {
             logger.log("No scheduled invoices found for today. ", new Date());
-            System.out.println("No scheduled invoices found for today.");
             return;
           }
           for ( int i = 0; i < invoiceList.size(); i++ ) {
@@ -49,12 +48,13 @@ public class ScheduleInvoiceCron
                 sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
-              e.printStackTrace();
+              logger.error(this.getClass(), e.getMessage()););
             }
           }
           logger.log("Cron Completed");
         } catch ( Throwable e ) {
-          e.printStackTrace();
+          logger.error(this.getClass(), e.getMessage()););
+          // e.printStackTrace();
           throw new RuntimeException(e);
         }
     }
@@ -82,12 +82,12 @@ public class ScheduleInvoiceCron
           invoiceDAO_.put(invoice);
           logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
-          e.printStackTrace();
+          logger.error(this.getClass(), e.getMessage()););
           throw new RuntimeException(e);
         }
 
       } catch ( Throwable e ){
-        e.printStackTrace();
+        logger.error(this.getClass(), e.getMessage()););
       }
     }
 
