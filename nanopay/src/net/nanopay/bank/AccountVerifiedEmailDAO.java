@@ -49,6 +49,7 @@ public class AccountVerifiedEmailDAO
 
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());
+    args.put("name",    owner.getFirstName());
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try {

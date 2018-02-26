@@ -50,6 +50,7 @@ public class PaidTransactionDAO
 
     // Loads variables that will be represented in the email received
     args.put("amount",    formatter.format(transaction.getAmount()/100.00));
+    args.put("name",      user.getFirstName());
     args.put("fromEmail", sender.getEmail());
     args.put("fromName",  sender.getFirstName());
     args.put("account" ,  transaction.getInvoiceId());
