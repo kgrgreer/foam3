@@ -103,9 +103,9 @@ public class LiquidityTransactionDAO
 
     if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
 
-      if ( payerAccount.getBalance() > payerMaxBalance ) {
+      if ( payerAccount.getBalance() - total > payerMaxBalance ) {
         if ( checkCashOutStatus(payerLiquiditySetting) ) {
-          addCashOutTransaction(payerId, payerAccount.getBalance() - payerMaxBalance, x);
+          addCashOutTransaction(payerId, payerAccount.getBalance() - total - payerMaxBalance, x);
         }
       }
     }
