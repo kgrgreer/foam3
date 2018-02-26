@@ -166,7 +166,7 @@ foam.CLASS({
           .end()
         .end()
       .end();
-    },
+    }
   ],
 
   messages: [
