@@ -25,9 +25,9 @@ public class PaidTransferDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+
     //Sets the decorator to run on the return phase of the DAO call
     Transaction transaction = (Transaction) super.put_(x, obj);
-
 
     //Returns if transaction is an invoice
     if (transaction.getInvoiceId() != 0) {
@@ -50,7 +50,6 @@ public class PaidTransferDAO
     //Sends an email when an transfer has gone through
     AppConfig config = (AppConfig) x.get("appConfig");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-
     EmailService email = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{user.getEmail()});

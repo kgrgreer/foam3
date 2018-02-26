@@ -57,7 +57,7 @@ foam.CLASS({
           width: 962px;
           height: 40px;
           background: white;
-          padding: 10px 0 20px 0;
+          padding: 10px 0 10px 0;
           margin: 0;
         }
         ^ p{
@@ -76,7 +76,7 @@ foam.CLASS({
           width: 20px;
           height: 20px;
           float: left;
-          padding: 10px 0 0 20px;
+          padding: 10px 0 0 10px;
         }
         ^ .table-attachment img {
           width: 20px;

@@ -168,7 +168,6 @@ foam.CLASS({
             website: merchantInfo.website,
             businessTypeId: merchantInfo.businessType,
             businessSectorId: merchantInfo.businessSector,
-            initialEmailedAmount: self.formatCurrency(merchantInfo.amount/100),
             portalAdminCreated: true
           });
 
