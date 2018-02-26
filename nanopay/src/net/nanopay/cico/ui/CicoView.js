@@ -230,7 +230,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.setDefaultBank();
+      this.getDefaultBank();
 
       this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
@@ -309,7 +309,7 @@ foam.CLASS({
       this.amount = 0;
     },
 
-    function setDefaultBank() {
+    function getDefaultBank() {
       var self = this;
       self.userBankAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
         if( a.array.length == 0 ) return;

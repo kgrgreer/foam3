@@ -174,6 +174,25 @@ foam.CLASS({
           .add(this.TOGGLE_DEFAULT_BUTTON)
         .end()
       .end();
+    },
+
+    function setDefaultBank() {
+      var self = this;
+      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+        if ( a.array.length == 0 ) return;
+        a.array[0].setAsDefault = false;
+        a.array[0].accountName = a.array[0].accountName.replace(' (Default)', '');
+        self.bankAccountDAO.put(a.array[0]);
+      });
+
+      self.selectedAccount.setAsDefault = true;
+      self.selectedAccount.accountName += ' (Default)';
+      self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
+        self.manageAccountNotification('Bank account successfully set as default.', '');
+        self.closeDialog();
+      }).catch( function(error) {
+        self.manageAccountNotification(error.message, 'error');
+      });
     }
   ],
 
@@ -205,27 +224,8 @@ foam.CLASS({
         return self.selectedAccount.status == "Verified";
       },
       code: function(X) {
-        var self = this;
         if ( ! X.selectedAccount.setAsDefault ) {
-          self.userVerifiedAccounts.select().then( function(a) {
-            a.array.forEach( function(t) {
-              if ( t.setAsDefault ) {
-                t.setAsDefault = false;
-              } 
-              if (t.accountName.includes(' (Default)')) {
-                t.accountName = t.accountName.replace(' (Default)', '');
-              }
-              X.bankAccountDAO.put(t);
-            });
-            X.selectedAccount.setAsDefault = true;
-            X.selectedAccount.accountName += ' (Default)';
-            X.bankAccountDAO.put(X.selectedAccount).then(function(response) {
-              X.manageAccountNotification('Bank account successfully set as default.', '');
-              X.closeDialog();
-            });
-          }).catch(function(error) {
-            X.manageAccountNotification(error.message, 'error');
-          });
+          this.setDefaultBank();
         } else {
           X.manageAccountNotification('Bank account already set as default.', 'error');
           X.closeDialog();
