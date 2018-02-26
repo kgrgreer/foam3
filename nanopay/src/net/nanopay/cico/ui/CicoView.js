@@ -142,21 +142,19 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-create {
       visibility: hidden;
     }
-    ^ .foam-u2-view-TableView-row:hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
     ^ .foam-u2-md-OverlayDropdown {
       width: 175px;
     }
-    ^ thead > tr > th{
-      background: %TABLECOLOR%;
-    }
-
     ^ .loadingSpinner {
       position: absolute;
       top: 11px;
       left: 95px;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
     }
   `,
 
@@ -362,8 +360,7 @@ foam.CLASS({
         function initE() {
           this
             .start({
-              class: 'foam.u2.view.TableView',
-              editColumnsEnabled: true,
+              class: 'foam.u2.view.ScrollTableView',
               data: this.cicoTransactions,
               columns: [
                 'id', 'date', 'amount', 'type'
