@@ -7,7 +7,6 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,22 +14,24 @@ import net.nanopay.invoice.model.Invoice;
 import static foam.mlang.MLang.*;
 
 
-
+// Creates an email for all scheduled invoices getting paid the next day
 public class ScheduledEmail
   implements ContextAgent {
-  Calendar today = Calendar.getInstance();
-  Calendar startTime = Calendar.getInstance();
-  Calendar endTime = Calendar.getInstance();
-  Calendar dueDate = Calendar.getInstance();
 
   public void execute(X x) {
+    Calendar     today = Calendar.getInstance();
+    Calendar startTime = Calendar.getInstance();
+    Calendar   endTime = Calendar.getInstance();
+    Calendar   dueDate = Calendar.getInstance();
+    DAO     invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO        userDAO = (DAO) x.get("userDAO");
 
+    // Get todays date and captures the time period of tomorrow.
     today.setTime(new Date());
     startTime.setTimeInMillis(today.getTimeInMillis() + (1000*60*60*24) );
     endTime.setTimeInMillis(startTime.getTimeInMillis() + ((1000*60*60*24)-1) );
-    DAO   invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO      userDAO = (DAO) x.get("userDAO");
 
+    // Grabs all invoices whose payment days are tomorrow
     invoiceDAO = invoiceDAO.where(
       AND(
         GTE(Invoice.PAYMENT_DATE,startTime.getTime()),
@@ -47,6 +48,8 @@ public class ScheduledEmail
     HashMap<String, Object> args;
     User user;
     User payee;
+
+    // Goes to each invoice and sends the payer an email about the payment coming
     for (Invoice invoice: invoicesList){
       args    = new HashMap<>();
       message = new EmailMessage();
