@@ -47,8 +47,7 @@ public class InvoiceVoidEmailDAO
     args.put("amount",  formatter.format(invoice.getAmount()/100.00));
     args.put("link",    config.getUrl());
     args.put("name",    payer.getFirstName());
-
-
+    
     try{
       email.sendEmailFromTemplate(payer, message, "voidInvoice", args);
     } catch(Throwable t) {
