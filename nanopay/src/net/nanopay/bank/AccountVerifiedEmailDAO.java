@@ -30,21 +30,22 @@ public class AccountVerifiedEmailDAO
     AppConfig   config     = (AppConfig) x.get("appConfig");
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
-    // Doesn't send email if the status of the account isn't verified
-    if ( ! account.getStatus().equals("Verified") ) {
+    // Doesn't send email if the account hasn't been made prior
+    if ( oldAccount == null )
       return getDelegate().put_(x, obj);
-    }
+
+    // Doesn't send email if the status of the account isn't verified
+    if ( ! account.getStatus().equals("Verified") )
+      return getDelegate().put_(x, obj);
 
     // Doesn't send email if account has been previously verified
-    if ( oldAccount.getStatus().equals(account.getStatus()) ) {
+    if ( oldAccount.getStatus().equals(account.getStatus()) )
       return getDelegate().put_(x, obj);
-    }
 
     account = (BankAccount) super.put_(x , obj);
-
-    EmailService            email = (EmailService) x.get("email");
+    EmailService            email   = (EmailService) x.get("email");
     EmailMessage            message = new EmailMessage();
-    HashMap<String, Object> args = new HashMap<>();
+    HashMap<String, Object> args    = new HashMap<>();
 
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());
@@ -55,7 +56,6 @@ public class AccountVerifiedEmailDAO
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }
-
     return account;
   }
 }
