@@ -37,12 +37,9 @@ public class PaidTransactionDAO
     if ( transaction.getPayeeId() == transaction.getPayerId() ) {
       return transaction;
     }
-
-    //Sends an email when an invoice is paid
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     User user = (User) userDAO_.find_(x, transaction.getPayeeId());
     User sender = (User) userDAO_.find_(x, transaction.getPayerId());
-
     EmailService email = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{user.getEmail()});

@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'BusinessProfileView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack', 'user' ],
+  imports: [
+    'stack',
+    'user'
+  ],
 
   documentation: 'View displaying business information',
 
@@ -169,7 +172,7 @@ foam.CLASS({
           .start().addClass('profileImgDiv')
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.user.profilePicture,
+              data$: this.user.profilePicture$,
               uploadHidden: true
             })
             .start().add(this.user.businessName).addClass('companyName').end()
