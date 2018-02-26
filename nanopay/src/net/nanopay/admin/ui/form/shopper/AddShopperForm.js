@@ -149,7 +149,6 @@ foam.CLASS({
             phone: shopperPhone,
             address: shopperAddress,
             password: shopperInfo.password,
-            initialEmailedAmount: self.formatCurrency(shopperInfo.amount/100),
             portalAdminCreated: true,
             profilePicture: shopperInfo.profilePicture
           });

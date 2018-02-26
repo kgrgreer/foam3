@@ -176,7 +176,12 @@ foam.CLASS({
     {
       name: 'userBankAccounts',
       factory: function() {
-        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+        return this.bankAccountDAO.where(
+          this.AND(
+            this.EQ(this.BankAccount.OWNER, this.user.id),
+            this.EQ(this.BankAccount.STATUS, "Verified")
+          )
+        );
       }
     },
     {
@@ -184,11 +189,11 @@ foam.CLASS({
       view: function(_, X) {
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
-          objToChoice: function(a){
+          dao: self.userBankAccounts,
+          objToChoice: function(a) {
             return [a.id, a.accountName];
           }
-        })
+        });
       }
     },
     {
@@ -225,6 +230,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.getDefaultBank();
+
       this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
       });
@@ -292,6 +299,14 @@ foam.CLASS({
 
     function resetCicoAmount() {
       this.amount = 0;
+    },
+
+    function getDefaultBank() {
+      var self = this;
+      self.userBankAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+        if( a.array.length == 0 ) return;
+        self.bankList = a.array[0].id;
+      });
     }
   ],
 

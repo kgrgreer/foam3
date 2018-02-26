@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Bank account information.',
 
-  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status', 'actionsMenu'],
 
   properties: [
     {
@@ -77,6 +77,11 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       value: 0
+    },
+    {
+      class: 'Boolean',
+      name: 'setAsDefault',
+      value: false
     }
   ],
 
