@@ -54,10 +54,12 @@ foam.CLASS({
     }
     ^ .labelDiv {
       margin-bottom: 30px;
+      margin-right: 20px;
     }
     ^ .inlineDiv {
       display: inline-block;
       margin-right: 80px;
+      vertical-align: top;
     }
     ^ .topInlineDiv {
       display: inline-block;
@@ -203,8 +205,6 @@ foam.CLASS({
                 .start().add('Website').addClass('labelTitle').end()
                 .start().add(this.user.website).addClass('labelContent').end()
               .end()
-            .end()
-            .start().addClass('topInlineDiv')
               .start().addClass('labelDiv')
                 .start().add('Address').addClass('labelTitle').end()
                 .startContext()
@@ -226,7 +226,7 @@ foam.CLASS({
         .end()
         .callIf( this.user.type == 'Merchant', function() {
           this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' })
-        }) 
+        })
       .end()
     }
   ],
