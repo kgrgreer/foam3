@@ -14,19 +14,15 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class BankAccountInvoiceDAO extends ProxyDAO {
+public class BankAccountCashInDAO extends ProxyDAO {
     protected DAO userDAO_;
-    protected DAO accountDAO_;
     protected DAO bankAccountDAO_;
-    protected DAO invoiceDAO_;
 
-    public BankAccountInvoiceDAO(X x, DAO delegate) {
+    public BankAccountCashInDAO(X x, DAO delegate) {
         setDelegate(delegate);
         setX(x);
         // initialize our DAO
         userDAO_ = (DAO) x.get("localUserDAO");
-        invoiceDAO_ = (DAO) x.get("invoiceDAO");
-        accountDAO_ = (DAO) x.get("localAccountDAO");
         bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
     }
 
@@ -37,11 +33,7 @@ public class BankAccountInvoiceDAO extends ProxyDAO {
         if ( txn.getPayeeId() == txn.getPayerId() ) {
             return super.put_(x, obj);
         }
-        Invoice invoice = (Invoice) invoiceDAO_.find(txn.getInvoiceId());
-        //invoice.getPaymentMethod();
-        Account payerAccount = (Account) accountDAO_.find(invoice.getPayerId());
-        long payerId = payerAccount.getId();
-        User payer = (User) userDAO_.find(payerId);
+        long payerId = txn.getPayerId();
         long amount = txn.getAmount();
         BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
         if ( bankAccount != null ) {
