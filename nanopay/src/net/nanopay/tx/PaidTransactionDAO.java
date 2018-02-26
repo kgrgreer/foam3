@@ -47,10 +47,10 @@ public class PaidTransactionDAO
     HashMap<String, Object> args = new HashMap<>();
 
     // Loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount()));
+    args.put("amount", formatter.format(transaction.getAmount()/100.00));
     args.put("fromEmail", sender.getEmail());
     args.put("fromName", sender.getFirstName());
-    args.put("number" , transaction.getInvoiceId());
+    args.put("account" , transaction.getInvoiceId());
 
     try {
       email.sendEmailFromTemplate(user, message, "invoice-paid", args);

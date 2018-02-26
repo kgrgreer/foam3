@@ -9,6 +9,8 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import net.nanopay.invoice.model.Invoice;
 import java.text.NumberFormat;
@@ -41,17 +43,18 @@ public class InvoiceMakeEmailDAO
 
     // Sends email after the invoice was put to the DAO
     invoice = (Invoice) super.put_(x,obj);
-    AppConfig          config = (AppConfig) x.get("appConfig");
-    EmailService        email = (EmailService) x.get("email");
-    EmailMessage      message = new EmailMessage();
-    NumberFormat    formatter = NumberFormat.getCurrencyInstance();
+    AppConfig            config = (AppConfig) x.get("appConfig");
+    EmailService          email = (EmailService) x.get("email");
+    EmailMessage        message = new EmailMessage();
+    NumberFormat      formatter = NumberFormat.getCurrencyInstance();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("amount", formatter.format(invoice.getAmount()));
+    args.put("amount", formatter.format(invoice.getAmount()/100.00));
     args.put("fromEmail", payee.getEmail());
     args.put("fromName", payee.getFirstName());
-    args.put("date", invoice.getDueDate());
+    args.put("date", dateFormat.format(invoice.getDueDate()));
     args.put("link", config.getUrl());
 
     try {

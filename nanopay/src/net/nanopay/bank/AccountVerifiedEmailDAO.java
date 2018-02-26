@@ -30,6 +30,10 @@ public class AccountVerifiedEmailDAO
     AppConfig   config     = (AppConfig) x.get("appConfig");
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
+    // Doesn't send email if the account hasn't been made prior
+    if ( oldAccount.equals(null) )
+      return getDelegate().put_(x, obj);
+
     // Doesn't send email if the status of the account isn't verified
     if ( ! account.getStatus().equals("Verified") )
       return getDelegate().put_(x, obj);

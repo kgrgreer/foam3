@@ -55,7 +55,7 @@ public class PaidTransferDAO
     HashMap<String, Object> args = new HashMap<>();
 
     // Loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount()));
+    args.put("amount", formatter.format(transaction.getAmount()/100.00));
     args.put("name", user.getFirstName());
     args.put("email", user.getEmail());
     args.put("link" , config.getUrl());

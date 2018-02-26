@@ -41,11 +41,10 @@ public class InvoiceVoidEmailDAO
     EmailMessage      message = new EmailMessage();
     NumberFormat    formatter = NumberFormat.getCurrencyInstance();
 
-
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("account", invoice.getId());
-    args.put("amount", formatter.format(invoice.getAmount()));
+    args.put("amount", formatter.format(invoice.getAmount()/100.00));
     args.put("link", config.getUrl());
 
     try{
