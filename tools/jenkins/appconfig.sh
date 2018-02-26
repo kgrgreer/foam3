@@ -21,6 +21,7 @@ elif [[ "${NAME}" = *"staging"* ]]; then
     MODE="STAGING"
 fi
 
+
 echo RELEASE=${RELEASE}
 echo NAME=${NAME}
 echo VERSION=${VERSION}
