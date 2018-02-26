@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.xero',
+  package: 'net.nanopay.invoice.xero',
   name: 'TokenStorage',
 
   properties:[

@@ -182,7 +182,7 @@ foam.CLASS({
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add(this.invoice.currencyType, ' $', (this.invoice.amount/100).toFixed(2)).end()
+              .start().addClass('value').add(this.invoice.currencyType, ' ', (this.invoice.amount/100).toFixed(2)).end()
             .end()
           .end()
           .start().addClass("choice")

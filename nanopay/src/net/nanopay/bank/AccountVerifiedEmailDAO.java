@@ -6,15 +6,13 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.model.Account;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.model.Transaction;
-import java.text.NumberFormat;
 import java.util.HashMap;
+import net.nanopay.model.BankAccount;
 
+// Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
   extends ProxyDAO
 {
@@ -27,28 +25,37 @@ public class AccountVerifiedEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    try{
-      BankAccount account = (BankAccount) obj;
-      User owner = (User) userDAO_.find_(x, account.getOwner());
-      AppConfig config = (AppConfig) x.get("appConfig");
-      BankAccount oldAccount = (BankAccount) find_(x, account.getId());
-      if (! account.getStatus().equals("Verified")){
-        return getDelegate().put_(x, obj);
-      }
-      if(oldAccount.getStatus().equals(account.getStatus())){
-        return getDelegate().put_(x, obj);
-      }
-      EmailService email = (EmailService) x.get("email");
-      EmailMessage message = new EmailMessage();
-      message.setTo(new String[]{owner.getEmail()});
-      HashMap<String, Object> args = new HashMap<>();
-      args.put("link", config.getUrl());
-      args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-      email.sendEmailFromTemplate(owner, message, "verifiedBank", args);
+    BankAccount account    = (BankAccount) obj;
+    User        owner      = (User) userDAO_.find_(x, account.getOwner());
+    AppConfig   config     = (AppConfig) x.get("appConfig");
+    BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
-    } catch(Throwable t) {
-      t.printStackTrace();
+    // Doesn't send email if the status of the account isn't verified
+    if ( ! account.getStatus().equals("Verified") ) {
+      return getDelegate().put_(x, obj);
     }
-    return getDelegate().put_(x, obj);
+
+    // Doesn't send email if account has been previously verified
+    if ( oldAccount.getStatus().equals(account.getStatus()) ) {
+      return getDelegate().put_(x, obj);
+    }
+
+    account = (BankAccount) super.put_(x , obj);
+
+    EmailService            email = (EmailService) x.get("email");
+    EmailMessage            message = new EmailMessage();
+    HashMap<String, Object> args = new HashMap<>();
+
+    message.setTo(new String[]{owner.getEmail()});
+    args.put("link",    config.getUrl());
+    args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+
+    try {
+      email.sendEmailFromTemplate(owner, message, "verifiedBank", args);
+    } catch(Throwable t) {
+      ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
+    }
+
+    return account;
   }
 }

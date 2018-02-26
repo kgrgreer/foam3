@@ -39,15 +39,15 @@ cp exportDriverRegistrys /opt/tomcat/bin/
 cp -n groups /opt/tomcat/bin/
 cp languages /opt/tomcat/bin/
 cp menus /opt/tomcat/bin/
-cp permissions /opt/tomcat/bin/
+cp -n permissions /opt/tomcat/bin/
 cp regions /opt/tomcat/bin/
-cp scripts /opt/tomcat/bin/
+cp -n scripts /opt/tomcat/bin/
 cp services /opt/tomcat/bin/
 cp tests /opt/tomcat/bin/
 cp transactionLimits /opt/tomcat/bin/
 cp -n users /opt/tomcat/bin/
 cp institutions /opt/tomcat/bin/
-cp spids /opt/tomcat/bin/
+cp -n spids /opt/tomcat/bin/
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2

@@ -16,14 +16,18 @@ clean() {
 # Clean top level build folder
 clean
 
-node tools/xsd/index.js net.nanopay.iso20022 pacs.002.001.09.xsd pacs.008.001.06.xsd pacs.028.001.01.xsd
+node tools/xsd/index.js net.nanopay.iso20022 \
+  pacs.002.001.09.xsd \
+  pacs.008.001.06.xsd \
+  pacs.028.001.01.xsd \
+  pain.007.001.07.xsd \
+  tsin.004.001.01.xsd
+
 node tools/xsd/index.js net.nanopay.fx.ascendantfx.model AFXLinkCustom.svc.xsd
 
 # For each project, grabs java code
 for d in *; do
-  if [ "$d" = 'admin-portal' ]  || [ "$d" = 'b2b' ]       || [ "$d" = 'foam2' ]   ||
-     [ "$d" = 'interac' ]       || [ "$d" = 'merchant' ]  || [ "$d" = 'nanopay' ]; then
-
+  if [ "$d" = 'foam2' ] || [ "$d" = 'interac' ] || [ "$d" = 'merchant' ] || [ "$d" = 'nanopay' ]; then
     cd $d
     clean
 

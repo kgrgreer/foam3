@@ -8,11 +8,12 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.tx.model.Transaction;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import net.nanopay.invoice.model.Invoice;
 
+
+//Sends an email when an invoice is made.
 public class InvoiceMakeEmailDAO
   extends ProxyDAO
 {
@@ -25,34 +26,39 @@ public class InvoiceMakeEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    try {
-      Invoice invoice = (Invoice) obj;
-      AppConfig config = (AppConfig) x.get("appConfig");
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-      User payee = (User) userDAO_.find_(x, invoice.getPayeeId());
-      User payer = (User) userDAO_.find_(x, invoice.getPayerId());
-      if ( find(invoice.getId()) != null )
-      {
-        return getDelegate().put_(x, obj);
-      }
-      if ( payer.getId() == invoice.getCreatedBy() )
-      {
-        return getDelegate().put_(x, obj);
-      }
-      EmailService email = (EmailService) x.get("email");
-      EmailMessage message = new EmailMessage();
-      message.setTo(new String[]{payer.getEmail()});
-      HashMap<String, Object> args = new HashMap<>();
-      args.put("amount", formatter.format(invoice.getAmount()));
-      args.put("fromEmail", payee.getEmail());
-      args.put("fromName", payee.getFirstName());
-      args.put("date", invoice.getDueDate());
-      args.put("link", config.getUrl());
-      email.sendEmailFromTemplate(payer, message, "newInvoice", args);
+    Invoice invoice = (Invoice) obj;
+    User payee = (User) userDAO_.find_(x, invoice.getPayeeId());
+    User payer = (User) userDAO_.find_(x, invoice.getPayerId());
 
+    //Makes sure an email isn't sent if the creator is the payer of the invoice
+    if ( payer.getId() == invoice.getCreatedBy() )
+    {
+      return getDelegate().put_(x, obj);
+    }
+
+    //Doesn't send invoice if one with the same id already exists
+    if ( find(invoice.getId()) != null )
+    {
+      return getDelegate().put_(x, obj);
+    }
+
+    //Sends email after the invoice was put to the DAO
+    invoice = (Invoice) super.put_(x,obj);
+    AppConfig config = (AppConfig) x.get("appConfig");
+    EmailService email = (EmailService) x.get("email");
+    EmailMessage message = new EmailMessage();
+    message.setTo(new String[]{payer.getEmail()});
+    HashMap<String, Object> args = new HashMap<>();
+    args.put("amount", invoice.getAmount());
+    args.put("fromEmail", payee.getEmail());
+    args.put("fromName", payee.getFirstName());
+    args.put("date", invoice.getDueDate());
+    args.put("link", config.getUrl());
+    try {
+      email.sendEmailFromTemplate(payer, message, "newInvoice", args);
     } catch(Throwable t) {
       t.printStackTrace();
     }
-    return getDelegate().put_(x, obj);
+    return invoice;
   }
 }

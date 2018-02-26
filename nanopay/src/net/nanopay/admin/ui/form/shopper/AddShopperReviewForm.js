@@ -84,7 +84,7 @@ foam.CLASS({
               .start().addClass('shopperImage')
                 .tag({
                   class: 'foam.nanos.auth.ProfilePictureView',
-                  data: this.viewData.profilePicture,
+                  data$: this.viewData.profilePicture$,
                   uploadHidden: true
                 })
               .end()
