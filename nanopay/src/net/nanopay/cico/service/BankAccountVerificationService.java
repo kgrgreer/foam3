@@ -136,4 +136,3 @@ public class BankAccountVerificationService
     bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
     userDAO = (DAO) getX().get("localUserDAO");
   }
-}
