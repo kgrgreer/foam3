@@ -6,7 +6,7 @@ foam.CLASS({
       javaCode:
 `try {
 DAO tokenDAO = (DAO) getX().get("tokenDAO");
-DAO userDAO = (DAO) getX().get("userDAO");
+DAO userDAO = (DAO) getX().get("localUserDAO");
 AppConfig appConfig = (AppConfig) getX().get("appConfig");
 Token token = new Token();
 token.setUserId(user.getId());
@@ -37,7 +37,6 @@ if (user.getType().equals("Personal")){
 String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
 email.sendEmailFromTemplate(user, message, template, args);
 user.setPortalAdminCreated(false);
-user.setInitialEmailedAmount("$0.00");
 user.setWelcomeEmailSent(true);
 userDAO.put(user);
 return true;

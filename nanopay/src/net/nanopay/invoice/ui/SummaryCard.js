@@ -110,7 +110,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Currency',
+      class: 'String',
       name: 'formattedAmount',
       expression: function(amount) { return this.formatCurrency(amount/100); }
     },

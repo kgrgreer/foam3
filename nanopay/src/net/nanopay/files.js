@@ -18,6 +18,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService'},
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -187,13 +188,16 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
 
+  // history
+  { name: 'net/nanopay/ui/history/InvoiceHistoryView', flags: [ 'web' ] },
+  { name: 'net/nanopay/ui/history/InvoiceHistoryItemView', flags: [ 'web' ] },
+
   // modal
   { name: 'net/nanopay/invoice/ui/modal/ApproveModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/DisputeModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/PayNowModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/ScheduleModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/RecordPaymentModal', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/modal/SingleResolutionModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/EmailModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalHeader', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/ConfirmCashInModal', flags: ['web'] },
