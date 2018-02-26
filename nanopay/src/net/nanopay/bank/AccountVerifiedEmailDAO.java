@@ -31,7 +31,7 @@ public class AccountVerifiedEmailDAO
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
     // Doesn't send email if the account hasn't been made prior
-    if ( oldAccount.equals(null) )
+    if ( oldAccount == null )
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if the status of the account isn't verified
@@ -56,7 +56,6 @@ public class AccountVerifiedEmailDAO
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }
-
     return account;
   }
 }

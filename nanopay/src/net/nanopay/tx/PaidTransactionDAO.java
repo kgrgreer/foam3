@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
@@ -38,6 +39,7 @@ public class PaidTransactionDAO
       return transaction;
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    AppConfig       config = (AppConfig) x.get("appConfig");
     User              user = (User) userDAO_.find_(x, transaction.getPayeeId());
     User            sender = (User) userDAO_.find_(x, transaction.getPayerId());
     EmailService     email = (EmailService) x.get("email");
@@ -51,6 +53,7 @@ public class PaidTransactionDAO
     args.put("fromEmail", sender.getEmail());
     args.put("fromName", sender.getFirstName());
     args.put("account" , transaction.getInvoiceId());
+    args.put("link", config.getUrl());
 
     try {
       email.sendEmailFromTemplate(user, message, "invoice-paid", args);

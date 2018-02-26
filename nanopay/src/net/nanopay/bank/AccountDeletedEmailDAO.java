@@ -41,7 +41,6 @@ public class AccountDeletedEmailDAO
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }
-
     return account;
   }
 }
