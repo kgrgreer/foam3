@@ -14,7 +14,7 @@ sed -i -e "s/files.js/files-v${VERSION}.js/g" nanopay/src/net/nanopay/index.html
 sed -i -e "s/files.js/files-v${VERSION}.js/g" nanopay/src/net/nanopay/connected-city.html
 
 # rename files.
-mv foam2/src/foam.js foam2/src/foam-v${VERSION}.js
-mv foam2/src/foam/nanos/nanos.js foam2/src/foam/nanos/nanos-v${VERSION}.js
-mv nanopay/src/net/nanopay/files.js nanopay/src/net/nanopay/files-v${VERSION}.js
-mv nanopay/src/net/nanopay/flinks/utils/files.js nanopay/src/net/nanopay/flinks/utils/files-v${VERSION}.js
+cp foam2/src/foam.js foam2/src/foam-v${VERSION}.js
+cp foam2/src/foam/nanos/nanos.js foam2/src/foam/nanos/nanos-v${VERSION}.js
+cp nanopay/src/net/nanopay/files.js nanopay/src/net/nanopay/files-v${VERSION}.js
+cp nanopay/src/net/nanopay/flinks/utils/files.js nanopay/src/net/nanopay/flinks/utils/files-v${VERSION}.js
