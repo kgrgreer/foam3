@@ -43,11 +43,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'initialEmailedAmount',
-      value: "$0.00"
-    },
-    {
       class: 'Boolean',
       name: 'portalAdminCreated',
       value: false,

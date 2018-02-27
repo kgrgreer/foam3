@@ -183,6 +183,10 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'Long',
+      name: 'accountId'
+    },
+    {
       class: 'String',
       name: 'status',
       transient: true,

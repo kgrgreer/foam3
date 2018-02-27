@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'ScheduleModal',
@@ -8,16 +7,19 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.model.BankAccount'
   ],
 
   implements: [
-    'net.nanopay.ui.modal.ModalStyling'
+    'net.nanopay.ui.modal.ModalStyling',
+    'foam.mlang.Expressions'
   ],
 
   imports: [
     'user',
-    'invoiceDAO'
+    'invoiceDAO',
+    'account'
   ],
 
   properties: [
@@ -39,6 +41,36 @@ foam.CLASS({
       name: 'note',
       view: 'foam.u2.tag.TextArea',
       value: ''
+    },
+    {
+      class: 'Boolean',
+      name: 'digitalCash',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'accountCheck',
+      value: false
+    },
+    {
+      name: 'accounts',
+      postSet: function(oldValue, newValue) {
+        var self = this;
+        this.user.bankAccounts.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
+          var account = a.array[0];
+        });
+      },
+      view: function(_,X) {
+        var expr = foam.mlang.Expressions.create();
+        return foam.u2.view.ChoiceView.create({
+          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
+          objToChoice: function(account) {
+            return [account.id, 'Account No. ' +
+                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
+                    ];
+          }
+        });
+      }
     }
   ],
 
@@ -56,13 +88,87 @@ foam.CLASS({
       margin-top: 10px;
       margin-bottom: 25px;
     }
+    ^ .foam-u2-tag-Select {
+      width: 320px;
+      height: 40px;
+      border-radius: 0;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding: 12px 20px;
+      padding-right: 35px;
+      border: solid 1px rgba(164, 179, 184, 0.5) !important;
+      background-color: white;
+      outline: none;
+      cursor: pointer;
+    }
+    ^ .foam-u2-tag-Select:disabled {
+      cursor: default;
+      background: white;
+    }
+    ^ .foam-u2-tag-Select:focus {
+      border: solid 1px #59A5D5;
+    }
+    ^ .dropdownContainer {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    ^ .caret {
+      position: relative;
+      pointer-events: none;
+    }
+    ^ .caret:before {
+      content: '';
+      position: absolute;
+      top: -23px;
+      left: 295px;
+      border-top: 7px solid #a4b3b8;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+    }
+    ^ .caret:after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      border-top: 0px solid #ffffff;
+      border-left: 0px solid transparent;
+      border-right: 0px solid transparent;
+    }
+    ^ .confirmationContainer {
+      margin-top: 18px;
+      width: 100%;
+    }
+    ^ input[type='checkbox'] {
+      display: inline-block;
+      vertical-align: top;
+      margin:0 ;
+      border: solid 1px rgba(164, 179, 184, 0.75);
+      cursor: pointer;
+    }
+    ^ input[type='checkbox']:checked {
+      background-color: black;
+    }
+    ^ .confirmationLabel {
+      margin-top: 0;
+      display: inline-block;
+      vertical-align: top;
+      width: 80%;
+      margin-left: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    ^ .choice {
+      margin: 30px;
+    }
   `,
   
   methods: [
     function initE(){
       this.SUPER();
       var self = this;
-      
+      this.accounts = null;
+
       this
       .tag(this.ModalHeader.create({
         title: 'Schedule'
@@ -76,9 +182,34 @@ foam.CLASS({
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add(this.invoice.currencyType, ' ', this.invoice.amount.toFixed(2)).end()
+              .start().addClass('value').add(this.invoice.currencyType, ' $', (this.invoice.amount/100).toFixed(2)).end()
             .end()
           .end()
+          .start().addClass("choice")
+            .start('div').addClass('confirmationContainer')
+              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
+              .on('click', function() {
+                self.accountCheck = ! self.accountCheck;
+                self.digitalCash = ! self.digitalCash;
+              })
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', (this.account.balance/100).toFixed(2))
+              .end()
+            .end()
+            .start('div').addClass('confirmationContainer')
+              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
+              .on('click', function() {
+                self.digitalCash = ! self.digitalCash;
+                self.accountCheck = ! self.accountCheck;
+              })
+              .start('p').addClass('confirmationLabel').add('Pay from account')
+              .end()
+            .end()
+            .start('div').addClass('dropdownContainer').show(this.accountCheck$)
+              .start(self.ACCOUNTS).end()
+              .start('div').addClass('caret').end()
+            .end()
+          .end()
+
           // .start().addClass('label').add("Payment Method").end()
           // .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Schedule a Date").end()
@@ -103,8 +234,12 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Cannot schedule a payment date for the past. Please try again.', type: 'error' }));
           return;
         }
+        if (this.accountCheck) this.invoice.accountId = this.accounts;
 
-        
+        if ( this.paymentDate ){
+          this.paymentDate = this.paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
+        }
+
         this.invoice.paymentDate = this.paymentDate;
         this.invoice.note = this.note;
 
@@ -114,4 +249,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

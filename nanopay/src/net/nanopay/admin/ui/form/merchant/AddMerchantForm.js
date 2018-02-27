@@ -7,7 +7,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Country',    
+    'foam.nanos.auth.Country',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
@@ -16,14 +16,14 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',    
+    'accountDAO',
     'email',
     'formatCurrency',
     'validateEmail',
     'validatePostalCode',
     'validatePhone',
     'stack',
-    'transactionDAO',    
+    'transactionDAO',
     'user',
     'userDAO',
   ],
@@ -31,14 +31,14 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
-  
+
   methods: [
     function init() {
       this.views = [
         { parent: 'addMerchant', id: 'form-addMerchant-info',      label: 'Merchant Info',    view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantInfoForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-profile',   label: 'Business Profile', view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantProfileForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-sendMoney', label: 'Send Money',       view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantSendMoneyForm' } },
-        { parent: 'addMerchant', id: 'form-addMerchant-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantReviewForm' } },        
+        { parent: 'addMerchant', id: 'form-addMerchant-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantReviewForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-done',      label: 'Done',             view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        if ( this.position === 0 || this.position > 2 ) {
+        if ( this.position === 0 || this.position > 3 ) {
           X.stack.push({ class: 'net.nanopay.admin.ui.UserView' });
         } else {
           this.subStack.back();
@@ -66,7 +66,7 @@ foam.CLASS({
         // Info from form
         var merchantInfo = this.viewData;
 
-        if ( this.position == 0 ) { 
+        if ( this.position == 0 ) {
           // Merchant Info
 
           if ( ( merchantInfo.firstName == null || merchantInfo.firstName.trim() == '' ) ||
@@ -84,7 +84,7 @@ foam.CLASS({
 
           if ( !this.validatePhone(merchantInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
-            return; 
+            return;
           }
 
           self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -168,7 +168,6 @@ foam.CLASS({
             website: merchantInfo.website,
             businessTypeId: merchantInfo.businessType,
             businessSectorId: merchantInfo.businessSector,
-            initialEmailedAmount: self.formatCurrency(merchantInfo.amount/100),
             portalAdminCreated: true
           });
 

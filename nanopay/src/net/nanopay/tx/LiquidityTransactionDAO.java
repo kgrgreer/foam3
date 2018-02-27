@@ -41,8 +41,12 @@ public class LiquidityTransactionDAO
   }
 
   @Override
-  public FObject put_(X x, FObject obj) {
+  synchronized public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
+    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
+    if ( bankAccount != null ){
+      return getDelegate().put_(x, obj);
+    }
 
     // If It is a CICO Transaction, does not do anything.
     if ( txn.getPayeeId() == txn.getPayerId() ) {
@@ -103,17 +107,17 @@ public class LiquidityTransactionDAO
 
     if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
 
-      if ( payerAccount.getBalance() > payerMaxBalance ) {
+      if ( payerAccount.getBalance() - total > payerMaxBalance ) {
         if ( checkCashOutStatus(payerLiquiditySetting) ) {
-          addCashOutTransaction(payerId, payerAccount.getBalance() - payerMaxBalance, x);
+          addCashOutTransaction(payerId, payerAccount.getBalance() - total - payerMaxBalance, x);
         }
       }
     }
     // if the user's balance bigger than the liquidity maxbalance, do cash out
     if ( ifCheckRangePerTransaction(payeeLiquiditySetting) ) {
-      if ( payeeAccount.getBalance() > payeeMaxBalance ) {
+      if ( payeeAccount.getBalance() + total > payeeMaxBalance ) {
         if ( checkCashOutStatus(payeeLiquiditySetting) ) {
-          long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance;
+          long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance + total;
           addCashOutTransaction(payeeId, cashOutAmount, x);
         }
       }
