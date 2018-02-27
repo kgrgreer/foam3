@@ -52,6 +52,9 @@ foam.CLASS({
           cursor: pointer;
           background: %TABLEHOVERCOLOR%;
         }
+        ^ .foam-u2-view-TableView-row {
+          height: 40px;
+        }
         ^ .button-div{
           height: 40px;
         }
@@ -104,7 +107,7 @@ foam.CLASS({
           })
         .end()
         .start().enableClass('hide', this.hideSaleSummary$)        
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-payable.png'})
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-bankempty.svg'})
         .end()
     },
   ],
@@ -128,7 +131,7 @@ foam.CLASS({
 
           this
             .start({
-              class: 'foam.u2.view.TableView',
+              class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
               config: {
