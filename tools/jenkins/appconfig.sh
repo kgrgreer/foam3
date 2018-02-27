@@ -2,8 +2,8 @@
 # Set AppConfig values
 
 RELEASE=`echo ${GIT_BRANCH} | sed 's/.*\///'`
-NAME=`echo ${RELEAES} | sed 's/.*\///' | sed 's/-v.*//'`
-VERSION=`echo ${RELEASE} | sed 's/.*\///' | sed 's/.*-v//'`
+NAME=`echo ${RELEAES} | sed 's/-v.*//'`
+VERSION=`echo ${RELEASE} | sed 's/.*-v//'`
 MODE="DEVELOPMENT"
 YEAR=`date +%Y`
 COPYRIGHT="(c) Copyright ${YEAR} nanopay Corporation. All Rights Reserved"
@@ -20,7 +20,6 @@ elif [[ "${NAME}" = *"demo"* ]]; then
 elif [[ "${NAME}" = *"staging"* ]]; then
     MODE=1 #"STAGING"
 fi
-
 
 echo RELEASE=${RELEASE}
 echo NAME=${NAME}
