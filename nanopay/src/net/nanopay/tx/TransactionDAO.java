@@ -64,6 +64,10 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction     transaction     = (Transaction) obj;
+
+    // executeTransaction(x, transaction);
+    // TODO: delete all the rest of the code
+
     TransactionType transactionType = (TransactionType) transaction.getType();
     long            payeeId         = transaction.getPayeeId();
     long            payerId         = transaction.getPayerId();
@@ -171,8 +175,8 @@ public class TransactionDAO
         d += t.getAmount();
       }
     }
-    if ( c != d ) throw new RuntimeException("Debits and credits don't match.");
-    if ( c == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
+    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
   /** Lock each trasnfer's account then execute the transfers. **/
