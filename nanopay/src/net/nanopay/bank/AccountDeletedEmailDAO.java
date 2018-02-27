@@ -34,6 +34,7 @@ public class AccountDeletedEmailDAO
     message.setTo(new String[]{owner.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("link",    config.getUrl());
+    args.put("name",    owner.getFirstName());
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try{

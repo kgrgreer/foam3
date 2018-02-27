@@ -59,6 +59,9 @@ foam.CLASS({
           cursor: pointer;
           background: %TABLEHOVERCOLOR%;
         }
+        ^ .foam-u2-view-TableView-row {
+          height: 40px;
+        }
         ^ .button-div{
           height: 40px;
         }
@@ -127,7 +130,7 @@ foam.CLASS({
 
           this
             .start({
-              class: 'foam.u2.view.TableView',
+              class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
               config: {

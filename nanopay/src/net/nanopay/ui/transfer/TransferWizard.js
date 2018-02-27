@@ -364,7 +364,7 @@ foam.CLASS({
 
             self.add(self.NotificationMessage.create({
               type: 'error',
-              message: err.message + '. Unable to process payment...'
+              message: err.message + 'Unable to process payment.'
             }));
 
             if ( err ) console.log(err.message);

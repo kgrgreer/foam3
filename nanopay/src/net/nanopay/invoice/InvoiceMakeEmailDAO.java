@@ -52,6 +52,8 @@ public class InvoiceMakeEmailDAO
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("amount",    formatter.format(invoice.getAmount()/100.00));
+    args.put("account",   invoice.getId());
+    args.put("name",      payer.getFirstName());
     args.put("fromEmail", payee.getEmail());
     args.put("fromName",  payee.getFirstName());
     args.put("date",      dateFormat.format(invoice.getDueDate()));
