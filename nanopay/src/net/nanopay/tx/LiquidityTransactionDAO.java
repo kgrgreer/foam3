@@ -139,6 +139,9 @@ public class LiquidityTransactionDAO
     return originalTx;
   }
 
+  /*
+  Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
+   */
   public void addCICOTransaction(long userId, long amount, long bankAccountId, TransactionType transactionType, X
       x) throws
       RuntimeException {
@@ -155,6 +158,8 @@ public class LiquidityTransactionDAO
 
   public long getBankAccountID(LiquiditySettings liquiditySettings, long userID) {
     BankAccount bankAccount;
+    //if user ID == 0, that means this user don't set default bank account. If we want to cash in we need to find on
+    // bank account which is enable for this user
     if ( liquiditySettings.getId() == 0 ) {
       bankAccount = (BankAccount) bankAccountDAO_.find(
           AND(
@@ -169,6 +174,7 @@ public class LiquidityTransactionDAO
               EQ(BankAccount.STATUS, "Verified")
           ));
     }
+    //if bank account is null we will return -1, because our bank account id will never be negative
     if ( bankAccount == null )
       return - 1;
 
@@ -176,12 +182,14 @@ public class LiquidityTransactionDAO
   }
 
   public boolean checkBankAccountAvailable(long bankAccountID) {
+    // if bank account is -1, that means this bank account is not available
     if ( bankAccountID == - 1 )
       return false;
     return true;
   }
 
   public LiquiditySettings getLiquiditySettings(User user) {
+    // if user don't have liquidity settings we return the default settings of user's group
     return liquiditySettingsDAO_.find(user.getId()) == null ? ( (Group) groupDAO_.find(user.getGroup()) )
         .getLiquiditySettings() : (LiquiditySettings) liquiditySettingsDAO_.find(user.getId());
   }
