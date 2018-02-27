@@ -17,7 +17,7 @@ public class RandomDepositBankAccountDAO
 
   public RandomDepositBankAccountDAO(X x, DAO delegate) {
     super(x, delegate);
-    transactionDAO_ = (DAO) x.get("localTransactionDAO");
+    transactionDAO_ = (DAO) x.get("standardCICOTransactionDAO");
   }
 
   @Override
