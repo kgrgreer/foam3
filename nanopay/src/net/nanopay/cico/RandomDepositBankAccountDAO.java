@@ -16,7 +16,8 @@ public class RandomDepositBankAccountDAO
   protected DAO transactionDAO_;
 
   public RandomDepositBankAccountDAO(X x, DAO delegate) {
-    super(x, delegate);
+    setX(x);
+    setDelegate(delegate);
     transactionDAO_ = (DAO) x.get("standardCICOTransactionDAO");
   }
 
