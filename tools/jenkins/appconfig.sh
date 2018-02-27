@@ -2,7 +2,7 @@
 # Set AppConfig values
 
 RELEASE=`echo ${GIT_BRANCH} | sed 's/.*\///'`
-NAME=`echo ${RELEAES} | sed 's/-v.*//'`
+NAME=`echo ${RELEASE} | sed 's/-v.*//'`
 VERSION=`echo ${RELEASE} | sed 's/.*-v//'`
 MODE="DEVELOPMENT"
 YEAR=`date +%Y`
