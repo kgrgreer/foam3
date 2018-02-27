@@ -50,21 +50,25 @@ foam.CLASS({
       width: 962px;
       margin: 0 auto;
     }
+    ^ .topContainer {
+      width: 100%;
+    }
     ^ .balanceBox {
       position: relative;
-      width: 330px;
-      height: 100px;
+      min-width: 330px;
+      max-width: calc(100% - 135px);
+      padding-bottom: 15px;
       border-radius: 2px;
       background-color: #ffffff;
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
       display: inline-block;
-      vertical-align: top;
+      vertical-align: middle;
     }
     ^ .sideBar {
       width: 6px;
-      height: 100px;
+      height: 100%;
       background-color: %SECONDARYCOLOR%;
-      float: left;
+      position: absolute;
     }
     ^ .balanceBoxTitle {
       color: #093649;
@@ -79,14 +83,17 @@ foam.CLASS({
       font-weight: 300;
       line-height: 1;
       letter-spacing: 0.5px;
+      overflow-wrap: break-word;
       text-align: left;
       color: #093649;
       margin-top: 27px;
       margin-left: 44px;
+      margin-right: 44px;
     }
     ^ .inlineDiv {
       display: inline-block;
       width: 135px;
+      vertical-align: middle;
     }
 
     ^ .net-nanopay-ui-ActionView-cashInBtn {
@@ -142,21 +149,19 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-create {
       visibility: hidden;
     }
-    ^ .foam-u2-view-TableView-row:hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
     ^ .foam-u2-md-OverlayDropdown {
       width: 175px;
     }
-    ^ thead > tr > th{
-      background: %TABLECOLOR%;
-    }
-
     ^ .loadingSpinner {
       position: absolute;
       top: 11px;
       left: 95px;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
     }
   `,
 
@@ -242,14 +247,16 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('div').addClass('balanceBox')
-            .start('div').addClass('sideBar').end()
-            .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add(this.formattedBalance$).addClass('balance').end()
-          .end()
-          .start('div').addClass('inlineDiv')
-            .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
-            .start().add(this.CASH_OUT_BUTTON).end()
+          .start('div').addClass('topContainer')
+            .start('div').addClass('balanceBox')
+              .start('div').addClass('sideBar').end()
+              .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
+              .start().add(this.formattedBalance$).addClass('balance').end()
+            .end()
+            .start('div').addClass('inlineDiv')
+              .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
+              .start().add(this.CASH_OUT_BUTTON).end()
+            .end()
           .end()
           .start()
             .tag({
@@ -362,8 +369,7 @@ foam.CLASS({
         function initE() {
           this
             .start({
-              class: 'foam.u2.view.TableView',
-              editColumnsEnabled: true,
+              class: 'foam.u2.view.ScrollTableView',
               data: this.cicoTransactions,
               columns: [
                 'id', 'date', 'amount', 'type'

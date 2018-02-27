@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Form to review shopper information to make sure its correct',
 
   imports: [
-    'formatCurrency',        
+    'formatCurrency',
     'goBack',
     'goNext',
     'viewData'
@@ -55,7 +55,7 @@ foam.CLASS({
       margin-left: 160px;
     }
   `,
-  
+
   messages: [
     { name: 'Step', message: 'Step 2: Please review all the information details of the user.' },
     { name: 'ShopperInfoLabel', message: 'Shopper Info' },
@@ -84,7 +84,7 @@ foam.CLASS({
               .start().addClass('shopperImage')
                 .tag({
                   class: 'foam.nanos.auth.ProfilePictureView',
-                  data$: this.viewData.profilePicture$,
+                  data: this.viewData.profilePicture,
                   uploadHidden: true
                 })
               .end()
@@ -105,10 +105,10 @@ foam.CLASS({
               .start().add(this.viewData.addressLine).addClass('infoText').end()
               .start().add(this.viewData.city + ' ' + this.viewData.province).addClass('infoText').end()
             .end()
-            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()            
+            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()
             .start().addClass('inline')
               .start().add(this.AmountLabel).addClass('boldLabel').end()
-              .start().add(this.formatCurrency(this.viewData.amount/100)).addClass('infoText bottomMargin').end()              
+              .start().add(this.formatCurrency(this.viewData.amount/100)).addClass('infoText bottomMargin').end()
             .end()
           .end()
         .end();
