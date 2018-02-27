@@ -307,7 +307,7 @@ foam.CLASS({
         }
 
         if ( this.position == 2 ) {
-          X.stack.back();
+          X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
 
