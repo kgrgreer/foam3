@@ -10,15 +10,15 @@ COPYRIGHT="(c) Copyright ${YEAR} nanopay Corporation. All Rights Reserved"
 
 echo
 if [[ "${NAME}" = *"test"* ]]; then
-    MODE="TEST"
+    MODE=4 #"TEST"
 elif [[ "${NAME}" = *"prod"* ]]; then
-    MODE="PRODUCTION"
+    MODE=2 #"PRODUCTION"
 elif [[ "${NAME}" = *"integration"* ]]; then
-    MODE="DEMO"
+    MODE=3 #"DEMO"
 elif [[ "${NAME}" = *"demo"* ]]; then
-    MODE="DEMO"
+    MODE=3 #"DEMO"
 elif [[ "${NAME}" = *"staging"* ]]; then
-    MODE="STAGING"
+    MODE=1 #"STAGING"
 fi
 
 
