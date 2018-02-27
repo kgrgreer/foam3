@@ -9,7 +9,7 @@ foam.CLASS({
     'businessSectorDAO',
     'businessTypeDAO',
     'goBack',
-    'goNext', 
+    'goNext',
     'viewData',
   ],
 
@@ -118,7 +118,7 @@ foam.CLASS({
               .start().addClass('businessImage')
                 .tag({
                   class: 'foam.nanos.auth.ProfilePictureView',
-                  data$: this.viewData.profilePicture$,
+                  data: this.viewData.profilePicture,
                   uploadHidden: true
                 })
               .end()
@@ -143,13 +143,13 @@ foam.CLASS({
               .start().add(this.viewData.addressLine).addClass('infoText').end()
               .start().add(this.viewData.city + ' ' + this.viewData.province + ' ' + this.viewData.country).addClass('infoText').end()
             .end()
-            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()            
+            .start().add(this.SendMoneyLabel).addClass('greenLabel bottomMargin').end()
             .start().addClass('inline')
               .start().add(this.AmountLabel).addClass('boldLabel').end()
-              .start().add('$',(this.viewData.amount/100).toFixed(2)).addClass('infoText bottomMargin').end()              
+              .start().add('$',(this.viewData.amount/100).toFixed(2)).addClass('infoText bottomMargin').end()
             .end()
           .end()
         .end();
     }
   ]
-}); 
+});
