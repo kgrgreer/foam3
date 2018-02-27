@@ -31,8 +31,6 @@ public class BankAccountVerificationService
     implements BankAccountVerificationInterface
 {
   protected DAO bankAccountDAO;
-  protected DAO standardCICOTransactionDAO;
-  protected DAO userDAO;
 
   @Override
   public boolean verify(long bankAccountId, long randomDepositAmount)
@@ -96,43 +94,7 @@ public class BankAccountVerificationService
   }
 
   @Override
-  public boolean addCashout(FObject obj)
-      throws RuntimeException
-  {
-
-    Transaction transaction = (Transaction) obj;
-    long payeeId = transaction.getPayeeId();
-    long payerId = transaction.getPayerId();
-    User payee = (User) userDAO.find(transaction.getPayeeId());
-    long total = transaction.getTotal();
-    payee.setX(getX());
-
-    Sink sinkBank = new ListSink();
-    sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
-
-    List dataBank = ((ListSink) sinkBank).getData();
-    BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
-
-    // Cashout invoice payee
-    Transaction t = new Transaction();
-    t.setPayeeId(payeeId);
-    t.setPayerId(payeeId);
-    t.setBankAccountId(bankAccountPayee.getId());
-    t.setInvoiceId(0);
-    t.setCicoStatus(TransactionStatus.NEW);
-    t.setType(TransactionType.CASHOUT);
-    t.setAmount(total);
-    t.setDate(new Date());
-
-    standardCICOTransactionDAO.put(t);
-    return true;
-
-  }
-
-  @Override
   public void start() {
-    standardCICOTransactionDAO = (DAO) getX().get("localTransactionDAO");
     bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
-    userDAO = (DAO) getX().get("localUserDAO");
   }
 }

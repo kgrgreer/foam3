@@ -12,9 +12,8 @@ foam.INTERFACE({
   methods: [
     {
       name: 'verify',
-      javaReturns: 'boolean',
       returns: 'Promise',
-      javaThrows: [ 'java.lang.RuntimeException' ],
+      javaReturns: 'boolean',
       args: [
         {
           name: 'bankAccountId',
@@ -23,18 +22,6 @@ foam.INTERFACE({
         {
           name: 'randomDepositAmount',
           javaType: 'long'
-        }
-      ]
-    },
-    {
-      name: 'addCashout',
-      javaReturns: 'boolean',
-      returns: 'Promise',
-      javaThrows: [ 'java.lang.RuntimeException' ],
-      args: [
-        {
-          name: 'obj',
-          javaType: 'foam.core.FObject'
         }
       ]
     }

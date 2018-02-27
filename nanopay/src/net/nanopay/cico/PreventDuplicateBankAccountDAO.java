@@ -1,4 +1,4 @@
-package net.nanopay.cico.service;
+package net.nanopay.cico;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -11,7 +11,7 @@ import net.nanopay.model.BankAccount;
 /**
  * This DAO prevents the adding of duplicate bank accounts
  * based on the account owner, account number, transit number,
- * and instition number
+ * and instition numberO
  */
 public class PreventDuplicateBankAccountDAO
     extends ProxyDAO
