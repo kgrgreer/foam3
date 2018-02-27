@@ -6,8 +6,7 @@
 
 foam.INTERFACE({
   package: 'net.nanopay.cico.service',
-  name: 'BankAccountVerificationInterface',
-  extends: 'foam.nanos.NanoService',
+  name: 'BankAccountVerifier',
 
   methods: [
     {
