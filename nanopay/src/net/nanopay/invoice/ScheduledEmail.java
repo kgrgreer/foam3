@@ -47,7 +47,7 @@ public class ScheduledEmail
     HashMap<String, Object> args;
     User                    user;
     User                    payee;
-   
+
     // Goes to each invoice and sends the payer an email about the payment coming
     for (Invoice invoice: invoicesList){
       args    = new HashMap<>();
