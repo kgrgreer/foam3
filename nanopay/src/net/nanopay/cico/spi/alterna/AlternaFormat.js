@@ -20,15 +20,46 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'transitNumber'
+      name: 'transitNumber',
+      validateObj: function(transitNumber) {
+        var transNumRegex = /^[0-9]{5}$/;
+        if ( ! transitNumber ) {
+          return 'Please enter transit number';
+        }
+
+        if ( ! transNumRegex.test(transitNumber) ) {
+          return 'Invalid transit number.';
+        }
+      }
     },
     {
       class: 'String',
-      name: 'bankNumber'
+      name: 'bankNumber',
+      validateObj: function(bankNumber) {
+        var instNumRegex = /^[0-9]{3}$/;
+        if ( ! bankNumber ) {
+          return 'Please enter institution number.';
+        }
+
+        if ( ! instNumRegex.test(bankNumber) ) {
+          return 'Invalid institution number.';
+        }
+      }
     },
     {
       class: 'String',
-      name: 'accountNumber'
+      name: 'accountNumber',
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{0,7}$/;
+
+        if ( ! accountNumber ) {
+          return 'Please enter account number.';
+        }
+
+        if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Invalid account number.';
+        }
+      }
     },
     {
       class: 'String',
