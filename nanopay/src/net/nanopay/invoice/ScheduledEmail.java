@@ -31,14 +31,16 @@ public class ScheduledEmail
     startTime.set(today.get(Calendar.YEAR),today.get(Calendar.MONTH),today.get(Calendar.DAY_OF_MONTH)+1,0,0,0);
     startTime.setTimeInMillis(startTime.getTimeInMillis() - 1000);
     endTime.setTimeInMillis(startTime.getTimeInMillis() + (1000*60*60*24) );
+    
     // Grabs all invoices whose payment days are tomorrow
-    invoiceDAO = invoiceDAO.where(
+    DAO invoiceListDAO = invoiceDAO.where(
       AND(
         GTE(Invoice.PAYMENT_DATE,startTime.getTime()),
-        LTE(Invoice.PAYMENT_DATE,endTime.getTime())
+        LTE(Invoice.PAYMENT_DATE,endTime.getTime()),
+        EQ(Invoice.SCHEDULED_EMAIL_SENT,false)
       )
     );
-    List<Invoice>    invoicesList = (List)((ListSink)invoiceDAO.select(new ListSink())).getData();
+    List<Invoice>    invoicesList = (List)((ListSink)invoiceListDAO.select(new ListSink())).getData();
     EmailService     email        = (EmailService) x.get("email");
     AppConfig        config       = (AppConfig) x.get("appConfig");
     NumberFormat     formatter    = NumberFormat.getCurrencyInstance();
@@ -63,6 +65,8 @@ public class ScheduledEmail
       args.put("name",    user.getFirstName());
       args.put("toEmail", payee.getEmail());
       email.sendEmailFromTemplate(user, message, "schedule-paid", args);
+      invoice.setScheduledEmailSent(true);
+      invoiceDAO.put(invoice);
     }
   }
 }
