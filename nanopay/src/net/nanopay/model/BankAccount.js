@@ -14,17 +14,47 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountName',
-      label: 'Account Name'
+      label: 'Account Name',
+      validateObj: function (accountName) {
+        var accNameRegex = /^[A-Za-z]{0,70}$/;
+        if ( ! accountName ) {
+          return 'Please enter account name';
+        }
+
+        if ( ! accNameRegex.test(accountName) ) {
+          return 'Account name must be less than 70 characters.';
+        }
+      }
     },
     {
       class: 'String',
       name: 'institutionNumber',
-      label: 'Institution No.'
+      label: 'Institution No.',
+      validateObj: function(institutionNumber) {
+        var instNumRegex = /^[0-9]{3}$/;
+        if ( ! institutionNumber ) {
+          return 'Please enter institution number.';
+        }
+
+        if ( ! instNumRegex.test(institutionNumber) ) {
+          return 'Invalid institution number.';
+        }
+      }
     },
     {
       class: 'String',
       name: 'transitNumber',
-      label: 'Transit No.'
+      label: 'Transit No.',
+      validateObj: function(transitNumber) {
+        var transNumRegex = /^[0-9]{5}$/;
+        if ( ! transitNumber ) {
+          return 'Please enter transit number'
+        }
+
+        if ( ! transNumRegex.test(transitNumber) ) {
+          return 'Invalid transit number.';
+        }
+      }
     },
     {
       class: 'String',
@@ -33,6 +63,17 @@ foam.CLASS({
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length))
+      },
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{0,7}$/;
+
+        if ( ! accountNumber ) {
+          return 'Please enter account number.';
+        }
+
+        if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Invalid account number.';
+        }
       }
     },
     {
