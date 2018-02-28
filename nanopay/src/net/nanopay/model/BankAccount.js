@@ -21,7 +21,7 @@ foam.CLASS({
         }
 
         if ( accountName.length > 70 ) {
-          return 'Account name must be less than 70 characters.';
+          return 'Account name must be less than or equal to 70 characters.';
         }
       }
     },
@@ -47,7 +47,7 @@ foam.CLASS({
       validateObj: function(transitNumber) {
         var transNumRegex = /^[0-9]{5}$/;
         if ( ! transitNumber ) {
-          return 'Please enter transit number'
+          return 'Please enter transit number';
         }
 
         if ( ! transNumRegex.test(transitNumber) ) {

@@ -83,6 +83,15 @@ foam.CLASS({
       name: 'bankName',
       postSet: function(oldValue, newValue) {
         this.viewData.accountName = newValue;
+      },
+      validateObj: function (bankName) {
+        if ( ! bankName ) {
+          return 'Please enter account name';
+        }
+
+        if ( bankName.length > 70 ) {
+          return 'Account name must be less than or equal to 70 characters.';
+        }
       }
     },
     {
@@ -90,13 +99,35 @@ foam.CLASS({
       name: 'accountNumber',
       postSet: function(oldValue, newValue) {
         this.viewData.accountNumber = newValue;
+      },
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{0,7}$/;
+
+        if ( ! accountNumber ) {
+          return 'Please enter account number.';
+        }
+
+        if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Invalid account number.';
+        }
       }
+      
     },
     {
       class: 'String',
       name: 'transitNumber',
       postSet: function(oldValue, newValue) {
         this.viewData.transitNumber = newValue;
+      },
+      validateObj: function(transitNumber) {
+        var transNumRegex = /^[0-9]{5}$/;
+        if ( ! transitNumber ) {
+          return 'Please enter transit number';
+        }
+
+        if ( ! transNumRegex.test(transitNumber) ) {
+          return 'Invalid transit number.';
+        }
       }
     },
     {
@@ -104,6 +135,16 @@ foam.CLASS({
       name: 'institutionOther',
       postSet: function(oldValue, newValue) {
         this.viewData.bankNumber = newValue;
+      },
+      validateObj: function(institutionNumber) {
+        var instNumRegex = /^[0-9]{3}$/;
+        if ( ! institutionNumber ) {
+          return 'Please enter institution number.';
+        }
+
+        if ( ! instNumRegex.test(institutionNumber) ) {
+          return 'Invalid institution number.';
+        }
       }
     }
   ],
