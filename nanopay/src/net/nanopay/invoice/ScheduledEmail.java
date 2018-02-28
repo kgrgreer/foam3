@@ -28,9 +28,9 @@ public class ScheduledEmail
 
     // Get todays date and captures the time period of tomorrow.
     today.setTime(new Date());
-    startTime.setTimeInMillis(today.getTimeInMillis() + (1000*60*60*24) );
-    endTime.setTimeInMillis(startTime.getTimeInMillis() + ((1000*60*60*24)-1) );
-
+    startTime.set(today.get(Calendar.YEAR),today.get(Calendar.MONTH),today.get(Calendar.DAY_OF_MONTH)+1,0,0,0);
+    startTime.setTimeInMillis(startTime.getTimeInMillis() - 1000);
+    endTime.setTimeInMillis(startTime.getTimeInMillis() + (1000*60*60*24) );
     // Grabs all invoices whose payment days are tomorrow
     invoiceDAO = invoiceDAO.where(
       AND(
@@ -43,7 +43,6 @@ public class ScheduledEmail
     AppConfig        config       = (AppConfig) x.get("appConfig");
     NumberFormat     formatter    = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat   = new SimpleDateFormat("dd-MMM-YYYY");
-
     EmailMessage            message;
     HashMap<String, Object> args;
     User                    user;
