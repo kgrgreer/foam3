@@ -9,7 +9,9 @@ DAO tokenDAO = (DAO) getX().get("tokenDAO");
 DAO userDAO = (DAO) getX().get("localUserDAO");
 AppConfig appConfig = (AppConfig) getX().get("appConfig");
 String url = appConfig.getUrl()
-    .replaceAll("/?", "");
+    .replaceAll("/$", "");
+
+System.out.println("url = " + url);
 
 Token token = new Token();
 token.setUserId(user.getId());
@@ -32,7 +34,7 @@ if (user.getType().equals("Personal")){
     args.put("applink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://www.apple.com/lae/ios/app-store/");
     args.put("playlink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://play.google.com/store?hl=en");
   }
-  args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=null" );
+  args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/" );
 }
 String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
 email.sendEmailFromTemplate(user, message, template, args);
