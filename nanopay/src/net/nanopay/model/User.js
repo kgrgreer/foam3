@@ -1,17 +1,18 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
-  properties: [ 
+
+  properties: [
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
-      of: 'net.nanopay.model.BusinessType',      
+      of: 'net.nanopay.model.BusinessType',
     },
     {
       class: 'Reference',
-      targetDAOKey: 'businessSectorDAO',      
+      targetDAOKey: 'businessSectorDAO',
       name: 'businessSectorId',
-      of: 'net.nanopay.model.BusinessSector',            
+      of: 'net.nanopay.model.BusinessSector',
     },
     {
       class: 'String',
@@ -30,7 +31,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'jobTitle',
-      label: 'Job Title'
+      label: 'Job Title',
+      validateObj: function(jobTitle) {
+        if ( ! jobTitle ) {
+          return this.JobTitleEmptyError;
+        }
+
+        if ( jobTitle.length > 35 ) {
+          return this.JobTitleLengthError;
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -42,5 +52,10 @@ foam.CLASS({
       name: 'welcomeEmailSent',
       value: false,
     }
+  ],
+
+  messages: [
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' }
   ]
 });

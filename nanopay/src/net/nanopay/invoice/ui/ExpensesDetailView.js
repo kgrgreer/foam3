@@ -186,9 +186,9 @@ foam.CLASS({
           y: 40
         })
         self.payNowPopUp_.addClass('popUpDropDown')
-          .start('div').add('Schedule A Payment')
-            .on('click', this.schedulePopUp)
-          .end()
+//          .start('div').add('Schedule A Payment')
+//            .on('click', this.schedulePopUp)
+//          .end()
           .start().show(invoice.createdBy == this.user.id)
             .add('Void')
             .on('click', this.voidPopUp)
@@ -210,14 +210,14 @@ foam.CLASS({
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
-    function schedulePopUp(){
-      var self = this;
-      self.payNowPopUp_.remove();
-      if(this.data.paymentMethod.name != 'NONE'){
-        self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
-        return;
-      }
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
-    }
+//    function schedulePopUp(){
+//      var self = this;
+//      self.payNowPopUp_.remove();
+//      if(this.data.paymentMethod.name != 'NONE'){
+//        self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+//        return;
+//      }
+//      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+//    }
   ]
 });

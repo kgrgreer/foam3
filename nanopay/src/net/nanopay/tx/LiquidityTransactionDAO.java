@@ -157,6 +157,8 @@ public class LiquidityTransactionDAO
 
   public long getBankAccountID(LiquiditySettings liquiditySettings, long userID) {
     BankAccount bankAccount;
+    if ( liquiditySettings == null )
+      return - 1;
     //if user ID == 0, that means this user don't set default bank account. If we want to cash in we need to find on
     // bank account which is enable for this user
     if ( liquiditySettings.getId() == 0 ) {
@@ -206,8 +208,10 @@ public class LiquidityTransactionDAO
   }
 
   public boolean ifCheckRangePerTransaction(LiquiditySettings liquiditySettings) {
-    if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
-      return true;
+    if ( liquiditySettings != null ) {
+      if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
+        return true;
+    }
     return false;
   }
 }
