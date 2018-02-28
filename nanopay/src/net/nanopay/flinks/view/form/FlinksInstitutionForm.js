@@ -7,7 +7,8 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'stack'
+    'stack',
+    'nSpecDAO'
   ],
 
   axioms: [
@@ -95,7 +96,9 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.selectedOption = newValue;
       }
-    }
+    },
+    'mode',
+    'up'
   ],
 
   messages: [
@@ -115,13 +118,14 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this
+      this.up = this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
-        .start('div').addClass('subContent')
-          .forEach(this.bankImgs, function(e) {
+        .start('div').addClass('subContent');
+        this.up.forEach(this.bankImgs, function(e) {
+            if ( e.index === 15 ) return;
             this.start('div').addClass('optionSpacer').addClass('institution')
               .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
               .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
@@ -140,6 +144,19 @@ foam.CLASS({
           .on('click', self.otherBank)
         .end()
         .start('div').style({'clear' : 'both'}).end();
+
+        this.nSpecDAO.find("appConfig").then(function(response){
+          self.mode = response.service.mode.label;
+          if ( self.mode && self.mode !== "Production") {
+            self.up.start('div').addClass('optionSpacer').addClass('institution')
+            .addClass(self.selectedOption$.map(function(o) { return o == 15 ? 'selected' : ''; }))
+            .start({class: 'foam.u2.tag.Image', data: self.bankImgs[15].image}).addClass('image').end()
+            .on('click', function() {
+              self.selectedOption = 15;
+            })
+          .end()
+          }
+        });
     }
   ],
 
