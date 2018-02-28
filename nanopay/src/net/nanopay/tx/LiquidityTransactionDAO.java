@@ -44,8 +44,7 @@ public class LiquidityTransactionDAO
   @Override
   synchronized public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
-    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
-    if ( bankAccount != null ) {
+    if ( txn.getBankAccountId() != null ) {
       return getDelegate().put_(x, obj);
     }
 
