@@ -206,8 +206,10 @@ public class LiquidityTransactionDAO
   }
 
   public boolean ifCheckRangePerTransaction(LiquiditySettings liquiditySettings) {
-    if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
-      return true;
+    if ( liquiditySettings != null ) {
+      if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
+        return true;
+    }
     return false;
   }
 }
