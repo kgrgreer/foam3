@@ -89,22 +89,19 @@ To build Swift code run the following command
 `node swiftfoam/gen_swift.js`
 
 ### Deployments
-For each deployment to the servers, they are tagged with a specific version.
+For each deployment to the servers
 Steps to build:
 1. Fetch latest tags
    eg. git fetch --tags
-   
-2. Checkout the latest tag for the server.
-   eg. git checkout cc-staging-v1.0.6
 
 3. Pull latest code
    eg. git pull origin master
 
 4. Create a new tag with the updated code. Increment the previous tag version
-   eg. git tag -a cc-staging-v1.0.7 -m "Some tag message"
+   eg. git tag -a staging-v1.0.7 -m "Some tag message"
 
 5. Push new tag to remote
-  eg git push origin cc-staging-v1.0.7
+  eg git push origin staging-v1.0.7
 
 6. Open Jenkins https://jenkins.prod.nanopay.net
 
