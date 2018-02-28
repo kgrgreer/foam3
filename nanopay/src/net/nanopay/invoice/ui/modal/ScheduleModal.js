@@ -187,7 +187,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      this.accounts = null;
+      this.getDefaultBank();
 
       this
       .tag(this.ModalHeader.create({
@@ -231,7 +231,21 @@ foam.CLASS({
           .start(this.SCHEDULE).addClass('blue-button btn').end()
         .end()
       .end()
-    } 
+    },
+
+    function getDefaultBank() {
+      var self = this;
+      this.user.bankAccounts.where(
+        this.AND(
+          this.EQ(this.BankAccount.STATUS, 'Verified'),
+          this.EQ(this.BankAccount.SET_AS_DEFAULT, true)
+        )
+      ).select().then(function (a) {
+        if ( a.array.length == 0 ) return;
+        self.accounts = a.array[0].id;
+        self.account = a.array[0];
+      });
+    }
   ],
 
   actions: [
