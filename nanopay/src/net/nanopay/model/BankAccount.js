@@ -65,7 +65,6 @@ foam.CLASS({
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{0,7}$/;
-
         if ( ! accountNumber ) {
           return 'Please enter account number.';
         }
