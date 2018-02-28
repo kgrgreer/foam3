@@ -13,7 +13,8 @@ foam.CLASS({
     'net.nanopay.iso20022.PostalAddress6',
     'net.nanopay.iso20022.PaymentTransaction91',
     'net.nanopay.iso20022.PaymentIdentification3',
-    'net.nanopay.iso20022.OriginalGroupHeader13'
+    'net.nanopay.iso20022.OriginalGroupHeader13',
+    'net.nanopay.iso20022.OriginalGroupInformation27'
   ],
 
   properties: [
@@ -62,7 +63,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'generatePacs002Msg',
+      name: 'generatePacs002Msgby008Msg',
 
         javaReturns: 'net.nanopay.fx.interac.model.PacsModel002',
         javaCode: `
