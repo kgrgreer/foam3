@@ -226,6 +226,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
+      },
+      validateObj: function(province) {
+        if ( ! province || province.name.length > 35 ) {
+          return this.AddressProvinceError;
+        }
       }
     },
     {
@@ -236,6 +241,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
+      },
+      validateObj: function(postalCode) {
+        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+
+        if ( ! postalCodeRegex.test(postalCode) ) {
+          return this.AddressPostalCodeError;
+        }
       }
     },
     {
@@ -282,7 +294,9 @@ foam.CLASS({
     { name: 'EmailError', message: 'Invalid email address' },
     { name: 'PhoneError', message: 'Invalid phone number' },
     { name: 'AddressError', message: 'Street address is invalid' },
-    { name: 'AddressCityError', message: 'City name is invalid' }
+    { name: 'AddressCityError', message: 'City name is invalid' },
+    { name: 'AddressProvinceError', message: 'Invalid province option' },
+    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
   ],
 
   methods: [
