@@ -77,7 +77,7 @@ foam.CLASS({
             .start('h4').add('Amount Per Invoice').end()
             .start('h4').add('Next Invoice Date').end()
             .start('h3').add('Frequency').end()
-            .start('h3').add('Occurances').end()
+            .start('h3').add('Occurrences').end()
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()

@@ -242,7 +242,7 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-payable.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
     },
     function dblclick(transaction){

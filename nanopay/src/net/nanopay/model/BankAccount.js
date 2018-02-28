@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Bank account information.',
 
-  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status', 'actionsMenu'],
 
   properties: [
     {
@@ -64,19 +64,19 @@ foam.CLASS({
       name: 'branchId'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'randomDepositAmount',
-      factory: function() {
-        var randomAmountInCents = 1 + Math.floor(Math.random() * 99);
-
-        return randomAmountInCents;
-      },
-      hidden: true
+      networkTransient: true
     },
     {
       class: 'Int',
       name: 'verificationAttempts',
       value: 0
+    },
+    {
+      class: 'Boolean',
+      name: 'setAsDefault',
+      value: false
     }
   ],
 

@@ -50,21 +50,25 @@ foam.CLASS({
       width: 962px;
       margin: 0 auto;
     }
+    ^ .topContainer {
+      width: 100%;
+    }
     ^ .balanceBox {
       position: relative;
-      width: 330px;
-      height: 100px;
+      min-width: 330px;
+      max-width: calc(100% - 135px);
+      padding-bottom: 15px;
       border-radius: 2px;
       background-color: #ffffff;
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
       display: inline-block;
-      vertical-align: top;
+      vertical-align: middle;
     }
     ^ .sideBar {
       width: 6px;
-      height: 100px;
+      height: 100%;
       background-color: %SECONDARYCOLOR%;
-      float: left;
+      position: absolute;
     }
     ^ .balanceBoxTitle {
       color: #093649;
@@ -79,14 +83,17 @@ foam.CLASS({
       font-weight: 300;
       line-height: 1;
       letter-spacing: 0.5px;
+      overflow-wrap: break-word;
       text-align: left;
       color: #093649;
       margin-top: 27px;
       margin-left: 44px;
+      margin-right: 44px;
     }
     ^ .inlineDiv {
       display: inline-block;
       width: 135px;
+      vertical-align: middle;
     }
 
     ^ .net-nanopay-ui-ActionView-cashInBtn {
@@ -142,21 +149,19 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-create {
       visibility: hidden;
     }
-    ^ .foam-u2-view-TableView-row:hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
     ^ .foam-u2-md-OverlayDropdown {
       width: 175px;
     }
-    ^ thead > tr > th{
-      background: %TABLECOLOR%;
-    }
-
     ^ .loadingSpinner {
       position: absolute;
       top: 11px;
       left: 95px;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
     }
   `,
 
@@ -167,7 +172,7 @@ foam.CLASS({
     },
     {
       name: 'formattedBalance',
-      value: 0
+      value: '...'
     },
     {
       class: 'Boolean',
@@ -176,7 +181,12 @@ foam.CLASS({
     {
       name: 'userBankAccounts',
       factory: function() {
-        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+        return this.bankAccountDAO.where(
+          this.AND(
+            this.EQ(this.BankAccount.OWNER, this.user.id),
+            this.EQ(this.BankAccount.STATUS, "Verified")
+          )
+        );
       }
     },
     {
@@ -184,11 +194,11 @@ foam.CLASS({
       view: function(_, X) {
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
-          objToChoice: function(a){
+          dao: self.userBankAccounts,
+          objToChoice: function(a) {
             return [a.id, a.accountName];
           }
-        })
+        });
       }
     },
     {
@@ -225,13 +235,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.getDefaultBank();
+
       this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
-      });
-
-      this.accountDAO.find(this.user.id).then(function (a) {
-        self.account.copyFrom(a);
-        self.onDAOUpdate();
       });
 
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
@@ -240,17 +247,16 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('div').addClass('balanceBox')
-            .start('div').addClass('sideBar').end()
-            .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add(this.formattedBalance$.map(function(b) {
-              if ( ! b && self.isLoading ) return '...';
-              return '$' + self.addCommas(b.toFixed(2).toString());
-            })).addClass('balance').end()
-          .end()
-          .start('div').addClass('inlineDiv')
-            .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
-            .start().add(this.CASH_OUT_BUTTON).end()
+          .start('div').addClass('topContainer')
+            .start('div').addClass('balanceBox')
+              .start('div').addClass('sideBar').end()
+              .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
+              .start().add(this.formattedBalance$).addClass('balance').end()
+            .end()
+            .start('div').addClass('inlineDiv')
+              .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
+              .start().add(this.CASH_OUT_BUTTON).end()
+            .end()
           .end()
           .start()
             .tag({
@@ -300,6 +306,14 @@ foam.CLASS({
 
     function resetCicoAmount() {
       this.amount = 0;
+    },
+
+    function getDefaultBank() {
+      var self = this;
+      self.userBankAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+        if( a.array.length == 0 ) return;
+        self.bankList = a.array[0].id;
+      });
     }
   ],
 
@@ -325,16 +339,12 @@ foam.CLASS({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isMerged: true,
+      // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        self.isLoading = true;
         this.accountDAO.find(this.user.id).then(function (a) {
-          self.isLoading = false;
           self.account.copyFrom(a);
-          self.formattedBalance = a.balance / 100;
-        }).catch(function (e) {
-          self.isLoading = false;
+          self.formattedBalance = '$' + (a.balance / 100).toFixed(2);
         });
       }
     }
@@ -359,8 +369,7 @@ foam.CLASS({
         function initE() {
           this
             .start({
-              class: 'foam.u2.view.TableView',
-              editColumnsEnabled: true,
+              class: 'foam.u2.view.ScrollTableView',
               data: this.cicoTransactions,
               columns: [
                 'id', 'date', 'amount', 'type'

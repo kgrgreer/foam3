@@ -77,12 +77,11 @@ foam.CLASS({
     ^ .foam-u2-dialog-Popup-inner {
       background-color: transparent !important;
     }
-    ^ thead > tr > th{
-      background: %TABLECOLOR%;
-    }
     ^ .foam-u2-view-TableView-row:hover {
-      cursor: pointer;
       background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
     }
   `,
 
@@ -207,7 +206,7 @@ foam.CLASS({
         function initE() {
           this
             .start({
-              class: 'foam.u2.view.TableView',
+              class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
               columns: [

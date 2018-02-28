@@ -71,10 +71,11 @@ public class CsvUtil {
   }
   /**
    * fills the outputter with all CICO transactions
-   * @param X- the context
+   * @param x - the context
+   * @param mode - outputter mode
    * @param outStream -  the outputter out format if it's a stream
    * @param outWriter -  the outputter out format if it's a writer
-   * @param outputter -  "empty" outputter
+   * @param outputHeaders - flag to show headers or not
    * @return the outputter
    */
   public Sink writeCsvFile(X x, OutputterMode mode, OutputStream outStream, Writer outWriter, boolean outputHeaders) {
@@ -83,8 +84,6 @@ public class CsvUtil {
 
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-
-    User user               = (User) x.get("user");
 
     final Sink outputter;
     if ( outStream != null ) {
@@ -114,8 +113,16 @@ public class CsvUtil {
             return;
           }
 
-          // get bank account
+          // if user null, return
+          if ( user == null ) {
+            return;
+          }
+
+          // get bank account and check if null
           BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
+          if ( bankAccount == null ) {
+            return;
+          }
 
           AlternaFormat alternaFormat = new AlternaFormat();
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
@@ -142,6 +149,4 @@ public class CsvUtil {
     });
     return outputter;
   }
-
-
 }

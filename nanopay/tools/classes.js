@@ -11,7 +11,7 @@ var classes = [
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
-  'net.nanopay.cico.service.BankAccountVerificationInterface',
+  'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -29,6 +29,7 @@ var classes = [
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.xero.TokenStorage',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
@@ -75,16 +76,18 @@ var classes = [
 ];
 
 var abstractClasses = [
+  'net.nanopay.invoice.xero.AbstractXeroService'
 ];
 
 var skeletons = [
-  'net.nanopay.cico.service.BankAccountVerificationInterface',
+  'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit'
 ];
 
 var proxies = [
+  'net.nanopay.cico.service.BankAccountVerifier'
 ];
 
 module.exports = {

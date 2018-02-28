@@ -42,7 +42,7 @@ foam.CLASS({
       display: block;
     }
 
-    .stack-wrapper:after, .net-nanopay-b2b-ui-shared-FooterView {
+    .stack-wrapper:after {
       height: 10px;
     }
 

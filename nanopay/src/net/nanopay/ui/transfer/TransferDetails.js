@@ -168,7 +168,7 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
           objToChoice: function(account) {
-            return [account.id, 'Account No. ' +
+            return [account.id, account.accountName + ' ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
                     ];
           }
@@ -246,8 +246,15 @@ foam.CLASS({
       name: 'digitalCash',
       documentation: 'UI toggle choice between payments using account or digital cash.',
       value: true,
+      preSet: function(oldValue, newValue) {
+        if ( ! this.accountCheck && oldValue ) {
+          return oldValue;
+        }
+        return newValue;
+      },
       postSet: function(oldValue, newValue){
         this.viewData.digitalCash = newValue;
+        if ( this.accountCheck ) this.accountCheck = false;
       }
     },
     {
@@ -255,8 +262,15 @@ foam.CLASS({
       name: 'accountCheck',
       documentation: 'UI toggle choice between payments using account or digital cash. Used to set bankAccountId on transaction on create.',
       value: false,
+      preSet: function(oldValue, newValue) {
+        if ( ! this.digitalCash && oldValue ) {
+          return oldValue;
+        }
+        return newValue;
+      },
       postSet: function(oldValue, newValue){
         this.viewData.accountCheck = newValue;
+        if ( this.digitalCash ) this.digitalCash = false;
       }
     }
   ],
@@ -291,6 +305,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.getDefaultBank();
 
       this
         .addClass(this.myClass())
@@ -300,19 +315,11 @@ foam.CLASS({
           .start().addClass("choice")
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
-              .on('click', function() {
-                self.accountCheck = ! self.accountCheck;
-                self.digitalCash = ! self.digitalCash;
-              })
               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', (this.account.balance/100).toFixed(2))
               .end()
             .end()
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
-              .on('click', function() {
-                self.digitalCash = ! self.digitalCash;
-                self.accountCheck = ! self.accountCheck;
-              })
               .start('p').addClass('confirmationLabel').add('Pay from account')
               .end()
             .end()
@@ -368,6 +375,20 @@ foam.CLASS({
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();
+    },
+
+    function getDefaultBank() {
+      var self = this;
+      this.user.bankAccounts.where(
+        this.AND(
+          this.EQ(this.BankAccount.STATUS, 'Verified'),
+          this.EQ(this.BankAccount.SET_AS_DEFAULT, true)
+        )
+      ).select().then( function (a) {
+        if ( a.array.length == 0 ) return;
+        self.accounts = a.array[0].id;
+        self.viewData.account = a.array[0];
+      });
     }
   ]
 });

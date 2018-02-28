@@ -64,6 +64,10 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction     transaction     = (Transaction) obj;
+
+    // executeTransaction(x, transaction);
+    // TODO: delete all the rest of the code
+
     TransactionType transactionType = (TransactionType) transaction.getType();
     long            payeeId         = transaction.getPayeeId();
     long            payerId         = transaction.getPayerId();
@@ -76,15 +80,20 @@ public class TransactionDAO
       throw new RuntimeException("Invalid Payee id");
     }
 
+    if ( transaction.getTotal() <= 0 ) {
+      throw new RuntimeException("Transaction amount must be greater than 0");
+    }
+
+    // if bank account verification transaction, continue
+    if ( transactionType == TransactionType.VERIFICATION ) {
+      return super.put_(x, obj);
+    }
+
     //For cico transactions payer and payee are the same
     if ( payeeId == payerId ) {
       if ( transactionType != TransactionType.CASHOUT && transactionType != TransactionType.CASHIN ) {
         throw new RuntimeException("PayeeID and PayerID cannot be the same");
       }
-    }
-
-    if ( transaction.getTotal() <= 0 ) {
-      throw new RuntimeException("Transaction amount must be greater than 0");
     }
 
     // don't perform balance transfer if status in blacklist
@@ -171,8 +180,8 @@ public class TransactionDAO
         d += t.getAmount();
       }
     }
-    if ( c != d ) throw new RuntimeException("Debits and credits don't match.");
-    if ( c == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
+    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
   /** Lock each trasnfer's account then execute the transfers. **/

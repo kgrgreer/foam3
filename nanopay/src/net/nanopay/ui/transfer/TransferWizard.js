@@ -307,7 +307,7 @@ foam.CLASS({
         }
 
         if ( this.position == 2 ) {
-          X.stack.back();
+          X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
 
@@ -349,7 +349,7 @@ foam.CLASS({
           });
 
           // Make the transfer
-          return self.transactionDAO.put(transaction)
+          self.transactionDAO.put(transaction)
             .then(function (result) {
               if ( result ) {
                 self.viewData.transaction = result;
@@ -360,14 +360,10 @@ foam.CLASS({
             self.nextLabel = 'Make New Transfer';
 
           }).catch(function (err) {
-            console.error(err);
-
             self.add(self.NotificationMessage.create({
               type: 'error',
-              message: err.message + '. Unable to process payment...'
+              message: err.message + 'Unable to process payment.'
             }));
-
-            if ( err ) console.log(err.message);
           });
 
           return;
