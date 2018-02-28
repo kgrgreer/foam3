@@ -19,7 +19,7 @@ public class AccountDeletedEmailDAO
   protected DAO userDAO_;
 
   public AccountDeletedEmailDAO(X x, DAO delegate) {
-    setX(x):
+    setX(x);
     setDelegate(delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
   }
