@@ -307,7 +307,7 @@ foam.CLASS({
         }
 
         if ( this.position == 2 ) {
-          X.stack.back();
+          X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
 
@@ -364,7 +364,7 @@ foam.CLASS({
 
             self.add(self.NotificationMessage.create({
               type: 'error',
-              message: err.message + '. Unable to process payment...'
+              message: err.message + 'Unable to process payment.'
             }));
 
             if ( err ) console.log(err.message);

@@ -39,7 +39,7 @@ public class AlternaWebAgent
     CsvUtil util = new CsvUtil();
 
     final Date now = new Date();
-    response.setContentType("text/html");
+    response.setContentType("text/csv");
     response.setHeader("Content-disposition", "attachment; filename=\"" + util.generateFilename(now) + "\"");
 
     final Sink outputter = util.writeCsvFile(x, OutputterMode.STORAGE, null, out, false);

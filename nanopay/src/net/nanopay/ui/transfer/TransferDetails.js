@@ -246,8 +246,15 @@ foam.CLASS({
       name: 'digitalCash',
       documentation: 'UI toggle choice between payments using account or digital cash.',
       value: true,
+      preSet: function(oldValue, newValue) {
+        if ( ! this.accountCheck && oldValue ) {
+          return oldValue;
+        }
+        return newValue;
+      },
       postSet: function(oldValue, newValue){
         this.viewData.digitalCash = newValue;
+        if ( this.accountCheck ) this.accountCheck = false;
       }
     },
     {
@@ -255,8 +262,15 @@ foam.CLASS({
       name: 'accountCheck',
       documentation: 'UI toggle choice between payments using account or digital cash. Used to set bankAccountId on transaction on create.',
       value: false,
+      preSet: function(oldValue, newValue) {
+        if ( ! this.digitalCash && oldValue ) {
+          return oldValue;
+        }
+        return newValue;
+      },
       postSet: function(oldValue, newValue){
         this.viewData.accountCheck = newValue;
+        if ( this.digitalCash ) this.digitalCash = false;
       }
     }
   ],
@@ -301,19 +315,11 @@ foam.CLASS({
           .start().addClass("choice")
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
-              .on('click', function() {
-                self.accountCheck = ! self.accountCheck;
-                self.digitalCash = ! self.digitalCash;
-              })
               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', (this.account.balance/100).toFixed(2))
               .end()
             .end()
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
-              .on('click', function() {
-                self.digitalCash = ! self.digitalCash;
-                self.accountCheck = ! self.accountCheck;
-              })
               .start('p').addClass('confirmationLabel').add('Pay from account')
               .end()
             .end()

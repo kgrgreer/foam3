@@ -11,7 +11,7 @@ var classes = [
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
-  'net.nanopay.cico.service.BankAccountVerificationInterface',
+  'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -77,13 +77,14 @@ var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.cico.service.BankAccountVerificationInterface',
+  'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit'
 ];
 
 var proxies = [
+  'net.nanopay.cico.service.BankAccountVerifier'
 ];
 
 module.exports = {
