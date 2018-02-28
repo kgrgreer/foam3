@@ -39,6 +39,11 @@ FOAM_FILES([
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX'},
 
+  // interac
+  { name: 'net/nanopay/fx/interac/model/PayoutOptions'},
+  { name: 'net/nanopay/fx/interac/model/Corridor'},
+  { name: 'net/nanopay/fx/interac/model/RequiredUserFields'},
+
   // lianlian pay
   { name: 'net/nanopay/fx/lianlianpay/LianLianPay' },
   { name: 'net/nanopay/fx/lianlianpay/model/ResultCode' },

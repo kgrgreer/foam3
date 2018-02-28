@@ -321,18 +321,20 @@ foam.CLASS({
         return this.position !== 2;
       },
       code: function(X) {
-        var self = this;
+        var self        = this;
         var transaction = null;
-        var invoiceId = 0;
+        var invoiceId   = 0;
         var bankAccountId;
-        if (self.viewData.accountCheck) bankAccountId = self.viewData.account.id;
+
+        if ( self.viewData.accountCheck ) bankAccountId = self.viewData.account.id;
 
         if ( this.position == 1 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
           var rate;
-          if( this.type == 'foreign' ){
+
+          if ( this.type == 'foreign' ){
             rate = this.viewData.rate.toString();
           }
           if ( this.invoiceMode ){
@@ -365,11 +367,7 @@ foam.CLASS({
               message: err.message + 'Unable to process payment.'
             }));
           });
-
-          return;
-        }
-
-        if ( this.position == 2 ) {
+        } else if ( this.position == 2 ) {
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';
@@ -381,9 +379,9 @@ foam.CLASS({
           }
           this.backLabel = 'Back';
           this.nextLabel = 'Next';
-          return;
+        } else {
+          this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
         }
-        this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
       }
     }
   ]

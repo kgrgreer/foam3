@@ -107,6 +107,10 @@ sha256/
 /hashedTxns
 /rollingHashedTxns
 /signedTxns
+/currencies
+/corridors
+/transactionPurposes
+/payoutOptions
 /dugs
 /spids
 /liquiditySettings

@@ -44,8 +44,7 @@ public class LiquidityTransactionDAO
   @Override
   synchronized public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
-    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
-    if ( bankAccount != null ) {
+    if ( txn.getBankAccountId() != null ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -207,8 +206,10 @@ public class LiquidityTransactionDAO
   }
 
   public boolean ifCheckRangePerTransaction(LiquiditySettings liquiditySettings) {
-    if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
-      return true;
+    if ( liquiditySettings != null ) {
+      if ( liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION )
+        return true;
+    }
     return false;
   }
 }
