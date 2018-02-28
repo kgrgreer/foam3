@@ -132,7 +132,7 @@ foam.CLASS({
           return;
         }
 
-        this.invoice.status = X.data.paymentDate > new Date() ? 'Scheduled' : 'Paid';
+        this.invoice.status = 'Paid';
         this.invoice.paymentDate = X.data.paymentDate;
         // Avoids schedule invoice payments in cron.
         this.invoice.paymentId = this.RECORDED_PAYMENT;
