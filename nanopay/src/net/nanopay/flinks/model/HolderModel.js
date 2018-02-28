@@ -34,9 +34,9 @@ foam.CLASS({
       validateObj: function(phoneNumber) {
         var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
 
-          if ( ! phoneNumber || ! hasOkLength ) {
-            return this.PhoneError;
-          }
+        if ( ! phoneNumber || ! hasOkLength ) {
+          return this.PhoneError;
+        }
       }
     }
   ],

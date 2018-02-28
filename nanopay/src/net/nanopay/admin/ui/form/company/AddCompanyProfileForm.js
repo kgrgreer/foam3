@@ -129,9 +129,7 @@ foam.CLASS({
         this.viewData.businessName = newValue;
       },
       validateObj: function(businessName) {
-        var hasOkLength = businessName.length >= 1 && businessName.length <= 35;
-
-        if ( ! businessName || ! hasOkLength ) {
+        if ( ! businessName || businessName.length > 35 ) {
           return this.BusinessNameError;
         }
       }
@@ -255,6 +253,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
+      },
+      validateObj: function(addressLine) {
+        if ( ! addressLine || addressLine > 70 ) {
+          return this.AddressError;
+        }
       }
     },
     {
@@ -314,7 +317,8 @@ foam.CLASS({
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
-    { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' }
+    { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' },
+    { name: 'AddressError', message: 'Street address is too long' }
   ],
 
   methods: [

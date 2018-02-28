@@ -94,9 +94,7 @@ foam.CLASS({
         this.viewData.firstName = newValue;
       },
       validateObj: function(firstName) {
-        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
-
-        if ( ! firstName || ! hasOkLength ) {
+        if ( ! firstName || firstName.length > 70 ) {
           return this.FormError;
         }
       }
@@ -111,9 +109,7 @@ foam.CLASS({
         this.viewData.lastName = newValue;
       },
       validateObj: function(lastName) {
-        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
-
-        if ( ! lastName || ! hasOkLength ) {
+        if ( ! lastName || lastName.length > 70 ) {
           return this.FormError;
         }
       }
@@ -193,6 +189,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
+      },
+      validateObj: function(addressLine) {
+        if ( ! addressLine || addressLine > 70 ) {
+          return this.AddressError;
+        }
       }
     },
     {
@@ -274,7 +275,8 @@ foam.CLASS({
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'PhoneError', message: 'Invalid phone number' }
+    { name: 'PhoneError', message: 'Invalid phone number' },
+    { name: 'AddressError', message: 'Street address is too long' }
   ],
 
   methods: [
