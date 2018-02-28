@@ -60,7 +60,8 @@ foam.CLASS({
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
     { name: 'JobTitleLengthError', message: 'Job title is too long' },
-    { name: 'EmailError', message: 'Invalid email address' }
+    { name: 'EmailError', message: 'Invalid email address' },
+    { name: 'PhoneError', message: 'Invalid phone number' }
   ],
 
   properties: [
@@ -106,6 +107,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
+      },
+      validateObj: function(phoneNumber) {
+        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
+
+          if ( ! phoneNumber || ! hasOkLength ) {
+            return this.PhoneError;
+          }
       }
     },
     {

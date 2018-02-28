@@ -73,6 +73,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
+      },
+      validateObj: function(phoneNumber) {
+        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
+
+          if ( ! phoneNumber || ! hasOkLength ) {
+            return this.PhoneError;
+          }
       }
     },
     {
@@ -105,7 +112,8 @@ foam.CLASS({
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
     { name: 'PasswordLabel', message: 'Password *' },
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' }
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'PhoneError', message: 'Invalid phone number' }
   ],
 
   methods: [
