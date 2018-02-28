@@ -19,7 +19,8 @@ public class AccountVerifiedEmailDAO
   protected DAO userDAO_;
 
   public AccountVerifiedEmailDAO(X x, DAO delegate) {
-    super(x, delegate);
+    setX(x);
+    setDelegate(delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
   }
 

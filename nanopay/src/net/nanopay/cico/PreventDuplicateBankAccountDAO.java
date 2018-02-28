@@ -11,17 +11,13 @@ import net.nanopay.model.BankAccount;
 /**
  * This DAO prevents the adding of duplicate bank accounts
  * based on the account owner, account number, transit number,
- * and instition numberO
+ * and instition number
  */
 public class PreventDuplicateBankAccountDAO
     extends ProxyDAO
 {
-  public PreventDuplicateBankAccountDAO(DAO delegate) {
-    this(null, delegate);
-  }
-
   public PreventDuplicateBankAccountDAO(X x, DAO delegate) {
-    super(x);
+    setX(x);
     setDelegate(delegate);
   }
 
