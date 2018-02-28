@@ -19,7 +19,8 @@ public class BankEmailDAO
   protected DAO userDAO_;
 
   public BankEmailDAO(X x, DAO delegate) {
-    super(x, delegate);
+    setX(x);
+    setDelegate(delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
   }
 

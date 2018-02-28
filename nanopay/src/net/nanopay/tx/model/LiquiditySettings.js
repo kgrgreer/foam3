@@ -27,6 +27,10 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.tx.model.CashOutFrequency',
       name: 'cashOutFrequency'
+    },
+    {
+      class: 'Long',
+      name: 'bankAccountId'
     }
   ]
 });

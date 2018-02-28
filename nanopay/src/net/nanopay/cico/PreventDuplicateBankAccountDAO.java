@@ -1,4 +1,4 @@
-package net.nanopay.cico.service;
+package net.nanopay.cico;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -16,12 +16,8 @@ import net.nanopay.model.BankAccount;
 public class PreventDuplicateBankAccountDAO
     extends ProxyDAO
 {
-  public PreventDuplicateBankAccountDAO(DAO delegate) {
-    this(null, delegate);
-  }
-
   public PreventDuplicateBankAccountDAO(X x, DAO delegate) {
-    super(x);
+    setX(x);
     setDelegate(delegate);
   }
 
