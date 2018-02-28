@@ -78,38 +78,62 @@ public class PacsWebAgent
         //System.err.println("objects selected: " + sink.getArray().size());
 
         if ( "json".equals(format) ) {
-          /*foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
-          outputterJson.setOutputDefaultValues(true);
-          outputterJson.output(data); //sink.getArray().toArray()
-
-          response.setContentType("application/json");
-
-          out.println(outputterJson.toString());*/
 
           JSONParser jsonParser = new JSONParser();
           jsonParser.setX(x);
           PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);
 
-        if ( pacsModel008 == null || "".equals(pacsModel008) ) {
-          out.println("Parse Error");
+          if ( pacsModel008 == null || "".equals(pacsModel008) ) {
+            out.println("Parse Error");
 
-          String message = getParsingError(x, buffer_.toString());
-          logger.error(message + ", input: " + buffer_.toString());
-          out.println(message);
-          out.flush();
-          return;
-        }
+            String message = getParsingError(x, buffer_.toString());
+            logger.error(message + ", input: " + buffer_.toString());
+            out.println(message);
+            out.flush();
+            return;
+          }
 
-        PacsModel002  pacsModel002 = pacsModel008.generatePacs002Msg();
+          PacsModel002  pacsModel002 = pacsModel008.generatePacs002Msg();
 
-        foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
-        outputterJson.setOutputDefaultValues(true);
-        outputterJson.output(pacsModel002); //sink.getArray().toArray()
+          foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+          outputterJson.setOutputDefaultValues(true);
+          outputterJson.output(pacsModel002);
 
-        response.setContentType("application/json");
+          response.setContentType("application/json");
 
-        out.println(outputterJson.toString());
-      }
+          out.println(outputterJson.toString());
+       } else if ( "xml".equals(format) ) {
+         XMLSupport      xmlSupport = new XMLSupport();
+         XMLInputFactory factory    = XMLInputFactory.newInstance();
+         StringReader    reader     = new StringReader(data);
+         XMLStreamReader xmlReader  = factory.createXMLStreamReader(reader);
+         List<FObject>   objList    = xmlSupport.fromXML(x, xmlReader, PacsModel008.class);
+
+         /*if ( objList.size() == 0 ) {
+           out.println("Parse Error : ");
+
+           String message = getParsingError(x, buffer_.toString());
+           logger.error(message + ", input: " + buffer_.toString());
+           out.println(message);
+           out.flush();
+           return;
+         }*/
+         if ( objList.size() == 0 ) System.out.println("eeee");
+
+
+         PacsModel008 pacsModel008 = null;
+         Iterator i = objList.iterator();
+         while ( i.hasNext() ) {
+           System.out.println("fff");
+           pacsModel008 = (PacsModel008)i.next();
+           PacsModel002 pacsModel002 = pacsModel008.generatePacs002Msg();
+           response.setContentType("application/xml");
+           out.println(xmlSupport.toXMLString(pacsModel002));
+         }
+
+         //PacsModel002  pacsModel002 = pacsModel008.generatePacs002Msg();
+         //response.setContentType("application/xml");
+         //out.println(xmlSupport.toXMLString(pacsModel002));
     }
       /*if ( daoName == null || "".equals(daoName) ) {
         throw new RuntimeException("Input DaoName");
@@ -129,7 +153,7 @@ public class PacsWebAgent
       */
 
         //out.println("Success");
-
+      }
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
