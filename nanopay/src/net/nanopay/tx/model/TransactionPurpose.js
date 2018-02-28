@@ -34,7 +34,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      required: true
+      required: true,
+      swiftName: 'desc'
     },
     {
       class: 'Boolean',
