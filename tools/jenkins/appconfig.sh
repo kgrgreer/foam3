@@ -24,7 +24,6 @@ fi
 echo RELEASE=${RELEASE}
 echo NAME=${NAME}
 echo VERSION=${VERSION}
-echo URL=${URL}
 echo MODE=${MODE}
 
 sed -i -e "s/name: 'name'/name: 'name', value: '${NAME}'/g" foam2/src/foam/nanos/app/AppConfig.js
