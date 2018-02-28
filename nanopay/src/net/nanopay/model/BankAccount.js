@@ -16,12 +16,11 @@ foam.CLASS({
       name: 'accountName',
       label: 'Account Name',
       validateObj: function (accountName) {
-        var accNameRegex = /^[A-Za-z]{0,70}$/;
         if ( ! accountName ) {
           return 'Please enter account name';
         }
 
-        if ( ! accNameRegex.test(accountName) ) {
+        if ( accountName.length > 70 ) {
           return 'Account name must be less than 70 characters.';
         }
       }
