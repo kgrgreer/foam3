@@ -4,21 +4,21 @@
 RELEASE=`echo ${GIT_BRANCH} | sed 's/.*\///'`
 NAME=`echo ${RELEASE} | sed 's/-v.*//'`
 VERSION=`echo ${RELEASE} | sed 's/.*-v//'`
-MODE="DEVELOPMENT"
+MODE="'DEVELOPMENT'"
 YEAR=`date +%Y`
 COPYRIGHT="(c) Copyright ${YEAR} nanopay Corporation. All Rights Reserved"
 
 echo
 if [[ "${NAME}" = *"test"* ]]; then
-    MODE=4 #"TEST"
+    MODE="'TEST'" #"TEST"
 elif [[ "${NAME}" = *"prod"* ]]; then
-    MODE=2 #"PRODUCTION"
+    MODE="'PRODUCTION'" #"PRODUCTION"
 elif [[ "${NAME}" = *"integration"* ]]; then
-    MODE=3 #"DEMO"
+    MODE="'DEMO'" #"DEMO"
 elif [[ "${NAME}" = *"demo"* ]]; then
-    MODE=3 #"DEMO"
+    MODE="'DEMO'" #"DEMO"
 elif [[ "${NAME}" = *"staging"* ]]; then
-    MODE=1 #"STAGING"
+    MODE="'STAGING'" #"STAGING"
 fi
 
 echo RELEASE=${RELEASE}
