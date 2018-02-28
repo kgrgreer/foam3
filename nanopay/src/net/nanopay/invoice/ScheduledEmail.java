@@ -31,6 +31,7 @@ public class ScheduledEmail
     startTime.set(today.get(Calendar.YEAR),today.get(Calendar.MONTH),today.get(Calendar.DAY_OF_MONTH)+1,0,0,0);
     startTime.setTimeInMillis(startTime.getTimeInMillis() - 1000);
     endTime.setTimeInMillis(startTime.getTimeInMillis() + (1000*60*60*24) );
+    
     // Grabs all invoices whose payment days are tomorrow
     DAO invoiceListDAO = invoiceDAO.where(
       AND(

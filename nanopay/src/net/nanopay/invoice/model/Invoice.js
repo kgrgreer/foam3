@@ -243,7 +243,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'ScheduledEmailSent',
+      name: 'scheduledEmailSent',
       value: false,      
     }
   ],
