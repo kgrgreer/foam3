@@ -240,6 +240,11 @@ foam.CLASS({
       name: 'invoiceFile',
       documentation: 'Original invoice file',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'ScheduledEmailSent',
+      value: false,      
     }
   ],
 
