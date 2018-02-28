@@ -61,7 +61,7 @@ return true;`
     {
       name: 'processToken',
       javaCode:
-`DAO userDAO = (DAO) getX().get("userDAO");
+`DAO userDAO = (DAO) getX().get("localUserDAO");
 AuthyApiClient client = getClient();
 // if already verified, return true
 Phone phone = user.getPhone();

@@ -194,6 +194,7 @@ foam.CLASS({
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
         if ( paymentMethod.name == 'VOID' ) return 'Void';
+        if ( paymentMethod.name == "CHEQUE" ) return "Paid";
         if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
         if ( paymentId > 0 || paymentDate < Date.now() && paymentId == this.RECORDED_PAYMENT) return 'Paid';
         if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) {  return 'Scheduled' };

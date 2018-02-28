@@ -31,6 +31,18 @@ Go into the NANOPAY/tools directory and run the following commands:
 
 ```
 
+To have tomcat automatically reload, add your development path to tomcat's configuration.
+Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`).
+```
+/Library/Tomcat/conf/server.xml
+```
+adding (example) a `Context docBase` to the `Host` element.
+```
+<Host>
+  ...
+  <Context docBase="Users/your_login_name/path_to_nanopay_repo/NANOPAY" path="/dev" />
+</Host> 
+```
 
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
@@ -89,22 +101,19 @@ To build Swift code run the following command
 `node swiftfoam/gen_swift.js`
 
 ### Deployments
-For each deployment to the servers, they are tagged with a specific version.
+For each deployment to the servers
 Steps to build:
 1. Fetch latest tags
    eg. git fetch --tags
-   
-2. Checkout the latest tag for the server.
-   eg. git checkout cc-staging-v1.0.6
 
 3. Pull latest code
    eg. git pull origin master
 
 4. Create a new tag with the updated code. Increment the previous tag version
-   eg. git tag -a cc-staging-v1.0.7 -m "Some tag message"
+   eg. git tag -a staging-v1.0.7 -m "Some tag message"
 
 5. Push new tag to remote
-  eg git push origin cc-staging-v1.0.7
+  eg git push origin staging-v1.0.7
 
 6. Open Jenkins https://jenkins.prod.nanopay.net
 
