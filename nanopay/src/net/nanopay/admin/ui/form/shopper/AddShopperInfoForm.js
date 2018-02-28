@@ -276,7 +276,7 @@ foam.CLASS({
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'EmailError', message: 'Invalid email address' },
     { name: 'PhoneError', message: 'Invalid phone number' },
-    { name: 'AddressError', message: 'Street address is too long' }
+    { name: 'AddressError', message: 'Street address is invalid' }
   ],
 
   methods: [

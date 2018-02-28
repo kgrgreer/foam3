@@ -304,7 +304,7 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' },
-    { name: 'AddressError', message: 'Street address is too long' }
+    { name: 'AddressError', message: 'Street address is invalid' }
   ],
 
   methods: [
