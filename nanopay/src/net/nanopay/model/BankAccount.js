@@ -104,14 +104,9 @@ foam.CLASS({
       name: 'branchId'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'randomDepositAmount',
-      factory: function() {
-        var randomAmountInCents = 1 + Math.floor(Math.random() * 99);
-
-        return randomAmountInCents;
-      },
-      hidden: true
+      networkTransient: true
     },
     {
       class: 'Int',
