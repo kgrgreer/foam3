@@ -204,6 +204,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
+      },
+      validateObj: function(city) {
+        if ( ! city || city.length > 35 ) {
+          return this.AddressCityError;
+        }
       }
     },
     {
@@ -276,7 +281,8 @@ foam.CLASS({
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'EmailError', message: 'Invalid email address' },
     { name: 'PhoneError', message: 'Invalid phone number' },
-    { name: 'AddressError', message: 'Street address is invalid' }
+    { name: 'AddressError', message: 'Street address is invalid' },
+    { name: 'AddressCityError', message: 'City name is invalid' }
   ],
 
   methods: [

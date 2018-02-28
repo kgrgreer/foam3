@@ -268,6 +268,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
+      },
+      validateObj: function(city) {
+        if ( ! city || city.length > 35 ) {
+          return this.AddressCityError;
+        }
       }
     },
     {
@@ -318,7 +323,8 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' },
-    { name: 'AddressError', message: 'Street address is invalid' }
+    { name: 'AddressError', message: 'Street address is invalid' },
+    { name: 'AddressCityError', message: 'City name is invalid' }
   ],
 
   methods: [
