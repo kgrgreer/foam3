@@ -31,6 +31,18 @@ Go into the NANOPAY/tools directory and run the following commands:
 
 ```
 
+To have tomcat automatically reload, add your development path to tomcat's configuration.
+Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`).
+```
+/Library/Tomcat/conf/server.xml
+```
+adding (example) a `Context docBase` to the `Host` element.
+```
+<Host>
+  ...
+  <Context docBase="Users/your_login_name/path_to_nanopay_repo/NANOPAY" path="/dev" />
+</Host> 
+```
 
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
