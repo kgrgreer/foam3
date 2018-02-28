@@ -18,7 +18,13 @@ public class RandomDepositBankAccountDAO
   public RandomDepositBankAccountDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    transactionDAO_ = (DAO) x.get("standardCICOTransactionDAO");
+  }
+
+  public DAO getTransactionDAO() {
+    if ( transactionDAO_ == null ) {
+      transactionDAO_ = (DAO) getX().get("standardCICOTransactionDAO");
+    }
+    return transactionDAO_;
   }
 
   @Override
@@ -44,7 +50,7 @@ public class RandomDepositBankAccountDAO
           .setType(TransactionType.VERIFICATION)
           .setCicoStatus(TransactionStatus.NEW)
           .build();
-      transactionDAO_.put(transaction);
+      getTransactionDAO().put(transaction);
     }
 
     return super.put_(x, account);
