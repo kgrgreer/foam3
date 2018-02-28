@@ -127,6 +127,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.businessName = newValue;
+      },
+      validateObj: function(businessName) {
+        if ( ! businessName || businessName.length > 35 ) {
+          return this.BusinessNameError;
+        }
       }
     },
     {
@@ -248,6 +253,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
+      },
+      validateObj: function(addressLine) {
+        if ( ! addressLine || addressLine > 70 ) {
+          return this.AddressError;
+        }
       }
     },
     {
@@ -258,6 +268,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
+      },
+      validateObj: function(city) {
+        if ( ! city || city.length > 35 ) {
+          return this.AddressCityError;
+        }
       }
     },
     {
@@ -275,6 +290,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
+      },
+      validateObj: function(province) {
+        if ( ! province || province.name.length > 35 ) {
+          return this.AddressProvinceError;
+        }
       }
     },
     {
@@ -285,6 +305,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
+      },
+      validateObj: function(postalCode) {
+        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+
+        if ( ! postalCodeRegex.test(postalCode) ) {
+          return this.AddressPostalCodeError;
+        }
       }
     }
   ],
@@ -306,7 +333,12 @@ foam.CLASS({
     { name: 'AddressLineLabel', message: 'Address line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
-    { name: 'PostalCodeLabel', message: 'Postal Code *' }
+    { name: 'PostalCodeLabel', message: 'Postal Code *' },
+    { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' },
+    { name: 'AddressError', message: 'Street address is invalid' },
+    { name: 'AddressCityError', message: 'City name is invalid' },
+    { name: 'AddressProvinceError', message: 'Invalid province option' },
+    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
   ],
 
   methods: [

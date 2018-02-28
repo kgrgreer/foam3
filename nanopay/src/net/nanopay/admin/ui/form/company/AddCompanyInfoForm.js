@@ -11,7 +11,7 @@ foam.CLASS({
     'goNext'
   ],
 
-  css:` 
+  css:`
     ^ .labelTitle {
       font-size: 14px;
       font-weight: bold;
@@ -47,7 +47,23 @@ foam.CLASS({
       margin-left: 60px;
     }
   `,
-  
+
+  messages: [
+    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
+    { name: 'FirstNameLabel', message: 'First Name *' },
+    { name: 'LastNameLabel', message: 'Last Name *' },
+    { name: 'JobTitleLabel', message: 'Job Title *' },
+    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
+    { name: 'EmailLabel', message: 'Email *' },
+    { name: 'PasswordLabel', message: 'Password *' },
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' },
+    { name: 'EmailError', message: 'Invalid email address' },
+    { name: 'PhoneError', message: 'Invalid phone number' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -57,6 +73,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
+      },
+      validateObj: function(firstName) {
+        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
+
+        if ( ! firstName || ! hasOkLength ) {
+          return this.FormError;
+        }
       }
     },
     {
@@ -67,6 +90,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
+      },
+      validateObj: function(lastName) {
+        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
+
+        if ( ! lastName || ! hasOkLength ) {
+          return this.FormError;
+        }
       }
     },
     {
@@ -77,6 +107,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
+      },
+      validateObj: function(phoneNumber) {
+        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
+
+          if ( ! phoneNumber || ! hasOkLength ) {
+            return this.PhoneError;
+          }
       }
     },
     {
@@ -87,6 +124,15 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.jobTitle = newValue;
+      },
+      validateObj: function(jobTitle) {
+        if ( ! jobTitle ) {
+          return this.JobTitleEmptyError;
+        }
+
+        if ( jobTitle.length > 35 ) {
+          return this.JobTitleLengthError;
+        }
       }
     },
     {
@@ -97,6 +143,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.email = newValue;
+      },
+      validateObj: function(email) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if ( ! emailRegex.test(email) ) {
+          return this.EmailError;
+        }
       }
     },
     {
@@ -119,17 +172,6 @@ foam.CLASS({
         this.viewData.confirmPassword = newValue;
       }
     }
-  ],
-
-  messages: [
-    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
-    { name: 'FirstNameLabel', message: 'First Name *' },
-    { name: 'LastNameLabel', message: 'Last Name *' },
-    { name: 'JobTitleLabel', message: 'Job Title *' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'EmailLabel', message: 'Email *' },
-    { name: 'PasswordLabel', message: 'Password *' },
-    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
