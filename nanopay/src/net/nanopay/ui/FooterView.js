@@ -30,13 +30,16 @@ foam.CLASS({
           display: inline-block;
           opacity: 0.6;
           float: left;
-          margin-left: 25px;
+          margin-left: 50px;
         }
         ^ .copyright-label {
           margin-right: 50px;
           float: right;
         }
-
+        ^ .col {
+          display: inline-block;
+          vertical-align: middle;
+        }
         ^ .copyright-label, 
         ^ .net-nanopay-ui-ActionView-goToTerm,
         ^ .net-nanopay-ui-ActionView-goToPrivacy,
@@ -50,7 +53,6 @@ foam.CLASS({
           font-stretch: normal;
           line-height: normal;
           letter-spacing: 0.2px;
-          text-align: left;
           color: #272727;
           width: auto !important;
           padding: 0 10px !important;
@@ -83,16 +85,18 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().style({'display':'inline-block'})
-          .start('h3')
-            .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
-            .add('|')
-            .start(this.GO_TO_TERM).end()
-            .add('|')
-            .start(this.GO_TO_PRIVACY).end()
-            .addClass('copyright-label').add('Copyright © 2018 ' + this.webApp + '. All right reserved.').end()
-          .end()
-        .end();
+        .start('h3').addClass('col')
+          .add('Powered by')
+          .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
+          .add('|')
+          .start(this.GO_TO_TERM).end()
+          .add('|')
+          .start(this.GO_TO_PRIVACY).end()
+        .end()
+        .start('div').addClass('col').addClass('copyright-label')
+          .start('p').add('Copyright © 2018 ' + this.webApp + '. All right reserved.').end()
+        .end()
+        
     }
   ],
 
