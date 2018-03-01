@@ -214,8 +214,9 @@ foam.CLASS({
     {
       name: 'province',
       view: function(_, X) {
+        var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO,
+          dao: X.regionDAO.where(expr.EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')),
           objToChoice: function(a){
             return [a.id, a.name];
           }
