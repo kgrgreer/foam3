@@ -36,20 +36,20 @@ public class InvoiceVoidEmailDAO
 
     invoice = (Invoice) super.put_(x , obj);
     AppConfig       config    = (AppConfig) x.get("appConfig");
-    User            payer     = (User) userDAO_.find_(x, invoice.getPayerId() );
+    User            payee     = (User) userDAO_.find_(x, invoice.getPayeeId() );
     EmailService    email     = (EmailService) x.get("email");
     EmailMessage    message   = new EmailMessage();
     NumberFormat    formatter = NumberFormat.getCurrencyInstance();
 
-    message.setTo(new String[]{payer.getEmail()});
+    message.setTo(new String[]{payee.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("account", invoice.getId());
     args.put("amount",  formatter.format(invoice.getAmount()/100.00));
     args.put("link",    config.getUrl());
-    args.put("name",    payer.getFirstName());
+    args.put("name",    payee.getFirstName());
     
     try{
-      email.sendEmailFromTemplate(payer, message, "voidInvoice", args);
+      email.sendEmailFromTemplate(payee, message, "voidInvoice", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending invoice voided email.", t);
     }
