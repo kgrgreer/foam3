@@ -98,7 +98,8 @@ foam.CLASS({
       }
     },
     'mode',
-    'up'
+    //It is an Element that refer to subContent
+    'subContent'
   ],
 
   messages: [
@@ -118,14 +119,14 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.up = this
+      this.subContent = this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent');
-        this.up.forEach(this.bankImgs, function(e) {
-            if ( e.index === 15 ) return;
+        this.subContent.forEach(this.bankImgs, function(e) {
+            if ( e.index === self.bankImgs[15].index ) return;
             this.start('div').addClass('optionSpacer').addClass('institution')
               .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
               .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
@@ -145,14 +146,16 @@ foam.CLASS({
         .end()
         .start('div').style({'clear' : 'both'}).end();
 
+        //get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
+        //do not show Flinks demo in Production mode
         this.nSpecDAO.find("appConfig").then(function(response){
           self.mode = response.service.mode.label;
           if ( self.mode && self.mode !== "Production") {
-            self.up.start('div').addClass('optionSpacer').addClass('institution')
-            .addClass(self.selectedOption$.map(function(o) { return o == 15 ? 'selected' : ''; }))
+            self.subContent.start('div').addClass('optionSpacer').addClass('institution')
+            .addClass(self.selectedOption$.map(function(o) { return o == self.bankImgs[15].index ? 'selected' : ''; }))
             .start({class: 'foam.u2.tag.Image', data: self.bankImgs[15].image}).addClass('image').end()
             .on('click', function() {
-              self.selectedOption = 15;
+              self.selectedOption = self.bankImgs[15].index;
             })
           .end()
           }
