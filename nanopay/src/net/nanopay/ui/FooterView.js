@@ -64,7 +64,7 @@ foam.CLASS({
       class: 'String',
       name: 'aboutLabel',
       factory: function () {
-        return this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
+        return 'Powered by ' + this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
       }
     }
   ],
@@ -78,7 +78,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
-          .add('Powered by').style({'margin-left':'50px'})
           .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
           .add('|')
           .start(this.GO_TO_TERM).end()
