@@ -83,7 +83,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
+        .start().style({'display':'inline-block'})
           .start('h3')
             .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
             .add('|')
