@@ -29,27 +29,31 @@ public class InvoiceVoidEmailDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
+    User    payer   = (User) userDAO_.find_(x, invoice.getPayerId() );
 
     // Checks to make sure invoice is set to Void
     if ( ! invoice.getPaymentMethod().name().equals("VOID") )
       return getDelegate().put_(x, obj);
 
+    // Makes sure an email isn't sent if the creator is the payer of the invoice
+    if ( payer.getId() == invoice.getCreatedBy() )
+      return getDelegate().put_(x, obj);
+
     invoice = (Invoice) super.put_(x , obj);
     AppConfig       config    = (AppConfig) x.get("appConfig");
-    User            payee     = (User) userDAO_.find_(x, invoice.getPayeeId() );
     EmailService    email     = (EmailService) x.get("email");
     EmailMessage    message   = new EmailMessage();
     NumberFormat    formatter = NumberFormat.getCurrencyInstance();
 
-    message.setTo(new String[]{payee.getEmail()});
+    message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("account", invoice.getId());
     args.put("amount",  formatter.format(invoice.getAmount()/100.00));
     args.put("link",    config.getUrl());
-    args.put("name",    payee.getFirstName());
-    
+    args.put("name",    payer.getFirstName());
+
     try{
-      email.sendEmailFromTemplate(payee, message, "voidInvoice", args);
+      email.sendEmailFromTemplate(payer, message, "voidInvoice", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending invoice voided email.", t);
     }
