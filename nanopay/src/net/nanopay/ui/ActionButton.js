@@ -28,6 +28,7 @@ foam.CLASS({
           display: inline-block;
         }
         ^ .button-text {
+          pointer-events: none;
           width: 31px;
           display: inline-block;
           font-family: 'Roboto';
