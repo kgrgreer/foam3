@@ -36,7 +36,7 @@ public class CsvUtil {
   protected ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
     protected SimpleDateFormat initialValue() {
-      return new SimpleDateFormat("yyyy-MM-dd");
+      return new SimpleDateFormat("MM/dd/yyyy");
     }
   };
 
@@ -131,7 +131,7 @@ public class CsvUtil {
           alternaFormat.setTransitNumber(bankAccount.getTransitNumber());
           alternaFormat.setBankNumber(bankAccount.getInstitutionNumber());
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
-          alternaFormat.setAmountDollar(String.format("%.2f", (t.getAmount() / 100.0)));
+          alternaFormat.setAmountDollar(String.format("$"+"%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
           alternaFormat.setProcessDate(generateProcessDate(now));
           alternaFormat.setReference(generateReferenceId());
