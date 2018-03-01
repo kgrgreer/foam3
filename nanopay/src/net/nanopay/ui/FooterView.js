@@ -67,7 +67,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start()
+        .start().style({'display':'inline-block'})
           .start('h3')
             .start(this.GO_TO_NANOPAY).end()
             .add('|')
@@ -95,7 +95,6 @@ foam.CLASS({
       label: 'Terms and Conditions',
       code: function(X) {
         var self = this;
-        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"
         var termsURL = 'https://nanopay.net/termsandconditions/';
         self.window.location.assign(termsURL);
       }
@@ -105,8 +104,7 @@ foam.CLASS({
       label: 'Privacy Policy',
       code: function(X) {
         var self = this;
-        //var alternaUrl = self.window.location.orgin + "/privacy-policy/"
-        var priacyURL = 'https://nanopay.net/privacy-policy/';
+        var privacyURL = 'https://nanopay.net/privacy-policy/';
         self.window.location.assign(privacyURL);
       }
     }
