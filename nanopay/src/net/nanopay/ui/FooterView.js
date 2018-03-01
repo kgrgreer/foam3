@@ -32,20 +32,12 @@ foam.CLASS({
         ^ .copyright-label {
           margin-right: 50px;
           float: right;
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #272727;
-          width: auto !Important;
-          padding: 0 10px !Important;
         }
-        .net-nanopay-ui-ActionView-goToTerm {
+
+        ^ .copyright-label, 
+        ^ .net-nanopay-ui-ActionView-goToTerm,
+        ^ .net-nanopay-ui-ActionView-goToPrivacy,
+        ^ .net-nanopay-ui-ActionView-goToNanopay {
           background: transparent;
           opacity: 0.6;
           font-family: Roboto;
@@ -57,74 +49,14 @@ foam.CLASS({
           letter-spacing: 0.2px;
           text-align: left;
           color: #272727;
-          width: auto !Important;
-          padding: 0 10px !Important;
+          width: auto !important;
+          padding: 0 10px !important;
         }
-        .net-nanopay-ui-ActionView-goToTerm:hover {
+
+        ^ .net-nanopay-ui-ActionView-goToTerm:hover,
+        ^ .net-nanopay-ui-ActionView-goToPrivacy:hover,
+        ^ .net-nanopay-ui-ActionView-goToNanopay:hover {
           text-decoration: underline;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #272727;
-        }
-        .net-nanopay-ui-ActionView-goToPrivacy {
-          background: transparent;
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #272727;
-          width: auto !Important;
-          padding: 0 10px !Important;
-        }
-        .net-nanopay-ui-ActionView-goToPrivacy:hover {
-          text-decoration: underline;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #272727;
-        }
-        .net-nanopay-ui-ActionView-goToNanopay {
-          background: transparent;
-          opacity: 0.6;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #272727;
-          width: auto !Important;
-          padding: 0 10px !Important;
-        }
-        .net-nanopay-ui-ActionView-goToNanopay:hover {
-          text-decoration: underline;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #272727;
         }
       */}
     })
