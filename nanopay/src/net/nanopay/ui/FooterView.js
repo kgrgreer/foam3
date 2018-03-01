@@ -90,8 +90,8 @@ foam.CLASS({
             .start(this.GO_TO_TERM).end()
             .add('|')
             .start(this.GO_TO_PRIVACY).end()
+            .addClass('copyright-label').add('Copyright © 2018 ' + this.webApp + '. All right reserved.').end()
           .end()
-          .start('h3').addClass('copyright-label').add('Copyright © 2018 ' + this.webApp + '. All right reserved.').end()
         .end();
     }
   ],
