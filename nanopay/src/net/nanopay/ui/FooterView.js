@@ -55,6 +55,9 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-goToNanopay:hover {
           text-decoration: underline;
         }
+        ^ .net-nanopay-ui-ActionView-goToNanopay {
+          padding-left: 50px;
+        }
       */}
     })
   ],
@@ -78,7 +81,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('col')
-          .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
+          .start(this.GO_TO_NANOPAY, { label: this.aboutLabel })
+            .style({
+              'margin-left': '50px'
+            })
+          .end()
           .add('|')
           .start(this.GO_TO_TERM).end()
           .add('|')
