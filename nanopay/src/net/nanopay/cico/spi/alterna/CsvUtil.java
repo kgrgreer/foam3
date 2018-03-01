@@ -131,7 +131,7 @@ public class CsvUtil {
           alternaFormat.setTransitNumber(bankAccount.getTransitNumber());
           alternaFormat.setBankNumber(bankAccount.getInstitutionNumber());
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
-          alternaFormat.setAmountDollar(String.format("$"+"%.2f", (t.getAmount() / 100.0)));
+          alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
           alternaFormat.setProcessDate(generateProcessDate(now));
           alternaFormat.setReference(generateReferenceId());
