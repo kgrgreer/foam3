@@ -220,6 +220,13 @@ foam.CLASS({
         //     return [purpose.code, purpose.code + ' - ' + purpose.description];
         //   }
         // })
+
+        return foam.u2.view.ChoiceView.create({
+          dao: X.transactionPurposeDAO,
+          objToChoice: function(purpose) {
+            return [purpose.id, purpose.purposeCode + ' - ' + purpose.description];
+          }
+        });
       }
     },
     {
@@ -334,15 +341,15 @@ foam.CLASS({
             .start(this.PAYEES, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
             .start('div').enableClass('hidden', this.invoiceMode$).addClass('caret').end()
           .end()
-          // .callIf(this.type == 'foreign', function() {
-          //   this.start()
-          //     .start('p').add(self.PurposeLabel).end()
-          //     .start('div').addClass('dropdownContainer')
-          //       .add(self.PURPOSE)
-          //       .start('div').addClass('caret').end()
-          //     .end()
-          //   .end()
-          // })
+           // .callIf(this.type == 'foreign', function() {
+            .start()
+              .start('p').add(self.PurposeLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .add(self.PURPOSE)
+                .start('div').addClass('caret').end()
+              .end()
+            .end()
+           // })
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
