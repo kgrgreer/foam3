@@ -15,6 +15,14 @@ foam.CLASS({
     'regionDAO'
   ],
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.Region'
+  ],
+
   css:`
     ^ .labelTitle {
       font-size: 14px;
@@ -278,12 +286,15 @@ foam.CLASS({
     {
       name: 'province',
       view: function(_, X) {
+        var choices = X.data.slot(function (country) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, country || ""));
+        });
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
+          objToChoice: function(region) {
+            return [region.id, region.name];
+          },
+          dao$: choices
+        });
       },
       factory: function() {
         return this.viewData.province;
