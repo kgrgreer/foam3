@@ -22,15 +22,8 @@ foam.CLASS({
           position: relative;
           top: 60;
         }
-        ^ h3{
-          font-size: 14px;
-          font-weight: 300;
-          text-align: center;
-          color: #262626;
-          display: inline-block;
-          opacity: 0.6;
-          float: left;
-          margin-left: 50px;
+        ^ div {
+          font-size:14px;
         }
         ^ .copyright-label {
           margin-right: 50px;
@@ -57,7 +50,6 @@ foam.CLASS({
           width: auto !important;
           padding: 0 10px !important;
         }
-
         ^ .net-nanopay-ui-ActionView-goToTerm:hover,
         ^ .net-nanopay-ui-ActionView-goToPrivacy:hover,
         ^ .net-nanopay-ui-ActionView-goToNanopay:hover {
@@ -85,8 +77,8 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('h3').addClass('col')
-          .add('Powered by')
+        .start('div').addClass('col')
+          .add('Powered by').style({'margin-left':'50px'})
           .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
           .add('|')
           .start(this.GO_TO_TERM).end()
