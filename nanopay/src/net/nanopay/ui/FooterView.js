@@ -6,7 +6,10 @@ foam.CLASS({
   documentation: 'View to display footer, including copyright label',
 
   imports: [
-    'webApp'
+    'webApp',
+    'aboutUrl',
+    'privacyUrl',
+    'termsUrl'
   ],
 
   axioms: [
@@ -62,14 +65,27 @@ foam.CLASS({
     })
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'aboutLabel',
+      factory: function () {
+        return this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
+      }
+    }
+  ],
+
   methods: [
     function initE(){
       this.SUPER();
+
+      console.log(this.aboutLabel);
+
       this
         .addClass(this.myClass())
         .start()
           .start('h3')
-            .start(this.GO_TO_NANOPAY).end()
+            .start(this.GO_TO_NANOPAY, { label: this.aboutLabel }).end()
             .add('|')
             .start(this.GO_TO_TERM).end()
             .add('|')
@@ -83,31 +99,22 @@ foam.CLASS({
   actions: [
      {
       name: 'goToNanopay',
-      label: 'nanopay.net',
       code: function(X) {
-        var self = this;
-        var nanopayURL = 'https://nanopay.net';
-        self.window.location.assign(nanopayURL);
+        this.window.location.assign(X.aboutUrl);
       }
     },
     {
       name: 'goToTerm',
       label: 'Terms and Conditions',
       code: function(X) {
-        var self = this;
-        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"
-        var termsURL = 'https://nanopay.net/termsandconditions/';
-        self.window.location.assign(termsURL);
+        this.window.location.assign(X.termsUrl);
       }
     },
     {
       name: 'goToPrivacy',
       label: 'Privacy Policy',
       code: function(X) {
-        var self = this;
-        //var alternaUrl = self.window.location.orgin + "/privacy-policy/"
-        var priacyURL = 'https://nanopay.net/privacy-policy/';
-        self.window.location.assign(privacyURL);
+        this.window.location.assign(X.privacyUrl);
       }
     }
   ]

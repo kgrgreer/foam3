@@ -28,7 +28,10 @@ foam.CLASS({
 
   exports: [
     'account',
-    'as ctrl'
+    'aboutUrl',
+    'privacyUrl',
+    'termsUrl',
+    'as ctrl',
   ],
 
   css: `
@@ -64,6 +67,9 @@ foam.CLASS({
   `,
 
   properties: [
+    'aboutUrl',
+    'privacyUrl',
+    'termsUrl',
     {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
