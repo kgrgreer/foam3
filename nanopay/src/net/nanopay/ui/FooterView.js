@@ -64,7 +64,7 @@ foam.CLASS({
       class: 'String',
       name: 'aboutLabel',
       factory: function () {
-        return 'Powered by ' + this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
+        return this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
       }
     }
   ],
