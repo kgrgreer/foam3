@@ -53,41 +53,43 @@ foam.CLASS({
       }
       ^ .net-nanopay-ui-ActionView-closeModal{
         position: relative;
-        right: -330px;
+        right: 0px;
         width: 50px;
         height: 40px;
-        opacity: 0.01;
+        background: transparent;
+        margin-top: 0;
+        top: 0;
+        right: 0;
       }
     */}
     })
   ],
-  
+
   methods: [
     function initE(){
     this.SUPER();
     var self = this;
-    
+
     this
     .addClass(this.myClass())
       .start()
         .start()
           .start().addClass('container')
             .start().addClass('title').add(this.title).end()
-            .start({class:'foam.u2.tag.Image', data: 'images/ic-cancelwhite.svg'}).addClass('close')
-              .add(this.CLOSE_MODAL)
-            .end()
+            .start(this.CLOSE_MODAL).addClass('close').end()
           .end()
         .end()
       .end()
-    } 
+    }
   ],
-    
+
   actions: [
     {
       name: 'closeModal',
+      icon: 'images/ic-cancelwhite.svg',
       code: function(X){
         X.closeDialog()
       }
     }
-  ] 
+  ]
 });

@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.User'
   ],
 
-  exports: [ 
+  exports: [
     'as data',
     'filter',
     'filteredUserDAO',
@@ -49,19 +49,6 @@ foam.CLASS({
       box-shadow:none;
       padding: 10px 10px 10px 31px;
       font-size: 14px;
-    }
-    ^ .inline-float-right {
-      float: right;
-      display: inline-block;
-    }
-    ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
-      margin-right: 5px;
     }
     ^ .net-nanopay-ui-ActionView-addBank {
       background-color: #59A5D5;
@@ -134,7 +121,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      
+
       this
         .addClass(this.myClass())
         .start()
@@ -143,9 +130,7 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
               .start(this.ADD_BANK).end()
-              .start().addClass('inline-float-right')
-                .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
-              .end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)

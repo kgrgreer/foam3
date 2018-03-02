@@ -70,8 +70,8 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',           message: 'Step 2: Please verify your bank account.' },
-    { name: 'Instructions1',  message: 'We have deposited an amount between $0.01-0.99 to the account you have provided. The random deposit amount will appear in your account 2-3 business days from the account creation date.' },
-    { name: 'Instructions2',  message: 'Please input the correct amount below. If the amount is correct your account will be verified.' }
+    { name: 'Instructions1',  message: 'We have debited and credited an amount between $0.01 - $0.99 to the account you have provided. The amount will appear in your account 2-3 business days from the account creation date.' },
+    { name: 'Instructions2',  message: 'Please input the amount below to verify your account.' }
   ],
 
   properties: [

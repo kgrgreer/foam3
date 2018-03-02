@@ -89,7 +89,7 @@ foam.CLASS({
     }
     ^ .searchIcon {
       position: absolute;
-      margin-left: 20px;
+      margin-left: 5px;
       margin-top: 8px;
     }
     ^ .net-nanopay-ui-ActionView-sendTransfer {
@@ -143,7 +143,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: #ffffff;
       display: inline-block;
-      margin-left: 15px;
       margin-bottom: 30px;
       vertical-align: top;
       border: 0;
@@ -165,12 +164,7 @@ foam.CLASS({
       width: 175px;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
+      margin-right: 0;
     }
     ^ .net-nanopay-ui-ActionView-filterButton {
       position: absolute;
@@ -234,11 +228,9 @@ foam.CLASS({
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
-              .start().addClass('inline')
-                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).end()
-              .end()
               .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
@@ -253,6 +245,7 @@ foam.CLASS({
   actions: [
     {
       name: 'exportButton',
+      label: 'Export',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
       }
