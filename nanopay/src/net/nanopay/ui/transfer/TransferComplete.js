@@ -36,14 +36,6 @@ foam.CLASS({
           letter-spacing: 0.4px;
           color: #093649;
         }
-        ^ .net-nanopay-ui-ActionView-exportModal{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          opacity: 0.01;
-          cursor: pointer;
-          z-index: 100;
-        }
         ^status-check p {
           display: inline-block;
           margin-left: 10px;
@@ -119,9 +111,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().style({ float: 'right'})
-          .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button hide').add(this.EXPORT_MODAL).enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
-        .end()
+        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).addClass('import-button hide').enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))
             .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 0 }))
@@ -149,7 +139,7 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'exportModal',
+      name: 'exportButton',
       code: function(X){
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.viewData.transaction}));
       }

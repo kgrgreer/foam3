@@ -3,16 +3,16 @@ foam.CLASS({
   name: 'SalesDetailView',
   extends: 'foam.u2.View',
 
-  requires: [ 
-    'net.nanopay.invoice.model.Invoice', 
+  requires: [
+    'net.nanopay.invoice.model.Invoice',
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage'
   ],
 
-  imports: [ 
-    'stack', 
-    'hideReceivableSummary', 
+  imports: [
+    'stack',
+    'hideReceivableSummary',
     'invoiceDAO',
     'user',
     'ctrl'
@@ -21,11 +21,11 @@ foam.CLASS({
   exports: [
     'as data',
     'hideReceivableSummary',
-    'openExportModal' 
+    'openExportModal'
   ],
-  
+
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions',
   ],
 
   constants: {
@@ -49,14 +49,6 @@ foam.CLASS({
       vertical-align: top;
       position: sticky;
       z-index: 10;
-    }
-    ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
     }
     ^ .net-nanopay-ui-ActionView-recordPayment {
       background-color: #59A5D5;
@@ -126,7 +118,7 @@ foam.CLASS({
           this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
         })
         .start(this.RECORD_PAYMENT).end()
-        .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' } }).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
+        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
         .start('h5').add('Bill to ', this.data.payerName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})

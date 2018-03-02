@@ -159,6 +159,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.birthday = newValue;
+      },
+      validateObj: function(birthdate) {
+        var year = birthdate.getFullYear();
+        var currentYear = new Date().getFullYear();
+        if ( currentYear - year < 16 ) return this.YearOfBirthError;
       }
     },
     {
@@ -297,7 +302,8 @@ foam.CLASS({
     { name: 'AddressError', message: 'Street address is invalid' },
     { name: 'AddressCityError', message: 'City name is invalid' },
     { name: 'AddressProvinceError', message: 'Invalid province option' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
+    { name: 'AddressPostalCodeError', message: 'Invalid postal code' },
+    { name: 'YearOfBirthError', message: 'User should be at least 16 years of age to register'}
   ],
 
   methods: [
