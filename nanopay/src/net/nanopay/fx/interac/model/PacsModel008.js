@@ -4,6 +4,8 @@ foam.CLASS({
 
   documentation: 'Pacs Message for Interac',
 
+  imports: [ 'transactionDAO'],
+
   javaImports: [
     'java.util.Date',
     'net.nanopay.iso20022.GroupHeader70',
@@ -14,7 +16,11 @@ foam.CLASS({
     'net.nanopay.iso20022.PaymentTransaction91',
     'net.nanopay.iso20022.PaymentIdentification3',
     'net.nanopay.iso20022.OriginalGroupHeader13',
-    'net.nanopay.iso20022.OriginalGroupInformation27'
+    'net.nanopay.iso20022.OriginalGroupInformation27',
+
+    'net.nanopay.tx.TransactionDAO',
+    'foam.dao.DAO',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -25,39 +31,14 @@ foam.CLASS({
     },
     {
 			class: 'FObjectProperty',
+			name: 'PmtTpInf',
+			of: 'net.nanopay.iso20022.PaymentTypeInformation21'
+		},
+    {
+			class: 'FObjectProperty',
 			name: 'CdtTrfTxInf',
 			of: 'net.nanopay.iso20022.CreditTransferTransaction25'
 		}
-    /*{
-			class: 'FObjectProperty',
-			name: 'SttlmInf',
-			of: 'net.nanopay.iso20022.SettlementInstruction4'
-		},*/
-    /*{
-			class:  'FObjectProperty',
-			name:  'PmtId',
-			of:  'net.nanopay.iso20022.PaymentIdentification3'
-		},*/
-    /*{
-			class: 'FObjectProperty',
-			name: 'PmtId',
-			of: 'net.nanopay.iso20022.PaymentTypeInformation21'
-		},*/
-    /*{
-			class: 'FObjectProperty',
-			name: 'PstlAdr',
-			of: 'net.nanopay.iso20022.PostalAddress6'
-		},*/
-    /*{
-			class:  'FObjectProperty',
-			name:  'CdtTfTs',
-			of:  'net.nanopay.iso20022.CreditTransferTransaction25'
-		},*/
-    /*{
-			class:  'FObjectProperty',
-			name:  'PmtId',
-			of:  'net.nanopay.iso20022.BranchAndFinancialInstitutionIdentification5'
-		}*/
 
   ],
 
@@ -73,9 +54,18 @@ foam.CLASS({
           OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
           orgnlGrpInfAndSts.setOrgnlMsgId(this.getGrpHdr().getMsgId());
           orgnlGrpInfAndSts.setOrgnlCreDtTm(this.getGrpHdr().getCreDtTm());
+                    System.out.println("dkfjkd: " + this.getGrpHdr().getCreDtTm());
           orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
-          orgnlGrpInfAndSts.setGrpSts("ACSP");   // ACSP or ACSC
-          System.out.println("dkfjkd: " + this.getGrpHdr().getCreDtTm());
+
+          DAO txnDAO     = (DAO) getX().get("transactionDAO");
+          Transaction txn = (Transaction) txnDAO.find(Long.parseLong(this.getCdtTrfTxInf().getPmtId().getTxId()));
+          String strStatus = "";
+
+          if ( txn != null ) {
+            strStatus = txn.getStatus();
+          } else {
+            // some error
+          }
 
           PaymentTransaction91 paymentTransaction91 = new PaymentTransaction91();
           paymentTransaction91.setStsId(java.util.UUID.randomUUID().toString().replace("-", ""));
@@ -83,8 +73,9 @@ foam.CLASS({
           paymentTransaction91.setOrgnlEndToEndId(this.getCdtTrfTxInf().getPmtId().getEndToEndId());
           paymentTransaction91.setOrgnlTxId(this.getCdtTrfTxInf().getPmtId().getTxId());
 
-          paymentTransaction91.setTxSts("ACSP");  // ACSP or ACSC
-
+          paymentTransaction91.setTxSts(strStatus);  // ACSP or ACSC
+          orgnlGrpInfAndSts.setGrpSts(strStatus);
+          pacsModel002.setGrpSts("ACSP");
 
           pacsModel002.setGrpHdr(this.getGrpHdr());
           pacsModel002.getGrpHdr().setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
@@ -92,14 +83,6 @@ foam.CLASS({
 
           pacsModel002.setOrgnlGrpInfAndSts(orgnlGrpInfAndSts);
           pacsModel002.setTxInfAndSts(paymentTransaction91);
-
-          //--pacsModel002.getTxInfAndSts().setStsId(java.util.UUID.randomUUID().toString().replace("-", ""));
-          //--pacsModel002.getTxInfAndSts().setOrgnlEndToEndId("OrgnlEndToEndId");
-
-          //--OriginalGroupHeader3 ognlGrpHdr3 = new OriginalGroupHeader3();
-
-          //--ognlGrpHdr3.setOrgnlMsgId(this.GroupHeader53.MsgId);
-          pacsModel002.setGrpSts("ACSP");  // ACSP or ACSC
 
           return pacsModel002;
           `
