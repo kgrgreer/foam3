@@ -32,7 +32,7 @@ foam.CLASS({
   messages: [
     {
       name: 'placeholderText',
-      message: 'You don’t have any bills to pay now. When you receive an invoice from your partners, it will show up here.'
+      message: 'You haven’t sent any invoices yet. After you send an invoice to your partners, it will show up here.'
     }
   ],
   
