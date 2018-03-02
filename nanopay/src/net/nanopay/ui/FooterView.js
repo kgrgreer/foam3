@@ -92,7 +92,7 @@ foam.CLASS({
           .start(this.GO_TO_PRIVACY).end()
         .end()
         .start('div').addClass('col').addClass('copyright-label')
-          .start('p').add('Copyright © 2018 ' + this.webApp + '. All right reserved.').end()
+          .start('p').add('Copyright © 2018 ' + this.webApp + '. All rights reserved.').end()
         .end()
         
     }

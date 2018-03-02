@@ -25,7 +25,7 @@ public class TransactionAmountCheckDAO
   public FObject put_(X x, FObject obj) {
     Transaction t = (Transaction) obj;
     if ( t.getTotal() > amount_ ) {
-      throw new RuntimeException("Transaction limit exceeded");
+      throw new RuntimeException("Transaction limit exceeded. ");
     }
     return super.put_(x, obj);
   }
