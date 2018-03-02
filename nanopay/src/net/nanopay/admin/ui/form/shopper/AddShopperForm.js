@@ -42,12 +42,7 @@ foam.CLASS({
       this.SUPER();
     },
 
-    function validateAge() {
-      var year = this.viewData.birthday.getFullYear();
-      var currentYear = new Date().getFullYear();
-      if ( currentYear - year < 16 ) return false;
-      return true;
-    }
+
   ],
 
   actions: [
@@ -104,11 +99,6 @@ foam.CLASS({
 
           if ( !this.validatePhone(shopperInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
-            return;
-          }
-
-          if ( ! this.validateAge() ) {
-            this.add(self.NotificationMessage.create({ message: 'User should be at least 16 years of age to register.', type: 'error' }));
             return;
           }
 
