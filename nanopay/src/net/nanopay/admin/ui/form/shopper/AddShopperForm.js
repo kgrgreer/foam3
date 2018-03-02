@@ -17,12 +17,12 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'email',
-    'formatCurrency', 
+    'formatCurrency',
     'validateEmail',
     'validatePostalCode',
-    'validatePhone',   
+    'validatePhone',
     'stack',
-    'transactionDAO',    
+    'transactionDAO',
     'user',
     'userDAO'
   ],
@@ -36,11 +36,13 @@ foam.CLASS({
       this.views = [
         { parent: 'addShopper', id: 'form-addShopper-info',      label: 'Shopper Info', view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperInfoForm' } },
         { parent: 'addShopper', id: 'form-addShopper-sendMoney', label: 'Send Money',   view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperSendMoneyForm' } },
-        { parent: 'addShopper', id: 'form-addShopper-review',    label: 'Review',       view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperReviewForm' } },        
+        { parent: 'addShopper', id: 'form-addShopper-review',    label: 'Review',       view: { class: 'net.nanopay.admin.ui.form.shopper.AddShopperReviewForm' } },
         { parent: 'addShopper', id: 'form-addShopper-done',      label: 'Done',         view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
-    }
+    },
+
+
   ],
 
   actions: [
@@ -97,7 +99,7 @@ foam.CLASS({
 
           if ( !this.validatePhone(shopperInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
-            return; 
+            return;
           }
 
           self.subStack.push(self.views[self.subStack.pos + 1].view);
