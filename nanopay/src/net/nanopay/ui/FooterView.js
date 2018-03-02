@@ -7,7 +7,6 @@ foam.CLASS({
 
   imports: [
     'webApp',
-    'aboutUrl',
     'privacyUrl',
     'termsUrl'
   ],
@@ -67,7 +66,7 @@ foam.CLASS({
       class: 'String',
       name: 'aboutLabel',
       factory: function () {
-        return 'Powered by ' + this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
+        return 'Powered by nanopay';
       }
     }
   ],
@@ -102,7 +101,7 @@ foam.CLASS({
      {
       name: 'goToNanopay',
       code: function(X) {
-        this.window.location.assign(X.aboutUrl);
+        this.window.location.assign('https://nanopay.net');
       }
     },
     {

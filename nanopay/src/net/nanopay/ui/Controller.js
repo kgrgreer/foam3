@@ -28,7 +28,6 @@ foam.CLASS({
 
   exports: [
     'account',
-    'aboutUrl',
     'privacyUrl',
     'termsUrl',
     'as ctrl',
@@ -80,7 +79,6 @@ foam.CLASS({
   `,
 
   properties: [
-    'aboutUrl',
     'privacyUrl',
     'termsUrl',
     {
