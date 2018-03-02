@@ -109,7 +109,7 @@ try {
 GetObjectRequest request = new GetObjectRequest(getBucket(), key);
 S3Object result = getS3Client().getObject(request);
 ObjectMetadata metadata = result.getObjectMetadata();
-return new InputStreamBlob(result.getObjectContent(), metadata.getContentLength());`
+return new AmazonS3InputStreamBlob(result, metadata.getContentLength());`
     },
     {
       name: 'urlFor_',

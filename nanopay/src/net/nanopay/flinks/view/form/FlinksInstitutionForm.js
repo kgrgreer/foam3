@@ -7,7 +7,8 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'stack'
+    'stack',
+    'nSpecDAO'
   ],
 
   axioms: [
@@ -95,7 +96,10 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.selectedOption = newValue;
       }
-    }
+    },
+    'mode',
+    //It is an Element that refer to subContent
+    'subContent'
   ],
 
   messages: [
@@ -115,13 +119,14 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this
+      this.subContent = this
         .addClass(this.myClass())
         .start('div').addClass('subTitle')
           .add(this.Step)
         .end()
-        .start('div').addClass('subContent')
-          .forEach(this.bankImgs, function(e) {
+        .start('div').addClass('subContent');
+        this.subContent.forEach(this.bankImgs, function(e) {
+            if ( e.index === self.bankImgs[15].index ) return;
             this.start('div').addClass('optionSpacer').addClass('institution')
               .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
               .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
@@ -140,6 +145,21 @@ foam.CLASS({
           .on('click', self.otherBank)
         .end()
         .start('div').style({'clear' : 'both'}).end();
+
+        //get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
+        //do not show Flinks demo in Production mode
+        this.nSpecDAO.find("appConfig").then(function(response){
+          self.mode = response.service.mode.label;
+          if ( self.mode && self.mode !== "Production") {
+            self.subContent.start('div').addClass('optionSpacer').addClass('institution')
+            .addClass(self.selectedOption$.map(function(o) { return o == self.bankImgs[15].index ? 'selected' : ''; }))
+            .start({class: 'foam.u2.tag.Image', data: self.bankImgs[15].image}).addClass('image').end()
+            .on('click', function() {
+              self.selectedOption = self.bankImgs[15].index;
+            })
+          .end()
+          }
+        });
     }
   ],
 
