@@ -64,13 +64,13 @@ public class PacsWebAgent
 
 
         out.println("</select></span>");
-        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format onchange=changeFormat() style=margin-left:25><option value=json selected>JSON</option><option value=xml>XML</option></select></span>");
+        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format onchange=changeFormat() style=margin-left:40><option value=json selected>JSON</option><option value=xml>XML</option></select></span>");
         out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5 ><option value=select>SELECT</option></select></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
         out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
         out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
-        out.println("<script>function changeFormat() {var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}</script>");
+        //out.println("<script>function changeFormat() {var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}</script>");
 
         out.println();
 
@@ -102,7 +102,7 @@ public class PacsWebAgent
               return;
             }
 
-            PacsModel002  pacsModel002 = pacsModel008.generatePacs002Msgby008Msg();
+            PacsModel002 pacsModel002 = pacsModel008.generatePacs002Msgby008Msg();
 
             outputterJson.output(pacsModel002);
           } else {
@@ -118,7 +118,7 @@ public class PacsWebAgent
               return;
             }
 
-            PacsModel002  pacsModel002 = pacsModel028.generatePacs002Msgby028Msg();
+            PacsModel002 pacsModel002 = pacsModel028.generatePacs002Msgby028Msg();
 
             outputterJson.output(pacsModel002);
           }
@@ -132,7 +132,7 @@ public class PacsWebAgent
          XMLStreamReader xmlReader  = factory.createXMLStreamReader(reader);
          List<FObject>   objList    = xmlSupport.fromXML(x, xmlReader, PacsModel008.class);
 
-         /*if ( objList.size() == 0 ) {
+         if ( objList.size() == 0 ) {
            out.println("Parse Error : ");
 
            String message = getParsingError(x, buffer_.toString());
@@ -140,14 +140,13 @@ public class PacsWebAgent
            out.println(message);
            out.flush();
            return;
-         }*/
+         }
          if ( objList.size() == 0 ) System.out.println("eeee");
 
 
          PacsModel008 pacsModel008 = null;
          Iterator i = objList.iterator();
          while ( i.hasNext() ) {
-           System.out.println("fff");
            pacsModel008 = (PacsModel008)i.next();
            PacsModel002 pacsModel002 = pacsModel008.generatePacs002Msgby008Msg();
            response.setContentType("application/xml");
