@@ -167,6 +167,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.companyEmail = newValue;
+      },
+      validateObj: function (companyEmail) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if ( ! emailRegex.test(companyEmail) ) {
+          return this.EmailError;
+        }
       }
     },
     {
@@ -187,6 +194,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.registrationNumber = newValue;
+      },
+      validateObj: function (registrationNumber) {
+        var regNumberRegex = /^[a-zA-Z0-9]{1,35}$/;
+
+        if ( ! regNumberRegex.test(registrationNumber) ) {
+          return this.RegNumberError;
+        }
       }
     },
     {
@@ -231,6 +245,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.website = newValue;
+      },
+      validateObj: function (website) {
+        var websiteRegex = /@^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$@i/
+
+        if ( ! websiteRegex.test(website) ) {
+          return this.WebsiteError;
+        }
       }
     },
     {
@@ -241,6 +262,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.streetNumber = newValue;
+      },
+      validateObj: function (streetNumber) {
+        var streetNumberRegex = /^[0-9]{1,16}$/;
+
+        if ( ! streetNumberRegex.test(streetNumber) ) {
+          return this.StreetNumberError;
+        }
       }
     },
     {
@@ -251,6 +279,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.streetName = newValue;
+      },
+      validateObj: function (streetName) {
+        if ( streetName.length > 70 ) {
+          return this.StreetNameError;
+        }
       }
     },
     {
@@ -277,8 +310,10 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
       },
-      validateObj: function(city) {
-        if ( ! city || city.length > 35 ) {
+      validateObj: function (city) {
+        var cityRegex = /^[a-zA-Z]{1,35}$/;
+
+        if ( ! cityRegex.test(city) ) {
           return this.AddressCityError;
         }
       }
@@ -345,11 +380,16 @@ foam.CLASS({
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
-    { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' },
-    { name: 'AddressError', message: 'Street address is invalid' },
-    { name: 'AddressCityError', message: 'City name is invalid' },
-    { name: 'AddressProvinceError', message: 'Invalid province option' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
+    { name: 'BusinessNameError', message: 'Business name must be less than 35 characters.' },
+    { name: 'AddressError', message: 'Street address is invalid.' },
+    { name: 'AddressCityError', message: 'City name is invalid.' },
+    { name: 'AddressProvinceError', message: 'Invalid province option.' },
+    { name: 'AddressPostalCodeError', message: 'Invalid postal code.' },
+    { name: 'EmailError', message: 'Invalid email address.' },
+    { name: 'RegNumberError', message: 'Invalid registration number.' },
+    { name: 'StreetNumberError', message: 'Invalid street number.' },
+    { name: 'StreetNameError', message: 'Invalid street name.' },
+    { name: 'WebsiteError', message: 'Invalid website.'}
   ],
 
   methods: [

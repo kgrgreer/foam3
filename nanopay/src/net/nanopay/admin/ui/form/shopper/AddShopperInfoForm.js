@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Form to input shopper information',
 
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
   imports: [
     'viewData',
     'goBack',
@@ -262,7 +266,7 @@ foam.CLASS({
         this.viewData.postalCode = newValue;
       },
       validateObj: function(postalCode) {
-        var postalCodeRegex = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
+        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
 
         if ( ! postalCodeRegex.test(postalCode) ) {
           return this.AddressPostalCodeError;
