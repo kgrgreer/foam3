@@ -54,12 +54,16 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
+      float: right;
+      background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px;
       height: 40px;
-      opacity: 0.01;
       cursor: pointer;
       z-index: 100;
+      margin-right: 5px;
+    }
+    ^ .net-nanopay-ui-ActionView-exportButton img {
       margin-right: 5px;
     }
     ^ .net-nanopay-ui-ActionView-addUser {
@@ -169,9 +173,7 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
               .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
-              .start().addClass('inline-float-right')
-                .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
-              .end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
@@ -184,6 +186,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO}));
       }

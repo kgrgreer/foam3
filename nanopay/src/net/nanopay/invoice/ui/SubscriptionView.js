@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: "Summary View of User' Recurring Invoices.",
 
-  requires: [ 
+  requires: [
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.RecurringInvoice'
   ],
@@ -58,10 +58,10 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideActionButton$)
           .start().addClass('button-div')
-            .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})    
+            .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
             .start().addClass('inline float-right')
             .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
-            .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Export'}}).addClass('import-button').end()
+            .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
             .end()
           .end()
         .end()
@@ -70,7 +70,7 @@ foam.CLASS({
           dao: this.recurringInvoiceDAO,
           detailView: { class: 'net.nanopay.invoice.ui.SubscriptionDetailView' },
           summaryView: this.SubscriptionTableView.create(),
-          showActions: false            
+          showActions: false
         })
         .end()
     }
@@ -84,8 +84,8 @@ foam.CLASS({
       requires: [ 'net.nanopay.invoice.model.RecurringInvoice' ],
 
       imports: [ 'recurringInvoiceDAO' ],
-      properties: [ 
-        'selection', 
+      properties: [
+        'selection',
         { name: 'data', factory: function() { return this.recurringInvoiceDAO; }}
       ],
 
@@ -98,7 +98,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               config: {
-                amount: { 
+                amount: {
                   tableCellView: function(obj, e) {
                   return e.E().add('- $', obj.amount).style({color: '#c82e2e'})
                   }
