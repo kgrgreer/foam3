@@ -157,7 +157,7 @@ foam.CLASS({
     { name: 'CashOutSuccessDesc', message: 'You have successfully cashed out ' },
     {
       name: 'CashOutResultDesc',
-      message: "Please be advised that it will take around 2 business days for the balance to arrive in your bank account. If you don't see your balance after 5 business days please contact our advisor at +1 (416) 900-1111 or support@nanopay.net."
+      message: "Please be advised that it will take around 2 business days for the balance to arrive in your bank account. If you don't see your balance after 5 business days please contact our advisor at support@nanopay.net."
     }
   ],
 

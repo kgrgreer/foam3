@@ -41,7 +41,9 @@ foam.CLASS({
         { parent: 'addShopper', id: 'form-addShopper-done',      label: 'Done',         view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
-    }
+    },
+
+
   ],
 
   actions: [

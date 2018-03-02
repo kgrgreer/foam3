@@ -46,14 +46,6 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
-    }
     ^ .net-nanopay-ui-ActionView-payNow {
       background-color: #59A5D5;
       border: solid 1px #59A5D5;
@@ -113,13 +105,13 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideSaleSummary = true;     
+      this.hideSaleSummary = true;
       this
         .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
-        .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' } }).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
+        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
         .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .start('h2').addClass('light-roboto-h2').style({ "margin-bottom": "0px"})
