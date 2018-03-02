@@ -59,13 +59,13 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
                     bankId = ls.getBankAccountId();
                 }
                 if(checkBalance(ls, balance) && ls.getCashOutFrequency()==frequency){
-                    addTransaction(x, user, bankId);
+                    addTransaction(x, user.getId(), bankId);
                 }
             } else{
                 Group group = (Group) groupDAO.find(user.getGroup());
                 ls = group.getLiquiditySettings();
                 if(checkBalance(ls, balance) && ls.getCashOutFrequency()==frequency){
-                    addTransaction(x, user, bankId);
+                    addTransaction(x, user.getId(), bankId);
                 }
             }
         }
@@ -86,10 +86,10 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
         else return false;
     }
 
-    public void addTransaction(X x, User user, long bankId){
+    public void addTransaction(X x, long userId, long bankId){
         Transaction transaction = new Transaction.Builder(x)
-                .setPayeeId(user.getId())
-                .setPayerId(user.getId())
+                .setPayeeId(userId)
+                .setPayerId(userId)
                 .setAmount(amount)
                 .setType(type)
                 .setBankAccountId(bankId)
