@@ -158,7 +158,7 @@ foam.CLASS({
     { name: 'CashInSuccessDesc', message: 'You have successfully cashed in '},
     {
       name: 'CashInResultDesc',
-      message: "Please be advised that it will take around 2 business days for you to see the balance in the portal. If you don't see your balance after 5 business days please contact our advisor at XXX-XXX-XXXX."
+      message: "Please be advised that it will take around 2 business days for you to see the balance in the portal. If you don't see your balance after 5 business days please contact our advisor at +1 (416) 900-1111 or support@nanopay.net."
     }
   ],
 
