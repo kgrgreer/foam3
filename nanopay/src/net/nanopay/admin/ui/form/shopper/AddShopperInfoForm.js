@@ -5,10 +5,6 @@ foam.CLASS({
 
   documentation: 'Form to input shopper information',
 
-  requires: [
-    'foam.u2.dialog.NotificationMessage'
-  ],
-
   imports: [
     'viewData',
     'goBack',
