@@ -61,11 +61,11 @@ foam.CLASS({
         // Info from form
         var companyInfo = this.viewData;
 
-        if ( this.position == 0 ) { 
+        if ( this.position == 0 ) {
           // Merchant Info
 
           if ( ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
-          ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) || 
+          ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
           ( companyInfo.jobTitle == null || companyInfo.jobTitle.trim() == '' ) ||
           ( companyInfo.email == null || companyInfo.email.trim() == '' ) ||
           ( companyInfo.phoneNumber == null || companyInfo.phoneNumber.trim() == '' ) ||
@@ -86,7 +86,7 @@ foam.CLASS({
 
           if ( !this.validatePhone(companyInfo.phoneNumber) ) {
             this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
-            return; 
+            return;
           }
 
           self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -106,7 +106,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
-          
+
           if ( !this.validatePostalCode(companyInfo.postalCode) ){
             self.add(self.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
             return;

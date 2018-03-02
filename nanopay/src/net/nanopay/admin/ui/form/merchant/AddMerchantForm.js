@@ -20,6 +20,7 @@ foam.CLASS({
     'email',
     'formatCurrency',
     'validateEmail',
+    'validateAge',
     'validatePostalCode',
     'validatePhone',
     'stack',
@@ -106,6 +107,11 @@ foam.CLASS({
 
           if ( !this.validateEmail(merchantInfo.companyEmail) ){
             self.add(self.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
+            return;
+          }
+
+          if ( ! this.validateAge(merchantInfo.birthday) ) {
+            this.add(self.NotificationMessage.create({ message: 'User should be at least 16 years of age to register.', type: 'error' }));
             return;
           }
 

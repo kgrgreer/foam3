@@ -1,13 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.util',
   name: 'FormValidation',
-  
-  exports: [ 
+
+  exports: [
     'validateEmail',
     'validatePostalCode',
     'validatePhone',
     'validateStrStrong',
-    'validateStrMedium'
+    'validateStrMedium',
+    'validateAge'
   ],
 
   methods: [
@@ -32,6 +33,12 @@ foam.CLASS({
     function validateStrMedium(str){
       var re =  /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
       return re.test(String(str));
+    }
+
+    function validateAge(date) {
+      var year = date.getFullYear();
+      var currentYear = new Date().getFullYear();
+      return currentYear - year >= 16;
     }
   ]
 });
