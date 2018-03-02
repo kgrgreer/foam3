@@ -85,12 +85,8 @@ foam.CLASS({
         this.viewData.accountName = newValue;
       },
       validateObj: function (bankName) {
-        if ( ! bankName ) {
-          return 'Please enter account name';
-        }
-
         if ( bankName.length > 70 ) {
-          return 'Account name must be less than or equal to 70 characters.';
+          return 'Invalid account name.';
         }
       }
     },
@@ -102,9 +98,6 @@ foam.CLASS({
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{0,7}$/;
-        if ( ! accountNumber ) {
-          return 'Please enter account number.';
-        }
 
         if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Invalid account number.';
@@ -119,9 +112,6 @@ foam.CLASS({
       },
       validateObj: function(transitNumber) {
         var transNumRegex = /^[0-9]{5}$/;
-        if ( ! transitNumber ) {
-          return 'Please enter transit number';
-        }
 
         if ( ! transNumRegex.test(transitNumber) ) {
           return 'Invalid transit number.';
@@ -136,10 +126,7 @@ foam.CLASS({
       },
       validateObj: function(institutionNumber) {
         var instNumRegex = /^[0-9]{3}$/;
-        if ( ! institutionNumber ) {
-          return 'Please enter institution number.';
-        }
-
+        
         if ( ! instNumRegex.test(institutionNumber) ) {
           return 'Invalid institution number.';
         }

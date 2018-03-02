@@ -16,12 +16,8 @@ foam.CLASS({
       name: 'accountName',
       label: 'Account Name',
       validateObj: function (accountName) {
-        if ( ! accountName ) {
-          return 'Please enter account name';
-        }
-
         if ( accountName.length > 70 ) {
-          return 'Account name must be less than or equal to 70 characters.';
+          return 'Invalid account name.';
         }
       }
     },
@@ -29,11 +25,8 @@ foam.CLASS({
       class: 'String',
       name: 'institutionNumber',
       label: 'Institution No.',
-      validateObj: function(institutionNumber) {
+      validateObj: function (institutionNumber) {
         var instNumRegex = /^[0-9]{3}$/;
-        if ( ! institutionNumber ) {
-          return 'Please enter institution number.';
-        }
 
         if ( ! instNumRegex.test(institutionNumber) ) {
           return 'Invalid institution number.';
@@ -44,11 +37,8 @@ foam.CLASS({
       class: 'String',
       name: 'transitNumber',
       label: 'Transit No.',
-      validateObj: function(transitNumber) {
+      validateObj: function (transitNumber) {
         var transNumRegex = /^[0-9]{5}$/;
-        if ( ! transitNumber ) {
-          return 'Please enter transit number';
-        }
 
         if ( ! transNumRegex.test(transitNumber) ) {
           return 'Invalid transit number.';
@@ -59,15 +49,12 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       label: 'Account No.',
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function (str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length))
       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{0,7}$/;
-        if ( ! accountNumber ) {
-          return 'Please enter account number.';
-        }
+      validateObj: function (accountNumber) {
+        var accNumberRegex = /^[0-9]{1,7}$/;
 
         if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Invalid account number.';
@@ -77,7 +64,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      tableCellFormatter: function(a) {
+      tableCellFormatter: function (a) {
         var colour = ( a == 'Verified' ) ? '#2cab70' : '#f33d3d';
         this.start()
           .add(a)
@@ -123,7 +110,7 @@ foam.CLASS({
     {
       name: 'run',
       icon: 'images/ic-options-hover.svg',
-      code: function() {
+      code: function () {
         foam.nanos.menu.SubMenuView.create({menu: foam.nanos.menu.Menu.create({id: 'accountSettings'})});
       }
     }

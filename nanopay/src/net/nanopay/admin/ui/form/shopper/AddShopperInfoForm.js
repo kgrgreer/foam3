@@ -94,8 +94,10 @@ foam.CLASS({
         this.viewData.firstName = newValue;
       },
       validateObj: function(firstName) {
-        if ( ! firstName || firstName.length > 70 ) {
-          return this.FormError;
+        var firstNameRegex = /^[a-zA-Z]{1,70}$/;
+
+        if ( ! firstNameRegex.test(firstName) ) {
+          return this.FirstNameError;
         }
       }
     },
@@ -109,8 +111,10 @@ foam.CLASS({
         this.viewData.lastName = newValue;
       },
       validateObj: function(lastName) {
-        if ( ! lastName || lastName.length > 70 ) {
-          return this.FormError;
+        var lastNameRegex = /^[a-zA-Z]{1,70}$/;
+
+        if ( ! lastNameRegex.test(lastName) ) {
+          return this.LastNameError;
         }
       }
     },
@@ -140,12 +144,12 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
       },
-      validateObj: function(phoneNumber) {
-        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
-
-          if ( ! phoneNumber || ! hasOkLength ) {
-            return this.PhoneError;
-          }
+      validateObj: function (number) {
+        var numberRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+        
+        if ( ! numberRegex.test(number) ) {
+          return this.PhoneError;
+        }
       }
     },
     {
@@ -169,6 +173,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.streetNumber = newValue;
+      },
+      validateObj: function (streetNumber) {
+        var streetNumberRegex = /^[0-9]{1,16}$/;
+
+        if ( ! streetNumberRegex.test(streetNumber) ) {
+          return this.StreetNumberError;
+        }
       }
     },
     {
@@ -179,6 +190,11 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.streetName = newValue;
+      },
+      validateObj: function (streetName) {
+        if ( streetName.length > 70 ) {
+          return this.StreetNameError;
+        }
       }
     },
     {
@@ -205,8 +221,10 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
       },
-      validateObj: function(city) {
-        if ( ! city || city.length > 35 ) {
+      validateObj: function (city) {
+        var cityRegex = /^[a-zA-Z]{1,35}$/;
+
+        if ( ! cityRegex.test(city) ) {
           return this.AddressCityError;
         }
       }
@@ -244,7 +262,7 @@ foam.CLASS({
         this.viewData.postalCode = newValue;
       },
       validateObj: function(postalCode) {
-        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+        var postalCodeRegex = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
 
         if ( ! postalCodeRegex.test(postalCode) ) {
           return this.AddressPostalCodeError;
@@ -259,6 +277,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
+      },
+      validateObj: function (password) {
+        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,32}$/;
+
+        if ( ! passwordRegex.test(password) ) {
+          return this.PasswordError;
+        }
       }
     },
     {
@@ -292,12 +317,17 @@ foam.CLASS({
     { name: 'CreateAPasswordLabel', message: 'Create a Password *' },
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'PhoneError', message: 'Invalid phone number' },
-    { name: 'AddressError', message: 'Street address is invalid' },
-    { name: 'AddressCityError', message: 'City name is invalid' },
-    { name: 'AddressProvinceError', message: 'Invalid province option' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
+    { name: 'FirstNameError', message: 'Invalid first name.' },
+    { name: 'LastNameError', message: 'Invalid last name.' },
+    { name: 'EmailError', message: 'Invalid email address.' },
+    { name: 'PhoneError', message: 'Invalid phone number.' },
+    { name: 'StreetNameError', message: 'Invalid street name.' },
+    { name: 'StreetNumberError', message: 'Invalid street number.' },
+    { name: 'AddressError', message: 'Street address is invalid.' },
+    { name: 'AddressCityError', message: 'City name is invalid.' },
+    { name: 'AddressProvinceError', message: 'Invalid province option.' },
+    { name: 'AddressPostalCodeError', message: 'Invalid postal code.' },
+    { name: 'PasswordError', message: 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.' }
   ],
 
   methods: [

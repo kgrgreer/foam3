@@ -41,10 +41,10 @@ foam.CLASS({
         this.viewData.firstName = newValue;
       },
       validateObj: function(firstName) {
-        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
+        var firstNameRegex = /^[a-zA-Z]{1,70}$/;
 
-        if ( ! firstName || ! hasOkLength ) {
-          return this.FormError;
+        if ( ! firstNameRegex.test(firstName) ) {
+          return this.FirstNameError;
         }
       }
     },
@@ -58,10 +58,10 @@ foam.CLASS({
         this.viewData.lastName = newValue;
       },
       validateObj: function(lastName) {
-        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
+        var lastNameRegex = /^[a-zA-Z]{1,70}$/;
 
-        if ( ! lastName || ! hasOkLength ) {
-          return this.FormError;
+        if ( ! lastNameRegex.test(lastName) ) {
+          return this.LastNameError;
         }
       }
     },
@@ -74,12 +74,12 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
       },
-      validateObj: function(phoneNumber) {
-        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
-
-          if ( ! phoneNumber || ! hasOkLength ) {
-            return this.PhoneError;
-          }
+      validateObj: function (number) {
+        var numberRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+        
+        if ( ! numberRegex.test(number) ) {
+          return this.PhoneError;
+        }
       }
     },
     {
@@ -90,6 +90,13 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
+      },
+      validateObj: function (password) {
+        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,32}$/;
+
+        if ( ! passwordRegex.test(password) ) {
+          return this.PasswordError;
+        }
       }
     },
     {
@@ -113,7 +120,10 @@ foam.CLASS({
     { name: 'PasswordLabel', message: 'Password *' },
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'PhoneError', message: 'Invalid phone number' }
+    { name: 'FirstNameError', message: 'Invalid first name.' },
+    { name: 'LastNameError', message: 'Invalid last name.' },
+    { name: 'PhoneError', message: 'Invalid phone number.' },
+    { name: 'PasswordError', message: 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.' }
   ],
 
   methods: [
