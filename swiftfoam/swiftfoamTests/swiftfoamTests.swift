@@ -107,11 +107,7 @@ class swiftfoamTests: XCTestCase {
 
       let accounts = try (client.accountDAO!.`where`(pred).select() as! ArraySink).array as! [Account]
       for account in accounts {
-        guard let ownerId = account.owner as? Int else {
-          XCTFail("Could not convert Account.owner property to Int")
-          return
-        }
-        XCTAssert(ownerId == user.id, "Owner must match User")
+        XCTAssert(account.id == user.id, "Owner must match User")
       }
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
