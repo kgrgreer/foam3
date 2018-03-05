@@ -201,7 +201,7 @@ foam.CLASS({
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
           .start('p')
-            .add('Authroize').addClass('headings')
+            .add('Authorize').addClass('headings')
             .start('p').addClass('messageBody').add(this.TC1).end()
           .end()
           .start('p')
