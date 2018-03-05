@@ -252,12 +252,8 @@ module.exports = {
   blacklist: blacklist
 };`
 
-simpleTypes = simpleTypes.filter(function (element, index) {
-  return index == simpleTypes.indexOf(element);
-});
-
-classes = classes.filter(function (element, index) {
-  return index == classes.indexOf(element);
+classes = classes.filter(function (element, index, self) {
+  return index == self.indexOf(element);
 });
 
 var files = Object.keys(simpleTypes).concat(classes).sort().map(function (file) {
