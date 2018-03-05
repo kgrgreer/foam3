@@ -18,9 +18,15 @@ foam.CLASS({
     'accountDAO',
     'email',
     'formatCurrency',
+    'validateName',
     'validateEmail',
-    'validatePostalCode',
     'validatePhone',
+    'validateStreetNumber',
+    'validateStreetName',
+    'validateAddressLine',
+    'validatePostalCode',
+    'validateCity',
+    'validatePassword',
     'stack',
     'transactionDAO',
     'user',
@@ -68,6 +74,8 @@ foam.CLASS({
 
         if ( this.position == 0 ) {
           // Shopper Info
+
+          // Check if fields are empty
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
           ( shopperInfo.lastName == null || shopperInfo.lastName.trim() == '' ) ||
           ( shopperInfo.emailAddress == null || shopperInfo.emailAddress.trim() == '' ) ||
@@ -82,23 +90,49 @@ foam.CLASS({
             return;
           }
 
-          if ( !this.validateEmail(shopperInfo.emailAddress) ){
-            this.add(this.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
+          // Front end validations
+          if ( ! this.validateName(shopperInfo.firstName) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid first name.', type: 'error' }));
             return;
           }
-
-          if ( !this.validatePostalCode(shopperInfo.postalCode) ){
-            this.add(this.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
+          if ( ! this.validateName(shopperInfo.lastName) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid last name.', type: 'error' }));
             return;
           }
-
-          if ( shopperInfo.password != shopperInfo.confirmPassword ){
+          if ( ! this.validateEmail(shopperInfo.emailAddress) ) { 
+            this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+            return;
+          }
+          if ( ! this.validatePhone(shopperInfo.phoneNumber) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+            return;
+          }
+          if ( ! this.validateStreetNumber(shopperInfo.streetNumber) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+            return;
+          }
+          if ( ! this.validateStreetName(shopperInfo.streetName) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+            return;
+          }
+          if ( shopperInfo.addressLine.length > 0 && ! this.validateAddressLine(shopperInfo.addressLine) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+            return;
+          }
+          if ( ! this.validateCity(shopperInfo.city) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+            return;
+          }
+          if ( ! this.validatePostalCode(shopperInfo.postalCode) ) {
+            this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+            return;
+          }
+          if ( ! this.validatePassword(shopperInfo.password)) {
+            this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+            return;
+          }
+          if ( shopperInfo.password != shopperInfo.confirmPassword ) {
             this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
-            return;
-          }
-
-          if ( !this.validatePhone(shopperInfo.phoneNumber) ) {
-            this.add(this.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return;
           }
 
