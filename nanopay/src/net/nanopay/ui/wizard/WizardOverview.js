@@ -16,7 +16,7 @@ foam.CLASS({
         ^ .guideColumn {
           display: inline-block;
           vertical-align: top;
-          margin-right: 20px;
+          margin-right: 10px;
         }
 
         ^ .titleColumn {
@@ -26,13 +26,23 @@ foam.CLASS({
         }
 
         ^ .positionCircle {
-          width: 12px;
-          height: 12px;
+          width: 21px;
+          height: 21px;
           box-sizing: border-box;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          border-radius: 6px;
-          background-color: #FFFFFF;
+          border-radius: 10.5px;
+          background-color: #a4b3b8;
           margin: auto;
+
+          background-size: 0 0;
+
+          background-repeat: no-repeat;
+          background-image: url(images/ic-approve.svg);
+
+          -webkit-transition: all .15s ease-in-out;
+          -moz-transition: all .15s ease-in-out;
+          -ms-transition: all .15s ease-in-out;
+          -o-transition: all .15s ease-in-out;
+          transition: all .15s ease-in-out;
         }
 
         ^ .positionCircle:first-child {
@@ -40,32 +50,59 @@ foam.CLASS({
         }
 
         ^ .positionCircle.current {
-          border: solid 1px #23c2b7;
-          background-color: #FFFFFF;
+          background-color: #1cc2b7;
+        }
+
+        ^ .positionCircle p {
+          color: white;
+          padding-top: 0.5px;
+          line-height: 21px;
+          width: 21px;
+          text-align: center;
+
+          -webkit-transition: font-size .25s ease-in-out;
+          -moz-transition: font-size .25s ease-in-out;
+          -ms-transition: font-size .25s ease-in-out;
+          -o-transition: font-size .25s ease-in-out;
+          transition: font-size .25s ease-in-out;
         }
 
         ^ .positionCircle.complete {
-          border: solid 1px #23c2b7;
-          background-color: #23c2b7 !important;
+          background-color: #1cc2b7;
+          background-size: 21px 21px;
+        }
+
+        ^ .positionCircle.complete p {
+          font-size: 0;
         }
 
         ^ .positionLine {
-          width: 2px;
-          height: 38px;
-          background-color: rgba(164, 179, 184, 0.5);
-          margin: auto;
+          width: 1px;
+          height: 20px;
+          background-color: #a4b3b8;
+          margin: 5px auto;
         }
 
         ^ .positionTitle {
           margin: 0;
-          height: 20px;
-          line-height: 20px;
+          height: 21px;
+          line-height: 30px;
           margin-bottom: 30px;
 
           font-size: 12px;
           letter-spacing: 0.3px;
           font-family: Roboto;
           color: #093649;
+
+          -webkit-transition: all .15s ease-in-out;
+          -moz-transition: all .15s ease-in-out;
+          -ms-transition: all .15s ease-in-out;
+          -o-transition: all .15s ease-in-out;
+          transition: all .15s ease-in-out;
+        }
+
+        ^ .positionTitle.inactive {
+          color: #a4b3b8;
         }
       */}
     })
@@ -88,6 +125,7 @@ foam.CLASS({
               .addClass('positionCircle')
               .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
+              .start('p').add(index + 1).end()
             .end();
             if ( index < self.titles.length - 1 ) {
               this.start('div').addClass('positionLine').end();
@@ -96,7 +134,11 @@ foam.CLASS({
         .end()
         .start('div').addClass('titleColumn')
           .start().forEach(this.titles, function(title, index) {
-            this.start('p').addClass('positionTitle').add(title).end();
+            this.start('p')
+            .addClass('positionTitle')
+            .addClass(self.position$.map(function(p) { return index > p ? 'inactive' : ''; }))
+              .add(title)
+            .end();
           }).end()
         .end()
     }
