@@ -332,11 +332,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.errors$.sub(this.errorsUpdate);
-      this.errorsUpdate();
-    },
-
     function initE() {
       this.SUPER();
       this
@@ -407,15 +402,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'errorsUpdate',
-      code: function() {
-        this.errors = this.errors_;
-      }
     }
   ]
 });
