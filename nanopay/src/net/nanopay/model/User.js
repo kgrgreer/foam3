@@ -33,10 +33,6 @@ foam.CLASS({
       name: 'jobTitle',
       label: 'Job Title',
       validateObj: function(jobTitle) {
-        if ( ! jobTitle ) {
-          return this.JobTitleEmptyError;
-        }
-
         if ( jobTitle.length > 35 ) {
           return this.JobTitleLengthError;
         }

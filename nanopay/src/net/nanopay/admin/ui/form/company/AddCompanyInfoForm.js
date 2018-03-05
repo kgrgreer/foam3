@@ -129,10 +129,6 @@ foam.CLASS({
         this.viewData.jobTitle = newValue;
       },
       validateObj: function(jobTitle) {
-        if ( ! jobTitle ) {
-          return this.JobTitleEmptyError;
-        }
-
         if ( jobTitle.length > 35 ) {
           return this.JobTitleLengthError;
         }

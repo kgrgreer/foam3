@@ -83,22 +83,22 @@ foam.CLASS({
           }
 
           if ( !this.validateEmail(shopperInfo.emailAddress) ){
-            self.add(self.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
             return;
           }
 
           if ( !this.validatePostalCode(shopperInfo.postalCode) ){
-            self.add(self.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
             return;
           }
 
           if ( shopperInfo.password != shopperInfo.confirmPassword ){
-            self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
             return;
           }
 
           if ( !this.validatePhone(shopperInfo.phoneNumber) ) {
-            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return;
           }
 
@@ -154,6 +154,21 @@ foam.CLASS({
             portalAdminCreated: true,
             profilePicture: shopperInfo.profilePicture
           });
+
+          if ( newShopper.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: newShopper.errors_[0][1], type: 'error' }));
+            return;
+          }
+
+          if ( shopperPhone.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: shopperPhone.errors_[0][1], type: 'error' }));
+            return;
+          }
+
+          if ( shopperAddress.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: shopperAddress.errors_[0][1], type: 'error' }));
+            return;
+          }
 
           this.userDAO.put(newShopper).then(function(response) {
             shopperInfo.shopper = response;
