@@ -7,7 +7,6 @@ foam.CLASS({
 
   imports: [
     'viewData',
-    'errors',
     'goBack',
     'goNext',
     'regionDAO'
@@ -93,13 +92,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
-      },
-      validateObj: function(firstName) {
-        var firstNameRegex = /^[a-zA-Z]{1,70}$/;
-
-        if ( ! firstNameRegex.test(firstName) ) {
-          return this.FirstNameError;
-        }
       }
     },
     {
@@ -110,13 +102,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
-      },
-      validateObj: function(lastName) {
-        var lastNameRegex = /^[a-zA-Z]{1,70}$/;
-
-        if ( ! lastNameRegex.test(lastName) ) {
-          return this.LastNameError;
-        }
       }
     },
     {
@@ -127,13 +112,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.emailAddress = newValue;
-      },
-      validateObj: function(emailAddress) {
-        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-        if ( ! emailRegex.test(emailAddress) ) {
-          return this.EmailError;
-        }
       }
     },
     {
@@ -144,13 +122,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
-      },
-      validateObj: function (phoneNumber) {
-        var numberRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-        
-        if ( ! numberRegex.test(phoneNumber) ) {
-          return this.PhoneError;
-        }
       }
     },
     {
@@ -174,13 +145,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.streetNumber = newValue;
-      },
-      validateObj: function (streetNumber) {
-        var streetNumberRegex = /^[0-9]{1,16}$/;
-
-        if ( ! streetNumberRegex.test(streetNumber) ) {
-          return this.StreetNumberError;
-        }
       }
     },
     {
@@ -191,11 +155,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.streetName = newValue;
-      },
-      validateObj: function (streetName) {
-        if ( streetName.length > 70 ) {
-          return this.StreetNameError;
-        }
       }
     },
     {
@@ -206,11 +165,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
-      },
-      validateObj: function(addressLine) {
-        if ( ! addressLine || addressLine > 70 ) {
-          return this.AddressError;
-        }
       }
     },
     {
@@ -221,13 +175,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
-      },
-      validateObj: function (city) {
-        var cityRegex = /^[a-zA-Z]{1,35}$/;
-
-        if ( ! cityRegex.test(city) ) {
-          return this.AddressCityError;
-        }
       }
     },
     {
@@ -246,11 +193,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
-      },
-      validateObj: function(province) {
-        if ( ! province || province.name.length > 35 ) {
-          return this.AddressProvinceError;
-        }
       }
     },
     {
@@ -261,13 +203,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
-      },
-      validateObj: function(postalCode) {
-        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-
-        if ( ! postalCodeRegex.test(postalCode) ) {
-          return this.AddressPostalCodeError;
-        }
       }
     },
     {
@@ -278,13 +213,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
-      },
-      validateObj: function (password) {
-        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,32}$/;
-
-        if ( ! passwordRegex.test(password) ) {
-          return this.PasswordError;
-        }
       }
     },
     {
@@ -316,19 +244,7 @@ foam.CLASS({
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'CreateAPasswordLabel', message: 'Create a Password *' },
-    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'FirstNameError', message: 'Invalid first name.' },
-    { name: 'LastNameError', message: 'Invalid last name.' },
-    { name: 'EmailError', message: 'Invalid email address.' },
-    { name: 'PhoneError', message: 'Invalid phone number.' },
-    { name: 'StreetNameError', message: 'Invalid street name.' },
-    { name: 'StreetNumberError', message: 'Invalid street number.' },
-    { name: 'AddressError', message: 'Street address is invalid.' },
-    { name: 'AddressCityError', message: 'City name is invalid.' },
-    { name: 'AddressProvinceError', message: 'Invalid province option.' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code.' },
-    { name: 'PasswordError', message: 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.' }
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
