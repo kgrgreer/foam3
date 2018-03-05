@@ -7,6 +7,7 @@ foam.CLASS({
 
   imports: [
     'viewData',
+    'errors',
     'goBack',
     'goNext',
     'regionDAO'
@@ -127,10 +128,10 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.emailAddress = newValue;
       },
-      validateObj: function(email) {
+      validateObj: function(emailAddress) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if ( ! emailRegex.test(email) ) {
+        if ( ! emailRegex.test(emailAddress) ) {
           return this.EmailError;
         }
       }
@@ -144,10 +145,10 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
       },
-      validateObj: function (number) {
+      validateObj: function (phoneNumber) {
         var numberRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
         
-        if ( ! numberRegex.test(number) ) {
+        if ( ! numberRegex.test(phoneNumber) ) {
           return this.PhoneError;
         }
       }
@@ -331,6 +332,11 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.errors$.sub(this.errorsUpdate);
+      this.errorsUpdate();
+    },
+
     function initE() {
       this.SUPER();
       this
@@ -401,6 +407,15 @@ foam.CLASS({
             .end()
           .end()
         .end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'errorsUpdate',
+      code: function() {
+        this.errors = this.errors_;
+      }
     }
   ]
 });
