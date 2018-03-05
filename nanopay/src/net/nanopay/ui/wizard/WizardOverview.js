@@ -58,7 +58,9 @@ foam.CLASS({
           padding-top: 0.5px;
           line-height: 21px;
           width: 21px;
+          font-size: 12px;
           text-align: center;
+          margin: 0;
 
           -webkit-transition: font-size .25s ease-in-out;
           -moz-transition: font-size .25s ease-in-out;
