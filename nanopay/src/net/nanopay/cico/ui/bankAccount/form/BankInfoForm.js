@@ -91,7 +91,7 @@ foam.CLASS({
     { name: 'LabelName',            message: 'Name *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
     { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' },
-    { name: 'TC1',                 message: 'I authorize nanoPay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
+    { name: 'TC1',                 message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
     { name: 'TC2',                 message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit www.cdnpay.ca.'},
     { name: 'TC3',                 message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting www.cdnpay.ca.'}
   ],
