@@ -44,9 +44,6 @@ public class LiquidityTransactionDAO
   @Override
   synchronized public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
-    if ( txn.getBankAccountId() != null ) {
-      return getDelegate().put_(x, obj);
-    }
 
     // If It is a CICO Transaction, does not do anything.
     if ( txn.getPayeeId() == txn.getPayerId() ) {
@@ -81,17 +78,16 @@ public class LiquidityTransactionDAO
     long payerBankAccountID = getBankAccountID(payerLiquiditySetting, payerId);
     long payeeBankAccountID = getBankAccountID(payeeLiquiditySetting, payeeId);
 
+    if ( txn.getBankAccountId() != null ) {
+      FObject tx = getDelegate().put_(x, obj);
+      liquidityCashOut(x, payeeLiquiditySetting, payeeAccount, total, payeeBankAccountID);
+      return tx;
+    }
     long payerMinBalance = 0;
     long payerMaxBalance = 0;
-    long payeeMinBalance = 0;
-    long payeeMaxBalance = 0;
     if ( payerLiquiditySetting != null ) {
       payerMinBalance = payerLiquiditySetting.getMinimumBalance();
       payerMaxBalance = payerLiquiditySetting.getMaximumBalance();
-    }
-    if ( payeeLiquiditySetting != null ) {
-      payeeMinBalance = payeeLiquiditySetting.getMinimumBalance();
-      payeeMaxBalance = payeeLiquiditySetting.getMaximumBalance();
     }
 
     // if the user's balance is not enough to make the payment, do cash in first
@@ -123,18 +119,9 @@ public class LiquidityTransactionDAO
         }
       }
     }
+
     // if the user's balance bigger than the liquidity maxbalance, do cash out
-    if ( ifCheckRangePerTransaction(payeeLiquiditySetting) ) {
-      if ( payeeAccount.getBalance() + total > payeeMaxBalance ) {
-        if ( checkCashOutStatus(payeeLiquiditySetting) ) {
-          long cashOutAmount = payeeAccount.getBalance() - payeeMaxBalance + total;
-          if ( checkBankAccountAvailable(payeeBankAccountID) ) addCICOTransaction(payeeId, cashOutAmount,
-              payeeBankAccountID, TransactionType.CASHOUT, x);
-        }
-      }
-    }
-
-
+    liquidityCashOut(x, payeeLiquiditySetting, payeeAccount, total, payeeBankAccountID);
     return originalTx;
   }
 
@@ -213,5 +200,22 @@ public class LiquidityTransactionDAO
         return true;
     }
     return false;
+  }
+
+  public void liquidityCashOut(X x, LiquiditySettings liquiditySettings, Account account, long transactionAmount, long
+      bankAccountId) {
+    long maxBalance = 0;
+    if ( liquiditySettings != null ) {
+      maxBalance = liquiditySettings.getMaximumBalance();
+    }
+    if ( ifCheckRangePerTransaction(liquiditySettings) ) {
+      if ( account.getBalance() + transactionAmount > maxBalance ) {
+        if ( checkCashOutStatus(liquiditySettings) ) {
+          long cashOutAmount = account.getBalance() - maxBalance + transactionAmount;
+          if ( checkBankAccountAvailable(bankAccountId) ) addCICOTransaction(account.getId(), cashOutAmount,
+              bankAccountId, TransactionType.CASHOUT, x);
+        }
+      }
+    }
   }
 }

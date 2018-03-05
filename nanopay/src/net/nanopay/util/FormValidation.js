@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.util',
   name: 'FormValidation',
-  
-  exports: [ 
+
+  exports: [
     'validateEmail',
     'validatePostalCode',
     'validatePhone',

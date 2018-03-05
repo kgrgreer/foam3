@@ -252,17 +252,19 @@ module.exports = {
   blacklist: blacklist
 };`
 
-classes = classes.filter(function (element, index, self) {
+// create an array of the simple type classes
+var simpleClasses = Object.keys(simpleTypes).filter(function (element, index, self) {
   return index == self.indexOf(element);
+}).map(function (name) {
+  return packageName + '.' + name;
 });
 
-var files = Object.keys(simpleTypes).concat(classes).sort().map(function (file) {
-  if ( ! file.startsWith(packageName) ) {
-    return { name: packagePath + '/' + file }
-  } else {
-    return { name: file.replace(/\./g, '/') }
-  }
-});
+// concat and filter the simple classes with the non-simple classes
+var files = simpleClasses.concat(classes).filter(function (element, index, self) {
+  return index == self.indexOf(element);
+}).sort().map(function (file) {
+  return { name: file.replace(/\./g, '/') };
+})
 
 // add refinements if they exist
 if ( fs.existsSync(outdir + 'refinements.js') ) {
