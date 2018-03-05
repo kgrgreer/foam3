@@ -29,7 +29,6 @@ foam.CLASS({
           width: 992px;
           height: 600px;
           margin: auto;
-          overflow: hidden;
         }
 
         ^ .topRow {
@@ -58,11 +57,12 @@ foam.CLASS({
         ^ .stackColumn {
           display: inline-block;
           width: 75%;
+          max-height: 600px;
           box-sizing: border-box;
           padding: 20px 0;
           padding-top: 4px;
           padding-right: 20px;
-          overflow: hidden;
+          overflow-y: scroll;
         }
 
         ^ .stackView {
