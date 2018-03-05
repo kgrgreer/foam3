@@ -252,6 +252,10 @@ module.exports = {
   blacklist: blacklist
 };`
 
+simpleTypes = Object.keys(simpleTypes).filter(function (element, index, self) {
+  return index == self.indexOf(element);
+});
+
 classes = classes.filter(function (element, index, self) {
   return index == self.indexOf(element);
 });
