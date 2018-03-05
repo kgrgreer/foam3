@@ -83,6 +83,27 @@ foam.CLASS({
           margin: 5px auto;
         }
 
+        ^ .progressLine {
+          width: 100%;
+          height: 0;
+          background-color: #1cc2b7;
+
+          -webkit-transition: all .25s ease-in-out;
+          -moz-transition: all .25s ease-in-out;
+          -ms-transition: all .25s ease-in-out;
+          -o-transition: all .25s ease-in-out;
+          transition: all .25s ease-in-out;
+        }
+
+        ^ .progressLine.progressed {
+          height: 100%;
+        }
+
+        ^ .progressLine.complete {
+          background-color: #2cab70;
+          height: 100%;
+        }
+
         ^ .positionTitle {
           margin: 0;
           height: 21px;
@@ -128,7 +149,12 @@ foam.CLASS({
               .start('p').add(index + 1).end()
             .end();
             if ( index < self.titles.length - 1 ) {
-              this.start('div').addClass('positionLine').end();
+              this.start('div').addClass('positionLine')
+                .start('div')
+                .addClass('progressLine')
+                .addClass(self.position$.map(function(p) { return index == p - 1 ? 'progressed' : index < p - 1 ? 'complete' : ''; }))
+                .end()
+              .end();
             }
           }).end()
         .end()
