@@ -17,7 +17,7 @@ foam.CLASS({
       label: 'Account Name',
       validateObj: function (accountName) {
         if ( accountName.length > 70 ) {
-          return 'Invalid account name.';
+          return 'Account name cannot exceed 70 characters.';
         }
       }
     },
@@ -54,7 +54,7 @@ foam.CLASS({
           .add('***' + str.substring(str.length - 4, str.length))
       },
       validateObj: function (accountNumber) {
-        var accNumberRegex = /^[0-9]{1,7}$/;
+        var accNumberRegex = /^[0-9]{1,30}$/;
 
         if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Invalid account number.';

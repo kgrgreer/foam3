@@ -13,7 +13,8 @@ foam.CLASS({
     'validateAddressLine',
     'validatePassword',
     'validateWebsite',
-    'validateTitleNumOrAuth'
+    'validateTitleNumOrAuth',
+    'validateInstitutionNumber'
   ],
 
   methods: [
@@ -60,6 +61,18 @@ foam.CLASS({
     function validateTitleNumOrAuth(issuingAuthority) {
       var re = /^[a-zA-Z0-9 ]{1,35}$/;
       return re.test(String(issuingAuthority));
+    },
+    function validateAccountNumber(accountNumber) {
+      var re = /^[0-9]{1,30}$/;
+      return re.test(String(accountNumber));
+    },
+    function validateTransitNumber(transitNumber) {
+      var re = /^[0-9]{5}$/;
+      return re.test(String(transitNumber));
+    },
+    function validateInstitutionNumber(institutionNumber) {
+      var re = /^[0-9]{3}$/;
+      return re.test(String(institutionNumber));
     }
   ]
 });
