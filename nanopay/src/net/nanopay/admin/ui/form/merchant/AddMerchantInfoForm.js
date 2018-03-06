@@ -39,13 +39,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
-      },
-      validateObj: function(firstName) {
-        var firstNameRegex = /^[a-zA-Z]{1,70}$/;
-
-        if ( ! firstNameRegex.test(firstName) ) {
-          return this.FirstNameError;
-        }
       }
     },
     {
@@ -56,13 +49,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
-      },
-      validateObj: function(lastName) {
-        var lastNameRegex = /^[a-zA-Z]{1,70}$/;
-
-        if ( ! lastNameRegex.test(lastName) ) {
-          return this.LastNameError;
-        }
       }
     },
     {
@@ -73,13 +59,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
-      },
-      validateObj: function (number) {
-        var numberRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-        
-        if ( ! numberRegex.test(number) ) {
-          return this.PhoneError;
-        }
       }
     },
     {
@@ -90,13 +69,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
-      },
-      validateObj: function (password) {
-        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,32}$/;
-
-        if ( ! passwordRegex.test(password) ) {
-          return this.PasswordError;
-        }
       }
     },
     {
@@ -118,12 +90,7 @@ foam.CLASS({
     { name: 'LastNameLabel', message: 'Last Name *' },
     { name: 'PhoneNumberLabel', message: 'Phone Number *' },
     { name: 'PasswordLabel', message: 'Password *' },
-    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'FirstNameError', message: 'Invalid first name.' },
-    { name: 'LastNameError', message: 'Invalid last name.' },
-    { name: 'PhoneError', message: 'Invalid phone number.' },
-    { name: 'PasswordError', message: 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.' }
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [

@@ -11,12 +11,14 @@ foam.CLASS({
     'validateStreetNumber',
     'validateStreetName',
     'validateAddressLine',
-    'validatePassword'
+    'validatePassword',
+    'validateWebsite',
+    'validateRegNumber'
   ],
 
   methods: [
     function validateName(name) {
-      var re = /^[a-zA-Z]{1,70}$/;
+      var re = /^[a-zA-Z ]{1,70}$/;
       return re.test(String(name));
     },
     function validateEmail(email) {
@@ -50,6 +52,14 @@ foam.CLASS({
     function validatePassword(password) {
       var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,32}$/;
       return re.test(String(password));
+    },
+    function validateWebsite(website) {
+      var re = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g;
+      return re.test(String(website));
+    },
+    function validateRegNumber(registrationNumber) {
+      var re = /^[a-zA-Z0-9 ]{1,35}$/;
+      return re.test(String(registrationNumber));
     }
   ]
 });
