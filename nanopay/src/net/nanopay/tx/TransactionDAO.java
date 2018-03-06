@@ -65,6 +65,10 @@ public class TransactionDAO
   public FObject put_(X x, FObject obj) {
     Transaction     transaction     = (Transaction) obj;
 
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+
+    if ( oldTxn != null ) return super.put_(x, obj);
+
     // executeTransaction(x, transaction);
     // TODO: delete all the rest of the code
 

@@ -34,11 +34,11 @@ public class LiquidityCashInDAO
     setDelegate(delegate);
     setX(x);
     // initialize our DAO
-    userDAO_ = (DAO) x.get("localUserDAO");
-    bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
-    accountDAO_ = (DAO) x.get("localAccountDAO");
+    userDAO_              = (DAO) x.get("localUserDAO");
+    bankAccountDAO_       = (DAO) x.get("localBankAccountDAO");
+    accountDAO_           = (DAO) x.get("localAccountDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
-    groupDAO_ = (DAO) x.get("groupDAO");
+    groupDAO_             = (DAO) x.get("groupDAO");
   }
 
   @Override
