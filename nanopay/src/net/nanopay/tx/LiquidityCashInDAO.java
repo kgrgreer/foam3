@@ -85,7 +85,7 @@ public class LiquidityCashInDAO
     }
 
     // if the user's balance is not enough to make the payment, do cash in first
-    if ( payerAccount.getBalance() < total ) {
+    if ( payerAccount.getBalance() - payerMinBalance < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
         long cashInAmount = total - payerAccount.getBalance();
         if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
