@@ -203,7 +203,7 @@ foam.CLASS({
         .end()
         .start('div').addClass('row').addClass('rowTopMarginOverride')
           .start('p')
-            .add('Authorize').addClass('headings')
+            .add('Authorization').addClass('headings')
             .start('p').addClass('messageBody').add(this.TC1).end()
           .end()
           .start('p')
