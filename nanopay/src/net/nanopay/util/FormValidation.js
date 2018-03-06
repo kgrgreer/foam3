@@ -13,7 +13,7 @@ foam.CLASS({
     'validateAddressLine',
     'validatePassword',
     'validateWebsite',
-    'validateRegNumber'
+    'validateTitleNumOrAuth'
   ],
 
   methods: [
@@ -54,12 +54,12 @@ foam.CLASS({
       return re.test(String(password));
     },
     function validateWebsite(website) {
-      var re = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g;
+      var re = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
       return re.test(String(website));
     },
-    function validateRegNumber(registrationNumber) {
+    function validateTitleNumOrAuth(issuingAuthority) {
       var re = /^[a-zA-Z0-9 ]{1,35}$/;
-      return re.test(String(registrationNumber));
+      return re.test(String(issuingAuthority));
     }
   ]
 });

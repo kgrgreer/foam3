@@ -29,7 +29,7 @@ foam.CLASS({
     'validateStreetName',
     'validateCity',
     'validateAddressLine',
-    'validateRegNumber',
+    'validateTitleNumOrAuth',
     'stack',
     'transactionDAO',
     'user',
@@ -88,7 +88,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
         return false;
       }
-      if ( merchantInfo.registrationNumber.length > 0 && ! this.validateRegNumber(merchantInfo.registrationNumber) ) {
+      if ( merchantInfo.registrationNumber.length > 0 && ! this.validateTitleNumOrAuth(merchantInfo.registrationNumber) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid registration number.', type: 'error' }));
         return false;
       }
