@@ -1,5 +1,6 @@
 package net.nanopay.cico.spi.alterna;
 
+import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
@@ -28,7 +29,8 @@ public class AlternaSFTPService
     CsvUtil.writeCsvFile(getX(), baos, OutputterMode.STORAGE);
 
     Session session = null;
-    ChannelSftp channel = null;
+    Channel channel = null;
+    ChannelSftp channelSftp;
 
     try {
       // create session with user name and password
@@ -43,11 +45,13 @@ public class AlternaSFTPService
       session.connect();
 
       // open SFTP connection and upload file
-      channel = (ChannelSftp) session.openChannel("sftp");
+      channel = session.openChannel("sftp");
       channel.connect();
-      channel.cd(WORKING_DIR);
-      channel.put(new ByteArrayInputStream(baos.toByteArray()), CsvUtil.generateFilename(now));
-      channel.exit();
+
+      channelSftp = (ChannelSftp) channel;
+      channelSftp.cd(WORKING_DIR);
+      channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), CsvUtil.generateFilename(now));
+      channelSftp.exit();
     } catch ( Exception e ) {
       e.printStackTrace();
     } finally {
