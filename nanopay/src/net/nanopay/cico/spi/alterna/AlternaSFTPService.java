@@ -8,10 +8,8 @@ import foam.lib.json.OutputterMode;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
-import java.util.TimeZone;
 
 public class AlternaSFTPService
     extends ContextAwareSupport
@@ -25,8 +23,7 @@ public class AlternaSFTPService
 
   @Override
   public void sendCICOFile() {
-    Date now = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTime();
-
+    Date now = new Date();
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     CsvUtil.writeCsvFile(getX(), baos, OutputterMode.STORAGE);
 
