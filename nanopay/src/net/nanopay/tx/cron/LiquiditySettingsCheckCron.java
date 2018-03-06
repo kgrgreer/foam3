@@ -57,25 +57,25 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
         if( ls.getBankAccountId() > 0 ){
           bankId = ls.getBankAccountId();
         }
-        if( checkBalance(ls, balance) && ls.getCashOutFrequency() == frequency_ ){
+        if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
           addTransaction(x, user.getId(), bankId);
         }
       } else{
         Group group = (Group) groupDAO.find(user.getGroup());
         ls = group.getLiquiditySettings();
-        if( checkBalance(ls, balance) && ls.getCashOutFrequency() == frequency_ ){
+        if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
           addTransaction(x, user.getId(), bankId);
         }
       }
     }
   }
   public boolean checkBalance(LiquiditySettings ls, long balance){
-    if( balance > ls.getMaximumBalance() ){
+    if( balance > ls.getMaximumBalance() && ls.getEnableCashOut() ){
       amount_ = balance - ls.getMaximumBalance();
       type_ = TransactionType.CASHOUT;
       return true;
     }
-    if( balance < ls.getMinimumBalance() ){
+    if( balance < ls.getMinimumBalance() && ls.getEnableCashIn() ){
       amount_ = ls.getMinimumBalance() - balance;
       type_ = TransactionType.CASHIN;
       return true;
