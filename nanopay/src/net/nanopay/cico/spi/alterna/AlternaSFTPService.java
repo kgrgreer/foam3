@@ -61,9 +61,4 @@ public class AlternaSFTPService
       System.out.println("Host Session disconnected.");
     }
   }
-
-  @Override
-  public void start() {
-
-  }
 }
