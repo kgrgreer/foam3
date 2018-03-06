@@ -200,6 +200,8 @@ foam.CLASS({
             .start('p').add(this.LabelInstitute).addClass('inputFieldLabel').end()
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
+        .end()
+        .start('div').addClass('row').addClass('rowTopMarginOverride')
           .start('p')
             .add('Authorize').addClass('headings')
             .start('p').addClass('messageBody').add(this.TC1).end()
@@ -212,8 +214,7 @@ foam.CLASS({
             .add('Cancellation').addClass('headings')
             .start('p').addClass('messageBody').add(this.TC3).end()
           .end()
-        .end()
-      
+        .end() 
     }
   ]
 });
