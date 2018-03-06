@@ -2,16 +2,11 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-
-import java.util.Date;
-
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.liquidity.model.Liquidity;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.CashOutFrequency;
@@ -21,16 +16,15 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
+public class LiquidityCashOutDAO extends ProxyDAO {
 
-public class LiquidityTransactionDAO
-    extends ProxyDAO {
   protected DAO userDAO_;
   protected DAO liquiditySettingsDAO_;
   protected DAO accountDAO_;
   protected DAO bankAccountDAO_;
   protected DAO groupDAO_;
 
-  public LiquidityTransactionDAO(X x, DAO delegate) {
+  public LiquidityCashOutDAO(X x, DAO delegate) {
     setDelegate(delegate);
     setX(x);
     // initialize our DAO
@@ -42,8 +36,11 @@ public class LiquidityTransactionDAO
   }
 
   @Override
-  synchronized public FObject put_(X x, FObject obj) {
+  synchronized public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction txn = (Transaction) obj;
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+
+    if ( oldTxn != null ) return super.put_(x, obj);
 
     // If It is a CICO Transaction, does not do anything.
     if ( txn.getPayeeId() == txn.getPayerId() ) {
@@ -60,15 +57,9 @@ public class LiquidityTransactionDAO
     User payer = (User) userDAO_.find(payerId);
     User payee = (User) userDAO_.find(payeeId);
 
-    // check if user exist
-    if ( payer == null ) throw new RuntimeException("Payer not exist");
-    if ( payee == null ) throw new RuntimeException("Payee not exist");
-
     //get payer group and payee group
     Group payerGroup = (Group) groupDAO_.find(payer.getGroup());
     Group payeeGroup = (Group) groupDAO_.find(payee.getGroup());
-
-    long total = txn.getTotal();
 
     //get payer and payee group's liquidity settings
     LiquiditySettings payerLiquiditySetting = getLiquiditySettings(payer);
@@ -78,50 +69,17 @@ public class LiquidityTransactionDAO
     long payerBankAccountID = getBankAccountID(payerLiquiditySetting, payerId);
     long payeeBankAccountID = getBankAccountID(payeeLiquiditySetting, payeeId);
 
-    if ( txn.getBankAccountId() != null ) {
-      FObject tx = getDelegate().put_(x, obj);
-      liquidityCashOut(x, payeeLiquiditySetting, payeeAccount, total, payeeBankAccountID);
-      return tx;
-    }
-    long payerMinBalance = 0;
-    long payerMaxBalance = 0;
-    if ( payerLiquiditySetting != null ) {
-      payerMinBalance = payerLiquiditySetting.getMinimumBalance();
-      payerMaxBalance = payerLiquiditySetting.getMaximumBalance();
-    }
-
-    // if the user's balance is not enough to make the payment, do cash in first
-    if ( payerAccount.getBalance() < total ) {
-      if ( checkCashInStatus(payerLiquiditySetting) ) {
-        long cashInAmount = total - payerAccount.getBalance();
-        if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
-          cashInAmount += payerMinBalance;
-        }
-        if ( checkBankAccountAvailable(payerBankAccountID) ) {
-          addCICOTransaction(payerId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, x);
-        } else {
-          throw new RuntimeException("Please add and verify your bank account to cash in");
-        }
-      } else {
-        throw new RuntimeException("balance is insufficient");
-      }
-    }
-
     // Make a payment
-    FObject originalTx = super.put_(x, obj);
-
-    if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
-
-      if ( payerAccount.getBalance() - total > payerMaxBalance ) {
-        if ( checkCashOutStatus(payerLiquiditySetting) ) {
-          addCICOTransaction(payerId, payerAccount.getBalance() - total - payerMaxBalance, payerBankAccountID,
-              TransactionType.CASHOUT, x);
-        }
-      }
+    FObject originalTx;
+    try {
+      originalTx = super.put_(x, obj);
+    } catch ( RuntimeException exception ) {
+      throw exception;
     }
 
     // if the user's balance bigger than the liquidity maxbalance, do cash out
-    liquidityCashOut(x, payeeLiquiditySetting, payeeAccount, total, payeeBankAccountID);
+    liquidityPayerCashOut(x, payerLiquiditySetting, payerAccount, txn.getTotal(), payerBankAccountID);
+    liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
     return originalTx;
   }
 
@@ -202,8 +160,8 @@ public class LiquidityTransactionDAO
     return false;
   }
 
-  public void liquidityCashOut(X x, LiquiditySettings liquiditySettings, Account account, long transactionAmount, long
-      bankAccountId) {
+  public void liquidityPayeeCashOut(X x, LiquiditySettings liquiditySettings, Account account, long
+      transactionAmount, long bankAccountId) {
     long maxBalance = 0;
     if ( liquiditySettings != null ) {
       maxBalance = liquiditySettings.getMaximumBalance();
@@ -212,8 +170,26 @@ public class LiquidityTransactionDAO
       if ( account.getBalance() + transactionAmount > maxBalance ) {
         if ( checkCashOutStatus(liquiditySettings) ) {
           long cashOutAmount = account.getBalance() - maxBalance + transactionAmount;
-          if ( checkBankAccountAvailable(bankAccountId) ) addCICOTransaction(account.getId(), cashOutAmount,
-              bankAccountId, TransactionType.CASHOUT, x);
+          if ( checkBankAccountAvailable(bankAccountId) )
+            addCICOTransaction(account.getId(), cashOutAmount,
+                bankAccountId, TransactionType.CASHOUT, x);
+        }
+      }
+    }
+  }
+
+  public void liquidityPayerCashOut(X x, LiquiditySettings liquiditySettings, Account account, long
+      transactionAmount, long bankAccountId) throws RuntimeException {
+    long maxBalance = 0;
+    if ( liquiditySettings != null ) {
+      maxBalance = liquiditySettings.getMaximumBalance();
+    }
+    if ( ifCheckRangePerTransaction(liquiditySettings) ) {
+
+      if ( account.getBalance() - transactionAmount > maxBalance ) {
+        if ( checkCashOutStatus(liquiditySettings) ) {
+          addCICOTransaction(account.getId(), account.getBalance() - transactionAmount - maxBalance, bankAccountId,
+              TransactionType.CASHOUT, x);
         }
       }
     }
