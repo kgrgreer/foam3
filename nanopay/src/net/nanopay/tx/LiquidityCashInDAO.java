@@ -48,10 +48,6 @@ public class LiquidityCashInDAO
     if ( txn.getPayeeId() == txn.getPayerId() ) {
       return super.put_(x, obj);
     }
-    // If user choose bank account to pay
-    if ( txn.getBankAccountId() != null ) {
-      return getDelegate().put_(x, obj);
-    }
 
     // get payer and payee account
     Account payeeAccount = (Account) accountDAO_.find(txn.getPayeeId());
@@ -83,6 +79,8 @@ public class LiquidityCashInDAO
     if ( payerLiquiditySetting != null ) {
       payerMinBalance = payerLiquiditySetting.getMinimumBalance();
     }
+
+    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
 
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payerAccount.getBalance() - payerMinBalance < total ) {
