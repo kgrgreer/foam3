@@ -26,9 +26,8 @@ foam.CLASS({
     'validatePostalCode',
     'validateWebsite',
     'validateStreetNumber',
-    'validateStreetName',
     'validateCity',
-    'validateAddressLine',
+    'validateAddress',
     'validateTitleNumOrAuth',
     'stack',
     'transactionDAO',
@@ -100,11 +99,11 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateStreetName(merchantInfo.streetName) ) {
+      if ( ! this.validateAddress(merchantInfo.streetName) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
         return false;
       }
-      if ( merchantInfo.addressLine.length > 0 && ! this.validateAddressLine(merchantInfo.addressLine) ) {
+      if ( merchantInfo.addressLine.length > 0 && ! this.validateAddress(merchantInfo.addressLine) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
         return false;
       }

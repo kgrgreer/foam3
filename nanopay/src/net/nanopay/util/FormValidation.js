@@ -9,8 +9,7 @@ foam.CLASS({
     'validatePhone',
     'validateCity',
     'validateStreetNumber',
-    'validateStreetName',
-    'validateAddressLine',
+    'validateAddress',
     'validatePassword',
     'validateWebsite',
     'validateTitleNumOrAuth',
@@ -19,7 +18,7 @@ foam.CLASS({
 
   methods: [
     function validateName(name) {
-      var re = /^[a-zA-Z ]{1,70}$/;
+      var re = /^[a-zA-Z- ]{1,70}$/;
       return re.test(String(name));
     },
     function validateEmail(email) {
@@ -34,13 +33,9 @@ foam.CLASS({
       var re = /^[0-9]{1,16}$/;
       return re.test(String(streetNumber));
     },
-    function validateStreetName(streetName) {
+    function validateAddress(address) {
       var re = /^[a-zA-Z0-9 ]{1,70}$/;
-      return re.test(String(streetName));
-    },
-    function validateAddressLine(addressLine) {
-      var re = /^[a-zA-Z0-9 ]{1,70}$/;
-      return re.test(String(addressLine));
+      return re.test(String(address));
     },
     function validatePostalCode(code) {
       var re = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
