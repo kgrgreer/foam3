@@ -16,12 +16,12 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
   synchronized public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
     Transaction curTxn = (Transaction) obj;
-//    if ( oldTxn != null ) {
-//      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-//        throw new RuntimeException("You could only change the invoice, transaction status and CICO Transaction status" +
-//            " information");
-//      }
-//    }
+    if ( oldTxn != null ) {
+      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
+        throw new RuntimeException("You could only change the invoice, transaction status and CICO Transaction status" +
+            " information");
+      }
+    }
     return super.put_(x, obj);
   }
 
@@ -35,6 +35,15 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
     temp.setStatus(oldtxn.getStatus());
     temp.setInvoiceId(oldtxn.getInvoiceId());
     temp.setCicoStatus(oldtxn.getCicoStatus());
-    return temp.compareTo(oldtxn);
+    temp.setDate(oldtxn.getDate());
+    temp.setPayerName(oldtxn.getPayerName());
+    temp.setPayeeName(oldtxn.getPayeeName());
+    temp.setDeviceId(oldtxn.getDeviceId());
+    temp.setReferenceNumber(oldtxn.getReferenceNumber());
+    temp.setNotes(oldtxn.getNotes());
+    temp.setChallenge(oldtxn.getChallenge());
+    temp.setProviderId(oldtxn.getProviderId());
+    temp.setBrokerId(oldtxn.getBrokerId());
+    return oldtxn.compareTo(temp);
   }
 }
