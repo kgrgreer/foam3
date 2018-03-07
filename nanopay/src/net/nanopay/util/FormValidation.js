@@ -12,6 +12,8 @@ foam.CLASS({
     'validatePassword',
     'validateWebsite',
     'validateTitleNumOrAuth',
+    'validateAccountNumber',
+    'validateTransitNumber',
     'validateInstitutionNumber'
   ],
 
