@@ -35,6 +35,15 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
     temp.setStatus(oldtxn.getStatus());
     temp.setInvoiceId(oldtxn.getInvoiceId());
     temp.setCicoStatus(oldtxn.getCicoStatus());
-    return temp.compareTo(oldtxn);
+    temp.setDate(oldtxn.getDate());
+    temp.setPayerName(oldtxn.getPayerName());
+    temp.setPayeeName(oldtxn.getPayeeName());
+    temp.setDeviceId(oldtxn.getDeviceId());
+    temp.setReferenceNumber(oldtxn.getReferenceNumber());
+    temp.setNotes(oldtxn.getNotes());
+    temp.setChallenge(oldtxn.getChallenge());
+    temp.setProviderId(oldtxn.getProviderId());
+    temp.setBrokerId(oldtxn.getBrokerId());
+    return oldtxn.compareTo(temp);
   }
 }
