@@ -66,6 +66,17 @@ public class CsvUtil {
   public static String generateFilename(Date date) {
     return filenameSdf.get().format(date) + "_mintchipcashout.csv";
   }
+
+  /**
+   * Pads the left size of a string with zeros
+   * @param s string to padd
+   * @param n number of 0's to pad with
+   * @return the string padded with n number of zeros
+   */
+  public static String padLeftWithZeros(String s, int n) {
+    return String.format("%" + n + "s", s).replace(' ', '0');
+  }
+
   /**
    * fills the outputter with all CICO transactions
    * @param x - the context
@@ -117,8 +128,8 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
-          alternaFormat.setTransitNumber(bankAccount.getTransitNumber());
-          alternaFormat.setBankNumber(bankAccount.getInstitutionNumber());
+          alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(bankAccount.getInstitutionNumber(), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
