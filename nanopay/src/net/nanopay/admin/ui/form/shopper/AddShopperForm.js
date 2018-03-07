@@ -18,7 +18,6 @@ foam.CLASS({
     'accountDAO',
     'email',
     'formatCurrency',
-    'validateName',
     'validateEmail',
     'validatePhone',
     'validateStreetNumber',
@@ -49,12 +48,12 @@ foam.CLASS({
     function validations () {
       var shopperInfo = this.viewData;
       
-      if ( ! this.validateName(shopperInfo.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid first name.', type: 'error' }));
+      if ( shopperInfo.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateName(shopperInfo.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid last name.', type: 'error' }));
+      if ( shopperInfo.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
       if ( ! this.validateEmail(shopperInfo.emailAddress) ) { 

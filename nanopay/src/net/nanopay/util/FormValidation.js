@@ -3,7 +3,6 @@ foam.CLASS({
   name: 'FormValidation',
 
   exports: [
-    'validateName',
     'validateEmail',
     'validatePostalCode',
     'validatePhone',
@@ -17,16 +16,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function validateName(name) {
-      var re = /^[a-zA-Z- ]{1,70}$/;
-      return re.test(String(name));
-    },
     function validateEmail(email) {
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(String(email).toLowerCase());
     },
     function validatePhone(number) {
-      var re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+      var re = /([+]?\d{1,2}[.-\s]?)?(\d{3}[.-]?){2}\d{4}/g;
       return re.test(String(number));
     },
     function validateStreetNumber(streetNumber) {
@@ -38,7 +33,7 @@ foam.CLASS({
       return re.test(String(address));
     },
     function validatePostalCode(code) {
-      var re = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+      var re = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
       return re.test(String(code));
     },
     function validateCity(city) {

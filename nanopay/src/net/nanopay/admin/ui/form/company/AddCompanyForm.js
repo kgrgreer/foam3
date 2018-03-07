@@ -17,7 +17,6 @@ foam.CLASS({
   imports: [
     'stack',
     'userDAO',
-    'validateName',
     'validateEmail',
     'validatePhone',
     'validatePassword',
@@ -48,12 +47,12 @@ foam.CLASS({
     function infoValidations() {
       var companyInfo = this.viewData;
 
-      if ( ! this.validateName(companyInfo.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid first name.', type: 'error' }));
+      if ( companyInfo.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateName(companyInfo.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid last name.', type: 'error' }));
+      if ( companyInfo.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
       if ( companyInfo.jobTitle.length > 0 && ! this.validateTitleNumOrAuth(companyInfo.jobTitle) ) {
