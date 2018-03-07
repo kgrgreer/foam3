@@ -16,7 +16,10 @@ foam.CLASS({
     'bankAccountVerification',
     'selectedAccount',
     'stack',
-    'user'
+    'user',
+    'validateTransitNumber',
+    'validateAccountNumber',
+    'validateInstitutionNumber'
   ],
 
   exports: [
@@ -44,6 +47,28 @@ foam.CLASS({
         { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
       this.SUPER();
+    },
+    function validations() {
+      var accountInfo = this.viewData;
+
+      if ( accountInfo.accountName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Account name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateTransitNumber(accountInfo.transitNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAccountNumber(accountInfo.accountNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid account number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateInstitutionNumber(accountInfo.bankNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid institution number.', type: 'error' }));
+        return false;
+      }
+
+      return true;
     }
   ],
 
@@ -66,22 +91,11 @@ foam.CLASS({
           ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
           ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
            accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
 
-          if ( ! /^[0-9]{1,35}$/.exec(accountInfo.accountNumber) ) {
-            self.add(self.NotificationMessage.create({ message: 'Invalid account number.', type: 'error' }));
-            return;
-          }
-
-          if ( ! /^[0-9]{5}$/.exec(accountInfo.transitNumber) ) {
-            self.add(self.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
-            return;
-          }
-
-          if ( ! /^[0-9]{3}$/.exec(accountInfo.bankNumber) ) {
-            self.add(self.NotificationMessage.create({ message: 'Invalid bank number.', type: 'error' }));
+          if ( ! this.validations() ) {
             return;
           }
 
@@ -92,6 +106,11 @@ foam.CLASS({
             accountNumber: accountInfo.accountNumber,
             owner: this.user.id
           });
+
+          if ( newAccount.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+            return;
+          }
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
             self.newBankAccount = response;
