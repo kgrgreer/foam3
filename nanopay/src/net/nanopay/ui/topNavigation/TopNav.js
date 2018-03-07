@@ -32,9 +32,9 @@ foam.CLASS({
     }
     ^ .menuItem{
       display: inline-block;
-      padding: 20px 0 10px 0px;
+      padding: 20px 0 5px 0px;
       cursor: pointer;
-      border-bottom: 4px solid transparent;
+      border-bottom: 1px solid transparent;
     }
     ^ .menuItem:hover, ^ .menuItem.hovered {
       cursor: pointer;
