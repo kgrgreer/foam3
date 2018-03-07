@@ -48,7 +48,7 @@ foam.CLASS({
     },
     function validations () {
       var shopperInfo = this.viewData;
-      
+
       if ( shopperInfo.firstName.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
         return false;
@@ -57,7 +57,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateEmail(shopperInfo.emailAddress) ) { 
+      if ( ! this.validateEmail(shopperInfo.emailAddress) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
         return false;
       }
@@ -65,12 +65,10 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
         return false;
       }
-      
       if ( ! this.validateAge(shopperInfo.birthday) ) {
-        this.add(self.NotificationMessage.create({ message: 'User should be at least 16 years of age to register.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'User should be at least 16 years of age to register.', type: 'error' }));
         return;
       }
-      
       if ( ! this.validateStreetNumber(shopperInfo.streetNumber) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
         return false;
