@@ -31,26 +31,26 @@ cp brokers /opt/tomcat/bin/
 cp businessSectors /opt/tomcat/bin/
 cp businessTypes /opt/tomcat/bin/
 cp cicoServiceProviders /opt/tomcat/bin/
+cp corridors /opt/tomcat/bin/
 cp countries /opt/tomcat/bin/
 cp cronjobs /opt/tomcat/bin/
 cp currencies /opt/tomcat/bin/
-cp corridors /opt/tomcat/bin/
-cp payoutOptions /opt/tomcat/bin/
 cp emailTemplates /opt/tomcat/bin/
 cp exportDriverRegistrys /opt/tomcat/bin/
 cp -n groups /opt/tomcat/bin/
+cp institutions /opt/tomcat/bin/
 cp languages /opt/tomcat/bin/
 cp menus /opt/tomcat/bin/
+cp payoutOptions /opt/tomcat/bin/
 cp -n permissions /opt/tomcat/bin/
 cp regions /opt/tomcat/bin/
 cp -n scripts /opt/tomcat/bin/
 cp services /opt/tomcat/bin/
+cp -n spids /opt/tomcat/bin/
 cp tests /opt/tomcat/bin/
 cp transactionLimits /opt/tomcat/bin/
 cp transactionPurposes /opt/tomcat/bin/
 cp -n users /opt/tomcat/bin/
-cp institutions /opt/tomcat/bin/
-cp -n spids /opt/tomcat/bin/
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
