@@ -8,7 +8,7 @@ p({"class":"foam.nanos.menu.Menu","id":"sales","label":"Receivable","handler":{"
 p({"class":"foam.nanos.menu.Menu","id":"expenses","label":"Payable","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.ExpensesView"}},"order":1000,"parent":"invoices"})
 p({"class":"foam.nanos.menu.Menu","id":"transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.ui.TransactionsView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"transfer","label":"Transfer","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.TransferView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.UserView"}},"order":1000,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.UserView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.resetPassword.ResetView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.SubMenu"},"order":1000,"parent":""})

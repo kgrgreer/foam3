@@ -10,6 +10,7 @@ var classes = [
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.cico.spi.alterna.SFTPService',
+  'net.nanopay.cico.spi.alterna.AlternaSFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.model.Account',

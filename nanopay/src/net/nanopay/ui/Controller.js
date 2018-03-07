@@ -28,10 +28,10 @@ foam.CLASS({
 
   exports: [
     'account',
-    'aboutUrl',
     'privacyUrl',
     'termsUrl',
     'as ctrl',
+    'findAccount'
   ],
 
   css: `
@@ -80,7 +80,6 @@ foam.CLASS({
   `,
 
   properties: [
-    'aboutUrl',
     'privacyUrl',
     'termsUrl',
     {

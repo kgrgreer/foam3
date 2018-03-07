@@ -31,7 +31,7 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.accounts"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
-p({"class":"foam.nanos.auth.Permission","id":"cc.*","description":"All Connected City permissions"})
+p({"class":"foam.nanos.auth.Permission","id":"cc.*","description":"All ConnectedCity permissions"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"*","description":"All Access"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z

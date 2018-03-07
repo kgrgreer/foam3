@@ -7,7 +7,6 @@ foam.CLASS({
 
   imports: [
     'webApp',
-    'aboutUrl',
     'privacyUrl',
     'termsUrl'
   ],
@@ -58,6 +57,12 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-goToNanopay {
           padding-left: 50px;
         }
+        ^ .copyright-label{
+          flaot: right;
+        }
+        ^ .mini-links {
+          float: left;
+        }
       */}
     })
   ],
@@ -67,7 +72,7 @@ foam.CLASS({
       class: 'String',
       name: 'aboutLabel',
       factory: function () {
-        return 'Powered by ' + this.aboutUrl.replace(/(^\w+:|^)\/\//, '');
+        return 'Powered by nanopay';
       }
     }
   ],
@@ -80,7 +85,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('col')
+        .start('div').addClass('col').addClass('mini-links')
           .start(this.GO_TO_NANOPAY, { label: this.aboutLabel })
             .style({
               'margin-left': '50px'
@@ -102,7 +107,7 @@ foam.CLASS({
      {
       name: 'goToNanopay',
       code: function(X) {
-        this.window.location.assign(X.aboutUrl);
+        this.window.location.assign('https://nanopay.net');
       }
     },
     {
