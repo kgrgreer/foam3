@@ -318,8 +318,6 @@ foam.CLASS({
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.account.balance$.map(function(balance) {
-              debugger;
-                            console.log('****************************** ', balance);
                             return (balance/100).toFixed(2)}))
               .end()
             .end()
