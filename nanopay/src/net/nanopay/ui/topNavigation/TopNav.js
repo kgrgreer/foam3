@@ -35,14 +35,14 @@ foam.CLASS({
       padding: 20px 0 10px 0px;
       cursor: pointer;
       border-bottom: 4px solid transparent;
-      transition: text-shadow;
     }
-    ^ .menuItem:hover {
+    ^ .menuItem:hover, ^ .menuItem.hovered {
       cursor: pointer;
-      text-shadow: 0 0 5px white, 0 0 10px white;
+      padding-bottom: 5px;
+      border-bottom: 1px solid white;
     }
     ^ .selected {
-      border-bottom: 4px solid %ACCENTCOLOR%;
+      border-bottom: 4px solid %ACCENTCOLOR% !important;
       padding-bottom: 5px;
       text-shadow: 0 0 0px white, 0 0 0px white;
     }
