@@ -16,12 +16,12 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
   synchronized public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
     Transaction curTxn = (Transaction) obj;
-    if ( oldTxn != null ) {
-      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-        throw new RuntimeException("You could only change the invoice, transaction status and CICO Transaction status" +
-            " information");
-      }
-    }
+//    if ( oldTxn != null ) {
+//      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
+//        throw new RuntimeException("You could only change the invoice, transaction status and CICO Transaction status" +
+//            " information");
+//      }
+//    }
     return super.put_(x, obj);
   }
 
