@@ -6,12 +6,15 @@ foam.CLASS({
     'validateEmail',
     'validatePostalCode',
     'validatePhone',
+    'validateAge',
     'validateCity',
     'validateStreetNumber',
     'validateAddress',
     'validatePassword',
     'validateWebsite',
     'validateTitleNumOrAuth',
+    'validateAccountNumber',
+    'validateTransitNumber',
     'validateInstitutionNumber'
   ],
 
@@ -59,6 +62,11 @@ foam.CLASS({
     function validateTransitNumber(transitNumber) {
       var re = /^[0-9]{5}$/;
       return re.test(String(transitNumber));
+    },
+    function validateAge(date) {
+      var year = date.getFullYear();
+      var currentYear = new Date().getFullYear();
+      return currentYear - year >= 16;
     },
     function validateInstitutionNumber(institutionNumber) {
       var re = /^[0-9]{3}$/;

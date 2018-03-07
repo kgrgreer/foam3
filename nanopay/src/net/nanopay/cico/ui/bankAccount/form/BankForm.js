@@ -46,6 +46,7 @@ foam.CLASS({
         { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
         { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
+      this.nextLabel = 'I Agree';
       this.SUPER();
     },
     function validations() {
@@ -84,6 +85,7 @@ foam.CLASS({
       code: function() {
         var self = this;
         if ( this.position == 0 ) { // On Submission screen.
+          this.nextLabel = 'I Agree';
           // data from form
           var accountInfo = this.viewData;
 
