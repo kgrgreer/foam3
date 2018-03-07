@@ -38,6 +38,15 @@ foam.CLASS({
     ^ .attachment-btn {
       margin: 10px 0 50px;
     }
+    ^ .box-for-drag-drop {
+      border: 5px dashed #1234;
+      height: 100px;
+      width: 200px;
+    }
+    ^ .inputText{
+      text-align: center;
+      line-height: 60px
+    }
   `,
 
   messages: [
@@ -51,7 +60,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .add('Attachments')
+          .add('Attachment')
           .add(this.slot(function (data) {
             var e = this.E();
 
@@ -64,6 +73,13 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
+          .start('div').addClass('box-for-drag-drop')
+          .start('p').add('Click or drag files here').addClass('inputText').end()
+          .on('dragstart', this.onDragStart)
+          .on('dragenter', this.onDragOver)
+          .on('dragover', this.onDragOver)
+          .on('drop', this.onDrop)
+          .on('click', self.onAddAttachmentClicked)
           .start('input').addClass('attachment-input')
             .attrs({
               type: 'file',
@@ -72,9 +88,6 @@ foam.CLASS({
             })
             .on('change', this.onChange)
           .end()
-          .start().addClass('attachment-btn white-blue-button btn')
-            .add('Add Attachment')
-            .on('click', self.onAddAttachmentClicked)
           .end()
         .end();
     },
@@ -90,10 +103,35 @@ foam.CLASS({
     function onAddAttachmentClicked (e) {
       this.document.querySelector('.attachment-input').click();
     },
+    function onDragOver(e) {
+      console.log("2");         
+      e.preventDefault();    
+    },
+    function onDrop(e) {
+      e.preventDefault();  
+      console.log("2");         
 
+      var files = []; 
+      if (e.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        for (var i = 0; i < e.dataTransfer.items.length; i++) {
+          // If dropped items aren't files, reject them
+          if (e.dataTransfer.items[i].kind === 'file') {
+            var file = e.dataTransfer.items[i].getAsFile();
+            if(file.type === "application/pdf" || file.type === "image/jpg" || file.type === "image/gif"|| file.type === "image/jpeg" || file.type === "image/bmp"||file.type === "image/png"){
+              files.push(file);           
+            }
+          }
+        }
+        this.addFiles(files)
+      } 
+    },
     function onChange (e) {
-      var errors = false;
       var files = e.target.files;
+      this.addFiles(files)
+    },
+    function addFiles(files){
+      var errors = false;
       for ( var i = 0 ; i < files.length ; i++ ) {
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
