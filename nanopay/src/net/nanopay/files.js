@@ -142,6 +142,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
   { name: 'net/nanopay/cico/spi/alterna/SFTPService' },
+  { name: 'net/nanopay/cico/spi/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   // invoice
