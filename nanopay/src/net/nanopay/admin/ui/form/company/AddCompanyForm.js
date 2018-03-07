@@ -143,11 +143,11 @@ foam.CLASS({
         // Info from form
         var companyInfo = this.viewData;
 
-        if ( this.position == 0 ) { 
+        if ( this.position == 0 ) {
           // Merchant Info
 
           if ( ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
-          ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) || 
+          ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
           ( companyInfo.jobTitle == null || companyInfo.jobTitle.trim() == '' ) ||
           ( companyInfo.email == null || companyInfo.email.trim() == '' ) ||
           ( companyInfo.phoneNumber == null || companyInfo.phoneNumber.trim() == '' ) ||
@@ -157,6 +157,11 @@ foam.CLASS({
           }
 
           if ( ! this.infoValidations() ) {
+            return;
+          }
+
+          if ( !this.validatePhone(companyInfo.phoneNumber) ) {
+            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return;
           }
 
