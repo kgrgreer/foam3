@@ -80,8 +80,6 @@ public class LiquidityCashInDAO
       payerMinBalance = payerLiquiditySetting.getMinimumBalance();
     }
 
-    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
-
     // if the user's balance is not enough to make the payment, do cash in first
     if ( payerAccount.getBalance() - payerMinBalance < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
