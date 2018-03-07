@@ -26,7 +26,8 @@ foam.CLASS({
     'stack',
     'standardCICOTransactionDAO',
     'user',
-    'auth'
+    'auth',
+    'window'
   ],
 
   exports: [
@@ -302,6 +303,7 @@ foam.CLASS({
 
     function goToBankAccounts() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+      this.window.location.hash = "set-bank";
     },
 
     function resetCicoAmount() {
