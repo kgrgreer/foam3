@@ -205,7 +205,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'nextLabel',
-      value: 'I Agree'
+      value: 'Next'
     },
 
     // When set to true, all circles in the overview will be filled in
