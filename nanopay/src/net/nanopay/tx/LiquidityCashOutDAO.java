@@ -106,7 +106,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
       return - 1;
     //if user ID == 0, that means this user don't set default bank account. If we want to cash in we need to find on
     // bank account which is enable for this user
-    if ( liquiditySettings.getId() == 0 ) {
+    if ( liquiditySettings.getBankAccountId() == 0 ) {
       bankAccount = (BankAccount) bankAccountDAO_.find(
           AND(
               EQ(BankAccount.OWNER, userID),
