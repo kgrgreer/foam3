@@ -28,11 +28,11 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     setDelegate(delegate);
     setX(x);
     // initialize our DAO
-    userDAO_              = (DAO) x.get("localUserDAO");
-    bankAccountDAO_       = (DAO) x.get("localBankAccountDAO");
-    accountDAO_           = (DAO) x.get("localAccountDAO");
+    userDAO_ = (DAO) x.get("localUserDAO");
+    bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
+    accountDAO_ = (DAO) x.get("localAccountDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
-    groupDAO_             = (DAO) x.get("groupDAO");
+    groupDAO_ = (DAO) x.get("groupDAO");
   }
 
   @Override
@@ -78,8 +78,12 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     }
 
     // if the user's balance bigger than the liquidity maxbalance, do cash out
-    liquidityPayerCashOut(x, payerLiquiditySetting, payerAccount, txn.getTotal(), payerBankAccountID);
-    liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
+    try {
+      liquidityPayerCashOut(x, payerLiquiditySetting, payerAccount, txn.getTotal(), payerBankAccountID);
+      liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
+    } catch ( RuntimeException rexp ) {
+      // Do nothing if cash out is not success, cash out is not a necessary process for the payer to pay money
+    }
     return originalTx;
   }
 
