@@ -1,14 +1,17 @@
+
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui',
-  name: 'InvoiceFileUploadView',
-  extends: 'foam.u2.Element',
+  package: 'net.nanopay.ui.modal',
+  name: 'UploadModal',
+  extends: 'foam.u2.View',
+
+  documentation: 'Upload Modal',
 
   requires: [
+    'net.nanopay.ui.modal.ModalHeader',
     'foam.blob.BlobBlob',
     'foam.nanos.fs.File',
     'foam.u2.dialog.NotificationMessage'
   ],
-
   imports: [
     'user',
     'blobService'
@@ -18,15 +21,22 @@ foam.CLASS({
     'as data',
     'onInvoiceFileRemoved'
   ],
-
+  implements: [
+    'net.nanopay.ui.modal.ModalStyling'
+  ],
+ 
   properties: [
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'data'
     }
   ],
-
-  css: `
+  css:`
+    ^ .container{
+      height: 600px;
+      background-color: #093649;
+      margin-bottom: 20px;
+    }
     ^ .attachment-input {
       width: 0.1px;
       height: 0.1px;
@@ -35,32 +45,29 @@ foam.CLASS({
       position: absolute;
       z-index: -1;
     }
-    ^ .attachment-btn {
-      margin: 10px 0 50px;
-    }
     ^ .box-for-drag-drop {
+      margin: 20px;
       border: 5px dashed #1234;
-      height: 100px;
-      width: 200px;
+      height: 300px;
+      width: 560px;
     }
     ^ .inputText{
       text-align: center;
       line-height: 60px
     }
   `,
-
-  messages: [
-    { name: 'ErrorMessage', message: 'One or more file(s) were not uploaded as they exceeded the file size limit of 10MB' }
-  ],
-
+  
   methods: [
-    function initE() {
+    function initE(){
+      this.SUPER();
       var self = this;
-
+          
       this
-        .addClass(this.myClass())
-        .start()
-          .add('Attachment')
+      .tag(this.ModalHeader.create({
+        title: 'Choose File'
+      }))
+      .addClass(this.myClass())
+      .start()
           .add(this.slot(function (data) {
             var e = this.E();
 
@@ -73,9 +80,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
-      
-          .start('div').addClass('box-for-drag-drop')
+      .start('div').addClass('box-for-drag-drop')
           .start('p').add('Click or drag files here').addClass('inputText').end()
           .on('dragstart', this.onDragStart)
           .on('dragenter', this.onDragOver)
@@ -91,24 +96,13 @@ foam.CLASS({
             .on('change', this.onChange)
           .end()
           .end()
-        .end();
-    },
-
+          .end()
+    } ,
     function onInvoiceFileRemoved (fileNumber) {
       this.document.querySelector('.attachment-input').value = null;
       this.data.splice(fileNumber - 1, 1);
       this.data = Array.from(this.data);
     }
-  ],
-  actions: [
-    {
-      name: 'uploadButton',
-      label: 'Choose File',
-
-      code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.UploadModal', exportData: X.filteredUserDAO}));
-      }
-    },
   ],
   listeners: [
     function onAddAttachmentClicked (e) {
