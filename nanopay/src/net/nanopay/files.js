@@ -142,7 +142,14 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/cico/spi/alterna/AlternaFormat' },
   { name: 'net/nanopay/cico/spi/alterna/SFTPService' },
+  { name: 'net/nanopay/cico/spi/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
+
+  // invite
+  { name: 'net/nanopay/invite/model/Question' },
+  { name: 'net/nanopay/invite/model/Questionnaire' },
+  { name: 'net/nanopay/invite/ui/QuestionView' },
+  { name: 'net/nanopay/invite/ui/QuestionnaireView' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

@@ -10,6 +10,7 @@ var classes = [
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.cico.spi.alterna.SFTPService',
+  'net.nanopay.cico.spi.alterna.AlternaSFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.model.Account',
@@ -26,10 +27,19 @@ var classes = [
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
+
+  // invite
+  'net.nanopay.invite.model.Question',
+  'net.nanopay.invite.model.Questionnaire',
+  'net.nanopay.invite.model.QuestionnaireQuestionJunction',
+
+  // invoice
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.xero.TokenStorage',
+
+  // fx
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.interac.model.Corridor',

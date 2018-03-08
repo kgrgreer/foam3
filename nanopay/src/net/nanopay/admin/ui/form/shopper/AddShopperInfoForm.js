@@ -92,11 +92,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
-      },
-      validateObj: function(firstName) {
-        if ( ! firstName || firstName.length > 70 ) {
-          return this.FormError;
-        }
       }
     },
     {
@@ -107,11 +102,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
-      },
-      validateObj: function(lastName) {
-        if ( ! lastName || lastName.length > 70 ) {
-          return this.FormError;
-        }
       }
     },
     {
@@ -122,13 +112,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.emailAddress = newValue;
-      },
-      validateObj: function(email) {
-        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-        if ( ! emailRegex.test(email) ) {
-          return this.EmailError;
-        }
       }
     },
     {
@@ -139,13 +122,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.phoneNumber = newValue;
-      },
-      validateObj: function(phoneNumber) {
-        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
-
-          if ( ! phoneNumber || ! hasOkLength ) {
-            return this.PhoneError;
-          }
       }
     },
     {
@@ -189,11 +165,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
-      },
-      validateObj: function(addressLine) {
-        if ( ! addressLine || addressLine > 70 ) {
-          return this.AddressError;
-        }
       }
     },
     {
@@ -204,11 +175,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
-      },
-      validateObj: function(city) {
-        if ( ! city || city.length > 35 ) {
-          return this.AddressCityError;
-        }
       }
     },
     {
@@ -227,11 +193,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
-      },
-      validateObj: function(province) {
-        if ( ! province || province.name.length > 35 ) {
-          return this.AddressProvinceError;
-        }
       }
     },
     {
@@ -242,13 +203,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
-      },
-      validateObj: function(postalCode) {
-        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-
-        if ( ! postalCodeRegex.test(postalCode) ) {
-          return this.AddressPostalCodeError;
-        }
       }
     },
     {
@@ -290,14 +244,7 @@ foam.CLASS({
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'CreateAPasswordLabel', message: 'Create a Password *' },
-    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'PhoneError', message: 'Invalid phone number' },
-    { name: 'AddressError', message: 'Street address is invalid' },
-    { name: 'AddressCityError', message: 'City name is invalid' },
-    { name: 'AddressProvinceError', message: 'Invalid province option' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
