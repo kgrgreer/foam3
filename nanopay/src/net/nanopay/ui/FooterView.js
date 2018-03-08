@@ -81,8 +81,6 @@ foam.CLASS({
     function initE(){
       this.SUPER();
 
-      console.log(this.aboutLabel);
-
       this
         .addClass(this.myClass())
         .start('div').addClass('col').addClass('mini-links')
