@@ -31,16 +31,24 @@ foam.CLASS({
         ^{
           background-color: #edf0f5;
           width: 1160px;
-          height: calc(100% - 120px - 60px - 60px);
+          height: calc(100% - 20px - 60px - 60px);
           margin: auto;
-          padding-top: 110px;
-        }
-
-        ^ .topRow {
-          padding: 20px;
+          padding-top: 30px;
+          box-sizing: border-box;
         }
 
         ^ .title {
+          margin: 0;
+          line-height: 40px;
+          margin-bottom: 30px;
+          display: inline-block;
+          opacity: 0.6;
+          font-size: 20px;
+          font-weight: 300;
+          color: #093649;
+        }
+
+        ^ .subTitle {
           margin: 0;
           line-height: 40px;
           display: inline-block;
@@ -300,12 +308,15 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start('div')
+          .start('p').add(this.title || '').addClass('title').end()
+        .end()
+        .start('div')
           .start('div').addClass('positionColumn')
             .tag({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
           .start('div').addClass('stackColumn')
             .start('div')
-              .start('p').add(this.position$.map(function(p) { return self.viewTitles[p]; }) || '').addClass('title').end()
+              .start('p').add(this.position$.map(function(p) { return self.viewTitles[p]; }) || '').addClass('subTitle').end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
