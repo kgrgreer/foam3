@@ -102,15 +102,6 @@ foam.CLASS({
       name: 'bankName',
       postSet: function(oldValue, newValue) {
         this.viewData.accountName = newValue;
-      },
-      validateObj: function (bankName) {
-        if ( ! bankName ) {
-          return 'Please enter account name';
-        }
-
-        if ( bankName.length > 70 ) {
-          return 'Account name must be less than or equal to 70 characters.';
-        }
       }
     },
     {
@@ -118,16 +109,6 @@ foam.CLASS({
       name: 'accountNumber',
       postSet: function(oldValue, newValue) {
         this.viewData.accountNumber = newValue;
-      },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{0,7}$/;
-        if ( ! accountNumber ) {
-          return 'Please enter account number.';
-        }
-
-        if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Invalid account number.';
-        }
       }
     },
     {
@@ -135,16 +116,6 @@ foam.CLASS({
       name: 'transitNumber',
       postSet: function(oldValue, newValue) {
         this.viewData.transitNumber = newValue;
-      },
-      validateObj: function(transitNumber) {
-        var transNumRegex = /^[0-9]{5}$/;
-        if ( ! transitNumber ) {
-          return 'Please enter transit number';
-        }
-
-        if ( ! transNumRegex.test(transitNumber) ) {
-          return 'Invalid transit number.';
-        }
       }
     },
     {
@@ -152,16 +123,6 @@ foam.CLASS({
       name: 'institutionOther',
       postSet: function(oldValue, newValue) {
         this.viewData.bankNumber = newValue;
-      },
-      validateObj: function(institutionOther) {
-        var instNumRegex = /^[0-9]{3}$/;
-        if ( ! institutionOther ) {
-          return 'Please enter institution number.';
-        }
-
-        if ( ! instNumRegex.test(institutionOther) ) {
-          return 'Invalid institution number.';
-        }
       }
     }
   ],
@@ -200,8 +161,10 @@ foam.CLASS({
             .start('p').add(this.LabelInstitute).addClass('inputFieldLabel').end()
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
+        .end()
+        .start('div').addClass('row').addClass('rowTopMarginOverride')
           .start('p')
-            .add('Authorize').addClass('headings')
+            .add('Authorization').addClass('headings')
             .start('p').addClass('messageBody').add(this.TC1).end()
           .end()
           .start('p')
@@ -212,8 +175,7 @@ foam.CLASS({
             .add('Cancellation').addClass('headings')
             .start('p').addClass('messageBody').add(this.TC3).end()
           .end()
-        .end()
-      
+        .end() 
     }
   ]
 });

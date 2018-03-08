@@ -31,6 +31,7 @@ foam.CLASS({
     'privacyUrl',
     'termsUrl',
     'as ctrl',
+    'findAccount'
   ],
 
   css: `

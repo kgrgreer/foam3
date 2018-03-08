@@ -57,6 +57,12 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-goToNanopay {
           padding-left: 50px;
         }
+        ^ .copyright-label{
+          flaot: right;
+        }
+        ^ .mini-links {
+          float: left;
+        }
       */}
     })
   ],
@@ -79,7 +85,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('col')
+        .start('div').addClass('col').addClass('mini-links')
           .start(this.GO_TO_NANOPAY, { label: this.aboutLabel })
             .style({
               'margin-left': '50px'

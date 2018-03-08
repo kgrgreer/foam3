@@ -193,7 +193,8 @@ foam.CLASS({
         return this.transactionDAO.where(
           this.AND(
             this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
+            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
+            this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
           )
         );
       }
