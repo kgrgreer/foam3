@@ -147,11 +147,12 @@ FOAM_FILES([
 
   // invite
   { name: 'net/nanopay/invite/model/Invitation' },
-  { name: 'net/nanopay/invite/model/BusinessInvitation' },
   { name: 'net/nanopay/invite/model/Question' },
   { name: 'net/nanopay/invite/model/Questionnaire' },
-  { name: 'net/nanopay/invite/ui/QuestionView' },
-  { name: 'net/nanopay/invite/ui/QuestionnaireView' },
+  { name: 'net/nanopay/invite/ui/InvitationHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/InvitationHistoryView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

@@ -30,7 +30,6 @@ var classes = [
 
   // invite
   'net.nanopay.invite.model.Invitation',
-  'net.nanopay.invite.model.BusinessInvitation',
   'net.nanopay.invite.model.Question',
   'net.nanopay.invite.model.Questionnaire',
   'net.nanopay.invite.model.QuestionnaireQuestionJunction',
