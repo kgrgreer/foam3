@@ -4,7 +4,36 @@ INSTANCE=1
 VERSION=1
 
 # Creates an array of the file names 
-declare -a arr=( "brokers" "businessSectors" "businessTypes" "cicoServiceProviders" "countries" "cronjobs" "currencies" "corridors" "payoutOptions" "transactionPurposes" "dugs" "emailTemplates" "exportDriverRegistrys" "groups" "institutions" "languages" "menus" "permissions" "questionnaireQuestionJunction" "questionnaires" "questions" "regions" "scripts" "services" "spids" "tests" "transactionLimits" "users" )
+declare -a arr=( 
+  "brokers"
+  "businessSectors"
+  "businessTypes"
+  "cicoServiceProviders"
+  "corridors"
+  "countries"
+  "cronjobs"
+  "currencies"
+  "dugs"
+  "emailTemplates"
+  "exportDriverRegistrys"
+  "groups"
+  "institutions"
+  "languages"
+  "menus"
+  "payoutOptions"
+  "permissions"
+  "questionnaireQuestionJunction"
+  "questionnaires"
+  "questions"
+  "regions"
+  "scripts"
+  "services"
+  "spids"
+  "tests"
+  "transactionLimits"
+  "transactionPurposes"
+  "users"
+  )
 
 # Go through the array and check each location for the file and concatenate into one JDAO
 for file in "${arr[@]}"
