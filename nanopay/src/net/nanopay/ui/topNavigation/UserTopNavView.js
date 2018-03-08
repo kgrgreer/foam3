@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.ui.topNavigation',
   name: 'UserTopNavView',
@@ -28,6 +27,10 @@ foam.CLASS({
       color: white;
       position: relative;
       bottom: 5;
+    }
+    ^ h1:hover {
+      cursor: pointer;
+      text-shadow: 0 0 5px white, 0 0 10px white;
     }
     ^carrot {
       width: 0;

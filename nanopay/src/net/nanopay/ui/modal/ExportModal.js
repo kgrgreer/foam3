@@ -126,34 +126,34 @@ foam.CLASS({
   ],
 
   actions: [
-    function convert(){
+    function convert() {
       var self = this;
 
-    //This needs to be refactored in each driver. Driver should be able to discern from FObject & DAO.
-    if( this.exportData ){
-      if ( this.dataType == 'JSON') {
-        this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
-          self.note = result;
-        });
-      } else if ( this.dataType == 'XML' ) {
-        this.xmlDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
-          self.note = result;
-        });
-        //this.note = this.xmlDriver.exportFObject(null, this.exportData);
-      } else if ( this.dataType == 'CSV' ) {
-        this.csvDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
-          self.note = result;
-        });
-      }
+      //This needs to be refactored in each driver. Driver should be able to discern from FObject & DAO.
+      if( this.exportData ) {
+        if ( this.dataType == 'JSON') {
+          this.jsonDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+            self.note = result;
+          });
+        } else if ( this.dataType == 'XML' ) {
+          this.xmlDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+            self.note = result;
+          });
+          //this.note = this.xmlDriver.exportFObject(null, this.exportData);
+        } else if ( this.dataType == 'CSV' ) {
+          this.csvDriver.exportDAO(this.__context__, this.exportData).then(function (result) {
+            self.note = result;
+          });
+        }
      } else {
-      if ( this.dataType == 'JSON' ) {
-        this.note = this.jsonDriver.exportFObject(this.__context__, this.exportObj);
-      } else if ( this.dataType == 'XML' ) {
-        this.note = this.xmlDriver.exportFObject(this.__context__, this.exportObj);
-      } else if ( this.dataType == 'CSV' ) {
-        this.note = this.csvDriver.exportFObject(this.__context__, this.exportObj);
+        if ( this.dataType == 'JSON' ) {
+          this.note = this.jsonDriver.exportFObject(this.__context__, this.exportObj);
+        } else if ( this.dataType == 'XML' ) {
+          this.note = this.xmlDriver.exportFObject(this.__context__, this.exportObj);
+        } else if ( this.dataType == 'CSV' ) {
+          this.note = this.csvDriver.exportFObject(this.__context__, this.exportObj);
+        }
       }
-     }
     }
   ]
 })

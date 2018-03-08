@@ -1,21 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount.form',
   name: 'BankInfoForm',
-  extends: 'foam.u2.Controller',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to input bank account details.',
-
-  imports: [
-    'goBack',
-    'goNext',
-    'viewData'
-  ],
 
   css: `
     ^ .col {
       display: inline-block;
       width: 357px;
-
       vertical-align: top;
     }
 
@@ -65,6 +58,29 @@ foam.CLASS({
     ^ .instituteOtherMargin {
       margin-left: 150px;
     }
+
+    ^ .headings {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+    }
+    
+    ^ .messageBody {
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #093649;
+    }
   `,
 
   messages: [
@@ -74,7 +90,10 @@ foam.CLASS({
     { name: 'LabelInstitute',       message: 'Institution No. *' },
     { name: 'LabelName',            message: 'Name *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },
-    { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' }
+    { name: 'Step',                 message: 'Step 1: Please provide your bank account information below.' },
+    { name: 'TC1',                 message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
+    { name: 'TC2',                 message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit www.cdnpay.ca.'},
+    { name: 'TC3',                 message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting www.cdnpay.ca.'}
   ],
 
   properties: [
@@ -134,13 +153,13 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.bankNumber = newValue;
       },
-      validateObj: function(institutionNumber) {
+      validateObj: function(institutionOther) {
         var instNumRegex = /^[0-9]{3}$/;
-        if ( ! institutionNumber ) {
+        if ( ! institutionOther ) {
           return 'Please enter institution number.';
         }
 
-        if ( ! instNumRegex.test(institutionNumber) ) {
+        if ( ! instNumRegex.test(institutionOther) ) {
           return 'Invalid institution number.';
         }
       }
@@ -182,6 +201,20 @@ foam.CLASS({
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
         .end()
+        .start('div').addClass('row').addClass('rowTopMarginOverride')
+          .start('p')
+            .add('Authorization').addClass('headings')
+            .start('p').addClass('messageBody').add(this.TC1).end()
+          .end()
+          .start('p')
+            .add('Recourse/Reimbursement').addClass('headings')
+            .start('p').addClass('messageBody').add(this.TC2).end()
+          .end()
+          .start('p')
+            .add('Cancellation').addClass('headings')
+            .start('p').addClass('messageBody').add(this.TC3).end()
+          .end()
+        .end() 
     }
   ]
 });
