@@ -1,30 +1,37 @@
 # Concatenate JDAO files from subdirectories into one JDAO
+MODE=1
+INSTANCE=1
+VERSION=1
 
 # Creates an array of the file names 
-declare -a arr=("brokers" "businessSectors" "businessTypes" "cicoServiceProviders" "countries" "cronjobs" "currencies" "corridors" "payoutOptions" "transactionPurposes" "dugs" "emailTemplates" "exportDriverRegistrys" "groups" "institutions" "languages" "menus" "permissions" "questionnaireQuestionJunction" "questionnaires" "questions" "regions" "scripts" "services" "spids" "tests" "transactionLimits" "users" )
+declare -a arr=( "brokers" "businessSectors" "businessTypes" "cicoServiceProviders" "countries" "cronjobs" "currencies" "corridors" "payoutOptions" "transactionPurposes" "dugs" "emailTemplates" "exportDriverRegistrys" "groups" "institutions" "languages" "menus" "permissions" "questionnaireQuestionJunction" "questionnaires" "questions" "regions" "scripts" "services" "spids" "tests" "transactionLimits" "users" )
 
 # Go through the array and check each location for the file and concatenate into one JDAO
 for file in "${arr[@]}"
 do
-  find foam2/src -type f -name $file -exec cat {} \; > $file
-  find nanopay/src -type f -name $file -exec cat {} \; >> $file
-  find interac/src -type f -name $file -exec cat {} \; >> $file
-  find deployment -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
-
-  # Checks if parameter 1 directory exists, if so grabs the file from there
-  if  [[ -d "deployment/$1" ]]; then
-      find deployment/$1 -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
+  # Emptys the file
+   > $file
+  # Checks if file exists, if so grabs the file from there
+  if  [[ -f "foam2/src/$file" ]]; then
+      cat foam2/src/$file >> $file
   fi
-  
-  # Checks if parameter 2 directory exists within parameter 1 directory, if so grabs the file from there
-  if  [[ -d "deployment/$1/$2" ]]; then
-      find deployment/$1/$2 -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
-  fi 
-    
-  # Checks if parameter 3 directory exists within parameter 2 directory, if so grabs the file from there
-  if  [[ -d "deployment/$1/$2/$3" ]]; then
-    find deployment/$1/$2/$3 -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
+  if  [[ -f "nanopay/src/$file" ]]; then
+      cat nanopay/src/$file >> $file
   fi
-  
+  if  [[ -f "interac/src/$file" ]]; then
+      cat interac/src/$file >> $file
+  fi
+  if  [[ -f "deployment/$file" ]]; then
+      cat deployment/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$file" ]]; then
+      cat deployment/$MODE/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
+      cat deployment/$MODE/$INSTANCE/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
+      cat deployment/$MODE/$INSTANCE/$VERSION/$file >> $file
+  fi
 
 done
