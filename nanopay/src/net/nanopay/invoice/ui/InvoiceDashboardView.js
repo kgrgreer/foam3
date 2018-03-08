@@ -123,15 +123,13 @@ foam.CLASS({
             .start().addClass('overall-receivables inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
               .start('h4').add('+', this.formattedReceivableAmount$.map(function(a){
-                if ( a == "$NaN" ) return '...';
-                return a;
+                return a == "$NaN" ? '...' : a;
               })).end()
             .end()
             .start().addClass('overall-payables inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
               .start('h4').add('-', this.formattedPayableAmount$.map(function(a){
-                if ( a == "$NaN" ) return '...';
-                return a;
+                return a == "$NaN" ? '...' : a;
               })).end()
             .end()
           .end()
