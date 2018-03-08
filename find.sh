@@ -1,29 +1,24 @@
 # Concatenate JDAO files from subdirectories into one JDAO
-find **/src -type f -name brokers -exec cat {} \; > brokers
-find **/src -type f -name businessSectors -exec cat {} \; > businessSectors
-find **/src -type f -name businessTypes -exec cat {} \; > businessTypes
-find **/src -type f -name cicoServiceProviders -exec cat {} \; > cicoServiceProviders
-find **/src -type f -name corridors -exec cat {} \; > corridors
-find **/src -type f -name countries -exec cat {} \; > countries
-find **/src -type f -name cronjobs -exec cat {} \; > cronjobs
-find **/src -type f -name currencies -exec cat {} \; > currencies
-find **/src -type f -name dugs -exec cat {} \; > dugs
-find **/src -type f -name emailTemplates -exec cat {} \; > emailTemplates
-find **/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
-find **/src -type f -name groups -exec cat {} \; > groups
-find **/src -type f -name institutions -exec cat {} \; > institutions
-find **/src -type f -name languages -exec cat {} \; > languages
-find **/src -type f -name menus -exec cat {} \; > menus
-find **/src -type f -name payoutOptions -exec cat {} \; > payoutOptions
-find **/src -type f -name permissions -exec cat {} \; > permissions
-find **/src -type f -name questionnaireQuestionJunction -exec cat {} \; > questionnaireQuestionJunction
-find **/src -type f -name questionnaires -exec cat {} \; > questionnaires
-find **/src -type f -name questions -exec cat {} \; > questions
-find **/src -type f -name regions -exec cat {} \; > regions
-find **/src -type f -name scripts -exec cat {} \; > scripts
-find **/src -type f -name services -exec cat {} \; > services
-find **/src -type f -name spids -exec cat {} \; > spids
-find **/src -type f -name tests -exec cat {} \; > tests
-find **/src -type f -name transactionLimits -exec cat {} \; > transactionLimits
-find **/src -type f -name transactionPurposes -exec cat {} \; > transactionPurposes
-find **/src -type f -name users -exec cat {} \; > users
+
+declare -a arr=("brokers" "businessSectors" "businessTypes" "cicoServiceProviders" "countries" "cronjobs" "currencies" "corridors" "payoutOptions" "transactionPurposes" "dugs" "emailTemplates" "exportDriverRegistrys" "groups" "institutions" "languages" "menus" "permissions" "questionnaireQuestionJunction" "questionnaires" "questions" "regions" "scripts" "services" "spids" "tests" "transactionLimits" "users" )
+for file in "${arr[@]}"
+do
+  find foam2/src -type f -name $file -exec cat {} \; > $file
+  find nanopay/src -type f -name $file -exec cat {} \; >> $file
+  find interac/src -type f -name $file -exec cat {} \; >> $file
+  find deployment -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
+
+  if  [[ -d "deployment/$1" ]]; then
+      find deployment/$1 -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
+  fi
+  if  [[ -d "deployment/$1/$2" ]]; then
+      find deployment/$1/$2 -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
+  fi 
+  if  [[ -d "deployment/$1/$2/$3" ]]; then
+    find deployment/$1/$2/$3 -maxdepth 1 -type f -name $file -exec cat {} \; >> $file
+  fi
+  
+
+done
+
+
