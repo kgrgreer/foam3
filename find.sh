@@ -16,6 +16,9 @@ find **/src -type f -name languages -exec cat {} \; > languages
 find **/src -type f -name menus -exec cat {} \; > menus
 find **/src -type f -name payoutOptions -exec cat {} \; > payoutOptions
 find **/src -type f -name permissions -exec cat {} \; > permissions
+find **/src -type f -name questionnaireQuestionJunction -exec cat {} \; > questionnaireQuestionJunction
+find **/src -type f -name questionnaires -exec cat {} \; > questionnaires
+find **/src -type f -name questions -exec cat {} \; > questions
 find **/src -type f -name regions -exec cat {} \; > regions
 find **/src -type f -name scripts -exec cat {} \; > scripts
 find **/src -type f -name services -exec cat {} \; > services

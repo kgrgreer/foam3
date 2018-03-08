@@ -32,17 +32,22 @@ foam.CLASS({
     }
     ^ .menuItem{
       display: inline-block;
-      padding: 20px 0 10px 0px;
+      padding: 20px 0 5px 0px;
       cursor: pointer;
-      border-bottom: 4px solid transparent;
-      transition: text-shadow;
+      border-bottom: 1px solid transparent;
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
     }
-    ^ .menuItem:hover {
+    ^ .menuItem:hover, ^ .menuItem.hovered {
       cursor: pointer;
-      text-shadow: 0 0 5px white, 0 0 10px white;
+      padding-bottom: 5px;
+      border-bottom: 1px solid white;
     }
     ^ .selected {
-      border-bottom: 4px solid %ACCENTCOLOR%;
+      border-bottom: 4px solid %ACCENTCOLOR% !important;
       padding-bottom: 5px;
       text-shadow: 0 0 0px white, 0 0 0px white;
     }

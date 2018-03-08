@@ -73,6 +73,9 @@ function build_NANOPAY_into_tomcat {
     cp menus "$CATALINA_HOME/bin/"
     cp payoutOptions "$CATALINA_HOME/bin/"  
     cp -n permissions "$CATALINA_HOME/bin/" &
+    cp questionnaireQuestionJunction "$CATALINA_HOME/bin/"
+    cp questionnaires "$CATALINA_HOME/bin/"
+    cp questions "$CATALINA_HOME/bin/"
     cp regions "$CATALINA_HOME/bin/"
     cp scripts "$CATALINA_HOME/bin/"
     cp services "$CATALINA_HOME/bin/"
