@@ -8,6 +8,11 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.invite.model.InvitationStatus',
+      name: 'status'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'user'
