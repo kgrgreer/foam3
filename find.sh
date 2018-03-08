@@ -30,6 +30,9 @@ do
   if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
       cat deployment/$MODE/$INSTANCE/$file >> $file
   fi
+  if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
+      cat deployment/$MODE/$VERSION/$file >> $file
+  fi
   if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
       cat deployment/$MODE/$INSTANCE/$VERSION/$file >> $file
   fi
