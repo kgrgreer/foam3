@@ -6,8 +6,12 @@ foam.CLASS({
   exports: [
     'viewData',
     'errors',
+    'hardExitLabel',
+    'saveAndExitLabel',
     'backLabel',
     'nextLabel',
+    'hardExit',
+    'saveAndExit',
     'goBack',
     'goNext',
     'complete',
@@ -26,9 +30,10 @@ foam.CLASS({
       code: function CSS() {/*
         ^{
           background-color: #edf0f5;
-          width: 992px;
-          height: 600px;
+          width: 1160px;
+          height: calc(100% - 120px - 60px - 60px);
           margin: auto;
+          padding-top: 110px;
         }
 
         ^ .topRow {
@@ -39,43 +44,59 @@ foam.CLASS({
           margin: 0;
           line-height: 40px;
           display: inline-block;
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
+          font-size: 30px;
+          font-weight: bold;
+          font-style: normal;
+          font-stretch: normal;
           color: #093649;
+
+          margin-bottom: 30px;
         }
 
         ^ .positionColumn {
           display: inline-block;
-          width: 25%;
+          width: 300px;
           vertical-align: top;
           box-sizing: border-box;
           padding: 20px;
+          padding-left: 0;
           padding-top: 0;
         }
 
         ^ .stackColumn {
           display: inline-block;
-          width: 75%;
-          max-height: 600px;
+          width: calc(100% - 300px);
+          height: 100%;
           box-sizing: border-box;
           padding: 20px 0;
           padding-top: 4px;
-          padding-right: 20px;
           overflow-y: scroll;
-        }
-
-        ^ .stackView {
-          width: 75%;
           vertical-align: top;
         }
 
+        ^ .navigationBar {
+          position: fixed;
+          width: 100%;
+          height: 60px;
+          left: 0;
+          bottom: 0;
+          background-color: #edf0f5;
+          z-index: 100;
+        }
+
         ^ .navigationContainer {
-          display: inline-block;
-          width: 75%;
-          height: 40px;
+          margin: 0 auto;
+          width: 1160px;
+          height: 100%;
+          padding: 10px 0;
+        }
+
+        ^ .exitContainer {
+          float: left;
+        }
+
+        ^ .backNextContainer {
           float: right;
-          margin-bottom: 20px;
         }
 
         ^ .net-nanopay-ui-ActionView-unavailable {
@@ -84,11 +105,11 @@ foam.CLASS({
           padding: 0 !important;
         }
 
-        ^ .net-nanopay-ui-ActionView-goBack {
+        ^ .plainAction {
           display: inline-block;
           margin: 0;
           box-sizing: border-box;
-          margin-right: 30px;
+          margin-right: 10px;
           background: none;
           outline: none;
           border:none;
@@ -103,11 +124,17 @@ foam.CLASS({
           color: #093649;
         }
 
-        ^ .net-nanopay-ui-ActionView-goBack:disabled {
-          color: rgba(9, 54, 73, 0.5);
+        ^ .plainAction:last-child {
+          margin-right: 0;
         }
 
-        ^ .net-nanopay-ui-ActionView-goBack:hover:enabled {
+        ^ .plainAction:disabled {
+          background-color: #c2c9ce;
+          opacity: 0.5;
+          color: white;
+        }
+
+        ^ .plainAction:hover:enabled {
           cursor: pointer;
           background: none;
           background-color: rgba(164, 179, 184, 0.4);
@@ -194,6 +221,27 @@ foam.CLASS({
       value: false
     },
 
+    // If true, displays the exitAndSave Action
+    {
+      class: 'Boolean',
+      name: 'hasSaveOption',
+      value: false
+    },
+
+    // Label for the back button
+    {
+      class: 'String',
+      name: 'hardExitLabel',
+      value: 'Exit'
+    },
+
+    // Label for the next button
+    {
+      class: 'String',
+      name: 'saveAndExitLabel',
+      value: 'Save & Exit'
+    },
+
     // Label for the back button
     {
       class: 'String',
@@ -221,7 +269,7 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.title ) { console.warn('[WizardView] : No title provided'); }
-      
+
       this.viewTitles = [];
       this.subStack = this.Stack.create();
 
@@ -251,26 +299,31 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div').addClass('topRow')
-          .start('p').add(this.title || '').addClass('title').end()
-        .end()
         .start('div')
           .start('div').addClass('positionColumn')
             .tag({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
           .start('div').addClass('stackColumn')
-            .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
+            .start('div')
+              .start('p').add(this.position$.map(function(p) { return self.viewTitles[p]; }) || '').addClass('title').end()
+            .end()
+            .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
-        .end();
-
-      if ( ! this.isCustomNavigation ) {
-        this.start('div')
-          .start('div').addClass('navigationContainer')
-            .tag(this.GO_BACK, {label$: this.backLabel$})
-            .tag(this.GO_NEXT, {label$: this.nextLabel$})
-          .end()
-        .end();
-      }
+        .end()
+        .callIf(!this.hideBottomBar, function(){
+          this.start('div').addClass('navigationBar')
+            .start('div').addClass('navigationContainer')
+              .start('div').addClass('exitContainer')
+                .start(this.HARD_EXIT, {label$: this.hardExitLabel$}).addClass('plainAction').end()
+                .start(this.SAVE_AND_EXIT, {label$: this.saveAndExitLabel$}).addClass('plainAction').end()
+              .end()
+              .start('div').addClass('backNextContainer')
+                .start(this.GO_BACK, {label$: this.backLabel$}).addClass('plainAction').end()
+                .tag(this.GO_NEXT, {label$: this.nextLabel$})
+              .end()
+            .end()
+          .end();
+        });
     }
   ],
 
@@ -317,6 +370,19 @@ foam.CLASS({
         }
 
         this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
+      }
+    },
+    {
+      name: 'hardExit',
+      code: function(X) {
+        X.stack.back();
+      }
+    },
+    {
+      name: 'saveAndExit',
+      code: function(X) {
+        // TODO: Implement a save function or it has be overwritten
+        X.stack.back();
       }
     }
   ]
