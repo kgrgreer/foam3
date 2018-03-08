@@ -73,7 +73,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
+          //.start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
       
           .start('div').addClass('box-for-drag-drop')
           .start('p').add('Click or drag files here').addClass('inputText').end()
