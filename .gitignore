@@ -116,3 +116,6 @@ sha256/
 /transactionPurposes
 /transactions
 /users
+/questions
+/questionnaires
+/questionnaireQuestionJunction

@@ -43,6 +43,9 @@ cp languages /opt/tomcat/bin/
 cp menus /opt/tomcat/bin/
 cp payoutOptions /opt/tomcat/bin/
 cp -n permissions /opt/tomcat/bin/
+cp questionnaireQuestionJunction /opt/tomcat/bin/
+cp questionnaires /opt/tomcat/bin/
+cp questions /opt/tomcat/bin/
 cp regions /opt/tomcat/bin/
 cp -n scripts /opt/tomcat/bin/
 cp services /opt/tomcat/bin/
