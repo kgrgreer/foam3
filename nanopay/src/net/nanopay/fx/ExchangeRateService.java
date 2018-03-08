@@ -14,6 +14,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import net.nanopay.fx.model.ExchangeRate;
+import net.nanopay.fx.interac.model.AcceptRateApiModel;
+import net.nanopay.fx.interac.model.AcceptExchangeRateFields;
 import net.nanopay.fx.model.ExchangeRateQuote;
 import net.nanopay.fx.model.ExchangeRateFields;
 import net.nanopay.fx.model.FeesFields;
@@ -22,6 +24,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.text.SimpleDateFormat;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionDAO;
 
 public class ExchangeRateService
   extends    ContextAwareSupport
@@ -49,9 +53,9 @@ public class ExchangeRateService
     }
 
     //final double amount = ((double) amountI) / 100.0;
-    final ExchangeRateQuote quote  = new ExchangeRateQuote();
-    final ExchangeRateFields reqExRate = new ExchangeRateFields();
-    final FeesFields reqFee = new FeesFields();
+    final ExchangeRateQuote  quote       = new ExchangeRateQuote();
+    final ExchangeRateFields reqExRate   = new ExchangeRateFields();
+    final FeesFields         reqFee      = new FeesFields();
     final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
 
     quote.setExchangeRate(reqExRate);
@@ -83,11 +87,11 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        quote.setExchangeRateId(((ExchangeRate) obj).getId());
+        //quote.setExchangeRateId(((ExchangeRate) obj).getId());
         //quote.setTargetAmount(amount * ((ExchangeRate) obj).getRate());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
         //reqExRate.setExpirationTime(((ExchangeRate) obj).getExpirationDate());
-        quote.setFeesAmount((Double) feeAmount);
+        //quote.setFeesAmount((Double) feeAmount);
         //quote.setFeesPercentage((Double) feeAmount / amount);
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
         reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
@@ -148,9 +152,9 @@ public class ExchangeRateService
     }
 
     //final double amount = ((double) amountI) / 100.0;
-    final ExchangeRateQuote quote  = new ExchangeRateQuote();
-    final ExchangeRateFields reqExRate = new ExchangeRateFields();
-    final FeesFields reqFee = new FeesFields();
+    final ExchangeRateQuote  quote       = new ExchangeRateQuote();
+    final ExchangeRateFields reqExRate   = new ExchangeRateFields();
+    final FeesFields         reqFee      = new FeesFields();
     final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
 
     quote.setExchangeRate(reqExRate);
@@ -182,11 +186,11 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        quote.setExchangeRateId(((ExchangeRate) obj).getId());
+        //quote.setExchangeRateId(((ExchangeRate) obj).getId());
         //quote.setTargetAmount(amount * ((ExchangeRate) obj).getRate());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
         //reqExRate.setExpirationTime(((ExchangeRate) obj).getExpirationDate());
-        quote.setFeesAmount((Double) feeAmount);
+        //quote.setFeesAmount((Double) feeAmount);
         //quote.setFeesPercentage((Double) feeAmount / amount);
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
         reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
@@ -273,13 +277,41 @@ public class ExchangeRateService
   }
 
   @Override
-  public void acceptRate(String endToEndId, String dealRefNum)
+  public AcceptRateApiModel acceptRate(String endToEndId, String dealRefNum)
       throws RuntimeException
   {
-    String transactionId = java.util.UUID.randomUUID().toString().replace("-", "");
-    String fxStatus = "Booked";
-    String code = "200";
+    if ( dealRefNum == null || dealRefNum.equals("")  ) {
+      throw new RuntimeException("Invalid dealRefNum");
+    }
 
-    throw new RuntimeException(dealRefNum + " is " + fxStatus + " endToEndId : " + endToEndId + " transactionId : " + transactionId + " code : " + code);
+    final AcceptRateApiModel acceptRate  = new AcceptRateApiModel();
+    final AcceptExchangeRateFields acceptField = new AcceptExchangeRateFields();
+
+    acceptRate.setCode("200");
+    acceptRate.setEndToEndId(endToEndId);
+    String transactionId = java.util.UUID.randomUUID().toString().replace("-", "");
+    acceptRate.setTransactionId(transactionId);
+    acceptField.setDealReferenceNumber(dealRefNum);
+    acceptField.setFxStatus("Booked");
+    acceptRate.setExchangeRate(acceptField);
+    //throw new RuntimeException(dealRefNum + " is " + fxStatus + " endToEndId : " + endToEndId + " transactionId : " + transactionId + " code : " + code);
+
+    // try {
+    //   Transaction createdTx = new Transaction();
+    //   //TransactionDAO TransactionDAO = new TransactionDAO();
+    //   DAO transactionDAO = (DAO) getX().get("localTransactionDAO");
+    //
+    //   createdTx.setId(Long.parseLong("123454321")); //transactionId
+    //   createdTx.setStatus("Booked");
+    //   createdTx.setPayerId(Long.parseLong("1348"));
+    //   //createdTx.setRate(transactionId);
+    //   transactionDAO.put(createdTx);
+    //
+    //
+    // } catch (RuntimeException e) {
+    //   throw e;
+    // }
+
+    return acceptRate;
   }
 }

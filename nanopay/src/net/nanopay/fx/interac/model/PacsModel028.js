@@ -6,22 +6,23 @@ foam.CLASS({
 
   javaImports: [
     'java.util.Date',
-    'net.nanopay.iso20022.GroupHeader70',
-    'net.nanopay.iso20022.OriginalGroupInformation27',
-    'net.nanopay.iso20022.OriginalGroupHeader13'
+    'net.nanopay.iso20022.GroupHeader53',
+    'net.nanopay.iso20022.OriginalGroupHeader13',
+    'net.nanopay.iso20022.FIToFIPaymentStatusReportV09'
   ],
 
-  properties: [
+  properties:  [
     {
-      class: 'FObjectProperty',
-      name: 'GrpHdr',
-      of: 'net.nanopay.iso20022.GroupHeader70'
-    },
+			class:  'String',
+			name:  'MsgType',
+			value: "pacs.028.001.01"
+		},
     {
-			class: 'FObjectProperty',
-			name: 'OrgnlGrpInf',
-			of: 'net.nanopay.iso20022.OriginalGroupInformation27'
-		}
+      class:  'FObjectProperty',
+      name:  'FIToFIPmtStsReq',
+      of:  'net.nanopay.iso20022.FIToFIPaymentStatusRequestV01',
+      required:  false
+    }
   ],
 
   methods: [
@@ -33,17 +34,19 @@ foam.CLASS({
             PacsModel002 pacsModel002 = new PacsModel002();
             pacsModel002.setX(getX());
 
-            OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
-            orgnlGrpInfAndSts.setOrgnlMsgId(this.getOrgnlGrpInf().getOrgnlMsgId());
-            orgnlGrpInfAndSts.setOrgnlCreDtTm(this.getOrgnlGrpInf().getOrgnlCreDtTm());
-            orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
+            GroupHeader53 grpHdr53 = new GroupHeader53();
+            grpHdr53.setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
+            grpHdr53.setCreDtTm(new Date());
 
-            pacsModel002.setGrpHdr(this.getGrpHdr());
-            pacsModel002.getGrpHdr().setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
-            pacsModel002.getGrpHdr().setCreDtTm(new Date());
+            pacsModel002.setGrpHdr(grpHdr53);
+
+            OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
+            orgnlGrpInfAndSts.setOrgnlMsgId((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[0].getOrgnlMsgId());
+            orgnlGrpInfAndSts.setOrgnlCreDtTm((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[0].getOrgnlCreDtTm());
+            orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
+            orgnlGrpInfAndSts.setGrpSts("ACSP");   // ACSP or ACSC
 
             pacsModel002.setOrgnlGrpInfAndSts(orgnlGrpInfAndSts);
-            pacsModel002.setGrpSts("ACSP");  // ACSP or ACSC
 
             return pacsModel002;
             `

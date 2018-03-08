@@ -19,10 +19,10 @@ foam.CLASS({
       class: 'String',
       name: 'code'
     },
-    {
-      class: 'Long',
-      name: 'exchangeRateId'
-    },
+    // {
+    //   class: 'Long',
+    //   name: 'exchangeRateId'
+    // },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.model.ExchangeRateFields',
@@ -47,19 +47,19 @@ foam.CLASS({
         return this.DeliveryTimeFields.create();
       }
     },
-    {
-      class: 'Double',
-      name: 'feesAmount'
-    },
-    {
-      class: 'Double',
-      name: 'feesPercentage'
-    },
-    {
-      class: 'Long',
-      name: 'amount',
-      value: 0
-    }
+    // {
+    //   class: 'Double',
+    //   name: 'feesAmount'
+    // },
+    // {
+    //   class: 'Double',
+    //   name: 'feesPercentage'
+    // },
+    // {
+    //   class: 'Long',
+    //   name: 'amount',
+    //   value: 0
+    // }
   ]
 });
 

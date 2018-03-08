@@ -6,7 +6,7 @@ foam.CLASS({
 
   javaImports: [
     'java.util.Date',
-    'net.nanopay.iso20022.GroupHeader70',
+    'net.nanopay.iso20022.GroupHeader53',
     'net.nanopay.iso20022.OriginalGroupHeader13',
     'net.nanopay.iso20022.SettlementInstruction4',
     'net.nanopay.iso20022.PaymentTypeInformation21',
@@ -16,19 +16,20 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'MsgType',
+      value: 'pacs.002.001.09'
+    },
+    {
       class: 'FObjectProperty',
       name: 'GrpHdr',
-      of: 'net.nanopay.iso20022.GroupHeader70'
+      of: 'net.nanopay.iso20022.GroupHeader53'
     },
     {
       class: 'FObjectProperty',
       name: 'OrgnlGrpInfAndSts',
       of: 'net.nanopay.iso20022.OriginalGroupHeader13'
     },
-    {
-			class: 'String',
-			name: 'GrpSts'
-		},
     {
 			class: 'FObjectProperty',
 			name: 'PmtId',

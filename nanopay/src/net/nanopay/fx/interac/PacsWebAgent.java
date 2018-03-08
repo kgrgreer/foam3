@@ -42,14 +42,11 @@ public class PacsWebAgent
     final PrintWriter   out        = x.get(PrintWriter.class);
     CharBuffer          buffer_    = CharBuffer.allocate(65535);
     String              data       = req.getParameter("data");
-    //String              daoName    = req.getParameter("dao");
     String              command    = req.getParameter("cmd");
     String              format     = req.getParameter("format");
     String              id         = req.getParameter("id");
     String              msg        = req.getParameter("msg");
     Logger              logger     = (Logger) x.get("logger");
-
-    //response.setContentType("text/html");
 
     if ( command == null || "".equals(command) ) command = "select";
 
@@ -58,11 +55,8 @@ public class PacsWebAgent
     try {
 
       if ( "select".equals(command) && ( data == null || "".equals(data) ) ) {
-        //out.println("<form method=post><span>DAO:</span>");
         out.print("<form method=post><span>Request Pacs: </span>");
         out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
-
-
         out.println("</select></span>");
         out.println("<br><br><span id=formatSpan>Format:<select name=format id=format onchange=changeFormat() style=margin-left:40><option value=json selected>JSON</option><option value=xml>XML</option></select></span>");
         out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5 ><option value=select>SELECT</option></select></span>");
@@ -70,7 +64,6 @@ public class PacsWebAgent
         out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
         out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
-        //out.println("<script>function changeFormat() {var vbuiltUrl = document.location.protocol + '//' + document.location.host + '/service/dig?dao=' + document.getElementById('dao').value + '&format=' + document.getElementById('format').options[document.getElementById('format').selectedIndex].value + '&cmd=' + document.getElementById('cmd').options[document.getElementById('cmd').selectedIndex].value + '&email='; document.getElementById('builtUrl').value=vbuiltUrl;}</script>");
 
         out.println();
 
@@ -78,16 +71,14 @@ public class PacsWebAgent
       }
 
       if ( "select".equals(command) ) {
-        //ArraySink sink = (ArraySink) dao.select(new ArraySink());
-        //System.err.println("objects selected: " + sink.getArray().size());
-
         if ( "json".equals(format) ) {
 
           JSONParser jsonParser = new JSONParser();
           jsonParser.setX(x);
 
           foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
-          outputterJson.setOutputDefaultValues(true);
+          outputterJson.setOutputClassNames(false);
+          //outputterJson.setOutputDefaultValues(true);
 
           if ( "008".equals(msg) ) {
             PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);

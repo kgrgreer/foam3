@@ -66,7 +66,8 @@ foam.INTERFACE({
     },
     {
       name: 'acceptRate',
-      javaReturns: 'void',
+      javaReturns: 'net.nanopay.fx.interac.model.AcceptRateApiModel',
+      returns: 'Promise',
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
