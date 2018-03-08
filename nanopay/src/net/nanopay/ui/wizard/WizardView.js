@@ -74,7 +74,7 @@ foam.CLASS({
         ^ .stackColumn {
           display: inline-block;
           width: calc(100% - 300px);
-          height: 100%;
+          height: calc(100% - 65px);
           box-sizing: border-box;
           padding: 20px 0;
           padding-top: 4px;
@@ -88,7 +88,7 @@ foam.CLASS({
           height: 60px;
           left: 0;
           bottom: 0;
-          background-color: #edf0f5;
+          background-color: white;
           z-index: 100;
         }
 
@@ -308,9 +308,9 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start('div')
-          .start('p').add(this.title || '').addClass('title').end()
-        .end()
-        .start('div')
+          .start('div')
+            .start('p').add(this.title || '').addClass('title').end()
+          .end()
           .start('div').addClass('positionColumn')
             .tag({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
           .end()
