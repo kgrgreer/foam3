@@ -102,6 +102,9 @@ sha256/
 /payees
 /payoutOptions
 /permissions
+/questionnaireQuestionJunction
+/questionnaires
+/questions
 /rollingHashedTxns
 /recurringInvoices
 /regions
