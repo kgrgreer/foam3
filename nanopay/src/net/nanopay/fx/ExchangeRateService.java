@@ -24,8 +24,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.text.SimpleDateFormat;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.TransactionDAO;
 
 public class ExchangeRateService
   extends    ContextAwareSupport
