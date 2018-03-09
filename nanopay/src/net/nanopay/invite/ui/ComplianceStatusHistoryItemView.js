@@ -157,7 +157,7 @@ foam.CLASS({
       var attributes = this.getAttributes(record);
       return parentView
         .addClass(this.myClass())
-        .style({' padding-left': '20px' })
+        .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
           .tag({ class: 'foam.u2.tag.Image', data: attributes.icon })
         .end()
