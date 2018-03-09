@@ -7,26 +7,33 @@ foam.CLASS({
     'foam.u2.history.HistoryItemView'
   ],
 
+  requires: [
+    'net.nanopay.invite.ui.InvitationStatusHistoryItemView',
+    'net.nanopay.invite.ui.ComplianceStatusHistoryItemView'
+  ],
+
   documentation: 'View displaying history for invitation item',
 
   methods: [
-
-    function formateDate(timestamp) {
-
-    },
-
-
     function outputRecord(parentView, record) {
-      var self = this;
+      var updates = record.updates;
+      // if no updates then this is a new account, so show the status page
+      if ( ! updates || updates.length === 0 ) {
+        return this.InvitationStatusHistoryItemView.create().outputRecord(parentView, record);
+      }
 
+      for ( var i = 0 ; i < updates.length ; i++ ) {
+        var update = updates[i];
+        switch ( update.name ) {
+          case 'inviteStatus':
+            this.InvitationStatusHistoryItemView.create().outputRecord(parentView, record);
+            break;
 
-
-      return parentView
-        .style({' padding-left': '20px' })
-        .start('')
-
-      console.log('parentView', parentView);
-      console.log('record = ', record);
+          case 'complianceStatus':
+            this.ComplianceStatusHistoryItemView.create().outputRecord(parentView, record);
+            break;
+        }
+      }
     }
   ]
 });

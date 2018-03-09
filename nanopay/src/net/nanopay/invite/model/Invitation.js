@@ -10,7 +10,12 @@ foam.CLASS({
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.invite.model.InvitationStatus',
-      name: 'status'
+      name: 'inviteStatus'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.invite.model.ComplianceStatus',
+      name: 'complianceStatus'
     },
     {
       class: 'Reference',

@@ -56,14 +56,6 @@ foam.CLASS({
       padding: 10px;
     }
 
-    ^ statusTitle {
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      color: #093649;
-    }
-
     ^ statusDate {
       font-family: Roboto;
       font-size: 8px;
@@ -74,36 +66,8 @@ foam.CLASS({
       position: relative;
     }
 
-    ^ statusBox {
-      margin-top: -17px;
-      padding-bottom: 22px;
-    }
-
-    ^ statusContent {
-      padding-left: 40px;
-    }
-
     .Invoice-Status-Paid {
       background-color: #2cab70;
-    }
-
-    ^ messageText {
-      opacity: 0.7;
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      color: #093649;
-      position: relative;
-    }
-
-    ^ messageBox {
-      width: 513px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      border: solid 0.5px #a4b3b8;
-      margin: 10px 0px 0px 31px;
-      padding: 10px;
     }
 
     .Invoice-Status-Received {

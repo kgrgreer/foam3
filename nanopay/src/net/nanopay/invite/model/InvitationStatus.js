@@ -5,8 +5,8 @@ foam.ENUM({
   documentation: 'Invitation status (pending, active, disabled)',
 
   values: [
-    { name: 'NOT_SUBMITTED', label: 'Not Submitted' },
     { name: 'PENDING',       label: 'Pending'       },
+    { name: 'SUBMITTED',     label: 'Submitted'     },
     { name: 'ACTIVE',        label: 'Active'        },
     { name: 'DISABLED',      label: 'Disabled'      }
   ]
