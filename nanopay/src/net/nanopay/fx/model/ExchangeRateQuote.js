@@ -76,12 +76,10 @@ foam.CLASS({
       {
         class: 'String',
         name: 'dealReferenceNumber',
-        javaFactory: 'return java.util.UUID.randomUUID().toString().replace("-", "");'
       },
       {
         class: 'String',
         name: 'fxStatus',
-        value: 'Quoted'
       },
       {
         class: 'DateTime',
