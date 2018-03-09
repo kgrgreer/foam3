@@ -77,8 +77,8 @@ public class PacsWebAgent
           jsonParser.setX(x);
 
           foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+          outputterJson.setOutputDefaultValues(true);
           outputterJson.setOutputClassNames(false);
-          //outputterJson.setOutputDefaultValues(true);
 
           if ( "008".equals(msg) ) {
             PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);
