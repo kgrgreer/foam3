@@ -79,6 +79,7 @@ public class ApiWebAgent
 
           foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
           outputterJson.setOutputDefaultValues(true);
+          outputterJson.setOutputClassNames(false);
 
           ExchangerateApiModel exApiModel = (ExchangerateApiModel) jsonParser.parseString(data, ExchangerateApiModel.class);
 
