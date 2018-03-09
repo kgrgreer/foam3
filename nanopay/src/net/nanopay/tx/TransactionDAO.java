@@ -19,13 +19,13 @@ import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionDAO
-        extends ProxyDAO
+  extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
   protected final Set<String> STATUS_BLACKLIST =
-          Collections.unmodifiableSet(new HashSet<String>() {{
-            add("Refunded");
-          }});
+    Collections.unmodifiableSet(new HashSet<String>() {{
+      add("Refunded");
+    }});
 
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -76,14 +76,14 @@ public class TransactionDAO
     Transfer[] ts = t.createTransfers(x);
 
     // TODO: disallow or merge duplicate accounts
-    if( ts.length != 1 ){
+    if ( ts.length != 1 ) {
       validateTransfers(ts);
     }
     return lockAndExecute(x, t, ts, 0);
   }
 
   void validateTransfers(Transfer[] ts)
-          throws RuntimeException
+    throws RuntimeException
   {
     long c = 0, d = 0;
     for ( int i = 0 ; i < ts.length ; i++ ) {

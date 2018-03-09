@@ -58,8 +58,8 @@ public class Transfer
 
     account_ = account == null ? new Account() : account;
 
-    if(getAmount() < 0){
-      if ( (-getAmount() > account_.getBalance()) ) throw new RuntimeException("Insufficient balance in account " + getUserId());
+    if ( getAmount() < 0 ) {
+      if ( -getAmount() > account_.getBalance() ) throw new RuntimeException("Insufficient balance in account " + getUserId());
     }
   }
 
