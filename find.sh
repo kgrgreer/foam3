@@ -1,7 +1,7 @@
 # Concatenate JDAO files from subdirectories into one JDAO
-MODE
-INSTANCE
-VERSION
+MODE=1
+INSTANCE=1
+VERSION=1
 
 # Creates an array of the file names 
 declare -a arr=( 

@@ -33,7 +33,7 @@ sed -i -e "s/name: 'version'/name: 'version', value: '${VERSION}'/g" foam2/src/f
 
 sed -i -e "s/name: 'copyright'/name: 'copyright', value: '${COPYRIGHT}'/g" foam2/src/foam/nanos/app/AppConfig.js
 
-sed -i -e " s/.*MODE.*/MODE=${MODE}/g" find.sh
+sed -i -e " s/.*MODE=1.*/MODE=${MODE}/g" find.sh
 
-sed -i -e " s/.*VERSION.*/VERSION=${VERSION}/g" find.sh
+sed -i -e " s/.*VERSION=1.*/VERSION=${VERSION}/g" find.sh
 exit 0
