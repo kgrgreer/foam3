@@ -29,6 +29,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .tag({
           class: 'foam.u2.history.HistoryView',
+          title: 'Profile History',
           data: this.invitationHistoryDAO,
           historyItemView: this.InvitationHistoryItemView.create()
         });
