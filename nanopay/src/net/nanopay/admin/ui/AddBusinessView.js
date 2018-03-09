@@ -5,6 +5,15 @@ foam.CLASS({
 
   documentation: 'View for adding a business',
 
+  requires: [
+    'foam.nanos.auth.User'
+  ],
+
+  imports: [
+    'stack',
+    'userDAO'
+  ],
+
   css: `
     ^ .container {
       width: 540px;
@@ -50,6 +59,29 @@ foam.CLASS({
       font-size: 12px;
       color: #093649;
       outline: none;
+    }
+    ^ .buttonDiv {
+      width: 100%;
+      height: 60px;
+      background-color: #edf0f5;
+      position: fixed;
+      bottom: 0;
+      z-index: 200;
+    }
+    ^ .net-nanopay-ui-ActionView-closeButton {
+      margin-left: 60px;
+      border-radius: 2px;
+      background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      margin-top: 10px;
+    }
+    ^ .net-nanopay-ui-ActionView-addButton {
+      float: right;
+      margin-right: 60px;
+      border-radius: 2px;
+      background-color: #59a5d5;
+      color: white;
+      margin-top: 10px;
     }
   `,
 
@@ -106,7 +138,27 @@ foam.CLASS({
             .start('p').add(this.BusinessPhoneLabel).addClass('label').end()
             .start(this.BUSINESS_PHONE_NUMBER).addClass('largeInput').end()
           .end()
+          .start().addClass('buttonDiv')
+            .start(this.CLOSE_BUTTON).end()
+            .start(this.ADD_BUTTON).end()
+          .end()
         .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'closeButton',
+      label: 'Close',
+      code: function (X) {
+        this.stack.back();
+      }
+    },
+    {
+      name: 'addButton',
+      label: 'Add',
+      code: function (X) {
+      }
     }
   ]
 });
