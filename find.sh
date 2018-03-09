@@ -1,7 +1,13 @@
 # Concatenate JDAO files from subdirectories into one JDAO
+
 MODE=1
 INSTANCE=1
 VERSION=1
+
+# Sets varuables to lowercase
+MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
+INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
+VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 
 # Creates an array of the file names 
 declare -a arr=( 
@@ -34,6 +40,7 @@ declare -a arr=(
   "transactionPurposes"
   "users"
   )
+
 
 # Go through the array and check each location for the file and concatenate into one JDAO
 for file in "${arr[@]}"
