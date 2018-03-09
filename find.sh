@@ -53,17 +53,17 @@ do
   if  [[ -f "deployment/$file" ]]; then
       cat deployment/$file >> $file
   fi
-MODE='DEVELOPMENT'
-MODE='DEVELOPMENT'
+  if  [[ -f "deployment/$MODE/$file" ]]; then
+      cat deployment/$MODE/$file >> $file
   fi
-MODE='DEVELOPMENT'
-MODE='DEVELOPMENT'
+  if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
+      cat deployment/$MODE/$INSTANCE/$file >> $file
   fi
-MODE='DEVELOPMENT'
-MODE='DEVELOPMENT'
+  if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
+      cat deployment/$MODE/$VERSION/$file >> $file
   fi
-MODE='DEVELOPMENT'
-MODE='DEVELOPMENT'
+  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
+      cat deployment/$MODE/$INSTANCE/$VERSION/$file >> $file
   fi
 
 done
