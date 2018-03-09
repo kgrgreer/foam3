@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'UserView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'View displaying a table with a list of all shoppers and merchants',
 
@@ -12,17 +12,20 @@ foam.CLASS({
   requires: [
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User'
   ],
 
   exports: [
-    'as data',
     'filter',
-    'filteredUserDAO'
+    'filteredUserDAO',
+    'showNotification'
   ],
 
   imports: [
-    'stack', 'auth', 'userDAO'
+     'auth',
+     'stack',
+     'userDAO'
   ],
 
   css: `
@@ -179,6 +182,9 @@ foam.CLASS({
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
         .end();
+    },
+    function showNotification(_message, _type) {
+      this.add(this.NotificationMessage.create({ message: _message, type: _type }));
     }
   ],
 
@@ -186,7 +192,6 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
-
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO}));
       }
@@ -218,7 +223,6 @@ foam.CLASS({
   ],
 
   listeners: [
-
     function addShopper() {
       var self = this;
       self.addUserPopUp_.remove();
