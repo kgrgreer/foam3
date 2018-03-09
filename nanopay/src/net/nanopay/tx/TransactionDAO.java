@@ -98,7 +98,7 @@ public class TransactionDAO
     if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
-  /** Lock each trasnfer's account then execute the transfers. **/
+  /** Sorts array of transfers. **/
   FObject lockAndExecute(X x, Transaction txn, Transfer[] ts, int i) {
     // sort to avoid deadlock
     java.util.Arrays.sort(ts);
@@ -106,6 +106,7 @@ public class TransactionDAO
     return lockAndExecute_(x, txn, ts, i);
   }
 
+  /** Lock each trasnfer's account then execute the transfers. **/
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
     if ( i > ts.length-1 ) {
       return  execute(x, txn, ts);
