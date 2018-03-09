@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
@@ -83,6 +84,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
       liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
     } catch ( RuntimeException rexp ) {
       // Do nothing if cash out is not success, cash out is not a necessary process for the payer to pay money
+      //((Logger) x.get(Logger.class)).error(rexp);
     }
     return originalTx;
   }
