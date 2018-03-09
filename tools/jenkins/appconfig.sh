@@ -7,7 +7,6 @@ VERSION=`echo ${RELEASE} | sed 's/.*-v//'`
 MODE="'DEVELOPMENT'"
 YEAR=`date +%Y`
 COPYRIGHT="(c) Copyright ${YEAR} nanopay Corporation. All Rights Reserved"
-INSTANCE="PORTAL"
 
 echo
 if [[ "${NAME}" = *"test"* ]]; then
@@ -26,7 +25,6 @@ echo RELEASE=${RELEASE}
 echo NAME=${NAME}
 echo VERSION=${VERSION}
 echo MODE=${MODE}
-echo INSTANCE=${INSTANCE}
 
 
 sed -i -e "s/name: 'name'/name: 'name', value: '${NAME}'/g" foam2/src/foam/nanos/app/AppConfig.js
@@ -36,8 +34,6 @@ sed -i -e "s/name: 'version'/name: 'version', value: '${VERSION}'/g" foam2/src/f
 sed -i -e "s/name: 'copyright'/name: 'copyright', value: '${COPYRIGHT}'/g" foam2/src/foam/nanos/app/AppConfig.js
 
 sed -i -e " s/.*MODE.*/MODE=${MODE}/g" find.sh
-
-sed -i -e " s/.*INSTANCE.*/INSTANCE=${INSTANCE}/g" find.sh
 
 sed -i -e " s/.*VERSION.*/VERSION=${VERSION}/g" find.sh
 exit 0

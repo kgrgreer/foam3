@@ -1,7 +1,7 @@
 # Concatenate JDAO files from subdirectories into one JDAO
-MODE=1
-INSTANCE=1
-VERSION=1
+MODE
+INSTANCE
+VERSION
 
 # Creates an array of the file names 
 declare -a arr=( 
@@ -53,17 +53,17 @@ do
   if  [[ -f "deployment/$file" ]]; then
       cat deployment/$file >> $file
   fi
-  if  [[ -f "deployment/$MODE/$file" ]]; then
-      cat deployment/$MODE/$file >> $file
+MODE='DEVELOPMENT'
+MODE='DEVELOPMENT'
   fi
-  if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
-      cat deployment/$MODE/$INSTANCE/$file >> $file
+MODE='DEVELOPMENT'
+MODE='DEVELOPMENT'
   fi
-  if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
-      cat deployment/$MODE/$VERSION/$file >> $file
+MODE='DEVELOPMENT'
+MODE='DEVELOPMENT'
   fi
-  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
-      cat deployment/$MODE/$INSTANCE/$VERSION/$file >> $file
+MODE='DEVELOPMENT'
+MODE='DEVELOPMENT'
   fi
 
 done
