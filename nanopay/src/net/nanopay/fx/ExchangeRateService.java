@@ -56,27 +56,6 @@ public class ExchangeRateService
     final FeesFields         reqFee      = new FeesFields();
     final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
 
-    quote.setExchangeRate(reqExRate);
-    quote.setFee(reqFee);
-    quote.setDeliveryTime(reqDlvrTime);
-
-    reqExRate.setSourceCurrency(sourceCurrency);
-    reqExRate.setTargetCurrency(targetCurrency);
-
-    if ( valueDate == null || valueDate.equals("") ) {
-      reqExRate.setValueDate((Date) new Date());
-    } else {
-      //reqExRate.setValueDate(valueDate);
-      try {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date date = format.parse(valueDate);
-        reqExRate.setValueDate(date);
-      } catch ( Throwable t ) {
-        //TODO
-      }
-    }
-
     exchangeRateDAO_.where(
         MLang.AND(
             MLang.EQ(ExchangeRate.FROM_CURRENCY, sourceCurrency),
@@ -85,20 +64,34 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        //quote.setExchangeRateId(((ExchangeRate) obj).getId());
-        //quote.setTargetAmount(amount * ((ExchangeRate) obj).getRate());
-        reqExRate.setRate(((ExchangeRate) obj).getRate());
-        //reqExRate.setExpirationTime(((ExchangeRate) obj).getExpirationDate());
-        //quote.setFeesAmount((Double) feeAmount);
-        //quote.setFeesPercentage((Double) feeAmount / amount);
+        quote.setCode(((ExchangeRate) obj).getCode());
+        quote.setExchangeRate(reqExRate);
+        quote.setFee(reqFee);
+        quote.setDeliveryTime(reqDlvrTime);
+
+        if ( valueDate == null || valueDate.equals("") ) {
+          reqExRate.setValueDate((Date) new Date());
+        } else {
+            //reqExRate.setValueDate(valueDate);
+          try {
+            String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            Date date = format.parse(valueDate);
+            reqExRate.setValueDate(date);
+          } catch ( Throwable t ) {
+              //TODO
+          }
+        }
+
+        reqExRate.setSourceCurrency(sourceCurrency);
+        reqExRate.setTargetCurrency(targetCurrency);
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
         reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
-        quote.setCode(((ExchangeRate) obj).getCode());
-
+        reqExRate.setRate(((ExchangeRate) obj).getRate());
         reqExRate.setTargetAmount((sourceAmount - feeAmount) * reqExRate.getRate());
         reqExRate.setSourceAmount(sourceAmount);
         reqFee.setTotalFees(feeAmount);
-
+        reqFee.setTotalFeesCurrency(sourceCurrency);
         reqExRate.setExpirationTime(new Date(new Date().getTime() + (1000 * 60 * 60 * 2)));
         reqDlvrTime.setProcessDate(new Date(new Date().getTime() + (1000 * 60 * 60 * 24)));
       }
@@ -107,15 +100,6 @@ public class ExchangeRateService
     if ( quote.getCode() == null || (quote.getCode()).equals("") ) {
       quote.setCode("400");
     }
-
-    reqExRate.getRate();
-    reqExRate.getTargetAmount();
-    reqFee.setTotalFeesCurrency(sourceCurrency);
-    reqExRate.getDealReferenceNumber();
-    reqExRate.getFxStatus();
-    reqExRate.getExpirationTime();
-
-    //quote.setProcessDate((Date) new Date() + 1);
 
     pm.log(getX());
 
@@ -155,27 +139,6 @@ public class ExchangeRateService
     final FeesFields         reqFee      = new FeesFields();
     final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
 
-    quote.setExchangeRate(reqExRate);
-    quote.setFee(reqFee);
-    quote.setDeliveryTime(reqDlvrTime);
-
-    reqExRate.setSourceCurrency(sourceCurrency);
-    reqExRate.setTargetCurrency(targetCurrency);
-
-    if ( valueDate == null || valueDate.equals("") ) {
-      reqExRate.setValueDate((Date) new Date());
-    } else {
-      //reqExRate.setValueDate(valueDate);
-      try {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date date = format.parse(valueDate);
-        reqExRate.setValueDate(date);
-      } catch ( Throwable t ) {
-        //TODO
-      }
-    }
-
     exchangeRateDAO_.where(
         MLang.AND(
             MLang.EQ(ExchangeRate.FROM_CURRENCY, sourceCurrency),
@@ -184,12 +147,26 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        //quote.setExchangeRateId(((ExchangeRate) obj).getId());
-        //quote.setTargetAmount(amount * ((ExchangeRate) obj).getRate());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
-        //reqExRate.setExpirationTime(((ExchangeRate) obj).getExpirationDate());
-        //quote.setFeesAmount((Double) feeAmount);
-        //quote.setFeesPercentage((Double) feeAmount / amount);
+        quote.setExchangeRate(reqExRate);
+        quote.setFee(reqFee);
+        quote.setDeliveryTime(reqDlvrTime);
+        reqExRate.setSourceCurrency(sourceCurrency);
+        reqExRate.setTargetCurrency(targetCurrency);
+
+        if ( valueDate == null || valueDate.equals("") ) {
+          reqExRate.setValueDate((Date) new Date());
+        } else {
+          try {
+            String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            Date date = format.parse(valueDate);
+            reqExRate.setValueDate(date);
+          } catch ( Throwable t ) {
+            //TODO
+          }
+        }
+
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
         reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
         quote.setCode(((ExchangeRate) obj).getCode());
@@ -197,7 +174,7 @@ public class ExchangeRateService
         reqExRate.setSourceAmount((targetAmount / reqExRate.getRate()) + feeAmount);
         reqExRate.setTargetAmount(targetAmount);
         reqFee.setTotalFees(feeAmount);
-
+        reqFee.setTotalFeesCurrency(sourceCurrency);
         reqExRate.setExpirationTime(new Date(new Date().getTime() + (1000 * 60 * 60 * 2)));
         reqDlvrTime.setProcessDate(new Date(new Date().getTime() + (1000 * 60 * 60 * 24)));
 
@@ -207,15 +184,6 @@ public class ExchangeRateService
     if ( quote.getCode() == null || (quote.getCode()).equals("") ) {
       quote.setCode("400");
     }
-
-    reqExRate.getRate();
-    reqExRate.getTargetAmount();
-    reqFee.setTotalFeesCurrency(sourceCurrency);
-    reqExRate.getDealReferenceNumber();
-    reqExRate.getFxStatus();
-    reqExRate.getExpirationTime();
-
-    //quote.setProcessDate((Date) new Date() + 1);
 
     pm.log(getX());
 
@@ -287,28 +255,11 @@ public class ExchangeRateService
 
     acceptRate.setCode("200");
     acceptRate.setEndToEndId(endToEndId);
-    String transactionId = java.util.UUID.randomUUID().toString().replace("-", "");
-    acceptRate.setTransactionId(transactionId);
+    //String transactionId = java.util.UUID.randomUUID().toString().replace("-", "");
+    //acceptRate.setTransactionId(transactionId);
     acceptField.setDealReferenceNumber(dealRefNum);
     acceptField.setFxStatus("Booked");
     acceptRate.setExchangeRate(acceptField);
-    //throw new RuntimeException(dealRefNum + " is " + fxStatus + " endToEndId : " + endToEndId + " transactionId : " + transactionId + " code : " + code);
-
-    // try {
-    //   Transaction createdTx = new Transaction();
-    //   //TransactionDAO TransactionDAO = new TransactionDAO();
-    //   DAO transactionDAO = (DAO) getX().get("localTransactionDAO");
-    //
-    //   createdTx.setId(Long.parseLong("123454321")); //transactionId
-    //   createdTx.setStatus("Booked");
-    //   createdTx.setPayerId(Long.parseLong("1348"));
-    //   //createdTx.setRate(transactionId);
-    //   transactionDAO.put(createdTx);
-    //
-    //
-    // } catch (RuntimeException e) {
-    //   throw e;
-    // }
 
     return acceptRate;
   }
