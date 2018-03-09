@@ -8,9 +8,9 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.ui.InvitationStatusHistoryItemView',
     'net.nanopay.invite.ui.ComplianceStatusHistoryItemView',
-    'net.nanopay.invite.ui.DocumentStatusHistoryItemView'
+    'net.nanopay.invite.ui.DocumentStatusHistoryItemView',
+    'net.nanopay.invite.ui.InvitationStatusHistoryItemView'
   ],
 
   documentation: 'View displaying history for invitation item',
