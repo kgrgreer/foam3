@@ -15,6 +15,7 @@ import foam.core.FObject;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 
@@ -96,7 +97,12 @@ public class CsvUtil {
     }
     // add a set to store all CICO Transactionas and their status change to Accept
     ArraySink acceptTransactions = new ArraySink();
-    transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.ACCEPTED)).select(acceptTransactions);
+    transactionDAO.where(
+        OR(
+            EQ(Transaction.CICO_STATUS, TransactionStatus.ACCEPTED),
+            EQ(Transaction.CICO_STATUS, TransactionStatus.DECLINED),
+            EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING))
+    ).select(acceptTransactions);
     Set<Long> acceptTransactionsSet = new HashSet();
     for ( Object txn : acceptTransactions.getArray() ) {
       acceptTransactionsSet.add(( (Transaction) txn ).getId());
