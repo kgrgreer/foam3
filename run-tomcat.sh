@@ -63,7 +63,7 @@ function build_NANOPAY_into_tomcat {
     fi
 
     while read journal; do
-        cp $journal $CATALINA_HOME/bin/$journal
+        cp $journal $CATALINA_HOME/bin/$journal.0
     done < $JOURNALS
 
     # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
