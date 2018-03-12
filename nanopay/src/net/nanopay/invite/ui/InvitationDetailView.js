@@ -5,11 +5,14 @@ foam.CLASS({
 
   requires: [
     'foam.u2.PopupView',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.invite.model.InvitationStatus'
   ],
 
   imports: [
-    'window'
+    'window',
+    'invitationDAO'
   ],
 
   exports: [
@@ -132,7 +135,7 @@ foam.CLASS({
             .start(this.EDIT_PROFILE, null, this.editProfileMenuBtn_$).end()
           .end()
         .end()
-        .tag({ class: 'net.nanopay.invite.ui.InvitationItemView', data: this.data })
+        .tag({ class: 'net.nanopay.invite.ui.InvitationItemView', data$: this.data$ })
         .br()
         .tag({ class: 'net.nanopay.invite.ui.InvitationHistoryView', id: this.data.id })
     }
@@ -195,7 +198,21 @@ foam.CLASS({
     },
 
     function disableProfile() {
-      // TODO: add disable profile functionality
+      var self = this;
+
+      var toDisable = this.data.clone();
+      toDisable.inviteStatus = this.InvitationStatus.DISABLED;
+
+      this.invitationDAO.put(toDisable)
+      .then(function (result) {
+        if ( ! result ) throw new Error('Unable to disable profile');
+        self.data.copyFrom(result);
+        self.NotificationMessage.create({ message: 'Successfully disabled profile.' });
+      })
+      .catch(function (err) {
+        self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' });
+      });
+
       this.editProfilePopUp_.remove();
     }
   ]

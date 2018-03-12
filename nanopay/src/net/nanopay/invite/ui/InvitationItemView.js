@@ -100,9 +100,9 @@ foam.CLASS({
             .start('td').add(phone.number$).end()
             .start('td').add(user.jobTitle$).end()
             .start('td').add(user.businessName$).end()
-            .start('td').add(this.data.complianceStatus.label).end()
+            .start('td').add(this.data.complianceStatus$.map(function (status) { return status.label; })).end()
             .start('td').add(user.type$).end()
-            .start('td').add(this.data.inviteStatus.label).end()
+            .start('td').add(this.data.inviteStatus$.map(function(status) { return status.label; })).end()
           .end()
         .end()
     }
