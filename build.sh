@@ -29,15 +29,15 @@ cd /pkg/stack/stage/NANOPAY
 
 # Copy repository journal, creating the .0 file which will be read before the app managed journal.
 # journals created by find.sh
-filename='journals'
-if [[ ! -f $filename ]]; then
+filename="journals"
+if [[ ! -f "$filename" ]]; then
   echo "ERROR: missing $filename file."
   exit 1
 fi
 
 while read journal; do
-    cp $journal /opt/tomcat/bin/$journal.0
-done < $filename
+    cp "$journal" "/opt/tomcat/bin/$journal.0"
+done < "$filename"
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
