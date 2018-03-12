@@ -62,19 +62,11 @@ foam.CLASS({
   properties: [
     'data',
     {
-      name: 'invitee',
-      factory: function () {
-        return this.User.create();
-      }
-    },
-    {
       class: 'String',
-      name: 'legalName'
-    },
-    {
-      name: 'phone',
+      name: 'legalName',
       factory: function () {
-        return this.Phone.create();
+        var user = this.data.user;
+        return user.firstName + ' ' + user.lastName;
       }
     }
   ],
@@ -83,7 +75,9 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.getInvitedUser();
+
+      var user = this.data.user;
+      var phone = user.phone;
 
       this
         .addClass(this.myClass())
@@ -102,29 +96,15 @@ foam.CLASS({
           .start('tr').addClass('table-body')
             .start('td').add(this.data.id).end()
             .start('td').add(this.legalName$).end()
-            .start('td').add(this.invitee.email$).end()
-            .start('td').add(this.phone.number$).end()
-            .start('td').add(this.invitee.jobTitle$).end()
-            .start('td').add(this.invitee.businessName$).end()
+            .start('td').add(user.email$).end()
+            .start('td').add(phone.number$).end()
+            .start('td').add(user.jobTitle$).end()
+            .start('td').add(user.businessName$).end()
             .start('td').add(this.data.complianceStatus.label).end()
-            .start('td').add(this.invitee.type$).end()
+            .start('td').add(user.type$).end()
             .start('td').add(this.data.inviteStatus.label).end()
           .end()
         .end()
-    },
-
-    function getInvitedUser() {
-      var self = this;
-      this.userDAO.find(this.data.user)
-      .then(function (result) {
-        if ( ! result ) throw new Error('User not found');
-        self.legalName = result.firstName + ' ' + result.lastName;
-        self.invitee.copyFrom(result);
-        self.phone.copyFrom(result.phone);
-      })
-      .catch(function (err) {
-        self.NotificationMessage.create({ message: err.message, type: 'error' });
-      });
     }
   ]
 });

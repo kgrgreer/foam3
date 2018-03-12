@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'complianceStatus'
     },
     {
-      class: 'Reference',
+      class: 'FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'user'
     },
