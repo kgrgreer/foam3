@@ -90,7 +90,14 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.Reconciliation',
   'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
   'net.nanopay.fx.lianlianpay.model.Statement',
-  'net.nanopay.fx.lianlianpay.model.StatementRecord'
+  'net.nanopay.fx.lianlianpay.model.StatementRecord',
+  'foam.nanos.auth.UserUserJunction',
+  'net.nanopay.fx.interac.model.PacsModel008',
+  'net.nanopay.fx.interac.model.PacsModel002',
+  'net.nanopay.fx.interac.model.PacsModel028',
+  'net.nanopay.fx.interac.model.ExchangerateApiModel',
+  'net.nanopay.fx.interac.model.AcceptRateApiModel',
+  'net.nanopay.fx.interac.model.AcceptExchangeRateFields'
 ];
 
 var abstractClasses = [
