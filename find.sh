@@ -1,26 +1,78 @@
 # Concatenate JDAO files from subdirectories into one JDAO
-find **/src -type f -name brokers -exec cat {} \; > brokers
-find **/src -type f -name businessSectors -exec cat {} \; > businessSectors
-find **/src -type f -name businessTypes -exec cat {} \; > businessTypes
-find **/src -type f -name cicoServiceProviders -exec cat {} \; > cicoServiceProviders
-find **/src -type f -name countries -exec cat {} \; > countries
-find **/src -type f -name cronjobs -exec cat {} \; > cronjobs
-find **/src -type f -name currencies -exec cat {} \; > currencies
-find **/src -type f -name corridors -exec cat {} \; > corridors
-find **/src -type f -name payoutOptions -exec cat {} \; > payoutOptions
-find **/src -type f -name transactionPurposes -exec cat {} \; > transactionPurposes
-find **/src -type f -name dugs -exec cat {} \; > dugs
-find **/src -type f -name emailTemplates -exec cat {} \; > emailTemplates
-find **/src -type f -name exportDriverRegistrys -exec cat {} \; > exportDriverRegistrys
-find **/src -type f -name groups -exec cat {} \; > groups
-find **/src -type f -name languages -exec cat {} \; > languages
-find **/src -type f -name menus -exec cat {} \; > menus
-find **/src -type f -name permissions -exec cat {} \; > permissions
-find **/src -type f -name regions -exec cat {} \; > regions
-find **/src -type f -name scripts -exec cat {} \; > scripts
-find **/src -type f -name services -exec cat {} \; > services
-find **/src -type f -name tests -exec cat {} \; > tests
-find **/src -type f -name transactionLimits -exec cat {} \; > transactionLimits
-find **/src -type f -name users -exec cat {} \; > users
-find **/src -type f -name institutions -exec cat {} \; > institutions
-find **/src -type f -name spids -exec cat {} \; > spids
+
+MODE=1
+INSTANCE=1
+VERSION=1
+
+# Sets varuables to lowercase
+MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
+INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
+VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
+
+# Creates an array of the file names 
+declare -a arr=( 
+  "brokers"
+  "businessSectors"
+  "businessTypes"
+  "cicoServiceProviders"
+  "corridors"
+  "countries"
+  "cronjobs"
+  "currencies"
+  "dugs"
+  "emailTemplates"
+  "exportDriverRegistrys"
+  "groups"
+  "institutions"
+  "invitations"
+  "invitationHistory"
+  "languages"
+  "menus"
+  "payoutOptions"
+  "permissions"
+  "questionnaireQuestionJunction"
+  "questionnaires"
+  "questions"
+  "regions"
+  "scripts"
+  "services"
+  "spids"
+  "tests"
+  "transactionLimits"
+  "transactionPurposes"
+  "users"
+  )
+
+
+# Go through the array and check each location for the file and concatenate into one JDAO
+for file in "${arr[@]}"
+do
+  # Emptys the file
+   > $file
+  # Checks if file exists, if so grabs the file from there
+  if  [[ -f "foam2/src/$file" ]]; then
+      cat foam2/src/$file >> $file
+  fi
+  if  [[ -f "nanopay/src/$file" ]]; then
+      cat nanopay/src/$file >> $file
+  fi
+  if  [[ -f "interac/src/$file" ]]; then
+      cat interac/src/$file >> $file
+  fi
+  if  [[ -f "deployment/$file" ]]; then
+      cat deployment/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$file" ]]; then
+      cat deployment/$MODE/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
+      cat deployment/$MODE/$INSTANCE/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
+      cat deployment/$MODE/$VERSION/$file >> $file
+  fi
+  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
+      cat deployment/$MODE/$INSTANCE/$VERSION/$file >> $file
+  fi
+
+done

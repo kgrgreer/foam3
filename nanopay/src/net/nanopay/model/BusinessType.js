@@ -12,6 +12,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name'
+    },
+    {
+      class: 'String',
+      name: 'description'
     }
   ]
 });

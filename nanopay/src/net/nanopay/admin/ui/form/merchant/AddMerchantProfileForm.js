@@ -36,15 +36,6 @@ foam.CLASS({
       margin-top: 20px;
       display: inline-block;
     }
-    ^ .net-nanopay-ui-ActionView-uploadImage {
-      width: 136px;
-      height: 40px;
-      background: transparent;
-      border: solid 1px #59a5d5;
-      color: #59a5d5;
-      margin: 0;
-      outline: none;
-    }
     ^ .foam-u2-tag-Select {
       width: 218px;
       height: 40px;
@@ -85,19 +76,6 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
-    ^ .uploadButtonContainer {
-      height: 80px;
-      display: inline-block;
-      vertical-align: text-bottom;
-      margin-left: 40px;
-    }
-    ^ .uploadDescription {
-      margin-top: 9px;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: 0.2px;
-      color: #093649;
-    }
     ^ .topMargin {
       margin-top: 20px;
     }
@@ -132,11 +110,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.businessName = newValue;
-      },
-      validateObj: function(businessName) {
-        if ( ! businessName || businessName.length > 35 ) {
-          return this.BusinessNameError;
-        }
       }
     },
     {
@@ -248,11 +221,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.addressLine = newValue;
-      },
-      validateObj: function(addressLine) {
-        if ( ! addressLine || addressLine > 70 ) {
-          return this.AddressError;
-        }
       }
     },
     {
@@ -263,11 +231,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.city = newValue;
-      },
-      validateObj: function(city) {
-        if ( ! city || city.length > 35 ) {
-          return this.AddressCityError;
-        }
       }
     },
     {
@@ -288,11 +251,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.province = newValue;
-      },
-      validateObj: function(province) {
-        if ( ! province || province.name.length > 35 ) {
-          return this.AddressProvinceError;
-        }
       }
     },
     {
@@ -303,13 +261,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.postalCode = newValue;
-      },
-      validateObj: function(postalCode) {
-        var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-
-        if ( ! postalCodeRegex.test(postalCode) ) {
-          return this.AddressPostalCodeError;
-        }
       }
     }
   ],
@@ -330,12 +281,7 @@ foam.CLASS({
     { name: 'AddressLineLabel', message: 'Address line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
-    { name: 'PostalCodeLabel', message: 'Postal Code *' },
-    { name: 'BusinessNameError', message: 'Business name should have less than 35 characters' },
-    { name: 'AddressError', message: 'Street address is invalid' },
-    { name: 'AddressCityError', message: 'City name is invalid' },
-    { name: 'AddressProvinceError', message: 'Invalid province option' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
+    { name: 'PostalCodeLabel', message: 'Postal Code *' }
   ],
 
   methods: [
@@ -412,16 +358,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'uploadImage',
-      label: this.UploadImageLabel,
-      code: function(X) {
-        //TODO: Add image upload functionality
-      }
     }
   ]
 });
