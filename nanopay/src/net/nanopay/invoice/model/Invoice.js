@@ -197,7 +197,7 @@ foam.CLASS({
         if ( paymentMethod.name == "CHEQUE" ) return "Paid";
         if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
         if ( paymentId > 0 || paymentDate < Date.now() && paymentId == this.RECORDED_PAYMENT) return 'Paid';
-        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) {  return 'Scheduled' };
+        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) return ('Scheduled');
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
@@ -225,11 +225,9 @@ foam.CLASS({
         function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
 
         var label;
-
-        if ( state === 'Scheduled' || state === 'Paid' ) {
-          label = state;
-        } else {
-          label = state;
+        label = state;
+        if ( state === 'Scheduled') {
+          label = label + ' ' + obj.paymentDate.toISOString().substring(0,10);
         }
 
         this.start().addClass('generic-status Invoice-Status-' + state).add(label).end();

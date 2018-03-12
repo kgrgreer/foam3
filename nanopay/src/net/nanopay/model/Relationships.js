@@ -94,3 +94,11 @@ foam.RELATIONSHIP({
   forwardName: 'balanceAlerts',
   inverseName: 'owner'
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.invite.model.Questionnaire',
+  targetModel: 'net.nanopay.invite.model.Question',
+  cardinality: '*:*',
+  forwardName: 'questions',
+  inverseName: 'questionnaires'
+});

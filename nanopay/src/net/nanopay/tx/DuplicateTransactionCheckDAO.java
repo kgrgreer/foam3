@@ -18,8 +18,7 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
     Transaction curTxn = (Transaction) obj;
     if ( oldTxn != null ) {
       if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-        throw new RuntimeException("You could only change the invoice, transaction status and CICO Transaction status" +
-            " information");
+        throw new RuntimeException("Unable to update Transaction");
       }
     }
     return super.put_(x, obj);

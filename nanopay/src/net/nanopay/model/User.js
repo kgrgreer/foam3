@@ -33,12 +33,9 @@ foam.CLASS({
       name: 'jobTitle',
       label: 'Job Title',
       validateObj: function(jobTitle) {
-        if ( ! jobTitle ) {
-          return this.JobTitleEmptyError;
-        }
-
-        if ( jobTitle.length > 35 ) {
-          return this.JobTitleLengthError;
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( jobTitle.length > 0 && ! re.test(jobTitle) ) {
+          return 'Invalid job title.';
         }
       }
     },
@@ -52,10 +49,5 @@ foam.CLASS({
       name: 'welcomeEmailSent',
       value: false,
     }
-  ],
-
-  messages: [
-    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
-    { name: 'JobTitleLengthError', message: 'Job title is too long' }
   ]
 });

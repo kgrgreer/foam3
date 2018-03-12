@@ -60,27 +60,31 @@ function build_NANOPAY_into_tomcat {
     cp businessSectors "$CATALINA_HOME/bin/"
     cp businessTypes "$CATALINA_HOME/bin/"
     cp cicoServiceProviders "$CATALINA_HOME/bin/"
-    cp countries "$CATALINA_HOME/bin/"
-    cp currencies "$CATALINA_HOME/bin/"
     cp corridors "$CATALINA_HOME/bin/"
-    cp payoutOptions "$CATALINA_HOME/bin/"
+    cp countries "$CATALINA_HOME/bin/"
     cp cronjobs "$CATALINA_HOME/bin/"
-    cp currency "$CATALINA_HOME/bin/"
+    cp currencies "$CATALINA_HOME/bin/"
     cp dugs "$CATALINA_HOME/bin/"
     cp emailTemplates "$CATALINA_HOME/bin/"
     cp exportDriverRegistrys "$CATALINA_HOME/bin/"
     cp groups "$CATALINA_HOME/bin/"
+    cp institutions "$CATALINA_HOME/bin/"
+    cp -n invitations "$CATALINA_HOME/bin/"
+    cp -n invitationHistory "$CATALINA_HOME/bin/"
     cp languages "$CATALINA_HOME/bin/"
     cp menus "$CATALINA_HOME/bin/"
+    cp payoutOptions "$CATALINA_HOME/bin/"  
     cp -n permissions "$CATALINA_HOME/bin/" &
+    cp questionnaireQuestionJunction "$CATALINA_HOME/bin/"
+    cp questionnaires "$CATALINA_HOME/bin/"
+    cp questions "$CATALINA_HOME/bin/"
     cp regions "$CATALINA_HOME/bin/"
     cp scripts "$CATALINA_HOME/bin/"
     cp services "$CATALINA_HOME/bin/"
+    cp spids $CATALINA_HOME/bin/    
     cp tests "$CATALINA_HOME/bin/"
     cp transactionLimits "$CATALINA_HOME/bin/"
     cp -n users "$CATALINA_HOME/bin/" &
-    cp institutions "$CATALINA_HOME/bin/"
-    cp spids $CATALINA_HOME/bin/
 
     # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
     rmdir "$WEBAPPS/foam2"

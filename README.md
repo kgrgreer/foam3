@@ -22,6 +22,12 @@ git submodule init
 git submodule update
 ```
 
+### npm 
+Run npm to install required packages, such iso2022
+```
+npm install
+```
+
 ### Installing tomcat
 
 Go into the NANOPAY/tools directory and run the following commands:
