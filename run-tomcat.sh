@@ -57,13 +57,13 @@ function build_NANOPAY_into_tomcat {
 
     # Copy repository journals
     JOURNALS='journals'
-    if [[ ! -f $JOURNALS ]]; then
+    if [ ! -f $JOURNALS ]; then
         echo "ERROR: missing $JOURNALS file."
         exit 1
     fi
 
     while read journal; do
-        cp $journal $CATALINA_HOME/bin/$journal.0
+        cp $journal $CATALINA_HOME/bin/$journal
     done < $JOURNALS
 
     # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
