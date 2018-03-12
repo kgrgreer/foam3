@@ -39,6 +39,8 @@ cp emailTemplates /opt/tomcat/bin/
 cp exportDriverRegistrys /opt/tomcat/bin/
 cp -n groups /opt/tomcat/bin/
 cp institutions /opt/tomcat/bin/
+cp -n invitations /opt/tomcat/bin/
+cp -n invitationHistory /opt/tomcat/bin/
 cp languages /opt/tomcat/bin/
 cp menus /opt/tomcat/bin/
 cp payoutOptions /opt/tomcat/bin/

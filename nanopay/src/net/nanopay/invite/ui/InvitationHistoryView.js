@@ -5,7 +5,12 @@ foam.CLASS({
 
   documentation: 'History view of invitation',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [
+    'net.nanopay.invite.model.Invitation',
     'net.nanopay.invite.ui.InvitationHistoryItemView'
   ],
 
@@ -14,11 +19,11 @@ foam.CLASS({
   ],
 
   properties: [
-    'selection',
+    'id',
     {
       name: 'data',
       factory: function () {
-        return this.invitationHistoryDAO;
+        return this.invitationHistoryDAO.where(this.EQ(this.Invitation.ID, this.id));
       }
     }
   ],
