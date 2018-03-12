@@ -8,6 +8,10 @@ foam.CLASS({
     'foam.u2.dialog.Popup'
   ],
 
+  imports: [
+    'window'
+  ],
+
   exports: [
     'as data'
   ],
@@ -147,7 +151,7 @@ foam.CLASS({
       name: 'print',
       label: 'Print',
       code: function (X) {
-        window.print();
+        X.window.print();
       }
     },
     {
