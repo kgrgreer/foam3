@@ -29,6 +29,9 @@ var classes = [
   'net.nanopay.liquidity.model.Liquidity',
 
   // invite
+  'net.nanopay.invite.model.ComplianceStatus',
+  'net.nanopay.invite.model.InvitationStatus',
+  'net.nanopay.invite.model.Invitation',
   'net.nanopay.invite.model.Question',
   'net.nanopay.invite.model.Questionnaire',
   'net.nanopay.invite.model.QuestionnaireQuestionJunction',
