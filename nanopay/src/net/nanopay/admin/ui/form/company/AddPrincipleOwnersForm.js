@@ -22,7 +22,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.Region'
+    'foam.nanos.auth.Region',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   css:`
@@ -166,15 +167,15 @@ foam.CLASS({
 
     ^ .nameFieldsCol.firstName {
       opacity: 0;
-      // transform: translateX(64px);//translateX(-166.66px);
+      // transform: translateX(64px);
     }
     ^ .nameFieldsCol.middleName {
       opacity: 0;
-      transform: translateX(-166.66px);//translateX(64px);
+      transform: translateX(-166.66px);
     }
     ^ .nameFieldsCol.lastName {
       opacity: 0;
-      transform: translateX(-333.32px);//translateY(64px);//translateX(166.66px);
+      transform: translateX(-166.66px);
     }
 
     ^ .nameFields {
@@ -530,6 +531,50 @@ foam.CLASS({
       label: 'Add',
       code: function() {
         // TODO: Make sure required fields are validated before adding to DAO
+        if ( ! this.firstNameField || ! this.lastNameField ) {
+          this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.jobTitleField ) {
+          this.add(this.NotificationMessage.create({ message: 'Job title field must be populated.', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.validateEmail(this.emailAddressField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+          return;
+        }
+
+        // TODO: validate phone number
+
+        if ( ! this.validateAge(this.birthdayField) ) {
+          this.add(this.NotificationMessage.create({ message: 'User must be at least 16 years of age.', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.validateStreetNumber(this.streetNumberField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+          return;
+        }
+        if ( ! this.validateAddress(this.streetNameField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+          return;
+        }
+        if ( this.addressField.length > 0 && ! this.validateAddress(this.addressField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+          return;
+        }
+        if ( ! this.validateCity(this.cityField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+          return;
+        }
+        if ( ! this.validatePostalCode(this.postalCodeField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+          return;
+        }
+
+        // TODO: Add to DAO
       }
     }
   ]
