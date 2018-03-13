@@ -90,7 +90,7 @@ return calendar.getTime();`
   userDAO.put(user);
   return true;
 } catch (Throwable t) {
-  ((Logger) getLogger()).error(t);
+  ((Logger) getLogger()).error("Error generating invitation", t);
   return false;
 }`
     }
