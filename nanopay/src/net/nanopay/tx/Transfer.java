@@ -53,17 +53,19 @@ public class Transfer
 
     user_ = user;
 
-    DAO     accountDAO = (DAO) x.get("accoutDAO");
+    DAO     accountDAO = (DAO) x.get("accountDAO");
     Account account    = (Account) accountDAO.find(getUserId());
 
     account_ = account == null ? new Account() : account;
 
-    if ( getAmount() < account_.getBalance() ) throw new RuntimeException("Insufficient balance in account " + getUserId());
+    if ( getAmount() < 0 ) {
+      if ( -getAmount() > account_.getBalance() ) throw new RuntimeException("Insufficient balance in account " + getUserId());
+    }
   }
 
   /** Execute the balance transfer, updating the user's balance. **/
   public void execute(X x) {
-    DAO     accountDAO = (DAO) x.get("accoutDAO");
+    DAO     accountDAO = (DAO) x.get("accountDAO");
     Account account    = getAccount();
 
     account.setBalance(account.getBalance() + getAmount());
