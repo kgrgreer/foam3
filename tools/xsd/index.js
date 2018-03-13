@@ -148,6 +148,16 @@ function processFile (file) {
         break;
     }
 
+    // Add MsgType for ISO20022 messages
+    if ( m.name === 'Document' ) {
+      if ( ! m.properties ) m.properties = [];
+      m.properties.push({
+        class: 'String',
+        name: 'MsgType',
+        value: filename.replace(/\.[^/.]+$/, "")
+      });
+    }
+
     if ( m.type === 'enum' ) {
       delete m.type;
       models.push(genModel(m, 'ENUM'));
