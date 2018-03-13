@@ -23,7 +23,9 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Region',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Address'
   ],
 
   css:`
@@ -549,7 +551,7 @@ foam.CLASS({
         // TODO: validate phone number
 
         if ( ! this.validateAge(this.birthdayField) ) {
-          this.add(this.NotificationMessage.create({ message: 'User must be at least 16 years of age.', type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: 'Principle owner must be at least 16 years of age.', type: 'error' }));
           return;
         }
 
@@ -574,7 +576,27 @@ foam.CLASS({
           return;
         }
 
-        // TODO: Add to DAO
+        var newPrincipleOwner = this.User.create({
+          firstName: this.firstNameField,
+          middleName: this.middleNameField,
+          lastName: this.lastNameField,
+          email: this.emailAddressField,
+          // TODO: Phone Number
+          birthday: this.birthdayField,
+          address: this.Address.create({
+            streetNumber: this.streetNumberField,
+            streetName: this.streetNameField,
+            city: this.cityField,
+            postalCode: this.postalCodeField,
+            countryId: this.countryField,
+            regionId: this.provinceField
+          }),
+          jobTitle: this.jobTitleField,
+          principleType: this.principleTypeField
+        });
+        console.log(newPrincipleOwner);
+
+        // TODO: Add to a DAO or array.
       }
     }
   ]

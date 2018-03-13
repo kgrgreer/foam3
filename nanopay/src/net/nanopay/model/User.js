@@ -40,6 +40,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'principleType',
+      label: 'Principle Type'
+    },
+    {
       class: 'Boolean',
       name: 'portalAdminCreated',
       value: false,
