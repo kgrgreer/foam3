@@ -55,6 +55,47 @@ foam.CLASS({
       text-align: center;
       line-height: 60px
     }
+    ^ .net-nanopay-ui-modal-ModalHeader {
+      width: 100%;
+    } 
+    ^ .net-nanopay-ui-ActionView-submitButton {
+      font-family: Roboto;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      background: #59aadd;
+      border: solid 1px #59aadd;
+      display: inline-block;
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      margin: 0PX 20PX 21PX 0PX;
+      outline: none;
+      float: right;
+      box-shadow: none;
+      font-weight: normal;
+    }
+    ^ .net-nanopay-ui-ActionView-cancelButton {
+      font-family: Roboto;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      background: rgba(164, 179, 184, 0.1);
+      border: solid 1px rgba(164, 179, 184, 0.1);
+      display: inline-block;
+      color: #093649;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      margin: 0px 0px 10px 20px;
+      outline: none;
+      float: left;
+      box-shadow: none;
+      font-weight: normal;
+    }
   `,
   
   methods: [
@@ -68,19 +109,19 @@ foam.CLASS({
       }))
       .addClass(this.myClass())
       .start()
-          .add(this.slot(function (data) {
-            var e = this.E();
+        .add(this.slot(function (data) {
+          var e = this.E();
 
-            for ( var i = 0 ; i < data.length ; i++ ) {
-              e.tag({
-                class: 'net.nanopay.invoice.ui.InvoiceFileView',
-                data: data[i],
-                fileNumber: i + 1,
-              });
-            }
-            return e;
-          }, this.data$))
-      .start('div').addClass('box-for-drag-drop')
+          for ( var i = 0 ; i < data.length ; i++ ) {
+            e.tag({
+              class: 'net.nanopay.invoice.ui.InvoiceFileView',
+              data: data[i],
+              fileNumber: i + 1,
+            });
+          }
+          return e;
+        }, this.data$))
+        .start('div').addClass('box-for-drag-drop')
           .start('p').add('Click or drag files here').addClass('inputText').end()
           .on('dragstart', this.onDragStart)
           .on('dragenter', this.onDragOver)
@@ -95,14 +136,32 @@ foam.CLASS({
             })
             .on('change', this.onChange)
           .end()
-          .end()
-          .end()
+        .end()
+      .end()
+      .add(this.CANCEL_BUTTON)
+      .add(this.SUBMIT_BUTTON)
     } ,
     function onInvoiceFileRemoved (fileNumber) {
       this.document.querySelector('.attachment-input').value = null;
       this.data.splice(fileNumber - 1, 1);
       this.data = Array.from(this.data);
     }
+  ],
+  actions:[
+    {
+      name: 'cancelButton',
+      label: 'Cancel',
+      code: function(X) {
+        X.closeDialog();
+      }
+    },
+    {
+      name: 'submitButton',
+      label: 'Submit',
+      code: function(X) {
+        X.closeDialog();
+      }
+    },
   ],
   listeners: [
     function onAddAttachmentClicked (e) {
