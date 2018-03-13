@@ -12,8 +12,16 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
-    'java.util.Calendar'
+    'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.EmailService',
+
+    'java.util.Calendar',
+    'java.util.HashMap',
+    'java.util.UUID',
   ],
 
   methods: [
@@ -29,6 +37,7 @@ return calendar.getTime();`
       javaCode:
 `try {
   AppConfig config = (AppConfig) getAppConfig();
+  EmailService email = (EmailService) getEmail();
   DAO tokenDAO = (DAO) getTokenDAO();
   DAO userDAO = (DAO) getLocalUserDAO();
   String url = config.getUrl()
@@ -49,16 +58,7 @@ return calendar.getTime();`
   args.put("email", user.getEmail());
   args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
 
-  // add app store / play store links
-  if (user.getType().equals("Personal")){
-    if (user.getPortalAdminCreated()) {
-      args.put("applink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://www.apple.com/lae/ios/app-store/");
-      args.put("playlink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://play.google.com/store?hl=en");
-    }
-  }
-
-  String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
-  email.sendEmailFromTemplate(user, message, template, args);
+  email.sendEmailFromTemplate(user, message, "welcome-email", args);
   user.setPortalAdminCreated(false);
   user.setWelcomeEmailSent(true);
   userDAO.put(user);
