@@ -174,7 +174,7 @@ foam.CLASS({
     }
     ^ .nameFieldsCol.lastName {
       opacity: 0;
-      transform: translateX(-166.66px);//translateY(64px);//translateX(166.66px);
+      transform: translateX(-333.32px);//translateY(64px);//translateX(166.66px);
     }
 
     ^ .nameFields {
@@ -311,6 +311,7 @@ foam.CLASS({
       name: 'firstNameField',
       value: ''
     },
+    'firstNameFieldElement',
     {
       class: 'String',
       name: 'middleNameField',
@@ -431,6 +432,7 @@ foam.CLASS({
                   .addClass('displayOnly')
                   .on('focus', function() {
                     this.blur();
+                    self.firstNameFieldElement && self.firstNameFieldElement.focus();
                     self.isEditingName = true;
                   })
                   .end()
@@ -442,7 +444,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD, { tabIndex: 2 })
+                    .start(this.FIRST_NAME_FIELD, { tabIndex: 2 }, this.firstNameFieldElement$)
                       .addClass('nameFields')
                     .end()
                 .end()
@@ -460,9 +462,6 @@ foam.CLASS({
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
                     .start(this.LAST_NAME_FIELD, { tabIndex: 4 })
                       .addClass('nameFields')
-                      .on('focusout', function() {
-                        self.notEditingName();
-                      })
                     .end()
                 .end()
             .end()
@@ -477,7 +476,7 @@ foam.CLASS({
             .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
             .start(this.EMAIL_ADDRESS_FIELD, { tabIndex: 6 }).addClass('fullWidthField').end()
             .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-
+            // TODO: For Phone Number
             .start('p').add(this.PrincipleTypeLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .start(this.PRINCIPLE_TYPE_FIELD, {tabIndex: 8}).end()
