@@ -146,10 +146,20 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   // invite
+  { name: 'net/nanopay/invite/model/ComplianceStatus' },
+  { name: 'net/nanopay/invite/model/InvitationStatus' },
+  { name: 'net/nanopay/invite/model/Invitation' },
   { name: 'net/nanopay/invite/model/Question' },
   { name: 'net/nanopay/invite/model/Questionnaire' },
-  { name: 'net/nanopay/invite/ui/QuestionView' },
-  { name: 'net/nanopay/invite/ui/QuestionnaireView' },
+  { name: 'net/nanopay/invite/ui/InvitationDetailView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/InvitationHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/InvitationHistoryView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/InvitationItemView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/InvitationStatusHistoryItemView', flags: ['web']},
+  { name: 'net/nanopay/invite/ui/ComplianceStatusHistoryItemView', flags: ['web']},
+  { name: 'net/nanopay/invite/ui/DocumentStatusHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
@@ -244,6 +254,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },
   { name: 'net/nanopay/ui/Placeholder', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
+  { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/model/Relationships'},
