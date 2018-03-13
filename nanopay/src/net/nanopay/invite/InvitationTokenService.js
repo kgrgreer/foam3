@@ -18,10 +18,27 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
-
+    'foam.util.Password',
+    'org.apache.commons.text.CharacterPredicates',
+    'org.apache.commons.text.RandomStringGenerator',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.UUID',
+    'java.util.UUID'
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(foam.java.Code.create({
+          data:
+`protected static RandomStringGenerator passgen = new RandomStringGenerator.Builder()
+    .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
+    .withinRange('0', 'z')
+    .build();`
+        }))
+      }
+    }
   ],
 
   methods: [
@@ -49,18 +66,27 @@ return calendar.getTime();`
   token.setData(UUID.randomUUID().toString());
   token = (Token) tokenDAO.put(token);
 
-  EmailMessage message = new EmailMessage.Builder(x)
+  EmailMessage message = new EmailMessage.Builder(getX())
     .setTo(new String[] { user.getEmail() })
     .build();
+
+  // keep generating a new password until a valid one is generated
+  String password = passgen.generate(8);
+  while ( ! Password.isValid(password) ) {
+    password = passgen.generate(8);
+  }
 
   HashMap<String, Object> args = new HashMap<>();
   args.put("name", user.getFirstName());
   args.put("email", user.getEmail());
   args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
+  args.put("password", password);
 
   email.sendEmailFromTemplate(user, message, "welcome-email", args);
   user.setPortalAdminCreated(false);
   user.setWelcomeEmailSent(true);
+  user.setPassword(Password.hash(password));
+  user.setPasswordExpiry(generateExpiryDate());
   userDAO.put(user);
   return true;
 } catch (Throwable t) {
