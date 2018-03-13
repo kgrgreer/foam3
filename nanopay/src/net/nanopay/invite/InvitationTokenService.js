@@ -1,23 +1,37 @@
 foam.CLASS({
-  refines: 'foam.nanos.auth.email.EmailTokenService',
+  package: 'net.nanopay.invite',
+  name: 'InvitationTokenService',
+  extends: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'logger'
+    'appConfig',
+    'email',
+    'localUserDAO',
+    'logger',
+    'tokenDAO'
   ],
 
   javaImports: [
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'java.util.Calendar'
   ],
 
   methods: [
     {
+      name: 'generateExpiryDate',
+      javaCode:
+`Calendar calendar = Calendar.getInstance();
+calendar.add(Calendar.DAY_OF_MONTH, 14);
+return calendar.getTime();`
+    },
+    {
       name: 'generateToken',
       javaCode:
 `try {
-  DAO tokenDAO = (DAO) getX().get("tokenDAO");
-  DAO userDAO = (DAO) getX().get("localUserDAO");
-  AppConfig appConfig = (AppConfig) getX().get("appConfig");
-  String url = appConfig.getUrl()
+  AppConfig config = (AppConfig) getAppConfig();
+  DAO tokenDAO = (DAO) getTokenDAO();
+  DAO userDAO = (DAO) getLocalUserDAO();
+  String url = config.getUrl()
       .replaceAll("/$", "");
 
   Token token = new Token();
@@ -26,9 +40,9 @@ foam.CLASS({
   token.setData(UUID.randomUUID().toString());
   token = (Token) tokenDAO.put(token);
 
-  EmailService email = (EmailService) getX().get("email");
-  EmailMessage message = new EmailMessage();
-  message.setTo(new String[]{user.getEmail()});
+  EmailMessage message = new EmailMessage.Builder(x)
+    .setTo(new String[] { user.getEmail() })
+    .build();
 
   HashMap<String, Object> args = new HashMap<>();
   args.put("name", user.getFirstName());
@@ -53,6 +67,6 @@ foam.CLASS({
   ((Logger) getLogger()).error(t);
   return false;
 }`
-  }
+    }
   ]
 });

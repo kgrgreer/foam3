@@ -160,6 +160,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invite/ui/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/QuestionView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
+  { name: 'net/nanopay/invite/InvitationTokenService' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
