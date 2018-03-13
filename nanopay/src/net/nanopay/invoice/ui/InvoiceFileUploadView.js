@@ -73,23 +73,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          //.start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
-      
-          .start('div').addClass('box-for-drag-drop')
-          .start('p').add('Click or drag files here').addClass('inputText').end()
-          .on('dragstart', this.onDragStart)
-          .on('dragenter', this.onDragOver)
-          .on('dragover', this.onDragOver)
-          .on('drop', this.onDrop)
-          .on('click', self.onAddAttachmentClicked)
-          .start('input').addClass('attachment-input')
-            .attrs({
-              type: 'file',
-              accept: 'application/pdf',
-              multiple: 'multiple'
-            })
-            .on('change', this.onChange)
-          .end()
+          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
           .end()
         .end();
     },
