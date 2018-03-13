@@ -230,6 +230,15 @@ foam.CLASS({
 
     ^ .net-nanopay-ui-ActionView {
       color: white;
+      font-size: 12px;
+    }
+
+    ^ .net-nanopay-ui-ActionView:focus {
+      background-color: #3783b3;
+    }
+
+    ^ .net-nanopay-ui-ActionView:hover {
+      background-color: #3783b3;
     }
 
     ^ .dropdownContainer {
@@ -430,7 +439,7 @@ foam.CLASS({
               .addClass('nameDisplayContainer')
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_LEGAL_NAME, { tabIndex: 1 })
+                .start(this.DISPLAYED_LEGAL_NAME)
                   .addClass('fullWidthField')
                   .addClass('displayOnly')
                   .on('focus', function() {
@@ -447,7 +456,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD, { tabIndex: 2 }, this.firstNameFieldElement$)
+                    .start(this.FIRST_NAME_FIELD, {}, this.firstNameFieldElement$)
                       .addClass('nameFields')
                     .end()
                 .end()
@@ -455,7 +464,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('middleName', this.isEditingName$, true)
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
-                    .start(this.MIDDLE_NAME_FIELD, { tabIndex: 3 })
+                    .start(this.MIDDLE_NAME_FIELD)
                       .addClass('nameFields')
                     .end()
                 .end()
@@ -463,7 +472,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('lastName', this.isEditingName$, true)
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
-                    .start(this.LAST_NAME_FIELD, { tabIndex: 4 })
+                    .start(this.LAST_NAME_FIELD)
                       .addClass('nameFields')
                     .end()
                 .end()
@@ -476,47 +485,47 @@ foam.CLASS({
             })
 
             .start('p').add(this.JobTitleLabel).addClass('infoLabel').end()
-            .start(this.JOB_TITLE_FIELD, { tabIndex: 5 }).addClass('fullWidthField').end()
+            .start(this.JOB_TITLE_FIELD).addClass('fullWidthField').end()
             .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
-            .start(this.EMAIL_ADDRESS_FIELD, { tabIndex: 6 }).addClass('fullWidthField').end()
+            .start(this.EMAIL_ADDRESS_FIELD).addClass('fullWidthField').end()
             .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
             // TODO: For Phone Number
             .start('p').add(this.PrincipleTypeLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
-              .start(this.PRINCIPLE_TYPE_FIELD, {tabIndex: 8}).end()
+              .tag(this.PRINCIPLE_TYPE_FIELD)
               .start('div').addClass('caret').end()
             .end()
             .start('p').add(this.DateOfBirthLabel).addClass('infoLabel').end()
-            .start(this.BIRTHDAY_FIELD, { tabIndex: 9 }).addClass('fullWidthField').end()
+            .start(this.BIRTHDAY_FIELD).addClass('fullWidthField').end()
 
             // ADDRESS INFO
             .start('p').add(this.ResidentialAddressLabel).addClass('sectionTitle').end()
             .start('p').add(this.CountryLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
-              .start(this.COUNTRY_FIELD, {tabIndex: 10}).end()
+              .start(this.COUNTRY_FIELD).end()
               .start('div').addClass('caret').end()
             .end()
             .start('div').addClass('streetContainer')
               .start('div').addClass('streetFieldCol')
                 .start('p').add(this.StreetNumberLabel).addClass('infoLabel').end()
-                .start(this.STREET_NUMBER_FIELD, { tabIndex: 11 }).addClass('fullWidthField').addClass('streetNumberField').end()
+                .start(this.STREET_NUMBER_FIELD).addClass('fullWidthField').addClass('streetNumberField').end()
               .end()
               .start('div').addClass('streetFieldCol')
                 .start('p').add(this.StreetNameLabel).addClass('infoLabel').end()
-                .start(this.STREET_NAME_FIELD, { tabIndex: 12 }).addClass('fullWidthField').addClass('streetNameField').end()
+                .start(this.STREET_NAME_FIELD).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
             .start('p').add(this.AddressLabel).addClass('infoLabel').end()
-            .start(this.ADDRESS_FIELD, { tabIndex: 13 }).addClass('fullWidthField').end()
+            .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
-              .start(this.PROVINCE_FIELD, {tabIndex: 14}).end()
+              .start(this.PROVINCE_FIELD).end()
               .start('div').addClass('caret').end()
             .end()
             .start('p').add(this.CityLabel).addClass('infoLabel').end()
-            .start(this.CITY_FIELD, { tabIndex: 15 }).addClass('fullWidthField').end()
+            .start(this.CITY_FIELD).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
-            .start(this.POSTAL_CODE_FIELD, { tabIndex: 16 }).addClass('fullWidthField').end()
+            .start(this.POSTAL_CODE_FIELD).addClass('fullWidthField').end()
             .start(this.ADD_PRINCIPLE_OWNER).end()
           .end()
         .end();
@@ -524,6 +533,46 @@ foam.CLASS({
 
     function notEditingName() {
       this.isEditingName = false;
+    },
+
+    function clearFields() {
+      this.firstNameField = '';
+      this.middleNameField = '';
+      this.lastNameField = '';
+      this.notEditingName(); // This will change displayedLegalName as well
+      this.jobTitleField = '';
+      this.emailAddressField = '';
+      // TODO: Phone number
+      this.principleTypeField = 'Shareholder';
+      this.birthdayField = null;
+
+      this.countryField = 'CA';
+      this.streetNumberField = '';
+      this.streetNameField = '';
+      this.addressField = '';
+      this.provinceField = 'AB';
+      this.cityField = '';
+      this.postalCodeField = '';
+    },
+
+    function editPrincipleOwner(user) {
+      this.firstNameField = user.firstName;
+      this.middleNameField = user.middleName;
+      this.lastNameField = user.lastName;
+      this.notEditingName(); // This will change displayedLegalName as well
+      this.jobTitleField = user.jobTitle;
+      this.emailAddressField = user.email;
+      // TODO: Phone number
+      this.principleTypeField = user.principleType;
+      this.birthdayField = user.birthday;
+
+      this.countryField = user.address.countryId;
+      this.streetNumberField = user.address.streetNumber;
+      this.streetNameField = user.address.streetName;
+      this.addressField = user.address.address2;
+      this.provinceField = user.address.regionId;
+      this.cityField = user.address.city;
+      this.postalCodeField = user.address.postalCode;
     }
   ],
 
@@ -586,6 +635,7 @@ foam.CLASS({
           address: this.Address.create({
             streetNumber: this.streetNumberField,
             streetName: this.streetNameField,
+            address2: this.addressField,
             city: this.cityField,
             postalCode: this.postalCodeField,
             countryId: this.countryField,
@@ -595,8 +645,8 @@ foam.CLASS({
           principleType: this.principleTypeField
         });
         console.log(newPrincipleOwner);
-
-        // TODO: Add to a DAO or array.
+        this.clearFields();
+        // TODO: Add to a DAO or FObjectArray.
       }
     }
   ]
