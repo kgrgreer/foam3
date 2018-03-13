@@ -104,6 +104,15 @@ foam.CLASS({
       pointer-events: none;
       opacity: 0;
     }
+    ^ .phoneFieldsCol {
+      display: inline-block;
+      vertical-align: middle;
+      height: 64px;
+      opacity: 1;
+      box-sizing: border-box;
+      margin-right: 20px;
+      transition: all 0.15s linear;
+    }
     ^ .nameFieldsCol {
       display: inline-block;
       vertical-align: middle;
@@ -202,6 +211,9 @@ foam.CLASS({
       background: %SECONDARYCOLOR%;
       opacity: 0.9;
     }
+    ^ .property-confirmEmailAddress {
+      margin-bottom: 10px;
+    }
   `,
 
   properties: [
@@ -260,7 +272,8 @@ foam.CLASS({
     },
     {
       name: 'displayedPhoneNumber',
-      class: 'String'
+      class: 'String',
+      value: '+1'
     },
     {
       name: 'countryCode',
@@ -307,6 +320,7 @@ foam.CLASS({
                   .on('focus', function() {
                     this.blur();
                     self.isEditingName = true;
+                    self.isEditingPhone = false;
                   })
                 .end()
             .end()
@@ -365,43 +379,48 @@ foam.CLASS({
               .start('p').add(this.ConfirmEmailLabel).addClass('label').end()
               .start(this.CONFIRM_EMAIL_ADDRESS).addClass('largeInput').end()
             .end()
-            .start().addClass('nameContainer')
-              .start()
-                .addClass('nameDisplayContainer')
-                .enableClass('hidden', this.isEditingPhone$)
-                .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_PHONE_NUMBER, { tabIndex: 7 })
-                  .addClass('legalNameDisplayField')
-                  .on('focus', function() {
-                    this.blur();
+          .end()
+          .start()
+            .addClass('nameContainer')
+            .start()
+              .on('click', function() {
+                self.notEditingName();
+              })
+              .addClass('nameDisplayContainer')
+              .enableClass('hidden', this.isEditingPhone$)
+              .start('p').add(this.PhoneNumberLabel).addClass('label').end()
+              .start(this.DISPLAYED_PHONE_NUMBER)
+                .addClass('legalNameDisplayField')
+                .on('focus', function() {
+                  this.blur();
+                  self.isEditingPhone = true;
+                  self.isEditingName = false;
+                })
+              .end()
+            .end()
+            .start('div')
+              .addClass('nameInputContainer')
+              .enableClass('hidden', this.isEditingPhone$, true)
+              .start('div')
+                .addClass('phoneFieldsCol')
+                .enableClass('firstName', this.isEditingPhone$, true)
+                .start().add(this.CountryCodeLabel).addClass('label').style({ 'margin-bottom': '8px' }).end()
+                .start(this.COUNTRY_CODE)
+                  .addClass('countryCodeInput')
+                  .on('click', function() {
                     self.isEditingPhone = true;
                   })
                 .end()
               .end()
               .start('div')
-                .addClass('nameInputContainer')
-                .enableClass('hidden', this.isEditingPhone$, true)
-                .start('div')
-                  .addClass('nameFieldsCol')
-                  .enableClass('firstName', this.isEditingPhone$, true)
-                  .start('p').add(this.CountryCodeLabel).addClass('infoLabel').end()
-                  .start(this.COUNTRY_CODE, { tabIndex: 2 })
-                    .addClass('nameFields')
-                    .on('click', function() {
-                      self.isEditingPhone = true;
-                    })
-                  .end()
-                .end()
-                .start('div')
-                  .addClass('nameFieldsCol')
-                  .enableClass('middleName', this.isEditingPhone$, true)
-                  .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                  .start(this.PHONE_NUMBER, { tabIndex: 3 })
-                    .addClass('nameFields')
-                    .on('click', function() {
-                      self.isEditingPhone = true;
-                    })
-                  .end()
+                .addClass('nameFieldsCol')
+                .enableClass('middleName', this.isEditingPhone$, true)
+                .start('p').add(this.PhoneNumberLabel).addClass('label').end()
+                .start(this.PHONE_NUMBER)
+                  .addClass('phoneNumberInput')
+                  .on('click', function() {
+                    self.isEditingPhone = true;
+                  })
                 .end()
               .end()
             .end()
