@@ -466,6 +466,7 @@ foam.CLASS({
                 .end()
             .end()
           .end()
+
           .start('div')
             .on('click', function() {
               self.notEditingName();
@@ -482,9 +483,10 @@ foam.CLASS({
               .start(this.PRINCIPLE_TYPE_FIELD, {tabIndex: 8}).end()
               .start('div').addClass('caret').end()
             .end()
-
             .start('p').add(this.DateOfBirthLabel).addClass('infoLabel').end()
             .start(this.BIRTHDAY_FIELD, { tabIndex: 9 }).addClass('fullWidthField').end()
+
+            // ADDRESS INFO
             .start('p').add(this.ResidentialAddressLabel).addClass('sectionTitle').end()
             .start('p').add(this.CountryLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
@@ -501,7 +503,6 @@ foam.CLASS({
                 .start(this.STREET_NAME_FIELD, { tabIndex: 12 }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
-
             .start('p').add(this.AddressLabel).addClass('infoLabel').end()
             .start(this.ADDRESS_FIELD, { tabIndex: 13 }).addClass('fullWidthField').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
