@@ -5,12 +5,33 @@ foam.CLASS({
 
   documentation: 'Form to input Principle Owner(s)',
 
+  imports: [
+    'countryDAO',
+    'regionDAO',
+    'validateEmail',
+    'validatePostalCode',
+    'validatePhone',
+    'validateAge',
+    'validateCity',
+    'validateStreetNumber',
+    'validateAddress'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.Region'
+  ],
+
   css:`
     ^ .sectionTitle {
       line-height: 16px;
       font-size: 14px;
       font-weight: bold;
 
+      margin-top: 30px;
       margin-bottom: 20px;
     }
 
@@ -48,16 +69,55 @@ foam.CLASS({
       margin-bottom: 8px;
     }
 
-    ^ .legalNameDisplayField {
-      width: 100%;
+    ^ .fullWidthField {
+      width: 540px;
       height: 40px;
 
       background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5) !important;
+      border: solid 1px rgba(164, 179, 184, 0.5);
 
       padding: 12px 13px;
 
       box-sizing: border-box;
+      outline: none;
+    }
+
+    ^ .fullWidthField:focus {
+      border: solid 1px #59A5D5;
+      outline: none;
+    }
+
+    ^ .noPadding {
+      padding: 0
+    }
+
+    ^ .caret {
+      position: relative;
+      pointer-events: none;
+    }
+
+    ^ .caret:before {
+      content: '';
+      position: absolute;
+      top: -23px;
+      left: 510px;
+      border-top: 7px solid #a4b3b8;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+    }
+
+    ^ .caret:after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      border-top: 0px solid #ffffff;
+      border-left: 0px solid transparent;
+      border-right: 0px solid transparent;
+    }
+
+    ^ .displayOnly {
+      border: solid 1px rgba(164, 179, 184, 0.5) !important;
     }
 
     ^ .nameInputContainer {
@@ -141,22 +201,12 @@ foam.CLASS({
       margin-right: 0;
     }
 
-    ^ .inputSmall {
-      display: inline-block;
-
+    ^ .streetNumberField {
       width: 125px;
-
-      margin-right: 20px;
     }
 
-    ^ .inputMedium {
-      display: inline-block;
-
-      width: 393px;
-    }
-
-    ^ .inputLarge {
-      width: 540px;
+    ^ .streetNameField {
+      width: 395px;
     }
 
     ^ .net-nanopay-ui-ActionView-addPrincipleOwner {
@@ -177,6 +227,37 @@ foam.CLASS({
 
     ^ .net-nanopay-ui-ActionView {
       color: white;
+    }
+
+    ^ .dropdownContainer {
+      width: 540px;
+      outline: none;
+    }
+
+    ^ .foam-u2-tag-Select {
+      width: 540px;
+      height: 40px;
+      border-radius: 0;
+
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+
+      padding: 12px;
+      padding-right: 35px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      background-color: white;
+      outline: none !important;
+      cursor: pointer;
+    }
+
+    ^ .foam-u2-tag-Select:disabled {
+      cursor: default;
+      background: white;
+    }
+
+    ^ .foam-u2-tag-Select:focus {
+      border: solid 1px #59A5D5;
     }
   `,
 
@@ -240,6 +321,96 @@ foam.CLASS({
       name: 'lastNameField',
       value: ''
     },
+    {
+      class: 'String',
+      name: 'jobTitleField',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'emailAddressField',
+      value: ''
+    },
+    {
+      name: 'principleTypeField',
+      value: 'Shareholder',
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Shareholder', 'Owner', 'Officer', 'To Be Filled Out' ] },
+    },
+    {
+      class: 'Date',
+      name: 'birthdayField',
+      tableCellFormatter: function(date) {
+        this.add(date ? date.toISOString().substring(0,10) : '');
+      },
+      // factory: function() {
+      //   return this.viewData.birthday;
+      // },
+      // postSet: function(oldValue, newValue) {
+      //   this.viewData.birthday = newValue;
+      // }
+    },
+    {
+      name: 'countryField',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.countryDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        })
+      },
+      factory: function() {
+        return this.viewData.country || 'CA';
+      },
+      // postSet: function(oldValue, newValue) {
+      //   this.viewData.country = newValue;
+      // }
+    },
+    {
+      class: 'String',
+      name: 'streetNumberField',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'streetNameField',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'addressField',
+      value: ''
+    },
+    {
+      name: 'provinceField',
+      view: function(_, X) {
+        var choices = X.data.slot(function (countryField) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ""));
+        });
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(region) {
+            return [region.id, region.name];
+          },
+          dao$: choices
+        });
+      }
+      // factory: function() {
+      //   return this.viewData.province;
+      // },
+      // postSet: function(oldValue, newValue) {
+      //   this.viewData.province = newValue;
+      // }
+    },
+    {
+      class: 'String',
+      name: 'cityField',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'postalCodeField',
+      value: ''
+    }
   ],
 
   methods: [
@@ -256,7 +427,8 @@ foam.CLASS({
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
                 .start(this.DISPLAYED_LEGAL_NAME, { tabIndex: 1 })
-                  .addClass('legalNameDisplayField')
+                  .addClass('fullWidthField')
+                  .addClass('displayOnly')
                   .on('focus', function() {
                     this.blur();
                     self.isEditingName = true;
@@ -272,9 +444,6 @@ foam.CLASS({
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
                     .start(this.FIRST_NAME_FIELD, { tabIndex: 2 })
                       .addClass('nameFields')
-                      .on('click', function() {
-                        self.isEditingName = true;
-                      })
                     .end()
                 .end()
                 .start('div')
@@ -283,9 +452,6 @@ foam.CLASS({
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
                     .start(this.MIDDLE_NAME_FIELD, { tabIndex: 3 })
                       .addClass('nameFields')
-                      .on('click', function() {
-                        self.isEditingName = true;
-                      })
                     .end()
                 .end()
                 .start('div')
@@ -294,8 +460,8 @@ foam.CLASS({
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
                     .start(this.LAST_NAME_FIELD, { tabIndex: 4 })
                       .addClass('nameFields')
-                      .on('click', function() {
-                        self.isEditingName = true;
+                      .on('focusout', function() {
+                        self.notEditingName();
                       })
                     .end()
                 .end()
@@ -307,35 +473,47 @@ foam.CLASS({
             })
 
             .start('p').add(this.JobTitleLabel).addClass('infoLabel').end()
-
+            .start(this.JOB_TITLE_FIELD, { tabIndex: 5 }).addClass('fullWidthField').end()
             .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
-
+            .start(this.EMAIL_ADDRESS_FIELD, { tabIndex: 6 }).addClass('fullWidthField').end()
             .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
 
             .start('p').add(this.PrincipleTypeLabel).addClass('infoLabel').end()
+            .start('div').addClass('dropdownContainer')
+              .start(this.PRINCIPLE_TYPE_FIELD, {tabIndex: 8}).end()
+              .start('div').addClass('caret').end()
+            .end()
 
             .start('p').add(this.DateOfBirthLabel).addClass('infoLabel').end()
-
+            .start(this.BIRTHDAY_FIELD, { tabIndex: 9 }).addClass('fullWidthField').end()
             .start('p').add(this.ResidentialAddressLabel).addClass('sectionTitle').end()
             .start('p').add(this.CountryLabel).addClass('infoLabel').end()
-
+            .start('div').addClass('dropdownContainer')
+              .start(this.COUNTRY_FIELD, {tabIndex: 10}).end()
+              .start('div').addClass('caret').end()
+            .end()
             .start('div').addClass('streetContainer')
               .start('div').addClass('streetFieldCol')
                 .start('p').add(this.StreetNumberLabel).addClass('infoLabel').end()
+                .start(this.STREET_NUMBER_FIELD, { tabIndex: 11 }).addClass('fullWidthField').addClass('streetNumberField').end()
               .end()
               .start('div').addClass('streetFieldCol')
                 .start('p').add(this.StreetNameLabel).addClass('infoLabel').end()
+                .start(this.STREET_NAME_FIELD, { tabIndex: 12 }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
 
             .start('p').add(this.AddressLabel).addClass('infoLabel').end()
-
+            .start(this.ADDRESS_FIELD, { tabIndex: 13 }).addClass('fullWidthField').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
-
+            .start('div').addClass('dropdownContainer')
+              .start(this.PROVINCE_FIELD, {tabIndex: 14}).end()
+              .start('div').addClass('caret').end()
+            .end()
             .start('p').add(this.CityLabel).addClass('infoLabel').end()
-
+            .start(this.CITY_FIELD, { tabIndex: 15 }).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
-
+            .start(this.POSTAL_CODE_FIELD, { tabIndex: 16 }).addClass('fullWidthField').end()
             .start(this.ADD_PRINCIPLE_OWNER).end()
           .end()
         .end();
