@@ -207,10 +207,10 @@ foam.CLASS({
       .then(function (result) {
         if ( ! result ) throw new Error('Unable to disable profile');
         self.data.copyFrom(result);
-        self.NotificationMessage.create({ message: 'Successfully disabled profile.' });
+        self.add(self.NotificationMessage.create({ message: 'Successfully disabled profile.' }));
       })
       .catch(function (err) {
-        self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' });
+        self.add(self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
       });
 
       this.editProfilePopUp_.remove();
