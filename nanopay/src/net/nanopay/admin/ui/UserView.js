@@ -18,8 +18,7 @@ foam.CLASS({
 
   exports: [
     'filter',
-    'filteredUserDAO',
-    'showNotification'
+    'filteredUserDAO'
   ],
 
   imports: [
@@ -182,9 +181,6 @@ foam.CLASS({
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
         .end();
-    },
-    function showNotification(_message, _type) {
-      this.add(this.NotificationMessage.create({ message: _message, type: _type }));
     }
   ],
 

@@ -469,7 +469,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Confirmation email does not match.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePhone(this.phoneNumber) ) {
+      if ( ! this.validatePhone(this.countryCode + ' ' + this.phoneNumber) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
         return false;
       }
