@@ -333,7 +333,7 @@ foam.CLASS({
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
                     .start(this.FIRST_NAME_FIELD, { tabIndex: 2 })
                       .addClass('nameFields')
-                      .on('click', function() {
+                      .on('click', function() { 
                         self.isEditingName = true;
                       })
                     .end()
@@ -369,23 +369,35 @@ foam.CLASS({
             })
             .start()
               .start('p').add(this.JobTitleLabel).addClass('label').end()
-              .start(this.JOB_TITLE).addClass('largeInput').end()
+              .start(this.JOB_TITLE).addClass('largeInput')
+                .on('focus', function() {
+                  self.isEditingPhone = false;
+                  self.isEditingName = false;
+                })
+              .end()
             .end()
             .start()
               .start('p').add(this.EmailLabel).addClass('label').end()
-              .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
+              .start(this.EMAIL_ADDRESS).addClass('largeInput')
+                .on('focus', function() {
+                  self.isEditingPhone = false;
+                  self.isEditingName = false;
+                })
+              .end()
             .end()
             .start()
               .start('p').add(this.ConfirmEmailLabel).addClass('label').end()
-              .start(this.CONFIRM_EMAIL_ADDRESS).addClass('largeInput').end()
+              .start(this.CONFIRM_EMAIL_ADDRESS).addClass('largeInput')
+                .on('focus', function() {
+                  self.isEditingPhone = false;
+                  self.isEditingName = false;
+                })
+              .end()
             .end()
           .end()
           .start()
             .addClass('nameContainer')
             .start()
-              .on('click', function() {
-                self.notEditingName();
-              })
               .addClass('nameDisplayContainer')
               .enableClass('hidden', this.isEditingPhone$)
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
