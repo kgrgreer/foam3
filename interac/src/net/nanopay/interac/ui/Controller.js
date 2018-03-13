@@ -3,8 +3,6 @@ foam.CLASS({
   name: 'Controller',
   extends: 'foam.u2.Element',
 
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); }, 
-
   implements: [
     'foam.nanos.client.Client',
     'net.nanopay.interac.dao.Storage',

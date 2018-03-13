@@ -2,8 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.merchant.ui',
   name: 'Controller',
   extends: 'foam.nanos.controller.ApplicationController',
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
-
   documentation: 'Top-level Merchant application controller.',
 
   implements: [
@@ -36,7 +34,6 @@ foam.CLASS({
   ],
 
   properties: [
-    'copyright',
     {
       class: 'Boolean',
       name: 'showAbout',

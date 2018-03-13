@@ -3,8 +3,6 @@ foam.CLASS({
   name: 'Controller',
   extends: 'foam.nanos.controller.ApplicationController',
 
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
-
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
@@ -79,8 +77,6 @@ foam.CLASS({
   `,
 
   properties: [
-    'privacyUrl',
-    'termsUrl',
     {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
