@@ -47,9 +47,10 @@ foam.CLASS({
     }
     ^ .box-for-drag-drop {
       margin: 20px;
-      border: 5px dashed #1234;
+      border: dashed 4px #edf0f5;
       height: 300px;
       width: 560px;
+      overflow: scroll;
     }
     ^ .inputText{
       text-align: center;
@@ -109,20 +110,22 @@ foam.CLASS({
       }))
       .addClass(this.myClass())
       .start()
-        .add(this.slot(function (data) {
-          var e = this.E();
-
-          for ( var i = 0 ; i < data.length ; i++ ) {
-            e.tag({
-              class: 'net.nanopay.invoice.ui.InvoiceFileView',
-              data: data[i],
-              fileNumber: i + 1,
-            });
-          }
-          return e;
-        }, this.data$))
         .start('div').addClass('box-for-drag-drop')
-          .start('p').add('Click or drag files here').addClass('inputText').end()
+          .add(this.slot(function (data) {
+            var e = this.E();
+
+            for ( var i = 0 ; i < data.length ; i++ ) {
+              e.tag({
+                class: 'net.nanopay.invoice.ui.InvoiceFileView',
+                data: data[i],
+                fileNumber: i + 1,
+              });
+            }
+            return e;
+          }, this.data$))
+          .start('p').add('Click or drag files here').show(this.data$.map(function (data) {
+            return data.length === 0;
+          })).addClass('inputText').end()
           .on('dragstart', this.onDragStart)
           .on('dragenter', this.onDragOver)
           .on('dragover', this.onDragOver)
