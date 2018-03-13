@@ -25,6 +25,13 @@ foam.CLASS({
       width: 540px;
       margin: 0 auto;
     }
+    ^ .nameContainer {
+      position: relative;
+      width: 540px;
+      height: 64px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
     ^ .header {
       font-size: 30px;
       font-weight: bold;
@@ -56,18 +63,85 @@ foam.CLASS({
       color: #093649;
       margin-left: 0;
     }
-    ^ .nameInput {
-      width: 166px;
-      height: 40px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px;
-      font-size: 12px;
-      color: #093649;
-      outline: none;
+    ^ .nameDisplayContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 540px;
+      height: 64px;
+      opacity: 1;
+      box-sizing: border-box;
+      transition: all 0.15s linear;
+      z-index: 10;
     }
-    ^ .nameMargins {
-      margin-left: 20.5px;
-      margin-right: 20.5px;
+    ^ .nameDisplayContainer.hidden {
+      left: 540px;
+      opacity: 0;
+    }
+    ^ .nameDisplayContainer p {
+      margin: 0;
+      margin-bottom: 8px;
+    }
+    ^ .legalNameDisplayField {
+      width: 100%;
+      height: 40px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5) !important;
+      padding: 12px 13px;
+      box-sizing: border-box;
+    }
+    ^ .nameInputContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 540px;
+      height: 64px;
+      opacity: 1;
+      box-sizing: border-box;
+      z-index: 9;
+    }
+    ^ .nameInputContainer.hidden {
+      pointer-events: none;
+      opacity: 0;
+    }
+    ^ .nameFieldsCol {
+      display: inline-block;
+      vertical-align: middle;
+      /* 100% minus 2x 20px padding equally divided by 3 fields */
+      width: calc((100% - 40px) / 3);
+      height: 64px;
+      opacity: 1;
+      box-sizing: border-box;
+      margin-right: 20px;
+      transition: all 0.15s linear;
+    }
+    ^ .nameFieldsCol:last-child {
+      margin-right: 0;
+    }
+    ^ .nameFieldsCol p {
+      margin: 0;
+      margin-bottom: 8px;
+    }
+    ^ .nameFieldsCol.firstName {
+      opacity: 0;
+      // transform: translateX(64px);//translateX(-166.66px);
+    }
+    ^ .nameFieldsCol.middleName {
+      opacity: 0;
+      transform: translateX(-166.66px);//translateX(64px);
+    }
+    ^ .nameFieldsCol.lastName {
+      opacity: 0;
+      transform: translateX(-166.66px);//translateY(64px);//translateX(166.66px);
+    }
+    ^ .nameFields {
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      padding: 12px 13px;
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+      outline: none;
     }
     ^ .largeInput {
       width: 540px;
@@ -104,27 +178,25 @@ foam.CLASS({
       width: 100%;
       height: 60px;
       background-color: #edf0f5;
-      position: fixed;
+      position: relative;
       bottom: 0;
       z-index: 200;
     }
     ^ .net-nanopay-ui-ActionView-closeButton {
-      margin-left: 60px;
       border-radius: 2px;
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      margin-top: 10px;
+      margin-top: 20px;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover {
       background: lightgray;
     }
     ^ .net-nanopay-ui-ActionView-addButton {
       float: right;
-      margin-right: 60px;
       border-radius: 2px;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      margin-top: 10px;
+      margin-top: 20px;
     }
     ^ .net-nanopay-ui-ActionView-addButton:hover {
       background: %SECONDARYCOLOR%;
@@ -134,16 +206,35 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'firstName',
-      class: 'String'
+      class: 'Boolean',
+      name: 'isEditingName',
+      value: false,
+      postSet: function(oldValue, newValue) {
+        this.displayedLegalName = '';
+        if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
+        if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
+        if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+      }
     },
     {
-      name: 'middleInitials',
-      class: 'String'
+      class: 'String',
+      name: 'displayedLegalName',
+      value: ''
     },
     {
-      name: 'lastName',
-      class: 'String'
+      class: 'String',
+      name: 'firstNameField',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'middleNameField',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'lastNameField',
+      value: ''
     },
     {
       name: 'jobTitle',
@@ -180,8 +271,9 @@ foam.CLASS({
   messages: [
     { name: 'Title', message: 'Add Business' },
     { name: 'Description', message: 'Fill in the details for the admin user of this business, the user will receive an email with login credentials after.' },
+    { name: 'LegalNameLabel', message: 'Legal Name' },
     { name: 'FirstNameLabel', message: 'First Name' },
-    { name: 'MiddleInitialsLabel', message: 'Middle Initials (optional)' },
+    { name: 'MiddleNameLabel', message: 'Middle Initials(optional)' },
     { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'JobTitleLabel', message: 'Job Title' },
     { name: 'EmailLabel', message: 'Email Address' },
@@ -200,20 +292,61 @@ foam.CLASS({
           .start().addClass('container')
             .start('p').add(this.Title).addClass('header').end()
             .start('p').add(this.Description).addClass('description').end()
-            .start()
-              .start().addClass('inline')
-                .start('p').add(this.FirstNameLabel).addClass('label').end()
-                .start(this.FIRST_NAME).addClass('nameInput').end()
-              .end()
-              .start().addClass('inline nameMargins')
-                .start('p').add(this.MiddleInitialsLabel).addClass('label').end()
-                .start(this.MIDDLE_INITIALS).addClass('nameInput').end()
-              .end()
-              .start().addClass('inline')
-                .start('p').add(this.LastNameLabel).addClass('label').end()
-                .start(this.LAST_NAME).addClass('nameInput').end()
-              .end()
+            .start('div').addClass('nameContainer')
+            .start('div')
+              .addClass('nameDisplayContainer')
+              .enableClass('hidden', this.isEditingName$)
+                .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
+                .start(this.DISPLAYED_LEGAL_NAME, { tabIndex: 1 })
+                  .addClass('legalNameDisplayField')
+                  .on('focus', function() {
+                    this.blur();
+                    self.isEditingName = true;
+                  })
+                  .end()
             .end()
+            .start('div')
+              .addClass('nameInputContainer')
+              .enableClass('hidden', this.isEditingName$, true)
+                .start('div')
+                  .addClass('nameFieldsCol')
+                  .enableClass('firstName', this.isEditingName$, true)
+                    .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
+                    .start(this.FIRST_NAME_FIELD, { tabIndex: 2 })
+                      .addClass('nameFields')
+                      .on('click', function() {
+                        self.isEditingName = true;
+                      })
+                    .end()
+                .end()
+                .start('div')
+                  .addClass('nameFieldsCol')
+                  .enableClass('middleName', this.isEditingName$, true)
+                    .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
+                    .start(this.MIDDLE_NAME_FIELD, { tabIndex: 3 })
+                      .addClass('nameFields')
+                      .on('click', function() {
+                        self.isEditingName = true;
+                      })
+                    .end()
+                .end()
+                .start('div')
+                  .addClass('nameFieldsCol')
+                  .enableClass('lastName', this.isEditingName$, true)
+                    .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
+                    .start(this.LAST_NAME_FIELD, { tabIndex: 4 })
+                      .addClass('nameFields')
+                      .on('click', function() {
+                        self.isEditingName = true;
+                      })
+                    .end()
+                .end()
+            .end()
+          .end()
+          .start('div')
+            .on('click', function() {
+              self.notEditingName();
+            })
             .start()
               .start('p').add(this.JobTitleLabel).addClass('label').end()
               .start(this.JOB_TITLE).addClass('largeInput').end()
@@ -280,9 +413,8 @@ foam.CLASS({
     function addBusiness() {
       var self = this;
 
-      if ( ( this.firstName == null || this.firstName.trim() == '' ) ||
-      ( this.middleInitials == null || this.middleInitials.trim() == '' ) || 
-      ( this.lastName == null || this.lastName.trim() == '' ) || 
+      if ( ( this.firstNameField == null || this.firstNameField.trim() == '' ) ||
+      ( this.lastNameField == null || this.lastNameField.trim() == '' ) || 
       ( this.jobTitle == null || this.jobTitle.trim() == '' ) ||
       ( this.emailAddress == null || this.emailAddress.trim() == '' ) ||
       ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
@@ -325,6 +457,9 @@ foam.CLASS({
       }).catch(function (error) {
         self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
       });
+    },
+    function notEditingName() {
+      this.isEditingName = false;
     }
   ],
 
