@@ -118,6 +118,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperSendMoneyForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/shopper/AddShopperReviewForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/company/AddCompanyForm', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/form/company/AddPrincipleOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/company/AddCompanyProfileForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/company/AddCompanyInfoForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/company/AddCompanyReviewForm', flags: ['web'] },
