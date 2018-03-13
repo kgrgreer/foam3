@@ -186,7 +186,7 @@ foam.CLASS({
       border-radius: 2px;
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      margin-top: 20px;
+      margin-top: 30px;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover {
       background: lightgray;
@@ -196,7 +196,7 @@ foam.CLASS({
       border-radius: 2px;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      margin-top: 20px;
+      margin-top: 30px;
     }
     ^ .net-nanopay-ui-ActionView-addButton:hover {
       background: %SECONDARYCOLOR%;
@@ -209,11 +209,21 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isEditingName',
       value: false,
-      postSet: function(oldValue, newValue) {
+      postSet: function (oldValue, newValue) {
         this.displayedLegalName = '';
         if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
         if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
         if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isEditingPhone',
+      value: false,
+      postSet: function (oldValue, newValue) {
+        this.displayedPhoneNumber = '';
+        if ( this.countryCode ) this.displayedPhoneNumber += this.countryCode;
+        if ( this.phoneNumber ) this.displayedPhoneNumber += ' ' + this.phoneNumber;
       }
     },
     {
@@ -249,22 +259,17 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'countryCode',
+      name: 'displayedPhoneNumber',
       class: 'String'
+    },
+    {
+      name: 'countryCode',
+      class: 'String',
+      value: '+1'
     },
     {
       name: 'phoneNumber',
       class: 'String'
-    },
-    {
-      name: 'nameFocused',
-      class: 'Boolean',
-      value: false
-    },
-    {
-      name: 'phoneFocused',
-      class: 'Boolean',
-      value: false
     }
   ],
 
@@ -303,7 +308,7 @@ foam.CLASS({
                     this.blur();
                     self.isEditingName = true;
                   })
-                  .end()
+                .end()
             .end()
             .start('div')
               .addClass('nameInputContainer')
@@ -346,6 +351,7 @@ foam.CLASS({
           .start('div')
             .on('click', function() {
               self.notEditingName();
+              self.notEditingPhone();
             })
             .start()
               .start('p').add(this.JobTitleLabel).addClass('label').end()
@@ -359,14 +365,44 @@ foam.CLASS({
               .start('p').add(this.ConfirmEmailLabel).addClass('label').end()
               .start(this.CONFIRM_EMAIL_ADDRESS).addClass('largeInput').end()
             .end()
-            .start()
-              .start().addClass('inline')
-                .start('p').add(this.CountryCodeLabel).addClass('label').end()
-                .start(this.COUNTRY_CODE).addClass('countryCodeInput').end()
+            .start().addClass('nameContainer')
+              .start()
+                .addClass('nameDisplayContainer')
+                .enableClass('hidden', this.isEditingPhone$)
+                .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
+                .start(this.DISPLAYED_PHONE_NUMBER, { tabIndex: 7 })
+                  .addClass('legalNameDisplayField')
+                  .on('focus', function() {
+                    this.blur();
+                    self.isEditingPhone = true;
+                  })
+                .end()
               .end()
-              .start().addClass('inline marginLeft')
-                .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                .start(this.PHONE_NUMBER).addClass('phoneNumberInput').end()
+              .start('div')
+                .addClass('nameInputContainer')
+                .enableClass('hidden', this.isEditingPhone$, true)
+                .start('div')
+                  .addClass('nameFieldsCol')
+                  .enableClass('firstName', this.isEditingPhone$, true)
+                  .start('p').add(this.CountryCodeLabel).addClass('infoLabel').end()
+                  .start(this.COUNTRY_CODE, { tabIndex: 2 })
+                    .addClass('nameFields')
+                    .on('click', function() {
+                      self.isEditingPhone = true;
+                    })
+                  .end()
+                .end()
+                .start('div')
+                  .addClass('nameFieldsCol')
+                  .enableClass('middleName', this.isEditingPhone$, true)
+                  .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
+                  .start(this.PHONE_NUMBER, { tabIndex: 3 })
+                    .addClass('nameFields')
+                    .on('click', function() {
+                      self.isEditingPhone = true;
+                    })
+                  .end()
+                .end()
               .end()
             .end()
           .end()
@@ -378,15 +414,15 @@ foam.CLASS({
     },
 
     function validations() {
-      if ( this.firstName.length > 70 ) {
+      if ( this.firstNameField.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( this.middleInitials.length > 70 ) {
+      if ( this.middleNameField.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( this.lastName.length > 70 ) {
+      if ( this.lastNameField.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
@@ -460,6 +496,9 @@ foam.CLASS({
     },
     function notEditingName() {
       this.isEditingName = false;
+    },
+    function notEditingPhone() {
+      this.isEditingPhone = false;
     }
   ],
 
