@@ -26,7 +26,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status'
+      name: 'status',
+      tableCellFormatter: function(status) {
+        
+      }
     },
     {
       class: 'String',

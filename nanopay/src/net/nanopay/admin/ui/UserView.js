@@ -135,7 +135,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'firstName', 'lastName', 'email', 'organization', 'type'
+          'id', 'legalName', 'email', 'phone', 'jobTitle', 'businessName', 'type', 'status'
         ]
       }
     },

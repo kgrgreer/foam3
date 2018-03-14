@@ -503,9 +503,11 @@ foam.CLASS({
         firstName: this.firstName,
         middleName: this.middleInitials,
         lastName: this.lastName,
+        legalName: this.firstName + ' ' + this.lastName,
         email: this.emailAddress,
         department: this.jobTitle,
         type: 'Business',
+        status: 'Pending',
         phone: businessPhone
       });
 
@@ -519,7 +521,6 @@ foam.CLASS({
       }
 
       this.userDAO.put(newBusiness).then(function(response) {
-        self.showNotification('New business successfully added!', '');
         self.stack.back();
       }).catch(function (error) {
         self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
