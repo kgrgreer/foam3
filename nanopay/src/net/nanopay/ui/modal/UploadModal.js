@@ -25,12 +25,6 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling'
   ],
  
-  properties: [
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'data'
-    }
-  ],
   css:`
     ^ .container{
       height: 600px;
@@ -52,9 +46,48 @@ foam.CLASS({
       width: 560px;
       overflow: scroll;
     }
-    ^ .inputText{
+
+    ^ .dragText{
       text-align: center;
-      line-height: 60px
+      padding: 120px 190px  0px 191px;
+    }
+    ^ .inputImage{
+      height: 60px;
+      opacity: 1;
+      margin-bottom: 10px;
+      margin-top: -60px;
+    }
+    ^ .inputText{
+      width: 177px;
+      height: 40px;
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.43;
+      letter-spacing: 0.2px;
+      text-align: center;
+      color: #093649;
+    }
+    ^ .inputRestrictText{
+      width: 480px;
+      height: 16px;
+      opacity: 0.7;
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-left: -140px;
+    }
+    ^ .buttonBox{
+      width: 100%;
+      height: 8%;
     }
     ^ .net-nanopay-ui-modal-ModalHeader {
       width: 100%;
@@ -64,15 +97,15 @@ foam.CLASS({
       width: 136px;
       height: 40px;
       border-radius: 2px;
-      background: #59aadd;
-      border: solid 1px #59aadd;
+      background: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
       display: inline-block;
       color: white;
       text-align: center;
       cursor: pointer;
       font-size: 14px;
       padding: 0;
-      margin: 0PX 20PX 21PX 0PX;
+      margin: 5px 20px 10px 0px;;
       outline: none;
       float: right;
       box-shadow: none;
@@ -84,36 +117,59 @@ foam.CLASS({
       height: 40px;
       border-radius: 2px;
       background: rgba(164, 179, 184, 0.1);
-      border: solid 1px rgba(164, 179, 184, 0.1);
+      border: solid 1px #8C92AC;
       display: inline-block;
       color: #093649;
       text-align: center;
       cursor: pointer;
       font-size: 14px;
       padding: 0;
-      margin: 0px 0px 10px 20px;
+      margin: 5px 0px 10px 20px;;
       outline: none;
       float: left;
       box-shadow: none;
       font-weight: normal;
     }
   `,
-  
+
+  properties: [
+    
+    {
+      class: 'Boolean',
+      name: 'inDropZone'
+    },
+    'exportData',
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'data',
+      value: this.exportData
+    },
+  ],
+
+  messages:[
+    { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
+    { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
+    { name: 'FileTypeError', message: 'Wrong file format' },
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
+  ],
   methods: [
     function initE(){
       this.SUPER();
       var self = this;
           
       this
+      .on('dragstart', this.onDragStart)
+      .on('dragenter', this.onDragOver)
+      .on('dragover', this.onDragOver)
+      .on('drop', this.onDropOut)
       .tag(this.ModalHeader.create({
         title: 'Choose File'
       }))
       .addClass(this.myClass())
       .start()
-        .start('div').addClass('box-for-drag-drop')
+       .start('div').addClass('box-for-drag-drop')
           .add(this.slot(function (data) {
             var e = this.E();
-
             for ( var i = 0 ; i < data.length ; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
@@ -123,12 +179,15 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start('p').add('Click or drag files here').show(this.data$.map(function (data) {
+          .start('div').addClass('dragText').show(this.data$.map(function (data) {
             return data.length === 0;
-          })).addClass('inputText').end()
-          .on('dragstart', this.onDragStart)
-          .on('dragenter', this.onDragOver)
-          .on('dragover', this.onDragOver)
+          }))
+            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' }).addClass('inputImage').end()
+            .start('p').add(this.BoxText).addClass('inputText').end()
+            .start('p').add(this.FileRestrictText).addClass('inputRestrictText').end()
+          .end()
+          
+         
           .on('drop', this.onDrop)
           .on('click', self.onAddAttachmentClicked)
           .start('input').addClass('attachment-input')
@@ -140,9 +199,12 @@ foam.CLASS({
             .on('change', this.onChange)
           .end()
         .end()
+        .start('div').addClass('buttonBox')
+          .add(this.CANCEL_BUTTON)
+          .add(this.SUBMIT_BUTTON)
+        .end()
       .end()
-      .add(this.CANCEL_BUTTON)
-      .add(this.SUBMIT_BUTTON)
+      
     } ,
     function onInvoiceFileRemoved (fileNumber) {
       this.document.querySelector('.attachment-input').value = null;
@@ -163,6 +225,7 @@ foam.CLASS({
       label: 'Submit',
       code: function(X) {
         X.closeDialog();
+        this.exportData = this.data;
       }
     },
   ],
@@ -170,28 +233,83 @@ foam.CLASS({
     function onAddAttachmentClicked (e) {
       this.document.querySelector('.attachment-input').click();
     },
-    function onDragOver(e) {
-      console.log("2");         
+    function onDrag(e) {
+      console.log("0");      
       e.preventDefault();    
+    },
+    function onDragStart(e) {
+      console.log("1");      
+      e.preventDefault();  
+    },
+    function onDragOver(e) {
+      console.log("-");         
+      e.preventDefault();    
+    },
+    function onDragExit(e) {
+      console.log("-2");         
+      e.preventDefault();    
+    },
+    function onDragEnter(e) {
+      console.log("2");    
+           
+      e.preventDefault();    
+    },
+    
+    function onDropOut(e) {
+      e.preventDefault();  
+      console.log("-3");         
     },
     function onDrop(e) {
       e.preventDefault();  
-      console.log("2");         
-
+      console.log("3");         
       var files = []; 
+      var inputFile;
       if (e.dataTransfer.items) {
-        // Use DataTransferItemList interface to access the file(s)
-        for (var i = 0; i < e.dataTransfer.items.length; i++) {
-          // If dropped items aren't files, reject them
-          if (e.dataTransfer.items[i].kind === 'file') {
-            var file = e.dataTransfer.items[i].getAsFile();
-            if(file.type === "application/pdf" || file.type === "image/jpg" || file.type === "image/gif"|| file.type === "image/jpeg" || file.type === "image/bmp"||file.type === "image/png"){
-              files.push(file);           
+        inputFile = e.dataTransfer.items
+        if (inputFile) {
+          for (var i = 0; i < inputFile.length; i++) {
+            // If dropped items aren't files, reject them
+            if (inputFile[i].kind === 'file') {
+              var file = inputFile[i].getAsFile();
+              if(this.isRightType(file)){
+                files.push(file);           
+              }
+              else{
+                this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+              }
             }
           }
         }
-        this.addFiles(files)
-      } 
+      }
+      else if(e.dataTransfer.files){
+        inputFile = e.dataTransfer.files
+        for (var i = 0; i < inputFile.length; i++) {
+          var file = inputFile[i];
+          if(this.isRightType(file)) 
+            files.push(file);            
+          else{
+            this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+          }  
+        }
+      }
+      this.addFiles(files) 
+    },
+    function isRightType(file){
+      if(file.type === "image/jpg" 
+      || file.type === "image/jpeg" 
+      || file.type === "image/png" 
+      || file.type === "application/msword"
+      || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      || file.type === "application/vnd.ms-powerpoint"            
+      || file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      || file.type === "application/vnd.openxmlformats-officedocument.presentationml.slideshow"
+      || file.type === "application/vnd.oasis.opendocument.text"
+      || file.type === "application/vnd.ms-excel"
+      || file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      || file.type === "application/pdf"){
+        return true;
+      }
+      return false;
     },
     function onChange (e) {
       var files = e.target.files;
@@ -203,6 +321,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
+          this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
           continue;
         }
 
