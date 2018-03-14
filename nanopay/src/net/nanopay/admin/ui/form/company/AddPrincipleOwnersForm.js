@@ -25,7 +25,9 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Address'
+    'foam.nanos.auth.Phone',
+    'foam.nanos.auth.Address',
+    'foam.dao.ArrayDAO'
   ],
 
   css:`
@@ -38,7 +40,7 @@ foam.CLASS({
       margin-bottom: 20px;
     }
 
-    ^ .nameContainer {
+    ^ .animationContainer {
       position: relative;
       width: 540px;
       height: 64px;
@@ -46,7 +48,7 @@ foam.CLASS({
       box-sizing: border-box;
     }
 
-    ^ .nameDisplayContainer {
+    ^ .displayContainer {
       position: absolute;
       top: 0;
       left: 0;
@@ -57,32 +59,27 @@ foam.CLASS({
       opacity: 1;
       box-sizing: border-box;
 
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
       transition: all 0.15s linear;
 
       z-index: 10;
     }
 
-    ^ .nameDisplayContainer.hidden {
+    ^ .displayContainer.hidden {
       left: 540px;
       opacity: 0;
     }
 
-    ^ .nameDisplayContainer p {
+    ^ .displayContainer p {
       margin: 0;
       margin-bottom: 8px;
     }
 
     ^ .fullWidthField {
       width: 540px;
-      height: 40px;
-
-      background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-
-      padding: 12px 13px;
-
-      box-sizing: border-box;
-      outline: none;
     }
 
     ^ .fullWidthField:focus {
@@ -123,7 +120,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
     }
 
-    ^ .nameInputContainer {
+    ^ .inputContainer {
       position: absolute;
       top: 0;
       left: 0;
@@ -137,7 +134,7 @@ foam.CLASS({
       z-index: 9;
     }
 
-    ^ .nameInputContainer.hidden {
+    ^ .inputContainer.hidden {
       pointer-events: none;
       opacity: 0;
     }
@@ -155,6 +152,10 @@ foam.CLASS({
 
       margin-right: 20px;
 
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
       transition: all 0.15s linear;
     }
 
@@ -180,15 +181,49 @@ foam.CLASS({
       transform: translateX(-166.66px);
     }
 
-    ^ .nameFields {
-      background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px 13px;
-
+    ^ .fields {
       width: 100%;
-      height: 40px;
+    }
 
+    ^ .phoneNumberFieldsCol {
+      display: inline-block;
+      vertical-align: middle;
+
+      height: 64px;
+
+      opacity: 1;
       box-sizing: border-box;
+
+      margin-right: 20px;
+
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
+      transition: all 0.15s linear;
+    }
+
+    ^ .phoneNumberFieldsCol:last-child {
+      margin-right: 0;
+    }
+
+    ^ .phoneNumberFieldsCol p {
+      margin: 0;
+      margin-bottom: 8px;
+    }
+
+    ^ .phoneNumberFieldsCol.out {
+      opacity: 0;
+      transform: translateX(-166.66px);
+    }
+
+    ^ .phoneCountryCodeCol {
+      width: 105px;
+      pointer-events: none;
+    }
+
+    ^ .phoneNumberCol {
+      width: 415px;
     }
 
     ^ .streetContainer {
@@ -223,14 +258,10 @@ foam.CLASS({
       margin-top: 50px;
     }
 
-    ^ .foam-u2-TextField:focus {
-      border: solid 1px #59A5D5;
-      outline: none;
-    }
-
     ^ .net-nanopay-ui-ActionView {
       color: white;
       font-size: 12px;
+      outline: none;
     }
 
     ^ .net-nanopay-ui-ActionView:focus {
@@ -248,18 +279,14 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 540px;
-      height: 40px;
       border-radius: 0;
 
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
 
-      padding: 12px;
       padding-right: 35px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
-      outline: none !important;
+
       cursor: pointer;
     }
 
@@ -268,7 +295,28 @@ foam.CLASS({
       background: white;
     }
 
-    ^ .foam-u2-tag-Select:focus {
+    ^ .foam-u2-TextField, ^ .foam-u2-DateView, ^ .foam-u2-tag-Select {
+      height: 40px;
+
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+
+      padding: 12px 13px;
+
+      box-sizing: border-box;
+      outline: none;
+
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
+      transition: all 0.15s linear;
+    }
+
+    ^ .foam-u2-TextField:focus,
+    ^ .foam-u2-DateView:focus,
+    ^ .foam-u2-tag-Select:focus,
+    ^ .net-nanopay-ui-ActionView:focus {
       border: solid 1px #59A5D5;
     }
   `,
@@ -281,6 +329,7 @@ foam.CLASS({
     { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'JobTitleLabel', message: 'Job Title' },
     { name: 'EmailAddressLabel', message: 'Email Address' },
+    { name: 'CountryCodeLabel', message: 'Country Code' },
     { name: 'PhoneNumberLabel', message: 'Phone Number' },
     { name: 'PrincipleTypeLabel', message: 'Principle Type' },
     { name: 'DateOfBirthLabel', message: 'Date of Birth' },
@@ -296,10 +345,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      name: 'principleOwnerEdit',
+      name: 'principleOwnersDAO',
       factory: function() {
-        return net.nanopay.model.User.create();
+        if ( this.viewData.principleOwners ) {
+          return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners });
+        }
+        return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
     },
     {
@@ -311,6 +362,16 @@ foam.CLASS({
         if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
         if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
         if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isEditingPhone',
+      value: false,
+      postSet: function(oldValue, newValue) {
+        this.displayedPhoneNumber = '';
+        if ( this.phoneCountryCodeField ) this.displayedPhoneNumber += this.phoneCountryCodeField;
+        if ( this.phoneNumberField ) this.displayedPhoneNumber += ' ' + this.phoneNumberField;
       }
     },
     {
@@ -345,6 +406,22 @@ foam.CLASS({
       value: ''
     },
     {
+      class: 'String',
+      name: 'displayedPhoneNumber',
+      value: '+1'
+    },
+    {
+      name: 'phoneCountryCodeField',
+      class: 'String',
+      value: '+1'
+    },
+    'phoneNumberFieldElement',
+    {
+      name: 'phoneNumberField',
+      class: 'String',
+      value: ''
+    },
+    {
       name: 'principleTypeField',
       value: 'Shareholder',
       view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Shareholder', 'Owner', 'Officer', 'To Be Filled Out' ] },
@@ -354,13 +431,7 @@ foam.CLASS({
       name: 'birthdayField',
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
-      },
-      // factory: function() {
-      //   return this.viewData.birthday;
-      // },
-      // postSet: function(oldValue, newValue) {
-      //   this.viewData.birthday = newValue;
-      // }
+      }
     },
     {
       name: 'countryField',
@@ -374,10 +445,7 @@ foam.CLASS({
       },
       factory: function() {
         return this.viewData.country || 'CA';
-      },
-      // postSet: function(oldValue, newValue) {
-      //   this.viewData.country = newValue;
-      // }
+      }
     },
     {
       class: 'String',
@@ -407,12 +475,6 @@ foam.CLASS({
           dao$: choices
         });
       }
-      // factory: function() {
-      //   return this.viewData.province;
-      // },
-      // postSet: function(oldValue, newValue) {
-      //   this.viewData.province = newValue;
-      // }
     },
     {
       class: 'String',
@@ -423,6 +485,11 @@ foam.CLASS({
       class: 'String',
       name: 'postalCodeField',
       value: ''
+    },
+    {
+      class: 'String',
+      name: 'addLabel',
+      value: 'Add'
     }
   ],
 
@@ -434,9 +501,10 @@ foam.CLASS({
         .start('div')
           // TODO: TABLE SHOULD GO HERE
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').end()
-          .start('div').addClass('nameContainer')
+
+          .start('div').addClass('animationContainer')
             .start('div')
-              .addClass('nameDisplayContainer')
+              .addClass('displayContainer')
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
                 .start(this.DISPLAYED_LEGAL_NAME)
@@ -450,14 +518,14 @@ foam.CLASS({
                   .end()
             .end()
             .start('div')
-              .addClass('nameInputContainer')
+              .addClass('inputContainer')
               .enableClass('hidden', this.isEditingName$, true)
                 .start('div')
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
                     .start(this.FIRST_NAME_FIELD, {}, this.firstNameFieldElement$)
-                      .addClass('nameFields')
+                      .addClass('fields')
                     .end()
                 .end()
                 .start('div')
@@ -465,7 +533,7 @@ foam.CLASS({
                   .enableClass('middleName', this.isEditingName$, true)
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
                     .start(this.MIDDLE_NAME_FIELD)
-                      .addClass('nameFields')
+                      .addClass('fields')
                     .end()
                 .end()
                 .start('div')
@@ -473,7 +541,7 @@ foam.CLASS({
                   .enableClass('lastName', this.isEditingName$, true)
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
                     .start(this.LAST_NAME_FIELD)
-                      .addClass('nameFields')
+                      .addClass('fields')
                     .end()
                 .end()
             .end()
@@ -481,15 +549,64 @@ foam.CLASS({
 
           .start('div')
             .on('click', function() {
-              self.notEditingName();
+              self.isEditingName = false;
             })
-
             .start('p').add(this.JobTitleLabel).addClass('infoLabel').end()
             .start(this.JOB_TITLE_FIELD).addClass('fullWidthField').end()
             .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
             .start(this.EMAIL_ADDRESS_FIELD).addClass('fullWidthField').end()
-            .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-            // TODO: For Phone Number
+
+            .start('div')
+              .style({ 'margin-top': '20px' })
+              .addClass('animationContainer')
+              .start('div')
+                .addClass('displayContainer')
+                .enableClass('hidden', this.isEditingPhone$)
+                .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
+                .start(this.DISPLAYED_PHONE_NUMBER)
+                  .addClass('fullWidthField')
+                  .addClass('displayOnly')
+                  .on('focus', function() {
+                    this.blur();
+                    self.phoneNumberFieldElement && self.phoneNumberFieldElement.focus();
+                    self.isEditingPhone = true;
+                  })
+                .end()
+              .end()
+              .start('div')
+                .addClass('inputContainer')
+                .enableClass('hidden', this.isEditingPhone$, true)
+                .start('div')
+                  .addClass('phoneNumberFieldsCol')
+                  .addClass('phoneCountryCodeCol')
+                  .enableClass('out', this.isEditingPhone$, true)
+                  .start('div').add(this.CountryCodeLabel).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
+                  .start(this.PHONE_COUNTRY_CODE_FIELD, { visibility: foam.u2.Visibility.RO })
+                    .addClass('fields')
+                    .on('focus', function() {
+                      this.blur();
+                      self.phoneNumberFieldElement && self.phoneNumberFieldElement.focus();
+                    })
+                  .end()
+                .end()
+                .start('div')
+                  .addClass('phoneNumberFieldsCol')
+                  .addClass('phoneNumberCol')
+                  .enableClass('out', this.isEditingPhone$, true)
+                  .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
+                  .start(this.PHONE_NUMBER_FIELD, {}, this.phoneNumberFieldElement$)
+                    .addClass('fields')
+                    .on('focus', function() {
+                      self.isEditingPhone = true;
+                    })
+                    .on('focusout', function() {
+                      self.isEditingPhone = false;
+                    })
+                  .end()
+                .end()
+              .end()
+            .end()
+
             .start('p').add(this.PrincipleTypeLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .tag(this.PRINCIPLE_TYPE_FIELD)
@@ -526,23 +643,20 @@ foam.CLASS({
             .start(this.CITY_FIELD).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
             .start(this.POSTAL_CODE_FIELD).addClass('fullWidthField').end()
-            .start(this.ADD_PRINCIPLE_OWNER).end()
+            .start(this.ADD_PRINCIPLE_OWNER, { label$: this.addLabel$ }).end()
           .end()
         .end();
-    },
-
-    function notEditingName() {
-      this.isEditingName = false;
     },
 
     function clearFields() {
       this.firstNameField = '';
       this.middleNameField = '';
       this.lastNameField = '';
-      this.notEditingName(); // This will change displayedLegalName as well
+      this.isEditingName = false; // This will change displayedLegalName as well
       this.jobTitleField = '';
       this.emailAddressField = '';
-      // TODO: Phone number
+      this.phoneNumberField = '';
+      this.isEditingPhone = false;
       this.principleTypeField = 'Shareholder';
       this.birthdayField = null;
 
@@ -553,13 +667,19 @@ foam.CLASS({
       this.provinceField = 'AB';
       this.cityField = '';
       this.postalCodeField = '';
+
+      this.addLabel = 'Add';
+
+      this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
+      this.document.body.scrollTop = 0; // For Safari
+      this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     },
 
     function editPrincipleOwner(user) {
       this.firstNameField = user.firstName;
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
-      this.notEditingName(); // This will change displayedLegalName as well
+      this.isEditingName = false; // This will change displayedLegalName as well
       this.jobTitleField = user.jobTitle;
       this.emailAddressField = user.email;
       // TODO: Phone number
@@ -573,13 +693,14 @@ foam.CLASS({
       this.provinceField = user.address.regionId;
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
+
+      this.addLabel = 'Update';
     }
   ],
 
   actions: [
     {
       name: 'addPrincipleOwner',
-      label: 'Add',
       code: function() {
         // TODO: Make sure required fields are validated before adding to DAO
         if ( ! this.firstNameField || ! this.lastNameField ) {
@@ -597,7 +718,10 @@ foam.CLASS({
           return;
         }
 
-        // TODO: validate phone number
+        if ( ! this.validatePhone(this.phoneCountryCodeField + this.phoneNumberField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+          return;
+        }
 
         if ( ! this.validateAge(this.birthdayField) ) {
           this.add(this.NotificationMessage.create({ message: 'Principle owner must be at least 16 years of age.', type: 'error' }));
@@ -630,7 +754,9 @@ foam.CLASS({
           middleName: this.middleNameField,
           lastName: this.lastNameField,
           email: this.emailAddressField,
-          // TODO: Phone Number
+          phone: this.Phone.create({
+            number: this.phoneCountryCodeField + this.phoneNumberField
+          }),
           birthday: this.birthdayField,
           address: this.Address.create({
             streetNumber: this.streetNumberField,
@@ -644,7 +770,8 @@ foam.CLASS({
           jobTitle: this.jobTitleField,
           principleType: this.principleTypeField
         });
-        console.log(newPrincipleOwner);
+
+        this.principleOwnersDAO.put(newPrincipleOwner);
         this.clearFields();
         // TODO: Add to a DAO or FObjectArray.
       }
