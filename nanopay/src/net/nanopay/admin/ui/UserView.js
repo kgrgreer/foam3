@@ -29,7 +29,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 962px;
+      width: 1240px;
       margin: 0 auto;
     }
     ^ .searchIcon {
@@ -106,6 +106,9 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ table {
+      width: 1240px;
+    }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
@@ -135,7 +138,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'legalName', 'email', 'phone', 'jobTitle', 'businessName', 'type', 'status'
+          'id', 'legalName', 'email', 'phoneNumber', 'jobTitle', 'businessName', 'type', 'status'
         ]
       }
     },

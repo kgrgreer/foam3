@@ -496,16 +496,16 @@ foam.CLASS({
       }
 
       var businessPhone = this.Phone.create({
-        number: this.countryCode + ' ' + this.phoneNumber
+        number: this.countryCode + this.phoneNumber
       });
 
       var newBusiness = this.User.create({
-        firstName: this.firstName,
-        middleName: this.middleInitials,
-        lastName: this.lastName,
-        legalName: this.firstName + ' ' + this.lastName,
+        firstName: this.firstNameField,
+        middleName: this.middleNameField,
+        lastName: this.lastNameField,
+        businessName: '-',
+        jobTitle: this.jobTitle,
         email: this.emailAddress,
-        department: this.jobTitle,
         type: 'Business',
         status: 'Pending',
         phone: businessPhone
