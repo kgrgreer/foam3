@@ -22,7 +22,7 @@ import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 
-public class LiquidityTransactionDAO
+public class LiquidityCashInDAO
     extends ProxyDAO {
   protected DAO userDAO_;
   protected DAO liquiditySettingsDAO_;
@@ -30,21 +30,20 @@ public class LiquidityTransactionDAO
   protected DAO bankAccountDAO_;
   protected DAO groupDAO_;
 
-  public LiquidityTransactionDAO(X x, DAO delegate) {
+  public LiquidityCashInDAO(X x, DAO delegate) {
     setDelegate(delegate);
     setX(x);
     // initialize our DAO
-    userDAO_ = (DAO) x.get("localUserDAO");
-    bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
-    accountDAO_ = (DAO) x.get("localAccountDAO");
+    userDAO_              = (DAO) x.get("localUserDAO");
+    bankAccountDAO_       = (DAO) x.get("localBankAccountDAO");
+    accountDAO_           = (DAO) x.get("localAccountDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
-    groupDAO_ = (DAO) x.get("groupDAO");
+    groupDAO_             = (DAO) x.get("groupDAO");
   }
 
   @Override
-  synchronized public FObject put_(X x, FObject obj) {
+  synchronized public FObject put_(X x, FObject obj) throws RuntimeException{
     Transaction txn = (Transaction) obj;
-
     // If It is a CICO Transaction, does not do anything.
     if ( txn.getPayeeId() == txn.getPayerId() ) {
       return super.put_(x, obj);
@@ -76,22 +75,13 @@ public class LiquidityTransactionDAO
 
     //get payer and payee bank account ID
     long payerBankAccountID = getBankAccountID(payerLiquiditySetting, payerId);
-    long payeeBankAccountID = getBankAccountID(payeeLiquiditySetting, payeeId);
-
-    if ( txn.getBankAccountId() != null ) {
-      FObject tx = getDelegate().put_(x, obj);
-      liquidityCashOut(x, payeeLiquiditySetting, payeeAccount, total, payeeBankAccountID);
-      return tx;
-    }
     long payerMinBalance = 0;
-    long payerMaxBalance = 0;
     if ( payerLiquiditySetting != null ) {
       payerMinBalance = payerLiquiditySetting.getMinimumBalance();
-      payerMaxBalance = payerLiquiditySetting.getMaximumBalance();
     }
 
     // if the user's balance is not enough to make the payment, do cash in first
-    if ( payerAccount.getBalance() < total ) {
+    if ( payerAccount.getBalance() - payerMinBalance < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
         long cashInAmount = total - payerAccount.getBalance();
         if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
@@ -108,20 +98,12 @@ public class LiquidityTransactionDAO
     }
 
     // Make a payment
-    FObject originalTx = super.put_(x, obj);
-
-    if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
-
-      if ( payerAccount.getBalance() - total > payerMaxBalance ) {
-        if ( checkCashOutStatus(payerLiquiditySetting) ) {
-          addCICOTransaction(payerId, payerAccount.getBalance() - total - payerMaxBalance, payerBankAccountID,
-              TransactionType.CASHOUT, x);
-        }
-      }
+    FObject originalTx;
+    try{
+      originalTx = super.put_(x, obj);
+    }catch ( RuntimeException exception ){
+      throw exception;
     }
-
-    // if the user's balance bigger than the liquidity maxbalance, do cash out
-    liquidityCashOut(x, payeeLiquiditySetting, payeeAccount, total, payeeBankAccountID);
     return originalTx;
   }
 
@@ -148,7 +130,7 @@ public class LiquidityTransactionDAO
       return - 1;
     //if user ID == 0, that means this user don't set default bank account. If we want to cash in we need to find on
     // bank account which is enable for this user
-    if ( liquiditySettings.getId() == 0 ) {
+    if ( liquiditySettings.getBankAccountId() == 0 ) {
       bankAccount = (BankAccount) bankAccountDAO_.find(
           AND(
               EQ(BankAccount.OWNER, userID),
@@ -200,22 +182,5 @@ public class LiquidityTransactionDAO
         return true;
     }
     return false;
-  }
-
-  public void liquidityCashOut(X x, LiquiditySettings liquiditySettings, Account account, long transactionAmount, long
-      bankAccountId) {
-    long maxBalance = 0;
-    if ( liquiditySettings != null ) {
-      maxBalance = liquiditySettings.getMaximumBalance();
-    }
-    if ( ifCheckRangePerTransaction(liquiditySettings) ) {
-      if ( account.getBalance() + transactionAmount > maxBalance ) {
-        if ( checkCashOutStatus(liquiditySettings) ) {
-          long cashOutAmount = account.getBalance() - maxBalance + transactionAmount;
-          if ( checkBankAccountAvailable(bankAccountId) ) addCICOTransaction(account.getId(), cashOutAmount,
-              bankAccountId, TransactionType.CASHOUT, x);
-        }
-      }
-    }
   }
 }

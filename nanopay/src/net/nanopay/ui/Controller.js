@@ -29,21 +29,20 @@ foam.CLASS({
     'privacyUrl',
     'termsUrl',
     'as ctrl',
+    'findAccount'
   ],
 
   css: `
     .stack-wrapper {
-      margin-bottom: -10px;
-      min-height: calc(80% - 60px);
+      /* 65px for topNav || 20px for padding || 40px for footer */
+      min-height: calc(100% - 65px - 20px - 40px) !important;
+      padding: 10px 0;
+      margin-bottom: 0 !important;
     }
 
     .stack-wrapper:after {
       content: "";
       display: block;
-    }
-
-    .stack-wrapper:after {
-      height: 10px;
     }
 
     .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
@@ -102,11 +101,9 @@ foam.CLASS({
         self
           .addClass(self.myClass())
           .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
-          .br()
           .start('div').addClass('stack-wrapper')
             .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
           .end()
-          .br()
           .tag({class: 'net.nanopay.ui.FooterView'});
       });
     },

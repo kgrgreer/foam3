@@ -1,39 +1,43 @@
 package net.nanopay.cico.spi.alterna;
 
-import net.nanopay.model.Account;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
-
 import foam.dao.Sink;
-import foam.nanos.auth.User;
-import foam.core.X;
+import foam.dao.ArraySink;
 import foam.core.Detachable;
-import foam.core.FObject;
+import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
+import foam.nanos.auth.User;
+import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.model.BankAccount;
+import net.nanopay.tx.model.Transaction;
 
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import static foam.mlang.MLang.EQ;
 
 public class CsvUtil {
 
   public CsvUtil() {}
 
-  protected ThreadLocal<SimpleDateFormat> filenameSdf = new ThreadLocal<SimpleDateFormat>() {
+  protected final static ThreadLocal<SimpleDateFormat> filenameSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
     protected SimpleDateFormat initialValue() {
       return new SimpleDateFormat("yyyyMMdd");
     }
   };
 
-  protected ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
+  protected final static ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
     protected SimpleDateFormat initialValue() {
       return new SimpleDateFormat("MM/dd/yyyy");
@@ -46,7 +50,7 @@ public class CsvUtil {
    * @return either the current date plus 1 day if current time is before 11 am
    *         or the current date plus 2 days if the current date is after 11 am
    */
-  protected String generateProcessDate(Date date) {
+  public static String generateProcessDate(Date date) {
     Calendar now = Calendar.getInstance();
     now.setTime(date);
     now.add(Calendar.DAY_OF_MONTH, ( now.get(Calendar.HOUR_OF_DAY) < 11 ) ? 1 : 2);
@@ -57,7 +61,7 @@ public class CsvUtil {
    * Generates a reference id by concatentating the current time in milliseconds with a randomly generated number
    * @return a reference id
    */
-  protected String generateReferenceId() {
+  public static String generateReferenceId() {
     return new Date().getTime() + "" + (int) (Math.random() * (99999 - 10000) + 10000);
   }
 
@@ -66,39 +70,58 @@ public class CsvUtil {
    * @param date date to use in the filename
    * @return the filename
    */
-  public String generateFilename(Date date) {
+  public static String generateFilename(Date date) {
     return filenameSdf.get().format(date) + "_mintchipcashout.csv";
   }
+
+  /**
+   * Pads the left size of a string with zeros
+   * @param s string to padd
+   * @param n number of 0's to pad with
+   * @return the string padded with n number of zeros
+   */
+  public static String padLeftWithZeros(String s, int n) {
+    return String.format("%" + n + "s", s).replace(' ', '0');
+  }
+
   /**
    * fills the outputter with all CICO transactions
    * @param x - the context
+   * @param o -  output stream to write to
    * @param mode - outputter mode
-   * @param outStream -  the outputter out format if it's a stream
-   * @param outWriter -  the outputter out format if it's a writer
-   * @param outputHeaders - flag to show headers or not
    * @return the outputter
    */
-  public Sink writeCsvFile(X x, OutputterMode mode, OutputStream outStream, Writer outWriter, boolean outputHeaders) {
+  public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
     final Date now = new Date();
     final DAO userDAO = (DAO) x.get("localUserDAO");
-
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    final Sink outputter;
-    if ( outStream != null ) {
-      outputter = new Outputter(outStream, mode, outputHeaders);
-    } else {
-      outputter = new Outputter(outWriter, mode, outputHeaders);
+    // add a set to store all CICO Transactionas and their status change to Accept
+    ArraySink acceptTransactions = new ArraySink();
+    transactionDAO.where(
+        OR(
+            EQ(Transaction.CICO_STATUS, TransactionStatus.ACCEPTED),
+            EQ(Transaction.CICO_STATUS, TransactionStatus.DECLINED),
+            EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING))
+    ).select(acceptTransactions);
+    Set<Long> acceptTransactionsSet = new HashSet();
+    for ( Object txn : acceptTransactions.getArray() ) {
+      acceptTransactionsSet.add(( (Transaction) txn ).getId());
     }
 
+    Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
+
       @Override
       public void put(Object obj, Detachable sub) {
         try {
           User user = null;
           String txnType = null;
           Transaction t = (Transaction) obj;
+          // if CICO Transaction is accept, it will not add to CSV file
+          if ( acceptTransactionsSet.contains(Long.valueOf(t.getId())) )
+            return;
 
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION ) {
@@ -128,25 +151,25 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
-          alternaFormat.setTransitNumber(bankAccount.getTransitNumber());
-          alternaFormat.setBankNumber(bankAccount.getInstitutionNumber());
+          alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(bankAccount.getInstitutionNumber(), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
-          alternaFormat.setProcessDate(generateProcessDate(now));
-          alternaFormat.setReference(generateReferenceId());
-          outputter.put(alternaFormat, sub);
+          alternaFormat.setProcessDate(CsvUtil.generateProcessDate(now));
+          alternaFormat.setReference(CsvUtil.generateReferenceId());
+          out.put(alternaFormat, sub);
           // if a verification transaction, also add a CR with same information
           if ( t.getType() == TransactionType.VERIFICATION ) {
             AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
             cashout.setTxnType("CR");
-            outputter.put(cashout, sub);
+            out.put(cashout, sub);
           }
+          out.flush();
         } catch (Exception e) {
           e.printStackTrace();
         }
       }
     });
-    return outputter;
   }
 }
