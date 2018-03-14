@@ -26,7 +26,34 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'status'
+      name: 'status',
+      tableCellFormatter: function(status) {
+        var bgColour = '#a4b3b8';
+        var borderColour = '#a4b3b8';
+        var textColour = '#ffffff';
+        if ( status == 'Submitted' ) {
+          bgColour = 'transparent';
+          borderColour = '#2cab70';
+          textColour = '#2cab70';
+        } else if ( status == 'Active' ) {
+          bgColour = '#2cab70';
+          borderColour = '#2cab70';
+          textColour = '#ffffff';
+        }
+        if ( status != '' ) {
+          this.start()
+            .add(status)
+            .style({
+              'color': textColour,
+              'border': '1px solid ' + borderColour,
+              'border-radius': '100px',
+              'background': bgColour,
+              'padding': '3px 10px 3px 10px',
+              'display': 'inline-block'
+            })
+          .end()
+        }
+      }
     },
     {
       class: 'String',
