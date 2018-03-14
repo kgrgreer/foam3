@@ -34,6 +34,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'copyright',
     {
       class: 'Boolean',
       name: 'showAbout',
@@ -63,7 +64,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.retail.model.Device',
       name: 'device',
-      factory: function () { return this.Device.create(); }
+      factory: function () { return this.Device.create(null, this.clientContext); }
     },
     {
       class: 'String',
@@ -96,79 +97,84 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.SUPER();
-      this.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+      var self = this;
+      self.SUPER();
+      self.clientPromise.then(function() {
+        self.stack.push({ class: 'net.nanopay.merchant.ui.HomeView' });
+      });
     },
 
     function initE() {
       var self = this;
-      this.AppStyles.create();
+      self.clientPromise.then(function() {
+        self.AppStyles.create(null, self.clientContext);
 
-      this
-        .addClass(this.myClass())
-        // sidebar
-        .start('div').addClass('sidenav')
-          .start('div').addClass('sidenav-list-item back')
-            .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon back material-icons')
-                .attrs({ 'aria-hidden': true })
-                .add('arrow_back')
+        self
+          .addClass(self.myClass())
+          // sidebar
+          .start('div').addClass('sidenav')
+            .start('div').addClass('sidenav-list-item back')
+              .start('a').attrs({ href: '#' })
+                .start('i').addClass('sidenav-list-icon back material-icons')
+                  .attrs({ 'aria-hidden': true })
+                  .add('arrow_back')
+                .end()
+                .add('Back')
               .end()
-              .add('Back')
+              .on('click', self.onMenuItemClicked)
             .end()
-            .on('click', this.onMenuItemClicked)
-          .end()
-          .start('div').addClass('sidenav-list-item selected')
-            .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon')
-                .attrs({ 'aria-hidden': true })
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.svg' })
+            .start('div').addClass('sidenav-list-item selected')
+              .start('a').attrs({ href: '#' })
+                .start('i').addClass('sidenav-list-icon')
+                  .attrs({ 'aria-hidden': true })
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.svg' })
+                .end()
+                .add('Home')
               .end()
-              .add('Home')
+              .on('click', self.onMenuItemClicked)
             .end()
-            .on('click', this.onMenuItemClicked)
-          .end()
-          .start('div').addClass('sidenav-list-item')
-            .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon')
-                .attrs({ 'aria-hidden': true })
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-transactions.svg' })
+            .start('div').addClass('sidenav-list-item')
+              .start('a').attrs({ href: '#' })
+                .start('i').addClass('sidenav-list-icon')
+                  .attrs({ 'aria-hidden': true })
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-transactions.svg' })
+                .end()
+                .add('Transactions')
               .end()
-              .add('Transactions')
+              .on('click', self.onMenuItemClicked)
             .end()
-            .on('click', this.onMenuItemClicked)
-          .end()
-          .start('div').addClass('sidenav-list-item')
-            .start('a').attrs({ href: '#' })
-              .start('i').addClass('sidenav-list-icon')
-                .attrs({ 'aria-hidden': true })
-                .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.svg' })
+            .start('div').addClass('sidenav-list-item')
+              .start('a').attrs({ href: '#' })
+                .start('i').addClass('sidenav-list-icon')
+                  .attrs({ 'aria-hidden': true })
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.svg' })
+                .end()
+                .add('Tip')
+                .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: self.tipEnabled$ })
               .end()
-              .add('Tip')
-              .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.tipEnabled$ })
+              .on('click', self.onMenuItemClicked)
             .end()
-            .on('click', this.onMenuItemClicked)
           .end()
-        .end()
 
-        // main content
-        .start('div')
-          .addClass('stack-wrapper')
-          .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
-        .end()
+          // main content
+          .start('div')
+            .addClass('stack-wrapper')
+            .tag({ class: 'foam.u2.stack.StackView', data: self.stack, showActions: false })
+          .end()
 
-        // toolbar
-        .start('div').addClass('toolbar').show(this.showHeader$)
-          .start('button').addClass('toolbar-icon material-icons')
-            .add(this.toolbarIcon$)
-            .on('click', this.onMenuClicked)
+          // toolbar
+          .start('div').addClass('toolbar').show(self.showHeader$)
+            .start('button').addClass('toolbar-icon material-icons')
+              .add(self.toolbarIcon$)
+              .on('click', self.onMenuClicked)
+            .end()
+            .start('div').addClass('toolbar-title').add(self.toolbarTitle$).end()
+            .start('button').addClass('toolbar-icon about material-icons').show(self.showAbout$)
+              .add('info_outline')
+              .on('click', self.onAboutClicked)
+            .end()
           .end()
-          .start('div').addClass('toolbar-title').add(this.toolbarTitle$).end()
-          .start('button').addClass('toolbar-icon about material-icons').show(this.showAbout$)
-            .add('info_outline')
-            .on('click', this.onAboutClicked)
-          .end()
-        .end()
+      });
     },
 
     function setDefaultMenu() {
@@ -187,7 +193,7 @@ foam.CLASS({
           throw new Error('Invalid password');
         }
 
-        return self.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
+        return self.clientContext.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
       })
       .then(function (result) {
         if ( ! result ) {

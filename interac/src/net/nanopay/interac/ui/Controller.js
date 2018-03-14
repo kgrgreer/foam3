@@ -4,18 +4,20 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   implements: [
-    'foam.nanos.client.Client',
+    'foam.box.Context',
+    'foam.mlang.Expressions',
     'net.nanopay.interac.dao.Storage',
-    'foam.mlang.Expressions'
   ],
 
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.model.Account',
+    'foam.nanos.client.ClientBuilder',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.interac.Data',
     'net.nanopay.interac.Iso20022',
-    'net.nanopay.iso20022.ISO20022Driver'
+    'net.nanopay.iso20022.ISO20022Driver',
+    'net.nanopay.model.Account',
   ],
 
   exports: [
@@ -54,33 +56,48 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'clientPromise',
+      factory: function() {
+        var self = this;
+        return self.ClientBuilder.create().promise.then(function(cls) {
+          var c = cls.create(null, self);
+          self.clientContext = c.__subContext__;
+          return c;
+        });
+      },
+    },
+    {
+      name: 'clientContext',
+      postSet: function(_, n) { this.__subSubContext__ = n },
+    },
+    {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'user',
-      factory: function() { return this.User.create(); }
+      factory: function() { return this.User.create(null, this.clientContext); }
     },
     {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
       name: 'account',
-      factory: function() { return this.Account.create(); }
+      factory: function() { return this.Account.create(null, this.clientContext); }
     },
     {
       name: 'stack',
       factory: function () {
-        return this.Stack.create();
+        return this.Stack.create(null, this.clientContext);
       }
     },
     {
       name: 'iso20022',
       factory: function () {
-        return this.Iso20022.create();
+        return this.Iso20022.create(null, this.clientContext);
       }
     },
     {
       name: 'iso20022Driver',
       factory: function () {
-        return this.ISO20022Driver.create();
+        return this.ISO20022Driver.create(null, this.clientContext);
       }
     },
     {
@@ -93,58 +110,60 @@ foam.CLASS({
     function init () {
       this.SUPER();
       var self = this;
-
-      // Injecting Sample Partner
-      // this.userDAO.limit(1).select().then(function(a) {
-      //   self.user.copyFrom(a.array[0]);
-      // });
+      self.clientPromise.then(function() {
+        // Injecting Sample Partner
+        // self.clientContext.userDAO.limit(1).select().then(function(a) {
+        //   self.user.copyFrom(a.array[0]);
+        // });
+      })
     },
 
     function initE() {
       var self = this;
+      self.clientPromise.then(function() {
+        self.Data.create(null, self.clientContext);
 
-      net.nanopay.interac.Data.create(undefined, this);
-
-      if(this.country == 'Canada') {
-        this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
-      } else if(this.country == 'India') {
-        this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
-      }
-
-      this
-        .addClass(this.myClass());
-        /*.add(this.user$.dot('id').map(function (id) {
-          return id ?
-            self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business }) :
-            self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.NoMenuTopNav' });
-        }))*/
-
-        if(this.country == 'Canada') {
-          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav'}));
-          this.userDAO.find(1).then(function(a) {
-            self.user.copyFrom(a);
-            self.accountDAO.find(self.user.id).then(function(a){
-              self.account = a;
-            })
-          });
-          this.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
-        } else if(this.country == 'India') {
-          this.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}));
-          this.userDAO.find(2).then(function(a) {
-            self.user.copyFrom(a);
-            self.accountDAO.find(self.user.id).then(function(a){
-              self.account = a;
-            })
-          });
-          this.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
+        if(self.country == 'Canada') {
+          self.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
+        } else if(self.country == 'India') {
+          self.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
         }
 
-        this.br()
-        .start('div').addClass('stack-wrapper')
-          .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
-        .end()
-        .br()
-        .tag({class: 'net.nanopay.interac.ui.shared.FooterView'})
+        self
+          .addClass(self.myClass());
+          /*.add(self.user$.dot('id').map(function (id) {
+            return id ?
+              self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.TopNav', data: self.business }) :
+              self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.NoMenuTopNav' });
+          }))*/
+
+          if(self.country == 'Canada') {
+            self.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav'}));
+            self.clientContext.userDAO.find(1).then(function(a) {
+              self.user.copyFrom(a);
+              self.accountDAO.find(self.user.id).then(function(a){
+                self.account = a;
+              })
+            });
+            self.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
+          } else if(self.country == 'India') {
+            self.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}));
+            self.clientContext.userDAO.find(2).then(function(a) {
+              self.user.copyFrom(a);
+              self.accountDAO.find(self.user.id).then(function(a){
+                self.account = a;
+              })
+            });
+            self.stack.push({ class: 'net.nanopay.interac.ui.IndiaTransactionsView' });
+          }
+
+          self.br()
+          .start('div').addClass('stack-wrapper')
+            .tag({ class: 'foam.u2.stack.StackView', data: self.stack, showActions: false })
+          .end()
+          .br()
+          .tag({class: 'net.nanopay.interac.ui.shared.FooterView'})
+      });
     }
   ]
 

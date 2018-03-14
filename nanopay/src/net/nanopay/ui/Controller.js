@@ -77,39 +77,43 @@ foam.CLASS({
   `,
 
   properties: [
+    'privacyUrl',
+    'termsUrl',
     {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
       name: 'account',
-      factory: function() { return this.Account.create(); }
+      factory: function() { return this.Account.create(null, self.clientContext); }
     }
   ],
 
   methods: [
     function initE() {
-      this.AppStyles.create();
-      this.InvoiceStyles.create();
-      this.ModalStyling.create();
-
       var self = this;
-      foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+      self.clientPromise.then(function() {
+        self.AppStyles.create(null, self.clientContext);
+        self.InvoiceStyles.create(null, self.clientContext);
+        self.ModalStyling.create(null, self.clientContext);
 
-      this.findAccount();
+        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-      this
-        .addClass(this.myClass())
-        .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
-        .br()
-        .start('div').addClass('stack-wrapper')
-          .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
-        .end()
-        .br()
-        .tag({class: 'net.nanopay.ui.FooterView'});
+        self.findAccount();
+
+        self
+          .addClass(self.myClass())
+          .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
+          .br()
+          .start('div').addClass('stack-wrapper')
+            .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
+          .end()
+          .br()
+          .tag({class: 'net.nanopay.ui.FooterView'});
+      });
     },
 
     function findAccount() {
       var self = this;
-      this.accountDAO.find(this.user.id).then(function (a) {
+      this.clientContext.accountDAO.find(this.user.id).then(function (a) {
         return self.account.copyFrom(a);
       }.bind(this));
     }
