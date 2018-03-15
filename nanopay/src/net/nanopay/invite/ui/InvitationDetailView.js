@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.invite.model.ComplianceStatus',
     'net.nanopay.invite.model.InvitationStatus'
   ],
 
@@ -68,7 +69,36 @@ foam.CLASS({
       text-align: center;
       color: #093649;
     }
-    ^ .net-nanopay-ui-ActionView-editProfile {
+
+    ^ .net-nanopay-ui-ActionView-approveProfile {
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
+      float: right;
+      margin-right: 1px;
+      position: sticky;
+      z-index: 10;
+    }
+    ^ .net-nanopay-ui-ActionView-approveProfileDropDown {
+      width: 30px;
+      height: 40px;
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-approveProfileDropDown::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 6px solid transparent;
+      border-top-color: white;
+      transform: translate(-6.5px, -1px);
+    }
+
+
+
+    ^ .net-nanopay-ui-ActionView-editInvite {
       width: 157px;
       height: 40px;
       border-radius: 2px;
@@ -76,7 +106,7 @@ foam.CLASS({
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
     }
-    ^ .net-nanopay-ui-ActionView-editProfile::after {
+    ^ .net-nanopay-ui-ActionView-editInvite::after {
       content: ' ';
       position: absolute;
       height: 0;
@@ -88,14 +118,14 @@ foam.CLASS({
     ^ .popUpDropDown {
       padding: 0 !important;
       z-index: 10000;
-      width: 157px;
+      width: 165px;
       background: white;
       opacity: 1;
       box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
       position: absolute;
     }
     ^ .popUpDropDown > div {
-      width: 157px;
+      width: 165px;
       height: 30px;
       font-size: 14px;
       font-weight: 300;
@@ -116,13 +146,16 @@ foam.CLASS({
 
   properties: [
     'data',
-    'editProfileMenuBtn_',
-    'editProfilePopUp_'
+    'approveProfileMenuBtn_',
+    'approveProfilePopUp_',
+    'editInviteMenuBtn_',
+    'editInvitePopUp_'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
 
       this
         .addClass(this.myClass())
@@ -132,7 +165,31 @@ foam.CLASS({
           .end()
           .start().addClass('right-actions')
             .start(this.PRINT, { icon: 'images/ic-print.svg', showLabel: true }).end()
-            .start(this.EDIT_PROFILE, null, this.editProfileMenuBtn_$).end()
+            .add(this.slot(function (status) {
+              if ( status == self.ComplianceStatus.REQUESTED ) {
+                switch ( self.data.inviteStatus ) {
+                  case self.InvitationStatus.PENDING:
+                    return this.E('span').start(self.EDIT_INVITE, null, self.editInviteMenuBtn_$).end();
+
+                  case self.InvitationStatus.SUBMITTED:
+                    return this.E('span')
+                      .start(self.APPROVE_PROFILE_DROP_DOWN, null, self.approveProfileMenuBtn_$).end()
+                      .start(self.APPROVE_PROFILE).end()
+                }
+              } else if ( status == self.ComplianceStatus.PASSED ) {
+                switch ( self.data.inviteStatus ) {
+                  case self.InvitationStatus.PENDING:
+                  case self.InvitationStatus.SUBMITTED:
+                    return this.E('span').start(self.EDIT_PROFILE, null, self.editInviteMenuBtn_$).end();
+
+                  case self.InvitationStatus.ACTIVE:
+                    return this.E('span').start(self.DISABLE_PROFILE).end();
+
+                  case self.InvitationStatus.DISABLED:
+                    return this.E('span').start(self.ACTIVATE_PROFILE).end();
+                }
+              }
+            }, this.data.complianceStatus$))
           .end()
         .end()
         .tag({ class: 'net.nanopay.invite.ui.InvitationItemView', data$: this.data$ })
@@ -158,16 +215,55 @@ foam.CLASS({
       }
     },
     {
-      name: 'editProfile',
+      name: 'approveProfile',
+      label: 'Approve Profile',
+      code: function (X) {
+        var toApprove = X.data.clone();
+        toApprove.complianceStatus = this.ComplianceStatus.PASSED;
+
+        X.invitationDAO.put(toApprove)
+        .then(function (result) {
+          if ( ! result ) throw new Error('Unable to approve profile');
+          X.data.copyFrom(result);
+          X.add(X.NotificationMessage.create({ message: 'Profile successfully approved.' }));
+        })
+        .catch(function (X) {
+          X.add(X.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
+        });
+
+        this.approveProfilePopUp_.remove();
+      }
+    },
+    {
+      name: 'approveProfileDropDown',
+      label: '',
+      code: function (X) {
+        this.approveProfilePopUp_ = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        this.approveProfilePopUp_.addClass('popUpDropDown')
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile)
+          .end()
+
+        this.approveProfileMenuBtn_.add(this.approveProfilePopUp_);
+      }
+    },
+    {
+      name: 'editInvite',
       label: 'Edit Profile',
       code: function (X) {
-        this.editProfilePopUp_ = foam.u2.PopupView.create({
-          width: 157,
+        this.editInvitePopUp_ = foam.u2.PopupView.create({
+          width: 165,
           x: 0,
           y: 40
         });
 
-        this.editProfilePopUp_.addClass('popUpDropDown')
+        this.editInvitePopUp_.addClass('popUpDropDown')
           .start('div')
             .add('Revoke Invite')
             .on('click', this.revokeInvite)
@@ -181,7 +277,14 @@ foam.CLASS({
             .on('click', this.disableProfile)
           .end()
 
-        this.editProfileMenuBtn_.add(this.editProfilePopUp_);
+        this.editInviteMenuBtn_.add(this.editInvitePopUp_);
+      }
+    },
+    {
+      name: 'activateProfile',
+      label: 'Activate Profile',
+      code: function (X) {
+
       }
     }
   ],
@@ -189,12 +292,12 @@ foam.CLASS({
   listeners: [
     function revokeInvite() {
       // TODO: add revoke invite functionality
-      this.editProfilePopUp_.remove();
+      this.editInvitePopUp_.remove();
     },
 
     function resendInvite() {
       // TODO: add resend invite functionality
-      this.editProfilePopUp_.remove();
+      this.editInvitePopUp_.remove();
     },
 
     function disableProfile() {
@@ -207,13 +310,13 @@ foam.CLASS({
       .then(function (result) {
         if ( ! result ) throw new Error('Unable to disable profile');
         self.data.copyFrom(result);
-        self.NotificationMessage.create({ message: 'Successfully disabled profile.' });
+        self.add(self.NotificationMessage.create({ message: 'Profile successfully disabled.' }));
       })
       .catch(function (err) {
-        self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' });
+        self.add(self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
       });
 
-      this.editProfilePopUp_.remove();
+      this.approveProfilePopUp_.remove();
     }
   ]
 });

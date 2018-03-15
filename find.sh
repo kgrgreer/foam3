@@ -25,7 +25,6 @@ declare -a arr=(
   "groups"
   "institutions"
   "invitations"
-  "invitationHistory"
   "languages"
   "menus"
   "payoutOptions"

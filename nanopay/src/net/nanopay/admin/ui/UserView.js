@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'UserView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'View displaying a table with a list of all shoppers and merchants',
 
@@ -12,22 +12,24 @@ foam.CLASS({
   requires: [
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User'
   ],
 
   exports: [
-    'as data',
     'filter',
     'filteredUserDAO'
   ],
 
   imports: [
-    'stack', 'auth', 'userDAO'
+     'auth',
+     'stack',
+     'userDAO'
   ],
 
   css: `
     ^ {
-      width: 962px;
+      width: 1240px;
       margin: 0 auto;
     }
     ^ .searchIcon {
@@ -104,6 +106,9 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ table {
+      width: 1240px;
+    }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
@@ -128,12 +133,12 @@ foam.CLASS({
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
-        return data.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
+        return data.where(this.OR(this.CONTAINS_IC(this.User.LEGAL_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'firstName', 'lastName', 'email', 'organization', 'type'
+          'id', 'legalName', 'email', 'phoneNumber', 'jobTitle', 'businessName', 'type', 'status'
         ]
       }
     },
@@ -186,7 +191,6 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
-
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO}));
       }
@@ -218,7 +222,6 @@ foam.CLASS({
   ],
 
   listeners: [
-
     function addShopper() {
       var self = this;
       self.addUserPopUp_.remove();
@@ -234,7 +237,7 @@ foam.CLASS({
     function addCompany() {
       var self = this;
       self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddCompanyView' });
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
     }
   ]
 });

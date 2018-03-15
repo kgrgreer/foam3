@@ -78,6 +78,7 @@ foam.CLASS({
             labelText: file.filename,
             icon: 'images/ic-attachment-round.svg'
           });
+          this.files[file.id] = true;
         }
       }
       return attributes;

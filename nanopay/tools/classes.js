@@ -35,6 +35,9 @@ var classes = [
   'net.nanopay.invite.model.Question',
   'net.nanopay.invite.model.Questionnaire',
   'net.nanopay.invite.model.QuestionnaireQuestionJunction',
+  'net.nanopay.invite.InvitationTokenService',
+  'net.nanopay.invite.InvitationEmailDAO',
+  'net.nanopay.invite.CreateUserOnInvitationCreateDAO',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
@@ -90,7 +93,11 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.Reconciliation',
   'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
   'net.nanopay.fx.lianlianpay.model.Statement',
-  'net.nanopay.fx.lianlianpay.model.StatementRecord'
+  'net.nanopay.fx.lianlianpay.model.StatementRecord',
+  'foam.nanos.auth.UserUserJunction',
+  'net.nanopay.fx.interac.model.ExchangerateApiModel',
+  'net.nanopay.fx.interac.model.AcceptRateApiModel',
+  'net.nanopay.fx.interac.model.AcceptExchangeRateFields'
 ];
 
 var abstractClasses = [

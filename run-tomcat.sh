@@ -137,4 +137,3 @@ done
 shutdown_tomcat
 [ $RESTART_ONLY -eq 1 ] || build_NANOPAY_into_tomcat
 start_tomcat
-
