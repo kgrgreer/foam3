@@ -44,10 +44,15 @@ declare -a arr=(
 
 
 # Go through the array and check each location for the file and concatenate into one JDAO
+# create journals file used by build.sh
+> journals
+
 for file in "${arr[@]}"
 do
   # Emptys the file
-   > $file
+  > $file
+
+  echo $file >> journals
   # Checks if file exists, if so grabs the file from there
   if  [[ -f "foam2/src/$file" ]]; then
       cat foam2/src/$file >> $file
@@ -75,3 +80,5 @@ do
   fi
 
 done
+
+exit 0
