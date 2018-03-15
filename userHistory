@@ -18,3 +18,5 @@ p({"class":"foam.dao.history.HistoryRecord","seqNo":8,"objectId":1367,"user":", 
 p({"class":"foam.dao.history.HistoryRecord","seqNo":9,"objectId":1368,"user":", admin(1348)","timestamp":"2018-03-14T18:39:27.741Z"})
 // Modified by admin (1348) at 2018-03-14T18:40:17Z
 p({"class":"foam.dao.history.HistoryRecord","seqNo":10,"objectId":1369,"user":", admin(1348)","timestamp":"2018-03-14T18:40:17.223Z"})
+// Modified by admin (1348) at 2018-03-15T15:17:40Z
+p({"class":"foam.dao.history.HistoryRecord","seqNo":11,"objectId":1360,"user":", admin(1348)","timestamp":"2018-03-15T15:17:40.381Z"})
