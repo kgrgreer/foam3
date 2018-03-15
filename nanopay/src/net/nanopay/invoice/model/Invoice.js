@@ -73,6 +73,7 @@ foam.CLASS({
       label: 'Issue Date',
       required: true,
       factory: function() { return new Date(); },
+      javaFactory: 'return new Date();',
       aliases: [ 'issueDate', 'issue', 'issued' ],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
@@ -175,12 +176,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'currencyCode',
-      required: true
+      name: 'currencyCode'
     },
     {
-      name: 'iso20022',
-      required: true
+      name: 'iso20022'
     },
     {
       class: 'Long',
