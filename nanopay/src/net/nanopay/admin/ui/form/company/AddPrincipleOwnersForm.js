@@ -17,6 +17,10 @@ foam.CLASS({
     'validateAddress'
   ],
 
+  exports: [
+    'principleOwnersDAO'
+  ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -38,6 +42,24 @@ foam.CLASS({
 
       margin-top: 30px;
       margin-bottom: 20px;
+    }
+
+    ^ .hideTable {
+      height: 0;
+      overflow: hidden;
+    }
+
+    ^ table {
+      width: 540px;
+      margin-bottom: 30px;
+    }
+
+    ^ thead > tr > th {
+      height: 30px;
+    }
+
+    ^ .foam-u2-view-TableView tbody > tr {
+      height: 30px;
     }
 
     ^ .animationContainer {
@@ -355,6 +377,17 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'hasPrincipleOwners',
+      factory: function() {
+        // In case we load from a save state
+        // TODO: REQUIRES TESTING
+        this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
+          return c.value > 0;
+        });
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'isEditingName',
       value: false,
       postSet: function(oldValue, newValue) {
@@ -494,13 +527,23 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.principleOwnersDAO.on.sub(this.onDAOChange);
+      this.onDAOChange();
+    },
+
     function initE() {
       this.SUPER();
       var self = this;
       this.addClass(this.myClass())
         .start('div')
           // TODO: TABLE SHOULD GO HERE
-          .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').end()
+          .start(this.PrincipleOwnerTableView)
+            .addClass('fullWidthField')
+            .enableClass('hideTable', this.hasPrincipleOwners$, true)
+          .end()
+          .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
 
           .start('div').addClass('animationContainer')
             .start('div')
@@ -581,7 +624,7 @@ foam.CLASS({
                   .addClass('phoneCountryCodeCol')
                   .enableClass('out', this.isEditingPhone$, true)
                   .start('div').add(this.CountryCodeLabel).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
-                  .start(this.PHONE_COUNTRY_CODE_FIELD, { visibility: foam.u2.Visibility.RO })
+                  .start(this.PHONE_COUNTRY_CODE_FIELD, { visibility: foam.u2.Visibility.DISABLED })
                     .addClass('fields')
                     .on('focus', function() {
                       this.blur();
@@ -771,10 +814,53 @@ foam.CLASS({
           principleType: this.principleTypeField
         });
 
-        this.principleOwnersDAO.put(newPrincipleOwner);
-        this.clearFields();
-        // TODO: Add to a DAO or FObjectArray.
+        var self = this;
+        // TODO?: Maybe add a loading indicator?
+        this.principleOwnersDAO.put(newPrincipleOwner).then(function(npo) {
+          self.clearFields();
+        });
       }
+    }
+  ],
+
+  listeners: [
+    function onDAOChange() {
+      var self = this;
+      this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
+        self.hasPrincipleOwners = c.value > 0;
+      });
+    }
+  ],
+
+  classes: [
+    {
+      name: 'PrincipleOwnerTableView',
+      extends: 'foam.u2.View',
+
+      requires: [ 'foam.nanos.auth.User' ],
+      imports: [ 'principleOwnersDAO' ],
+
+      properties: [
+        'selection',
+        { name: 'data', factory: function() { return this.principleOwnersDAO; }}
+      ],
+
+      methods: [
+        function initE() {
+          this.SUPER();
+
+          this
+            .start({
+              class: 'foam.u2.view.TableView',
+              editColumnsEnabled: false,
+              selection$: this.selection$,
+              data: this.data,
+              columns: [
+                'legalName', 'jobTitle', 'principleType'
+              ],
+            }).end();
+        }
+      ]
     }
   ]
 });
