@@ -42,6 +42,7 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.banks"})
 p({"class":"foam.nanos.auth.Permission","id":"user.shop"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transfer"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.cctransfer"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"user.merch"})
 // Modified by admin  (1348) at 2018-01-22T10:39:35Z

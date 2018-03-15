@@ -10,7 +10,9 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.User',
     'foam.nanos.auth.Phone',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.invite.model.ComplianceStatus',
+    'net.nanopay.invite.model.InvitationStatus'
   ],
 
   css: `
@@ -57,6 +59,30 @@ foam.CLASS({
       text-align: left;
       padding: 0 20px 0 20px;
     }
+    ^ .Compliance-Status-Pending {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Compliance-Status-Requested {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Compliance-Status-Passed {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Compliance-Status-Failed {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Invite-Status-Pending {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Invite-Status-Submitted {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Invite-Status-Active {
+      margin: 20px 5px 20px 5px;
+    }
+    ^ .Invite-Status-Disabled {
+      margin: 20px 5px 20px 5px;
+    }
   `,
 
   properties: [
@@ -100,9 +126,41 @@ foam.CLASS({
             .start('td').add(phone.number$).end()
             .start('td').add(user.jobTitle$).end()
             .start('td').add(user.businessName$).end()
-            .start('td').add(this.data.complianceStatus$.map(function (status) { return status.label; })).end()
+            .start('td')
+              .addClass(this.data.complianceStatus$.map(function (status) {
+                switch ( status ) {
+                  case self.ComplianceStatus.PENDING:
+                    return 'Compliance-Status-Pending';
+                  case self.ComplianceStatus.REQUESTED:
+                    return 'Compliance-Status-Requested';
+                  case self.ComplianceStatus.PASSED:
+                    return 'Compliance-Status-Passed';
+                  case self.ComplianceStatus.FAILED:
+                    return 'Compliance-Status-Failed';
+                }
+              }))
+              .add(this.data.complianceStatus$.map(function (status) {
+                return status.label;
+              }))
+            .end()
             .start('td').add(user.type$).end()
-            .start('td').add(this.data.inviteStatus$.map(function(status) { return status.label; })).end()
+            .start('td')
+              .addClass(this.data.inviteStatus$.map(function (status) {
+                switch ( status ) {
+                  case self.InvitationStatus.PENDING:
+                    return 'Invite-Status-Pending'
+                  case self.InvitationStatus.SUBMITTED:
+                    return 'Invite-Status-Submitted'
+                  case self.InvitationStatus.ACTIVE:
+                    return 'Invite-Status-Active'
+                  case self.InvitationStatus.DISABLED:
+                    return 'Invite-Status-Disabled'
+                }
+              }))
+              .add(this.data.inviteStatus$.map(function (status) {
+                return status.label;
+              }))
+            .end()
           .end()
         .end()
     }

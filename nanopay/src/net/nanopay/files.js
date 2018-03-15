@@ -101,6 +101,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // admin
+  { name: 'net/nanopay/admin/ui/AddBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
@@ -160,6 +161,9 @@ FOAM_FILES([
   { name: 'net/nanopay/invite/ui/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/QuestionView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
+  { name: 'net/nanopay/invite/InvitationTokenService' },
+  { name: 'net/nanopay/invite/InvitationEmailDAO', flags: ['java'] },
+  { name: 'net/nanopay/invite/CreateUserOnInvitationCreateDAO', flags: ['java'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
@@ -254,6 +258,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },
   { name: 'net/nanopay/ui/Placeholder', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
+  { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/model/Relationships'},
