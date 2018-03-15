@@ -113,3 +113,120 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  refines: 'net.nanopay.iso20022.Pacs00800106',
+
+  javaImports: [
+    'net.nanopay.tx.TransactionDAO',
+    'net.nanopay.tx.model.Transaction',
+    'java.util.Date',
+    'foam.dao.DAO'
+  ],
+
+  methods: [
+    {
+      name: 'generatePacs002Msgby008Msg',
+
+        javaReturns: 'net.nanopay.iso20022.Pacs00200109',
+        javaCode: `
+          Pacs00200109 pacs00200109 = new Pacs00200109();
+          pacs00200109.setX(getX());
+
+          FIToFIPaymentStatusReportV09 fIToFIPmtStsRpt = new FIToFIPaymentStatusReportV09();
+
+          GroupHeader53 grpHdr53 = new GroupHeader53();
+          grpHdr53.setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
+          grpHdr53.setCreDtTm(new Date());
+
+          int length_ = this.getFIToFICstmrCdtTrf().getCdtTrfTxInf().length;
+          pacs00200109.setFIToFIPmtStsRpt(fIToFIPmtStsRpt);
+          pacs00200109.getFIToFIPmtStsRpt().setTxInfAndSts(new PaymentTransaction91[length_]);
+          pacs00200109.getFIToFIPmtStsRpt().setOrgnlGrpInfAndSts(new OriginalGroupHeader13[length_]);
+          pacs00200109.getFIToFIPmtStsRpt().setGrpHdr(grpHdr53);
+
+          DAO txnDAO     = (DAO) getX().get("transactionDAO");
+
+          Transaction txn = (Transaction) txnDAO.find(Long.parseLong((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[0].getPmtId().getTxId()));
+          String strStatus = "";
+
+          if ( txn != null ) {
+            strStatus = txn.getStatus();
+          }
+
+          for ( int i = 0 ; i < length_ ; i++ ) {
+            PaymentTransaction91 paymentTransaction91 = new PaymentTransaction91();
+
+            paymentTransaction91.setStsId(java.util.UUID.randomUUID().toString().replace("-", ""));
+            paymentTransaction91.setOrgnlEndToEndId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getEndToEndId());
+            paymentTransaction91.setOrgnlTxId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getTxId());
+            paymentTransaction91.setTxSts(strStatus);  // ACSP or ACSC
+
+            pacs00200109.getFIToFIPmtStsRpt().getTxInfAndSts()[i] = paymentTransaction91;
+
+            OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
+
+            orgnlGrpInfAndSts.setOrgnlMsgId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId());
+            orgnlGrpInfAndSts.setOrgnlCreDtTm(this.getFIToFICstmrCdtTrf().getGrpHdr().getCreDtTm());
+            orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
+            orgnlGrpInfAndSts.setOrgnlNbOfTxs(this.getFIToFICstmrCdtTrf().getGrpHdr().getNbOfTxs());
+            orgnlGrpInfAndSts.setOrgnlCtrlSum(this.getFIToFICstmrCdtTrf().getGrpHdr().getCtrlSum());
+            orgnlGrpInfAndSts.setOrgnlMsgId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId());
+            orgnlGrpInfAndSts.setGrpSts(strStatus);
+
+            pacs00200109.getFIToFIPmtStsRpt().getOrgnlGrpInfAndSts()[i] = orgnlGrpInfAndSts;
+          }
+
+          return pacs00200109;
+          `
+      }
+  ]
+
+});
+
+
+foam.CLASS({
+  refines: 'net.nanopay.iso20022.Pacs02800101',
+
+  javaImports: [
+    'net.nanopay.tx.TransactionDAO',
+    'net.nanopay.tx.model.Transaction',
+    'java.util.Date',
+    'foam.dao.DAO'
+  ],
+
+  methods: [
+      {
+        name: 'generatePacs002Msgby028Msg',
+
+          javaReturns: 'net.nanopay.iso20022.Pacs00200109',
+          javaCode: `
+            Pacs00200109 pacs00200109 = new Pacs00200109();
+            pacs00200109.setX(getX());
+
+            FIToFIPaymentStatusReportV09 fIToFIPmtStsRpt = new FIToFIPaymentStatusReportV09();
+
+            GroupHeader53 grpHdr53 = new GroupHeader53();
+            grpHdr53.setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
+            grpHdr53.setCreDtTm(new Date());
+
+            int length_ = this.getFIToFIPmtStsReq().getOrgnlGrpInf().length;
+            pacs00200109.setFIToFIPmtStsRpt(fIToFIPmtStsRpt);
+            pacs00200109.getFIToFIPmtStsRpt().setOrgnlGrpInfAndSts(new OriginalGroupHeader13[length_]);
+            pacs00200109.getFIToFIPmtStsRpt().setGrpHdr(grpHdr53);
+
+            for ( int i = 0 ; i < length_ ; i++ ) {
+              OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
+
+              orgnlGrpInfAndSts.setOrgnlMsgId((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId());
+              orgnlGrpInfAndSts.setOrgnlCreDtTm((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlCreDtTm());
+              orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
+              orgnlGrpInfAndSts.setGrpSts("ACSP");   // ACSP or ACSC
+              pacs00200109.getFIToFIPmtStsRpt().getOrgnlGrpInfAndSts()[i] = orgnlGrpInfAndSts;
+            }
+
+            return pacs00200109;
+            `
+        }
+  ]
+});
