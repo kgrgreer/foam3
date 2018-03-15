@@ -69,8 +69,7 @@ function build_NANOPAY_into_tomcat {
     cp exportDriverRegistrys "$CATALINA_HOME/bin/"
     cp groups "$CATALINA_HOME/bin/"
     cp institutions "$CATALINA_HOME/bin/"
-    cp -n invitations "$CATALINA_HOME/bin/"
-    cp -n invitationHistory "$CATALINA_HOME/bin/"
+    cp -n invitations "$CATALINA_HOME/bin/" &
     cp languages "$CATALINA_HOME/bin/"
     cp menus "$CATALINA_HOME/bin/"
     cp payoutOptions "$CATALINA_HOME/bin/"  
