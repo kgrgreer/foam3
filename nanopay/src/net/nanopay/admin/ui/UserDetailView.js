@@ -201,9 +201,9 @@ foam.CLASS({
           .end()
           .start().addClass('right-actions')
             .start(this.PRINT, { icon: 'images/ic-print.svg', showLabel: true }).end()
-            .add(this.slot(function (complianceStatus, inviteStatus) {
-              if ( complianceStatus == self.ComplianceStatus.REQUESTED ) {
-                switch ( inviteStatus ) {
+            .add(this.slot(function (status, compliance) {
+              if ( compliance == self.ComplianceStatus.REQUESTED ) {
+                switch ( status ) {
                   case self.AccountStatus.PENDING:
                     return this.E('span').start(self.EDIT_INVITE, null, self.editInviteMenuBtn_$).end();
 
@@ -212,8 +212,8 @@ foam.CLASS({
                       .start(self.APPROVE_PROFILE_DROP_DOWN, null, self.approveProfileMenuBtn_$).end()
                       .start(self.APPROVE_PROFILE).end()
                 }
-              } else if ( complianceStatus == self.ComplianceStatus.PASSED ) {
-                switch ( inviteStatus ) {
+              } else if ( compliance == self.ComplianceStatus.PASSED ) {
+                switch ( status ) {
                   case self.AccountStatus.SUBMITTED:
                     return this.E('span')
                       .start(self.ACTIVATE_PROFILE_DROP_DOWN, null, self.activateProfileMenuBtn_$).end()
@@ -226,12 +226,12 @@ foam.CLASS({
                     return this.E('span').start(self.ACTIVATE_PROFILE).end();
                 }
               }
-            }, this.data.complianceStatus$, this.data.inviteStatus$))
+            }, this.data.status$, this.data.compliance$))
           .end()
         .end()
-        .tag({ class: 'net.nanopay.invite.ui.InvitationItemView', data$: this.data$ })
-        .br()
-        .tag({ class: 'net.nanopay.invite.ui.InvitationHistoryView', id: this.data.id })
+        .tag({ class: 'net.nanopay.admin.ui.UserItemView', data$: this.data$ })
+//        .br()
+//        .tag({ class: 'net.nanopay.invite.ui.InvitationHistoryView', id: this.data.id })
     }
 
   ],
@@ -257,7 +257,7 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var toApprove = this.data.clone();
-        toApprove.complianceStatus = this.ComplianceStatus.PASSED;
+        toApprove.compliance = this.ComplianceStatus.PASSED;
 
         this.invitationDAO.put(toApprove)
         .then(function (result) {
@@ -297,7 +297,7 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var toActivate = this.data.clone();
-        toActivate.inviteStatus = this.AccountStatus.ACTIVE;
+        toActivate.status = this.AccountStatus.ACTIVE;
 
         this.invitationDAO.put(toActivate)
         .then(function (result) {
@@ -387,7 +387,7 @@ foam.CLASS({
       var self = this;
 
       var toDisable = this.data.clone();
-      toDisable.inviteStatus = this.AccountStatus.DISABLED;
+      toDisable.status = this.AccountStatus.DISABLED;
 
       this.invitationDAO.put(toDisable)
       .then(function (result) {
