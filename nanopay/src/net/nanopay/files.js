@@ -116,6 +116,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantInfoForm', flags: ['web'] },
@@ -157,7 +158,6 @@ FOAM_FILES([
   // invite
   { name: 'net/nanopay/onboarding/model/Question' },
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
-  { name: 'net/nanopay/invite/ui/InvitationDetailView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/InvitationHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/InvitationHistoryView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/InvitationItemView', flags: ['web'] },

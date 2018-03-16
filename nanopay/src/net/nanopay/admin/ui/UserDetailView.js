@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invite.ui',
-  name: 'InvitationDetailView',
+  name: 'UserDetailView',
   extends: 'foam.u2.View',
 
   requires: [
