@@ -61,6 +61,7 @@ nanopay/src/net/nanopay/iso20022/*
 sha256/
 
 # Service files
+/journals
 /accounts
 /balanceAlerts
 /bankAccounts
@@ -120,3 +121,4 @@ sha256/
 /transactionPurposes
 /transactions
 /users
+/userHistory

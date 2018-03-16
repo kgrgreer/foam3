@@ -124,14 +124,6 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
-  properties:  [
-    {
-			class:  'String',
-			name:  'MsgType',
-			value: "pacs.008.001.06"
-		}
-	],
-
   methods: [
     {
       name: 'generatePacs002Msgby008Msg',
@@ -201,14 +193,6 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'java.util.Date',
     'foam.dao.DAO'
-  ],
-
-  properties:  [
-    {
-			class:  'String',
-			name:  'MsgType',
-			value: "pacs.028.001.01"
-		}
   ],
 
   methods: [

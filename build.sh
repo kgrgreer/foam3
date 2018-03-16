@@ -27,35 +27,17 @@ sleep 5
 cd /pkg/stack/stage/NANOPAY
 ./find.sh
 
-cp brokers /opt/tomcat/bin/
-cp businessSectors /opt/tomcat/bin/
-cp businessTypes /opt/tomcat/bin/
-cp cicoServiceProviders /opt/tomcat/bin/
-cp corridors /opt/tomcat/bin/
-cp countries /opt/tomcat/bin/
-cp cronjobs /opt/tomcat/bin/
-cp currencies /opt/tomcat/bin/
-cp emailTemplates /opt/tomcat/bin/
-cp exportDriverRegistrys /opt/tomcat/bin/
-cp -n groups /opt/tomcat/bin/
-cp institutions /opt/tomcat/bin/
-cp -n invitations /opt/tomcat/bin/
-cp -n invitationHistory /opt/tomcat/bin/
-cp languages /opt/tomcat/bin/
-cp menus /opt/tomcat/bin/
-cp payoutOptions /opt/tomcat/bin/
-cp -n permissions /opt/tomcat/bin/
-cp questionnaireQuestionJunction /opt/tomcat/bin/
-cp questionnaires /opt/tomcat/bin/
-cp questions /opt/tomcat/bin/
-cp regions /opt/tomcat/bin/
-cp -n scripts /opt/tomcat/bin/
-cp services /opt/tomcat/bin/
-cp -n spids /opt/tomcat/bin/
-cp tests /opt/tomcat/bin/
-cp transactionLimits /opt/tomcat/bin/
-cp transactionPurposes /opt/tomcat/bin/
-cp -n users /opt/tomcat/bin/
+# Copy repository journal, creating the .0 file which will be read before the app managed journal.
+# journals created by find.sh
+filename="journals"
+if [[ ! -f "$filename" ]]; then
+  echo "ERROR: missing $filename file."
+  exit 1
+fi
+
+while read journal; do
+    cp "$journal" "/opt/tomcat/bin/$journal.0"
+done < "$filename"
 
 # Copy over static web files to ROOT
 cp -r foam2/ /opt/tomcat/webapps/ROOT/foam2
