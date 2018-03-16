@@ -498,7 +498,7 @@ foam.CLASS({
       }
 
       var businessPhone = this.Phone.create({
-        number: this.countryCode + this.phoneNumber
+        number: this.countryCode + ' ' + this.phoneNumber
       });
 
       var newBusiness = this.User.create({
