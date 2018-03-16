@@ -417,10 +417,8 @@ foam.CLASS({
       name: 'principleOwnersDAO',
       factory: function() {
         if ( this.viewData.principleOwners ) {
-          console.log('hitme');
           return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners });
         }
-        console.log('hitmebabyonemoretime');
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
     },
