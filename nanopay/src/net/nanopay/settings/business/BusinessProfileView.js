@@ -172,29 +172,11 @@ foam.CLASS({
           .start().add('Business Profile').addClass('boxTitle').end()
           .add(this.EDIT_PROFILE)
           .start().addClass('profileImgDiv')
-          .add(this.slot(function (data) {
-            return this.E('img').addClass('shopperImage')
-              .attrs({
-                src: this.data$.map(function (data) {
-                  if ( data && data.data ) {
-                    var blob = data.data;
-                    var sessionId = localStorage['defaultSession'];
-                    if ( self.BlobBlob.isInstance(blob) ) {
-                      return URL.createObjectURL(blob.blob);
-                    } else {
-                      var url = '/service/httpFileService/' + data.id;
-                      // attach session id if available
-                      if ( sessionId ) {
-                        url += '?sessionId=' + sessionId;
-                      }
-                      return url;
-                    }
-                  } else {
-                     return 'images/person.svg'
-                  }
-                })
-              });
-          }, this.data$))
+            .tag({
+              class: 'foam.nanos.auth.ProfilePictureView',
+              data$: this.user.profilePicture$,
+              uploadHidden: true
+            })
             .start().add(this.user.businessName).addClass('companyName').end()
           .end()
           .start()

@@ -63,7 +63,6 @@ foam.CLASS({
           .add('Attachment')
           .add(this.slot(function (data) {
             var e = this.E();
-
             for ( var i = 0 ; i < data.length ; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
@@ -98,57 +97,5 @@ foam.CLASS({
     function onAddAttachmentClicked (e) {
       this.document.querySelector('.attachment-input').click();
     },
-    function onDragOver(e) {
-      console.log("2");         
-      e.preventDefault();    
-    },
-    function onDrop(e) {
-      e.preventDefault();  
-      console.log("2");         
-
-      var files = []; 
-      if (e.dataTransfer.items) {
-        // Use DataTransferItemList interface to access the file(s)
-        for (var i = 0; i < e.dataTransfer.items.length; i++) {
-          // If dropped items aren't files, reject them
-          if (e.dataTransfer.items[i].kind === 'file') {
-            var file = e.dataTransfer.items[i].getAsFile();
-            if(file.type === "application/pdf" || file.type === "image/jpg" || file.type === "image/gif"|| file.type === "image/jpeg" || file.type === "image/bmp"||file.type === "image/png"){
-              files.push(file);           
-            }
-          }
-        }
-        this.addFiles(files)
-      } 
-    },
-    function onChange (e) {
-      var files = e.target.files;
-      this.addFiles(files)
-    },
-    function addFiles(files){
-      var errors = false;
-      for ( var i = 0 ; i < files.length ; i++ ) {
-        // skip files that exceed limit
-        if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
-          if ( ! errors ) errors = true;
-          continue;
-        }
-
-        this.data.push(this.File.create({
-          owner: this.user.id,
-          filename: files[i].name,
-          filesize: files[i].size,
-          mimeType: files[i].type,
-          data: this.BlobBlob.create({
-            blob: files[i]
-          })
-        }));
-      }
-      this.data = Array.from(this.data);
-
-      if ( errors ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorMessage, type: 'error' }));
-      }
-    }
   ]
 });

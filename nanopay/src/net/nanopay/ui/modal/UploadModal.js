@@ -158,8 +158,6 @@ foam.CLASS({
       var self = this;
           
       this
-      .on('dragstart', this.onDragStart)
-      .on('dragenter', this.onDragOver)
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
       .tag(this.ModalHeader.create({
@@ -233,35 +231,14 @@ foam.CLASS({
     function onAddAttachmentClicked (e) {
       this.document.querySelector('.attachment-input').click();
     },
-    function onDrag(e) {
-      console.log("0");      
-      e.preventDefault();    
-    },
-    function onDragStart(e) {
-      console.log("1");      
-      e.preventDefault();  
-    },
     function onDragOver(e) {
-      console.log("-");         
       e.preventDefault();    
     },
-    function onDragExit(e) {
-      console.log("-2");         
-      e.preventDefault();    
-    },
-    function onDragEnter(e) {
-      console.log("2");    
-           
-      e.preventDefault();    
-    },
-    
     function onDropOut(e) {
       e.preventDefault();  
-      console.log("-3");         
     },
     function onDrop(e) {
       e.preventDefault();  
-      console.log("3");         
       var files = []; 
       var inputFile;
       if (e.dataTransfer.items) {
@@ -280,8 +257,7 @@ foam.CLASS({
             }
           }
         }
-      }
-      else if(e.dataTransfer.files){
+      } else if(e.dataTransfer.files){
         inputFile = e.dataTransfer.files
         for (var i = 0; i < inputFile.length; i++) {
           var file = inputFile[i];
@@ -312,6 +288,7 @@ foam.CLASS({
       return false;
     },
     function onChange (e) {
+      
       var files = e.target.files;
       this.addFiles(files)
     },
@@ -324,7 +301,14 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
           continue;
         }
-
+        var isIncluded = false
+        for ( var j = 0 ; j < this.data.length ; j++ ) {
+          if( this.data[j].filename.localeCompare(files[i].name)===0){ 
+            isIncluded = true; 
+            break
+          }
+        }
+        if (isIncluded) continue ;
         this.data.push(this.File.create({
           owner: this.user.id,
           filename: files[i].name,
@@ -333,10 +317,9 @@ foam.CLASS({
           data: this.BlobBlob.create({
             blob: files[i]
           })
-        }));
+        }))
       }
       this.data = Array.from(this.data);
-
       if ( errors ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorMessage, type: 'error' }));
       }
