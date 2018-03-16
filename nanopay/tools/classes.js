@@ -36,7 +36,6 @@ var classes = [
   'net.nanopay.admin.model.QuestionnaireQuestionJunction',
   'net.nanopay.invite.InvitationTokenService',
 //  'net.nanopay.invite.InvitationEmailDAO',
-//  'net.nanopay.invite.CreateUserOnInvitationCreateDAO',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',

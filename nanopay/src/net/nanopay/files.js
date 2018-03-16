@@ -162,7 +162,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
   { name: 'net/nanopay/invite/InvitationTokenService' },
   { name: 'net/nanopay/invite/InvitationEmailDAO', flags: ['java'] },
-  { name: 'net/nanopay/invite/CreateUserOnInvitationCreateDAO', flags: ['java'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
