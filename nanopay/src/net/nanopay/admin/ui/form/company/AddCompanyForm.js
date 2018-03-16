@@ -160,11 +160,6 @@ foam.CLASS({
             return;
           }
 
-          if ( !this.validatePhone(companyInfo.phoneNumber) ) {
-            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
-            return;
-          }
-
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }
