@@ -36,8 +36,8 @@ foam.CLASS({
 
   css: `
     .stack-wrapper {
-      /* 65px for topNav || 20px for padding || 40px for footer */
-      min-height: calc(100% - 65px - 20px - 40px) !important;
+      /* 70px for topNav || 20px for padding || 40px for footer */
+      min-height: calc(100% - 70px - 20px - 40px) !important;
       padding: 10px 0;
       margin-bottom: 0 !important;
     }

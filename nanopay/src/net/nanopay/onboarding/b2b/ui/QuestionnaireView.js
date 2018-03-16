@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
+  package: 'net.nanopay.onboarding.b2b.ui',
   name: 'QuestionnaireView',
   extends: 'foam.u2.View',
 
@@ -8,8 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.ui.QuestionView',
-    'net.nanopay.invite.model.Questionnaire'
+    'net.nanopay.onboarding.b2b.ui.QuestionView',
+    'net.nanopay.onboarding.model.Questionnaire'
   ],
 
   css: `
@@ -53,7 +53,7 @@ foam.CLASS({
           .add(this.slot(function (questions) {
             return questions.forEach(function (question) {
               return self.tag({
-                class: 'net.nanopay.invite.ui.QuestionView',
+                class: 'net.nanopay.onboarding.b2b.ui.QuestionView',
                 question: question
               });
             })

@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   documentation: 'View for displaying history for compliance status',

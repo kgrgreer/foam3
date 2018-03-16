@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.model.Invitation',
+//    'net.nanopay.admin.model.Invitation',
     'net.nanopay.invite.ui.InvitationHistoryItemView'
   ],
 

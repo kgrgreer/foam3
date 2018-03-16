@@ -11,8 +11,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.Phone',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.invite.model.ComplianceStatus',
-    'net.nanopay.invite.model.InvitationStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   css: `
@@ -147,13 +147,13 @@ foam.CLASS({
             .start('td')
               .addClass(this.data.inviteStatus$.map(function (status) {
                 switch ( status ) {
-                  case self.InvitationStatus.PENDING:
+                  case self.AccountStatus.PENDING:
                     return 'Invite-Status-Pending'
-                  case self.InvitationStatus.SUBMITTED:
+                  case self.AccountStatus.SUBMITTED:
                     return 'Invite-Status-Submitted'
-                  case self.InvitationStatus.ACTIVE:
+                  case self.AccountStatus.ACTIVE:
                     return 'Invite-Status-Active'
-                  case self.InvitationStatus.DISABLED:
+                  case self.AccountStatus.DISABLED:
                     return 'Invite-Status-Disabled'
                 }
               }))

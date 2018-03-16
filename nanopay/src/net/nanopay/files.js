@@ -10,7 +10,15 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
+  { name: 'net/nanopay/admin/model/ComplianceStatus' },
+  { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
+
+  // onboarding
+  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireView', flags: ['web'] },
+
   { name: 'net/nanopay/liquidity/model/Threshold' },
   { name: 'net/nanopay/liquidity/model/Liquidity' },
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
@@ -147,23 +155,16 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   // invite
-  { name: 'net/nanopay/invite/model/ComplianceStatus' },
-  { name: 'net/nanopay/invite/model/InvitationStatus' },
-  { name: 'net/nanopay/invite/model/Invitation' },
-  { name: 'net/nanopay/invite/model/Question' },
-  { name: 'net/nanopay/invite/model/Questionnaire' },
+  { name: 'net/nanopay/onboarding/model/Question' },
+  { name: 'net/nanopay/onboarding/model/Questionnaire' },
   { name: 'net/nanopay/invite/ui/InvitationDetailView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/InvitationHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/InvitationHistoryView', flags: ['web'] },
   { name: 'net/nanopay/invite/ui/InvitationItemView', flags: ['web'] },
-  { name: 'net/nanopay/invite/ui/InvitationStatusHistoryItemView', flags: ['web']},
+  { name: 'net/nanopay/invite/ui/AccountStatusHistoryItemView', flags: ['web']},
   { name: 'net/nanopay/invite/ui/ComplianceStatusHistoryItemView', flags: ['web']},
   { name: 'net/nanopay/invite/ui/DocumentStatusHistoryItemView', flags: ['web'] },
-  { name: 'net/nanopay/invite/ui/QuestionView', flags: ['web'] },
-  { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
   { name: 'net/nanopay/invite/InvitationTokenService' },
-  { name: 'net/nanopay/invite/InvitationEmailDAO', flags: ['java'] },
-  { name: 'net/nanopay/invite/CreateUserOnInvitationCreateDAO', flags: ['java'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

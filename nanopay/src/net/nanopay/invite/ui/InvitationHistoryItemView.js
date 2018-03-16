@@ -10,7 +10,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.invite.ui.ComplianceStatusHistoryItemView',
     'net.nanopay.invite.ui.DocumentStatusHistoryItemView',
-    'net.nanopay.invite.ui.InvitationStatusHistoryItemView'
+    'net.nanopay.invite.ui.AccountStatusHistoryItemView'
   ],
 
   documentation: 'View displaying history for invitation item',
@@ -19,7 +19,7 @@ foam.CLASS({
     {
       name: 'invitationStatusHistoryItem',
       factory: function () {
-        return this.InvitationStatusHistoryItemView.create();
+        return this.AccountStatusHistoryItemView.create();
       }
     },
     {
