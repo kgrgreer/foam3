@@ -25,6 +25,11 @@ foam.CLASS({
       label: 'Clearing ID'
     },
     {
+      class: 'Boolean',
+      name: 'invited',
+      value: false
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
