@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'as view',
+    'as view'
   ],
 
   css: `
