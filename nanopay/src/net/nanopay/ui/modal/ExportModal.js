@@ -118,7 +118,7 @@ foam.CLASS({
             .start(this.DATA_TYPE).end()
             .start().addClass('label').add("Response").end()
             .start(this.NOTE).addClass('input-box note').end()
-       p          .end()
+          .end()
         .end()
       .end()
     } 
