@@ -16,7 +16,8 @@ FOAM_FILES([
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
-
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireView', flags: ['web'] },
 
   { name: 'net/nanopay/liquidity/model/Threshold' },
   { name: 'net/nanopay/liquidity/model/Liquidity' },
@@ -163,8 +164,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invite/ui/AccountStatusHistoryItemView', flags: ['web']},
   { name: 'net/nanopay/invite/ui/ComplianceStatusHistoryItemView', flags: ['web']},
   { name: 'net/nanopay/invite/ui/DocumentStatusHistoryItemView', flags: ['web'] },
-  { name: 'net/nanopay/invite/ui/QuestionView', flags: ['web'] },
-  { name: 'net/nanopay/invite/ui/QuestionnaireView', flags: ['web'] },
   { name: 'net/nanopay/invite/InvitationTokenService' },
 
   // invoice
