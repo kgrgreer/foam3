@@ -6,7 +6,7 @@ import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 
 public class Transfer
-    implements Comparable
+  implements Comparable
 {
   protected long    userId_;
   protected long    amount_;
