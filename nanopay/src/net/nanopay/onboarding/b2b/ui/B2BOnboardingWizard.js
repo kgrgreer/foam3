@@ -19,6 +19,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.title = 'Registration';
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } }
       ];
@@ -31,14 +32,14 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       code: function(X) {
-        this.stack.pop();
+        this.stack.back();
       }
     },
     {
       name: 'goNext',
       label: 'Next',
       code: function() {
-        this.stack.pop();
+        this.stack.back();
       }
     }
   ]
