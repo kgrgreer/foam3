@@ -21,7 +21,8 @@ foam.CLASS({
     function init() {
       this.title = 'Registration';
       this.views = [
-        { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } }
+        { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireView' } }
       ];
       this.SUPER();
     }
@@ -39,7 +40,8 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       code: function() {
-        this.stack.back();
+        this.subStack.push(this.views[this.subStack.pos + 1].view);
+        //this.stack.back();
       }
     }
   ]
