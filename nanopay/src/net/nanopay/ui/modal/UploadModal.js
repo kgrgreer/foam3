@@ -133,24 +133,23 @@ foam.CLASS({
   `,
 
   properties: [
-    
     {
       class: 'Boolean',
       name: 'inDropZone'
     },
-    'exportData',
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'data',
       value: this.exportData
     },
+    'exportData'
   ],
 
   messages:[
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
-    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' }
   ],
   methods: [
     function initE(){
@@ -184,8 +183,6 @@ foam.CLASS({
             .start('p').add(this.BoxText).addClass('inputText').end()
             .start('p').add(this.FileRestrictText).addClass('inputRestrictText').end()
           .end()
-          
-         
           .on('drop', this.onDrop)
           .on('click', self.onAddAttachmentClicked)
           .start('input').addClass('attachment-input')
