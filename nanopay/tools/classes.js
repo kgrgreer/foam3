@@ -31,9 +31,9 @@ var classes = [
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.admin.model.AccountStatus',
-  'net.nanopay.admin.model.Question',
-  'net.nanopay.admin.model.Questionnaire',
-  'net.nanopay.admin.model.QuestionnaireQuestionJunction',
+  'net.nanopay.onboarding.model.Question',
+  'net.nanopay.onboarding.model.Questionnaire',
+  'net.nanopay.onboarding.model.QuestionnaireQuestionJunction',
   'net.nanopay.invite.InvitationTokenService',
 
   // invoice

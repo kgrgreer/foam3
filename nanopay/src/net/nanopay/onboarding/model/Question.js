@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.model',
+  package: 'net.nanopay.onboarding.model',
   name: 'Question',
 
   description: 'Describes a single question as part of a Questionnaire',

@@ -71,7 +71,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.admin.model.Questionnaire',
+      of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
       documentation: 'Questionnaire response'
     },

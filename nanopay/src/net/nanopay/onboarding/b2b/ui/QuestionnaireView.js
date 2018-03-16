@@ -9,7 +9,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.onboarding.b2b.ui.QuestionView',
-    'net.nanopay.admin.model.Questionnaire'
+    'net.nanopay.onboarding.model.Questionnaire'
   ],
 
   css: `
