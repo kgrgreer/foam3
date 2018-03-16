@@ -330,8 +330,6 @@ foam.CLASS({
     function onDragOver(e) {
       this.isDrag = true;    
       e.preventDefault();
-      
-
-    },
+    }
   ]
 });
