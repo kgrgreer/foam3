@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
+  package: 'net.nanopay.admin.ui',
   name: 'UserDetailView',
   extends: 'foam.u2.View',
 
