@@ -323,7 +323,7 @@ foam.CLASS({
         this.activateProfilePopUp_.addClass('popUpDropDown')
           .start('div')
             .add('Disable Profile')
-            .on('click', this.disableProfile)
+            .on('click', this.disableProfile_)
           .end()
 
         this.activateProfileMenuBtn_.add(this.activateProfilePopUp_);
