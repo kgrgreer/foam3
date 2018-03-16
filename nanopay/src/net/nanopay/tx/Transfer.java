@@ -6,7 +6,7 @@ import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 
 public class Transfer
-  implements Comparable
+    implements Comparable
 {
   protected long    userId_;
   protected long    amount_;
@@ -46,14 +46,14 @@ public class Transfer
   public void validate(X x)
     throws RuntimeException
   {
-    DAO  userDAO = (DAO) x.get("userDAO");
+    DAO  userDAO = (DAO) x.get("localUserDAO");
     User user    = (User) userDAO.find(getUserId());
 
     if ( user == null ) throw new RuntimeException("Uknown user " + getUserId());
 
     user_ = user;
 
-    DAO     accountDAO = (DAO) x.get("accountDAO");
+    DAO     accountDAO = (DAO) x.get("localAccountDAO");
     Account account    = (Account) accountDAO.find(getUserId());
 
     account_ = account == null ? new Account() : account;
@@ -65,7 +65,7 @@ public class Transfer
 
   /** Execute the balance transfer, updating the user's balance. **/
   public void execute(X x) {
-    DAO     accountDAO = (DAO) x.get("accountDAO");
+    DAO     accountDAO = (DAO) x.get("localAccountDAO");
     Account account    = getAccount();
 
     account.setBalance(account.getBalance() + getAmount());
