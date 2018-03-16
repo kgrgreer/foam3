@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui.form.company',
+  package: 'net.nanopay.onboarding.b2b.ui',
   name: 'AddPrincipleOwnersForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 

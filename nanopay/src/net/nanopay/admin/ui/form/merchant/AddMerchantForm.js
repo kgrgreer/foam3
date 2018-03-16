@@ -41,7 +41,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        { parent: 'addMerchant', id: 'form-addPrincipleOwner-profile', label: 'Principle Owner(s) Profile',  view: { class: 'net.nanopay.admin.ui.form.company.AddPrincipleOwnersForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-info',      label: 'Merchant Info',    view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantInfoForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-profile',   label: 'Business Profile', view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantProfileForm' } },
         { parent: 'addMerchant', id: 'form-addMerchant-sendMoney', label: 'Send Money',       view: { class: 'net.nanopay.admin.ui.form.merchant.AddMerchantSendMoneyForm' } },
