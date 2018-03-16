@@ -65,6 +65,14 @@ foam.CLASS({
       background: #e9e9e9;
     }
 
+    ^ .foam-u2-view-TableView-selected {
+      background-color: rgba(89, 165, 213, 0.3) !important;
+    }
+
+    ^ .foam-u2-view-TableView-selected:hover {
+      background-color: rgba(89, 165, 213, 0.3) !important;
+    }
+
     ^ .animationContainer {
       position: relative;
       width: 540px;
