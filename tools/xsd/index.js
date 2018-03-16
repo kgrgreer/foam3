@@ -111,7 +111,7 @@ function preparse(docElement) {
  * Processes an XSD file and converts it to FOAM
  * @param  {String} file Raw string input from XSD file
  */
-function processFile (file) {
+function processFile (file, filename) {
   let models = [];
 
   // parse the raw string to a DOM object
@@ -214,7 +214,7 @@ if ( ! fs.existsSync(outdir) ) {
 for ( var i = 0; i < files.length; i++ ) {
   var messageClasses = [];
   var file = fs.readFileSync(indir + files[i], 'utf8');
-  let models = processFile(file);
+  let models = processFile(file, files[i]);
 
   // change generic document type to be name of ISO20022 message
   models = models.map(function (model) {
@@ -243,11 +243,7 @@ if ( ! fs.existsSync(classesOutDir) ) {
   mkdirp.sync(classesOutDir);
 }
 
-let classesOutput = '';
-for ( var key in simpleTypes ) {
-  classesOutput += 'require(\'./' + key + '.js\');\n';
-}
-
+let classesOutput = 'require(\'./files.js\');\n\n';
 classesOutput += `var classes = ${modelToStr(classes)};
 var abstractClasses = [];
 var skeletons = [];
