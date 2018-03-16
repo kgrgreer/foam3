@@ -29,15 +29,14 @@ var classes = [
   'net.nanopay.liquidity.model.Liquidity',
 
   // invite
-  'net.nanopay.invite.model.ComplianceStatus',
-  'net.nanopay.invite.model.InvitationStatus',
-  'net.nanopay.invite.model.Invitation',
-  'net.nanopay.invite.model.Question',
-  'net.nanopay.invite.model.Questionnaire',
-  'net.nanopay.invite.model.QuestionnaireQuestionJunction',
+  'net.nanopay.admin.model.ComplianceStatus',
+  'net.nanopay.admin.model.AccountStatus',
+  'net.nanopay.admin.model.Question',
+  'net.nanopay.admin.model.Questionnaire',
+  'net.nanopay.admin.model.QuestionnaireQuestionJunction',
   'net.nanopay.invite.InvitationTokenService',
-  'net.nanopay.invite.InvitationEmailDAO',
-  'net.nanopay.invite.CreateUserOnInvitationCreateDAO',
+//  'net.nanopay.invite.InvitationEmailDAO',
+//  'net.nanopay.invite.CreateUserOnInvitationCreateDAO',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',

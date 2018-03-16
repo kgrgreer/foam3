@@ -7,8 +7,8 @@ foam.CLASS({
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.invite.model.ComplianceStatus',
-    'net.nanopay.invite.model.InvitationStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   imports: [
@@ -204,25 +204,25 @@ foam.CLASS({
             .add(this.slot(function (complianceStatus, inviteStatus) {
               if ( complianceStatus == self.ComplianceStatus.REQUESTED ) {
                 switch ( inviteStatus ) {
-                  case self.InvitationStatus.PENDING:
+                  case self.AccountStatus.PENDING:
                     return this.E('span').start(self.EDIT_INVITE, null, self.editInviteMenuBtn_$).end();
 
-                  case self.InvitationStatus.SUBMITTED:
+                  case self.AccountStatus.SUBMITTED:
                     return this.E('span')
                       .start(self.APPROVE_PROFILE_DROP_DOWN, null, self.approveProfileMenuBtn_$).end()
                       .start(self.APPROVE_PROFILE).end()
                 }
               } else if ( complianceStatus == self.ComplianceStatus.PASSED ) {
                 switch ( inviteStatus ) {
-                  case self.InvitationStatus.SUBMITTED:
+                  case self.AccountStatus.SUBMITTED:
                     return this.E('span')
                       .start(self.ACTIVATE_PROFILE_DROP_DOWN, null, self.activateProfileMenuBtn_$).end()
                       .start(self.ACTIVATE_PROFILE).end()
 
-                  case self.InvitationStatus.ACTIVE:
+                  case self.AccountStatus.ACTIVE:
                     return this.E('span').start(self.DISABLE_PROFILE).end();
 
-                  case self.InvitationStatus.DISABLED:
+                  case self.AccountStatus.DISABLED:
                     return this.E('span').start(self.ACTIVATE_PROFILE).end();
                 }
               }
@@ -297,7 +297,7 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var toActivate = this.data.clone();
-        toActivate.inviteStatus = this.InvitationStatus.ACTIVE;
+        toActivate.inviteStatus = this.AccountStatus.ACTIVE;
 
         this.invitationDAO.put(toActivate)
         .then(function (result) {
@@ -387,7 +387,7 @@ foam.CLASS({
       var self = this;
 
       var toDisable = this.data.clone();
-      toDisable.inviteStatus = this.InvitationStatus.DISABLED;
+      toDisable.inviteStatus = this.AccountStatus.DISABLED;
 
       this.invitationDAO.put(toDisable)
       .then(function (result) {

@@ -135,7 +135,7 @@ public class LiquidityCron
         alert.setBalance(balance);
         alert.setMinBalance(limit);
         alert.setBankName(bank.getOrganization());
-        alert.setStatus(bank.getStatus());
+        alert.setStatus(bank.getStatus().name());
         alert.setThreshold(threshold.getId());
         alert.setUser(bank.getId());
         balanceAlertDAO_.put(alert);

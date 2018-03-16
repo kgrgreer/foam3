@@ -104,8 +104,8 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.invite.model.Questionnaire',
-  targetModel: 'net.nanopay.invite.model.Question',
+  sourceModel: 'net.nanopay.admin.model.Questionnaire',
+  targetModel: 'net.nanopay.admin.model.Question',
   cardinality: '*:*',
   forwardName: 'questions',
   inverseName: 'questionnaires'

@@ -14,7 +14,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.Email',
     'foam.util.SafetyUtil',
-    'net.nanopay.invite.model.Invitation',
     'static foam.mlang.MLang.EQ'
   ],
 

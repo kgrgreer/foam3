@@ -1,6 +1,6 @@
 foam.ENUM({
-  package: 'net.nanopay.invite.model',
-  name: 'InvitationStatus',
+  package: 'net.nanopay.admin.model',
+  name: 'AccountStatus',
 
   documentation: 'Invitation status (pending, active, disabled)',
 

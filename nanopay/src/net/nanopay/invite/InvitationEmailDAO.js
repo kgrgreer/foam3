@@ -9,7 +9,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.email.EmailTokenService',
-    'net.nanopay.invite.model.Invitation'
+//    'net.nanopay.admin.model.Invitation'
   ],
 
   methods: [

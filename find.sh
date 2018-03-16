@@ -24,7 +24,6 @@ declare -a arr=(
   "exportDriverRegistrys"
   "groups"
   "institutions"
-  "invitations"
   "languages"
   "menus"
   "payoutOptions"

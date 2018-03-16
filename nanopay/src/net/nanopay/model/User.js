@@ -25,24 +25,25 @@ foam.CLASS({
       label: 'Clearing ID'
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
-      tableCellFormatter: function(status) {
+      tableCellFormatter: function (status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
         var textColour = '#ffffff';
-        if ( status == 'Submitted' ) {
+        if ( status.label == 'Submitted' ) {
           bgColour = 'transparent';
           borderColour = '#2cab70';
           textColour = '#2cab70';
-        } else if ( status == 'Active' ) {
+        } else if ( status.label == 'Active' ) {
           bgColour = '#2cab70';
           borderColour = '#2cab70';
           textColour = '#ffffff';
         }
-        if ( status != '' ) {
+        if ( status.label != '' ) {
           this.start()
-            .add(status)
+            .add(status.label)
             .style({
               'color': textColour,
               'border': '1px solid ' + borderColour,
@@ -54,6 +55,25 @@ foam.CLASS({
           .end()
         }
       }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      tableCellFormatter: function (status) {
+        return status.label;
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.admin.model.Questionnaire',
+      name: 'questionnaire',
+      documentation: 'Questionnaire response'
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'additionalDocuments',
+      documentation: 'Additional documents for compliance verification'
     },
     {
       class: 'String',
