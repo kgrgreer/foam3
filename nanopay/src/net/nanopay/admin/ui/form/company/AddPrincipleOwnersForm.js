@@ -17,10 +17,6 @@ foam.CLASS({
     'validateAddress'
   ],
 
-  exports: [
-    'principleOwnersDAO'
-  ],
-
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -44,9 +40,12 @@ foam.CLASS({
       margin-bottom: 20px;
     }
 
-    ^ .hideTable {
-      height: 0;
+    ^ .fullWidthField.hideTable {
+      height: 0 !important;
       overflow: hidden;
+      margin-bottom: 0 !important;
+      transform: translateY(-40px);
+      opacity: 0;
     }
 
     ^ table {
@@ -60,6 +59,10 @@ foam.CLASS({
 
     ^ .foam-u2-view-TableView tbody > tr {
       height: 30px;
+    }
+
+    ^ .foam-u2-view-TableView tbody > tr:hover {
+      background: #e9e9e9;
     }
 
     ^ .animationContainer {
@@ -102,6 +105,12 @@ foam.CLASS({
 
     ^ .fullWidthField {
       width: 540px;
+
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
+      transition: all 0.15s linear;
     }
 
     ^ .fullWidthField:focus {
@@ -272,18 +281,40 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-addPrincipleOwner {
       width: 540px;
       height: 40px;
-      border-radius: 2px;
-      background-color: #59a5d5;
 
       font-size: 14px;
 
       margin-top: 50px;
     }
 
+    ^ .net-nanopay-ui-ActionView-delete {
+      background-color: rgba(216, 30, 5, 0.3) !important;
+      border: solid 1px #d81e05 !important;
+      color: #d81e05 !important;
+      margin-left: 10px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-delete:hover {
+      background-color: #d81e05 !important;
+      color: white !important;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelEdit {
+      color: black !important;
+      background-color: rgba(164, 179, 184, 0.1) !important;
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8) !important;
+      float: right;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelEdit:hover {
+      background-color: rgba(164, 179, 184, 0.3) !important;
+    }
+
     ^ .net-nanopay-ui-ActionView {
       color: white;
       font-size: 12px;
       outline: none;
+      background-color: #59a5d5;
     }
 
     ^ .net-nanopay-ui-ActionView:focus {
@@ -341,6 +372,14 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView:focus {
       border: solid 1px #59A5D5;
     }
+
+    ^ .foam-u2-TextField:disabled,
+    ^ .foam-u2-DateView:disabled,
+    ^ .foam-u2-tag-Select:disabled,
+    ^ .net-nanopay-ui-ActionView:disabled {
+      border: solid 1px rgba(164, 179, 184, 0.5) !important;
+      color: #a4b3b8 !important;
+    }
   `,
 
   messages: [
@@ -370,19 +409,28 @@ foam.CLASS({
       name: 'principleOwnersDAO',
       factory: function() {
         if ( this.viewData.principleOwners ) {
+          console.log('hitme');
           return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners });
         }
+        console.log('hitmebabyonemoretime');
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
     },
     {
+      name: 'selectedPrincipleOwner',
+      preSet: function(oldValue, newValue) {
+      if ( newValue != null ) this.editPrincipleOwner(newValue);
+        return newValue;
+      }
+    },
+    {
       class: 'Boolean',
-      name: 'hasPrincipleOwners',
+      name: 'principleOwnersCount',
       factory: function() {
         // In case we load from a save state
         // TODO: REQUIRES TESTING
         this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
-          return c.value > 0;
+          return c.value;
         });
       }
     },
@@ -444,8 +492,8 @@ foam.CLASS({
       value: '+1'
     },
     {
-      name: 'phoneCountryCodeField',
       class: 'String',
+      name: 'phoneCountryCodeField',
       value: '+1'
     },
     'phoneNumberFieldElement',
@@ -523,6 +571,11 @@ foam.CLASS({
       class: 'String',
       name: 'addLabel',
       value: 'Add'
+    },
+    {
+      class: 'Boolean',
+      name: 'isDisplayMode',
+      value: false
     }
   ],
 
@@ -536,13 +589,33 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      var modeSlot = this.isDisplayMode$.map(function(b) { return b ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW; });
       this.addClass(this.myClass())
         .start('div')
           // TODO: TABLE SHOULD GO HERE
-          .start(this.PrincipleOwnerTableView)
+          .start('div')
             .addClass('fullWidthField')
-            .enableClass('hideTable', this.hasPrincipleOwners$, true)
+            .enableClass('hideTable', this.principleOwnersCount$.map(function(c) { return c > 0; }), true)
+            .start({
+              class: 'foam.u2.view.TableView',
+              data$: this.principleOwnersDAO$,
+              editColumnsEnabled: false,
+              selection$: this.selectedPrincipleOwner$,
+              columns: [
+                'legalName', 'jobTitle', 'principleType'
+              ]
+            }).end()
           .end()
+
+          .start('div')
+            .addClass('fullWidthField')
+            .style({ 'margin-bottom':'30px' })
+            .enableClass('hideTable', this.selectedPrincipleOwner$.map(function(selected) { return selected ? true : false; }), true)
+            .start(this.EDIT).end()
+            .start(this.DELETE).end()
+            .start(this.CANCEL_EDIT).end()
+          .end()
+
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
 
           .start('div').addClass('animationContainer')
@@ -550,7 +623,7 @@ foam.CLASS({
               .addClass('displayContainer')
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_LEGAL_NAME)
+                .start(this.DISPLAYED_LEGAL_NAME, { mode$: modeSlot })
                   .addClass('fullWidthField')
                   .addClass('displayOnly')
                   .on('focus', function() {
@@ -567,7 +640,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD, {}, this.firstNameFieldElement$)
+                    .start(this.FIRST_NAME_FIELD, { mode$: modeSlot }, this.firstNameFieldElement$)
                       .addClass('fields')
                     .end()
                 .end()
@@ -575,7 +648,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('middleName', this.isEditingName$, true)
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
-                    .start(this.MIDDLE_NAME_FIELD)
+                    .start(this.MIDDLE_NAME_FIELD, { mode$: modeSlot })
                       .addClass('fields')
                     .end()
                 .end()
@@ -583,7 +656,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('lastName', this.isEditingName$, true)
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
-                    .start(this.LAST_NAME_FIELD)
+                    .start(this.LAST_NAME_FIELD, { mode$: modeSlot })
                       .addClass('fields')
                     .end()
                 .end()
@@ -595,9 +668,9 @@ foam.CLASS({
               self.isEditingName = false;
             })
             .start('p').add(this.JobTitleLabel).addClass('infoLabel').end()
-            .start(this.JOB_TITLE_FIELD).addClass('fullWidthField').end()
+            .start(this.JOB_TITLE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
-            .start(this.EMAIL_ADDRESS_FIELD).addClass('fullWidthField').end()
+            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
 
             .start('div')
               .style({ 'margin-top': '20px' })
@@ -606,7 +679,7 @@ foam.CLASS({
                 .addClass('displayContainer')
                 .enableClass('hidden', this.isEditingPhone$)
                 .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_PHONE_NUMBER)
+                .start(this.DISPLAYED_PHONE_NUMBER, { mode$: modeSlot })
                   .addClass('fullWidthField')
                   .addClass('displayOnly')
                   .on('focus', function() {
@@ -624,7 +697,7 @@ foam.CLASS({
                   .addClass('phoneCountryCodeCol')
                   .enableClass('out', this.isEditingPhone$, true)
                   .start('div').add(this.CountryCodeLabel).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
-                  .start(this.PHONE_COUNTRY_CODE_FIELD, { visibility: foam.u2.Visibility.DISABLED })
+                  .start(this.PHONE_COUNTRY_CODE_FIELD, { mode: foam.u2.DisplayMode.DISABLED })
                     .addClass('fields')
                     .on('focus', function() {
                       this.blur();
@@ -637,7 +710,7 @@ foam.CLASS({
                   .addClass('phoneNumberCol')
                   .enableClass('out', this.isEditingPhone$, true)
                   .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                  .start(this.PHONE_NUMBER_FIELD, {}, this.phoneNumberFieldElement$)
+                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot }, this.phoneNumberFieldElement$)
                     .addClass('fields')
                     .on('focus', function() {
                       self.isEditingPhone = true;
@@ -652,41 +725,41 @@ foam.CLASS({
 
             .start('p').add(this.PrincipleTypeLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
-              .tag(this.PRINCIPLE_TYPE_FIELD)
+              .tag(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlot })
               .start('div').addClass('caret').end()
             .end()
             .start('p').add(this.DateOfBirthLabel).addClass('infoLabel').end()
-            .start(this.BIRTHDAY_FIELD).addClass('fullWidthField').end()
+            .start(this.BIRTHDAY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
 
             // ADDRESS INFO
             .start('p').add(this.ResidentialAddressLabel).addClass('sectionTitle').end()
             .start('p').add(this.CountryLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
-              .start(this.COUNTRY_FIELD).end()
+              .start(this.COUNTRY_FIELD, { mode$: modeSlot }).end()
               .start('div').addClass('caret').end()
             .end()
             .start('div').addClass('streetContainer')
               .start('div').addClass('streetFieldCol')
                 .start('p').add(this.StreetNumberLabel).addClass('infoLabel').end()
-                .start(this.STREET_NUMBER_FIELD).addClass('fullWidthField').addClass('streetNumberField').end()
+                .start(this.STREET_NUMBER_FIELD, { mode$: modeSlot }).addClass('fullWidthField').addClass('streetNumberField').end()
               .end()
               .start('div').addClass('streetFieldCol')
                 .start('p').add(this.StreetNameLabel).addClass('infoLabel').end()
-                .start(this.STREET_NAME_FIELD).addClass('fullWidthField').addClass('streetNameField').end()
+                .start(this.STREET_NAME_FIELD, { mode$: modeSlot }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
             .start('p').add(this.AddressLabel).addClass('infoLabel').end()
-            .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
+            .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
-              .start(this.PROVINCE_FIELD).end()
+              .start(this.PROVINCE_FIELD, { mode$: modeSlot }).end()
               .start('div').addClass('caret').end()
             .end()
             .start('p').add(this.CityLabel).addClass('infoLabel').end()
-            .start(this.CITY_FIELD).addClass('fullWidthField').end()
+            .start(this.CITY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
-            .start(this.POSTAL_CODE_FIELD).addClass('fullWidthField').end()
-            .start(this.ADD_PRINCIPLE_OWNER, { label$: this.addLabel$ }).end()
+            .start(this.POSTAL_CODE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start(this.ADD_PRINCIPLE_OWNER, { label$: this.addLabel$, mode$: modeSlot }).end()
           .end()
         .end();
     },
@@ -712,6 +785,8 @@ foam.CLASS({
       this.postalCodeField = '';
 
       this.addLabel = 'Add';
+      this.selectedPrincipleOwner = undefined;
+      this.isDisplayMode = false;
 
       this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
       this.document.body.scrollTop = 0; // For Safari
@@ -725,7 +800,8 @@ foam.CLASS({
       this.isEditingName = false; // This will change displayedLegalName as well
       this.jobTitleField = user.jobTitle;
       this.emailAddressField = user.email;
-      // TODO: Phone number
+      this.phoneNumberField = this.extractPhoneNumber(user.phone);
+      this.isEditingPhone = false;
       this.principleTypeField = user.principleType;
       this.birthdayField = user.birthday;
 
@@ -738,10 +814,44 @@ foam.CLASS({
       this.postalCodeField = user.address.postalCode;
 
       this.addLabel = 'Update';
+
+      this.isDisplayMode = true;
+    },
+
+    function extractPhoneNumber(phone) {
+      return phone.number.substring(2);
     }
   ],
 
   actions: [
+    {
+      name: 'edit',
+      label: 'Edit',
+      isAvailable: function(isDisplayMode) {
+        return isDisplayMode;
+      },
+      code: function() {
+        this.isDisplayMode = false;
+      }
+    },
+    {
+      name: 'delete',
+      label: 'Delete',
+      isAvailable: function(isDisplayMode) {
+        return isDisplayMode;
+      },
+      code: function() {
+        this.principleOwnersDAO.remove(this.selectedPrincipleOwner);
+        this.clearFields();
+      }
+    },
+    {
+      name: 'cancelEdit',
+      label: 'Cancel',
+      code: function() {
+        this.clearFields();
+      }
+    },
     {
       name: 'addPrincipleOwner',
       code: function() {
@@ -792,31 +902,40 @@ foam.CLASS({
           return;
         }
 
-        var newPrincipleOwner = this.User.create({
-          firstName: this.firstNameField,
-          middleName: this.middleNameField,
-          lastName: this.lastNameField,
-          email: this.emailAddressField,
-          phone: this.Phone.create({
-            number: this.phoneCountryCodeField + this.phoneNumberField
-          }),
-          birthday: this.birthdayField,
-          address: this.Address.create({
-            streetNumber: this.streetNumberField,
-            streetName: this.streetNameField,
-            address2: this.addressField,
-            city: this.cityField,
-            postalCode: this.postalCodeField,
-            countryId: this.countryField,
-            regionId: this.provinceField
-          }),
-          jobTitle: this.jobTitleField,
-          principleType: this.principleTypeField
-        });
-
         var self = this;
+
+        var principleOwner;
+
+        if ( this.selectedPrincipleOwner ) {
+          principleOwner = this.selectedPrincipleOwner;
+        } else {
+          principleOwner = this.User.create({
+            id: this.principleOwnersCount + 1
+          });
+        }
+
+        principleOwner.firstName = this.firstNameField,
+        principleOwner.middleName = this.middleNameField,
+        principleOwner.lastName = this.lastNameField,
+        principleOwner.email = this.emailAddressField,
+        principleOwner.phone = this.Phone.create({
+          number: this.phoneCountryCodeField + this.phoneNumberField
+        }),
+        principleOwner.birthday = this.birthdayField,
+        principleOwner.address = this.Address.create({
+          streetNumber: this.streetNumberField,
+          streetName: this.streetNameField,
+          address2: this.addressField,
+          city: this.cityField,
+          postalCode: this.postalCodeField,
+          countryId: this.countryField,
+          regionId: this.provinceField
+        }),
+        principleOwner.jobTitle= this.jobTitleField,
+        principleOwner.principleType= this.principleTypeField
+
         // TODO?: Maybe add a loading indicator?
-        this.principleOwnersDAO.put(newPrincipleOwner).then(function(npo) {
+        this.principleOwnersDAO.put(principleOwner).then(function(npo) {
           self.clearFields();
         });
       }
@@ -827,40 +946,8 @@ foam.CLASS({
     function onDAOChange() {
       var self = this;
       this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
-        self.hasPrincipleOwners = c.value > 0;
+        self.principleOwnersCount = c.value;
       });
-    }
-  ],
-
-  classes: [
-    {
-      name: 'PrincipleOwnerTableView',
-      extends: 'foam.u2.View',
-
-      requires: [ 'foam.nanos.auth.User' ],
-      imports: [ 'principleOwnersDAO' ],
-
-      properties: [
-        'selection',
-        { name: 'data', factory: function() { return this.principleOwnersDAO; }}
-      ],
-
-      methods: [
-        function initE() {
-          this.SUPER();
-
-          this
-            .start({
-              class: 'foam.u2.view.TableView',
-              editColumnsEnabled: false,
-              selection$: this.selection$,
-              data: this.data,
-              columns: [
-                'legalName', 'jobTitle', 'principleType'
-              ],
-            }).end();
-        }
-      ]
     }
   ]
 });
