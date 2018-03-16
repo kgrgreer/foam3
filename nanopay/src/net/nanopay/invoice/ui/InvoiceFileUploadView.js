@@ -60,7 +60,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .add('Attachment')
+          .add('Attachments')
           .add(this.slot(function (data) {
             var e = this.E();
             for ( var i = 0 ; i < data.length ; i++ ) {
