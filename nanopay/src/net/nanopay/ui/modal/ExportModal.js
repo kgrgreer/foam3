@@ -118,6 +118,7 @@ foam.CLASS({
             .start(this.DATA_TYPE).end()
             .start().addClass('label').add("Response").end()
             .start(this.NOTE).addClass('input-box note').end()
+            .start(this.CONVERT).addClass('blue-button btn').end()
           .end()
         .end()
       .end()
