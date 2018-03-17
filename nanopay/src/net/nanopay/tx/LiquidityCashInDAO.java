@@ -23,7 +23,7 @@ import static foam.mlang.MLang.EQ;
 
 
 public class LiquidityCashInDAO
-    extends ProxyDAO {
+  extends ProxyDAO {
   protected DAO userDAO_;
   protected DAO liquiditySettingsDAO_;
   protected DAO accountDAO_;
@@ -81,16 +81,17 @@ public class LiquidityCashInDAO
     }
 
     // if the user's balance is not enough to make the payment, do cash in first
+    if(txn.getBankAccountId() != null )
+      total = 0;
     if ( payerAccount.getBalance() - payerMinBalance < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
-        long cashInAmount = total - payerAccount.getBalance();
-        if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
-          cashInAmount += payerMinBalance;
-        }
-        if ( checkBankAccountAvailable(payerBankAccountID) ) {
-          addCICOTransaction(payerId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, x);
-        } else {
-          throw new RuntimeException("Please add and verify your bank account to cash in");
+        long cashInAmount = total + payerMinBalance - payerAccount.getBalance();
+        if (ifCheckRangePerTransaction(payerLiquiditySetting)) {
+          if (checkBankAccountAvailable(payerBankAccountID)) {
+            addCICOTransaction(payerId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, x);
+          } else {
+            throw new RuntimeException("Please add and verify your bank account to cash in");
+          }
         }
       } else {
         throw new RuntimeException("balance is insufficient");
@@ -111,15 +112,15 @@ public class LiquidityCashInDAO
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
    */
   public void addCICOTransaction(long userId, long amount, long bankAccountId, TransactionType transactionType, X
-      x) throws
-      RuntimeException {
+    x) throws
+    RuntimeException {
     Transaction transaction = new Transaction.Builder(x)
-        .setPayeeId(userId)
-        .setPayerId(userId)
-        .setAmount(amount)
-        .setType(transactionType)
-        .setBankAccountId(bankAccountId)
-        .build();
+      .setPayeeId(userId)
+      .setPayerId(userId)
+      .setAmount(amount)
+      .setType(transactionType)
+      .setBankAccountId(bankAccountId)
+      .build();
     DAO txnDAO = (DAO) x.get("transactionDAO");
     txnDAO.put_(x, transaction);
   }
@@ -132,17 +133,17 @@ public class LiquidityCashInDAO
     // bank account which is enable for this user
     if ( liquiditySettings.getBankAccountId() == 0 ) {
       bankAccount = (BankAccount) bankAccountDAO_.find(
-          AND(
-              EQ(BankAccount.OWNER, userID),
-              EQ(BankAccount.STATUS, "Verified")
-          ));
+        AND(
+          EQ(BankAccount.OWNER, userID),
+          EQ(BankAccount.STATUS, "Verified")
+        ));
     } else {
       bankAccount = (BankAccount) bankAccountDAO_.find(
-          AND(
-              EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
-              EQ(BankAccount.OWNER, liquiditySettings.getId()),
-              EQ(BankAccount.STATUS, "Verified")
-          ));
+        AND(
+          EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
+          EQ(BankAccount.OWNER, liquiditySettings.getId()),
+          EQ(BankAccount.STATUS, "Verified")
+        ));
     }
     //if bank account is null we will return -1, because our bank account id will never be negative
     if ( bankAccount == null )
@@ -161,7 +162,7 @@ public class LiquidityCashInDAO
   public LiquiditySettings getLiquiditySettings(User user) {
     // if user don't have liquidity settings we return the default settings of user's group
     return liquiditySettingsDAO_.find(user.getId()) == null ? ( (Group) groupDAO_.find(user.getGroup()) )
-        .getLiquiditySettings() : (LiquiditySettings) liquiditySettingsDAO_.find(user.getId());
+      .getLiquiditySettings() : (LiquiditySettings) liquiditySettingsDAO_.find(user.getId());
   }
 
   public boolean checkCashInStatus(LiquiditySettings liquiditySettings) {
