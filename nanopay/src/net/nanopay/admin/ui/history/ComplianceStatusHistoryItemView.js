@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
-  name: 'AccountStatusHistoryItemView',
+  package: 'net.nanopay.admin.ui.history',
+  name: 'ComplianceStatusHistoryItemView',
   extends: 'foam.u2.View',
 
   implements: [
@@ -8,10 +8,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
-  documentation: 'View for displaying history for invitation status',
+  documentation: 'View for displaying history for compliance status',
 
   css: `
     ^ .iconPosition {
@@ -61,40 +61,32 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'inviteStatus') ||
-        { newValue: this.AccountStatus.PENDING.ordinal };
+      var status = record.updates.find(u => u.name == 'compliance') ||
+        { newValue: this.ComplianceStatus.REQUESTED.ordinal };
 
       switch ( status.newValue ) {
-        case this.AccountStatus.PENDING.ordinal:
+        case this.ComplianceStatus.REQUESTED.ordinal:
           return {
-            title: 'Account was created',
-            labelText: 'Pending',
-            labelDecoration: 'Invite-Status-Pending',
-            icon: 'images/ic-created.svg'
+            title: 'Compliance check',
+            labelText: 'Requested',
+            labelDecoration: 'Compliance-Status-Requested',
+            icon: 'images/ic-pending.svg'
           };
 
-        case this.AccountStatus.SUBMITTED.ordinal:
+        case this.ComplianceStatus.PASSED.ordinal:
           return {
-            title: 'Registration',
-            labelText: 'Submitted',
-            labelDecoration: 'Invite-Status-Submitted',
-            icon: 'images/ic-received.svg'
+            title: 'Compliance check',
+            labelText: 'Passed',
+            labelDecoration: 'Compliance-Status-Passed',
+            icon: 'images/ic-compliance.svg'
           };
 
-        case this.AccountStatus.ACTIVE.ordinal:
+        case this.ComplianceStatus.FAILED.ordinal:
           return {
-            title: 'Account activated',
-            labelText: 'Active',
-            labelDecoration: 'Invite-Status-Active',
-            icon: 'images/ic-approve.svg'
-          };
-
-        case this.AccountStatus.DISABLED.ordinal:
-          return {
-            title: 'Account',
-            labelText: 'Disabled',
-            labelDecoration: 'Invite-Status-Disabled',
-            icon: 'images/ic-void.svg'
+            title: 'Compliance check',
+            labelText: 'Failed',
+            labelDecoration: 'Compliance-Status-Failed',
+            icon: 'images/ic-overdue.svg'
           };
       }
     },
@@ -109,7 +101,6 @@ foam.CLASS({
 
     function outputRecord(parentView, record) {
       var attributes = this.getAttributes(record);
-
       return parentView
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })

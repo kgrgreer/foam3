@@ -13,7 +13,7 @@ foam.CLASS({
 
   imports: [
     'window',
-    'invitationDAO'
+    'userDAO'
   ],
 
   exports: [
@@ -172,7 +172,7 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
-    ^ .net-nanopay-invite-ui-InvitationHistoryView {
+    ^ .net-nanopay-admin-ui-history-UserHistoryView {
       width: 1240px;
       margin: 0 auto;
     }
@@ -230,8 +230,9 @@ foam.CLASS({
           .end()
         .end()
         .tag({ class: 'net.nanopay.admin.ui.UserItemView', data$: this.data$ })
-//        .br()
-//        .tag({ class: 'net.nanopay.invite.ui.InvitationHistoryView', id: this.data.id })
+        .br()
+        .tag({ class: 'net.nanopay.admin.ui.history.UserHistoryView', id: this.data.id })
+
     }
 
   ],
@@ -259,7 +260,7 @@ foam.CLASS({
         var toApprove = this.data.clone();
         toApprove.compliance = this.ComplianceStatus.PASSED;
 
-        this.invitationDAO.put(toApprove)
+        this.userDAO.put(toApprove)
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to approve profile.');
           self.data.copyFrom(result);
@@ -299,7 +300,7 @@ foam.CLASS({
         var toActivate = this.data.clone();
         toActivate.status = this.AccountStatus.ACTIVE;
 
-        this.invitationDAO.put(toActivate)
+        this.userDAO.put(toActivate)
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to activate profile.');
           self.data.copyFrom(result);
@@ -389,7 +390,7 @@ foam.CLASS({
       var toDisable = this.data.clone();
       toDisable.status = this.AccountStatus.DISABLED;
 
-      this.invitationDAO.put(toDisable)
+      this.userDAO.put(toDisable)
       .then(function (result) {
         if ( ! result ) throw new Error('Unable to disable profile');
         self.data.copyFrom(result);
