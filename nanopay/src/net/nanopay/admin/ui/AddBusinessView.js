@@ -509,7 +509,8 @@ foam.CLASS({
         type: 'Business',
         status: 'Pending',
         phone: businessPhone,
-        invited: true
+        invited: true,
+        invitedBy: this.user.id
       });
 
       if ( newBusiness.errors_ ) {
