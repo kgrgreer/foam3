@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
+  package: 'net.nanopay.admin.ui.history',
   name: 'DocumentStatusHistoryItemView',
   extends: 'foam.u2.View',
 
@@ -78,6 +78,7 @@ foam.CLASS({
             labelText: file.filename,
             icon: 'images/ic-attachment-round.svg'
           });
+          this.files[file.id] = true;
         }
       }
       return attributes;

@@ -57,11 +57,11 @@ nanopay/src/net/nanopay/fx/ascendantfx/model/
 nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/refinements.js
 
-
 # sha256 folder
 sha256/
 
 # Service files
+/journals
 /accounts
 /balanceAlerts
 /bankAccounts
@@ -91,8 +91,6 @@ sha256/
 /identification
 /indiaTransactions
 /institutions
-/invitations
-/invitationHistory
 /invoiceHistory
 /invoiceResolutions
 /invoices
@@ -121,3 +119,5 @@ sha256/
 /transactionPurposes
 /transactions
 /users
+/userHistory
+/userUserJunction

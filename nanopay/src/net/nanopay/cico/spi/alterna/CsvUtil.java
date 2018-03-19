@@ -1,9 +1,13 @@
 package net.nanopay.cico.spi.alterna;
 
+import foam.dao.Sink;
+import foam.dao.ArraySink;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
@@ -16,6 +20,9 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static foam.mlang.MLang.EQ;
 
@@ -90,6 +97,19 @@ public class CsvUtil {
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
+    // add a set to store all CICO Transactionas and their status change to Accept
+    ArraySink acceptTransactions = new ArraySink();
+    transactionDAO.where(
+        OR(
+            EQ(Transaction.CICO_STATUS, TransactionStatus.ACCEPTED),
+            EQ(Transaction.CICO_STATUS, TransactionStatus.DECLINED),
+            EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING))
+    ).select(acceptTransactions);
+    Set<Long> acceptTransactionsSet = new HashSet();
+    for ( Object txn : acceptTransactions.getArray() ) {
+      acceptTransactionsSet.add(( (Transaction) txn ).getId());
+    }
+
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
 
@@ -99,6 +119,9 @@ public class CsvUtil {
           User user = null;
           String txnType = null;
           Transaction t = (Transaction) obj;
+          // if CICO Transaction is accept, it will not add to CSV file
+          if ( acceptTransactionsSet.contains(Long.valueOf(t.getId())) )
+            return;
 
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION ) {

@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
@@ -23,16 +24,18 @@ public class LiquidityCashOutDAO extends ProxyDAO {
   protected DAO accountDAO_;
   protected DAO bankAccountDAO_;
   protected DAO groupDAO_;
+  protected Logger logger_;
 
   public LiquidityCashOutDAO(X x, DAO delegate) {
     setDelegate(delegate);
     setX(x);
     // initialize our DAO
-    userDAO_              = (DAO) x.get("localUserDAO");
-    bankAccountDAO_       = (DAO) x.get("localBankAccountDAO");
-    accountDAO_           = (DAO) x.get("localAccountDAO");
+    userDAO_ = (DAO) x.get("localUserDAO");
+    bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
+    accountDAO_ = (DAO) x.get("localAccountDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
-    groupDAO_             = (DAO) x.get("groupDAO");
+    groupDAO_ = (DAO) x.get("groupDAO");
+    logger_ = (Logger) x.get("logger");
   }
 
   @Override
@@ -78,8 +81,13 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     }
 
     // if the user's balance bigger than the liquidity maxbalance, do cash out
-    liquidityPayerCashOut(x, payerLiquiditySetting, payerAccount, txn.getTotal(), payerBankAccountID);
-    liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
+    try {
+      liquidityPayerCashOut(x, payerLiquiditySetting, payerAccount, txn.getTotal(), payerBankAccountID);
+      liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
+    } catch ( RuntimeException rexp ) {
+      // Do nothing if cash out is not success, cash out is not a necessary process for the payer to pay money
+      logger_.error(rexp.getMessage());
+    }
     return originalTx;
   }
 
