@@ -82,13 +82,19 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
+      isAvailable: function(position) {
+        return position > 0;
+      },
       code: function(X) {
-        this.stack.back();
+        this.subStack.back();
       }
     },
     {
       name: 'goNext',
       label: 'Next',
+      isEnabled: function(position) {
+        return position < this.views.length - 1;
+      },
       code: function() {
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }

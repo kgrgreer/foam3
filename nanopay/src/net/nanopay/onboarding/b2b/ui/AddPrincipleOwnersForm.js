@@ -416,7 +416,7 @@ foam.CLASS({
       name: 'principleOwnersDAO',
       factory: function() {
         if ( this.viewData.principleOwners ) {
-          return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners });
+          return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
@@ -433,7 +433,6 @@ foam.CLASS({
       name: 'principleOwnersCount',
       factory: function() {
         // In case we load from a save state
-        // TODO: REQUIRES TESTING
         this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
           return c.value;
         });
