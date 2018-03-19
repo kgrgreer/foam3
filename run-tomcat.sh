@@ -8,6 +8,8 @@ function testcatalina {
     if [ -x "$1/bin/catalina.sh" ]; then
         printf "found. ( $1 )\n"
         export CATALINA_HOME="$1"
+        export CATALINA_PID="/tmp/catalina_pid"
+        touch "$CATALINA_PID"
     fi
 }
 
@@ -47,7 +49,7 @@ function status_tomcat {
 
 function shutdown_tomcat {
     printf "stopping tomcat..."
-    "$CATALINA_HOME/bin/shutdown.sh" > /dev/null 2>&1
+    "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
 
     wait_time=0
     while status_tomcat -eq "0"
