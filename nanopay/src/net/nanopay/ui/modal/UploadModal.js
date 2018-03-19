@@ -298,7 +298,7 @@ foam.CLASS({
             break
           }
         }
-        if (isIncluded) continue ;
+        if ( isIncluded ) continue ;
         this.data.push(this.File.create({
           owner: this.user.id,
           filename: files[i].name,
