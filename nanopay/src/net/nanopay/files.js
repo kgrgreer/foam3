@@ -109,6 +109,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // admin
+  { name: 'net/nanopay/admin/ui/AccountDisabledView', flags: ['web']},
   { name: 'net/nanopay/admin/ui/AddBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },

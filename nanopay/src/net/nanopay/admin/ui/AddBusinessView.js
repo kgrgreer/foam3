@@ -9,6 +9,8 @@ foam.CLASS({
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
@@ -507,7 +509,10 @@ foam.CLASS({
         jobTitle: this.jobTitle,
         email: this.emailAddress,
         type: 'Business',
-        status: 'Pending',
+        group: this.user.group === 's2hAdmin' ?
+          's2hCustomer' : 'business',
+        status: this.AccountStatus.PENDING,
+        compliance: this.ComplianceStatus.REQUESTED,
         phone: businessPhone,
         invited: true,
         invitedBy: this.user.id
