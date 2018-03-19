@@ -34,7 +34,7 @@ var classes = [
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.QuestionnaireQuestionJunction',
-  'net.nanopay.invite.InvitationTokenService',
+  'net.nanopay.onboarding.InvitationTokenService',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
