@@ -52,7 +52,7 @@ foam.CLASS({
 
     function saveProgress() {
       console.log('TODO: Save Progress');
-
+      var strippedPrincipleOwners = this.viewData.principleOwners ? this.viewData.principleOwners.map( function(po) { po.id = null; return po; } ) : [];
       // NOTE: This should be in a success block.
       this.add(this.NotificationMessage.create({ message: this.SaveSuccessfulMessage }));
     },
