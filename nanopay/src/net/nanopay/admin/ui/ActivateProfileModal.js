@@ -11,8 +11,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader',
-    'net.nanopay.admin.model.AccountStatus'
   ],
 
   imports: [
