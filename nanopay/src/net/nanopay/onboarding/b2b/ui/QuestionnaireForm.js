@@ -1,7 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
-  name: 'QuestionnaireView',
+  name: 'QuestionnaireForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
+
+  documentation: 'Form to input Questionnaire answers',
 
   imports: [
     'questionnaireDAO'

@@ -498,8 +498,6 @@ foam.CLASS({
           margin-left: 5px;
           width: 77px;
           height: 20px;
-          border-radius: 100px;
-          background-color: #59a5d5;
           display: inline-block;
         }
         .Compliance-Status-Requested span {
@@ -510,13 +508,13 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #ffffff;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #59a5d5;
         }
         .Compliance-Status-Passed {
           margin-left: 5px;
           width: 62px;
           height: 20px;
-          border-radius: 100px;
-          background-color: #1cc2b7;
           display: inline-block;
         }
         .Compliance-Status-Passed span {
@@ -527,13 +525,13 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #ffffff;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #1cc2b7;
         }
         .Compliance-Status-Failed {
           margin-left: 5px;
           width: 53px;
           height: 20px;
-          border-radius: 100px;
-          background-color: #d81e05;
           display: inline-block;
         }
         .Compliance-Status-Failed span {
@@ -544,14 +542,14 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #ffffff;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #d81e05;
         }
 
         .Invite-Status-Pending {
           margin-left: 5px;
           width: 65px;
           height: 20px;
-          border-radius: 100px;
-          background-color: #a4b3b8;
           display: inline-block;
         }
         .Invite-Status-Pending span {
@@ -562,13 +560,13 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #ffffff;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #a4b3b8;
         }
         .Invite-Status-Submitted {
           margin-left: 5px;
           width: 77px;
           height: 20px;
-          border-radius: 100px;
-          border: solid 1px #2cab70;
           display: inline-block;
         }
         .Invite-Status-Submitted span {
@@ -579,13 +577,13 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #2cab70;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          border: solid 1px #2cab70;
         }
         .Invite-Status-Active {
           margin-left: 5px;
           width: 55px;
           height: 20px;
-          border-radius: 100px;
-          background-color: #2cab70;
           display: inline-block;
         }
         .Invite-Status-Active span {
@@ -596,13 +594,13 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #ffffff;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #2cab70;
         }
         .Invite-Status-Disabled {
           margin-left: 5px;
           width: 68px;
           height: 20px;
-          border-radius: 100px;
-          background-color: #093649;
           display: inline-block;
         }
         .Invite-Status-Disabled span {
@@ -613,6 +611,8 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #ffffff;
           padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #093649;
         }
       */}
     })

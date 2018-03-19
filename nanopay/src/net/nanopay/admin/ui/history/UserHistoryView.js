@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
-  name: 'InvitationHistoryView',
+  package: 'net.nanopay.admin.ui.history',
+  name: 'UserHistoryView',
   extends: 'foam.u2.View',
 
   documentation: 'History view of invitation',
@@ -10,20 +10,20 @@ foam.CLASS({
   ],
 
   requires: [
-//    'net.nanopay.admin.model.Invitation',
-    'net.nanopay.invite.ui.InvitationHistoryItemView'
+    'foam.dao.history.HistoryRecord',
+    'net.nanopay.admin.ui.history.UserHistoryItemView'
   ],
 
   imports: [
-    'invitationHistoryDAO'
+    'userHistoryDAO'
   ],
 
   properties: [
     'id',
     {
       name: 'data',
-      factory: function () {
-        return this.invitationHistoryDAO.where(this.EQ(this.Invitation.ID, this.id));
+      expression: function (id) {
+        return this.userHistoryDAO.where(this.EQ(this.HistoryRecord.OBJECT_ID, this.id));
       }
     }
   ],
@@ -35,8 +35,8 @@ foam.CLASS({
         .tag({
           class: 'foam.u2.history.HistoryView',
           title: 'Profile History',
-          data: this.invitationHistoryDAO,
-          historyItemView: this.InvitationHistoryItemView.create()
+          data: this.data,
+          historyItemView: this.UserHistoryItemView.create()
         });
     }
   ]

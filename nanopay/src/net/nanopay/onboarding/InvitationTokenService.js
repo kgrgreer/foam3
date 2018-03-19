@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite',
+  package: 'net.nanopay.onboarding',
   name: 'InvitationTokenService',
   extends: 'foam.nanos.auth.email.EmailTokenService',
 

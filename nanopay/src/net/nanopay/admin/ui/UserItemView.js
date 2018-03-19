@@ -1,11 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
-  name: 'InvitationItemView',
+  package: 'net.nanopay.admin.ui',
+  name: 'UserItemView',
   extends: 'foam.u2.View',
-
-  imports: [
-    'userDAO'
-  ],
 
   requires: [
     'foam.nanos.auth.User',
@@ -59,9 +55,6 @@ foam.CLASS({
       text-align: left;
       padding: 0 20px 0 20px;
     }
-    ^ .Compliance-Status-Pending {
-      margin: 20px 5px 20px 5px;
-    }
     ^ .Compliance-Status-Requested {
       margin: 20px 5px 20px 5px;
     }
@@ -86,24 +79,13 @@ foam.CLASS({
   `,
 
   properties: [
-    'data',
-    {
-      class: 'String',
-      name: 'legalName',
-      factory: function () {
-        var user = this.data.user;
-        return user.firstName + ' ' + user.lastName;
-      }
-    }
+    'data'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
-
-      var user = this.data.user;
-      var phone = user.phone;
 
       this
         .addClass(this.myClass())
@@ -120,17 +102,15 @@ foam.CLASS({
             .start('th').add('Status').end()
           .end()
           .start('tr').addClass('table-body')
-            .start('td').add(this.data.id).end()
-            .start('td').add(this.legalName$).end()
-            .start('td').add(user.email$).end()
-            .start('td').add(phone.number$).end()
-            .start('td').add(user.jobTitle$).end()
-            .start('td').add(user.businessName$).end()
+            .start('td').add(this.data.id$).end()
+            .start('td').add(this.data.legalName$).end()
+            .start('td').add(this.data.email$).end()
+            .start('td').add(this.data.phone.number$).end()
+            .start('td').add(this.data.jobTitle$).end()
+            .start('td').add(this.data.businessName$).end()
             .start('td')
-              .addClass(this.data.complianceStatus$.map(function (status) {
+              .addClass(this.data.compliance$.map(function (status) {
                 switch ( status ) {
-                  case self.ComplianceStatus.PENDING:
-                    return 'Compliance-Status-Pending';
                   case self.ComplianceStatus.REQUESTED:
                     return 'Compliance-Status-Requested';
                   case self.ComplianceStatus.PASSED:
@@ -139,13 +119,13 @@ foam.CLASS({
                     return 'Compliance-Status-Failed';
                 }
               }))
-              .add(this.data.complianceStatus$.map(function (status) {
+              .add(this.data.compliance$.map(function (status) {
                 return status.label;
               }))
             .end()
-            .start('td').add(user.type$).end()
+            .start('td').add(this.data.type$).end()
             .start('td')
-              .addClass(this.data.inviteStatus$.map(function (status) {
+              .addClass(this.data.status$.map(function (status) {
                 switch ( status ) {
                   case self.AccountStatus.PENDING:
                     return 'Invite-Status-Pending'
@@ -157,7 +137,7 @@ foam.CLASS({
                     return 'Invite-Status-Disabled'
                 }
               }))
-              .add(this.data.inviteStatus$.map(function (status) {
+              .add(this.data.status$.map(function (status) {
                 return status.label;
               }))
             .end()
