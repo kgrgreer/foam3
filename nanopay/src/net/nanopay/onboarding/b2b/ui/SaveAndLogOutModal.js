@@ -54,18 +54,8 @@ foam.CLASS({
       background-color: rgba(164, 179, 184, 0.3);
     }
 
-    ^ .rightContainer {
-      display: inline-block;
-      float:right;
-    }
-
-    ^ .net-nanopay-ui-ActionView-cancel {
-      width: auto;
-      color: #59a5d5;
-      margin-right: 20px;
-    }
-
     ^ .net-nanopay-ui-ActionView-saveAndLogOut {
+      float: right;
       background-color: #59a5d5;
       color: white;
     }
@@ -93,11 +83,7 @@ foam.CLASS({
           .start('p').addClass('description').add(this.Description).end()
           .start('div')
             .start(this.LOG_OUT).end()
-            .start('div').addClass('rightContainer')
-              .start(this.CANCEL).end()
-              .start(this.SAVE_AND_LOG_OUT).end()
-            .end()
-
+            .start(this.SAVE_AND_LOG_OUT).end()
           .end()
         .end()
     }
@@ -108,12 +94,6 @@ foam.CLASS({
       name: 'logOut',
       code: function(X) {
         X.logOutHandler && X.logOutHandler(0);
-        X.closeDialog();
-      }
-    },
-    {
-      name: 'cancel',
-      code: function(X) {
         X.closeDialog();
       }
     },
