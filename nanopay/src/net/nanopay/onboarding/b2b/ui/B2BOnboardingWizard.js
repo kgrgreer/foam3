@@ -24,13 +24,17 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
 
+  messages: [
+    { name: 'SaveSuccessfulMessage', message: 'Progress saved.' }
+  ],
+
   methods: [
     function init() {
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } }
+        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm' } }
       ];
       this.SUPER();
     },
@@ -48,6 +52,9 @@ foam.CLASS({
 
     function saveProgress() {
       console.log('TODO: Save Progress');
+
+      // NOTE: This should be in a success block.
+      this.add(this.NotificationMessage.create({ message: this.SaveSuccessfulMessage }));
     },
 
     function logOut() {
