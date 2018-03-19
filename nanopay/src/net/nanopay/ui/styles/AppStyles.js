@@ -616,7 +616,6 @@ foam.CLASS({
         }
         .wizardDescription {
           margin: 0;
-          margin-bottom: 30px;
           font-size: 12px;
           font-weight: normal;
           font-style: normal;
@@ -637,6 +636,7 @@ foam.CLASS({
           height: 40px;
           border-radius: 2px;
           background-color: #093649;
+          margin-top: 30px;
         }
         .wizardBoxTitleLabel {
           font-size: 14px;

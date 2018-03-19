@@ -16,7 +16,7 @@ foam.CLASS({
     ^ .busiLogo {
       width: 80px;
       height: 80px;
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
     ^ .editLabel {
       font-size: 14px;
@@ -42,6 +42,7 @@ foam.CLASS({
     }
     ^ .addressDiv {
       width: 250px;
+      margin-bottom: 0;
     }
   `,
 
