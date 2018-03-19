@@ -6,15 +6,26 @@ foam.CLASS({
   documentation: 'Onboarding Wizard for new B2B users.',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup'
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'auth',
+    'window'
+  ],
+
+  exports: [
+    'logOutHandler'
   ],
 
   axioms: [
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+  ],
+
+  messages: [
+    { name: 'SaveSuccessfulMessage', message: 'Progress saved.' }
   ],
 
   methods: [
@@ -26,6 +37,32 @@ foam.CLASS({
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } }
       ];
       this.SUPER();
+    },
+
+    function logOutHandler(selection) {
+      switch(selection) {
+        case 0 : this.logOut();
+                 break;
+        case 1 : this.saveProgress();
+                 this.logOut();
+                 break;
+        default: console.error('unhandled response');
+      }
+    },
+
+    function saveProgress() {
+      console.log('TODO: Save Progress');
+      var strippedPrincipleOwners = this.viewData.principleOwners ? this.viewData.principleOwners.map( function(po) { po.id = null; return po; } ) : [];
+      // NOTE: This should be in a success block.
+      this.add(this.NotificationMessage.create({ message: this.SaveSuccessfulMessage }));
+    },
+
+    function logOut() {
+      var self = this;
+      this.auth.logout().then(function() {
+        self.window.location.hash = '';
+        self.window.location.reload();
+      });
     }
   ],
 
@@ -33,28 +70,33 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // TODO: Popup to confirm log out or log out and save
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.onboarding.b2b.ui.SaveAndLogOutModal' }));
       }
     },
     {
       name: 'save',
       code: function() {
-        // TODO: Save to DAO
+        this.saveProgress();
       }
     },
     {
       name: 'goBack',
       label: 'Back',
+      isAvailable: function(position) {
+        return position > 0;
+      },
       code: function(X) {
-        this.stack.back();
+        this.subStack.back();
       }
     },
     {
       name: 'goNext',
       label: 'Next',
+      isEnabled: function(position) {
+        return position < this.views.length - 1;
+      },
       code: function() {
         this.subStack.push(this.views[this.subStack.pos + 1].view);
-        //this.stack.back();
       }
     }
   ]

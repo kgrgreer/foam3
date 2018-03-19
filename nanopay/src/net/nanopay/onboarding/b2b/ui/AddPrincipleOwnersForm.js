@@ -302,7 +302,8 @@ foam.CLASS({
       margin-left: 10px;
     }
 
-    ^ .net-nanopay-ui-ActionView-delete:hover {
+    ^ .net-nanopay-ui-ActionView-delete:hover,
+    ^ .net-nanopay-ui-ActionView-delete:focus {
       background-color: #d81e05 !important;
       color: white !important;
     }
@@ -314,7 +315,8 @@ foam.CLASS({
       float: right;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit:hover {
+    ^ .net-nanopay-ui-ActionView-cancelEdit:hover,
+    ^ .net-nanopay-ui-ActionView-cancelEdit:focus {
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
@@ -325,11 +327,8 @@ foam.CLASS({
       background-color: #59a5d5;
     }
 
+    ^ .net-nanopay-ui-ActionView:hover,
     ^ .net-nanopay-ui-ActionView:focus {
-      background-color: #3783b3;
-    }
-
-    ^ .net-nanopay-ui-ActionView:hover {
       background-color: #3783b3;
     }
 
@@ -417,7 +416,7 @@ foam.CLASS({
       name: 'principleOwnersDAO',
       factory: function() {
         if ( this.viewData.principleOwners ) {
-          return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners });
+          return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
@@ -434,7 +433,6 @@ foam.CLASS({
       name: 'principleOwnersCount',
       factory: function() {
         // In case we load from a save state
-        // TODO: REQUIRES TESTING
         this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
           return c.value;
         });
@@ -940,8 +938,8 @@ foam.CLASS({
           countryId: this.countryField,
           regionId: this.provinceField
         }),
-        principleOwner.jobTitle= this.jobTitleField,
-        principleOwner.principleType= this.principleTypeField
+        principleOwner.jobTitle = this.jobTitleField,
+        principleOwner.principleType = this.principleTypeField
 
         // TODO?: Maybe add a loading indicator?
         this.principleOwnersDAO.put(principleOwner).then(function(npo) {
@@ -954,8 +952,9 @@ foam.CLASS({
   listeners: [
     function onDAOChange() {
       var self = this;
-      this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
-        self.principleOwnersCount = c.value;
+      this.principleOwnersDAO.select().then(function(principleOwners) {
+        self.viewData.principleOwners = principleOwners.array;
+        self.principleOwnersCount = principleOwners.array.length;
       });
     }
   ]
