@@ -1,7 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
-  name: 'QuestionnaireView',
-  extends: 'foam.u2.View',
+  name: 'QuestionnaireForm',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
+
+  documentation: 'Form to input Questionnaire answers',
 
   imports: [
     'questionnaireDAO'
@@ -48,7 +50,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('h1').add('Questionnaire').end()
         .start().addClass('questions')
           .add(this.slot(function (questions) {
             return questions.forEach(function (question) {

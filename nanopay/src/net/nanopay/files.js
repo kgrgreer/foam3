@@ -17,7 +17,7 @@ FOAM_FILES([
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
-  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
 
   { name: 'net/nanopay/liquidity/model/Threshold' },
   { name: 'net/nanopay/liquidity/model/Liquidity' },
