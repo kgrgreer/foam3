@@ -34,7 +34,7 @@ foam.CLASS({
       this.exitLabel = 'Log Out';
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm' } }
+        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } }
       ];
       this.SUPER();
     },
