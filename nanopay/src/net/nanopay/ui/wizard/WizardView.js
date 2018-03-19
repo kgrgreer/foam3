@@ -222,13 +222,6 @@ foam.CLASS({
     // If set, will start the wizard at a certain position
     'startAt',
 
-    // If true, will not include the back/next buttons
-    {
-      class: 'Boolean',
-      name: 'isCustomNavigation',
-      value: false
-    },
-
     // If true, displays the exitAndSave Action
     {
       class: 'Boolean',
@@ -351,11 +344,11 @@ foam.CLASS({
   actions: [
     /*
       NOTE:
-      If you intend on displaying the goBack and goNext actions in a custom way
-      by using isCustomNavigation, make sure to use:
+      If you intend on displaying any of the actions outside of the bottom bar,
+      make sure to use:
 
       .startContext({data: this.wizard})
-        .tag(//FULL PATH TO YOUR WIZARD//.GO_//BACK or NEXT//, {label$: this.backLabel$})
+        .tag(<FULL PATH TO YOUR WIZARD.ACTION>, {label$: this.backLabel$})
       .endContext()
     */
     {
