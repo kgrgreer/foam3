@@ -30,6 +30,11 @@ foam.CLASS({
       value: false
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'invitedBy'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
