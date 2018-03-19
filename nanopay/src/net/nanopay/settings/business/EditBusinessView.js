@@ -210,7 +210,7 @@ foam.CLASS({
   
   properties:[
     {
-      name: 'isDrag',
+      name: 'dragActive',
       value: false
     }
   ],
@@ -235,7 +235,7 @@ foam.CLASS({
                 class: 'foam.nanos.auth.ProfilePictureView',
                 data$: this.user.profilePicture$,
                 uploadHidden: false,
-                isDrag$: this.isDrag$
+                dragActive$: this.dragActive$
               })
               .end()
               .start().addClass('input-container')
@@ -325,10 +325,10 @@ foam.CLASS({
   listeners:[
     function onDropOut(e) {
       e.preventDefault();  
-      this.isDrag = false;    
+      this.dragActive = false;    
     },
     function onDragOver(e) {
-      this.isDrag = true;    
+      this.dragActive = true;    
       e.preventDefault();
     }
   ]
