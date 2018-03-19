@@ -60,9 +60,15 @@ foam.CLASS({
     }
 
     ^ .net-nanopay-ui-ActionView-cancel {
-      width: auto;
+      width: 73px;
       color: #59a5d5;
-      margin-right: 20px;
+      margin-right: 5px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancel:hover,
+    ^ .net-nanopay-ui-ActionView-cancel:focus {
+      border-radius: 2px;
+      background-color: rgba(89, 165, 213, 0.3);
     }
 
     ^ .net-nanopay-ui-ActionView-saveAndLogOut {
