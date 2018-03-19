@@ -12,8 +12,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'showNotification',
     'stack',
+    'user',
     'userDAO',
     'validateEmail',
     'validatePhone',
