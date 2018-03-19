@@ -125,6 +125,7 @@ foam.CLASS({
               break;
 
             case self.AccountStatus.DISABLED:
+              self.loginSuccess = false;
               self.stack.push({ class: 'net.nanopay.admin.ui.AccountDisabledView' });
               return;
 
