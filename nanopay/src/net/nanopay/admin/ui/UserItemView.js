@@ -55,9 +55,6 @@ foam.CLASS({
       text-align: left;
       padding: 0 20px 0 20px;
     }
-    ^ .Compliance-Status-Pending {
-      margin: 20px 5px 20px 5px;
-    }
     ^ .Compliance-Status-Requested {
       margin: 20px 5px 20px 5px;
     }
@@ -114,8 +111,6 @@ foam.CLASS({
             .start('td')
               .addClass(this.data.compliance$.map(function (status) {
                 switch ( status ) {
-                  case self.ComplianceStatus.PENDING:
-                    return 'Compliance-Status-Pending';
                   case self.ComplianceStatus.REQUESTED:
                     return 'Compliance-Status-Requested';
                   case self.ComplianceStatus.PASSED:
