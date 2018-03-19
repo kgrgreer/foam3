@@ -20,15 +20,28 @@ foam.CLASS({
   methods: [
     function init() {
       this.title = 'Registration';
+      this.hardExitLabel = 'Log Out';
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireView' } }
+        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm' } }
       ];
       this.SUPER();
     }
   ],
 
   actions: [
+    {
+      name: 'exit',
+      code: function() {
+        // TODO: Popup to confirm log out or log out and save
+      }
+    },
+    {
+      name: 'save',
+      code: function() {
+        // TODO: Save to DAO
+      }
+    },
     {
       name: 'goBack',
       label: 'Back',

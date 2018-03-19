@@ -6,12 +6,12 @@ foam.CLASS({
   exports: [
     'viewData',
     'errors',
-    'hardExitLabel',
-    'saveAndExitLabel',
+    'exitLabel',
+    'saveLabel',
     'backLabel',
     'nextLabel',
-    'hardExit',
-    'saveAndExit',
+    'exit',
+    'save',
     'goBack',
     'goNext',
     'complete',
@@ -239,15 +239,15 @@ foam.CLASS({
     // Label for the back button
     {
       class: 'String',
-      name: 'hardExitLabel',
+      name: 'exitLabel',
       value: 'Exit'
     },
 
     // Label for the next button
     {
       class: 'String',
-      name: 'saveAndExitLabel',
-      value: 'Save & Exit'
+      name: 'saveLabel',
+      value: 'Save'
     },
 
     // Label for the back button
@@ -325,8 +325,8 @@ foam.CLASS({
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
               .start('div').addClass('exitContainer')
-                .start(this.HARD_EXIT, {label$: this.hardExitLabel$}).addClass('plainAction').end()
-                .start(this.SAVE_AND_EXIT, {label$: this.saveAndExitLabel$}).addClass('plainAction').end()
+                .start(this.EXIT, {label$: this.exitLabel$}).addClass('plainAction').end()
+                .start(this.SAVE, {label$: this.saveLabel$}).addClass('plainAction').end()
               .end()
               .start('div').addClass('backNextContainer')
                 .start(this.GO_BACK, {label$: this.backLabel$}).addClass('plainAction').end()
@@ -384,13 +384,13 @@ foam.CLASS({
       }
     },
     {
-      name: 'hardExit',
+      name: 'exit',
       code: function(X) {
         X.stack.back();
       }
     },
     {
-      name: 'saveAndExit',
+      name: 'save',
       code: function(X) {
         // TODO: Implement a save function or it has be overwritten
         X.stack.back();
