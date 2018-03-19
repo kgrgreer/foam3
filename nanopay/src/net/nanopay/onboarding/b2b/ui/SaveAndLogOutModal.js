@@ -98,7 +98,7 @@ foam.CLASS({
               .start(this.SAVE_AND_LOG_OUT).end()
             .end()
           .end()
-        .end()
+        .end();
     }
   ],
 
