@@ -38,14 +38,6 @@ foam.CLASS({
       overflow: hidden;
       zoom: 1;
     }
-    ^ .net-nanopay-ui-ActionView-cancel {
-      background-color: rgba(164, 179, 184, 0.1);
-      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-    }
-    ^ .net-nanopay-ui-ActionView-cancel:hover,
-    ^ .net-nanopay-ui-ActionView-cancel:focus {
-      background-color: rgba(164, 179, 184, 0.3);
-    }
     ^ .net-nanopay-ui-ActionView-revoke {
       background-color: #59a5d5;
       color: white;
