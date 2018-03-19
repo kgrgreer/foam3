@@ -765,7 +765,7 @@ foam.CLASS({
             .start(this.CITY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
             .start(this.POSTAL_CODE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
-            .start(this.ADD_PRINCIPLE_OWNER, { label$: this.addLabel$, mode$: modeSlot }).end()
+            .start(this.ADD_PRINCIPLE_OWNER, { label$: this.addLabel$ }).end()
           .end()
         .end();
     },
@@ -860,6 +860,9 @@ foam.CLASS({
     },
     {
       name: 'addPrincipleOwner',
+      isEnabled: function(isDisplayMode) {
+        return ! isDisplayMode;
+      },
       code: function() {
         // TODO: Make sure required fields are validated before adding to DAO
         if ( ! this.firstNameField || ! this.lastNameField ) {
