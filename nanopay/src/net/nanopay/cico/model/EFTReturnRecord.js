@@ -20,7 +20,7 @@ foam.CLASS({
       name: 'returnDate'
     },
     {
-      class: 'String',
+      class: 'Double',
       name: 'amount'
     },
     {

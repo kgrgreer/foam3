@@ -1,21 +1,19 @@
 package net.nanopay.cico.spi.alterna;
 
-import com.jcraft.jsch.*;
-
-import java.io.*;
-import java.io.InputStreamReader;
-
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import foam.core.FObject;
 import foam.lib.json.Outputter;
-import foam.lib.json.OutputterMode;
-import org.apache.commons.io.IOUtils;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Date;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.*;
-import foam.core.*;
 
 public class EFTReturnFileFetcher{
 
@@ -35,7 +33,7 @@ public class EFTReturnFileFetcher{
     Channel channel = null;
     ChannelSftp channelSftp;
     EFTReturnFileParser eftReturnFileParser = new EFTReturnFileParser();
-    List<FObject> ret = new ArrayList<FObject>();
+    List<FObject> ret = new ArrayList<>();
 
     try {
       // create session with user name and password
@@ -58,31 +56,19 @@ public class EFTReturnFileFetcher{
 
       List<String> fileNames = new ArrayList<>();
       Vector v = channelSftp.ls("*.txt");
+      // use regex to match file name
       Pattern pattern = Pattern.compile("[0-9]{12}.txt");
       for( int i = 0; i < v.size(); i++ ){
-        //System.out.println(v.get(i));
         Matcher matcher = pattern.matcher(v.get(i).toString());
         if ( matcher.find() ) {
-          System.out.println(matcher.group());
           fileNames.add(matcher.group());
         }
       }
 
       for ( int i = 0; i < fileNames.size(); i++ ) {
         InputStream is = channelSftp.get(fileNames.get(i));
-        //InputStream is = channelSftp.get("378520180221.txt");
         ret.addAll(eftReturnFileParser.parse(is));
       }
-
-      for (int i = 0; i < ret.size(); i++) {
-        Outputter outputter = new Outputter();
-        System.out.println("parsed record: " + outputter.stringify(ret.get(i)));
-      }
-
-      //InputStream is = channelSftp.get(filename);
-      //IOUtils.copy(is, System.out);
-      //is.close();
-      //BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
       channelSftp.exit();
       return ret;

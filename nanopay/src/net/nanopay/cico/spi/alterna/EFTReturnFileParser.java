@@ -3,7 +3,6 @@ package net.nanopay.cico.spi.alterna;
 import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
-import foam.lib.json.Outputter;
 import foam.lib.parse.*;
 import net.nanopay.cico.model.EFTReturnRecord;
 
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The class parse the EFT response file
+ * This class parse the EFT response file
  */
 
 public class EFTReturnFileParser
@@ -56,9 +55,6 @@ public class EFTReturnFileParser
           ((PropertyInfo)propertyInfos.get(i)).set(obj, ((PropertyInfo)propertyInfos.get(i)).fromString((String) values[i]));
         }
         ret.add(obj);
-        //Outputter outputter = new Outputter();
-        //System.out.println("*****: " + outputter.stringify(obj));
-        //return outputter.stringify(obj);
       }
 
       reader.close();

@@ -24,23 +24,22 @@ public class EFTReturnFileProcessor {
     DAO transactionDao = (DAO)x.get("localTransactionDAO");
 
     for ( int i = 0; i < list.size(); i++ ) {
-      //System.out.println(list.get(i));
 
       EFTReturnRecord item = (EFTReturnRecord) list.get(i);
 
-//      Transaction tran = (Transaction)transactionDao.find(AND(
-//        EQ(Transaction.AMOUNT, item.getAmount()),
-//        EQ(Transaction.REFERENCE_NUMBER, item.getExternalReference()),
-//        OR(
-//          EQ(Transaction.TYPE, TransactionType.CASHIN),
-//          EQ(Transaction.TYPE,TransactionType.CASHOUT))
-//        )
-//      );
+      Transaction tran = (Transaction)transactionDao.find(AND(
+        EQ(Transaction.REFERENCE_NUMBER, item.getExternalReference()),
+        EQ(Transaction.AMOUNT, (long)(item.getAmount() * 100)),
+        OR(
+          EQ(Transaction.TYPE, TransactionType.CASHIN),
+          EQ(Transaction.TYPE,TransactionType.CASHOUT))
+        )
+      );
 
-      Transaction tran = (Transaction) transactionDao.find(EQ(Transaction.ID, item.getTransactionID()));
+      //Transaction tran = (Transaction) transactionDao.find(EQ(Transaction.ID, item.getTransactionID()));
 
+      // if find the corresponding transaction
       if ( tran != null ) {
-        System.out.println("matched transaction found");
         tran.setReturnCode(item.getReturnCode());
         tran.setReturnDate(item.getReturnDate());
 
@@ -52,9 +51,11 @@ public class EFTReturnFileProcessor {
 
         if ( tran.getCicoStatus() == TransactionStatus.PENDING ) {
           tran.setCicoStatus(TransactionStatus.DECLINED);
-          sendEmail(x, "Transaction was rejected or returned by the system", "transaction id: " + tran.getId());
+          sendEmail(x, "Transaction was rejected or returned by the system",
+            "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
         } else if ( tran.getCicoStatus() == TransactionStatus.ACCEPTED && tran.getReturnType().equals("Return") ) {
-          sendEmail(x, "Transaction was returned outside of the 3 business day return period", "transaction id: " + tran.getId());
+          sendEmail(x, "Transaction was returned outside of the 2 business day return period",
+            "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
         }
 
         transactionDao.put(tran);
@@ -67,6 +68,7 @@ public class EFTReturnFileProcessor {
     EmailMessage message = new EmailMessage();
 
     message.setTo(new String[]{"zac@nanopay.net"});
+    // message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
     emailService.sendEmail(message);
