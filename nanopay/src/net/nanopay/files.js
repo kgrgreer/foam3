@@ -13,12 +13,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
-
-  // onboarding
-  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
-  { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
-  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
-
   { name: 'net/nanopay/liquidity/model/Threshold' },
   { name: 'net/nanopay/liquidity/model/Liquidity' },
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
@@ -36,6 +30,12 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
+
+  // onboarding
+  { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
