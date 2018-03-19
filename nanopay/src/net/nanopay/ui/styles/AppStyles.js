@@ -510,6 +510,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           background-color: #59a5d5;
+          display: inline-block;
         }
         .Compliance-Status-Passed {
           margin-left: 5px;
@@ -527,6 +528,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           background-color: #1cc2b7;
+          display: inline-block;
         }
         .Compliance-Status-Failed {
           margin-left: 5px;
@@ -544,6 +546,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           background-color: #d81e05;
+          display: inline-block;
         }
 
         .Invite-Status-Pending {
@@ -562,6 +565,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           background-color: #a4b3b8;
+          display: inline-block;
         }
         .Invite-Status-Submitted {
           margin-left: 5px;
@@ -579,6 +583,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           border: solid 1px #2cab70;
+          display: inline-block;
         }
         .Invite-Status-Active {
           margin-left: 5px;
@@ -596,6 +601,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           background-color: #2cab70;
+          display: inline-block;
         }
         .Invite-Status-Disabled {
           margin-left: 5px;
@@ -613,6 +619,7 @@ foam.CLASS({
           padding: 0 10px 0 10px;
           border-radius: 100px;
           background-color: #093649;
+          display: inline-block;
         }
       */}
     })
