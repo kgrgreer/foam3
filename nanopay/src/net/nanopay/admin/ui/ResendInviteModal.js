@@ -48,13 +48,11 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-cancel:focus {
       background-color: rgba(164, 179, 184, 0.3);
     }
-    ^ .rightContainer {
-      display: inline-block;
-      float:right;
-    }
     ^ .net-nanopay-ui-ActionView-resend {
       background-color: #59a5d5;
       color: white;
+      display: inline-block;
+      float:right;
     }
     ^ .net-nanopay-ui-ActionView-resend:hover,
     ^ .net-nanopay-ui-ActionView-resend:focus {
@@ -83,9 +81,7 @@ foam.CLASS({
           .start('p').addClass('description').add(this.Description).end()
           .start()
             .start(this.CANCEL).end()
-            .start('div').addClass('rightContainer')
-              .start(this.RESEND).end(0)
-            .end()
+            .start(this.RESEND).end()
           .end()
         .end()
     }
