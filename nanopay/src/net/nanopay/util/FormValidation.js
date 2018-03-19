@@ -64,6 +64,7 @@ foam.CLASS({
       return re.test(String(transitNumber));
     },
     function validateAge(date) {
+      if ( ! date ) return false;
       var year = date.getFullYear();
       var currentYear = new Date().getFullYear();
       return currentYear - year >= 16;

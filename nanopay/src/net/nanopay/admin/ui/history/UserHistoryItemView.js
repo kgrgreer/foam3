@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
-  name: 'InvitationHistoryItemView',
+  package: 'net.nanopay.admin.ui.history',
+  name: 'UserHistoryItemView',
   extends: 'foam.u2.View',
 
   implements: [
@@ -8,9 +8,9 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.ui.ComplianceStatusHistoryItemView',
-    'net.nanopay.invite.ui.DocumentStatusHistoryItemView',
-    'net.nanopay.invite.ui.InvitationStatusHistoryItemView'
+    'net.nanopay.admin.ui.history.ComplianceStatusHistoryItemView',
+    'net.nanopay.admin.ui.history.DocumentStatusHistoryItemView',
+    'net.nanopay.admin.ui.history.AccountStatusHistoryItemView'
   ],
 
   documentation: 'View displaying history for invitation item',
@@ -19,7 +19,7 @@ foam.CLASS({
     {
       name: 'invitationStatusHistoryItem',
       factory: function () {
-        return this.InvitationStatusHistoryItemView.create();
+        return this.AccountStatusHistoryItemView.create();
       }
     },
     {
@@ -47,11 +47,11 @@ foam.CLASS({
       for ( var i = 0 ; i < updates.length ; i++ ) {
         var update = updates[i];
         switch ( update.name ) {
-          case 'inviteStatus':
+          case 'status':
             this.invitationStatusHistoryItem.outputRecord(parentView, record);
             break;
 
-          case 'complianceStatus':
+          case 'compliance':
             this.complianceStatusHistoryItem.outputRecord(parentView, record);
             break;
 
