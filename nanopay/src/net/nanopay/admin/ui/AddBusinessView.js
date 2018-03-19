@@ -508,7 +508,9 @@ foam.CLASS({
         email: this.emailAddress,
         type: 'Business',
         status: 'Pending',
-        phone: businessPhone
+        phone: businessPhone,
+        invited: true,
+        invitedBy: this.user.id
       });
 
       if ( newBusiness.errors_ ) {

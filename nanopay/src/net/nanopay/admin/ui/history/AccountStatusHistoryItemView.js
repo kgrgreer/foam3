@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
-  name: 'InvitationStatusHistoryItemView',
+  package: 'net.nanopay.admin.ui.history',
+  name: 'AccountStatusHistoryItemView',
   extends: 'foam.u2.View',
 
   implements: [
@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.model.InvitationStatus'
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   documentation: 'View for displaying history for invitation status',
@@ -61,11 +61,11 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'inviteStatus') ||
-        { newValue: this.InvitationStatus.PENDING.ordinal };
+      var status = record.updates.find(u => u.name == 'status') ||
+        { newValue: this.AccountStatus.PENDING.ordinal };
 
       switch ( status.newValue ) {
-        case this.InvitationStatus.PENDING.ordinal:
+        case this.AccountStatus.PENDING.ordinal:
           return {
             title: 'Account was created',
             labelText: 'Pending',
@@ -73,7 +73,7 @@ foam.CLASS({
             icon: 'images/ic-created.svg'
           };
 
-        case this.InvitationStatus.SUBMITTED.ordinal:
+        case this.AccountStatus.SUBMITTED.ordinal:
           return {
             title: 'Registration',
             labelText: 'Submitted',
@@ -81,7 +81,7 @@ foam.CLASS({
             icon: 'images/ic-received.svg'
           };
 
-        case this.InvitationStatus.ACTIVE.ordinal:
+        case this.AccountStatus.ACTIVE.ordinal:
           return {
             title: 'Account activated',
             labelText: 'Active',
@@ -89,7 +89,7 @@ foam.CLASS({
             icon: 'images/ic-approve.svg'
           };
 
-        case this.InvitationStatus.DISABLED.ordinal:
+        case this.AccountStatus.DISABLED.ordinal:
           return {
             title: 'Account',
             labelText: 'Disabled',

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
+  package: 'net.nanopay.onboarding.b2b.ui',
   name: 'QuestionView',
   extends: 'foam.u2.View',
 

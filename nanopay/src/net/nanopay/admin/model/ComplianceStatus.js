@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.invite.model',
+  package: 'net.nanopay.admin.model',
   name: 'ComplianceStatus',
 
   documentation: 'Status on compliance',

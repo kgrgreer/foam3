@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
+  package: 'net.nanopay.admin.ui.history',
   name: 'ComplianceStatusHistoryItemView',
   extends: 'foam.u2.View',
 
@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invite.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   documentation: 'View for displaying history for compliance status',
@@ -61,7 +61,7 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'complianceStatus') ||
+      var status = record.updates.find(u => u.name == 'compliance') ||
         { newValue: this.ComplianceStatus.REQUESTED.ordinal };
 
       switch ( status.newValue ) {
