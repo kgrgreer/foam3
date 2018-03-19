@@ -16,7 +16,7 @@ foam.CLASS({
     ^ .busiLogo {
       width: 80px;
       height: 80px;
-      margin-bottom : 30px;
+      margin-bottom: 20px;
     }
     ^ .editLabel {
       font-size: 14px;
@@ -29,6 +29,7 @@ foam.CLASS({
       bottom: 17;
     }
     ^ .principalOwnerLabel {
+      margin-top: 20px;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -38,6 +39,9 @@ foam.CLASS({
     }
     ^ .principalOwnerContainer {
       padding-left: 25px;
+    }
+    ^ .addressDiv {
+      width: 250px;
     }
   `,
 
@@ -53,7 +57,7 @@ foam.CLASS({
     { name: 'BusiNameLabel', message: 'Registered Business Name' },
     { name: 'BusiPhoneLabel', message: 'Business Phone' },
     { name: 'BusiWebsiteLabel', message: 'Website (optional)' },
-    { name: 'BusinessTypeLabel', message: 'Business Type' },
+    { name: 'BusiTypeLabel', message: 'Business Type' },
     { name: 'BusiRegNumberLabel', message: 'Business Registration Number' },
     { name: 'BusiRegAuthLabel', message: 'Registration Authority'},
     { name: 'BusiRegDateLabel', message: 'Registration Date' },
@@ -101,7 +105,7 @@ foam.CLASS({
           .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
           .start('p').add('2018-03-16').end()
           .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('171 East Liberty Street, Suite 340, Toronto, ON, Canada, M6K 3P6').end()
+          .start('p').add('171 East Liberty Street, Suite 340, Toronto, ON, Canada, M6K 3P6').addClass('addressDiv').end()
           .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('busiLogo').end()
 
@@ -123,7 +127,7 @@ foam.CLASS({
             .start('p').add(this.PrincBdayLabel).addClass('wizardBoldLabel').end()          
             .start('p').add('2018-03-16').end()
             .start('p').add(this.PrincAddressLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('171 East Liberty Street, Suite 340, Toronto, ON, Canada, M6K 3P6').end()
+            .start('p').add('171 East Liberty Street, Suite 340, Toronto, ON, Canada, M6K 3P6').addClass('addressDiv').end()
           .end()
           .start('p').add(this.PrincOwner2Label).addClass('principalOwnerLabel').end()
           .start().addClass('principalOwnerContainer')
@@ -138,7 +142,7 @@ foam.CLASS({
             .start('p').add(this.PrincBdayLabel).addClass('wizardBoldLabel').end()          
             .start('p').add('2018-03-16').end()
             .start('p').add(this.PrincAddressLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('171 East Liberty Street, Suite 340, Toronto, ON, Canada, M6K 3P6').end()
+            .start('p').add('171 East Liberty Street, Suite 340, Toronto, ON, Canada, M6K 3P6').addClass('addressDiv').end()
           .end()
 
           .start().addClass('wizardBoxTitleContainer')
