@@ -12,7 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack',Tha
+    'stack',
     'user',
     'userDAO',
     'validateEmail',
