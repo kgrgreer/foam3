@@ -42,13 +42,10 @@ public class PacsWebAgent
     final PrintWriter   out        = x.get(PrintWriter.class);
     CharBuffer          buffer_    = CharBuffer.allocate(65535);
     String              data       = req.getParameter("data");
-    String              command    = req.getParameter("cmd");
     String              format     = req.getParameter("format");
     String              id         = req.getParameter("id");
     String              msg        = req.getParameter("msg");
     Logger              logger     = (Logger) x.get("logger");
-
-    if ( command == null || "".equals(command) ) command = "select";
 
     if ( format == null  ) format = "json";
 
@@ -80,7 +77,7 @@ public class PacsWebAgent
           Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
           if ( pacs00800106 == null || "".equals(pacs00800106) ) {
-            out.println("Parse Error");
+            out.println("Parse Error. Please input the exact data. <br><br>");
 
             String message = getParsingError(x, buffer_.toString());
             logger.error(message + ", input: " + buffer_.toString());
@@ -96,7 +93,7 @@ public class PacsWebAgent
           Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
 
           if ( pacs02800101 == null || "".equals(pacs02800101) ) {
-            out.println("Parse Error");
+            out.println("Parse Error. Please input the exact data. <br><br>");
 
             String message = getParsingError(x, buffer_.toString());
             logger.error(message + ", input: " + buffer_.toString());
