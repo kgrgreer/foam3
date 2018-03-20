@@ -165,7 +165,8 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-goNext:disabled {
-          color: rgba(88, 165, 213, 0.5);
+          color: white;
+          background-color: #c2c9ce;
         }
 
         ^ .net-nanopay-ui-ActionView-goNext:hover:enabled {

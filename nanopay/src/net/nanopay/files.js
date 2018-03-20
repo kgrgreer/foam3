@@ -33,6 +33,7 @@ FOAM_FILES([
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/SaveAndLogOutModal', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
@@ -109,11 +110,16 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // admin
-  { name: 'net/nanopay/admin/ui/AccountDisabledView', flags: ['web']},
+  { name: 'net/nanopay/admin/ui/AccountDisabledView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/ActivateProfileModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/DisableProfileModal', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/EditBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/ResendInviteModal', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/RevokeInviteModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
@@ -136,8 +142,8 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/form/shared/AddUserDoneForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/UserHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/UserHistoryView', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/history/AccountStatusHistoryItemView', flags: ['web']},
-  { name: 'net/nanopay/admin/ui/history/ComplianceStatusHistoryItemView', flags: ['web']},
+  { name: 'net/nanopay/admin/ui/history/AccountStatusHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/history/ComplianceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
 
   // cico

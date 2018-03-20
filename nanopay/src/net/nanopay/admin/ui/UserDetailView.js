@@ -8,7 +8,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.ui.EditBusinessView'
   ],
 
   imports: [
@@ -307,19 +308,7 @@ foam.CLASS({
       name: 'activateProfile',
       label: 'Activate Profile',
       code: function (X) {
-        var self = this;
-        var toActivate = this.data.clone();
-        toActivate.status = this.AccountStatus.ACTIVE;
-
-        this.userDAO.put(toActivate)
-        .then(function (result) {
-          if ( ! result ) throw new Error('Unable to activate profile.');
-          self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully activated' }));
-        })
-        .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to activate profile.', type: 'error' }));
-        });
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.ActivateProfileModal', data: this.data }));
       }
     },
     {
@@ -345,7 +334,7 @@ foam.CLASS({
       name: 'editProfile',
       label: 'Edit Profile',
       code: function (X) {
-        X.editProfileDropDown(X);
+        X.stack.push(this.EditBusinessView.create({ data: this.data }));
       }
     },
     {
@@ -386,30 +375,15 @@ foam.CLASS({
 
   listeners: [
     function revokeInvite() {
-      // TODO: add revoke invite functionality
-      this.editProfilePopUp_.remove();
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.RevokeInviteModal', data: this.data }));
     },
 
     function resendInvite() {
-      // TODO: add resend invite functionality
-      this.editProfilePopUp_.remove();
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.ResendInviteModal', data: this.data }));
     },
 
     function disableProfile_() {
-      var self = this;
-
-      var toDisable = this.data.clone();
-      toDisable.status = this.AccountStatus.DISABLED;
-
-      this.userDAO.put(toDisable)
-      .then(function (result) {
-        if ( ! result ) throw new Error('Unable to disable profile');
-        self.data.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: 'Profile successfully disabled.' }));
-      })
-      .catch(function (err) {
-        self.add(self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
-      });
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.DisableProfileModal', data: this.data }));
     }
   ]
 });
