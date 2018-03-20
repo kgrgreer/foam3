@@ -168,18 +168,7 @@ foam.CLASS({
       dataString = reqProps.join('');
       return dataString;
     }
-  ],
-
-  actions: [
-    {
-      name: 'printPage',
-      label: 'Print',
-      code: function(){
-        window.print();
-      }
-    }
-  ],
-
+  ]
 });
 
 foam.CLASS({
