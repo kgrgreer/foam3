@@ -393,7 +393,7 @@ foam.CLASS({
     { name: 'BasicInfoLabel', message: 'Basic Information' },
     { name: 'LegalNameLabel', message: 'Legal Name' },
     { name: 'FirstNameLabel', message: 'First Name' },
-    { name: 'MiddleNameLabel', message: 'Middle Initials(optional)' },
+    { name: 'MiddleNameLabel', message: 'Middle Initials (optional)' },
     { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'JobTitleLabel', message: 'Job Title' },
     { name: 'EmailAddressLabel', message: 'Email Address' },

@@ -8,7 +8,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.ui.EditBusinessView'
   ],
 
   imports: [
@@ -333,7 +334,7 @@ foam.CLASS({
       name: 'editProfile',
       label: 'Edit Profile',
       code: function (X) {
-        // TODO: go to edit business screen
+        X.stack.push(this.EditBusinessView.create({ data: this.data }));
       }
     },
     {

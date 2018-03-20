@@ -63,6 +63,9 @@ foam.CLASS({
       width: 73px;
       color: #59a5d5;
       margin-right: 5px;
+      border: none;
+      background-color: transparent;
+      box-shadow: none;
     }
 
     ^ .net-nanopay-ui-ActionView-cancel:hover,
