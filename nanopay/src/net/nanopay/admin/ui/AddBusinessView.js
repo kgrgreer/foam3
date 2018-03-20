@@ -185,19 +185,12 @@ foam.CLASS({
       color: #093649;
       outline: none;
     }
-    ^ .buttonDiv {
-      width: 100%;
-      height: 60px;
-      background-color: #edf0f5;
-      position: relative;
-      bottom: 0;
-      z-index: 200;
-    }
     ^ .net-nanopay-ui-ActionView-closeButton {
       border-radius: 2px;
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      margin-top: 30px;
+      margin-left: 60px;
+      margin-top: 10px;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover {
       background: lightgray;
@@ -207,7 +200,8 @@ foam.CLASS({
       border-radius: 2px;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      margin-top: 30px;
+      margin-right: 60px;
+      margin-top: 10px;
     }
     ^ .net-nanopay-ui-ActionView-addButton:hover {
       background: %SECONDARYCOLOR%;
@@ -215,6 +209,15 @@ foam.CLASS({
     }
     ^ .property-confirmEmailAddress {
       margin-bottom: 10px;
+    }
+    ^ .navigationBar {
+      position: fixed;
+      width: 100%;
+      height: 60px;
+      left: 0;
+      bottom: 0;
+      background-color: white;
+      z-index: 100;
     }
   `,
 
@@ -439,9 +442,9 @@ foam.CLASS({
               .end()
             .end()
           .end()
-          .start().addClass('buttonDiv')
-            .start(this.CLOSE_BUTTON).end()
-            .start(this.ADD_BUTTON).end()
+          .start('div').addClass('navigationBar')
+            .add(this.CLOSE_BUTTON)
+            .add(this.ADD_BUTTON)
           .end()
         .end();
     },
@@ -498,7 +501,7 @@ foam.CLASS({
       }
 
       var businessPhone = this.Phone.create({
-        number: this.countryCode + this.phoneNumber
+        number: this.countryCode + ' ' + this.phoneNumber
       });
 
       var newBusiness = this.User.create({

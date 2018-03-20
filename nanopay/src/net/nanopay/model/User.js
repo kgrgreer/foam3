@@ -86,6 +86,11 @@ foam.CLASS({
       documentation: 'Additional documents for compliance verification'
     },
     {
+      class: 'FObjectArray',
+      of: 'foam.nanos.auth.User',
+      name: 'principalOwners'
+    },
+    {
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title',

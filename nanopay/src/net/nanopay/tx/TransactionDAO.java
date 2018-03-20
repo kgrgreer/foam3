@@ -67,6 +67,11 @@ public class TransactionDAO
 
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
+    // don't perform balance transfer if status in blacklist
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) ) {
+      return super.put_(x, obj);
+    }
+
     if ( oldTxn != null ) return super.put_(x, obj);
 
     return executeTransaction(x, transaction);

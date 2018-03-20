@@ -13,7 +13,12 @@ foam.CLASS({
   imports: [
     'stack',
     'auth',
-    'window'
+    'window',
+    'validatePostalCode',
+    'validatePhone',
+    'validateCity',
+    'validateStreetNumber',
+    'validateAddress'
   ],
 
   exports: [
@@ -25,7 +30,17 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SaveSuccessfulMessage', message: 'Progress saved.' }
+    { name: 'SaveSuccessfulMessage', message: 'Progress saved.' },
+    { name: 'ErrorBusinessProfileNameMessage', message: 'Business name required.' },
+    { name: 'ErrorBusinessProfilePhoneMessage', message: 'Invalid business phone number.' },
+    { name: 'ErrorBusinessProfileTypeMessage', message: 'Business type required.' },
+    { name: 'ErrorBusinessProfileRegistrationNumberMessage', message: 'Business registration number required.' },
+    { name: 'ErrorBusinessProfileRegistrationAuthorityMessage', message: 'Business registration authority required.' },
+    { name: 'ErrorBusinessProfileRegistrationDateMessage', message: 'Invalid business registration date.' },
+    { name: 'ErrorBusinessProfileStreetNumberMessage', message: 'Invalid street number.' },
+    { name: 'ErrorBusinessProfileStreetNameMessage', message: 'Invalid street name.' },
+    { name: 'ErrorBusinessProfileCityMessage', message: 'Invalid city name.' },
+    { name: 'ErrorBusinessProfilePostalCodeMessage', message: 'Invalid postal code.' }
   ],
 
   methods: [
@@ -33,6 +48,7 @@ foam.CLASS({
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.views = [
+        { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } }
       ];
@@ -63,6 +79,65 @@ foam.CLASS({
         self.window.location.hash = '';
         self.window.location.reload();
       });
+    },
+
+    function validateBusinessProfile() {
+      var businessProfile = this.viewData;
+      if ( ! businessProfile.businessName ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileNameMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validatePhone(businessProfile.businessPhoneNumber) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePhoneMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! businessProfile.businessType ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileTypeMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! businessProfile.businessRegistrationNumber ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationNumberMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! businessProfile.businessRegistrationAuthority ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationAuthorityMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! businessProfile.businessRegistrationDate ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationDateMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validateStreetNumber(businessProfile.businessStreetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNumberMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validateAddress(businessProfile.businessStreetName) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( businessProfile.businessAddress2 && ! this.validateAddress(businessProfile.businessAddress2) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validateCity(businessProfile.businessCity) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileCityMessage, type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validatePostalCode(businessProfile.businessPostalCode) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePostalCodeMessage, type: 'error' }));
+        return false;
+      }
+      return true;
     }
   ],
 
@@ -96,6 +171,7 @@ foam.CLASS({
         return position < this.views.length - 1;
       },
       code: function() {
+        if ( ! this.validateBusinessProfile() ) return;
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
     }
