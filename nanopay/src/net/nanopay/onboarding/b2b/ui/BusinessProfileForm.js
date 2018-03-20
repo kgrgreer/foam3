@@ -271,6 +271,8 @@ foam.CLASS({
 
       display: inline-block;
       vertical-align: middle;
+
+      color: #093649;
     }
 
     ^ .streetFieldCol {
