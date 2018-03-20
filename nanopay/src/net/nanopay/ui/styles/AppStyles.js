@@ -635,7 +635,7 @@ foam.CLASS({
           width: 540px;
           height: 40px;
           border-radius: 2px;
-          background-color: #093649;
+          background-color: %PRIMARYCOLOR%;
           margin-top: 30px;
         }
         .wizardBoxTitleLabel {
