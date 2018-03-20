@@ -8,7 +8,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.ui.EditBusinessView'
   ],
 
   imports: [
@@ -132,23 +133,32 @@ foam.CLASS({
       transform: translate(-6.5px, -1px);
     }
 
-    ^ .net-nanopay-ui-ActionView-editInvite {
-      width: 157px;
-      height: 40px;
-      border-radius: 2px;
+    ^ .net-nanopay-ui-ActionView-editProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
+      float: right;
+      margin-right: 1px;
+      position: sticky;
+      z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-editInvite::after {
+    ^ .net-nanopay-ui-ActionView-editProfileDropDown {
+      width: 30px;
+      height: 40px;
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-editProfileDropDown::after {
       content: ' ';
       position: absolute;
       height: 0;
       width: 0;
       border: 6px solid transparent;
       border-top-color: white;
-      transform: translate(5px, 5px);
+      transform: translate(-6.5px, -1px);
     }
+
     ^ .popUpDropDown {
       padding: 0 !important;
       z-index: 10000;
@@ -184,8 +194,8 @@ foam.CLASS({
     'activateProfilePopUp_',
     'approveProfileMenuBtn_',
     'approveProfilePopUp_',
-    'editInviteMenuBtn_',
-    'editInvitePopUp_'
+    'editProfileMenuBtn_',
+    'editProfilePopUp_'
   ],
 
   methods: [
@@ -205,7 +215,9 @@ foam.CLASS({
               if ( compliance == self.ComplianceStatus.REQUESTED ) {
                 switch ( status ) {
                   case self.AccountStatus.PENDING:
-                    return this.E('span').start(self.EDIT_INVITE, null, self.editInviteMenuBtn_$).end();
+                    return this.E('span')
+                      .start(self.EDIT_PROFILE_DROP_DOWN, null, self.editProfileMenuBtn_$).end()
+                      .start(self.EDIT_PROFILE).end();
 
                   case self.AccountStatus.SUBMITTED:
                     return this.E('span')
@@ -296,19 +308,7 @@ foam.CLASS({
       name: 'activateProfile',
       label: 'Activate Profile',
       code: function (X) {
-        var self = this;
-        var toActivate = this.data.clone();
-        toActivate.status = this.AccountStatus.ACTIVE;
-
-        this.userDAO.put(toActivate)
-        .then(function (result) {
-          if ( ! result ) throw new Error('Unable to activate profile.');
-          self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully activated' }));
-        })
-        .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to activate profile.', type: 'error' }));
-        });
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.ActivateProfileModal', data: this.data }));
       }
     },
     {
@@ -334,20 +334,20 @@ foam.CLASS({
       name: 'editProfile',
       label: 'Edit Profile',
       code: function (X) {
-        X.editProfileDropDown(X);
+        X.stack.push(this.EditBusinessView.create({ data: this.data }));
       }
     },
     {
       name: 'editProfileDropDown',
       label: '',
       code: function (X) {
-        this.editInvitePopUp_ = foam.u2.PopupView.create({
+        this.editProfilePopUp_ = foam.u2.PopupView.create({
           width: 165,
           x: -137,
           y: 40
         });
 
-        this.editInvitePopUp_.addClass('popUpDropDown')
+        this.editProfilePopUp_.addClass('popUpDropDown')
           .start('div')
             .add('Revoke Invite')
             .on('click', this.revokeInvite)
@@ -361,7 +361,7 @@ foam.CLASS({
             .on('click', this.disableProfile_)
           .end()
 
-        this.editInviteMenuBtn_.add(this.editInvitePopUp_);
+        this.editProfileMenuBtn_.add(this.editProfilePopUp_);
       }
     },
     {
@@ -375,30 +375,15 @@ foam.CLASS({
 
   listeners: [
     function revokeInvite() {
-      // TODO: add revoke invite functionality
-      this.editInvitePopUp_.remove();
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.RevokeInviteModal', data: this.data }));
     },
 
     function resendInvite() {
-      // TODO: add resend invite functionality
-      this.editInvitePopUp_.remove();
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.ResendInviteModal', data: this.data }));
     },
 
     function disableProfile_() {
-      var self = this;
-
-      var toDisable = this.data.clone();
-      toDisable.status = this.AccountStatus.DISABLED;
-
-      this.userDAO.put(toDisable)
-      .then(function (result) {
-        if ( ! result ) throw new Error('Unable to disable profile');
-        self.data.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: 'Profile successfully disabled.' }));
-      })
-      .catch(function (err) {
-        self.add(self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
-      });
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.admin.ui.DisableProfileModal', data: this.data }));
     }
   ]
 });
