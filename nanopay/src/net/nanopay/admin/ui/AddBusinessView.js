@@ -293,7 +293,7 @@ foam.CLASS({
     { name: 'Description', message: 'Fill in the details for the admin user of this business, the user will receive an email with login credentials after.' },
     { name: 'LegalNameLabel', message: 'Legal Name' },
     { name: 'FirstNameLabel', message: 'First Name' },
-    { name: 'MiddleNameLabel', message: 'Middle Initials(optional)' },
+    { name: 'MiddleNameLabel', message: 'Middle Initials (optional)' },
     { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'JobTitleLabel', message: 'Job Title' },
     { name: 'EmailLabel', message: 'Email Address' },
