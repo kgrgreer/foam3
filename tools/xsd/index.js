@@ -29,13 +29,18 @@ var classesOutDir = path.join(__dirname, '../../nanopay/src/' + packagePath + '/
 var classes = [];
 var simpleTypes = [];
 
+// push document interface
+if ( packageName === 'net.nanopay.iso20022' ) {
+  classes.push('net.nanopay.iso20022.Document');
+}
+
 /**
  * Converts the FOAM model to string
  * @param  {Object} m FOAM model
  * @return {String}   String of FOAM model
  */
 function modelToStr(m) {
-  return foam.json.Pretty.stringify(m).toString().replace(/"/g, "'").replace(/:/g, ': ');
+  return foam.json.Pretty.stringify(m).toString().replace(/"/g, "'");
 }
 
 /**
@@ -134,6 +139,20 @@ function processFile (file, filename) {
       name: child.getAttribute('name')
     };
 
+    // Add xmlns for ISO20022 messages
+    if ( m.name === 'Document' ) {
+      if ( ! m.implements ) m.implements = [];
+      if ( ! m.properties ) m.properties = [];
+
+      m.implements = [ 'net.nanopay.iso20022.Document' ];
+      m.properties.push({
+        class: 'String',
+        name: 'xmlns',
+        value: "urn:iso:std:iso:20022:tech:xsd:" + filename.replace(/\.[^/.]+$/, ""),
+        xmlAttribute: true
+      });
+    }
+
     switch ( child.localName ) {
       case 'complexType':
         // process complex type
@@ -146,16 +165,6 @@ function processFile (file, filename) {
         break;
       default:
         break;
-    }
-
-    // Add MsgType for ISO20022 messages
-    if ( m.name === 'Document' ) {
-      if ( ! m.properties ) m.properties = [];
-      m.properties.push({
-        class: 'String',
-        name: 'MsgType',
-        value: filename.replace(/\.[^/.]+$/, "")
-      });
     }
 
     if ( m.type === 'enum' ) {
