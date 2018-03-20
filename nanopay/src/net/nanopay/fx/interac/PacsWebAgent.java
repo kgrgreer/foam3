@@ -54,15 +54,11 @@ public class PacsWebAgent
 
     try {
 
-      if ( "select".equals(command) && ( data == null || "".equals(data) ) ) {
+      if ( data == null || "".equals(data) ) {
         out.print("<form method=post><span>Request Pacs: </span>");
         out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
-        out.println("</select></span>");
-        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format onchange=changeFormat() style=margin-left:40><option value=json selected>JSON</option><option value=xml>XML</option></select></span>");
-        out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5 ><option value=select>SELECT</option></select></span>");
+        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
-        out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
 
         out.println();
@@ -70,54 +66,53 @@ public class PacsWebAgent
         return;
       }
 
-      if ( "select".equals(command) ) {
-        if ( "json".equals(format) ) {
+      if ( "json".equals(format) ) {
 
-          JSONParser jsonParser = new JSONParser();
-          jsonParser.setX(x);
+        JSONParser jsonParser = new JSONParser();
+        jsonParser.setX(x);
 
-          foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
-          outputterJson.setOutputDefaultValues(true);
-          outputterJson.setOutputClassNames(false);
+        foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+        outputterJson.setOutputDefaultValues(true);
+        outputterJson.setOutputClassNames(false);
 
-          if ( "008".equals(msg) ) {
-            //PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);
-            Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
+        if ( "008".equals(msg) ) {
+          //PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);
+          Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
-            if ( pacs00800106 == null || "".equals(pacs00800106) ) {
-              out.println("Parse Error");
+          if ( pacs00800106 == null || "".equals(pacs00800106) ) {
+            out.println("Parse Error");
 
-              String message = getParsingError(x, buffer_.toString());
-              logger.error(message + ", input: " + buffer_.toString());
-              out.println(message);
-              out.flush();
-              return;
-            }
-
-            Pacs00200109 pacs00200109 = pacs00800106.generatePacs002Msgby008Msg();
-
-            outputterJson.output(pacs00200109);
-          } else {
-            Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
-
-            if ( pacs02800101 == null || "".equals(pacs02800101) ) {
-              out.println("Parse Error");
-
-              String message = getParsingError(x, buffer_.toString());
-              logger.error(message + ", input: " + buffer_.toString());
-              out.println(message);
-              out.flush();
-              return;
-            }
-
-            Pacs00200109 pacs00200109 = pacs02800101.generatePacs002Msgby028Msg();
-
-            outputterJson.output(pacs00200109);
+            String message = getParsingError(x, buffer_.toString());
+            logger.error(message + ", input: " + buffer_.toString());
+            out.println(message);
+            out.flush();
+            return;
           }
 
-          response.setContentType("application/json");
-          out.println(outputterJson.toString());
-        } //else if ( "xml".equals(format) ) {
+          Pacs00200109 pacs00200109 = pacs00800106.generatePacs002Msgby008Msg();
+
+          outputterJson.output(pacs00200109);
+        } else {
+          Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
+
+          if ( pacs02800101 == null || "".equals(pacs02800101) ) {
+            out.println("Parse Error");
+
+            String message = getParsingError(x, buffer_.toString());
+            logger.error(message + ", input: " + buffer_.toString());
+            out.println(message);
+            out.flush();
+            return;
+          }
+
+          Pacs00200109 pacs00200109 = pacs02800101.generatePacs002Msgby028Msg();
+
+          outputterJson.output(pacs00200109);
+        }
+
+        response.setContentType("application/json");
+        out.println(outputterJson.toString());
+      } //else if ( "xml".equals(format) ) {
     //      XMLSupport      xmlSupport = new XMLSupport();
     //      XMLInputFactory factory    = XMLInputFactory.newInstance();
     //      StringReader    reader     = new StringReader(data);
@@ -149,7 +144,6 @@ public class PacsWebAgent
     //      response.setContentType("application/xml");
     //      out.println(xmlSupport.toXMLString(pacsModel002));
     // }
-      }
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
