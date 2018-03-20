@@ -97,7 +97,8 @@ module.exports = {
 
     let valueProp = {
       class: this.getPropType(doc.getAttribute('base')),
-      name: 'xmlValue'
+      name: 'xmlValue',
+      xmlTextNode: true
     };
 
     if ( valueProp.class === 'FObjectProperty' ) {
