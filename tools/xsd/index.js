@@ -141,8 +141,10 @@ function processFile (file, filename) {
 
     // Add xmlns for ISO20022 messages
     if ( m.name === 'Document' ) {
-      m.implements = [ 'net.nanopay.iso20022.Document' ];
+      if ( ! m.implements ) m.implements = [];
       if ( ! m.properties ) m.properties = [];
+
+      m.implements = [ 'net.nanopay.iso20022.Document' ];
       m.properties.push({
         class: 'String',
         name: 'xmlns',
