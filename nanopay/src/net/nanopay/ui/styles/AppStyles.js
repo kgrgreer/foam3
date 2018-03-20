@@ -621,6 +621,39 @@ foam.CLASS({
           background-color: #093649;
           display: inline-block;
         }
+        .wizardDescription {
+          margin: 0;
+          font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 1.5;
+          letter-spacing: 0.2px;
+          text-align: left;
+          color: #093649;
+        }
+        .wizardBoldLabel {
+          font-size: 14px;
+          font-weight: bold;
+          color: #093649;
+          margin-top: 20px;
+        }
+        .wizardBoxTitleContainer {
+          width: 540px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: %PRIMARYCOLOR%;
+          margin-top: 30px;
+        }
+        .wizardBoxTitleLabel {
+          font-size: 14px;
+          font-weight: bold;
+          line-height: 1.43;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding-left: 20px;
+          padding-top: 9px;
+        }
       */}
     })
   ]
