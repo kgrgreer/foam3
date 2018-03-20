@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.admin.ui',
+  package: 'net.nanopay.onboarding.b2b.ui',
   name: 'ConfirmAdminInfoForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 

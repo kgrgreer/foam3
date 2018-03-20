@@ -38,6 +38,8 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/ConfirmAdminInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/ReviewAndSubmitForm', flags: ['web'] },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -117,8 +119,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/ConfirmAdminInfoForm', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/ReviewAndSubmitForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/DisableProfileModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/ResendInviteModal', flags: ['web'] },
