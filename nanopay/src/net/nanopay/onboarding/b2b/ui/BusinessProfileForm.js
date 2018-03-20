@@ -289,6 +289,16 @@ foam.CLASS({
     ^ .streetNameField {
       width: 395px;
     }
+
+    ^ .foam-nanos-auth-ProfilePictureView {
+      background-color: white;
+    }
+
+    ^ .boxless-for-drag-drop {
+      border: none !important;
+      width: 100% !important;
+      padding: 10px 0 !important;
+    }
   `,
 
   messages: [
@@ -311,13 +321,23 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
-    { name: 'BusinessProfilePictureSubtitle', message: 'Business Logo (optional)' }
+    { name: 'BusinessProfilePictureSubtitle', message: 'Business Logo (optional)' },
+    { name: 'BusinessTypeDescriptionSole', message: 'A sole proprietorship is an unincorporated business owned by an individual.' },
+    { name: 'BusinessTypeDescriptionPart', message: 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.' },
+    { name: 'BusinessTypeDescriptionCorp', message: 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.' },
+    { name: 'BusinessTypeDescriptionNonP', message: 'An non for profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
   ],
 
   properties: [
     {
       class: 'String',
-      name: 'businessNameField'
+      name: 'businessNameField',
+      factory: function() {
+        if ( this.viewData.businessName ) return this.viewData.businessName;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessName = newValue.trim();
+      }
     },
     {
       class: 'Boolean',
@@ -342,38 +362,72 @@ foam.CLASS({
     'phoneNumberFieldElement',
     {
       class: 'String',
-      name: 'phoneNumberField'
+      name: 'phoneNumberField',
+      factory: function() {
+        if ( this.viewData.businessPhoneNumber ) return this.viewData.businessPhoneNumber.substring(2);
+      },
+      postSet: function(oldValue, newValue) {
+        this.isEditingPhone = false;
+        this.viewData.businessPhoneNumber = '+1' + newValue.trim();
+      }
     },
     {
       class: 'String',
-      name: 'websiteField'
+      name: 'websiteField',
+      factory: function() {
+        if ( this.viewData.website ) return this.viewData.website;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.website = newValue.trim();
+      }
     },
     {
       name: 'businessTypeField',
       value: 'Please select',
       view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Please select', 'Sole Proprietorship', 'Partnership', 'Corporation', 'Non for Profit' ] },
+      factory: function() {
+        if ( this.viewData.businessType ) {
+          if ( this.viewData.businessType === 'Sole Proprietorship' ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionSole;
+          }
+
+          if ( this.viewData.businessType === 'Partnership' ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionPart;
+          }
+
+          if ( this.viewData.businessType === 'Corporation' ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
+          }
+
+          if ( this.viewData.businessType === 'Non for Profit' ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
+          }
+          return this.viewData.businessType;
+        } else {
+          return 'Please select';
+        }
+      },
       postSet: function(oldValue, newValue) {
         if ( newValue !== 'Please select' ) {
+          this.viewData.businessType = newValue;
           if ( newValue === 'Sole Proprietorship' ) {
-            this.businessTypeInfo = 'A sole proprietorship is an unincorporated business owned by an individual.';
-            return newValue;
+            this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
           if ( newValue === 'Partnership' ) {
-            this.businessTypeInfo = 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.';
-            return newValue;
+            this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
           if ( newValue === 'Corporation' ) {
-            this.businessTypeInfo = 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.';
-            return newValue;
+            this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
           if ( newValue === 'Non for Profit' ) {
-            this.businessTypeInfo = 'An non for profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.';
-            return newValue;
+            this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
+          return newValue;
         } else {
+          this.viewData.businessType = null;
           this.businessTypeInfo = '';
           return newValue;
         }
@@ -385,15 +439,33 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'businessRegistrationNumberField'
+      name: 'businessRegistrationNumberField',
+      factory: function() {
+        if ( this.viewData.businessRegistrationNumber ) return this.viewData.businessRegistrationNumber;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessRegistrationNumber = newValue.trim();
+      }
     },
     {
       class: 'String',
-      name: 'registrationAuthorityField'
+      name: 'registrationAuthorityField',
+      factory: function() {
+        if ( this.viewData.businessRegistrationAuthority ) return this.viewData.businessRegistrationAuthority;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessRegistrationAuthority = newValue.trim();
+      }
     },
     {
       class: 'Date',
       name: 'registrationDateField',
+      factory: function() {
+        if ( this.viewData.businessRegistrationDate ) return this.viewData.businessRegistrationDate;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessRegistrationDate = newValue;
+      },
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
       }
@@ -409,23 +481,42 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.viewData.country || 'CA';
+        if ( this.viewData.businessCountry ) return this.viewData.businessCountry;
+        return 'CA';
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessCountry = newValue;
       }
     },
     {
       class: 'String',
       name: 'streetNumberField',
-      value: ''
+      factory: function() {
+        if ( this.viewData.businessStreetNumber ) return this.viewData.businessStreetNumber;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessStreetNumber = newValue.trim();
+      }
     },
     {
       class: 'String',
       name: 'streetNameField',
-      value: ''
+      factory: function() {
+        if ( this.viewData.businessStreetName ) return this.viewData.businessStreetName;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessStreetName = newValue.trim();
+      }
     },
     {
       class: 'String',
       name: 'addressField',
-      value: ''
+      factory: function() {
+        if ( this.viewData.businessAddress2 ) return this.viewData.businessAddress2;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessAddress2 = newValue.trim();
+      }
     },
     {
       name: 'provinceField',
@@ -439,18 +530,44 @@ foam.CLASS({
           },
           dao$: choices
         });
+      },
+      factory: function() {
+        if ( this.viewData.businessRegion ) return this.viewData.businessRegion;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessRegion = newValue;
       }
     },
     {
       class: 'String',
       name: 'cityField',
-      value: ''
+      factory: function() {
+        if ( this.viewData.businessCity ) return this.viewData.businessCity;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessCity = newValue;
+      }
     },
     {
       class: 'String',
       name: 'postalCodeField',
-      value: ''
+      factory: function() {
+        if ( this.viewData.businessPostalCode ) return this.viewData.businessPostalCode;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessPostalCode = newValue;
+      }
+    },
+    {
+      name: 'businessProfilePicture',
+      factory: function() {
+        if ( this.viewData.businessProfilePicture ) return this.viewData.businessProfilePicture;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.businessProfilePicture = newValue;
+      }
     }
+
   ],
 
   methods: [
@@ -576,7 +693,11 @@ foam.CLASS({
           .start(this.POSTAL_CODE_FIELD).addClass('fullWidthField').end()
 
           .start('p').add(this.BusinessProfilePictureSubtitle).addClass('sectionTitle').end()
-
+          .start('div')
+            .start({
+              class: 'foam.nanos.auth.ProfilePictureView',
+              data$: self.businessProfilePicture$
+            }).end()
         .end()
       .end();
     }
