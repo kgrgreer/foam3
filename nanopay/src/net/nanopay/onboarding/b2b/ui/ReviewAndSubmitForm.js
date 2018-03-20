@@ -6,8 +6,7 @@ foam.CLASS({
   documentation: 'Form for reviewing details of a new user before adding',
 
   imports: [
-    'businessTypeDAO',
-    'viewData'
+    'businessTypeDAO'
   ],
 
   css: `
@@ -168,21 +167,21 @@ foam.CLASS({
       name: 'editBusinessProfile',
       icon: 'images/ic-draft.svg',
       code: function(X) {
-        // Go back to edit info subview.
+        this.goTo(1);
       }
     },
     {
       name: 'editPrincipalOwner',
       icon: 'images/ic-draft.svg',
       code: function(X) {
-        // Go back to edit principal owners subview
+        this.goTo(2);
       }
     },
     {
       name: 'editQuestionaire',
       icon: 'images/ic-draft.svg',
       code: function(X) {
-        // Go back to questionaire subview
+        this.goTo(3);
       }
     }
     

@@ -13,9 +13,10 @@ foam.CLASS({
   ^ .container {
     width: 540px;
   }
-  ^ .accountIdLabel {
-    font-style: bold;
+  ^ .sectionTitle {
+    line-height: 16px;
     font-size: 14px;
+    font-weight: bold;
     margin-top: 0;
     margin-bottom: 20px;
   }
@@ -311,7 +312,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
-            .start('p').add('Account ID ' + this.viewData.user.id).addClass('accountIdLabel').end()
+            .start('p').add('Account ID ' + this.viewData.user.id).addClass('sectionTitle').end()
             .start('div').addClass('nameContainer')
             .start('div')
               .addClass('nameDisplayContainer')
