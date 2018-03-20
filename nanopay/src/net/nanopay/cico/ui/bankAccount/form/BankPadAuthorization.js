@@ -29,7 +29,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-tag-Select {
-      width: 209px;
+      width: 218px;
       height: 40px;
       border-radius: 0;
 
@@ -88,11 +88,12 @@ foam.CLASS({
       text-align: left;
       color: #093649;
     }
-    ^ .full-width-input-1{
-      width: 555px;
-      left: -30px;
+    ^ .full-width-input{
+      width: 498px;
+      left: -26px;
       position: relative;
       font-size: 14px;
+      margin-top: 8px;
     }
     ^ .inputLarge{
       margin-bottom: 20px;
@@ -100,9 +101,11 @@ foam.CLASS({
     }
     ^ .provinceContainer {
       position: relative;
+      margin-bottom: 20px;
     }
     ^ .countryContainer {
       position: relative;
+      margin-bottom: 20px;
     }
     ^ .caret {
       position: relative;
@@ -110,7 +113,7 @@ foam.CLASS({
     ^ .caret:before {
       content: '';
       position: absolute;
-      top: -22px;
+      top: -32px;
       left: 190px;
       border-top: 7px solid #a4b3b8;
       border-left: 7px solid transparent;
@@ -125,11 +128,19 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
+    ^ .property-province{
+      padding: 10px 0px;
+    }
+    ^ .property-country{
+      padding: 10px 0px;
+    }
+    ^ .infoContainer{
+      height: 560px;
+    }
   `,
 
   messages: [
-    { name: 'Guide',                message: 'Don\'t know where to find these numbers? Check your cheque or contact your bank representative.' },
-    { name: 'Instructions',         message: 'Give your bank account a name to manage multiple accounts.' },
+    { name: 'Step',                 message: 'Step 2: Pre-authorized debit confirmation' },
     { name: 'LabelFirstName',       message: 'First Name' },
     { name: 'LabelLastName',        message: 'Last Name' },
     { name: 'LabelCountry',         message: 'Country' },
@@ -141,7 +152,6 @@ foam.CLASS({
     { name: 'LabelAccount',         message: 'Account No. *' },
     { name: 'LabelInstitute',       message: 'Institution No. *' },
     { name: 'LabelTransit',         message: 'Transit No. *' },    
-    { name: 'Step',                 message: 'Step 2: Pre-authorized debit confirmation' },
     { name: 'TC1',                  message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
     { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit www.payments.ca.'},
     { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting www.payments.ca.'}
@@ -171,40 +181,40 @@ foam.CLASS({
       class: 'String',
       name: 'streetNumber',
       factory: function() {
-        return this.viewData.user.address.streetNumber;
+        return this.viewData.address.streetNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.streetNumber = newValue;
+        this.viewData.address.streetNumber = newValue;
       }
     },
     {
       class: 'String',
       name: 'streetName',
       factory: function() {
-        return this.viewData.user.address.streetName;
+        return this.viewData.address.streetName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.streetName = newValue;
+        this.viewData.address.streetName = newValue;
       }
     },
     {
       class: 'String',
       name: 'addressLine',
       factory: function() {
-        return this.viewData.user.address.addressLine;
+        return this.viewData.address.addressLine;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.addressLine = newValue;
+        this.viewData.address.addressLine = newValue;
       }
     },
     {
       class: 'String',
       name: 'city',
       factory: function() {
-        return this.viewData.city;
+        return this.viewData.address.city;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.city = newValue;
+        this.viewData.address.city = newValue;
       }
     },
     {
@@ -219,10 +229,10 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.viewData.user.address.country;
+        return this.viewData.address.country;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.country = newValue;
+        this.viewData.address.country = newValue;
       }
     },
     {
@@ -237,25 +247,28 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.viewData.province;
+        return this.viewData.address.province;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.province = newValue;
+        this.viewData.address.province = newValue;
       }
     },
     {
       class: 'String',
       name: 'postalCode',
       factory: function() {
-        return this.viewData.user.address.postalCode;
+        return this.viewData.address.postalCode;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.postalCode = newValue;
+        this.viewData.address.postalCode = newValue;
       }
     },
     {
       class: 'String',
       name: 'accountNumber',
+      factory: function() {
+        return this.viewData.accountNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.accountNumber = newValue;
       }
@@ -263,6 +276,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'transitNumber',
+      factory: function() {
+        return this.viewData.transitNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.transitNumber = newValue;
       }
@@ -270,6 +286,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionOther',
+      factory: function() {
+        return this.viewData.bankNumber;
+      },
       postSet: function(oldValue, newValue) {
         this.viewData.bankNumber = newValue;
       }
@@ -285,6 +304,7 @@ foam.CLASS({
         .end()
         .start().addClass('infoContainer')
           .start().add('Legal Name').addClass('headings').end()
+
           .start().addClass('inline')
             .start().add(this.LabelFirstName).addClass('infoLabel').end()
             .start(this.FIRST_NAME).addClass('inputLarge').end()
@@ -293,7 +313,9 @@ foam.CLASS({
             .start().add(this.LabelLastName).addClass('infoLabel').end()
             .start(this.LAST_NAME).addClass('inputLarge').end()
           .end()
-          .start().add('Address').addClass('headings').end()
+
+          .start('div').add('Address').addClass('headings').end()
+
           .start().addClass('inline')
             .start().addClass('countryContainer')
               .start().add(this.LabelCountry).addClass('infoLabel').end()
@@ -303,16 +325,18 @@ foam.CLASS({
           .end()
           .start().addClass('inline float-right')
             .start().add(this.LabelSuite).addClass('infoLabel').end()
-            .start(this.SUITE).addClass('inputLarge').end()
+            .start(this.STREET_NUMBER).addClass('inputLarge').end()
           .end()
+
           .start().addClass('inline')
             .start().add(this.LabelAddress).addClass('infoLabel').end()
-            .start(this.ADDRESS).addClass('inputLarge').end()
+            .start(this.STREET_NAME).addClass('inputLarge').end()
           .end()
           .start().addClass('inline float-right')
             .start().add(this.LabelCity).addClass('infoLabel').end()
             .start(this.CITY).addClass('inputLarge').end()
           .end()
+
           .start().addClass('inline')
             .start().addClass('provinceContainer')
               .start().add(this.LabelProvince).addClass('infoLabel').end()
@@ -321,14 +345,17 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('inline float-right')
-            .start().add(this.LabelPostalCode).addClass('infoLabel').end()
+            .start().add(this.LabelPostal).addClass('infoLabel').end()
             .start(this.POSTAL_CODE).addClass('inputLarge').end()
           .end()
-          .start().add('Banking Info').addClass('headings').end()
+
+          .start('div').add('Banking Info').addClass('headings').end()
+
           .start().addClass('inline')
             .start().add(this.LabelInstitute).addClass('infoLabel').end()
-            .start(this.INSTITUTION_OTHER).addClass('inputExtraLarge').end()
+            .start(this.INSTITUTION_OTHER).addClass('full-width-input').end()
           .end()
+
           .start().addClass('inline')
             .start().add(this.LabelTransit).addClass('infoLabel').end()
             .start(this.TRANSIT_NUMBER).addClass('inputLarge').end()

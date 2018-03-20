@@ -50,6 +50,7 @@ foam.CLASS({
       this.nextLabel = 'Next';
       this.SUPER();
       this.viewData.user = this.user
+      this.viewData.address = this.user.address
     },
     function validations() {
       var accountInfo = this.viewData;
