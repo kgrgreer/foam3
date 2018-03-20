@@ -81,13 +81,13 @@ public class LiquidityCashInDAO
     }
 
     // if the user's balance is not enough to make the payment, do cash in first
-    if(txn.getBankAccountId() != null )
+    if ( txn.getBankAccountId() != null )
       total = 0;
     if ( payerAccount.getBalance() - payerMinBalance < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
         long cashInAmount = total + payerMinBalance - payerAccount.getBalance();
-        if (ifCheckRangePerTransaction(payerLiquiditySetting)) {
-          if (checkBankAccountAvailable(payerBankAccountID)) {
+        if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
+          if ( checkBankAccountAvailable(payerBankAccountID) ) {
             addCICOTransaction(payerId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, x);
           } else {
             throw new RuntimeException("Please add and verify your bank account to cash in");
