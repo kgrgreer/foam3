@@ -173,7 +173,6 @@ foam.CLASS({
         return position < this.views.length - 1;
       },
       code: function() {
-        if ( ! this.validateBusinessProfile() ) return;
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
     }
