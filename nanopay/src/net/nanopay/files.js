@@ -159,6 +159,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankDoneForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankPadAuthorization', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankVerificationForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/ManageAccountModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },

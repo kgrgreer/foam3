@@ -42,12 +42,14 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankInfoForm' } },
-        { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
-        { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',          view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
+        { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',       view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankInfoForm' } },
+        { parent: 'addBank', id: 'form-addBank-pad',          label: 'Pad Authorization',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization' } },
+        { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',       view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
+        { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',               view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
-      this.nextLabel = 'I Agree';
+      this.nextLabel = 'Next';
       this.SUPER();
+      this.viewData.user = this.user
     },
     function validations() {
       var accountInfo = this.viewData;
@@ -84,8 +86,9 @@ foam.CLASS({
       name: 'goNext',
       code: function() {
         var self = this;
-        if ( this.position == 0 ) { // On Submission screen.
-          this.nextLabel = 'I Agree';
+        if ( this.position == 0 ) { 
+          // On Submission screen.
+          this.nextLabel = 'Next';
           // data from form
           var accountInfo = this.viewData;
 
@@ -113,6 +116,29 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
             return;
           }
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+        }
+        if ( this.position == 1 ) {
+          // On Pad Verfication
+          this.nextLabel = 'I Agree';
+          var accountInfo = this.viewData;
+
+          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
+          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
+          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
+           accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
+            this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            return;
+          }
+
+          if ( ! this.validations() ) {
+            return;
+          }
+
+          if ( newAccount.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+            return;
+          }
 
           this.bankAccountDAO.put(newAccount).then(function(response) {
             self.newBankAccount = response;
@@ -123,8 +149,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
         }
-
-        if ( this.position == 1 ) {
+        if ( this.position == 2 ) {
           // On Verification screen
           if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
             this.newBankAccount = this.selectedAccount;

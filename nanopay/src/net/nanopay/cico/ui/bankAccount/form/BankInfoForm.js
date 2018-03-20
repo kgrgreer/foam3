@@ -4,7 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to input bank account details.',
-
+  import:[    
+    'user',
+    'userDAO'
+  ],
   css: `
     ^ .col {
       display: inline-block;
