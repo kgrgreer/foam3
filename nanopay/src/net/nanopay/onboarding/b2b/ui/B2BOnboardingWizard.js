@@ -75,8 +75,7 @@ foam.CLASS({
       var self = this;
 
       this.user = this.viewData.user;
-      this.user.principalOwners = this.viewData.principalOwners ? this.viewData.principalOwners : [];
-
+      
       this.userDAO.put(this.user).then(function(updateduser) {
         self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
         if ( andLogout ) self.logOut();

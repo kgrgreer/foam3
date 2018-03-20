@@ -327,7 +327,7 @@ foam.CLASS({
     { name: 'BusinessTypeDescriptionSole', message: 'A sole proprietorship is an unincorporated business owned by an individual.' },
     { name: 'BusinessTypeDescriptionPart', message: 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.' },
     { name: 'BusinessTypeDescriptionCorp', message: 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.' },
-    { name: 'BusinessTypeDescriptionNonP', message: 'An non for profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
+    { name: 'BusinessTypeDescriptionNonP', message: 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
   ],
 
   properties: [
@@ -386,45 +386,52 @@ foam.CLASS({
     {
       name: 'businessTypeField',
       value: 'Please select',
-      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Please select', 'Sole Proprietorship', 'Partnership', 'Corporation', 'Non for Profit' ] },
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessTypeDAO,
+          objToChoice: function(a){
+            return [a.id, a.name];
+          }
+        })
+      },
       factory: function() {
-        if ( this.viewData.businessType ) {
-          if ( this.viewData.businessType === 'Sole Proprietorship' ) {
+        if ( this.viewData.user.businessTypeId ) {
+          if ( this.viewData.businessType == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
-          if ( this.viewData.businessType === 'Partnership' ) {
+          if ( this.viewData.businessType == 1 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( this.viewData.businessType === 'Corporation' ) {
+          if ( this.viewData.businessType == 2 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( this.viewData.businessType === 'Non for Profit' ) {
+          if ( this.viewData.businessType == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
-          return this.viewData.businessType;
+          return this.viewData.user.businessTypeId;
         } else {
-          return 'Please select';
+          return 0;
         }
       },
       postSet: function(oldValue, newValue) {
         if ( newValue !== 'Please select' ) {
-          this.viewData.businessType = newValue;
-          if ( newValue === 'Sole Proprietorship' ) {
+          this.viewData.user.businessTypeId = newValue;
+          if ( newValue == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
-          if ( newValue === 'Partnership' ) {
+          if ( newValue == 1 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( newValue === 'Corporation' ) {
+          if ( newValue == 2 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( newValue === 'Non for Profit' ) {
+          if ( newValue == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
           return newValue;
