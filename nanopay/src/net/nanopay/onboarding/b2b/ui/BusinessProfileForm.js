@@ -310,7 +310,8 @@ foam.CLASS({
     { name: 'AddressLabel', message: 'Address' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
-    { name: 'PostalCodeLabel', message: 'Postal Code' }
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
+    { name: 'BusinessProfilePictureSubtitle', message: 'Business Logo (optional)' }
   ],
 
   properties: [
@@ -573,6 +574,8 @@ foam.CLASS({
           .start(this.CITY_FIELD).addClass('fullWidthField').end()
           .start('p').add(this.PostalCodeLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start(this.POSTAL_CODE_FIELD).addClass('fullWidthField').end()
+
+          .start('p').add(this.BusinessProfilePictureSubtitle).addClass('sectionTitle').end()
 
         .end()
       .end();
