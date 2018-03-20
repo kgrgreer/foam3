@@ -82,7 +82,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
 
     // if the user's balance bigger than the liquidity maxbalance, do cash out
     long transactionAmount = txn.getAmount();
-    if( txn.getBankAccountId() != null ) {
+    if ( txn.getBankAccountId() != null ) {
       transactionAmount = 0;
     }
     try {
