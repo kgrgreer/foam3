@@ -60,8 +60,6 @@ public class ApiWebAgent
         out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
         out.println("</select></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
-        out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
 
         out.println();
