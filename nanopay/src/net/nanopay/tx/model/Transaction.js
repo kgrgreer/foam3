@@ -221,14 +221,14 @@ foam.CLASS({
       javaCode: `
         // Don't perform balance transfer if status in blacklist
         if ( STATUS_BLACKLIST.contains(getStatus()) ) return new Transfer[] {};
-        if(getType() == TransactionType.CASHOUT){
+        if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
             new Transfer(getPayerId(), -getTotal())
           };
         }
-        if(getType() == TransactionType.CASHIN){
+        if ( getType() == TransactionType.CASHIN ) {
           return new Transfer[]{
-            new Transfer(getPayerId(), getTotal())
+            new Transfer(getPayeeId(), getTotal())
           };
         }
         return new Transfer[] {
