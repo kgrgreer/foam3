@@ -415,8 +415,8 @@ foam.CLASS({
     {
       name: 'principalOwnersDAO',
       factory: function() {
-        if ( this.viewData.principalOwners ) {
-          return foam.dao.ArrayDAO.create({ array: this.viewData.principalOwners, of: 'foam.nanos.auth.User' });
+        if ( this.viewData.user.principalOwners ) {
+          return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
