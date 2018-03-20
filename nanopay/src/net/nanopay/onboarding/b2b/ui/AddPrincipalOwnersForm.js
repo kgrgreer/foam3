@@ -763,7 +763,7 @@ foam.CLASS({
             .start(this.CITY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
             .start(this.POSTAL_CODE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
-            .start(this.ADD_PRINCIPLE_OWNER, { label$: this.addLabel$ }).end()
+            .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addLabel$ }).end()
           .end()
         .end();
     },
