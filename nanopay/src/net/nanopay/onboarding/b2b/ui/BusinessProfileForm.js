@@ -396,19 +396,19 @@ foam.CLASS({
       },
       factory: function() {
         if ( this.viewData.user.businessTypeId ) {
-          if ( this.viewData.businessType == 0 ) {
+          if ( this.viewData.user.businessType == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
-          if ( this.viewData.businessType == 1 ) {
+          if ( this.viewData.user.businessTypeId == 1 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( this.viewData.businessType == 2 ) {
+          if ( this.viewData.user.businessTypeId == 2 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( this.viewData.businessType == 3 ) {
+          if ( this.viewData.user.businessTypeId == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
           return this.viewData.user.businessTypeId;
