@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
-  name: 'AddPrincipleOwnersForm',
+  name: 'AddPrincipalOwnersForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: 'Form to input Principle Owner(s)',
+  documentation: 'Form to input Principal Owner(s)',
 
   imports: [
     'countryDAO',
@@ -286,7 +286,7 @@ foam.CLASS({
       width: 395px;
     }
 
-    ^ .net-nanopay-ui-ActionView-addPrincipleOwner {
+    ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
       width: 540px;
       height: 40px;
 
@@ -399,7 +399,7 @@ foam.CLASS({
     { name: 'EmailAddressLabel', message: 'Email Address' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
     { name: 'PhoneNumberLabel', message: 'Phone Number' },
-    { name: 'PrincipleTypeLabel', message: 'Principle Type' },
+    { name: 'PrincipalTypeLabel', message: 'Principal Type' },
     { name: 'DateOfBirthLabel', message: 'Date of Birth' },
     { name: 'ResidentialAddressLabel', message: 'Residential Address' },
     { name: 'CountryLabel', message: 'Country' },
@@ -413,27 +413,27 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'principleOwnersDAO',
+      name: 'principalOwnersDAO',
       factory: function() {
-        if ( this.viewData.principleOwners ) {
-          return foam.dao.ArrayDAO.create({ array: this.viewData.principleOwners, of: 'foam.nanos.auth.User' });
+        if ( this.viewData.principalOwners ) {
+          return foam.dao.ArrayDAO.create({ array: this.viewData.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
     },
     {
-      name: 'selectedPrincipleOwner',
+      name: 'selectedPrincipalOwner',
       preSet: function(oldValue, newValue) {
-      if ( newValue != null ) this.editPrincipleOwner(newValue);
+      if ( newValue != null ) this.editPrincipalOwner(newValue);
         return newValue;
       }
     },
     {
       class: 'Boolean',
-      name: 'principleOwnersCount',
+      name: 'principalOwnersCount',
       factory: function() {
         // In case we load from a save state
-        this.principleOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
+        this.principalOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
           return c.value;
         });
       }
@@ -586,7 +586,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.principleOwnersDAO.on.sub(this.onDAOChange);
+      this.principalOwnersDAO.on.sub(this.onDAOChange);
       this.onDAOChange();
     },
 
@@ -599,12 +599,12 @@ foam.CLASS({
           // TODO: TABLE SHOULD GO HERE
           .start('div')
             .addClass('fullWidthField')
-            .enableClass('hideTable', this.principleOwnersCount$.map(function(c) { return c > 0; }), true)
+            .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
             .start({
               class: 'foam.u2.view.TableView',
-              data$: this.principleOwnersDAO$,
+              data$: this.principalOwnersDAO$,
               editColumnsEnabled: false,
-              selection$: this.selectedPrincipleOwner$,
+              selection$: this.selectedPrincipalOwner$,
               columns: [
                 'legalName', 'jobTitle', 'principleType'
               ]
@@ -614,7 +614,7 @@ foam.CLASS({
           .start('div')
             .addClass('fullWidthField')
             .style({ 'margin-bottom':'30px' })
-            .enableClass('hideTable', this.selectedPrincipleOwner$.map(function(selected) { return selected ? true : false; }), true)
+            .enableClass('hideTable', this.selectedPrincipalOwner$.map(function(selected) { return selected ? true : false; }), true)
             .start(this.EDIT).end()
             .start(this.DELETE).end()
             .start(this.CANCEL_EDIT).end()
@@ -727,7 +727,7 @@ foam.CLASS({
               .end()
             .end()
 
-            .start('p').add(this.PrincipleTypeLabel).addClass('infoLabel').end()
+            .start('p').add(this.PrincipalTypeLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .tag(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlot })
               .start('div').addClass('caret').end()
@@ -789,7 +789,7 @@ foam.CLASS({
       this.postalCodeField = '';
 
       this.addLabel = 'Add';
-      this.selectedPrincipleOwner = undefined;
+      this.selectedPrincipalOwner = undefined;
       this.isDisplayMode = false;
 
       this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
@@ -797,7 +797,7 @@ foam.CLASS({
       this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     },
 
-    function editPrincipleOwner(user) {
+    function editPrincipalOwner(user) {
       this.firstNameField = user.firstName;
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
@@ -845,7 +845,7 @@ foam.CLASS({
         return isDisplayMode;
       },
       code: function() {
-        this.principleOwnersDAO.remove(this.selectedPrincipleOwner);
+        this.principalOwnersDAO.remove(this.selectedPrincipalOwner);
         this.clearFields();
       }
     },
@@ -857,7 +857,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'addPrincipleOwner',
+      name: 'addPrincipalOwner',
       isEnabled: function(isDisplayMode) {
         return ! isDisplayMode;
       },
@@ -884,7 +884,7 @@ foam.CLASS({
         }
 
         if ( ! this.validateAge(this.birthdayField) ) {
-          this.add(this.NotificationMessage.create({ message: 'Principle owner must be at least 16 years of age.', type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
           return;
         }
 
@@ -913,11 +913,11 @@ foam.CLASS({
 
         var principleOwner;
 
-        if ( this.selectedPrincipleOwner ) {
-          principleOwner = this.selectedPrincipleOwner;
+        if ( this.selectedPrincipalOwner ) {
+          principleOwner = this.selectedPrincipalOwner;
         } else {
           principleOwner = this.User.create({
-            id: this.principleOwnersCount + 1
+            id: this.principalOwnersCount + 1
           });
         }
 
@@ -942,7 +942,7 @@ foam.CLASS({
         principleOwner.principleType = this.principleTypeField
 
         // TODO?: Maybe add a loading indicator?
-        this.principleOwnersDAO.put(principleOwner).then(function(npo) {
+        this.principalOwnersDAO.put(principleOwner).then(function(npo) {
           self.clearFields();
         });
       }
@@ -952,9 +952,9 @@ foam.CLASS({
   listeners: [
     function onDAOChange() {
       var self = this;
-      this.principleOwnersDAO.select().then(function(principleOwners) {
-        self.viewData.principleOwners = principleOwners.array;
-        self.principleOwnersCount = principleOwners.array.length;
+      this.principalOwnersDAO.select().then(function(principalOwners) {
+        self.viewData.principalOwners = principalOwners.array;
+        self.principalOwnersCount = principalOwners.array.length;
       });
     }
   ]

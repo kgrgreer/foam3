@@ -18,7 +18,9 @@ foam.CLASS({
     'validatePhone',
     'validateCity',
     'validateStreetNumber',
-    'validateAddress'
+    'validateAddress',
+    'user',
+    'userDAO'
   ],
 
   exports: [
@@ -47,9 +49,11 @@ foam.CLASS({
     function init() {
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
+      this.viewData.principalOwners = this.user.principalOwners;
+      console.log(this.user.principalOwners);
       this.views = [
-        { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
+        // { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } }
       ];
       this.SUPER();
@@ -68,9 +72,17 @@ foam.CLASS({
 
     function saveProgress() {
       console.log('TODO: Save Progress');
-      var strippedPrincipleOwners = this.viewData.principleOwners ? this.viewData.principleOwners.map( function(po) { po.id = null; return po; } ) : [];
+      var self = this;
+      this.user.principalOwners = this.viewData.principalOwners ? this.viewData.principalOwners.map( function(po) { po.id = null; return po; } ) : [];
+      console.log(this.user.principalOwners);
+      this.userDAO.put(this.user).then(function(updateduser) {
+        console.log(updateduser);
+        self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
+      }).catch(function(err){
+        console.log(err);
+      });
       // NOTE: This should be in a success block.
-      this.add(this.NotificationMessage.create({ message: this.SaveSuccessfulMessage }));
+
     },
 
     function logOut() {

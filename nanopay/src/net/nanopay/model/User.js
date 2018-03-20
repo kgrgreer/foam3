@@ -104,7 +104,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'principleType',
-      label: 'Principle Type'
+      label: 'Principal Type'
     },
     {
       class: 'Boolean',
