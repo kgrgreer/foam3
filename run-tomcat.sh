@@ -6,8 +6,10 @@ NANOPAY_HOME=$(dirname $0)
 
 function testcatalina {
     if [ -x "$1/bin/catalina.sh" ]; then
-        echo "found. (" $1 ")"
+        printf "found. ( $1 )\n"
         export CATALINA_HOME="$1"
+        export CATALINA_PID="/tmp/catalina_pid"
+        touch "$CATALINA_PID"
     fi
 }
 
@@ -33,8 +35,46 @@ function rmfile {
     fi
 }
 
+function status_tomcat {
+    ps -a | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" > /dev/null
+    result=$?
+    # echo "exit code: ${result}"
+    # if [ "${result}" -eq "0" ] ; then
+    #     echo "`date`: tomcat started"
+    # else
+    #     echo "`date`: tomcat stopped"
+    # fi
+    return ${result}
+}
+
 function shutdown_tomcat {
-    "$CATALINA_HOME/bin/shutdown.sh" > /dev/null 2>&1
+    printf "stopping tomcat..."
+    "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
+
+    wait_time=0
+    while status_tomcat -eq "0"
+    do
+        if [ "$wait_time" -eq "5" ]; then
+            break;
+        fi
+        wait_time=$(($wait_time + 1))
+
+        printf "."
+        sleep 1;
+
+    done
+    if status_tomcat -eq "0"; then
+        kill $(ps -ef | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" | awk '{print $2}')
+        sleep 1;
+        if status_tomcat -eq "0"; then
+            printf "failed to kill tomcat process.\n"
+            exit 1
+        else
+            printf "killed.\n"
+        fi
+    else
+        printf "stopped.\n"
+    fi
 }
 
 function build_NANOPAY_into_tomcat {
@@ -55,36 +95,16 @@ function build_NANOPAY_into_tomcat {
     cd "$NANOPAY_HOME"
     ./find.sh
 
-    #Copy over all JDAO files to /bin
-    cp brokers "$CATALINA_HOME/bin/"
-    cp businessSectors "$CATALINA_HOME/bin/"
-    cp businessTypes "$CATALINA_HOME/bin/"
-    cp cicoServiceProviders "$CATALINA_HOME/bin/"
-    cp corridors "$CATALINA_HOME/bin/"
-    cp countries "$CATALINA_HOME/bin/"
-    cp cronjobs "$CATALINA_HOME/bin/"
-    cp currencies "$CATALINA_HOME/bin/"
-    cp dugs "$CATALINA_HOME/bin/"
-    cp emailTemplates "$CATALINA_HOME/bin/"
-    cp exportDriverRegistrys "$CATALINA_HOME/bin/"
-    cp groups "$CATALINA_HOME/bin/"
-    cp institutions "$CATALINA_HOME/bin/"
-    cp -n invitations "$CATALINA_HOME/bin/" &
-    cp -n invitationHistory "$CATALINA_HOME/bin/" &
-    cp languages "$CATALINA_HOME/bin/"
-    cp menus "$CATALINA_HOME/bin/"
-    cp payoutOptions "$CATALINA_HOME/bin/"  
-    cp -n permissions "$CATALINA_HOME/bin/" &
-    cp questionnaireQuestionJunction "$CATALINA_HOME/bin/"
-    cp questionnaires "$CATALINA_HOME/bin/"
-    cp questions "$CATALINA_HOME/bin/"
-    cp regions "$CATALINA_HOME/bin/"
-    cp scripts "$CATALINA_HOME/bin/"
-    cp services "$CATALINA_HOME/bin/"
-    cp spids $CATALINA_HOME/bin/    
-    cp tests "$CATALINA_HOME/bin/"
-    cp transactionLimits "$CATALINA_HOME/bin/"
-    cp -n users "$CATALINA_HOME/bin/" &
+    # Copy repository journals
+    JOURNALS='journals'
+    if [ ! -f $JOURNALS ]; then
+        echo "ERROR: missing $JOURNALS file."
+        exit 1
+    fi
+
+    while read journal; do
+        cp "$journal" "$CATALINA_HOME/bin/$journal.0"
+    done < $JOURNALS
 
     # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
     rmdir "$WEBAPPS/foam2"
@@ -108,24 +128,27 @@ function build_NANOPAY_into_tomcat {
 }
 
 function start_tomcat {
-    ARGS=
-    if [ $DEBUG -eq 1 ]; then
-        ARGS="jpda"
-    fi
+    if status_tomcat -eq "0"; then
+        echo "instance of tomcat already running.\n"
+        exit 1
+    else 
+        ARGS=
+        if [ $DEBUG -eq 1 ]; then
+            ARGS="jpda"
+        fi
 
-    if [ $FOREGROUND -eq 1 ]; then
-        ARGS="$ARGS run"
-    else
-        ARGS="$ARGS start"
-    fi
+        if [ $FOREGROUND -eq 1 ]; then
+            ARGS="$ARGS run"
+        else
+            ARGS="$ARGS start"
+        fi
 
-    "$CATALINA_HOME/bin/catalina.sh" $ARGS
+        "$CATALINA_HOME/bin/catalina.sh" $ARGS
+    fi
 }
 
-
-
 while [ -z "$CATALINA_HOME" ]; do
-    echo -n "Searching for catalina... "
+    printf "Searching for catalina... "
     testcatalina /Library/Tomcat
     if [ ! -z "$CATALINA_HOME" ]; then
         break
@@ -134,8 +157,8 @@ while [ -z "$CATALINA_HOME" ]; do
     if [ ! -z "$CATALINA_HOME" ]; then
         break
     fi
-    echo "not found."
-    echo "Set CATALINA_HOME environment variable to the location of Tomcat."
+    printf "not found.\n"
+    printf "Set CATALINA_HOME environment variable to the location of Tomcat."
     exit 1
 done
 

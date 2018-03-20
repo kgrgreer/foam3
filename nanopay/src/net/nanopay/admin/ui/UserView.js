@@ -16,15 +16,16 @@ foam.CLASS({
     'foam.nanos.auth.User'
   ],
 
-  exports: [
-    'filter',
-    'filteredUserDAO'
-  ],
-
   imports: [
      'auth',
      'stack',
      'userDAO'
+  ],
+
+  exports: [
+    'filter',
+    'filteredUserDAO',
+    'dblclick'
   ],
 
   css: `
@@ -184,6 +185,9 @@ foam.CLASS({
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
         .end();
+    },
+    function dblclick(user) {
+      this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
     }
   ],
 

@@ -207,6 +207,14 @@ foam.CLASS({
       padding-bottom: 20px;
     }
   `,
+  
+  properties:[
+    {
+      name: 'dragActive',
+      value: false
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -214,6 +222,8 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
+        .on('dragover', this.onDragOver)
+        .on('drop', this.onDropOut)
         .start()
           .start('div').addClass('editBusinessContainer')
             .start('h2').add('Edit Business profile').end()
@@ -221,7 +231,12 @@ foam.CLASS({
             .start().addClass(this.myClass('registration-container'))
               .start('h3').add('Business information').end()
               .start().addClass('business-image-container')
-                .start(this.User.PROFILE_PICTURE).end()
+              .tag({
+                class: 'foam.nanos.auth.ProfilePictureView',
+                data$: this.user.profilePicture$,
+                uploadHidden: false,
+                dragActive$: this.dragActive$
+              })
               .end()
               .start().addClass('input-container')
                 .start('label').add('Business Name *').end()
@@ -305,6 +320,16 @@ foam.CLASS({
           X.stack.push({ class:'net.nanopay.settings.business.BusinessProfileView' })
         })
       }
+    }
+  ],
+  listeners:[
+    function onDropOut(e) {
+      e.preventDefault();  
+      this.dragActive = false;    
+    },
+    function onDragOver(e) {
+      this.dragActive = true;    
+      e.preventDefault();
     }
   ]
 });

@@ -38,6 +38,15 @@ foam.CLASS({
     ^ .attachment-btn {
       margin: 10px 0 50px;
     }
+    ^ .box-for-drag-drop {
+      border: 5px dashed #1234;
+      height: 100px;
+      width: 200px;
+    }
+    ^ .inputText{
+      text-align: center;
+      line-height: 60px
+    }
   `,
 
   messages: [
@@ -54,7 +63,6 @@ foam.CLASS({
           .add('Attachments')
           .add(this.slot(function (data) {
             var e = this.E();
-
             for ( var i = 0 ; i < data.length ; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
@@ -64,17 +72,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start('input').addClass('attachment-input')
-            .attrs({
-              type: 'file',
-              accept: 'application/pdf',
-              multiple: 'multiple'
-            })
-            .on('change', this.onChange)
-          .end()
-          .start().addClass('attachment-btn white-blue-button btn')
-            .add('Add Attachment')
-            .on('click', self.onAddAttachmentClicked)
+          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
           .end()
         .end();
     },
@@ -85,37 +83,19 @@ foam.CLASS({
       this.data = Array.from(this.data);
     }
   ],
+  actions: [
+    {
+      name: 'uploadButton',
+      label: 'Choose File',
 
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.UploadModal', exportData$: this.data$}));
+      }
+    },
+  ],
   listeners: [
     function onAddAttachmentClicked (e) {
       this.document.querySelector('.attachment-input').click();
     },
-
-    function onChange (e) {
-      var errors = false;
-      var files = e.target.files;
-      for ( var i = 0 ; i < files.length ; i++ ) {
-        // skip files that exceed limit
-        if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
-          if ( ! errors ) errors = true;
-          continue;
-        }
-
-        this.data.push(this.File.create({
-          owner: this.user.id,
-          filename: files[i].name,
-          filesize: files[i].size,
-          mimeType: files[i].type,
-          data: this.BlobBlob.create({
-            blob: files[i]
-          })
-        }));
-      }
-      this.data = Array.from(this.data);
-
-      if ( errors ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorMessage, type: 'error' }));
-      }
-    }
   ]
 });

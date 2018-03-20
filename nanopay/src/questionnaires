@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.invite.model.Questionnaire","id":1,"description":"Business onboarding questionnaire"})
+p({"class":"net.nanopay.onboarding.model.Questionnaire","id":"b2b","description":"Business onboarding questionnaire"})

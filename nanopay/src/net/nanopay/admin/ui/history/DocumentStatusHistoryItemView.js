@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invite.ui',
+  package: 'net.nanopay.admin.ui.history',
   name: 'DocumentStatusHistoryItemView',
   extends: 'foam.u2.View',
 
