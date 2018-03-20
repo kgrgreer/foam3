@@ -33,6 +33,7 @@ foam.CLASS({
 
   messages: [
     { name: 'SaveSuccessfulMessage', message: 'Progress saved.' },
+    { name: 'SaveFailureMessage', message: 'Could not save your changes. Please try again.' },
     { name: 'ErrorBusinessProfileNameMessage', message: 'Business name required.' },
     { name: 'ErrorBusinessProfilePhoneMessage', message: 'Invalid business phone number.' },
     { name: 'ErrorBusinessProfileTypeMessage', message: 'Business type required.' },
@@ -50,7 +51,6 @@ foam.CLASS({
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.principalOwners = this.user.principalOwners;
-      console.log(this.user.principalOwners);
       this.views = [
         // { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
@@ -63,26 +63,21 @@ foam.CLASS({
       switch(selection) {
         case 0 : this.logOut();
                  break;
-        case 1 : this.saveProgress();
-                 this.logOut();
+        case 1 : this.saveProgress(true);
                  break;
         default: console.error('unhandled response');
       }
     },
 
-    function saveProgress() {
-      console.log('TODO: Save Progress');
+    function saveProgress(andLogout) {
       var self = this;
-      this.user.principalOwners = this.viewData.principalOwners ? this.viewData.principalOwners.map( function(po) { po.id = null; return po; } ) : [];
-      console.log(this.user.principalOwners);
+      this.user.principalOwners = this.viewData.principalOwners ? this.viewData.principalOwners : [];
       this.userDAO.put(this.user).then(function(updateduser) {
-        console.log(updateduser);
         self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
+        if ( andLogout ) self.logOut();
       }).catch(function(err){
-        console.log(err);
+        self.add(self.NotificationMessage.create({ message: self.SaveFailureMessage, type: 'error' }));
       });
-      // NOTE: This should be in a success block.
-
     },
 
     function logOut() {
