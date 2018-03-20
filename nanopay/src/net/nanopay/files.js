@@ -116,6 +116,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddCompanyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddShopperView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/ConfirmAdminInfoForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/DisableProfileModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/ResendInviteModal', flags: ['web'] },

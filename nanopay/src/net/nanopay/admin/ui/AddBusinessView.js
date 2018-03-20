@@ -317,7 +317,7 @@ foam.CLASS({
               .addClass('nameDisplayContainer')
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_LEGAL_NAME, { tabIndex: 1 })
+                .start(this.DISPLAYED_LEGAL_NAME)
                   .addClass('legalNameDisplayField')
                   .on('focus', function() {
                     this.blur();
@@ -333,7 +333,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD, { tabIndex: 2 })
+                    .start(this.FIRST_NAME_FIELD)
                       .addClass('nameFields')
                       .on('click', function() { 
                         self.isEditingName = true;
@@ -344,7 +344,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('middleName', this.isEditingName$, true)
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
-                    .start(this.MIDDLE_NAME_FIELD, { tabIndex: 3 })
+                    .start(this.MIDDLE_NAME_FIELD)
                       .addClass('nameFields')
                       .on('click', function() {
                         self.isEditingName = true;
@@ -355,7 +355,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('lastName', this.isEditingName$, true)
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
-                    .start(this.LAST_NAME_FIELD, { tabIndex: 4 })
+                    .start(this.LAST_NAME_FIELD)
                       .addClass('nameFields')
                       .on('click', function() {
                         self.isEditingName = true;
