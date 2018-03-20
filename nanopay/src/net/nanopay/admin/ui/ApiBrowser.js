@@ -124,7 +124,6 @@ foam.CLASS({
       var self = this;
 
       this.start().addClass(this.myClass())
-        .start().add(this.PRINT_PAGE).end()
         .start('h2').add("API Documentation").end()
         .start().addClass('light-roboto-h2').add(this.introMessage).end()
         .start('h2').add("Making Requests").end()
