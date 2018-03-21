@@ -29,7 +29,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-tag-Select {
-      width: 218px;
+      width: 100%;
       height: 40px;
       border-radius: 0;
 
@@ -75,7 +75,7 @@ foam.CLASS({
       letter-spacing: 0.2px;
       text-align: left;
       color: #093649;
-      padding-bottom: 20px;
+      padding-bottom: 6px;
     }
     
     ^ .messageBody {
@@ -87,6 +87,7 @@ foam.CLASS({
       letter-spacing: 0.3px;
       text-align: left;
       color: #093649;
+      margin-top:0px
     }
     ^ .full-width-input{
       width: 498px;
@@ -98,8 +99,9 @@ foam.CLASS({
     ^ .inputLarge{
       margin-bottom: 20px;
       font-size: 14px;
+      margin-top: 10px;
     }
-    ^ .provinceContainer {
+    ^ .regionContainer {
       position: relative;
       margin-bottom: 20px;
     }
@@ -128,11 +130,34 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
-    ^ .property-province{
+    ^ .longcaret {
+      position: relative;
+    }
+    ^ .longcaret:before {
+      content: '';
+      position: absolute;
+      top: -32px;
+      left: 472px;
+      border-top: 7px solid #a4b3b8;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+    }
+    ^ .longcaret:after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      border-top: 0px solid #ffffff;
+      border-left: 0px solid transparent;
+      border-right: 0px solid transparent;
+    }
+    ^ .property-region{
       padding: 10px 0px;
+      width: 218px;
     }
     ^ .property-country{
       padding: 10px 0px;
+      width: 497px;
     }
     ^ .infoContainer{
       height: 560px;
@@ -144,10 +169,11 @@ foam.CLASS({
     { name: 'LabelFirstName',       message: 'First Name' },
     { name: 'LabelLastName',        message: 'Last Name' },
     { name: 'LabelCountry',         message: 'Country' },
+    { name: 'LabelStreetNumber',    message: 'Street Number' },
+    { name: 'LabelStreetName',      message: 'Street Name' },
     { name: 'LabelSuite',           message: 'Suite' },
-    { name: 'LabelAddress',         message: 'Address' },
     { name: 'LabelCity',            message: 'City' },
-    { name: 'LabelProvince',        message: 'Province' },
+    { name: 'LabelRegion',          message: 'Region' },
     { name: 'LabelPostal',          message: 'PostalCode' },
     { name: 'LabelAccount',         message: 'Account No. *' },
     { name: 'LabelInstitute',       message: 'Institution No. *' },
@@ -181,40 +207,40 @@ foam.CLASS({
       class: 'String',
       name: 'streetNumber',
       factory: function() {
-        return this.viewData.address.streetNumber;
+        return this.viewData.user.address.streetNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.streetNumber = newValue;
+        this.viewData.user.address.streetNumber = newValue;
       }
     },
     {
       class: 'String',
       name: 'streetName',
       factory: function() {
-        return this.viewData.address.streetName;
+        return this.viewData.user.address.streetName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.streetName = newValue;
+        this.viewData.user.address.streetName = newValue;
       }
     },
     {
       class: 'String',
-      name: 'addressLine',
+      name: 'suite',
       factory: function() {
-        return this.viewData.address.addressLine;
+        return this.viewData.user.address.suite;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.addressLine = newValue;
+        this.viewData.user.address.suite = newValue;
       }
     },
     {
       class: 'String',
       name: 'city',
       factory: function() {
-        return this.viewData.address.city;
+        return this.viewData.user.address.city;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.city = newValue;
+        this.viewData.user.address.city = newValue;
       }
     },
     {
@@ -229,14 +255,14 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.viewData.address.country;
+        return this.viewData.user.address.countryId;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.country = newValue;
+        this.viewData.user.address.countryId = newValue;
       }
     },
     {
-      name: 'province',
+      name: 'region',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
@@ -247,20 +273,20 @@ foam.CLASS({
         })
       },
       factory: function() {
-        return this.viewData.address.province;
+        return this.viewData.user.address.regionId;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.province = newValue;
+        this.viewData.user.address.regionId = newValue;
       }
     },
     {
       class: 'String',
       name: 'postalCode',
       factory: function() {
-        return this.viewData.address.postalCode;
+        return this.viewData.user.address.postalCode;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.address.postalCode = newValue;
+        this.viewData.user.address.postalCode = newValue;
       }
     },
     {
@@ -303,7 +329,7 @@ foam.CLASS({
           .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
         .start().addClass('infoContainer')
-          .start().add('Legal Name').addClass('headings').end()
+          .start('p').add('Legal Name').addClass('headings').end()
 
           .start().addClass('inline')
             .start().add(this.LabelFirstName).addClass('infoLabel').end()
@@ -314,23 +340,28 @@ foam.CLASS({
             .start(this.LAST_NAME).addClass('inputLarge').end()
           .end()
 
-          .start('div').add('Address').addClass('headings').end()
+          .start('p').add('Address').addClass('headings').end()
 
           .start().addClass('inline')
             .start().addClass('countryContainer')
               .start().add(this.LabelCountry).addClass('infoLabel').end()
               .tag(this.COUNTRY)
-              .start().addClass('caret').end()
+              .start().addClass('longcaret').end()
             .end()
           .end()
-          .start().addClass('inline float-right')
-            .start().add(this.LabelSuite).addClass('infoLabel').end()
+
+          .start().addClass('inline ')
+            .start().add(this.LabelStreetNumber).addClass('infoLabel').end()
             .start(this.STREET_NUMBER).addClass('inputLarge').end()
           .end()
-
-          .start().addClass('inline')
-            .start().add(this.LabelAddress).addClass('infoLabel').end()
+          .start().addClass('inline float-right')
+            .start().add(this.LabelStreetName).addClass('infoLabel').end()
             .start(this.STREET_NAME).addClass('inputLarge').end()
+          .end()
+
+          .start().addClass('inline ')
+            .start().add(this.LabelSuite).addClass('infoLabel').end()
+            .start(this.SUITE).addClass('inputLarge').end()
           .end()
           .start().addClass('inline float-right')
             .start().add(this.LabelCity).addClass('infoLabel').end()
@@ -338,9 +369,9 @@ foam.CLASS({
           .end()
 
           .start().addClass('inline')
-            .start().addClass('provinceContainer')
-              .start().add(this.LabelProvince).addClass('infoLabel').end()
-              .tag(this.PROVINCE)
+            .start().addClass('regionContainer')
+              .start().add(this.LabelRegion).addClass('infoLabel').end()
+              .tag(this.REGION)
               .start().addClass('caret').end()
             .end()
           .end()
@@ -349,20 +380,20 @@ foam.CLASS({
             .start(this.POSTAL_CODE).addClass('inputLarge').end()
           .end()
 
-          .start('div').add('Banking Info').addClass('headings').end()
+          .start('p').add('Banking Info').addClass('headings').end()
 
           .start().addClass('inline')
             .start().add(this.LabelInstitute).addClass('infoLabel').end()
-            .start(this.INSTITUTION_OTHER).addClass('full-width-input').end()
+            .start(this.INSTITUTION_OTHER, {mode: foam.u2.DisplayMode.RO} ).addClass('full-width-input').end()
           .end()
 
           .start().addClass('inline')
             .start().add(this.LabelTransit).addClass('infoLabel').end()
-            .start(this.TRANSIT_NUMBER).addClass('inputLarge').end()
+            .start(this.TRANSIT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('inputLarge').end()
           .end()
           .start().addClass('inline float-right')
             .start().add(this.LabelAccount).addClass('infoLabel').end()
-            .start(this.ACCOUNT_NUMBER).addClass('inputLarge').end()
+            .start(this.ACCOUNT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('inputLarge').end()
           .end()
           .start('div').addClass('row').addClass('rowTopMarginOverride')
             .start('p')

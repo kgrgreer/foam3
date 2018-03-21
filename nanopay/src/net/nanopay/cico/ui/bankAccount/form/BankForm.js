@@ -7,8 +7,9 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a bank account',
 
   requires: [
-    'net.nanopay.model.BankAccount',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.nanos.auth.User',
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
@@ -17,9 +18,14 @@ foam.CLASS({
     'selectedAccount',
     'stack',
     'user',
-    'validateTransitNumber',
+    'userDAO',
     'validateAccountNumber',
-    'validateInstitutionNumber'
+    'validateAddress',
+    'validateCity',
+    'validateInstitutionNumber',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'validateTransitNumber',
   ],
 
   exports: [
@@ -50,7 +56,6 @@ foam.CLASS({
       this.nextLabel = 'Next';
       this.SUPER();
       this.viewData.user = this.user
-      this.viewData.address = this.user.address
     },
     function validations() {
       var accountInfo = this.viewData;
@@ -71,7 +76,30 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid institution number.', type: 'error' }));
         return false;
       }
-
+      if ( this.viewData.user.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( this.viewData.user.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateStreetNumber(this.viewData.user.address.streetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAddress(this.viewData.user.address.streetName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateCity(this.viewData.user.address.city) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePostalCode(this.viewData.user.address.postalCode) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return false;
+      }
       return true;
     }
   ],
@@ -105,7 +133,7 @@ foam.CLASS({
             return;
           }
 
-          var newAccount = this.BankAccount.create({
+          this.viewData.account = this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
@@ -113,21 +141,22 @@ foam.CLASS({
             owner: this.user.id
           });
 
-          if ( newAccount.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+          if ( this.viewData.account.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: this.viewData.account.errors_[0][1], type: 'error' }));
             return;
           }
           self.subStack.push(self.views[self.subStack.pos + 1].view);
+          return;
         }
         if ( this.position == 1 ) {
           // On Pad Verfication
           this.nextLabel = 'I Agree';
-          var accountInfo = this.viewData;
+          var accountInfo = this.viewData.account;
 
           if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
           ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
           ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
-           accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
+           accountInfo.institutionNumber == null || accountInfo.institutionNumber.trim() == '' ) {
             this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
             return;
           }
@@ -136,22 +165,28 @@ foam.CLASS({
             return;
           }
 
-          if ( newAccount.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+          if ( accountInfo.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: accountInfo.errors_[0][1], type: 'error' }));
             return;
           }
-
-          this.bankAccountDAO.put(newAccount).then(function(response) {
-            self.newBankAccount = response;
+          this.userDAO.put(this.viewData.user).then(function (result) {
+            self.viewData.user.copyFrom(result);
+          }).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
+          this.bankAccountDAO.put(accountInfo).then(function(response) {
+            self.viewData.account = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Come back later';
             self.nextLabel = 'Verify';
+            return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
         }
         if ( this.position == 2 ) {
           // On Verification screen
+          self.add(self.NotificationMessage.create({ message: 'BOOM', type: '' }));
           if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
             this.newBankAccount = this.selectedAccount;
           }

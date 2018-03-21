@@ -165,20 +165,6 @@ foam.CLASS({
             .start(this.INSTITUTION_OTHER, {onKey: true, maxLength: 3}).end()
           .end()
         .end()
-        .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p')
-            .add('Authorization').addClass('headings')
-            .start('p').addClass('messageBody').add(this.TC1).end()
-          .end()
-          .start('p')
-            .add('Recourse/Reimbursement').addClass('headings')
-            .start('p').addClass('messageBody').add(this.TC2).end()
-          .end()
-          .start('p')
-            .add('Cancellation').addClass('headings')
-            .start('p').addClass('messageBody').add(this.TC3).end()
-          .end()
-        .end() 
     }
   ]
 });
