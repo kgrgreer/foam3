@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.doc.SimpleClassView',
     'foam.doc.GetRequestView',
     'foam.doc.PutRequestView',
+    'foam.doc.serviceListView'
   ],
 
   imports: [
@@ -105,6 +106,7 @@ foam.CLASS({
       var self = this;
 
       this.start().addClass(this.myClass())
+        .add(this.serviceListView.create())
         .start('h2').add("API Documentation").end()
         .start().addClass('light-roboto-h2').add(this.introMessage).end()
         .start('h2').add("Making Requests").end()
@@ -117,7 +119,11 @@ foam.CLASS({
           var model = self.parseClientModel(n);
           if( ! model ) return;
           var dataProps = self.requiredProperties(model);
-          this.start().style({ 'font-size' : '25px', 'margin' : '30px 0px', 'font-weight': '500'}).add(n.name).end()
+          this.start().addClass(n.name)
+            .style({ 'font-size' : '25px', 'margin' : '30px 0px', 'font-weight': '500'})
+            .add(n.name)
+            .attrs({ id : n.name })
+          .end()
           .tag(self.SimpleClassView.create({ data: model }))
           .tag(self.GetRequestView.create({ data: n.name }))
           .tag(self.PutRequestView.create({ data: { n : n, props : dataProps }}))
@@ -219,6 +225,64 @@ foam.CLASS({
           .end()
         .end()
       .end()
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.doc',
+  name: 'serviceListView',
+  extends: 'foam.u2.View',
+
+  implements: [ 'foam.mlang.Expressions' ],
+
+  imports: [ 'nSpecDAO' ],
+
+  requires: [ 'foam.nanos.boot.NSpec' ],
+
+  css: `
+    ^ { 
+      position: fixed;
+      right: 0;
+      float: right;
+      width: 200px;
+      overflow: scroll;
+      height: 80vh;
+      padding: 20px;
+      font-weight: 100;
+      color: white;
+      background: #093649;
+    }
+    ^ .menu-title{
+      font-size: 20px;
+      font-weight: 300;
+      padding-bottom: 20px;
+    }
+    ^ .menuItem:hover{
+      border-bottom: 1px solid white;
+      width: auto;
+      display: initial;
+      cursor: pointer;
+    }
+  `,
+
+  methods: [
+    function initE(){
+      this.SUPER();
+      var self = this;
+      this.start().addClass(this.myClass())
+      .start().addClass('menu-title').add("Service Menu").end()
+      .select(this.nSpecDAO.orderBy(this.NSpec.NAME), function(n) {
+        var cls = JSON.parse(n.client);
+        var clsName = cls.of ? cls.of : cls.class;
+        if (!foam.lookup(clsName, true)) return;
+        this.start().addClass('menuItem')
+          .add(n.name)
+          .on('click', function(){
+            document.getElementById(n.name).scrollIntoView()
+          })
+        .end()
+      });
     }
   ]
 });
