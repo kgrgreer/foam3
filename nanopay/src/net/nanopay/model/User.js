@@ -1,6 +1,10 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
+  requires: [
+    'net.nanopay.onboarding.model.Questionnaire'
+  ],
+
   properties: [
     {
       class: 'Reference',
