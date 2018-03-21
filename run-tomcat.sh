@@ -1,6 +1,6 @@
 #!/bin/sh
 # Exit on first failure
-set -e
+#set -e
 
 NANOPAY_HOME=$(dirname $0)
 
@@ -37,43 +37,40 @@ function rmfile {
 
 function status_tomcat {
     ps -a | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" > /dev/null
-    result=$?
-    # echo "exit code: ${result}"
-    # if [ "${result}" -eq "0" ] ; then
-    #     echo "`date`: tomcat started"
-    # else
-    #     echo "`date`: tomcat stopped"
-    # fi
-    return ${result}
+    return $?
 }
 
 function shutdown_tomcat {
-    printf "stopping tomcat..."
-    "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
-
-    wait_time=0
-    while status_tomcat -eq "0"
-    do
-        if [ "$wait_time" -eq "5" ]; then
-            break;
+    #
+    # Don't call shutdown.sh if the pid doesn't exists, it will exit.
+    #
+    PID="$(cat "$CATALINA_PID")"
+    if [ ! -z "${PID}" ]; then
+        if ps -p "${PID}" | grep -q 'java'; then
+            "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
         fi
-        wait_time=$(($wait_time + 1))
+    fi
 
-        printf "."
-        sleep 1;
-
-    done
     if status_tomcat -eq "0"; then
+        printf "killing tomcat..."
         kill $(ps -ef | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" | awk '{print $2}')
-        sleep 1;
+        wait_time=15
+        while status_tomcat -eq "0"
+        do
+            if [ "$wait_time" -eq "0" ]; then
+                break;
+            fi
+            wait_time=$(($wait_time - 1))
+
+            printf "."
+            sleep 1;
+        done
         if status_tomcat -eq "0"; then
             printf "failed to kill tomcat process.\n"
             exit 1
         else
             printf "killed.\n"
         fi
-    else
-        printf "stopped.\n"
     fi
 }
 
@@ -95,16 +92,22 @@ function build_NANOPAY_into_tomcat {
     cd "$NANOPAY_HOME"
     ./find.sh
 
-    # Copy repository journals
-    JOURNALS='journals'
-    if [ ! -f $JOURNALS ]; then
-        echo "ERROR: missing $JOURNALS file."
-        exit 1
-    fi
+    #
+    # NOTE: journal.0 is not presently possible for tomcat on localhost.
+    # It will require application changes to set/configure java's user.dir,
+    # so for now journals are only recreated on a regular start, and
+    # preserved with option -r
+    #
+    # # Copy repository journals
+    # JOURNALS='journals'
+    # if [ ! -f $JOURNALS ]; then
+    #     echo "ERROR: missing $JOURNALS file."
+    #     exit 1
+    # fi
 
-    while read journal; do
-        cp "$journal" "$CATALINA_HOME/bin/$journal.0"
-    done < $JOURNALS
+    # while read journal; do
+    #     cp "$journal" "$CATALINA_HOME/bin/$journal.0"
+    # done < $JOURNALS
 
     # Some older scripts may have copied foam2/nanopay/merchant as their own webapps.
     rmdir "$WEBAPPS/foam2"
