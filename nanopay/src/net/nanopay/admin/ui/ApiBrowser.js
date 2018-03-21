@@ -13,13 +13,13 @@ foam.CLASS({
   ],
 
   imports: [
-    'nSpecDAO'
+    'nSpecDAO',
+    'appConfig'
   ],
 
   exports: [
     'showOnlyProperties',
-    'showInherited',
-    'appConfig'
+    'showInherited'
   ],
 
   properties: [
@@ -34,9 +34,6 @@ foam.CLASS({
     {
       name: 'showInherited',
       value: false
-    },
-    {
-      name: 'appConfig'
     }
   ],
 
@@ -106,10 +103,9 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      this.nSpecDAO.find('appConfig').then(function(config){
-        console.log(config)
-        self.appConfig = config;
-      })
+      // this.nSpecDAO.find('appConfig').then(function(config){
+      //   self.appConfig = config;
+      // })
 
       this.start().addClass(this.myClass())
         .start('h2').add("API Documentation").end()
@@ -164,7 +160,10 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'url'
+      name: 'url',
+      expression: function(appConfig){
+        return appConfig.service.url;
+      }
     }
   ],
 
@@ -172,18 +171,12 @@ foam.CLASS({
     function initE(){
       self = this;
 
-      this.appConfig$.sub(function(){ 
-        self.url = self.appConfig.service.url 
-      });
-
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').add("GET Request: ").end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X GET').br()
-            .add(this.url$.map(function(a){
-              return self.E().add("'" + a + 'service/dig' + "'").br()
-            }))
+            .add("'" + this.url + 'service/dig?dao=' + this.data + "'").br()
             .add("-u 'username/password'").br()
             .add("-H 'accept: application/json'").br()
             .add("-H 'cache-control: no-cache'").br()
@@ -203,25 +196,24 @@ foam.CLASS({
   imports: [ 'appConfig' ],
 
   properties: [
-    'url'
+    {
+      name: 'url',
+      expression: function(appConfig){
+        return appConfig.service.url;
+      }
+    }
   ],
 
   methods: [
     function initE(){
       var self = this;
-      
-      this.appConfig$.sub(function(){ 
-        self.url = self.appConfig.service.url 
-      });
 
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').style({ 'margin-top': '25px'}).add("POST Request (Create & Update): ").end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X POST').br()
-            .add(this.url$.map(function(a){
-              return self.E().add("'" + a + 'service/dig' + "'").br()
-            }))
+            .add("'" + this.url + 'service/dig' + "'").br()
             .add("-u 'username/password'").br()
             .add('-d {"dao":"' + this.data.n.name + '", "data":{ ' + this.data.props + "}}" ).br()
             .add("-H 'accept: application/json'").br()
