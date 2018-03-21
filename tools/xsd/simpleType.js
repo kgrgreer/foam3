@@ -53,16 +53,66 @@ module.exports = {
 
       // add properties array if not already present
       if ( ! m.properties ) m.properties = [];
+
       // get the value
       var value = child.getAttribute('value');
+
       // check if value is numeric or not
       var isNumeric = /^\d+$/.test(value);
+
+      // if pattern, prefix carrot and append dollar sign
+      // because for xsd schema these are implicit
+      if ( child.localName === 'pattern' ) {
+        value = '^' + value + '$';
+      }
+
       // add the property
       m.properties.push({
         class: isNumeric ? 'Int' : 'String',
         name: child.localName,
         value: isNumeric ? parseInt(value, 10) : value
       });
+    }
+
+    // add value assertions for javascript
+    if ( typeof isNumeric !== 'undefined' ) {
+      var property = { name: 'assertValue' };
+      if ( isNumeric ) {
+        property.value = function (value, prop) {
+          if ( prop.minInclusive || prop.minInclusive === 0 )
+            foam.assert(value >= prop.minInclusive, prop.name);
+          if ( prop.minExclusive || prop.minExclusive === 0 )
+            foam.assert(value > prop.minExclusive, prop.name);
+          if ( prop.maxInclusive || prop.maxInclusive === 0 )
+            foam.assert(value <= prop.maxInclusive, prop.name);
+          if ( prop.maxExclusive || prop.maxExclusive === 0 )
+            foam.assert(value < prop.maxExclusive, prop.name);
+
+          var str = value + '';
+          var length = str.length;
+          var hasDecimal = str.indexOf('.') !== -1;
+
+          if ( prop.totalDigits ) {
+            if ( hasDecimal ) length -= 1;
+            foam.assert(length <= prop.totalDigits, prop.name);
+          }
+
+          if ( prop.fractionDigits && hasDecimal ) {
+            var decimals = str.split('.')[1];
+            foam.assert(decimals.length <= prop.fractionDigits, prop.name);
+          }
+        }
+      } else {
+        property.value = function (value, prop) {
+          if ( prop.minLength || prop.minLength === 0 )
+            foam.assert(value.length >= prop.minLength, prop.name);
+          if ( prop.maxLength || prop.maxLength === 0 )
+            foam.assert(value.length <= prop.maxLength, prop.name);
+          if ( prop.pattern )
+            foam.assert(new RegExp(prop.pattern, 'g').test(value), prop.name);
+        }
+      }
+      m.properties.push(property);
     }
   },
 
