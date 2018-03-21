@@ -79,15 +79,17 @@ foam.CLASS({
           height: 620px;
         }
         ^ .subTitle {
-          width: 490px;
+          width: 251px;
           height: 16px;
           font-family: Roboto;
           font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
           line-height: 1.33;
           letter-spacing: 0.3px;
           text-align: left;
           color: #093649;
-          margin-bottom: 20px;
         }
         ^ .inputErrorLabel {
           display: none;
