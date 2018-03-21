@@ -135,18 +135,21 @@ if ( length > ` + this.totalDigits + ` ) {
           if ( prop.maxExclusive || prop.maxExclusive === 0 )
             foam.assert(value < prop.maxExclusive, prop.name);
 
-          var str = value + '';
-          var length = str.length;
-          var hasDecimal = str.indexOf('.') !== -1;
+          if ( prop.totalDigits || prop.fractionDigits ) {
+            var str = value + '';
+            var length = str.length;
+            var hasDecimal = str.indexOf('.') !== -1;
 
-          if ( prop.totalDigits ) {
-            if ( hasDecimal ) length -= 1;
-            foam.assert(length <= prop.totalDigits, prop.name);
-          }
+            if ( prop.totalDigits ) {
+              if ( hasDecimal ) length -= 1;
+              foam.assert(length <= prop.totalDigits, prop.name);
+            }
 
-          if ( prop.fractionDigits && hasDecimal ) {
-            var decimals = str.split('.')[1];
-            foam.assert(decimals.length <= prop.fractionDigits, prop.name);
+            if ( prop.fractionDigits && hasDecimal ) {
+              var decimals = str.split('.')[1];
+              foam.assert(decimals.length <= prop.fractionDigits, prop.name);
+            }
+
           }
         }
       });
