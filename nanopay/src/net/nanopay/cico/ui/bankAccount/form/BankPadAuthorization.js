@@ -162,10 +162,22 @@ foam.CLASS({
     ^ .infoContainer{
       height: 560px;
     }
+    ^ .notEditable{
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      background-color: #ffffff;
+      color: #a4b3b8;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+    }
   `,
 
   messages: [
-    { name: 'Step',                 message: 'Step 2: Pre-authorized debit confirmation' },
+    { name: 'Step2',                message: 'Step 2: Pre-authorized debit confirmation' },
+    { name: 'Step4',                message: 'Step 4: Pre-authorized debit confirmation' },
     { name: 'LabelFirstName',       message: 'First Name' },
     { name: 'LabelLastName',        message: 'Last Name' },
     { name: 'LabelCountry',         message: 'Country' },
@@ -326,7 +338,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add( this.wizard.position === 1 ? this.Step2 : this.Step4).end()
         .end()
         .start().addClass('infoContainer')
           .start('p').add('Legal Name').addClass('headings').end()
@@ -384,16 +396,16 @@ foam.CLASS({
 
           .start().addClass('inline')
             .start().add(this.LabelInstitute).addClass('infoLabel').end()
-            .start(this.INSTITUTION_OTHER, {mode: foam.u2.DisplayMode.RO} ).addClass('full-width-input').end()
+            .start(this.INSTITUTION_OTHER, {mode: foam.u2.DisplayMode.RO} ).addClass('notEditable full-width-input').end()
           .end()
 
           .start().addClass('inline')
             .start().add(this.LabelTransit).addClass('infoLabel').end()
-            .start(this.TRANSIT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('inputLarge').end()
+            .start(this.TRANSIT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('notEditable inputLarge').end()
           .end()
           .start().addClass('inline float-right')
             .start().add(this.LabelAccount).addClass('infoLabel').end()
-            .start(this.ACCOUNT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('inputLarge').end()
+            .start(this.ACCOUNT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('notEditable inputLarge').end()
           .end()
           .start('div').addClass('row').addClass('rowTopMarginOverride')
             .start('p')
