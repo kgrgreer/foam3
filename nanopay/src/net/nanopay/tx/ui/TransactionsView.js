@@ -190,7 +190,6 @@ foam.CLASS({
     {
       name: 'data',
       factory: function() {
-      var user = this.user;
         return this.transactionDAO.where(
           this.OR(
             this.AND(
@@ -199,7 +198,10 @@ foam.CLASS({
             this.AND(
               this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
               this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION))));
+              this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
+            )
+          )
+        );
       }
     },
     {
