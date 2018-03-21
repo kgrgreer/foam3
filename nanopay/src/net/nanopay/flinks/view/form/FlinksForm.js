@@ -78,8 +78,7 @@ foam.CLASS({
         ^ {
           height: 620px;
         }
-        ^ .subTitle {
-          width: 251px;
+        ^ .subTitleFlinks {
           height: 16px;
           font-family: Roboto;
           font-size: 12px;
