@@ -104,7 +104,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'principleType',
-      label: 'Principle Type'
+      label: 'Principal Type'
     },
     {
       class: 'Boolean',
@@ -115,6 +115,39 @@ foam.CLASS({
       class: 'Boolean',
       name: 'welcomeEmailSent',
       value: false,
+    },
+
+    // NOTE: The following is subject to change and is not finalized.
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'businessPhone',
+      factory: function () { return this.Phone.create(); },
+      view: { class: 'foam.nanos.auth.PhoneDetailView' }
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationNumber'
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationAuthority'
+    },
+    {
+      class: 'Date',
+      name: 'businessRegistrationDate'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'businessAddress',
+      factory: function () { return this.Address.create(); },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'businessProfilePicture',
+      view: { class: 'foam.nanos.auth.ProfilePictureView' }
     }
   ]
 });

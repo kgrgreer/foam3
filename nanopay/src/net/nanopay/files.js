@@ -35,7 +35,7 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/SaveAndLogOutModal', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/BusinessProfileForm', flags: ['web'] },
-  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipalOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ConfirmAdminInfoForm', flags: ['web'] },

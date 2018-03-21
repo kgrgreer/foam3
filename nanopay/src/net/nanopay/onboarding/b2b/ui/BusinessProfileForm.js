@@ -327,7 +327,7 @@ foam.CLASS({
     { name: 'BusinessTypeDescriptionSole', message: 'A sole proprietorship is an unincorporated business owned by an individual.' },
     { name: 'BusinessTypeDescriptionPart', message: 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.' },
     { name: 'BusinessTypeDescriptionCorp', message: 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.' },
-    { name: 'BusinessTypeDescriptionNonP', message: 'An non for profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
+    { name: 'BusinessTypeDescriptionNonP', message: 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
   ],
 
   properties: [
@@ -335,10 +335,10 @@ foam.CLASS({
       class: 'String',
       name: 'businessNameField',
       factory: function() {
-        if ( this.viewData.businessName ) return this.viewData.businessName;
+        if ( this.viewData.user.businessName ) return this.viewData.user.businessName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessName = newValue.trim();
+        this.viewData.user.businessName = newValue.trim();
       }
     },
     {
@@ -366,65 +366,74 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        if ( this.viewData.businessPhoneNumber ) return this.viewData.businessPhoneNumber.substring(2);
+        return this.viewData.user.businessPhone ? this.viewData.user.businessPhone.number.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
-        this.viewData.businessPhoneNumber = '+1' + newValue.trim();
+        this.viewData.user.businessPhone = this.Phone.create({
+          number: '+1' + newValue
+        });
       }
     },
     {
       class: 'String',
       name: 'websiteField',
       factory: function() {
-        if ( this.viewData.website ) return this.viewData.website;
+        if ( this.viewData.user.website ) return this.viewData.user.website;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.website = newValue.trim();
+        this.viewData.user.website = newValue.trim();
       }
     },
     {
       name: 'businessTypeField',
       value: 'Please select',
-      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Please select', 'Sole Proprietorship', 'Partnership', 'Corporation', 'Non for Profit' ] },
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessTypeDAO,
+          objToChoice: function(a){
+            return [a.id, a.name];
+          }
+        })
+      },
       factory: function() {
-        if ( this.viewData.businessType ) {
-          if ( this.viewData.businessType === 'Sole Proprietorship' ) {
+        if ( this.viewData.user.businessTypeId ) {
+          if ( this.viewData.user.businessType == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
-          if ( this.viewData.businessType === 'Partnership' ) {
+          if ( this.viewData.user.businessTypeId == 1 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( this.viewData.businessType === 'Corporation' ) {
+          if ( this.viewData.user.businessTypeId == 2 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( this.viewData.businessType === 'Non for Profit' ) {
+          if ( this.viewData.user.businessTypeId == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
-          return this.viewData.businessType;
+          return this.viewData.user.businessTypeId;
         } else {
-          return 'Please select';
+          return 0;
         }
       },
       postSet: function(oldValue, newValue) {
         if ( newValue !== 'Please select' ) {
-          this.viewData.businessType = newValue;
-          if ( newValue === 'Sole Proprietorship' ) {
+          this.viewData.user.businessTypeId = newValue;
+          if ( newValue == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
-          if ( newValue === 'Partnership' ) {
+          if ( newValue == 1 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( newValue === 'Corporation' ) {
+          if ( newValue == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( newValue === 'Non for Profit' ) {
+          if ( newValue == 5 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
           return newValue;
@@ -443,30 +452,30 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationNumberField',
       factory: function() {
-        if ( this.viewData.businessRegistrationNumber ) return this.viewData.businessRegistrationNumber;
+        if ( this.viewData.user.businessRegistrationNumber ) return this.viewData.user.businessRegistrationNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessRegistrationNumber = newValue.trim();
+        this.viewData.user.businessRegistrationNumber = newValue.trim();
       }
     },
     {
       class: 'String',
       name: 'registrationAuthorityField',
       factory: function() {
-        if ( this.viewData.businessRegistrationAuthority ) return this.viewData.businessRegistrationAuthority;
+        if ( this.viewData.user.businessRegistrationAuthority ) return this.viewData.user.businessRegistrationAuthority;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessRegistrationAuthority = newValue.trim();
+        this.viewData.user.businessRegistrationAuthority = newValue.trim();
       }
     },
     {
       class: 'Date',
       name: 'registrationDateField',
       factory: function() {
-        if ( this.viewData.businessRegistrationDate ) return this.viewData.businessRegistrationDate;
+        if ( this.viewData.user.businessRegistrationDate ) return this.viewData.user.businessRegistrationDate;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessRegistrationDate = newValue;
+        this.viewData.user.businessRegistrationDate = newValue;
       },
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
@@ -483,41 +492,41 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.viewData.businessCountry ) return this.viewData.businessCountry;
+        if ( this.viewData.user.businessAddress.countryId ) return this.viewData.user.businessAddress.countryId;
         return 'CA';
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessCountry = newValue;
+        this.viewData.user.businessAddress.countryId = newValue;
       }
     },
     {
       class: 'String',
       name: 'streetNumberField',
       factory: function() {
-        if ( this.viewData.businessStreetNumber ) return this.viewData.businessStreetNumber;
+        if ( this.viewData.user.businessAddress.streetNumber ) return this.viewData.user.businessAddress.streetNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessStreetNumber = newValue.trim();
+        this.viewData.user.businessAddress.streetNumber = newValue.trim();
       }
     },
     {
       class: 'String',
       name: 'streetNameField',
       factory: function() {
-        if ( this.viewData.businessStreetName ) return this.viewData.businessStreetName;
+        if ( this.viewData.user.businessAddress.streetName ) return this.viewData.user.businessAddress.streetName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessStreetName = newValue.trim();
+        this.viewData.user.businessAddress.streetName = newValue.trim();
       }
     },
     {
       class: 'String',
       name: 'addressField',
       factory: function() {
-        if ( this.viewData.businessAddress2 ) return this.viewData.businessAddress2;
+        if ( this.viewData.user.businessAddress.address2 ) return this.viewData.user.businessAddress.address2;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessAddress2 = newValue.trim();
+        this.viewData.user.businessAddress.address2 = newValue.trim();
       }
     },
     {
@@ -534,39 +543,39 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.businessRegion ) return this.viewData.businessRegion;
+        if ( this.viewData.user.businessAddress.regionId ) return this.viewData.user.businessAddress.regionId;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessRegion = newValue;
+        this.viewData.user.businessAddress.regionId = newValue;
       }
     },
     {
       class: 'String',
       name: 'cityField',
       factory: function() {
-        if ( this.viewData.businessCity ) return this.viewData.businessCity;
+        if ( this.viewData.user.businessAddress.city ) return this.viewData.user.businessAddress.city;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessCity = newValue;
+        this.viewData.user.businessAddress.city = newValue;
       }
     },
     {
       class: 'String',
       name: 'postalCodeField',
       factory: function() {
-        if ( this.viewData.businessPostalCode ) return this.viewData.businessPostalCode;
+        if ( this.viewData.user.businessAddress.postalCode ) return this.viewData.user.businessAddress.postalCode;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessPostalCode = newValue;
+        this.viewData.user.businessAddress.postalCode = newValue;
       }
     },
     {
       name: 'businessProfilePicture',
       factory: function() {
-        if ( this.viewData.businessProfilePicture ) return this.viewData.businessProfilePicture;
+        if ( this.viewData.user.businessProfilePicture ) return this.viewData.user.businessProfilePicture;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.businessProfilePicture = newValue;
+        this.viewData.user.businessProfilePicture = newValue;
       }
     }
 

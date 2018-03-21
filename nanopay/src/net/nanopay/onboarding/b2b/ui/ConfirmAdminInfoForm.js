@@ -5,8 +5,8 @@ foam.CLASS({
 
   documentation: 'Form to input and confirm admin information',
 
-  imports: [
-    'viewData'
+  requires: [
+    'foam.nanos.auth.Phone'
   ],
 
   css: `
@@ -167,6 +167,18 @@ foam.CLASS({
   ^ .property-emailAddress {
     margin-bottom: 10px;
   }
+
+  ^ .foam-u2-TextField:disabled {
+    border: solid 1px rgba(164, 179, 184, 0.5) !important;
+    color: #a4b3b8 !important;
+  }
+
+  ^ .foam-u2-TextField:focus,
+  ^ .foam-u2-DateView:focus,
+  ^ .foam-u2-tag-Select:focus,
+  ^ .net-nanopay-ui-ActionView:focus {
+    border: solid 1px #59A5D5;
+  }
   `,
 
   properties: [
@@ -195,27 +207,28 @@ foam.CLASS({
       class: 'String',
       name: 'displayedLegalName',
       factory: function() {
-        return this.viewData.legalName;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.legalName = newValue;
+        if ( this.viewData.user.middleName ) {
+          return this.viewData.user.firstName + ' ' + this.viewData.user.middleName + ' ' + this.viewData.user.lastName;
+        }
+        return this.viewData.user.firstName + ' ' + this.viewData.user.lastName;
       }
     },
     {
       class: 'String',
       name: 'firstNameField',
       factory: function() {
-        return this.viewData.firstName;
+        return this.viewData.user.firstName;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.firstName = newValue;
       }
     },
+    'firstNameElement',
     {
       class: 'String',
       name: 'middleNameField',
       factory: function() {
-        return this.viewData.middleName;
+        return this.viewData.user.middleName;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.middleName = newValue;
@@ -225,7 +238,7 @@ foam.CLASS({
       class: 'String',
       name: 'lastNameField',
       factory: function() {
-        return this.viewData.lastName;
+        return this.viewData.user.lastName;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.lastName = newValue;
@@ -235,59 +248,48 @@ foam.CLASS({
       name: 'jobTitle',
       class: 'String',
       factory: function() {
-        return this.viewData.jobTitle;
+        return this.viewData.user.jobTitle;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.jobTitle = newValue;
+        this.viewData.user.jobTitle = newValue;
       }
     },
     {
       name: 'emailAddress',
       class: 'String',
+      visibility: foam.u2.Visibility.DISABLED,
       factory: function() {
-        return this.viewData.emailAddress;
+        return this.viewData.user.email;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.emailAddress = newValue;
-      }
-    },
-    {
-      name: 'confirmEmailAddress',
-      class:'String',
-      factory: function() {
-        return this.viewData.confirmEmailAddress
+        this.viewData.user.email = newValue;
       }
     },
     {
       name: 'displayedPhoneNumber',
-      class: 'String',
-      factory: function() {
-        return this.viewData.displayedPhoneNumber;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.displayedPhoneNumber = newValue;
-      }
+      class: 'String'
     },
     {
       name: 'countryCode',
       class: 'String',
       factory: function() {
-        return this.viewData.countryCode || '+1';
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.countryCode = newValue;
+        return '+1';
       }
     },
     {
       name: 'phoneNumber',
       class: 'String',
       factory: function() {
-        return this.viewData.phoneNumber;
+        return this.viewData.user.phone ? this.viewData.user.phone.number.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.phoneNumber = newValue;
+        this.isEditingPhone = false;
+        this.viewData.user.phone = this.Phone.create({
+          number: '+1' + newValue
+        });
       }
-    }
+    },
+    'phoneNumberElement'
   ],
 
   messages: [
@@ -309,7 +311,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
-            .start('p').add('Account ID 1234567890').addClass('accountIdLabel').end()
+            .start('p').add('Account ID ' + this.viewData.user.id).addClass('accountIdLabel').end()
             .start('div').addClass('nameContainer')
             .start('div')
               .addClass('nameDisplayContainer')
@@ -321,6 +323,7 @@ foam.CLASS({
                     this.blur();
                     self.isEditingName = true;
                     self.isEditingPhone = false;
+                    self.firstNameElement.focus();
                   })
                 .end()
             .end()
@@ -331,9 +334,9 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD)
+                    .start(this.FIRST_NAME_FIELD, {}, this.firstNameElement$)
                       .addClass('nameFields')
-                      .on('click', function() { 
+                      .on('click', function() {
                         self.isEditingName = true;
                       })
                     .end()
@@ -398,6 +401,7 @@ foam.CLASS({
                   this.blur();
                   self.isEditingPhone = true;
                   self.isEditingName = false;
+                  self.phoneNumberElement.focus();
                 })
               .end()
             .end()
@@ -408,7 +412,7 @@ foam.CLASS({
                 .addClass('phoneFieldsCol')
                 .enableClass('firstName', this.isEditingPhone$, true)
                 .start().add(this.CountryCodeLabel).addClass('label').style({ 'margin-bottom': '8px' }).end()
-                .start(this.COUNTRY_CODE)
+                .start(this.COUNTRY_CODE, { mode: foam.u2.DisplayMode.DISABLED })
                   .addClass('countryCodeInput')
                   .on('click', function() {
                     self.isEditingPhone = true;
@@ -419,7 +423,7 @@ foam.CLASS({
                 .addClass('nameFieldsCol')
                 .enableClass('middleName', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                .start(this.PHONE_NUMBER)
+                .start(this.PHONE_NUMBER, {}, this.phoneNumberElement$)
                   .addClass('phoneNumberInput')
                   .on('click', function() {
                     self.isEditingPhone = true;
