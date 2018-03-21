@@ -111,7 +111,7 @@ foam.CLASS({
         .start().addClass('light-roboto-h2 sml').add('Below is an example GET request to the corridorDAO using curl:').end()
         .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'net.nanopay.interac.model.Pacs008ISOPurpose' })).end()
         .start().addClass('light-roboto-h2 sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
-        .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, model: { id: 'net.nanopay.interac.model.Pacs008ISOPurpose' }, props : ',"type":"String"'}})).end()
+        .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
         .select(this.nSpecDAO, function(n) {
           var model = self.parseClientModel(n);
           if( ! model ) return;
@@ -119,7 +119,7 @@ foam.CLASS({
           this.start().style({ 'font-size' : '25px', 'margin' : '30px 0px', 'font-weight': '500'}).add(n.name).end()
           .tag(self.SimpleClassView.create({ data: model }))
           .tag(self.GetRequestView.create({ data: n.name }))
-          .tag(self.PutRequestView.create({ data: { n : n, model : model, props : dataProps }}))
+          .tag(self.PutRequestView.create({ data: { n : n, props : dataProps }}))
         })
       .end();
     },
@@ -137,7 +137,7 @@ foam.CLASS({
         var a  = m.axiomMap_[key];
         if (a.required) {
           if(a.cls_.name != "Import") {
-            reqProps.push(',"', key, '"', ":", '"', a.cls_.name, '"');
+            reqProps.push('"', key, '"', ":", '"', a.cls_.name, '"');
           }
         }
       }
@@ -185,7 +185,7 @@ foam.CLASS({
             .add('curl -X POST').br()
             .add("'" + 'http://127.0.0.1:8080/service/dig' + "'").br()
             .add("-u 'username/password'").br()
-            .add('-d {"dao":"' + this.data.n.name + '", "data":{ "class":"' + this.data.model.id + '"' + this.data.props + "}" ).br()
+            .add('-d {"dao":"' + this.data.n.name + '", "data":{ ' + this.data.props + "}}" ).br()
             .add("-H 'accept: application/json'").br()
             .add("-H 'cache-control: no-cache'").br()
             .add("-H 'content-type: application/json'")
