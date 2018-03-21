@@ -95,27 +95,7 @@ foam.CLASS({
 
   messages: [
     { name: "introMessage", message: "Welcome to the nanopay API documentation. This API will give you the ability to connect your software to banking infrastructure to move money, store funds, and verify bank accounts."},
-    { name: "makingRequests", message: "Request and response bodies are JSON encoded. Requests must contain api credentials (email/password provided by nanopay) on the authorization tag. Data contained in the table views below display available properties on the model. Those that are required are added to the examples shown on each service call. " },
-    { name: "exampleRequest", 
-      message: 
-        "curl -X GET \
-        -u 'username:password' \
-        'http://127.0.0.1:8080/service/dig?dao=corridorDAO&format=json&cmd=select' \
-        -H 'accept: application/json' \
-        -H 'cache-control: no-cache' \
-        -H 'content-type: application/json'"
-    },
-    {
-      name: "examplePutRequest",
-      message: 
-      "`curl -X POST \
-        -u 'admin@nanopay.net:adminAb1' \
-        'http://127.0.0.1:8080/service/dig?dao=corridorDAO' \
-        -d '{'class':'net.nanopay.fx.interac.model.Corridor','id':4,'sourceCountry':'CA','targetCountry':'IN','currencies':['INR']}' \
-        -H 'accept: application/json' \
-        -H 'cache-control: no-cache' \
-        -H 'content-type: application/json'"
-    }
+    { name: "makingRequests", message: "Request and response bodies are JSON encoded. Requests must contain api credentials (email/password provided by nanopay) on the authorization tag. Data contained in the table views below display available properties on the model. Those that are required are added to the examples shown on each service call. " }
   ],
 
   methods: [
@@ -127,15 +107,11 @@ foam.CLASS({
         .start('h2').add("API Documentation").end()
         .start().addClass('light-roboto-h2').add(this.introMessage).end()
         .start('h2').add("Making Requests").end()
-        .start().addClass('light-roboto-h2').add(this.makingRequests).tag('br').tag('br').end()
-          .start().addClass('light-roboto-h2 sml').add('Below is an example GET request to the corridorDAO using curl:').end()
-        .start().addClass('black-box')
-          .start().addClass('small-roboto').add(this.exampleRequest).end()
-        .end()
-        .start().addClass('light-roboto-h2 sml').tag('br').tag('br').add('Below is an example PUT request to the corridorDAO using curl (PUT requests can create and update objects):').end()
-        .start().addClass('black-box')
-          .start().addClass('small-roboto').add(this.examplePutRequest).end()
-        .end()
+        .start().addClass('light-roboto-h2').add(this.makingRequests).br().br().end()
+        .start().addClass('light-roboto-h2 sml').add('Below is an example GET request to the corridorDAO using curl:').end()
+        .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'net.nanopay.interac.model.Pacs008ISOPurpose' })).end()
+        .start().addClass('light-roboto-h2 sml').br().add('Below is an example POST request to the corridorDAO using curl (POST requests can create and update objects):').end()
+        .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, model: { id: 'net.nanopay.interac.model.Pacs008ISOPurpose' }, props : ',"type":"String"'}})).end()
         .select(this.nSpecDAO, function(n) {
           var model = self.parseClientModel(n);
           if( ! model ) return;
@@ -199,14 +175,14 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'PutRequestView',
   extends: 'foam.u2.View',
-
+  
   methods: [
     function initE(){
       this.addClass(this.myClass())
-      .start().addClass('light-roboto-h2').style({ 'margin-top': '25px'}).add("PUT Request (Create & Update): ").end()
+      .start().addClass('light-roboto-h2').style({ 'margin-top': '25px'}).add("POST Request (Create & Update): ").end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
-            .add('curl -X PUT').br()
+            .add('curl -X POST').br()
             .add("'" + 'http://127.0.0.1:8080/service/dig' + "'").br()
             .add("-u 'username/password'").br()
             .add('-d {"dao":"' + this.data.n.name + '", "data":{ "class":"' + this.data.model.id + '"' + this.data.props + "}" ).br()
