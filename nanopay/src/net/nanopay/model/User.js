@@ -82,10 +82,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
-      documentation: 'Questionnaire response',
-      factory: function () {
-        return this.Questionnaire.create();
-      }
+      documentation: 'Questionnaire response'
     },
     {
       class: 'foam.nanos.fs.FileArray',
