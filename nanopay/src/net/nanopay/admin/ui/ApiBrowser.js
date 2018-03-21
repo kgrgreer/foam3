@@ -109,7 +109,7 @@ foam.CLASS({
         .start('h2').add("Making Requests").end()
         .start().addClass('light-roboto-h2').add(this.makingRequests).br().br().end()
         .start().addClass('light-roboto-h2 sml').add('Below is an example GET request to the corridorDAO using curl:').end()
-        .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'net.nanopay.interac.model.Pacs008ISOPurpose' })).end()
+        .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'pacs008ISOPurposeDAO' })).end()
         .start().addClass('light-roboto-h2 sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
         .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
         .select(this.nSpecDAO, function(n) {
