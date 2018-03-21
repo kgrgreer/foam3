@@ -41,7 +41,7 @@ foam.CLASS({
           border: solid 1px %ACCENTCOLOR%;
         }
         ^ .account.selected {
-          border: solid 1px red;
+          border: solid 3px #1cc2b7;
         }
         ^ .Nav {
           margin-top: 20px;

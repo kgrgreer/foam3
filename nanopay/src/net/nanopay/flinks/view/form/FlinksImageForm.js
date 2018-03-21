@@ -7,7 +7,8 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'viewData'
+    'viewData',
+    'loadingSpinner'
   ],
 
   requires: [
@@ -171,6 +172,11 @@ foam.CLASS({
               }).end()
             })
             .start('div').style({'clear' : 'both'}).end()
+          .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
+            .end()
           .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
