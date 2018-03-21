@@ -173,6 +173,23 @@ foam.CLASS({
     border: solid 1px rgba(164, 179, 184, 0.5) !important;
     color: #a4b3b8 !important;
   }
+  ^ .foam-u2-TextField {
+    height: 40px;
+
+    background-color: #ffffff;
+    border: solid 1px rgba(164, 179, 184, 0.5);
+
+    padding: 12px 13px;
+
+    box-sizing: border-box;
+    outline: none;
+
+    -webkit-transition: all .15s linear;
+    -moz-transition: all .15s linear;
+    -ms-transition: all .15s linear;
+    -o-transition: all .15s linear;
+    transition: all 0.15s linear;
+  }
 
   ^ .foam-u2-TextField:focus,
   ^ .foam-u2-DateView:focus,

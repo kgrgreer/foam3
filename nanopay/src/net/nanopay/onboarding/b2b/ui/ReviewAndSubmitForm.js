@@ -6,7 +6,10 @@ foam.CLASS({
   documentation: 'Form for reviewing details of a new user before adding',
 
   imports: [
-    'businessTypeDAO'
+    'businessTypeDAO',
+    'countryDAO',
+    'regionDAO',
+    'user'
   ],
 
   css: `
@@ -74,9 +77,38 @@ foam.CLASS({
     { name: 'PrincAddressLabel', message: 'Residential Address' }
   ],
 
+  properties: [
+    'businessTypeName',
+    'businessRegion',
+    'businessCountry'
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
+
+      var self = this;
+      
+      this.businessTypeDAO.find(this.viewData.user.businessTypeId).then(function(a) {
+        self.businessTypeName = a.name;
+      });
+
+      this.regionDAO.find(this.viewData.user.regionId).then(function(a) {
+        self.businessRegion = a.name;
+      });
+
+      this.countryDAO.find(this.viewData.user.countryId).then(function(a) {
+        self.businessCountry = a.name;
+      });
+
+      var businessAddress = this.viewData.user.businessAddress.streetNumber + ' '
+                            + this.viewData.user.businessAddress.streetName + ', '
+                            + this.viewData.user.businessAddress.address2 + ' '
+                            + this.viewData.user.businessAddress.city + ', '
+                            + this.businessRegion + ', '
+                            + this.businessCountry + ', '
+                            + this.viewData.user.businessAddress.postalCode;
+
 
       this
         .addClass(this.myClass())
@@ -90,23 +122,23 @@ foam.CLASS({
             .start(this.EDIT_BUSINESS_PROFILE).addClass('editImage').end()
           .end()
           .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('nanopay').end()
+          .start('p').add(this.viewData.user.businessName).end()
           .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('+1 9054248118').end()
+          .start('p').add(this.viewData.user.businessPhone.number).end()
           .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('www.nanopay.net').end()
+          .start('p').add(this.viewData.user.website).end()
           .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('Sole Proprietorship').end()
+          .start('p').add(this.businessTypeName$).end()
           .start('p').add(this.BusiRegNumberLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('123456789').end()
+          .start('p').add(this.viewData.user.businessRegistrationNumber).end()
           .start('p').add(this.BusiRegAuthLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('nanopay').end()
+          .start('p').add(this.viewData.user.businessRegistrationAuthority).end()
           .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('2018-12-25').end()
+          .start('p').add(this.viewData.user.businessRegistrationDate.toISOString().substring(0,10)).end()
           .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
-          .start('p').add('171 East Liberty Street, Suite 340 Toronto, ON, Canada, M6K 3P6').addClass('addressDiv').end()
+          .start('p').add(businessAddress).addClass('addressDiv').end()
           .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
-          .start({ class: 'foam.u2.tag.Image', data: 'images/business-placeholder.png' }).addClass('busiLogo').end()
+          .start({ class: 'foam.u2.tag.Image', data: this.viewData.user.businessProfilePicture }).addClass('busiLogo').end()
           
           // Principal Owner's Profile
           .start().addClass('wizardBoxTitleContainer')
