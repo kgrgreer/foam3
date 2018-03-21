@@ -76,6 +76,8 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       padding-bottom: 6px;
+      margin: 14px 0px ;
+
     }
     
     ^ .messageBody {
@@ -305,30 +307,30 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       factory: function() {
-        return this.viewData.accountNumber;
+        return this.viewData.bankAccount.accountNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.accountNumber = newValue;
+        this.viewData.bankAccount.accountNumber = newValue;
       }
     },
     {
       class: 'String',
       name: 'transitNumber',
       factory: function() {
-        return this.viewData.transitNumber;
+        return this.viewData.bankAccount.transitNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.transitNumber = newValue;
+        this.viewData.bankAccount.transitNumber = newValue;
       }
     },
     {
       class: 'String',
-      name: 'institutionOther',
+      name: 'institutionNumber',
       factory: function() {
-        return this.viewData.bankNumber;
+        return this.viewData.bankAccount.institutionNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.bankNumber = newValue;
+        this.viewData.bankAccount.institutionNumber = newValue;
       }
     }
   ],
@@ -396,7 +398,7 @@ foam.CLASS({
 
           .start().addClass('inline')
             .start().add(this.LabelInstitute).addClass('infoLabel').end()
-            .start(this.INSTITUTION_OTHER, {mode: foam.u2.DisplayMode.RO} ).addClass('notEditable full-width-input').end()
+            .start(this.INSTITUTION_NUMBER, {mode: foam.u2.DisplayMode.RO} ).addClass('notEditable full-width-input').end()
           .end()
 
           .start().addClass('inline')

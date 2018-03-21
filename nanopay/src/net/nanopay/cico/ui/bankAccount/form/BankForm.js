@@ -133,7 +133,7 @@ foam.CLASS({
             return;
           }
 
-          this.viewData.account = this.BankAccount.create({
+          this.viewData.bankAccount = this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
@@ -141,8 +141,8 @@ foam.CLASS({
             owner: this.user.id
           });
 
-          if ( this.viewData.account.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: this.viewData.account.errors_[0][1], type: 'error' }));
+          if ( this.viewData.bankAccount.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
             return;
           }
           self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -151,15 +151,7 @@ foam.CLASS({
         if ( this.position == 1 ) {
           // On Pad Verfication
           this.nextLabel = 'I Agree';
-          var accountInfo = this.viewData.account;
-
-          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
-          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
-          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
-           accountInfo.institutionNumber == null || accountInfo.institutionNumber.trim() == '' ) {
-            this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
-            return;
-          }
+          var accountInfo = this.viewData.bankAccount;
 
           if ( ! this.validations() ) {
             return;
@@ -175,7 +167,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
           this.bankAccountDAO.put(accountInfo).then(function(response) {
-            self.viewData.account = response;
+            self.viewData.bankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Come back later';
             self.nextLabel = 'Verify';
