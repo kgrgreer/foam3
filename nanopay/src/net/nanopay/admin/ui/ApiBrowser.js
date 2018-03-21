@@ -103,9 +103,6 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      // this.nSpecDAO.find('appConfig').then(function(config){
-      //   self.appConfig = config;
-      // })
 
       this.start().addClass(this.myClass())
         .start('h2').add("API Documentation").end()
