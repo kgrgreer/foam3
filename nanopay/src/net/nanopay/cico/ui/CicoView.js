@@ -214,8 +214,7 @@ foam.CLASS({
               this.EQ(this.Transaction.PAYEE_ID, user.id)),
             this.OR(
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN))
-              ));
+              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN))));
       }
     },
     {
