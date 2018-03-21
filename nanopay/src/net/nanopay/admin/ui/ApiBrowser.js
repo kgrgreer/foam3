@@ -18,7 +18,8 @@ foam.CLASS({
 
   exports: [
     'showOnlyProperties',
-    'showInherited'
+    'showInherited',
+    'appConfig'
   ],
 
   properties: [
@@ -34,7 +35,9 @@ foam.CLASS({
       name: 'showInherited',
       value: false
     },
-    'count'
+    {
+      name: 'appConfig'
+    }
   ],
 
   css: `
@@ -103,6 +106,11 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
+      this.nSpecDAO.find('appConfig').then(function(config){
+        console.log(config)
+        self.appConfig = config;
+      })
+
       this.start().addClass(this.myClass())
         .start('h2').add("API Documentation").end()
         .start().addClass('light-roboto-h2').add(this.introMessage).end()
@@ -152,14 +160,30 @@ foam.CLASS({
   name: 'GetRequestView',
   extends: 'foam.u2.View',
 
+  imports: [ 'appConfig' ],
+
+  properties: [
+    {
+      name: 'url'
+    }
+  ],
+
   methods: [
     function initE(){
+      self = this;
+
+      this.appConfig$.sub(function(){ 
+        self.url = self.appConfig.service.url 
+      });
+
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').add("GET Request: ").end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X GET').br()
-            .add("'http://127.0.0.1:8080/service/dig?dao=" + this.data + "'").br()
+            .add(this.url$.map(function(a){
+              return self.E().add("'" + a + 'service/dig' + "'").br()
+            }))
             .add("-u 'username/password'").br()
             .add("-H 'accept: application/json'").br()
             .add("-H 'cache-control: no-cache'").br()
@@ -176,14 +200,28 @@ foam.CLASS({
   name: 'PutRequestView',
   extends: 'foam.u2.View',
   
+  imports: [ 'appConfig' ],
+
+  properties: [
+    'url'
+  ],
+
   methods: [
     function initE(){
+      var self = this;
+      
+      this.appConfig$.sub(function(){ 
+        self.url = self.appConfig.service.url 
+      });
+
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').style({ 'margin-top': '25px'}).add("POST Request (Create & Update): ").end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X POST').br()
-            .add("'" + 'http://127.0.0.1:8080/service/dig' + "'").br()
+            .add(this.url$.map(function(a){
+              return self.E().add("'" + a + 'service/dig' + "'").br()
+            }))
             .add("-u 'username/password'").br()
             .add('-d {"dao":"' + this.data.n.name + '", "data":{ ' + this.data.props + "}}" ).br()
             .add("-H 'accept: application/json'").br()
