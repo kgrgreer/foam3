@@ -48,6 +48,11 @@ foam.CLASS({
     ^ .addressDiv {
       width: 220px;
     }
+    ^ .busiLogo {
+      border: none;
+      padding: 0;
+      height: inherit;
+    }
   `,
 
   messages: [
@@ -66,8 +71,7 @@ foam.CLASS({
     { name: 'BusiRegDateLabel', message: 'Registration Date' },
     { name: 'BusiAddressLabel', message: 'Business Address' },
     { name: 'BusiLogoLabel', message: 'Business Logo (optional)' },
-    { name: 'PrincOwner1Label', message: 'Principal Owner 1' },
-    { name: 'PrincOwner2Label', message: 'Principal Owner 2' },
+    { name: 'PrincOwnerLabel', message: 'Principal Owner' },
     { name: 'PrincJobtitleLabel', message: 'Job Title' },
     { name: 'PrincNameLabel', message: 'Legal Name' },
     { name: 'PrincEmailLabel', message: 'Email Address' },
@@ -93,22 +97,13 @@ foam.CLASS({
         self.businessTypeName = a.name;
       });
 
-      this.regionDAO.find(this.viewData.user.regionId).then(function(a) {
+      this.regionDAO.find(this.viewData.user.businessAddress.regionId).then(function(a) {
         self.businessRegion = a.name;
       });
 
-      this.countryDAO.find(this.viewData.user.countryId).then(function(a) {
+      this.countryDAO.find(this.viewData.user.businessAddress.countryId).then(function(a) {
         self.businessCountry = a.name;
       });
-
-      var businessAddress = this.viewData.user.businessAddress.streetNumber + ' '
-                            + this.viewData.user.businessAddress.streetName + ', '
-                            + this.viewData.user.businessAddress.address2 + ' '
-                            + this.viewData.user.businessAddress.city + ', '
-                            + this.businessRegion + ', '
-                            + this.businessCountry + ', '
-                            + this.viewData.user.businessAddress.postalCode;
-
 
       this
         .addClass(this.myClass())
@@ -136,9 +131,20 @@ foam.CLASS({
           .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessRegistrationDate.toISOString().substring(0,10)).end()
           .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
-          .start('p').add(businessAddress).addClass('addressDiv').end()
-          .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
-          .start({ class: 'foam.u2.tag.Image', data: this.viewData.user.businessProfilePicture }).addClass('busiLogo').end()
+          .start('p').add(
+            this.viewData.user.businessAddress.streetNumber + ' '
+            + this.viewData.user.businessAddress.streetName + ', '
+            + this.viewData.user.businessAddress.address2 + ' '
+            + this.viewData.user.businessAddress.city + ', '
+            + this.viewData.user.businessAddress.postalCode
+          ).addClass('addressDiv').end()
+          .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()    
+          .tag({
+            class: 'foam.nanos.auth.ProfilePictureView',
+            data: this.viewData.user.businessProfilePicture,
+            placeholderImage: 'images/business-placeholder.png',
+            uploadHidden: true
+          })
           
           // Principal Owner's Profile
           .start().addClass('wizardBoxTitleContainer')
@@ -146,50 +152,45 @@ foam.CLASS({
             .start().add(this.EditLabel).addClass('editLabel').end()
             .start(this.EDIT_PRINCIPAL_OWNER).addClass('editImage').end()
           .end()
-          .start('p').add(this.PrincOwner1Label).addClass('principalOwnerLabel').end()
-          .start().addClass('principalOwnerContainer')
-            .start('p').add(this.PrincNameLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('Mark Bastin').end()
-            .start('p').add(this.PrincEmailLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('blake@nanopay.net').end()
-            .start('p').add(this.PrincPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('+1 9054248118').end()
-            .start('p').add(this.PrincTypeLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('Director').end()
-            .start('p').add(this.PrincBdayLabel).addClass('wizardBoldLabel').end()          
-            .start('p').add('2018-03-16').end()
-            .start('p').add(this.PrincAddressLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('171 East Liberty Street, Suite 340 Toronto, ON, Canada, M6K 3P6').addClass('addressDiv').end()
+          .start('div')
+            .forEach(this.viewData.user.principalOwners, function (data, index) {
+              self
+              .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
+              .start().addClass('principalOwnerContainer')
+                .start('p').add('Legal Name').addClass('wizardBoldLabel').end()
+                .start('p').add(data.middleName ? data.firstName + ' ' + data.middleName + ' ' + data.lastName : data.firstName + ' ' + data.lastName).end()
+                .start('p').add('Email Address').addClass('wizardBoldLabel').end()
+                .start('p').add(data.email).end()
+                .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
+                .start('p').add(data.phone.number).end()
+                .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
+                .start('p').add(data.principleType).end()
+                .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()          
+                .start('p').add(data.birthday.toISOString().substring(0,10)).end()
+                .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
+                .start('p').add(
+                    data.address.streetNumber + ' '
+                  + data.address.streetName + ', '
+                  + data.address.address2 + ' '
+                  + data.address.city + ', '
+                  + data.address.postalCode
+                ).addClass('addressDiv').end()
+              .end()
+            }).end()
           .end()
-          .start('p').add(this.PrincOwner2Label).addClass('principalOwnerLabel').end()
-          .start().addClass('principalOwnerContainer')
-            .start('p').add(this.PrincNameLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('Mark Bastin').end()
-            .start('p').add(this.PrincEmailLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('blake@nanopay.net').end()
-            .start('p').add(this.PrincPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('+1 9054248118').end()
-            .start('p').add(this.PrincTypeLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('Director').end()
-            .start('p').add(this.PrincBdayLabel).addClass('wizardBoldLabel').end()          
-            .start('p').add('2018-03-16').end()
-            .start('p').add(this.PrincAddressLabel).addClass('wizardBoldLabel').end()
-            .start('p').add('171 East Liberty Street, Suite 340 Toronto, ON, Canada, M6K 3P6').addClass('addressDiv').end()
-          .end()
-
+            
           // Questionaire
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
             .start().add(this.EditLabel).addClass('editLabel').end()
             .start(this.EDIT_QUESTIONAIRE).addClass('editImage').end()
           .end()
-          .start('p').add('How many invoices does your business create per month ?').addClass('wizardBoldLabel').end()
-          .start('p').add('1200').end()
-          .start('p').add('How many invoices does your business receive per month ?').addClass('wizardBoldLabel').end()
-          .start('p').add('500').end()
-          .start('p').add('What is the average invoice amount per month (in CAD) ?').addClass('wizardBoldLabel').end()
-          .start('p').add('4000000').end()
-
+          .start('div')
+          .forEach(this.viewData.user.questionnaire.questions, function (question) {
+            self
+              .start('p').add(question.question).addClass('wizardBoldLabel').end()
+              .start('p').add(question.response).end()
+          }).end()
         .end();
     }
   ],
