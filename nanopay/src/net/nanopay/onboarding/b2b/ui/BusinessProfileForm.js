@@ -429,11 +429,11 @@ foam.CLASS({
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( newValue == 2 ) {
+          if ( newValue == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( newValue == 3 ) {
+          if ( newValue == 5 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
           return newValue;
