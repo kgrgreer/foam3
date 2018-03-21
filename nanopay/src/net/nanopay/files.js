@@ -133,6 +133,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/ApiBrowser', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantInfoForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantProfileForm', flags: ['web'] },
