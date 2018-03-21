@@ -33,44 +33,44 @@ foam.CLASS({
   properties: [
     'id',
     {
-      name: 'questions',
-      factory: function () { return []; }
+      class: 'FObjectProperty',
+      of: 'net.nanopay.onboarding.model.Questionnaire',
+      name: 'questionnaire',
+      factory: function () {
+        if ( this.viewData.user.questionnaire ) {
+          this.viewData.user.questionnaire = this.Questionnaire.create();
+        }
+        return this.viewData.user.questionnaire;
+      },
+      postSet: function (_, newValue) {
+        this.viewData.user.questionnaire = newValue;
+      }
     }
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.getQuestions();
-    },
-
     function initE() {
       this.SUPER();
       var self = this;
+      this.getQuestionnaire();
 
       this
         .addClass(this.myClass())
         .start().addClass('questions')
-          .add(this.slot(function (questions) {
-            return questions.forEach(function (question) {
-              return self.tag({
-                class: 'net.nanopay.onboarding.b2b.ui.QuestionView',
-                question: question
-              });
-            })
-          }, this.questions$))
+          .tag({
+            class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireView',
+            data$: this.questionnaire$
+          })
         .end()
     },
 
     /**
-     * Get's list of questions from the questionnaire
+     * Get's the questionnaire
      */
-    function getQuestions() {
+    function getQuestionnaire() {
       var self = this;
-      this.questionnaireDAO.find(this.id).then(function (questionnaire) {
-        return questionnaire.questions.dao.select();
-      }).then(function (result) {
-        self.questions = result.array;
+      this.questionnaireDAO.find(this.id).then(function (result) {
+        self.questionnaire.copyFrom(result);
       });
     }
   ]

@@ -33,7 +33,6 @@ var classes = [
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.onboarding.model.Questionnaire',
-  'net.nanopay.onboarding.model.QuestionnaireQuestionJunction',
   'net.nanopay.onboarding.InvitationTokenService',
 
   // invoice

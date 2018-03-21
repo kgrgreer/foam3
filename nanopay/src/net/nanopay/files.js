@@ -37,9 +37,13 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/BusinessProfileForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipalOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ConfirmAdminInfoForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ReviewAndSubmitForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/model/Question' },
+  { name: 'net/nanopay/onboarding/model/Questionnaire' },
+  { name: 'net/nanopay/onboarding/InvitationTokenService' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -171,11 +175,6 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/SFTPService' },
   { name: 'net/nanopay/cico/spi/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
-
-  // onboarding
-  { name: 'net/nanopay/onboarding/model/Question' },
-  { name: 'net/nanopay/onboarding/model/Questionnaire' },
-  { name: 'net/nanopay/onboarding/InvitationTokenService' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

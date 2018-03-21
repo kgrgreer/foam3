@@ -1,6 +1,10 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
+  requires: [
+    'net.nanopay.onboarding.model.Questionnaire'
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -78,7 +82,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
-      documentation: 'Questionnaire response'
+      documentation: 'Questionnaire response',
+      factory: function () {
+        return this.Questionnaire.create();
+      }
     },
     {
       class: 'foam.nanos.fs.FileArray',
