@@ -40,7 +40,7 @@ if ( packageName === 'net.nanopay.iso20022' ) {
  * @return {String}   String of FOAM model
  */
 function modelToStr(m) {
-  return foam.json.Pretty.stringify(m).toString().replace(/"/g, "'");
+  return foam.json.Pretty.stringify(m).toString();
 }
 
 /**

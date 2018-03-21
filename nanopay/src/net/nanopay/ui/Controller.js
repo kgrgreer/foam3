@@ -32,7 +32,8 @@ foam.CLASS({
     'privacyUrl',
     'termsUrl',
     'as ctrl',
-    'findAccount'
+    'findAccount',
+    'appConfig'
   ],
 
   css: `
@@ -86,6 +87,9 @@ foam.CLASS({
       of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
+    },
+    {
+      name: 'appConfig'
     }
   ],
 
@@ -94,6 +98,10 @@ foam.CLASS({
       this.AppStyles.create();
       this.InvoiceStyles.create();
       this.ModalStyling.create();
+
+      this.nSpecDAO.find('appConfig').then(function(config){
+        self.appConfig = config;
+      })
 
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');

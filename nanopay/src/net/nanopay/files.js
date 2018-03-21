@@ -35,11 +35,13 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/SaveAndLogOutModal', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/BusinessProfileForm', flags: ['web'] },
-  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipleOwnersForm', flags: ['web'] },
-  { name: 'net/nanopay/onboarding/b2b/ui/QuestionView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipalOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ConfirmAdminInfoForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ReviewAndSubmitForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/model/Question' },
+  { name: 'net/nanopay/onboarding/model/Questionnaire' },
+  { name: 'net/nanopay/onboarding/InvitationTokenService' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
@@ -129,6 +131,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/ApiBrowser', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantInfoForm', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/form/merchant/AddMerchantProfileForm', flags: ['web'] },
@@ -172,11 +175,6 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/SFTPService' },
   { name: 'net/nanopay/cico/spi/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
-
-  // onboarding
-  { name: 'net/nanopay/onboarding/model/Question' },
-  { name: 'net/nanopay/onboarding/model/Questionnaire' },
-  { name: 'net/nanopay/onboarding/InvitationTokenService' },
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

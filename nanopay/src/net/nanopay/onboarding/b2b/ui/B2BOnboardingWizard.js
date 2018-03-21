@@ -18,7 +18,9 @@ foam.CLASS({
     'validatePhone',
     'validateCity',
     'validateStreetNumber',
-    'validateAddress'
+    'validateAddress',
+    'user',
+    'userDAO'
   ],
 
   exports: [
@@ -31,6 +33,7 @@ foam.CLASS({
 
   messages: [
     { name: 'SaveSuccessfulMessage', message: 'Progress saved.' },
+    { name: 'SaveFailureMessage', message: 'Could not save your changes. Please try again.' },
     { name: 'ErrorBusinessProfileNameMessage', message: 'Business name required.' },
     { name: 'ErrorBusinessProfilePhoneMessage', message: 'Invalid business phone number.' },
     { name: 'ErrorBusinessProfileTypeMessage', message: 'Business type required.' },
@@ -47,10 +50,11 @@ foam.CLASS({
     function init() {
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
+      this.viewData.user = this.user;
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-confirmAdminInfo', label: 'Confirm Admin Info', view: { class: 'net.nanopay.onboarding.b2b.ui.ConfirmAdminInfoForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-principleOwner', label: 'Principle Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipleOwnersForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-reviewAndSubmit', label: 'Review and Submit', view: { class: 'net.nanopay.onboarding.b2b.ui.ReviewAndSubmitForm' } }
       ];
@@ -61,18 +65,23 @@ foam.CLASS({
       switch(selection) {
         case 0 : this.logOut();
                  break;
-        case 1 : this.saveProgress();
-                 this.logOut();
+        case 1 : this.saveProgress(true);
                  break;
         default: console.error('unhandled response');
       }
     },
 
-    function saveProgress() {
-      console.log('TODO: Save Progress');
-      var strippedPrincipleOwners = this.viewData.principleOwners ? this.viewData.principleOwners.map( function(po) { po.id = null; return po; } ) : [];
-      // NOTE: This should be in a success block.
-      this.add(this.NotificationMessage.create({ message: this.SaveSuccessfulMessage }));
+    function saveProgress(andLogout) {
+      var self = this;
+
+      this.user = this.viewData.user;
+      
+      this.userDAO.put(this.user).then(function(updateduser) {
+        self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
+        if ( andLogout ) self.logOut();
+      }).catch(function(err){
+        self.add(self.NotificationMessage.create({ message: self.SaveFailureMessage, type: 'error' }));
+      });
     },
 
     function logOut() {
