@@ -96,7 +96,7 @@ foam.CLASS({
 
   messages: [
     { name: "introMessage", message: "Welcome to the nanopay API documentation. This API will give you the ability to connect your software to banking infrastructure to move money, store funds, and verify bank accounts."},
-    { name: "makingRequests", message: "Request and response bodies are JSON encoded. Requests must contain api credentials (email/password provided by nanopay) on the authorization tag. Data contained in the table views below display available properties on the model. Those that are required are added to the examples shown on each service call. " }
+    { name: "makingRequests", message: "Request and response bodies are JSON encoded. Requests must contain api credentials (email/password provided by nanopay) on the authorization tag. Data contained in the table views below model details display available properties on the model. Those that are required are added to the examples shown on each service call. " }
   ],
 
   methods: [
