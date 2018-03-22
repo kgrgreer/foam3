@@ -77,8 +77,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      console.log(this.user.status);
-
       this
         .addClass(this.myClass())
         .start().addClass('container')
