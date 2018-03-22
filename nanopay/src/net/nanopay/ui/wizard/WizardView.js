@@ -276,7 +276,9 @@ foam.CLASS({
       this.viewTitles = [];
       this.subStack = this.Stack.create();
 
-      this.views.forEach(function(viewData){
+      this.views.filter(function (view) {
+        return ! view.hidden;
+      }).forEach(function(viewData) {
         self.viewTitles.push(viewData.label);
       });
 
