@@ -37,7 +37,7 @@ foam.CLASS({
       class: 'String',
       name: 'nextLabel',
       expression: function (position) {
-        return ( position < this.views.length - 1 ) ? 'Next' : 'Submit';
+        return ( position < this.views.length - 2 ) ? 'Next' : 'Submit';
       }
     }
   ],
@@ -61,6 +61,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      var self = this;
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
@@ -69,18 +70,31 @@ foam.CLASS({
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-reviewAndSubmit', label: 'Review and Submit', view: { class: 'net.nanopay.onboarding.b2b.ui.ReviewAndSubmitForm' } }
+        { parent: 'addB2BUser', id: 'form-addB2BUser-reviewAndSubmit', label: 'Review and Submit', view: { class: 'net.nanopay.onboarding.b2b.ui.ReviewAndSubmitForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-profileSubmitted', label: this.user.status$.map(function (status) {
+          switch ( status ) {
+            case self.AccountStatus.ACTIVE:
+              return 'Registration has been approved.';
+            case self.AccountStatus.DISABLED:
+              return 'Registration is temporarily disabled.';
+            default:
+              return 'Registration is under review.';
+          }
+        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
       ];
       this.SUPER();
     },
 
     function logOutHandler(selection) {
       switch(selection) {
-        case 0 : this.logOut();
-                 break;
-        case 1 : this.saveProgress(true);
-                 break;
-        default: console.error('unhandled response');
+        case 0:
+          this.logOut();
+          break;
+        case 1:
+          this.saveProgress(true);
+          break;
+        default:
+          console.error('unhandled response');
       }
     },
 
@@ -109,6 +123,7 @@ foam.CLASS({
         if ( ! result ) throw new Error(self.SubmitFailureMessage);
         self.user.copyFrom(result);
         self.add(self.NotificationMessage.create({ message: self.SubmitSuccessMessage }));
+        self.subStack.push(self.views[self.subStack.pos + 1].view);
       }).catch(function (err) {
         self.add(self.NotificationMessage.create({ message: self.SubmitFailureMessage, type: 'error' }));
       });
@@ -186,11 +201,18 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.onboarding.b2b.ui.SaveAndLogOutModal' }));
+        if ( this.position === this.views.length - 1 ) {
+          this.logOut();
+        } else {
+          this.add(this.Popup.create().tag({ class: 'net.nanopay.onboarding.b2b.ui.SaveAndLogOutModal' }));
+        }
       }
     },
     {
       name: 'save',
+      isAvailable: function (position) {
+        return ( position < this.views.length - 1 );
+      },
       code: function() {
         this.saveProgress();
       }
@@ -199,7 +221,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       isAvailable: function(position) {
-        return position > 0;
+        return ( position > 0 && position < this.views.length - 1 );
       },
       code: function(X) {
         this.subStack.back();
@@ -207,15 +229,20 @@ foam.CLASS({
     },
     {
       name: 'goNext',
+      isAvailable: function (position) {
+        return ( position < this.views.length - 1 );
+      },
       code: function() {
-        // move to next screen
-        if ( this.position < this.views.length - 1 ) {
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
+        // submit profile
+        if ( this.position === this.views.length - 2 ) {
+          this.submit();
           return;
         }
 
-        // submit profile
-        this.submit();
+        // move to next screen
+        if ( this.position < this.views.length - 1 ) {
+          this.subStack.push(this.views[this.subStack.pos + 1].view);
+        }
       }
     }
   ]
