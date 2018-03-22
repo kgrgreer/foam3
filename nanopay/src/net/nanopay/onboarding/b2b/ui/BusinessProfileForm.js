@@ -387,7 +387,6 @@ foam.CLASS({
     },
     {
       name: 'businessTypeField',
-      value: 'Please select',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.businessTypeDAO,
@@ -406,11 +405,11 @@ foam.CLASS({
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( this.viewData.user.businessTypeId == 2 ) {
+          if ( this.viewData.user.businessTypeId == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( this.viewData.user.businessTypeId == 3 ) {
+          if ( this.viewData.user.businessTypeId == 5 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
           return this.viewData.user.businessTypeId;
@@ -421,6 +420,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         if ( newValue !== 'Please select' ) {
           this.viewData.user.businessTypeId = newValue;
+          console.log(this.viewData.user.businessTypeId);
           if ( newValue == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
@@ -438,7 +438,7 @@ foam.CLASS({
           }
           return newValue;
         } else {
-          this.viewData.businessType = null;
+          this.viewData.user.businessType = null;
           this.businessTypeInfo = '';
           return newValue;
         }
