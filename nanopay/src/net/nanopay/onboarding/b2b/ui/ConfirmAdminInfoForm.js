@@ -13,9 +13,10 @@ foam.CLASS({
   ^ .container {
     width: 540px;
   }
-  ^ .accountIdLabel {
-    font-style: bold;
+  ^ .sectionTitle {
+    line-height: 16px;
     font-size: 14px;
+    font-weight: bold;
     margin-top: 0;
     margin-bottom: 20px;
   }
@@ -172,6 +173,23 @@ foam.CLASS({
     border: solid 1px rgba(164, 179, 184, 0.5) !important;
     color: #a4b3b8 !important;
   }
+  ^ .foam-u2-TextField {
+    height: 40px;
+
+    background-color: #ffffff;
+    border: solid 1px rgba(164, 179, 184, 0.5);
+
+    padding: 12px 13px;
+
+    box-sizing: border-box;
+    outline: none;
+
+    -webkit-transition: all .15s linear;
+    -moz-transition: all .15s linear;
+    -ms-transition: all .15s linear;
+    -o-transition: all .15s linear;
+    transition: all 0.15s linear;
+  }
 
   ^ .foam-u2-TextField:focus,
   ^ .foam-u2-DateView:focus,
@@ -220,7 +238,7 @@ foam.CLASS({
         return this.viewData.user.firstName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.firstName = newValue;
+        this.viewData.user.firstName = newValue;
       }
     },
     'firstNameElement',
@@ -231,7 +249,7 @@ foam.CLASS({
         return this.viewData.user.middleName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.middleName = newValue;
+        this.viewData.user.middleName = newValue;
       }
     },
     {
@@ -241,7 +259,7 @@ foam.CLASS({
         return this.viewData.user.lastName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.lastName = newValue;
+        this.viewData.user.lastName = newValue;
       }
     },
     {
@@ -311,7 +329,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
-            .start('p').add('Account ID ' + this.viewData.user.id).addClass('accountIdLabel').end()
+            .start('p').add('Account ID ' + this.viewData.user.id).addClass('sectionTitle').end()
             .start('div').addClass('nameContainer')
             .start('div')
               .addClass('nameDisplayContainer')

@@ -8,6 +8,7 @@ foam.ENUM({
     { name: 'PENDING',       label: 'Pending'       },
     { name: 'SUBMITTED',     label: 'Submitted'     },
     { name: 'ACTIVE',        label: 'Active'        },
-    { name: 'DISABLED',      label: 'Disabled'      }
+    { name: 'DISABLED',      label: 'Disabled'      },
+    { name: 'REVOKED',       label: 'Revoked'       },
   ]
 });

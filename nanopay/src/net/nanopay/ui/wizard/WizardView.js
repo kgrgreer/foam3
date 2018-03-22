@@ -12,6 +12,7 @@ foam.CLASS({
     'nextLabel',
     'exit',
     'save',
+    'goTo',
     'goBack',
     'goNext',
     'complete',
@@ -275,7 +276,9 @@ foam.CLASS({
       this.viewTitles = [];
       this.subStack = this.Stack.create();
 
-      this.views.forEach(function(viewData){
+      this.views.filter(function (view) {
+        return ! view.hidden;
+      }).forEach(function(viewData) {
         self.viewTitles.push(viewData.label);
       });
 
@@ -310,7 +313,9 @@ foam.CLASS({
           .end()
           .start('div').addClass('stackColumn')
             .start('div')
-              .start('p').add(this.position$.map(function(p) { return self.viewTitles[p]; }) || '').addClass('subTitle').end()
+              .start('p').add(this.position$.map(function(p) {
+                return self.views[p].label;
+              }) || '').addClass('subTitle').end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
@@ -329,6 +334,12 @@ foam.CLASS({
             .end()
           .end();
         });
+    },
+
+    function goTo(index) {
+      while(this.position > index && this.position > 0) {
+        this.subStack.back();
+      }
     }
   ],
 

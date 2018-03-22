@@ -387,7 +387,6 @@ foam.CLASS({
     },
     {
       name: 'businessTypeField',
-      value: 'Please select',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.businessTypeDAO,
@@ -406,11 +405,11 @@ foam.CLASS({
             this.businessTypeInfo = this.BusinessTypeDescriptionPart;
           }
 
-          if ( this.viewData.user.businessTypeId == 2 ) {
+          if ( this.viewData.user.businessTypeId == 3 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
           }
 
-          if ( this.viewData.user.businessTypeId == 3 ) {
+          if ( this.viewData.user.businessTypeId == 5 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
           }
           return this.viewData.user.businessTypeId;
@@ -438,7 +437,7 @@ foam.CLASS({
           }
           return newValue;
         } else {
-          this.viewData.businessType = null;
+          this.viewData.user.businessType = null;
           this.businessTypeInfo = '';
           return newValue;
         }
@@ -707,7 +706,8 @@ foam.CLASS({
           .start('div')
             .start({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data$: self.businessProfilePicture$
+              data$: self.businessProfilePicture$,
+              placeholderImage: 'images/business-placeholder.png'
             }).end()
         .end()
       .end();
