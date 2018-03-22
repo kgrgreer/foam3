@@ -38,8 +38,12 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/AddPrincipalOwnersForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/QuestionnaireForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ConfirmAdminInfoForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/NextStepView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ProfileSubmittedForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ReviewAndSubmitForm', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/UploadAdditionalDocumentsView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/ViewSubmittedRegistrationView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/AdditionalDocumentsUploadView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/model/Question' },
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
@@ -116,7 +120,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/ui/devices/form/DevicePasswordForm', flags: ['web'] },
 
   // admin
-  { name: 'net/nanopay/admin/ui/AccountDisabledView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/AccountRevokedView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/ActivateProfileModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/AddMerchantView', flags: ['web'] },

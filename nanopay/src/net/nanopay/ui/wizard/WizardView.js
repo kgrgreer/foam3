@@ -313,8 +313,9 @@ foam.CLASS({
           .end()
           .start('div').addClass('stackColumn')
             .start('div')
-            .start('p').add(this.position$.map(function(p) { return self.viewTitles[p]; }) || '').addClass('subTitle').end()
-
+              .start('p').add(this.position$.map(function(p) {
+                return self.views[p].label;
+              }) || '').addClass('subTitle').end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()

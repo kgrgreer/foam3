@@ -10,10 +10,13 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
   imports: [
+    'userDAO',
     'closeDialog'
   ],
 
@@ -87,7 +90,20 @@ foam.CLASS({
     {
       name: 'revoke',
       code: function (X) {
+        var self = this;
+        var toRevoke = this.data.clone();
+        toRevoke.status = this.AccountStatus.REVOKED;
 
+        this.userDAO.put(toRevoke)
+        .then(function (result) {
+          if ( ! result ) throw new Error('Unable to revoke profile.');
+          X.closeDialog();
+          self.data.copyFrom(result);
+          self.add(self.NotificationMessage.create({ message: 'Profile successfully revoked.' }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: 'Unable to revoke profile.', type: 'error' }));
+        });
       }
     }
   ]

@@ -87,7 +87,8 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
-      documentation: 'Additional documents for compliance verification'
+      documentation: 'Additional documents for compliance verification',
+      view: { class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView' }
     },
     {
       class: 'FObjectArray',
@@ -152,6 +153,11 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'onboardingComplete',
+      value: false
     }
   ]
 });
