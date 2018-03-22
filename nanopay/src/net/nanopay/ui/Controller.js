@@ -140,12 +140,12 @@ foam.CLASS({
 
             // show onboarding screen if user hasn't clicked "Go To Portal" button
             case self.AccountStatus.ACTIVE:
-              if ( self.user.onboardingComplete ) break;
+              if ( self.user.onboarded ) break;
               self.loginSuccess = false;
               self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
               return;
 
-              if ( ! self.user.onboardingComplete ) {
+              if ( ! self.user.onboarded ) {
                 self.loginSuccess = false;
               }
               break;
