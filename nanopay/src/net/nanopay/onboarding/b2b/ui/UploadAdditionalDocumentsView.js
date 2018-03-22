@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Upload Additional Documents View',
 
+  requires: [
+    'foam.u2.dialog.Popup'
+  ],
+
   imports: [
     'user'
   ],
@@ -23,6 +27,8 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('p').addClass('containerTitle').add(this.Title).end()
         .start().addClass('containerDesc').add(this.Description).end()
+        .br()
+        .start(this.user.ADDITIONAL_DOCUMENTS).end()
     }
   ]
 });
