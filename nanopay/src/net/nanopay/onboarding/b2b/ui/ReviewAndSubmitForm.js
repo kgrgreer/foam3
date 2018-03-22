@@ -15,12 +15,12 @@ foam.CLASS({
   css: `
     ^ .editImage {
       background-color: %PRIMARYCOLOR%;
-      width: 20px;
+      width: fit-content;
       height: 20px;
       float: right;
       position: relative;
       bottom: 19;
-      right: 30;
+      right: 10;
       cursor: pointer;
     }
     ^ .editLabel {
@@ -28,10 +28,14 @@ foam.CLASS({
       font-weight: bold;
       letter-spacing: 0.2px;
       color: #ffffff;
-      float: right;
-      position: relative;
-      right: 20;
-      bottom: 17;
+      line-height: 20px;
+    }
+    ^ .editImage img {
+      vertical-align: middle;
+    }
+    ^ .editLabel span {
+      margin-left: 8px;
+      vertical-align: middle;
     }
     ^ .principalOwnerLabel {
       margin-top: 20px;
@@ -84,7 +88,7 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-      
+
       this.businessTypeDAO.find(this.viewData.user.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
       });
@@ -105,8 +109,7 @@ foam.CLASS({
           // Business Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle1).addClass('wizardBoxTitleLabel').end()
-            .start().add(this.EditLabel).addClass('editLabel').end()
-            .start(this.EDIT_BUSINESS_PROFILE).addClass('editImage').end()
+            .start(this.EDIT_BUSINESS_PROFILE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessName).end()
@@ -132,19 +135,18 @@ foam.CLASS({
             + this.viewData.user.businessAddress.city + ', '
             + this.viewData.user.businessAddress.postalCode
           ).addClass('addressDiv').end()
-          .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()    
+          .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
           .tag({
             class: 'foam.nanos.auth.ProfilePictureView',
             data: this.viewData.user.businessProfilePicture,
             placeholderImage: 'images/business-placeholder.png',
             uploadHidden: true
           })
-          
+
           // Principal Owner's Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
-            .start().add(this.EditLabel).addClass('editLabel').end()
-            .start(this.EDIT_PRINCIPAL_OWNER).addClass('editImage').end()
+            .start(this.EDIT_PRINCIPAL_OWNER, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
             .forEach(this.viewData.user.principalOwners, function (data, index) {
@@ -159,7 +161,7 @@ foam.CLASS({
                 .start('p').add(data.phone.number).end()
                 .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
                 .start('p').add(data.principleType).end()
-                .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()          
+                .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
                 .start('p').add(data.birthday.toISOString().substring(0,10)).end()
                 .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                 .start('p').add(
@@ -172,12 +174,11 @@ foam.CLASS({
               .end()
             }).end()
           .end()
-            
+
           // Questionaire
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-            .start().add(this.EditLabel).addClass('editLabel').end()
-            .start(this.EDIT_QUESTIONAIRE).addClass('editImage').end()
+            .start(this.EDIT_QUESTIONAIRE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
           .forEach(this.viewData.user.questionnaire.questions, function (question) {
@@ -193,6 +194,7 @@ foam.CLASS({
     {
       name: 'editBusinessProfile',
       icon: 'images/ic-draft.svg',
+      label: 'Edit',
       code: function(X) {
         this.goTo(1);
       }
@@ -200,6 +202,7 @@ foam.CLASS({
     {
       name: 'editPrincipalOwner',
       icon: 'images/ic-draft.svg',
+      label: 'Edit',
       code: function(X) {
         this.goTo(2);
       }
@@ -207,11 +210,12 @@ foam.CLASS({
     {
       name: 'editQuestionaire',
       icon: 'images/ic-draft.svg',
+      label: 'Edit',
       code: function(X) {
         this.goTo(3);
       }
     }
-    
+
   ]
 
 });
