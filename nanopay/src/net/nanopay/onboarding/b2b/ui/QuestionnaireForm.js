@@ -32,11 +32,36 @@ foam.CLASS({
       padding-top: 8px;
       padding-bottom: 20px;
     }
-    ^ .foam-u2-TextField.property-response {
-      width: 540px;
+
+    ^ .foam-u2-TextField {
+      width:540px;
       height: 40px;
+
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
+      border-radius: 0;
+
+      padding: 12px 13px;
+
+      box-sizing: border-box;
+      outline: none;
+
+      -webkit-appearance: none;
+
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
+      transition: all 0.15s linear;
+    }
+
+    ^ .foam-u2-TextField:focus {
+      border: solid 1px #59A5D5;
+    }
+
+    ^ .foam-u2-TextField:disabled {
+      border: solid 1px rgba(164, 179, 184, 0.5) !important;
+      color: #a4b3b8 !important;
     }
 
   `,

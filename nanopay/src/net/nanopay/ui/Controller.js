@@ -128,9 +128,13 @@ foam.CLASS({
           // check account status and show UI accordingly
           switch ( self.user.status ) {
             case self.AccountStatus.PENDING:
-            case self.AccountStatus.SUBMITTED:
               self.loginSuccess = false;
               self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
+              return;
+
+            case self.AccountStatus.SUBMITTED:
+              self.loginSuccess = false;
+              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
               return;
 
             case self.AccountStatus.DISABLED:

@@ -707,7 +707,8 @@ foam.CLASS({
           .start('div')
             .start({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data$: self.businessProfilePicture$
+              data$: self.businessProfilePicture$,
+              placeholderImage: 'images/business-placeholder.png'
             }).end()
         .end()
       .end();
