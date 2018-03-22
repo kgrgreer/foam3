@@ -73,7 +73,6 @@ public class PacsWebAgent
         outputterJson.setOutputClassNames(false);
 
         if ( "008".equals(msg) ) {
-          //PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);
           Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
           if ( pacs00800106 == null || "".equals(pacs00800106) ) {
@@ -107,40 +106,8 @@ public class PacsWebAgent
           outputterJson.output(pacs00200109);
         }
 
-        response.setContentType("application/json");
         out.println(outputterJson.toString());
-      } //else if ( "xml".equals(format) ) {
-    //      XMLSupport      xmlSupport = new XMLSupport();
-    //      XMLInputFactory factory    = XMLInputFactory.newInstance();
-    //      StringReader    reader     = new StringReader(data);
-    //      XMLStreamReader xmlReader  = factory.createXMLStreamReader(reader);
-    //      List<FObject>   objList    = xmlSupport.fromXML(x, xmlReader, PacsModel008.class);
-    //
-    //      if ( objList.size() == 0 ) {
-    //        out.println("Parse Error : ");
-    //
-    //        String message = getParsingError(x, buffer_.toString());
-    //        logger.error(message + ", input: " + buffer_.toString());
-    //        out.println(message);
-    //        out.flush();
-    //        return;
-    //      }
-    //      if ( objList.size() == 0 ) System.out.println("eeee");
-    //
-    //
-    //      PacsModel008 pacsModel008 = null;
-    //      Iterator i = objList.iterator();
-    //      while ( i.hasNext() ) {
-    //        pacsModel008 = (PacsModel008)i.next();
-    //        PacsModel002 pacsModel002 = pacsModel008.generatePacs002Msgby008Msg();
-    //        response.setContentType("application/xml");
-    //        out.println(xmlSupport.toXMLString(pacsModel002));
-    //      }
-    //
-    //      PacsModel002  pacsModel002 = pacsModel008.generatePacs002Msg();
-    //      response.setContentType("application/xml");
-    //      out.println(xmlSupport.toXMLString(pacsModel002));
-    // }
+      } 
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
