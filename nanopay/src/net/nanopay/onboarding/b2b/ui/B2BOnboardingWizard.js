@@ -31,6 +31,16 @@ foam.CLASS({
     foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'nextLabel',
+      expression: function (position) {
+        return ( position < this.views.length - 1 ) ? 'Next' : 'Submit';
+      }
+    }
+  ],
+
   messages: [
     { name: 'SaveSuccessfulMessage', message: 'Progress saved.' },
     { name: 'SaveFailureMessage', message: 'Could not save your changes. Please try again.' },
