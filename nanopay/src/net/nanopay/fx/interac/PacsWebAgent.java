@@ -51,7 +51,7 @@ public class PacsWebAgent
 
     try {
 
-      if ( data == null || "".equals(data) ) {
+      if ( SafetyUtil.isEmpty(data) ) {
         out.print("<form method=post><span>Request Pacs: </span>");
         out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
         out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");

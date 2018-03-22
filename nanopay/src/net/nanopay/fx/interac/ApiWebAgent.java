@@ -52,7 +52,7 @@ public class ApiWebAgent
 
     try {
 
-      if ( data == null || "".equals(data) ) {
+      if ( SafetyUtil.isEmpty(data) ) {
         out.print("<form method=post><span>ExchangeRate Service </span>");
         out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
