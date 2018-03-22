@@ -95,11 +95,19 @@ public class ApiWebAgent
 
         ExchangeRateQuote exQuote = null;
         if ( "getRateFromTarget".equals(serviceKey) ) {
-          exQuote = service.getRateFromTarget(sourceCurrency, targetCurrency, targetAmount, valueDate);
-          outputterJson.output(exQuote);
+          if ( targetAmount > 0) {
+            exQuote = service.getRateFromTarget(sourceCurrency, targetCurrency, targetAmount, valueDate);
+            outputterJson.output(exQuote);
+          } else {
+            out.println("Please input the exact data");
+          }
         } else if ( "getRateFromSource".equals(serviceKey) ) {
-          exQuote = service.getRateFromSource(sourceCurrency, targetCurrency, sourceAmount, valueDate);
-          outputterJson.output(exQuote);
+          if ( sourceAmount > 0) {
+            exQuote = service.getRateFromSource(sourceCurrency, targetCurrency, sourceAmount, valueDate);
+            outputterJson.output(exQuote);
+          } else {
+            out.println("Please input the exact data");
+          }
         } else {
           if ( sourceCurrency == null || "".equals(sourceCurrency) || targetCurrency == null || "".equals(targetCurrency) ) {
             AcceptRateApiModel accprate = service.acceptRate(endToEndId, dealReferenceNumber);
