@@ -49,6 +49,18 @@ foam.CLASS({
       color: white;
       background: %SECONDARYCOLOR%;
     }
+    ^ .principalOwnerLabel {
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      letter-spacing: 0.2px;
+      color: #093649;
+    }
+    ^ .principalOwnerContainer {
+      padding-left: 25px;
+    }
   `,
 
   messages: [
@@ -183,6 +195,7 @@ foam.CLASS({
                   ).addClass('addressDiv').end()
                 .end()
               }).end()
+              .end()
             .end()
 
             //Questionnaire
@@ -191,12 +204,12 @@ foam.CLASS({
               .start().add(this.CloseLabel).addClass('closeLabel').end()
               .start(this.CLOSE_QUESTIONNAIRE).addClass('closeIcon').end()
             .end()
-            /*.start('div')
+            .start('div')
             .forEach(this.user.questionnaire.questions, function (question) {
               self
                 .start('p').add(question.question).addClass('wizardBoldLabel').end()
                 .start('p').add(question.response).end()
-            }).end()*/
+            }).end()
  
           .end()
         .end();
