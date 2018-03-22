@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
-  name: 'AccountDisabledView',
+  name: 'AccountRevokedView',
   extends: 'foam.u2.View',
 
   imports: [
