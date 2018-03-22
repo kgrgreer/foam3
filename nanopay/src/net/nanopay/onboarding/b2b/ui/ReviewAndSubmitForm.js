@@ -70,15 +70,7 @@ foam.CLASS({
     { name: 'BusiRegAuthLabel', message: 'Registration Authority'},
     { name: 'BusiRegDateLabel', message: 'Registration Date' },
     { name: 'BusiAddressLabel', message: 'Business Address' },
-    { name: 'BusiLogoLabel', message: 'Business Logo (optional)' },
-    { name: 'PrincOwnerLabel', message: 'Principal Owner' },
-    { name: 'PrincJobtitleLabel', message: 'Job Title' },
-    { name: 'PrincNameLabel', message: 'Legal Name' },
-    { name: 'PrincEmailLabel', message: 'Email Address' },
-    { name: 'PrincPhoneLabel', message: 'Phone Number' },
-    { name: 'PrincTypeLabel', message: 'Principal Type' },
-    { name: 'PrincBdayLabel', message: 'Date of Birth' },
-    { name: 'PrincAddressLabel', message: 'Residential Address' }
+    { name: 'BusiLogoLabel', message: 'Business Logo (optional)' }
   ],
 
   properties: [
