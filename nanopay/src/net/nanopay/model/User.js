@@ -152,6 +152,11 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'onboardingComplete',
+      value: false
     }
   ]
 });

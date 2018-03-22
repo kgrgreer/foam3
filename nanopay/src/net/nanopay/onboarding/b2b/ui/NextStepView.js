@@ -5,8 +5,14 @@ foam.CLASS({
 
   documentation: 'next step view',
 
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
   imports: [
-    'user'
+    'user',
+    'userDAO',
+    'window'
   ],
 
   messages: [
@@ -23,6 +29,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('p').addClass('containerTitle').add(this.Title).end()
         .start().addClass('containerDesc').add(this.Description).end()
+        .br()
         .start(this.GO_TO_PORTAL).end();
     }
   ],
@@ -31,7 +38,16 @@ foam.CLASS({
     {
       name: 'goToPortal',
       code: function (X) {
+        X.user.onboardingComplete = true;
 
+        X.userDAO.put(X.user)
+        .then(function (result) {
+          X.window.location.hash = '';
+          X.window.location.reload();
+        })
+        .catch(function (err) {
+          X.add(X.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
+        });
       }
     }
   ]

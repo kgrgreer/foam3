@@ -77,12 +77,14 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      console.log(this.user.status);
+
       this
         .addClass(this.myClass())
         .start().addClass('container')
           .start('p').add('Account ID ' + this.viewData.user.id).addClass('sectionTitle').end()
           .start().addClass('borderContainer')
-            .tag({ class: ( this.user.status$ != this.AccountStatus.ACTIVE ) ?
+            .tag({ class: ( this.user.status !== this.AccountStatus.ACTIVE ) ?
               'net.nanopay.onboarding.b2b.ui.UploadAdditionalDocumentsView' :
               'net.nanopay.onboarding.b2b.ui.NextStepView' })
           .end()
