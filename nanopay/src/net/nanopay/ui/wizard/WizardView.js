@@ -12,6 +12,7 @@ foam.CLASS({
     'nextLabel',
     'exit',
     'save',
+    'goTo',
     'goBack',
     'goNext',
     'complete',
@@ -329,6 +330,12 @@ foam.CLASS({
             .end()
           .end();
         });
+    },
+
+    function goTo(index) {
+      while(this.position > index && this.position > 0) {
+        this.subStack.back();
+      }
     }
   ],
 
