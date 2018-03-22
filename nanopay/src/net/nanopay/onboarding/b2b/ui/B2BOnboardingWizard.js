@@ -59,7 +59,8 @@ foam.CLASS({
     { name: 'ErrorBusinessProfileStreetNumberMessage', message: 'Invalid street number.' },
     { name: 'ErrorBusinessProfileStreetNameMessage', message: 'Invalid street name.' },
     { name: 'ErrorBusinessProfileCityMessage', message: 'Invalid city name.' },
-    { name: 'ErrorBusinessProfilePostalCodeMessage', message: 'Invalid postal code.' }
+    { name: 'ErrorBusinessProfilePostalCodeMessage', message: 'Invalid postal code.' },
+    { name: 'ErrorQuestionnaireMessage', message: 'You must answer each question.' }
   ],
 
   methods: [
@@ -212,6 +213,23 @@ foam.CLASS({
         return false;
       }
       return true;
+    },
+
+    function validateQuestionnaire() {
+      var questions = this.viewData.user.questionnaire.questions;
+      if ( ! questions ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorQuestionnaireMessage, type: 'error' }));
+        return false;
+      }
+      var self = this;
+      var valid = true;
+      questions.forEach(function(question) {
+        if ( ! question.response ) {
+          self.add(self.NotificationMessage.create({ message: self.ErrorQuestionnaireMessage, type: 'error' }));
+          valid = false;
+        }
+      });
+      return valid;
     }
   ],
 
@@ -266,6 +284,10 @@ foam.CLASS({
           if ( this.position === 1 ) {
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
+          }
+          if ( this.position == 3) {
+            // validate Questionnaire
+            if ( ! this.validateQuestionnaire() ) return;
           }
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }
