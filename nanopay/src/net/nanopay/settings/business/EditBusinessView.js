@@ -234,6 +234,7 @@ foam.CLASS({
               .tag({
                 class: 'foam.nanos.auth.ProfilePictureView',
                 data$: this.user.profilePicture$,
+                placeholderImage: 'images/business-placeholder.png',
                 uploadHidden: false,
                 dragActive$: this.dragActive$
               })

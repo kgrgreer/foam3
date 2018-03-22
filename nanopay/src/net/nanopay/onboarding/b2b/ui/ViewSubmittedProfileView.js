@@ -7,13 +7,13 @@ foam.CLASS({
 
   imports: [
     'businessTypeDAO',
-    'stack'
+    'stack',
+    'user'
   ],
 
   css: `
     ^ .container {
       width: 540px;
-      margin: 0 auto;
     }
     ^ .header {
       font-size: 30px;
@@ -44,6 +44,10 @@ foam.CLASS({
       position: relative;
       right: 20;
       bottom: 17;
+    }
+    ^ .net-nanopay-ui-ActionView-backToHome {
+      color: white;
+      background: %SECONDARYCOLOR%;
     }
   `,
 
@@ -80,7 +84,7 @@ foam.CLASS({
 
       var self = this;
 
-      this.businessTypeDAO.find(this.viewData.user.businessTypeId).then(function(a) {
+      this.businessTypeDAO.find(this.user.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
       });
 
@@ -117,33 +121,33 @@ foam.CLASS({
               .start(this.CLOSE_BUSINESS_PROFILE).addClass('closeIcon').end()
             .end()
             .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.viewData.user.businessName).end()
+            .start('p').add(this.user.businessName).end()
             .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.viewData.user.businessPhone.number).end()
+            .start('p').add(this.user.businessPhone.number).end()
             .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.viewData.user.website).end()
+            .start('p').add(this.user.website).end()
             .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.businessTypeName$).end()
             .start('p').add(this.BusiRegNumberLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.viewData.user.businessRegistrationNumber).end()
+            .start('p').add(this.user.businessRegistrationNumber).end()
             .start('p').add(this.BusiRegAuthLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.viewData.user.businessRegistrationAuthority).end()
+            .start('p').add(this.user.businessRegistrationAuthority).end()
             .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.viewData.user.businessRegistrationDate$.map(function (date) {
+            .start('p').add(this.user.businessRegistrationDate$.map(function (date) {
               return ( date ) ? date.toISOString().substring(0, 10) : '';
             })).end()
             .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
             .start('p').add(
-              this.viewData.user.businessAddress.streetNumber + ' '
-              + this.viewData.user.businessAddress.streetName + ', '
-              + this.viewData.user.businessAddress.address2 + ' '
-              + this.viewData.user.businessAddress.city + ', '
-              + this.viewData.user.businessAddress.postalCode
+              this.user.businessAddress.streetNumber + ' '
+              + this.user.businessAddress.streetName + ', '
+              + this.user.businessAddress.address2 + ' '
+              + this.user.businessAddress.city + ', '
+              + this.user.businessAddress.postalCode
             ).addClass('addressDiv').end()
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()    
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.viewData.user.businessProfilePicture,
+              data: this.user.businessProfilePicture,
               placeholderImage: 'images/business-placeholder.png',
               uploadHidden: true
             })
@@ -155,7 +159,7 @@ foam.CLASS({
               .start(this.CLOSE_PRINCIPAL_OWNER).addClass('closeIcon').end()
             .end()
             .start('div')
-              .forEach(this.viewData.user.principalOwners, function (data, index) {
+              .forEach(this.user.principalOwners, function (data, index) {
                 self
                 .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
                 .start().addClass('principalOwnerContainer')
@@ -183,16 +187,16 @@ foam.CLASS({
 
             //Questionnaire
             .start().addClass('wizardBoxTitleContainer')
-              .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-              .start().add(this.EditLabel).addClass('closeLabel').end()
-              .start(this.CLOSE_QUESTIONAIRE).addClass('closeIcon').end()
+              .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
+              .start().add(this.CloseLabel).addClass('closeLabel').end()
+              .start(this.CLOSE_QUESTIONNAIRE).addClass('closeIcon').end()
             .end()
-            .start('div')
-            .forEach(this.viewData.user.questionnaire.questions, function (question) {
+            /*.start('div')
+            .forEach(this.user.questionnaire.questions, function (question) {
               self
                 .start('p').add(question.question).addClass('wizardBoldLabel').end()
                 .start('p').add(question.response).end()
-            }).end()
+            }).end()*/
  
           .end()
         .end();
