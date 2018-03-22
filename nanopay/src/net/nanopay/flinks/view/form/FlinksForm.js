@@ -18,7 +18,15 @@ foam.CLASS({
     'institutionDAO',
     'user',
     'userDAO',
-    'email'
+    'email',
+    'bankAccountDAO',
+    'validateAccountNumber',
+    'validateAddress',
+    'validateCity',
+    'validateInstitutionNumber',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'validateTransitNumber',
   ],
 
   requires: [
@@ -163,22 +171,28 @@ foam.CLASS({
       this.title = 'Connect to a new bank account';
       this.viewData.answers = [];
       this.viewData.questions = [];
+      this.viewData.user = this.user;
+      this.viewData.bankAccount = [];
       this.viewTitles = [
         'Institution',
         'Connect',
         'Security',
+        'Accounts',
+        'Pad Authorization',
         'Done'
       ],
       this.isCustomNavigation = true;
       this.views = {
-        FlinksInstitutionForm:        { step: 1, view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true},
-        FlinksConnectForm:            { step: 2, view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' }},
-        FlinksXQuestionAnswerForm:    { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' }},
-        FlinksXSelectionAnswerForm:   { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' }},
-        FlinksMultipleChoiceForm:     { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' }},
-        FlinksImageForm:              { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' }},
-        FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
-        FlinksFailForm:               { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true}
+        FlinksInstitutionForm:        { step: 1, label: 'Institution', view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true},
+        FlinksConnectForm:            { step: 2, label: 'Connect', view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' }},
+        FlinksXQuestionAnswerForm:    { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' }},
+        FlinksXSelectionAnswerForm:   { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' }},
+        FlinksMultipleChoiceForm:     { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' }},
+        FlinksImageForm:              { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' }},
+        FlinksAccountForm:            { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
+        FlinksFailForm:               { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
+        PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization' }},
+
       }
       this.SUPER();
     },
@@ -219,6 +233,33 @@ foam.CLASS({
           this.fail();
         }
       }
+    },
+    function validations() {
+      if ( this.viewData.user.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( this.viewData.user.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateStreetNumber(this.viewData.user.address.streetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAddress(this.viewData.user.address.streetName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateCity(this.viewData.user.address.city) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePostalCode(this.viewData.user.address.postalCode) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return false;
+      }
+      return true;
     }
   ],
 
@@ -233,6 +274,8 @@ foam.CLASS({
         } else if ( this.currentViewId === 'FlinksAccountForm' ) {
           X.stack.back();
         } else if ( this.currentViewId === 'FlinksFailForm' ) {
+          X.stack.back();
+        } else if ( this.currentViewId === 'PADAuthorizationForm') {
           X.stack.back();
         } else {
           this.rollBackView();
@@ -346,22 +389,35 @@ foam.CLASS({
             var inNumber = institution.array[0].institutionNumber;
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                X.bankAccountDAO.put(self.BankAccount.create({
+                self.viewData.bankAccount.push(self.BankAccount.create({
                   accountName: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
                   transitNumber: item.TransitNumber,
                   status: 'Verified'
-                })).catch(function(a) {
-                  self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
-                  self.fail();
-                });
+                }))
               }
             });
+            self.pushView('PADAuthorizationForm');          
           });
           self.isConnecting = false;
-          X.stack.back();
           return;
+        }
+        if ( this.currentViewId === 'PADAuthorizationForm' ) {
+          if ( ! this.validations() ) {
+            return;
+          }
+          this.userDAO.put(this.viewData.user).then(function (result) {
+            self.viewData.user.copyFrom(result);
+          }).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
+          this.bankAccountDAO.put(this.viewData.bankAccount).then(function(){
+            X.stack.back();
+          }).catch(function(a) {
+            self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+            self.fail();
+          });
         }
       }
     }

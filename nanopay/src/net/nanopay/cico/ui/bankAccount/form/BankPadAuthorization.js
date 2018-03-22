@@ -103,6 +103,20 @@ foam.CLASS({
       font-size: 14px;
       margin-top: 10px;
     }
+    ^ .full-width-input-label{
+      width: 474px;
+      height: 17px;
+      position: relative;
+      font-size: 14px;
+      margin: 8px 0px 20px 0px;
+    }
+    ^ .inputLarge-label{
+      height: 17px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      margin-top: 10px;
+      width: 196px
+    }
     ^ .regionContainer {
       position: relative;
       margin-bottom: 20px;
@@ -174,6 +188,17 @@ foam.CLASS({
       background-color: #ffffff;
       color: #a4b3b8;
       border: solid 1px rgba(164, 179, 184, 0.5);
+      padding: 10px;
+    }
+    ^ .header{
+      padding-bottom: 10px;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      background-color: #ffffff;
     }
   `,
 
@@ -303,40 +328,11 @@ foam.CLASS({
         this.viewData.user.address.postalCode = newValue;
       }
     },
-    {
-      class: 'String',
-      name: 'accountNumber',
-      factory: function() {
-        return this.viewData.bankAccount.accountNumber;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.bankAccount.accountNumber = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'transitNumber',
-      factory: function() {
-        return this.viewData.bankAccount.transitNumber;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.bankAccount.transitNumber = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'institutionNumber',
-      factory: function() {
-        return this.viewData.bankAccount.institutionNumber;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.bankAccount.institutionNumber = newValue;
-      }
-    }
   ],
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       this
         .addClass(this.myClass())
         .start('div').addClass('row').addClass('rowTopMarginOverride')
@@ -395,20 +391,25 @@ foam.CLASS({
           .end()
 
           .start('p').add('Banking Info').addClass('headings').end()
+          .start('div').forEach( this.viewData.bankAccount, function(data, index){
+            this
+            .callIf( ! (self.viewData.bankAccount.length === 1), function(){
+              this.start().add('Account '+ (index+1) ).addClass('header').end()
+            }) 
+            .start().addClass('inline')
+              .start().add(self.LabelInstitute).addClass('infoLabel').end()
+              .start().add(data.institutionNumber).addClass('notEditable full-width-input-label').end()
+            .end()
+            .start().addClass('inline')
+              .start().add(self.LabelTransit).addClass('infoLabel').end()
+              .start().add(data.transitNumber).addClass('notEditable inputLarge-label').end()
+            .end()
+            .start().addClass('inline float-right')
+              .start().add(self.LabelAccount).addClass('infoLabel').end()
+              .start().add(data.accountNumber).addClass('notEditable inputLarge-label').end()
+            .end()
+          }).end()
 
-          .start().addClass('inline')
-            .start().add(this.LabelInstitute).addClass('infoLabel').end()
-            .start(this.INSTITUTION_NUMBER, {mode: foam.u2.DisplayMode.RO} ).addClass('notEditable full-width-input').end()
-          .end()
-
-          .start().addClass('inline')
-            .start().add(this.LabelTransit).addClass('infoLabel').end()
-            .start(this.TRANSIT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('notEditable inputLarge').end()
-          .end()
-          .start().addClass('inline float-right')
-            .start().add(this.LabelAccount).addClass('infoLabel').end()
-            .start(this.ACCOUNT_NUMBER, {mode: foam.u2.DisplayMode.RO}).addClass('notEditable inputLarge').end()
-          .end()
           .start('div').addClass('row').addClass('rowTopMarginOverride')
             .start('p')
               .add('Authorization').addClass('headings')

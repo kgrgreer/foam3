@@ -56,6 +56,7 @@ foam.CLASS({
       this.nextLabel = 'Next';
       this.SUPER();
       this.viewData.user = this.user
+      this.viewData.bankAccount = []
     },
     function validations() {
       var accountInfo = this.viewData;
@@ -133,13 +134,13 @@ foam.CLASS({
             return;
           }
 
-          this.viewData.bankAccount = this.BankAccount.create({
+          this.viewData.bankAccount.push( this.BankAccount.create({
             accountName: accountInfo.accountName,
             institutionNumber: accountInfo.bankNumber,
             transitNumber: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber,
             owner: this.user.id
-          });
+          }));
 
           if ( this.viewData.bankAccount.errors_ ) {
             this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
