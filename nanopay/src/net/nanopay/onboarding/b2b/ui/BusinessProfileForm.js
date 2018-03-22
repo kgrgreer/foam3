@@ -420,7 +420,6 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         if ( newValue !== 'Please select' ) {
           this.viewData.user.businessTypeId = newValue;
-          console.log(this.viewData.user.businessTypeId);
           if ( newValue == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
