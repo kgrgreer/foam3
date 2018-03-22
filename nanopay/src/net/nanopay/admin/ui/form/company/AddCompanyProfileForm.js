@@ -97,7 +97,7 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      view: { class: 'foam.nanos.auth.ProfilePictureView' },
+      view: { class: 'foam.nanos.auth.ProfilePictureView', placeholderImage: 'images/business-placeholder.png' },
       factory: function () {
         return this.viewData.profilePicture;
       },

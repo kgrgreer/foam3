@@ -6,12 +6,13 @@ foam.CLASS({
   exports: [
     'viewData',
     'errors',
-    'hardExitLabel',
-    'saveAndExitLabel',
+    'exitLabel',
+    'saveLabel',
     'backLabel',
     'nextLabel',
-    'hardExit',
-    'saveAndExit',
+    'exit',
+    'save',
+    'goTo',
     'goBack',
     'goNext',
     'complete',
@@ -165,7 +166,8 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-goNext:disabled {
-          color: rgba(88, 165, 213, 0.5);
+          color: white;
+          background-color: #c2c9ce;
         }
 
         ^ .net-nanopay-ui-ActionView-goNext:hover:enabled {
@@ -222,13 +224,6 @@ foam.CLASS({
     // If set, will start the wizard at a certain position
     'startAt',
 
-    // If true, will not include the back/next buttons
-    {
-      class: 'Boolean',
-      name: 'isCustomNavigation',
-      value: false
-    },
-
     // If true, displays the exitAndSave Action
     {
       class: 'Boolean',
@@ -239,15 +234,15 @@ foam.CLASS({
     // Label for the back button
     {
       class: 'String',
-      name: 'hardExitLabel',
+      name: 'exitLabel',
       value: 'Exit'
     },
 
     // Label for the next button
     {
       class: 'String',
-      name: 'saveAndExitLabel',
-      value: 'Save & Exit'
+      name: 'saveLabel',
+      value: 'Save'
     },
 
     // Label for the back button
@@ -281,7 +276,9 @@ foam.CLASS({
       this.viewTitles = [];
       this.subStack = this.Stack.create();
 
-      this.views.forEach(function(viewData){
+      this.views.filter(function (view) {
+        return ! view.hidden;
+      }).forEach(function(viewData) {
         self.viewTitles.push(viewData.label);
       });
 
@@ -316,7 +313,9 @@ foam.CLASS({
           .end()
           .start('div').addClass('stackColumn')
             .start('div')
-              .start('p').add(this.position$.map(function(p) { return self.viewTitles[p]; }) || '').addClass('subTitle').end()
+              .start('p').add(this.position$.map(function(p) {
+                return self.views[p].label;
+              }) || '').addClass('subTitle').end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
@@ -325,8 +324,8 @@ foam.CLASS({
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
               .start('div').addClass('exitContainer')
-                .start(this.HARD_EXIT, {label$: this.hardExitLabel$}).addClass('plainAction').end()
-                .start(this.SAVE_AND_EXIT, {label$: this.saveAndExitLabel$}).addClass('plainAction').end()
+                .start(this.EXIT, {label$: this.exitLabel$}).addClass('plainAction').end()
+                .start(this.SAVE, {label$: this.saveLabel$}).addClass('plainAction').end()
               .end()
               .start('div').addClass('backNextContainer')
                 .start(this.GO_BACK, {label$: this.backLabel$}).addClass('plainAction').end()
@@ -335,6 +334,12 @@ foam.CLASS({
             .end()
           .end();
         });
+    },
+
+    function goTo(index) {
+      while(this.position > index && this.position > 0) {
+        this.subStack.back();
+      }
     }
   ],
 
@@ -351,11 +356,11 @@ foam.CLASS({
   actions: [
     /*
       NOTE:
-      If you intend on displaying the goBack and goNext actions in a custom way
-      by using isCustomNavigation, make sure to use:
+      If you intend on displaying any of the actions outside of the bottom bar,
+      make sure to use:
 
       .startContext({data: this.wizard})
-        .tag(//FULL PATH TO YOUR WIZARD//.GO_//BACK or NEXT//, {label$: this.backLabel$})
+        .tag(<FULL PATH TO YOUR WIZARD.ACTION>, {label$: this.backLabel$})
       .endContext()
     */
     {
@@ -384,13 +389,13 @@ foam.CLASS({
       }
     },
     {
-      name: 'hardExit',
+      name: 'exit',
       code: function(X) {
         X.stack.back();
       }
     },
     {
-      name: 'saveAndExit',
+      name: 'save',
       code: function(X) {
         // TODO: Implement a save function or it has be overwritten
         X.stack.back();

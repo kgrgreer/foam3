@@ -23,7 +23,8 @@ foam.CLASS({
     'net.nanopay.model.Currency',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.invoice.ui.style.InvoiceStyles'
+    'net.nanopay.invoice.ui.style.InvoiceStyles',
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   exports: [
@@ -31,7 +32,8 @@ foam.CLASS({
     'privacyUrl',
     'termsUrl',
     'as ctrl',
-    'findAccount'
+    'findAccount',
+    'appConfig'
   ],
 
   css: `
@@ -85,6 +87,9 @@ foam.CLASS({
       of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
+    },
+    {
+      name: 'appConfig'
     }
   ],
 
@@ -93,6 +98,10 @@ foam.CLASS({
       this.AppStyles.create();
       this.InvoiceStyles.create();
       this.ModalStyling.create();
+
+      this.nSpecDAO.find('appConfig').then(function(config){
+        self.appConfig = config;
+      })
 
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
@@ -106,6 +115,49 @@ foam.CLASS({
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user, else show login
+      this.auth.getCurrentUser(null).then(function (result) {
+        self.loginSuccess = !! result;
+        if ( result ) {
+          self.user.copyFrom(result);
+          // check account status and show UI accordingly
+          switch ( self.user.status ) {
+            case self.AccountStatus.PENDING:
+              self.loginSuccess = false;
+              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
+              return;
+
+            case self.AccountStatus.SUBMITTED:
+              self.loginSuccess = false;
+              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+              return;
+
+            case self.AccountStatus.DISABLED:
+              self.loginSuccess = false;
+              self.stack.push({ class: 'net.nanopay.admin.ui.AccountDisabledView' });
+              return;
+
+          }
+
+          // check if user email verified
+          if ( ! self.user.emailVerified ) {
+            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+            return;
+          }
+
+          self.onUserUpdate();
+        }
+      })
+      .catch(function (err) {
+        self.requestLogin().then(function () {
+          self.getCurrentUser();
+        });
+      });
     },
 
     function findAccount() {

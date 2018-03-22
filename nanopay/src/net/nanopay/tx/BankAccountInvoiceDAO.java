@@ -13,13 +13,13 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class BankAccountCashInDAO
+public class BankAccountInvoiceDAO
   extends ProxyDAO
 {
   protected DAO userDAO_;
   protected DAO bankAccountDAO_;
 
-  public BankAccountCashInDAO(X x, DAO delegate) {
+  public BankAccountInvoiceDAO(X x, DAO delegate) {
     setDelegate(delegate);
     setX(x);
 
@@ -38,24 +38,15 @@ public class BankAccountCashInDAO
 
     long        payerId     = txn.getPayerId();
     long        amount      = txn.getAmount();
-    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
 
-    if ( bankAccount != null )
-      addCashIn(x, payerId, amount, bankAccount);
+    if ( txn.getBankAccountId() == null ) {
+      return getDelegate().put_(x, obj);
+    }
+    BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
+    if ( bankAccount == null ) throw new RuntimeException("Bank account doesn't exist");
+
+    txn.setType(TransactionType.CASHIN);
 
     return getDelegate().put_(x, obj);
-  }
-
-  public void addCashIn(X x, long userId, long amount, BankAccount bankAccount) {
-    Transaction transaction = new Transaction.Builder(x)
-        .setPayeeId(userId)
-        .setPayerId(userId)
-        .setAmount(amount)
-        .setType(TransactionType.CASHIN)
-        .setBankAccountId(bankAccount.getId())
-        .build();
-
-    DAO txnDAO = (DAO) x.get("transactionDAO");
-    txnDAO.put_(x, transaction);
   }
 }

@@ -55,6 +55,7 @@ node_modules/
 # xsd generated code
 nanopay/src/net/nanopay/fx/ascendantfx/model/
 nanopay/src/net/nanopay/iso20022/*
+!nanopay/src/net/nanopay/iso20022/Document.js
 !nanopay/src/net/nanopay/iso20022/refinements.js
 
 # sha256 folder
@@ -79,6 +80,7 @@ sha256/
 /currencies
 /dateofbirth
 /devices
+/digs
 /dugs
 /emailTemplates
 /encryptedRegions
@@ -102,9 +104,7 @@ sha256/
 /payees
 /payoutOptions
 /permissions
-/questionnaireQuestionJunction
 /questionnaires
-/questions
 /rollingHashedTxns
 /recurringInvoices
 /regions

@@ -9,11 +9,13 @@ foam.CLASS({
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
-    'showNotification',
     'stack',
+    'user',
     'userDAO',
     'validateEmail',
     'validatePhone',
@@ -183,19 +185,12 @@ foam.CLASS({
       color: #093649;
       outline: none;
     }
-    ^ .buttonDiv {
-      width: 100%;
-      height: 60px;
-      background-color: #edf0f5;
-      position: relative;
-      bottom: 0;
-      z-index: 200;
-    }
     ^ .net-nanopay-ui-ActionView-closeButton {
       border-radius: 2px;
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      margin-top: 30px;
+      margin-left: 60px;
+      margin-top: 10px;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover {
       background: lightgray;
@@ -205,7 +200,8 @@ foam.CLASS({
       border-radius: 2px;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      margin-top: 30px;
+      margin-right: 60px;
+      margin-top: 10px;
     }
     ^ .net-nanopay-ui-ActionView-addButton:hover {
       background: %SECONDARYCOLOR%;
@@ -213,6 +209,15 @@ foam.CLASS({
     }
     ^ .property-confirmEmailAddress {
       margin-bottom: 10px;
+    }
+    ^ .navigationBar {
+      position: fixed;
+      width: 100%;
+      height: 60px;
+      left: 0;
+      bottom: 0;
+      background-color: white;
+      z-index: 100;
     }
   `,
 
@@ -291,7 +296,7 @@ foam.CLASS({
     { name: 'Description', message: 'Fill in the details for the admin user of this business, the user will receive an email with login credentials after.' },
     { name: 'LegalNameLabel', message: 'Legal Name' },
     { name: 'FirstNameLabel', message: 'First Name' },
-    { name: 'MiddleNameLabel', message: 'Middle Initials(optional)' },
+    { name: 'MiddleNameLabel', message: 'Middle Initials (optional)' },
     { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'JobTitleLabel', message: 'Job Title' },
     { name: 'EmailLabel', message: 'Email Address' },
@@ -315,7 +320,7 @@ foam.CLASS({
               .addClass('nameDisplayContainer')
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_LEGAL_NAME, { tabIndex: 1 })
+                .start(this.DISPLAYED_LEGAL_NAME)
                   .addClass('legalNameDisplayField')
                   .on('focus', function() {
                     this.blur();
@@ -331,7 +336,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD, { tabIndex: 2 })
+                    .start(this.FIRST_NAME_FIELD)
                       .addClass('nameFields')
                       .on('click', function() { 
                         self.isEditingName = true;
@@ -342,7 +347,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('middleName', this.isEditingName$, true)
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
-                    .start(this.MIDDLE_NAME_FIELD, { tabIndex: 3 })
+                    .start(this.MIDDLE_NAME_FIELD)
                       .addClass('nameFields')
                       .on('click', function() {
                         self.isEditingName = true;
@@ -353,7 +358,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('lastName', this.isEditingName$, true)
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
-                    .start(this.LAST_NAME_FIELD, { tabIndex: 4 })
+                    .start(this.LAST_NAME_FIELD)
                       .addClass('nameFields')
                       .on('click', function() {
                         self.isEditingName = true;
@@ -437,9 +442,9 @@ foam.CLASS({
               .end()
             .end()
           .end()
-          .start().addClass('buttonDiv')
-            .start(this.CLOSE_BUTTON).end()
-            .start(this.ADD_BUTTON).end()
+          .start('div').addClass('navigationBar')
+            .add(this.CLOSE_BUTTON)
+            .add(this.ADD_BUTTON)
           .end()
         .end();
     },
@@ -496,7 +501,7 @@ foam.CLASS({
       }
 
       var businessPhone = this.Phone.create({
-        number: this.countryCode + this.phoneNumber
+        number: this.countryCode + ' ' + this.phoneNumber
       });
 
       var newBusiness = this.User.create({
@@ -507,7 +512,10 @@ foam.CLASS({
         jobTitle: this.jobTitle,
         email: this.emailAddress,
         type: 'Business',
-        status: 'Pending',
+        group: this.user.group === 's2hAdmin' ?
+          's2hCustomer' : 'business',
+        status: this.AccountStatus.PENDING,
+        compliance: this.ComplianceStatus.REQUESTED,
         phone: businessPhone,
         invited: true,
         invitedBy: this.user.id
