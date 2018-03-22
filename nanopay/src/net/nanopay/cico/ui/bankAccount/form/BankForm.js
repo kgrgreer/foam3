@@ -152,7 +152,7 @@ foam.CLASS({
         if ( this.position == 1 ) {
           // On Pad Verfication
           this.nextLabel = 'I Agree';
-          var accountInfo = this.viewData.bankAccount;
+          var accountInfo = this.viewData.bankAccount[0];
 
           if ( ! this.validations() ) {
             return;
@@ -162,11 +162,11 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: accountInfo.errors_[0][1], type: 'error' }));
             return;
           }
-          this.userDAO.put(this.viewData.user).then(function (result) {
-            self.viewData.user.copyFrom(result);
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          });
+          // this.userDAO.put(this.viewData.user).then(function (result) {
+          //   self.viewData.user.copyFrom(result);
+          // }).catch(function(error) {
+          //   self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          // });
           this.bankAccountDAO.put(accountInfo).then(function(response) {
             self.viewData.bankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
@@ -179,7 +179,7 @@ foam.CLASS({
         }
         if ( this.position == 2 ) {
           // On Verification screen
-          self.add(self.NotificationMessage.create({ message: 'BOOM', type: '' }));
+          debugger;
           if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
             this.newBankAccount = this.selectedAccount;
           }

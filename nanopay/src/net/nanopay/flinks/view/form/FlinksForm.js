@@ -407,17 +407,19 @@ foam.CLASS({
           if ( ! this.validations() ) {
             return;
           }
-          this.userDAO.put(this.viewData.user).then(function (result) {
-            self.viewData.user.copyFrom(result);
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          });
-          this.bankAccountDAO.put(this.viewData.bankAccount).then(function(){
-            X.stack.back();
-          }).catch(function(a) {
-            self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
-            self.fail();
-          });
+          // this.userDAO.put(this.viewData.user).then(function (result) {
+          //   self.viewData.user.copyFrom(result);
+          // }).catch(function(error) {
+          //   self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          // });
+          this.viewData.bankAccount.forEach(function(bank){
+            self.bankAccountDAO.put(bank).then(function(){
+              X.stack.back();
+            }).catch(function(a) {
+              self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+              self.fail();
+            });
+          })  
         }
       }
     }
