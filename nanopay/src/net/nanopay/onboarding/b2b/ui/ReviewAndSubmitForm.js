@@ -129,7 +129,9 @@ foam.CLASS({
           .start('p').add(this.BusiRegAuthLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessRegistrationAuthority).end()
           .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
-          .start('p').add(this.viewData.user.businessRegistrationDate.toISOString().substring(0,10)).end()
+          .start('p').add(this.viewData.user.businessRegistrationDate$.map(function (date) {
+            return ( date ) ? date.toISOString().substring(0, 10) : '';
+          })).end()
           .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
           .start('p').add(
             this.viewData.user.businessAddress.streetNumber + ' '
