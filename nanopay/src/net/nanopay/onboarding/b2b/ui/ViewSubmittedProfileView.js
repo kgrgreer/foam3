@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
-  name: 'ViewSubmittedProfile',
+  name: 'ViewSubmittedProfileView',
   extends: 'foam.u2.Controller',
 
   documentation: 'Allows user to view their previously submitted registration profile.',
@@ -67,7 +67,11 @@ foam.CLASS({
   ],
 
   properties: [
-    'businessTypeName'
+    'businessTypeName',
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'files'
+    }
   ],
 
   methods: [
@@ -94,6 +98,17 @@ foam.CLASS({
               .start().add(this.CloseLabel).addClass('closeLabel').end()
               .start(this.CLOSE_DOCUMENTS).addClass('closeIcon').end()
             .end()
+            .add(this.slot(function (data) {
+              var e = this.E();
+              for ( var i = 0 ; i < data.length ; i++ ) {
+                e.tag({
+                  class: 'net.nanopay.invoice.ui.InvoiceFileView',
+                  data: data[i],
+                  fileNumber: i + 1,
+                });
+              }
+              return e;
+            }, this.files$))
 
             // Business Profile
             .start().addClass('wizardBoxTitleContainer')
@@ -178,7 +193,7 @@ foam.CLASS({
                 .start('p').add(question.question).addClass('wizardBoldLabel').end()
                 .start('p').add(question.response).end()
             }).end()
-
+ 
           .end()
         .end();
     }
