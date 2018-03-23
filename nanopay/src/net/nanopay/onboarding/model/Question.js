@@ -6,10 +6,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
-      name: 'id'
-    },
-    {
       class: 'String',
       name: 'question',
       description: 'Describes the question'
