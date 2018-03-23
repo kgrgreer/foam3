@@ -11,7 +11,8 @@ foam.CLASS({
 
   imports: [
     'user',
-    'stack'
+    'stack',
+    'ctrl'
   ],
 
   css: `
@@ -60,7 +61,7 @@ foam.CLASS({
     {
       name: 'viewProfile',
       code: function (X) {
-        this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.ViewSubmittedProfileView'});
+        this.ctrl.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.ViewSubmittedProfileView'});
       }
     }
   ]

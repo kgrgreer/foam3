@@ -14,6 +14,7 @@ foam.CLASS({
   css: `
     ^ .container {
       width: 540px;
+      margin: 0 auto;
     }
     ^ .header {
       font-size: 30px;
@@ -48,8 +49,10 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-backToHome {
       color: white;
       background: %SECONDARYCOLOR%;
+      margin-top: 20px;
     }
     ^ .principalOwnerLabel {
+      margin: 0 auto;
       margin-top: 20px;
       font-size: 14px;
       font-weight: 300;
@@ -57,9 +60,12 @@ foam.CLASS({
       font-stretch: normal;
       letter-spacing: 0.2px;
       color: #093649;
+      width: 540px;
     }
     ^ .principalOwnerContainer {
       padding-left: 25px;
+      width: 540px;
+      margin: 0 auto;
     }
   `,
 
@@ -108,29 +114,13 @@ foam.CLASS({
             .start('p').add(this.Title).addClass('header').end()
             .start('p').add(this.Description).addClass('description').end()
 
-            // Previously submitted additional documents
             .start().addClass('wizardBoxTitleContainer')
               .start().add(this.BoxTitle1).addClass('wizardBoxTitleLabel').end()
-              .start().add(this.CloseLabel).addClass('closeLabel').end()
-              .start(this.CLOSE_DOCUMENTS).addClass('closeIcon').end()
             .end()
-            .add(this.slot(function (data) {
-              var e = this.E();
-              for ( var i = 0 ; i < data.length ; i++ ) {
-                e.tag({
-                  class: 'net.nanopay.invoice.ui.InvoiceFileView',
-                  data: data[i],
-                  fileNumber: i + 1,
-                });
-              }
-              return e;
-            }, this.files$))
 
-            // Business Profile
+                // Business Profile
             .start().addClass('wizardBoxTitleContainer')
               .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
-              .start().add(this.CloseLabel).addClass('closeLabel').end()
-              .start(this.CLOSE_BUSINESS_PROFILE).addClass('closeIcon').end()
             .end()
             .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.user.businessName).end()
@@ -156,7 +146,7 @@ foam.CLASS({
               + this.user.businessAddress.city + ', '
               + this.user.businessAddress.postalCode
             ).addClass('addressDiv').end()
-            .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()    
+            .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
               data: this.user.businessProfilePicture,
@@ -167,10 +157,8 @@ foam.CLASS({
             // Principal Owner's Profile
             .start().addClass('wizardBoxTitleContainer')
               .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-              .start().add(this.CloseLabel).addClass('closeLabel').end()
-              .start(this.CLOSE_PRINCIPAL_OWNER).addClass('closeIcon').end()
             .end()
-            .start('div')
+            .start()
               .forEach(this.user.principalOwners, function (data, index) {
                 self
                 .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
@@ -183,7 +171,7 @@ foam.CLASS({
                   .start('p').add(data.phone.number).end()
                   .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
                   .start('p').add(data.principleType).end()
-                  .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()          
+                  .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
                   .start('p').add(data.birthday.toISOString().substring(0,10)).end()
                   .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                   .start('p').add(
@@ -194,23 +182,27 @@ foam.CLASS({
                     + data.address.postalCode
                   ).addClass('addressDiv').end()
                 .end()
-              }).end()
-              .end()
+              })
+            .end()
+            .end()
             .end()
 
-            //Questionnaire
-            .start().addClass('wizardBoxTitleContainer')
-              .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
-              .start().add(this.CloseLabel).addClass('closeLabel').end()
-              .start(this.CLOSE_QUESTIONNAIRE).addClass('closeIcon').end()
+            // Questionaire
+            .start().addClass('container')
+              .start().addClass('wizardBoxTitleContainer')
+                .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
+              .end()
+              .start()
+                .forEach(this.user.questionnaire.questions, function (question) {
+                  self
+                  .start().addClass('container')
+                    .start('p').add(question.question).addClass('wizardBoldLabel').end()
+                    .start('p').add(question.response).end()
+                  .end()
+                })
+              .end()
             .end()
-            .start('div')
-            .forEach(this.user.questionnaire.questions, function (question) {
-              self
-                .start('p').add(question.question).addClass('wizardBoldLabel').end()
-                .start('p').add(question.response).end()
-            }).end()
- 
+            
           .end()
         .end();
     }
@@ -222,34 +214,6 @@ foam.CLASS({
       label: '<< Back to Home',
       code: function(X) {
         this.stack.back();
-      }
-    },
-    {
-      name: 'closeDocuments',
-      icon: 'images/ic-void.svg',
-      code: function(X) {
-        // close additional documents
-      }
-    },
-    {
-      name: 'closeBusinessProfile',
-      icon: 'images/ic-void.svg',
-      code: function(X) {
-        // close business profile
-      }
-    },
-    {
-      name: 'closePrincipalOwner',
-      icon: 'images/ic-void.svg',
-      code: function(X) {
-        // close principal owner's profile
-      }
-    },
-    {
-      name: 'closeQuestionnaire',
-      icon: 'images/ic-void.svg',
-      code: function(X) {
-        // close questionnaire
       }
     }
   ]
