@@ -67,6 +67,14 @@ foam.CLASS({
       width: 540px;
       margin: 0 auto;
     }
+    ^ .net-nanopay-invoice-ui-InvoiceFileView {
+      min-width: 520px;
+      height: 30px;
+      padding-top: 10px;
+    }
+    ^ .net-nanopay-ui-ActionView-remove {
+       display: none;
+    }
   `,
 
   messages: [
@@ -117,6 +125,23 @@ foam.CLASS({
             .start().addClass('wizardBoxTitleContainer')
               .start().add(this.BoxTitle1).addClass('wizardBoxTitleLabel').end()
             .end()
+
+            .add(this.slot(function (documents) {
+              if ( documents.length <= 0 ) return;
+    
+              var e = this.E()
+                .start('span')
+                .end();
+    
+              for ( var i = 0 ; i < documents.length ; i++ ) {
+                e.tag({
+                  class: 'net.nanopay.invoice.ui.InvoiceFileView',
+                  data: documents[i],
+                  fileNumber: i + 1,
+                });
+              }
+              return e;
+            }, this.user.additionalDocuments$))
 
                 // Business Profile
             .start().addClass('wizardBoxTitleContainer')
