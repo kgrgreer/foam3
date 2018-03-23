@@ -114,26 +114,26 @@ if ( length > ` + this.totalDigits + ` ) {
       m.properties.push({
         name: 'assertValue',
         value: function (value, prop) {
-          if ( prop.minLength || prop.minLength === 0 )
-            foam.assert(value.length >= prop.minLength, prop.name);
-          if ( prop.maxLength || prop.maxLength === 0 )
-            foam.assert(value.length <= prop.maxLength, prop.name);
-          if ( prop.pattern )
-            foam.assert(new RegExp(prop.pattern, 'g').test(value), prop.name);
+          if ( ( prop.minLength || prop.minLength === 0 ) && value.length < prop.minLength )
+            throw new Error(prop.name);
+          if ( ( prop.maxLength || prop.maxLength === 0 ) && value.length > prop.maxLength )
+            throw new Error(prop.name);
+          if ( prop.pattern && ! new RegExp(prop.pattern, 'g').test(value) )
+            throw new Error(prop.name);
         }
       });
     } else if ( m.extends === 'foam.core.Float' ) {
       m.properties.push({
         name: 'assertValue',
         value: function (value, prop) {
-          if ( prop.minInclusive || prop.minInclusive === 0 )
-            foam.assert(value >= prop.minInclusive, prop.name);
-          if ( prop.minExclusive || prop.minExclusive === 0 )
-            foam.assert(value > prop.minExclusive, prop.name);
-          if ( prop.maxInclusive || prop.maxInclusive === 0 )
-            foam.assert(value <= prop.maxInclusive, prop.name);
-          if ( prop.maxExclusive || prop.maxExclusive === 0 )
-            foam.assert(value < prop.maxExclusive, prop.name);
+          if ( ( prop.minInclusive || prop.minInclusive === 0 ) && value < prop.minInclusive )
+            throw new Error(prop.name);
+          if ( ( prop.minExclusive || prop.minExclusive === 0 ) && value <= prop.minExclusive )
+            throw new Error(prop.name);
+          if ( ( prop.maxInclusive || prop.maxInclusive === 0 ) && value > prop.maxInclusive )
+            throw new Error(prop.name);
+          if ( ( prop.maxExclusive || prop.maxExclusive === 0 ) && value >= prop.maxExclusive )
+            throw new Error(prop.name);
 
           if ( prop.totalDigits || prop.fractionDigits ) {
             var str = value + '';
@@ -142,12 +142,14 @@ if ( length > ` + this.totalDigits + ` ) {
 
             if ( prop.totalDigits ) {
               if ( hasDecimal ) length -= 1;
-              foam.assert(length <= prop.totalDigits, prop.name);
+              if ( length > prop.totalDigits )
+                throw new Error(prop.name);
             }
 
             if ( prop.fractionDigits && hasDecimal ) {
               var decimals = str.split('.')[1];
-              foam.assert(decimals.length <= prop.fractionDigits, prop.name);
+              if ( decimals.length > prop.fractionDigits )
+                throw new Error(prop.name);
             }
 
           }

@@ -133,15 +133,27 @@ foam.CLASS({
               return;
 
             case self.AccountStatus.SUBMITTED:
+            case self.AccountStatus.DISABLED:
               self.loginSuccess = false;
               self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
               return;
 
-            case self.AccountStatus.DISABLED:
+            // show onboarding screen if user hasn't clicked "Go To Portal" button
+            case self.AccountStatus.ACTIVE:
+              if ( self.user.onboarded ) break;
               self.loginSuccess = false;
-              self.stack.push({ class: 'net.nanopay.admin.ui.AccountDisabledView' });
+              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
               return;
 
+              if ( ! self.user.onboarded ) {
+                self.loginSuccess = false;
+              }
+              break;
+
+            case self.AccountStatus.REVOKED:
+              self.loginSuccess = false;
+              self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+              return;
           }
 
           // check if user email verified

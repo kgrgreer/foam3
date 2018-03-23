@@ -238,7 +238,7 @@ foam.CLASS({
         return this.viewData.user.firstName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.firstName = newValue;
+        this.viewData.user.firstName = newValue;
       }
     },
     'firstNameElement',
@@ -249,7 +249,7 @@ foam.CLASS({
         return this.viewData.user.middleName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.middleName = newValue;
+        this.viewData.user.middleName = newValue;
       }
     },
     {
@@ -259,7 +259,7 @@ foam.CLASS({
         return this.viewData.user.lastName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.lastName = newValue;
+        this.viewData.user.lastName = newValue;
       }
     },
     {

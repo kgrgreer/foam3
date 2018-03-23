@@ -140,7 +140,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
+      
       this.addClass(this.myClass())
         .start('div').addClass('guideColumn')
           .start().forEach(this.titles, function(title, index) {
@@ -164,7 +164,7 @@ foam.CLASS({
           .start().forEach(this.titles, function(title, index) {
             this.start('p')
             .addClass('positionTitle')
-            .addClass(self.position$.map(function(p) { return index > p ? 'inactive' : ''; }))
+            .addClass(self.position$.map(function(p) { return index > p && ! self.complete ? 'inactive' : ''; }))
               .add(title)
             .end();
           }).end()
