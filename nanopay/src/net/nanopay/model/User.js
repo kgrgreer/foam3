@@ -1,6 +1,10 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
+  requires: [
+    'net.nanopay.onboarding.model.Questionnaire'
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -83,7 +87,13 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
-      documentation: 'Additional documents for compliance verification'
+      documentation: 'Additional documents for compliance verification',
+      view: { class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView' }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.auth.User',
+      name: 'principalOwners'
     },
     {
       class: 'String',
@@ -99,7 +109,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'principleType',
-      label: 'Principle Type'
+      label: 'Principal Type'
     },
     {
       class: 'Boolean',
@@ -110,6 +120,44 @@ foam.CLASS({
       class: 'Boolean',
       name: 'welcomeEmailSent',
       value: false,
+    },
+
+    // NOTE: The following is subject to change and is not finalized.
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'businessPhone',
+      factory: function () { return this.Phone.create(); },
+      view: { class: 'foam.nanos.auth.PhoneDetailView' }
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationNumber'
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationAuthority'
+    },
+    {
+      class: 'Date',
+      name: 'businessRegistrationDate'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'businessAddress',
+      factory: function () { return this.Address.create(); },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'businessProfilePicture',
+      view: { class: 'foam.nanos.auth.ProfilePictureView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'onboarded',
+      value: false
     }
   ]
 });

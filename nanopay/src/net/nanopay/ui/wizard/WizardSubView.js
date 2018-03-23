@@ -15,6 +15,7 @@ foam.CLASS({
     'nextLabel',
     'exit',
     'save',
+    'goTo',
     'goBack',
     'goNext',
     'complete',

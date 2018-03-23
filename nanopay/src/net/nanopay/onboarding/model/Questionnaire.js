@@ -13,6 +13,11 @@ foam.CLASS({
       class: 'String',
       name: 'description',
       documentation: 'Description of the questionnaire'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.onboarding.model.Question',
+      name: 'questions'
     }
   ]
 });

@@ -1,3 +1,0 @@
-p({"class":"net.nanopay.onboarding.model.Question","id":1,"question":"How many invoices does your business create per month?"})
-p({"class":"net.nanopay.onboarding.model.Question","id":2,"question":"How many invoices does your business receive per month?"})
-p({"class":"net.nanopay.onboarding.model.Question","id":3,"question":"What is the average invoice amount per month (in CAD)?"})
