@@ -38,7 +38,7 @@ foam.CLASS({
     {
       name: 'goToPortal',
       code: function (X) {
-        X.user.onboardingComplete = true;
+        X.user.onboarded = true;
 
         X.userDAO.put(X.user)
         .then(function (result) {

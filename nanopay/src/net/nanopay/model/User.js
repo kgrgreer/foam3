@@ -156,7 +156,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'onboardingComplete',
+      name: 'onboarded',
       value: false
     }
   ]
