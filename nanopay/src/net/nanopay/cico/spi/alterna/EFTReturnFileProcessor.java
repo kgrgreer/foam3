@@ -19,7 +19,7 @@ public class EFTReturnFileProcessor {
   public void process(X x) {
 
     EFTReturnFileFetcher eftReturnFileFetcher = new EFTReturnFileFetcher();
-    List<FObject> list = eftReturnFileFetcher.downloadFile();
+    List<FObject> list = eftReturnFileFetcher.downloadFiles();
 
     DAO transactionDao = (DAO)x.get("localTransactionDAO");
 
@@ -38,7 +38,7 @@ public class EFTReturnFileProcessor {
 
       //Transaction tran = (Transaction) transactionDao.find(EQ(Transaction.ID, item.getTransactionID()));
 
-      // if find the corresponding transaction
+      // if corresponding transaction is found
       if ( tran != null ) {
         tran.setReturnCode(item.getReturnCode());
         tran.setReturnDate(item.getReturnDate());
@@ -61,6 +61,8 @@ public class EFTReturnFileProcessor {
         transactionDao.put(tran);
       }
     }
+
+    eftReturnFileFetcher.moveProcessedFiles();
   }
 
   public void sendEmail(X x, String subject, String content) {

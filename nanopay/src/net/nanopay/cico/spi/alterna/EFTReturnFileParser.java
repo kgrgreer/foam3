@@ -6,11 +6,11 @@ import foam.core.PropertyInfo;
 import foam.lib.parse.*;
 import net.nanopay.cico.model.EFTReturnRecord;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * This class parse the EFT response file
@@ -20,8 +20,10 @@ public class EFTReturnFileParser
 {
   public List<FObject> parse(InputStream is) {
 
+    List<FObject> ret = new ArrayList<>();
+    BufferedReader reader = null;
+
     try {
-      List<FObject> ret = new ArrayList<>();
       ClassInfo classInfo = EFTReturnRecord.getOwnClassInfo();
       List<Object> propertyInfos = new ArrayList<>();
       propertyInfos.add(classInfo.getAxiomByName("transactionID"));
@@ -36,31 +38,32 @@ public class EFTReturnFileParser
       propertyInfos.add(classInfo.getAxiomByName("bankNumber"));
       propertyInfos.add(classInfo.getAxiomByName("transitNumber"));
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+      reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
       String line;
       Object[] values;
 
-      while ((line = reader.readLine()) != null) {
+      while ( (line = reader.readLine()) != null ) {
         StringPStream ps = new StringPStream();
         ps.setString(line);
 
         FObject obj = (FObject) classInfo.getObjClass().newInstance();
         Parser parser = new Repeat(new EFTStringParser(), new Literal("|"));
         PStream ps1 = ps.apply(parser, null);
-        if (ps1 == null) throw new RuntimeException("format error");
+        if ( ps1 == null ) throw new RuntimeException("format error");
 
         values = (Object[]) ps1.value();
-        for (int i = 0; i < propertyInfos.size(); i++) {
+        for ( int i = 0; i < propertyInfos.size(); i++ ) {
           ((PropertyInfo)propertyInfos.get(i)).set(obj, ((PropertyInfo)propertyInfos.get(i)).fromString((String) values[i]));
         }
         ret.add(obj);
       }
-
-      reader.close();
-      return ret;
-    } catch ( Throwable t ) {
-      throw new RuntimeException(t);
+    } catch ( IllegalAccessException | IOException | InstantiationException e ) {
+      e.printStackTrace();
+    } finally {
+      IOUtils.closeQuietly(reader);
     }
+
+    return ret;
   }
 }
