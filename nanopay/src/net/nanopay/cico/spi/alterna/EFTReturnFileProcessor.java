@@ -2,9 +2,11 @@ package net.nanopay.cico.spi.alterna;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
 import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
@@ -14,11 +16,12 @@ import java.util.List;
 
 import static foam.mlang.MLang.*;
 
-public class EFTReturnFileProcessor {
+public class EFTReturnFileProcessor extends ContextAwareSupport {
 
-  public void process(X x) {
-
-    EFTReturnFileFetcher eftReturnFileFetcher = new EFTReturnFileFetcher();
+  public void process() {
+    X x = getX();
+    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+    EFTReturnFileFetcher eftReturnFileFetcher = new EFTReturnFileFetcher(credentials);
     List<FObject> list = eftReturnFileFetcher.downloadFiles();
 
     DAO transactionDao = (DAO)x.get("localTransactionDAO");

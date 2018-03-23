@@ -14,8 +14,11 @@ import java.util.regex.Pattern;
 
 public class EFTReturnFileFetcher{
 
-  private EFTReturnFileCredentials credentials = new EFTReturnFileCredentials.Builder(null)
-    .setUser("eftcadtest2").setPassword("1a2$3d4f").setHost("ftp.eftcanada.com").setPort(22).build();
+  private EFTReturnFileCredentials credentials;
+
+  public EFTReturnFileFetcher(EFTReturnFileCredentials credentials) {
+    this.credentials = credentials;
+  }
 
   private List<String> fileNames = new ArrayList<>();
 
@@ -57,6 +60,7 @@ public class EFTReturnFileFetcher{
       }
 
       for ( int i = 0; i < fileNames.size(); i++ ) {
+        System.out.println(fileNames.get(i));
         InputStream is = channelSftp.get(fileNames.get(i));
         ret.addAll(eftReturnFileParser.parse(is));
       }
