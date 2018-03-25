@@ -36,7 +36,7 @@ public class UserRegistrationDAO
       throw new RuntimeException("Email required");
     }
 
-    if ( this.inX(x).find(EQ(User.EMAIL, user.getEmail())) != null ) {
+    if ( getDelegate().inX(x).find(EQ(User.EMAIL, user.getEmail())) != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
 
