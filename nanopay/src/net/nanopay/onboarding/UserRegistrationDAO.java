@@ -2,6 +2,7 @@ package net.nanopay.onboarding;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
@@ -17,7 +18,13 @@ public class UserRegistrationDAO
   protected String spid_;
   protected String group_;
 
-  public UserRegistrationDAO(String spid, String group) {
+  public UserRegistrationDAO(X x, String group, DAO delegate) {
+    this(x, "nanopay", group, delegate);
+  }
+
+  public UserRegistrationDAO(X x, String spid, String group, DAO delegate) {
+    setX(x);
+    setDelegate(delegate);
     spid_ = spid;
     group_ = group;
   }
