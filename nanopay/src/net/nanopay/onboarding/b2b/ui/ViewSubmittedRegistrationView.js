@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'ViewSubmittedRegistrationView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'View Submitted Registration View',
 
@@ -10,7 +10,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'stack',
+    'ctrl'
   ],
 
   css: `
@@ -59,7 +61,7 @@ foam.CLASS({
     {
       name: 'viewProfile',
       code: function (X) {
-
+        this.ctrl.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.ViewSubmittedProfileView'});
       }
     }
   ]
