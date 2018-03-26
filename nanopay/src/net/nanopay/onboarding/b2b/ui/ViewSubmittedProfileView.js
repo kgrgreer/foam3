@@ -114,6 +114,8 @@ foam.CLASS({
         self.businessTypeName = a.name;
       });
 
+      console.log(this.user.additionalDocuments.length);
+
       this
         .addClass(this.myClass())
         .start()
@@ -122,28 +124,30 @@ foam.CLASS({
             .start('p').add(this.Title).addClass('header').end()
             .start('p').add(this.Description).addClass('description').end()
 
-            .start().addClass('wizardBoxTitleContainer')
-              .start().add(this.BoxTitle1).addClass('wizardBoxTitleLabel').end()
-            .end()
+            // Additional Documents
+            .callIf(this.user.additionalDocuments.length > 0, function () {
+              this.start().addClass('wizardBoxTitleContainer')
+              .start().add(self.BoxTitle1).addClass('wizardBoxTitleLabel').end()
+              .end()
+              .add(this.slot(function (documents) {
+                if ( documents.length <= 0 ) return;
+      
+                var e = this.E()
+                  .start('span')
+                  .end();
+      
+                for ( var i = 0 ; i < documents.length ; i++ ) {
+                  e.tag({
+                    class: 'net.nanopay.invoice.ui.InvoiceFileView',
+                    data: documents[i],
+                    fileNumber: i + 1,
+                  });
+                }
+                return e;
+              }, self.user.additionalDocuments$))
+            })
 
-            .add(this.slot(function (documents) {
-              if ( documents.length <= 0 ) return;
-    
-              var e = this.E()
-                .start('span')
-                .end();
-    
-              for ( var i = 0 ; i < documents.length ; i++ ) {
-                e.tag({
-                  class: 'net.nanopay.invoice.ui.InvoiceFileView',
-                  data: documents[i],
-                  fileNumber: i + 1,
-                });
-              }
-              return e;
-            }, this.user.additionalDocuments$))
-
-                // Business Profile
+            // Business Profile
             .start().addClass('wizardBoxTitleContainer')
               .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
             .end()
@@ -174,7 +178,7 @@ foam.CLASS({
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.user.businessProfilePicture,
+              data: this.user.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png',
               uploadHidden: true
             })
