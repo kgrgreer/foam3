@@ -192,6 +192,7 @@ foam.CLASS({
         FlinksAccountForm:            { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
         FlinksFailForm:               { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
         PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization' }},
+        Complete:                     { step: 6, label: 'Done', view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' }},
 
       }
       this.SUPER();
@@ -407,19 +408,27 @@ foam.CLASS({
           if ( ! this.validations() ) {
             return;
           }
-          // this.userDAO.put(this.viewData.user).then(function (result) {
-          //   self.viewData.user.copyFrom(result);
-          // }).catch(function(error) {
-          //   self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          // });
+          this.padCaptureDAO.put(self.BankAccount.create({
+            firstName: this.viewData.user.firstName,
+            lastName: this.viewData.user.lastName,
+            userId: this.viewData.user.id,
+            address: this.viewData.user.address,
+            termNC: 'TO BE ADDED'
+          })).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
           this.viewData.bankAccount.forEach(function(bank){
             self.bankAccountDAO.put(bank).then(function(){
-              X.stack.back();
+              self.pushView('Complete');   
+              return;
             }).catch(function(a) {
               self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
               self.fail();
             });
           })  
+        }
+        if ( this.currentViewId === 'Complete' ) {  
+          return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }
     }

@@ -8,6 +8,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
+  { name: 'net/nanopay/model/PadCapture' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },

@@ -175,8 +175,12 @@ foam.CLASS({
       padding: 10px 0px;
       width: 497px;
     }
-    ^ .infoContainer{
-      height: 560px;
+    ^ .infoContainer-wizard{
+      width: 496px;
+      background: white;
+      border-radius: 2px;
+      overflow-y: scroll;
+      padding: 20px;
     }
     ^ .notEditable{
       font-size: 12px;
@@ -203,8 +207,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Step2',                message: 'Step 2: Pre-authorized debit confirmation' },
-    { name: 'Step4',                message: 'Step 4: Pre-authorized debit confirmation' },
+    { name: 'Step1',                 message: 'Step ' },
+    { name: 'Step2',                 message: ' : Pre-authorized debit confirmation' },
     { name: 'LabelFirstName',       message: 'First Name' },
     { name: 'LabelLastName',        message: 'Last Name' },
     { name: 'LabelCountry',         message: 'Country' },
@@ -213,10 +217,10 @@ foam.CLASS({
     { name: 'LabelSuite',           message: 'Suite' },
     { name: 'LabelCity',            message: 'City' },
     { name: 'LabelRegion',          message: 'Region' },
-    { name: 'LabelPostal',          message: 'PostalCode' },
-    { name: 'LabelAccount',         message: 'Account No. *' },
-    { name: 'LabelInstitute',       message: 'Institution No. *' },
-    { name: 'LabelTransit',         message: 'Transit No. *' },    
+    { name: 'LabelPostal',          message: 'Postal Code' },
+    { name: 'LabelAccount',         message: 'Account Number' },
+    { name: 'LabelInstitute',       message: 'Institution Number' },
+    { name: 'LabelTransit',         message: 'Transit Number' },    
     { name: 'TC1',                  message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
     { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit www.payments.ca.'},
     { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting www.payments.ca.'}
@@ -336,9 +340,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').addClass('stepTopMargin').add( this.wizard.position === 1 ? this.Step2 : this.Step4).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step1 + (this.wizard.position+1) + this.Step2).end()
         .end()
-        .start().addClass('infoContainer')
+        .start().addClass('infoContainer-wizard')
           .start('p').add('Legal Name').addClass('headings').end()
 
           .start().addClass('inline')

@@ -9,11 +9,14 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.PadCapture',
+
   ],
 
   imports: [
     'bankAccountDAO',
+    'padCaptureDAO',
     'bankAccountVerification',
     'selectedAccount',
     'stack',
@@ -162,11 +165,15 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: accountInfo.errors_[0][1], type: 'error' }));
             return;
           }
-          // this.userDAO.put(this.viewData.user).then(function (result) {
-          //   self.viewData.user.copyFrom(result);
-          // }).catch(function(error) {
-          //   self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          // });
+          this.padCaptureDAO.put(self.PadCapture.create({
+                  firstName: this.viewData.user.firstName,
+                  lastName: this.viewData.user.lastName,
+                  userId: this.viewData.user.id,
+                  address: this.viewData.user.address,
+                  termNC: 'TO BE ADDED'
+          })).catch(function(error) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          });
           this.bankAccountDAO.put(accountInfo).then(function(response) {
             self.viewData.bankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
