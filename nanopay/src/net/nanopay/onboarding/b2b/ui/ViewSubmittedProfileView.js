@@ -114,8 +114,6 @@ foam.CLASS({
         self.businessTypeName = a.name;
       });
 
-      console.log(this.user.additionalDocuments.length);
-
       this
         .addClass(this.myClass())
         .start()
