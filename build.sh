@@ -93,10 +93,11 @@ function deploy_war {
 function deploy_journals {
     # prepare journals
     cd "$NANOPAY_HOME"
+    mkdir -p "$JOURNAL_OUT"
 
     ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
-
     JOURNALS="$JOURNAL_OUT/journals"
+    touch "$JOURNALS"
     if [ ! -f $JOURNALS ]; then
         echo "ERROR: missing $JOURNALS file."
         exit 1
