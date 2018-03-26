@@ -96,6 +96,7 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
       this.businessTypeDAO.find(this.viewData.user.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
       });
@@ -149,6 +150,7 @@ foam.CLASS({
             placeholderImage: 'images/business-placeholder.png',
             uploadHidden: true
           })
+
           // Principal Owner's Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
@@ -180,7 +182,7 @@ foam.CLASS({
               .end()
             }).end()
           .end()
-            
+
           // Questionaire
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()

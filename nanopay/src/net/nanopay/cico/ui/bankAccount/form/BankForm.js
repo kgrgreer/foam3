@@ -11,7 +11,6 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.PadCapture',
-
   ],
 
   imports: [
