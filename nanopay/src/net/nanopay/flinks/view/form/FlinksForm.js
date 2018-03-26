@@ -20,6 +20,7 @@ foam.CLASS({
     'userDAO',
     'email',
     'bankAccountDAO',
+    'padCaptureDAO',
     'validateAccountNumber',
     'validateAddress',
     'validateCity',
@@ -34,6 +35,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
+    'net.nanopay.model.PadCapture',
     'foam.nanos.notification.email.EmailMessage',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -192,7 +194,7 @@ foam.CLASS({
         FlinksAccountForm:            { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
         FlinksFailForm:               { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
         PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization' }},
-        Complete:                     { step: 6, label: 'Done', view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' }},
+        Complete:                     { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' }},
 
       }
       this.SUPER();
@@ -408,16 +410,19 @@ foam.CLASS({
           if ( ! this.validations() ) {
             return;
           }
-          this.padCaptureDAO.put(self.BankAccount.create({
-            firstName: this.viewData.user.firstName,
-            lastName: this.viewData.user.lastName,
-            userId: this.viewData.user.id,
-            address: this.viewData.user.address,
-            termNC: 'TO BE ADDED'
-          })).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          });
           this.viewData.bankAccount.forEach(function(bank){
+            self.padCaptureDAO.put(self.PadCapture.create({
+              firstName: self.viewData.user.firstName,
+              lastName: self.viewData.user.lastName,
+              userId: self.viewData.user.id,
+              address: self.viewData.user.address,
+              termNC: 'TO BE ADDED',
+              institutionNumber: bank.institutionNumber,
+              transitNumber: bank.transitNumber,
+              accountNumber: bank.accountNumber         
+            })).catch(function(error) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            });
             self.bankAccountDAO.put(bank).then(function(){
               self.pushView('Complete');   
               return;

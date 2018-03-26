@@ -166,11 +166,14 @@ foam.CLASS({
             return;
           }
           this.padCaptureDAO.put(self.PadCapture.create({
-                  firstName: this.viewData.user.firstName,
-                  lastName: this.viewData.user.lastName,
-                  userId: this.viewData.user.id,
-                  address: this.viewData.user.address,
-                  termNC: 'TO BE ADDED'
+            firstName: this.viewData.user.firstName,
+            lastName: this.viewData.user.lastName,
+            userId: this.viewData.user.id,
+            address: this.viewData.user.address,
+            termNC: 'TO BE ADDED',
+            institutionNumber: this.viewData.bankAccount[0].institutionNumber,
+            transitNumber: this.viewData.bankAccount[0].transitNumber,
+            accountNumber: this.viewData.bankAccount[0].accountNumber         
           })).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
@@ -186,7 +189,6 @@ foam.CLASS({
         }
         if ( this.position == 2 ) {
           // On Verification screen
-          debugger;
           if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
             this.newBankAccount = this.selectedAccount;
           }

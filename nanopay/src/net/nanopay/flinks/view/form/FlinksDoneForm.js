@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   messages: [
-    { name: 'Step', message: 'Step5: You\'re all set! Connection is successful.'}
+    { name: 'Step', message: 'Step 6: You\'re all set! Connection is successful.'}
   ],
   
   methods: [
