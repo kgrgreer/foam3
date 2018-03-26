@@ -43,6 +43,7 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/ProfileSubmittedForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ReviewAndSubmitForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/UploadAdditionalDocumentsView', flags: ['web'] },
+  { name: 'net/nanopay/onboarding/b2b/ui/ViewSubmittedProfileView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/ViewSubmittedRegistrationView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/AdditionalDocumentsUploadView', flags: ['web'] },
   { name: 'net/nanopay/onboarding/model/Question' },

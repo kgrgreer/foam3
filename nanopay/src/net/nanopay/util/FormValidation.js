@@ -28,7 +28,7 @@ foam.CLASS({
       return re.test(String(number));
     },
     function validateStreetNumber(streetNumber) {
-      var re = /^[0-9]{1,16}$/;
+      var re = /^[0-9 ]{1,16}$/;
       return re.test(String(streetNumber));
     },
     function validateAddress(address) {
@@ -56,11 +56,11 @@ foam.CLASS({
       return re.test(String(issuingAuthority));
     },
     function validateAccountNumber(accountNumber) {
-      var re = /^[0-9]{1,30}$/;
+      var re = /^[0-9 ]{1,30}$/;
       return re.test(String(accountNumber));
     },
     function validateTransitNumber(transitNumber) {
-      var re = /^[0-9]{5}$/;
+      var re = /^[0-9 ]{5}$/;
       return re.test(String(transitNumber));
     },
     function validateAge(date) {
@@ -70,7 +70,7 @@ foam.CLASS({
       return currentYear - year >= 16;
     },
     function validateInstitutionNumber(institutionNumber) {
-      var re = /^[0-9]{3}$/;
+      var re = /^[0-9 ]{3}$/;
       return re.test(String(institutionNumber));
     }
   ]
