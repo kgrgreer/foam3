@@ -13,8 +13,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step1', message: 'Step ' },
-    { name: 'Step2', message: ' : Done!' },
+    { name: 'Step', message: 'Step 4: Done!' },
     { name: 'Done', message: 'You have successfully added and verified this bank account! You are now ready to use the cash in / cash out service to manage your balances!' }
   ],
 
@@ -25,7 +24,7 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')
-          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step1 + ((this.wizard.position)?this.wizard.position+1:this.wizard.view.step) + this.Step2).end()
+          .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
         .start('p').addClass('pDefault').add(this.Done).end()
 
