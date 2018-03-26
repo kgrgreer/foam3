@@ -9,7 +9,8 @@ foam.CLASS({
     'user',
     'viewData',
     'regionDAO',
-    'countryDAO'
+    'countryDAO',
+    'window'
   ],
   css: `
     ^ .col {
@@ -204,11 +205,14 @@ foam.CLASS({
       letter-spacing: 0.2px;
       background-color: #ffffff;
     }
+    ^ .link{
+      color: #59a5d5;
+    }
   `,
 
   messages: [
-    { name: 'Step1',                 message: 'Step ' },
-    { name: 'Step2',                 message: ' : Pre-authorized debit confirmation' },
+    { name: 'Step1',                message: 'Step ' },
+    { name: 'Step2',                message: ' : Pre-authorized debit confirmation' },
     { name: 'LabelFirstName',       message: 'First Name' },
     { name: 'LabelLastName',        message: 'Last Name' },
     { name: 'LabelCountry',         message: 'Country' },
@@ -222,8 +226,10 @@ foam.CLASS({
     { name: 'LabelInstitute',       message: 'Institution Number' },
     { name: 'LabelTransit',         message: 'Transit Number' },    
     { name: 'TC1',                  message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
-    { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit www.payments.ca.'},
-    { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting www.payments.ca.'}
+    { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit '},
+    { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting '},
+    { name: 'link',                 message: 'www.payments.ca.'},
+
   ],
   properties:[
     {
@@ -421,14 +427,19 @@ foam.CLASS({
             .end()
             .start('p')
               .add('Recourse/Reimbursement').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC2).end()
+              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody link').add(this.link).on('click',this.goToPayment).end().end()
             .end()
             .start('p')
               .add('Cancellation').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC3).end()
+              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody link').add(this.link).on('click',this.goToPayment).end().end()
             .end()
           .end() 
         .end()
     }
-  ]
+  ],
+  listeners: [
+    function goToPayment () {
+      window.open('https://www.payments.ca','_blank');
+    },
+ ]
 });
