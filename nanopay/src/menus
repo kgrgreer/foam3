@@ -25,5 +25,4 @@ p({"class":"foam.nanos.menu.Menu","id":"foreign","label":"Foreign","handler":{"c
 p({"class":"foam.nanos.menu.Menu","id":"bank-dashboard","label":"CIP/Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.DashboardView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"bank-profile","label":"Bank List","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"cicoSpids","label":"CICO Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"cicoServiceProviderDAO"},"order":1000,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":1000,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"api-doc","label":"API Documentation","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ApiBrowser"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"api-doc","label":"API Documentation","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ApiBrowser"}},"order":2000,"parent":"integration"})
