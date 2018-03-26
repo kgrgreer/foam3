@@ -99,6 +99,6 @@ foam.RELATIONSHIP({
   cardinality: '*:*',
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'foam.nanos.auth.User',
-  forwardName: 'Partners',
-  inverseName: 'PartnersBy'
+  forwardName: 'partners',
+  inverseName: 'partners'
 });
