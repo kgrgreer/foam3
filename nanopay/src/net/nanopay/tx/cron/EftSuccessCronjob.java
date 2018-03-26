@@ -1,9 +1,13 @@
 package net.nanopay.tx.cron;
 
 import foam.core.ContextAgent;
+import foam.core.Detachable;
+import foam.core.FObject;
 import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.dao.ListSink;
+import foam.dao.Sink;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.Arrays;
@@ -27,17 +31,21 @@ public class EftSuccessCronjob implements ContextAgent {
         i = i + 1;
       }
     }
-    List transactions = ((ListSink) transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING)).select( new ListSink())).getData();
-    for ( i=0; i < transactions.size(); i++ ) {
-      Transaction txn = (Transaction) transactions.get(i);
-      String refStr = txn.getReferenceNumber().substring(0, txn.getReferenceNumber().length() - 5);
-      Long refNo = Long.parseLong(refStr);
-      Calendar refDate = Calendar.getInstance();
-      refDate.setTimeInMillis(refNo);
-      if ( refDate.get(Calendar.DAY_OF_YEAR) <= daySent.get(Calendar.DAY_OF_YEAR) ) {
-        txn.setCicoStatus(TransactionStatus.ACCEPTED);
+    transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING)).select( new AbstractSink() {
+      @Override
+      public void put(Object o, Detachable d) {
+        Transaction txn = (Transaction) o;
+        //reference number contains date when csv is generated in milliseconds and 5-digit random number
+        String refStr = txn.getReferenceNumber().substring(0, txn.getReferenceNumber().length() - 5);
+        long refNo = Long.parseLong(refStr);
+        Calendar refDate = Calendar.getInstance();
+        refDate.setTimeInMillis(refNo);
+        if ( refDate.get(Calendar.DAY_OF_YEAR) <= daySent.get(Calendar.DAY_OF_YEAR) ) {
+          txn.setCicoStatus(TransactionStatus.ACCEPTED);
+          //transactionDAO.put_(x, txn);
+        }
       }
-    }
+    });
   }
 }
 
