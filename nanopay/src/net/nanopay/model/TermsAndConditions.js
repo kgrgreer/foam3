@@ -9,14 +9,12 @@ foam.CLASS({
     'java.util.Date' ,
   ],
 
-  tableColumns: [ 'version', 'issuedDate' ],
+  tableColumns: [ 'id', 'issuedDate' ],
 
   properties: [
-    
     {
-      class: 'String',
-      name: 'version',
-      documentation: 'Template version'
+      class: 'Long',
+      name: 'id'
     },
     {
       class: 'Date',
