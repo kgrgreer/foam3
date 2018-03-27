@@ -26,37 +26,20 @@ public class TermsAndConditionsWebAgent
 
     @Override
     public void execute(X x) {
-        PrintWriter        out      = x.get(PrintWriter.class);
-        HttpServletRequest request  = x.get(HttpServletRequest.class);
-
-        DAO                tcDAO    = (DAO) x.get("termsAndConditionsDAO");
-        String             version  = request.getParameter("version");
-        System.out.println(version);
-
-        System.out.println((((ListSink)tcDAO.select(new ListSink())).getData()).size());
-
-        Long                latest =  Long.valueOf(""+(((ListSink)tcDAO.select(new ListSink())).getData()).size()+"");
-        System.out.println(latest);
-
-        tcDAO    =  tcDAO.where(EQ(TermsAndConditions.ID,( !version.equals("null") )?Long.valueOf(version):latest-1));
-
-        ListSink           listSink = (ListSink) tcDAO.select(new ListSink());
-        List               termsList = listSink.getData();
-        TermsAndConditions terms    = (TermsAndConditions) termsList.get(0);
-
-        System.out.println(termsList.get(termsList.size()-1));
-        out.println(terms.getBody());
-//                           tcDAO     = tcDAO.where(EQ(TermsAndConditions.ID,version));
-//        List               termsList = ((ListSink) tcDAO.select( new ListSink() )).getData();
-//        TermsAndConditions terms    = (TermsAndConditions) termsList.get(0);
-//        System.out.println(terms.getId());
-//        out.print("<html><body><h1>HELLO</h1></body></html>");
-//        out.print(terms.getBody());
-
-
-//         ListSink           listSink = (ListSink) tcDAO.select(new ListSink());
-//        List               termsList = listSink.getData();
-//        TermsAndConditions terms    = (TermsAndConditions) termsList.get(0);
+      PrintWriter        out      = x.get(PrintWriter.class);
+      HttpServletRequest request  = x.get(HttpServletRequest.class);
+      DAO                tcDAO    = (DAO) x.get("termsAndConditionsDAO");
+      String             version  = request.getParameter("version");
+      TermsAndConditions terms;
+      
+      if ( version.equals("") ) { 
+        ListSink listSink = (ListSink) tcDAO.select(new ListSink());
+        List     termsList = listSink.getData();
+        terms = (TermsAndConditions) termsList.get(termsList.size());
+      }else {
+        terms = (TermsAndConditions) tcDAO.find(EQ(TermsAndConditions.VERSION,version));
+      }
+      out.println(terms.getBody());
     }
 }
 
