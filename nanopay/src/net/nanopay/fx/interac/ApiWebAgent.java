@@ -75,7 +75,7 @@ public class ApiWebAgent
 
         ExchangerateApiModel exApiModel = (ExchangerateApiModel) jsonParser.parseString(data, ExchangerateApiModel.class);
 
-        if ( exApiModel == null || "".equals(exApiModel) ) {
+        if ( exApiModel == null ) {
           out.println("Parse Error. Please input the exact data. <br><br>");
 
           String message = getParsingError(x, buffer_.toString());
