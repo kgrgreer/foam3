@@ -23,6 +23,7 @@ var classes = [
   'net.nanopay.model.Currency',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.Identification',
+  'net.nanopay.model.TermsAndConditions',
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.liquidity.model.Threshold',
   'net.nanopay.liquidity.model.ThresholdResolve',

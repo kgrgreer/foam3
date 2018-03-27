@@ -145,16 +145,16 @@ foam.CLASS({
           pacs00200109.getFIToFIPmtStsRpt().setOrgnlGrpInfAndSts(new OriginalGroupHeader13[length_]);
           pacs00200109.getFIToFIPmtStsRpt().setGrpHdr(grpHdr53);
 
-          DAO txnDAO     = (DAO) getX().get("transactionDAO");
-
-          Transaction txn = (Transaction) txnDAO.find(Long.parseLong((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[0].getPmtId().getTxId()));
-          String strStatus = "";
-
-          if ( txn != null ) {
-            strStatus = txn.getStatus();
-          }
+          DAO txnDAO = (DAO) getX().get("transactionDAO");
 
           for ( int i = 0 ; i < length_ ; i++ ) {
+            Transaction txn = (Transaction) txnDAO.find(Long.parseLong((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getTxId()));
+            String strStatus = "";
+
+            if ( txn != null ) {
+              strStatus = txn.getStatus();
+            }
+
             PaymentTransaction91 paymentTransaction91 = new PaymentTransaction91();
 
             paymentTransaction91.setStsId(java.util.UUID.randomUUID().toString().replace("-", ""));
