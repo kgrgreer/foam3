@@ -42,7 +42,7 @@ public class EftSuccessCronjob implements ContextAgent {
         refDate.setTimeInMillis(refNo);
         if ( refDate.get(Calendar.DAY_OF_YEAR) <= daySent.get(Calendar.DAY_OF_YEAR) ) {
           txn.setCicoStatus(TransactionStatus.ACCEPTED);
-          //transactionDAO.put_(x, txn);
+          transactionDAO.put_(x, txn);
         }
       }
     });
