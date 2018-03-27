@@ -35,7 +35,6 @@ public class ApiWebAgent
     final PrintWriter   out                 = x.get(PrintWriter.class);
     CharBuffer          buffer_             = CharBuffer.allocate(65535);
     String              data                = req.getParameter("data");
-    String              command             = req.getParameter("cmd");
     String              format              = req.getParameter("format");
     String              id                  = req.getParameter("id");
     String              msg                 = req.getParameter("msg");
@@ -49,19 +48,14 @@ public class ApiWebAgent
     String              dealReferenceNumber = "";
     String              endToEndId          = "";
 
-    if ( command == null || "".equals(command) ) command = "select";
-
     if ( format == null  ) format = "json";
 
     try {
 
-      if ( "select".equals(command) && ( data == null || "".equals(data) ) ) {
+      if ( SafetyUtil.isEmpty(data) ) {
         out.print("<form method=post><span>ExchangeRate Service </span>");
         out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
-        out.println("</select></span>");
         out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
-        out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
         out.println("<br><br><button type=submit >Submit</button></form>");
 
         out.println();
@@ -71,51 +65,59 @@ public class ApiWebAgent
 
       ExchangeRateService service = (ExchangeRateService) x.get("exchangeRate");
 
-      if ( "select".equals(command) ) {
-        if ( "json".equals(format) ) {
+      if ( "json".equals(format) ) {
+        JSONParser jsonParser = new JSONParser();
+        jsonParser.setX(x);
 
-          JSONParser jsonParser = new JSONParser();
-          jsonParser.setX(x);
+        foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+        outputterJson.setOutputDefaultValues(true);
+        outputterJson.setOutputClassNames(false);
 
-          foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
-          outputterJson.setOutputDefaultValues(true);
-          outputterJson.setOutputClassNames(false);
+        ExchangerateApiModel exApiModel = (ExchangerateApiModel) jsonParser.parseString(data, ExchangerateApiModel.class);
 
-          ExchangerateApiModel exApiModel = (ExchangerateApiModel) jsonParser.parseString(data, ExchangerateApiModel.class);
+        if ( exApiModel == null ) {
+          out.println("Parse Error. Please input the exact data. <br><br>");
 
-          if ( exApiModel == null || "".equals(exApiModel) ) {
-            out.println("Parse Error");
+          String message = getParsingError(x, buffer_.toString());
+          logger.error(message + ", input: " + buffer_.toString());
+          out.println(message);
+          out.flush();
+          return;
+        }
 
-            String message = getParsingError(x, buffer_.toString());
-            logger.error(message + ", input: " + buffer_.toString());
-            out.println(message);
-            out.flush();
-            return;
-          }
+        sourceCurrency      = exApiModel.getSourceCurrency();
+        targetCurrency      = exApiModel.getTargetCurrency();
+        sourceAmount        = exApiModel.getSourceAmount();
+        targetAmount        = exApiModel.getTargetAmount();
+        valueDate           = exApiModel.getValueDate();
+        dealReferenceNumber = exApiModel.getDealReferenceNumber();
+        endToEndId          = exApiModel.getEndToEndId();
 
-          sourceCurrency      = exApiModel.getSourceCurrency();
-          targetCurrency      = exApiModel.getTargetCurrency();
-          sourceAmount        = exApiModel.getSourceAmount();
-          targetAmount        = exApiModel.getTargetAmount();
-          valueDate           = exApiModel.getValueDate();
-          dealReferenceNumber = exApiModel.getDealReferenceNumber();
-          endToEndId          = exApiModel.getEndToEndId();
-
-          ExchangeRateQuote exQuote = null;
-          if ( "getRateFromTarget".equals(serviceKey) ) {
-            exQuote = service.getRateFromTarget(sourceCurrency, targetCurrency, sourceAmount, valueDate);
-            outputterJson.output(exQuote);
-          } else if ( "getRateFromSource".equals(serviceKey) ) {
-            exQuote = service.getRateFromSource(sourceCurrency, targetCurrency, targetAmount, valueDate);
+        ExchangeRateQuote exQuote = null;
+        if ( "getRateFromTarget".equals(serviceKey) ) {
+          if ( targetAmount > 0) {
+            exQuote = service.getRateFromTarget(sourceCurrency, targetCurrency, targetAmount, valueDate);
             outputterJson.output(exQuote);
           } else {
+            out.println("Please input the exact data");
+          }
+        } else if ( "getRateFromSource".equals(serviceKey) ) {
+          if ( sourceAmount > 0) {
+            exQuote = service.getRateFromSource(sourceCurrency, targetCurrency, sourceAmount, valueDate);
+            outputterJson.output(exQuote);
+          } else {
+            out.println("Please input the exact data");
+          }
+        } else {
+          if ( SafetyUtil.isEmpty(sourceCurrency) || SafetyUtil.isEmpty(targetCurrency) ) {
             AcceptRateApiModel accprate = service.acceptRate(endToEndId, dealReferenceNumber);
             outputterJson.output(accprate);
+          } else {
+            out.println("Please input the exact data");
           }
+        }
 
-          response.setContentType("application/json");
-          out.println(outputterJson.toString());
-       }
+        out.println(outputterJson.toString());
       }
     } catch (Throwable t) {
       out.println("Error " + t);
