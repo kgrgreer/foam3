@@ -64,7 +64,6 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        quote.setId(((ExchangeRate) obj).getId());
         quote.setCode(((ExchangeRate) obj).getCode());
         quote.setExchangeRate(reqExRate);
         quote.setFee(reqFee);
@@ -148,7 +147,6 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        quote.setId(((ExchangeRate) obj).getId());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
         quote.setExchangeRate(reqExRate);
         quote.setFee(reqFee);
