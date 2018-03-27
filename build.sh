@@ -227,7 +227,7 @@ function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
-    JOURNAL_HOME=/tmp/journals
+    JOURNAL_HOME="$NANOPAY_HOME/journals"
 
     if [ "$OSTYPE" == "linux-gnu" ]; then
         NANOPAY_HOME=/pkg/stack/stage/NANOPAY
@@ -262,6 +262,10 @@ function setenv {
         exit 1
     done
 
+    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
+        # remove journal file that find.sh was creating
+        rm "$JOURNAL_HOME"
+    fi
     mkdir -p $JOURNAL_HOME
 
     WAR_HOME="$NANOPAY_HOME"/target/root-0.0.1
