@@ -62,3 +62,7 @@ sha256/
 
 # Service files
 /journals
+
+# Logs
+*.lck
+*nano.log*
