@@ -192,6 +192,7 @@ function start_tomcat {
         # System property 'user.dir', which, for now is the
         # only way to control where the nano.log is created.
         #
+        mkdir -p "$CATALINA_BASE/logs"
         cd "$CATALINA_BASE/logs"
         "$CATALINA_HOME/bin/catalina.sh" $ARGS
     fi
@@ -219,7 +220,6 @@ function testcatalina {
     if [ -x "$1/bin/catalina.sh" ]; then
         #printf "found. ( $1 )\n"
         export CATALINA_HOME="$1"
-        export CATALINA_BASE="$CATALINA_HOME"
     fi
 }
 
@@ -261,6 +261,10 @@ function setenv {
         printf "Set CATALINA_HOME environment variable to the location of Tomcat."
         exit 1
     done
+
+    if [ -z "$CATALINA_BASE" ]; then
+        export CATALINA_BASE="$CATALINA_HOME"
+    fi
 
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was creating
