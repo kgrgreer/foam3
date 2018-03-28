@@ -64,7 +64,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.retail.model.Device',
       name: 'device',
-      factory: function () { return this.Device.create(null, this.clientContext); }
+      factory: function () { return this.Device.create(null, this.__subSubContext__); }
     },
     {
       class: 'String',
@@ -107,7 +107,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       self.clientPromise.then(function() {
-        self.AppStyles.create(null, self.clientContext);
+        self.AppStyles.create(null, self.__subSubContext__);
 
         self
           .addClass(self.myClass())
@@ -193,7 +193,7 @@ foam.CLASS({
           throw new Error('Invalid password');
         }
 
-        return self.clientContext.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
+        return self.__subSubContext__.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
       })
       .then(function (result) {
         if ( ! result ) {

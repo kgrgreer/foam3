@@ -61,43 +61,38 @@ foam.CLASS({
         var self = this;
         return self.ClientBuilder.create().promise.then(function(cls) {
           var c = cls.create(null, self);
-          self.clientContext = c.__subContext__;
           return c;
         });
       },
     },
     {
-      name: 'clientContext',
-      postSet: function(_, n) { this.__subSubContext__ = n },
-    },
-    {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'user',
-      factory: function() { return this.User.create(null, this.clientContext); }
+      factory: function() { return this.User.create(null, this.__subSubContext__); }
     },
     {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
       name: 'account',
-      factory: function() { return this.Account.create(null, this.clientContext); }
+      factory: function() { return this.Account.create(null, this.__subSubContext__); }
     },
     {
       name: 'stack',
       factory: function () {
-        return this.Stack.create(null, this.clientContext);
+        return this.Stack.create(null, this.__subSubContext__);
       }
     },
     {
       name: 'iso20022',
       factory: function () {
-        return this.Iso20022.create(null, this.clientContext);
+        return this.Iso20022.create(null, this.__subSubContext__);
       }
     },
     {
       name: 'iso20022Driver',
       factory: function () {
-        return this.ISO20022Driver.create(null, this.clientContext);
+        return this.ISO20022Driver.create(null, this.__subSubContext__);
       }
     },
     {
@@ -110,9 +105,10 @@ foam.CLASS({
     function init () {
       this.SUPER();
       var self = this;
-      self.clientPromise.then(function() {
+      self.clientPromise.then(function(client) {
+        self.__subSubContext__ = client.__subContext__;
         // Injecting Sample Partner
-        // self.clientContext.userDAO.limit(1).select().then(function(a) {
+        // self.__subSubContext__.userDAO.limit(1).select().then(function(a) {
         //   self.user.copyFrom(a.array[0]);
         // });
       })
@@ -121,7 +117,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       self.clientPromise.then(function() {
-        self.Data.create(null, self.clientContext);
+        self.Data.create(null, self.__subSubContext__);
 
         if(self.country == 'Canada') {
           self.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
@@ -139,7 +135,7 @@ foam.CLASS({
 
           if(self.country == 'Canada') {
             self.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.CanadaTopNav'}));
-            self.clientContext.userDAO.find(1).then(function(a) {
+            self.__subSubContext__.userDAO.find(1).then(function(a) {
               self.user.copyFrom(a);
               self.accountDAO.find(self.user.id).then(function(a){
                 self.account = a;
@@ -148,7 +144,7 @@ foam.CLASS({
             self.stack.push({ class: 'net.nanopay.interac.ui.CanadaTransactionsView' });
           } else if(self.country == 'India') {
             self.add(self.E().tag({class: 'net.nanopay.interac.ui.shared.topNavigation.IndiaTopNav', data: self.business}));
-            self.clientContext.userDAO.find(2).then(function(a) {
+            self.__subSubContext__.userDAO.find(2).then(function(a) {
               self.user.copyFrom(a);
               self.accountDAO.find(self.user.id).then(function(a){
                 self.account = a;

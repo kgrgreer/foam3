@@ -82,7 +82,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
       name: 'account',
-      factory: function() { return this.Account.create(null, self.clientContext); }
+      factory: function() { return this.Account.create(null, self.__subSubContext__); }
     }
   ],
 
@@ -90,9 +90,9 @@ foam.CLASS({
     function initE() {
       var self = this;
       self.clientPromise.then(function() {
-        self.AppStyles.create(null, self.clientContext);
-        self.InvoiceStyles.create(null, self.clientContext);
-        self.ModalStyling.create(null, self.clientContext);
+        self.AppStyles.create(null, self.__subSubContext__);
+        self.InvoiceStyles.create(null, self.__subSubContext__);
+        self.ModalStyling.create(null, self.__subSubContext__);
 
         foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
@@ -110,7 +110,7 @@ foam.CLASS({
 
     function findAccount() {
       var self = this;
-      this.clientContext.accountDAO.find(this.user.id).then(function (a) {
+      this.__subSubContext__.accountDAO.find(this.user.id).then(function (a) {
         return self.account.copyFrom(a);
       }.bind(this));
     }
