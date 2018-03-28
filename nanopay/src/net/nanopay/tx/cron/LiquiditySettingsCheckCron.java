@@ -3,7 +3,7 @@ package net.nanopay.tx.cron;
 import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.cico.model.TransactionType;
@@ -36,7 +36,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     DAO bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
     DAO liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
     DAO groupDAO = (DAO) x.get("groupDAO");
-    List users = ((ListSink)userDAO_.select(new ListSink())).getData();
+    List users = ((ArraySink)userDAO_.select(new ArraySink())).getArray();
     long balance;
     for( int i=0; i<users.size(); i++ ){
       User user = (User) users.get(i);
@@ -94,5 +94,3 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     txnDAO.put_(x, transaction);
   }
 }
-
-
