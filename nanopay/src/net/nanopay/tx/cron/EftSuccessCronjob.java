@@ -6,7 +6,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
-import foam.dao.ListSink;
 import foam.dao.Sink;
 import net.nanopay.tx.model.Transaction;
 
