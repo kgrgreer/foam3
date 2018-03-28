@@ -2,32 +2,27 @@ package net.nanopay.fx;
 
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
-import foam.core.FObject;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
+import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-import net.nanopay.fx.model.ExchangeRate;
-import net.nanopay.fx.interac.model.AcceptRateApiModel;
 import net.nanopay.fx.interac.model.AcceptExchangeRateFields;
-import net.nanopay.fx.model.ExchangeRateQuote;
-import net.nanopay.fx.model.ExchangeRateFields;
-import net.nanopay.fx.model.FeesFields;
-import net.nanopay.fx.model.DeliveryTimeFields;
+import net.nanopay.fx.interac.model.AcceptRateApiModel;
+import net.nanopay.fx.model.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ExchangeRateService
   extends    ContextAwareSupport
-  implements ExchangeRateInterface
+  implements ExchangeRateInterface, NanoService
 {
   protected DAO    exchangeRateDAO_;
   protected Double feeAmount = new Double(1);
@@ -64,7 +59,6 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        quote.setId(((ExchangeRate) obj).getId());
         quote.setCode(((ExchangeRate) obj).getCode());
         quote.setExchangeRate(reqExRate);
         quote.setFee(reqFee);
@@ -148,7 +142,6 @@ public class ExchangeRateService
     ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
-        quote.setId(((ExchangeRate) obj).getId());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
         quote.setExchangeRate(reqExRate);
         quote.setFee(reqFee);

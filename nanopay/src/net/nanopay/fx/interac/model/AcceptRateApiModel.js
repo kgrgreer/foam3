@@ -18,10 +18,6 @@ foam.CLASS({
       name: 'endToEndId'
     },
     {
-      class: 'String',
-      name: 'transactionId'
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
       name: 'exchangeRate',
