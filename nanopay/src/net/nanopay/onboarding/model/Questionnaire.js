@@ -12,6 +12,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
+      swiftName: 'description_',
       documentation: 'Description of the questionnaire'
     },
     {
