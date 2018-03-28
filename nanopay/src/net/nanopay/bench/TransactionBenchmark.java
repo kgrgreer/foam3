@@ -2,7 +2,7 @@ package net.nanopay.bench;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
@@ -27,13 +27,13 @@ public class TransactionBenchmark
     accountDAO_ = (DAO) x.get("localAccountDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
 
-    Sink sink = new ListSink();
+    Sink sink = new ArraySink();
     sink = userDAO_.select(sink);
-    users = ((ListSink) sink).getData();
+    users = ((ArraySink) sink).getArray();
 
-    sink = new ListSink();
+    sink = new ArraySink();
     sink = accountDAO_.select(sink);
-    accounts = ((ListSink) sink).getData();
+    accounts = ((ArraySink) sink).getArray();
 
     for ( int i = 0 ; i < accounts.size() ; i++ ) {
       Account account = (Account) accounts.get(i);

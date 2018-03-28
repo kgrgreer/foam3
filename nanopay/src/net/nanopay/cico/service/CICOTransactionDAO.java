@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.mlang.MLang;
 import java.util.Date;
@@ -74,10 +74,10 @@ public class CICOTransactionDAO
     long total = transaction.getTotal();
     payee.setX(getX());
 
-    Sink sinkBank = new ListSink();
+    Sink sinkBank = new ArraySink();
     sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
 
-    List dataBank = ((ListSink) sinkBank).getData();
+    List dataBank = ((ArraySink) sinkBank).getArray();
     BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
 
     // Cashout invoice payee
