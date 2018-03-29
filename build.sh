@@ -24,7 +24,7 @@ function backup {
     BACKUP_HOME="/opt/backup"
 
     # backup journals in event of file incompatiblity between versions
-    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ]; then
+    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
         printf "backup\n"
         DATE=$(date +%Y%m%d_%H%M%S)
         mkdir -p "$BACKUP_HOME/$DATE"
@@ -93,6 +93,15 @@ function deploy_war {
 function deploy_journals {
     # prepare journals
     cd "$NANOPAY_HOME"
+
+    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
+        # remove journal file that find.sh was previously creating
+        rm "$JOURNAL_HOME"
+    fi
+
+    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+        rmdir "$JOURNAL_HOME"
+    fi
 
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
@@ -227,7 +236,10 @@ function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
-    JOURNAL_HOME="$NANOPAY_HOME/journals"
+
+    if [ -z "$JOURNAL_HOME" ]; then
+       JOURNAL_HOME="$NANOPAY_HOME/journals"
+    fi
 
     if [ "$OSTYPE" == "linux-gnu" ]; then
         NANOPAY_HOME=/pkg/stack/stage/NANOPAY
@@ -286,6 +298,7 @@ function usage {
     echo "  -b : Generate source, compile, and deploy war and journals."
     echo "  -c : Generate source and compile."
     echo "  -d : Run with JDPA debugging enabled."
+    echo "  -j : Delete runtime journals"
     echo "  -n : Run nanos."
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
@@ -299,6 +312,7 @@ BUILD_ONLY=0
 COMPILE_ONLY=0
 DEBUG=0
 FOREGROUND=0
+DELETE_RUNTIME_JOURNALS=0
 RESTART_ONLY=0
 RUN_NANOS=0
 STOP_TOMCAT=0
@@ -309,6 +323,7 @@ while getopts "bcdfhnrs" opt ; do
         c) COMPILE_ONLY=1 ;;
         d) DEBUG=1 ;;
         f) FOREGROUND=1 ;;
+        j) DELETE_RUNTIME_JOURNALS=1 ;;
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
@@ -335,11 +350,17 @@ else
         build_war
         undeploy_war
         deploy_journals
-        #
-        # NOTE: Tomcat needs to be running to property unpack and deploy war.
-        #
-        start_tomcat
-        deploy_war
+        if [ "$FOREGROUND" -eq 1 ]; then
+            deploy_war
+            start_tomcat
+        else
+            #
+            # NOTE: Tomcat needs to be running to property unpack and deploy war
+            # on the linux production instances. Either work on macos localhost.
+            #
+            start_tomcat
+            deploy_war
+        fi
     else
         start_tomcat
     fi

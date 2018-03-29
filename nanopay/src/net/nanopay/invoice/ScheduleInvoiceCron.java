@@ -25,14 +25,14 @@ public class ScheduleInvoiceCron
     public void fetchInvoices() {
       try{
         logger.log("Finding scheduled Invoices...");
-        ListSink sink = (ListSink) invoiceDAO_.where(
+        ArraySink sink = (ArraySink) invoiceDAO_.where(
           AND(
             EQ(Invoice.PAYMENT_ID, 0),
             EQ(Invoice.PAYMENT_METHOD, PaymentStatus.NONE),
             NEQ(Invoice.PAYMENT_DATE, null)
           )
-        ).select(new ListSink());
-          List invoiceList = sink.getData();
+        ).select(new ArraySink());
+          List invoiceList = sink.getArray();
           if ( invoiceList.size() < 1 ) {
             logger.log("No scheduled invoices found for today. ", new Date());
             return;
@@ -64,11 +64,11 @@ public class ScheduleInvoiceCron
       try {
         Transaction transaction = new Transaction();
 
-        // sets accountId to be used for CICO transaction 
+        // sets accountId to be used for CICO transaction
         if ( invoice.getAccountId() != 0 ) {
           transaction.setBankAccountId(invoice.getAccountId());
         }
-                
+
         long invAmount = invoice.getAmount();
         transaction.setPayeeId((Long) invoice.getPayeeId());
         transaction.setPayerId((Long) invoice.getPayerId());
@@ -91,7 +91,7 @@ public class ScheduleInvoiceCron
       }
     }
 
-    public void start() {      
+    public void start() {
       logger = (Logger) getX().get("logger");
       logger.log("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");

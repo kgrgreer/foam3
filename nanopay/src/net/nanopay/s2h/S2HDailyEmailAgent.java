@@ -7,7 +7,7 @@ import net.nanopay.invoice.model.Invoice;
 import static foam.mlang.MLang.*;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import net.nanopay.model.*;
 
 import java.text.NumberFormat;
@@ -66,8 +66,8 @@ public class S2HDailyEmailAgent
 
 
     //makes a list of the DAO information
-    List<Invoice> paidList =    (List)((ListSink)   paidInvoices.select(new ListSink())).getData();
-    List<Invoice> overdueList = (List)((ListSink)overdueInvoices.select(new ListSink())).getData();
+    List<Invoice> paidList =    (List)((ArraySink)   paidInvoices.select(new ArraySink())).getArray();
+    List<Invoice> overdueList = (List)((ArraySink)overdueInvoices.select(new ArraySink())).getArray();
 
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
     if ( ! paidList.isEmpty() ) {
