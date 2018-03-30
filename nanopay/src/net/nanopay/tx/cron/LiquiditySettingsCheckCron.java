@@ -39,7 +39,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     List users                = ((ArraySink)userDAO_.select(new ArraySink())).getArray();
     long balance;
 
-    for( int i = 0 ; i  users.size() ; i++ ) {
+    for ( int i = 0 ; i < users.size() ; i++ ) {
       User    user = (User) users.get(i);
       Account acc  = (Account) accountDAO_.find(((User) users.get(i)).getId());
       //DAO banks = user.getBankAccounts();
@@ -79,7 +79,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       type_ = TransactionType.CASHOUT;
       return true;
     }
-    
+
     if ( balance < ls.getMinimumBalance() && ls.getEnableCashIn() ) {
       amount_ = ls.getMinimumBalance() - balance;
       type_ = TransactionType.CASHIN;
