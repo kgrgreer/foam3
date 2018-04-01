@@ -53,6 +53,7 @@ Go into the NANOPAY/tools directory and run the following commands:
 ##### Tomcat docBase
 To have tomcat automatically reload, add your development path to tomcat's configuration.
 Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`) as follows:
+
 NOTE: this can be added/updated at any time by running *build.sh -i*
 ```
 /Library/Tomcat/conf/server.xml
