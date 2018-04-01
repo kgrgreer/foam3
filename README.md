@@ -52,15 +52,15 @@ Go into the NANOPAY/tools directory and run the following commands:
 
 ##### Tomcat docBase
 To have tomcat automatically reload, add your development path to tomcat's configuration.
-Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`).
+Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`) as follows:
 ```
 /Library/Tomcat/conf/server.xml
 ```
-adding (example) a `Context docBase` to the `Host` element.
+
 ```
 <Host>
   ...
-  <Context docBase="Users/your_login_name/path_to_nanopay_repo/NANOPAY" path="/dev" />
+  <Context docBase="${catalina_doc_base}" path="/dev" />
 </Host> 
 ```
 
