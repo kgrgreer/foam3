@@ -1,38 +1,38 @@
 package net.nanopay.s2h;
 
 import foam.core.*;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
-import net.nanopay.invoice.model.Invoice;
-import static foam.mlang.MLang.*;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import foam.dao.ArraySink;
-import net.nanopay.model.*;
-
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.Currency;
-
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.model.*;
+import static foam.mlang.MLang.*;
 
 public class S2HDailyEmailAgent
   implements ContextAgent
 {
-  String [] recipients;
+  String[] recipients;
   Calendar calendar = Calendar.getInstance();
   Calendar dayStart = Calendar.getInstance();
-  Calendar dayEnd = Calendar.getInstance();
+  Calendar dayEnd   = Calendar.getInstance();
+
   public void execute(X x)
   {
-    DAO userDAO = (DAO) x.get("userDAO");
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    Calendar calendar = Calendar.getInstance();
-    Calendar dayStart = Calendar.getInstance();
-    Calendar dayEnd = Calendar.getInstance();
+    DAO      userDAO    = (DAO) x.get("userDAO");
+    DAO      invoiceDAO = (DAO) x.get("invoiceDAO");
+    Calendar calendar   = Calendar.getInstance();
+    Calendar dayStart   = Calendar.getInstance();
+    Calendar dayEnd     = Calendar.getInstance();
+
     calendar.setTime(new Date());
-    int year = calendar.get(Calendar.YEAR);
+    int year  = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
-    int day = calendar.get(Calendar.DAY_OF_MONTH);
+    int day   = calendar.get(Calendar.DAY_OF_MONTH);
 
     //TODO replace with S2H's email
     if ( recipients.length == 0 ){
@@ -40,7 +40,7 @@ public class S2HDailyEmailAgent
       return;
     }
     //sets up an email to be sent
-    EmailService email = (EmailService) x.get("email");
+    EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     HashMap<String, Object> args = new HashMap<>();
     message.setTo(recipients);
@@ -64,9 +64,8 @@ public class S2HDailyEmailAgent
         LTE(Invoice.DUE_DATE, dayEnd.getTime()),
         EQ(Invoice.PAYMENT_ID, 0)));
 
-
     //makes a list of the DAO information
-    List<Invoice> paidList =    (List)((ArraySink)   paidInvoices.select(new ArraySink())).getArray();
+    List<Invoice> paidList    = (List)((ArraySink)   paidInvoices.select(new ArraySink())).getArray();
     List<Invoice> overdueList = (List)((ArraySink)overdueInvoices.select(new ArraySink())).getArray();
 
     args.put("auto","MESSAGE WAS SENT AUTOMATICALLY");
@@ -84,21 +83,25 @@ public class S2HDailyEmailAgent
     //sends an email following the email template
     email.sendEmailFromTemplate(null, message, "s2h-invoice-update", args);
   }
-  private String getList(List<Invoice> invoices, DAO user,String dayTitle)
+
+  protected String getList(List<Invoice> invoices, DAO user,String dayTitle)
   {
-    double sum = 0.0;
-    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    double        sum = 0.0;
+    NumberFormat  formatter = NumberFormat.getCurrencyInstance();
     StringBuilder list = new StringBuilder("");
+
     list.append("<tr><th style=\"text-align: left\">Invoice #</th>");
     list.append("<th style=\"text-align: left\">Payer Name:</th>");
-    if( ! dayTitle.isEmpty() ) {
+
+    if ( ! dayTitle.isEmpty() ) {
       list.append("<th style=\"text-align: right\">"+ dayTitle +"</th>");
     }
     list.append("<th style=\"text-align: right\">Amount:</th></tr>");
 
-    for (Invoice invoice : invoices){
-      list.append( "<tr><td style=\"text-align: left\">"+ invoice.getInvoiceNumber()+"</td>");
-      list.append( "<td style=\"text-align: left\">"+ user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) +"</td>");
+    for ( Invoice invoice : invoices ) {
+      list.append( "<tr><td style=\"text-align: left\">" + invoice.getInvoiceNumber() + "</td>");
+      list.append( "<td style=\"text-align: left\">" + user.find(invoice.getPayerId()).getProperty(User.ORGANIZATION.getName()) + "</td>");
+
       if( ! dayTitle.isEmpty() ) {
         list.append( "<td style=\"text-align: right\">" +
           (dayEnd.getTimeInMillis() - invoice.getDueDate().getTime()) / 86400000
@@ -116,6 +119,7 @@ public class S2HDailyEmailAgent
     list.append( "<td style=\"text-align: right\"><b>"+ formatter.format(sum) +"</b></td></tr>");
     return list.toString();
   }
+  
   public void setRecipients(String[] people)
   {
     recipients = people;
