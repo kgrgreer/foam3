@@ -15,6 +15,19 @@ Checkout `NANOPAY`
 git clone https://github.com/nanopayinc/NANOPAY.git
 ```
 
+### Configuration
+
+Have the build script inialize submodules, update node and tomcat libraries, and setup a docbase so tomcat automatically reloads on javascript changes.
+
+NOTE: you will be prompted for your system password during the tomcat installation.
+
+```
+cd NANOPAY
+build.sh -i
+```
+
+#### Indidual Configuration Components
+##### FOAM2 SubModule
 foam2 is added as a submodule.
 Initialize the submodule
 ```
@@ -22,13 +35,13 @@ git submodule init
 git submodule update
 ```
 
-### npm 
+##### npm 
 Run npm to install required packages, such iso2022
 ```
 npm install
 ```
 
-### Installing tomcat
+##### Installing tomcat
 
 Go into the NANOPAY/tools directory and run the following commands:
 
@@ -37,6 +50,7 @@ Go into the NANOPAY/tools directory and run the following commands:
 
 ```
 
+##### Tomcat docBase
 To have tomcat automatically reload, add your development path to tomcat's configuration.
 Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`).
 ```
