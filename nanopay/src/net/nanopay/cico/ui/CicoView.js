@@ -375,7 +375,7 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               data: this.cicoTransactions,
               columns: [
-                'id', 'date', 'amount', 'type', 'cicoStatus'
+                'id', 'date', 'amount', 'type', 'status'
               ]
             });
         }

@@ -54,7 +54,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      value: 'Completed'
+      value: ''
     },
     {
       class: 'String',
@@ -234,7 +234,7 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-        return TransactionType.NONE.equals(getType()) || TransactionType.CASHOUT.equals(getType()) || TransactionStatus.ACCEPTED.equals(getCicoStatus());
+        return ( ( "".equals(getStatus()) && ! TransactionType.CASHIN.equals(getType()) ) || ( TransactionType.CASHIN.equals(getType()) && "ACCEPTED".equals(getStatus()) ) );
       `
     },
     {

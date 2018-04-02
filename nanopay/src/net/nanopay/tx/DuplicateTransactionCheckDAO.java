@@ -18,8 +18,7 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
     Transaction curTxn = (Transaction) obj;
     if ( oldTxn != null ) {
-      if ( oldTxn.getCicoStatus().equals(TransactionStatus.ACCEPTED) || oldTxn.getCicoStatus().equals(TransactionStatus
-          .DECLINED) ) {
+      if ( oldTxn.getStatus().equals("ACCEPTED") || oldTxn.getStatus().equals("DECLINED") ) {
         throw new RuntimeException("Unable to update Transaction, if transaction status is accept or decline");
       }
       if ( compareTransactions(oldTxn, curTxn) != 0 ) {

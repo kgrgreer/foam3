@@ -66,12 +66,12 @@ public class TransactionDAO
       return super.put_(x, obj);
     }
     if ( transaction.getType().equals(TransactionType.CASHIN) ) {
-      if ( transaction.getCicoStatus().equals(TransactionStatus.ACCEPTED) )
+      if ( transaction.getStatus().equals("ACCEPTED") )
         return executeTransaction(x, transaction);
       return super.put_(x, obj);
     }
     if ( transaction.getType().equals(TransactionType.CASHOUT) ) {
-      if ( ! transaction.getCicoStatus().equals(TransactionStatus.DECLINED) ) {
+      if ( ! transaction.getStatus().equals("DECLINED") ) {
         if ( oldTxn != null )
           return super.put_(x, obj);
       } else {
