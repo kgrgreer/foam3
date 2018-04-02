@@ -44,7 +44,6 @@ public class FlinksConnectWebAgent
   @Override
   public void execute(X x) {
     AppConfig config = (AppConfig) x.get("appConfig");
-    DAO emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
     HttpServletRequest req = x.get(HttpServletRequest.class);
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     HttpURLConnection conn = null;
@@ -80,7 +79,7 @@ public class FlinksConnectWebAgent
       StringBuilder builder = sb.get();
 
       reader = new BufferedReader(new InputStreamReader(
-          code == 200 ? conn.getInputStream() : conn.getErrorStream()));
+          code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()));
 
       while ((line = reader.readLine()) != null) {
         builder.append(line);
