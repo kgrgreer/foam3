@@ -1,9 +1,11 @@
 package net.nanopay.flinks;
 
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
+import foam.nanos.app.AppConfig;
 import foam.nanos.http.WebAgent;
 import net.nanopay.flinks.model.FlinksAuthRequest;
 import net.nanopay.flinks.model.FlinksResponse;
@@ -24,7 +26,6 @@ public class FlinksConnectWebAgent
 {
   public static final String FLINKS_HOST =
       "https://nanopay-api.private.fin.ag/v3/8bc4718b-3780-46d0-82fd-b217535229f1/BankingServices/Authorize";
-
   public static final ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
 
     @Override
@@ -42,6 +43,8 @@ public class FlinksConnectWebAgent
 
   @Override
   public void execute(X x) {
+    AppConfig config = (AppConfig) x.get("appConfig");
+    DAO emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
     HttpServletRequest req = x.get(HttpServletRequest.class);
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     HttpURLConnection conn = null;
@@ -56,7 +59,6 @@ public class FlinksConnectWebAgent
           .setWithTransactions(false)
           .setWithBalance(false)
           .build();
-
 
       URL url = new URL(FLINKS_HOST);
       conn = (HttpURLConnection) url.openConnection();
@@ -80,7 +82,7 @@ public class FlinksConnectWebAgent
       reader = new BufferedReader(new InputStreamReader(
           code == 200 ? conn.getInputStream() : conn.getErrorStream()));
 
-      while ( (line = reader.readLine()) != null ) {
+      while ((line = reader.readLine()) != null) {
         builder.append(line);
       }
 
@@ -88,8 +90,16 @@ public class FlinksConnectWebAgent
       FlinksResponse response = (FlinksResponse)
           parser.parseString(builder.toString(), FlinksResponse.class);
 
-    } catch (Throwable t) {
-      t.printStackTrace();
+      builder.setLength(0);
+      builder.append(config.getUrl())
+          .append("service/flinksRedirect")
+          .append("?loginId=").append(loginId)
+          .append("&requestId=").append(response.getRequestId());
+
+      resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+      resp.setHeader("Location", builder.toString());
+    } catch (Throwable ignored) {
+
     } finally {
       if ( conn != null ) conn.disconnect();
       IOUtils.closeQuietly(writer);
