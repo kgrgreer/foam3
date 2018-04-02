@@ -231,6 +231,13 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'isActive',
+      javaReturns: 'boolean',
+      javaCode: `
+        return TransactionType.NONE.equals(getType()) || TransactionType.CASHOUT.equals(getType()) || TransactionStatus.ACCEPTED.equals(getCicoStatus());
+      `
+    },
+    {
       name: 'createTransfers',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
@@ -238,7 +245,7 @@ foam.CLASS({
       javaReturns: 'Transfer[]',
       javaCode: `
         // Don't perform balance transfer if status in blacklist
-        if ( STATUS_BLACKLIST.contains(getStatus()) ) return new Transfer[] {};
+        if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
             new Transfer(getPayerId(), -getTotal())

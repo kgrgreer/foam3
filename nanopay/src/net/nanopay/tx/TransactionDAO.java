@@ -2,21 +2,15 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.Sink;
-import foam.mlang.MLang;
-import foam.nanos.auth.User;
 import java.util.*;
-import java.util.Date;
-import java.util.List;
 import net.nanopay.cico.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.model.Account;
-import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
+
+import static foam.mlang.MLang.EQ;
 
 public class TransactionDAO
   extends ProxyDAO
@@ -63,17 +57,31 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Transaction     transaction     = (Transaction) obj;
-
+    Transaction transaction = (Transaction) obj;
+    ArraySink transactions = new ArraySink();
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) ) {
       return super.put_(x, obj);
     }
+    if ( transaction.getType().equals(TransactionType.CASHIN) ) {
+      if ( transaction.getCicoStatus().equals(TransactionStatus.ACCEPTED) )
+        return executeTransaction(x, transaction);
+      return super.put_(x, obj);
+    }
+    if ( transaction.getType().equals(TransactionType.CASHOUT) ) {
+      if ( ! transaction.getCicoStatus().equals(TransactionStatus.DECLINED) ) {
+        if ( oldTxn != null )
+          return super.put_(x, obj);
+      } else {
+        Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
+        refound.validate(x);
+        refound.execute(x);
+        return super.put_(x, obj);
+      }
 
-    if ( oldTxn != null ) return super.put_(x, obj);
-
+    }
     return executeTransaction(x, transaction);
   }
 
@@ -90,6 +98,8 @@ public class TransactionDAO
   void validateTransfers(Transfer[] ts)
     throws RuntimeException
   {
+    if(ts.length == 0)
+      return;
     long c = 0, d = 0;
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
