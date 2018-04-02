@@ -6,11 +6,21 @@
 
 package net.nanopay.fx.interac;
 
-import foam.core.*;
+import foam.core.ClassInfo;
+import foam.core.Detachable;
+import foam.core.FObject;
+import foam.core.PropertyInfo;
+import foam.core.ProxyX;
+import foam.core.X;
+import foam.core.XMLSupport;
 import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.nanos.http.Command;
+import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
+import foam.nanos.http.HttpParameters;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import java.io.*;
 import java.nio.CharBuffer;
@@ -30,15 +40,17 @@ public class ApiWebAgent
   public ApiWebAgent() {}
 
   public void execute(X x) {
-    HttpServletRequest  req                 = x.get(HttpServletRequest.class);
-    HttpServletResponse response            = x.get(HttpServletResponse.class);
-    final PrintWriter   out                 = x.get(PrintWriter.class);
-    CharBuffer          buffer_             = CharBuffer.allocate(65535);
-    String              data                = req.getParameter("data");
-    String              format              = req.getParameter("format");
-    String              id                  = req.getParameter("id");
-    String              msg                 = req.getParameter("msg");
     Logger              logger              = (Logger) x.get("logger");
+    HttpServletRequest  req                 = x.get(HttpServletRequest.class);
+    HttpServletResponse resp                = x.get(HttpServletResponse.class);
+    HttpParameters      p                   = x.get(HttpParameters.class);
+    final PrintWriter   out                 = x.get(PrintWriter.class);
+    String              contentType         = req.getHeader("Content-Type");
+    Enum                command             = (Enum) p.get("cmd");
+    Enum                format              = (Enum) p.get("format");
+    String              msg                 = p.getParameter("msg");
+    String              data                = p.getParameter("data");
+    String              id                  = p.getParameter("id");
     String              serviceKey          = req.getParameter("serviceKey");
     String              sourceCurrency      = "";
     String              targetCurrency      = "";
@@ -48,24 +60,30 @@ public class ApiWebAgent
     String              dealReferenceNumber = "";
     String              endToEndId          = "";
 
-    if ( format == null  ) format = "json";
+    logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
 
     try {
 
       if ( SafetyUtil.isEmpty(data) ) {
-        out.print("<form method=post><span>ExchangeRate Service </span>");
-        out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
-        out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><br><button type=submit >Submit</button></form>");
+        if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
+          resp.setContentType("text/html");
+          out.print("<form method=post><span>ExchangeRate Service </span>");
+          out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
+          out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
+          out.println("<br><br><button type=submit >Submit</button></form>");
 
-        out.println();
+          out.println();
 
-        return;
+          return;
+        } else {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "PUT|POST expecting data, none received.");
+          return;
+        }
       }
 
       ExchangeRateService service = (ExchangeRateService) x.get("exchangeRate");
 
-      if ( "json".equals(format) ) {
+      if ( Format.JSON == format ) {
         JSONParser jsonParser = new JSONParser();
         jsonParser.setX(x);
 
@@ -76,12 +94,9 @@ public class ApiWebAgent
         ExchangerateApiModel exApiModel = (ExchangerateApiModel) jsonParser.parseString(data, ExchangerateApiModel.class);
 
         if ( exApiModel == null ) {
-          out.println("Parse Error. Please input the exact data. <br><br>");
-
-          String message = getParsingError(x, buffer_.toString());
-          logger.error(message + ", input: " + buffer_.toString());
-          out.println(message);
-          out.flush();
+          String message = getParsingError(x, data);
+          logger.error(message + ", input: " + data);
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
           return;
         }
 
@@ -99,32 +114,47 @@ public class ApiWebAgent
             exQuote = service.getRateFromTarget(sourceCurrency, targetCurrency, targetAmount, valueDate);
             outputterJson.output(exQuote);
           } else {
-            out.println("Please input the exact data");
+            String message = "target amount < 0";
+            logger.error(message);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+            return;
           }
         } else if ( "getRateFromSource".equals(serviceKey) ) {
           if ( sourceAmount > 0) {
             exQuote = service.getRateFromSource(sourceCurrency, targetCurrency, sourceAmount, valueDate);
             outputterJson.output(exQuote);
           } else {
-            out.println("Please input the exact data");
+            String message = "source amount < 0";
+            logger.error(message);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+            return;
           }
         } else {
           if ( SafetyUtil.isEmpty(sourceCurrency) || SafetyUtil.isEmpty(targetCurrency) ) {
             AcceptRateApiModel accprate = service.acceptRate(endToEndId, dealReferenceNumber);
             outputterJson.output(accprate);
           } else {
-            out.println("Please input the exact data");
+            String message = "invalid source|target currency";
+            logger.error(message);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+            return;
           }
         }
 
         out.println(outputterJson.toString());
+        resp.setStatus(HttpServletResponse.SC_OK);
       }
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
-        t.printStackTrace(out);
+      t.printStackTrace(out);
       out.println("</pre>");
       t.printStackTrace();
+      try {
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.toString());
+      } catch ( java.io.IOException e ) {
+        logger.error("Failed to send HttpServletResponse CODE", e);
+      }
     }
   }
 
