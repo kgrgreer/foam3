@@ -65,6 +65,7 @@ public class PacsWebAgent
         if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
           resp.setContentType("text/html");
           out.println("<form method=post><span>Request Pacs: </span>");
+          //out.println("<input id=cmdInput name=cmd type=hidden value=get ></input>");
           out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
           out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");
           out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
@@ -118,7 +119,9 @@ public class PacsWebAgent
 
         out.println(outputterJson.toString());
         resp.setStatus(HttpServletResponse.SC_OK);
-      } 
+      } else {
+        resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format.toString());
+      }
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
