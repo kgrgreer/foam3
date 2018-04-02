@@ -7,8 +7,8 @@
 package net.nanopay.settings;
 
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.ListSink;
 import foam.nanos.http.WebAgent;
 import net.nanopay.model.TermsAndConditions;
 
@@ -39,9 +39,9 @@ public class TermsAndConditionsWebAgent
     }
 
     if ( version.equals("") ) {
-      ListSink listSink = (ListSink) tcDAO.orderBy(new foam.mlang.order.Desc(TermsAndConditions.ID)).limit(1).select(new ListSink());
+      ArraySink listSink = (ArraySink) tcDAO.orderBy(new foam.mlang.order.Desc(TermsAndConditions.ID)).limit(1).select(new ArraySink());
 
-      terms = (TermsAndConditions) listSink.getData().get(0);
+      terms = (TermsAndConditions) listSink.getArray().get(0);
     } else {
       terms = (TermsAndConditions) tcDAO.find(EQ(TermsAndConditions.ID,Long.valueOf(version)));
     }
