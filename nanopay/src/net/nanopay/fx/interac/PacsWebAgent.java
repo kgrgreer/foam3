@@ -62,8 +62,9 @@ public class PacsWebAgent
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
-        if ( "application/x-www-form-urlencoded".equals(contentType) ) {
-          out.print("<form method=post><span>Request Pacs: </span>");
+        if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
+          resp.setContentType("text/html");
+          out.println("<form method=post><span>Request Pacs: </span>");
           out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
           out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");
           out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
