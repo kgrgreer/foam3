@@ -13,6 +13,7 @@ var classes = [
   'net.nanopay.cico.spi.alterna.AlternaSFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerifier',
+  'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -23,6 +24,7 @@ var classes = [
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',
   'net.nanopay.model.Identification',
+  'net.nanopay.model.TermsAndConditions',
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.liquidity.model.Threshold',
   'net.nanopay.liquidity.model.ThresholdResolve',
@@ -44,6 +46,7 @@ var classes = [
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.fx.client.ClientExchangeRateService',
   'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.interac.model.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',

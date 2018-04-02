@@ -45,11 +45,11 @@ public class AutoCashOutForInvoiceTransactionDAO
       invoiceDAO.put(invoice);
 
       DAO      bankAccountDAO = (DAO) x.get("localBankAccountDAO");
-      ListSink listSink       = (ListSink) bankAccountDAO
+      ArraySink listSink      = (ArraySink) bankAccountDAO
         .where(EQ(BankAccount.OWNER, txn.getPayeeId()))
         .limit(1)
-        .select(new ListSink());
-      List     list           = listSink.getData();
+        .select(new ArraySink());
+      List     list           = listSink.getArray();
 
       // And the Payee
       if ( list.size() > 0 ) {

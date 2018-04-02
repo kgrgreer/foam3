@@ -68,6 +68,20 @@ return CachingDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'shopperRegistrationDAO',
+      swiftFactory: `
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)shopperRegistrationDAO"
+    ])
+  ]),
+  "cache": ArrayDAO_create(["of": User.classInfo()]),
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'transactionDAO',
       swiftFactory: `
 return CachingDAO_create([

@@ -20,11 +20,47 @@ function rmfile {
     fi
 }
 
+function install {
+    # Only support MacOS install/setup
+    if [ "$OSTYPE" != darwin17 ]; then
+        return
+    fi
+
+    cd "$NANOPAY_HOME"
+
+    git submodule init
+    git submodule update
+
+    npm install
+
+    cd tools
+    ./tomcatInstall.sh
+
+    setenv
+    set_doc_base
+}
+
+function set_doc_base {
+    # setup docbase
+    # <Host>
+    #    <Context docBase="$catalina_doc_base" path="/dev" />
+    # </Host>
+    if [ -f "$CATALINA_HOME/conf/server.xml" ]; then
+        if ! grep -q "docBase" "$CATALINA_HOME/conf/server.xml"; then
+            printf "adding docBase\n"
+            # TODO: figure how ot insert \n before <\Host> on macos
+            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" /></Host>,g" "$CATALINA_HOME/conf/server.xml"
+        else
+            sed -i -e "s,docBase=.*path=,docBase=\"\${catalina_doc_base}\" path=,g" "$CATALINA_HOME/conf/server.xml"
+        fi
+    fi
+}
+
 function backup {
     BACKUP_HOME="/opt/backup"
 
     # backup journals in event of file incompatiblity between versions
-    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ]; then
+    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
         printf "backup\n"
         DATE=$(date +%Y%m%d_%H%M%S)
         mkdir -p "$BACKUP_HOME/$DATE"
@@ -93,6 +129,15 @@ function deploy_war {
 function deploy_journals {
     # prepare journals
     cd "$NANOPAY_HOME"
+
+    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
+        # remove journal file that find.sh was previously creating
+        rm "$JOURNAL_HOME"
+    fi
+
+    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+        rmdir "$JOURNAL_HOME"
+    fi
 
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
@@ -192,6 +237,7 @@ function start_tomcat {
         # System property 'user.dir', which, for now is the
         # only way to control where the nano.log is created.
         #
+        mkdir -p "$CATALINA_BASE/logs"
         cd "$CATALINA_BASE/logs"
         "$CATALINA_HOME/bin/catalina.sh" $ARGS
     fi
@@ -219,7 +265,6 @@ function testcatalina {
     if [ -x "$1/bin/catalina.sh" ]; then
         #printf "found. ( $1 )\n"
         export CATALINA_HOME="$1"
-        export CATALINA_BASE="$CATALINA_HOME"
     fi
 }
 
@@ -227,7 +272,10 @@ function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
-    JOURNAL_HOME="$NANOPAY_HOME/journals"
+
+    if [ -z "$JOURNAL_HOME" ]; then
+       JOURNAL_HOME="$NANOPAY_HOME/journals"
+    fi
 
     if [ "$OSTYPE" == "linux-gnu" ]; then
         NANOPAY_HOME=/pkg/stack/stage/NANOPAY
@@ -262,6 +310,18 @@ function setenv {
         exit 1
     done
 
+    if [ -z "$CATALINA_BASE" ]; then
+        export CATALINA_BASE="$CATALINA_HOME"
+    fi
+    if [ -z "$CATALINA_PORT_HTTP" ]; then
+        export CATALINA_PORT_HTTP=8080
+    fi
+    if [ -z "$CATALINA_PORT_HTTPS" ]; then
+        export CATALINA_PORT_HTTPS=8443
+    fi
+    if [ -z "$CATALINA_DOC_BASE" ]; then
+        export CATALINA_DOC_BASE="$NANOPAY_HOME"
+    fi
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was creating
         rm "$JOURNAL_HOME"
@@ -270,9 +330,18 @@ function setenv {
 
     WAR_HOME="$NANOPAY_HOME"/target/root-0.0.1
 
-    export JAVA_OPTS=""
+    if [ -z "$JAVA_OPTS" ]; then
+        export JAVA_OPTS=""
+    fi
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$CATALINA_BASE/logs"
+
+    if [ -z "$CATALINA_OPTS" ]; then
+        export CATALINA_OPTS=""
+    fi
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
 }
 
 function usage {
@@ -282,6 +351,8 @@ function usage {
     echo "  -b : Generate source, compile, and deploy war and journals."
     echo "  -c : Generate source and compile."
     echo "  -d : Run with JDPA debugging enabled."
+    echo "  -j : Delete runtime journals"
+    echo "  -i : Install npm and tomcat libraries"
     echo "  -n : Run nanos."
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
@@ -295,16 +366,20 @@ BUILD_ONLY=0
 COMPILE_ONLY=0
 DEBUG=0
 FOREGROUND=0
+DELETE_RUNTIME_JOURNALS=0
+INSTALL=0
 RESTART_ONLY=0
 RUN_NANOS=0
 STOP_TOMCAT=0
 
-while getopts "bcdfhnrs" opt ; do
+while getopts "bcdfhinrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) COMPILE_ONLY=1 ;;
         d) DEBUG=1 ;;
         f) FOREGROUND=1 ;;
+        j) DELETE_RUNTIME_JOURNALS=1 ;;
+        i) INSTALL=1 ;;
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
@@ -314,7 +389,10 @@ while getopts "bcdfhnrs" opt ; do
 done
 
 setenv
-
+if [ "$INSTALL" -eq 1 ]; then
+    install
+    exit 0
+fi
 if [ "$RUN_NANOS" -eq 1 ]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
@@ -331,11 +409,17 @@ else
         build_war
         undeploy_war
         deploy_journals
-        #
-        # NOTE: Tomcat needs to be running to property unpack and deploy war.
-        #
-        start_tomcat
-        deploy_war
+        if [ "$FOREGROUND" -eq 1 ]; then
+            deploy_war
+            start_tomcat
+        else
+            #
+            # NOTE: Tomcat needs to be running to property unpack and deploy war
+            # on the linux production instances. Either work on macos localhost.
+            #
+            start_tomcat
+            deploy_war
+        fi
     else
         start_tomcat
     fi
