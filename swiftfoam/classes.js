@@ -48,6 +48,7 @@ var classes = [
   'foam.nanos.auth.Phone',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.User',
+  'foam.nanos.auth.UserUserJunction',
   'foam.nanos.auth.token.ClientTokenService',
   'foam.nanos.auth.token.Token',
   'foam.nanos.auth.token.TokenService',

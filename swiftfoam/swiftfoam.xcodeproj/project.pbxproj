@@ -228,6 +228,8 @@
 		4A2015442073C532005BC7F6 /* foam_core_Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2015422073C532005BC7F6 /* foam_core_Identifiable.swift */; };
 		4A2015462073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2015452073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift */; };
 		4A2015482073CF10005BC7F6 /* foam_dao_ReadOnlyDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2015472073CF10005BC7F6 /* foam_dao_ReadOnlyDAO.swift */; };
+		4A20154C2073D333005BC7F6 /* foam_nanos_auth_UserUserJunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A20154A2073D332005BC7F6 /* foam_nanos_auth_UserUserJunction.swift */; };
+		4A20154D2073D333005BC7F6 /* foam_nanos_auth_UserUserJunctionId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A20154B2073D332005BC7F6 /* foam_nanos_auth_UserUserJunctionId.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -465,6 +467,8 @@
 		4A2015422073C532005BC7F6 /* foam_core_Identifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_core_Identifiable.swift; sourceTree = "<group>"; };
 		4A2015452073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_ManyToManyRelationshipDAO.swift; sourceTree = "<group>"; };
 		4A2015472073CF10005BC7F6 /* foam_dao_ReadOnlyDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_ReadOnlyDAO.swift; sourceTree = "<group>"; };
+		4A20154A2073D332005BC7F6 /* foam_nanos_auth_UserUserJunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_auth_UserUserJunction.swift; sourceTree = "<group>"; };
+		4A20154B2073D332005BC7F6 /* foam_nanos_auth_UserUserJunctionId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_auth_UserUserJunctionId.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -528,6 +532,8 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				4A20154A2073D332005BC7F6 /* foam_nanos_auth_UserUserJunction.swift */,
+				4A20154B2073D332005BC7F6 /* foam_nanos_auth_UserUserJunctionId.swift */,
 				4A2015472073CF10005BC7F6 /* foam_dao_ReadOnlyDAO.swift */,
 				4A2015452073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift */,
 				4A2015422073C532005BC7F6 /* foam_core_Identifiable.swift */,
@@ -1064,6 +1070,7 @@
 				107C57B62044663100CB13F7 /* foam_box_HTTPReplyBox.swift in Sources */,
 				107C57F12044663100CB13F7 /* foam_swift_parse_parser_NotChars.swift in Sources */,
 				107C57E62044663100CB13F7 /* foam_mlang_sink_Map.swift in Sources */,
+				4A20154D2073D333005BC7F6 /* foam_nanos_auth_UserUserJunctionId.swift in Sources */,
 				107C57D72044663100CB13F7 /* net_nanopay_tx_model_FeeType.swift in Sources */,
 				107C57C52044663100CB13F7 /* foam_box_ReplyBox.swift in Sources */,
 				107C57DD2044663100CB13F7 /* foam_box_RPCMessage.swift in Sources */,
@@ -1074,6 +1081,7 @@
 				107C57D42044663100CB13F7 /* foam_core_Exception.swift in Sources */,
 				107C582D2044663100CB13F7 /* foam_nanos_auth_Region.swift in Sources */,
 				107C57F02044663100CB13F7 /* foam_nanos_auth_LastModifiedAware.swift in Sources */,
+				4A20154C2073D333005BC7F6 /* foam_nanos_auth_UserUserJunction.swift in Sources */,
 				107C579D2044663100CB13F7 /* foam_core_EventProxy.swift in Sources */,
 				107C57F52044663100CB13F7 /* net_nanopay_tx_model_InformationalFee.swift in Sources */,
 				107C582E2044663100CB13F7 /* foam_swift_parse_parser_NotChar.swift in Sources */,
