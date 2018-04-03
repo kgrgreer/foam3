@@ -81,13 +81,19 @@ try {
   String filename = CsvUtil.generateFilename(now);
   
   Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.csv");
+  Boolean csvFileExist = false;
+  
   for ( ChannelSftp.LsEntry entry : list ) {
-    if ( ! entry.getFilename().equals(filename) ) {
-      channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
-    } else {
-        logger.debug("Do not send duplicate csv files!", System.getProperty("user.name"));
+    if ( entry.getFilename().equals(filename) ) {
+      csvFileExist = true;
     }
-  }  
+  }
+  
+  if ( ! csvFileExist ) {
+    channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
+  } else {
+    logger.warning("duplicate csv file sent", filename, "sent by " + System.getProperty("user.name"));
+  } 
   
   channelSftp.exit();
 } catch ( Exception e ) {
