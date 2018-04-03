@@ -6,7 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import java.util.*;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
@@ -66,12 +66,12 @@ public class TransactionDAO
       return super.put_(x, obj);
     }
     if ( transaction.getType().equals(TransactionType.CASHIN) ) {
-      if ( transaction.getStatus().equals("ACCEPTED") )
+      if ( transaction.getStatus().equals(TransactionStatus.COMPLETED) )
         return executeTransaction(x, transaction);
       return super.put_(x, obj);
     }
     if ( transaction.getType().equals(TransactionType.CASHOUT) ) {
-      if ( ! transaction.getStatus().equals("DECLINED") ) {
+      if ( ! transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         if ( oldTxn != null )
           return super.put_(x, obj);
       } else {

@@ -4,7 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
 
 public class DuplicateTransactionCheckDAO extends ProxyDAO {
@@ -18,7 +18,7 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
     Transaction curTxn = (Transaction) obj;
     if ( oldTxn != null ) {
-      if ( oldTxn.getStatus().equals("ACCEPTED") || oldTxn.getStatus().equals("DECLINED") ) {
+      if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
         throw new RuntimeException("Unable to update Transaction, if transaction status is accept or decline");
       }
       if ( compareTransactions(oldTxn, curTxn) != 0 ) {
@@ -37,7 +37,7 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
     Transaction temp = (Transaction) curtxn.deepClone();
     temp.setStatus(oldtxn.getStatus());
     temp.setInvoiceId(oldtxn.getInvoiceId());
-    temp.setCicoStatus(oldtxn.getCicoStatus());
+    //temp.setCicoStatus(oldtxn.getCicoStatus());
     temp.setDate(oldtxn.getDate());
     temp.setPayerName(oldtxn.getPayerName());
     temp.setPayeeName(oldtxn.getPayeeName());

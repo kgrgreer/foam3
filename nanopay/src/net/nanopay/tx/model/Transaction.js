@@ -18,7 +18,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.cico.model.TransactionStatus',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -52,9 +52,11 @@ foam.CLASS({
       name: 'invoiceId'
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: ''
+      value: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+      javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
       class: 'String',
@@ -234,7 +236,7 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-        return ( ( "".equals(getStatus()) && ! TransactionType.CASHIN.equals(getType()) ) || ( TransactionType.CASHIN.equals(getType()) && "ACCEPTED".equals(getStatus()) ) );
+        return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT);
       `
     },
     {
