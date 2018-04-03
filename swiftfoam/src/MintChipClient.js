@@ -21,6 +21,7 @@ foam.CLASS({
     'currentUser',
     'refreshTransactionDAO',
     'transactionDAO',
+    'userUserJunctionDAO'
   ],
   properties: [
     {
@@ -205,6 +206,17 @@ return ClientDAO_create([
 ])
       `,
     },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'userUserJunctionDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)userUserJunctionDAO"
+  ])
+])
+      `
+    }
   ],
   axioms: [
     foam.pattern.Singleton.create(),
