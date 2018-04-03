@@ -69,7 +69,7 @@ return d
       class: 'String',
       name: 'amount',
       swiftView: 'foam.swift.ui.FOAMUILabel',
-      swiftExpressionArgs: ['transaction$amount', 'transaction$tip', 'transaction$payerId', 'user$id'],
+      swiftExpressionArgs: ['transaction$amount', 'transaction$tip', 'transaction$payerId', 'transaction$type', 'user$id'],
       swiftExpression: `
 guard let amount = transaction$amount as? Int else {
   return "ERROR " + String(describing: transaction$amount)
@@ -89,11 +89,21 @@ if let tipAmount = transaction$tip as? Int {
 }
 
 var sign: String = ""
-if ( payerId == userId ) {
-  sign = "+ "
+
+if let type = transaction$type as? TransactionType {
+  if type == .CASHOUT {
+    sign = "- "
+  } else if type == .CASHIN{
+    sign = "+ "
+  }
 } else {
-  sign = "- "
+  if ( payerId == userId ) {
+    sign = "+ "
+  } else {
+    sign = "- "
+  }
 }
+
 return sign + "$" + String(format: "%.2f", Float(amount + tip)/100)
       `,
     },
