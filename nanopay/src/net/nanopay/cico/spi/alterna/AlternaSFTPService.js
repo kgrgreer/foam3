@@ -55,7 +55,6 @@ ByteArrayOutputStream baos = new ByteArrayOutputStream();
 CsvUtil.writeCsvFile(getX(), baos, OutputterMode.STORAGE);
 final Logger logger = (Logger) getX().get("logger");
 
-
 Session session = null;
 Channel channel = null;
 ChannelSftp channelSftp;
@@ -90,7 +89,6 @@ try {
     }
   }  
   
-  // channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), CsvUtil.generateFilename(now));
   channelSftp.exit();
 } catch ( Exception e ) {
   e.printStackTrace();
