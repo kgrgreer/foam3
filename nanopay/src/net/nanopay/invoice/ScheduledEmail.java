@@ -2,7 +2,7 @@ package net.nanopay.invoice;
 
 import foam.core.*;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
@@ -31,7 +31,7 @@ public class ScheduledEmail
     startTime.set(today.get(Calendar.YEAR),today.get(Calendar.MONTH),today.get(Calendar.DAY_OF_MONTH)+1,0,0,0);
     startTime.setTimeInMillis(startTime.getTimeInMillis() - 1000);
     endTime.setTimeInMillis(startTime.getTimeInMillis() + (1000*60*60*24) );
-    
+
     // Grabs all invoices whose payment days are tomorrow
     DAO invoiceListDAO = invoiceDAO.where(
       AND(
@@ -40,7 +40,7 @@ public class ScheduledEmail
         EQ(Invoice.SCHEDULED_EMAIL_SENT,false)
       )
     );
-    List<Invoice>    invoicesList = (List)((ListSink)invoiceListDAO.select(new ListSink())).getData();
+    List<Invoice>    invoicesList = (List)((ArraySink)invoiceListDAO.select(new ArraySink())).getArray();
     EmailService     email        = (EmailService) x.get("email");
     AppConfig        config       = (AppConfig) x.get("appConfig");
     NumberFormat     formatter    = NumberFormat.getCurrencyInstance();

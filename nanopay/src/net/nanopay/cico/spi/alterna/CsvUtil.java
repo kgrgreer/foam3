@@ -24,7 +24,7 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 
 public class CsvUtil {
 
@@ -111,7 +111,15 @@ public class CsvUtil {
     }
 
     Outputter out = new Outputter(o, mode, false);
-    transactionDAO.where(EQ(Transaction.CICO_STATUS, TransactionStatus.NEW)).select(new AbstractSink() {
+    transactionDAO.where(
+        AND(
+            EQ(Transaction.CICO_STATUS, TransactionStatus.NEW),
+            OR(
+                EQ(Transaction.TYPE, TransactionType.CASHIN),
+                EQ(Transaction.TYPE, TransactionType.CASHOUT)
+            )
+        )
+    ).select(new AbstractSink() {
 
       @Override
       public void put(Object obj, Detachable sub) {

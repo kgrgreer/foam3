@@ -15,6 +15,19 @@ Checkout `NANOPAY`
 git clone https://github.com/nanopayinc/NANOPAY.git
 ```
 
+### Configuration
+
+Have the build script inialize submodules, update node and tomcat libraries, and setup a docbase so tomcat automatically reloads on javascript changes.
+
+NOTE: you will be prompted for your system password during the tomcat installation.
+
+```
+cd NANOPAY
+build.sh -i
+```
+
+#### Indidual Configuration Components
+##### FOAM2 SubModule
 foam2 is added as a submodule.
 Initialize the submodule
 ```
@@ -22,13 +35,13 @@ git submodule init
 git submodule update
 ```
 
-### npm 
+##### npm 
 Run npm to install required packages, such iso2022
 ```
 npm install
 ```
 
-### Installing tomcat
+##### Installing tomcat
 
 Go into the NANOPAY/tools directory and run the following commands:
 
@@ -37,64 +50,31 @@ Go into the NANOPAY/tools directory and run the following commands:
 
 ```
 
+##### Tomcat docBase
 To have tomcat automatically reload, add your development path to tomcat's configuration.
-Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`).
+Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`) as follows:
+
+NOTE: this can be added/updated at any time by running *build.sh -i*
 ```
 /Library/Tomcat/conf/server.xml
 ```
-adding (example) a `Context docBase` to the `Host` element.
+
 ```
 <Host>
   ...
-  <Context docBase="Users/your_login_name/path_to_nanopay_repo/NANOPAY" path="/dev" />
+  <Context docBase="${catalina_doc_base}" path="/dev" />
 </Host> 
 ```
 
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
 
-`sh run-nanos.sh`
-OR
-`./run-nanos.sh`
+`./build.sh -n`
 
 ### Build all projects and run tomcat at once
 You can run the script generateAll.sh to build all projects and run tomcat, go to the NANOPAY project root folder and execute:
 
-`sh run-tomcat.sh`
-OR
-`./run-tomcat.sh`
-
-### Build manual procedures
-
-1. Copy the services file from foam2 to the current directory
-
-`cp foam2/src/services .`
-
-2. Build foam2
-
-```
-cd foam2/src
-./gen.sh
-cd ../build
-mvn compile package
-mvn install:install-file -Dfile="target/foam-1.0-SNAPSHOT.jar" -DgroupId=com.google -DartifactId=foam -Dversion=1.0 -Dname=foam -Dpackaging=jar
-cd ../..
-```
-
-3. Build NANOPAY
-
-```
-cd NANOPAY
-./gen.sh
-mvn compile package
-cd ..
-```
-
-4. Run NANOS
-
-```
-./NANOPAY/tools/nanos.sh
-```
+`./build.sh`
 
 ### Loading a project
 

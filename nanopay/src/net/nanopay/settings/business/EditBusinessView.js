@@ -8,19 +8,19 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'net.nanopay.retail.model.Business', 
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.retail.model.Business'
   ],
 
   imports: [
-    'userDAO',
     'addressDAO',
-    'user',
-    'stack',
+    'businessSectorDAO',
+    'businessTypeDAO',
     'countryDAO',
     'regionDAO',
-    'businessSectorDAO',
-    'businessTypeDAO'
+    'stack',
+    'user',
+    'userDAO'
   ],
 
   exports: [
@@ -207,7 +207,7 @@ foam.CLASS({
       padding-bottom: 20px;
     }
   `,
-  
+
   properties:[
     {
       name: 'dragActive',
@@ -234,6 +234,7 @@ foam.CLASS({
               .tag({
                 class: 'foam.nanos.auth.ProfilePictureView',
                 data$: this.user.profilePicture$,
+                placeholderImage: 'images/business-placeholder.png',
                 uploadHidden: false,
                 dragActive$: this.dragActive$
               })
@@ -273,9 +274,9 @@ foam.CLASS({
 
   messages: [
     { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'invalidPostal', message: 'Invalid postal code entry.' },    
-    { name: 'structAddress', message: 'Enter street number and name for structured address.' },    
-    { name: 'nonStructAddress', message: 'Enter an address' },    
+    { name: 'invalidPostal', message: 'Invalid postal code entry.' },
+    { name: 'structAddress', message: 'Enter street number and name for structured address.' },
+    { name: 'nonStructAddress', message: 'Enter an address' },
   ],
 
   actions: [
@@ -295,23 +296,23 @@ foam.CLASS({
         address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
         if ( address.structured ) {
           if ( ! address.streetNumber || ! address.streetNumber ) {
-            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));            
+            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));
             return;
           }
         } else {
           if ( ! address.address1 ) {
-            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));            
+            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));
             return;
           }
         }
 
         if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) ) {
-          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));            
+          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));
           return;
         }
 
         if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
-          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));            
+          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));
           return;
         }
 
@@ -322,13 +323,15 @@ foam.CLASS({
       }
     }
   ],
+
   listeners:[
     function onDropOut(e) {
-      e.preventDefault();  
-      this.dragActive = false;    
+      e.preventDefault();
+      this.dragActive = false;
     },
+    
     function onDragOver(e) {
-      this.dragActive = true;    
+      this.dragActive = true;
       e.preventDefault();
     }
   ]

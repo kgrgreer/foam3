@@ -6,16 +6,25 @@
 
 package net.nanopay.fx.interac;
 
-import foam.core.*;
+import foam.core.ClassInfo;
+import foam.core.Detachable;
+import foam.core.FObject;
 import foam.core.PropertyInfo;
+import foam.core.ProxyX;
+import foam.core.X;
+import foam.core.XMLSupport;
 import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
 import foam.nanos.boot.NSpec;
+import foam.nanos.http.Command;
+import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
+import foam.nanos.http.HttpParameters;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import java.io.*;
 import java.nio.CharBuffer;
@@ -37,33 +46,41 @@ public class PacsWebAgent
   public PacsWebAgent() {}
 
   public void execute(X x) {
-    HttpServletRequest  req        = x.get(HttpServletRequest.class);
-    HttpServletResponse response   = x.get(HttpServletResponse.class);
-    final PrintWriter   out        = x.get(PrintWriter.class);
-    CharBuffer          buffer_    = CharBuffer.allocate(65535);
-    String              data       = req.getParameter("data");
-    String              format     = req.getParameter("format");
-    String              id         = req.getParameter("id");
-    String              msg        = req.getParameter("msg");
     Logger              logger     = (Logger) x.get("logger");
+    HttpServletRequest  req        = x.get(HttpServletRequest.class);
+    HttpServletResponse resp       = x.get(HttpServletResponse.class);
+    HttpParameters      p          = x.get(HttpParameters.class);
+    final PrintWriter   out        = x.get(PrintWriter.class);
+    String              contentType = req.getHeader("Content-Type");
+    Enum                command    = (Enum) p.get("cmd");
+    Enum                format     = (Enum) p.get("format");
+    String              msg        = p.getParameter("msg");
+    String              data       = p.getParameter("data");
+    String              id         = p.getParameter("id");
 
-    if ( format == null  ) format = "json";
+    logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
 
     try {
-
       if ( SafetyUtil.isEmpty(data) ) {
-        out.print("<form method=post><span>Request Pacs: </span>");
-        out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
-        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");
-        out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><br><button type=submit >Submit</button></form>");
+        if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
+          resp.setContentType("text/html");
+          out.println("<form method=post><span>Request Pacs: </span>");
+          //out.println("<input id=cmdInput name=cmd type=hidden value=get ></input>");
+          out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
+          out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");
+          out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
+          out.println("<br><br><button type=submit >Submit</button></form>");
 
-        out.println();
+          out.println();
 
-        return;
+          return;
+        } else {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "PUT|POST expecting data, none received.");
+          return;
+        }
       }
 
-      if ( "json".equals(format) ) {
+      if ( Format.JSON == format ) {
 
         JSONParser jsonParser = new JSONParser();
         jsonParser.setX(x);
@@ -76,12 +93,9 @@ public class PacsWebAgent
           Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
           if ( pacs00800106 == null || "".equals(pacs00800106) ) {
-            out.println("Parse Error. Please input the exact data. <br><br>");
-
-            String message = getParsingError(x, buffer_.toString());
-            logger.error(message + ", input: " + buffer_.toString());
-            out.println(message);
-            out.flush();
+            String message = getParsingError(x, data);
+            logger.error(message + ", input: " + data);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
             return;
           }
 
@@ -92,12 +106,9 @@ public class PacsWebAgent
           Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
 
           if ( pacs02800101 == null || "".equals(pacs02800101) ) {
-            out.println("Parse Error. Please input the exact data. <br><br>");
-
-            String message = getParsingError(x, buffer_.toString());
-            logger.error(message + ", input: " + buffer_.toString());
-            out.println(message);
-            out.flush();
+            String message = getParsingError(x, data);
+            logger.error(message + ", input: " + data);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
             return;
           }
 
@@ -107,13 +118,21 @@ public class PacsWebAgent
         }
 
         out.println(outputterJson.toString());
-      } 
+        resp.setStatus(HttpServletResponse.SC_OK);
+      } else {
+        resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format.toString());
+      }
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
-        t.printStackTrace(out);
+      t.printStackTrace(out);
       out.println("</pre>");
       t.printStackTrace();
+      try {
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.toString());
+      } catch ( java.io.IOException e ) {
+        logger.error("Failed to send HttpServletResponse CODE", e);
+      }
     }
   }
 
