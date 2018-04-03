@@ -134,11 +134,14 @@ foam.CLASS({
                   case self.AccountStatus.ACTIVE:
                     return 'Invite-Status-Active'
                   case self.AccountStatus.DISABLED:
+                  case self.AccountStatus.REVOKED:
                     return 'Invite-Status-Disabled'
                 }
               }))
               .add(this.data.status$.map(function (status) {
-                return status.label;
+                return status === self.AccountStatus.REVOKED ?
+                  self.AccountStatus.DISABLED.label :
+                  status.label;
               }))
             .end()
           .end()
