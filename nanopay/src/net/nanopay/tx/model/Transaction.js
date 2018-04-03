@@ -236,7 +236,8 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-        return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT);
+         return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT) ||
+        getType().equals(TransactionType.NONE);
       `
     },
     {

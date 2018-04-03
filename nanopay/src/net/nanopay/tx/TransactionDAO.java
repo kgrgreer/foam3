@@ -141,7 +141,7 @@ public class TransactionDAO
     for ( int i = 0 ; i < ts.length ; i++ ) {
       ts[i].execute(x);
     }
-
+    if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
     return getDelegate().put_(x, txn);
   }
 
