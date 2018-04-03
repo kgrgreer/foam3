@@ -19,6 +19,7 @@ foam.CLASS({
   exports: [
     'userDAO',
     'currentUser',
+    'invoiceDAO',
     'refreshTransactionDAO',
     'transactionDAO',
   ],
@@ -232,6 +233,22 @@ return ClientDAO_create([
   "delegate": HTTPBox_create([
     "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
   ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'invoiceDAO',
+      swiftFactory: `
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)invoiceDAO"
+      ])
+    ])
+  ]),
+  "cache": ArrayDAO_create(["of": Invoice.classInfo()]),
 ])
       `,
     },
