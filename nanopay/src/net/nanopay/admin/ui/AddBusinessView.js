@@ -463,7 +463,7 @@ foam.CLASS({
         return false;
       }
       if ( /\d/.test(this.middleNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Middle initials cannot conain numbers', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
         return false;
       }
       if ( this.lastNameField.length > 70 ) {
