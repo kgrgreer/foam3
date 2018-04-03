@@ -15,8 +15,10 @@ foam.CLASS({
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
     'java.util.Date',
-    'java.util.Properties'
-  ],
+    'java.util.Properties',
+    'java.util.Vector',
+    'foam.nanos.logger.Logger'
+],
 
   properties: [
     {
@@ -51,6 +53,8 @@ foam.CLASS({
 `Date now = new Date();
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 CsvUtil.writeCsvFile(getX(), baos, OutputterMode.STORAGE);
+final Logger logger = (Logger) getX().get("logger");
+
 
 Session session = null;
 Channel channel = null;
@@ -74,7 +78,19 @@ try {
 
   channelSftp = (ChannelSftp) channel;
   channelSftp.cd(getDirectory());
-  channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), CsvUtil.generateFilename(now));
+  
+  String filename = CsvUtil.generateFilename(now);
+  
+  Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.csv");
+  for ( ChannelSftp.LsEntry entry : list ) {
+    if (!entry.getFilename().equals(filename)) {
+      channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
+    } else {
+        logger.debug("Do not send duplicate csv files!", System.getProperty("user.name"));
+    }
+  }  
+  
+  // channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), CsvUtil.generateFilename(now));
   channelSftp.exit();
 } catch ( Exception e ) {
   e.printStackTrace();
