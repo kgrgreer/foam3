@@ -82,7 +82,7 @@ try {
   
   Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.csv");
   for ( ChannelSftp.LsEntry entry : list ) {
-    if (!entry.getFilename().equals(filename)) {
+    if ( ! entry.getFilename().equals(filename) ) {
       channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
     } else {
         logger.debug("Do not send duplicate csv files!", System.getProperty("user.name"));
