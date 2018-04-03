@@ -29,6 +29,7 @@ var classes = [
   'foam.dao.ManyToManyRelationship',
   'foam.dao.ManyToManyRelationshipDAO',
   'foam.dao.ManyToManyRelationshipImpl',
+  'foam.dao.ReadOnlyDAO',
   'foam.log.LogLevel',
   'foam.mlang.Constant',
   'foam.mlang.Expr',
