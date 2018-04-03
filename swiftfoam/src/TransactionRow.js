@@ -113,7 +113,7 @@ return "\\(fc)\\(lc)"
     {
       swiftType: 'UIColor',
       name: 'amountColor',
-      swiftExpressionArgs: ['transaction$amount', 'transaction$payerId', 'user$id'],
+      swiftExpressionArgs: ['transaction$amount', 'transaction$payerId', 'transaction$type', 'user$id'],
       swiftExpression: `
 guard let amount = transaction$amount as? Int else {
   return UIColor.red
@@ -125,6 +125,14 @@ guard let userId = user$id as? Int else {
 
 guard let payerId = transaction$payerId as? Int else {
   return UIColor.red
+}
+
+guard transaction$type as? TransactionType != .CASHOUT else {
+  return UIColor.red
+}
+
+guard transaction$type as? TransactionType != .CASHIN else {
+  return UIColor.green
 }
 
 if ( payerId == userId ) {
