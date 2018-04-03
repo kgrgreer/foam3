@@ -27,6 +27,7 @@ var classes = [
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
   'foam.dao.ManyToManyRelationship',
+  'foam.dao.ManyToManyRelationshipDAO',
   'foam.dao.ManyToManyRelationshipImpl',
   'foam.log.LogLevel',
   'foam.mlang.Constant',

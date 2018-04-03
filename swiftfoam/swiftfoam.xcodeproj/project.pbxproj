@@ -226,6 +226,7 @@
 		107C58612044663100CB13F7 /* foam_nanos_auth_AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107C57932044663100CB13F7 /* foam_nanos_auth_AuthService.swift */; };
 		4A2015432073C532005BC7F6 /* foam_dao_ManyToManyRelationshipImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2015412073C532005BC7F6 /* foam_dao_ManyToManyRelationshipImpl.swift */; };
 		4A2015442073C532005BC7F6 /* foam_core_Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2015422073C532005BC7F6 /* foam_core_Identifiable.swift */; };
+		4A2015462073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2015452073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -461,6 +462,7 @@
 		107C57932044663100CB13F7 /* foam_nanos_auth_AuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_auth_AuthService.swift; sourceTree = "<group>"; };
 		4A2015412073C532005BC7F6 /* foam_dao_ManyToManyRelationshipImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_ManyToManyRelationshipImpl.swift; sourceTree = "<group>"; };
 		4A2015422073C532005BC7F6 /* foam_core_Identifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_core_Identifiable.swift; sourceTree = "<group>"; };
+		4A2015452073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_ManyToManyRelationshipDAO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -524,6 +526,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				4A2015452073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift */,
 				4A2015422073C532005BC7F6 /* foam_core_Identifiable.swift */,
 				4A2015412073C532005BC7F6 /* foam_dao_ManyToManyRelationshipImpl.swift */,
 				06F80D5B20695FB70010A476 /* net_nanopay_onboarding_model_Question.swift */,
@@ -934,6 +937,7 @@
 				107C57C72044663100CB13F7 /* foam_blob_Blob.swift in Sources */,
 				107C582A2044663100CB13F7 /* foam_mlang_predicate_Gte.swift in Sources */,
 				107C57FA2044663100CB13F7 /* RegisterClasses.swift in Sources */,
+				4A2015462073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift in Sources */,
 				107C57E72044663100CB13F7 /* foam_box_HelloMessage.swift in Sources */,
 				107C58582044663100CB13F7 /* foam_dao_PromisedDAO.swift in Sources */,
 				107C57982044663100CB13F7 /* foam_dao_ArraySink.swift in Sources */,
