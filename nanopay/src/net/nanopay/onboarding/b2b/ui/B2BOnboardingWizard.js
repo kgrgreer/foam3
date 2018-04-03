@@ -63,6 +63,8 @@ foam.CLASS({
     { name: 'ErrorQuestionnaireMessage', message: 'You must answer each question.' },
     { name: 'ErrorFirstNameTooLong' message: 'First name cannot exceed 70 characters.' },
     { name: 'ErrorFirstNameDigits', message: 'First name cannot contain numbers.' },
+    { name: 'ErrorMiddleNameTooLong' message: 'Middle name cannot exceed 70 characters.' },
+    { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
     { name: 'ErrorLastNameTooLong' message: 'Last name cannot exceed 70 characters.' },
     { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' }
   ],
@@ -158,6 +160,18 @@ foam.CLASS({
       if ( /\d/.test(editedUser.firstName) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameDigits, type: 'error' }));
         return false;
+      }
+
+      if ( editedUser.middleName ) {
+        if ( editedUser.middleName.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameTooLong, type: 'error' }));
+          return false;
+        }
+
+        if ( /\d/.test(editedUser.middleName) ) {
+          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameDigits, type: 'error' }));
+          return false;
+        }
       }
 
       if ( ! editedUser.lastName) {
