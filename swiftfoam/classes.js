@@ -60,6 +60,7 @@ var classes = [
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.model.Account',
+  'net.nanopay.model.BankAccount',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.tx.UserTransactionLimit',

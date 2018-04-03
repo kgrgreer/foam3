@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0600B4781FACE9D6002825CD /* Session.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0600B4761FACE9D6002825CD /* Session.xcdatamodeld */; };
 		060F94FE1F84155D0037D18F /* ServiceURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060F94FD1F84155D0037D18F /* ServiceURL.swift */; };
+		062E88352073C40C000D3A73 /* net_nanopay_model_BankAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062E88342073C40C000D3A73 /* net_nanopay_model_BankAccount.swift */; };
 		064401081F795BFA003E3692 /* swiftfoam.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064400FE1F795BFA003E3692 /* swiftfoam.framework */; };
 		0644010D1F795BFA003E3692 /* swiftfoamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0644010C1F795BFA003E3692 /* swiftfoamTests.swift */; };
 		0644010F1F795BFA003E3692 /* swiftfoam.h in Headers */ = {isa = PBXBuildFile; fileRef = 064401011F795BFA003E3692 /* swiftfoam.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -239,6 +240,7 @@
 /* Begin PBXFileReference section */
 		0600B4771FACE9D6002825CD /* Session.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Session.xcdatamodel; sourceTree = "<group>"; };
 		060F94FD1F84155D0037D18F /* ServiceURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceURL.swift; sourceTree = "<group>"; };
+		062E88342073C40C000D3A73 /* net_nanopay_model_BankAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_model_BankAccount.swift; sourceTree = "<group>"; };
 		064400FE1F795BFA003E3692 /* swiftfoam.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = swiftfoam.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		064401011F795BFA003E3692 /* swiftfoam.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swiftfoam.h; sourceTree = "<group>"; };
 		064401021F795BFA003E3692 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -520,6 +522,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				062E88342073C40C000D3A73 /* net_nanopay_model_BankAccount.swift */,
 				06F80D5B20695FB70010A476 /* net_nanopay_onboarding_model_Question.swift */,
 				06F80D5120695EC10010A476 /* foam_dao_ManyToManyRelationship.swift */,
 				06F80D5320695EC10010A476 /* foam_mlang_predicate_EndsWith.swift */,
@@ -981,6 +984,7 @@
 				107C58312044663100CB13F7 /* foam_box_LookupBox.swift in Sources */,
 				107C57B72044663100CB13F7 /* foam_swift_parse_parser_Repeat.swift in Sources */,
 				107C57F72044663100CB13F7 /* foam_mlang_Expressions.swift in Sources */,
+				062E88352073C40C000D3A73 /* net_nanopay_model_BankAccount.swift in Sources */,
 				107C58402044663100CB13F7 /* foam_dao_LimitedDAO.swift in Sources */,
 				107C57942044663100CB13F7 /* foam_mlang_sink_Explain.swift in Sources */,
 				107C58152044663100CB13F7 /* foam_swift_ui_DAOTableViewSource.swift in Sources */,
