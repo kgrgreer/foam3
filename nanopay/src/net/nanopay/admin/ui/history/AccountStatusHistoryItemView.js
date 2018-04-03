@@ -96,6 +96,13 @@ foam.CLASS({
             labelDecoration: 'Invite-Status-Disabled',
             icon: 'images/ic-void.svg'
           };
+        case this.AccountStatus.REVOKED.ordinal:
+          return {
+            title: 'Invite revoked, and account',
+            labelText: 'Disabled',
+            labelDecoration: 'Invite-Status-Disabled',
+            icon: 'images/ic-void.svg'
+          };
       }
     },
 
