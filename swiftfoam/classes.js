@@ -60,6 +60,7 @@ var classes = [
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.model.Account',
+  'net.nanopay.model.BankAccount',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.tx.UserTransactionLimit',
@@ -75,8 +76,10 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.model.TransactionPurpose',
-  'net.nanopay.cico.model.TransactionStatus',
-  'net.nanopay.cico.model.TransactionType'
+  'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.model.PaymentStatus'
 ];
 
 module.exports = {
