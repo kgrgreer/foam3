@@ -2,21 +2,18 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-
-import java.util.Date;
 
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.liquidity.model.Liquidity;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -115,6 +112,7 @@ public class LiquidityCashInDAO
     x) throws
     RuntimeException {
     Transaction transaction = new Transaction.Builder(x)
+        .setStatus(TransactionStatus.PENDING)
       .setPayeeId(userId)
       .setPayerId(userId)
       .setAmount(amount)
