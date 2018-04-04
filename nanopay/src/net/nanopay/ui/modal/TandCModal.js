@@ -9,8 +9,6 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
   ],
-  imports: [
-  ],
 
   exports: [
     'as data',
@@ -24,11 +22,6 @@ foam.CLASS({
   ],
 
   css:`
-  ^ .container{
-    height: 600px;
-    background-color: #093649;
-    margin-bottom: 20px;
-  }
   ^ .iframe-container{
     width: 800px;
     border-width: 0px;
@@ -38,7 +31,10 @@ foam.CLASS({
   ^ .net-nanopay-ui-modal-ModalHeader {
     width: 100%;
   } 
-  
+  ^ .net-nanopay-ui-ActionView-printButton {
+    float: left;
+    margin: 0px 5px 5px 5px;
+  } 
   `,
 
   methods: [
@@ -46,16 +42,20 @@ foam.CLASS({
       this.SUPER();
       var self = this;          
       this
-      
-      .tag(this.ModalHeader.create({
-        title: 'Terms and Conditions'
-      }))
-      .addClass(this.myClass())
-      .start('iframe').addClass('iframe-container')
-        .attrs({src:"http://localhost:8080/service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+      .start()
+        .tag(this.ModalHeader.create({
+          title: 'Terms and Conditions'
+        }))
+        .addClass(this.myClass())
+        .start('div')
+          .start(this.PRINT_BUTTON).addClass('btn blue-button')
+          .end()
+        .end()
+        .start('iframe').addClass('iframe-container')
+          .attrs({id:'print-iframe',name:'print-iframe',src:"http://localhost:8080/service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+        .end()
       .end()
-      
-    } ,
+    },
    
   ],
   actions:[
@@ -66,8 +66,16 @@ foam.CLASS({
         X.closeDialog();
       }
     },
+    {
+      name: 'printButton',
+      label: 'Print',
+      code: function(X) {
+        X.window.frames["print-iframe"].focus()
+        X.window.frames["print-iframe"].print()
+      }
+    },
   ],
   listeners: [
-    
+   
   ]
 });
