@@ -18,7 +18,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.cico.model.TransactionStatus',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -31,7 +31,12 @@ foam.CLASS({
     {
       name: 'STATUS_BLACKLIST',
       type: 'Set<String>',
-      value: 'Collections.unmodifiableSet(new HashSet<String>() {{ add("Refunded"); }});'
+      value: `Collections.unmodifiableSet(new HashSet<String>() {
+        {
+          add("Refunded");
+          add("Request");
+        }
+      });`
     }
   ],
 
@@ -52,9 +57,11 @@ foam.CLASS({
       name: 'invoiceId'
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: 'Completed'
+      value: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+      javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
       class: 'String',
@@ -231,6 +238,14 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'isActive',
+      javaReturns: 'boolean',
+      javaCode: `
+         return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT) ||
+        getType().equals(TransactionType.NONE);
+      `
+    },
+    {
       name: 'createTransfers',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
@@ -238,7 +253,7 @@ foam.CLASS({
       javaReturns: 'Transfer[]',
       javaCode: `
         // Don't perform balance transfer if status in blacklist
-        if ( STATUS_BLACKLIST.contains(getStatus()) ) return new Transfer[] {};
+        if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
             new Transfer(getPayerId(), -getTotal())

@@ -11,6 +11,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PadCapture' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
+  { name: 'net/nanopay/model/TermsAndConditions' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -91,6 +92,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/LiquiditySettings' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
+  { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
@@ -161,7 +163,6 @@ FOAM_FILES([
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },
-  { name: 'net/nanopay/cico/model/TransactionStatus' },
   { name: 'net/nanopay/cico/model/TransactionType' },
   { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },

@@ -26,6 +26,7 @@ var classes = [
   'foam.log.LogLevel',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
+  'foam.dao.ManyToManyRelationship',
   'foam.mlang.Constant',
   'foam.mlang.Expr',
   'foam.mlang.predicate.Eq',
@@ -56,7 +57,12 @@ var classes = [
   'foam.u2.Visibility',
   'foam.nanos.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.admin.model.AccountStatus',
+  'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.model.Account',
+  'net.nanopay.model.BankAccount',
+  'net.nanopay.onboarding.model.Questionnaire',
+  'net.nanopay.onboarding.model.Question',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.tx.model.Fee',
@@ -71,7 +77,9 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.model.TransactionPurpose',
   'net.nanopay.cico.model.TransactionStatus',
-  'net.nanopay.cico.model.TransactionType'
+  'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.model.PaymentStatus'
 ];
 
 module.exports = {

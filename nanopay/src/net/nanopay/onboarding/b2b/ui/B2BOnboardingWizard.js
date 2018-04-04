@@ -47,7 +47,7 @@ foam.CLASS({
     { name: 'SaveFailureMessage', message: 'Could not save your changes. Please try again.' },
     { name: 'SubmitSuccessMessage', message: 'Registration submitted successfully! You will receive a confirmation email in your mailbox' },
     { name: 'SubmitFailureMessage', message: 'Registration submission failed. Please try again later.' },
-    { name: 'ErrorAdminNameMessage', message: 'Invalid first and or last name.' },
+    { name: 'ErrorMissingFields', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'ErrorAdminJobTitleMessage', message: 'Job title required.' },
     { name: 'ErrorAdminNumberMessage', message: 'Invalid phone number.' },
     { name: 'ErrorBusinessProfileNameMessage', message: 'Business name required.' },
@@ -60,7 +60,13 @@ foam.CLASS({
     { name: 'ErrorBusinessProfileStreetNameMessage', message: 'Invalid street name.' },
     { name: 'ErrorBusinessProfileCityMessage', message: 'Invalid city name.' },
     { name: 'ErrorBusinessProfilePostalCodeMessage', message: 'Invalid postal code.' },
-    { name: 'ErrorQuestionnaireMessage', message: 'You must answer each question.' }
+    { name: 'ErrorQuestionnaireMessage', message: 'You must answer each question.' },
+    { name: 'ErrorFirstNameTooLong' message: 'First name cannot exceed 70 characters.' },
+    { name: 'ErrorFirstNameDigits', message: 'First name cannot contain numbers.' },
+    { name: 'ErrorMiddleNameTooLong' message: 'Middle name cannot exceed 70 characters.' },
+    { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
+    { name: 'ErrorLastNameTooLong' message: 'Last name cannot exceed 70 characters.' },
+    { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' }
   ],
 
   methods: [
@@ -142,8 +148,41 @@ foam.CLASS({
 
     function validateAdminInfo() {
       var editedUser = this.viewData.user;
-      if ( ! editedUser.firstName || ! editedUser.lastName ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorAdminNameMessage, type: 'error' }));
+      if ( ! editedUser.firstName) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
+        return false;
+      }
+      if ( editedUser.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameTooLong, type: 'error' }));
+        return false;
+      }
+      if ( /\d/.test(editedUser.firstName) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameDigits, type: 'error' }));
+        return false;
+      }
+
+      if ( editedUser.middleName ) {
+        if ( editedUser.middleName.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameTooLong, type: 'error' }));
+          return false;
+        }
+
+        if ( /\d/.test(editedUser.middleName) ) {
+          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameDigits, type: 'error' }));
+          return false;
+        }
+      }
+
+      if ( ! editedUser.lastName) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
+        return false;
+      }
+      if ( editedUser.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorLastNameTooLong, type: 'error' }));
+        return false;
+      }
+      if ( /\d/.test(editedUser.lastName) ) {
+        this.add(this.NotificationMessage.create({ message: this.ErrorLastNameDigits, type: 'error' }));
         return false;
       }
 

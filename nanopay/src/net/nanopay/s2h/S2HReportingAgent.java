@@ -7,7 +7,7 @@ import net.nanopay.invoice.model.Invoice;
 import static foam.mlang.MLang.*;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import net.nanopay.model.*;
 import net.nanopay.tx.model.Transaction;
 
@@ -19,16 +19,16 @@ import java.util.Currency;
 public class S2HReportingAgent
   implements ContextAgent
 {
-  String [] recipients;
+  String[] recipients;
   Calendar calendar = Calendar.getInstance();
   Calendar dayStart = Calendar.getInstance();
-  Calendar dayEnd = Calendar.getInstance();
+  Calendar dayEnd   = Calendar.getInstance();
 
   public S2HReportingAgent(){
     calendar.setTime(new Date());
-    int year = calendar.get(Calendar.YEAR);
+    int year  = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
-    int day = calendar.get(Calendar.DAY_OF_MONTH);
+    int day   = calendar.get(Calendar.DAY_OF_MONTH);
     dayEnd.set(year, month, day, 0, 0, 0);
     dayStart.setTimeInMillis(dayEnd.getTimeInMillis()- 1213200000);
     dayEnd.setTimeInMillis(dayEnd.getTimeInMillis()- 1000);
@@ -81,8 +81,8 @@ public class S2HReportingAgent
 
 
     //makes a list of the DAO information
-    List<Invoice> invoicesList = (List)((ListSink)timeInvoice.select(new ListSink())).getData();
-    List<Transaction> transactionList = (List)((ListSink)timeTransaction.select(new ListSink())).getData();
+    List<Invoice> invoicesList = (List)((ArraySink)timeInvoice.select(new ArraySink())).getArray();
+    List<Transaction> transactionList = (List)((ArraySink)timeTransaction.select(new ArraySink())).getArray();
     double sum = 0.0;
     StringBuilder list = new StringBuilder("");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();

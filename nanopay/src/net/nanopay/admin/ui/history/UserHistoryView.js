@@ -23,7 +23,9 @@ foam.CLASS({
     {
       name: 'data',
       expression: function (id) {
-        return this.userHistoryDAO.where(this.EQ(this.HistoryRecord.OBJECT_ID, this.id));
+        return this.userHistoryDAO
+          .where(this.EQ(this.HistoryRecord.OBJECT_ID, this.id))
+          .orderBy(this.HistoryRecord.TIMESTAMP);
       }
     }
   ],

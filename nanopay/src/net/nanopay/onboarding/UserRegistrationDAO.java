@@ -9,11 +9,10 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-
 import static foam.mlang.MLang.EQ;
 
 public class UserRegistrationDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   protected String spid_;
   protected String group_;
@@ -25,13 +24,14 @@ public class UserRegistrationDAO
   public UserRegistrationDAO(X x, String spid, String group, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    spid_ = spid;
+    spid_  = spid;
     group_ = group;
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) obj;
+    
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }

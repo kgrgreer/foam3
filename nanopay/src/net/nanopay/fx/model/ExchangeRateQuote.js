@@ -20,10 +20,6 @@ foam.CLASS({
       name: 'code'
     },
     {
-      class: 'Long',
-      name: 'Id'
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.model.ExchangeRateFields',
       name: 'exchangeRate',

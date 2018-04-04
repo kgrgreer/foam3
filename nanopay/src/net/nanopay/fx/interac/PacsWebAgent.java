@@ -6,16 +6,25 @@
 
 package net.nanopay.fx.interac;
 
-import foam.core.*;
+import foam.core.ClassInfo;
+import foam.core.Detachable;
+import foam.core.FObject;
 import foam.core.PropertyInfo;
+import foam.core.ProxyX;
+import foam.core.X;
+import foam.core.XMLSupport;
 import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
 import foam.nanos.boot.NSpec;
+import foam.nanos.http.Command;
+import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
+import foam.nanos.http.HttpParameters;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import java.io.*;
 import java.nio.CharBuffer;
@@ -37,125 +46,93 @@ public class PacsWebAgent
   public PacsWebAgent() {}
 
   public void execute(X x) {
-    HttpServletRequest  req        = x.get(HttpServletRequest.class);
-    HttpServletResponse response   = x.get(HttpServletResponse.class);
-    final PrintWriter   out        = x.get(PrintWriter.class);
-    CharBuffer          buffer_    = CharBuffer.allocate(65535);
-    String              data       = req.getParameter("data");
-    String              command    = req.getParameter("cmd");
-    String              format     = req.getParameter("format");
-    String              id         = req.getParameter("id");
-    String              msg        = req.getParameter("msg");
     Logger              logger     = (Logger) x.get("logger");
+    HttpServletRequest  req        = x.get(HttpServletRequest.class);
+    HttpServletResponse resp       = x.get(HttpServletResponse.class);
+    HttpParameters      p          = x.get(HttpParameters.class);
+    final PrintWriter   out        = x.get(PrintWriter.class);
+    String              contentType = req.getHeader("Content-Type");
+    Enum                command    = (Enum) p.get("cmd");
+    Enum                format     = (Enum) p.get("format");
+    String              msg        = p.getParameter("msg");
+    String              data       = p.getParameter("data");
+    String              id         = p.getParameter("id");
 
-    if ( command == null || "".equals(command) ) command = "select";
-
-    if ( format == null  ) format = "json";
+    logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
 
     try {
+      if ( SafetyUtil.isEmpty(data) ) {
+        if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
+          resp.setContentType("text/html");
+          out.println("<form method=post><span>Request Pacs: </span>");
+          //out.println("<input id=cmdInput name=cmd type=hidden value=get ></input>");
+          out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
+          out.println("<br><br><span id=formatSpan>Format:<select name=format id=format style=margin-left:40><option value=json selected>JSON</option></select></span>");
+          out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
+          out.println("<br><br><button type=submit >Submit</button></form>");
 
-      if ( "select".equals(command) && ( data == null || "".equals(data) ) ) {
-        out.print("<form method=post><span>Request Pacs: </span>");
-        out.println("<span id=msgSpan><select name=msg id=msg  style=margin-left:5><option value=008>008</option><option value=028>028</option></select></span>");
-        out.println("</select></span>");
-        out.println("<br><br><span id=formatSpan>Format:<select name=format id=format onchange=changeFormat() style=margin-left:40><option value=json selected>JSON</option><option value=xml>XML</option></select></span>");
-        out.println("<br><br><span>Command:<select name=cmd id=cmd width=150 style=margin-left:5 ><option value=select>SELECT</option></select></span>");
-        out.println("<br><br><span id=dataSpan>Data:<br><textarea rows=20 cols=120 name=data></textarea></span>");
-        out.println("<br><span id=urlSpan style=display:none;> URL : </span>");
-        out.println("<input id=builtUrl size=120 style=margin-left:20;display:none;/ >");
-        out.println("<br><br><button type=submit >Submit</button></form>");
+          out.println();
 
-        out.println();
-
-        return;
+          return;
+        } else {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "PUT|POST expecting data, none received.");
+          return;
+        }
       }
 
-      if ( "select".equals(command) ) {
-        if ( "json".equals(format) ) {
+      if ( Format.JSON == format ) {
 
-          JSONParser jsonParser = new JSONParser();
-          jsonParser.setX(x);
+        JSONParser jsonParser = new JSONParser();
+        jsonParser.setX(x);
 
-          foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
-          outputterJson.setOutputDefaultValues(true);
-          outputterJson.setOutputClassNames(false);
+        foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+        outputterJson.setOutputDefaultValues(true);
+        outputterJson.setOutputClassNames(false);
 
-          if ( "008".equals(msg) ) {
-            //PacsModel008 pacsModel008 = (PacsModel008) jsonParser.parseString(data, PacsModel008.class);
-            Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
+        if ( "008".equals(msg) ) {
+          Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
-            if ( pacs00800106 == null || "".equals(pacs00800106) ) {
-              out.println("Parse Error");
-
-              String message = getParsingError(x, buffer_.toString());
-              logger.error(message + ", input: " + buffer_.toString());
-              out.println(message);
-              out.flush();
-              return;
-            }
-
-            Pacs00200109 pacs00200109 = pacs00800106.generatePacs002Msgby008Msg();
-
-            outputterJson.output(pacs00200109);
-          } else {
-            Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
-
-            if ( pacs02800101 == null || "".equals(pacs02800101) ) {
-              out.println("Parse Error");
-
-              String message = getParsingError(x, buffer_.toString());
-              logger.error(message + ", input: " + buffer_.toString());
-              out.println(message);
-              out.flush();
-              return;
-            }
-
-            Pacs00200109 pacs00200109 = pacs02800101.generatePacs002Msgby028Msg();
-
-            outputterJson.output(pacs00200109);
+          if ( pacs00800106 == null || "".equals(pacs00800106) ) {
+            String message = getParsingError(x, data);
+            logger.error(message + ", input: " + data);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+            return;
           }
 
-          response.setContentType("application/json");
-          out.println(outputterJson.toString());
-        } //else if ( "xml".equals(format) ) {
-    //      XMLSupport      xmlSupport = new XMLSupport();
-    //      XMLInputFactory factory    = XMLInputFactory.newInstance();
-    //      StringReader    reader     = new StringReader(data);
-    //      XMLStreamReader xmlReader  = factory.createXMLStreamReader(reader);
-    //      List<FObject>   objList    = xmlSupport.fromXML(x, xmlReader, PacsModel008.class);
-    //
-    //      if ( objList.size() == 0 ) {
-    //        out.println("Parse Error : ");
-    //
-    //        String message = getParsingError(x, buffer_.toString());
-    //        logger.error(message + ", input: " + buffer_.toString());
-    //        out.println(message);
-    //        out.flush();
-    //        return;
-    //      }
-    //      if ( objList.size() == 0 ) System.out.println("eeee");
-    //
-    //
-    //      PacsModel008 pacsModel008 = null;
-    //      Iterator i = objList.iterator();
-    //      while ( i.hasNext() ) {
-    //        pacsModel008 = (PacsModel008)i.next();
-    //        PacsModel002 pacsModel002 = pacsModel008.generatePacs002Msgby008Msg();
-    //        response.setContentType("application/xml");
-    //        out.println(xmlSupport.toXMLString(pacsModel002));
-    //      }
-    //
-    //      PacsModel002  pacsModel002 = pacsModel008.generatePacs002Msg();
-    //      response.setContentType("application/xml");
-    //      out.println(xmlSupport.toXMLString(pacsModel002));
-    // }
+          Pacs00200109 pacs00200109 = pacs00800106.generatePacs002Msgby008Msg();
+
+          outputterJson.output(pacs00200109);
+        } else {
+          Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
+
+          if ( pacs02800101 == null || "".equals(pacs02800101) ) {
+            String message = getParsingError(x, data);
+            logger.error(message + ", input: " + data);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+            return;
+          }
+
+          Pacs00200109 pacs00200109 = pacs02800101.generatePacs002Msgby028Msg();
+
+          outputterJson.output(pacs00200109);
+        }
+
+        out.println(outputterJson.toString());
+        resp.setStatus(HttpServletResponse.SC_OK);
+      } else {
+        resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format.toString());
       }
     } catch (Throwable t) {
       out.println("Error " + t);
       out.println("<pre>");
-        t.printStackTrace(out);
+      t.printStackTrace(out);
       out.println("</pre>");
       t.printStackTrace();
+      try {
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.toString());
+      } catch ( java.io.IOException e ) {
+        logger.error("Failed to send HttpServletResponse CODE", e);
+      }
     }
   }
 

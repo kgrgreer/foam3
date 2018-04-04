@@ -2,7 +2,7 @@ package net.nanopay.bench;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import net.nanopay.tx.model.Transaction;
 
@@ -27,9 +27,9 @@ public class SignatureVerificationBenchmark
     PrivateKey key = keypair_.getPrivate();
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
 
-    Sink sink = new ListSink();
+    Sink sink = new ArraySink();
     sink = transactionDAO_.select(sink);
-    List data = ((ListSink) sink).getData();
+    List data = ((ArraySink) sink).getArray();
 
     // generate signatures in setup to properly benchmark verification
     Iterator i = data.iterator();
