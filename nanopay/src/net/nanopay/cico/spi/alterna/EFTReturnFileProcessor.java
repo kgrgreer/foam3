@@ -52,7 +52,7 @@ public class EFTReturnFileProcessor extends ContextAwareSupport {
           tran.setReturnType("Return");
         }
 
-        if ( tran.getStatus() == TransactionStatus.PENDING ) {
+        if ( tran.getStatus() == TransactionStatus.SENT ) {
           tran.setStatus(TransactionStatus.DECLINED);
           sendEmail(x, "Transaction was rejected or returned by the system",
             "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
