@@ -61,7 +61,7 @@ foam.CLASS({
     { name: 'ErrorBusinessProfileCityMessage', message: 'Invalid city name.' },
     { name: 'ErrorBusinessProfilePostalCodeMessage', message: 'Invalid postal code.' },
     { name: 'ErrorQuestionnaireMessage', message: 'You must answer each question.' },
-    { name: 'ErrorFirstNameTooLong' message: 'First name cannot exceed 70 characters.' },
+    { name: 'ErrorFirstNameTooLong', message: 'First name cannot exceed 70 characters.' },
     { name: 'ErrorFirstNameDigits', message: 'First name cannot contain numbers.' },
     { name: 'ErrorMiddleNameTooLong' message: 'Middle name cannot exceed 70 characters.' },
     { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
