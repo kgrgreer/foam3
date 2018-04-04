@@ -102,16 +102,15 @@ public class CsvUtil {
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
-
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
-      AND(
-        EQ(Transaction.STATUS, TransactionStatus.PENDING),
-        OR(
-          EQ(Transaction.TYPE, TransactionType.CASHIN),
-          EQ(Transaction.TYPE, TransactionType.CASHOUT)
+        AND(
+            EQ(Transaction.STATUS, TransactionStatus.PENDING),
+            OR(
+                EQ(Transaction.TYPE, TransactionType.CASHIN),
+                EQ(Transaction.TYPE, TransactionType.CASHOUT)
+            )
         )
-      )
     ).select(new AbstractSink() {
 
       @Override

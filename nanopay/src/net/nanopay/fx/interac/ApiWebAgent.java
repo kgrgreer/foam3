@@ -143,6 +143,8 @@ public class ApiWebAgent
 
         out.println(outputterJson.toString());
         resp.setStatus(HttpServletResponse.SC_OK);
+      } else {
+        resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format.toString());
       }
     } catch (Throwable t) {
       out.println("Error " + t);
