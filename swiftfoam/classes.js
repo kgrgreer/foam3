@@ -76,7 +76,6 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.model.TransactionPurpose',
-  'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.model.PaymentStatus'
