@@ -11,7 +11,7 @@ import static foam.mlang.MLang.OR;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
@@ -102,23 +102,11 @@ public class CsvUtil {
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    // add a set to store all CICO Transactionas and their status change to Accept
-    ArraySink acceptTransactions = new ArraySink();
-    transactionDAO.where(
-      OR(
-        EQ(Transaction.CICO_STATUS, TransactionStatus.ACCEPTED),
-        EQ(Transaction.CICO_STATUS, TransactionStatus.DECLINED),
-        EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING))
-    ).select(acceptTransactions);
-    Set<Long> acceptTransactionsSet = new HashSet();
-    for ( Object txn : acceptTransactions.getArray() ) {
-      acceptTransactionsSet.add(( (Transaction) txn ).getId());
-    }
 
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
       AND(
-        EQ(Transaction.CICO_STATUS, TransactionStatus.NEW),
+        EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
           EQ(Transaction.TYPE, TransactionType.CASHIN),
           EQ(Transaction.TYPE, TransactionType.CASHOUT)
@@ -132,9 +120,6 @@ public class CsvUtil {
           User user = null;
           String txnType = null;
           Transaction t = (Transaction) obj;
-          // if CICO Transaction is accept, it will not add to CSV file
-          if ( acceptTransactionsSet.contains(Long.valueOf(t.getId())) )
-            return;
 
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION ) {
@@ -186,7 +171,7 @@ public class CsvUtil {
           alternaFormat.setReference(refNo);
           t.setSettlementDate(generateSettlementDate(now));
           t.setReferenceNumber(refNo);
-          t.setCicoStatus(TransactionStatus.PENDING);
+          t.setStatus(TransactionStatus.SENT);
           transactionDAO.put_(x, t);
           out.put(alternaFormat, sub);
           // if a verification transaction, also add a CR with same information
@@ -203,4 +188,3 @@ public class CsvUtil {
     });
   }
 }
-

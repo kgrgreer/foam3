@@ -13,7 +13,7 @@ import net.nanopay.tx.model.Transaction;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -33,17 +33,17 @@ public class EftSuccessCronjob implements ContextAgent {
       }
     }
     transactionDAO.where(AND(
-      EQ(Transaction.CICO_STATUS, TransactionStatus.PENDING),
+      EQ(Transaction.STATUS, TransactionStatus.SENT),
       NEQ(Transaction.TYPE, TransactionType.CASHOUT)
     )).select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
-        Transaction txn = (Transaction) o;
+        Transaction txn = (Transaction) ((Transaction) o).deepClone();
         Calendar txnSettlementDate = Calendar.getInstance();
         if ( txn.getSettlementDate() != null ) {
           txnSettlementDate.setTime(txn.getSettlementDate());
           if ( txnSettlementDate.get(Calendar.DAY_OF_YEAR) <= daySent.get(Calendar.DAY_OF_YEAR) ) {
-            txn.setCicoStatus(TransactionStatus.ACCEPTED);
+            txn.setStatus(TransactionStatus.COMPLETED);
             transactionDAO.put_(x, txn);
           }
         }
@@ -51,4 +51,3 @@ public class EftSuccessCronjob implements ContextAgent {
     });
   }
 }
-
