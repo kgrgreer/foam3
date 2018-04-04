@@ -25,6 +25,7 @@ public class TransactionDAO
   protected final Set<String> STATUS_BLACKLIST =
     Collections.unmodifiableSet(new HashSet<String>() {{
       add("Refunded");
+      add("Request");
     }});
 
   protected DAO userDAO_;
