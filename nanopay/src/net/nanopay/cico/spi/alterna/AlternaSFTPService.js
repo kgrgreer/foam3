@@ -92,7 +92,7 @@ try {
   if ( ! csvFileExist ) {
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
   } else {
-    logger.warning("duplicate csv file sent", filename, "sent by " + System.getProperty("user.name"));
+    logger.warning("duplicate csv file not sent", filename, System.getProperty("user.name"));
   } 
   
   channelSftp.exit();
