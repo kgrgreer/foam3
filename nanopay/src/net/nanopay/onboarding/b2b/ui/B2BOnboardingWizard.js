@@ -65,7 +65,7 @@ foam.CLASS({
     { name: 'ErrorFirstNameDigits', message: 'First name cannot contain numbers.' },
     { name: 'ErrorMiddleNameTooLong', message: 'Middle name cannot exceed 70 characters.' },
     { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
-    { name: 'ErrorLastNameTooLong' message: 'Last name cannot exceed 70 characters.' },
+    { name: 'ErrorLastNameTooLong', message: 'Last name cannot exceed 70 characters.' },
     { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' }
   ],
 
