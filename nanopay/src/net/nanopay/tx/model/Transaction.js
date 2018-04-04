@@ -31,7 +31,12 @@ foam.CLASS({
     {
       name: 'STATUS_BLACKLIST',
       type: 'Set<String>',
-      value: 'Collections.unmodifiableSet(new HashSet<String>() {{ add("Refunded"); }});'
+      value: `Collections.unmodifiableSet(new HashSet<String>() {
+        {
+          add("Refunded");
+          add("Request");
+        }
+      });`
     }
   ],
 
