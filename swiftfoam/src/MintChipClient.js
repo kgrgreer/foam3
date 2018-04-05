@@ -241,10 +241,15 @@ return ClientDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'userUserJunctionDAO',
       swiftFactory: `
-return ClientDAO_create([
-  "delegate": HTTPBox_create([
-    "url": "\\(self.httpBoxUrlRoot.rawValue)userUserJunctionDAO"
-  ])
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)userUserJunctionDAO"
+      ])
+    ])
+  ]),
+  "cache": ArrayDAO_create(["of": UserUserJunction.classInfo()])
 ])
       `
     },
