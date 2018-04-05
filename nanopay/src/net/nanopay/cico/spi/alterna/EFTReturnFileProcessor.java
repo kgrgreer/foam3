@@ -8,7 +8,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
@@ -52,11 +52,11 @@ public class EFTReturnFileProcessor extends ContextAwareSupport {
           tran.setReturnType("Return");
         }
 
-        if ( tran.getCicoStatus() == TransactionStatus.PENDING ) {
-          tran.setCicoStatus(TransactionStatus.DECLINED);
+        if ( tran.getStatus() == TransactionStatus.SENT ) {
+          tran.setStatus(TransactionStatus.DECLINED);
           sendEmail(x, "Transaction was rejected or returned by the system",
             "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
-        } else if ( tran.getCicoStatus() == TransactionStatus.ACCEPTED && tran.getReturnType().equals("Return") ) {
+        } else if ( tran.getStatus() == TransactionStatus.COMPLETED && tran.getReturnType().equals("Return") ) {
           sendEmail(x, "Transaction was returned outside of the 2 business day return period",
             "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
         }

@@ -69,7 +69,9 @@ foam.CLASS({
             .start('h3').add(this.data.payerId).end()
             .start('h3').add('$', this.addCommas((this.data.total/100).toFixed(2))).end()
             .start('h3').add(this.data.payeeId).end()
-            .start('h3').add(this.data.status).end()
+            .start('h3').add(this.data.status$.map(function (status) {
+              return status.label;
+            })).end()
           .end()
         .end();
     }

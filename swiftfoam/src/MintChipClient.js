@@ -19,6 +19,7 @@ foam.CLASS({
   exports: [
     'userDAO',
     'currentUser',
+    'invoiceDAO',
     'refreshTransactionDAO',
     'transactionDAO',
     'userUserJunctionDAO'
@@ -145,6 +146,36 @@ return ClientDAO_create([
       `,
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'bankAccountDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)bankAccountDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'standardCICOTransactionDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)standardCICOTransactionDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.token.ClientTokenService',
       name: 'smsService',
@@ -216,6 +247,21 @@ return ClientDAO_create([
   ])
 ])
       `
+    },
+    {
+      name: 'invoiceDAO',
+      swiftFactory: `
+return CachingDAO_create([
+  "src": ClientDAO_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)invoiceDAO"
+      ])
+    ])
+  ]),
+  "cache": ArrayDAO_create(["of": Invoice.classInfo()]),
+])
+      `,
     }
   ],
   axioms: [
