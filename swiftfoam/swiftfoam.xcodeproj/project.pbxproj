@@ -233,6 +233,7 @@
 		4A32B30B20764D2200DF626A /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107C57822044662D00CB13F7 /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift */; };
 		4A32B30C20764D2200DF626A /* net_nanopay_tx_model_TransactionLimitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107C57582044662500CB13F7 /* net_nanopay_tx_model_TransactionLimitType.swift */; };
 		4A32B30D20764D2200DF626A /* TransactionRowIBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107C57812044662D00CB13F7 /* TransactionRowIBView.swift */; };
+		4AC151AA2076844F00EA633F /* foam_mlang_ArrayConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC151A92076844F00EA633F /* foam_mlang_ArrayConstant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -475,6 +476,7 @@
 		4A32B2BC20764C1400DF626A /* net_nanopay_invoice_model_Invoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_invoice_model_Invoice.swift; sourceTree = "<group>"; };
 		4A32B2BD20764C1400DF626A /* net_nanopay_invoice_model_PaymentStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_invoice_model_PaymentStatus.swift; sourceTree = "<group>"; };
 		4A32B2BE20764C1400DF626A /* net_nanopay_model_BankAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_model_BankAccount.swift; sourceTree = "<group>"; };
+		4AC151A92076844F00EA633F /* foam_mlang_ArrayConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_mlang_ArrayConstant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -538,6 +540,7 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				4AC151A92076844F00EA633F /* foam_mlang_ArrayConstant.swift */,
 				4A32B2BC20764C1400DF626A /* net_nanopay_invoice_model_Invoice.swift */,
 				4A32B2BD20764C1400DF626A /* net_nanopay_invoice_model_PaymentStatus.swift */,
 				4A32B2BE20764C1400DF626A /* net_nanopay_model_BankAccount.swift */,
@@ -892,6 +895,7 @@
 				4A32B30220764D2200DF626A /* foam_swift_parse_json_Whitespace.swift in Sources */,
 				107C582A2044663100CB13F7 /* foam_mlang_predicate_Gte.swift in Sources */,
 				4A32B30020764D2200DF626A /* foam_swift_parse_json_NullParser.swift in Sources */,
+				4AC151AA2076844F00EA633F /* foam_mlang_ArrayConstant.swift in Sources */,
 				107C57FA2044663100CB13F7 /* RegisterClasses.swift in Sources */,
 				4A2015462073C9FE005BC7F6 /* foam_dao_ManyToManyRelationshipDAO.swift in Sources */,
 				107C57E72044663100CB13F7 /* foam_box_HelloMessage.swift in Sources */,
