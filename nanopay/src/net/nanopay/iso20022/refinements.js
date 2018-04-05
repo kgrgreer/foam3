@@ -119,6 +119,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
     'java.util.Date',
     'foam.dao.DAO'
@@ -152,7 +153,7 @@ foam.CLASS({
             String strStatus = "";
 
             if ( txn != null ) {
-              strStatus = txn.getStatus();
+              strStatus = ( (TransactionStatus) txn.getStatus() ).getLabel();
             }
 
             PaymentTransaction91 paymentTransaction91 = new PaymentTransaction91();
