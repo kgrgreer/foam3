@@ -57,6 +57,7 @@ return ClientAuthService_create([
       name: 'userDAO',
       swiftFactory: `
 return CachingDAO_create([
+  "of": User.classInfo(),
   "src": ClientDAO_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -73,6 +74,7 @@ return CachingDAO_create([
       name: 'shopperRegistrationDAO',
       swiftFactory: `
 return CachingDAO_create([
+  "of": User.classInfo(),
   "src": ClientDAO_create([
     "delegate": HTTPBox_create([
       "url": "\\(self.httpBoxUrlRoot.rawValue)shopperRegistrationDAO"
@@ -87,6 +89,7 @@ return CachingDAO_create([
       name: 'transactionDAO',
       swiftFactory: `
 return CachingDAO_create([
+  "of": Transaction.classInfo(),
   "src": ClientDAO_create([
     "delegate": LogBox_create([
       "delegate": SessionClientBox_create([
@@ -105,6 +108,7 @@ return CachingDAO_create([
       name: 'transactionLimitDAO',
       swiftFactory: `
 return CachingDAO_create([
+  "of": TransactionLimit.classInfo(),
   "src": ClientDAO_create([
     "delegate": LogBox_create([
       "delegate": HTTPBox_create([
@@ -135,6 +139,7 @@ return ClientUserTransactionLimitService_create([
       name: 'accountDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Account.classInfo(),
   "delegate": LogBox_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -150,6 +155,7 @@ return ClientDAO_create([
       name: 'bankAccountDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": BankAccount.classInfo(),
   "delegate": LogBox_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -165,6 +171,7 @@ return ClientDAO_create([
       name: 'standardCICOTransactionDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Transaction.classInfo(),
   "delegate": LogBox_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -220,6 +227,7 @@ return ClientTokenService_create([
       name: 'countryDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Country.classInfo(),
   "delegate": HTTPBox_create([
     "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
   ])
@@ -231,6 +239,7 @@ return ClientDAO_create([
       name: 'regionDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Region.classInfo(),
   "delegate": HTTPBox_create([
     "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
   ])
@@ -242,6 +251,7 @@ return ClientDAO_create([
       name: 'userUserJunctionDAO',
       swiftFactory: `
 return CachingDAO_create([
+  "of": UserUserJunction.classInfo(),
   "src": ClientDAO_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -257,6 +267,7 @@ return CachingDAO_create([
       name: 'invoiceDAO',
       swiftFactory: `
 return CachingDAO_create([
+  "of": Invoice.classInfo(),
   "src": ClientDAO_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
