@@ -9,6 +9,9 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
   ],
+  imports: [
+    'user'
+  ],
 
   exports: [
     'as data',
@@ -33,26 +36,36 @@ foam.CLASS({
   } 
   ^ .net-nanopay-ui-ActionView-printButton {
     float: left;
-    margin: 0px 5px 5px 5px;
+    margin: 2px 5px 5px 25px;
+  } 
+  ^ .net-nanopay-ui-ActionView-EmailButton {
+    float: right;
+    margin: 2px 25px 5px 5px;
   } 
   `,
 
   methods: [
     function initE(){
       this.SUPER();
-      var self = this;          
+      var self = this;    
       this
       .start()
         .tag(this.ModalHeader.create({
           title: 'Terms and Conditions'
         }))
         .addClass(this.myClass())
+        
+        .start('iframe').addClass('iframe-container')
+          .attrs({id:'print-iframe',name:'print-iframe',src:"http://localhost:8080/service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+        .end()
         .start('div')
           .start(this.PRINT_BUTTON).addClass('btn blue-button')
           .end()
-        .end()
-        .start('iframe').addClass('iframe-container')
-          .attrs({id:'print-iframe',name:'print-iframe',src:"http://localhost:8080/service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+          .callIf( this.user.email != "",function(){
+            this 
+            .start(self.EMAIL_BUTTON).addClass('btn blue-button')
+            .end()
+          })
         .end()
       .end()
     },
@@ -74,8 +87,12 @@ foam.CLASS({
         X.window.frames["print-iframe"].print()
       }
     },
-  ],
-  listeners: [
-   
+    {
+      name: 'emailButton',
+      label: 'Email',
+      code: function(X) {
+        //TODO add emails
+      }
+    },
   ]
 });
