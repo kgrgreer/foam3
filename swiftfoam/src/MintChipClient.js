@@ -22,6 +22,7 @@ foam.CLASS({
     'invoiceDAO',
     'refreshTransactionDAO',
     'transactionDAO',
+    'userUserJunctionDAO'
   ],
   properties: [
     {
@@ -55,15 +56,13 @@ return ClientAuthService_create([
       class: 'foam.dao.DAOProperty',
       name: 'userDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": SessionClientBox_create([
-      "delegate": HTTPBox_create([
-        "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
-      ])
+return ClientDAO_create([
+  "of": User.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
     ])
-  ]),
-  "cache": ArrayDAO_create(["of": User.classInfo()]),
+  ])
 ])
       `,
     },
@@ -71,13 +70,11 @@ return CachingDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'shopperRegistrationDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)shopperRegistrationDAO"
-    ])
-  ]),
-  "cache": ArrayDAO_create(["of": User.classInfo()]),
+return ClientDAO_create([
+  "of": User.classInfo(),
+  "delegate": HTTPBox_create([
+    "url": "\\(self.httpBoxUrlRoot.rawValue)shopperRegistrationDAO"
+  ])
 ])
       `,
     },
@@ -85,17 +82,15 @@ return CachingDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'transactionDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": LogBox_create([
-      "delegate": SessionClientBox_create([
-        "delegate": HTTPBox_create([
-          "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
-        ])
+return ClientDAO_create([
+  "of": Transaction.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
       ])
     ])
-  ]),
-  "cache": ArrayDAO_create(["of": Transaction.classInfo()]),
+  ])
 ])
       `,
     },
@@ -103,15 +98,13 @@ return CachingDAO_create([
       class: 'foam.dao.DAOProperty',
       name: 'transactionLimitDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": LogBox_create([
-      "delegate": HTTPBox_create([
-        "url": "\\(self.httpBoxUrlRoot.rawValue)transactionLimitDAO"
-      ])
+return ClientDAO_create([
+  "of": TransactionLimit.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)transactionLimitDAO"
     ])
-  ]),
-  "cache": ArrayDAO_create(["of": TransactionLimit.classInfo()]),
+  ])
 ])
       `,
     },
@@ -134,6 +127,7 @@ return ClientUserTransactionLimitService_create([
       name: 'accountDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Account.classInfo(),
   "delegate": LogBox_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -149,6 +143,7 @@ return ClientDAO_create([
       name: 'bankAccountDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": BankAccount.classInfo(),
   "delegate": LogBox_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -164,6 +159,7 @@ return ClientDAO_create([
       name: 'standardCICOTransactionDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Transaction.classInfo(),
   "delegate": LogBox_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
@@ -219,6 +215,7 @@ return ClientTokenService_create([
       name: 'countryDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Country.classInfo(),
   "delegate": HTTPBox_create([
     "url": "\\(self.httpBoxUrlRoot.rawValue)countryDAO"
   ])
@@ -230,6 +227,7 @@ return ClientDAO_create([
       name: 'regionDAO',
       swiftFactory: `
 return ClientDAO_create([
+  "of": Region.classInfo(),
   "delegate": HTTPBox_create([
     "url": "\\(self.httpBoxUrlRoot.rawValue)regionDAO"
   ])
@@ -238,20 +236,31 @@ return ClientDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'userUserJunctionDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": UserUserJunction.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)userUserJunctionDAO"
+    ])
+  ])
+])
+      `
+    },
+    {
       name: 'invoiceDAO',
       swiftFactory: `
-return CachingDAO_create([
-  "src": ClientDAO_create([
-    "delegate": SessionClientBox_create([
-      "delegate": HTTPBox_create([
-        "url": "\\(self.httpBoxUrlRoot.rawValue)invoiceDAO"
-      ])
+return ClientDAO_create([
+  "of": Invoice.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)invoiceDAO"
     ])
-  ]),
-  "cache": ArrayDAO_create(["of": Invoice.classInfo()]),
+  ])
 ])
       `,
-    },
+    }
   ],
   axioms: [
     foam.pattern.Singleton.create(),
