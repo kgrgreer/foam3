@@ -458,13 +458,15 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
         return false;
       }
-      if ( this.middleNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( /\d/.test(this.middleNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
-        return false;
+      if ( this.middleNameField ) {
+        if ( this.middleNameField.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
+          return false;
+        }
+        if ( /\d/.test(this.middleNameField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
+          return false;
+        }
       }
       if ( this.lastNameField.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
