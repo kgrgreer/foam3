@@ -397,6 +397,9 @@ foam.CLASS({
                   self.isEditingPhone = false;
                   self.isEditingName = false;
                 })
+                .on('paste', function(e) {
+                  e.preventDefault();
+                })
               .end()
             .end()
           .end()
