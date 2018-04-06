@@ -10,7 +10,8 @@ foam.CLASS({
     'isConnecting',
     'group',
     'logo',
-    'window'
+    'window',
+    'loadingSpinner'
   ],
 
   axioms: [
@@ -163,7 +164,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
@@ -184,6 +185,11 @@ foam.CLASS({
               .add('I agree to the')
               .start(this.GO_TO_TERM).end()
               .add('and authorize the release of my Bank information to nanopay.')
+            .end()
+          .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
             .end()
           .end()
         .end()

@@ -155,7 +155,7 @@ foam.CLASS({
       .start('div').addClass('subTitle')
         .add(this.Step)
       .end()
-      .start('div').addClass('subContent')
+      .start('div').addClass('subTitleFlinks')
         .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
         .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
         .start('div').addClass('qa-block')
