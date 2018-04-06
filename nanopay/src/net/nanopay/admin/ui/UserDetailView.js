@@ -191,11 +191,68 @@ foam.CLASS({
   properties: [
     'data',
     'activateProfileMenuBtn_',
-    'activateProfilePopUp_',
     'approveProfileMenuBtn_',
-    'approveProfilePopUp_',
     'editProfileMenuBtn_',
-    'editProfilePopUp_'
+    {
+      name: 'activateProfilePopUp_',
+      factory: function () {
+        var popup = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        popup.addClass('popUpDropDown')
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile_)
+          .end()
+
+        return popup;
+      }
+    },
+    {
+      name: 'approveProfilePopUp_',
+      factory: function () {
+        var popup = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        popup.addClass('popUpDropDown')
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile_)
+          .end()
+        return popup;
+      }
+    },
+    {
+      name: 'editProfilePopUp_',
+      factory: function () {
+        var popup = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        popup.addClass('popUpDropDown')
+          .start('div')
+            .add('Revoke Invite')
+            .on('click', this.revokeInvite)
+          .end()
+          .start('div')
+            .add('Resend Invite')
+            .on('click', this.resendInvite)
+          .end()
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile_)
+          .end()
+        return popup;
+      }
+    }
   ],
 
   methods: [
@@ -291,18 +348,6 @@ foam.CLASS({
       name: 'approveProfileDropDown',
       label: '',
       code: function (X) {
-        this.approveProfilePopUp_ = foam.u2.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        });
-
-        this.approveProfilePopUp_.addClass('popUpDropDown')
-          .start('div')
-            .add('Disable Profile')
-            .on('click', this.disableProfile_)
-          .end()
-
         this.approveProfileMenuBtn_.add(this.approveProfilePopUp_);
       }
     },
@@ -317,18 +362,6 @@ foam.CLASS({
       name: 'activateProfileDropDown',
       label: '',
       code: function (X) {
-        this.activateProfilePopUp_ = foam.u2.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        });
-
-        this.activateProfilePopUp_.addClass('popUpDropDown')
-          .start('div')
-            .add('Disable Profile')
-            .on('click', this.disableProfile_)
-          .end()
-
         this.activateProfileMenuBtn_.add(this.activateProfilePopUp_);
       }
     },
@@ -343,26 +376,6 @@ foam.CLASS({
       name: 'editProfileDropDown',
       label: '',
       code: function (X) {
-        this.editProfilePopUp_ = foam.u2.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        });
-
-        this.editProfilePopUp_.addClass('popUpDropDown')
-          .start('div')
-            .add('Revoke Invite')
-            .on('click', this.revokeInvite)
-          .end()
-          .start('div')
-            .add('Resend Invite')
-            .on('click', this.resendInvite)
-          .end()
-          .start('div')
-            .add('Disable Profile')
-            .on('click', this.disableProfile_)
-          .end()
-
         this.editProfileMenuBtn_.add(this.editProfilePopUp_);
       }
     },
