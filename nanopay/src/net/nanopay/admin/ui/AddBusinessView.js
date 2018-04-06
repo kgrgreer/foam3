@@ -525,7 +525,6 @@ foam.CLASS({
         firstName: this.firstNameField,
         middleName: this.middleNameField,
         lastName: this.lastNameField,
-        businessName: '-',
         jobTitle: this.jobTitle,
         email: this.emailAddress,
         type: 'Business',
