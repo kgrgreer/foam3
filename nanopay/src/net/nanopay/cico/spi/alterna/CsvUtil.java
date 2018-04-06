@@ -148,11 +148,12 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
           //if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if ( t.getPadType() != "" ) {
+          if (  "".equals(t.getPadType()) ) {
             alternaFormat.setPadType(t.getPadType());
           }
-          else
+          else {
             t.setPadType(alternaFormat.getPadType());
+          }
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
           alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
@@ -161,11 +162,12 @@ public class CsvUtil {
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if ( t.getTxnCode() != "" ) {
+          if (  "".equals(t.getTxnCode()) ) {
             alternaFormat.setTxnCode(t.getTxnCode());
           }
-          else
+          else {
             t.setTxnCode(alternaFormat.getTxnCode());
+          }
           alternaFormat.setProcessDate(csvSdf.get().format(generateSettlementDate(now)));
           alternaFormat.setReference(refNo);
           t.setSettlementDate(generateSettlementDate(now));
