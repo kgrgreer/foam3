@@ -310,8 +310,6 @@ foam.CLASS({
         }))
       }
       this.data = Array.from(this.data);
-      if ( errors ) 
-        this.add(this.NotificationMessage.create({ message: this.ErrorMessage, type: 'error' }));
     }
   ]
 });

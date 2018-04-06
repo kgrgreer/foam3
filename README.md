@@ -86,6 +86,17 @@ To build Swift code run the following command
 
 `node swiftfoam/gen_swift.js`
 
+### Branching 
+We are following the OneFlow git branching strategy as described http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow and https://barro.github.io/2016/02/a-succesful-git-branching-model-considered-harmful/.  It is similar to GitFlow http://nvie.com/posts/a-successful-git-branching-model/ with the exception of using rebase and not using developer sub team branches (branches just shared between developers). 
+* `master` branch is the lastest stable release. 
+* `development` branch is the work in progress.
+* `staging` is similar to the documented `release` branches.
+* `staging` bugfixes are PR'd on the staging branch and will be merged/cherry-picked back into `development` branch.
+* `release` hotfixes are PR'd on the release branch and will be merged/cherry-picked back into the `development` branch.
+
+### Versioning
+Versioning follows the Semantic Versioning principles: https://semver.org/
+
 ### Deployments
 For each deployment to the servers
 Steps to build:
