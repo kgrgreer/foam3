@@ -150,6 +150,18 @@ foam.CLASS({
       }
     },
     {
+      class: 'DateTime',
+      name: 'settlementDate'
+    },
+    {
+      class: 'String',
+      name: 'padType'
+    },
+    {
+      class: 'String',
+      name: 'txnCode'
+    },
+    {
       class: 'Currency',
       name: 'receivingAmount',
       label: 'Receiving Amount',

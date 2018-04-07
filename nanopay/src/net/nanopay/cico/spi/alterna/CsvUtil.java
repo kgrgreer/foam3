@@ -18,11 +18,8 @@ import net.nanopay.tx.model.Transaction;
 
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
 
 import static foam.mlang.MLang.*;
 
@@ -43,6 +40,8 @@ public class CsvUtil {
       return new SimpleDateFormat("MM/dd/yyyy");
     }
   };
+  
+  public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
 
   /**
    * Generates the process date based on a given date
@@ -50,11 +49,18 @@ public class CsvUtil {
    * @return either the current date plus 1 day if current time is before 11 am
    *         or the current date plus 2 days if the current date is after 11 am
    */
-  public static String generateProcessDate(Date date) {
+  public static Date generateSettlementDate(Date date) {
     Calendar now = Calendar.getInstance();
     now.setTime(date);
-    now.add(Calendar.DAY_OF_MONTH, ( now.get(Calendar.HOUR_OF_DAY) < 11 ) ? 1 : 2);
-    return csvSdf.get().format(now.getTime());
+    int k = now.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
+    int i = 0;
+    while ( i < k ) {
+      now.add(Calendar.DAY_OF_YEAR, 1);
+      if ( now.get(Calendar.DAY_OF_WEEK) != 7 && now.get(Calendar.DAY_OF_WEEK) != 1 && !cadHolidays.contains(now.get(Calendar.DAY_OF_YEAR)) ) {
+        i = i + 1;
+      }
+    }
+    return now.getTime();
   }
 
   /**
@@ -96,8 +102,6 @@ public class CsvUtil {
     final DAO userDAO = (DAO) x.get("localUserDAO");
     final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-
-    // add a set to store all CICO Transactionas and their status change to Accept
 
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
@@ -141,17 +145,36 @@ public class CsvUtil {
             return;
           }
 
-          AlternaFormat alternaFormat = new AlternaFormat();
+          String refNo = generateReferenceId();
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
+          AlternaFormat alternaFormat = new AlternaFormat();
+          //if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+          if (  !"".equals(t.getPadType()) ) {
+            alternaFormat.setPadType(t.getPadType());
+          }
+          else {
+            t.setPadType(alternaFormat.getPadType());
+          }
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
-          alternaFormat.setLastName(!isOrganization ? user.getLastName() : " ");
+          alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
           alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
           alternaFormat.setBankNumber(padLeftWithZeros(bankAccount.getInstitutionNumber(), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
-          alternaFormat.setProcessDate(CsvUtil.generateProcessDate(now));
-          alternaFormat.setReference(CsvUtil.generateReferenceId());
+          //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
+          if (  !"".equals(t.getTxnCode()) ) {
+            alternaFormat.setTxnCode(t.getTxnCode());
+          }
+          else {
+            t.setTxnCode(alternaFormat.getTxnCode());
+          }
+          alternaFormat.setProcessDate(csvSdf.get().format(generateSettlementDate(now)));
+          alternaFormat.setReference(refNo);
+          t.setSettlementDate(generateSettlementDate(now));
+          t.setReferenceNumber(refNo);
+          t.setStatus(TransactionStatus.SENT);
+          transactionDAO.put_(x, t);
           out.put(alternaFormat, sub);
           // if a verification transaction, also add a CR with same information
           if ( t.getType() == TransactionType.VERIFICATION ) {
