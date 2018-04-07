@@ -23,7 +23,7 @@ public class EftSuccessCronjob implements ContextAgent {
   @Override
   public void execute(X x){
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
+    List<Integer> cadHolidays = CsvUtil.cadHolidays;
     Calendar daySent = Calendar.getInstance();
     int i =0;
     while ( i < 2 ) {
