@@ -149,7 +149,7 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
           //if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if (  "".equals(t.getPadType()) ) {
+          if (  !"".equals(t.getPadType()) ) {
             alternaFormat.setPadType(t.getPadType());
           }
           else {
@@ -163,7 +163,7 @@ public class CsvUtil {
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if (  "".equals(t.getTxnCode()) ) {
+          if (  !"".equals(t.getTxnCode()) ) {
             alternaFormat.setTxnCode(t.getTxnCode());
           }
           else {
