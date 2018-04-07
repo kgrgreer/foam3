@@ -40,6 +40,8 @@ public class CsvUtil {
       return new SimpleDateFormat("MM/dd/yyyy");
     }
   };
+  
+  public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
 
   /**
    * Generates the process date based on a given date
@@ -48,7 +50,6 @@ public class CsvUtil {
    *         or the current date plus 2 days if the current date is after 11 am
    */
   public static Date generateSettlementDate(Date date) {
-    List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
     Calendar now = Calendar.getInstance();
     now.setTime(date);
     int k = now.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
