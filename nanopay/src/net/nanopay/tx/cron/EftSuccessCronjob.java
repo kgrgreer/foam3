@@ -9,6 +9,7 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.spi.alterna.CsvUtil;
 
 import java.util.Arrays;
 import java.util.Calendar;
