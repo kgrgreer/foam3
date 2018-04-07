@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+//Every business day the cronjob generates csv file with CICO transactions and sends it to EftCanada
 public class CsvSentCron implements ContextAgent {
 
   @Override
