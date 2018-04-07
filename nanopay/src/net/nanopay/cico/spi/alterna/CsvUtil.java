@@ -1,26 +1,22 @@
 package net.nanopay.cico.spi.alterna;
 
-import foam.dao.Sink;
-import foam.dao.ArraySink;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
+import foam.dao.Sink;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
-import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.model.Transaction;
-
+import java.io.*;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.io.*;
-
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.model.BankAccount;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -40,7 +36,7 @@ public class CsvUtil {
       return new SimpleDateFormat("MM/dd/yyyy");
     }
   };
-  
+
   public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
 
   /**
@@ -98,20 +94,20 @@ public class CsvUtil {
    * @return the outputter
    */
   public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
-    final Date now = new Date();
-    final DAO userDAO = (DAO) x.get("localUserDAO");
-    final DAO bankAccountDAO = (DAO) x.get("localBankAccountDAO");
-    final DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    final Date now            = new Date();
+    final DAO  userDAO        = (DAO) x.get("localUserDAO");
+    final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
+    final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
 
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
-        AND(
-            EQ(Transaction.STATUS, TransactionStatus.PENDING),
-            OR(
-                EQ(Transaction.TYPE, TransactionType.CASHIN),
-                EQ(Transaction.TYPE, TransactionType.CASHOUT)
-            )
+      AND(
+        EQ(Transaction.STATUS, TransactionStatus.PENDING),
+        OR(
+          EQ(Transaction.TYPE, TransactionType.CASHIN),
+          EQ(Transaction.TYPE, TransactionType.CASHOUT)
         )
+      )
     ).select(new AbstractSink() {
 
       @Override
@@ -148,13 +144,14 @@ public class CsvUtil {
           String refNo = generateReferenceId();
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
-          //if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+          // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
           if (  !"".equals(t.getPadType()) ) {
             alternaFormat.setPadType(t.getPadType());
           }
           else {
             t.setPadType(alternaFormat.getPadType());
           }
+
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
           alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
@@ -162,13 +159,14 @@ public class CsvUtil {
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
+
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if (  !"".equals(t.getTxnCode()) ) {
+          if (  ! "".equals(t.getTxnCode()) ) {
             alternaFormat.setTxnCode(t.getTxnCode());
-          }
-          else {
+          } else {
             t.setTxnCode(alternaFormat.getTxnCode());
           }
+
           alternaFormat.setProcessDate(csvSdf.get().format(generateSettlementDate(now)));
           alternaFormat.setReference(refNo);
           t.setSettlementDate(generateSettlementDate(now));
@@ -176,6 +174,7 @@ public class CsvUtil {
           t.setStatus(TransactionStatus.SENT);
           transactionDAO.put_(x, t);
           out.put(alternaFormat, sub);
+          
           // if a verification transaction, also add a CR with same information
           if ( t.getType() == TransactionType.VERIFICATION ) {
             AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
