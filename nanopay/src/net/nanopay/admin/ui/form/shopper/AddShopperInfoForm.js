@@ -74,9 +74,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'File',
+      class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      view: { class: 'foam.nanos.auth.ProfilePictureView' },
+      view: { class: 'foam.nanos.auth.ProfilePictureView', placeholderImage: 'images/person.svg' },
       factory: function () {
         return this.viewData.profilePicture;
       },
@@ -180,8 +180,9 @@ foam.CLASS({
     {
       name: 'province',
       view: function(_, X) {
+        var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO,
+          dao: X.regionDAO.where(expr.EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')),
           objToChoice: function(a){
             return [a.id, a.name];
           }
@@ -213,6 +214,16 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
       }
+    },
+    {
+      class: 'String',
+      name: 'confirmPassword',
+      factory: function() {
+        return this.viewData.confirmPassword;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.confirmPassword = newValue;
+      }
     }
   ],
 
@@ -232,7 +243,8 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'PasswordLabel', message: 'Password' },
-    { name: 'CreateAPasswordLabel', message: 'Create a Password *' }
+    { name: 'CreateAPasswordLabel', message: 'Create a Password *' },
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
   ],
 
   methods: [
@@ -299,6 +311,10 @@ foam.CLASS({
             .start().addClass('topMargin')
               .start().add(this.CreateAPasswordLabel).addClass('infoLabel').end()
               .start(this.PASSWORD).addClass('inputExtraLarge').end()
+            .end()
+            .start().addClass('topMargin')
+              .start().add(this.ConfirmPasswordLabel).addClass('infoLabel').end()
+              .start(this.CONFIRM_PASSWORD).addClass('inputExtraLarge').end()
             .end()
           .end()
         .end();

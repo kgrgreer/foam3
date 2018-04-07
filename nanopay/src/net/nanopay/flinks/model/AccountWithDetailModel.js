@@ -26,6 +26,18 @@ foam.CLASS({
     {
       class: 'String',
       name: 'InstitutionNumber'
+    },
+    {
+      class: 'String',
+      name: 'Type'
+    },
+    {
+      class: 'String',
+      name: 'Title'
+    },
+    {
+      class: 'String',
+      name: 'AccountNumber'
     }
   ]
 });

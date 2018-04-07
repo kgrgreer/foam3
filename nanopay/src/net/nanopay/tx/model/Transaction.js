@@ -18,7 +18,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.cico.model.TransactionStatus',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -31,7 +31,12 @@ foam.CLASS({
     {
       name: 'STATUS_BLACKLIST',
       type: 'Set<String>',
-      value: 'Collections.unmodifiableSet(new HashSet<String>() {{ add("Refunded"); }});'
+      value: `Collections.unmodifiableSet(new HashSet<String>() {
+        {
+          add("Refunded");
+          add("Request");
+        }
+      });`
     }
   ],
 
@@ -39,38 +44,46 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      label: 'Transaction ID'
+      label: 'Transaction ID',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
-      name: 'refundTransactionId'
+      name: 'refundTransactionId',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
       name: 'invoiceId'
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: 'Completed'
+      value: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+      javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
       class: 'String',
-      name: 'referenceNumber'
+      name: 'referenceNumber',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
       name: 'impsReferenceNumber',
-      label: 'IMPS Reference Number'
+      label: 'IMPS Reference Number',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
-      name: 'payerName'
+      name: 'payerName',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
       name: 'payerId',
       label: 'Payer',
+      visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payerId, X) {
         var self = this;
         X.userDAO.find(payerId).then(function(payer) {
@@ -94,12 +107,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'payeeName'
+      name: 'payeeName',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
       name: 'payeeId',
       label: 'Payee',
+      visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payeeId, X) {
         var self = this;
         X.userDAO.find(payeeId).then(function(payee) {
@@ -125,6 +140,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
+      visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
@@ -134,9 +150,22 @@ foam.CLASS({
       }
     },
     {
+      class: 'DateTime',
+      name: 'settlementDate'
+    },
+    {
+      class: 'String',
+      name: 'padType'
+    },
+    {
+      class: 'String',
+      name: 'txnCode'
+    },
+    {
       class: 'Currency',
       name: 'receivingAmount',
       label: 'Receiving Amount',
+      visibility: foam.u2.Visibility.RO,
       transient: true,
       expression: function(amount, rate) {
         var receivingAmount = amount * rate;
@@ -152,6 +181,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'challenge',
+      visibility: foam.u2.Visibility.RO,
       documentation: 'Randomly generated challenge'
     },
     {
@@ -161,29 +191,34 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'tip'
+      name: 'tip',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Double',
       name: 'rate',
+      visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(rate){
         this.start().add(rate.toFixed(2)).end()
       }
     },
     {
       class: 'FObjectArray',
+      visibility: foam.u2.Visibility.RO,
       name: 'feeTransactions',
       of: 'net.nanopay.tx.model.Transaction'
     },
     {
       class: 'FObjectArray',
       name: 'informationalFees',
+      visibility: foam.u2.Visibility.RO,
       of: 'net.nanopay.tx.model.Fee'
     },
     // TODO: field for tax as well? May need a more complex model for that
     {
       class: 'Currency',
       name: 'total',
+      visibility: foam.u2.Visibility.RO,
       label: 'Amount',
       transient: true,
       expression: function (amount, tip) {
@@ -202,16 +237,26 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionPurpose',
       name: 'purpose',
+      visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction purpose'
     },
     {
       class: 'String',
       name: 'notes',
+      visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction notes'
     }
   ],
 
   methods: [
+    {
+      name: 'isActive',
+      javaReturns: 'boolean',
+      javaCode: `
+         return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT) ||
+        getType().equals(TransactionType.NONE);
+      `
+    },
     {
       name: 'createTransfers',
       args: [
@@ -220,8 +265,17 @@ foam.CLASS({
       javaReturns: 'Transfer[]',
       javaCode: `
         // Don't perform balance transfer if status in blacklist
-        if ( STATUS_BLACKLIST.contains(getStatus()) ) return new Transfer[] {};
-
+        if ( ! isActive() ) return new Transfer[] {};
+        if ( getType() == TransactionType.CASHOUT ) {
+          return new Transfer[]{
+            new Transfer(getPayerId(), -getTotal())
+          };
+        }
+        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.VERIFICATION ) {
+          return new Transfer[]{
+            new Transfer(getPayeeId(), getTotal())
+          };
+        }
         return new Transfer[] {
             new Transfer(getPayerId(), -getTotal()),
             new Transfer(getPayeeId(),  getTotal())

@@ -89,7 +89,7 @@ foam.CLASS({
     }
     ^ .searchIcon {
       position: absolute;
-      margin-left: 20px;
+      margin-left: 5px;
       margin-top: 8px;
     }
     ^ .net-nanopay-ui-ActionView-sendTransfer {
@@ -143,7 +143,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: #ffffff;
       display: inline-block;
-      margin-left: 15px;
       margin-bottom: 30px;
       vertical-align: top;
       border: 0;
@@ -151,33 +150,12 @@ foam.CLASS({
       padding: 10px 10px 10px 31px;
       font-size: 14px;
     }
-    ^ .foam-u2-view-TableView th {
-      font-family: 'Roboto';
-      padding-left: 15px;
-      font-size: 14px;
-      line-height: 1;
-      letter-spacing: 0.4px;
-      color: #093649;
-    }
-    ^ .foam-u2-view-TableView td {
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      padding-left: 15px;
-      font-size: 12px;
-      color: #093649;
-    }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
     }
-    ^ tbody > tr {
-      height: 60px;
-      background: white;
-    }
-    ^ tbody > tr:nth-child(odd) {
-      background: #f6f9f9;
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
     }
     ^ .net-nanopay-ui-ActionView-create {
       visibility: hidden;
@@ -186,12 +164,7 @@ foam.CLASS({
       width: 175px;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
+      margin-right: 0;
     }
     ^ .net-nanopay-ui-ActionView-filterButton {
       position: absolute;
@@ -200,9 +173,6 @@ foam.CLASS({
       opacity: 0.01;
       cursor: pointer;
       z-index: 100;
-    }
-    ^ .foam-u2-view-TableView-row {
-      height: 40px;
     }
   `,
 
@@ -223,7 +193,8 @@ foam.CLASS({
         return this.transactionDAO.where(
           this.AND(
             this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
+            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
+            this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
           )
         );
       }
@@ -258,15 +229,13 @@ foam.CLASS({
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
-              .start().addClass('inline')
-                .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).add(this.EXPORT_BUTTON).end()
-              .end()
               .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-payable.png' })
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
     },
     function dblclick(transaction){
@@ -277,6 +246,7 @@ foam.CLASS({
   actions: [
     {
       name: 'exportButton',
+      label: 'Export',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
       }

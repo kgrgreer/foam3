@@ -269,7 +269,7 @@ foam.CLASS({
           if ( address.countryId ) this.regionCountry_ += ', ' + address.countryId;
         }
 
-        if(this.user.defaultBankAccountId){
+        /*if(this.user.defaultBankAccountId){
           this.user.bankAccounts.find(this.user.defaultBankAccountId).then(function(a){
             if(!a) return;
             self.setBankInfo(a)
@@ -280,7 +280,7 @@ foam.CLASS({
             if(!account) return;
             self.setBankInfo(account)
           });
-        }
+        }*/
 
         this.createView();
       }

@@ -20,6 +20,7 @@ foam.CLASS({
 
   imports: [
     'user',
+    'account',
     'bankAccountDAO',
     'bankAccountVerification',
     'transactionDAO',
@@ -242,7 +243,6 @@ foam.CLASS({
 
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
-        { parent: 'etransfer', id: 'etransfer-transfer-amount',   label: 'Amount',          view: { class: 'net.nanopay.ui.transfer.TransferAmount'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
@@ -307,8 +307,8 @@ foam.CLASS({
           this.viewData.rateLocked = false;
         }
 
-        if ( this.position == 3 ) {
-          X.stack.back();
+        if ( this.position == 2 ) {
+          X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
 
@@ -319,94 +319,62 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        return (this.position !== 3);
+        return this.position !== 2;
       },
       code: function(X) {
-        var self = this;
+        var self        = this;
         var transaction = null;
-        var invoiceId = 0;
+        var invoiceId   = 0;
+        var bankAccountId;
 
-        if ( this.position == 2 ) { // On Review Transfer page.
+        if ( self.viewData.accountCheck ) bankAccountId = self.viewData.account.id;
+
+        if ( this.position == 0 ) {
+          if ( ! self.viewData.accountCheck && this.account.balance < self.viewData.fromAmount ) {
+              this.add(this.NotificationMessage.create({ message: 'Insufficient digital cash balance. There will be a cash in from the default bank account to compensate the difference.', type: 'error' }));
+          }
+        }
+
+        if ( this.position == 1 ) { // On Review Transfer page.
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
           var rate;
-          if( this.type == 'foreign' ){
+
+          if ( this.type == 'foreign' ){
             rate = this.viewData.rate.toString();
           }
           if ( this.invoiceMode ){
             invoiceId = this.invoice.id;
           }
 
-          var txAmount = Math.round(self.viewData.fromAmount*100);
+          transaction = self.Transaction.create({
+            payerId: self.user.id,
+            payeeId: self.viewData.payee.id,
+            amount: self.viewData.fromAmount,
+            bankAccountId: bankAccountId,
+            invoiceId: invoiceId,
+            notes: self.viewData.notes
+          });
 
-          // Get payer's bank account
-          this.bankAccountDAO.where(
-            this.AND(
-              this.EQ(this.BankAccount.OWNER, this.user.id),
-              this.EQ(this.BankAccount.STATUS, 'Verified')
-            )
-          ).limit(1).select(function(cashInBankAccount) {
-            // Perform a cash-in operation
-            var cashInTransaction = self.Transaction.create({
-              payeeId: self.user.id,
-              amount: txAmount,
-              bankAccountId: cashInBankAccount.id,
-              type: self.TransactionType.CASHIN
-            });
-
-            return self.standardCICOTransactionDAO.put(cashInTransaction);
-          }).then(function(response) {
-            // NOTE: payerID, payeeID, amount in cents, rate, purpose
-            transaction = self.Transaction.create({
-              payerId: self.user.id,
-              payeeId: self.viewData.payee.id,
-              amount: txAmount,
-              invoiceId: invoiceId,
-              notes: self.viewData.notes
-            });
-
-            // Make the transfer
-            return self.transactionDAO.put(transaction);
-          }).then(function (result) {
-            if ( result ) {
-              self.viewData.transaction = result;
-            }
-
-            return self.bankAccountVerification.addCashout(transaction);
-          }).then(function (response) {
+          // Make the transfer
+          self.transactionDAO.put(transaction)
+            .then(function (result) {
+              if ( result ) {
+                self.viewData.transaction = result;
+              }
+            }).then(function (response) {
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = 'Back to Home';
             self.nextLabel = 'Make New Transfer';
-            self.add(self.NotificationMessage.create({ message: "Success!" }));
 
-            if ( self.invoice ) {
-              var emailMessage = self.EmailMessage.create({
-                to: [ self.viewData.payee.email ]
-              });
-
-              self.email.sendEmailFromTemplate(self.user, emailMessage, 'nanopay-paid', {
-                fromName: self.user.businessName,
-                fromEmail: self.user.email,
-                amount: self.formatCurrency(self.invoice.amount),
-                number: self.invoice.invoiceNumber
-              });
-            }
           }).catch(function (err) {
-            console.error(err);
-
             self.add(self.NotificationMessage.create({
               type: 'error',
-              message: err.message + '. Unable to process payment...'
+              message: err.message + 'Unable to process payment.'
             }));
-
-            if ( err ) console.log(err.message);
           });
-
-          return;
-        }
-
-        if ( this.position == 3 ) {
+        } else if ( this.position == 2 ) {
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';
@@ -418,9 +386,9 @@ foam.CLASS({
           }
           this.backLabel = 'Back';
           this.nextLabel = 'Next';
-          return;
+        } else {
+          this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
         }
-        this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
       }
     }
   ]

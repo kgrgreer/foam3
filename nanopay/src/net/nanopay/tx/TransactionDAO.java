@@ -2,30 +2,25 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.Sink;
-import foam.mlang.MLang;
-import foam.nanos.auth.User;
 import java.util.*;
-import java.util.Date;
-import java.util.List;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.model.Account;
-import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
+
+import static foam.mlang.MLang.EQ;
 
 public class TransactionDAO
   extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
   protected final Set<String> STATUS_BLACKLIST =
-      Collections.unmodifiableSet(new HashSet<String>() {{
-        add("Refunded");
-      }});
+    Collections.unmodifiableSet(new HashSet<String>() {{
+      add("Refunded");
+      add("Request");
+    }});
 
   protected DAO userDAO_;
   protected DAO accountDAO_;
@@ -63,120 +58,49 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Transaction     transaction     = (Transaction) obj;
-    TransactionType transactionType = (TransactionType) transaction.getType();
-    long            payeeId         = transaction.getPayeeId();
-    long            payerId         = transaction.getPayerId();
-
-    if ( payerId <= 0 ) {
-      throw new RuntimeException("Invalid Payer id");
-    }
-
-    if ( payeeId <= 0 ) {
-      throw new RuntimeException("Invalid Payee id");
-    }
-
-    //For cico transactions payer and payee are the same
-    if ( payeeId == payerId ) {
-      if ( transactionType != TransactionType.CASHOUT && transactionType != TransactionType.CASHIN ) {
-        throw new RuntimeException("PayeeID and PayerID cannot be the same");
-      }
-    }
-
-    if ( transaction.getTotal() <= 0 ) {
-      throw new RuntimeException("Transaction amount must be greater than 0");
-    }
+    Transaction transaction = (Transaction) obj;
+    ArraySink transactions = new ArraySink();
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) ) {
       return super.put_(x, obj);
     }
-
-    Long firstLock  = payerId < payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-    Long secondLock = payerId > payeeId ? transaction.getPayerId() : transaction.getPayeeId();
-
-    synchronized (firstLock) {
-      synchronized (secondLock) {
-        Sink sink;
-        List data;
-        Account payeeAccount;
-        Account payerAccount;
-        User payee = (User) getUserDAO().find(transaction.getPayeeId());
-        User payer = (User) getUserDAO().find(transaction.getPayerId());
-
-        if ( payee == null || payer == null ) {
-          throw new RuntimeException("Users not found");
-        }
-        // find payee account
-        payeeAccount = (Account) getAccountDAO().find(payee.getId());
-        if ( payeeAccount == null ) {
-          throw new RuntimeException("Payee account not found");
-        }
-        // find payer account
-        payerAccount = (Account) getAccountDAO().find(payer.getId());
-        if ( payerAccount == null ) {
-          throw new RuntimeException("Payer account not found");
-        }
-
-        // check if payer account has enough balance
-        long total = transaction.getTotal();
-        // cashin does not require balance checks
-        if ( payerAccount.getBalance() < total ) {
-          if ( transactionType != TransactionType.CASHIN ) {
-            throw new RuntimeException("Insufficient balance to complete transaction.");
-          }
-        }
-
-        //For cash in, just increment balance, payer and payee will be the same
-        if ( transactionType == TransactionType.CASHIN ) {
-          payerAccount.setBalance(payerAccount.getBalance() + total);
-          getAccountDAO().put(payerAccount);
-        }
-        //For cash out, decrement balance, payer and payee will be the same
-        else if ( transactionType == TransactionType.CASHOUT ) {
-          payerAccount.setBalance(payerAccount.getBalance() - total);
-          getAccountDAO().put(payerAccount);
-        }
-        else {
-          payerAccount.setBalance(payerAccount.getBalance() - total);
-          payeeAccount.setBalance(payeeAccount.getBalance() + total);
-          getAccountDAO().put(payerAccount);
-          getAccountDAO().put(payeeAccount);
-        }
-
-
-        FObject ret = super.put_(x, obj);
-
-        // find invoice
-        if ( transaction.getInvoiceId() != 0 ) {
-          Invoice invoice = (Invoice) getInvoiceDAO().find(transaction.getInvoiceId());
-          if ( invoice == null ) {
-            throw new RuntimeException("Invoice not found");
-          }
-
-          invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
-          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
-          getInvoiceDAO().put(invoice);
-          // addInvoiceCashout( x, payee, total, payeeId, payerId );
-        }
-
-        return ret;
-      }
+    if ( transaction.getType().equals(TransactionType.CASHIN) ) {
+      if ( transaction.getStatus().equals(TransactionStatus.COMPLETED) )
+        return executeTransaction(x, transaction);
+      return super.put_(x, obj);
     }
+    if ( transaction.getType().equals(TransactionType.CASHOUT) ) {
+      if ( ! transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
+        if ( oldTxn != null )
+          return super.put_(x, obj);
+      } else {
+        Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
+        refound.validate(x);
+        refound.execute(x);
+        return super.put_(x, obj);
+      }
+
+    }
+    return executeTransaction(x, transaction);
   }
 
-  void executeTransaction(X x, Transaction t) {
+  FObject executeTransaction(X x, Transaction t) {
     Transfer[] ts = t.createTransfers(x);
 
     // TODO: disallow or merge duplicate accounts
-    validateTransfers(ts);
-    lockAndExecute(x, t, ts, 0);
+    if ( ts.length != 1 ) {
+      validateTransfers(ts);
+    }
+    return lockAndExecute(x, t, ts, 0);
   }
 
   void validateTransfers(Transfer[] ts)
     throws RuntimeException
   {
+    if(ts.length == 0)
+      return;
     long c = 0, d = 0;
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
@@ -186,30 +110,31 @@ public class TransactionDAO
         d += t.getAmount();
       }
     }
-    if ( c != d ) throw new RuntimeException("Debits and credits don't match.");
-    if ( c == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
+    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
-  /** Lock each trasnfer's account then execute the transfers. **/
-  void lockAndExecute(X x, Transaction txn, Transfer[] ts, int i) {
+  /** Sorts array of transfers. **/
+  FObject lockAndExecute(X x, Transaction txn, Transfer[] ts, int i) {
     // sort to avoid deadlock
     java.util.Arrays.sort(ts);
 
-    lockAndExecute_(x, txn, ts, i);
+    return lockAndExecute_(x, txn, ts, i);
   }
 
-  void lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
-    if ( i > ts.length ) {
-      execute(x, txn, ts);
+  /** Lock each trasnfer's account then execute the transfers. **/
+  FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
+    if ( i > ts.length-1 ) {
+      return  execute(x, txn, ts);
     } else {
       synchronized ( ts[i].getLock() ) {
-        lockAndExecute_(x, txn, ts, i+1);
+        return lockAndExecute_(x, txn, ts, i+1);
       }
     }
   }
 
   /** Called once all locks are locked. **/
-  void execute(X x, Transaction txn, Transfer[] ts) {
+  FObject execute(X x, Transaction txn, Transfer[] ts) {
     for ( int i = 0 ; i < ts.length ; i++ ) {
       ts[i].validate(x);
     }
@@ -217,8 +142,8 @@ public class TransactionDAO
     for ( int i = 0 ; i < ts.length ; i++ ) {
       ts[i].execute(x);
     }
-
-    getDelegate().put_(x, txn);
+    if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
+    return getDelegate().put_(x, txn);
   }
 
   @Override

@@ -4,7 +4,7 @@ import foam.core.*;
 import foam.dao.*;
 import foam.nanos.auth.User;
 import java.util.*;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -45,11 +45,11 @@ public class AutoCashOutForInvoiceTransactionDAO
       invoiceDAO.put(invoice);
 
       DAO      bankAccountDAO = (DAO) x.get("localBankAccountDAO");
-      ListSink listSink       = (ListSink) bankAccountDAO
+      ArraySink listSink      = (ArraySink) bankAccountDAO
         .where(EQ(BankAccount.OWNER, txn.getPayeeId()))
         .limit(1)
-        .select(new ListSink());
-      List     list           = listSink.getData();
+        .select(new ArraySink());
+      List     list           = listSink.getArray();
 
       // And the Payee
       if ( list.size() > 0 ) {
@@ -60,7 +60,7 @@ public class AutoCashOutForInvoiceTransactionDAO
         t.setPayerId(txn.getPayerId());
         t.setAmount(txn.getTotal());
         t.setType(TransactionType.CASHOUT);
-        t.setCicoStatus(TransactionStatus.NEW);
+        t.setStatus(TransactionStatus.PENDING);
         t.setBankAccountId(bankAcc.getId());
 
         DAO transacionDAO = (DAO) x.get("localTransactionDAO");

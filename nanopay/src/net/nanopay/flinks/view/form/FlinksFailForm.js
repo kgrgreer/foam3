@@ -11,13 +11,12 @@ foam.CLASS({
 
   css: `
     ^ {
+      padding-left: 2px;
       width: 497px;
     }
-
     ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
       cursor: pointer;
     }
-
     ^ .net-nanopay-ui-ActionView-closeButton {
       float: left;
       margin: 0;
@@ -31,6 +30,7 @@ foam.CLASS({
       font-weight: lighter;
       letter-spacing: 0.2px;
       margin-right: 40px;
+      margin-left: 1px;
     }
   `,
 
@@ -48,7 +48,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
@@ -61,11 +61,11 @@ foam.CLASS({
   actions: [
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
         X.form.goBack();
       }
     }
   ]
 
-})
+});

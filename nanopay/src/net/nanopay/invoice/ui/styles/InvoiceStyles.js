@@ -45,6 +45,7 @@ foam.CLASS({
           color: #20b020;
           border: 1px solid #20b020;
           background: white;
+          font-size: 10px;
         }
         .Invoice-Status-Pending-Approval {
           color: #093649;
@@ -54,14 +55,15 @@ foam.CLASS({
         .Invoice-Status-Draft {
           color: #666666;
         }
+        .property-userList{
+          height: 50px;
+        }
         .generic-status{
           border-radius: 30px;
           padding: 3px 7px;
           display: inline;
         }
-        .foam-comics-BrowserView-net-nanopay-b2b-model-Invoice tbody tr {
-          height: 40px;
-        }
+        .foam-u2-view-TableView-th-id  {width: 80px;}
         .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; }
         .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; }
         .foam-u2-view-TableView-th-payerName { width: 150px; }
@@ -72,7 +74,7 @@ foam.CLASS({
         .foam-u2-view-TableView-th-issueDate      { width: 90px; }
         .foam-u2-view-TableView-th-dueDate      { width: 90px; }
         .foam-u2-view-TableView-th-amount         { width: 90px; padding-right:20px; }
-        .foam-u2-view-TableView-th-status         { width: 80px; }
+        .foam-u2-view-TableView-th-status         { width: 102px; }
       */}
     })
   ]

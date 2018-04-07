@@ -40,7 +40,7 @@ foam.CLASS({
     {
       class: 'Double',      
       name: 'endsAfter',
-      label: 'Occurences'
+      label: 'Occurrences'
     },
     {
       class: 'DateTime',

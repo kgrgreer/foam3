@@ -198,18 +198,48 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      validateObj: function(firstName) {
+        var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
+
+        if ( ! firstName || ! hasOkLength ) {
+          return this.FormError;
+        }
+      }
     },
     {
       class: 'String',
-      name: 'lastName'
+      name: 'lastName',
+      validateObj: function(lastName) {
+        var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
+
+        if ( ! lastName || ! hasOkLength ) {
+          return this.FormError;
+        }
+      }
     },
     {
       class: 'String',
-      name: 'jobTitle'
+      name: 'jobTitle',
+      validateObj: function(jobTitle) {
+        if ( ! jobTitle ) {
+          return this.JobTitleEmptyError;
+        }
+
+        if ( jobTitle.length > 35 ) {
+          return this.JobTitleLengthError;
+        }
+      }
     },
     {
       class: 'String',
-      name: 'email'
+      name: 'email',
+      validateObj: function(email) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if ( ! emailRegex.test(email) ) {
+          return this.EmailError;
+        }
+      }
     },
     {
       class: 'String',
@@ -269,9 +299,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all fields.' },
+    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'invalidPhone', message: 'Phone number is invalid.' },
-    { name: 'informationUpdated', message: 'Information has been successfully changed.' }
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' },
+    { name: 'EmailError', message: 'Invalid email address' }
   ],
 
   actions: [

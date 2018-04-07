@@ -21,20 +21,21 @@ foam.CLASS({
       color: #2cab70;
     }
     ^ .businessImage {
-      width: 53px;
-      height: 53px;
+      width: inherit;
+      height: inherit;
       margin-top: 10px;
       display: inline-block;
+      vertical-align: middle;
     }
     ^ .businessName {
       position: relative;
-      bottom: 20;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
       display: inline-block;
       margin-left: 25px;
+      vertical-align: middle;
     }
     ^ .boldLabel {
       font-size: 14px;
@@ -57,7 +58,7 @@ foam.CLASS({
       margin-left: 160px;
     }
   `,
-  
+
   messages: [
     { name: 'Step', message: 'Step 3: Please scroll down and review all the details of the business.' },
     { name: 'BusinessInfoLabel', message: 'Business Info' },
@@ -69,8 +70,8 @@ foam.CLASS({
     { name: 'PhoneLabel', message: 'Phone' },
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'BusinessProfileLabel', message: 'Business Profile' },
-    { name: 'CompanyEmailLabel', message: 'Company Email' },
-    { name: 'CompanyTypeLabel', message: 'Company Type' },
+    { name: 'CompanyEmailLabel', message: 'Business Email' },
+    { name: 'CompanyTypeLabel', message: 'Business Type' },
     { name: 'RegistrationNumberLabel', message: 'Registration Number' },
     { name: 'BusinessSectorLabel', message: 'Business Sector' },
     { name: 'WebsiteLabel', message: 'Website' },
@@ -107,8 +108,6 @@ foam.CLASS({
               .start().add(this.viewData.firstName).addClass('infoText bottomMargin').end()
               .start().add(this.EmailLabel).addClass('boldLabel').end()
               .start().add(this.viewData.email).addClass('infoText bottomMargin').end()
-              .start().add(this.PasswordLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.password).addClass('infoText bottomMargin').end()
             .end()
             .start().addClass('inline alignTopWithMargin')
               .start().add(this.LastNameLabel).addClass('boldLabel').end()
@@ -133,7 +132,7 @@ foam.CLASS({
               // .start().add(this.CompanyEmailLabel).addClass('boldLabel').end()
               // .start().add(this.viewData.companyEmail).addClass('infoText bottomMargin').end()
               .start().add(this.IssuingLabel).addClass('boldLabel').end()
-              .start().add(this.viewData.issueAuthority).addClass('infoText bottomMargin').end()
+              .start().add(this.viewData.issuingAuthority).addClass('infoText bottomMargin').end()
               .start().add(this.RegistrationNumberLabel).addClass('boldLabel').end()
               .start().add(this.viewData.registrationNumber).addClass('infoText bottomMargin').end()
               .start().add(this.WebsiteLabel).addClass('boldLabel').end()
@@ -155,4 +154,4 @@ foam.CLASS({
         .end();
     }
   ]
-}); 
+});

@@ -52,11 +52,6 @@ foam.CLASS({
   refines: 'foam.nanos.auth.User',
   properties: [
     {
-      class: 'Boolean',
-      name: 'emailVerified',
-      documentation: 'Email verified flag'
-    },
-    {
       class: 'FObjectArray',
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit'
@@ -98,4 +93,12 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.liquidity.model.BalanceAlert',
   forwardName: 'balanceAlerts',
   inverseName: 'owner'
+});
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'foam.nanos.auth.User',
+  forwardName: 'partners',
+  inverseName: 'partners'
 });

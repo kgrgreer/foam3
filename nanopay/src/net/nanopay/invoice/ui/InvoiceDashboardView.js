@@ -18,22 +18,20 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'payableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      name: 'payableAmount'
     },
     {
-      class: 'Currency',
+      class: 'String',
       name: 'formattedPayableAmount',
-      expression: function(payableAmount) { return this.formatCurrency(payableAmount); }
+      expression: function(payableAmount) { return this.formatCurrency(payableAmount/100); }
     },
     {
-      name: 'receivableAmount',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      name: 'receivableAmount'
     },
     {
-      class: 'Currency',
+      class: 'String',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount); }
+      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount/100); }
     },
     {
       name: 'salesDAO',
@@ -124,11 +122,15 @@ foam.CLASS({
             .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
             .start().addClass('overall-receivables inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
-              .start('h4').add('+', this.formattedReceivableAmount$).end()
+              .start('h4').add('+', this.formattedReceivableAmount$.map(function(a){
+                return a == "$NaN" ? '...' : a;
+              })).end()
             .end()
             .start().addClass('overall-payables inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
-              .start('h4').add('-', this.formattedPayableAmount$).end()
+              .start('h4').add('-', this.formattedPayableAmount$.map(function(a){
+                return a == "$NaN" ? '...' : a;
+              })).end()
             .end()
           .end()
         .end();

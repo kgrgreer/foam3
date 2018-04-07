@@ -2,7 +2,7 @@ package net.nanopay.auth;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.mlang.MLang;
 import foam.nanos.NanoService;
@@ -49,13 +49,13 @@ public class DeviceAuthService
       throw new RuntimeException("Invalid serial number");
     }
 
-    Sink sink = new ListSink();
+    Sink sink = new ArraySink();
     sink = deviceDAO_.where(MLang.AND(
         MLang.EQ(Device.SERIAL_NUMBER, serialNumber),
         MLang.EQ(Device.PASSWORD, password)
     )).limit(1).select(sink);
 
-    List data = ((ListSink) sink).getData();
+    List data = ((ArraySink) sink).getArray();
     if ( data == null || data.size() != 1 ) {
       throw new AuthenticationException("Device not found");
     }

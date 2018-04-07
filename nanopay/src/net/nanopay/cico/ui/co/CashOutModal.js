@@ -8,7 +8,13 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'  
   ],
 
-  imports: [ 'amount', 'bankList', 'closeDialog', 'confirmCashIn', 'goToBankAccounts' ],
+  imports: [ 
+    'amount', 
+    'bankList', 
+    'closeDialog', 
+    'confirmCashIn', 
+    'goToBankAccounts'
+  ],
 
   documentation: 'Pop up modal for cashing out.',
 
@@ -158,7 +164,7 @@ foam.CLASS({
             .add(this.GO_TO_BANK)
           .end()
         .end()
-      .end()
+      .end();
     }
   ],
 

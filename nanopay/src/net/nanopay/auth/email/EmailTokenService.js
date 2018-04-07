@@ -1,79 +1,58 @@
 foam.CLASS({
-  package: 'net.nanopay.auth.email',
-  name: 'EmailTokenService',
-  extends: 'foam.nanos.auth.token.AbstractTokenService',
+  refines: 'foam.nanos.auth.email.EmailTokenService',
 
-  documentation: 'Implementation of Token Service used for verifying email addresses',
+  imports: [
+    'logger'
+  ],
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.dao.ListSink',
-    'foam.dao.Sink',
-    'foam.mlang.MLang',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
-    'foam.nanos.auth.token.Token',
-    'java.util.Calendar',
-    'java.util.HashMap',
-    'java.util.List',
-    'java.util.UUID'
+    'foam.nanos.logger.Logger'
   ],
 
   methods: [
     {
       name: 'generateToken',
       javaCode:
-`DAO tokenDAO = (DAO) getX().get("tokenDAO");
-AppConfig appConfig = (AppConfig) getX().get("appConfig");
-Token token = new Token();
-token.setUserId(user.getId());
-token.setExpiry(generateExpiryDate());
-token.setData(UUID.randomUUID().toString());
-token = (Token) tokenDAO.put(token);
+`try {
+  DAO tokenDAO = (DAO) getX().get("tokenDAO");
+  DAO userDAO = (DAO) getX().get("localUserDAO");
+  AppConfig appConfig = (AppConfig) getX().get("appConfig");
+  String url = appConfig.getUrl()
+      .replaceAll("/$", "");
 
-EmailService email = (EmailService) getX().get("email");
-EmailMessage message = new EmailMessage();
-message.setTo(new String[]{user.getEmail()});
+  Token token = new Token();
+  token.setUserId(user.getId());
+  token.setExpiry(generateExpiryDate());
+  token.setData(UUID.randomUUID().toString());
+  token = (Token) tokenDAO.put(token);
 
-HashMap<String, Object> args = new HashMap<>();
-args.put("name", user.getFirstName());
-args.put("email", user.getEmail());
-args.put("link", appConfig.getUrl() + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect= /");
+  EmailService email = (EmailService) getX().get("email");
+  EmailMessage message = new EmailMessage();
+  message.setTo(new String[]{user.getEmail()});
 
-email.sendEmailFromTemplate(user, message, "welcome-email", args);
-return true;`
-    },
-    {
-      name: 'processToken',
-      javaCode:
-`DAO userDAO = (DAO) getX().get("userDAO");
-DAO tokenDAO = (DAO) getX().get("tokenDAO");
-Calendar calendar = Calendar.getInstance();
+  HashMap<String, Object> args = new HashMap<>();
+  args.put("name", user.getFirstName());
+  args.put("email", user.getEmail());
+  args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
 
-Sink sink = new ListSink();
-sink = tokenDAO.where(MLang.AND(
-  MLang.EQ(Token.USER_ID, user.getId()),
-  MLang.EQ(Token.PROCESSED, false),
-  MLang.GT(Token.EXPIRY, calendar.getTime()),
-  MLang.EQ(Token.DATA, token)
-)).limit(1).select(sink);
-
-List list = ((ListSink) sink).getData();
-if ( list == null || list.size() == 0 ) {
-  // token not found
-  throw new RuntimeException("Token not found");
-}
-
-// set token processed to true
-Token result = (Token) list.get(0);
-result.setProcessed(true);
-tokenDAO.put(result);
-
-// set user email verified to true
-user.setEmailVerified(true);
-userDAO.put(user);
-return true;`
+  // add app store / play store links
+  if (user.getType().equals("Personal")){
+    if (user.getPortalAdminCreated()) {
+      args.put("applink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://www.apple.com/lae/ios/app-store/");
+      args.put("playlink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://play.google.com/store?hl=en");
     }
+  }
+
+  String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
+  email.sendEmailFromTemplate(user, message, template, args);
+  user.setPortalAdminCreated(false);
+  user.setWelcomeEmailSent(true);
+  userDAO.put(user);
+  return true;
+} catch (Throwable t) {
+  ((Logger) getLogger()).error(t);
+  return false;
+}`
+  }
   ]
 });

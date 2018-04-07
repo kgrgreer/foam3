@@ -12,10 +12,11 @@ foam.CLASS({
   requires: [
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   imports: [
@@ -26,7 +27,8 @@ foam.CLASS({
     'stack',
     'standardCICOTransactionDAO',
     'user',
-    'auth'
+    'auth',
+    'window'
   ],
 
   exports: [
@@ -34,6 +36,7 @@ foam.CLASS({
     'bankList',
     'cashOut',
     'cashIn',
+    'cicoTransactions',
     'confirmCashOut',
     'confirmCashIn',
     'dblclick',
@@ -44,124 +47,125 @@ foam.CLASS({
     'as view'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 962px;
-          margin: 0 auto;
-        }
-        ^ .balanceBox {
-          position: relative;
-          width: 330px;
-          height: 100px;
-          border-radius: 2px;
-          background-color: #ffffff;
-          box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
-          display: inline-block;
-          vertical-align: top;
-        }
-        ^ .sideBar {
-          width: 6px;
-          height: 100px;
-          background-color: %SECONDARYCOLOR%;
-          float: left;
-        }
-        ^ .balanceBoxTitle {
-          color: #093649;
-          font-size: 12px;
-          margin-left: 44px;
-          padding-top: 14px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-        }
-        ^ .balance {
-          font-size: 30px;
-          font-weight: 300;
-          line-height: 1;
-          letter-spacing: 0.5px;
-          text-align: left;
-          color: #093649;
-          margin-top: 27px;
-          margin-left: 44px;
-        }
-        ^ .inlineDiv {
-          display: inline-block;
-          width: 135px;
-        }
+  css: `
+    ^ {
+      width: 962px;
+      margin: 0 auto;
+    }
+    ^ .topContainer {
+      width: 100%;
+    }
+    ^ .balanceBox {
+      position: relative;
+      min-width: 330px;
+      max-width: calc(100% - 135px);
+      padding-bottom: 15px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^ .sideBar {
+      width: 6px;
+      height: 100%;
+      background-color: %SECONDARYCOLOR%;
+      position: absolute;
+    }
+    ^ .balanceBoxTitle {
+      color: #093649;
+      font-size: 12px;
+      margin-left: 44px;
+      padding-top: 14px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+    }
+    ^ .balance {
+      font-size: 30px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: 0.5px;
+      overflow-wrap: break-word;
+      text-align: left;
+      color: #093649;
+      margin-top: 27px;
+      margin-left: 44px;
+      margin-right: 44px;
+    }
+    ^ .inlineDiv {
+      display: inline-block;
+      width: 135px;
+      vertical-align: middle;
+    }
 
-        ^ .net-nanopay-ui-ActionView-cashInBtn {
-          width: 135px;
-          height: 50px;
-          border-radius: 2px;
-          background: %SECONDARYCOLOR%;
-          color: white;
-          margin: 0;
-          padding: 0;
-          border: 0;
-          outline: none;
-          cursor: pointer;
-          line-height: 50px;
-          font-size: 14px;
-          font-weight: normal;
-          box-shadow: none;
-        }
-        ^ .net-nanopay-ui-ActionView-cashInBtn:hover {
-          background: %SECONDARYCOLOR%;
-          opacity: 0.9;
-        }
-        ^ .net-nanopay-ui-ActionView-cashOutButton {
-          width: 135px;
-          height: 50px;
-          border-radius: 2px;
-          background: rgba(164, 179, 184, 0.1);
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          color: #093649;
-          margin: 0;
-          padding: 0;
-          border: 0;
-          outline: none;
-          cursor: pointer;
-          line-height: 50px;
-          font-size: 14px;
-          font-weight: normal;
-          margin-bottom: 2px;
-        }
-        ^ .net-nanopay-ui-ActionView-cashOutButton:hover {
-          background: lightgray;
-        }
-        ^ .recentActivities {
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-          margin-top: 15px;
-        }
-        ^ .net-nanopay-ui-ActionView-create {
-          visibility: hidden;
-        }
-        ^ .foam-u2-view-TableView-row:hover {
-          cursor: pointer;
-          background: %TABLEHOVERCOLOR%;
-        }
-        ^ .foam-u2-md-OverlayDropdown {
-          width: 175px;
-        }
-        ^ thead > tr > th{
-          background: %TABLECOLOR%;
-        }
-
-        ^ .loadingSpinner {
-          position: absolute;
-          top: 11px;
-          left: 95px;
-        }
-      */}
-    })
-  ],
+    ^ .net-nanopay-ui-ActionView-cashInBtn {
+      width: 135px;
+      height: 50px;
+      border-radius: 2px;
+      background: %SECONDARYCOLOR%;
+      color: white;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+      cursor: pointer;
+      line-height: 50px;
+      font-size: 14px;
+      font-weight: normal;
+      box-shadow: none;
+    }
+    ^ .net-nanopay-ui-ActionView-cashInBtn:hover {
+      background: %SECONDARYCOLOR%;
+      opacity: 0.9;
+    }
+    ^ .net-nanopay-ui-ActionView-cashOutButton {
+      width: 135px;
+      height: 50px;
+      border-radius: 2px;
+      background: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      color: #093649;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+      cursor: pointer;
+      line-height: 50px;
+      font-size: 14px;
+      font-weight: normal;
+      margin-bottom: 2px;
+    }
+    ^ .net-nanopay-ui-ActionView-cashOutButton:hover {
+      background: lightgray;
+    }
+    ^ .recentActivities {
+      opacity: 0.6;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #093649;
+      margin-top: 15px;
+    }
+    ^ .net-nanopay-ui-ActionView-create {
+      visibility: hidden;
+    }
+    ^ .foam-u2-md-OverlayDropdown {
+      width: 175px;
+    }
+    ^ .loadingSpinner {
+      position: absolute;
+      top: 11px;
+      left: 95px;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
+    }
+  `,
 
   properties: [
     {
@@ -170,7 +174,7 @@ foam.CLASS({
     },
     {
       name: 'formattedBalance',
-      value: 0
+      value: '...'
     },
     {
       class: 'Boolean',
@@ -179,7 +183,12 @@ foam.CLASS({
     {
       name: 'userBankAccounts',
       factory: function() {
-        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+        return this.bankAccountDAO.where(
+          this.AND(
+            this.EQ(this.BankAccount.OWNER, this.user.id),
+            this.EQ(this.BankAccount.STATUS, "Verified")
+          )
+        );
       }
     },
     {
@@ -187,22 +196,26 @@ foam.CLASS({
       view: function(_, X) {
         var self = X.view;
         return foam.u2.view.ChoiceView.create({
-          dao: self.userBankAccounts.where(self.EQ(self.BankAccount.STATUS, 'Verified')),
-          objToChoice: function(a){
+          dao: self.userBankAccounts,
+          objToChoice: function(a) {
             return [a.id, a.accountName];
           }
-        })
+        });
       }
     },
     {
       name: 'cicoTransactions',
       expression: function(standardCICOTransactionDAO) {
+        var user = this.user;
+
         return standardCICOTransactionDAO.where(
-          this.OR(
-            this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-            this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
-          )
-        );
+          this.AND(
+            this.OR(
+              this.EQ(this.Transaction.PAYER_ID, user.id),
+              this.EQ(this.Transaction.PAYEE_ID, user.id)),
+            this.OR(
+              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
+              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN))));
       }
     },
     {
@@ -224,13 +237,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.getDefaultBank();
+
       this.auth.check(null, "cico.ci").then(function(perm) {
         self.hasCashIn = perm;
-      });
-
-      this.accountDAO.find(this.user.id).then(function (a) {
-        self.account.copyFrom(a);
-        self.onDAOUpdate();
       });
 
       this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
@@ -239,17 +249,16 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('div').addClass('balanceBox')
-            .start('div').addClass('sideBar').end()
-            .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-            .start().add(this.formattedBalance$.map(function(b) {
-              if ( self.isLoading ) return '...';
-              return '$' + self.addCommas(b.toFixed(2).toString());
-            })).addClass('balance').end()
-          .end()
-          .start('div').addClass('inlineDiv')
-            .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
-            .start().add(this.CASH_OUT_BUTTON).end()
+          .start('div').addClass('topContainer')
+            .start('div').addClass('balanceBox')
+              .start('div').addClass('sideBar').end()
+              .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
+              .start().add(this.formattedBalance$).addClass('balance').end()
+            .end()
+            .start('div').addClass('inlineDiv')
+              .start().show(this.hasCashIn$).add(this.CASH_IN_BTN).end()
+              .start().add(this.CASH_OUT_BUTTON).end()
+            .end()
           .end()
           .start()
             .tag({
@@ -295,10 +304,19 @@ foam.CLASS({
 
     function goToBankAccounts() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+      this.window.location.hash = "set-bank";
     },
 
     function resetCicoAmount() {
       this.amount = 0;
+    },
+
+    function getDefaultBank() {
+      var self = this;
+      self.userBankAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+        if( a.array.length == 0 ) return;
+        self.bankList = a.array[0].id;
+      });
     }
   ],
 
@@ -324,16 +342,12 @@ foam.CLASS({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isMerged: true,
+      // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        self.isLoading = true;
         this.accountDAO.find(this.user.id).then(function (a) {
-          self.isLoading = false;
           self.account.copyFrom(a);
-          self.formattedBalance = a.balance / 100;
-        }).catch(function (e) {
-          self.isLoading = false;
+          self.formattedBalance = '$' + (a.balance / 100).toFixed(2);
         });
       }
     }
@@ -343,38 +357,25 @@ foam.CLASS({
     {
       name: 'CicoTableView',
       extends: 'foam.u2.View',
-      implements: [
-        'foam.mlang.Expressions',
+
+      requires: [
+        'net.nanopay.cico.model.TransactionType',
+        'net.nanopay.tx.model.Transaction'
       ],
-      requires: [ 'net.nanopay.tx.model.Transaction',
-                  'net.nanopay.cico.model.TransactionType'
-                ],
 
-      imports: [ 'standardCICOTransactionDAO' ],
-
-      properties: [
-        {
-          name: 'cicoTransactions',
-          expression: function(standardCICOTransactionDAO) {
-            return standardCICOTransactionDAO.where(
-              this.OR(
-                this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-                this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN)
-              )
-            );
-          }
-        }
+      imports: [
+        'cicoTransactions',
+        'standardCICOTransactionDAO'
       ],
 
       methods: [
         function initE() {
           this
             .start({
-              class: 'foam.u2.view.TableView',
-              editColumnsEnabled: true,
+              class: 'foam.u2.view.ScrollTableView',
               data: this.cicoTransactions,
               columns: [
-                'id', 'date', 'amount', 'type'
+                'id', 'date', 'amount', 'type', 'status'
               ]
             });
         }

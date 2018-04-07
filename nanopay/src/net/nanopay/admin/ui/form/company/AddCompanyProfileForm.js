@@ -15,6 +15,14 @@ foam.CLASS({
     'regionDAO'
   ],
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.Region'
+  ],
+
   css:`
     ^ .labelTitle {
       font-size: 14px;
@@ -27,15 +35,6 @@ foam.CLASS({
       height: 80px;
       margin-top: 10px;
       display: inline-block;
-    }
-    ^ .net-nanopay-ui-ActionView-uploadImage {
-      width: 136px;
-      height: 40px;
-      background: transparent;
-      border: solid 1px #59a5d5;
-      color: #59a5d5;
-      margin: 0;
-      outline: none;
     }
     ^ .foam-u2-tag-Select {
       width: 218px;
@@ -77,19 +76,6 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
-    ^ .uploadButtonContainer {
-      height: 80px;
-      display: inline-block;
-      vertical-align: text-bottom;
-      margin-left: 40px;
-    }
-    ^ .uploadDescription {
-      margin-top: 9px;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: 0.2px;
-      color: #093649;
-    }
     ^ .topMargin {
       margin-top: 20px;
     }
@@ -109,9 +95,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'File',
+      class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      view: { class: 'foam.nanos.auth.ProfilePictureView' },
+      view: { class: 'foam.nanos.auth.ProfilePictureView', placeholderImage: 'images/business-placeholder.png' },
       factory: function () {
         return this.viewData.profilePicture;
       },
@@ -158,12 +144,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'issueAuthority',
+      name: 'issuingAuthority',
       factory: function() {
-        return this.viewData.issueAuthority;
+        return this.viewData.issuingAuthority;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.issueAuthority = newValue;
+        this.viewData.issuingAuthority = newValue;
       }
     },
     {
@@ -263,12 +249,15 @@ foam.CLASS({
     {
       name: 'province',
       view: function(_, X) {
+        var choices = X.data.slot(function (country) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, country || ""));
+        });
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO,
-          objToChoice: function(a){
-            return [a.id, a.name];
-          }
-        })
+          objToChoice: function(region) {
+            return [region.id, region.name];
+          },
+          dao$: choices
+        });
       },
       factory: function() {
         return this.viewData.province;
@@ -294,10 +283,10 @@ foam.CLASS({
     { name: 'BusinessInformationLabel', message: 'Business Information' },
     { name: 'BusinessNameLabel', message: 'Business Name *' },
     { name: 'CountryLabel', message: 'Country *' },
-    { name: 'CompanyEmailLabel', message: 'Company Email *' },
+    { name: 'CompanyEmailLabel', message: 'Business Email *' },
     { name: 'RegistrationNoLabel', message: 'Registration No. *' },
     { name: 'IssueAuthorityLabel', message: 'Issuing Authority '},
-    { name: 'CompanyTypeLabel', message: 'Company Type *' },
+    { name: 'CompanyTypeLabel', message: 'Business Type *' },
     { name: 'BusinessSectorLabel', message: 'Business Sector *' },
     { name: 'WebsiteLabel', message: 'Website ' },
     { name: 'BusinessAddressLabel', message: 'Business Address' },
@@ -350,7 +339,7 @@ foam.CLASS({
             .end()
             .start().addClass('topMargin')
               .start().add(this.IssueAuthorityLabel).addClass('infoLabel').end()
-              .start(this.ISSUE_AUTHORITY).addClass('inputLarge').end()
+              .start(this.ISSUING_AUTHORITY).addClass('inputLarge').end()
             .end()
             .start().add(this.BusinessAddressLabel).addClass('labelTitle topMargin').end()
             .start().addClass('inline topMargin rightMargin')
@@ -388,15 +377,5 @@ foam.CLASS({
           .end()
         .end();
     }
-  ],
-
-  actions: [
-    {
-      name: 'uploadImage',
-      label: this.UploadImageLabel,
-      code: function(X) {
-        //TODO: Add image upload functionality
-      }
-    }
   ]
-}); 
+});

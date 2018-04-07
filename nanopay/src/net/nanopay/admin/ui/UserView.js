@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'UserView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'View displaying a table with a list of all shoppers and merchants',
 
@@ -12,22 +12,25 @@ foam.CLASS({
   requires: [
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User'
   ],
 
-  exports: [
-    'as data',
-    'filter',
-    'filteredUserDAO'
+  imports: [
+     'auth',
+     'stack',
+     'userDAO'
   ],
 
-  imports: [
-    'stack', 'auth', 'userDAO'
+  exports: [
+    'filter',
+    'filteredUserDAO',
+    'dblclick'
   ],
 
   css: `
     ^ {
-      width: 962px;
+      width: 1240px;
       margin: 0 auto;
     }
     ^ .searchIcon {
@@ -54,12 +57,16 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
+      float: right;
+      background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px;
       height: 40px;
-      opacity: 0.01;
       cursor: pointer;
       z-index: 100;
+      margin-right: 5px;
+    }
+    ^ .net-nanopay-ui-ActionView-exportButton img {
       margin-right: 5px;
     }
     ^ .net-nanopay-ui-ActionView-addUser {
@@ -100,6 +107,9 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ table {
+      width: 1240px;
+    }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
       background: %TABLEHOVERCOLOR%;
@@ -124,12 +134,12 @@ foam.CLASS({
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
-        return data.where(this.OR(this.CONTAINS_IC(this.User.FIRST_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
+        return data.where(this.OR(this.CONTAINS_IC(this.User.LEGAL_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'firstName', 'lastName', 'email', 'organization', 'type'
+          'id', 'legalName', 'email', 'phoneNumber', 'jobTitle', 'businessName', 'type', 'status'
         ]
       }
     },
@@ -169,14 +179,15 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
               .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
-              .start().addClass('inline-float-right')
-                .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' }}).add(this.EXPORT_BUTTON).end()
-              .end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
         .end();
+    },
+    function dblclick(user) {
+      this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
     }
   ],
 
@@ -206,7 +217,7 @@ foam.CLASS({
           .start('div').show(this.accessMerchant$).add('Add Merchant')
             .on('click', this.addMerchant)
           .end()
-          .start('div').show(this.accessCompany$).add('Add Company')
+          .start('div').show(this.accessCompany$).add('Add Business')
             .on('click', this.addCompany)
           .end()
         self.addUserMenuBtn_.add(self.addUserPopUp_)
@@ -215,7 +226,6 @@ foam.CLASS({
   ],
 
   listeners: [
-
     function addShopper() {
       var self = this;
       self.addUserPopUp_.remove();
@@ -231,7 +241,7 @@ foam.CLASS({
     function addCompany() {
       var self = this;
       self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddCompanyView' });
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
     }
   ]
 });

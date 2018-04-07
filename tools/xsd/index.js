@@ -29,13 +29,18 @@ var classesOutDir = path.join(__dirname, '../../nanopay/src/' + packagePath + '/
 var classes = [];
 var simpleTypes = [];
 
+// push document interface
+if ( packageName === 'net.nanopay.iso20022' ) {
+  classes.push('net.nanopay.iso20022.Document');
+}
+
 /**
  * Converts the FOAM model to string
  * @param  {Object} m FOAM model
  * @return {String}   String of FOAM model
  */
 function modelToStr(m) {
-  return foam.json.Pretty.stringify(m).toString().replace(/"/g, "'").replace(/:/g, ': ');
+  return foam.json.Pretty.stringify(m).toString();
 }
 
 /**
@@ -111,7 +116,7 @@ function preparse(docElement) {
  * Processes an XSD file and converts it to FOAM
  * @param  {String} file Raw string input from XSD file
  */
-function processFile (file) {
+function processFile (file, filename) {
   let models = [];
 
   // parse the raw string to a DOM object
@@ -133,6 +138,20 @@ function processFile (file) {
       package: packageName,
       name: child.getAttribute('name')
     };
+
+    // Add xmlns for ISO20022 messages
+    if ( m.name === 'Document' ) {
+      if ( ! m.implements ) m.implements = [];
+      if ( ! m.properties ) m.properties = [];
+
+      m.implements = [ 'net.nanopay.iso20022.Document' ];
+      m.properties.push({
+        class: 'String',
+        name: 'xmlns',
+        value: "urn:iso:std:iso:20022:tech:xsd:" + filename.replace(/\.[^/.]+$/, ""),
+        xmlAttribute: true
+      });
+    }
 
     switch ( child.localName ) {
       case 'complexType':
@@ -204,7 +223,7 @@ if ( ! fs.existsSync(outdir) ) {
 for ( var i = 0; i < files.length; i++ ) {
   var messageClasses = [];
   var file = fs.readFileSync(indir + files[i], 'utf8');
-  let models = processFile(file);
+  let models = processFile(file, files[i]);
 
   // change generic document type to be name of ISO20022 message
   models = models.map(function (model) {
@@ -233,11 +252,7 @@ if ( ! fs.existsSync(classesOutDir) ) {
   mkdirp.sync(classesOutDir);
 }
 
-let classesOutput = '';
-for ( var key in simpleTypes ) {
-  classesOutput += 'require(\'./' + key + '.js\');\n';
-}
-
+let classesOutput = 'require(\'./files.js\');\n\n';
 classesOutput += `var classes = ${modelToStr(classes)};
 var abstractClasses = [];
 var skeletons = [];
@@ -252,13 +267,19 @@ module.exports = {
   blacklist: blacklist
 };`
 
-var files = Object.keys(simpleTypes).concat(classes).sort().map(function (file) {
-  if ( ! file.startsWith(packageName) ) {
-    return { name: packagePath + '/' + file }
-  } else {
-    return { name: file.replace(/\./g, '/') }
-  }
+// create an array of the simple type classes
+var simpleClasses = Object.keys(simpleTypes).filter(function (element, index, self) {
+  return index == self.indexOf(element);
+}).map(function (name) {
+  return packageName + '.' + name;
 });
+
+// concat and filter the simple classes with the non-simple classes
+var files = simpleClasses.concat(classes).filter(function (element, index, self) {
+  return index == self.indexOf(element);
+}).sort().map(function (file) {
+  return { name: file.replace(/\./g, '/') };
+})
 
 // add refinements if they exist
 if ( fs.existsSync(outdir + 'refinements.js') ) {

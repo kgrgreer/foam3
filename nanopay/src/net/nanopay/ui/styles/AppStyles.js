@@ -240,6 +240,7 @@ foam.CLASS({
           margin-bottom: 15px;
           outline: none;
           padding: 10px;
+          font-size: 14px;
         }
         .label{
           height: 16px;
@@ -269,6 +270,16 @@ foam.CLASS({
           display: inline-block;
           border-radius: 4px;
           border: solid 1px #1cc2b7;
+        }
+        .property-password{
+          text-security:disc;
+          -webkit-text-security:disc;
+          -mox-text-security:disc;
+        }
+        .property-confirmPassword{
+          text-security:disc;
+          -webkit-text-security:disc;
+          -mox-text-security:disc;
         }
          .button-row {
            width: 1004px;
@@ -481,6 +492,167 @@ foam.CLASS({
           color: #093649;
           display: inline-block;
           vertical-align: top;
+        }
+
+        .Compliance-Status-Requested {
+          margin-left: 5px;
+          width: 77px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Compliance-Status-Requested span {
+          width: 59px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #59a5d5;
+          display: inline-block;
+        }
+        .Compliance-Status-Passed {
+          margin-left: 5px;
+          width: 62px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Compliance-Status-Passed span {
+          width: 42px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #1cc2b7;
+          display: inline-block;
+        }
+        .Compliance-Status-Failed {
+          margin-left: 5px;
+          width: 53px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Compliance-Status-Failed span {
+          width: 34px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #d81e05;
+          display: inline-block;
+        }
+
+        .Invite-Status-Pending {
+          margin-left: 5px;
+          width: 65px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Invite-Status-Pending span {
+          width: 45px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #a4b3b8;
+          display: inline-block;
+        }
+        .Invite-Status-Submitted {
+          margin-left: 5px;
+          width: 77px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Invite-Status-Submitted span {
+          width: 57px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #2cab70;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          border: solid 1px #2cab70;
+          display: inline-block;
+        }
+        .Invite-Status-Active {
+          margin-left: 5px;
+          width: 55px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Invite-Status-Active span {
+          width: 35px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #2cab70;
+          display: inline-block;
+        }
+        .Invite-Status-Disabled {
+          margin-left: 5px;
+          width: 68px;
+          height: 20px;
+          display: inline-block;
+        }
+        .Invite-Status-Disabled span {
+          width: 48px;
+          height: 20px;
+          font-size: 12px;
+          line-height: 1.67;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding: 0 10px 0 10px;
+          border-radius: 100px;
+          background-color: #093649;
+          display: inline-block;
+        }
+        .wizardDescription {
+          margin: 0;
+          font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 1.5;
+          letter-spacing: 0.2px;
+          text-align: left;
+          color: #093649;
+        }
+        .wizardBoldLabel {
+          font-size: 14px;
+          font-weight: bold;
+          color: #093649;
+          margin-top: 20px;
+        }
+        .wizardBoxTitleContainer {
+          width: 540px;
+          height: 40px;
+          border-radius: 2px;
+          background-color: %PRIMARYCOLOR%;
+          margin-top: 30px;
+        }
+        .wizardBoxTitleLabel {
+          font-size: 14px;
+          font-weight: bold;
+          line-height: 1.43;
+          letter-spacing: 0.2px;
+          color: #ffffff;
+          padding-left: 20px;
+          padding-top: 9px;
         }
       */}
     })

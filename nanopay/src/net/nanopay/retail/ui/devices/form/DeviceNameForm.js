@@ -7,7 +7,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Step',         message: 'Step 1: Name your device.' },
-    { name: 'Instructions', message: 'Please name your device to help distinguish it among other devices.\nYou can change the name at any time.' },
+    { name: 'Instructions', message: 'Please name your device to help distinguish it among other devices.' },
     { name: 'NameLabel',    message: 'Name *' }
   ],
 

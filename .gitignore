@@ -5,10 +5,8 @@
 .idea/
 *.iml
 ingenico/ingenico.iml
-b2b/b2b.iml
 interac/interac.iml
 nanopay/nanopay.iml
-admin-portal/admin-portal.iml
 retail/retail.iml
 
 # CMake
@@ -46,7 +44,6 @@ build/
 target/
 root/target/
 nanopay-bin.js
-nano.log*
 
 # Local Tomcat Server XML
 /server.xml
@@ -56,56 +53,16 @@ node_modules/
 
 # xsd generated code
 nanopay/src/net/nanopay/fx/ascendantfx/model/
-nanopay/src/net/nanopay/iso20022/
+nanopay/src/net/nanopay/iso20022/*
+!nanopay/src/net/nanopay/iso20022/Document.js
+!nanopay/src/net/nanopay/iso20022/refinements.js
 
 # sha256 folder
 sha256/
 
 # Service files
-/accounts
-/balanceAlerts
-/bankAccounts
-/branches
-/businesses
-/canadaTransactions
-/countryAgents
-/dateofbirth
-/devices
-/exchangeRates
-/historyRecords
-/identification
-/indiaTransactions
-/invoiceResolutions
-/invoices
-/pacs8india
-/pacs8iso
-/payees
-/recurringInvoices
-/tokens
-/transactions
-/brokers
-/businessSectors
-/businessTypes
-/cicoServiceProviders
-/countries
-/cronjobs
-/currency
-/emailTemplates
-/exportDriverRegistrys
-/groups
-/languages
-/menus
-/permissions
-/regions
-/scripts
-/services
-/tests
-/thresholds
-/transactionLimits
-/users
-/institutions
-/files
-/encryptedRegions
-/hashedTxns
-/rollingHashedTxns
+/journals
 
+# Logs
+*.lck
+*nano.log*

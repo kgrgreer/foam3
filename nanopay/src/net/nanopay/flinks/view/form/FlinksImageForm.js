@@ -7,7 +7,8 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'viewData'
+    'viewData',
+    'loadingSpinner'
   ],
 
   requires: [
@@ -94,7 +95,7 @@ foam.CLASS({
     }
 
     ^ .net-nanopay-ui-ActionView-closeButton {
-      float: right;
+      float: left;
       margin: 0;
       outline: none;
       min-width: 136px;
@@ -106,6 +107,7 @@ foam.CLASS({
       font-weight: lighter;
       letter-spacing: 0.2px;
       margin-right: 40px;
+      margin-left: 1px;
     }
 
     ^ .net-nanopay-ui-ActionView-nextButton:disabled {
@@ -148,7 +150,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
@@ -171,6 +173,11 @@ foam.CLASS({
             })
             .start('div').style({'clear' : 'both'}).end()
           .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
+            .end()
+          .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.NEXT_BUTTON)
@@ -182,7 +189,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'next',
+      label: 'Continue',
       isEnabled: function(isConnecting) {
         if ( isConnecting === true ) return false;
         return true;
@@ -203,7 +210,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'close',
+      label: 'Cancel',
       code: function(X) {
         X.form.goBack();
       }

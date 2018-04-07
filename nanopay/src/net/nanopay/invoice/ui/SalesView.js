@@ -32,7 +32,7 @@ foam.CLASS({
   messages: [
     {
       name: 'placeholderText',
-      message: 'You don’t have any bills to pay now. When you receive an invoice from your partners, it will show up here.'
+      message: 'You haven’t sent any invoices yet. After you send an invoice to your partners, it will show up here.'
     }
   ],
   
@@ -58,6 +58,9 @@ foam.CLASS({
         ^ .foam-u2-view-TableView-row:hover {
           cursor: pointer;
           background: %TABLEHOVERCOLOR%;
+        }
+        ^ .foam-u2-view-TableView-row {
+          height: 40px;
         }
         ^ .button-div{
           height: 40px;
@@ -127,7 +130,7 @@ foam.CLASS({
 
           this
             .start({
-              class: 'foam.u2.view.TableView',
+              class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
               config: {
@@ -138,7 +141,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate', 'amount', 'status'
+                'id', 'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate', 'amount', 'status'
               ]
             }).addClass(this.myClass('table')).end()
         }

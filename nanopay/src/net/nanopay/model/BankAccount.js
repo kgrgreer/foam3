@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Bank account information.',
 
-  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'],
+  tableColumns: ['accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status', 'actionsMenu'],
 
   properties: [
     {
@@ -14,31 +14,57 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountName',
-      label: 'Account Name'
+      label: 'Account Name',
+      validateObj: function (accountName) {
+        if ( accountName.length > 70 ) {
+          return 'Account name cannot exceed 70 characters.';
+        }
+      }
     },
     {
       class: 'String',
       name: 'institutionNumber',
-      label: 'Institution No.'
+      label: 'Institution No.',
+      validateObj: function (institutionNumber) {
+        var instNumRegex = /^[0-9]{3}$/;
+
+        if ( ! instNumRegex.test(institutionNumber) ) {
+          return 'Invalid institution number.';
+        }
+      }
     },
     {
       class: 'String',
       name: 'transitNumber',
-      label: 'Transit No.'
+      label: 'Transit No.',
+      validateObj: function (transitNumber) {
+        var transNumRegex = /^[0-9]{5}$/;
+
+        if ( ! transNumRegex.test(transitNumber) ) {
+          return 'Invalid transit number.';
+        }
+      }
     },
     {
       class: 'String',
       name: 'accountNumber',
       label: 'Account No.',
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function (str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length))
+      },
+      validateObj: function (accountNumber) {
+        var accNumberRegex = /^[0-9]{1,30}$/;
+
+        if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Invalid account number.';
+        }
       }
     },
     {
       class: 'String',
       name: 'status',
-      tableCellFormatter: function(a) {
+      tableCellFormatter: function (a) {
         var colour = ( a == 'Verified' ) ? '#2cab70' : '#f33d3d';
         this.start()
           .add(a)
@@ -64,19 +90,19 @@ foam.CLASS({
       name: 'branchId'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'randomDepositAmount',
-      factory: function() {
-        var randomAmountInCents = 1 + Math.floor(Math.random() * 99);
-
-        return randomAmountInCents;
-      },
-      hidden: true
+      networkTransient: true
     },
     {
       class: 'Int',
       name: 'verificationAttempts',
       value: 0
+    },
+    {
+      class: 'Boolean',
+      name: 'setAsDefault',
+      value: false
     }
   ],
 
@@ -84,7 +110,7 @@ foam.CLASS({
     {
       name: 'run',
       icon: 'images/ic-options-hover.svg',
-      code: function() {
+      code: function () {
         foam.nanos.menu.SubMenuView.create({menu: foam.nanos.menu.Menu.create({id: 'accountSettings'})});
       }
     }

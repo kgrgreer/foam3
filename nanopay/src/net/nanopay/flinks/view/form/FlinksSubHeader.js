@@ -7,6 +7,7 @@ foam.CLASS({
     'group',
     'logo'
   ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -18,12 +19,10 @@ foam.CLASS({
           margin-top: 20px;
           display: table;
         }
-
         ^ .verticalCenter {
           display: table-cell;
           vertical-align: middle;
         }
-
         ^ .icConnected {
           display: inline-block;
           width: 24px;
@@ -31,7 +30,6 @@ foam.CLASS({
           margin-left: 30px;
           vertical-align: middle;
         }
-
         ^ .firstImg {
           display: inline-block;
           max-width: 120px;
@@ -41,7 +39,6 @@ foam.CLASS({
           vertical-align: middle;
           margin-left: 82px;
         }
-
         ^ .secondImg {
           display: inline-block;
           max-width: 120px;
@@ -78,4 +75,4 @@ foam.CLASS({
       .end()
     }
   ]
-})
+});

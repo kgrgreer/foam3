@@ -2,285 +2,151 @@ p({"class":"foam.nanos.auth.Permission","id":"cico.ci","description":"Allows the
 p({"class":"foam.nanos.auth.Permission","id":"user.merch","description":"Allows the Adding of Merchant"})
 p({"class":"foam.nanos.auth.Permission","id":"user.shop","description":"Allows the Adding of Shopper"})
 p({"class":"foam.nanos.auth.Permission","id":"user.comp","description":"Allows the Adding of Company"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.settings"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-password"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-personal"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sign-in"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-security"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.password"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.devices"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.read.*"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-bank"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.banks"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-bus"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.accounts"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
-p({"class":"foam.nanos.auth.Permission","id":"cc.*","description":"All Connected City permissions"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
+p({"class":"foam.nanos.auth.Permission","id":"cc.*","description":"All ConnectedCity permissions"})
 p({"class":"foam.nanos.auth.Permission","id":"*","description":"All Access"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"cico.ci"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.banks"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"user.shop"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transfer"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.cctransfer"})
 p({"class":"foam.nanos.auth.Permission","id":"user.merch"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"*","description":"All Access"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-bank"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"transaction.read.*"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.*"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.expenses"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.invoices"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.banks"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"cico.ci"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sales"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.allInvoices"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.dashboard"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-bank"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions","description":"Transactions"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions","description":"Transactions"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-security"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-password"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.settings"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"s2h.*","description":"All S2H Features."})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sales"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.accounts"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"user.comp"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"transaction.read.*"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.pacs008ISOPurposeDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.logger"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.exportDriverRegistryDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.sessionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.s2hInvoiceDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.appConfig"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.demoObjectDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.menuDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.historyDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.threadPool"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.smsToken"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.images"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.scriptDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.interacTransactionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.exchangeRateDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.flinksAuth"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.push"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.localTransactionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.thresholdResolveDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.institutionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.currencyDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.xeroCallback"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.accountDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.localUserDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.emailToken"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.xeroComplete"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.tokenStorage"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.ping"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.countryDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.blobStore"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.alterna"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.countryAgentDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.cicoServiceProviderDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.authy"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.websockets"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.email"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.brokerDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.pmLogger"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.services"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.transactionErrorDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.thresholdDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.standardCICOTransactionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.encryptedRegionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.dig"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.auth"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.indiaTransactionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.businessTypeDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.regionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.canadaTransactionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.exchangeRate"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.testDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.transactionLimitDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.deviceAuth"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.localBankAccountDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.export"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.branchDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.transactionSuccessDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.static"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.httprouter"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.businessDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.httpBlobService"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.http"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.pmInfoDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.blobService"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.groupDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.liquidityDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.memory"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.cronDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.classes"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.nSpecDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.businessSectorDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.verifyEmail"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.alternaSftp"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.localAccountDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.invoiceDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.xero"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.trace"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.payeeDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.identificationDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.dateAndPlaceOfBirthDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.deviceDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.userTransactionLimit"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.pacs008IndiaPurposeDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.feeDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.bankAccountVerification"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.permissionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.threads"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.bankAccountDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.emailTemplateDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.tokenDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.uptime"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.transactionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.resetPasswordToken"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.languageDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.recurringInvoiceDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.userDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
-p({"class":"foam.nanos.auth.Permission","id":"service.execute.invoiceResolutionDAO"})
-// Modified by admin  (1348) at 2018-01-22T10:39:35Z
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.balanceAlertDAO"})
+p({"class":"foam.nanos.auth.Permission","id":"service.execute.questionnaireDAO"})
+p({"class":"foam.nanos.auth.Permission","id":"corridor.read.*"})
+p({"class":"foam.nanos.auth.Permission","id":"corridor.write.*"})
+p({"class":"foam.nanos.auth.Permission","id":"payoutOptions.read.*"})
+p({"class":"foam.nanos.auth.Permission","id":"payoutOptions.write.*"})
+p({"class":"foam.nanos.auth.Permission","id":"transactionPurpose.read.*"})
+p({"class":"foam.nanos.auth.Permission","id":"transactionPurpose.write.*"})

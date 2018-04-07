@@ -10,7 +10,8 @@ foam.CLASS({
     'isConnecting',
     'group',
     'logo',
-    'window'
+    'window',
+    'loadingSpinner'
   ],
 
   axioms: [
@@ -48,6 +49,7 @@ foam.CLASS({
           letter-spacing: 0.1px;
           text-align: left;
           color: #093649;
+          border: 1px solid red;
         }
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
@@ -70,7 +72,7 @@ foam.CLASS({
         }
 
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -81,7 +83,7 @@ foam.CLASS({
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
-          margin-right: 40px;
+          margin-left: 1px;
         }
 
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
@@ -96,6 +98,22 @@ foam.CLASS({
           text-decoration: underline;
           background: transparent;
           color: #59a5d5;
+          height: 25px;
+        }
+
+        ^ .pStyle {
+          width: 428px;
+          height: 32px;
+          font-family: Roboto;
+          font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 1.33;
+          letter-spacing: 0.3px;
+          text-align: left;
+          color: #093649;
+          word-wrap: break-word;
         }
       */}
     })
@@ -146,7 +164,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
@@ -163,10 +181,15 @@ foam.CLASS({
             .start('div').style({'display':'inline-block','vertical-align':'top'})
               .start(this.CONDITION_AGREE).style({'height':'14px', 'width':'14px', 'margin-left':'20px', 'margin-right':'8px', 'margin-top':'15px'}).end()
             .end()
-            .start('div').style({'display':'inline-block','width':'420px','vertical-align':'top'}).addClass('conditionText')
+            .start('div').style({'display':'inline-block'}).addClass('pStyle')
               .add('I agree to the')
-              .tag(this.GO_TO_TERM)
+              .start(this.GO_TO_TERM).end()
               .add('and authorize the release of my Bank information to nanopay.')
+            .end()
+          .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
             .end()
           .end()
         .end()
@@ -180,7 +203,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'Sign In',
+      label: 'Continue',
       isEnabled: function(isConnecting, username, password, conditionAgree) {
         if ( isConnecting == true ) return false;
         if ( username.trim().length == 0 ) return false;

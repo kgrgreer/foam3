@@ -106,10 +106,9 @@ foam.CLASS({
       name: 'userList',
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
+          dao: X.data.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
           objToChoice: function(user) {
-            var username = user.firstName + ' ' + user.lastName;
-            return [user.id, username + ' - (' + user.email + ')'];
+            return [user.id, user.label() + ' - (' + user.email + ')'];
           }
         });
       }
@@ -166,18 +165,6 @@ foam.CLASS({
 
         self.transactionDAO.put(transaction).then(function(response) {
           return self.userDAO.find(self.userList);
-        })
-        .then(function (result) {
-          var template = ( result.type === 'Merchant' ) ? 'cc-template-invite/merc1' : 'cc-template-invite/shopper';
-          var emailMessage = self.EmailMessage.create({
-            to: [ result.email ]
-          });
-
-          return self.email.sendEmailFromTemplate(result, emailMessage, template, {
-            name: result.firstName,
-            email: result.email,
-            money: self.formatCurrency(self.transferAmount/100)
-          });
         })
         .then(function () {
           self.add(self.NotificationMessage.create({ message: 'Value transfer successfully sent!' }));

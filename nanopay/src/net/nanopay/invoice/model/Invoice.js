@@ -39,6 +39,11 @@ foam.CLASS({
 
   javaImports: [ 'java.util.Date' ],
 
+  constants: {
+    RECORDED_PAYMENT: -2,
+    DISPUTED_INVOICE: -1
+  },
+
   properties: [
     {
       name: 'search',
@@ -68,6 +73,7 @@ foam.CLASS({
       label: 'Issue Date',
       required: true,
       factory: function() { return new Date(); },
+      javaFactory: 'return new Date();',
       aliases: [ 'issueDate', 'issue', 'issued' ],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
@@ -150,16 +156,18 @@ foam.CLASS({
       name: 'invoiceImageUrl'
     },
     {
-      // TODO: switch to Currency
-      // class: 'Currency',
-      class: 'Double',
+      class: 'Currency',
       name: 'amount',
       aliases: [ 'a' ],
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
-        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas(a.toFixed(2))).end();
+        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas((a/100).toFixed(2))).end();
       }
+    },
+    {
+      class: 'Long',
+      name: 'sourceAccountId'
     },
     {
       class: 'Enum',
@@ -168,12 +176,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'currencyCode',
-      required: true
+      name: 'currencyCode'
     },
     {
-      name: 'iso20022',
-      required: true
+      name: 'iso20022'
+    },
+    {
+      class: 'Long',
+      name: 'accountId'
     },
     {
       class: 'String',
@@ -183,9 +193,10 @@ foam.CLASS({
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
         if ( paymentMethod.name == 'VOID' ) return 'Void';
-        if ( paymentId === -1 ) return 'Disputed';
-        if ( paymentId > 0 ) return 'Paid';
-        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == -2) {  return 'Scheduled' };
+        if ( paymentMethod.name == "CHEQUE" ) return "Paid";
+        if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
+        if ( paymentId > 0 || paymentDate < Date.now() && paymentId == this.RECORDED_PAYMENT) return 'Paid';
+        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) return ('Scheduled');
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
@@ -213,21 +224,24 @@ foam.CLASS({
         function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
 
         var label;
-
-        if ( state === 'Scheduled' || state === 'Paid' ) {
-          label = state;
-        } else {
-          label = state;
+        label = state;
+        if ( state === 'Scheduled') {
+          label = label + ' ' + obj.paymentDate.toISOString().substring(0,10);
         }
 
         this.start().addClass('generic-status Invoice-Status-' + state).add(label).end();
       }
     },
     {
-      class: 'FileArray',
+      class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
       documentation: 'Original invoice file',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'scheduledEmailSent',
+      value: false,      
     }
   ],
 

@@ -7,7 +7,8 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'stack'
+    'stack',
+    'nSpecDAO'
   ],
 
   axioms: [
@@ -16,7 +17,6 @@ foam.CLASS({
         ^ {
           width: 520px;
         }
-
         ^ .optionSpacer {
           display: inline-block;
           width: 122px;
@@ -25,15 +25,12 @@ foam.CLASS({
           box-sizing: border-box;
           border: solid 1px white;
         }
-
         ^ .optionSpacer:last-child {
           margin-right: 0;
         }
-
         ^ .institution {
           margin-bottom: 10px
         }
-
         ^ .institution:hover {
           cursor: pointer;
         }
@@ -64,14 +61,12 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
-          margin: 0;
+          float: left;
+          margin-left : 2px;
           outline: none;
           min-width: 136px;
           height: 40px;
@@ -83,30 +78,11 @@ foam.CLASS({
           letter-spacing: 0.2px;
           margin-right: 40px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
-        }
-
-        ^ .net-nanopay-ui-ActionView-otherButton {
-          float: left;
-          margin: 0;
-          margin-left: 1px;
-          outline: none;
-          border:none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: %SECONDARYCOLOR%;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-          margin-right: 40px;
         }
       */}
     })
@@ -114,14 +90,16 @@ foam.CLASS({
 
   properties: [
     {
-      //decide which bank will connect
       class: 'Int',
       name: 'selectedOption',
       value: -1,
       postSet: function(oldValue, newValue) {
         this.viewData.selectedOption = newValue;
       }
-    }
+    },
+    'mode',
+    //It is an Element that refer to subContent
+    'subContent'
   ],
 
   messages: [
@@ -129,6 +107,7 @@ foam.CLASS({
     { name: 'Error', message: 'Invalid Institution'},
     { name: 'NameLabel', message: 'Institution *'}
   ],
+
   methods: [
     function init() {
       this.SUPER();
@@ -140,16 +119,16 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
-      this
+      this.subContent = this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
-        .start('div').addClass('subContent')
-          .forEach(this.bankImgs, function(e){
+        .start('div').addClass('subContent');
+        this.subContent.forEach(this.bankImgs, function(e) {
+            if ( e.index === self.bankImgs[15].index ) return;
             this.start('div').addClass('optionSpacer').addClass('institution')
-              .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : '';}))
+              .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
               .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
               .on('click', function() {
                 self.selectedOption = e.index;
@@ -160,23 +139,46 @@ foam.CLASS({
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
-          .tag(this.OTHER_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end()
+        .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
+          .add("Can't find your institution? Click here.")
+          .on('click', self.otherBank)
+        .end()
+        .start('div').style({'clear' : 'both'}).end();
+
+        //get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
+        //do not show Flinks demo in Production mode
+        this.nSpecDAO.find("appConfig").then(function(response){
+          self.mode = response.service.mode.label;
+          if ( self.mode && self.mode !== "Production") {
+            self.subContent.start('div').addClass('optionSpacer').addClass('institution')
+            .addClass(self.selectedOption$.map(function(o) { return o == self.bankImgs[15].index ? 'selected' : ''; }))
+            .start({class: 'foam.u2.tag.Image', data: self.bankImgs[15].image}).addClass('image').end()
+            .on('click', function() {
+              self.selectedOption = self.bankImgs[15].index;
+            })
+          .end()
+          }
+        });
     }
   ],
+
+  listeners: [
+    function otherBank() {
+    this.form.otherBank();
+    }
+  ],
+
   actions: [
     {
       name: 'nextButton',
-      label: 'Next',
+      label: 'Continue',
       isEnabled: function(isConnecting, selectedOption) {
-        //console.log(isConnecting, selectedOption);
         if ( isConnecting === true ) return false;
         if ( selectedOption === -1 ) return false;
         return true;
       },
       code: function(X) {
-        //console.log('nextButton');
         X.form.goNext();
       }
     },
@@ -184,16 +186,8 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        //console.log('close the form');
         X.form.goBack();
-      }
-    },
-    {
-      name: 'otherButton',
-      label: 'Other bank',
-      code: function(X) {
-        X.form.otherBank();
-      }
+      },
     }
   ]
-})
+});

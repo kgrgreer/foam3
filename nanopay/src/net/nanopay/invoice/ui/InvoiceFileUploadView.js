@@ -5,7 +5,8 @@ foam.CLASS({
 
   requires: [
     'foam.blob.BlobBlob',
-    'foam.nanos.fs.File'
+    'foam.nanos.fs.File',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
@@ -20,7 +21,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FileArray',
+      class: 'foam.nanos.fs.FileArray',
       name: 'data'
     }
   ],
@@ -35,9 +36,22 @@ foam.CLASS({
       z-index: -1;
     }
     ^ .attachment-btn {
-      margin: 10px 0;
+      margin: 10px 0 50px;
+    }
+    ^ .box-for-drag-drop {
+      border: 5px dashed #1234;
+      height: 100px;
+      width: 200px;
+    }
+    ^ .inputText{
+      text-align: center;
+      line-height: 60px
     }
   `,
+
+  messages: [
+    { name: 'ErrorMessage', message: 'One or more file(s) were not uploaded as they exceeded the file size limit of 10MB' }
+  ],
 
   methods: [
     function initE() {
@@ -49,7 +63,6 @@ foam.CLASS({
           .add('Attachments')
           .add(this.slot(function (data) {
             var e = this.E();
-
             for ( var i = 0 ; i < data.length ; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
@@ -59,19 +72,8 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start('input').addClass('attachment-input')
-            .attrs({
-              type: 'file',
-              accept: 'application/pdf',
-              multiple: 'multiple'
-            })
-            .on('change', this.onChange)
+          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
           .end()
-          .start().addClass('attachment-btn white-blue-button btn')
-            .add('Add Attachment')
-            .on('click', self.onAddAttachmentClicked)
-          .end()
-          .add('Maximum size 10MB')
         .end();
     },
 
@@ -81,26 +83,19 @@ foam.CLASS({
       this.data = Array.from(this.data);
     }
   ],
+  actions: [
+    {
+      name: 'uploadButton',
+      label: 'Choose File',
 
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.UploadModal', exportData$: this.data$}));
+      }
+    },
+  ],
   listeners: [
     function onAddAttachmentClicked (e) {
       this.document.querySelector('.attachment-input').click();
     },
-
-    function onChange (e) {
-      var files = e.target.files;
-      for ( var i = 0 ; i < files.length ; i++ ) {
-        this.data.push(this.File.create({
-          owner: this.user.id,
-          filename: files[i].name,
-          filesize: files[i].size,
-          mimeType: files[i].type,
-          data: this.BlobBlob.create({
-            blob: files[i]
-          })
-        }));
-      }
-      this.data = Array.from(this.data);
-    }
   ]
 });

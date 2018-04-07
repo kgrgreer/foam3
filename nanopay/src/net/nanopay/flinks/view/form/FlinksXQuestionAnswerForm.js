@@ -7,11 +7,14 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'viewData'
+    'viewData',
+    'loadingSpinner'
   ],
   requires: [
     'foam.u2.view.StringArrayView',
-    'foam.u2.tag.Input'
+    'foam.u2.tag.Input',
+    'net.nanopay.flinks.view.element.StringArrayInput',
+    'foam.u2.view.PasswordView'
   ],
 
   axioms: [
@@ -21,7 +24,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 385px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -43,9 +46,9 @@ foam.CLASS({
           padding: 10px;
         }
         ^ .qa-block {
-          border: 2px solid #778899;
+          border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -93,13 +96,11 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -111,12 +112,11 @@ foam.CLASS({
           font-weight: lighter;
           letter-spacing: 0.2px;
           margin-right: 40px;
+          margin-left: 1px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
@@ -161,7 +161,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
@@ -170,12 +170,11 @@ foam.CLASS({
           .start('div').addClass('qa-block')
             .forEach(this.viewData.SecurityChallenges, function(data, index){
               self.viewData.questions[index] = data.Prompt;
-              var text = self.Input.create({'onKey':true});
+              var text = self.StringArrayInput.create({max: 3, isPassword: true});
               text.data$.sub(function(){
-                //console.log('stringArray.data', text.data);
-                self.viewData.answers[index] = new Array(1).fill(text.data);
-                //console.log(self.viewData);
-                if ( text.data.trim().length === 0 ) {
+                self.viewData.answers[index] = text.data;
+                if ( text.data[0].trim().length === 0 ) {
+
                   self.answerCheck[index] = false;
                 } else {
                   self.answerCheck[index] = true;
@@ -183,8 +182,14 @@ foam.CLASS({
                 self.tick++;
               });
               this.start('p').addClass('question').add('Q' + (index+1) + ': ').add(data.Prompt).end();
-              this.start(text).style({'margin-top':'10px'}).addClass('input').end();
+              //this.start(text).style({'margin-top':'10px'}).addClass('input').end();
+              this.start(text).style({'margin-top':'10px'}).end();
             })
+          .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
+            .end()
           .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
@@ -194,10 +199,11 @@ foam.CLASS({
         .start('div').style({'clear' : 'both'}).end()
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
-      label: 'Next',
+      label: 'Continue',
       isEnabled: function(tick, isConnecting, answerCheck) {
         for ( var x in answerCheck ) {
           if ( answerCheck[x] === false ) return false;
@@ -206,19 +212,16 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
     },
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
-        //console.log('close the form');
-        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }
   ]
-})
+});

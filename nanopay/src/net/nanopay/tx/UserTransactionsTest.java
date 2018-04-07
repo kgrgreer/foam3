@@ -3,7 +3,7 @@ package net.nanopay.tx;
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.dao.AbstractSink;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.MapDAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
@@ -18,11 +18,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class UserTransactionsTest {
 
-  private static final int USER_COUNT = 5;
-  private static final int ACCOUNT_COUNT = 1;
-  private static final int THREAD_COUNT = 8;
-  private static final int TRANSACTION_COUNT = 1000;
-  private static final int STARTING_BALANCE = 100;
+  private static final int     USER_COUNT          = 5;
+  private static final int     ACCOUNT_COUNT       = 1;
+  private static final int     THREAD_COUNT        = 8;
+  private static final int     TRANSACTION_COUNT   = 1000;
+  private static final int     STARTING_BALANCE    = 100;
   private static final boolean PRINT_USER_BALANCES = true;
 
   public static void main(String[] args) {
@@ -43,7 +43,7 @@ public class UserTransactionsTest {
     System.out.println("Creating users");
 
     // Generate USER_COUNT users
-    for ( int i = 0; i < USER_COUNT; i++ ) {
+    for ( int i = 0 ; i < USER_COUNT ; i++ ) {
       User user = new User();
       user.setId(i);
       Account[] accounts = new Account[ACCOUNT_COUNT];
@@ -129,7 +129,7 @@ public class UserTransactionsTest {
     final AtomicLong ai = new AtomicLong(0);
     userDao.select(new AbstractSink() {
       @Override
-      public void put(FObject obj, Detachable sub) {
+      public void put(Object obj, Detachable sub) {
         User user = (User) obj;
         Account acc = ((Account)user.getAccounts()[0]);
         if (PRINT_USER_BALANCES) {
@@ -143,8 +143,8 @@ public class UserTransactionsTest {
       System.err.println("Balance lost: " + ai.get() + "/" + STARTING_BALANCE * USER_COUNT);
     }
 
-    ListSink userSink = (ListSink) userDao.select(new ListSink());
-    List userList = userSink.getData();
+    ArraySink userSink = (ArraySink) userDao.select(new ArraySink());
+    List userList = userSink.getArray();
     long[] userBalances = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
@@ -164,8 +164,8 @@ public class UserTransactionsTest {
     System.out.println("[Single-Threaded] Completed " + TRANSACTION_COUNT + " transactions with user pool size of "
         + USER_COUNT + " in " + endTime / Math.pow(10.0, 9.0) + "s");
 
-    userSink = (ListSink) userDao.select(new ListSink());
-    userList = userSink.getData();
+    userSink = (ArraySink) userDao.select(new ArraySink());
+    userList = userSink.getArray();
     long[] userBalances2 = new long[USER_COUNT];
 
     for(int i = 0; i < userList.size(); i++) {
@@ -176,7 +176,7 @@ public class UserTransactionsTest {
     ai.set(0);
     userDao.select(new AbstractSink() {
       @Override
-      public void put(FObject obj, Detachable sub) {
+      public void put(Object obj, Detachable sub) {
         User user = (User) obj;
         Account acc = (Account)user.getAccounts()[0];
         if (PRINT_USER_BALANCES) {

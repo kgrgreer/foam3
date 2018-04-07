@@ -129,6 +129,9 @@ foam.CLASS({
       position: relative;
       top: 25px;
     }
+    ^ .note-div {
+      height:
+    }
   `,
 
   methods: [
@@ -193,8 +196,8 @@ foam.CLASS({
                 .end()
               .end()
             .endContext()
-            .start().addClass('small-margin')
-              .add('Note')
+            .start()
+              .start().addClass('label').add('Note').end()
               .start(this.Invoice.NOTE).addClass('half-input-box').end()
             .end()
           .end();
@@ -235,13 +238,17 @@ foam.CLASS({
           this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
           return;  
         }
+        
+        if ( dueDate ){
+          var offsetDate = dueDate.setMinutes(dueDate.getMinutes() + new Date().getTimezoneOffset());
+        }
 
         var inv = this.Invoice.create({
           payerId: this.userList,
           payeeId: this.user.id,
           createdBy: this.user.id,
           amount: this.data.amount,
-          dueDate: this.data.dueDate,
+          dueDate: offsetDate,
           purchaseOrder: this.data.purchaseOrder,
           invoiceNumber: this.data.invoiceNumber,
           note: this.data.note,

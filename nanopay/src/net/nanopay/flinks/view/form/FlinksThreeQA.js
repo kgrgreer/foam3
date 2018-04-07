@@ -86,11 +86,9 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
@@ -106,11 +104,9 @@ foam.CLASS({
           color: #FFFFFF;
           margin-right: 40px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
@@ -138,8 +134,6 @@ foam.CLASS({
       class: 'StringArray',
       name: 'answer0',
       postSet: function(oldValue, newValue) {
-        console.log(newValue);
-        console.log(this.isFinish);
         this.viewData.answers[0] = newValue;
       },
       validateObj: function(answer0) {
@@ -154,7 +148,6 @@ foam.CLASS({
       class: 'StringArray',
       name: 'answer1',
       postSet: function(oldValue, newValue) {
-        console.log(newValue);
         this.viewData.answers[1] = newValue;
       },
       validateObj: function(answer1) {
@@ -169,7 +162,6 @@ foam.CLASS({
       class: 'StringArray',
       name: 'answer2',
       postSet: function(oldValue, newValue) {
-        console.log(newValue);
         this.viewData.answers[2] = newValue;
       },
       validateObj: function(answer2) {
@@ -187,17 +179,13 @@ foam.CLASS({
     { name: 'header1', message: 'Please answer the security question: '},
     { name: 'answerError', message: 'Invalid answer'}
   ],
+
   methods: [
     function init() {
-      console.log(this.isFinish);
       this.SUPER();
-      //this.form.isEnabledButtons(true);
       this.viewData.questions = [
-        'What is your mother maiden name','What is your age','cccc'
+        'What is your mothers maiden name','What is your age','cccc'
       ];
-      // for ( var i = 0 ; i < this.viewData.securityChallenges.length ; i++ ){
-      //   this.viewData.questions[i] = this.viewData.securityChallenges[i].Prompt;
-      // }
       this.nextLabel = 'next';
     },
     function initE() {
@@ -234,16 +222,14 @@ foam.CLASS({
         return (isFinish0 && isFinish1 && isFinish2) ? true : false;
       },
       code: function(X) {
-        console.log('nextButton');
         X.form.goNext();
       }
     },
     {
       name: 'closeButton',
       code: function(X) {
-        console.log('close the form');
         X.form.goBack();
       }
     }
   ]
-})
+});

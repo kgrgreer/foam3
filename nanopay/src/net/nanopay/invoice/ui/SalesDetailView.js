@@ -3,16 +3,16 @@ foam.CLASS({
   name: 'SalesDetailView',
   extends: 'foam.u2.View',
 
-  requires: [ 
-    'net.nanopay.invoice.model.Invoice', 
+  requires: [
+    'net.nanopay.invoice.model.Invoice',
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage'
   ],
 
-  imports: [ 
-    'stack', 
-    'hideReceivableSummary', 
+  imports: [
+    'stack',
+    'hideReceivableSummary',
     'invoiceDAO',
     'user',
     'ctrl'
@@ -21,12 +21,16 @@ foam.CLASS({
   exports: [
     'as data',
     'hideReceivableSummary',
-    'openExportModal' 
+    'openExportModal'
   ],
-  
+
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions',
   ],
+
+  constants: {
+    RECORDED_PAYMENT: -2
+  },
 
   css: `
     ^ {
@@ -43,15 +47,8 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: static;
-    }
-    ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-recordPayment {
       background-color: #59A5D5;
@@ -59,6 +56,8 @@ foam.CLASS({
       color: white;
       float: right;
       margin-right: 1px;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-voidDropDown {
       width: 30px;
@@ -119,7 +118,7 @@ foam.CLASS({
           this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
         })
         .start(this.RECORD_PAYMENT).end()
-        .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' } }).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
+        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
         .start('h5').add('Bill to ', this.data.payerName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
@@ -156,7 +155,7 @@ foam.CLASS({
       label: 'Record Payment',
       code: function(X) {
         var self = this;
-        if(this.data.paymentMethod.name != "NONE"){
+        if(this.data.paymentMethod.name != "NONE" || this.data.paymentId != this.RECORDED_PAYMENT && this.data.paymentDate < Date.now() ){
           self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }

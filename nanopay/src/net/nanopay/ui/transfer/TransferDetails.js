@@ -20,8 +20,11 @@ foam.CLASS({
   imports: [
     // 'pacs008ISOPurposeDAO',
     // 'pacs008IndiaPurposeDAO',
+    'findAccount',
+    'formatCurrency',
     'bankAccountDAO',
     'payeeDAO',
+    'account',
     'user',
     'type'
   ],
@@ -127,6 +130,12 @@ foam.CLASS({
           font-size: 12px;
           cursor: pointer;
         }
+        ^ .property-accounts{
+          margin-top: 20px;
+        }
+        ^ .choice{
+          margin-bottom: 20px;
+        }
       */}
     })
   ],
@@ -158,11 +167,11 @@ foam.CLASS({
       view: function(_,X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.bankAccountDAO.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
+          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
           objToChoice: function(account) {
-            return [account.id, 'Account No. ' +
+            return [account.id, account.accountName + ' ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
-                    ]; // TODO: Grab amount and display
+                    ];
           }
         });
       }
@@ -212,6 +221,13 @@ foam.CLASS({
         //     return [purpose.code, purpose.code + ' - ' + purpose.description];
         //   }
         // })
+
+        return foam.u2.view.ChoiceView.create({
+          dao: X.transactionPurposeDAO,
+          objToChoice: function(purpose) {
+            return [purpose.id, purpose.purposeCode + ' - ' + purpose.description];
+          }
+        });
       }
     },
     {
@@ -232,6 +248,38 @@ foam.CLASS({
       validateObj: function(notThirdParty, invoiceMode) {
         if ( ! invoiceMode && ! notThirdParty ) return 'Non-third party verification not checked.'
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'digitalCash',
+      documentation: 'UI toggle choice between payments using account or digital cash.',
+      value: true,
+      preSet: function(oldValue, newValue) {
+        if ( ! this.accountCheck && oldValue ) {
+          return oldValue;
+        }
+        return newValue;
+      },
+      postSet: function(oldValue, newValue){
+        this.viewData.digitalCash = newValue;
+        if ( this.accountCheck ) this.accountCheck = false;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'accountCheck',
+      documentation: 'UI toggle choice between payments using account or digital cash. Used to set bankAccountId on transaction on create.',
+      value: false,
+      preSet: function(oldValue, newValue) {
+        if ( ! this.digitalCash && oldValue ) {
+          return oldValue;
+        }
+        return newValue;
+      },
+      postSet: function(oldValue, newValue){
+        this.viewData.accountCheck = newValue;
+        if ( this.digitalCash ) this.digitalCash = false;
+      }
     }
   ],
 
@@ -245,6 +293,7 @@ foam.CLASS({
 
       if ( this.invoiceMode ) {
         this.payees = this.invoice.payeeId;
+        this.viewData.fromAmount = this.invoice.amount;
       }
 
       if ( this.viewData.purpose ) {
@@ -255,23 +304,39 @@ foam.CLASS({
         this.notes = this.viewData.notes;
       }
 
+      this.digitalCash = this.viewData.digitalCash;
+      this.accountCheck = this.viewData.accountCheck;
+
       this.SUPER()
     },
 
     function initE() {
       this.SUPER();
       var self = this;
+      this.getDefaultBank();
+      this.findAccount();
 
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
           .start('p').add(self.TransferFromLabel).addClass('bold').end()
-          .start('p').add(self.AccountLabel).end()
-          .start('div').addClass('dropdownContainer')
-            .start(self.ACCOUNTS, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
-            .callIf( ! self.invoiceMode , function() {
-              this.start('div').addClass('caret').end()
-            })
+          // .start('p').add(self.AccountLabel).end()
+          .start().addClass("choice")
+            .start('div').addClass('confirmationContainer')
+              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.account.balance$.map(function(balance) {
+                            return (balance/100).toFixed(2)}))
+              .end()
+            .end()
+            .start('div').addClass('confirmationContainer')
+              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
+              .start('p').addClass('confirmationLabel').add('Pay from account')
+              .end()
+            .end()
+          .end()
+          .start('div').addClass('dropdownContainer').show(this.accountCheck$)
+            .start(self.ACCOUNTS).end()
+            .start('div').addClass('caret').end()
           .end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .start('p').add(this.PayeeLabel).end()
@@ -279,15 +344,15 @@ foam.CLASS({
             .start(this.PAYEES, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
             .start('div').enableClass('hidden', this.invoiceMode$).addClass('caret').end()
           .end()
-          // .callIf(this.type == 'foreign', function() {
-          //   this.start()
-          //     .start('p').add(self.PurposeLabel).end()
-          //     .start('div').addClass('dropdownContainer')
-          //       .add(self.PURPOSE)
-          //       .start('div').addClass('caret').end()
-          //     .end()
-          //   .end()
-          // })
+           // .callIf(this.type == 'foreign', function() {
+            .start()
+              .start('p').add(self.PurposeLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .add(self.PURPOSE)
+                .start('div').addClass('caret').end()
+              .end()
+            .end()
+           // })
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
@@ -320,6 +385,20 @@ foam.CLASS({
           .start('p').add(this.ToLabel).addClass('bold').end()
           .add(this.payeeCard)
         .end();
+    },
+
+    function getDefaultBank() {
+      var self = this;
+      this.user.bankAccounts.where(
+        this.AND(
+          this.EQ(this.BankAccount.STATUS, 'Verified'),
+          this.EQ(this.BankAccount.SET_AS_DEFAULT, true)
+        )
+      ).select().then( function (a) {
+        if ( a.array.length == 0 ) return;
+        self.accounts = a.array[0].id;
+        self.viewData.account = a.array[0];
+      });
     }
   ]
 });

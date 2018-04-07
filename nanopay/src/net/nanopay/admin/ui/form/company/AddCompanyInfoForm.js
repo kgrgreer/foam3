@@ -11,7 +11,7 @@ foam.CLASS({
     'goNext'
   ],
 
-  css:` 
+  css:`
     ^ .labelTitle {
       font-size: 14px;
       font-weight: bold;
@@ -32,10 +32,11 @@ foam.CLASS({
       width: 555px;
       left: -30px;
       position: relative;
+      font-size: 14px;
     }
     ^ .inputLarge{
       margin-bottom: 20px;
-      font-size: 10px;
+      font-size: 14px;
     }
     ^ .position-label{
       margin-bottom: 10px;
@@ -46,7 +47,18 @@ foam.CLASS({
       margin-left: 60px;
     }
   `,
-  
+
+  messages: [
+    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
+    { name: 'FirstNameLabel', message: 'First Name *' },
+    { name: 'LastNameLabel', message: 'Last Name *' },
+    { name: 'JobTitleLabel', message: 'Job Title *' },
+    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
+    { name: 'EmailLabel', message: 'Email *' },
+    { name: 'PasswordLabel', message: 'Password *' },
+    { name: 'ConfirmPasswordLabel', message: 'Confirm Password *' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -107,17 +119,17 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.password = newValue;
       }
+    },
+    {
+      class: 'String',
+      name: 'confirmPassword',
+      factory: function() {
+        return this.viewData.confirmPassword;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.confirmPassword = newValue;
+      }
     }
-  ],
-
-  messages: [
-    { name: 'Step', message: 'Step 1: Fill in Admin\'s information and create account password.' },
-    { name: 'FirstNameLabel', message: 'First Name *' },
-    { name: 'LastNameLabel', message: 'Last Name *' },
-    { name: 'JobTitleLabel', message: 'Job Title *' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'EmailLabel', message: 'Email *' },
-    { name: 'PasswordLabel', message: 'Password *' }
   ],
 
   methods: [
@@ -151,6 +163,10 @@ foam.CLASS({
             .start().addClass('full-width-input-1')
               .start().add(this.PasswordLabel).addClass('infoLabel position-label').end()
               .start(this.PASSWORD).addClass('full-width-input').end()
+            .end()
+            .start()
+              .start().add(this.ConfirmPasswordLabel).addClass('infoLabel').end()
+              .start(this.CONFIRM_PASSWORD).addClass('inputExtraLarge').end()
             .end()
           .end()
         .end();

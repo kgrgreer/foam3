@@ -7,7 +7,8 @@ foam.CLASS({
     'bankImgs',
     'form',
     'isConnecting',
-    'viewData'
+    'viewData',
+    'loadingSpinner'
   ],
 
   requires: [
@@ -15,6 +16,7 @@ foam.CLASS({
     'foam.u2.view.StringArrayView',
     'foam.u2.tag.Input'
   ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -22,7 +24,7 @@ foam.CLASS({
           width: 492px;
         }
         ^ .subContent {
-          height: 405px;
+          height: 285px;
         }
         ^ .sub-header {
           font-family: Roboto;
@@ -36,7 +38,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ .foam-u2-tag-Input {
-          width: 400px;
+          width: 100%;
           height: 30px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
@@ -46,9 +48,9 @@ foam.CLASS({
           padding-bottom: 5px;
         }
         ^ .qa-block {
-          border: 2px solid #778899;
+          border: 2px solid #ffffff;
           width: 436px;
-          height: 246px;
+          height: 155px;
           margin-left:20px;
           margin-top: 10px;
           overflow: auto;
@@ -80,13 +82,11 @@ foam.CLASS({
           letter-spacing: 0.2px;
           color: #FFFFFF;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ .net-nanopay-ui-ActionView-closeButton {
-          float: right;
+          float: left;
           margin: 0;
           outline: none;
           min-width: 136px;
@@ -98,8 +98,8 @@ foam.CLASS({
           font-weight: lighter;
           letter-spacing: 0.2px;
           margin-right: 40px;
+          margin-left: 1px;
         }
-
         ^ .net-nanopay-ui-ActionView-nextButton:disabled {
           background-color: #7F8C8D;
         }
@@ -107,20 +107,17 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
-
         ^ select {
-          width: 400px;
+          width: 100%;
           height: 30px;
           background-color: #ffffff;
           border: solid 1px rgba(29, 100, 123, 0.5);
         }
-
         ^ .select:first-child {
           margin-top: 0px;
         }
-
         ^ .select {
-          width: 400px;
+          width: 100%;
           height: 30px;
           background-color: #ffffff;
           margin-top: 15px;
@@ -167,7 +164,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
@@ -178,8 +175,6 @@ foam.CLASS({
               var selection = self.ChoiceView.create({choices: item.Iterables, placeholder: 'Q'+(index+1)+': Please select a question'});
               var input = self.Input.create({onKey: true});
               selection.data$.sub(function(){
-                // console.log('XSelection: ', selection.data);
-                // console.log(selection.index);
                 self.viewData.questions[index] = selection.data;
                 if ( selection.index == -1 ) {
                   self.questionCheck[index] = false;
@@ -189,7 +184,6 @@ foam.CLASS({
                 self.tick++;
               });
               input.data$.sub(function(){
-                //console.log('XSelection: ', input.data);
                 self.viewData.answers[index] = new Array(1).fill(input.data);
                 if ( input.data.trim().length == 0 ) {
                   self.answerCheck[index] = false;
@@ -202,6 +196,11 @@ foam.CLASS({
               this.start(input).style({'margin-top':'10px'}).end();
             })
           .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
+            .end()
+          .end()
         .end()
         .start('div').style({'margin-top' : '15px', 'height' : '40px'})
           .tag(this.NEXT_BUTTON)
@@ -213,7 +212,7 @@ foam.CLASS({
   actions: [
     {
       name: 'nextButton',
-      label: 'Next',
+      label: 'Continue',
       isEnabled: function(tick, isConnecting, questionCheck, answerCheck) {
         for ( var x in answerCheck ) {
           if ( answerCheck[x] === false ) return false;
@@ -225,19 +224,16 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        //console.log('nextButton');
         this.isConnecting = true;
         X.form.goNext();
       }
     },
     {
       name: 'closeButton',
-      label: 'Close',
+      label: 'Cancel',
       code: function(X) {
-        //console.log('close the form');
-        //console.log(X.form.goBack);
         X.form.goBack();
       }
     }
   ]
-})
+});

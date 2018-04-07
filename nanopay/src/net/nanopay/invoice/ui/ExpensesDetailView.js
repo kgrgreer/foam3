@@ -43,15 +43,8 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: static;
-    }
-    ^ .net-nanopay-ui-ActionView-exportButton {
-      position: absolute;
-      width: 75px;
-      height: 40px;
-      opacity: 0.01;
-      cursor: pointer;
-      z-index: 100;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-payNow {
       background-color: #59A5D5;
@@ -59,6 +52,8 @@ foam.CLASS({
       color: white;
       float: right;
       margin-right: 1px;
+      position: sticky;
+      z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-payNowDropDown {
       width: 30px;
@@ -110,13 +105,13 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideSaleSummary = true;     
+      this.hideSaleSummary = true;
       this
         .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
-        .start({ class: 'net.nanopay.ui.ActionButton', data: { image: 'images/ic-export.png', text: 'Export' } }).add(this.EXPORT_BUTTON).style({ 'float': 'right' }).end()
+        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
         .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .start('h2').addClass('light-roboto-h2').style({ "margin-bottom": "0px"})
@@ -183,9 +178,9 @@ foam.CLASS({
           y: 40
         })
         self.payNowPopUp_.addClass('popUpDropDown')
-          .start('div').add('Schedule A Payment')
-            .on('click', this.schedulePopUp)
-          .end()
+         .start('div').add('Schedule A Payment')
+           .on('click', this.schedulePopUp)
+         .end()
           .start().show(invoice.createdBy == this.user.id)
             .add('Void')
             .on('click', this.voidPopUp)
@@ -207,14 +202,14 @@ foam.CLASS({
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
-    function schedulePopUp(){
-      var self = this;
-      self.payNowPopUp_.remove();
-      if(this.data.paymentMethod.name != 'NONE'){
-        self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
-        return;
-      }
-      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
-    }
+   function schedulePopUp(){
+     var self = this;
+     self.payNowPopUp_.remove();
+     if(this.data.paymentMethod.name != 'NONE'){
+       self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+       return;
+     }
+     this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+   }
   ]
 });

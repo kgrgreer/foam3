@@ -76,13 +76,15 @@ foam.CLASS({
           width: 20px;
           height: 20px;
           float: left;
-          padding: 10px 0 0 20px;
+          padding: 10px 0 0 10px;
         }
         ^ .table-attachment img {
           width: 20px;
           height: 20px;
           object-fit: contain;
           cursor: pointer;
+          position: sticky;
+          z-index: 10;
         }
         ^ .dropdown {
           position: relative;
@@ -112,7 +114,9 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
-            .start().addClass('table-attachment').end()
+            .callIf(this.data.invoiceFile[0], function(){
+              this.start().addClass('table-attachment').end()
+            })
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function(){
@@ -135,10 +139,10 @@ foam.CLASS({
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
             .start('h4').add(this.data.dueDate ? this.data.dueDate.toISOString().substring(0,10) : '').end()
-            .start('h4').add('$', this.addCommas(this.data.amount.toFixed(2))).end()
+            .start('h4').add('$', this.addCommas((this.data.amount/100).toFixed(2))).end()
             .start('h3')
               .add(this.data.status$.map(function(a) {
-                return self.E().add(a).addClass('generic-status Invoice-Status-' + a);
+                return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring(0,10) : a).addClass('generic-status Invoice-Status-' + a);
               }))
           .end()
         .end()

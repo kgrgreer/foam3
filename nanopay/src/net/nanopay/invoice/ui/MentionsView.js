@@ -7,14 +7,14 @@ foam.CLASS({
   documentation: 'View displaying alerts & mentions',
 
   implements: [
-    'foam.mlang.Expressions', 
+    'foam.mlang.Expressions',
   ],
-  
+
   requires: [
     'net.nanopay.invoice.model.Invoice'
   ],
 
-  imports: [ 
+  imports: [
     'invoiceDAO',
     'formatCurrency'
   ],
@@ -27,16 +27,15 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'formattedMentionsAmount',
-      expression: function(disputedAmount, pendingAmount) { 
+      expression: function(disputedAmount, pendingAmount) {
         var a = disputedAmount + pendingAmount;
-        return this.formatCurrency(a); 
+        return this.formatCurrency(a);
       }
     },
     {
       class: 'Double',
       name: 'disputedAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
     {
       class: 'Currency',
@@ -46,10 +45,9 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'pendingAmount',
-      value: '',
-      view: 'net.nanopay.b2b.ReadOnlyCurrencyView'
+      value: ''
     },
-    { 
+    {
       class: 'Currency',
       name: 'formattedPendingAmount',
       expression: function(pendingAmount) { return this.formatCurrency(pendingAmount); }
