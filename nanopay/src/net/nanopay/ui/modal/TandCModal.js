@@ -10,7 +10,8 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalHeader',
   ],
   imports: [
-    'user'
+    'user',
+    'emailDocService'
   ],
 
   exports: [
@@ -91,7 +92,17 @@ foam.CLASS({
       name: 'emailButton',
       label: 'Email',
       code: function(X) {
-        //TODO add emails
+        var self = this;
+        this.emailDocService.emailDoc(this.user,"nanopayTerms").then(function (result) {
+          if ( ! result ) {
+            throw new Error('Error sending Email');
+          }
+          self.add(self.NotificationMessage.create({ message: 'Email sent to ' + self.user.email }));
+        })
+        .catch(function (err) {
+          debugger;
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
       }
     },
   ]

@@ -10,7 +10,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
-  { name: 'net/nanopay/model/TermsAndConditions' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },

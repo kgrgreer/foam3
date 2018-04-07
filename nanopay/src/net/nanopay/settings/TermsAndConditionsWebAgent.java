@@ -10,7 +10,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
-import net.nanopay.model.TermsAndConditions;
+import foam.nanos.auth.HtmlDoc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,10 +28,11 @@ public class TermsAndConditionsWebAgent
   public void execute(X x) {
     HttpServletRequest  request  = x.get(HttpServletRequest.class);
     HttpServletResponse response = x.get(HttpServletResponse.class);
-    DAO                 tcDAO    = (DAO) x.get("termsAndConditionsDAO");
+    DAO                 tcDAO    = (DAO) x.get("htmlDocDAO");
     String              version  = request.getParameter("version");
-    TermsAndConditions  terms;
+    HtmlDoc             terms;
     PrintWriter         out      = null;
+    tcDAO = (DAO) tcDAO.where(EQ(HtmlDoc.NAME,"nanopayTerms"));
     try {
       out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), StandardCharsets.ISO_8859_1), true);
     } catch (IOException e) {
@@ -39,11 +40,11 @@ public class TermsAndConditionsWebAgent
     }
 
     if ( version.equals("") ) {
-      ArraySink listSink = (ArraySink) tcDAO.orderBy(new foam.mlang.order.Desc(TermsAndConditions.ID)).limit(1).select(new ArraySink());
+      ArraySink listSink = (ArraySink) tcDAO.orderBy(new foam.mlang.order.Desc(HtmlDoc.ID)).limit(1).select(new ArraySink());
 
-      terms = (TermsAndConditions) listSink.getArray().get(0);
+      terms = (HtmlDoc) listSink.getArray().get(0);
     } else {
-      terms = (TermsAndConditions) tcDAO.find(EQ(TermsAndConditions.ID,Long.valueOf(version)));
+      terms = (HtmlDoc) tcDAO.find(EQ(HtmlDoc.ID,Long.valueOf(version)));
     }
     out.println(terms.getBody());
   }
