@@ -265,6 +265,12 @@ foam.CLASS({
       name: 'complete',
       value: false
     },
+    //When set to true, the bottomBar will hide
+    {
+      class: 'Boolean',
+      name: 'hideBottomBar',
+      value: false
+    },
     'pushView'
   ],
 
