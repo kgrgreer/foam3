@@ -1,55 +1,45 @@
 foam.CLASS({
-  package: 'net.nanopay.onboarding.b2b.ui',
-  name: 'ViewSubmittedProfileView',
+  package: 'net.nanopay.admin.ui',
+  name: 'ReviewProfileView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Allows user to view their previously submitted registration profile.',
+  documentation: 'View that holds user profile information',
 
   imports: [
-    'businessTypeDAO',
-    'stack',
-    'user'
+    'businessTypeDAO'
   ],
 
   css: `
+    ^ {
+      width: 1200px;
+      margin: 0 auto;
+      min-height: 100px;
+      background: white;
+      position: relative;
+      vertical-align: top;
+      border-radius: 2px;
+      overflow: auto;
+      font-size: 12px;
+      padding-left: 20px;
+      padding-right: 20px;
+      margin-top: 20px;
+    }
     ^ .container {
       width: 540px;
       margin: 0 auto;
     }
-    ^ .header {
-      font-size: 30px;
-      font-weight: bold;
+    ^ h2 {
+      height: 20px;
+      opacity: 0.6;
+      font-family: Roboto;
+      font-size: 20px;
+      font-weight: 300;
       font-style: normal;
       font-stretch: normal;
       line-height: 1;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       text-align: left;
       color: #093649;
-    }
-    ^ .closeIcon {
-      background-color: %PRIMARYCOLOR%;
-      width: 20px;
-      height: 20px;
-      float: right;
-      position: relative;
-      bottom: 19;
-      right: 30;
-      cursor: pointer;
-    }
-    ^ .closeLabel {
-      font-size: 14px;
-      font-weight: bold;
-      letter-spacing: 0.2px;
-      color: #ffffff;
-      float: right;
-      position: relative;
-      right: 20;
-      bottom: 17;
-    }
-    ^ .net-nanopay-ui-ActionView-backToHome {
-      color: white;
-      background: %SECONDARYCOLOR%;
-      margin-top: 20px;
     }
     ^ .principalOwnerLabel {
       margin: 0 auto;
@@ -72,41 +62,21 @@ foam.CLASS({
       height: 30px;
       padding-top: 10px;
     }
-    ^ .net-nanopay-ui-ActionView-remove {
-       display: none;
-    }
   `,
 
   messages: [
-    { name: 'Title', message: 'View Submitted Registration Profile' },
-    { name: 'Description', message: 'You can view the registration details, but please be aware that you can no longer edit the profile. If you want to make any changes, please contact support@yourcompany.com.' },
-    { name: 'BoxTitle1', message: 'Previously Submitted Additional Documents' },
-    { name: 'BoxTitle2', message: '1. Business Profile' },
-    { name: 'BoxTitle3', message: "2. Principal Owner's Profile" },
-    { name: 'BoxTitle4', message: '3. Questionnaire' },
-    { name: 'CloseLabel', message: 'Close' },
-    { name: 'BusiNameLabel', message: 'Registered Business Name' },
-    { name: 'BusiPhoneLabel', message: 'Business Phone' },
-    { name: 'BusiWebsiteLabel', message: 'Website (optional)' },
-    { name: 'BusiTypeLabel', message: 'Business Type' },
-    { name: 'BusiRegNumberLabel', message: 'Business Registration Number' },
-    { name: 'BusiRegAuthLabel', message: 'Registration Authority'},
-    { name: 'BusiRegDateLabel', message: 'Registration Date' },
-    { name: 'BusiAddressLabel', message: 'Business Address' },
-    { name: 'BusiLogoLabel', message: 'Business Logo (optional)' }
+    { name: 'Title', message: 'Registration Profile' }
   ],
 
   properties: [
     'businessTypeName',
+    'data'
   ],
 
   methods: [
     function initE() {
-      this.SUPER();
 
-      var self = this;
-
-      this.businessTypeDAO.find(this.user.businessTypeId).then(function(a) {
+      this.businessTypeDAO.find(this.data.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
       });
 
@@ -114,12 +84,9 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
-            .add(this.BACK_TO_HOME)
-            .start('p').add(this.Title).addClass('header').end()
-            .start('p').add(this.Description).addClass('description').end()
-
+            .start('h2').add(this.Title).end()
             // Additional Documents
-            .callIf(this.user.additionalDocuments.length > 0, function () {
+            .callIf(this.data.additionalDocuments.length > 0, function () {
               this.start().addClass('wizardBoxTitleContainer')
               .start().add(self.BoxTitle1).addClass('wizardBoxTitleLabel').end()
               .end()
@@ -138,7 +105,7 @@ foam.CLASS({
                   });
                 }
                 return e;
-              }, self.user.additionalDocuments$))
+              }, self.data.additionalDocuments$))
             })
 
             // Business Profile
@@ -146,33 +113,33 @@ foam.CLASS({
               .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
             .end()
             .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessName).end()
+            .start('p').add(this.data.businessName).end()
             .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessPhone.number).end()
+            .start('p').add(this.data.businessPhone.number).end()
             .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.website).end()
+            .start('p').add(this.data.website).end()
             .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.businessTypeName$).end()
             .start('p').add(this.BusiRegNumberLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessRegistrationNumber).end()
+            .start('p').add(this.data.businessRegistrationNumber).end()
             .start('p').add(this.BusiRegAuthLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessRegistrationAuthority).end()
+            .start('p').add(this.data.businessRegistrationAuthority).end()
             .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessRegistrationDate$.map(function (date) {
+            .start('p').add(this.data.businessRegistrationDate$.map(function (date) {
               return ( date ) ? date.toISOString().substring(0, 10) : '';
             })).end()
             .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
             .start('p').add(
-              this.user.businessAddress.streetNumber + ' '
-              + this.user.businessAddress.streetName + ', '
-              + this.user.businessAddress.address2 + ' '
-              + this.user.businessAddress.city + ', '
-              + this.user.businessAddress.postalCode
+              this.data.businessAddress.streetNumber + ' '
+              + this.data.businessAddress.streetName + ', '
+              + this.data.businessAddress.address2 + ' '
+              + this.data.businessAddress.city + ', '
+              + this.data.businessAddress.postalCode
             ).addClass('addressDiv').end()
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.user.businessProfilePicture$,
+              data: this.data.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png',
               uploadHidden: true
             })
@@ -182,7 +149,7 @@ foam.CLASS({
               .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
             .end()
             .start()
-              .forEach(this.user.principalOwners, function (data, index) {
+              .forEach(this.data.principalOwners, function (data, index) {
                 self
                 .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
                 .start().addClass('principalOwnerContainer')
@@ -216,7 +183,7 @@ foam.CLASS({
                 .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
               .end()
               .start()
-                .forEach(this.user.questionnaire.questions, function (question) {
+                .forEach(this.data.questionnaire.questions, function (question) {
                   self
                   .start().addClass('container')
                     .start('p').add(question.question).addClass('wizardBoldLabel').end()
@@ -228,16 +195,10 @@ foam.CLASS({
             
           .end()
         .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'backToHome',
-      label: '<< Back to Home',
-      code: function(X) {
-        this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-      }
+      
     }
   ]
+
+
+  
 });

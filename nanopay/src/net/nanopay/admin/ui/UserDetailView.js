@@ -303,6 +303,8 @@ foam.CLASS({
         .tag({ class: 'net.nanopay.admin.ui.UserItemView', data$: this.data$ })
         .br()
         .tag({ class: 'net.nanopay.admin.ui.history.UserHistoryView', id: this.data.id })
+        .tag({ class: 'net.nanopay.admin.ui.ReviewProfileView', data$: this.data$ })
+
 
     }
 
