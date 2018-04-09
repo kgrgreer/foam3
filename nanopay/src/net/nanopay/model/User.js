@@ -41,7 +41,22 @@ foam.CLASS({
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'previousStatus',
+      documentation: 'Stores the users previous status'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
+      preSet: function (oldValue, newValue) {
+        this.previousStatus = oldValue;
+        return newValue;
+      },
+      javaSetter:
+`setPreviousStatus(getStatus());
+status_ = val;
+statusIsSet_ = true;`,
+
       tableCellFormatter: function (status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
