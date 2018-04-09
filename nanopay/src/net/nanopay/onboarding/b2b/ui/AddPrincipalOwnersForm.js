@@ -416,6 +416,7 @@ foam.CLASS({
       name: 'principalOwnersDAO',
       factory: function() {
         if ( this.viewData.user.principalOwners ) {
+          if ( this.viewData.user.principalOwners.length > 1) this.addLabel = 'Add Another Principal Owner';
           return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
@@ -788,7 +789,7 @@ foam.CLASS({
       this.cityField = '';
       this.postalCodeField = '';
 
-      this.addLabel = 'Add';
+      this.addLabel = 'Add Another Principal Owner';
       this.selectedPrincipalOwner = undefined;
       this.isDisplayMode = false;
 

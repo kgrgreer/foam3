@@ -270,7 +270,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hideBottomBar',
       value: false
-    }
+    },
+    'pushView'
   ],
 
   methods: [
@@ -303,6 +304,12 @@ foam.CLASS({
       } else {
         this.subStack.push(this.views[0].view);
       }
+
+      if( this.pushView ) {
+        this.subStack.push(this.pushView.view);
+        this.position = this.pushView.position;
+        this.pushView = null;
+      }  
     },
 
     function initE(){

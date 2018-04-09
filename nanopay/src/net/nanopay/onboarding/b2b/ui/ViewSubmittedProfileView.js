@@ -240,7 +240,10 @@ foam.CLASS({
       name: 'backToHome',
       label: '<< Back to Home',
       code: function(X) {
-        this.stack.back();
+        this.stack.push({ 
+          class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard',
+          pushView: { position: 5, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
+        })
       }
     }
   ]

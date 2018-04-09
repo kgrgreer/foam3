@@ -326,7 +326,7 @@ foam.CLASS({
             .addClass('nameDisplayContainer')
             .enableClass('hidden', this.isEditingPhone$)
             .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-            .start(this.DISPLAYED_PHONE_NUMBER)
+            .start(this.DISPLAYED_PHONE_NUMBER, { data$: this.data.phone.number$})
               .addClass('legalNameDisplayField')
               .on('focus', function() {
                 this.blur();
@@ -353,7 +353,7 @@ foam.CLASS({
               .addClass('nameFieldsCol')
               .enableClass('middleName', this.isEditingPhone$, true)
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-              .start(this.User.PHONE_NUMBER, { data$: this.data.phone.number$ })
+              .start(this.User.PHONE_NUMBER, { data$: this.data.phone.number$.map(function(a){ return a.substring(3, a.length); })})
                 .addClass('phoneNumberInput')
                 .on('click', function() {
                   self.isEditingPhone = true;
