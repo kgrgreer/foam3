@@ -99,7 +99,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-        .start('h2').add(this.Title).end()
+          .start('h2').add(this.Title).end()
           .start().addClass('container')
             // Additional Documents
             .callIf(this.data.additionalDocuments.length > 0, function () {
@@ -161,56 +161,62 @@ foam.CLASS({
             })
 
             // Principal Owner's Profile
-            .start().addClass('wizardBoxTitleContainer')
-              .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-            .end()
-            .start()
-              .forEach(this.data.principalOwners, function (data, index) {
-                self
-                .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
-                .start().addClass('principalOwnerContainer')
-                  .start('p').add('Legal Name').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.middleName ? data.firstName + ' ' + data.middleName + ' ' + data.lastName : data.firstName + ' ' + data.lastName).end()
-                  .start('p').add('Email Address').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.email).end()
-                  .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.phone.number).end()
-                  .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.principleType).end()
-                  .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.birthday.toISOString().substring(0,10)).end()
-                  .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
-                  .start('p').add(
-                      data.address.streetNumber + ' '
-                    + data.address.streetName + ', '
-                    + data.address.address2 + ' '
-                    + data.address.city + ', '
-                    + data.address.postalCode
-                  ).addClass('addressDiv').end()
-                .end()
-              })
-            .end()
-            .end()
-            .end()
-
-            // Questionaire
-            .start().addClass('container')
-              .start().addClass('wizardBoxTitleContainer')
-                .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
-              .end()
-              .start()
-                .forEach(this.data.questionnaire.questions, function (question) {
-                  self
-                  .start().addClass('container')
-                    .start('p').add(question.question).addClass('wizardBoldLabel').end()
-                    .start('p').add(question.response).end()
-                  .end()
-                })
-              .end()
-            .end()
-            .br()
-            .br()
             
+            .callIf(this.data.principalOwners.length > 0, function () {
+              self.start().addClass('container')
+                .start().addClass('wizardBoxTitleContainer')
+                  .start().add(self.BoxTitle3).addClass('wizardBoxTitleLabel').end()
+                .end()
+                .start()
+                  .forEach(self.data.principalOwners, function (data, index) {
+                    self
+                    .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
+                    .start().addClass('principalOwnerContainer')
+                      .start('p').add('Legal Name').addClass('wizardBoldLabel').end()
+                      .start('p').add(data.middleName ? data.firstName + ' ' + data.middleName + ' ' + data.lastName : data.firstName + ' ' + data.lastName).end()
+                      .start('p').add('Email Address').addClass('wizardBoldLabel').end()
+                      .start('p').add(data.email).end()
+                      .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
+                      .start('p').add(data.phone.number).end()
+                      .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
+                      .start('p').add(data.principleType).end()
+                      .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
+                      .start('p').add(data.birthday.toISOString().substring(0,10)).end()
+                      .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
+                      .start('p').add(
+                          data.address.streetNumber + ' '
+                        + data.address.streetName + ', '
+                        + data.address.address2 + ' '
+                        + data.address.city + ', '
+                        + data.address.postalCode
+                      ).addClass('addressDiv').end()
+                    .end()
+                  })
+                .end()
+              .end()
+            })
+          
+            // Questionaire
+
+            .callIf(this.data.questionnaire, function () {
+              self
+              .start().addClass('container')
+                .start().addClass('wizardBoxTitleContainer')
+                  .start().add(self.BoxTitle4).addClass('wizardBoxTitleLabel').end()
+                .end()
+                .start()
+                  .forEach(self.data.questionnaire.questions, function (question) {
+                    self
+                    .start().addClass('container')
+                      .start('p').add(question.question).addClass('wizardBoldLabel').end()
+                      .start('p').add(question.response).end()
+                    .end()
+                  })
+                .end()
+              .end()
+            })
+            .br()
+            .br()
           .end()
         .end();
       
