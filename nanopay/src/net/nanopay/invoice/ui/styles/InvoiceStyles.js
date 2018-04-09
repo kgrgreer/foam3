@@ -74,7 +74,7 @@ foam.CLASS({
         .foam-u2-view-TableView-th-issueDate      { width: 90px; }
         .foam-u2-view-TableView-th-dueDate      { width: 90px; }
         .foam-u2-view-TableView-th-amount         { width: 90px; padding-right:20px; }
-        .foam-u2-view-TableView-th-status         { width: 102px; }
+        .foam-u2-view-TableView-th-status         { width: 130px; }
       */}
     })
   ]
