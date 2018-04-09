@@ -12,79 +12,58 @@ foam.CLASS({
     'com.jcraft.jsch.JSch',
     'com.jcraft.jsch.Session',
     'foam.lib.json.OutputterMode',
+    'foam.core.X',
+    'foam.nanos.logger.Logger',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
     'java.util.Date',
     'java.util.Properties',
     'java.util.Vector',
-    'foam.nanos.logger.Logger'
+    'net.nanopay.cico.model.EFTReturnFileCredentials'
 ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'host'
-    },
-    {
-      class: 'Int',
-      name: 'port',
-      value: 22
-    },
-    {
-      class: 'String',
-      name: 'username'
-    },
-    {
-      class: 'String',
-      name: 'password',
-      networkTransient: true
-    },
-    {
-      class: 'String',
-      name: 'directory',
-      value: '/'
-    }
-  ],
 
   methods: [
     {
       name: 'sendCICOFile',
       javaCode:
-`Date now = new Date();
+        `Date now = new Date();
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-CsvUtil.writeCsvFile(getX(), baos, OutputterMode.STORAGE);
-final Logger logger = (Logger) getX().get("logger");
 
+X x = getX();
+EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
+
+final Logger logger = (Logger) x.get("logger");
 Session session = null;
 Channel channel = null;
 ChannelSftp channelSftp;
-
 try {
   // create session with user name and password
   JSch jsch = new JSch();
-  session = jsch.getSession(getUsername(), getHost(), getPort());
-  session.setPassword(getPassword());
-
+  session = jsch.getSession(credentials.getUser(), credentials.getHost(), credentials.getPort());
+  session.setPassword(credentials.getPassword());
+  
   // add configuration
   Properties config = new Properties();
   config.put("StrictHostKeyChecking", "no");
   session.setConfig(config);
   session.connect();
-
+  
   // open SFTP connection and upload file
   channel = session.openChannel("sftp");
   channel.connect();
-
   channelSftp = (ChannelSftp) channel;
-  channelSftp.cd(getDirectory());
+
+  channelSftp.cd("/");
   
   String filename = CsvUtil.generateFilename(now);
   
-  Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.csv");
+  Vector list = channelSftp.ls("/Archive/");
   Boolean csvFileExist = false;
   
-  for ( ChannelSftp.LsEntry entry : list ) {
-    if ( entry.getFilename().equals(filename) ) {
+  for ( Object entry : list ) {
+    ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
+    if ( e.getFilename().equals(filename) ) {
       csvFileExist = true;
     }
   }
@@ -97,7 +76,7 @@ try {
   
   channelSftp.exit();
 } catch ( Exception e ) {
-  e.printStackTrace();
+  logger.error(e);
 } finally {
   // close channels
   if ( channel != null ) channel.disconnect();

@@ -1,9 +1,11 @@
 package net.nanopay.cico.spi.alterna;
 
-import foam.lib.parse.*;
+import foam.lib.parse.PStream;
+import foam.lib.parse.Parser;
+import foam.lib.parse.ParserContext;
 
-public class EFTStringParser implements Parser {
-
+public class EFTStringParser implements Parser
+{
   public EFTStringParser() {}
 
   public PStream parse(PStream ps, ParserContext x) {
