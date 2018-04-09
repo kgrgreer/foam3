@@ -167,7 +167,7 @@ foam.CLASS({
                 .start('p').add(
                     data.address.streetNumber + ' '
                   + data.address.streetName + ', '
-                  + data.address.address2 + ' '
+                  + data.address.address2 + ', '
                   + data.address.city + ', '
                   + data.address.postalCode
                 ).addClass('addressDiv').end()

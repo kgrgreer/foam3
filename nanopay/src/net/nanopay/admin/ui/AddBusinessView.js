@@ -397,6 +397,9 @@ foam.CLASS({
                   self.isEditingPhone = false;
                   self.isEditingName = false;
                 })
+                .on('paste', function(e) {
+                  e.preventDefault();
+                })
               .end()
             .end()
           .end()
@@ -522,7 +525,6 @@ foam.CLASS({
         firstName: this.firstNameField,
         middleName: this.middleNameField,
         lastName: this.lastNameField,
-        businessName: '-',
         jobTitle: this.jobTitle,
         email: this.emailAddress,
         type: 'Business',

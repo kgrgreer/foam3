@@ -146,7 +146,7 @@ foam.CLASS({
       documentation: 'Business Identification Number (BIN)',
       validateObj: function (businessRegistrationNumber) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if (  businessIdentificationNumber.length > 0 && ! re.test(businessIdentificationNumber) ) {
+        if (  businessRegistrationNumber.length > 0 && ! re.test(businessRegistrationNumber) ) {
           return 'Invalid registration number.'
         }
       }
@@ -164,9 +164,9 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationAuthority',
       width: 35,
-      validateObj: function (issuingAuthority) {
+      validateObj: function (businessRegistrationAuthority) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if ( issuingAuthority.length > 0 && ! re.test(issuingAuthority) ) {
+        if ( businessRegistrationAuthority.length > 0 && ! re.test(businessRegistrationAuthority) ) {
           return 'Invalid issuing authority.';
         }
       }
