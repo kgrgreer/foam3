@@ -4,6 +4,7 @@ import com.jcraft.jsch.*;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.X;
+import foam.nanos.logger.Logger;
 import foam.dao.DAO;
 import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
@@ -24,6 +25,7 @@ public class EFTConfirmationFileProcessor extends ContextAwareSupport
 {
   public void process() {
     X x = getX();
+    Logger logger = (Logger) x.get("logger");
     EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
 
     EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
@@ -115,7 +117,7 @@ public class EFTConfirmationFileProcessor extends ContextAwareSupport
       channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();
