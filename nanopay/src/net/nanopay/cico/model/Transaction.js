@@ -28,6 +28,14 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'confirmationLineNumber'
+    },
+    {
+      class: 'String',
+      name: 'description'
+    },
+    {
+      class: 'String',
       name: 'returnCode'
     },
     {

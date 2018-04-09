@@ -65,8 +65,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
+      name: 'referenceNumber'
     },
     {
       class: 'Long',
