@@ -1,6 +1,7 @@
 package net.nanopay.fresh;
 
 import foam.core.*;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
@@ -17,6 +18,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.HttpClient;
 import foam.lib.json.JSONParser;
 
+import static foam.mlang.MLang.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +28,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 
@@ -35,9 +36,9 @@ public class FreshBook
 {
   public void execute(X x)
   {
-    HttpServletRequest req = ( HttpServletRequest ) x.get( HttpServletRequest.class );
-    HttpServletResponse resp = ( HttpServletResponse ) x.get( HttpServletResponse.class );
-    PrintWriter out = ( PrintWriter ) x.get( PrintWriter.class );
+    HttpServletRequest req =  x.get( HttpServletRequest.class );
+    HttpServletResponse resp =  x.get( HttpServletResponse.class );
+    PrintWriter out =  x.get( PrintWriter.class );
 
     FreshConfig config = new FreshConfig();
     config.setCode(req.getParameter("code"));
@@ -96,8 +97,8 @@ public class FreshBook
       fResponse = (FreshResponse) parser.parseString(line,fResponse.getClassInfo().getObjClass());
       //System.out.println(jout.stringify(fResponse));
       //System.out.println((FreshCurrent) fResponse.getResponse());
-      FreshCurrent current = (FreshCurrent) fResponse.getResponse();
-      FreshBusiness business = (FreshBusiness) current.getBusiness_memberships()[0].getBusiness();
+      FreshCurrent current =  fResponse.getResponse();
+      FreshBusiness business =  current.getBusiness_memberships()[0].getBusiness();
 
       //Get the account id to start grabbing invoices
       String accountId = business.getAccount_id();
@@ -117,16 +118,15 @@ public class FreshBook
 
       FreshInvoiceResponse fLResponse = new FreshInvoiceResponse();
       fLResponse = (FreshInvoiceResponse) parser.parseString(line,fLResponse.getClassInfo().getObjClass());
-      FreshInvoice[] invoices = (FreshInvoice[]) fLResponse.getResponse().getResult().getInvoices();
-      //System.out.println(jout.stringify(invoices[0]));
-      Calendar cal = Calendar.getInstance();
+      FreshInvoice[] invoices = fLResponse.getResponse().getResult().getInvoices();
+      System.out.println(jout.stringify(invoices[0]));
       for (int i = 0; i<invoices.length; i++)
       {
         FreshInvoice invoice = invoices[i];
         User user = (User) x.get("user");
         DAO invoiceDAO = (DAO) x.get("invoiceDAO");
         Invoice account = new Invoice();
-        String newStr = invoice.getAmount().getAmount().replace(".", "");;
+        String newStr = invoice.getAmount().getAmount().replace(".", "");
         account.setAmount(Long.parseLong(newStr));
         Date date;
         if(!invoice.getCreate_date().equals("")) {
@@ -151,14 +151,22 @@ public class FreshBook
         account.setInvoiceNumber(invoice.getInvoice_number());
         if(invoice.getStatus() == 1) { account.setDraft(true);}
         //System.out.println(jout.stringify(account));
-        invoiceDAO.put(account);
+        DAO freshInvoices = invoiceDAO.where(
+          AND(
+            EQ(Invoice.FRESHBOOKS_INVOICE_NUMBER,invoice.getInvoice_number()),
+            EQ(Invoice.CREATED_BY,user.getId())
+          ));
+        ArraySink sink = (ArraySink) freshInvoices.select(new ArraySink());
+
+        if (  sink.getArray().isEmpty() ) invoiceDAO.put(account);
+        
+
       }
       resp.sendRedirect("/");
 
     }catch (Throwable t){
-      //System.out.println("*******************************BAD NEWS");
-      ((Logger) x.get(Logger.class)).error("Error retrieving FreshBooks info.", t);
-      //e.printStackTrace();
+      System.out.println("*******************************BAD NEWS");
+      t.printStackTrace();
       return;
     }
 
