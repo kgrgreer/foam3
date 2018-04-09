@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'ReviewProfileView',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.View',
 
   documentation: 'View that holds user profile information',
 
@@ -65,7 +65,21 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Title', message: 'Registration Profile' }
+    { name: 'Title', message: 'Registration Profile' },
+    { name: 'BoxTitle1', message: 'Previously Submitted Additional Documents' },
+    { name: 'BoxTitle2', message: '1. Business Profile' },
+    { name: 'BoxTitle3', message: "2. Principal Owner's Profile" },
+    { name: 'BoxTitle4', message: '3. Questionnaire' },
+    { name: 'CloseLabel', message: 'Close' },
+    { name: 'BusiNameLabel', message: 'Registered Business Name' },
+    { name: 'BusiPhoneLabel', message: 'Business Phone' },
+    { name: 'BusiWebsiteLabel', message: 'Website (optional)' },
+    { name: 'BusiTypeLabel', message: 'Business Type' },
+    { name: 'BusiRegNumberLabel', message: 'Business Registration Number' },
+    { name: 'BusiRegAuthLabel', message: 'Registration Authority'},
+    { name: 'BusiRegDateLabel', message: 'Registration Date' },
+    { name: 'BusiAddressLabel', message: 'Business Address' },
+    { name: 'BusiLogoLabel', message: 'Business Logo (optional)' }
   ],
 
   properties: [
@@ -76,6 +90,8 @@ foam.CLASS({
   methods: [
     function initE() {
 
+      var self = this;
+
       this.businessTypeDAO.find(this.data.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
       });
@@ -83,8 +99,8 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
+        .start('h2').add(this.Title).end()
           .start().addClass('container')
-            .start('h2').add(this.Title).end()
             // Additional Documents
             .callIf(this.data.additionalDocuments.length > 0, function () {
               this.start().addClass('wizardBoxTitleContainer')
@@ -113,17 +129,17 @@ foam.CLASS({
               .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
             .end()
             .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.businessName).end()
+            .start('p').add(this.data.businessName$).end()
             .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.businessPhone.number).end()
+            .start('p').add(this.data.businessPhone.number$).end()
             .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.website).end()
+            .start('p').add(this.data.website$).end()
             .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.businessTypeName$).end()
             .start('p').add(this.BusiRegNumberLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.businessRegistrationNumber).end()
+            .start('p').add(this.data.businessRegistrationNumber$).end()
             .start('p').add(this.BusiRegAuthLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.businessRegistrationAuthority).end()
+            .start('p').add(this.data.businessRegistrationAuthority$).end()
             .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.businessRegistrationDate$.map(function (date) {
               return ( date ) ? date.toISOString().substring(0, 10) : '';
@@ -192,6 +208,8 @@ foam.CLASS({
                 })
               .end()
             .end()
+            .br()
+            .br()
             
           .end()
         .end();
