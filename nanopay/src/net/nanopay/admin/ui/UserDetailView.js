@@ -9,7 +9,8 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.ui.EditBusinessView'
+    'net.nanopay.admin.ui.EditBusinessView',
+    'net.nanopay.ui.ExpandContainer'
   ],
 
   imports: [
@@ -186,6 +187,9 @@ foam.CLASS({
       width: 1240px;
       margin: 0 auto;
     }
+    ^ .net-nanopay-ui-ExpandContainer {
+      width: 1240px;
+    }
   `,
 
   properties: [
@@ -260,6 +264,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      var expandContainer = this.ExpandContainer.create({ title: "Registration Profile" });
+
       this
         .addClass(this.myClass())
         .start().addClass('actions')
@@ -303,7 +309,11 @@ foam.CLASS({
         .tag({ class: 'net.nanopay.admin.ui.UserItemView', data$: this.data$ })
         .br()
         .tag({ class: 'net.nanopay.admin.ui.history.UserHistoryView', id: this.data.id })
-        .tag({ class: 'net.nanopay.admin.ui.ReviewProfileView', data$: this.data$ })
+        .br()
+        .br()
+        .start(expandContainer)
+          .tag({ class: 'net.nanopay.admin.ui.ReviewProfileView', data$: this.data$ })
+        .end()
 
 
     }

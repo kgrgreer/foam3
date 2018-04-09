@@ -10,20 +10,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      width: 1200px;
-      margin: 0 auto;
-      min-height: 100px;
-      background: white;
-      position: relative;
-      vertical-align: top;
-      border-radius: 2px;
-      overflow: auto;
-      font-size: 12px;
-      padding-left: 20px;
-      padding-right: 20px;
-      margin-top: 20px;
-    }
     ^ .container {
       width: 540px;
       margin: 0 auto;
@@ -65,7 +51,6 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Title', message: 'Registration Profile' },
     { name: 'BoxTitle1', message: 'Previously Submitted Additional Documents' },
     { name: 'BoxTitle2', message: '1. Business Profile' },
     { name: 'BoxTitle3', message: "2. Principal Owner's Profile" },
@@ -99,7 +84,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('h2').add(this.Title).end()
           .start().addClass('container')
             // Additional Documents
             .callIf(this.data.additionalDocuments.length > 0, function () {
