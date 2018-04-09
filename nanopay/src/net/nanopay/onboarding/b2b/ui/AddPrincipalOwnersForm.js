@@ -17,6 +17,11 @@ foam.CLASS({
     'validateAddress'
   ],
 
+  exports: [
+    'delete_PrincipalOwner',
+    'edit_PrincipalOwner'
+  ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -607,19 +612,19 @@ foam.CLASS({
               editColumnsEnabled: false,
               selection$: this.selectedPrincipalOwner$,
               columns: [
-                'legalName', 'jobTitle', 'principleType'
+                'legalName', 'jobTitle', 'principleType', 'delete_PrincipalOwner', 'edit_PrincipalOwner'
               ]
             }).end()
           .end()
 
-          .start('div')
-            .addClass('fullWidthField')
-            .style({ 'margin-bottom':'30px' })
-            .enableClass('hideTable', this.selectedPrincipalOwner$.map(function(selected) { return selected ? true : false; }), true)
-            .start(this.EDIT).end()
-            .start(this.DELETE).end()
-            .start(this.CANCEL_EDIT).end()
-          .end()
+          // .start('div')
+          //   .addClass('fullWidthField')
+          //   .style({ 'margin-bottom':'30px' })
+          //   .enableClass('hideTable', this.selectedPrincipalOwner$.map(function(selected) { return selected ? true : false; }), true)
+          //   .start(this.EDIT).end()
+          //   .start(this.DELETE).end()
+          //   .start(this.CANCEL_EDIT).end()
+          // .end()
 
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
 
@@ -825,12 +830,32 @@ foam.CLASS({
 
     function extractPhoneNumber(phone) {
       return phone.number.substring(2);
+    },
+
+    function sameAsAdmin(flag) {
+      this.clearFields();
+      if ( flag ) {
+        this.firstNameField = this.user.firstName;
+        this.middleNameField = this.user.middleName;
+        this.lastNameField = this.user.lastName;
+        this.isEditingName = false;
+
+        this.jobTitleField = this.user.jobTitle;
+        this.emailAddressField = this.user.email;
+        this.phoneNumberField = this.extractPhoneNumber(this.user.phone);
+        this.isEditingPhone = false;
+      }
+    },
+
+    function deletePrincipalOwner(owner) {
+      this.principalOwnersDAO.remove(this.owner);
+      this.clearFields();
     }
   ],
 
   actions: [
     {
-      name: 'edit',
+      name: 'edit_PrincipalOwner',
       label: 'Edit',
       isAvailable: function(isDisplayMode) {
         return isDisplayMode;
@@ -840,7 +865,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'delete',
+      name: 'delete_PrincipalOwner',
       label: 'Delete',
       isAvailable: function(isDisplayMode) {
         return isDisplayMode;
