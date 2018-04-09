@@ -19,8 +19,9 @@ foam.CLASS({
     'java.util.Date',
     'java.util.Properties',
     'java.util.Vector',
-    'net.nanopay.cico.model.EFTReturnFileCredentials'
-  ],
+    'net.nanopay.cico.model.EFTReturnFileCredentials',
+    'foam.nanos.logger.Logger'
+],
 
   methods: [
     {
@@ -28,6 +29,11 @@ foam.CLASS({
       javaCode:
         `Date now = new Date();
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+<<<<<<< HEAD
+=======
+CsvUtil.writeCsvFile(getX(), baos, OutputterMode.STORAGE);
+final Logger logger = (Logger) getX().get("logger");
+>>>>>>> 8a1119f75b783e8bc1d5b26fa56b9a2e00b82733
 
 X x = getX();
 EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
@@ -53,6 +59,7 @@ try {
   channel = session.openChannel("sftp");
   channel.connect();
   channelSftp = (ChannelSftp) channel;
+<<<<<<< HEAD
   channelSftp.cd("/");
   
   String filename = CsvUtil.generateFilename(now);
@@ -63,6 +70,17 @@ try {
   for ( Object entry : list ) {
     ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
     if ( e.getFilename().equals(filename) ) {
+=======
+  channelSftp.cd(getDirectory());
+  
+  String filename = CsvUtil.generateFilename(now);
+  
+  Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.csv");
+  Boolean csvFileExist = false;
+  
+  for ( ChannelSftp.LsEntry entry : list ) {
+    if ( entry.getFilename().equals(filename) ) {
+>>>>>>> 8a1119f75b783e8bc1d5b26fa56b9a2e00b82733
       csvFileExist = true;
     }
   }

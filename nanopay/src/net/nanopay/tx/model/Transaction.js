@@ -60,7 +60,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+      value: net.nanopay.tx.model.TransactionStatus.PENDING,
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
@@ -147,6 +147,18 @@ foam.CLASS({
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
+    },
+    {
+      class: 'DateTime',
+      name: 'settlementDate'
+    },
+    {
+      class: 'String',
+      name: 'padType'
+    },
+    {
+      class: 'String',
+      name: 'txnCode'
     },
     {
       class: 'Currency',
@@ -258,7 +270,7 @@ foam.CLASS({
             new Transfer(getPayerId(), -getTotal())
           };
         }
-        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.VERIFICATION ) {
+        if ( getType() == TransactionType.CASHIN ) {
           return new Transfer[]{
             new Transfer(getPayeeId(), getTotal())
           };

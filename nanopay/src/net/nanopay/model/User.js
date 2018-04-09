@@ -132,11 +132,44 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'businessRegistrationNumber'
+      name: 'businessIdentificationNumber',
+      transient: true,
+      getter: function() { return this.businessRegistrationNumber; },
+      setter: function(x) { this.businessRegistrationNumber = x; },
+      javaGetter: `return getBusinessRegistrationNumber();`,
+      javaSetter: `setBusinessRegistrationNumber(val);`
     },
     {
       class: 'String',
-      name: 'businessRegistrationAuthority'
+      name: 'businessRegistrationNumber',
+      width: 35,
+      documentation: 'Business Identification Number (BIN)',
+      validateObj: function (businessRegistrationNumber) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if (  businessRegistrationNumber.length > 0 && ! re.test(businessRegistrationNumber) ) {
+          return 'Invalid registration number.'
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'issuingAuthority',
+      transient: true,
+      getter: function() { return this.businessRegistrationAuthority; },
+      setter: function(x) { this.businessRegistrationAuthority = x; },
+      javaGetter: `return getBusinessRegistrationAuthority();`,
+      javaSetter: `setBusinessRegistrationAuthority(val);`
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationAuthority',
+      width: 35,
+      validateObj: function (businessRegistrationAuthority) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( businessRegistrationAuthority.length > 0 && ! re.test(businessRegistrationAuthority) ) {
+          return 'Invalid issuing authority.';
+        }
+      }
     },
     {
       class: 'Date',

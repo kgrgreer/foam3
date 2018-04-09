@@ -166,7 +166,7 @@ function deploy_journals {
                 # move non journal.zero files
                 while read file; do
                     # one last check, just in case
-                    if [ ! -f "$JOURNAL_HOME/$file" ]; then
+                    if [ ! -f "$JOURNAL_HOME/$file" ] && [ -f "$CATALINA_HOME/bin/$file" ]; then
                         cp "$CATALINA_HOME/bin/$file" "$JOURNAL_HOME/$file" 2>/dev/null
                     fi
                 done < $JOURNALS

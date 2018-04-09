@@ -67,7 +67,7 @@ foam.CLASS({
       switch ( status.newValue ) {
         case this.AccountStatus.PENDING.ordinal:
           return {
-            title: 'Account was created',
+            title: 'Account',
             labelText: 'Pending',
             labelDecoration: 'Invite-Status-Pending',
             icon: 'images/ic-created.svg'
@@ -83,7 +83,7 @@ foam.CLASS({
 
         case this.AccountStatus.ACTIVE.ordinal:
           return {
-            title: 'Account activated',
+            title: 'Account',
             labelText: 'Active',
             labelDecoration: 'Invite-Status-Active',
             icon: 'images/ic-approve.svg'
@@ -98,9 +98,9 @@ foam.CLASS({
           };
         case this.AccountStatus.REVOKED.ordinal:
           return {
-            title: 'Invite revoked, and account',
-            labelText: 'Disabled',
-            labelDecoration: 'Invite-Status-Disabled',
+            title: 'Invite',
+            labelText: 'Revoked',
+            labelDecoration: 'Invite-Status-Pending',
             icon: 'images/ic-void.svg'
           };
       }
