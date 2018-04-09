@@ -94,6 +94,8 @@ We are following the OneFlow git branching strategy as described http://endoflin
 * `staging` bugfixes are PR'd on the staging branch and will be merged/cherry-picked back into `development` branch.
 * `release` hotfixes are PR'd on the release branch and will be merged/cherry-picked back into the `development` branch.
 
+Picture of nanopay git flow: https://drive.google.com/file/d/0B1fbZtuULvxQM29JaEhiWnZYSU11QkpyVW5FTnBSNW1WOXhz/view?usp=sharing
+
 ### Versioning
 Versioning follows the Semantic Versioning principles: https://semver.org/
 
