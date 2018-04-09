@@ -148,6 +148,7 @@ public class FreshBook
         account.setPayerId(Long.parseLong("1350"));
         account.setFreshbooksInvoiceId(invoice.getInvoiceid());
         account.setStatus(account.getStatus());
+        account.setInvoiceNumber(invoice.getInvoice_number());
         if(invoice.getStatus() == 1) { account.setDraft(true);}
         //System.out.println(jout.stringify(account));
         invoiceDAO.put(account);
