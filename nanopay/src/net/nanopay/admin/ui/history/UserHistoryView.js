@@ -11,12 +11,19 @@ foam.CLASS({
 
   requires: [
     'foam.dao.history.HistoryRecord',
-    'net.nanopay.admin.ui.history.UserHistoryItemView'
+    'net.nanopay.admin.ui.history.UserHistoryItemView',
+    'net.nanopay.ui.ExpandContainer'
   ],
 
   imports: [
     'userHistoryDAO'
   ],
+
+  css: `
+    ^ .net-nanopay-ui-ExpandContainer{
+      width: 1240px
+    }
+  `,
 
   properties: [
     'id',
@@ -32,14 +39,18 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var userHistoryContainer = this.ExpandContainer.create({ title: 'Profile History' });
+
       this
         .addClass(this.myClass())
-        .tag({
-          class: 'foam.u2.history.HistoryView',
-          title: 'Profile History',
-          data: this.data,
-          historyItemView: this.UserHistoryItemView.create()
-        });
+        .start(userHistoryContainer)
+          .tag({
+            class: 'foam.u2.history.HistoryView',
+            title: '',
+            data: this.data,
+            historyItemView: this.UserHistoryItemView.create()
+          })
+        .end();
     }
   ]
 });
