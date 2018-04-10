@@ -169,7 +169,9 @@ foam.CLASS({
             lastName: this.viewData.user.lastName,
             userId: this.viewData.user.id,
             address: this.viewData.user.address,
-            termNC: 'TO BE ADDED',
+            agree1:this.viewData.agree1,
+            agree2:this.viewData.agree2,
+            agree3:this.viewData.agree3,
             institutionNumber: this.viewData.bankAccount[0].institutionNumber,
             transitNumber: this.viewData.bankAccount[0].transitNumber,
             accountNumber: this.viewData.bankAccount[0].accountNumber         

@@ -343,6 +343,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.viewData.agree1 = this.TC1;
+      this.viewData.agree2 = this.TC2;
+      this.viewData.agree3 = this.TC3;
+
       this
         .addClass(this.myClass())
         .start('div').addClass('row').addClass('rowTopMarginOverride')

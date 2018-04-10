@@ -25,7 +25,15 @@ foam.CLASS({
     },
     {
       class:'String',
-      name: 'termNC',
+      name: 'agree1',
+    },
+    {
+      class:'String',
+      name: 'agree2',
+    },
+    {
+      class:'String',
+      name: 'agree3',
     },
     {
       class:'Long',
