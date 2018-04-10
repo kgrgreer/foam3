@@ -1,11 +1,6 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
-  imports: [
-    'delete_PrincipalOwner',
-    'edit_PrincipalOwner'
-  ],
-
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -211,24 +206,6 @@ statusIsSet_ = true;`,
       class: 'Boolean',
       name: 'onboarded',
       value: false
-    },
-    {
-      transient: true,
-      hidden: true,
-      label: '',
-      name: 'delete_principalOwner',
-      tableCellFormatter: function() {
-        this.start(this.DELETE__PRINCIPLE_OWNER).end();
-      }
-    },
-    {
-      transient: true,
-      hidden: true,
-      label: '',
-      name: 'edit_principalOwner',
-      tableCellFormatter: function() {
-        this.start(this.EDIT__PRINCIPLE_OWNER).end();
-      }
     }
   ]
 });

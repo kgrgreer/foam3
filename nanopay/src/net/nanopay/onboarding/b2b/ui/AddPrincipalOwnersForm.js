@@ -17,11 +17,6 @@ foam.CLASS({
     'validateAddress'
   ],
 
-  exports: [
-    'delete_PrincipalOwner',
-    'edit_PrincipalOwner'
-  ],
-
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -296,28 +291,71 @@ foam.CLASS({
       height: 40px;
 
       font-size: 14px;
-
-      margin-top: 50px;
     }
 
-    ^ .net-nanopay-ui-ActionView-delete {
-      background-color: rgba(216, 30, 5, 0.3) !important;
-      border: solid 1px #d81e05 !important;
-      color: #d81e05 !important;
-      margin-left: 10px;
+    ^ .updateButton {
+      display: inline-block;
+      vertical-align: top;
+
+      margin-left: 19px;
+
+      width: 384px !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-delete:hover,
-    ^ .net-nanopay-ui-ActionView-delete:focus {
-      background-color: #d81e05 !important;
-      color: white !important;
+    ^ .deleteButton, ^ .editButton {
+      width: 64px;
+      height: 24px;
+      border-radius: 2px;
+      background-color: rgba(164, 179, 184, 0.1);
+      border: solid 1px rgba(164, 179, 184, 0.3);
+      color: #093649;
+      padding: 1px 5px;
+
+      box-sizing: border-box;
+    }
+
+    ^ .deleteButton img, ^ .editButton img {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
+      width: 29px;
+
+      font-size: 10px;
+      color: #093649;
+
+      display: inline-block;
+      vertical-align: middle;
+
+      text-align: center;
+
+      margin: 0;
+    }
+
+    ^ .deleteButton:hover, ^ .editButton:hover,
+    ^ .deleteButton:focus, ^ .editButton:focus {
+      cursor: pointer;
+      background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit {
+      width: 135px;
+      height: 40px;
+
       color: black !important;
+
       background-color: rgba(164, 179, 184, 0.1) !important;
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8) !important;
-      float: right;
+
+      margin-left: 1px;
+      display: inline-block;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
+      width: 0 !important;
+      margin-left: 0 !important;
+      opacity: 0;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit:hover,
@@ -392,6 +430,19 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }
+
+    ^ .foam-u2-view-TableView-row td {
+      position: relative;
+    }
+
+    ^ .foam-u2-view-TableView tbody > tr:hover {
+      background: #f6f9f9 !important;
+      cursor: auto;
+    }
+
+    ^ .foam-u2-view-TableView-selected {
+      background-color: #f6f9f9 !important;
+    }
   `,
 
   messages: [
@@ -421,17 +472,16 @@ foam.CLASS({
       name: 'principalOwnersDAO',
       factory: function() {
         if ( this.viewData.user.principalOwners ) {
-          if ( this.viewData.user.principalOwners.length > 1) this.addLabel = 'Add Another Principal Owner';
+          if ( this.viewData.user.principalOwners.length > 0) this.addLabel = 'Add Another Principal Owner';
           return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
     },
     {
-      name: 'selectedPrincipalOwner',
-      preSet: function(oldValue, newValue) {
-      if ( newValue != null ) this.editPrincipalOwner(newValue);
-        return newValue;
+      name: 'editingPrincipalOwner',
+      postSet: function(oldValue, newValue) {
+        if ( newValue != null ) this.editPrincipalOwner(newValue, true);
       }
     },
     {
@@ -582,6 +632,7 @@ foam.CLASS({
       name: 'addLabel',
       value: 'Add'
     },
+    'addButtonElement',
     {
       class: 'Boolean',
       name: 'isDisplayMode',
@@ -610,21 +661,43 @@ foam.CLASS({
               class: 'foam.u2.view.TableView',
               data$: this.principalOwnersDAO$,
               editColumnsEnabled: false,
-              selection$: this.selectedPrincipalOwner$,
               columns: [
-                'legalName', 'jobTitle', 'principleType', 'delete_PrincipalOwner', 'edit_PrincipalOwner'
+                'legalName', 'jobTitle', 'principleType',
+                foam.core.Property.create({
+                  name: 'delete',
+                  label: '',
+                  tableCellFormatter: function(value, obj, axiom) {
+                    this.start('div').addClass('deleteButton')
+                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg'}).end()
+                      .start('p').addClass('buttonLabel').add('Delete').end()
+                      .on('click', function(evt) {
+                        evt.stopPropagation();
+                        this.blur();
+                        if ( self.editingPrincipalOwner === obj ) self.clearFields();
+                        self.deletePrincipalOwner(obj);
+                      })
+                    .end();
+                  }
+                }),
+                foam.core.Property.create({
+                  name: 'edit',
+                  label: '',
+                  factory: function() { return {}; },
+                  tableCellFormatter: function(value, obj, axiom) {
+                    this.start('div').addClass('editButton')
+                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg'}).end()
+                      .start('p').addClass('buttonLabel').add('Edit').end()
+                      .on('click', function(evt) {
+                        evt.stopPropagation();
+                        this.blur();
+                        self.editingPrincipalOwner = obj;
+                      })
+                    .end();
+                  }
+                })
               ]
             }).end()
           .end()
-
-          // .start('div')
-          //   .addClass('fullWidthField')
-          //   .style({ 'margin-bottom':'30px' })
-          //   .enableClass('hideTable', this.selectedPrincipalOwner$.map(function(selected) { return selected ? true : false; }), true)
-          //   .start(this.EDIT).end()
-          //   .start(this.DELETE).end()
-          //   .start(this.CANCEL_EDIT).end()
-          // .end()
 
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
 
@@ -769,7 +842,19 @@ foam.CLASS({
             .start(this.CITY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.PostalCodeLabel).addClass('infoLabel').end()
             .start(this.POSTAL_CODE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
-            .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addLabel$ }).end()
+
+            .start('div').style({ 'margin-top': '50px' })
+              .start(this.CANCEL_EDIT)
+                .enableClass('hidden', this.editingPrincipalOwner$, true)
+                .on('focus', function() {
+                  if ( ! self.editingPrincipalOwner ) self.addButtonElement.focus();
+                })
+              .end()
+              .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addLabel$ }, this.addButtonElement$)
+                .enableClass('updateButton', this.editingPrincipalOwner$)
+              .end()
+            .end()
+
           .end()
         .end();
     },
@@ -803,7 +888,7 @@ foam.CLASS({
       this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     },
 
-    function editPrincipalOwner(user) {
+    function editPrincipalOwner(user, editable) {
       this.firstNameField = user.firstName;
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
@@ -825,7 +910,7 @@ foam.CLASS({
 
       this.addLabel = 'Update';
 
-      this.isDisplayMode = true;
+      this.isDisplayMode = !editable;
     },
 
     function extractPhoneNumber(phone) {
@@ -847,38 +932,20 @@ foam.CLASS({
       }
     },
 
-    function deletePrincipalOwner(owner) {
-      this.principalOwnersDAO.remove(this.owner);
-      this.clearFields();
+    function deletePrincipalOwner(obj) {
+      var self = this;
+      this.principalOwnersDAO.remove(obj).then(function(deleted){
+        self.prevDeletedPrincipalOwner = deleted;
+      });
     }
   ],
 
   actions: [
     {
-      name: 'edit_PrincipalOwner',
-      label: 'Edit',
-      isAvailable: function(isDisplayMode) {
-        return isDisplayMode;
-      },
-      code: function() {
-        this.isDisplayMode = false;
-      }
-    },
-    {
-      name: 'delete_PrincipalOwner',
-      label: 'Delete',
-      isAvailable: function(isDisplayMode) {
-        return isDisplayMode;
-      },
-      code: function() {
-        this.principalOwnersDAO.remove(this.selectedPrincipalOwner);
-        this.clearFields();
-      }
-    },
-    {
       name: 'cancelEdit',
       label: 'Cancel',
       code: function() {
+        this.editingPrincipalOwner = null;
         this.clearFields();
       }
     },
@@ -888,7 +955,6 @@ foam.CLASS({
         return ! isDisplayMode;
       },
       code: function() {
-        // TODO: Make sure required fields are validated before adding to DAO
         if ( ! this.firstNameField || ! this.lastNameField ) {
           this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
           return;
@@ -939,8 +1005,8 @@ foam.CLASS({
 
         var principleOwner;
 
-        if ( this.selectedPrincipalOwner ) {
-          principleOwner = this.selectedPrincipalOwner;
+        if ( this.editingPrincipalOwner ) {
+          principleOwner = this.editingPrincipalOwner;
         } else {
           principleOwner = this.User.create({
             id: this.principalOwnersCount + 1
@@ -969,6 +1035,7 @@ foam.CLASS({
 
         // TODO?: Maybe add a loading indicator?
         this.principalOwnersDAO.put(principleOwner).then(function(npo) {
+          self.editingPrincipalOwner = null;
           self.clearFields();
         });
       }
@@ -981,6 +1048,8 @@ foam.CLASS({
       this.principalOwnersDAO.select().then(function(principalOwners) {
         self.viewData.principalOwners = principalOwners.array;
         self.principalOwnersCount = principalOwners.array.length;
+        if ( self.principalOwnersCount > 0) self.addLabel = 'Add Another Principal Owner';
+        else self.addLabel = 'Add';
       });
     }
   ]
