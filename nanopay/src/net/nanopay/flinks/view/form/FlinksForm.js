@@ -6,6 +6,7 @@ foam.CLASS({
   exports: [
     'isConnecting',
     'bankImgs',
+    'loadingSpinner',
     'as form'
   ],
 
@@ -88,16 +89,17 @@ foam.CLASS({
         ^ {
           height: 620px;
         }
-        ^ .subTitle {
-          width: 490px;
+        ^ .subTitleFlinks {
           height: 16px;
           font-family: Roboto;
           font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
           line-height: 1.33;
           letter-spacing: 0.3px;
           text-align: left;
           color: #093649;
-          margin-bottom: 20px;
         }
         ^ .inputErrorLabel {
           display: none;
@@ -131,15 +133,16 @@ foam.CLASS({
           height: 307px;
           border-radius: 2px;
           background-color: #ffffff;
+          position: relative;
         }
         ^ .loadingSpinner {
           background-color: #ffffff;
           width: 490px;
           height: 210px;
-          position: relative;
-          bottom: 290;
-          left: 248;
-          text-align: center;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          text-align: relative;
         }
         ^ .loadingSpinner > img {
           position: absolute;
@@ -206,11 +209,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
-          .start(this.loadingSpinner).addClass('loadingSpinner')
-            .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
-          .end()
-        .end();
     },
     function otherBank() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this.parentNode);

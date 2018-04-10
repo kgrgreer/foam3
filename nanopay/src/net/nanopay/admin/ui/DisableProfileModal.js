@@ -91,9 +91,8 @@ foam.CLASS({
       name: 'disable',
       code: function (X) {
         var self = this;
-        var toDisable = this.data.clone();
-        toDisable.status = toDisable.status === this.AccountStatus.PENDING ?
-          this.AccountStatus.REVOKED : this.AccountStatus.DISABLED;
+        var toDisable = this.data;
+        toDisable.status = this.AccountStatus.DISABLED;
 
         this.userDAO.put(toDisable)
         .then(function (result) {

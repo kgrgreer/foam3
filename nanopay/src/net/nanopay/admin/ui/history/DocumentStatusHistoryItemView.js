@@ -13,23 +13,6 @@ foam.CLASS({
     ^ .iconPosition {
       margin-left: -6px;
     }
-    ^ .messageBox {
-      width: 513px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      border: solid 0.5px #a4b3b8;
-      margin: 10px 0px 0px 31px;
-      padding: 10px;
-    }
-    ^ .messageText {
-      opacity: 0.7;
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      color: #093649;
-      position: relative;
-    }
     ^ .statusBox {
       margin-top: -20px;
       padding-bottom: 22px;
@@ -53,6 +36,9 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
     }
+    ^ .link {
+      text-decoration: none;
+    }
   `,
 
   properties: [
@@ -72,10 +58,12 @@ foam.CLASS({
       var attributes = [];
       for ( var i = 0 ; i < documents.newValue.length ; i++ ) {
         var file = documents.newValue[i];
+        console.log('file =', file);
         if ( ! this.files[file.id] ) {
           attributes.push({
             title: 'Additional document ',
             labelText: file.filename,
+            labelLink: file.address,
             icon: 'images/ic-attachment-round.svg'
           });
           this.files[file.id] = true;
@@ -107,7 +95,14 @@ foam.CLASS({
               .style({ 'padding-left': '30px' })
               .start('span').addClass('statusTitle')
                 .add(attribute.title)
-                .add(attribute.labelText)
+                .start('a')
+                  .addClass('link')
+                  .attrs({
+                    href: attribute.labelLink,
+                    target: '_blank'
+                  })
+                  .add(attribute.labelText)
+                .end()
                 .add(' added')
               .end()
             .end()

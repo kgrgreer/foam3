@@ -233,7 +233,7 @@ foam.CLASS({
               .start().addClass('business-image-container')
               .tag({
                 class: 'foam.nanos.auth.ProfilePictureView',
-                data$: this.user.profilePicture$,
+                data$: this.user.businessProfilePicture$,
                 placeholderImage: 'images/business-placeholder.png',
                 uploadHidden: false,
                 dragActive$: this.dragActive$
@@ -257,14 +257,14 @@ foam.CLASS({
               .end()
               .start().addClass('input-container')
                 .start('label').add('Business Identification No. *').end()
-                .start(this.User.BUSINESS_IDENTIFICATION_NUMBER).end()
+                .start(this.User.BUSINESS_REGISTRATION_NUMBER).end()
               .end()
               .start().addClass('input-container')
                 .start('label').add('Issuing Authority *').end()
-                .start(this.User.ISSUING_AUTHORITY).end()
+                .start(this.User.BUSINESS_REGISTRATION_AUTHORITY).end()
               .end()
               .start('h3').add('Business Address *').end()
-              .tag(this.User.ADDRESS, {showVerified: false,showType: false})
+              .tag(this.User.BUSINESS_ADDRESS, {showVerified: false,showType: false})
               .start(this.SAVE_BUSINESS).addClass('foam-u2-ActionView-saveBusiness').end()
             .end()
           .end()

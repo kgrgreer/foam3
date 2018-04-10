@@ -139,9 +139,7 @@ foam.CLASS({
                 }
               }))
               .add(this.data.status$.map(function (status) {
-                return status === self.AccountStatus.REVOKED ?
-                  self.AccountStatus.DISABLED.label :
-                  status.label;
+                return status.label;
               }))
             .end()
           .end()

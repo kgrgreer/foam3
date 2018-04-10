@@ -12,7 +12,9 @@ foam.CLASS({
 
   imports: [
     'stack',
-    'userDAO'
+    'userDAO',
+    'validatePhone',
+    'validateTitleNumOrAuth'
   ],
 
   css: `
@@ -364,6 +366,48 @@ foam.CLASS({
           .start(this.CLOSE_BUTTON).end()
           .start(this.SAVE_BUTTON).end()
         .end()
+    },
+
+    function validations() {
+      if ( ! this.data.firstName || ! this.data.lastName || ! this.data.jobTitle || ! this.data.phone || ! this.data.phone.number ) {
+        this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+        return false;
+      }
+      if ( this.data.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( /\d/.test(this.data.firstName) ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
+        return false;
+      }
+      if ( this.data.middleName ) {
+        if ( this.data.middleName.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
+          return false;
+        }
+        if ( /\d/.test(this.data.middleName) ) {
+          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
+          return false;
+        }
+      }
+      if ( this.data.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( /\d/.test(this.data.lastName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot contain numbers.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateTitleNumOrAuth(this.data.jobTitle) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePhone(this.countryCode + ' ' + this.data.phone.number) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        return false;
+      }
+      return true;
     }
   ],
 
@@ -380,6 +424,10 @@ foam.CLASS({
       label: 'Save',
       code: function (X) {
         var self = this;
+        if ( ! this.validations() ) {
+          return;
+        }
+
         this.userDAO.put(this.data).then(function (result) {
           self.add(self.NotificationMessage.create({ message: 'Successfully updated business profile.' }));
           self.stack.back();

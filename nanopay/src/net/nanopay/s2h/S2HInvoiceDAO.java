@@ -10,13 +10,14 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.s2h.model.S2HInvoice;
 
 public class S2HInvoiceDAO
-  extends ProxyDAO {
+  extends ProxyDAO
+{
 
   public S2HInvoiceDAO(DAO delegate) {
     setDelegate(delegate);
     setOf(net.nanopay.s2h.model.S2HInvoice.getOwnClassInfo());
   }
-  
+
   // Overrides all functions to only allow put calls
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
@@ -33,11 +34,13 @@ public class S2HInvoiceDAO
   {
     throw new UnsupportedOperationException("Unsupported operation: remove_");
   }
+
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate)
   {
     throw new UnsupportedOperationException("Unsupported operation: removeAll_");
   }
+
   // Takes an S2H formatted invoice and calls a converter method
   // that changes it into a Nanopay formatted invoice
   @Override
