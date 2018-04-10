@@ -954,6 +954,7 @@ foam.CLASS({
         // TODO?: Maybe add a loading indicator?
         this.createPrincipalOwner();
         this.clearFields();
+        this.isSameAsAdmin = false;
       }
     }
   ]

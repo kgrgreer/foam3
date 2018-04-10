@@ -205,14 +205,14 @@ foam.CLASS({
       code: function(msg) {
         if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
           if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
-            this.pushView('FlinksXSelectionAnswerForm');
+            this.pushViews('FlinksXSelectionAnswerForm');
           } else {
-            this.pushView('FlinksXQuestionAnswerForm');
+            this.pushViews('FlinksXQuestionAnswerForm');
           }
         } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' ||  msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
-          this.pushView('FlinksMultipleChoiceForm');
+          this.pushViews('FlinksMultipleChoiceForm');
         } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
-          this.pushView('FlinksImageForm');
+          this.pushViews('FlinksImageForm');
         } else {
           this.fail();
         }
@@ -242,7 +242,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.currentViewId === 'FlinksInstitutionForm' ) {
-          this.pushView('FlinksConnectForm');
+          this.pushViews('FlinksConnectForm');
           return;
         }
         //connect to the Bank

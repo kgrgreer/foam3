@@ -22,6 +22,10 @@ foam.ENUM({
       label: 'Completed'
     },
     {
+      name: 'REFUNDED',
+      label: 'Refunded'
+    },
+    {
       name: 'ACSP',
       label: 'ACSP'
     },
