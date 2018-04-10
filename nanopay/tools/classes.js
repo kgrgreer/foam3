@@ -43,6 +43,17 @@ var classes = [
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.fresh.FreshConfig',  
+  'net.nanopay.fresh.model.FreshToken',  
+  'net.nanopay.fresh.model.FreshBusiness',  
+  'net.nanopay.fresh.model.FreshBusinessMembership',    
+  'net.nanopay.fresh.model.FreshCurrent',  
+  'net.nanopay.fresh.model.FreshResponse',
+  'net.nanopay.fresh.model.FreshInvoiceResponse',   
+  'net.nanopay.fresh.model.FreshInvoiceResult',   
+  'net.nanopay.fresh.model.FreshInvoicePages',   
+  'net.nanopay.fresh.model.FreshInvoice',   
+  'net.nanopay.fresh.model.FreshInvoiceAmount',   
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
