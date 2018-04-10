@@ -8,6 +8,7 @@ var classes = [
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
+  'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.cico.spi.alterna.SFTPService',

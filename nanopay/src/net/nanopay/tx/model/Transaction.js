@@ -60,13 +60,12 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+      value: net.nanopay.tx.model.TransactionStatus.PENDING,
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
+      name: 'referenceNumber'
     },
     {
       class: 'Long',
@@ -271,7 +270,7 @@ foam.CLASS({
             new Transfer(getPayerId(), -getTotal())
           };
         }
-        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.VERIFICATION ) {
+        if ( getType() == TransactionType.CASHIN ) {
           return new Transfer[]{
             new Transfer(getPayeeId(), getTotal())
           };
