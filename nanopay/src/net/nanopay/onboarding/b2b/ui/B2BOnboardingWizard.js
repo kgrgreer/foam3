@@ -468,8 +468,8 @@ foam.CLASS({
           }
           if ( this.position === 2 ) {
             // validate Principal Owner
-            if ( ! this.validatePrincipalOwner() ) return;
-            this.createPrincipalOwner();
+            if ( ! this.validatePrincipalOwner() && this.principalOwnersCount < 0) return;
+            if ( this.principalOwnersCount <= 0 ) this.createPrincipalOwner();
           }
           if ( this.position == 3) {
             // validate Questionnaire
