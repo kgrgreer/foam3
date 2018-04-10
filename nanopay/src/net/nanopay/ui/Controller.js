@@ -125,35 +125,39 @@ foam.CLASS({
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
-          // check account status and show UI accordingly
-          switch ( self.user.status ) {
-            case self.AccountStatus.PENDING:
-              self.loginSuccess = false;
-              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
-              return;
 
-            case self.AccountStatus.SUBMITTED:
-            case self.AccountStatus.DISABLED:
-              self.loginSuccess = false;
-              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-              return;
-
-            // show onboarding screen if user hasn't clicked "Go To Portal" button
-            case self.AccountStatus.ACTIVE:
-              if ( self.user.onboarded ) break;
-              self.loginSuccess = false;
-              self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
-              return;
-
-              if ( ! self.user.onboarded ) {
+          // only show B2B onboarding if user is a Business
+          if ( self.user.type === 'Business' ) {
+            // check account status and show UI accordingly
+            switch ( self.user.status ) {
+              case self.AccountStatus.PENDING:
                 self.loginSuccess = false;
-              }
-              break;
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
+                return;
 
-            case self.AccountStatus.REVOKED:
-              self.loginSuccess = false;
-              self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-              return;
+              case self.AccountStatus.SUBMITTED:
+              case self.AccountStatus.DISABLED:
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+                return;
+
+              // show onboarding screen if user hasn't clicked "Go To Portal" button
+              case self.AccountStatus.ACTIVE:
+                if ( self.user.onboarded ) break;
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
+                return;
+
+                if ( ! self.user.onboarded ) {
+                  self.loginSuccess = false;
+                }
+                break;
+
+              case self.AccountStatus.REVOKED:
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+                return;
+            }
           }
 
           // check if user email verified
