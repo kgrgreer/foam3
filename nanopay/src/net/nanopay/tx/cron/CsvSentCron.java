@@ -17,7 +17,7 @@ public class CsvSentCron
   implements ContextAgent
 {
   @Override
-  public void execute(X x){
+  public void execute(X x) {
     AlternaSFTPService sftp  = (AlternaSFTPService) x.get("alternaSftp");
     Calendar           today = Calendar.getInstance();
 

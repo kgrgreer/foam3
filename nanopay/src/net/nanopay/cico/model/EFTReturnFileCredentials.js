@@ -18,7 +18,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'host',
-      value: 'ftp.eftcanada.com'
+      value: ''
     },
     {
       class: 'Int',
