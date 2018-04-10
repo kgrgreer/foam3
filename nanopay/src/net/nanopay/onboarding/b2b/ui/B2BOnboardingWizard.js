@@ -8,7 +8,10 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.AccountStatus',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Phone'
   ],
 
   imports: [
@@ -20,12 +23,18 @@ foam.CLASS({
     'validateCity',
     'validateStreetNumber',
     'validateAddress',
+    'validateEmail',
+    'validateAge',
     'user',
     'userDAO'
   ],
 
   exports: [
-    'logOutHandler'
+    'logOutHandler',
+    'validatePrincipalOwner',
+    'createPrincipalOwner',
+    'principalOwnersDAO',
+    'principalOwnersCount'
   ],
 
   axioms: [
@@ -38,6 +47,26 @@ foam.CLASS({
       name: 'nextLabel',
       expression: function (position) {
         return ( position < this.views.length - 2 ) ? 'Next' : 'Submit';
+      }
+    },
+    {
+      name: 'principalOwnersDAO',
+      factory: function() {
+        if ( this.viewData.user.principalOwners ) {
+          return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
+        }
+        return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'principalOwnersCount',
+      factory: function() {
+        var self = this;
+        // In case we load from a save state
+        this.principalOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
+          return c.value;
+        });
       }
     }
   ],
@@ -75,6 +104,9 @@ foam.CLASS({
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
+      this.viewData.principalOwner = {};
+      this.principalOwnersDAO.on.sub(this.onDAOChange);
+
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-confirmAdminInfo', label: 'Confirm Admin Info', view: { class: 'net.nanopay.onboarding.b2b.ui.ConfirmAdminInfoForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
@@ -269,6 +301,117 @@ foam.CLASS({
         }
       });
       return valid;
+    },
+
+    function validatePrincipalOwner() {
+      var principalOwner = this.viewData.principalOwner;
+      // TODO: Make sure required fields are validated before adding to DAO
+      if ( ! principalOwner.firstName || ! principalOwner.lastName ) {
+        this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
+        return;
+      }
+
+      if ( ! principalOwner.jobTitle ) {
+        this.add(this.NotificationMessage.create({ message: 'Job title field must be populated.', type: 'error' }));
+        return;
+      }
+
+      if ( ! this.validateEmail(principalOwner.emailAddress) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        return;
+      }
+
+      if ( ! this.validatePhone(principalOwner.countryCode + principalOwner.phoneNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        return;
+      }
+
+      if ( ! this.validateAge(principalOwner.birthday) ) {
+        this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
+        return;
+      }
+
+      if ( ! this.validateStreetNumber(principalOwner.streetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return;
+      }
+      if ( ! this.validateAddress(principalOwner.streetName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return;
+      }
+
+      var address = this.Address.create({
+        streetNumber: this.streetNumberField,
+        streetName: this.streetNameField,
+        address2: this.addressField,
+        city: this.cityField,
+        postalCode: this.postalCodeField,
+        countryId: this.countryField,
+        regionId: this.provinceField
+      });
+
+      if ( address.length > 0 && ! this.validateAddress(address) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        return;
+      }
+      if ( ! this.validateCity(principalOwner.city) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return;
+      }
+      if ( ! this.validatePostalCode(principalOwner.postalCode) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return;
+      }
+
+      return true;
+    },
+
+    function createPrincipalOwner(){
+      var self = this;
+
+      var principleOwner;
+
+      if ( this.selectedPrincipalOwner ) {
+        principleOwner = this.selectedPrincipalOwner;
+      } else {
+        principleOwner = this.User.create({
+          id: this.principalOwnersCount + 1
+        });
+      }
+
+      principleOwner.firstName = this.viewData.principalOwner.firstName,
+      principleOwner.middleName = this.viewData.principalOwner.middleName,
+      principleOwner.lastName = this.viewData.principalOwner.lastName,
+      principleOwner.email = this.viewData.principalOwner.emailAddress,
+      principleOwner.phone = this.Phone.create({
+        number: this.viewData.principalOwner.countryCode + this.viewData.principalOwner.phoneNumber
+      }),
+      principleOwner.birthday = this.viewData.principalOwner.birthday,
+      principleOwner.address = this.Address.create({
+        streetNumber: this.viewData.principalOwner.streetNumber,
+        streetName: this.viewData.principalOwner.streetName,
+        address2: this.viewData.principalOwner.address,
+        city: this.viewData.principalOwner.city,
+        postalCode: this.viewData.principalOwner.postalCode,
+        countryId: this.viewData.principalOwner.country,
+        regionId: this.viewData.principalOwner.province
+      }),
+      principleOwner.jobTitle = this.viewData.principalOwner.jobTitle
+      principleOwner.principleType = this.viewData.principalOwner.principleType
+      // TODO?: Maybe add a loading indicator?
+      this.principalOwnersDAO.put(principleOwner).then(function(a){
+        self.principalOwnersCount += 1;
+      });
+    }
+  ],
+
+  listeners: [
+    function onDAOChange(){
+      var self = this;
+      this.principalOwnersDAO.select().then(function(principalOwners) {
+        self.viewData.principalOwners = principalOwners.array;
+        self.principalOwnersCount = principalOwners.array.length;
+      });
     }
   ],
 
@@ -313,7 +456,6 @@ foam.CLASS({
           this.submit();
           return;
         }
-
         // move to next screen
         if ( this.position < this.views.length - 1 ) {
           if ( this.position === 0 ) {
@@ -323,6 +465,11 @@ foam.CLASS({
           if ( this.position === 1 ) {
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
+          }
+          if ( this.position === 2 ) {
+            // validate Principal Owner
+            if ( ! this.validatePrincipalOwner() ) return;
+            this.createPrincipalOwner();
           }
           if ( this.position == 3) {
             // validate Questionnaire
