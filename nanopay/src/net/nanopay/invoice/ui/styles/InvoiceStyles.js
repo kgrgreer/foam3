@@ -13,6 +13,7 @@ foam.CLASS({
           border-radius: 30px;
           padding: 3px 7px;
           display: inline;
+          font-weight: 300;
         }
         .Invoice-Status-Disputed  {
           color: #c82e2e;
@@ -25,9 +26,9 @@ foam.CLASS({
           background: black;
         }
         .Invoice-Status-New  {
-          color: #262626;
+          color: #59a5d5;
           background: white;
-          border: 1px solid #262626;
+          border: 1px solid #59a5d5;
         }
         .Invoice-Status-Overdue {
           background: #c82e2e;
@@ -38,12 +39,12 @@ foam.CLASS({
           color: white;
         }
         .Invoice-Status-Paid {
-          background: #20b020;
+          background: #2cab70;
           color: white;
         }
         .Invoice-Status-Scheduled {
-          color: #20b020;
-          border: 1px solid #20b020;
+          color: #2cab70;
+          border: 1px solid #2cab70;
           background: white;
           font-size: 10px;
         }
