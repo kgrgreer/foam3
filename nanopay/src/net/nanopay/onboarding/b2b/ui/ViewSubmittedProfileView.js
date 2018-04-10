@@ -7,8 +7,10 @@ foam.CLASS({
 
   imports: [
     'businessTypeDAO',
+    'questionnaireDAO',
     'stack',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   css: `
@@ -109,6 +111,13 @@ foam.CLASS({
       this.businessTypeDAO.find(this.user.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
       });
+
+      if ( ! this.user.questionnaire ) {
+        this.questionnaireDAO.find('b2b').then(function (result) {
+          self.user.questionnaire = result;
+          return self.userDAO.put(self.user);
+        });
+      }
 
       this
         .addClass(this.myClass())
@@ -216,16 +225,20 @@ foam.CLASS({
                 .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
               .end()
               .start()
-                .forEach(this.user.questionnaire.questions, function (question) {
-                  self
-                  .start().addClass('container')
-                    .start('p').add(question.question).addClass('wizardBoldLabel').end()
-                    .start('p').add(question.response).end()
-                  .end()
-                })
+                .add(this.slot(function (questionnaire) {
+                  if ( ! questionnaire ) return;
+                  return self.E()
+                    .start()
+                    .forEach(this.user.questionnaire.questions, function (question) {
+                      self
+                        .start().addClass('container')
+                          .start('p').add(question.question).addClass('wizardBoldLabel').end()
+                          .start('p').add(question.response).end()
+                        .end()
+                    })
+                }, this.user.questionnaire$))
               .end()
             .end()
-            
           .end()
         .end();
     }
@@ -236,7 +249,10 @@ foam.CLASS({
       name: 'backToHome',
       label: '<< Back to Home',
       code: function(X) {
-        this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+        this.stack.push({ 
+          class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard',
+          pushView: { position: 5, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
+        })
       }
     }
   ]

@@ -60,7 +60,7 @@ foam.CLASS({
       // }
 
       //inital start view
-      this.pushView(this.startView, true);
+      this.pushViews(this.startView, true);
     },
 
     //use super method the inital the view elements
@@ -70,14 +70,14 @@ foam.CLASS({
 
     //go the successView
     function success() {
-      this.pushView(this.successView);
+      this.pushViews(this.successView);
     },
     //go to failView
     function fail() {
-      this.pushView(this.errorView);
+      this.pushViews(this.errorView);
     },
     //push view into subStack and set rollBack point if needs
-    function pushView(viewId, rollBack) {
+    function pushViews(viewId, rollBack) {
       if ( ! viewId && ! this.views[viewId] ) {
         console.error('[JumpWizardView] : can not find view');
         return;

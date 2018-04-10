@@ -12,7 +12,6 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.ui.modal.ModalHeader',
   ],
 
@@ -92,9 +91,9 @@ foam.CLASS({
       name: 'activate',
       code: function (X) {
         var self = this;
-        var toActivate = this.data.clone();
-        toActivate.status = toActivate.compliance === this.ComplianceStatus.REQUESTED ?
-          this.AccountStatus.PENDING : this.AccountStatus.ACTIVE;
+        var toActivate = this.data;
+        toActivate.status = toActivate.status === this.AccountStatus.DISABLED ?
+          toActivate.previousStatus : this.AccountStatus.ACTIVE;
 
         this.userDAO.put(toActivate)
         .then(function (result) {

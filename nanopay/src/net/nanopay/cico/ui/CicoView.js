@@ -210,7 +210,7 @@ foam.CLASS({
 
         return standardCICOTransactionDAO.where(
           this.AND(
-            this.OR(
+            this.AND(
               this.EQ(this.Transaction.PAYER_ID, user.id),
               this.EQ(this.Transaction.PAYEE_ID, user.id)),
             this.OR(

@@ -14,7 +14,8 @@ foam.CLASS({
     'validateAge',
     'validateCity',
     'validateStreetNumber',
-    'validateAddress'
+    'validateAddress',
+    'user'
   ],
 
   implements: [
@@ -337,6 +338,35 @@ foam.CLASS({
       outline: none;
     }
 
+    ^ .checkBoxContainer {
+      position: relative;
+      margin-bottom: 20px;
+      padding: 13px 0;
+    }
+
+    ^ .checkBoxContainer .foam-u2-md-CheckBox {
+      display: inline-block;
+      vertical-align: middle;
+
+      margin: 0 10px;
+      margin-left: 0;
+
+      padding: 0 13px;
+    }
+
+    ^ .checkBoxContainer .foam-u2-md-CheckBox:checked {
+      background-color: %PRIMARYCOLOR%;
+      border-color: %PRIMARYCOLOR%;
+    }
+
+    ^ .checkBoxContainer .foam-u2-md-CheckBox-label {
+      display: inline-block;
+      vertical-align: middle;
+
+      margin: 0;
+      position: relative;
+    }
+
     ^ .foam-u2-tag-Select {
       width: 540px;
       border-radius: 0;
@@ -416,6 +446,7 @@ foam.CLASS({
       name: 'principalOwnersDAO',
       factory: function() {
         if ( this.viewData.user.principalOwners ) {
+          if ( this.viewData.user.principalOwners.length > 1) this.addLabel = 'Add Another Principal Owner';
           return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
@@ -424,7 +455,7 @@ foam.CLASS({
     {
       name: 'selectedPrincipalOwner',
       preSet: function(oldValue, newValue) {
-      if ( newValue != null ) this.editPrincipalOwner(newValue);
+        if ( newValue != null ) this.editPrincipalOwner(newValue);
         return newValue;
       }
     },
@@ -580,6 +611,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isDisplayMode',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isSameAsAdmin',
+      value: false,
+      postSet: function(oldValue, newValue) {
+        this.selectedPrincipalOwner = null;
+        this.sameAsAdmin(newValue);
+      }
     }
   ],
 
@@ -593,7 +633,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var modeSlot = this.isDisplayMode$.map(function(b) { return b ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW; });
+      var modeSlot = this.isDisplayMode$.map(function(mode) { return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW; });
+      var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
+        return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      })
       this.addClass(this.myClass())
         .start('div')
           // TODO: TABLE SHOULD GO HERE
@@ -622,12 +665,16 @@ foam.CLASS({
 
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
 
+          .start('div').addClass('checkBoxContainer')
+            .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
+          .end()
+
           .start('div').addClass('animationContainer')
             .start('div')
               .addClass('displayContainer')
               .enableClass('hidden', this.isEditingName$)
                 .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_LEGAL_NAME, { mode$: modeSlot })
+                .start(this.DISPLAYED_LEGAL_NAME, { mode$: modeSlotSameAsAdmin })
                   .addClass('fullWidthField')
                   .addClass('displayOnly')
                   .on('focus', function() {
@@ -644,7 +691,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD, { mode$: modeSlot }, this.firstNameFieldElement$)
+                    .start(this.FIRST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }, this.firstNameFieldElement$)
                       .addClass('fields')
                     .end()
                 .end()
@@ -652,7 +699,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('middleName', this.isEditingName$, true)
                     .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
-                    .start(this.MIDDLE_NAME_FIELD, { mode$: modeSlot })
+                    .start(this.MIDDLE_NAME_FIELD, { mode$: modeSlotSameAsAdmin })
                       .addClass('fields')
                     .end()
                 .end()
@@ -660,7 +707,7 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('lastName', this.isEditingName$, true)
                     .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
-                    .start(this.LAST_NAME_FIELD, { mode$: modeSlot })
+                    .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin })
                       .addClass('fields')
                     .end()
                 .end()
@@ -672,9 +719,9 @@ foam.CLASS({
               self.isEditingName = false;
             })
             .start('p').add(this.JobTitleLabel).addClass('infoLabel').end()
-            .start(this.JOB_TITLE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start(this.JOB_TITLE_FIELD, { mode$: modeSlotSameAsAdmin }).addClass('fullWidthField').end()
             .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
-            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).addClass('fullWidthField').end()
 
             .start('div')
               .style({ 'margin-top': '20px' })
@@ -683,7 +730,7 @@ foam.CLASS({
                 .addClass('displayContainer')
                 .enableClass('hidden', this.isEditingPhone$)
                 .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                .start(this.DISPLAYED_PHONE_NUMBER, { mode$: modeSlot })
+                .start(this.DISPLAYED_PHONE_NUMBER, { mode$: modeSlotSameAsAdmin })
                   .addClass('fullWidthField')
                   .addClass('displayOnly')
                   .on('focus', function() {
@@ -788,7 +835,7 @@ foam.CLASS({
       this.cityField = '';
       this.postalCodeField = '';
 
-      this.addLabel = 'Add';
+      this.addLabel = 'Add Another Principal Owner';
       this.selectedPrincipalOwner = undefined;
       this.isDisplayMode = false;
 
@@ -797,25 +844,27 @@ foam.CLASS({
       this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     },
 
-    function editPrincipalOwner(user) {
-      this.firstNameField = user.firstName;
-      this.middleNameField = user.middleName;
-      this.lastNameField = user.lastName;
-      this.isEditingName = false; // This will change displayedLegalName as well
-      this.jobTitleField = user.jobTitle;
-      this.emailAddressField = user.email;
-      this.phoneNumberField = this.extractPhoneNumber(user.phone);
-      this.isEditingPhone = false;
-      this.principleTypeField = user.principleType;
-      this.birthdayField = user.birthday;
+    function editPrincipalOwner(owner) {
+      this.isSameAsAdmin = false;
 
-      this.countryField = user.address.countryId;
-      this.streetNumberField = user.address.streetNumber;
-      this.streetNameField = user.address.streetName;
-      this.addressField = user.address.address2;
-      this.provinceField = user.address.regionId;
-      this.cityField = user.address.city;
-      this.postalCodeField = user.address.postalCode;
+      this.firstNameField = owner.firstName;
+      this.middleNameField = owner.middleName;
+      this.lastNameField = owner.lastName;
+      this.isEditingName = false; // This will change displayedLegalName as well
+      this.jobTitleField = owner.jobTitle;
+      this.emailAddressField = owner.email;
+      this.phoneNumberField = this.extractPhoneNumber(owner.phone);
+      this.isEditingPhone = false;
+      this.principleTypeField = owner.principleType;
+      this.birthdayField = owner.birthday;
+
+      this.countryField = owner.address.countryId;
+      this.streetNumberField = owner.address.streetNumber;
+      this.streetNameField = owner.address.streetName;
+      this.addressField = owner.address.address2;
+      this.provinceField = owner.address.regionId;
+      this.cityField = owner.address.city;
+      this.postalCodeField = owner.address.postalCode;
 
       this.addLabel = 'Update';
 
@@ -824,6 +873,21 @@ foam.CLASS({
 
     function extractPhoneNumber(phone) {
       return phone.number.substring(2);
+    },
+
+    function sameAsAdmin(flag) {
+      this.clearFields();
+      if ( flag ) {
+        this.firstNameField = this.user.firstName;
+        this.middleNameField = this.user.middleName;
+        this.lastNameField = this.user.lastName;
+        this.isEditingName = false;
+
+        this.jobTitleField = this.user.jobTitle;
+        this.emailAddressField = this.user.email;
+        this.phoneNumberField = this.extractPhoneNumber(this.user.phone);
+        this.isEditingPhone = false;
+      }
     }
   ],
 
@@ -944,6 +1008,7 @@ foam.CLASS({
         // TODO?: Maybe add a loading indicator?
         this.principalOwnersDAO.put(principleOwner).then(function(npo) {
           self.clearFields();
+          self.isSameAsAdmin = false;
         });
       }
     }

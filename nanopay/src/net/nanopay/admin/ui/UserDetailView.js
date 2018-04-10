@@ -340,7 +340,7 @@ foam.CLASS({
       label: 'Approve Profile',
       code: function (X) {
         var self = this;
-        var toApprove = this.data.clone();
+        var toApprove = this.data;
         toApprove.compliance = this.ComplianceStatus.PASSED;
 
         this.userDAO.put(toApprove)
