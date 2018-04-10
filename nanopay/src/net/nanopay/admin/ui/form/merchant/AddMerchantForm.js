@@ -176,7 +176,7 @@ foam.CLASS({
           if ( ! this.profileValidations() ) {
             return;
           }
-          
+
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }

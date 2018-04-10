@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
@@ -48,7 +48,7 @@ public class RandomDepositBankAccountDAO
           .setBankAccountId(account.getId())
           .setAmount(randomDepositAmount)
           .setType(TransactionType.VERIFICATION)
-          .setCicoStatus(TransactionStatus.NEW)
+          .setStatus(TransactionStatus.PENDING)
           .build();
       getTransactionDAO().put(transaction);
     }

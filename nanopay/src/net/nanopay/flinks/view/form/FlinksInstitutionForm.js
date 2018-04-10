@@ -121,7 +121,7 @@ foam.CLASS({
       var self = this;
       this.subContent = this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent');

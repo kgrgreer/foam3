@@ -44,7 +44,6 @@ build/
 target/
 root/target/
 nanopay-bin.js
-nano.log*
 
 # Local Tomcat Server XML
 /server.xml
@@ -55,70 +54,15 @@ node_modules/
 # xsd generated code
 nanopay/src/net/nanopay/fx/ascendantfx/model/
 nanopay/src/net/nanopay/iso20022/*
+!nanopay/src/net/nanopay/iso20022/Document.js
 !nanopay/src/net/nanopay/iso20022/refinements.js
-
 
 # sha256 folder
 sha256/
 
 # Service files
-/accounts
-/balanceAlerts
-/bankAccounts
-/branches
-/brokers
-/businesses
-/businessSectors
-/businessTypes
-/canadaTransactions
-/cicoServiceProviders
-/corridors
-/countries
-/countryAgents
-/cronjobs
-/currencies
-/dateofbirth
-/devices
-/dugs
-/emailTemplates
-/encryptedRegions
-/exchangeRates
-/exportDriverRegistrys
-/files
-/groups
-/hashedTxns
-/historyRecords
-/identification
-/indiaTransactions
-/institutions
-/invitations
-/invitationHistory
-/invoiceHistory
-/invoiceResolutions
-/invoices
-/languages
-/liquiditySettings
-/menus
-/pacs8india
-/pacs8iso
-/payees
-/payoutOptions
-/permissions
-/questionnaireQuestionJunction
-/questionnaires
-/questions
-/rollingHashedTxns
-/recurringInvoices
-/regions
-/scripts
-/services
-/signedTxns
-/spids
-/tests
-/thresholds
-/tokens
-/transactionLimits
-/transactionPurposes
-/transactions
-/users
-/userHistory
+/journals
+
+# Logs
+*.lck
+*nano.log*

@@ -9,11 +9,17 @@ foam.CLASS({
   imports: [
     'viewData',
     'errors',
+    'exitLabel',
+    'saveLabel',
     'backLabel',
     'nextLabel',
+    'exit',
+    'save',
+    'goTo',
     'goBack',
     'goNext',
     'complete',
+    'isCustomNavigation',
     'wizard'
   ],
 

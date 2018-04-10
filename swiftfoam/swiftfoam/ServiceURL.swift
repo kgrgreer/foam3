@@ -19,4 +19,8 @@ public class ServiceURLs {
   public static func setHostRoute(url: Host) {
     hostRoute = url
   }
+
+  public static func getHostRoute() -> Host {
+    return hostRoute
+  }
 }

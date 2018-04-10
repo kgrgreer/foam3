@@ -2,7 +2,7 @@ package net.nanopay.bench;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import net.nanopay.tx.model.Transaction;
 
@@ -22,9 +22,9 @@ public class SignatureGenerationBenchmark
   public void setup(X x) {
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
 
-    Sink sink = new ListSink();
+    Sink sink = new ArraySink();
     sink = transactionDAO_.select(sink);
-    transactions_ = ((ListSink) sink).getData();
+    transactions_ = ((ArraySink) sink).getArray();
   }
 
   @Override

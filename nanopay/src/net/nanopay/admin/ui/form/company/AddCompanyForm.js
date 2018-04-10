@@ -37,10 +37,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        { parent: 'addCompany', id: 'form-addCompany-info',      label: 'User Info',        view: { class: 'net.nanopay.admin.ui.form.company.AddCompanyInfoForm' } },
-        { parent: 'addCompany', id: 'form-addCompany-profile',   label: 'Business Profile', view: { class: 'net.nanopay.admin.ui.form.company.AddCompanyProfileForm' } },
-        { parent: 'addCompany', id: 'form-addCompany-review',    label: 'Review',           view: { class: 'net.nanopay.admin.ui.form.company.AddCompanyReviewForm' } },
-        { parent: 'addCompany', id: 'form-addCompany-done',      label: 'Done',             view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
+        { parent: 'addCompany', id: 'form-addCompany-info',           label: 'User Info',                   view: { class: 'net.nanopay.admin.ui.form.company.AddCompanyInfoForm' } },
+        { parent: 'addCompany', id: 'form-addCompany-profile',        label: 'Business Profile',            view: { class: 'net.nanopay.admin.ui.form.company.AddCompanyProfileForm' } },
+        { parent: 'addCompany', id: 'form-addCompany-review',         label: 'Review',                      view: { class: 'net.nanopay.admin.ui.form.company.AddCompanyReviewForm' } },
+        { parent: 'addCompany', id: 'form-addCompany-done',           label: 'Done',                        view: { class: 'net.nanopay.admin.ui.form.shared.AddUserDoneForm' } }
       ];
       this.SUPER();
     },
@@ -157,11 +157,6 @@ foam.CLASS({
           }
 
           if ( ! this.infoValidations() ) {
-            return;
-          }
-
-          if ( !this.validatePhone(companyInfo.phoneNumber) ) {
-            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
             return;
           }
 

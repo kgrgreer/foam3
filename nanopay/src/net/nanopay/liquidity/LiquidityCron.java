@@ -19,22 +19,22 @@ import static foam.mlang.MLang.*;
 public class LiquidityCron
   extends    ContextAwareSupport
   {
-    protected DAO    balanceAlertDAO_;
-    protected DAO    thresholdDAO_;
-    protected DAO    userDAO_;
-    protected DAO    thresholdResolveDAO_;
-    protected DAO    liquidityDAO_;
-    protected DAO    accountDAO_;
+    protected DAO balanceAlertDAO_;
+    protected DAO thresholdDAO_;
+    protected DAO userDAO_;
+    protected DAO thresholdResolveDAO_;
+    protected DAO liquidityDAO_;
+    protected DAO accountDAO_;
 
     //fetch bank users based on type
     public void fetchUsers() {
       try{
         System.out.println("Finding users...");
-        ListSink sink = (ListSink) userDAO_.where(
+        ArraySink sink = (ArraySink) userDAO_.where(
             EQ(User.TYPE, "Bank")
-        ).select(new ListSink());
-          List bankList = sink.getData();
-          if(bankList.size() < 1) { 
+        ).select(new ArraySink());
+          List bankList = sink.getArray();
+          if(bankList.size() < 1) {
             System.out.println("No banks found");
             return;
           }
@@ -72,11 +72,11 @@ public class LiquidityCron
     public void bankThresholds(User bank, Account account){
       try{
         System.out.println("Finding Thresholds...");
-        ListSink sink = (ListSink) thresholdDAO_.where(
+        ArraySink sink = (ArraySink) thresholdDAO_.where(
             EQ(Threshold.OWNER, bank.getId())
-        ).select(new ListSink());
-          List thresholdList = sink.getData();
-          if(thresholdList.size() < 1) { 
+        ).select(new ArraySink());
+          List thresholdList = sink.getArray();
+          if(thresholdList.size() < 1) {
             System.out.println("No thresholds found");
             return;
           }
@@ -90,19 +90,19 @@ public class LiquidityCron
         }
     }
 
-    /* Iterates through threshold resolutions, 
+    /* Iterates through threshold resolutions,
       if exists, deletes threshold resolution if balance is greater then limit, if not creates balance alert if balance is lower.
       (balance alerts are created based on the existence of threshold resolutions.)
     */
     public void iterateThresholdResolve(Threshold threshold, User bank, Account account){
       System.out.println("Iterating through ThresholdResolve");
-      ListSink sink = (ListSink) thresholdResolveDAO_.where(
+      ArraySink sink = (ArraySink) thresholdResolveDAO_.where(
         AND(
           EQ(ThresholdResolve.THRESHOLD, threshold.getId()),
           EQ(ThresholdResolve.USER, bank.getId())
         )
-      ).select(new ListSink());
-      List thresholdResolveList = sink.getData();
+      ).select(new ArraySink());
+      List thresholdResolveList = sink.getArray();
       if(thresholdResolveList.size() < 1){
         createBalanceAlert(threshold, account, bank);
       } else {
@@ -135,7 +135,7 @@ public class LiquidityCron
         alert.setBalance(balance);
         alert.setMinBalance(limit);
         alert.setBankName(bank.getOrganization());
-        alert.setStatus(bank.getStatus());
+        alert.setStatus(bank.getStatus().name());
         alert.setThreshold(threshold.getId());
         alert.setUser(bank.getId());
         balanceAlertDAO_.put(alert);

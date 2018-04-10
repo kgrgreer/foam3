@@ -2,28 +2,25 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-
-import java.util.Date;
 
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.liquidity.model.Liquidity;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 
 public class LiquidityCashInDAO
-    extends ProxyDAO {
+  extends ProxyDAO {
   protected DAO userDAO_;
   protected DAO liquiditySettingsDAO_;
   protected DAO accountDAO_;
@@ -81,16 +78,17 @@ public class LiquidityCashInDAO
     }
 
     // if the user's balance is not enough to make the payment, do cash in first
+    if ( txn.getBankAccountId() != null )
+      total = 0;
     if ( payerAccount.getBalance() - payerMinBalance < total ) {
       if ( checkCashInStatus(payerLiquiditySetting) ) {
-        long cashInAmount = total - payerAccount.getBalance();
+        long cashInAmount = total + payerMinBalance - payerAccount.getBalance();
         if ( ifCheckRangePerTransaction(payerLiquiditySetting) ) {
-          cashInAmount += payerMinBalance;
-        }
-        if ( checkBankAccountAvailable(payerBankAccountID) ) {
-          addCICOTransaction(payerId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, x);
-        } else {
-          throw new RuntimeException("Please add and verify your bank account to cash in");
+          if ( checkBankAccountAvailable(payerBankAccountID) ) {
+            addCICOTransaction(payerId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, x);
+          } else {
+            throw new RuntimeException("Please add and verify your bank account to cash in");
+          }
         }
       } else {
         throw new RuntimeException("balance is insufficient");
@@ -111,15 +109,16 @@ public class LiquidityCashInDAO
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
    */
   public void addCICOTransaction(long userId, long amount, long bankAccountId, TransactionType transactionType, X
-      x) throws
-      RuntimeException {
+    x) throws
+    RuntimeException {
     Transaction transaction = new Transaction.Builder(x)
-        .setPayeeId(userId)
-        .setPayerId(userId)
-        .setAmount(amount)
-        .setType(transactionType)
-        .setBankAccountId(bankAccountId)
-        .build();
+        .setStatus(TransactionStatus.PENDING)
+      .setPayeeId(userId)
+      .setPayerId(userId)
+      .setAmount(amount)
+      .setType(transactionType)
+      .setBankAccountId(bankAccountId)
+      .build();
     DAO txnDAO = (DAO) x.get("transactionDAO");
     txnDAO.put_(x, transaction);
   }
@@ -132,17 +131,17 @@ public class LiquidityCashInDAO
     // bank account which is enable for this user
     if ( liquiditySettings.getBankAccountId() == 0 ) {
       bankAccount = (BankAccount) bankAccountDAO_.find(
-          AND(
-              EQ(BankAccount.OWNER, userID),
-              EQ(BankAccount.STATUS, "Verified")
-          ));
+        AND(
+          EQ(BankAccount.OWNER, userID),
+          EQ(BankAccount.STATUS, "Verified")
+        ));
     } else {
       bankAccount = (BankAccount) bankAccountDAO_.find(
-          AND(
-              EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
-              EQ(BankAccount.OWNER, liquiditySettings.getId()),
-              EQ(BankAccount.STATUS, "Verified")
-          ));
+        AND(
+          EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
+          EQ(BankAccount.OWNER, liquiditySettings.getId()),
+          EQ(BankAccount.STATUS, "Verified")
+        ));
     }
     //if bank account is null we will return -1, because our bank account id will never be negative
     if ( bankAccount == null )
@@ -161,7 +160,7 @@ public class LiquidityCashInDAO
   public LiquiditySettings getLiquiditySettings(User user) {
     // if user don't have liquidity settings we return the default settings of user's group
     return liquiditySettingsDAO_.find(user.getId()) == null ? ( (Group) groupDAO_.find(user.getGroup()) )
-        .getLiquiditySettings() : (LiquiditySettings) liquiditySettingsDAO_.find(user.getId());
+      .getLiquiditySettings() : (LiquiditySettings) liquiditySettingsDAO_.find(user.getId());
   }
 
   public boolean checkCashInStatus(LiquiditySettings liquiditySettings) {

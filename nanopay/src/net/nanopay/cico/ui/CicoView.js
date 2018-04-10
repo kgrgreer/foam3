@@ -15,7 +15,8 @@ foam.CLASS({
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   imports: [
@@ -374,7 +375,7 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               data: this.cicoTransactions,
               columns: [
-                'id', 'date', 'amount', 'type'
+                'id', 'date', 'amount', 'type', 'status'
               ]
             });
         }
