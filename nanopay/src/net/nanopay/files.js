@@ -159,6 +159,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/AccountStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/ComplianceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },

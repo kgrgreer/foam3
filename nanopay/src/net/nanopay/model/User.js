@@ -206,6 +206,12 @@ statusIsSet_ = true;`,
       class: 'Boolean',
       name: 'onboarded',
       value: false
+    },
+    {
+      class: 'Int',
+      name: 'inviteAttempts',
+      value: 0,
+      documentation: 'Counter to count the number of invite attempt',
     }
   ]
 });
