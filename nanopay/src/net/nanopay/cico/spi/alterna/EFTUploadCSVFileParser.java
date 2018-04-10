@@ -3,6 +3,8 @@ package net.nanopay.cico.spi.alterna;
 import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
+import foam.core.X;
+import foam.nanos.logger.Logger;
 import foam.lib.csv.CSVStringParser;
 import foam.lib.parse.*;
 import org.apache.commons.io.IOUtils;
@@ -22,6 +24,8 @@ public class EFTUploadCSVFileParser extends EFTFileParser
 {
   public List<FObject> parse(InputStream is) {
 
+    X x = getX();
+    Logger logger = (Logger) x.get("logger");
     List<FObject> ret = new ArrayList<>();
     BufferedReader reader = null;
 
@@ -45,7 +49,7 @@ public class EFTUploadCSVFileParser extends EFTFileParser
       parseFile(ret, reader, classInfo, propertyInfos);
 
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       IOUtils.closeQuietly(reader);
     }

@@ -76,7 +76,7 @@ try {
   
   channelSftp.exit();
 } catch ( Exception e ) {
-  e.printStackTrace();
+  logger.error(e);
 } finally {
   // close channels
   if ( channel != null ) channel.disconnect();

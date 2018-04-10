@@ -1,6 +1,7 @@
 package net.nanopay.cico.spi.alterna;
 
 import foam.core.ClassInfo;
+import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.lib.parse.*;
@@ -9,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class EFTFileParser
+public abstract class EFTFileParser extends ContextAwareSupport
 {
   public void parseFile(List<FObject> ret, BufferedReader reader, ClassInfo classInfo, List<Object> propertyInfos)
     throws IOException, InstantiationException, IllegalAccessException {

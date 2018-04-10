@@ -3,6 +3,7 @@ package net.nanopay.cico.spi.alterna;
 import com.jcraft.jsch.*;
 import foam.core.FObject;
 import foam.core.X;
+import foam.nanos.logger.Logger;
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
 import foam.nanos.notification.email.EmailMessage;
@@ -27,6 +28,7 @@ public class EFTReturnFileProcessor extends ContextAwareSupport
 {
   public void process() {
     X x = getX();
+    Logger logger = (Logger) x.get("logger");
     EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
 
     EFTReturnFileParser eftReturnFileParser = new EFTReturnFileParser();
@@ -128,7 +130,7 @@ public class EFTReturnFileProcessor extends ContextAwareSupport
       channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();
