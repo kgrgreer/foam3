@@ -396,7 +396,7 @@ foam.CLASS({
         countryId: this.viewData.principalOwner.country,
         regionId: this.viewData.principalOwner.province
       }),
-      principleOwner.jobTitle = this.viewData.principalOwner.jobTitle,
+      principleOwner.jobTitle = this.viewData.principalOwner.jobTitle
       principleOwner.principleType = this.viewData.principalOwner.principleType
       // TODO?: Maybe add a loading indicator?
       this.principalOwnersDAO.put(principleOwner).then(function(a){
