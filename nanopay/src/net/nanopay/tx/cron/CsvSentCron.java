@@ -25,13 +25,15 @@ public class CsvSentCron
 
     DAO nSpecDao = (DAO)x.get("nSpecDAO");
     String currentMode = ((Mode) ((AppConfig) ((NSpec) nSpecDao.find("appConfig")).getService()).getMode()).getLabel();
+
+    // Only run in production environment
     if ( ! currentMode.equals("Production") ) return;
 
     // Don't run on Saturday
-    if ( today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) return;
+    if ( today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ) return;
 
     // Don't run on Sunday
-    if ( today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) return;
+    if ( today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ) return;
 
     // Don't run on holidays
     if ( CsvUtil.cadHolidays.contains(today.get(Calendar.DAY_OF_YEAR)) ) return;
