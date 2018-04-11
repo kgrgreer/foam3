@@ -175,6 +175,11 @@
       <version>${appengine.sdk.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.stripe</groupId>
+      <artifactId>stripe-java</artifactId>
+      <version>5.35.1</version>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>build</sourceDirectory>

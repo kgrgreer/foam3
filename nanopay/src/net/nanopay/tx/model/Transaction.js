@@ -244,6 +244,15 @@ foam.CLASS({
       name: 'notes',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction notes'
+    },
+    {
+      class: 'String',
+      name: 'stripeTokenId',
+      storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'stripeChargeId'
     }
   ],
 
