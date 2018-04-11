@@ -134,6 +134,7 @@ foam.CLASS({
               + this.data.businessAddress.streetName + ', '
               + this.data.businessAddress.address2 + ' '
               + this.data.businessAddress.city + ', '
+              + this.data.businessAddress.regionId + ', '
               + this.data.businessAddress.postalCode
             ).addClass('addressDiv').end()
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
@@ -172,6 +173,7 @@ foam.CLASS({
                         + data.address.streetName + ', '
                         + data.address.address2 + ' '
                         + data.address.city + ', '
+                        + data.address.regionId + ', '
                         + data.address.postalCode
                       ).addClass('addressDiv').end()
                     .end()
