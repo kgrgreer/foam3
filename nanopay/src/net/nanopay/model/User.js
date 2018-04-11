@@ -52,11 +52,6 @@ foam.CLASS({
         this.previousStatus = oldValue;
         return newValue;
       },
-      javaSetter:
-`setPreviousStatus(getStatus());
-status_ = val;
-statusIsSet_ = true;`,
-
       tableCellFormatter: function (status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
