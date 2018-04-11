@@ -436,12 +436,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-view-TableView tbody > tr:hover {
-      background: #f6f9f9 !important;
       cursor: auto;
-    }
-
-    ^ .foam-u2-view-TableView-selected {
-      background-color: #f6f9f9 !important;
     }
   `,
 
@@ -482,6 +477,7 @@ foam.CLASS({
       name: 'editingPrincipalOwner',
       postSet: function(oldValue, newValue) {
         if ( newValue != null ) this.editPrincipalOwner(newValue, true);
+        this.tableViewElement.selection = newValue;
       }
     },
     {
@@ -494,6 +490,7 @@ foam.CLASS({
         });
       }
     },
+    'tableViewElement',
     {
       class: 'Boolean',
       name: 'isEditingName',
@@ -661,6 +658,7 @@ foam.CLASS({
               class: 'foam.u2.view.TableView',
               data$: this.principalOwnersDAO$,
               editColumnsEnabled: false,
+              ignoreClicks: true,
               columns: [
                 'legalName', 'jobTitle', 'principleType',
                 foam.core.Property.create({
@@ -696,7 +694,7 @@ foam.CLASS({
                   }
                 })
               ]
-            }).end()
+            }, {}, this.tableViewElement$).end()
           .end()
 
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
@@ -860,6 +858,8 @@ foam.CLASS({
     },
 
     function clearFields() {
+      this.editingPrincipalOwner = null;
+
       this.firstNameField = '';
       this.middleNameField = '';
       this.lastNameField = '';
@@ -879,8 +879,9 @@ foam.CLASS({
       this.cityField = '';
       this.postalCodeField = '';
 
-      this.addLabel = 'Add Another Principal Owner';
-      this.selectedPrincipalOwner = undefined;
+      if ( this.principalOwnersCount > 0 ) this.addLabel = 'Add Another Principal Owner';
+      else this.addLabel = 'Add';
+
       this.isDisplayMode = false;
 
       this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
