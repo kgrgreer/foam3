@@ -512,7 +512,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
+      class: 'Long',
       name: 'principalOwnersCount',
       factory: function() {
         // In case we load from a save state
@@ -1078,7 +1078,7 @@ foam.CLASS({
         return ! isDisplayMode;
       },
       code: function() {
-        if ( ! this.validatePrincipalOwner ) return;
+        if ( ! this.validatePrincipalOwner() ) return;
 
         var self = this;
 
