@@ -2,10 +2,8 @@ package net.nanopay.tx.cron;
 
 import foam.core.ContextAgent;
 import foam.core.X;
-import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.app.Mode;
-import foam.nanos.boot.NSpec;
 import net.nanopay.cico.spi.alterna.AlternaSFTPService;
 import net.nanopay.cico.spi.alterna.CsvUtil;
 
@@ -23,11 +21,8 @@ public class CsvSentCron
     AlternaSFTPService sftp  = (AlternaSFTPService) x.get("alternaSftp");
     Calendar           today = Calendar.getInstance();
 
-    DAO nSpecDao = (DAO)x.get("nSpecDAO");
-    String currentMode = ((Mode) ((AppConfig) ((NSpec) nSpecDao.find("appConfig")).getService()).getMode()).getLabel();
-
     // Only run in production environment
-    if ( ! currentMode.equals("Production") ) return;
+    if (((AppConfig) x.get("appConfig")).getMode() != Mode.PRODUCTION) return;
 
     // Don't run on Saturday
     if ( today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ) return;
