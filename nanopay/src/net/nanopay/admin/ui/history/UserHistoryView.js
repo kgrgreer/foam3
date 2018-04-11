@@ -20,8 +20,12 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .net-nanopay-ui-ExpandContainer{
-      width: 1240px
+    ^ .net-nanopay-ui-ExpandContainer {
+      width: 1240px;
+    }
+    ^ .expand-Container {
+      margin: 0;
+      padding-top: 20px;
     }
   `,
 
