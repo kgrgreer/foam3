@@ -244,6 +244,10 @@ foam.CLASS({
       name: 'notes',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction notes'
+    },
+    {
+      class: 'String',
+      name: 'messageId'
     }
   ],
 
