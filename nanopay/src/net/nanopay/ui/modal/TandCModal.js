@@ -8,6 +8,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
+    'foam.u2.dialog.NotificationMessage',
   ],
   imports: [
     'user',
@@ -100,7 +101,6 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: 'Email sent to ' + self.user.email }));
         })
         .catch(function (err) {
-          debugger;
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }
