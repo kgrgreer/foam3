@@ -87,6 +87,7 @@ return calendar.getTime();`
   user.setWelcomeEmailSent(true);
   user.setPassword(Password.hash(password));
   user.setPasswordExpiry(generateExpiryDate());
+  user.setInviteAttempts(user.getInviteAttempts() + 1);
   userDAO.put(user);
   return true;
 } catch (Throwable t) {

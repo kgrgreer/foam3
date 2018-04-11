@@ -91,7 +91,7 @@ foam.CLASS({
       name: 'revoke',
       code: function (X) {
         var self = this;
-        var toRevoke = this.data.clone();
+        var toRevoke = this.data;
         toRevoke.status = this.AccountStatus.REVOKED;
 
         this.userDAO.put(toRevoke)

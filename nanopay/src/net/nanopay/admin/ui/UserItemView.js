@@ -134,6 +134,7 @@ foam.CLASS({
                   case self.AccountStatus.ACTIVE:
                     return 'Invite-Status-Active'
                   case self.AccountStatus.DISABLED:
+                  case self.AccountStatus.REVOKED:
                     return 'Invite-Status-Disabled'
                 }
               }))

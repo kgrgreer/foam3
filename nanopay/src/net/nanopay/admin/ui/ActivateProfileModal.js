@@ -91,8 +91,9 @@ foam.CLASS({
       name: 'activate',
       code: function (X) {
         var self = this;
-        var toActivate = this.data.clone();
-        toActivate.status = this.AccountStatus.ACTIVE;
+        var toActivate = this.data;
+        toActivate.status = toActivate.status === this.AccountStatus.DISABLED ?
+          toActivate.previousStatus : this.AccountStatus.ACTIVE;
 
         this.userDAO.put(toActivate)
         .then(function (result) {

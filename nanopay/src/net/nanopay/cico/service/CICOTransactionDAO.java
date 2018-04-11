@@ -15,7 +15,7 @@ import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Account;
@@ -24,9 +24,11 @@ import net.nanopay.tx.model.Transaction;
 public class CICOTransactionDAO
   extends ProxyDAO
 {
+
   public CICOTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
+
   public CICOTransactionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -47,9 +49,7 @@ public class CICOTransactionDAO
     }
 
     try {
-      if ( transaction.getCicoStatus() == null ) {
-        transaction.setCicoStatus(TransactionStatus.NEW);
-      }
+      if ( getDelegate().find(transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);
       // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...
       if ( transaction.getType() == null ) {
         transaction.setType(TransactionType.CASHOUT);

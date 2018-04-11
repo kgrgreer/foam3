@@ -135,10 +135,6 @@ function deploy_journals {
         rm "$JOURNAL_HOME"
     fi
 
-    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
-        rmdir "$JOURNAL_HOME"
-    fi
-
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
@@ -149,10 +145,11 @@ function deploy_journals {
         exit 1
     fi
 
-    #cp "$JOURNAL_OUT/"* "$JOURNAL_HOME/"
     while read file; do
         journal_file="$file".0
-        cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
+        if [ -f "$JOURNAL_OUT/$journal_file" ]; then
+            cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
+        fi
     done < $JOURNALS
 
     # one-time copy of runtime journals from /opt/tomcat/bin to /mnt/journals
@@ -166,7 +163,7 @@ function deploy_journals {
                 # move non journal.zero files
                 while read file; do
                     # one last check, just in case
-                    if [ ! -f "$JOURNAL_HOME/$file" ]; then
+                    if [ ! -f "$JOURNAL_HOME/$file" ] && [ -f "$CATALINA_HOME/bin/$file" ]; then
                         cp "$CATALINA_HOME/bin/$file" "$JOURNAL_HOME/$file" 2>/dev/null
                     fi
                 done < $JOURNALS
@@ -214,6 +211,11 @@ function shutdown_tomcat {
     fi
 
     backup
+
+    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+        rmdir "$JOURNAL_HOME"
+        mkdir -p "$JOURNAL_HOME"
+    fi
 }
 
 function start_tomcat {
@@ -372,7 +374,7 @@ RESTART_ONLY=0
 RUN_NANOS=0
 STOP_TOMCAT=0
 
-while getopts "bcdfhinrs" opt ; do
+while getopts "bcdfhijnrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) COMPILE_ONLY=1 ;;

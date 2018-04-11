@@ -2,24 +2,28 @@ package net.nanopay.cico.spi.alterna;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
-import foam.core.PropertyInfo;
-import foam.lib.parse.*;
+import foam.core.X;
+import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.EFTReturnRecord;
+import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * This class parse the EFT response file
  */
 
-public class EFTReturnFileParser
+public class EFTReturnFileParser extends EFTFileParser
 {
   public List<FObject> parse(InputStream is) {
 
+    X x = getX();
+    Logger logger = (Logger) x.get("logger");
     List<FObject> ret = new ArrayList<>();
     BufferedReader reader = null;
 
@@ -40,26 +44,9 @@ public class EFTReturnFileParser
 
       reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
-      String line;
-      Object[] values;
-
-      while ( (line = reader.readLine()) != null ) {
-        StringPStream ps = new StringPStream();
-        ps.setString(line);
-
-        FObject obj = (FObject) classInfo.getObjClass().newInstance();
-        Parser parser = new Repeat(new EFTStringParser(), new Literal("|"));
-        PStream ps1 = ps.apply(parser, null);
-        if ( ps1 == null ) throw new RuntimeException("format error");
-
-        values = (Object[]) ps1.value();
-        for ( int i = 0; i < propertyInfos.size(); i++ ) {
-          ((PropertyInfo)propertyInfos.get(i)).set(obj, ((PropertyInfo)propertyInfos.get(i)).fromString((String) values[i]));
-        }
-        ret.add(obj);
-      }
+      parseFile(ret, reader, classInfo, propertyInfos);
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       IOUtils.closeQuietly(reader);
     }

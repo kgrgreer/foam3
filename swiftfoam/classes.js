@@ -23,12 +23,17 @@ var classes = [
   'foam.box.ReplyBox',
   'foam.box.SessionClientBox',
   'foam.box.swift.FileBox',
-  'foam.log.LogLevel',
+  'foam.core.Identifiable',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
   'foam.dao.ManyToManyRelationship',
-  'foam.mlang.Constant',
+  'foam.dao.ManyToManyRelationshipDAO',
+  'foam.dao.ManyToManyRelationshipImpl',
+  'foam.dao.ReadOnlyDAO',
+  'foam.log.LogLevel',
   'foam.mlang.Expr',
+  'foam.mlang.Constant',
+  'foam.mlang.ArrayConstant',
   'foam.mlang.predicate.Eq',
   'foam.mlang.sink.Count',
   'foam.nanos.auth.Address',
@@ -44,6 +49,7 @@ var classes = [
   'foam.nanos.auth.Phone',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.User',
+  'foam.nanos.auth.UserUserJunction',
   'foam.nanos.auth.token.ClientTokenService',
   'foam.nanos.auth.token.Token',
   'foam.nanos.auth.token.TokenService',
@@ -76,8 +82,10 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.model.TransactionPurpose',
-  'net.nanopay.cico.model.TransactionStatus',
-  'net.nanopay.cico.model.TransactionType'
+  'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.model.PaymentStatus'
 ];
 
 module.exports = {

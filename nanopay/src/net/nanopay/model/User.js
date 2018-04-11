@@ -41,7 +41,17 @@ foam.CLASS({
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'previousStatus',
+      documentation: 'Stores the users previous status'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
+      preSet: function (oldValue, newValue) {
+        this.previousStatus = oldValue;
+        return newValue;
+      },
       tableCellFormatter: function (status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
@@ -132,11 +142,44 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'businessRegistrationNumber'
+      name: 'businessIdentificationNumber',
+      transient: true,
+      getter: function() { return this.businessRegistrationNumber; },
+      setter: function(x) { this.businessRegistrationNumber = x; },
+      javaGetter: `return getBusinessRegistrationNumber();`,
+      javaSetter: `setBusinessRegistrationNumber(val);`
     },
     {
       class: 'String',
-      name: 'businessRegistrationAuthority'
+      name: 'businessRegistrationNumber',
+      width: 35,
+      documentation: 'Business Identification Number (BIN)',
+      validateObj: function (businessRegistrationNumber) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if (  businessRegistrationNumber.length > 0 && ! re.test(businessRegistrationNumber) ) {
+          return 'Invalid registration number.'
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'issuingAuthority',
+      transient: true,
+      getter: function() { return this.businessRegistrationAuthority; },
+      setter: function(x) { this.businessRegistrationAuthority = x; },
+      javaGetter: `return getBusinessRegistrationAuthority();`,
+      javaSetter: `setBusinessRegistrationAuthority(val);`
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationAuthority',
+      width: 35,
+      validateObj: function (businessRegistrationAuthority) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( businessRegistrationAuthority.length > 0 && ! re.test(businessRegistrationAuthority) ) {
+          return 'Invalid issuing authority.';
+        }
+      }
     },
     {
       class: 'Date',
@@ -158,6 +201,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'onboarded',
       value: false
+    },
+    {
+      class: 'Int',
+      name: 'inviteAttempts',
+      value: 0,
+      documentation: 'Counter to count the number of invite attempt',
     }
   ]
 });
