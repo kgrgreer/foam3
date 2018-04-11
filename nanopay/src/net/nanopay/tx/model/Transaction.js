@@ -258,6 +258,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'stripeChargeId'
+    },
+    {
+      class: 'String',
+      name: 'messageId'
     }
   ],
 
