@@ -52,11 +52,6 @@ foam.CLASS({
         this.previousStatus = oldValue;
         return newValue;
       },
-      javaSetter:
-`setPreviousStatus(getStatus());
-status_ = val;
-statusIsSet_ = true;`,
-
       tableCellFormatter: function (status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
@@ -206,6 +201,12 @@ statusIsSet_ = true;`,
       class: 'Boolean',
       name: 'onboarded',
       value: false
+    },
+    {
+      class: 'Int',
+      name: 'inviteAttempts',
+      value: 0,
+      documentation: 'Counter to count the number of invite attempt',
     }
   ]
 });

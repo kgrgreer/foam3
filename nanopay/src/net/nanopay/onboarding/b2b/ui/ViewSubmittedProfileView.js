@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'ViewSubmittedProfileView',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.View',
 
   documentation: 'Allows user to view their previously submitted registration profile.',
 
@@ -100,10 +100,6 @@ foam.CLASS({
 
   properties: [
     'businessTypeName',
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'files'
-    }
   ],
 
   methods: [
@@ -130,119 +126,7 @@ foam.CLASS({
             .add(this.BACK_TO_HOME)
             .start('p').add(this.Title).addClass('header').end()
             .start('p').add(this.Description).addClass('description').end()
-
-            // Additional Documents
-            .callIf(this.user.additionalDocuments.length > 0, function () {
-              this.start().addClass('wizardBoxTitleContainer')
-              .start().add(self.BoxTitle1).addClass('wizardBoxTitleLabel').end()
-              .end()
-              .add(this.slot(function (documents) {
-                if ( documents.length <= 0 ) return;
-      
-                var e = this.E()
-                  .start('span')
-                  .end();
-      
-                for ( var i = 0 ; i < documents.length ; i++ ) {
-                  e.tag({
-                    class: 'net.nanopay.invoice.ui.InvoiceFileView',
-                    data: documents[i],
-                    fileNumber: i + 1,
-                  });
-                }
-                return e;
-              }, self.user.additionalDocuments$))
-            })
-
-            // Business Profile
-            .start().addClass('wizardBoxTitleContainer')
-              .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
-            .end()
-            .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessName).end()
-            .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessPhone.number).end()
-            .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.website).end()
-            .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.businessTypeName$).end()
-            .start('p').add(this.BusiRegNumberLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessRegistrationNumber).end()
-            .start('p').add(this.BusiRegAuthLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessRegistrationAuthority).end()
-            .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.user.businessRegistrationDate$.map(function (date) {
-              return ( date ) ? date.toISOString().substring(0, 10) : '';
-            })).end()
-            .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(
-              this.user.businessAddress.streetNumber + ' '
-              + this.user.businessAddress.streetName + ', '
-              + this.user.businessAddress.address2 + ' '
-              + this.user.businessAddress.city + ', '
-              + this.user.businessAddress.postalCode
-            ).addClass('addressDiv').end()
-            .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
-            .tag({
-              class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.user.businessProfilePicture$,
-              placeholderImage: 'images/business-placeholder.png',
-              uploadHidden: true
-            })
-
-            // Principal Owner's Profile
-            .start().addClass('wizardBoxTitleContainer')
-              .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-            .end()
-            .start()
-              .forEach(this.user.principalOwners, function (data, index) {
-                self
-                .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
-                .start().addClass('principalOwnerContainer')
-                  .start('p').add('Legal Name').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.middleName ? data.firstName + ' ' + data.middleName + ' ' + data.lastName : data.firstName + ' ' + data.lastName).end()
-                  .start('p').add('Email Address').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.email).end()
-                  .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.phone.number).end()
-                  .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.principleType).end()
-                  .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
-                  .start('p').add(data.birthday.toISOString().substring(0,10)).end()
-                  .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
-                  .start('p').add(
-                      data.address.streetNumber + ' '
-                    + data.address.streetName + ', '
-                    + data.address.address2 + ' '
-                    + data.address.city + ', '
-                    + data.address.postalCode
-                  ).addClass('addressDiv').end()
-                .end()
-              })
-            .end()
-            .end()
-            .end()
-
-            // Questionaire
-            .start().addClass('container')
-              .start().addClass('wizardBoxTitleContainer')
-                .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
-              .end()
-              .start()
-                .add(this.slot(function (questionnaire) {
-                  if ( ! questionnaire ) return;
-                  return self.E()
-                    .start()
-                    .forEach(this.user.questionnaire.questions, function (question) {
-                      self
-                        .start().addClass('container')
-                          .start('p').add(question.question).addClass('wizardBoldLabel').end()
-                          .start('p').add(question.response).end()
-                        .end()
-                    })
-                }, this.user.questionnaire$))
-              .end()
-            .end()
+            .tag({ class: 'net.nanopay.admin.ui.ReviewProfileView', data$: this.user$ })
           .end()
         .end();
     }
@@ -253,7 +137,7 @@ foam.CLASS({
       name: 'backToHome',
       label: '<< Back to Home',
       code: function(X) {
-        this.stack.push({ 
+        X.stack.push({ 
           class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard',
           pushView: { position: 5, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
         })

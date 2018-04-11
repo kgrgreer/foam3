@@ -25,7 +25,6 @@ foam.CLASS({
         }
         ^ .Pending{
           width: 105px;
-          height: 15px;
           border-radius: 100px;
           border: solid 1px #093649;
           color: #093649;
@@ -35,14 +34,12 @@ foam.CLASS({
           color: white;
           background: #c82e2e;
           border-radius: 100px;
-          height: 18px;
           padding-left: 10px;
           padding-top: 5;
           width: 55px;
         }
         ^ .Disputed{
           width: 60px;
-          height: 15px;
           padding: 3px 3px 3px 15px;
           border-radius: 100px;
           border: solid 1px #c82e2e;  
@@ -50,7 +47,6 @@ foam.CLASS({
         }
         ^ .Paid{
           width: 35px;
-          height: 15px;
           padding: 3px 3px 3px 15px;
           border-radius: 100px;
           background: #2cab70;
@@ -59,7 +55,6 @@ foam.CLASS({
         ^ .Scheduled{
           color: #2cab70;
           width: 66px;
-          height: 18px;
           border: 1px solid #2cab70;
           border-radius: 100px;
           padding: 3px 0 0 10px;
@@ -68,7 +63,6 @@ foam.CLASS({
         ^ .New{
           color: #59a5d5;
           width: 40px;
-          height: 18px;
           border: 1px solid #59a5d5;
           border-radius: 100px;
           padding: 3px 0 0 15px;
@@ -78,7 +72,6 @@ foam.CLASS({
           background: #59aadd;
           border-radius: 100px;
           width: 30px;
-          height: 18px;
           padding-left: 10px;
           padding-top: 5;
         }
@@ -87,6 +80,8 @@ foam.CLASS({
           top: 35;
           left: 10;
           font-size: 12px;
+          padding: 3px 7px;
+          display: inline;
         }
         ^ .count{
           font-size: 30px;

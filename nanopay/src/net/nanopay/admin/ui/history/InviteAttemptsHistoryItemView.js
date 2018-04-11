@@ -1,13 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui.history',
-  name: 'DocumentStatusHistoryItemView',
+  name: 'InviteAttemptsHistoryItemView',
   extends: 'foam.u2.View',
 
   implements: [
     'foam.u2.history.HistoryItemView'
   ],
 
-  documentation: 'View for displaying history for compliance status',
+  documentation: 'View for displaying history for invitation attempts',
 
   css: `
     ^ .iconPosition {
@@ -16,9 +16,6 @@ foam.CLASS({
     ^ .statusBox {
       margin-top: -20px;
       padding-bottom: 22px;
-    }
-    ^ .statusContent {
-      padding-left: 40px;
     }
     ^ .statusDate {
       font-family: Roboto;
@@ -36,42 +33,9 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
     }
-    ^ .link {
-      text-decoration: none;
-    }
   `,
 
-  properties: [
-    {
-      name: 'files',
-      factory: function () {
-        return {};
-      }
-    }
-  ],
-
   methods: [
-    function getAttributes(record) {
-      var documents = record.updates.find(u => u.name == 'additionalDocuments' );
-      if ( ! documents.newValue ) documents.newValue = [];
-
-      var attributes = [];
-      for ( var i = 0 ; i < documents.newValue.length ; i++ ) {
-        var file = documents.newValue[i];
-        console.log('file =', file);
-        if ( ! this.files[file.id] ) {
-          attributes.push({
-            title: 'Additional document ',
-            labelText: file.filename,
-            labelLink: file.address,
-            icon: 'images/ic-attachment-round.svg'
-          });
-          this.files[file.id] = true;
-        }
-      }
-      return attributes;
-    },
-
     function formatDate(timestamp) {
       var locale = 'en-US';
       return timestamp.toLocaleTimeString(locale, { hour12: false }) +
@@ -81,29 +45,21 @@ foam.CLASS({
     },
 
     function outputRecord(parentView, record) {
-      var attributes = this.getAttributes(record);
-      for ( var i = 0 ; i < attributes.length ; i++ ) {
-        var attribute = attributes[i];
-        parentView
+      var inviteAttempts = record.updates.find(u => u.name == 'inviteAttempts' );
+      var attempts = inviteAttempts.newValue || 0;
+
+      if ( attempts > 1 ) {
+        return parentView
           .addClass(this.myClass())
           .style({ 'padding-left': '20px' })
           .start('div').addClass('iconPosition')
-            .tag({ class: 'foam.u2.tag.Image', data: attribute.icon })
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-sent.svg' })
           .end()
           .start('div').addClass('statusBox')
             .start('div')
               .style({ 'padding-left': '30px' })
               .start('span').addClass('statusTitle')
-                .add(attribute.title)
-                .start('a')
-                  .addClass('link')
-                  .attrs({
-                    href: attribute.labelLink,
-                    target: '_blank'
-                  })
-                  .add(attribute.labelText)
-                .end()
-                .add(' added')
+                .add('Invite resent')
               .end()
             .end()
             .start('div')
@@ -114,7 +70,6 @@ foam.CLASS({
             .end()
           .end()
       }
-      return parentView;
     }
   ]
 });
