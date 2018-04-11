@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Form to input Principal Owner(s)',
 
   imports: [
+    'wizard',
     'countryDAO',
     'regionDAO',
     'validateEmail',
@@ -15,10 +16,6 @@ foam.CLASS({
     'validateCity',
     'validateStreetNumber',
     'validateAddress',
-    'validatePrincipalOwner',
-    'createPrincipalOwner',
-    'principalOwnersDAO',
-    'principalOwnersCount',
     'user'
   ],
 
@@ -498,12 +495,33 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'principalOwnersDAO',
+      factory: function() {
+        if ( this.viewData.user.principalOwners ) {
+          if ( this.viewData.user.principalOwners.length > 0) this.addLabel = 'Add Another Principal Owner';
+          return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
+        }
+        return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
+      }
+    },
+    {
       name: 'editingPrincipalOwner',
       postSet: function(oldValue, newValue) {
         if ( newValue != null ) this.editPrincipalOwner(newValue, true);
         this.tableViewElement.selection = newValue;
       }
     },
+    {
+      class: 'Boolean',
+      name: 'principalOwnersCount',
+      factory: function() {
+        // In case we load from a save state
+        this.principalOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
+          return c.value;
+        });
+      }
+    },
+    'tableViewElement',
     {
       class: 'Boolean',
       name: 'isEditingName',
@@ -533,43 +551,28 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstNameField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.firstName = newValue;
-      }
+      value: ''
     },
     'firstNameFieldElement',
     {
       class: 'String',
       name: 'middleNameField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.middleName = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'lastNameField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.lastName = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'jobTitleField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.jobTitle = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'emailAddressField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.emailAddress = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
@@ -579,36 +582,24 @@ foam.CLASS({
     {
       class: 'String',
       name: 'phoneCountryCodeField',
-      value: '+1',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.countryCode = newValue;
-      }
+      value: '+1'
     },
     'phoneNumberFieldElement',
     {
       name: 'phoneNumberField',
       class: 'String',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.phoneNumber = newValue;
-      }
+      value: ''
     },
     {
       name: 'principleTypeField',
       value: 'Shareholder',
-      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Shareholder', 'Owner', 'Officer', 'To Be Filled Out' ] },
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.principleType = newValue;
-      }
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Shareholder', 'Owner', 'Officer', 'To Be Filled Out' ] }
     },
     {
       class: 'Date',
       name: 'birthdayField',
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0,10) : '');
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.birthday = newValue;
       }
     },
     {
@@ -628,26 +619,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetNumberField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.streetNumber = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'streetNameField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.streetName = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'addressField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.address = newValue;
-      }
+      value: ''
     },
     {
       name: 'provinceField',
@@ -661,26 +643,17 @@ foam.CLASS({
           },
           dao$: choices
         });
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.province = newValue;
       }
     },
     {
       class: 'String',
       name: 'cityField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.city = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
       name: 'postalCodeField',
-      value: '',
-      postSet: function(oldValue, newValue) {
-        this.viewData.principalOwner.postalCode = newValue;
-      }
+      value: ''
     },
     {
       class: 'String',
@@ -698,13 +671,22 @@ foam.CLASS({
       name: 'isSameAsAdmin',
       value: false,
       postSet: function(oldValue, newValue) {
-        this.selectedPrincipalOwner = null;
+        if ( newValue ) this.editingPrincipalOwner = null;
         this.sameAsAdmin(newValue);
       }
     }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.principalOwnersDAO.on.sub(this.onDAOChange);
+      this.onDAOChange();
+
+      // Gives the onboarding wizard access to the validations
+      this.wizard.addPrincipalOwnersForm = this;
+    },
+
     function initE() {
       this.SUPER();
       var self = this;
@@ -723,7 +705,7 @@ foam.CLASS({
               class: 'foam.u2.view.TableView',
               data$: this.principalOwnersDAO$,
               editColumnsEnabled: false,
-              ignoreClicks: true,
+              disableUserSelection: true,
               columns: [
                 'legalName', 'jobTitle', 'principleType',
                 foam.core.Property.create({
@@ -736,7 +718,10 @@ foam.CLASS({
                       .on('click', function(evt) {
                         evt.stopPropagation();
                         this.blur();
-                        if ( self.editingPrincipalOwner === obj ) self.clearFields();
+                        if ( self.editingPrincipalOwner === obj ) {
+                          self.editingPrincipalOwner = null;
+                          self.clearFields();
+                        }
                         self.deletePrincipalOwner(obj);
                       })
                     .end();
@@ -927,8 +912,6 @@ foam.CLASS({
     },
 
     function clearFields() {
-      this.editingPrincipalOwner = null;
-
       this.firstNameField = '';
       this.middleNameField = '';
       this.lastNameField = '';
@@ -960,25 +943,25 @@ foam.CLASS({
 
     function editPrincipalOwner(user, editable) {
       this.isSameAsAdmin = false;
-            
+
       this.firstNameField = user.firstName;
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
       this.isEditingName = false; // This will change displayedLegalName as well
-      this.jobTitleField = owner.jobTitle;
-      this.emailAddressField = owner.email;
-      this.phoneNumberField = this.extractPhoneNumber(owner.phone);
+      this.jobTitleField = user.jobTitle;
+      this.emailAddressField = user.email;
+      this.phoneNumberField = this.extractPhoneNumber(user.phone);
       this.isEditingPhone = false;
-      this.principleTypeField = owner.principleType;
-      this.birthdayField = owner.birthday;
+      this.principleTypeField = user.principleType;
+      this.birthdayField = user.birthday;
 
-      this.countryField = owner.address.countryId;
-      this.streetNumberField = owner.address.streetNumber;
-      this.streetNameField = owner.address.streetName;
-      this.addressField = owner.address.address2;
-      this.provinceField = owner.address.regionId;
-      this.cityField = owner.address.city;
-      this.postalCodeField = owner.address.postalCode;
+      this.countryField = user.address.countryId;
+      this.streetNumberField = user.address.streetNumber;
+      this.streetNameField = user.address.streetName;
+      this.addressField = user.address.address2;
+      this.provinceField = user.address.regionId;
+      this.cityField = user.address.city;
+      this.postalCodeField = user.address.postalCode;
 
       this.addLabel = 'Update';
 
@@ -1002,6 +985,81 @@ foam.CLASS({
         this.phoneNumberField = this.extractPhoneNumber(this.user.phone);
         this.isEditingPhone = false;
       }
+    },
+
+    function isFillingPrincipalOwnerForm() {
+      if ( this.firstNameField ||
+           this.middleNameField ||
+           this.lastNameField ||
+           this.jobTitleField ||
+           this.emailAddressField ||
+           this.phoneNumberField ||
+           this.birthdayField ||
+           this.streetNumberField ||
+           this.streetNameField ||
+           this.addressField ||
+           this.cityField ||
+           this.postalCodeField) {
+        return true;
+      }
+      return false;
+    },
+
+    function deletePrincipalOwner(obj) {
+      var self = this;
+      this.principalOwnersDAO.remove(obj).then(function(deleted){
+        self.prevDeletedPrincipalOwner = deleted;
+      });
+    },
+
+    function validatePrincipalOwner() {
+      if ( ! this.firstNameField || ! this.lastNameField ) {
+        this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.jobTitleField ) {
+        this.add(this.NotificationMessage.create({ message: 'Job title field must be populated.', type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validateEmail(this.emailAddressField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validatePhone(this.phoneCountryCodeField + this.phoneNumberField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validateAge(this.birthdayField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
+        return false;
+      }
+
+      if ( ! this.validateStreetNumber(this.streetNumberField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAddress(this.streetNameField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return false;
+      }
+      if ( this.addressField.length > 0 && ! this.validateAddress(this.addressField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateCity(this.cityField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePostalCode(this.postalCodeField) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return false;
+      }
+
+      return true;
     }
   ],
 
@@ -1020,12 +1078,62 @@ foam.CLASS({
         return ! isDisplayMode;
       },
       code: function() {
-        if ( !this.validatePrincipalOwner() ) return;
+        if ( ! this.validatePrincipalOwner ) return;
+
+        var self = this;
+
+        var principleOwner;
+
+        if ( this.editingPrincipalOwner ) {
+          principleOwner = this.editingPrincipalOwner;
+        } else {
+          principleOwner = this.User.create({
+            id: this.principalOwnersCount + 1
+          });
+        }
+
+        principleOwner.firstName = this.firstNameField,
+        principleOwner.middleName = this.middleNameField,
+        principleOwner.lastName = this.lastNameField,
+        principleOwner.email = this.emailAddressField,
+        principleOwner.phone = this.Phone.create({
+          number: this.phoneCountryCodeField + this.phoneNumberField
+        }),
+        principleOwner.birthday = this.birthdayField,
+        principleOwner.address = this.Address.create({
+          streetNumber: this.streetNumberField,
+          streetName: this.streetNameField,
+          address2: this.addressField,
+          city: this.cityField,
+          postalCode: this.postalCodeField,
+          countryId: this.countryField,
+          regionId: this.provinceField
+        }),
+        principleOwner.jobTitle = this.jobTitleField,
+        principleOwner.principleType = this.principleTypeField
+
         // TODO?: Maybe add a loading indicator?
-        this.createPrincipalOwner();
-        this.clearFields();
-        this.isSameAsAdmin = false;
+        this.principalOwnersDAO.put(principleOwner).then(function(npo) {
+          self.editingPrincipalOwner = null;
+          self.tableViewElement.selection = null;
+          self.clearFields();
+          self.isSameAsAdmin = false;
+        });
+
+        return true;
       }
+    }
+  ],
+
+  listeners: [
+    function onDAOChange() {
+      var self = this;
+      this.principalOwnersDAO.select().then(function(principalOwners) {
+        self.viewData.principalOwners = principalOwners.array;
+        self.principalOwnersCount = principalOwners.array.length;
+        if ( self.principalOwnersCount > 0) self.addLabel = 'Add Another Principal Owner';
+        else self.addLabel = 'Add';
+      });
     }
   ]
 });
