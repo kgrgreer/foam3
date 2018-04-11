@@ -33,8 +33,6 @@ public class StripeTransactionDAO extends ProxyDAO {
     transaction.setStatus(TransactionStatus.PENDING);
     getDelegate().put_(x, transaction);
 
-    Stripe.apiKey = "sk_test_KD0gUbEr1pATM7mTcB3eKNa0";
-
     Map<String, Object> chargeMap = new HashMap<String, Object>();
     chargeMap.put("amount", transaction.getAmount());
     chargeMap.put("currency", "cad");
