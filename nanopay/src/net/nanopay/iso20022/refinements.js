@@ -192,6 +192,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'java.util.Date',
     'foam.dao.DAO'
   ],
@@ -225,7 +226,7 @@ foam.CLASS({
               String strStatus = "";
 
               if ( txn != null ) {
-                strStatus = txn.getStatus();
+                strStatus = ( (TransactionStatus) txn.getStatus() ).getLabel();
               }
 
               orgnlGrpInfAndSts.setOrgnlMsgId((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId());
