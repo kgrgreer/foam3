@@ -22,7 +22,7 @@ public class CsvSentCron
     Calendar           today = Calendar.getInstance();
 
     // Only run in production environment
-    if (((AppConfig) x.get("appConfig")).getMode() != Mode.PRODUCTION) return;
+    if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.PRODUCTION ) return;
 
     // Don't run on Saturday
     if ( today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ) return;
