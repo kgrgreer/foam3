@@ -245,11 +245,16 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction notes'
     },
+    // For most Stripe users, the source of every charge is a credit or debit card.
+    // Stripe Token ID is the hash of the card object describing that card.
+    // https://stripe.com/docs/api/java#charge_object-source
+    // Token IDs cannot be stored or used more than once.
     {
       class: 'String',
       name: 'stripeTokenId',
       storageTransient: true
     },
+    // Stripe charge id is a unique identifier for every Charge object.
     {
       class: 'String',
       name: 'stripeChargeId'

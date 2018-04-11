@@ -16,17 +16,15 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
 
-public class StripeTransactionDAO
-  extends ProxyDAO
-{
-  public StripeTransactionDAO(DAO delegate) {
-    setDelegate(delegate);
-  }
-  public StripeTransactionDAO(X x, DAO delegate) {
-    setX(x);
-    setDelegate(delegate);
-  }
+public class StripeTransactionDAO extends ProxyDAO {
   private static final Long STRIPE_ID = 2L;
+  protected RequestOptions options_ = null;
+
+  public StripeTransactionDAO(X x, String apiKey, DAO delegate) {
+    setX(x);
+    this.options_ = RequestOptions.builder().setApiKey(apiKey).build();
+    setDelegate(delegate);
+  }
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
@@ -43,22 +41,22 @@ public class StripeTransactionDAO
 
     String notes = transaction.getNotes();
     chargeMap.put("description", SafetyUtil.isEmpty(notes) ? null : notes);
-
-    // TODO: Need a proper token here.
-    chargeMap.put("source", "tok_1234");
+    chargeMap.put("source", transaction.getStripeTokenId());
 
     Charge charge = null;
-
     try {
-        charge = Charge.create(chargeMap);
+        charge = Charge.create(chargeMap, this.options_);
         transaction.setStripeChargeId(charge.getId());
-        transaction.setStatus(TransactionStatus.COMPLETED);
     } catch (StripeException e){
-        transaction.setStatus(TransactionStatus.DECLINED);
         if(SafetyUtil.isEmpty(e.getMessage()))
             throw new RuntimeException("Stripe transaction failed.");
         else
             throw new RuntimeException(e.getMessage());
+    } finally {
+        if(charge == null)
+            transaction.setStatus(TransactionStatus.DECLINED);
+        else
+            transaction.setStatus(TransactionStatus.COMPLETED);
     }
 
     return getDelegate().put_(x, transaction);
