@@ -59,8 +59,8 @@ public class StripeTransactionDAO extends ProxyDAO {
             transaction.setStatus(TransactionStatus.DECLINED);
         else
             transaction.setStatus(TransactionStatus.COMPLETED);
-    }
 
-    return getDelegate().put_(x, transaction);
+        return getDelegate().put_(x, transaction);
+    }
   }
 }
