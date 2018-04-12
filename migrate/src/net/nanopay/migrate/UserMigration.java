@@ -76,11 +76,12 @@ public class UserMigration
 
               String type = addressDocument.getString("type");
               switch ( type ) {
-                case "home":
-                  user.setAddress(address);
-                  break;
                 case "store":
+                case "work":
                   user.setBusinessAddress(address);
+                  break;
+                default:
+                  user.setAddress(address);
                   break;
               }
             }
