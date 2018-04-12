@@ -20,6 +20,10 @@ public class StripeTransactionDAO extends ProxyDAO {
   private static final Long STRIPE_ID = 2L;
   protected RequestOptions options_ = null;
 
+  public StripeTransactionDAO(X x, DAO delegate) {
+    this(x, "sk_test_KD0gUbEr1pATM7mTcB3eKNa0", delegate);
+  }
+
   public StripeTransactionDAO(X x, String apiKey, DAO delegate) {
     setX(x);
     this.options_ = RequestOptions.builder().setApiKey(apiKey).build();
