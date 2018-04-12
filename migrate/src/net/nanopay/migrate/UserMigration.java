@@ -20,12 +20,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UserMigration
-  implements Migration<User>
+  extends AbstractMigration<User>
 {
-  protected MongoClient client_;
-
   public UserMigration(MongoClient client) {
-    client_ = client;
+    super(client);
   }
 
   public List<User> migrate(String... args) {
@@ -33,7 +31,7 @@ public class UserMigration
       throw new RuntimeException("Missing arguments");
     }
 
-    MongoDatabase prod = client_.getDatabase("development");
+    MongoDatabase prod = getClient().getDatabase("development");
     MongoCollection<Document> userCollection = prod.getCollection("user");
     MongoCollection<Document> addressCollection = prod.getCollection("address");
     MongoCollection<Document> phoneCollection = prod.getCollection("phone");
