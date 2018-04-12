@@ -224,10 +224,17 @@ foam.CLASS({
     // If set, will start the wizard at a certain position
     'startAt',
 
-    // If true, displays the exitAndSave Action
+    // If true, displays the Save Action
     {
       class: 'Boolean',
       name: 'hasSaveOption',
+      value: false
+    },
+
+    // If true, displays the Exit Action
+    {
+      class: 'Boolean',
+      name: 'hasExitOption',
       value: false
     },
 
@@ -264,7 +271,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'complete',
       value: false
-    }
+    },
+
+    //When set to true, the bottomBar will hide
+    {
+      class: 'Boolean',
+      name: 'hideBottomBar',
+      value: false
+    },
+               
+    'pushView'
   ],
 
   methods: [
@@ -297,6 +313,12 @@ foam.CLASS({
       } else {
         this.subStack.push(this.views[0].view);
       }
+
+      if( this.pushView ) {
+        this.subStack.push(this.pushView.view);
+        this.position = this.pushView.position;
+        this.pushView = null;
+      }
     },
 
     function initE(){
@@ -324,8 +346,12 @@ foam.CLASS({
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
               .start('div').addClass('exitContainer')
-                .start(this.EXIT, {label$: this.exitLabel$}).addClass('plainAction').end()
-                .start(this.SAVE, {label$: this.saveLabel$}).addClass('plainAction').end()
+                .callIf(this.hasExitOption, function() {
+                  this.start(self.EXIT, {label$: self.exitLabel$}).addClass('plainAction').end();
+                })
+                .callIf(this.hasSaveOption, function() {
+                  this.start(self.SAVE, {label$: self.saveLabel$}).addClass('plainAction').end();
+                })
               .end()
               .start('div').addClass('backNextContainer')
                 .start(this.GO_BACK, {label$: this.backLabel$}).addClass('plainAction').end()
@@ -337,8 +363,14 @@ foam.CLASS({
     },
 
     function goTo(index) {
-      while(this.position > index && this.position > 0) {
-        this.subStack.back();
+      if ( index < this.position ) {
+        while( this.position > index && this.position > 0 ) {
+          this.subStack.back();
+        }
+      } else if ( index > this.position ) {
+        while( this.position < index && this.position < this.subStack.depth ) {
+          this.subStack.back();
+        }
       }
     }
   ],
