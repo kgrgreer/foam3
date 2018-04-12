@@ -5,8 +5,7 @@ foam.CLASS({
     'net.nanopay.fx.interac.model.RequiredAddressFields',
     'net.nanopay.fx.interac.model.RequiredIdentificationFields',
     'net.nanopay.fx.interac.model.RequiredAccountFields',
-    'net.nanopay.fx.interac.model.RequiredAgentFields',
-    'net.nanopay.fx.interac.model.RequiredContactDetailsFields'
+    'net.nanopay.fx.interac.model.RequiredAgentFields'
   ],
   properties: [
     {
@@ -42,8 +41,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.interac.model.RequiredAddressFields',
       name: 'postalAddress',
-      factory: function() {
-        return this.RequiredAddressFields.create();
+      expression: function(userType) {
+        // NOTE WARNING: This is TEMPORARY and just following the spec
+        if ( userType === 'Sender' ) {
+          return this.RequiredAddressFields.create({ 'structured': true });
+        } else {
+          return this.RequiredAddressFields.create({ 'structured': false });
+        }
+
       }
     },
     {
@@ -66,16 +71,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.interac.model.RequiredAgentFields',
       name: 'agent',
-      factory: function() {
-        return this.RequiredAgentFields.create();
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.fx.interac.model.RequiredContactDetailsFields',
-      name: 'contactDetails',
-      factory: function() {
-        return this.RequiredContactDetailsFields.create();
+      expression: function(userType) {
+        if ( userType === 'Sender' ) {
+          return this.RequiredAgentFields.create({ memberCode: 'CACPA' });
+        } else {
+          return this.RequiredAgentFields.create({ memberCode: 'INFSC' });
+        }
       }
     }
   ]
@@ -86,34 +87,73 @@ foam.CLASS({
   name: 'RequiredAddressFields',
   properties: [
     {
-      class: 'Boolean',
+      class: 'String',
       name: 'addressType',
+      visibility: 'RO',
+      value: 'ADDR'
+    },
+    {
+      class: 'Boolean',
+      name: 'structured',
+      visibility: 'RO',
       documentation: 'Possible options: "Structured" | "Unstructured"',
     },
     {
       class: 'Boolean',
-      name: 'streetName'
+      name: 'streetName',
+      visibility: 'RO',
+      expression: function(structured) {
+        return structured;
+      }
     },
     {
       class: 'Boolean',
-      name: 'buildingNumber'
+      name: 'buildingNumber',
+      visibility: 'RO',
+      expression: function(structured) {
+        return structured;
+      }
     },
     {
       class: 'Boolean',
-      name: 'postCode'
+      name: 'addressLine1',
+      visibility: 'RO',
+      expression: function(structured) {
+        return ! structured;
+      }
     },
     {
       class: 'Boolean',
-      name: 'townName'
+      name: 'addressLine2',
+      visibility: 'RO',
+      expression: function(structured) {
+        return ! structured;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'postCode',
+      visibility: 'RO',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'townName',
+      visibility: 'RO',
+      value: true
     },
     {
       class: 'Boolean',
       name: 'countrySubDivision',
-      documentation: 'Region/Province/State eg: "ON"'
+      documentation: 'Region/Province/State eg: "ON"',
+      visibility: 'RO',
+      value: true
     },
     {
       class: 'Boolean',
-      name: 'country'
+      name: 'country',
+      visibility: 'RO',
+      value: true
     }
   ]
 });
@@ -121,30 +161,46 @@ foam.CLASS({
 foam.CLASS({
   package: 'net.nanopay.fx.interac.model',
   name: 'RequiredIdentificationFields',
+  requires: [ 'net.nanopay.fx.interac.model.RequiredDocumentFields' ],
   properties: [
     {
       class: 'Boolean',
       name: 'birthDate',
+      postSet: function(oldValue, newValue) {
+        this.cityOfBirth = newValue;
+        this.countryOfBirth = newValue;
+        return newValue;
+      }
     },
     {
       class: 'Boolean',
-      name: 'cityOfBirth'
+      name: 'cityOfBirth',
+      visibility: 'RO'
     },
     {
       class: 'Boolean',
-      name: 'countryOfBirth'
+      name: 'countryOfBirth',
+      visibility: 'RO'
     },
     {
-      class: 'Boolean',
-      name: 'documentType'
-    },
-    {
-      class: 'Boolean',
-      name: 'documentNumber'
+      class: 'FObjectProperty',
+      name: 'identificationDocuments',
+      factory: function() {
+        return this.RequiredDocumentFields.create();
+      }
     },
     {
       class: 'Boolean',
       name: 'occupation'
+    },
+    {
+      class: 'Boolean',
+      name: 'phoneNumber',
+    },
+    {
+      class: 'Boolean',
+      name: 'emailAddress',
+      value: true
     }
   ]
 });
@@ -156,6 +212,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'accountNumber',
+      visibility: 'RO',
+      value: true
     }
   ]
 });
@@ -167,33 +225,115 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'BICFI',
+      visibility: 'RO'
     },
     {
       class: 'Boolean',
-      name: 'branchIdentification'
+      name: 'branchIdentification',
+      expression: function(memberCode) {
+        if ( memberCode === 'CACPA' ) return true;
+        return false;
+      }
     },
     {
       class: 'Boolean',
-      name: 'memberIdentification'
+      name: 'memberId',
+      visibility: 'RO',
+      value: true
     },
     {
-      class: 'Boolean',
-      name: 'memberCode'
+      class: 'String',
+      name: 'memberCode',
+      visibility: 'RO',
+      documentation: 'Set by RequiredUserFields which checks for SENDER || RECEIVER'
     }
   ]
 });
 
 foam.CLASS({
   package: 'net.nanopay.fx.interac.model',
-  name: 'RequiredContactDetailsFields',
+  name: 'RequiredDocumentFields',
   properties: [
     {
       class: 'Boolean',
-      name: 'phoneNumber',
+      name: 'required',
+      preSet: function(oldValue, newValue) {
+        if ( ! newValue ) {
+          this.alienRegistrationNumber = false;
+          this.passportNumber = false;
+          this.customerIdentificationNumber = false;
+          this.driversLicenseNumber = false;
+          this.employeeIdentificationNumber = false;
+          this.nationalIdentityNumber = false;
+          this.socialSecurityNumber = false;
+          this.taxIdentificationNumber = false;
+        }
+        return newValue;
+      }
     },
     {
       class: 'Boolean',
-      name: 'emailAddress'
+      name: 'alienRegistrationNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'passportNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'customerIdentificationNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'driversLicenseNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'employeeIdentificationNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'nationalIdentityNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'socialSecurityNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'taxIdentificationNumber',
+      postSet: function(oldValue, newValue) {
+        if ( ! this.required ) this.required = true;
+        return newValue;
+      }
     }
   ]
 });

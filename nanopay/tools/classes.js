@@ -66,7 +66,7 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredIdentificationFields',
   'net.nanopay.fx.interac.model.RequiredAccountFields',
   'net.nanopay.fx.interac.model.RequiredAgentFields',
-  'net.nanopay.fx.interac.model.RequiredContactDetailsFields',
+  'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.UserTransactionLimit',
