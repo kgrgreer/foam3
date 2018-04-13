@@ -363,7 +363,6 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.tx.model.TransactionStatus',
     'java.util.Date',
     'foam.dao.DAO'
   ],
