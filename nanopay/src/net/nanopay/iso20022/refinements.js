@@ -192,6 +192,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'java.util.Date',
     'foam.dao.DAO'
   ],
@@ -216,13 +217,22 @@ foam.CLASS({
             pacs00200109.getFIToFIPmtStsRpt().setOrgnlGrpInfAndSts(new OriginalGroupHeader13[length_]);
             pacs00200109.getFIToFIPmtStsRpt().setGrpHdr(grpHdr53);
 
+            DAO txnDAO = (DAO) getX().get("transactionDAO");
+
             for ( int i = 0 ; i < length_ ; i++ ) {
               OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
+
+              Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId());
+              String strStatus = "";
+
+              if ( txn != null ) {
+                strStatus = ( (TransactionStatus) txn.getStatus() ).getLabel();
+              }
 
               orgnlGrpInfAndSts.setOrgnlMsgId((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId());
               orgnlGrpInfAndSts.setOrgnlCreDtTm((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlCreDtTm());
               orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
-              orgnlGrpInfAndSts.setGrpSts("ACSP");   // ACSP or ACSC
+              orgnlGrpInfAndSts.setGrpSts(strStatus);   // ACSP or ACSC
               pacs00200109.getFIToFIPmtStsRpt().getOrgnlGrpInfAndSts()[i] = orgnlGrpInfAndSts;
             }
 

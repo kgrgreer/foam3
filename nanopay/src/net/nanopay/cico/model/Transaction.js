@@ -32,7 +32,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'description'
+      name: 'description',
+      swiftName: 'description_'
     },
     {
       class: 'String',

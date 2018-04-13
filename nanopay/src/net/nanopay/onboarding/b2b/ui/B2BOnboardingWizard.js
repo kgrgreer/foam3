@@ -72,6 +72,8 @@ foam.CLASS({
   methods: [
     function init() {
       var self = this;
+      this.hasSaveOption = true;
+      this.hasExitOption = true;
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
