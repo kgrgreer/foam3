@@ -12,7 +12,8 @@ foam.CLASS({
   ],
   imports: [
     'user',
-    'emailDocService'
+    'emailDocService',
+    'appConfig'
   ],
 
   exports: [
@@ -50,6 +51,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;    
+      debugger;
       this
       .start()
         .tag(this.ModalHeader.create({
@@ -58,7 +60,7 @@ foam.CLASS({
         .addClass(this.myClass())
         
         .start('iframe').addClass('iframe-container')
-          .attrs({id:'print-iframe',name:'print-iframe',src:"http://localhost:8080/service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+          .attrs({id:'print-iframe',name:'print-iframe',src:this.appConfig.service.url+"service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
         .end()
         .start('div')
           .start(this.PRINT_BUTTON).addClass('btn blue-button')
