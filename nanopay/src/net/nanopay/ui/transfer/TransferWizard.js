@@ -25,7 +25,6 @@ foam.CLASS({
     'bankAccountVerification',
     'transactionDAO',
     'invoiceDAO',
-    'standardCICOTransactionDAO',
     'email',
     'formatCurrency'
   ],
