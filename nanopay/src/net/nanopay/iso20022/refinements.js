@@ -362,11 +362,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
-<<<<<<< HEAD
     'net.nanopay.cico.model.TransactionType',
-=======
     'net.nanopay.tx.model.TransactionStatus',
->>>>>>> development
     'java.util.Date',
     'foam.dao.DAO'
   ],
