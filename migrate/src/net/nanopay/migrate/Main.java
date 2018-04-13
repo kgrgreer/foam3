@@ -1,34 +1,32 @@
 package net.nanopay.migrate;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import com.mongodb.connection.Server;
 import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.retail.model.Device;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.Security;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Main {
 
   static {
-    // add BC provider
     BouncyCastleProvider provider = new BouncyCastleProvider();
     if (Security.getProvider(provider.getName()) == null ) {
       Security.addProvider(provider);
     }
   }
+
+  public static final String CWD = System.getProperty("user.dir");
 
   public static void main(String[] args) throws Throwable {
     Properties properties = new Properties();
@@ -51,10 +49,16 @@ public class Main {
     }).collect(Collectors.toList());
 
     MongoClient client = new MongoClient(addresses);
-    List<User> users = new UserMigration(client).migrate("mintchip");
     Outputter outputter = new Outputter(OutputterMode.STORAGE);
+
+    List<User> users = new UserMigration(client).migrate("mintchip");
     for ( User o : users ) {
-      System.out.println(outputter.stringify(o));
+//      System.out.println(outputter.stringify(o));
+    }
+
+    List<Device> devices = new DeviceMigration(client).migrate();
+    for ( Device o : devices ) {
+//      System.out.println(outputter.stringify(o));
     }
   }
 }

@@ -21,9 +21,21 @@
 
   <dependencies>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
       <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.nanopay</groupId>
+      <artifactId>root</artifactId>
+      <version>0.0.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/../target/root-0.0.1.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -46,20 +58,27 @@
       <version>1.57</version>
     </dependency>
     <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver</artifactId>
       <version>3.4.2</version>
     </dependency>
-    <dependency>
-      <groupId>net.nanopay</groupId>
-      <artifactId>root</artifactId>
-      <version>0.0.1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/../target/root-0.0.1.jar</systemPath>
-    </dependency>
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>src/net/nanopay/migrate/crypto/node_modules</exclude>
+        </excludes>
+      </resource>
+    </resources>
+
     <sourceDirectory>src</sourceDirectory>
     <!-- for hot reload of the web application-->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
