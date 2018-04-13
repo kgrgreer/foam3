@@ -259,6 +259,10 @@ foam.CLASS({
       name: 'stripeChargeId',
       documentation: 'Stripe charge id is a unique identifier for every' +
         ' Charge object.'
+    },
+    {
+      class: 'String',
+      name: 'messageId'
     }
   ],
 
