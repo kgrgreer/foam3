@@ -2,7 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksConnectForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
-
+  requires: [
+    'foam.u2.PopupView',
+    'foam.u2.dialog.Popup',
+  ],
   imports: [
     'bankImgs',
     'form',
@@ -143,6 +146,10 @@ foam.CLASS({
         //console.log(newValue);
         this.viewData.check = newValue;
       },
+    },
+    {
+      class: 'String',
+      name: 'version'
     }
   ],
 
@@ -230,9 +237,9 @@ foam.CLASS({
       label: 'terms and conditions',
       code: function(X) {
         var self = this;
-        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"
-        var alternaUrl = 'https://nanopay.net/termsandconditions/';
-        self.window.location.assign(alternaUrl);
+        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"        
+        this.version = " "
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal', exportData$: this.version$ }));
       }
     }
   ]

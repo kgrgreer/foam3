@@ -34,6 +34,7 @@ declare -a arr=(
   "emailTemplates"
   "exportDriverRegistrys"
   "groups"
+  "htmldoc"
   "institutions"
   "languages"
   "menus"
