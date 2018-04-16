@@ -81,19 +81,21 @@ function build_war {
     # NOTE: this removes the target directory where journal preparation occurs.
     # invoke deploY_journals after build_war
     #
-    mvn clean
+    if [ "$DEV_BUILD" -ne 1 ]; then
+      mvn clean
+    fi
 
     cd "$NANOPAY_HOME"
 
     # Copy over static web files to ROOT
     mkdir -p "$WAR_HOME"
 
-    cp -r foam2 "$WAR_HOME/foam2"
+    cp -r foam2 "$WAR_HOME"
     rm -r "$WAR_HOME/foam2/src/com"
     cp -r interac/src/net "$WAR_HOME/foam2/src/"
-    cp -r nanopay "$WAR_HOME/nanopay"
-    cp -r merchant "$WAR_HOME/merchant"
-    cp -r favicon "$WAR_HOME/favicon"
+    cp -r nanopay "$WAR_HOME"
+    cp -r merchant "$WAR_HOME"
+    cp -r favicon "$WAR_HOME"
 
     # Move images to ROOT/images
     mkdir -p "$WAR_HOME/images"
@@ -102,7 +104,11 @@ function build_war {
 
     # build and create war
     ./gen.sh
-    mvn install
+    if [ "$DEV_BUILD" -eq 1 ]; then
+      mvn install -Dbuild=dev -o
+    else
+      mvn install
+    fi
 }
 
 function undeploy_war {
@@ -355,6 +361,7 @@ function usage {
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
+    echo "  -k : Run maven under the development-build profile."
     echo "  -n : Run nanos."
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
@@ -366,6 +373,7 @@ function usage {
 
 BUILD_ONLY=0
 COMPILE_ONLY=0
+DEV_BUILD=0
 DEBUG=0
 FOREGROUND=0
 DELETE_RUNTIME_JOURNALS=0
@@ -374,7 +382,7 @@ RESTART_ONLY=0
 RUN_NANOS=0
 STOP_TOMCAT=0
 
-while getopts "bcdfhijnrs" opt ; do
+while getopts "bcdfhijknrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) COMPILE_ONLY=1 ;;
@@ -382,6 +390,7 @@ while getopts "bcdfhijnrs" opt ; do
         f) FOREGROUND=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         i) INSTALL=1 ;;
+        k) DEV_BUILD=1 ;;
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
