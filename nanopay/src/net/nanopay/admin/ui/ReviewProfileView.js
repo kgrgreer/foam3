@@ -135,12 +135,13 @@ foam.CLASS({
               + this.data.businessAddress.address2 + ' '
               + this.data.businessAddress.city + ', '
               + this.data.businessAddress.regionId + ', '
+              + this.data.businessAddress.countryId + ', '
               + this.data.businessAddress.postalCode
             ).addClass('addressDiv').end()
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.data.businessProfilePicture$,
+              data: this.data.businessProfilePicture,
               placeholderImage: 'images/business-placeholder.png',
               uploadHidden: true
             })
@@ -159,6 +160,8 @@ foam.CLASS({
                     .start().addClass('principalOwnerContainer')
                       .start('p').add('Legal Name').addClass('wizardBoldLabel').end()
                       .start('p').add(data.middleName ? data.firstName + ' ' + data.middleName + ' ' + data.lastName : data.firstName + ' ' + data.lastName).end()
+                      .start('p').add('Job Title').addClass('wizardBoldLabel').end()
+                      .start('p').add(data.jobTitle).end()
                       .start('p').add('Email Address').addClass('wizardBoldLabel').end()
                       .start('p').add(data.email).end()
                       .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
