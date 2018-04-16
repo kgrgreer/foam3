@@ -23,7 +23,7 @@ public class DeviceMigration
   }
 
   @Override
-  public Map<ObjectId, Device> migrate(String... args) {
+  public Map<ObjectId, Device> migrate() {
     MongoDatabase prod = getClient().getDatabase("development");
     MongoCollection<Document> deviceCollection = prod.getCollection("device");
 

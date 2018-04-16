@@ -58,8 +58,9 @@ public class Main
 
       Multimap<ObjectId, FObject> data = HashMultimap.create();
 
-      Map<ObjectId, User> users = new UserMigration(client).migrate("mintchip");
+      Map<ObjectId, User> users = new UserMigration(client).migrate();
       for (ObjectId id : users.keySet()) {
+        System.out.println(outputter.stringify(users.get(id)));
         data.put(id, users.get(id));
       }
 

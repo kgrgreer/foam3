@@ -41,7 +41,7 @@ public class TransactionMigration
   }
 
   @Override
-  public Map<ObjectId, List<Transaction>> migrate(String... args) {
+  public Map<ObjectId, List<Transaction>> migrate() {
     MongoDatabase main = getClient().getDatabase("development");
     MongoDatabase broker = getClient().getDatabase("broker");
 

@@ -7,6 +7,7 @@ import foam.core.EmptyX;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import static com.mongodb.client.model.Filters.*;
 
 public class UserMigration
   extends AbstractMigration<User>
@@ -42,128 +44,153 @@ public class UserMigration
     runtime_ = Runtime.getRuntime();
   }
 
-  public Map<ObjectId, User> migrate(String... args) {
-    if ( args == null || args.length == 0 ) {
-      throw new RuntimeException("Missing arguments");
-    }
-
+  public Map<ObjectId, User> migrate() {
     MongoDatabase main = getClient().getDatabase("development");
     MongoDatabase crypto = getClient().getDatabase("crypto-service");
 
     MongoCollection<Document> userCollection = main.getCollection("user");
+    MongoCollection<Document> businessCollection = main.getCollection("business");
     MongoCollection<Document> addressCollection = main.getCollection("address");
     MongoCollection<Document> phoneCollection = main.getCollection("phone");
     MongoCollection<Document> regionCollection = main.getCollection("region");
     MongoCollection<Document> countryCollection = main.getCollection("country");
     MongoCollection<Document> aesKeyCollection = crypto.getCollection("AESKey");
 
-    return userCollection.find(new Document("realm", "mintchip"))
-        .into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
-          @Override
-          public ObjectId apply(Document document) {
-            return document.getObjectId("_id");
+    return userCollection.find(or(
+        new Document("realm", "retail"),
+        new Document("realm", "mintchip"),
+        new Document("realm", "support")
+    )).into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
+      @Override
+      public ObjectId apply(Document document) {
+        return document.getObjectId("_id");
+      }
+    }, new Function<Document, User>() {
+      @Override
+      public User apply(Document document) {
+        User user = new User.Builder(EmptyX.instance())
+            .setFirstName(document.getString("firstName"))
+            .setLastName(document.getString("lastName"))
+            .setEmail(document.getString("email"))
+            .setBirthday(document.getDate("birthday"))
+            .setJobTitle(document.getString("jobTitle"))
+            .setBusinessName(document.getString("businessName"))
+            .setOnboarded(document.getBoolean("onboarded", false))
+            .setEmailVerified(document.getBoolean("emailVerified", false))
+            .setEnabled(document.getBoolean("enabled", false))
+            .build();
+
+        // set user type
+        switch ( document.getString("realm") ) {
+          case "mintchip":
+            user.setType("Personal");
+            break;
+          case "retail":
+            user.setType("Merchant");
+            break;
+          case "support":
+            user.setType("Support");
+            break;
+        }
+
+        // get business information
+        ObjectId businessId = document.getObjectId("businessId");
+        Document businessDocument = businessCollection.find(new Document("_id", businessId)).first();
+
+        // set business information
+        if ( businessDocument != null ) {
+          user.setType("Business");
+          String businessName = businessDocument.getString("name");
+          if ( ! SafetyUtil.isEmpty(businessName)) {
+            user.setBusinessName(businessName);
+            user.setOrganization(businessName);
           }
-        }, new Function<Document, User>() {
-          @Override
-          public User apply(Document document) {
-            User user = new User.Builder(EmptyX.instance())
-                .setFirstName(document.getString("firstName"))
-                .setLastName(document.getString("lastName"))
-                .setEmail(document.getString("email"))
-                .setBirthday(document.getDate("birthday"))
-                .setJobTitle(document.getString("jobTitle"))
-                .setBusinessName(document.getString("businessName"))
-                .setOnboarded(document.getBoolean("onboarded", false))
-                .setEmailVerified(document.getBoolean("emailVerified", false))
-                .setEnabled(document.getBoolean("enabled", false))
-                .build();
+        }
 
-            Document addressDocument = addressCollection.find(new Document("userId",
-                document.getObjectId("_id"))).first();
-            if ( addressDocument != null ) {
-              Address address = new Address.Builder(EmptyX.instance())
-                  .setStructured(false)
-                  .setAddress1(addressDocument.getString("address"))
-                  .setSuite(addressDocument.getString("suite"))
-                  .setCity(addressDocument.getString("city"))
-                  .setPostalCode(addressDocument.getString("postalCode"))
-                  .build();
+        Document addressDocument = addressCollection.find(new Document("userId",
+            document.getObjectId("_id"))).first();
+        if ( addressDocument != null ) {
+          Address address = new Address.Builder(EmptyX.instance())
+              .setStructured(false)
+              .setAddress1(addressDocument.getString("address"))
+              .setSuite(addressDocument.getString("suite"))
+              .setCity(addressDocument.getString("city"))
+              .setPostalCode(addressDocument.getString("postalCode"))
+              .build();
 
-              Document regionDocument = regionCollection.find(new Document("_id",
-                  addressDocument.getObjectId("regionId"))).first();
-              if ( regionDocument != null ) {
-                address.setRegionId(regionDocument.getString("code"));
-              }
-
-              Document countryDocument = countryCollection.find(new Document("_id",
-                  addressDocument.getObjectId("countryId"))).first();
-              if ( countryDocument != null ) {
-                address.setCountryId(countryDocument.getString("code"));
-              }
-
-              String type = addressDocument.getString("type");
-              switch ( type ) {
-                case "store":
-                case "work":
-                  user.setBusinessAddress(address);
-                  break;
-                default:
-                  user.setAddress(address);
-                  break;
-              }
-            }
-
-            Document phoneDocument = phoneCollection.find(new Document("userId",
-                document.getObjectId("_id"))).first();
-            if ( phoneDocument != null ) {
-              Phone phone = new Phone.Builder(EmptyX.instance())
-                  .setNumber(phoneDocument.getString("number"))
-                  .setVerified(document.getBoolean("phoneVerified", false))
-                  .build();
-              user.setPhone(phone);
-            }
-
-            Document aesKeyDocument = aesKeyCollection.find(new Document("ownerId", user.getEmail())).first();
-            if ( aesKeyDocument != null ) {
-              try {
-                String key = aesKeyDocument.getString("key");
-                String iv = aesKeyDocument.getString("iv");
-
-                Address address = user.getAddress() == null ?
-                    user.getBusinessAddress() == null ? new Address.Builder(EmptyX.instance()).build() :
-                        user.getBusinessAddress() :
-                    user.getAddress();
-
-                StringBuilder script = sb.get()
-                    .append("node src/net/nanopay/migrate/crypto/index.js ")
-                    .append(key).append(" ")
-                    .append(iv).append(" ")
-                    .append("{")
-                    .append("\"firstName\":\"").append(user.getFirstName()).append("\",")
-                    .append("\"lastName\":\"").append(user.getLastName()).append("\",")
-                    .append("\"address1\":\"").append(address.getAddress1()).append("\",")
-                    .append("\"city\":\"").append(address.getCity()).append("\",")
-                    .append("\"postalCode\":\"").append(address.getPostalCode()).append("\"}");
-
-                JsonObject object = null;
-                Process process = runtime_.exec(script.toString());
-                try ( JsonReader reader = Json.createReader(process.getInputStream()) ) {
-                  object = reader.readObject();
-                  user.setFirstName(object.getString("firstName", user.getFirstName()));
-                  user.setLastName(object.getString("lastName", user.getLastName()));
-                  address.setAddress1(object.getString("address1", address.getAddress1()));
-                  address.setCity(object.getString("city", address.getCity()));
-                  address.setPostalCode(object.getString("postalCode", address.getPostalCode()));
-                }
-
-
-              } catch (Throwable t) {
-                t.printStackTrace();
-              }
-            }
-
-            return user;
+          // set region code
+          Document regionDocument = regionCollection.find(new Document("_id",
+              addressDocument.getObjectId("regionId"))).first();
+          if ( regionDocument != null ) {
+            address.setRegionId(regionDocument.getString("code"));
           }
-        }));
+
+          // set country code
+          Document countryDocument = countryCollection.find(new Document("_id",
+              addressDocument.getObjectId("countryId"))).first();
+          if ( countryDocument != null ) {
+            address.setCountryId(countryDocument.getString("code"));
+          }
+
+          // set address
+          if ( businessId != null ) {
+            user.setBusinessAddress(address);
+          } else {
+            user.setAddress(address);
+          }
+        }
+
+        Document phoneDocument = phoneCollection.find(new Document("userId",
+            document.getObjectId("_id"))).first();
+        if ( phoneDocument != null ) {
+          Phone phone = new Phone.Builder(EmptyX.instance())
+              .setNumber(phoneDocument.getString("number"))
+              .setVerified(document.getBoolean("phoneVerified", false))
+              .build();
+          user.setPhone(phone);
+        }
+
+        Document aesKeyDocument = aesKeyCollection.find(new Document("ownerId", user.getEmail())).first();
+        if ( aesKeyDocument != null ) {
+          try {
+            String key = aesKeyDocument.getString("key");
+            String iv = aesKeyDocument.getString("iv");
+
+            Address address = user.getAddress() == null ?
+                user.getBusinessAddress() == null ? new Address.Builder(EmptyX.instance()).build() :
+                    user.getBusinessAddress() :
+                user.getAddress();
+
+            StringBuilder script = sb.get()
+                .append("node src/net/nanopay/migrate/crypto/index.js ")
+                .append(key).append(" ")
+                .append(iv).append(" ")
+                .append("{")
+                .append("\"firstName\":\"").append(user.getFirstName()).append("\",")
+                .append("\"lastName\":\"").append(user.getLastName()).append("\",")
+                .append("\"address1\":\"").append(address.getAddress1()).append("\",")
+                .append("\"city\":\"").append(address.getCity()).append("\",")
+                .append("\"postalCode\":\"").append(address.getPostalCode()).append("\"}");
+
+            JsonObject object = null;
+            Process process = runtime_.exec(script.toString());
+            try ( JsonReader reader = Json.createReader(process.getInputStream()) ) {
+              object = reader.readObject();
+              user.setFirstName(object.getString("firstName", user.getFirstName()));
+              user.setLastName(object.getString("lastName", user.getLastName()));
+              address.setAddress1(object.getString("address1", address.getAddress1()));
+              address.setCity(object.getString("city", address.getCity()));
+              address.setPostalCode(object.getString("postalCode", address.getPostalCode()));
+            }
+
+
+          } catch (Throwable t) {
+            t.printStackTrace();
+          }
+        }
+
+        return user;
+      }
+    }));
   }
 }

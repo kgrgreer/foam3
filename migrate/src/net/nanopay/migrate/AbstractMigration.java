@@ -19,5 +19,5 @@ public abstract class AbstractMigration<T>
     return client_;
   }
 
-  public abstract Map<ObjectId, T> migrate(String... args);
+  public abstract Map<ObjectId, T> migrate();
 }
