@@ -1,8 +1,9 @@
 package net.nanopay.migrate;
 
 import com.mongodb.MongoClient;
+import org.bson.types.ObjectId;
 
-import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractMigration<T>
   implements Migration
@@ -17,5 +18,5 @@ public abstract class AbstractMigration<T>
     return client_;
   }
 
-  public abstract List<T> migrate(String... args);
+  public abstract Map<ObjectId, T> migrate(String... args);
 }

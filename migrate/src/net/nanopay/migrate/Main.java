@@ -1,20 +1,23 @@
 package net.nanopay.migrate;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
+import foam.core.FObject;
 import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.retail.model.Device;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bson.types.ObjectId;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.Security;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -25,8 +28,6 @@ public class Main {
       Security.addProvider(provider);
     }
   }
-
-  public static final String CWD = System.getProperty("user.dir");
 
   public static void main(String[] args) throws Throwable {
     Properties properties = new Properties();
@@ -51,14 +52,16 @@ public class Main {
     MongoClient client = new MongoClient(addresses);
     Outputter outputter = new Outputter(OutputterMode.STORAGE);
 
-    List<User> users = new UserMigration(client).migrate("mintchip");
-    for ( User o : users ) {
-//      System.out.println(outputter.stringify(o));
+    Multimap<ObjectId, FObject> data = HashMultimap.create();
+
+    Map<ObjectId, User>   users = new UserMigration(client).migrate("mintchip");
+    for ( ObjectId id : users.keySet() ) {
+      data.put(id, users.get(id));
     }
 
-    List<Device> devices = new DeviceMigration(client).migrate();
-    for ( Device o : devices ) {
-//      System.out.println(outputter.stringify(o));
+    Map<ObjectId, Device> devices = new DeviceMigration(client).migrate();
+    for ( ObjectId id : devices.keySet() ) {
+      data.put(id, devices.get(id));
     }
   }
 }

@@ -7,18 +7,14 @@ import foam.core.EmptyX;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
-import org.apache.commons.io.IOUtils;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,7 +42,7 @@ public class UserMigration
     runtime_ = Runtime.getRuntime();
   }
 
-  public List<User> migrate(String... args) {
+  public Map<ObjectId, User> migrate(String... args) {
     if ( args == null || args.length == 0 ) {
       throw new RuntimeException("Missing arguments");
     }
@@ -62,7 +58,12 @@ public class UserMigration
     MongoCollection<Document> aesKeyCollection = crypto.getCollection("AESKey");
 
     return userCollection.find(new Document("realm", "mintchip"))
-        .into(new ArrayList<Document>()).stream().map(new Function<Document, User>() {
+        .into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
+          @Override
+          public ObjectId apply(Document document) {
+            return document.getObjectId("_id");
+          }
+        }, new Function<Document, User>() {
           @Override
           public User apply(Document document) {
             User user = new User.Builder(EmptyX.instance())
@@ -163,7 +164,6 @@ public class UserMigration
 
             return user;
           }
-        })
-        .collect(Collectors.toList());
+        }));
   }
 }

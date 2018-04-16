@@ -1,9 +1,9 @@
 package net.nanopay.migrate;
 
-import com.mongodb.MongoClient;
+import org.bson.types.ObjectId;
 
-import java.util.List;
+import java.util.Map;
 
 public interface Migration<T> {
-  List<T> migrate(String... args);
+  Map<ObjectId, T> migrate(String... args);
 }

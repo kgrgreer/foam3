@@ -8,9 +8,10 @@ import net.nanopay.retail.model.Device;
 import net.nanopay.retail.model.DeviceStatus;
 import net.nanopay.retail.model.DeviceType;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,12 +23,17 @@ public class DeviceMigration
   }
 
   @Override
-  public List<Device> migrate(String... args) {
+  public Map<ObjectId, Device> migrate(String... args) {
     MongoDatabase prod = getClient().getDatabase("development");
     MongoCollection<Document> deviceCollection = prod.getCollection("device");
 
     return deviceCollection.find()
-        .into(new ArrayList<Document>()).stream().map(new Function<Document, Device>() {
+        .into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
+          @Override
+          public ObjectId apply(Document document) {
+            return new ObjectId(document.getString("merchantUserId"));
+          }
+        }, new Function<Document, Device>() {
           @Override
           public Device apply(Document document) {
             DeviceStatus status = document.getBoolean("active") ?
@@ -54,7 +60,6 @@ public class DeviceMigration
                 .setType(type)
                 .build();
           }
-        })
-        .collect(Collectors.toList());
+        }));
   }
 }
