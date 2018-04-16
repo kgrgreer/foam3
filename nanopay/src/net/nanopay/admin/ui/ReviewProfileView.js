@@ -135,6 +135,7 @@ foam.CLASS({
               + this.data.businessAddress.address2 + ' '
               + this.data.businessAddress.city + ', '
               + this.data.businessAddress.regionId + ', '
+              + this.data.businessAddress.countryId + ', '
               + this.data.businessAddress.postalCode
             ).addClass('addressDiv').end()
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
