@@ -16,6 +16,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.exists;
+import static com.mongodb.client.model.Sorts.ascending;
+import static com.mongodb.client.model.Sorts.orderBy;
 
 public class InvoiceMigration
   extends AbstractMigration<List<Invoice>>
@@ -44,6 +46,7 @@ public class InvoiceMigration
             ObjectId businessId = document.getObjectId("businessId");
 
             return invoiceCollection.find(new Document("payerBusinessId", businessId))
+                .sort(orderBy(ascending("issueDate")))
                 .into(new ArrayList<>()).stream().map(new Function<Document, Invoice>() {
                   @Override
                   public Invoice apply(Document document) {
