@@ -10,6 +10,9 @@ import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.retail.model.Device;
+import net.nanopay.tx.model.Transaction;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
 import org.bson.types.ObjectId;
@@ -65,28 +68,28 @@ public class Main
         data.put(id, users.get(id));
       }
 
-//      Map<ObjectId, Device> devices = new DeviceMigration(client).migrate();
-//      for (ObjectId id : devices.keySet()) {
-//        data.put(id, devices.get(id));
-//      }
+      Map<ObjectId, Device> devices = new DeviceMigration(client).migrate();
+      for (ObjectId id : devices.keySet()) {
+        data.put(id, devices.get(id));
+      }
 
-//      Map<ObjectId, List<Transaction>> transactions = new TransactionMigration(client).migrate();
-//      for ( ObjectId id : transactions.keySet()) {
-//        System.out.println(id.toHexString());
-//        List<Transaction> t = transactions.get(id);
-//        for ( Transaction transaction : t ) {
-//          System.out.println(outputter.stringify(transaction));
-//        }
-//      }
-//
-//      Map<ObjectId, List<Invoice>> invoices = new InvoiceMigration(client).migrate();
-//      for ( ObjectId id : invoices.keySet()) {
-//        System.out.println(id.toHexString());
-//        List<Invoice> t = invoices.get(id);
-//        for ( Invoice invoice : t ) {
-//          System.out.println(outputter.stringify(invoice));
-//        }
-//      }
+      Map<ObjectId, List<Transaction>> transactions = new TransactionMigration(client).migrate();
+      for ( ObjectId id : transactions.keySet()) {
+        System.out.println(id.toHexString());
+        List<Transaction> t = transactions.get(id);
+        for ( Transaction transaction : t ) {
+          System.out.println(outputter.stringify(transaction));
+        }
+      }
+
+      Map<ObjectId, List<Invoice>> invoices = new InvoiceMigration(client).migrate();
+      for ( ObjectId id : invoices.keySet()) {
+        System.out.println(id.toHexString());
+        List<Invoice> t = invoices.get(id);
+        for ( Invoice invoice : t ) {
+          System.out.println(outputter.stringify(invoice));
+        }
+      }
     } catch (Throwable t) {
       t.printStackTrace();
     }

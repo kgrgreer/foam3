@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.ascending;
+import static com.mongodb.client.model.Sorts.orderBy;
 
 public class TransactionMigration
   extends AbstractMigration<List<Transaction>>
@@ -60,6 +62,7 @@ public class TransactionMigration
             String sas = nf.get().format(document.getDouble("secureAssetStore"));
 
             return transactionCollection.find(and(new Document("vtmCreated", true), or(new Document("payerId", sas), new Document("payeeId", sas))))
+                .sort(orderBy(ascending("issueDate")))
                 .into(new ArrayList<>()).stream().map(new Function<Document, Transaction>() {
                   @Override
                   public Transaction apply(Document document) {
