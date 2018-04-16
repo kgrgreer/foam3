@@ -70,12 +70,6 @@ function backup {
     fi
 }
 
-function gen_and_compile {
-    mvn clean
-    ./gen.sh
-    mvn compile
-}
-
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
@@ -83,24 +77,24 @@ function build_war {
     #
     if [ "$DEV_BUILD" -ne 1 ]; then
       mvn clean
+
+      cd "$NANOPAY_HOME"
+
+      # Copy over static web files to ROOT
+      mkdir -p "$WAR_HOME"
+
+      cp -r foam2 "$WAR_HOME"
+      rm -r "$WAR_HOME/foam2/src/com"
+      cp -r interac/src/net "$WAR_HOME/foam2/src/"
+      cp -r nanopay "$WAR_HOME"
+      cp -r merchant "$WAR_HOME"
+      cp -r favicon "$WAR_HOME"
+
+      # Move images to ROOT/images
+      mkdir -p "$WAR_HOME/images"
+      cp -r "nanopay/src/net/nanopay/images" "$WAR_HOME"
+      cp -r "merchant/src/net/nanopay/merchant/images" "$WAR_HOME"
     fi
-
-    cd "$NANOPAY_HOME"
-
-    # Copy over static web files to ROOT
-    mkdir -p "$WAR_HOME"
-
-    cp -r foam2 "$WAR_HOME"
-    rm -r "$WAR_HOME/foam2/src/com"
-    cp -r interac/src/net "$WAR_HOME/foam2/src/"
-    cp -r nanopay "$WAR_HOME"
-    cp -r merchant "$WAR_HOME"
-    cp -r favicon "$WAR_HOME"
-
-    # Move images to ROOT/images
-    mkdir -p "$WAR_HOME/images"
-    cp -r "nanopay/src/net/nanopay/images" "$WAR_HOME"
-    cp -r "merchant/src/net/nanopay/merchant/images" "$WAR_HOME"
 
     # build and create war
     ./gen.sh
@@ -357,11 +351,10 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Generate source, compile, and deploy war and journals."
-    echo "  -c : Generate source and compile."
+    echo "  -c : Generate source and compile. Run maven under the development-build profile."
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
-    echo "  -k : Run maven under the development-build profile."
     echo "  -n : Run nanos."
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
@@ -372,7 +365,6 @@ function usage {
 ############################
 
 BUILD_ONLY=0
-COMPILE_ONLY=0
 DEV_BUILD=0
 DEBUG=0
 FOREGROUND=0
@@ -382,15 +374,14 @@ RESTART_ONLY=0
 RUN_NANOS=0
 STOP_TOMCAT=0
 
-while getopts "bcdfhijknrs" opt ; do
+while getopts "bcdfhijnrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) COMPILE_ONLY=1 ;;
+        c) DEV_BUILD=1 ;;
         d) DEBUG=1 ;;
         f) FOREGROUND=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         i) INSTALL=1 ;;
-        k) DEV_BUILD=1 ;;
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
@@ -409,8 +400,6 @@ if [ "$RUN_NANOS" -eq 1 ]; then
 elif [ "$BUILD_ONLY" -eq 1 ]; then
     build_war
     deploy_journals
-elif [ "$COMPILE_ONLY" -eq 1 ]; then
-    gen_and_compile
 elif [ "$STOP_TOMCAT" -eq 1 ]; then
     shutdown_tomcat
     printf "Tomcat stopped.\n"
