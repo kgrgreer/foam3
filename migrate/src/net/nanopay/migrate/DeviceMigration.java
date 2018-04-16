@@ -24,8 +24,8 @@ public class DeviceMigration
 
   @Override
   public Map<ObjectId, Device> migrate() {
-    MongoDatabase prod = getClient().getDatabase("development");
-    MongoCollection<Document> deviceCollection = prod.getCollection("device");
+    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
+    MongoCollection<Document> deviceCollection = main.getCollection("device");
 
     return deviceCollection.find()
         .into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {

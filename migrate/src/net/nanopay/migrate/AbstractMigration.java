@@ -9,7 +9,7 @@ public abstract class AbstractMigration<T>
   implements Migration
 {
   protected MongoClient client_;
-  protected final boolean DEBUG = true;
+  protected final boolean DEBUG = Main.DEBUG;
 
   public AbstractMigration(MongoClient client) {
     client_ = client;

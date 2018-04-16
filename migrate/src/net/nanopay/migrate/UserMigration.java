@@ -14,6 +14,8 @@ import org.bson.types.ObjectId;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Function;
@@ -45,8 +47,8 @@ public class UserMigration
   }
 
   public Map<ObjectId, User> migrate() {
-    MongoDatabase main = getClient().getDatabase("development");
-    MongoDatabase crypto = getClient().getDatabase("crypto-service");
+    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
+    MongoDatabase crypto = getClient().getDatabase(DEBUG ? "crypto-service" : "crypto-service-prod");
 
     MongoCollection<Document> userCollection = main.getCollection("user");
     MongoCollection<Document> businessCollection = main.getCollection("business");
@@ -72,6 +74,7 @@ public class UserMigration
             .setFirstName(document.getString("firstName"))
             .setLastName(document.getString("lastName"))
             .setEmail(document.getString("email"))
+            .setPassword(document.getString("password"))
             .setBirthday(document.getDate("birthday"))
             .setJobTitle(document.getString("jobTitle"))
             .setBusinessName(document.getString("businessName"))
@@ -119,18 +122,22 @@ public class UserMigration
               .build();
 
           // set region code
-          Document regionDocument = regionCollection.find(new Document("_id",
-              addressDocument.getObjectId("regionId"))).first();
-          if ( regionDocument != null ) {
-            address.setRegionId(regionDocument.getString("code"));
-          }
+          try {
+            Document regionDocument = regionCollection.find(new Document("_id",
+                addressDocument.getObjectId("regionId"))).first();
+            if (regionDocument != null) {
+              address.setRegionId(regionDocument.getString("code"));
+            }
+          } catch (Throwable ignored) {}
 
           // set country code
-          Document countryDocument = countryCollection.find(new Document("_id",
-              addressDocument.getObjectId("countryId"))).first();
-          if ( countryDocument != null ) {
-            address.setCountryId(countryDocument.getString("code"));
-          }
+          try {
+            Document countryDocument = countryCollection.find(new Document("_id",
+                addressDocument.getObjectId("countryId"))).first();
+            if (countryDocument != null) {
+              address.setCountryId(countryDocument.getString("code"));
+            }
+          } catch (Throwable ignored) {}
 
           // set address
           if ( businessId != null ) {
@@ -174,7 +181,7 @@ public class UserMigration
 
             JsonObject object = null;
             Process process = runtime_.exec(script.toString());
-            try ( JsonReader reader = Json.createReader(process.getInputStream()) ) {
+            try ( JsonReader reader = Json.createReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8)) ) {
               object = reader.readObject();
               user.setFirstName(object.getString("firstName", user.getFirstName()));
               user.setLastName(object.getString("lastName", user.getLastName()));
@@ -182,8 +189,6 @@ public class UserMigration
               address.setCity(object.getString("city", address.getCity()));
               address.setPostalCode(object.getString("postalCode", address.getPostalCode()));
             }
-
-
           } catch (Throwable t) {
             t.printStackTrace();
           }

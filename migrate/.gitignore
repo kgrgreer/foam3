@@ -1,2 +1,2 @@
-conf/credentials.properties
+conf/credentials.*.properties
 classpath.txt

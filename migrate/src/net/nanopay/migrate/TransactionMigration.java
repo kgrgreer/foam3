@@ -42,8 +42,8 @@ public class TransactionMigration
 
   @Override
   public Map<ObjectId, List<Transaction>> migrate() {
-    MongoDatabase main = getClient().getDatabase("development");
-    MongoDatabase broker = getClient().getDatabase("broker");
+    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
+    MongoDatabase broker = getClient().getDatabase(DEBUG ? "broker" : "broker-prod");
 
     MongoCollection<Document> mintchipCollection = main.getCollection("mintchipConsumer");
     MongoCollection<Document> transactionCollection = broker.getCollection("transactionLog");
