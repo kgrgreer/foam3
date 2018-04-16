@@ -314,8 +314,6 @@ foam.CLASS({
         .start(expandContainer)
           .tag({ class: 'net.nanopay.admin.ui.ReviewProfileView', data$: this.data$ })
         .end()
-
-
     }
 
   ],
