@@ -4,6 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import foam.core.EmptyX;
+import foam.core.X;
+import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
@@ -40,10 +42,12 @@ public class UserMigration
     }
   };
 
+  protected DAO userDAO_;
   protected Runtime runtime_;
 
-  public UserMigration(MongoClient client) {
-    super(client);
+  public UserMigration(X x, MongoClient client) {
+    super(x, client);
+    userDAO_ = (DAO) x.get("userDAO");
     runtime_ = Runtime.getRuntime();
   }
 
@@ -199,6 +203,7 @@ public class UserMigration
           }
         }
 
+        userDAO_.put(user);
         return user;
       }
     }));

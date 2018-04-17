@@ -4,6 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import foam.core.EmptyX;
+import foam.core.X;
+import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.cico.model.TransactionType;
@@ -18,6 +20,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import static com.mongodb.client.model.Filters.*;
@@ -39,11 +42,13 @@ public class TransactionMigration
 
   public static final BigInteger ONE_HUNDRED = BigInteger.valueOf(100);
 
+  protected final DAO transactionDAO_;
   protected final Map<ObjectId, User> users_;
 
-  public TransactionMigration(MongoClient client, Map<ObjectId, User> users) {
-    super(client);
+  public TransactionMigration(X x, MongoClient client, Map<ObjectId, User> users) {
+    super(x, client);
     users_= users;
+    transactionDAO_ = (DAO) x.get("transactionDAO");
   }
 
   @Override
@@ -61,6 +66,9 @@ public class TransactionMigration
             return document.getObjectId("userId");
           }
         }, new Function<Document, List<Transaction>>() {
+
+          AtomicInteger i = new AtomicInteger(10000);
+
           @Override
           public List<Transaction> apply(Document document) {
             String sas = nf.get().format(document.getDouble("secureAssetStore"));
@@ -100,6 +108,7 @@ public class TransactionMigration
 
                     // build transaction
                     Transaction transaction = new Transaction.Builder(EmptyX.instance())
+                        .setId(i.getAndIncrement())
                         .setAmount(amount.longValue())
                         .setDate(document.getDate("issueDate"))
                         .setNotes(document.getString("personalMessage"))
@@ -117,6 +126,7 @@ public class TransactionMigration
                       transaction.setTotal(total.longValue());
                     }
 
+                    transactionDAO_.put(transaction);
                     return transaction;
                   }
                 }).collect(Collectors.toList());

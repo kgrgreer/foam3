@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import foam.core.EmptyX;
+import foam.core.X;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import org.bson.Document;
@@ -27,8 +28,8 @@ public class InvoiceMigration
 
   protected final Map<ObjectId, User> users_;
 
-  public InvoiceMigration(MongoClient client, Map<ObjectId, User> users) {
-    super(client);
+  public InvoiceMigration(X x, MongoClient client, Map<ObjectId, User> users) {
+    super(x, client);
     users_ = users;
   }
 

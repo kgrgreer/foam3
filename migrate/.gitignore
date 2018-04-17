@@ -1,2 +1,4 @@
 conf/credentials.*.properties
 classpath.txt
+/transactions
+/users
