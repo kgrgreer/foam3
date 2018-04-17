@@ -938,9 +938,6 @@ foam.CLASS({
       if ( scrollToTop ) {
         var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
         subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
-        // this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
-        // this.document.body.scrollTop = 0; // For Safari
-        // this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
       }
     },
 
