@@ -217,7 +217,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Registration Date').addClass('labelTitle').end()
-                .start().add(this.businessSectorName$).addClass('labelContent').end()
+                .start().add(this.user.businessRegistrationDate.toISOString().substring(0,10)).addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')
@@ -249,8 +249,6 @@ foam.CLASS({
           this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' });
         })
       .end()
-
-
     }
   ],
 
