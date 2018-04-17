@@ -102,6 +102,7 @@ foam.CLASS({
     ^ .widthWrapper {
       margin: auto;
       width: 540px;
+      padding-bottom: 75px;
     }
 
     ^ .fullWidthField {
@@ -306,6 +307,29 @@ foam.CLASS({
       width: 100% !important;
       padding: 10px 0 !important;
     }
+    ^ .shopperImage{
+      margin-left: 20px;
+    }
+    ^ .bottomActions{
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      padding: 20px;
+      background: white;
+      z-index: 1;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView{
+      background: #edf0f5;
+    }
+    ^ .net-nanopay-ui-ActionView-Save{
+      float: right;
+      background: #59a5d5;
+      color: white;
+      margin-right: 100px;
+    }
+    ^ .net-nanopay-ui-ActionView-Save{
+      margin-left: 40px;  
+    }
   `,
 
   messages: [
@@ -451,6 +475,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('widthWrapper')
+          .start('h1').add('Edit Business Profile').end()
           .start('p').add(this.BusinessInformationSubtitle).addClass('sectionTitle').end()
           .start('p').add(this.BusinessNameLabel).addClass('fieldLabel').end()
           .start(this.BUSINESS_NAME_FIELD).addClass('fullWidthField').end()
@@ -518,14 +543,6 @@ foam.CLASS({
             .start('div').addClass('caret').end()
           .end()
 
-          .start('div')
-            .addClass('fullWidthField')
-            .addClass('businessTypeInfoContainer')
-            .enableClass('hidden', businessTypeInfoSlot, true)
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-warning.svg'}).addClass('icon').end()
-            .start('p').add(this.businessTypeInfo$).addClass('businessTypeInfo').end()
-          .end()
-
           .start('p').add(this.BusinessRegistrationNumberLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start(this.BUSINESS_REGISTRATION_NUMBER_FIELD).addClass('fullWidthField').end()
 
@@ -571,7 +588,27 @@ foam.CLASS({
               placeholderImage: 'images/business-placeholder.png'
             }).end()
         .end()
-      .end();
+      .end()
+
+      .start().addClass('bottomActions')
+        .start(this.CANCEL).end()
+        .start(this.SAVE).end()
+      .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'Cancel',
+      code: function(){
+
+      }
+    },
+    {
+      name: 'Save',
+      code: function(){
+
+      }
     }
   ]
 });
