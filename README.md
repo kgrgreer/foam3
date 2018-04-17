@@ -71,10 +71,21 @@ You can run the script generateAll.sh to build all projects and run the nanos, g
 
 `./build.sh -n`
 
-### Build all projects and run tomcat at once
-You can run the script generateAll.sh to build all projects and run tomcat, go to the NANOPAY project root folder and execute:
+### Build All Projects and Run Tomcat At Once
+You can run the script `generateAll.sh` to build all projects and run tomcat by going to the NANOPAY project root directory and executing:
 
-`./build.sh`
+`./build.sh -c`
+
+#### Subsequent & Development Builds
+To prevent Maven from re-compiling *all* of the source code everytime you change a single file, please run `./build.sh`. This will:
+- It runs the Maven's development-build profile which will compile code with the `useIncrementalCompilation` flag set to `false`.
+- Maven will not poll for artifact updates, but will use local ones instead.
+- Dependency update checks through Codehaus Mojo will also not be run.
+
+##### CAVEATS
+- You must have run the full build `build.sh -c` at least once before as other files need to be present for the war file to built sucessfully.
+- `./build.sh` will only re-build the Class files that have been updated. As such, any Class renaming or Method renaming that will not propogate the rest of the source code.
+- In case of ClassNotFound or MissingMethod Exceptions, please run the full build again at least once.
 
 ### Loading a project
 
