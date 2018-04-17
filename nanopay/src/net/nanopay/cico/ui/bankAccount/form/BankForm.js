@@ -120,8 +120,6 @@ foam.CLASS({
         var self = this;
         if ( this.position == 0 ) { 
           // On Submission screen.
-          this.nextLabel = 'Next';
-          // data from form
           var accountInfo = this.viewData;
 
           if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
@@ -148,12 +146,13 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
             return;
           }
+          this.nextLabel = 'I Agree';         
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }
         if ( this.position == 1 ) {
           // On Pad Verfication
-          this.nextLabel = 'I Agree';
+          
           var accountInfo = this.viewData.bankAccount[0];
 
           if ( ! this.validations() ) {
