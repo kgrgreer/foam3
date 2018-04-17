@@ -78,7 +78,12 @@ You can run the script generateAll.sh to build all projects and run tomcat, go t
 
 ### Loading a project
 
-Visit [http://localhost:8080/static](http://localhost:8080/static) and go into any of the submodules to view that project
+#### Tomcat
+Visit [http://localhost:8080/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static).
+
+#### Nanos
+- **Various Projects :** Visit [http://localhost:8080/service/static](http://localhost:8080/service/static) and go into any of the submodules to view that project.
+- **Nanopay :** Visit [http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html).
 
 ### Building Swift code
 
