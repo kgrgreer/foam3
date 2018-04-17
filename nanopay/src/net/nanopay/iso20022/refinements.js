@@ -233,7 +233,7 @@ foam.CLASS({
               // } else {
               //    //sender = (User) senderDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
               //    senderId = sender.getId();
-              // } 
+              // }
 
               //DAO receiverDAO = (DAO) userDAO.where(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
 
@@ -304,7 +304,7 @@ foam.CLASS({
             // } else {
             //   receiver = (User) receiverDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
             //   receiverId = receiver.getId();
-            // }
+            // } 
 
               //Create a Transaction
               double txAmt = (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getXmlValue();
