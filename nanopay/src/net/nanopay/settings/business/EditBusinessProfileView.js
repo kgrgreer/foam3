@@ -437,15 +437,24 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'businessRegistrationNumberField'
+      name: 'businessRegistrationNumberField',
+      factory: function() {
+        if ( this.user.businessRegistrationNumber ) return this.user.businessRegistrationNumber;
+      }
     },
     {
       class: 'String',
-      name: 'registrationAuthorityField'
+      name: 'registrationAuthorityField',
+      factory: function() {
+        if ( this.user.businessRegistrationAuthority ) return this.user.businessRegistrationAuthority;
+      }
     },
     {
       class: 'Date',
-      name: 'registrationDateField'
+      name: 'registrationDateField',
+      factory: function() {
+        if ( this.user.registrationDate ) return this.user.registrationDate;
+      }
     },
     {
       name: 'countryField',
@@ -456,19 +465,32 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
+      },
+      factory: function() {
+        if ( this.user.businessAddress.countryId ) return this.user.businessAddress.countryId;
+        return 'CA';
       }
     },
     {
       class: 'String',
-      name: 'streetNumberField'
+      name: 'streetNumberField',
+      factory: function() {
+        if ( this.user.businessAddress.streetNumber ) return this.user.businessAddress.streetNumber;
+      }
     },
     {
       class: 'String',
-      name: 'streetNameField'
+      name: 'streetNameField',
+      factory: function() {
+        if ( this.user.businessAddress.streetName ) return this.user.businessAddress.streetName;
+      }
     },
     {
       class: 'String',
-      name: 'addressField'
+      name: 'addressField',
+      factory: function() {
+        if ( this.user.businessAddress.address2 ) return this.user.businessAddress.address2;
+      }
     },
     {
       name: 'provinceField',
@@ -482,27 +504,60 @@ foam.CLASS({
           },
           dao$: choices
         });
+      },
+      factory: function() {
+        if ( this.user.businessAddress.regionId ) return this.user.businessAddress.regionId;
       }
     },
     {
       class: 'String',
-      name: 'cityField'
+      name: 'cityField',
+      factory: function() {
+        if ( this.user.businessAddress.city ) return this.user.businessAddress.city;
+      }
     },
     {
       class: 'String',
-      name: 'postalCodeField'
+      name: 'postalCodeField',
+      factory: function() {
+        if ( this.user.businessAddress.postalCode ) return this.user.businessAddress.postalCode;
+      }
     },
     {
-      name: 'businessProfilePicture'
+      name: 'businessProfilePicture',
+      factory: function() {
+        if ( this.user.businessProfilePicture ) return this.user.businessProfilePicture;
+      }
     }
   ],
 
   messages: [
+    { name: 'BusinessInformationSubtitle', message: 'Business Information' },
+    { name: 'BusinessAddressSubtitle', message: 'Business Information' },
+    { name: 'BusinessNameLabel', message: 'Registered Business Name' },
+    { name: 'BusinessPhoneLabel', message: 'Business Phone' },
+    { name: 'CountryCodeLabel', message: 'Country Code' },
+    { name: 'PhoneNumberLabel', message: 'Phone Number' },
+    { name: 'WebsiteLabel', message: 'Website (optional)' },
+    { name: 'BusinessTypeLabel', message: 'Business Type' },
+    { name: 'BusinessRegistrationNumberLabel', message: 'Business Registration Number' },
+    { name: 'RegistrationAuthorityLabel', message: 'Registration Authority' },
+    { name: 'RegistrationDateLabel', message: 'Registration Date' },
+    { name: 'BusinessAddressLabel', message: 'Business Address' },
+    { name: 'CountryLabel', message: 'Country' },
+    { name: 'StreetNumberLabel', message: 'Street Number' },
+    { name: 'StreetNameLabel', message: 'Street Name' },
+    { name: 'AddressLabel', message: 'Address' },
+    { name: 'ProvinceLabel', message: 'Province' },
+    { name: 'CityLabel', message: 'City' },
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
+    { name: 'BusinessProfilePictureSubtitle', message: 'Business Logo (optional)' },
     { name: 'BusinessTypeDescriptionSole', message: 'A sole proprietorship is an unincorporated business owned by an individual.' },
     { name: 'BusinessTypeDescriptionPart', message: 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.' },
     { name: 'BusinessTypeDescriptionCorp', message: 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.' },
     { name: 'BusinessTypeDescriptionNonP', message: 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
   ],
+
 
   methods: [
     function initE() {
