@@ -213,6 +213,7 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessSettingsCard', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessProfileView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/PrincipalOwnersDetailView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/PreferenceView', flags: ['web'] },
