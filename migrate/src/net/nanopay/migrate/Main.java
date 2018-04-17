@@ -41,6 +41,12 @@ public class Main
   protected static X getX() {
     if ( root_ == null ) {
       root_ = EmptyX.instance()
+          .putFactory("deviceDAO", new XFactory() {
+            @Override
+            public Object create(X x) {
+              return new JDAO(x, Device.getOwnClassInfo(), "devices");
+            }
+          })
           .putFactory("invoiceDAO", new XFactory() {
             @Override
             public Object create(X x) {

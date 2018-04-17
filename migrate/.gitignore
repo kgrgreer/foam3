@@ -1,4 +1,5 @@
 conf/credentials.*.properties
 classpath.txt
+/devices
 /transactions
 /users

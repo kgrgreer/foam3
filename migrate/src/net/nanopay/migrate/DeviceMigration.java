@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import foam.core.EmptyX;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.nanos.auth.User;
 import net.nanopay.retail.model.Device;
 import net.nanopay.retail.model.DeviceStatus;
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 public class DeviceMigration
   extends AbstractMigration<Device>
 {
+  protected final DAO deviceDAO_;
   protected final Map<ObjectId, User> users_;
 
   public DeviceMigration(X x, MongoClient client, Map<ObjectId, User> users) {
     super(x, client);
     users_ = users;
+    deviceDAO_ = (DAO) x.get("deviceDAO");
   }
 
   @Override
@@ -57,13 +60,16 @@ public class DeviceMigration
                 break;
             }
 
-            return new Device.Builder(EmptyX.instance())
+            Device device = new Device.Builder(EmptyX.instance())
                 .setName(document.getString("name"))
                 .setSerialNumber(document.getString("serialNumber"))
                 .setPassword(document.getString("password"))
                 .setStatus(status)
                 .setType(type)
                 .build();
+
+            deviceDAO_.put(device);
+            return device;
           }
         }));
   }
