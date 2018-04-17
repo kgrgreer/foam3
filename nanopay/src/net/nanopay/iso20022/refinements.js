@@ -233,7 +233,7 @@ foam.CLASS({
               // } else {
               //    //sender = (User) senderDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
               //    senderId = sender.getId();
-              // }
+              // } 
 
               //DAO receiverDAO = (DAO) userDAO.where(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
 
