@@ -68,12 +68,12 @@ public class Main
         data.put(id, users.get(id));
       }
 
-      Map<ObjectId, Device> devices = new DeviceMigration(client).migrate();
+      Map<ObjectId, Device> devices = new DeviceMigration(client, users).migrate();
       for (ObjectId id : devices.keySet()) {
         data.put(id, devices.get(id));
       }
 
-      Map<ObjectId, List<Transaction>> transactions = new TransactionMigration(client).migrate();
+      Map<ObjectId, List<Transaction>> transactions = new TransactionMigration(client, users).migrate();
       for ( ObjectId id : transactions.keySet()) {
         System.out.println(id.toHexString());
         List<Transaction> t = transactions.get(id);
@@ -82,7 +82,7 @@ public class Main
         }
       }
 
-      Map<ObjectId, List<Invoice>> invoices = new InvoiceMigration(client).migrate();
+      Map<ObjectId, List<Invoice>> invoices = new InvoiceMigration(client, users).migrate();
       for ( ObjectId id : invoices.keySet()) {
         System.out.println(id.toHexString());
         List<Invoice> t = invoices.get(id);

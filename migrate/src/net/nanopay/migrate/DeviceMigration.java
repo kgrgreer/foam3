@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import foam.core.EmptyX;
+import foam.nanos.auth.User;
 import net.nanopay.retail.model.Device;
 import net.nanopay.retail.model.DeviceStatus;
 import net.nanopay.retail.model.DeviceType;
@@ -18,8 +19,11 @@ import java.util.stream.Collectors;
 public class DeviceMigration
   extends AbstractMigration<Device>
 {
-  public DeviceMigration(MongoClient client) {
+  protected final Map<ObjectId, User> users_;
+
+  public DeviceMigration(MongoClient client, Map<ObjectId, User> users) {
     super(client);
+    users_ = users;
   }
 
   @Override

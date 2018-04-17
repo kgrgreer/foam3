@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import foam.core.EmptyX;
+import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
@@ -38,8 +39,11 @@ public class TransactionMigration
 
   public static final BigInteger ONE_HUNDRED = BigInteger.valueOf(100);
 
-  public TransactionMigration(MongoClient client) {
+  protected final Map<ObjectId, User> users_;
+
+  public TransactionMigration(MongoClient client, Map<ObjectId, User> users) {
     super(client);
+    users_= users;
   }
 
   @Override

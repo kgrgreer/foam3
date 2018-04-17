@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import static com.mongodb.client.model.Filters.*;
@@ -68,9 +69,13 @@ public class UserMigration
         return document.getObjectId("_id");
       }
     }, new Function<Document, User>() {
+
+      AtomicInteger i = new AtomicInteger(10000);
+
       @Override
       public User apply(Document document) {
         User user = new User.Builder(EmptyX.instance())
+            .setId(i.getAndIncrement())
             .setFirstName(document.getString("firstName"))
             .setLastName(document.getString("lastName"))
             .setEmail(document.getString("email"))
