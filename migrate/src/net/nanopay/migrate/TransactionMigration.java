@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,11 +60,16 @@ public class TransactionMigration
     MongoCollection<Document> mintchipCollection = main.getCollection("mintchipConsumer");
     MongoCollection<Document> transactionCollection = broker.getCollection("transactionLog");
 
+    Map<String, User> payables = new HashMap<>();
+
     return mintchipCollection.find()
         .into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
           @Override
           public ObjectId apply(Document document) {
-            return document.getObjectId("userId");
+            ObjectId userId = document.getObjectId("userId");
+            String sas = nf.get().format(document.get("secureAssetStore"));
+            payables.put(sas, users_.get(userId));
+            return userId;
           }
         }, new Function<Document, List<Transaction>>() {
 
@@ -80,6 +86,10 @@ public class TransactionMigration
                   public Transaction apply(Document document) {
                     String payerId = document.getString("payerId");
                     String payeeId = document.getString("payeeId");
+                    long payerUserId = payables.get(payerId) != null ?
+                        payables.get(payerId).getId() : 0;
+                    long payeeUserId = payables.get(payeeId) != null ?
+                        payables.get(payeeId).getId() : 0;
 
                     TransactionType type = isBroker(payerId) ? TransactionType.CASHIN :
                         isBroker(payeeId) ? TransactionType.CASHOUT :
@@ -115,6 +125,22 @@ public class TransactionMigration
                         .setStatus(status)
                         .setType(type)
                         .build();
+
+                    // set the payer and payee ids depending on the types
+                    switch ( type ) {
+                      case CASHIN:
+                        transaction.setPayeeId(payeeUserId);
+                        break;
+
+                      case CASHOUT:
+                        transaction.setPayerId(payerUserId);
+                        break;
+
+                      default:
+                        transaction.setPayerId(payerUserId);
+                        transaction.setPayeeId(payeeUserId);
+                        break;
+                    }
 
                     // set tip information
                     if ( tip != null ) {

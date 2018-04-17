@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,9 @@ public class DeviceMigration
             return new ObjectId(document.getString("merchantUserId"));
           }
         }, new Function<Document, Device>() {
+
+          AtomicInteger i = new AtomicInteger(10000);
+
           @Override
           public Device apply(Document document) {
             DeviceStatus status = document.getBoolean("active") ?
@@ -60,7 +64,12 @@ public class DeviceMigration
                 break;
             }
 
+            ObjectId merchantUserId = document.getObjectId("merchantUserId");
+            long userId = users_.get(merchantUserId).getId();
+
             Device device = new Device.Builder(EmptyX.instance())
+                .setId(i.getAndIncrement())
+                .setOwner(userId)
                 .setName(document.getString("name"))
                 .setSerialNumber(document.getString("serialNumber"))
                 .setPassword(document.getString("password"))
