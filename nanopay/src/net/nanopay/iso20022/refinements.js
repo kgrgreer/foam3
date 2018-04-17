@@ -160,16 +160,17 @@ foam.CLASS({
           long senderId =  0 ;
           long receiverId = 0;
 
-           Random rand = new Random();
-           for ( int i = 0 ; i < length_ ; i++ ) {
+          Random rand = new Random();
+          for ( int i = 0 ; i < length_ ; i++ ) {
 
              try {
-               //DAO senderDAO = (DAO) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
+               //User sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
 
+               //System.out.println("sender aa : " + sender);
                // Create a Sender
                User sender = new User();
 
-               //if ( senderDAO == null ) {
+               //if ( sender == null ) {
                  senderId = rand.nextInt(1000) + 10000;
                  sender.setId(senderId);
                  sender.setEmail((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr());
@@ -221,17 +222,17 @@ foam.CLASS({
                 senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
                 senderBankAcct.setCurrencyCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getCcy());
                 senderBankAcct.setAccountName("Default");
-                // senderBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().);
-                // senderBankAcct.setTransitNumber();
+                senderBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
+                senderBankAcct.setTransitNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId());
                 senderBankAcct.setStatus("Verified");
                 senderBankAcct.setVerificationAttempts(1);
                 senderBankAcct.setSetAsDefault(true);
                 senderBankAcct.setOwner(senderId);
 
                 bankAccountDAO.put(senderBankAcct);
-              //} else {
-              //   sender = (User) senderDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
-              //   senderId = sender.getId();
+              // } else {
+              //    //sender = (User) senderDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
+              //    senderId = sender.getId();
               // }
 
               //DAO receiverDAO = (DAO) userDAO.where(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
@@ -240,7 +241,6 @@ foam.CLASS({
               User receiver = new User();
 
               //if ( receiver == null) {
-                receiver = new User();
                 receiverId = rand.nextInt(1000) + 10000;
                 receiver.setId(receiverId);
                 receiver.setEmail((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr());
@@ -292,27 +292,29 @@ foam.CLASS({
                 receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAcct().getId().getOthr().getId());
                 receiverBankAcct.setCurrencyCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getIntrBkSttlmAmt().getCcy());
                 receiverBankAcct.setAccountName("Default");
-                // receiverBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().);
-                // receiverBankAcct.setTransitNumber();
+                receiverBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
+                receiverBankAcct.setTransitNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getBrnchId().getId());
                 receiverBankAcct.setStatus("Verified");
                 receiverBankAcct.setVerificationAttempts(1);
                 receiverBankAcct.setSetAsDefault(true);
                 receiverBankAcct.setOwner(receiverId);
 
                 bankAccountDAO.put(receiverBankAcct);
-            //} else {
+                System.out.println("ssss2");
+            // } else {
             //   receiver = (User) receiverDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
             //   receiverId = receiver.getId();
             // }
 
               //Create a Transaction
-              double txAmt = (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getXmlValue();  //Long.parseLong(Double.toString(txAmt))
+              double txAmt = (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getXmlValue();
+              long longTxAmt = Math.round(txAmt);
 
               Transaction transaction = new Transaction.Builder(getX())
                 .setStatus(TransactionStatus.ACSP)
                 .setPayerId(senderId)
                 .setPayeeId(receiverId)
-                .setAmount(1100)
+                .setAmount(longTxAmt)
                 .setType(TransactionType.NONE)
                 .setBankAccountId(receiverId)
                 .setMessageId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId())
