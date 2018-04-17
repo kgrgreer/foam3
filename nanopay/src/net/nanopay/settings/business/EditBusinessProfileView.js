@@ -12,7 +12,8 @@ foam.CLASS({
     'validatePhone',
     'validateCity',
     'validateStreetNumber',
-    'validateAddress'
+    'validateAddress',
+    'user'
   ],
 
   exports: [
@@ -362,7 +363,10 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'businessNameField'
+      name: 'businessNameField',
+      factory: function() {
+        if ( this.user.businessName ) return this.user.businessName;
+      },
     },
     {
       class: 'Boolean',
@@ -382,11 +386,17 @@ foam.CLASS({
     'phoneNumberFieldElement',
     {
       class: 'String',
-      name: 'phoneNumberField'
+      name: 'phoneNumberField',
+      factory: function() {
+        return this.user.businessPhone ? this.user.businessPhone.number.substring(2) : '';
+      }
     },
     {
       class: 'String',
-      name: 'websiteField'
+      name: 'websiteField',
+      factory: function() {
+        if ( this.user.website ) return this.user.website;
+      }
     },
     {
       name: 'businessTypeField',
@@ -397,6 +407,28 @@ foam.CLASS({
             return [a.id, a.name];
           }
         })
+      },
+      factory: function() {
+        if ( this.user.businessTypeId ) {
+          if ( this.user.businessType == 0 ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionSole;
+          }
+
+          if ( this.user.businessTypeId == 1 ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionPart;
+          }
+
+          if ( this.user.businessTypeId == 3 ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionCorp;
+          }
+
+          if ( this.user.businessTypeId == 5 ) {
+            this.businessTypeInfo = this.BusinessTypeDescriptionNonP;
+          }
+          return this.user.businessTypeId;
+        } else {
+          return 0;
+        }
       }
     },
     {
@@ -463,6 +495,13 @@ foam.CLASS({
     {
       name: 'businessProfilePicture'
     }
+  ],
+
+  messages: [
+    { name: 'BusinessTypeDescriptionSole', message: 'A sole proprietorship is an unincorporated business owned by an individual.' },
+    { name: 'BusinessTypeDescriptionPart', message: 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.' },
+    { name: 'BusinessTypeDescriptionCorp', message: 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.' },
+    { name: 'BusinessTypeDescriptionNonP', message: 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
   ],
 
   methods: [
