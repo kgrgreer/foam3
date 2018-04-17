@@ -15,8 +15,7 @@ foam.CLASS({
     'validateAge',
     'validateCity',
     'validateStreetNumber',
-    'validateAddress',
-    'user'
+    'validateAddress'
   ],
 
   implements: [
@@ -911,7 +910,7 @@ foam.CLASS({
         .end();
     },
 
-    function clearFields() {
+    function clearFields(scrollToTop) {
       this.firstNameField = '';
       this.middleNameField = '';
       this.lastNameField = '';
@@ -936,12 +935,18 @@ foam.CLASS({
 
       this.isDisplayMode = false;
 
-      this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
-      this.document.body.scrollTop = 0; // For Safari
-      this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      if ( scrollToTop ) {
+        var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
+        subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        // this.document.getElementsByClassName('stackColumn')[0].scrollTop = 0;
+        // this.document.body.scrollTop = 0; // For Safari
+        // this.document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      }
     },
 
     function editPrincipalOwner(user, editable) {
+      var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+      formHeaderElement.scrollIntoView({behavior: 'smooth', block: 'start'});
       this.isSameAsAdmin = false;
 
       this.firstNameField = user.firstName;
@@ -975,14 +980,16 @@ foam.CLASS({
     function sameAsAdmin(flag) {
       this.clearFields();
       if ( flag ) {
-        this.firstNameField = this.user.firstName;
-        this.middleNameField = this.user.middleName;
-        this.lastNameField = this.user.lastName;
+        var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+        formHeaderElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        this.firstNameField = this.viewData.user.firstName;
+        this.middleNameField = this.viewData.user.middleName;
+        this.lastNameField = this.viewData.user.lastName;
         this.isEditingName = false;
 
-        this.jobTitleField = this.user.jobTitle;
-        this.emailAddressField = this.user.email;
-        this.phoneNumberField = this.extractPhoneNumber(this.user.phone);
+        this.jobTitleField = this.viewData.user.jobTitle;
+        this.emailAddressField = this.viewData.user.email;
+        this.phoneNumberField = this.extractPhoneNumber(this.viewData.user.phone);
         this.isEditingPhone = false;
       }
     },
@@ -1116,7 +1123,7 @@ foam.CLASS({
         this.principalOwnersDAO.put(principleOwner).then(function(npo) {
           self.editingPrincipalOwner = null;
           self.tableViewElement.selection = null;
-          self.clearFields();
+          self.clearFields(true);
           self.isSameAsAdmin = false;
         });
 
@@ -1129,7 +1136,7 @@ foam.CLASS({
     function onDAOChange() {
       var self = this;
       this.principalOwnersDAO.select().then(function(principalOwners) {
-        self.viewData.principalOwners = principalOwners.array;
+        self.viewData.user.principalOwners = principalOwners.array;
         self.principalOwnersCount = principalOwners.array.length;
         if ( self.principalOwnersCount > 0) self.addLabel = 'Add Another Principal Owner';
         else self.addLabel = 'Add';
