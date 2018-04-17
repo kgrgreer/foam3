@@ -208,11 +208,14 @@ foam.CLASS({
     ^ .link{
       color: #59a5d5;
     }
+    ^ .pDefault{
+      margin-bottom: 14 !important;
+    }
   `,
 
   messages: [
     { name: 'Step1',                message: 'Step ' },
-    { name: 'Step2',                message: ' : Pre-authorized debit confirmation' },
+    { name: 'Step2',                message: ' :Pre-authorized debit confirmation' },
     { name: 'LabelFirstName',       message: 'First Name' },
     { name: 'LabelLastName',        message: 'Last Name' },
     { name: 'LabelCountry',         message: 'Country' },
