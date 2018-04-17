@@ -14,6 +14,14 @@ import javax.naming.AuthenticationException;
 
 import static foam.mlang.MLang.EQ;
 
+/**
+ * BCryptAuthService
+ *
+ * This auth service is meant to migrate old Bcrypt passwords to our
+ * new password hashing method using PKDF2. When a user from the old
+ * MintChip platform logs in, their old password will be updated to
+ * the new method, effectively migrating them over.
+ */
 public class BCryptAuthService
     extends ProxyAuthService
     implements NanoService
