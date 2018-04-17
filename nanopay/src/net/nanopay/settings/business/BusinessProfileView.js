@@ -171,7 +171,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile', link: 'Edit Profile' });
-      var businessProfile = this.ExpandContainer.create({ title: 'Business Profile', link: 'Edit Profile' });
+      var businessProfile = this.ExpandContainer.create({ title: 'Business Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditBusinessProfileView' });
 
       this.user.businessTypeId$find.then(function(type) {
         self.businessTypeName = type.name;
