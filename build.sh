@@ -270,9 +270,20 @@ function testcatalina {
     fi
 }
 
+function beginswith {
+    # https://stackoverflow.com/a/18558871
+    case $2 in "$1"*) true;; *) false;; esac;
+}
+
 function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+
+    # if running via CodeDeploy set -c flag
+    if beginswith /pkg/stack/stage "$NANOPAY_HOME"; then
+        CLEAN_BUILD=1
+    fi
+
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
