@@ -4,12 +4,18 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   documentation: 'Provide an expandable div which take content to display inside.',
 
+  imports: [
+    'stack'
+  ],
+
   properties: [
     {
       name: "expandBox",
       value: false
     },
-    'title'
+    'title',
+    'link',
+    'linkView'
   ],
 
   css:`
@@ -33,7 +39,8 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       display: inline-block;
-      margin-top: 10px;
+      position: relative;
+      top: 10px;
     }
     ^ .expand-BTN{
       width: 135px;
@@ -50,6 +57,7 @@ foam.CLASS({
       cursor: pointer;
       display: inline-block;
       float: right;
+      position: relative;
     }
     ^ .close-BTN{
       width: 135px;
@@ -77,6 +85,15 @@ foam.CLASS({
     ^ .expandTrue{
       max-height: 0;
     }
+    ^ .link-tag{
+      display: inline-block;
+      border-bottom: 1px solid #59a5d5;
+      color: #59a5d5;
+      margin-left: 50px;
+      position: relative;
+      top: 10px;
+      cursor: pointer;
+    }
   `,
 
   methods: [
@@ -88,6 +105,13 @@ foam.CLASS({
         .start().addClass('boxTitle')
           .add(this.title)
         .end()
+        .callIf(this.link, function(){
+          this.start().addClass('link-tag')
+            .add(self.link).on('click', function(){
+              self.stack.push({ class: self.linkView});
+            })
+          .end()
+        })
         .start()
           .addClass('expand-BTN').enableClass('close-BTN', this.expandBox$, true)
           .add(this.expandBox$.map(function(e) { 
