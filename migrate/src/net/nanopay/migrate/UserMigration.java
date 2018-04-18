@@ -96,12 +96,15 @@ public class UserMigration
         switch ( document.getString("realm") ) {
           case "mintchip":
             user.setType("Personal");
+            user.setType("shopper");
             break;
           case "retail":
             user.setType("Merchant");
+            user.setGroup("merchant");
             break;
           case "support":
             user.setType("Support");
+            user.setGroup("support");
             break;
         }
 
