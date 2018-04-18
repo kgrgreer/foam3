@@ -44,8 +44,8 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      // var status = record.updates.find(u => u.name == 'status') ||
-      //   { newValue: this.Invoice.PENDING.ordinal };
+      var status = record.updates.find(u => u.name == 'status')
+      console.log(status)
 
       // switch ( status.newValue ) {
       //   case this.AccountStatus.PENDING.ordinal:
@@ -86,7 +86,6 @@ foam.CLASS({
       //       labelDecoration: 'Invite-Status-Pending',
       //       icon: 'images/ic-void.svg'
       //     };
-      // }
     },
 
     function formatDate(timestamp) {

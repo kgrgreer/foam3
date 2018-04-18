@@ -19,6 +19,12 @@ foam.CLASS({
       factory: function(){
         return this.InvoiceStatusHistoryItemView.create();
       }
+    },
+    {
+      name: 'invoiceReceivedHistoryItem',
+      factory: function(){
+        return this.InvoiceReceivedHistoryItem.create();
+      }
     }
   ],
 
