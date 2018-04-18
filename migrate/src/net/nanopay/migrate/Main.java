@@ -10,6 +10,7 @@ import foam.dao.JDAO;
 import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
+import foam.nanos.fs.File;
 import foam.nanos.fs.Storage;
 import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
@@ -45,6 +46,12 @@ public class Main
             @Override
             public Object create(X x) {
               return new JDAO(x, Device.getOwnClassInfo(), "devices");
+            }
+          })
+          .putFactory("fileDAO", new XFactory() {
+            @Override
+            public Object create(X x) {
+              return new JDAO(x, File.getOwnClassInfo(), "files");
             }
           })
           .putFactory("invoiceDAO", new XFactory() {
