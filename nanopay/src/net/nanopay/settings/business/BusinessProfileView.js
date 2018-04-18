@@ -170,7 +170,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile', link: 'Edit Profile' });
+      var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditPrincipalOwnersView' });
       var businessProfile = this.ExpandContainer.create({ title: 'Business Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditBusinessProfileView' });
 
       this.user.businessTypeId$find.then(function(type) {
@@ -217,7 +217,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Registration Date').addClass('labelTitle').end()
-                .start().add(this.user.businessRegistrationDate.toISOString().substring(0,10)).addClass('labelContent').end()
+                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toISOString().substring(0,10) : '').addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')
