@@ -63,8 +63,6 @@ public class InvoiceMigration
           }
         }, new Function<Document, List<Invoice>>() {
 
-          AtomicInteger i = new AtomicInteger(10000);
-
           @Override
           public List<Invoice> apply(Document document) {
             ObjectId businessId = document.getObjectId("businessId");
@@ -81,7 +79,6 @@ public class InvoiceMigration
                         document.getInteger("amount", 0)).divide(ONE_HUNDRED);
 
                     Invoice invoice = new Invoice.Builder(EmptyX.instance())
-                        .setId(i.getAndIncrement())
                         .setAmount(amount.longValue())
                         .setPayerId(payer.getId())
                         .setPayeeId(payee.getId())

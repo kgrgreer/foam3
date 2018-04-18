@@ -44,8 +44,6 @@ public class DeviceMigration
           }
         }, new Function<Document, Device>() {
 
-          AtomicInteger i = new AtomicInteger(10000);
-
           @Override
           public Device apply(Document document) {
             DeviceStatus status = document.getBoolean("active") ?
@@ -68,7 +66,6 @@ public class DeviceMigration
             long userId = users_.get(merchantUserId).getId();
 
             Device device = new Device.Builder(EmptyX.instance())
-                .setId(i.getAndIncrement())
                 .setOwner(userId)
                 .setName(document.getString("name"))
                 .setSerialNumber(document.getString("serialNumber"))

@@ -118,7 +118,6 @@ public class TransactionMigration
 
                     // build transaction
                     Transaction transaction = new Transaction.Builder(EmptyX.instance())
-                        .setId(i.getAndIncrement())
                         .setAmount(amount.longValue())
                         .setDate(document.getDate("issueDate"))
                         .setNotes(document.getString("personalMessage"))
