@@ -1,0 +1,6 @@
+conf/credentials.*.properties
+classpath.txt
+/devices
+/invoices
+/transactions
+/users

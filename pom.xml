@@ -144,6 +144,11 @@
       <version>1.57</version>
     </dependency>
     <dependency>
+      <groupId>org.mindrot</groupId>
+      <artifactId>jbcrypt</artifactId>
+      <version>0.3m</version>
+    </dependency>
+    <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver</artifactId>
       <version>3.4.2</version>
