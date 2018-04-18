@@ -15,7 +15,6 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,14 @@ public class DeviceMigration
 
   @Override
   public Map<ObjectId, Device> migrate() {
-    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
+    String maindb;
+    switch ( MODE ) {
+      case STAGING:     maindb = "staging";     break;
+      case PRODUCTION:  maindb = "prod";        break;
+      default:          maindb = "development"; break;
+    }
+
+    MongoDatabase main = getClient().getDatabase(maindb);
     MongoCollection<Document> deviceCollection = main.getCollection("device");
 
     return deviceCollection.find()

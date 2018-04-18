@@ -54,8 +54,8 @@ public class TransactionMigration
 
   @Override
   public Map<ObjectId, List<Transaction>> migrate() {
-    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
-    MongoDatabase broker = getClient().getDatabase(DEBUG ? "broker" : "broker-prod");
+    MongoDatabase main = getClient().getDatabase(maindb);
+    MongoDatabase broker = getClient().getDatabase(brokerdb);
 
     MongoCollection<Document> mintchipCollection = main.getCollection("mintchipConsumer");
     MongoCollection<Document> transactionCollection = broker.getCollection("transactionLog");
@@ -164,6 +164,7 @@ public class TransactionMigration
   }
 
   private boolean isV2(String sas) {
-    return ( ! SafetyUtil.isEmpty(sas) && sas.charAt(0) == (DEBUG ? '5' : '2' ) );
+    boolean debug = ( MODE != MigrationMode.PRODUCTION );
+    return ( ! SafetyUtil.isEmpty(sas) && sas.charAt(0) == (debug ? '5' : '2' ) );
   }
 }

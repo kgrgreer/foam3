@@ -52,8 +52,8 @@ public class UserMigration
   }
 
   public Map<ObjectId, User> migrate() {
-    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
-    MongoDatabase crypto = getClient().getDatabase(DEBUG ? "crypto-service" : "crypto-service-prod");
+    MongoDatabase main = getClient().getDatabase(maindb);
+    MongoDatabase crypto = getClient().getDatabase(cryptodb);
 
     MongoCollection<Document> userCollection = main.getCollection("user");
     MongoCollection<Document> businessCollection = main.getCollection("business");

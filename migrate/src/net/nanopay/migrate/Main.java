@@ -1,11 +1,11 @@
 package net.nanopay.migrate;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import foam.core.*;
+import foam.core.EmptyX;
+import foam.core.X;
+import foam.core.XFactory;
 import foam.dao.JDAO;
 import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
@@ -22,6 +22,7 @@ import org.bson.types.ObjectId;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class Main
     }
   }
 
-  public static final boolean DEBUG = true;
+  public static final MigrationMode MODE = MigrationMode.DEBUG;
 
   protected static X root_ = null;
 
@@ -98,17 +99,22 @@ public class Main
     try {
       // load properties
       Properties properties = new Properties();
-      String filename = DEBUG ?
-          "conf/credentials.debug.properties" :
-          "conf/credentials.prod.properties";
+      String filename;
+      switch ( MODE ) {
+        case STAGING:     filename = "conf/credentials.staging.properties"; break;
+        case PRODUCTION:  filename = "conf/credentials.prod.properties";    break;
+        default:          filename = "conf/credentials.debug.properties";   break;
+      }
+
       InputStream input = new FileInputStream(filename);
       properties.load(input);
 
       // load values from properties
       String host = properties.getProperty("mongodb.host", "");
-      String user = ! DEBUG ? properties.getProperty("mongodb.user", "") : "";
-      String pass = ! DEBUG ? new String(Base64.decode(properties.getProperty("mongodb.pass", ""))) : "";
-      boolean authenticate = ! DEBUG && ! SafetyUtil.isEmpty(user) && ! SafetyUtil.isEmpty(pass);
+      String user = properties.getProperty("mongodb.user", "");
+      String pass = properties.getProperty("mongodb.pass", "");
+      pass = ! SafetyUtil.isEmpty(pass) ? new String(Base64.decode(pass), StandardCharsets.UTF_8) : "";
+      boolean authenticate = ! SafetyUtil.isEmpty(user) && ! SafetyUtil.isEmpty(pass);
 
       // set up credentials and server addresses
       MongoCredential credential = MongoCredential.createCredential(user, "admin", pass.toCharArray());
@@ -122,9 +128,6 @@ public class Main
           new MongoClient(addresses, Collections.singletonList(credential)) :
           new MongoClient(addresses);
       Outputter outputter = new Outputter(OutputterMode.STORAGE);
-
-      // create multi map to contain all data under same user id
-      Multimap<ObjectId, FObject> data = HashMultimap.create();
 
       // migrate users
       Map<ObjectId, User> users

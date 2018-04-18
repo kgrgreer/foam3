@@ -13,13 +13,11 @@ import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import sun.misc.IOUtils;
 
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,7 @@ public class InvoiceMigration
 
   @Override
   public Map<ObjectId, List<Invoice>> migrate() {
-    MongoDatabase main = getClient().getDatabase(DEBUG ? "development" : "prod");
+    MongoDatabase main = getClient().getDatabase(maindb);
     MongoCollection<Document> userCollection = main.getCollection("user");
     MongoCollection<Document> invoiceCollection = main.getCollection("invoice");
     MongoCollection<Document> paymentCollection = main.getCollection("payment");
@@ -104,7 +102,7 @@ public class InvoiceMigration
                         long filesize = conn.getContentLengthLong();
 
                         String filename = invoiceFileUrl.substring(invoiceFileUrl.lastIndexOf('/') + 1);
-                        String blobId = (!DEBUG ? "PRODUCTION/" : "STAGING/") + filename;
+                        String blobId = prefix + "/" + filename;
 
                         File file = new File.Builder(EmptyX.instance())
                             .setId(UUID.randomUUID().toString())

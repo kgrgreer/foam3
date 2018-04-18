@@ -3,6 +3,7 @@
 mvn clean install
 mvn dependency:build-classpath -Dmdep.outputFile=classpath.txt;
 echo > devices
+echo > files
 echo > invoices
 echo > transactions
 echo > users
