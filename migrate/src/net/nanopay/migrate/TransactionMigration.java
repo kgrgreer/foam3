@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import static com.mongodb.client.model.Filters.*;
+
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.or;
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.orderBy;
 
@@ -72,8 +73,6 @@ public class TransactionMigration
             return userId;
           }
         }, new Function<Document, List<Transaction>>() {
-
-          AtomicInteger i = new AtomicInteger(10000);
 
           @Override
           public List<Transaction> apply(Document document) {
