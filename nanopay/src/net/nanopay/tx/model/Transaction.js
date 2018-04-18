@@ -248,7 +248,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'stripeTokenId',
-      storageTransient: true,
       documentation: 'For most Stripe users, the source of every charge is a' +
         ' credit or debit card. Stripe Token ID is the hash of the card' +
         ' object describing that card. Token IDs cannot be stored or used' +
