@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice',
+  package: 'net.nanopay.invoice.ui.history',
   name: 'InvoiceHistoryView',
   extends: 'foam.u2.View',
 
@@ -11,11 +11,18 @@ foam.CLASS({
 
   requires: [
     'foam.dao.history.HistoryRecord',
+    'net.nanopay.invoice.ui.history.InvoiceHistoryItemView'
   ],
 
   imports: [
     'invoiceHistoryDAO'
   ],
+
+  css: `
+    ^ {
+      margin-top: 20px;
+    }
+  `,
 
   properties: [
     'id',
@@ -36,8 +43,8 @@ foam.CLASS({
         .tag({
           class: 'foam.u2.history.HistoryView',
           title: 'Invoice History',
-          // data: this.data,
-          // historyItemView: this.UserHistoryItemView.create()
+          data: this.data,
+          historyItemView: this.InvoiceHistoryItemView.create()
         });
     }
   ]
