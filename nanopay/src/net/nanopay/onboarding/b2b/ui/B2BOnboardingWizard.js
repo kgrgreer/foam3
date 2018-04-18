@@ -114,7 +114,6 @@ foam.CLASS({
       var self = this;
 
       this.user = this.viewData.user;
-
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);

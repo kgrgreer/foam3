@@ -110,13 +110,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 3: Please choose the account you want to connect with nanopay.'}
+    { name: 'Step', message: 'Step 4: Please choose the account you want to connect with nanopay.'}
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.complete = true;
       this.selectBank = new Array(this.viewData.accounts.length).fill(false);
     },
 

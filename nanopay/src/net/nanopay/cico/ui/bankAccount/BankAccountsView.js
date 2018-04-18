@@ -269,7 +269,7 @@ foam.CLASS({
         },
 
         function verifyAccount() {
-          this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Verification', startAtValue: 1, nextLabelValue: 'Verify', backLabelValue: 'Come back later' }, this);
+          this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Verification', startAtValue: 2, nextLabelValue: 'Verify', backLabelValue: 'Come back later' }, this);
         },
 
         function manageAccount() {
