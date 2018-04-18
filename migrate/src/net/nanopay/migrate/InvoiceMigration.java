@@ -82,7 +82,6 @@ public class InvoiceMigration
                         .setAmount(amount.longValue())
                         .setPayerId(payer.getId())
                         .setPayeeId(payee.getId())
-                        .setCreatedBy(payer.getId())
                         .setInvoiceNumber(document.getString("invoiceNumber"))
                         .setPurchaseOrder(document.getString("purchaseOrder"))
                         .setIssueDate(document.getDate("issueDate"))
