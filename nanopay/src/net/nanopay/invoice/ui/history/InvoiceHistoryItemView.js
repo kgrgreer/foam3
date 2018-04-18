@@ -8,38 +8,31 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView'
   ],
 
   documentation: 'View displaying history for each history object.',
+  
+  properties: [
+    {
+      name: 'invoiceStatusHistoryItemView',
+      factory: function(){
+        return this.InvoiceStatusHistoryItemView.create();
+      }
+    }
+  ],
 
   methods: [
     function outputRecord(parentView, record) {
       var updates = record.updates;
-      // if no updates then this is a new account, so show the status page
-      // if ( ! updates || updates.length === 0 ) {
-      //   return this.invitationStatusHistoryItem.outputRecord(parentView, record);
-      // }
-
-      // for ( var i = 0 ; i < updates.length ; i++ ) {
-      //   var update = updates[i];
-      //   switch ( update.name ) {
-      //     case 'inviteAttempts':
-      //       this.inviteAttemptsHistoryItem.outputRecord(parentView, record);
-      //       break;
-
-      //     case 'status':
-      //       this.invitationStatusHistoryItem.outputRecord(parentView, record);
-      //       break;
-
-      //     case 'compliance':
-      //       this.complianceStatusHistoryItem.outputRecord(parentView, record);
-      //       break;
-
-      //     case 'additionalDocuments':
-      //       this.documentStatusHistoryItem.outputRecord(parentView, record);
-      //       break;
-      //   }
-      // }
+      for ( var i = 0 ; i < updates.length ; i++ ) {
+        var update = updates[i];
+        switch ( update.name ) {
+          case 'status':
+            this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
+            break;
+        }
+      }
     }
   ]
 });
