@@ -330,9 +330,10 @@ foam.CLASS({
       background: #59a5d5;
       color: white;
       margin-right: 100px;
-    }
-    ^ .net-nanopay-ui-ActionView-Save{
       margin-left: 40px;  
+    }
+    .bottomActions > .net-nanopay-ui-ActionView-Cancel{
+      margin-left: 40px;
     }
   `,
 
@@ -582,7 +583,6 @@ foam.CLASS({
           .start('p').add(this.BusinessInformationSubtitle).addClass('sectionTitle').end()
           .start('p').add(this.BusinessNameLabel).addClass('fieldLabel').end()
           .start(this.BUSINESS_NAME_FIELD).addClass('fullWidthField').end()
-
           .start('div')
             .style({ 'margin-top': '20px' })
             .addClass('animationContainer')
