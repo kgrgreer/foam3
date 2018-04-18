@@ -7,13 +7,16 @@ foam.CLASS({
 
   imports: [
     'countryDAO',
+    'userDAO',
     'regionDAO',
     'validatePostalCode',
     'validatePhone',
     'validateCity',
     'validateStreetNumber',
     'validateAddress',
-    'user'
+    'user',
+    'stack',
+    'ctrl'
   ],
 
   exports: [
@@ -366,7 +369,7 @@ foam.CLASS({
       name: 'businessNameField',
       factory: function() {
         if ( this.user.businessName ) return this.user.businessName;
-      },
+      }
     },
     {
       class: 'Boolean',
@@ -376,7 +379,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'displayedPhoneNumber',
-      value: '+1'
+      value: '+1',
+      factory: function() {
+        return this.user.businessPhone ? '+1 ' + this.user.businessPhone.number : '';
+      }
     },
     {
       class: 'String',
@@ -388,7 +394,10 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.user.businessPhone ? this.user.businessPhone.number.substring(2) : '';
+        return this.user.businessPhone ? this.user.businessPhone.number : '';
+      },
+      postSet: function(oldValue, newValue){
+        this.displayPhoneNumber = newValue;
       }
     },
     {
@@ -453,7 +462,7 @@ foam.CLASS({
       class: 'Date',
       name: 'registrationDateField',
       factory: function() {
-        if ( this.user.registrationDate ) return this.user.registrationDate;
+        if ( this.user.businessRegistrationDate ) return this.user.businessRegistrationDate;
       }
     },
     {
@@ -583,7 +592,7 @@ foam.CLASS({
               .addClass('fullWidthField')
               .enableClass('hidden', this.isEditingPhone$)
               .start('p').add(this.BusinessPhoneLabel).addClass('fieldLabel').end()
-              .start(this.DISPLAYED_PHONE_NUMBER)
+              .start(this.DISPLAYED_PHONE_NUMBER, {data$: this.phoneNumberField$})
                 .addClass('fullWidthField')
                 .addClass('displayOnly')
                 .on('focus', function() {
@@ -695,13 +704,81 @@ foam.CLASS({
     {
       name: 'Cancel',
       code: function(){
-
+        this.stack.back();
       }
     },
     {
       name: 'Save',
       code: function(){
+        var self = this;
+        if( !this.businessNameField ) {
+          this.add(this.NotificationMessage.create({ message: 'Business name required.', type: 'error' }));
+          return;
+        }
+        if( !this.validatePhone(this.phoneNumberField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Business phone required.', type: 'error' }));
+          return;
+        }
+        if( !this.businessTypeField ) {
+          this.add(this.NotificationMessage.create({ message: 'Business type required.', type: 'error' }));
+          return;
+        }
+        if( !this.businessRegistrationNumberField ) {
+          this.add(this.NotificationMessage.create({ message: 'Business registration number required.', type: 'error' }));
+          return;
+        }
+        if( !this.registrationAuthorityField ) {
+          this.add(this.NotificationMessage.create({ message: 'Business registration authority required.', type: 'error' }));
+          return;
+        }
+        if( !this.registrationDateField ) {
+          this.add(this.NotificationMessage.create({ message: 'Business registration date required.', type: 'error' }));
+          return;
+        }
+        if( !this.countryField ) {
+          this.add(this.NotificationMessage.create({ message: 'Country required.', type: 'error' }));
+          return;
+        }        
+        if( !this.validateStreetNumber(this.streetNumberField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Street number required.', type: 'error' }));
+          return;
+        }
+        if( !this.provinceField ) {
+          this.add(this.NotificationMessage.create({ message: 'Province required.', type: 'error' }));
+          return;
+        }
+        if( !this.validateCity(this.cityField) ) {
+          this.add(this.NotificationMessage.create({ message: 'City required.', type: 'error' }));
+          return;
+        }
+        if( !this.validatePostalCode(this.postalCodeField) ) {
+          this.add(this.NotificationMessage.create({ message: 'Postal Code required.', type: 'error' }));
+          return;
+        }
+        this.user.businessName = this.businessNameField;
+        this.user.businessPhone.number = this.phoneNumberField;
+        this.user.website = this.websiteField;
+        this.user.businessTypeId = this.businessTypeField;
+        this.user.businessRegistrationNumber = this.businessRegistrationNumberField;
+        this.user.businessRegistrationAuthority = this.registrationAuthorityField;
+        this.user.businessRegistrationDate = this.registrationDateField;
 
+        this.user.businessAddress.countryId = this.countryField;
+        this.user.businessAddress.streetNumber = this.streetNumberField;
+        this.user.businessAddress.streetName = this.streetNameField;
+        this.user.businessAddress.address2 = this.addressField;
+        this.user.businessAddress.regionId = this.provinceField;
+        this.user.businessAddress.city = this.cityField;
+        this.user.businessAddress.postalCode = this.postalCodeField;
+        this.user.businessProfilePicture = this.businessProfilePicture;
+        this.userDAO.put(this.user).then(function(a){
+          if(!a){          
+            ctrl.add(self.NotificationMessage.create({ message: 'Could not update user.', type: 'error' }));
+            return;
+          }
+          ctrl.add(self.NotificationMessage.create({ message: 'Business profile updated.'}));
+          self.stack.back();
+        });
       }
     }
   ]

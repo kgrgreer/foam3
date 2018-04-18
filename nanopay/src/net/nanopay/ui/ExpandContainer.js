@@ -92,6 +92,7 @@ foam.CLASS({
       margin-left: 50px;
       position: relative;
       top: 10px;
+      cursor: pointer;
     }
   `,
 
