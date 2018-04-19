@@ -39,13 +39,11 @@ foam.CLASS({
   css:`
     ^ {
       margin: auto;
-      width: 550px;
     }
     ^ .sectionTitle {
       line-height: 16px;
       font-size: 14px;
       font-weight: bold;
-
       margin-top: 30px;
       margin-bottom: 20px;
     }
@@ -920,13 +918,13 @@ foam.CLASS({
           .end()
         .end()
         .end()
-        .end()
         .startContext({ data: this})
           .start().addClass('bottomActions')
             .start(this.CANCEL).end()
             .start(this.SAVE).end()
           .end()
         .end()
+      .end()
     },
 
     function clearFields() {
