@@ -26,7 +26,7 @@ import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.orderBy;
 
 public class InvoiceMigration
-  extends AbstractMigration<List<Invoice>>
+  extends AbstractMigration<ObjectId, List<Invoice>>
 {
   public static final BigInteger ONE_HUNDRED = BigInteger.valueOf(100);
 

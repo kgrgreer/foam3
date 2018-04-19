@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 
 import java.util.Map;
 
-public abstract class AbstractMigration<T>
+public abstract class AbstractMigration<K, V>
   implements Migration, ContextAware
 {
   protected X x_;
@@ -46,7 +46,7 @@ public abstract class AbstractMigration<T>
     }
   }
 
-  public abstract Map<ObjectId, T> migrate();
+  public abstract Map<K, V> migrate();
 
   public MongoClient getClient() {
     return client_;

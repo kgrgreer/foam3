@@ -7,8 +7,6 @@ import foam.core.EmptyX;
 import foam.core.X;
 import foam.core.XFactory;
 import foam.dao.JDAO;
-import foam.lib.json.Outputter;
-import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.fs.Storage;
@@ -36,7 +34,7 @@ public class Main
     }
   }
 
-  public static final MigrationMode MODE = MigrationMode.DEBUG;
+  public static final MigrationMode MODE = MigrationMode.STAGING;
 
   protected static X root_ = null;
 
@@ -127,23 +125,22 @@ public class Main
       MongoClient client = authenticate ?
           new MongoClient(addresses, Collections.singletonList(credential)) :
           new MongoClient(addresses);
-      Outputter outputter = new Outputter(OutputterMode.STORAGE);
 
       // migrate users
       Map<ObjectId, User> users
           = new UserMigration(getX(), client).migrate();
 
       // migrate devices
-      Map<ObjectId, Device> devices
-          = new DeviceMigration(getX(), client, users).migrate();
+//      Map<ObjectId, Device> devices
+//          = new DeviceMigration(getX(), client, users).migrate();
 
       // migrate transaction
       Map<ObjectId, List<Transaction>> transactions
           = new TransactionMigration(getX(), client, users).migrate();
 
       // migrate invoices
-      Map<ObjectId, List<Invoice>> invoices
-          = new InvoiceMigration(getX(), client, users).migrate();
+//      Map<ObjectId, List<Invoice>> invoices
+//          = new InvoiceMigration(getX(), client, users).migrate();
     } catch (Throwable t) {
       t.printStackTrace();
     }

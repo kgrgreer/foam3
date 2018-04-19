@@ -30,7 +30,7 @@ import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.orderBy;
 
 public class TransactionMigration
-  extends AbstractMigration<List<Transaction>>
+  extends AbstractMigration<ObjectId, List<Transaction>>
 {
   public static final ThreadLocal<NumberFormat> nf = new ThreadLocal<NumberFormat>() {
     @Override

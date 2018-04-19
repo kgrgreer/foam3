@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DeviceMigration
-  extends AbstractMigration<Device>
+  extends AbstractMigration<ObjectId, Device>
 {
   protected final DAO deviceDAO_;
   protected final Map<ObjectId, User> users_;

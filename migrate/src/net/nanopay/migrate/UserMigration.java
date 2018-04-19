@@ -10,6 +10,7 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import org.bson.BsonType;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -20,13 +21,17 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import static com.mongodb.client.model.Filters.*;
 
 public class UserMigration
-  extends AbstractMigration<User>
+  extends AbstractMigration<ObjectId, User>
 {
   protected static final ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     @Override
@@ -56,6 +61,7 @@ public class UserMigration
     MongoDatabase crypto = getClient().getDatabase(cryptodb);
 
     MongoCollection<Document> userCollection = main.getCollection("user");
+    MongoCollection<Document> mintchipCollection = main.getCollection("mintchipConsumer");
     MongoCollection<Document> businessCollection = main.getCollection("business");
     MongoCollection<Document> addressCollection = main.getCollection("address");
     MongoCollection<Document> phoneCollection = main.getCollection("phone");
@@ -63,21 +69,32 @@ public class UserMigration
     MongoCollection<Document> countryCollection = main.getCollection("country");
     MongoCollection<Document> aesKeyCollection = crypto.getCollection("AESKey");
 
-    return userCollection.find(or(
-        new Document("realm", "retail"),
-        new Document("realm", "mintchip"),
-        new Document("realm", "support")
-    )).into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
+    // create a set of user ids that have a secure asset store
+    Set<ObjectId> ids = mintchipCollection.find(and(
+        exists("secureAssetStore"), type("secureAssetStore", BsonType.DOUBLE),
+        exists("userId"), type("userId", BsonType.OBJECT_ID)))
+        .into(new ArrayList<>()).stream().map(new Function<Document, ObjectId>() {
+          @Override
+          public ObjectId apply(Document document) {
+            return document.getObjectId("userId");
+          }
+        })
+        .collect(Collectors.toSet());
+
+    Map<ObjectId, User> result = ids.stream().collect(Collectors.toMap(new Function<ObjectId, ObjectId>() {
       @Override
-      public ObjectId apply(Document document) {
-        return document.getObjectId("_id");
+      public ObjectId apply(ObjectId objectId) {
+        return objectId;
       }
-    }, new Function<Document, User>() {
+    }, new Function<ObjectId, User>() {
 
       AtomicInteger i = new AtomicInteger(10000);
 
       @Override
-      public User apply(Document document) {
+      public User apply(ObjectId id) {
+        Document document = userCollection.find(new Document("_id", id)).first();
+        if ( document == null ) return new User.Builder(getX()).setId(-1).build();
+
         User user = new User.Builder(EmptyX.instance())
             .setId(i.getAndIncrement())
             .setFirstName(document.getString("firstName"))
@@ -92,7 +109,7 @@ public class UserMigration
             .setEnabled(document.getBoolean("enabled", false))
             .build();
 
-        // set user type
+        // set user type and group
         switch ( document.getString("realm") ) {
           case "mintchip":
             user.setType("Personal");
@@ -122,6 +139,7 @@ public class UserMigration
           }
         }
 
+        // set address information
         Document addressDocument = addressCollection.find(new Document("userId",
             document.getObjectId("_id"))).first();
         if ( addressDocument != null ) {
@@ -159,6 +177,7 @@ public class UserMigration
           }
         }
 
+        // set phone information
         Document phoneDocument = phoneCollection.find(new Document("userId",
             document.getObjectId("_id"))).first();
         if ( phoneDocument != null ) {
@@ -169,6 +188,7 @@ public class UserMigration
           user.setPhone(phone);
         }
 
+        // decrypt user information
         Document aesKeyDocument = aesKeyCollection.find(new Document("ownerId", user.getEmail())).first();
         if ( aesKeyDocument != null ) {
           try {
@@ -206,9 +226,14 @@ public class UserMigration
           }
         }
 
+
         userDAO_.put(user);
         return user;
       }
     }));
+
+    // remove null values
+    result.values().removeIf(user -> user.getId() == -1);
+    return result;
   }
 }

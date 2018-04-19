@@ -4,6 +4,6 @@ import org.bson.types.ObjectId;
 
 import java.util.Map;
 
-public interface Migration<T> {
-  Map<ObjectId, T> migrate();
+public interface Migration<K, V> {
+  Map<K, V> migrate();
 }
