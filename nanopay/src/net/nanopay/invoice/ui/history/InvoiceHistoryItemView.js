@@ -8,7 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView'
+    'net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView',
+    'net.nanopay.invoice.ui.history.InvoiceReceivedHistoryItemView',
   ],
 
   documentation: 'View displaying history for each history object.',
@@ -23,7 +24,7 @@ foam.CLASS({
     {
       name: 'invoiceReceivedHistoryItem',
       factory: function(){
-        return this.InvoiceReceivedHistoryItem.create();
+        return this.InvoiceReceivedHistoryItemView.create();
       }
     }
   ],
@@ -31,12 +32,21 @@ foam.CLASS({
   methods: [
     function outputRecord(parentView, record) {
       var updates = record.updates;
+      if(updates.length == 0){
+        this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
+      }
+
       for ( var i = 0 ; i < updates.length ; i++ ) {
         var update = updates[i];
         switch ( update.name ) {
           case 'status':
             this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
             break;
+          // case 'invoiceFile':
+          //   if (updates[0] == update || updates.length == 0) {
+          //     this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
+          //     break;
+          //   }
         }
       }
     }

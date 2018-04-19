@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'foam.dao.history.HistoryRecord',
+    'net.nanopay.invoice.ui.history.InvoiceReceivedHistoryItemView',
     'net.nanopay.invoice.ui.history.InvoiceHistoryItemView'
   ],
 
@@ -32,6 +33,12 @@ foam.CLASS({
         return this.invoiceHistoryDAO
           .where(this.EQ(this.HistoryRecord.OBJECT_ID, this.id))
           .orderBy(this.HistoryRecord.TIMESTAMP);
+      }
+    },
+    {
+      name: 'invoiceReceivedHistoryItem',
+      factory: function(){
+        return this.InvoiceReceivedHistoryItemView.create();
       }
     }
   ],
