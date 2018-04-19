@@ -42,11 +42,6 @@ foam.CLASS({
           case 'status':
             this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
             break;
-          // case 'invoiceFile':
-          //   if (updates[0] == update || updates.length == 0) {
-          //     this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
-          //     break;
-          //   }
         }
       }
     }
