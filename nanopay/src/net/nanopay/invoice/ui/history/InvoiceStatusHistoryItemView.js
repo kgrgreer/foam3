@@ -11,7 +11,15 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice'
   ],
 
+  imports: [
+    'invoiceDAO'
+  ],
+
   documentation: 'View for displaying history for invoice status',
+
+  properties: [
+    'paymentDate'
+  ],
 
   css: `
     ^ .iconPosition {
@@ -47,45 +55,41 @@ foam.CLASS({
       var status = record.updates.find(u => u.name == 'status')
       console.log(status)
 
-      // switch ( status.newValue ) {
-      //   case this.AccountStatus.PENDING.ordinal:
-      //     return {
-      //       title: 'Account',
-      //       labelText: 'Pending',
-      //       labelDecoration: 'Invite-Status-Pending',
-      //       icon: 'images/ic-created.svg'
-      //     };
+      switch ( status.newValue ) {
+        case "Void":
+          return {
+            labelText: 'Void',
+            labelDecoration: 'Invoice-Status-Void',
+            icon: 'images/ic-void.svg'
+          };
 
-      //   case this.AccountStatus.SUBMITTED.ordinal:
-      //     return {
-      //       title: 'Registration',
-      //       labelText: 'Submitted',
-      //       labelDecoration: 'Invite-Status-Submitted',
-      //       icon: 'images/ic-received.svg'
-      //     };
+        case "Paid":
+          return {
+            labelText: 'Paid',
+            labelDecoration: 'Invoice-Status-Paid',
+            icon: 'images/ic-approve.svg'
+          };
 
-      //   case this.AccountStatus.ACTIVE.ordinal:
-      //     return {
-      //       title: 'Account',
-      //       labelText: 'Active',
-      //       labelDecoration: 'Invite-Status-Active',
-      //       icon: 'images/ic-approve.svg'
-      //     };
+        case "Scheduled":
+          return {
+            labelText: 'Scheduled',
+            labelDecoration: 'Invoice-Status-Scheduled',
+            icon: 'images/ic-scheduled.svg'
+          };
 
-      //   case this.AccountStatus.DISABLED.ordinal:
-      //     return {
-      //       title: 'Account',
-      //       labelText: 'Disabled',
-      //       labelDecoration: 'Invite-Status-Disabled',
-      //       icon: 'images/ic-void.svg'
-      //     };
-      //   case this.AccountStatus.REVOKED.ordinal:
-      //     return {
-      //       title: 'Invite',
-      //       labelText: 'Revoked',
-      //       labelDecoration: 'Invite-Status-Pending',
-      //       icon: 'images/ic-void.svg'
-      //     };
+        case "Overdue":
+          return {
+            labelText: 'Overdue',
+            labelDecoration: 'Invoice-Status-Overdue',
+            icon: 'images/ic-overdue.svg'
+          };
+        case "Due":
+          return {
+            labelText: 'Due',
+            labelDecoration: 'Invoice-Status-Due',
+            icon: 'images/ic-scheduled.svg'
+          };
+      }
     },
 
     function formatDate(timestamp) {
@@ -97,7 +101,12 @@ foam.CLASS({
     },
 
     function outputRecord(parentView, record) {
+      var self = this;
       var attributes = this.getAttributes(record);
+
+      this.invoiceDAO.find(record.objectId).then(function(inv){
+        self.paymentDate = inv.paymentDate;
+      });
 
       return parentView
         .addClass(this.myClass())
@@ -109,10 +118,17 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add(attributes.title)
+              .add("Invoice has been marked as ", )
             .end()
             .start('div').addClass(attributes.labelDecoration)
-              .start('span').add(attributes.labelText).end()
+              .start('span').add(attributes.labelText)
+                .start('span').style({ 'margin-left' : '4px'})
+                  .add(this.paymentDate$.map(function(date){
+                    if(!date) return;
+                    return self.formatDate(date);
+                  }))
+                .end()
+              .end()
             .end()
           .end()
           .start('div')

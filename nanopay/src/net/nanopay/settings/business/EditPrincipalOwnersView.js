@@ -44,7 +44,6 @@ foam.CLASS({
       line-height: 16px;
       font-size: 14px;
       font-weight: bold;
-
       margin-top: 30px;
       margin-bottom: 20px;
     }
