@@ -20,17 +20,18 @@ foam.CLASS({
       width: 100%;
       background-color: #edf0f5;
       margin: auto;
+      padding-bottom: 60px;
     }
     ^ .businessSettingsContainer {
       width: 992px;
+      padding-left: 20px;
       margin: auto;
     }
     ^ .Container {
       width: 992px;
       min-height: 80px;
-      margin-top: 30px;
-      margin-bottom: 20px;
-      padding: 20px;
+      padding-top: 40px;
+      padding-left: 20px;
       border-radius: 2px;
       background-color: white;
       box-sizing: border-box;
