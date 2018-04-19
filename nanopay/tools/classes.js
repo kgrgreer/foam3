@@ -67,6 +67,7 @@ var classes = [
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.LiquiditySettings',
+  'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.Transaction',
@@ -109,7 +110,8 @@ var skeletons = [
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.tx.UserTransactionLimit'
+  'net.nanopay.tx.UserTransactionLimit',
+  'net.nanopay.tx.model.LiquidityAuth'
 ];
 
 var proxies = [
