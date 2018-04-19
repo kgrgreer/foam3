@@ -924,8 +924,7 @@ foam.CLASS({
             .start(this.SAVE).end()
           .end()
         .end()
-        .end()
-
+      .end()
     },
 
     function clearFields() {
