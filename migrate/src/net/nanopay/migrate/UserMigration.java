@@ -208,8 +208,7 @@ public class UserMigration
                 .append("\"firstName\":\"").append(user.getFirstName()).append("\",")
                 .append("\"lastName\":\"").append(user.getLastName()).append("\",")
                 .append("\"address1\":\"").append(address.getAddress1()).append("\",")
-                .append("\"city\":\"").append(address.getCity()).append("\",")
-                .append("\"postalCode\":\"").append(address.getPostalCode()).append("\"}");
+                .append("\"city\":\"").append(address.getCity()).append("\"}");
 
             JsonObject object = null;
             Process process = runtime_.exec(script.toString());
@@ -219,7 +218,6 @@ public class UserMigration
               user.setLastName(object.getString("lastName", user.getLastName()));
               address.setAddress1(object.getString("address1", address.getAddress1()));
               address.setCity(object.getString("city", address.getCity()));
-              address.setPostalCode(object.getString("postalCode", address.getPostalCode()));
             }
           } catch (Throwable t) {
             t.printStackTrace();
