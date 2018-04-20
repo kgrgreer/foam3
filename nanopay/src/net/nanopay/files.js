@@ -98,6 +98,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
+  { name: 'net/nanopay/tx/model/LiquidityAuth' },
 
   { name: 'net/nanopay/model/Broker' },
 
