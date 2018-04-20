@@ -13,6 +13,7 @@ foam.CLASS({
           border-radius: 30px;
           padding: 3px 7px;
           display: inline;
+          font-weight: 300;
         }
         .Invoice-Status-Disputed  {
           color: #c82e2e;
@@ -31,7 +32,7 @@ foam.CLASS({
           display: inline;
         }
         .Invoice-Status-New  {
-          color: #262626;
+          color: #59a5d5;
           background: white;
           border: 1px solid #262626;
           border-radius: 30px;
@@ -53,15 +54,15 @@ foam.CLASS({
           display: inline;
         }
         .Invoice-Status-Paid {
-          background: #20b020;
+          background: #2cab70;
           color: white;
           border-radius: 30px;
           padding: 3px 7px;
           display: inline;
         }
         .Invoice-Status-Scheduled {
-          color: #20b020;
-          border: 1px solid #20b020;
+          color: #2cab70;
+          border: 1px solid #2cab70;
           background: white;
           font-size: 10px;
           border-radius: 30px;
@@ -98,7 +99,7 @@ foam.CLASS({
         .foam-u2-view-TableView-th-issueDate      { width: 90px; }
         .foam-u2-view-TableView-th-dueDate      { width: 90px; }
         .foam-u2-view-TableView-th-amount         { width: 90px; padding-right:20px; }
-        .foam-u2-view-TableView-th-status         { width: 102px; }
+        .foam-u2-view-TableView-th-status         { width: 130px; }
       */}
     })
   ]

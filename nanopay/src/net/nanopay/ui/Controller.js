@@ -147,7 +147,7 @@ foam.CLASS({
                 self.loginSuccess = false;
                 self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
                 return;
-                
+
               case self.AccountStatus.REVOKED:
                 self.loginSuccess = false;
                 self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });

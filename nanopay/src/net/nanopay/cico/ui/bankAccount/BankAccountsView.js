@@ -199,7 +199,7 @@ foam.CLASS({
       icon: 'images/ic-plus.svg',
       code: function() {
         //this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this);
-        this.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true}, this);
+        this.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true}, this);
       }
     }
   ],

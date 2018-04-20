@@ -47,7 +47,7 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: sticky;
+      position: relative;
       z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-recordPayment {

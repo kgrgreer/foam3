@@ -22,7 +22,14 @@ public class EmailVerifiedTransactionDAO
     Transaction transaction = (Transaction) obj;
     User user = (User) userDAO_.find_(x, transaction.getPayerId());
     if ( user == null || ! user.getEmailVerified() ) {
-      throw new RuntimeException("You must verify your email to send money");
+      switch ( transaction.getType() ) {
+        case CASHIN:
+          throw new RuntimeException("You must verify your email to top up");
+        case CASHOUT:
+          throw new RuntimeException("You must verify your email to cash out");
+        default:
+          throw new RuntimeException("You must verify your email to send money");
+      }
     }
     return super.put_(x, obj);
   }

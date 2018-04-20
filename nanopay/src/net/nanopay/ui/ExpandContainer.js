@@ -80,7 +80,9 @@ foam.CLASS({
       height: auto;
       overflow: hidden;
       transition: max-height 1.2s ease;
-      max-height: 600px;
+      max-height: 1725px;
+      margin: 0 auto;
+      margin-right: 0;
     }
     ^ .expandTrue{
       max-height: 0;

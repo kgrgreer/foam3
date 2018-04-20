@@ -26,6 +26,7 @@ foam.CLASS({
         }
 
         ^ .positionCircle {
+          position: relative;
           width: 21px;
           height: 21px;
           box-sizing: border-box;
@@ -33,16 +34,39 @@ foam.CLASS({
           background-color: #a4b3b8;
           margin: auto;
 
-          background-size: 0 0;
-
-          background-repeat: no-repeat;
-          background-image: url(images/ic-approve.svg);
+          overflow: hidden;
 
           -webkit-transition: all .15s ease-in-out;
           -moz-transition: all .15s ease-in-out;
           -ms-transition: all .15s ease-in-out;
           -o-transition: all .15s ease-in-out;
           transition: all .15s ease-in-out;
+        }
+
+        ^ .positionCircle img {
+          position: absolute;
+          top: 0;
+          left: 0;
+
+          opacity: 0;
+
+          width: 0;
+          height: 0;
+
+          z-index: 11;
+
+          -webkit-transition: all .15s ease-in-out;
+          -moz-transition: all .15s ease-in-out;
+          -ms-transition: all .15s ease-in-out;
+          -o-transition: all .15s ease-in-out;
+          transition: all .15s ease-in-out;
+        }
+
+        ^ .positionCircle.complete img {
+          width: 21px;
+          height: 21px;
+
+          opacity: 1;
         }
 
         ^ .positionCircle:first-child {
@@ -67,11 +91,12 @@ foam.CLASS({
           -ms-transition: font-size .25s ease-in-out;
           -o-transition: font-size .25s ease-in-out;
           transition: font-size .25s ease-in-out;
+
+          z-index: 10;
         }
 
         ^ .positionCircle.complete {
           background-color: #1cc2b7;
-          background-size: 21px 21px;
         }
 
         ^ .positionCircle.complete p {
@@ -140,7 +165,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      
+
       this.addClass(this.myClass())
         .start('div').addClass('guideColumn')
           .start().forEach(this.titles, function(title, index) {
@@ -149,6 +174,7 @@ foam.CLASS({
               .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
               .start('p').add(index + 1).end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
             .end();
             if ( index < self.titles.length - 1 ) {
               this.start('div').addClass('positionLine')
