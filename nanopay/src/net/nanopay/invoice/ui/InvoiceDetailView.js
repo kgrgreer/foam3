@@ -42,6 +42,9 @@ foam.CLASS({
       name: 'nextInvoiceDate'
     },
     {
+      name: 'selectedUser'
+    },
+    {
       class: 'String',
       name: 'frequency',
       view: {
@@ -65,6 +68,9 @@ foam.CLASS({
             return [user.id, username + ' - (' + user.email + ')'];
           }
         });
+      },
+      postSet: function(ov, nv){
+        this.selectedUser = nv;
       }
     }
   ],
@@ -175,6 +181,8 @@ foam.CLASS({
                 .end()
               .end()
             .end()
+            .tag({ class: 'net.nanopay.ui.BusinessCard', business$: this.selectedUser$ })
+
             .start(this.Invoice.INVOICE_FILE).end()
 //            .start()
               // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })
