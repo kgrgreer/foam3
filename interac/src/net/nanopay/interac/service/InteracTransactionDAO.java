@@ -7,9 +7,6 @@ import foam.dao.ProxyDAO;
 import java.util.Random;
 import java.util.UUID;
 import net.nanopay.tx.model.Transaction;
-import foam.dao.Sink;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
 
 public class InteracTransactionDAO
   extends ProxyDAO
@@ -75,28 +72,5 @@ public class InteracTransactionDAO
     } catch (RuntimeException e) {
       throw e;
     }
-  }
-
-  // Overrides all functions to only allow put calls
-  @Override
-  public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    throw new UnsupportedOperationException("Unsupported operation: select_");
-  }
-
-  @Override
-  public FObject find_(X x, Object id) {
-    throw new UnsupportedOperationException("Unsupported operation: find_");
-  }
-
-  @Override
-  public FObject remove_(X x, FObject obj)
-  {
-    throw new UnsupportedOperationException("Unsupported operation: remove_");
-  }
-
-  @Override
-  public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate)
-  {
-    throw new UnsupportedOperationException("Unsupported operation: removeAll_");
   }
 }
