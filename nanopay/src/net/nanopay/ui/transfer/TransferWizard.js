@@ -331,7 +331,8 @@ foam.CLASS({
 
         if ( this.position == 0 ) {
           if ( ! self.viewData.accountCheck && this.account.balance < self.viewData.fromAmount ) {
-              this.add(this.NotificationMessage.create({ message: 'Insufficient digital cash balance. There will be a cash in from the default bank account to compensate the difference.', type: 'error' }));
+              //this.add(this.NotificationMessage.create({ message: 'Insufficient digital cash balance. There will
+            // be a cash in from the default bank account to compensate the difference.', type: 'error' }));
           }
         }
 
