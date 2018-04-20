@@ -71,8 +71,8 @@ foam.CLASS({
     function initE() {
       var self = this;
 
-      this.business$.map(function(a){
-        this.profileImg = a.businessProfilePicture;
+      this.business$.sub(function(){
+        self.profileImg = self.business.businessProfilePicture;
       });
 
       this
