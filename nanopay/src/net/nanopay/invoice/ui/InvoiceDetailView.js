@@ -42,7 +42,8 @@ foam.CLASS({
       name: 'nextInvoiceDate'
     },
     {
-      name: 'selectedUser'
+      name: 'selectedUser',
+      value: {}
     },
     {
       class: 'String',
@@ -63,6 +64,7 @@ foam.CLASS({
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
+          placeholder: 'Please Select',
           objToChoice: function(user) {
             var username = user.businessName || user.organization;
             return [user.id, username + ' - (' + user.email + ')'];
@@ -70,7 +72,10 @@ foam.CLASS({
         });
       },
       postSet: function(ov, nv){
-        this.selectedUser = nv;
+        var self = this;
+        this.userDAO.find(nv).then(function(u){
+          self.selectedUser = u;
+        });
       }
     }
   ],
@@ -138,6 +143,9 @@ foam.CLASS({
     ^ .note-div {
       height:
     }
+    ^ .net-nanopay-ui-BusinessCard{
+      margin-bottom: 30px;
+    }
   `,
 
   methods: [
@@ -181,8 +189,11 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            .tag({ class: 'net.nanopay.ui.BusinessCard', business$: this.selectedUser$ })
-
+            .start().show(this.selectedUser$.map(function(a){ 
+              return a.firstName ? true : false;
+            }))
+              .tag({ class: 'net.nanopay.ui.BusinessCard', business$: this.selectedUser$ })
+            .end()
             .start(this.Invoice.INVOICE_FILE).end()
 //            .start()
               // .tag({class: 'foam.u2.CheckBox', data$: this.checkBoxRecurring$ })

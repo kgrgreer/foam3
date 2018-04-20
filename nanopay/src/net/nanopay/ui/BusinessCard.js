@@ -7,10 +7,54 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 450px;
+      width: 400px;
     }
     ^ .boxless-for-drag-drop{
       border: none !important;
+      height: 70px !important;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView{
+      width: 100px;
+      display: inline-block;
+    }
+    ^ .container-1{
+      display: inline-block;
+      position: relative;
+      bottom: 10px;
+      left: -15px;
+    }
+    ^ .container-2{
+      margin-left: 15px;
+    }
+    ^ .companyName{
+      margin-bottom: 10px;
+    }
+    ^ .companyAddress{
+      font-size: 12px;
+      font-weight: 400;
+      width: 200px;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .shopperImage{
+      width: 50px;
+      height: 50px;
+    }
+    ^ .generic-status{
+      float: right;
+    }
+    ^ .userName{
+      font-size: 14px;
+      font-weight: bold;
+    }
+    ^ .job-title{
+      font-size: 12px;
+      font-weight: normal;
+      color: #093649;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    ^ .Invoice-Status-Paid{
+      background-color: #2cab70;
     }
   `,
 
@@ -18,11 +62,19 @@ foam.CLASS({
     {
       name: 'business',
       value: {}
-    }
+    },
+    'address',
+    'profileImg'
   ],
 
   methods: [
     function initE() {
+      var self = this;
+
+      this.business$.map(function(a){
+        this.profileImg = a.businessProfilePicture;
+      });
+
       this
         .addClass(this.myClass())
         .start()
@@ -30,12 +82,55 @@ foam.CLASS({
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
               placeholderImage: 'images/business-placeholder.png',
-              // data$: this.business.businessProfilePicture$,
+              data$: this.profileImg$,
               uploadHidden: true
             })
-            .start().add(this.business.businessName$).addClass('companyName').end()
+            .start().addClass('container-1')
+              .start().addClass('companyName')
+                .add(this.business$.map(function(a){ return a.businessName }))
+              .end()
+              .start().addClass('companyAddress')
+                .add(this.business$.map(function(a){
+                  return self.formatAddress(a.businessAddress);
+                }))
+              .end()
+            .end()
+          .end()
+          .start().addClass('container-2')
+            .start().addClass('userName')
+              .add(this.business$.map(function(a){ return a.firstName + ' ' + a.lastName }))
+            .end()
+            .start().addClass('job-title')
+              .add(this.business$.map(function(a){ return a.jobTitle }))
+            .end()
+            .start().addClass('companyAddress').style({ 'margin': '15px 0px;'})
+              .add(this.business$.map(function(a){ return a.email }))
+              .br()
+              .add(this.business$.map(function(a){
+                if (!a.businessPhone) return;
+                return a.businessPhone.number;
+              }))
+            .end()
+            .start().addClass('companyName inline')
+              .add('Business')
+            .end()
+            .start().addClass('generic-status Invoice-Status-Paid')
+             .add(this.business$.map(function(a){ 
+               if(!a.status) return;
+               return a.status.label; 
+              }))
+            .end()
           .end()
         .end()
+    },
+
+    function formatAddress(address){
+      var formattedAddress;
+      if(!address) return;
+      if(address.streetNumber){
+        formattedAddress = address.address2 + ' ' + address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
+      }
+      return formattedAddress;
     }
   ]
 });
