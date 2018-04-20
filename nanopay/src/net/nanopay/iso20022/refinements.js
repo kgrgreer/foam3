@@ -130,7 +130,9 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'java.util.Random',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'foam.core.FObject',
+    'foam.nanos.logger.Logger'
   ],
 
   methods: [
@@ -139,6 +141,7 @@ foam.CLASS({
 
         javaReturns: 'net.nanopay.iso20022.Pacs00200109',
         javaCode: `
+          Logger  logger = (Logger) getX().get("logger");
           Pacs00200109 pacs00200109 = new Pacs00200109();
           pacs00200109.setX(getX());
 
@@ -166,7 +169,6 @@ foam.CLASS({
              try {
                //User sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
 
-               //System.out.println("sender aa : " + sender);
                // Create a Sender
                User sender = new User();
 
@@ -213,7 +215,8 @@ foam.CLASS({
 
                  sender.setAddress(senderAddress);
 
-                 userDAO.put(sender);
+                 FObject fUserDAO = (FObject) userDAO.put(sender);
+                 //System.out.println(" fUserDAO.getId() : " + fUserDAO.Id());
 
                 // Create a Sender's BankAccount
                 BankAccount senderBankAcct = new BankAccount();
@@ -304,7 +307,7 @@ foam.CLASS({
             // } else {
             //   receiver = (User) receiverDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
             //   receiverId = receiver.getId();
-            // } 
+            // }
 
               //Create a Transaction
               double txAmt = (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getXmlValue();
@@ -322,7 +325,7 @@ foam.CLASS({
                 DAO txnDAO = (DAO) getX().get("transactionDAO");
                 txnDAO.put(transaction);
             } catch (Throwable t) {
-              t.printStackTrace();
+              logger.error("error message : " + t);
             }
 
             String strStatus = "ACSP";
