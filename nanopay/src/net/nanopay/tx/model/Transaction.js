@@ -40,6 +40,10 @@ foam.CLASS({
     }
   ],
 
+  searchColumns: [
+    'id', 'status', 'type'
+  ],
+
   properties: [
     {
       class: 'Long',
