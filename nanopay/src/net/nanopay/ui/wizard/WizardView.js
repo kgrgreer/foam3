@@ -318,11 +318,7 @@ foam.CLASS({
         this.subStack.push(this.pushView.view);
         this.position = this.pushView.position;
         this.pushView = null;
-<<<<<<< HEAD
       }
-=======
-      }  
->>>>>>> staging
     },
 
     function initE(){
