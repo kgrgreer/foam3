@@ -127,11 +127,18 @@ foam.CLASS({
       name: 'record',
       label: 'Record Payment',
       code: function(X){
+        var paymentDate = X.data.paymentDate;
         if(!X.data.paymentDate){
           this.add(this.NotificationMessage.create({ message: 'Please select a payment date.', type: 'error' }));
           return;
         }
-
+        // By pass for safari & mozilla type='date' on input support
+        // Operator checking if dueDate is a date object if not, makes it so or throws notification.
+        if( isNaN(paymentDate) && paymentDate != null ){
+          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
+          return;  
+        }
+        
         this.invoice.status = 'Paid';
         this.invoice.paymentDate = X.data.paymentDate;
         // Avoids schedule invoice payments in cron.

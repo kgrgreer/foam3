@@ -5,6 +5,7 @@ import foam.dao.*;
 import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 
+/** Represents a transfer of assets from one account to another. **/
 public class Transfer
   implements Comparable
 {

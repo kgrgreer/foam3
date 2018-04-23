@@ -279,7 +279,7 @@ foam.CLASS({
       name: 'hideBottomBar',
       value: false
     },
-               
+
     'pushView'
   ],
 

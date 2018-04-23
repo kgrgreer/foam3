@@ -75,7 +75,7 @@ function build_war {
     # NOTE: this removes the target directory where journal preparation occurs.
     # invoke deploY_journals after build_war
     #
-    if [ "$DEV_BUILD" -ne 1 ]; then
+    if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
 
       cd "$NANOPAY_HOME"
@@ -98,7 +98,7 @@ function build_war {
 
     # build and create war
     ./gen.sh
-    if [ "$DEV_BUILD" -eq 1 ]; then
+    if [ "$CLEAN_BUILD" -ne 1 ]; then
       mvn install -Dbuild=dev -o
     else
       mvn install
@@ -260,7 +260,7 @@ function start_nanos {
     mvn install
     mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
     deploy_journals
-    java -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+    java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
 }
 
 function testcatalina {
@@ -270,9 +270,20 @@ function testcatalina {
     fi
 }
 
+function beginswith {
+    # https://stackoverflow.com/a/18558871
+    case $2 in "$1"*) true;; *) false;; esac;
+}
+
 function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+
+    # if running via CodeDeploy set -c flag
+    if beginswith /pkg/stack/stage "$NANOPAY_HOME"; then
+        CLEAN_BUILD=1
+    fi
+
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
@@ -351,7 +362,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Generate source, compile, and deploy war and journals."
-    echo "  -c : Generate source and compile. Run maven under the development-build profile."
+    echo "  -c : Generate source and compile. Run maven under the default-build profile."
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
@@ -365,7 +376,7 @@ function usage {
 ############################
 
 BUILD_ONLY=0
-DEV_BUILD=0
+CLEAN_BUILD=0
 DEBUG=0
 FOREGROUND=0
 DELETE_RUNTIME_JOURNALS=0
@@ -377,7 +388,7 @@ STOP_TOMCAT=0
 while getopts "bcdfhijnrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) DEV_BUILD=1 ;;
+        c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
         f) FOREGROUND=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;

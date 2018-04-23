@@ -98,6 +98,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/model/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
+  { name: 'net/nanopay/tx/model/LiquidityAuth' },
 
   { name: 'net/nanopay/model/Broker' },
 
@@ -132,6 +133,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/DisableProfileModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/EditBusinessView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/ResendInviteModal', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/ReviewProfileView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/RevokeInviteModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
@@ -208,15 +210,21 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileUploadView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/history/InvoiceReceivedHistoryItemView', flags: ['web'] },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   // { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessSettingsCard', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/PrincipalOwnersDetailView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/EditBusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/PreferenceView', flags: ['web'] },
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },

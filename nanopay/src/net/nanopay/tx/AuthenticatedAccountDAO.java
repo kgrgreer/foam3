@@ -14,7 +14,7 @@ import net.nanopay.model.Account;
 import static foam.mlang.MLang.EQ;
 
 public class AuthenticatedAccountDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   public final static String GLOBAL_ACCOUNT_CREATE = "account.create.x";
   public final static String GLOBAL_ACCOUNT_READ   = "account.read.x";
@@ -41,6 +41,7 @@ public class AuthenticatedAccountDAO
     if ( account.getId() == 0 || ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
       account.setId(user.getId());
     }
+
     return super.put_(x, obj);
   }
 
@@ -57,6 +58,7 @@ public class AuthenticatedAccountDAO
     if ( account != null && account.getId() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
       return null;
     }
+
     return account;
   }
 

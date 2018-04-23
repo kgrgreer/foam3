@@ -24,12 +24,10 @@ foam.CLASS({
   ^ .Container {
     width: 992px;
     min-height: 80px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    padding: 20px;
     border-radius: 2px;
     background-color: white;
     box-sizing: border-box;
+    padding-left: 20px;
   }
   ^ .profileImg {
     width: 80px;
@@ -127,7 +125,7 @@ foam.CLASS({
   }
   ^ .sub-title{
     position: relative;
-    top: -25px;
+    top: -15px;
     color: #093649;
     font-size: 14px;
     font-weight: 300;

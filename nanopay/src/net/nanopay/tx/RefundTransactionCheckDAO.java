@@ -6,7 +6,6 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Count;
 import net.nanopay.tx.model.Transaction;
-
 import static foam.mlang.MLang.EQ;
 
 public class RefundTransactionCheckDAO
@@ -38,7 +37,7 @@ public class RefundTransactionCheckDAO
       if ( refunded == null ) {
         throw new RuntimeException("Unable to find transaction to refund");
       }
-      
+
       // check if original transaction is already refunded
       if ( "Refunded".equals(transaction.getStatus()) ) {
         throw new RuntimeException("Transaction already refunded");
