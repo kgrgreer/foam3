@@ -42,6 +42,20 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
+    ^ .account-status{
+      position: relative;
+      display: inline-block;
+    }
+    ^ .generic-status{
+      display: inline-block;
+      border-radius: 30px;
+      margin-left: 20px;
+      padding: 3px 7px;
+    }
+    ^ .status{
+      top: -30px;
+      position: relative;
+    }
   `,
 
   properties: [
@@ -67,7 +81,10 @@ foam.CLASS({
     function initE(){
       this 
         .addClass(this.myClass())
-        .start('p').add('Account ID ' + this.user.id).end()
+        .start().addClass('status')
+          .start('p').addClass('account-status').add('Account ID ' + this.user.id).end()
+          .start().addClass('generic-status Invoice-Status-Paid').add('Active').end()
+        .end()
         .start().addClass('line').end()
         .start().addClass('Container')
           .start('div').addClass('container-1')
