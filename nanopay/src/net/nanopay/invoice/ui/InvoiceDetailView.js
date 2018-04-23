@@ -64,7 +64,7 @@ foam.CLASS({
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
-          placeholder: 'Please Select',
+          placeholder: 'Please Select Customer',
           objToChoice: function(user) {
             var username = user.businessName || user.organization;
             return [user.id, username + ' - (' + user.email + ')'];
@@ -234,6 +234,11 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         var dueDate = this.data.dueDate;
+
+        if ( !this.userList ){
+          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Select a Customer.', type: 'error' }));
+          return;
+        }
 
         if (!this.data.amount || this.data.amount < 0){
           this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            
