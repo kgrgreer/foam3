@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'PasswordChangeForm',
-  extends: 'foam.u2.View',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Password change form for onboarding',
 
@@ -11,10 +11,28 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'userDAO',
+    'stack',
+    'auth'
+  ],
+
+  properties: [
+    {
+      name: 'originalPassword'
+    },
+    {
+      name: 'newPassword'
+    },
+    {
+      name: 'confirmPassword'
+    }
   ],
 
   css: `
+    ^ {
+      padding-bottom: 40px;
+    }
     ^ p{
       font-size: 14px;
       font-weight: bold;
@@ -56,24 +74,28 @@ foam.CLASS({
       top: -30px;
       position: relative;
     }
+    ^ .net-nanopay-ui-ActionView{
+      width: 540px;
+      height: 40px;
+      background-color: #59a5d5;
+      color: white;
+      margin-top: 30px;
+    }
+    ^ .foam-u2-TextField{
+
+    }
   `,
 
-  properties: [
-    {
-      class: 'Password',
-      name: 'originalPassword'
-    },
-    {
-      class: 'Password',
-      name: 'newPassword'
-    },
-    {
-      class: 'Password',
-      name: 'confirmPassword'
-    }
-  ],
-
   messages: [
+    { name: 'noSpaces', message: 'Password cannot contain spaces' },
+    { name: 'noNumbers', message: 'Password must have one numeric character' },
+    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
+    { name: 'emptyOriginal', message: 'Please enter your original password'},
+    { name: 'emptyPassword', message: 'Please enter your new password' },
+    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
+    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
+    { name: 'passwordMismatch', message: 'Passwords do not match' },
+    { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'passwordDescription', message: 'Please change you password before you start using the nanopay platform.'}
   ],
 
@@ -93,22 +115,83 @@ foam.CLASS({
           .end()
           .start('div')
             .start('h2').add("Original Password").addClass('label').end()
-            .start(this.ORIGINAL_PASSWORD).end()
+            .start(this.ORIGINAL_PASSWORD).attrs({ 'type':'password' }).end()
             .start('h2').add("New Password").addClass('label').end()
-            .start(this.NEW_PASSWORD).end()
+            .start(this.NEW_PASSWORD).attrs({ 'type':'password' }).end()
             .start('h2').add("Confirm Password").addClass('label').end()
-            .start(this.CONFIRM_PASSWORD).end()
+            .start(this.CONFIRM_PASSWORD).attrs({ 'type':'password' }).end()
           .end()
-          .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
+          .start(this.CHANGE_PASSWORD).addClass('update-BTN').end()
         .end()
     }
   ],
 
   actions: [
     {
-      name: 'updatedPassword',
+      name: 'changePassword',
       code: function(){
-        console.log('update password hit');
+        var self = this;
+
+        // check if original password entered
+        if ( ! this.originalPassword ) {
+          this.add(this.NotificationMessage.create({ message: this.emptyOriginal, type: 'error' }));
+          return;
+        }
+
+        // validate new password
+        if ( ! this.newPassword ) {
+          this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          return;
+        }
+
+        if ( this.newPassword.includes(' ') ) {
+          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
+          return;
+        }
+
+        if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
+          this.add(this.NotificationMessage.create({ message: this.invalidLength, type: 'error' }));
+          return;
+        }
+
+        if ( ! /\d/g.test(this.newPassword) ) {
+          this.add(self.NotificationMessage.create({ message: this.noNumbers, type: 'error' }));
+          return;
+        }
+
+        if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
+          this.add(self.NotificationMessage.create({ message: this.noSpecial, type: 'error' }));
+          return;
+        }
+
+        // check if confirmation entered
+        if ( ! this.confirmPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.emptyConfirmation, type: 'error' }));
+          return;
+        }
+
+        // check if passwords match
+        if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
+          this.add(self.NotificationMessage.create({ message: this.passwordMismatch, type: 'error' }));
+          return;
+        }
+
+        // update password
+        this.auth.updatePassword(null, this.originalPassword, this.newPassword).then(function (result) {
+          result.createdPwd = true;
+          self.userDAO.put(result)
+          .then(function (result) {
+            self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
+            self.window.location.hash = '';
+            self.window.location.reload();
+          })
+          .catch(function (err) {
+            self.add(self.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
+          });
+        })
+        .catch(function (err){
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
       }
     }
   ]

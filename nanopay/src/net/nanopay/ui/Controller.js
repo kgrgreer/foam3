@@ -144,8 +144,13 @@ foam.CLASS({
               // show onboarding screen if user hasn't clicked "Go To Portal" button
               case self.AccountStatus.ACTIVE:
                 if ( self.user.onboarded ) break;
+                if ( !self.user.createdPwd ) {
+                  self.loginSuccess = false;
+                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5, hideBottomBar: true })
+                  return;
+                }
                 self.loginSuccess = false;
-                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 })
                 return;
 
               case self.AccountStatus.REVOKED:

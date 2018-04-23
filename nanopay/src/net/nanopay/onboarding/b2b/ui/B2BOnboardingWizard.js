@@ -83,14 +83,13 @@ foam.CLASS({
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
-
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-confirmAdminInfo', label: 'Confirm Admin Info', view: { class: 'net.nanopay.onboarding.b2b.ui.ConfirmAdminInfoForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-reviewAndSubmit', label: 'Review and Submit', view: { class: 'net.nanopay.onboarding.b2b.ui.ReviewAndSubmitForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-changePassword', label: 'Registration has been approved.', view: { class: 'net.nanopay.onboarding.b2b.ui.PasswordChangeForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-changePassword', label: 'Registration has been approved.', view: { class: 'net.nanopay.onboarding.b2b.ui.PasswordChangeForm' }, hidden: true },
         { parent: 'addB2BUser', id: 'form-addB2BUser-profileSubmitted', label: this.user.status$.map(function (status) {
           switch ( status ) {
             case self.AccountStatus.ACTIVE:
@@ -342,6 +341,7 @@ foam.CLASS({
             // validate Questionnaire
             if ( ! this.validateQuestionnaire() ) return;
           }
+
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }
       }

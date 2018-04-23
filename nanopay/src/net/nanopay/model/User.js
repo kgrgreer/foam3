@@ -203,6 +203,11 @@ foam.CLASS({
       value: false
     },
     {
+      class: 'Boolean',
+      name: 'createdPwd',
+      value: false
+    },
+    {
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,
