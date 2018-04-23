@@ -131,12 +131,12 @@ public class Main
           = new UserMigration(getX(), client).migrate();
 
       // migrate devices
-//      Map<ObjectId, Device> devices
-//          = new DeviceMigration(getX(), client, users).migrate();
+      Map<ObjectId, Device> devices
+          = new DeviceMigration(getX(), client, users).migrate();
 
       // migrate transaction
       Map<ObjectId, List<Transaction>> transactions
-          = new TransactionMigration(getX(), client, users).migrate();
+          = new TransactionMigration(getX(), client, users, devices).migrate();
 
       // migrate invoices
 //      Map<ObjectId, List<Invoice>> invoices

@@ -17,6 +17,7 @@ public abstract class AbstractMigration<K, V>
   protected final String maindb;
   protected final String brokerdb;
   protected final String cryptodb;
+  protected final String retaildb;
   protected final String prefix;
 
   public AbstractMigration(X x, MongoClient client) {
@@ -27,6 +28,7 @@ public abstract class AbstractMigration<K, V>
         maindb = "staging";
         brokerdb = "broker-staging";
         cryptodb = "crypto-service-staging";
+        retaildb = "retail-api-staging";
         prefix = "STAGING/";
         break;
 
@@ -34,6 +36,7 @@ public abstract class AbstractMigration<K, V>
         maindb = "prod";
         brokerdb = "broker-prod";
         cryptodb = "crypto-service-prod";
+        retaildb = "retail-api-prod";
         prefix = "PRODUCTION/";
         break;
 
@@ -41,6 +44,7 @@ public abstract class AbstractMigration<K, V>
         maindb = "development";
         brokerdb = "broker";
         cryptodb = "crypto-service";
+        retaildb = "retail-api";
         prefix = "DEVELOPMENT/";
         break;
     }

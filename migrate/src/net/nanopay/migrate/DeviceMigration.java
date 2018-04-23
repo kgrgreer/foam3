@@ -18,7 +18,9 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.and;
@@ -46,11 +48,11 @@ public class DeviceMigration
     // create a set of device ids that have a secure asset store
     Set<ObjectId> ids = mintchipCollection.find(and(
         exists("secureAssetStore"), type("secureAssetStore", BsonType.DOUBLE),
-        exists("deviceId"), type("deviceId", BsonType.OBJECT_ID)))
+        exists("deviceId"), type("deviceId", BsonType.STRING)))
         .into(new ArrayList<>()).stream().map(new Function<Document, ObjectId>() {
           @Override
           public ObjectId apply(Document document) {
-            return null;
+            return new ObjectId(document.getString("deviceId"));
           }
         })
         .collect(Collectors.toSet());
@@ -61,14 +63,20 @@ public class DeviceMigration
         return objectId;
       }
     }, new Function<ObjectId, Device>() {
+
+      AtomicInteger i = new AtomicInteger(10000);
+
       @Override
       public Device apply(ObjectId id) {
-        Document document = deviceCollection.find(new Document("_id", id)).first();
+        Document document = deviceCollection.find(and(
+            new Document("_id", id), exists("merchantUserId"))).first();
         if ( document == null ) return new Device.Builder(getX()).setId(-1).build();
+
 
         boolean active = document.getBoolean("active", false);
         boolean hasCert = ! SafetyUtil.isEmpty(document.getString("certificateId"));
 
+        // set status
         DeviceStatus status;
         if ( active && hasCert ) {
           status = DeviceStatus.ACTIVE;
@@ -78,27 +86,29 @@ public class DeviceMigration
           status = DeviceStatus.PENDING;
         }
 
+        // set type
         DeviceType type = null;
-        switch ( document.getString("type") ) {
-          case "ios":
-            type = DeviceType.APPLE;
-            break;
-          case "android":
-            type = DeviceType.ANDROID;
-            break;
-          case "terminal":
-            type = DeviceType.INGENICO;
-            break;
+        String typeStr = document.getString("type");
+        if ( "ios".equals(typeStr) ) {
+          type = DeviceType.APPLE;
+        } else if ( "android".equals(typeStr) ) {
+          type = DeviceType.ANDROID;
+        } else if ( "terminal".equals(typeStr) ) {
+          type = DeviceType.INGENICO;
         }
 
-        ObjectId merchantUserId = document.getObjectId("merchantUserId");
-        long userId = users_.get(merchantUserId).getId();
+        // get owner id
+        ObjectId merchantUserId = new ObjectId(document.getString("merchantUserId"));
+        long userId = users_.get(merchantUserId) != null ?
+            users_.get(merchantUserId).getId() : -1;
 
+        // get password
+        int password = document.getInteger("password", -1);
         Device device = new Device.Builder(EmptyX.instance())
-            .setOwner(userId)
+            .setId(i.getAndIncrement()).setOwner(userId)
             .setName(document.getString("name"))
             .setSerialNumber(document.getString("serialNumber"))
-            .setPassword(document.getString("password"))
+            .setPassword(Integer.toString(password, 10))
             .setStatus(status)
             .setType(type)
             .build();
@@ -108,8 +118,13 @@ public class DeviceMigration
       }
     }));
 
-    // remove null values
-    result.values().removeIf(device -> device.getId() == -1);
+    // remove bad values
+    result.values().removeIf(new Predicate<Device>() {
+      @Override
+      public boolean test(Device device) {
+        return device.getId() != -1 && (long) device.getOwner() != -1 && !"-1".equals(device.getPassword());
+      }
+    });
     return result;
   }
 }
