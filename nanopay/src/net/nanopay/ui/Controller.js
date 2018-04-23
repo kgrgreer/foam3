@@ -146,7 +146,7 @@ foam.CLASS({
                 if ( self.user.onboarded ) break;
                 if ( !self.user.createdPwd ) {
                   self.loginSuccess = false;
-                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5, hideBottomBar: true })
+                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
                   return;
                 }
                 self.loginSuccess = false;
