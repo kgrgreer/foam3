@@ -25,6 +25,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
   { name: 'net/nanopay/ui/ContentCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/BusinessCard', flags: ['web'] },
   { name: 'net/nanopay/ui/RadioView', flags: ['web'] },
   { name: 'net/nanopay/ui/ToggleSwitch', flags: ['web'] },
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
