@@ -84,18 +84,6 @@ foam.CLASS({
     ^{
       font-weight: 100;
     }
-    ^ .customer-div {
-      display: inline-block;
-    }
-    ^ .po-amount-div {
-      margin-left: 20px;
-      position: relative;
-      right: 70px;
-    }
-    ^ .frequency-div {
-      display: inline-block;
-      margin: 0 36px 20px 0;
-    }
     ^ .enable-recurring-text {
       font-size: 12px;
       margin: 20px 0;
@@ -125,26 +113,31 @@ foam.CLASS({
       height: 40px;
       margin-top: 10px;
     }
-    ^ .small-margin{
-      margin-top: 15px;
-    }
     ^ .information {
-      height: 200px;
-    }
-    ^ .invoice-input{
-      float: right;
-      position: relative;
-      top: -168px;
-    }
-    ^ .invoice-num{
-      position: relative;
-      top: 25px;
-    }
-    ^ .note-div {
-      height:
+      height: 110px;
     }
     ^ .net-nanopay-ui-BusinessCard{
       margin-bottom: 30px;
+    }
+    ^ .foam-u2-tag-Select{
+      width: 450px;
+    }
+    ^ .container-1{
+      margin-left: 60px;
+      display: inline-block;
+    }
+    ^ .container-2{
+      margin-left: 40px;
+      display: inline-block;
+    }
+    ^ .property-amount{
+      width: 215px;
+    }
+    ^ .customer-div{
+      vertical-align: top;
+      margin-top: 10px;
+      width: 420px;
+      display: inline-block;
     }
   `,
 
@@ -172,21 +165,17 @@ foam.CLASS({
                   .start(this.USER_LIST).end()
                 .endContext()
               .end()
-              .start().addClass('invoice-num')
+              .start().addClass('container-1')
                 .start().addClass('label').add('Invoice #').end()
                 .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+                .start().addClass('label').add('PO #').end()
+                .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
               .end()
-              .start().style({ 'float' : 'right'}).addClass('invoice-input')
-                .start().addClass('po-amount-div float-right')
-                  .start().addClass('label').add('PO #').end()
-                  .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
-                .end()
-                .start().addClass('float-right')
-                  .start().addClass('label').add('Due Date').end()
-                  .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
-                  .start().addClass('label').add('Amount').end()
-                  .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
-                .end()
+              .start().addClass('container-2')
+                .start().addClass('label').add('Due Date').end()
+                .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
+                .start().addClass('label').add('Amount').end()
+                .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
             .start().show(this.selectedUser$.map(function(a){ 
