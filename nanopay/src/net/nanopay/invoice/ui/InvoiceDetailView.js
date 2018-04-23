@@ -178,9 +178,7 @@ foam.CLASS({
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
-            .start().show(this.selectedUser$.map(function(a){ 
-              return a.firstName ? true : false;
-            }))
+            .start().show(this.selectedUser$.map(function(a){ return a.emailVerified; }))
               .tag({ class: 'net.nanopay.ui.BusinessCard', business$: this.selectedUser$ })
             .end()
             .start(this.Invoice.INVOICE_FILE).end()
