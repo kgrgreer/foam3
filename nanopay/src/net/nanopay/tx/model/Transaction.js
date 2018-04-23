@@ -40,6 +40,10 @@ foam.CLASS({
     }
   ],
 
+  searchColumns: [
+    'id', 'status', 'type'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -258,6 +262,10 @@ foam.CLASS({
       name: 'stripeChargeId',
       documentation: 'Stripe charge id is a unique identifier for every' +
         ' Charge object.'
+    },
+    {
+      class: 'String',
+      name: 'messageId'
     }
   ],
 
