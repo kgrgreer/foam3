@@ -100,7 +100,7 @@ foam.CLASS({
       this.ModalStyling.create();
 
       this.nSpecDAO.find('appConfig').then(function(config){
-        self.appConfig = config;
+        self.appConfig = config.service;
       })
 
       var self = this;
