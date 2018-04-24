@@ -89,7 +89,6 @@ foam.CLASS({
         { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-reviewAndSubmit', label: 'Review and Submit', view: { class: 'net.nanopay.onboarding.b2b.ui.ReviewAndSubmitForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-changePassword', label: 'Registration has been approved.', view: { class: 'net.nanopay.onboarding.b2b.ui.PasswordChangeForm' }, hidden: true },
         { parent: 'addB2BUser', id: 'form-addB2BUser-profileSubmitted', label: this.user.status$.map(function (status) {
           switch ( status ) {
             case self.AccountStatus.ACTIVE:
@@ -99,7 +98,8 @@ foam.CLASS({
             default:
               return 'Registration is under review.';
           }
-        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
+        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-changePassword', label: 'Registration has been approved.', view: { class: 'net.nanopay.onboarding.b2b.ui.PasswordChangeForm' }, hidden: true }
       ];
       this.SUPER();
     },
@@ -141,7 +141,7 @@ foam.CLASS({
         if ( ! result ) throw new Error(self.SubmitFailureMessage);
         self.user.copyFrom(result);
         self.add(self.NotificationMessage.create({ message: self.SubmitSuccessMessage }));
-        self.subStack.push(self.views[self.subStack.pos + 1].view);
+        // self.subStack.push(self.views[self.subStack.pos + 1].view);
       }).catch(function (err) {
         self.add(self.NotificationMessage.create({ message: self.SubmitFailureMessage, type: 'error' }));
       });

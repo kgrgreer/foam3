@@ -59,6 +59,7 @@ foam.CLASS({
       height: 40px;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
+      padding-left: 10px;
     }
     ^ .account-status{
       position: relative;
@@ -80,9 +81,6 @@ foam.CLASS({
       background-color: #59a5d5;
       color: white;
       margin-top: 30px;
-    }
-    ^ .foam-u2-TextField{
-
     }
   `,
 
@@ -176,21 +174,18 @@ foam.CLASS({
           return;
         }
 
-        // update password
-        this.auth.updatePassword(null, this.originalPassword, this.newPassword).then(function (result) {
-          result.createdPwd = true;
-          self.userDAO.put(result)
-          .then(function (result) {
+        this.user.createdPwd = true;
+        this.userDAO.put(this.user).then(function (result) {
+          self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a){
             self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
-            self.window.location.hash = '';
-            self.window.location.reload();
-          })
-          .catch(function (err) {
-            self.add(self.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
+            this.window.location.hash = '';
+            this.window.location.reload();
+          }).catch(function(err){
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         })
-        .catch(function (err){
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
         });
       }
     }
