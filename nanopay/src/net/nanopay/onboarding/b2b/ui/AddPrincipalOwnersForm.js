@@ -671,11 +671,7 @@ foam.CLASS({
       name: 'isSameAsAdmin',
       value: false,
       postSet: function(oldValue, newValue) {
-<<<<<<< HEAD
-        this.selectedPrincipalOwner = null;
-=======
         if ( newValue ) this.editingPrincipalOwner = null;
->>>>>>> staging
         this.sameAsAdmin(newValue);
       }
     }
@@ -694,10 +690,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-<<<<<<< HEAD
-=======
       this.principleTypeField = 'Shareholder';
->>>>>>> staging
       var modeSlot = this.isDisplayMode$.map(function(mode) { return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW; });
       var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
         return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
@@ -949,14 +942,6 @@ foam.CLASS({
       }
     },
 
-<<<<<<< HEAD
-    function editPrincipalOwner(owner) {
-      this.isSameAsAdmin = false;
-
-      this.firstNameField = owner.firstName;
-      this.middleNameField = owner.middleName;
-      this.lastNameField = owner.lastName;
-=======
     function editPrincipalOwner(user, editable) {
       var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
       formHeaderElement.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -965,7 +950,6 @@ foam.CLASS({
       this.firstNameField = user.firstName;
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
->>>>>>> staging
       this.isEditingName = false; // This will change displayedLegalName as well
       this.jobTitleField = owner.jobTitle;
       this.emailAddressField = owner.email;
@@ -990,25 +974,6 @@ foam.CLASS({
     function extractPhoneNumber(phone) {
       return phone.number.substring(2);
     },
-<<<<<<< HEAD
-
-    function sameAsAdmin(flag) {
-      this.clearFields();
-      if ( flag ) {
-        this.firstNameField = this.user.firstName;
-        this.middleNameField = this.user.middleName;
-        this.lastNameField = this.user.lastName;
-        this.isEditingName = false;
-
-        this.jobTitleField = this.user.jobTitle;
-        this.emailAddressField = this.user.email;
-        this.phoneNumberField = this.extractPhoneNumber(this.user.phone);
-        this.isEditingPhone = false;
-      }
-    }
-  ],
-=======
->>>>>>> staging
 
     function sameAsAdmin(flag) {
       this.clearFields();
@@ -1154,13 +1119,9 @@ foam.CLASS({
 
         // TODO?: Maybe add a loading indicator?
         this.principalOwnersDAO.put(principleOwner).then(function(npo) {
-<<<<<<< HEAD
-          self.clearFields();
-=======
           self.editingPrincipalOwner = null;
           self.tableViewElement.selection = null;
           self.clearFields(true);
->>>>>>> staging
           self.isSameAsAdmin = false;
         });
 

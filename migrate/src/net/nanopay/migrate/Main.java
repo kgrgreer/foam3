@@ -34,7 +34,7 @@ public class Main
     }
   }
 
-  public static final MigrationMode MODE = MigrationMode.STAGING;
+  public static final MigrationMode MODE = MigrationMode.DEBUG;
 
   protected static X root_ = null;
 
@@ -100,7 +100,7 @@ public class Main
       String filename;
       switch ( MODE ) {
         case STAGING:     filename = "conf/credentials.staging.properties"; break;
-        case PRODUCTION:  filename = "conf/credentials.prod.properties";    break;
+        case PRODUCTION:  filename = "conf/credentials.production.properties";    break;
         default:          filename = "conf/credentials.debug.properties";   break;
       }
 
@@ -131,12 +131,12 @@ public class Main
           = new UserMigration(getX(), client).migrate();
 
       // migrate devices
-//      Map<ObjectId, Device> devices
-//          = new DeviceMigration(getX(), client, users).migrate();
+      Map<ObjectId, Device> devices
+          = new DeviceMigration(getX(), client, users).migrate();
 
       // migrate transaction
       Map<ObjectId, List<Transaction>> transactions
-          = new TransactionMigration(getX(), client, users).migrate();
+          = new TransactionMigration(getX(), client, users, devices).migrate();
 
       // migrate invoices
 //      Map<ObjectId, List<Invoice>> invoices

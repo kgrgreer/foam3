@@ -27,11 +27,11 @@ public class LiquidityDAO extends ProxyDAO {
       throw exception;
     }
 
-    if ( ! txn.getType().equals(TransactionType.CASHIN) && ! txn.getType().equals(TransactionType.CASHOUT) ) {
-      LiquidityService ls = (LiquidityService) x.get("liquidityService");
-      ls.liquifyUser(txn.getPayerId());
-      ls.liquifyUser(txn.getPayeeId());
-    }
+//    if ( ! txn.getType().equals(TransactionType.CASHIN) && ! txn.getType().equals(TransactionType.CASHOUT) ) {
+//      LiquidityService ls = (LiquidityService) x.get("liquidityService");
+//      ls.liquifyUser(txn.getPayerId());
+//      ls.liquifyUser(txn.getPayeeId());
+//    }
     return ret;
   }
 }

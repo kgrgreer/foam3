@@ -83,7 +83,6 @@ foam.CLASS({
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
-
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-confirmAdminInfo', label: 'Confirm Admin Info', view: { class: 'net.nanopay.onboarding.b2b.ui.ConfirmAdminInfoForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
@@ -99,7 +98,8 @@ foam.CLASS({
             default:
               return 'Registration is under review.';
           }
-        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
+        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-changePassword', label: 'Registration has been approved.', view: { class: 'net.nanopay.onboarding.b2b.ui.PasswordChangeForm' }, hidden: true }
       ];
       this.SUPER();
     },
@@ -141,7 +141,7 @@ foam.CLASS({
         if ( ! result ) throw new Error(self.SubmitFailureMessage);
         self.user.copyFrom(result);
         self.add(self.NotificationMessage.create({ message: self.SubmitSuccessMessage }));
-        self.subStack.push(self.views[self.subStack.pos + 1].view);
+        // self.subStack.push(self.views[self.subStack.pos + 1].view);
       }).catch(function (err) {
         self.add(self.NotificationMessage.create({ message: self.SubmitFailureMessage, type: 'error' }));
       });
@@ -341,6 +341,7 @@ foam.CLASS({
             // validate Questionnaire
             if ( ! this.validateQuestionnaire() ) return;
           }
+
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }
       }

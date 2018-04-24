@@ -18,7 +18,7 @@ foam.CLASS({
     'closeDialog',
     'onCashOutSuccess',
     'cashOut',
-    'standardCICOTransactionDAO',
+    'transactionDAO',
     'user'
   ],
 
@@ -242,7 +242,7 @@ foam.CLASS({
       name: 'cashOutBtn',
       label: 'Cash Out',
       code: function (X) {
-        var self = this; 
+        var self = this;
 
         var cashOutTransaction = this.Transaction.create({
           payerId: X.user.id,
@@ -251,7 +251,7 @@ foam.CLASS({
           type: this.TransactionType.CASHOUT
         });
 
-        X.standardCICOTransactionDAO.put(cashOutTransaction).then(function(response) {
+        X.transactionDAO.put(cashOutTransaction).then(function(response) {
           X.closeDialog();
           X.onCashOutSuccess();
         }).catch(function(error) {

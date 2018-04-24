@@ -9,6 +9,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.cico.model.TransactionType;
+import net.nanopay.retail.model.Device;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.bson.Document;
@@ -46,10 +47,12 @@ public class TransactionMigration
 
   protected final DAO transactionDAO_;
   protected final Map<ObjectId, User> users_;
+  protected final Map<ObjectId, Device> devices_;
 
-  public TransactionMigration(X x, MongoClient client, Map<ObjectId, User> users) {
+  public TransactionMigration(X x, MongoClient client, Map<ObjectId, User> users, Map<ObjectId, Device> devices) {
     super(x, client);
     users_= users;
+    devices_ = devices;
     transactionDAO_ = (DAO) x.get("transactionDAO");
   }
 
@@ -61,7 +64,8 @@ public class TransactionMigration
     MongoCollection<Document> mintchipCollection = main.getCollection("mintchipConsumer");
     MongoCollection<Document> transactionCollection = broker.getCollection("transactionLog");
 
-    Map<String, User> payables = new HashMap<>();
+    Map<String, User> sasToUser = new HashMap<>();
+    Map<String, Device> sasToDevice = new HashMap<>();
 
     return mintchipCollection.find()
         .into(new ArrayList<>()).stream().collect(Collectors.toMap(new Function<Document, ObjectId>() {
@@ -69,8 +73,22 @@ public class TransactionMigration
           public ObjectId apply(Document document) {
             ObjectId userId = document.getObjectId("userId");
             String sas = nf.get().format(document.get("secureAssetStore"));
-            payables.put(sas, users_.get(userId));
-            return userId;
+
+            // map sas to users
+            if ( userId != null && users_.get(userId) != null ) {
+              sasToUser.put(sas, users_.get(userId));
+            }
+
+            // map sas to devices
+            String deviceIdString = document.getString("deviceId");
+            if ( ! SafetyUtil.isEmpty(deviceIdString) && ObjectId.isValid(deviceIdString) ) {
+              ObjectId deviceId = new ObjectId(deviceIdString);
+              if ( devices_.get(deviceId) != null ) {
+                sasToDevice.put(sas, devices_.get(deviceId));
+              }
+            }
+
+            return document.getObjectId("_id");
           }
         }, new Function<Document, List<Transaction>>() {
 
@@ -85,10 +103,11 @@ public class TransactionMigration
                   public Transaction apply(Document document) {
                     String payerId = document.getString("payerId");
                     String payeeId = document.getString("payeeId");
-                    long payerUserId = payables.get(payerId) != null ?
-                        payables.get(payerId).getId() : 0;
-                    long payeeUserId = payables.get(payeeId) != null ?
-                        payables.get(payeeId).getId() : 0;
+                    long payerUserId = sasToUser.get(payerId) != null ?
+                        sasToUser.get(payerId).getId() : 0;
+
+                    long payeeUserId = sasToUser.get(payeeId) != null ?
+                        sasToUser.get(payeeId).getId() : 0;
 
                     TransactionType type = isBroker(payerId) ? TransactionType.CASHIN :
                         isBroker(payeeId) ? TransactionType.CASHOUT :
@@ -123,6 +142,13 @@ public class TransactionMigration
                         .setStatus(status)
                         .setType(type)
                         .build();
+
+                    // set transaction device id if exists
+                    Device device = sasToDevice.get(payerId) == null ?
+                        sasToDevice.get(payeeId) : sasToDevice.get(payerId);
+                    if ( device != null ) {
+                      transaction.setDeviceId(device.getId());
+                    }
 
                     // set the payer and payee ids depending on the types
                     switch ( type ) {
