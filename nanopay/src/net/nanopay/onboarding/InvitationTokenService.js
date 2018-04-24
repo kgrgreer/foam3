@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'appConfig',
     'email',
     'localUserDAO',
     'logger',
