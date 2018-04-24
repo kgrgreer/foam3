@@ -124,7 +124,7 @@ public class EFTConfirmationFileProcessor extends ContextAwareSupport
         channelSftp.rename(srcFileDirectory + fileNames.get(i), dstFileDirectory + fileNames.get(i));
       }
 
-      System.out.println("EFT Confirmation file processing finished");
+      logger.debug("EFT Confirmation file processing finished");
       channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {

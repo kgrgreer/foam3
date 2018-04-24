@@ -128,7 +128,7 @@ public class EFTReturnFileProcessor extends ContextAwareSupport
         channelSftp.rename(srcFileDirectory + fileNames.get(i), dstFileDirectory + fileNames.get(i));
       }
 
-      System.out.println("EFT Return file processing finished");
+      logger.debug("EFT Return file processing finished");
       channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {

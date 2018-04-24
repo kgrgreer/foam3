@@ -70,7 +70,7 @@ try {
   
   if ( ! csvFileExist ) {
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
-    System.out.println("CICO CSV file sent");
+    logger.debug("CICO CSV file sent");
   } else {
     logger.warning("duplicate csv file not sent", filename, System.getProperty("user.name"));
   } 
