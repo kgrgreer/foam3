@@ -144,11 +144,6 @@ foam.CLASS({
           return;
         }
 
-        if ( this.newPassword.includes(' ') ) {
-          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
-          return;
-        }
-
         if ( ! this.validatePassword(this.newPassword) ) {
           this.add(self.NotificationMessage.create({ message: this.invalidPassword, type: 'error' }));
           return;
