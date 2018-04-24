@@ -20,12 +20,15 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
       name: 'originalPassword'
     },
     {
+      class: 'String',
       name: 'newPassword'
     },
     {
+      class: 'String',
       name: 'confirmPassword'
     }
   ],
@@ -86,7 +89,6 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
     { name: 'emptyOriginal', message: 'Please enter your original password'},
