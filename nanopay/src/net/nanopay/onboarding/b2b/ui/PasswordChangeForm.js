@@ -185,7 +185,7 @@ foam.CLASS({
           });
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }
     }
