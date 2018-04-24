@@ -46,7 +46,14 @@ foam.CLASS({
       name: 'verifyAmount'
     }
   ],
-
+  messages: [
+    { name: 'Accept', message: "I Agree" },
+    { name: 'Next', message: 'Next' },
+    { name: 'Later', message: 'Come back later' },
+    { name: 'Verify', message: 'Verify' },
+    { name: 'Back', message: "Back" },
+    { name: 'Done', message: 'Done' }
+  ],
   methods: [
     function init() {
       this.views = [
@@ -55,7 +62,7 @@ foam.CLASS({
         { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',       view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
         { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',               view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
-      this.nextLabel = 'Next';
+      this.nextLabel = this.Next;
       this.SUPER();
       this.viewData.user = this.user
       this.viewData.bankAccount = []
@@ -146,7 +153,7 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
             return;
           }
-          this.nextLabel = 'I Agree';         
+          this.nextLabel = this.Accept;         
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }
@@ -180,8 +187,8 @@ foam.CLASS({
           this.bankAccountDAO.put(accountInfo).then(function(response) {
             self.viewData.bankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.backLabel = 'Come back later';
-            self.nextLabel = 'Verify';
+            self.backLabel = this.Later;
+            self.nextLabel = this.Verify;
             return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
@@ -197,8 +204,8 @@ foam.CLASS({
             if ( response ) {
               self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = 'Back';
-              self.nextLabel = 'Done';
+              self.backLabel = this.Back;
+              self.nextLabel = this.Done;
             }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
