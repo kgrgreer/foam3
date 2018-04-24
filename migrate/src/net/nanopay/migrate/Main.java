@@ -34,7 +34,7 @@ public class Main
     }
   }
 
-  public static final MigrationMode MODE = MigrationMode.STAGING;
+  public static final MigrationMode MODE = MigrationMode.DEBUG;
 
   protected static X root_ = null;
 
@@ -100,7 +100,7 @@ public class Main
       String filename;
       switch ( MODE ) {
         case STAGING:     filename = "conf/credentials.staging.properties"; break;
-        case PRODUCTION:  filename = "conf/credentials.prod.properties";    break;
+        case PRODUCTION:  filename = "conf/credentials.production.properties";    break;
         default:          filename = "conf/credentials.debug.properties";   break;
       }
 
