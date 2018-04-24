@@ -10,15 +10,17 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalHeader',
     'foam.u2.dialog.NotificationMessage',
   ],
+
   imports: [
-    'user',
+    'appConfig',
     'emailDocService',
-    'appConfig'
+    'user'
   ],
 
   exports: [
     'as data',
   ],
+
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
@@ -36,21 +38,21 @@ foam.CLASS({
   }
   ^ .net-nanopay-ui-modal-ModalHeader {
     width: 100%;
-  } 
+  }
   ^ .net-nanopay-ui-ActionView-printButton {
     float: left;
     margin: 2px 5px 5px 25px;
-  } 
+  }
   ^ .net-nanopay-ui-ActionView-EmailButton {
     float: right;
     margin: 2px 25px 5px 5px;
-  } 
+  }
   `,
 
   methods: [
     function initE(){
       this.SUPER();
-      var self = this;    
+      var self = this;
       debugger;
       this
       .start()
@@ -58,22 +60,22 @@ foam.CLASS({
           title: 'Terms and Conditions'
         }))
         .addClass(this.myClass())
-        
+
         .start('iframe').addClass('iframe-container')
-          .attrs({id:'print-iframe',name:'print-iframe',src:this.appConfig.service.url+"service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+          .attrs({id:'print-iframe',name:'print-iframe',src:this.appConfig.url+"service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
         .end()
         .start('div')
           .start(this.PRINT_BUTTON).addClass('btn blue-button')
           .end()
           .callIf( this.user.email != "",function(){
-            this 
+            this
             .start(self.EMAIL_BUTTON).addClass('btn blue-button')
             .end()
           })
         .end()
       .end()
     },
-   
+
   ],
   actions:[
     {
