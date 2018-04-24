@@ -5,7 +5,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: 'HIDDEN'
     },
     {
       class: 'StringArray',
@@ -17,7 +18,8 @@ foam.CLASS({
     {
       class: 'String',
       documentation: 'For phase 2 FI',
-      name: 'owner'
+      name: 'owner',
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectArray',

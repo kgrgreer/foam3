@@ -4,11 +4,21 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: 'View to display footer, including copyright label',
+  
+  requires: [
+    'foam.u2.PopupView',
+    'foam.u2.dialog.Popup',
+  ],
 
   imports: [
     'webApp',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'user'
+  ],
+
+  exports: [
+    'openTermsModal'
   ],
 
   axioms: [
@@ -75,6 +85,10 @@ foam.CLASS({
       factory: function () {
         return 'Powered by nanopay';
       }
+    },
+    {
+      class: 'String',
+      name: 'version'
     }
   ],
 
@@ -99,6 +113,10 @@ foam.CLASS({
           .start('p').add('Copyright © 2018 ' + this.webApp + '. All rights reserved.').end()
         .end()
 
+    },
+    function openTermsModal() {
+      this.version = " "
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal', exportData$: this.version$ }));
     }
   ],
 
@@ -113,7 +131,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'Terms and Conditions',
       code: function(X) {
-        this.window.location.assign(X.termsUrl);
+        X.openTermsModal()
       }
     },
     {

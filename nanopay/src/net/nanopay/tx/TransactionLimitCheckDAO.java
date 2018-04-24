@@ -54,8 +54,8 @@ public class TransactionLimitCheckDAO
     }
 
 
-    Long firstLock  = transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
-    Long secondLock = transaction.getPayerId() > transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId();
+    Object firstLock  = String.valueOf(transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId()).intern();
+    Object secondLock = String.valueOf(transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayeeId() : transaction.getPayerId()).intern();
 
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {

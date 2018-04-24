@@ -24,9 +24,11 @@ import net.nanopay.tx.model.Transaction;
 public class CICOTransactionDAO
   extends ProxyDAO
 {
+
   public CICOTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
+
   public CICOTransactionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);

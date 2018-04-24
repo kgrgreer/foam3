@@ -43,7 +43,7 @@ foam.CLASS({
       border: 1px solid lightgrey;
       background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
-      position: sticky;
+      position: relative;
       z-index: 10;
     }
     ^ .net-nanopay-ui-ActionView-payNow {
@@ -114,6 +114,7 @@ foam.CLASS({
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
         .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
+        .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
         .start('h2').addClass('light-roboto-h2').style({ "margin-bottom": "0px"})
           .add('Note:')
         .end()

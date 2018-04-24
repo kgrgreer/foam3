@@ -34,6 +34,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
+      swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
     {

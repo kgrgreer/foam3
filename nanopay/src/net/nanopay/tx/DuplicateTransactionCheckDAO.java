@@ -4,36 +4,48 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
-public class DuplicateTransactionCheckDAO extends ProxyDAO {
+public class DuplicateTransactionCheckDAO
+  extends ProxyDAO
+{
+  protected final Object[] locks_ = new Object[128];
+
   public DuplicateTransactionCheckDAO(X x, DAO delegate) {
     setDelegate(delegate);
     setX(x);
+    for ( int i = 0 ; i < locks_.length ; i++ ) locks_[i] = new Object();
+  }
+
+  public Object getLockForId(long id) {
+    return locks_[(int)(id%locks_.length)];
   }
 
   @Override
-  synchronized public FObject put_(X x, FObject obj) throws RuntimeException {
-    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+  public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction curTxn = (Transaction) obj;
-    if ( oldTxn != null ) {
-      if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
-        throw new RuntimeException("Unable to update Transaction, if transaction status is accept or decline");
+
+    synchronized ( getLockForId(curTxn.getId()) ) {
+      Transaction oldTxn = (Transaction) getDelegate().find(obj);
+      if ( oldTxn != null ) {
+        if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
+          throw new RuntimeException("Unable to update Transaction, if transaction status is accepted or declined");
+        }
+        if ( compareTransactions(oldTxn, curTxn) != 0 ) {
+          throw new RuntimeException("Unable to update Transaction");
+        }
       }
-      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-        throw new RuntimeException("Unable to update Transaction");
-      }
+      return super.put_(x, obj);
     }
-    return super.put_(x, obj);
   }
 
   /*
   For the transaction update we only accept transaction status and invoice change. Other change was not be accepted
    */
   public int compareTransactions(Transaction oldtxn, Transaction curtxn) {
-    if ( oldtxn == null || curtxn == null )
-      return - 1;
+    if ( oldtxn == null || curtxn == null ) return - 1;
+
     Transaction temp = (Transaction) curtxn.deepClone();
     temp.setStatus(oldtxn.getStatus());
     temp.setInvoiceId(oldtxn.getInvoiceId());

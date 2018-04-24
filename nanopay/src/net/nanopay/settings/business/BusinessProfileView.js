@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'BusinessProfileView',
   extends: 'foam.u2.View',
 
+  requires: [
+    'net.nanopay.ui.ExpandContainer',
+    'net.nanopay.settings.business.PrincipalOwnersDetailView'
+  ],
+
   imports: [
     'stack',
     'user'
@@ -15,17 +20,18 @@ foam.CLASS({
       width: 100%;
       background-color: #edf0f5;
       margin: auto;
+      padding-bottom: 60px;
     }
     ^ .businessSettingsContainer {
       width: 992px;
+      padding-left: 20px;
       margin: auto;
     }
     ^ .Container {
       width: 992px;
       min-height: 80px;
-      margin-top: 30px;
-      margin-bottom: 20px;
-      padding: 20px;
+      padding-top: 40px;
+      padding-left: 20px;
       border-radius: 2px;
       background-color: white;
       box-sizing: border-box;
@@ -46,7 +52,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
-      padding-left: 100px;
+      margin-left: 140px;
       display: inline-block;
       line-height: 16px;
       position: absolute;
@@ -58,7 +64,7 @@ foam.CLASS({
     }
     ^ .inlineDiv {
       display: inline-block;
-      margin-right: 80px;
+      margin-right: 40px;
       vertical-align: top;
     }
     ^ .topInlineDiv {
@@ -92,6 +98,7 @@ foam.CLASS({
       color: #093649;
       display: flex;
       width: 185px;
+      height: 20px;
     }
     ^ .foam-u2-ActionView-editProfile {
       text-decoration: underline;
@@ -119,6 +126,13 @@ foam.CLASS({
     }
     ^ .dayOfWeekDiv {
       margin-top: 20px;
+    }
+    ^ .shopperImage{
+      right: 0 !important;
+    }
+    ^ .net-nanopay-ui-ExpandContainer{
+      width: 1000px;
+      margin-top: 30px;
     }
   `,
 
@@ -157,20 +171,16 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditPrincipalOwnersView' });
+      var businessProfile = this.ExpandContainer.create({ title: 'Business Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditBusinessProfileView' });
 
-      this.user.businessSectorId$find.then(function(sector) {
-        self.businessSectorName = sector.name;
-      });
       this.user.businessTypeId$find.then(function(type) {
         self.businessTypeName = type.name;
       });
-
       this
       .addClass(this.myClass())
+      .start(businessProfile)
       .start().addClass('businessSettingsContainer')
-        .start().addClass('Container')
-          .start().add('Business Profile').addClass('boxTitle').end()
-          .add(this.EDIT_PROFILE)
           .start().addClass('profileImgDiv')
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
@@ -183,31 +193,37 @@ foam.CLASS({
           .start()
             .start().addClass('inlineDiv')
               .start().addClass('labelDiv')
-                .start().add('Business Type').addClass('labelTitle').end()
-                .start().add(this.businessTypeName$).addClass('labelContent').end()
+                .start().add('Business Phone').addClass('labelTitle').end()
+                .start().add(this.user.businessPhone.number).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')
-                .start().add('Business Sector').addClass('labelTitle').end()
-                .start().add(this.businessSectorName$).addClass('labelContent').end()
+                .start().add('Business Registration Number').addClass('labelTitle').end()
+                .start().add(this.user.businessRegistrationNumber).addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('inlineDiv')
-              .start().addClass('labelDiv')
-                .start().add('Business Identification No.').addClass('labelTitle').end()
-                .start().add(this.user.businessRegistrationNumber).addClass('labelContent').end()
-              .end()
-              .start().addClass('labelDiv')
-                .start().add('Issuing Authority').addClass('labelTitle').end()
-                .start().add(this.user.businessRegistrationAuthority).addClass('labelContent').end()
-              .end()
-            .end()
-            .start().addClass('topInlineDiv')
               .start().addClass('labelDiv')
                 .start().add('Website').addClass('labelTitle').end()
                 .start().add(this.user.website).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')
-                .start().add('Address').addClass('labelTitle').end()
+                .start().add('Registration Authority').addClass('labelTitle').end()
+                .start().add(this.user.businessRegistrationAuthority).addClass('labelContent').end()
+              .end()
+            .end()
+            .start().addClass('inlineDiv')
+              .start().addClass('labelDiv')
+                .start().add('Business Type').addClass('labelTitle').end()
+                .start().add(this.businessTypeName$).addClass('labelContent').end()
+              .end()
+              .start().addClass('labelDiv')
+                .start().add('Registration Date').addClass('labelTitle').end()
+                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toISOString().substring(0,10) : '').addClass('labelContent').end()
+              .end()
+            .end()
+            .start().addClass('topInlineDiv')
+              .start().addClass('labelDiv')
+                .start().add('Business Address').addClass('labelTitle').end()
                 .startContext()
                   .start().hide(this.user.businessAddress.structured$)
                     .start().add(this.user.businessAddress.address1).addClass('labelContent').end()
@@ -225,10 +241,15 @@ foam.CLASS({
             .end()
           .end()
         .end()
+        this
+        .addClass(this.myClass())
+        .start(ownerProfile)
+          .add(this.PrincipalOwnersDetailView.create({ user: this.user}))
+        .end()
         .callIf( this.user.type == 'Merchant', function() {
           this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' });
         })
-      .end();
+      .end()
     }
   ],
 

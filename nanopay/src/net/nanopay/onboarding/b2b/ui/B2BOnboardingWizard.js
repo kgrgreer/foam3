@@ -8,7 +8,10 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.AccountStatus',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Phone'
   ],
 
   imports: [
@@ -20,6 +23,8 @@ foam.CLASS({
     'validateCity',
     'validateStreetNumber',
     'validateAddress',
+    'validateEmail',
+    'validateAge',
     'user',
     'userDAO'
   ],
@@ -39,7 +44,8 @@ foam.CLASS({
       expression: function (position) {
         return ( position < this.views.length - 2 ) ? 'Next' : 'Submit';
       }
-    }
+    },
+    'addPrincipalOwnersForm'
   ],
 
   messages: [
@@ -72,9 +78,12 @@ foam.CLASS({
   methods: [
     function init() {
       var self = this;
+      this.hasSaveOption = true;
+      this.hasExitOption = true;
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
+
       this.views = [
         { parent: 'addB2BUser', id: 'form-addB2BUser-confirmAdminInfo', label: 'Confirm Admin Info', view: { class: 'net.nanopay.onboarding.b2b.ui.ConfirmAdminInfoForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
@@ -112,7 +121,6 @@ foam.CLASS({
       var self = this;
 
       this.user = this.viewData.user;
-
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);
@@ -313,7 +321,6 @@ foam.CLASS({
           this.submit();
           return;
         }
-
         // move to next screen
         if ( this.position < this.views.length - 1 ) {
           if ( this.position === 0 ) {
@@ -323,6 +330,12 @@ foam.CLASS({
           if ( this.position === 1 ) {
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
+          }
+          if ( this.position === 2 ) {
+            if ( this.addPrincipalOwnersForm.isFillingPrincipalOwnerForm() ) {
+              if ( ! this.addPrincipalOwnersForm.validatePrincipalOwner() ) return;
+              this.addPrincipalOwnersForm.addPrincipalOwner();
+            }
           }
           if ( this.position == 3) {
             // validate Questionnaire
