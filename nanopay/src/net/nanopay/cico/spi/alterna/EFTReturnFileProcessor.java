@@ -35,7 +35,6 @@ public class EFTReturnFileProcessor extends ContextAwareSupport
     DAO transactionDao = (DAO)x.get("localTransactionDAO");
 
     List<String> fileNames = new ArrayList<>();
-
     Session session = null;
     Channel channel = null;
     ChannelSftp channelSftp;
@@ -96,12 +95,14 @@ public class EFTReturnFileProcessor extends ContextAwareSupport
 
             if ( tran.getStatus() == TransactionStatus.SENT ) {
               tran.setStatus(TransactionStatus.DECLINED);
-              sendEmail(x, "Transaction was rejected or returned by the system",
-                "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
+              sendEmail(x, "Transaction was rejected or returned by EFT return file",
+                "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
             } else if ( tran.getStatus() == TransactionStatus.COMPLETED && tran.getReturnType().equals("Return") ) {
               sendEmail(x, "Transaction was returned outside of the 2 business day return period",
-                "Transaction id: " + tran.getId() + ", return code: " + tran.getReturnCode() + ", return date: " + tran.getReturnDate());
+                "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
             }
+
+            transactionDao.put(tran);
           }
         }
       }
@@ -127,6 +128,7 @@ public class EFTReturnFileProcessor extends ContextAwareSupport
         channelSftp.rename(srcFileDirectory + fileNames.get(i), dstFileDirectory + fileNames.get(i));
       }
 
+      System.out.println("EFT Return file processing finished");
       channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {

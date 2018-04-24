@@ -3,20 +3,22 @@ package net.nanopay.cico.spi.alterna;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.Sink;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
-import java.io.*;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -46,17 +48,19 @@ public class CsvUtil {
    *         or the current date plus 2 days if the current date is after 11 am
    */
   public static Date generateSettlementDate(Date date) {
-    Calendar now = Calendar.getInstance();
-    now.setTime(date);
-    int k = now.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
+    Calendar curDate = Calendar.getInstance();
+    curDate.setTime(date);
+    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
     int i = 0;
     while ( i < k ) {
-      now.add(Calendar.DAY_OF_YEAR, 1);
-      if ( now.get(Calendar.DAY_OF_WEEK) != 7 && now.get(Calendar.DAY_OF_WEEK) != 1 && !cadHolidays.contains(now.get(Calendar.DAY_OF_YEAR)) ) {
+      curDate.add(Calendar.DAY_OF_YEAR, 1);
+      if ( curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+        && curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+        && ! cadHolidays.contains(curDate.get(Calendar.DAY_OF_YEAR)) ) {
         i = i + 1;
       }
     }
-    return now.getTime();
+    return curDate.getTime();
   }
 
   /**
@@ -109,12 +113,12 @@ public class CsvUtil {
         )
       )
     ).select(new AbstractSink() {
-
       @Override
       public void put(Object obj, Detachable sub) {
         try {
-          User user = null;
-          String txnType = null;
+          User user;
+          String txnType;
+          String refNo;
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
@@ -141,11 +145,16 @@ public class CsvUtil {
             return;
           }
 
-          String refNo = generateReferenceId();
+          if ( ! t.getReferenceNumber().equals("") ) {
+            refNo = t.getReferenceNumber();
+          } else {
+            refNo = generateReferenceId();
+          }
+
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
           // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if (  !"".equals(t.getPadType()) ) {
+          if ( ! t.getPadType().equals("") ) {
             alternaFormat.setPadType(t.getPadType());
           }
           else {
@@ -161,7 +170,7 @@ public class CsvUtil {
           alternaFormat.setTxnType(txnType);
 
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if (  ! "".equals(t.getTxnCode()) ) {
+          if ( ! t.getTxnCode().equals("") ) {
             alternaFormat.setTxnCode(t.getTxnCode());
           } else {
             t.setTxnCode(alternaFormat.getTxnCode());
@@ -169,12 +178,13 @@ public class CsvUtil {
 
           alternaFormat.setProcessDate(csvSdf.get().format(generateSettlementDate(now)));
           alternaFormat.setReference(refNo);
+
           t.setSettlementDate(generateSettlementDate(now));
           t.setReferenceNumber(refNo);
-          t.setStatus(TransactionStatus.SENT);
-          transactionDAO.put_(x, t);
+
+          transactionDAO.put(t);
           out.put(alternaFormat, sub);
-          
+
           // if a verification transaction, also add a CR with same information
           if ( t.getType() == TransactionType.VERIFICATION ) {
             AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
