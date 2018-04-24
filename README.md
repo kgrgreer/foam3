@@ -26,46 +26,6 @@ cd NANOPAY
 build.sh -i
 ```
 
-#### Indidual Configuration Components
-##### FOAM2 SubModule
-foam2 is added as a submodule.
-Initialize the submodule
-```
-git submodule init
-git submodule update
-```
-
-##### npm 
-Run npm to install required packages, such iso2022
-```
-npm install
-```
-
-##### Installing tomcat
-
-Go into the NANOPAY/tools directory and run the following commands:
-
-```
-./tomcatInstall.sh
-
-```
-
-##### Tomcat docBase
-To have tomcat automatically reload, add your development path to tomcat's configuration.
-Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`) as follows:
-
-NOTE: this can be added/updated at any time by running *build.sh -i*
-```
-/Library/Tomcat/conf/server.xml
-```
-
-```
-<Host>
-  ...
-  <Context docBase="${catalina_doc_base}" path="/dev" />
-</Host> 
-```
-
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
 
@@ -115,7 +75,7 @@ Picture of nanopay git flow: https://drive.google.com/file/d/0B1fbZtuULvxQM29JaE
 ### Versioning
 Versioning follows the Semantic Versioning principles: https://semver.org/
 
-### Deployments
+### Demo Deployments
 For each deployment to the servers
 Steps to build:
 1. Fetch latest tags
@@ -125,10 +85,10 @@ Steps to build:
    eg. git pull origin master
 
 4. Create a new tag with the updated code. Increment the previous tag version
-   eg. git tag -a staging-v1.0.7 -m "Some tag message"
+   eg. git tag -a demo-v1.0.7 -m "Some tag message"
 
 5. Push new tag to remote
-  eg git push origin staging-v1.0.7
+  eg git push origin demo-v1.0.7
 
 6. Open Jenkins https://jenkins.prod.nanopay.net
 
