@@ -60,6 +60,15 @@ public class DuplicateTransactionCheckDAO
     temp.setProviderId(oldtxn.getProviderId());
     temp.setBrokerId(oldtxn.getBrokerId());
 
+    temp.setPadType(oldtxn.getPadType());
+    temp.setTxnCode(oldtxn.getTxnCode());
+    temp.setSettlementDate(oldtxn.getSettlementDate());
+    temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
+    temp.setDescription(oldtxn.getDescription());
+    temp.setReturnCode(oldtxn.getReturnCode());
+    temp.setReturnDate(oldtxn.getReturnDate());
+    temp.setReturnType(oldtxn.getReturnType());
+
     return oldtxn.compareTo(temp);
   }
 }
