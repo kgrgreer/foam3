@@ -30,13 +30,11 @@ foam.CLASS({
   constants: [
     {
       name: 'STATUS_BLACKLIST',
-      type: 'Set<String>',
-      value: `Collections.unmodifiableSet(new HashSet<String>() {
-        {
-          add("Refunded");
-          add("Request");
-        }
-      });`
+      type: 'Set<TransactionStatus>',
+      value: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+        add(TransactionStatus.REFUNDED);
+        add(TransactionStatus.PENDING);
+      }});`
     }
   ],
 

@@ -16,10 +16,10 @@ public class TransactionDAO
   extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
-  protected final Set<String> STATUS_BLACKLIST =
-    Collections.unmodifiableSet(new HashSet<String>() {{
-      add("Refunded");
-      add("Request");
+  protected final Set<TransactionStatus> STATUS_BLACKLIST =
+    Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+      add(TransactionStatus.REFUNDED);
+      add(TransactionStatus.PENDING);
     }});
 
   protected DAO userDAO_;
