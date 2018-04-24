@@ -101,7 +101,7 @@ foam.CLASS({
 
       this.nSpecDAO.find('appConfig').then(function(config){
         self.appConfig = config.service;
-      })
+      });
 
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
