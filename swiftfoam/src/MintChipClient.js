@@ -22,6 +22,7 @@ foam.CLASS({
     'invoiceDAO',
     'refreshTransactionDAO',
     'transactionDAO',
+    'stripeTransactionDAO',
     'userUserJunctionDAO'
   ],
   properties: [
@@ -88,6 +89,22 @@ return ClientDAO_create([
     "delegate": SessionClientBox_create([
       "delegate": HTTPBox_create([
         "url": "\\(self.httpBoxUrlRoot.rawValue)transactionDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'stripeTransactionDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": Transaction.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)stripeTransactionDAO"
       ])
     ])
   ])
