@@ -20,17 +20,18 @@ foam.CLASS({
       width: 100%;
       background-color: #edf0f5;
       margin: auto;
+      padding-bottom: 60px;
     }
     ^ .businessSettingsContainer {
       width: 992px;
+      padding-left: 20px;
       margin: auto;
     }
     ^ .Container {
       width: 992px;
       min-height: 80px;
-      margin-top: 30px;
-      margin-bottom: 20px;
-      padding: 20px;
+      padding-top: 40px;
+      padding-left: 20px;
       border-radius: 2px;
       background-color: white;
       box-sizing: border-box;
@@ -170,8 +171,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile' });
-      var businessProfile = this.ExpandContainer.create({ title: 'Business Profile' });
+      var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditPrincipalOwnersView' });
+      var businessProfile = this.ExpandContainer.create({ title: 'Business Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditBusinessProfileView' });
 
       this.user.businessTypeId$find.then(function(type) {
         self.businessTypeName = type.name;
@@ -217,7 +218,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Registration Date').addClass('labelTitle').end()
-                .start().add(this.user.businessRegistrationDate.toISOString().substring(0,10)).addClass('labelContent').end()
+                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toISOString().substring(0,10) : '').addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')

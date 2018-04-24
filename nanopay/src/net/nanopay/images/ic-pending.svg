@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
     <g fill="none" fill-rule="evenodd">
-        <circle cx="10" cy="10" r="10" fill="#59AADD"/>
+        <circle cx="10" cy="10" r="10" fill="#59A5D5"/>
         <g fill="#FFF" transform="rotate(90 3.7 12.5)">
             <circle cx="1.2" cy="1.2" r="1.2" transform="matrix(0 -1 -1 0 2.4 2.4)"/>
             <circle cx="1.2" cy="6" r="1.2" transform="matrix(0 -1 -1 0 7.2 7.2)"/>

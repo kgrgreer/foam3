@@ -7,8 +7,9 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.model.Account;
 
+// TODO: I don't think this is required anymore
 public class CreateAccountOnUserCreateDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   public CreateAccountOnUserCreateDAO(X x, DAO delegate) {
     setX(x);
@@ -17,7 +18,7 @@ public class CreateAccountOnUserCreateDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User result = (User) super.put_(x, obj);
+    User result    = (User) super.put_(x, obj);
     DAO accountDAO = (DAO) getX().get("localAccountDAO");
 
     if ( accountDAO.find(result.getId()) == null ) {

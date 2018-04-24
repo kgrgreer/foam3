@@ -71,6 +71,11 @@ foam.CLASS({
         ^ .show-yes{
           display: inline-block;
         }
+        ^ .net-nanopay-ui-ActionView-exportButton{
+          position: relative;
+          top: -55px;
+          float: none;
+        }
       */}
     })
   ],

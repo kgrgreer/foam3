@@ -75,7 +75,7 @@ foam.CLASS({
       // }
 
       //inital start view
-      this.pushView(this.startView, true);
+      this.pushViews(this.startView, true);
     },
 
     //use super method the inital the view elements
@@ -85,11 +85,11 @@ foam.CLASS({
 
     //go the successView
     function success() {
-      this.pushView(this.successView);
+      this.pushViews(this.successView);
     },
     //go to failView
     function fail() {
-      this.pushView(this.errorView);
+      this.pushViews(this.errorView);
     },
     function rollBackView() {
       if ( this.rollBackPoints.length === 0 ) {
