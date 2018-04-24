@@ -21,9 +21,9 @@ public class DuplicateTransactionCheckDAO extends ProxyDAO {
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
         throw new RuntimeException("Unable to update Transaction, if transaction status is accept or decline");
       }
-      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-        throw new RuntimeException("Unable to update Transaction");
-      }
+//      if ( compareTransactions(oldTxn, curTxn) != 0 ) {
+//        throw new RuntimeException("Unable to update Transaction");
+//      }
     }
     return super.put_(x, obj);
   }
