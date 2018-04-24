@@ -70,17 +70,33 @@ foam.CLASS({
       documentation: 'CVV of payment card',
       required: true,
       storageTransient: true
-    },
+    }
+  ],
+
+  methods: [
     {
-      class: 'Bool',
-      name: 'expired',
-      documentation: 'An expression to check if the card is expired.',
-      transient: true,
-      storageTransient: true,
-      expression: function( expirationDate ) {
-        // if today's date is later than the expiration date
-        return Date().setHours(0,0,0,0) > expirationDate.setHours(0,0,0,0);
-      }
+      name: 'isExpired',
+      code: function() {
+        return Date().setHours(0,0,0,0) > this.expirationDate.setHours(0,0,0,0);
+      },
+      javaReturns: 'boolean',
+      javaCode: function() {`
+Calendar today = Calendar.getInstance();
+today.set(Calendar.HOUR_OF_DAY, 0);
+today.set(Calendar.MINUTE_OF_DAY, 0);
+today.set(Calendar.SECOND_OF_DAY, 0);
+return today.getTime().after(this.getExpirationDate());
+      `},
+      swiftReturns: 'Bool',
+      swiftCode: function() {`
+let date = Date()
+let cal = Calendar(identifier: .gregorian)
+let today = cal.startOfDay(for: date)
+
+let expDate = cal.startOfDay(for: self.expirationDate)
+
+return today > expDate
+      `}
     }
   ]
 });
