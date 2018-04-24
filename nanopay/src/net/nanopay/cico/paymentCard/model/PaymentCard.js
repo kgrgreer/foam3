@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.model.PaymentCard',
+  package: 'net.nanopay.cico.paymentCard.model',
   name: 'PaymentCard',
   documentation: 'Model which describes a payment card.',
 
@@ -11,15 +11,21 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.retail.model.PaymentCardType',
+      of: 'net.nanopay.cico.paymentCard.model.PaymentCardType',
       name: 'type',
       documentation: 'Type of payment card. To be determined by decorator.'
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.retail.model.PaymentCardNetwork',
+      of: 'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
       name: 'network',
       documentation: 'Credit/Debit Network owner. To be determined by decorator.'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
+      name: 'paymentPlatform',
+      documentation: 'Payment platform that should be used to process this payment card'
     },
     {
       class: 'String',
@@ -45,11 +51,6 @@ foam.CLASS({
       class: 'foam.nanos.auth.Address',
       name: 'billingAddress',
       documentation: 'To reduce fraud by having the accurate billing address of the card.'
-    },
-    {
-      class: 'String',
-      name: 'paymentPlatform',
-      documentation: 'Payment platform that should be used to process this payment card'
     },
     {
       class: 'Int',
@@ -85,7 +86,7 @@ foam.CLASS({
 });
 
 foam.ENUM({
-  package: 'net.nanopay.cico.model.PaymentCard',
+  package: 'net.nanopay.cico.paymentCard.model',
   name: 'PaymentCardType',
   documentation: 'Types of payment cards.',
 
@@ -102,7 +103,7 @@ foam.ENUM({
 });
 
 foam.ENUM({
-  package: 'net.nanopay.cico.model.PaymentCard',
+  package: 'net.nanopay.cico.paymentCard.model',
   name: 'PaymentCardNetwork',
   documentation: 'Networks of payment cards.',
 
@@ -118,6 +119,27 @@ foam.ENUM({
     {
       name: 'AMERICANEXPRESS',
       label: 'American Express'
+    }
+  ]
+});
+
+foam.ENUM({
+  package: 'net.nanopay.cico.paymentCard.model',
+  name: 'PaymentCardPaymentPlatform',
+  documentation: 'Payment platform to use to process the transaction using this payment card.',
+
+  values: [
+    {
+      name: 'STRIPE',
+      label: 'Stripe'
+    },
+    {
+      name: 'AUTHORIZE',
+      label: 'Authorize.net'
+    },
+    {
+      name: 'GLOBALPAYMENTS',
+      label: 'Global Payments'
     }
   ]
 });
