@@ -30,7 +30,7 @@ foam.CLASS({
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 X x = getX();
-EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
 
 final Logger logger = (Logger) x.get("logger");

@@ -29,7 +29,7 @@ public class EFTReturnFileProcessor implements ContextAgent
   @Override
   public void execute(X x) {
     Logger logger = (Logger) x.get("logger");
-    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 
     EFTReturnFileParser eftReturnFileParser = new EFTReturnFileParser();
     DAO transactionDao = (DAO)x.get("localTransactionDAO");

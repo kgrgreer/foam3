@@ -28,7 +28,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
   @Override
   public void execute(X x) {
     Logger logger = (Logger) x.get("logger");
-    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 
     EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
     EFTUploadCSVFileParser eftUploadCSVFileParser = new EFTUploadCSVFileParser();
