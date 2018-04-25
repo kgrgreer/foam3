@@ -1,18 +1,18 @@
 package net.nanopay.cico.spi.alterna;
 
 import com.jcraft.jsch.*;
+import foam.core.ContextAgent;
 import foam.core.FObject;
 import foam.core.X;
-import foam.nanos.logger.Logger;
-import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
-import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ import java.util.regex.Pattern;
 
 import static foam.mlang.MLang.*;
 
-public class EFTReturnFileProcessor extends ContextAwareSupport
+public class EFTReturnFileProcessor implements ContextAgent
 {
-  public void process() {
-    X x = getX();
+  @Override
+  public void execute(X x) {
     Logger logger = (Logger) x.get("logger");
     EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
 
