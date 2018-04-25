@@ -164,6 +164,7 @@ foam.CLASS({
         }
 
         this.user.createdPwd = true;
+        this.user.passwordExpiry = null;
         this.userDAO.put(this.user).then(function (result) {
           self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a){
             self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
