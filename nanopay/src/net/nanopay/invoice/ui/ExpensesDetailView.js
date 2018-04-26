@@ -7,7 +7,8 @@ foam.CLASS({
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.Account'
   ],
 
   imports: [
@@ -16,6 +17,7 @@ foam.CLASS({
     'invoiceDAO',
     'ctrl',
     'bankAccountDAO',
+    'accountDAO',
     'user'
   ],
 
@@ -153,12 +155,22 @@ foam.CLASS({
           return;
         }
 
-        this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.STATUS, 'Verified'), this.EQ(this.BankAccount.OWNER, this.user.id))).limit(1).select().then(function(account) {
-          if ( account.array.length === 0 ) {
-            self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account.', type: 'error' }));
-            return;
+        this.accountDAO.where(this.EQ(this.Account.ID, this.user.id)).limit(1).select().then(function( accountBalance ) {
+          if ( accountBalance.array[0].balance < self.data.amount ) {
+            // Not enough digital cash balance
+            self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, 'Verified'), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
+              if ( account.array.length === 0 ) {
+                self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account or sufficient digital cash balance.', type: 'error' }));
+                return;
+              }
+              X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+            }).catch(function (err) {
+              console.error(err);
+              self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+            });
+          } else {
+            X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
           }
-          X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
         }).catch(function (err) {
           console.error(err);
           self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
