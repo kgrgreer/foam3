@@ -15,29 +15,29 @@ foam.CLASS({
   ],
 
   imports: [
+    'bankAccountDAO',
+    'email',
     'flinksAuth',
     'institutionDAO',
+    'padCaptureDAO',
     'user',
     'userDAO',
-    'email',
-    'bankAccountDAO',
-    'padCaptureDAO',
     'validateAccountNumber',
     'validateAddress',
     'validateCity',
     'validateInstitutionNumber',
     'validatePostalCode',
     'validateStreetNumber',
-    'validateTransitNumber',
+    'validateTransitNumber'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Country',
+    'foam.nanos.notification.email.EmailMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
     'net.nanopay.model.PadCapture',
-    'foam.nanos.notification.email.EmailMessage',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -202,6 +202,7 @@ foam.CLASS({
       }
       this.SUPER();
     },
+
     function initE() {
       this.SUPER();
 
@@ -210,13 +211,16 @@ foam.CLASS({
       this
         .addClass(this.myClass())
     },
+
     function otherBank() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this.parentNode);
     },
+
     function closeTo(view) {
       this.stack.back();
       this.stack.push(view, this.parent);
     },
+
     {
       name: 'MFADisparcher',
       code: function(msg) {
@@ -235,6 +239,7 @@ foam.CLASS({
         }
       }
     },
+
     function validations() {
       if ( this.viewData.user.firstName.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
@@ -378,7 +383,7 @@ foam.CLASS({
             // Repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
-            
+
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
             self.fail();
           });
@@ -399,7 +404,7 @@ foam.CLASS({
                 }))
               }
             });
-            self.pushView('PADAuthorizationForm');          
+            self.pushView('PADAuthorizationForm');
           });
           self.isConnecting = false;
           return;
@@ -419,20 +424,20 @@ foam.CLASS({
               agree3:self.viewData.agree3,
               institutionNumber: bank.institutionNumber,
               transitNumber: bank.transitNumber,
-              accountNumber: bank.accountNumber         
+              accountNumber: bank.accountNumber
             })).catch(function(error) {
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             });
             self.bankAccountDAO.put(bank).then(function(){
-              self.pushView('Complete');   
+              self.pushView('Complete');
               return;
             }).catch(function(a) {
               self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
               self.fail();
             });
-          })  
+          })
         }
-        if ( this.currentViewId === 'Complete' ) {  
+        if ( this.currentViewId === 'Complete' ) {
           return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }
