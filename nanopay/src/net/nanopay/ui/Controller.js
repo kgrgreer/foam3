@@ -9,8 +9,8 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.AddCommaFormatter',
+    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.FormValidation'
   ],
 
@@ -18,22 +18,22 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
-    'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.ui.style.AppStyles'
   ],
 
   exports: [
     'account',
-    'privacyUrl',
-    'termsUrl',
+    'appConfig',
     'as ctrl',
     'findAccount',
-    'appConfig'
+    'privacyUrl',
+    'termsUrl'
   ],
 
   css: `

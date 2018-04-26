@@ -6,11 +6,15 @@ foam.CLASS({
 
   documentation: 'View that handles unpredictable multi step procedures.',
 
+  imports: [
+    'stack'
+  ],
+
   properties: [
     'startView',
     'errorView',
     'successView',
-    //key value 
+    //key value
     'views',
     //String
     'currentViewId',
@@ -36,9 +40,6 @@ foam.CLASS({
     ]
   ],
 
-  imports: [
-    'stack'
-  ],
   methods: [
     function init() {
       var self = this;
@@ -55,7 +56,7 @@ foam.CLASS({
       this.currentViewId$.sub(function() {
         self.position = self.views[self.currentViewId].step - 1;
       });
-      
+
       //record start, error, and success view
       for ( var j in this.views ) {
         if ( this.views.hasOwnProperty(j) ) {
@@ -87,10 +88,12 @@ foam.CLASS({
     function success() {
       this.pushViews(this.successView);
     },
+
     //go to failView
     function fail() {
       this.pushViews(this.errorView);
     },
+
     function rollBackView() {
       if ( this.rollBackPoints.length === 0 ) {
         this.stack.back();

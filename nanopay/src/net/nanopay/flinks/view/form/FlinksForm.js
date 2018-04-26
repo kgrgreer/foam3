@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.flinks.view.element.JumpWizardView',
 
   exports: [
-    'isConnecting',
+    'as form',
     'bankImgs',
-    'loadingSpinner',
-    'as form'
+    'isConnecting',
+    'loadingSpinner'
   ],
 
   implements: [
@@ -221,22 +221,19 @@ foam.CLASS({
       this.stack.push(view, this.parent);
     },
 
-    {
-      name: 'MFADisparcher',
-      code: function(msg) {
-        if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
-          if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
-            this.pushViews('FlinksXSelectionAnswerForm');
-          } else {
-            this.pushViews('FlinksXQuestionAnswerForm');
-          }
-        } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' ||  msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
-          this.pushViews('FlinksMultipleChoiceForm');
-        } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
-          this.pushViews('FlinksImageForm');
+    function MFADisparcher(msg) {
+      if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
+        if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
+          this.pushViews('FlinksXSelectionAnswerForm');
         } else {
-          this.fail();
+          this.pushViews('FlinksXQuestionAnswerForm');
         }
+      } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' ||  msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
+        this.pushViews('FlinksMultipleChoiceForm');
+      } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
+        this.pushViews('FlinksImageForm');
+      } else {
+        this.fail();
       }
     },
 
