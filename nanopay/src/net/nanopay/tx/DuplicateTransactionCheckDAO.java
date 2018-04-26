@@ -25,7 +25,6 @@ public class DuplicateTransactionCheckDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction curTxn = (Transaction) obj;
-
     synchronized ( getLockForId(curTxn.getId()) ) {
       Transaction oldTxn = (Transaction) getDelegate().find(obj);
       if ( oldTxn != null ) {
