@@ -3,6 +3,13 @@ foam.CLASS({
   name: 'PaymentCard',
   documentation: 'Model which describes a payment card.',
 
+  javaImports: [
+    'java.util.Calendar',
+    'java.util.Date',
+    'java.time.LocalDate',
+    'java.time.ZoneId'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -77,7 +84,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'Int',
+      class: 'String',
       name: 'cvv',
       documentation: 'CVV of payment card',
       required: true,
@@ -108,6 +115,57 @@ let today = cal.startOfDay(for: date)
 let expDate = cal.startOfDay(for: self.expirationDate)
 
 return today > expDate
+      `}
+    },
+    {
+      name: 'getExpiryMonth',
+      code: function() {
+        // .getMonth return 0 - 11; 0 for January
+        var expirationMonth = this.expirationDate.getMonth() + 1;
+        if ( expirationMonth < 10 ) {
+          return '0' + expirationMonth;
+        }
+        return expirationMonth.toString();
+      },
+      javaReturns: 'String',
+      javaCode: function() {`
+LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+int month = localDate.getMonthValue();
+if ( month < 10 ) {
+  return "0" + month;
+}
+return String.valueOf(month);
+      `},
+      swiftReturns: 'String',
+      swiftCode: function() {`
+let calendar = Calendar.current
+
+let month = calendar.component(.month, from: expirationDate)
+if month < 10 {
+  return "0\(month)"
+}
+return "\(month)"
+      `}
+    },
+    {
+      name: 'getExpiryYear',
+      code: function() {
+        var expirationYear = this.expirationDate.getFullYear();
+        return expirationYear.toString().substring(2);
+      },
+      javaReturns: 'String',
+      javaCode: function() {`
+LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+int year = localDate.getYear();
+return String.valueOf(year).substring(2);
+      `},
+      swiftReturns: 'String',
+      swiftCode: function() {`
+let calendar = Calendar.current
+
+let year = calendar.component(.year, from: expirationDate)
+let yearString = String(describing: year)
+return yearString.dropFirst(2)
       `}
     }
   ]
