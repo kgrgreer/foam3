@@ -6,8 +6,7 @@ foam.CLASS({
   imports: [
     'bankImgs',
     'form',
-    'isConnecting',
-    'complete'
+    'isConnecting'
   ],
 
   requires: [
