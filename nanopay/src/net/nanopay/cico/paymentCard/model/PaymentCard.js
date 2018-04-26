@@ -48,7 +48,8 @@ foam.CLASS({
       documentation: 'Last name of cardholder'
     },
     {
-      class: 'foam.nanos.auth.Address',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
       name: 'billingAddress',
       documentation: 'To reduce fraud by having the accurate billing address of the card.'
     },
