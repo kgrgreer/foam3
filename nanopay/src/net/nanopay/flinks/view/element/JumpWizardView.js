@@ -22,22 +22,7 @@ foam.CLASS({
     'rollBackPoints',
     //Array of sequest View ID
     'sequenceViewIds',
-    [
-      'pushView',
-    //push view into subStack and set rollBack point if needs
-    function pushView(viewId, rollBack) {
-      if ( ! viewId && ! this.views[viewId] ) {
-        console.error('[JumpWizardView] : can not find view');
-        return;
-      }
-      this.currentViewId = viewId;
-      this.sequenceViewIds.push(viewId);
-      this.subStack.push(this.views[viewId].view);
-      if ( rollBack === true ) {
-        this.rollBackPoints.push(this.subStack.pos);
-      }
-    }
-    ]
+    'pushView'
   ],
 
   methods: [
@@ -113,6 +98,19 @@ foam.CLASS({
         this.sequenceViewIds.pop();
       }
       this.currentViewId = this.sequenceViewIds[this.sequenceViewIds.length-1];
+    },
+
+    function pushViews(viewId, rollBack) {
+      if ( ! viewId && ! this.views[viewId] ) {
+        console.error('[JumpWizardView] : can not find view');
+        return;
+      }
+      this.currentViewId = viewId;
+      this.sequenceViewIds.push(viewId);
+      this.subStack.push(this.views[viewId].view);
+      if ( rollBack === true ) {
+        this.rollBackPoints.push(this.subStack.pos);
+      }
     }
   ],
 

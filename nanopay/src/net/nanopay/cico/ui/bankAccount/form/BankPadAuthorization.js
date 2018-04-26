@@ -7,6 +7,7 @@ foam.CLASS({
   
   import:[
     'user',
+    'form',
     'viewData',
     'regionDAO',
     'countryDAO',
