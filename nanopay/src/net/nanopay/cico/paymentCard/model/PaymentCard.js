@@ -54,7 +54,7 @@ foam.CLASS({
       documentation: 'To reduce fraud by having the accurate billing address of the card.'
     },
     {
-      class: 'Int',
+      class: 'String',
       name: 'number',
       documentation: 'Number of payment card',
       required: true
