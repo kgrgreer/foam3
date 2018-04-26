@@ -196,7 +196,7 @@ foam.CLASS({
         FlinksImageForm:              { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' }},
         FlinksAccountForm:            { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
         FlinksFailForm:               { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
-        PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization' }},
+        PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' }},
         Complete:                     { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' }},
 
       }
@@ -401,7 +401,7 @@ foam.CLASS({
                 }))
               }
             });
-            self.pushView('PADAuthorizationForm');
+            self.pushViews('PADAuthorizationForm');
           });
           self.isConnecting = false;
           return;
@@ -426,7 +426,7 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             });
             self.bankAccountDAO.put(bank).then(function(){
-              self.pushView('Complete');
+              self.pushViews('Complete');
               return;
             }).catch(function(a) {
               self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
