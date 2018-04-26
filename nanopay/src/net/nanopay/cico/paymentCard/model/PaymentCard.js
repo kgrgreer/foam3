@@ -29,6 +29,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'externalId',
+      documentation: 'The id used on other payment platform used'
+    },
+    {
+      class: 'String',
       name: 'nickname',
       documentation: 'Name for easy recognition by user (optional)'
     },
@@ -51,7 +56,13 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'billingAddress',
-      documentation: 'To reduce fraud by having the accurate billing address of the card.'
+      documentation: 'Address associated with the payment card'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'homeAddress',
+      documentation: 'Address associated to the user adding the card'
     },
     {
       class: 'String',
