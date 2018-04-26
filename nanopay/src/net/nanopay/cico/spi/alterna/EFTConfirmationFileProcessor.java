@@ -1,11 +1,11 @@
 package net.nanopay.cico.spi.alterna;
 
 import com.jcraft.jsch.*;
-import foam.core.ContextAwareSupport;
+import foam.core.ContextAgent;
 import foam.core.FObject;
 import foam.core.X;
-import foam.nanos.logger.Logger;
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTConfirmationFileRecord;
@@ -23,12 +23,12 @@ import java.util.regex.Pattern;
 
 import static foam.mlang.MLang.EQ;
 
-public class EFTConfirmationFileProcessor extends ContextAwareSupport
+public class EFTConfirmationFileProcessor implements ContextAgent
 {
-  public void process() {
-    X x = getX();
+  @Override
+  public void execute(X x) {
     Logger logger = (Logger) x.get("logger");
-    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 
     EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
     EFTUploadCSVFileParser eftUploadCSVFileParser = new EFTUploadCSVFileParser();
