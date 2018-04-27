@@ -177,12 +177,20 @@ foam.ENUM({
 
   values: [
     {
+      name: 'OTHER',
+      label: 'Other'
+    },
+    {
       name: 'CREDIT',
       label: 'Credit Card'
     },
     {
       name: 'DEBIT',
       label: 'Debit Card'
+    },
+    {
+      name: 'LOYALTY',
+      label: 'Loyalty Card'
     }
   ]
 });
@@ -194,6 +202,10 @@ foam.ENUM({
 
   values: [
     {
+      name: 'OTHER',
+      label: 'Other'
+    },
+    {
       name: 'VISA',
       label: 'Visa'
     },
@@ -204,6 +216,10 @@ foam.ENUM({
     {
       name: 'AMERICANEXPRESS',
       label: 'American Express'
+    },
+    {
+      name: 'DISCOVER',
+      label: 'Discover'
     }
   ]
 });
@@ -214,6 +230,10 @@ foam.ENUM({
   documentation: 'Payment platform to use to process the transaction using this payment card.',
 
   values: [
+    {
+      name: 'UNSUPPORTED',
+      label: 'Unsupported'
+    },
     {
       name: 'STRIPE',
       label: 'Stripe'
