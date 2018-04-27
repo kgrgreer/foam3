@@ -13,8 +13,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id',
-      hidden: true
+      name: 'id'
     },
     {
       class: 'Enum',
