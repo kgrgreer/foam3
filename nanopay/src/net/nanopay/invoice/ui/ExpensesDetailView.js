@@ -4,20 +4,20 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.Account'
+    'foam.u2.dialog.Popup',
+    'foam.u2.PopupView',
+    'net.nanopay.model.Account',
+    'net.nanopay.model.BankAccount'
   ],
 
   imports: [
-    'stack',
+    'accountDAO',
+    'bankAccountDAO',
+    'ctrl',
     'hideSaleSummary',
     'invoiceDAO',
-    'ctrl',
-    'bankAccountDAO',
-    'accountDAO',
+    'stack',
     'user'
   ],
 
@@ -205,24 +205,24 @@ foam.CLASS({
   ],
 
   listeners: [
-    function voidPopUp(){
+    function voidPopUp() {
       var self = this;
       self.payNowPopUp_.remove();
-      if(this.data.paymentMethod.name != 'NONE'){
+      if ( this.data.paymentMethod.name != 'NONE' ) {
         self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
-   function schedulePopUp(){
-     var self = this;
-     self.payNowPopUp_.remove();
-     if(this.data.paymentMethod.name != 'NONE'){
-       self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
-       return;
-     }
-     this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
-   }
+    function schedulePopUp() {
+      var self = this;
+      self.payNowPopUp_.remove();
+      if ( this.data.paymentMethod.name != 'NONE' ) {
+        self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+    }
   ]
 });
