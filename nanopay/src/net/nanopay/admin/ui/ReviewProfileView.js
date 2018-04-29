@@ -187,7 +187,6 @@ foam.CLASS({
             })
           
             // Questionaire
-
             .callIf(this.data.questionnaire, function () {
               self
               .start().addClass('container')
