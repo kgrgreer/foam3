@@ -43,6 +43,12 @@ public class ValidatedPaymentCardDAO
       throw new AccessControlException("User does not have sufficient permissions");
     }
 
+    if ( card.expirationDate != null ) {
+      if ( card.isExpired() ) {
+        throw new RuntimeException("Card has expired");
+      }
+    }
+
     if ( card.type == PaymentCardType.CREDIT || card.type == PaymentCardType.DEBIT ) {
       /*
       *  To validate the credit card, we use Luhn's algorithm

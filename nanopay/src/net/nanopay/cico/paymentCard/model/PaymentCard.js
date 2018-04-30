@@ -34,9 +34,9 @@ foam.CLASS({
       documentation: 'Payment platform that should be used to process this payment card'
     },
     {
-      class: 'String',
-      name: 'externalId',
-      documentation: 'The id used on other payment platform used'
+      class: 'Map',
+      name: 'externalParameters',
+      documentation: 'External parameters provided by playment platform.'
     },
     {
       class: 'String',
