@@ -35,6 +35,12 @@ foam.CLASS({
     {
       name: 'showInherited',
       value: false
+    },
+    {
+      name: 'dao',
+      javaFactory: `
+return new AuthenticatedDAO("nSpec", true, this.nSpecDAO);
+`
     }
   ],
 
@@ -115,7 +121,7 @@ foam.CLASS({
         .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'pacs008ISOPurposeDAO' })).end()
         .start().addClass('light-roboto-h2 sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
         .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
-        .select(this.nSpecDAO, function(n) {
+        .select(this.dao, function(n) {
           var model = self.parseClientModel(n);
           if( ! model ) return;
           var dataProps = self.requiredProperties(model);
@@ -272,7 +278,7 @@ foam.CLASS({
       var self = this;
       this.start().addClass(this.myClass())
       .start().addClass('menu-title').add("Service Menu").end()
-      .select(this.nSpecDAO.orderBy(this.NSpec.NAME), function(n) {
+      .select(this.dao.orderBy(this.NSpec.NAME), function(n) {
         var cls = JSON.parse(n.client);
         var clsName = cls.of ? cls.of : cls.class;
         if (!foam.lookup(clsName, true)) return;
