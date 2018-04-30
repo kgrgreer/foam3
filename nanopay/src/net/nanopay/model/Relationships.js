@@ -94,3 +94,11 @@ foam.RELATIONSHIP({
   forwardName: 'balanceAlerts',
   inverseName: 'owner'
 });
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'foam.nanos.auth.User',
+  forwardName: 'partners',
+  inverseName: 'partners'
+});

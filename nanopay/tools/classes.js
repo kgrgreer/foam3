@@ -6,12 +6,16 @@ var classes = [
   'net.nanopay.blob.AmazonS3BlobStore',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
-  'net.nanopay.cico.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.cico.model.EFTReturnRecord',
+  'net.nanopay.cico.model.EFTConfirmationFileRecord',
+  'net.nanopay.cico.model.EFTReturnFileCredentials',
   'net.nanopay.cico.spi.alterna.AlternaFormat',
   'net.nanopay.cico.spi.alterna.SFTPService',
+  'net.nanopay.cico.spi.alterna.AlternaSFTPService',
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerifier',
+  'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -20,17 +24,42 @@ var classes = [
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
   'net.nanopay.model.PadAccount',
+  'net.nanopay.model.PadCapture',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.liquidity.model.Threshold',
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
+
+  // invite
+  'net.nanopay.admin.model.ComplianceStatus',
+  'net.nanopay.admin.model.AccountStatus',
+  'net.nanopay.onboarding.model.Question',
+  'net.nanopay.onboarding.model.Questionnaire',
+  'net.nanopay.onboarding.InvitationTokenService',
+  'net.nanopay.onboarding.FirebaseInvitationTokenService',
+
+  // invoice
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.fresh.FreshConfig',  
+  'net.nanopay.fresh.model.FreshToken',  
+  'net.nanopay.fresh.model.FreshBusiness',  
+  'net.nanopay.fresh.model.FreshBusinessMembership',    
+  'net.nanopay.fresh.model.FreshCurrent',  
+  'net.nanopay.fresh.model.FreshResponse',
+  'net.nanopay.fresh.model.FreshInvoiceResponse',   
+  'net.nanopay.fresh.model.FreshInvoiceResult',   
+  'net.nanopay.fresh.model.FreshInvoicePages',   
+  'net.nanopay.fresh.model.FreshInvoice',   
+  'net.nanopay.fresh.model.FreshInvoiceAmount',   
   'net.nanopay.invoice.xero.TokenStorage',
+
+  // fx
   'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.fx.client.ClientExchangeRateService',
   'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.interac.model.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
@@ -38,7 +67,7 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredIdentificationFields',
   'net.nanopay.fx.interac.model.RequiredAccountFields',
   'net.nanopay.fx.interac.model.RequiredAgentFields',
-  'net.nanopay.fx.interac.model.RequiredContactDetailsFields',
+  'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.UserTransactionLimit',
@@ -51,7 +80,9 @@ var classes = [
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.LiquiditySettings',
+  'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
+  'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
@@ -77,7 +108,11 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.Reconciliation',
   'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
   'net.nanopay.fx.lianlianpay.model.Statement',
-  'net.nanopay.fx.lianlianpay.model.StatementRecord'
+  'net.nanopay.fx.lianlianpay.model.StatementRecord',
+  'foam.nanos.auth.UserUserJunction',
+  'net.nanopay.fx.interac.model.ExchangerateApiModel',
+  'net.nanopay.fx.interac.model.AcceptRateApiModel',
+  'net.nanopay.fx.interac.model.AcceptExchangeRateFields'
 ];
 
 var abstractClasses = [
@@ -88,7 +123,8 @@ var skeletons = [
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.tx.UserTransactionLimit'
+  'net.nanopay.tx.UserTransactionLimit',
+  'net.nanopay.tx.model.LiquidityAuth'
 ];
 
 var proxies = [

@@ -4,11 +4,21 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: 'View to display footer, including copyright label',
+  
+  requires: [
+    'foam.u2.PopupView',
+    'foam.u2.dialog.Popup',
+  ],
 
   imports: [
     'webApp',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'user'
+  ],
+
+  exports: [
+    'openTermsModal'
   ],
 
   axioms: [
@@ -19,7 +29,8 @@ foam.CLASS({
           min-width: 992px;
           margin: auto;
           position: relative;
-          top: 60;
+          overflow: hidden;
+          zoom: 1;
         }
         ^ div {
           font-size:14px;
@@ -32,7 +43,7 @@ foam.CLASS({
           display: inline-block;
           vertical-align: middle;
         }
-        ^ .copyright-label, 
+        ^ .copyright-label,
         ^ .net-nanopay-ui-ActionView-goToTerm,
         ^ .net-nanopay-ui-ActionView-goToPrivacy,
         ^ .net-nanopay-ui-ActionView-goToNanopay {
@@ -74,14 +85,16 @@ foam.CLASS({
       factory: function () {
         return 'Powered by nanopay';
       }
+    },
+    {
+      class: 'String',
+      name: 'version'
     }
   ],
 
   methods: [
     function initE(){
       this.SUPER();
-
-      console.log(this.aboutLabel);
 
       this
         .addClass(this.myClass())
@@ -99,7 +112,11 @@ foam.CLASS({
         .start('div').addClass('col').addClass('copyright-label')
           .start('p').add('Copyright © 2018 ' + this.webApp + '. All rights reserved.').end()
         .end()
-        
+
+    },
+    function openTermsModal() {
+      this.version = " "
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal', exportData$: this.version$ }));
     }
   ],
 
@@ -114,7 +131,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'Terms and Conditions',
       code: function(X) {
-        this.window.location.assign(X.termsUrl);
+        X.openTermsModal()
       }
     },
     {

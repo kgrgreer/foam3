@@ -61,6 +61,7 @@ public class PaidTransactionDAO
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending invoice paid email.", t);
     }
+
     return transaction;
   }
 }

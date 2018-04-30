@@ -19,8 +19,13 @@ foam.CLASS({
     'email',
     'formatCurrency',
     'validateEmail',
-    'validatePostalCode',
+    'validateAge',
     'validatePhone',
+    'validateStreetNumber',
+    'validateAddress',
+    'validatePostalCode',
+    'validateCity',
+    'validatePassword',
     'stack',
     'transactionDAO',
     'user',
@@ -41,6 +46,59 @@ foam.CLASS({
       ];
       this.SUPER();
     },
+    function validations () {
+      var shopperInfo = this.viewData;
+
+      if ( shopperInfo.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( shopperInfo.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateEmail(shopperInfo.emailAddress) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePhone(shopperInfo.phoneNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAge(shopperInfo.birthday) ) {
+        this.add(this.NotificationMessage.create({ message: 'User should be at least 16 years of age to register.', type: 'error' }));
+        return;
+      }
+      if ( ! this.validateStreetNumber(shopperInfo.streetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAddress(shopperInfo.streetName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return false;
+      }
+      if ( shopperInfo.addressLine.length > 0 && ! this.validateAddress(shopperInfo.addressLine) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateCity(shopperInfo.city) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePostalCode(shopperInfo.postalCode) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePassword(shopperInfo.password)) {
+        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+        return false;
+      }
+      if ( shopperInfo.password != shopperInfo.confirmPassword ) {
+        this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+        return false;
+      }
+      return true;
+    }
 
 
   ],
@@ -68,6 +126,8 @@ foam.CLASS({
 
         if ( this.position == 0 ) {
           // Shopper Info
+
+          // Validations
           if ( ( shopperInfo.firstName == null || shopperInfo.firstName.trim() == '' ) ||
           ( shopperInfo.lastName == null || shopperInfo.lastName.trim() == '' ) ||
           ( shopperInfo.emailAddress == null || shopperInfo.emailAddress.trim() == '' ) ||
@@ -82,23 +142,7 @@ foam.CLASS({
             return;
           }
 
-          if ( !this.validateEmail(shopperInfo.emailAddress) ){
-            self.add(self.NotificationMessage.create({ message: 'Email address is invalid.', type: 'error' }));
-            return;
-          }
-
-          if ( !this.validatePostalCode(shopperInfo.postalCode) ){
-            self.add(self.NotificationMessage.create({ message: 'Postal code is invalid.', type: 'error' }));
-            return;
-          }
-
-          if ( shopperInfo.password != shopperInfo.confirmPassword ){
-            self.add(self.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
-            return;
-          }
-
-          if ( !this.validatePhone(shopperInfo.phoneNumber) ) {
-            this.add(self.NotificationMessage.create({ message: 'Phone number is invalid.', type: 'error' }));
+          if ( ! this.validations() ) {
             return;
           }
 
@@ -154,6 +198,19 @@ foam.CLASS({
             portalAdminCreated: true,
             profilePicture: shopperInfo.profilePicture
           });
+
+          if ( newShopper.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: newShopper.errors_[0][1], type: 'error' }));
+            return;
+          }
+          if ( shopperPhone.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: shopperPhone.errors_[0][1], type: 'error' }));
+            return;
+          }
+          if ( shopperAddress.errors_ ) {
+            this.add(this.NotificationMessage.create({ message: shopperAddress.errors_[0][1], type: 'error' }));
+            return;
+          }
 
           this.userDAO.put(newShopper).then(function(response) {
             shopperInfo.shopper = response;

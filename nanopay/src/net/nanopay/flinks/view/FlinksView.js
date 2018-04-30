@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.flinks.view',
   name: 'FlinksView',
   extends: 'foam.u2.Controller',
-  
+
   documentation: 'View displaying bank Selection',
 
   messages: [
@@ -24,7 +24,6 @@ foam.CLASS({
   methods: [
     function initE(){
       this.SUPER();
-      var self = this;
       
       this
         .addClass(this.myClass())

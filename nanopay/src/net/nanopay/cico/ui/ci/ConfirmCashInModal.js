@@ -16,7 +16,7 @@ foam.CLASS({
     'cashIn',
     'closeDialog',
     'onCashInSuccess',
-    'standardCICOTransactionDAO',
+    'transactionDAO',
     'user'
   ],
 
@@ -255,7 +255,7 @@ foam.CLASS({
           type: this.TransactionType.CASHIN
         });
 
-        X.standardCICOTransactionDAO.put(cashInTransaction).then(function(response) {
+        X.transactionDAO.put(cashInTransaction).then(function(response) {
           X.closeDialog();
           X.onCashInSuccess();
         }).catch(function(error) {

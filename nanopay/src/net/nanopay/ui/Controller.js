@@ -9,8 +9,8 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.AddCommaFormatter',
+    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.FormValidation'
   ],
 
@@ -18,34 +18,35 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
-    'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.invoice.ui.style.InvoiceStyles'
+    'net.nanopay.ui.style.AppStyles'
   ],
 
   exports: [
     'account',
-    'privacyUrl',
-    'termsUrl',
+    'appConfig',
     'as ctrl',
+    'findAccount',
+    'privacyUrl',
+    'termsUrl'
   ],
 
   css: `
     .stack-wrapper {
-      margin-bottom: -10px;
-      min-height: calc(80% - 60px);
+      /* 70px for topNav || 20px for padding || 40px for footer */
+      min-height: calc(100% - 70px - 20px - 40px) !important;
+      padding: 10px 0;
+      margin-bottom: 0 !important;
     }
 
     .stack-wrapper:after {
       content: "";
       display: block;
-    }
-
-    .stack-wrapper:after {
-      height: 10px;
     }
 
     .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
@@ -86,6 +87,9 @@ foam.CLASS({
       of: 'net.nanopay.model.Account',
       name: 'account',
       factory: function() { return this.Account.create(); }
+    },
+    {
+      name: 'appConfig'
     }
   ],
 
@@ -95,6 +99,10 @@ foam.CLASS({
       this.InvoiceStyles.create();
       this.ModalStyling.create();
 
+      this.nSpecDAO.find('appConfig').then(function(config){
+        self.appConfig = config.service;
+      });
+
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
@@ -103,12 +111,69 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
-        .br()
         .start('div').addClass('stack-wrapper')
           .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
         .end()
-        .br()
         .tag({class: 'net.nanopay.ui.FooterView'});
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user, else show login
+      this.auth.getCurrentUser(null).then(function (result) {
+        self.loginSuccess = !! result;
+        if ( result ) {
+          self.user.copyFrom(result);
+
+          // only show B2B onboarding if user is a Business
+          if ( self.user.type === 'Business' ) {
+            // check account status and show UI accordingly
+            switch ( self.user.status ) {
+              case self.AccountStatus.PENDING:
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
+                return;
+
+              case self.AccountStatus.SUBMITTED:
+              case self.AccountStatus.DISABLED:
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+                return;
+
+              // show onboarding screen if user hasn't clicked "Go To Portal" button
+              case self.AccountStatus.ACTIVE:
+                if ( !self.user.createdPwd ) {
+                  self.loginSuccess = false;
+                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
+                  return;
+                }
+                if ( self.user.onboarded ) break;
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+                return;
+
+              case self.AccountStatus.REVOKED:
+                self.loginSuccess = false;
+                self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+                return;
+            }
+          }
+
+          // check if user email verified
+          if ( ! self.user.emailVerified ) {
+            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+            return;
+          }
+
+          self.onUserUpdate();
+        }
+      })
+      .catch(function (err) {
+        self.requestLogin().then(function () {
+          self.getCurrentUser();
+        });
+      });
     },
 
     function findAccount() {

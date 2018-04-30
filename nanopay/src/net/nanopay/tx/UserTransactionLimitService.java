@@ -3,7 +3,7 @@ package net.nanopay.tx;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
@@ -59,7 +59,7 @@ public class UserTransactionLimitService
       limitName = DEFAULT_BROKER_TRANSACTION_LIMIT;
     }
 
-    Sink sink = new ListSink();
+    Sink sink = new ArraySink();
     sink = transactionLimitDAO_.where(AND(
         EQ(limitName, TransactionLimit.NAME),
         EQ(type, TransactionLimit.TYPE),
@@ -69,7 +69,7 @@ public class UserTransactionLimitService
       throw new RuntimeException("Limits not found");
     }
 
-    List data = ((ListSink) sink).getData();
+    List data = ((ArraySink) sink).getArray();
     if ( data == null || data.size() < 1 ) {
       throw new RuntimeException("Limits not found");
     }

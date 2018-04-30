@@ -252,7 +252,8 @@ foam.CLASS({
     {
       name: 'schedule',
       label: 'Confirm',
-      code: function(X){        
+      code: function(X){     
+        var paymentDate = X.data.paymentDate;   
         if(!X.data.paymentDate){
           this.add(this.NotificationMessage.create({ message: 'Please select a Schedule Date.', type: 'error' }));
           return;
@@ -260,6 +261,12 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Cannot schedule a payment date for the past. Please try again.', type: 'error' }));
           return;
         }
+
+        if( isNaN(paymentDate) && paymentDate != null ){
+          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
+          return;  
+        }
+
         if (this.accountCheck) this.invoice.accountId = this.accounts;
 
         if ( this.paymentDate ){

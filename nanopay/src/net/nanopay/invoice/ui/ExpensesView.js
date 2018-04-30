@@ -58,6 +58,9 @@ foam.CLASS({
         ^ .button-div{
           height: 40px;
         }
+        ^ .foam-u2-view-TableView td{
+          width: 8px;
+        }
         */
       }
     })

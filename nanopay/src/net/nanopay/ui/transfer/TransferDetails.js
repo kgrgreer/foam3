@@ -20,6 +20,7 @@ foam.CLASS({
   imports: [
     // 'pacs008ISOPurposeDAO',
     // 'pacs008IndiaPurposeDAO',
+    'findAccount',
     'formatCurrency',
     'bankAccountDAO',
     'payeeDAO',
@@ -220,6 +221,13 @@ foam.CLASS({
         //     return [purpose.code, purpose.code + ' - ' + purpose.description];
         //   }
         // })
+
+        return foam.u2.view.ChoiceView.create({
+          dao: X.transactionPurposeDAO,
+          objToChoice: function(purpose) {
+            return [purpose.id, purpose.purposeCode + ' - ' + purpose.description];
+          }
+        });
       }
     },
     {
@@ -306,6 +314,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.getDefaultBank();
+      this.findAccount();
 
       this
         .addClass(this.myClass())
@@ -315,7 +324,8 @@ foam.CLASS({
           .start().addClass("choice")
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
-              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', (this.account.balance/100).toFixed(2))
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.account.balance$.map(function(balance) {
+                            return (balance/100).toFixed(2)}))
               .end()
             .end()
             .start('div').addClass('confirmationContainer')
@@ -334,15 +344,15 @@ foam.CLASS({
             .start(this.PAYEES, { mode: this.invoiceMode ? foam.u2.DisplayMode.RO : undefined }).end()
             .start('div').enableClass('hidden', this.invoiceMode$).addClass('caret').end()
           .end()
-          // .callIf(this.type == 'foreign', function() {
-          //   this.start()
-          //     .start('p').add(self.PurposeLabel).end()
-          //     .start('div').addClass('dropdownContainer')
-          //       .add(self.PURPOSE)
-          //       .start('div').addClass('caret').end()
-          //     .end()
-          //   .end()
-          // })
+           // .callIf(this.type == 'foreign', function() {
+            .start()
+              .start('p').add(self.PurposeLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .add(self.PURPOSE)
+                .start('div').addClass('caret').end()
+              .end()
+            .end()
+           // })
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)

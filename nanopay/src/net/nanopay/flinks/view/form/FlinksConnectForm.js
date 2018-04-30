@@ -2,7 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksConnectForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
-
+  requires: [
+    'foam.u2.PopupView',
+    'foam.u2.dialog.Popup',
+  ],
   imports: [
     'bankImgs',
     'form',
@@ -10,7 +13,8 @@ foam.CLASS({
     'isConnecting',
     'group',
     'logo',
-    'window'
+    'window',
+    'loadingSpinner'
   ],
 
   axioms: [
@@ -142,6 +146,10 @@ foam.CLASS({
         //console.log(newValue);
         this.viewData.check = newValue;
       },
+    },
+    {
+      class: 'String',
+      name: 'version'
     }
   ],
 
@@ -163,7 +171,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('div').addClass('subTitle')
+        .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
@@ -184,6 +192,11 @@ foam.CLASS({
               .add('I agree to the')
               .start(this.GO_TO_TERM).end()
               .add('and authorize the release of my Bank information to nanopay.')
+            .end()
+          .end()
+          .start()
+            .start(this.loadingSpinner).addClass('loadingSpinner')
+              .start('h6').add('Connecting, please wait...').addClass('spinnerText').end()
             .end()
           .end()
         .end()
@@ -224,9 +237,9 @@ foam.CLASS({
       label: 'terms and conditions',
       code: function(X) {
         var self = this;
-        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"
-        var alternaUrl = 'https://nanopay.net/termsandconditions/';
-        self.window.location.assign(alternaUrl);
+        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"        
+        this.version = " "
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal', exportData$: this.version$ }));
       }
     }
   ]

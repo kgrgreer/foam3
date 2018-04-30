@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
-import foam.dao.ListSink;
+import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.mlang.MLang;
 import java.util.Date;
@@ -15,7 +15,7 @@ import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.cico.model.TransactionStatus;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Account;
@@ -24,9 +24,11 @@ import net.nanopay.tx.model.Transaction;
 public class CICOTransactionDAO
   extends ProxyDAO
 {
+
   public CICOTransactionDAO(DAO delegate) {
     setDelegate(delegate);
   }
+
   public CICOTransactionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -35,6 +37,11 @@ public class CICOTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
+
+    if ( transaction.getType() != TransactionType.CASHOUT && transaction.getType() != TransactionType.CASHIN && transaction.getType() != TransactionType.VERIFICATION ) {
+      return super.put_(x, obj);
+    }
+
     if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
@@ -47,9 +54,7 @@ public class CICOTransactionDAO
     }
 
     try {
-      if ( transaction.getCicoStatus() == null ) {
-        transaction.setCicoStatus(TransactionStatus.NEW);
-      }
+      if ( getDelegate().find(transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);
       // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...
       if ( transaction.getType() == null ) {
         transaction.setType(TransactionType.CASHOUT);
@@ -64,7 +69,7 @@ public class CICOTransactionDAO
   public FObject addInvoiceCashout(FObject obj) {
 
     Transaction transaction = (Transaction) obj;
-    DAO standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
+    //DAO standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
     DAO bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
     DAO userDAO = (DAO) getX().get("localUserDAO");
 
@@ -74,10 +79,10 @@ public class CICOTransactionDAO
     long total = transaction.getTotal();
     payee.setX(getX());
 
-    Sink sinkBank = new ListSink();
+    Sink sinkBank = new ArraySink();
     sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
 
-    List dataBank = ((ListSink) sinkBank).getData();
+    List dataBank = ((ArraySink) sinkBank).getArray();
     BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
 
     // Cashout invoice payee

@@ -15,84 +15,46 @@ Checkout `NANOPAY`
 git clone https://github.com/nanopayinc/NANOPAY.git
 ```
 
-foam2 is added as a submodule.
-Initialize the submodule
-```
-git submodule init
-git submodule update
-```
+### Configuration
 
-### Installing tomcat
+Have the build script inialize submodules, update node and tomcat libraries, and setup a docbase so tomcat automatically reloads on javascript changes.
 
-Go into the NANOPAY/tools directory and run the following commands:
+NOTE: you will be prompted for your system password during the tomcat installation.
 
 ```
-./tomcatInstall.sh
-
-```
-
-To have tomcat automatically reload, add your development path to tomcat's configuration.
-Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`).
-```
-/Library/Tomcat/conf/server.xml
-```
-adding (example) a `Context docBase` to the `Host` element.
-```
-<Host>
-  ...
-  <Context docBase="Users/your_login_name/path_to_nanopay_repo/NANOPAY" path="/dev" />
-</Host> 
+cd NANOPAY
+build.sh -i
 ```
 
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
 
-`sh run-nanos.sh`
-OR
-`./run-nanos.sh`
+`./build.sh -n`
 
-### Build all projects and run tomcat at once
-You can run the script generateAll.sh to build all projects and run tomcat, go to the NANOPAY project root folder and execute:
+### Build All Projects and Run Tomcat At Once
+You can run the script `generateAll.sh` to build all projects and run tomcat by going to the NANOPAY project root directory and executing:
 
-`sh run-tomcat.sh`
-OR
-`./run-tomcat.sh`
+`./build.sh -c`
 
-### Build manual procedures
+#### Subsequent & Development Builds
+To prevent Maven from re-compiling *all* of the source code everytime you change a single file, please run `./build.sh`. This will:
+- It runs the Maven's development-build profile which will compile code with the `useIncrementalCompilation` flag set to `false`.
+- Maven will not poll for artifact updates, but will use local ones instead.
+- Dependency update checks through Codehaus Mojo will also not be run.
 
-1. Copy the services file from foam2 to the current directory
-
-`cp foam2/src/services .`
-
-2. Build foam2
-
-```
-cd foam2/src
-./gen.sh
-cd ../build
-mvn compile package
-mvn install:install-file -Dfile="target/foam-1.0-SNAPSHOT.jar" -DgroupId=com.google -DartifactId=foam -Dversion=1.0 -Dname=foam -Dpackaging=jar
-cd ../..
-```
-
-3. Build NANOPAY
-
-```
-cd NANOPAY
-./gen.sh
-mvn compile package
-cd ..
-```
-
-4. Run NANOS
-
-```
-./NANOPAY/tools/nanos.sh
-```
+##### CAVEATS
+- You must have run the full build `build.sh -c` at least once before as other files need to be present for the war file to built sucessfully.
+- `./build.sh` will only re-build the Class files that have been updated. As such, any Class renaming or Method renaming that will not propogate the rest of the source code.
+- In case of ClassNotFound or MissingMethod Exceptions, please run the full build again at least once.
 
 ### Loading a project
 
-Visit [http://localhost:8080/static](http://localhost:8080/static) and go into any of the submodules to view that project
+#### Tomcat
+Visit [http://localhost:8080/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static).
+
+#### Nanos
+- **Various Projects :** Visit [http://localhost:8080/service/static](http://localhost:8080/service/static) and go into any of the submodules to view that project.
+- **Nanopay :** Visit [http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html).
 
 ### Building Swift code
 
@@ -100,7 +62,20 @@ To build Swift code run the following command
 
 `node swiftfoam/gen_swift.js`
 
-### Deployments
+### Branching 
+We are following the OneFlow git branching strategy as described http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow and https://barro.github.io/2016/02/a-succesful-git-branching-model-considered-harmful/.  It is similar to GitFlow http://nvie.com/posts/a-successful-git-branching-model/ with the exception of using rebase and not using developer sub team branches (branches just shared between developers). 
+* `master` branch is the lastest stable release. 
+* `development` branch is the work in progress.
+* `staging` is similar to the documented `release` branches.
+* `staging` bugfixes are PR'd on the staging branch and will be merged/cherry-picked back into `development` branch.
+* `release` hotfixes are PR'd on the release branch and will be merged/cherry-picked back into the `development` branch.
+
+Picture of nanopay git flow: https://drive.google.com/file/d/0B1fbZtuULvxQM29JaEhiWnZYSU11QkpyVW5FTnBSNW1WOXhz/view?usp=sharing
+
+### Versioning
+Versioning follows the Semantic Versioning principles: https://semver.org/
+
+### Demo Deployments
 For each deployment to the servers
 Steps to build:
 1. Fetch latest tags
@@ -110,10 +85,10 @@ Steps to build:
    eg. git pull origin master
 
 4. Create a new tag with the updated code. Increment the previous tag version
-   eg. git tag -a staging-v1.0.7 -m "Some tag message"
+   eg. git tag -a demo-v1.0.7 -m "Some tag message"
 
 5. Push new tag to remote
-  eg git push origin staging-v1.0.7
+  eg git push origin demo-v1.0.7
 
 6. Open Jenkins https://jenkins.prod.nanopay.net
 
