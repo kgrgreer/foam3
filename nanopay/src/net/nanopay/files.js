@@ -51,6 +51,7 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/model/Question' },
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
+  { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
 
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },

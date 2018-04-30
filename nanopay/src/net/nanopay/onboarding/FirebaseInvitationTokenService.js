@@ -22,13 +22,13 @@ return calendar.getTime();`
     },
 
     {
-      name: 'generateToken',
-      javaCode: `fuck`
+      name: 'generateTokenWithParameters',
+      javaCode: `return false;`
     },
 
     {
       name: 'processToken',
-      javaCode: `fuck`
+      javaCode: `return false;`
     }
   ]
 });
