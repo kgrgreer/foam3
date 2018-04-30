@@ -28,6 +28,8 @@ public class EmailVerifiedTransactionDAO
           throw new RuntimeException("You must verify your email to top up");
         case CASHOUT:
           throw new RuntimeException("You must verify your email to cash out");
+        case VERIFICATION:
+          throw new RuntimeException("You must verify your email to verificate bank account");
         default:
           throw new RuntimeException("You must verify your email to send money");
       }
