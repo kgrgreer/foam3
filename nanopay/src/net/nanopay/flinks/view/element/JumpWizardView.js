@@ -6,22 +6,23 @@ foam.CLASS({
 
   documentation: 'View that handles unpredictable multi step procedures.',
 
+  imports: [
+    'stack'
+  ],
+
   properties: [
     'startView',
     'errorView',
     'successView',
-    //key value 
+    //key value
     'views',
     //String
     'currentViewId',
     //Array of Int
     'rollBackPoints',
     //Array of sequest View ID
-    'sequenceViewIds'
-  ],
-
-  imports: [
-    'stack'
+    'sequenceViewIds',
+    'pushView'
   ],
 
   methods: [
@@ -40,7 +41,7 @@ foam.CLASS({
       this.currentViewId$.sub(function() {
         self.position = self.views[self.currentViewId].step - 1;
       });
-      
+
       //record start, error, and success view
       for ( var j in this.views ) {
         if ( this.views.hasOwnProperty(j) ) {
@@ -60,7 +61,7 @@ foam.CLASS({
       // }
 
       //inital start view
-      this.pushView(this.startView, true);
+      this.pushViews(this.startView, true);
     },
 
     //use super method the inital the view elements
@@ -70,25 +71,14 @@ foam.CLASS({
 
     //go the successView
     function success() {
-      this.pushView(this.successView);
+      this.pushViews(this.successView);
     },
+
     //go to failView
     function fail() {
-      this.pushView(this.errorView);
+      this.pushViews(this.errorView);
     },
-    //push view into subStack and set rollBack point if needs
-    function pushView(viewId, rollBack) {
-      if ( ! viewId && ! this.views[viewId] ) {
-        console.error('[JumpWizardView] : can not find view');
-        return;
-      }
-      this.currentViewId = viewId;
-      this.sequenceViewIds.push(viewId);
-      this.subStack.push(this.views[viewId].view);
-      if ( rollBack === true ) {
-        this.rollBackPoints.push(this.subStack.pos);
-      }
-    },
+
     function rollBackView() {
       if ( this.rollBackPoints.length === 0 ) {
         this.stack.back();
@@ -108,6 +98,19 @@ foam.CLASS({
         this.sequenceViewIds.pop();
       }
       this.currentViewId = this.sequenceViewIds[this.sequenceViewIds.length-1];
+    },
+
+    function pushViews(viewId, rollBack) {
+      if ( ! viewId && ! this.views[viewId] ) {
+        console.error('[JumpWizardView] : can not find view');
+        return;
+      }
+      this.currentViewId = viewId;
+      this.sequenceViewIds.push(viewId);
+      this.subStack.push(this.views[viewId].view);
+      if ( rollBack === true ) {
+        this.rollBackPoints.push(this.subStack.pos);
+      }
     }
   ],
 

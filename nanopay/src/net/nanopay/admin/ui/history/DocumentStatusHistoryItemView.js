@@ -58,7 +58,6 @@ foam.CLASS({
       var attributes = [];
       for ( var i = 0 ; i < documents.newValue.length ; i++ ) {
         var file = documents.newValue[i];
-        console.log('file =', file);
         if ( ! this.files[file.id] ) {
           attributes.push({
             title: 'Additional document ',

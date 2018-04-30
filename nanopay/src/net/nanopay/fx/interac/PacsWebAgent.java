@@ -25,6 +25,7 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.http.HttpParameters;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import java.io.*;
 import java.nio.CharBuffer;
@@ -52,13 +53,14 @@ public class PacsWebAgent
     HttpParameters      p          = x.get(HttpParameters.class);
     final PrintWriter   out        = x.get(PrintWriter.class);
     String              contentType = req.getHeader("Content-Type");
-    Enum                command    = (Enum) p.get("cmd");
-    Enum                format     = (Enum) p.get("format");
+    Command             command    = (Command) p.get("cmd");
+    Format              format     = (Format) p.get("format");
     String              msg        = p.getParameter("msg");
     String              data       = p.getParameter("data");
     String              id         = p.getParameter("id");
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
+    PM pm = new PM(getClass(), msg);
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
@@ -133,6 +135,8 @@ public class PacsWebAgent
       } catch ( java.io.IOException e ) {
         logger.error("Failed to send HttpServletResponse CODE", e);
       }
+    } finally {
+      pm.log(x);
     }
   }
 

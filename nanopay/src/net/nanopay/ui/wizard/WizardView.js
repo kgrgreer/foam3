@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'WizardView',
   extends: 'foam.u2.Controller',
   abstract: true,
+
   exports: [
     'viewData',
     'errors',
@@ -181,10 +182,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ButtonCancel', message: 'Cancel'},
-    { name: 'ButtonBack',   message: 'Back'},
-    { name: 'ButtonNext',   message: 'Next'},
-    { name: 'ButtonSubmit', message: 'Submit'}
+    { name: 'ButtonCancel', message: 'Cancel' },
+    { name: 'ButtonBack',   message: 'Back' },
+    { name: 'ButtonNext',   message: 'Next' },
+    { name: 'ButtonSubmit', message: 'Submit' }
   ],
 
   properties: [
@@ -279,7 +280,7 @@ foam.CLASS({
       name: 'hideBottomBar',
       value: false
     },
-               
+
     'pushView'
   ],
 

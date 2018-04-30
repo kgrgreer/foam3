@@ -6,7 +6,7 @@ sudo curl -o apache-tomcat-8.5.30.zip http://mirror.csclub.uwaterloo.ca/apache/t
 sudo unzip apache-tomcat-8.5.30.zip
 sudo rm apache-tomcat-8.5.30.zip
 sudo rm -rf /Library/Tomcat
-sudo ln -s /usr/local/apache-tomcat-8.5.29 /Library/Tomcat
+sudo ln -s /usr/local/apache-tomcat-8.5.30 /Library/Tomcat
 sudo chmod +x /Library/Tomcat/bin/*.sh
 cd /Library/Tomcat
 sudo rm -rf webapps/

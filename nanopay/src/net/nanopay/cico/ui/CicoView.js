@@ -25,7 +25,7 @@ foam.CLASS({
     'addCommas',
     'bankAccountDAO',
     'stack',
-    'standardCICOTransactionDAO',
+    'transactionDAO',
     'user',
     'auth',
     'window'
@@ -205,12 +205,12 @@ foam.CLASS({
     },
     {
       name: 'cicoTransactions',
-      expression: function(standardCICOTransactionDAO) {
+      expression: function(transactionDAO) {
         var user = this.user;
 
-        return standardCICOTransactionDAO.where(
+        return transactionDAO.where(
           this.AND(
-            this.OR(
+            this.AND(
               this.EQ(this.Transaction.PAYER_ID, user.id),
               this.EQ(this.Transaction.PAYEE_ID, user.id)),
             this.OR(
@@ -243,7 +243,7 @@ foam.CLASS({
         self.hasCashIn = perm;
       });
 
-      this.standardCICOTransactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
+      this.transactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
 
       this
@@ -263,7 +263,7 @@ foam.CLASS({
           .start()
             .tag({
               class: 'foam.u2.ListCreateController',
-              dao: this.standardCICOTransactionDAO,
+              dao: this.transactionDAO,
               factory: function() { return self.Transaction.create(); },
               detailView: {
               },
@@ -365,7 +365,7 @@ foam.CLASS({
 
       imports: [
         'cicoTransactions',
-        'standardCICOTransactionDAO'
+        'transactionDAO'
       ],
 
       methods: [

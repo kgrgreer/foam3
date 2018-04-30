@@ -30,14 +30,16 @@ foam.CLASS({
   constants: [
     {
       name: 'STATUS_BLACKLIST',
-      type: 'Set<String>',
-      value: `Collections.unmodifiableSet(new HashSet<String>() {
-        {
-          add("Refunded");
-          add("Request");
-        }
-      });`
+      type: 'Set<TransactionStatus>',
+      value: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+        add(TransactionStatus.REFUNDED);
+        add(TransactionStatus.PENDING);
+      }});`
     }
+  ],
+
+  searchColumns: [
+    'id', 'status', 'type'
   ],
 
   properties: [
@@ -248,7 +250,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'stripeTokenId',
-      storageTransient: true,
       documentation: 'For most Stripe users, the source of every charge is a' +
         ' credit or debit card. Stripe Token ID is the hash of the card' +
         ' object describing that card. Token IDs cannot be stored or used' +

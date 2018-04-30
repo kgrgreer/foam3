@@ -8,7 +8,10 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.admin.model.AccountStatus',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Phone'
   ],
 
   imports: [
@@ -20,6 +23,8 @@ foam.CLASS({
     'validateCity',
     'validateStreetNumber',
     'validateAddress',
+    'validateEmail',
+    'validateAge',
     'user',
     'userDAO'
   ],
@@ -39,7 +44,8 @@ foam.CLASS({
       expression: function (position) {
         return ( position < this.views.length - 2 ) ? 'Next' : 'Submit';
       }
-    }
+    },
+    'addPrincipalOwnersForm'
   ],
 
   messages: [
@@ -92,7 +98,8 @@ foam.CLASS({
             default:
               return 'Registration is under review.';
           }
-        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } }
+        }), hidden: true, view: { class: 'net.nanopay.onboarding.b2b.ui.ProfileSubmittedForm' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-changePassword', label: 'Registration has been approved.', view: { class: 'net.nanopay.onboarding.b2b.ui.PasswordChangeForm' }, hidden: true }
       ];
       this.SUPER();
     },
@@ -114,7 +121,6 @@ foam.CLASS({
       var self = this;
 
       this.user = this.viewData.user;
-
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);
@@ -135,7 +141,7 @@ foam.CLASS({
         if ( ! result ) throw new Error(self.SubmitFailureMessage);
         self.user.copyFrom(result);
         self.add(self.NotificationMessage.create({ message: self.SubmitSuccessMessage }));
-        self.subStack.push(self.views[self.subStack.pos + 1].view);
+        // self.subStack.push(self.views[self.subStack.pos + 1].view);
       }).catch(function (err) {
         self.add(self.NotificationMessage.create({ message: self.SubmitFailureMessage, type: 'error' }));
       });
@@ -315,7 +321,6 @@ foam.CLASS({
           this.submit();
           return;
         }
-
         // move to next screen
         if ( this.position < this.views.length - 1 ) {
           if ( this.position === 0 ) {
@@ -326,10 +331,17 @@ foam.CLASS({
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
           }
+          if ( this.position === 2 ) {
+            if ( this.addPrincipalOwnersForm.isFillingPrincipalOwnerForm() ) {
+              if ( ! this.addPrincipalOwnersForm.validatePrincipalOwner() ) return;
+              this.addPrincipalOwnersForm.addPrincipalOwner();
+            }
+          }
           if ( this.position == 3) {
             // validate Questionnaire
             if ( ! this.validateQuestionnaire() ) return;
           }
+
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }
       }

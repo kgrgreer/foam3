@@ -14,8 +14,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'nSpecDAO',
-    'appConfig'
+    'appConfig',
+    'nSpecDAO'
   ],
 
   exports: [
@@ -45,7 +45,7 @@ foam.CLASS({
       width: 700px;
       margin: 20px;
     }
-    ^ .foam-doc-UMLDiagram{ 
+    ^ .foam-doc-UMLDiagram{
       width: 700px;
       margin: 0;
       margin-bottom: 20px;
@@ -165,13 +165,13 @@ foam.CLASS({
     {
       name: 'url',
       expression: function(appConfig){
-        return appConfig.service.url;
+        return appConfig.url;
       }
     }
   ],
 
   methods: [
-    function initE(){
+    function initE() {
       self = this;
 
       this.addClass(this.myClass())
@@ -195,14 +195,14 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'PutRequestView',
   extends: 'foam.u2.View',
-  
+
   imports: [ 'appConfig' ],
 
   properties: [
     {
       name: 'url',
       expression: function(appConfig){
-        return appConfig.service.url;
+        return appConfig.url;
       }
     }
   ],
@@ -241,7 +241,7 @@ foam.CLASS({
   requires: [ 'foam.nanos.boot.NSpec' ],
 
   css: `
-    ^ { 
+    ^ {
       position: fixed;
       right: 0;
       float: right;
