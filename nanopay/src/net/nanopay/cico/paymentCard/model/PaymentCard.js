@@ -243,6 +243,10 @@ foam.ENUM({
       label: 'Authorize.net'
     },
     {
+      name: 'REALEX',
+      label: 'Realex'
+    },
+    {
       name: 'GLOBALPAYMENTS',
       label: 'Global Payments'
     }
