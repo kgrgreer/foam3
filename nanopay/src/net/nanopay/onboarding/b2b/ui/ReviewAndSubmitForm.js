@@ -57,6 +57,9 @@ foam.CLASS({
       padding: 0;
       height: inherit;
     }
+    ^ .foam-nanos-auth-ProfilePictureView{
+      width: 150px;
+    }
   `,
 
   messages: [

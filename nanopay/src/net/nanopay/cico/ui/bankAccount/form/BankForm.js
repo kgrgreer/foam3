@@ -44,6 +44,9 @@ foam.CLASS({
     },
     {
       name: 'verifyAmount'
+    },
+    {
+      name: 'userAddress'
     }
   ],
   messages: [
@@ -69,6 +72,7 @@ foam.CLASS({
     },
     function validations() {
       var accountInfo = this.viewData;
+      this.userAddress = this.viewData.user.address.city == "" ? this.viewData.user.businessAddress : this.viewData.user.address;
 
       if ( accountInfo.accountName.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'Account name cannot exceed 70 characters.', type: 'error' }));
@@ -94,19 +98,20 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateStreetNumber(this.viewData.user.address.streetNumber) ) {
+
+      if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateAddress(this.viewData.user.address.streetName) ) {
+      if ( ! this.validateAddress(this.userAddress.streetName) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateCity(this.viewData.user.address.city) ) {
+      if ( ! this.validateCity(this.userAddress.city) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(this.viewData.user.address.postalCode) ) {
+      if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
@@ -174,7 +179,7 @@ foam.CLASS({
             firstName: this.viewData.user.firstName,
             lastName: this.viewData.user.lastName,
             userId: this.viewData.user.id,
-            address: this.viewData.user.address,
+            address: this.userAddress,
             agree1:this.viewData.agree1,
             agree2:this.viewData.agree2,
             agree3:this.viewData.agree3,
