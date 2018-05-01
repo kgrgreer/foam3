@@ -76,7 +76,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'dfl'
+      name: 'ofl'
     },
     {
       class: 'String',
@@ -101,7 +101,7 @@ return calendar.getTime();`
       name: 'generateTokenWithParameters',
       javaCode:
 `HttpURLConnection conn = null;
-BufferedWriter writer = null;
+OutputStreamWriter writer = null;
 BufferedReader reader = null;
 
 try {
@@ -133,13 +133,15 @@ try {
 
   // generate dynamic link
   String dynamicLink = sb.get()
+      .append("{\\"longDynamicLink\\":\\"")
       .append(FIREBASE_DYNAMIC_URL)
       .append("?link=").append(url).append("/appRedirect")
       .append("?token=").append(token.getData())
       .append("&apn=").append(getApn())
       .append("&ibi=").append(getIbi())
       .append("&isi=").append(getIsi())
-      .append("&dfl=").append(getDfl())
+      .append("&ofl=").append(getOfl())
+      .append("\\",\\"suffix\\":{\\"option\\":\\"SHORT\\"}}")
       .toString();
 
   // post request to short link endpoint
@@ -153,20 +155,25 @@ try {
   conn.setDoOutput(true);
 
   // write dynamic link
-  writer = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8));
+  writer = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
   writer.write(dynamicLink);
+  writer.flush();
 
   // check response code
   int code = conn.getResponseCode();
-  if (code < 200 || code > 299) {
-    throw new RuntimeException("Error creating invite");
-  }
+  boolean success = ( code >= 200 && code <= 299 );
 
   // get response
   StringBuilder builder = sb.get();
-  reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+  reader = new BufferedReader(new InputStreamReader(success ?
+      conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
   for (String line; (line = reader.readLine()) != null; ) {
     builder.append(line);
+  }
+
+  // throw error message
+  if ( ! success ) {
+    throw new RuntimeException(builder.toString());
   }
 
   EmailService email = (EmailService) getEmail();
@@ -178,7 +185,7 @@ try {
   args.put("name", user.getEmail());
   args.put("email", user.getEmail());
   args.put("link", builder.toString());
-  if (parameters.containsKey("amount")) {
+  if ( parameters != null && parameters.containsKey("amount") ) {
     args.put("amount", parameters.get("amount"));
   }
 
