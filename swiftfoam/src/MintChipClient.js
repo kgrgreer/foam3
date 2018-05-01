@@ -157,6 +157,22 @@ return ClientDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'paymentCardDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": PaymentCard.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)paymentCardDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'transactionDAO',
       swiftFactory: `
 return ClientDAO_create([
