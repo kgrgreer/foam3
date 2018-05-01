@@ -17,6 +17,7 @@ foam.CLASS({
     'stack',
     'user',
     'userDAO',
+    'inviteToken',
     'validateEmail',
     'validatePhone',
     'validateTitleNumOrAuth'
@@ -556,7 +557,8 @@ foam.CLASS({
         return;
       }
 
-      this.userDAO.put(newBusiness).then(function(response) {
+      this.inviteToken.generateToken(null, newBusiness).then(function (result) {
+        if ( ! result ) throw new Error();
         self.stack.back();
       }).catch(function (error) {
         self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
