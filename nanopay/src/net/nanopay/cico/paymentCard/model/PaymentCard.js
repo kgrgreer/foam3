@@ -78,6 +78,7 @@ foam.CLASS({
     },
     {
       class: 'Date',
+      swiftType: 'Date',
       name: 'expirationDate',
       documentation: 'Expiration date of payment card',
       required: true

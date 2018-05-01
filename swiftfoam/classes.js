@@ -85,7 +85,11 @@ var classes = [
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.invoice.model.Invoice',
-  'net.nanopay.invoice.model.PaymentStatus'
+  'net.nanopay.invoice.model.PaymentStatus',
+  'net.nanopay.cico.paymentCard.model.PaymentCard',
+  'net.nanopay.cico.paymentCard.model.PaymentCardType',
+  'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
+  'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform'
 ];
 
 module.exports = {
