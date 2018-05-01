@@ -165,7 +165,7 @@ let calendar = Calendar.current
 
 let year = calendar.component(.year, from: expirationDate)
 let yearString = String(describing: year)
-return yearString.dropFirst(2)
+return String(yearString.dropFirst(2))
       `
     }
   ]
