@@ -9,8 +9,8 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.AddCommaFormatter',
+    'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.FormValidation'
   ],
 
@@ -18,22 +18,22 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
-    'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.admin.model.AccountStatus'
+    'net.nanopay.ui.style.AppStyles'
   ],
 
   exports: [
     'account',
-    'privacyUrl',
-    'termsUrl',
+    'appConfig',
     'as ctrl',
     'findAccount',
-    'appConfig'
+    'privacyUrl',
+    'termsUrl'
   ],
 
   css: `
@@ -100,8 +100,8 @@ foam.CLASS({
       this.ModalStyling.create();
 
       this.nSpecDAO.find('appConfig').then(function(config){
-        self.appConfig = config;
-      })
+        self.appConfig = config.service;
+      });
 
       var self = this;
       foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
@@ -143,9 +143,14 @@ foam.CLASS({
 
               // show onboarding screen if user hasn't clicked "Go To Portal" button
               case self.AccountStatus.ACTIVE:
+                if ( !self.user.createdPwd ) {
+                  self.loginSuccess = false;
+                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
+                  return;
+                }
                 if ( self.user.onboarded ) break;
                 self.loginSuccess = false;
-                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 })
+                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
                 return;
 
               case self.AccountStatus.REVOKED:

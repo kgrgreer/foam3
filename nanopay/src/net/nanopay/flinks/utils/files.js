@@ -33,6 +33,7 @@ FOAM_FILES([
   //flinks views
   { name: 'net/nanopay/flinks/view/FlinksView'},
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/form/FlinksBankPadAuthorization', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksInstitutionForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksAccountForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksConnectForm', flags: ['web'] },

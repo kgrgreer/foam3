@@ -102,6 +102,7 @@ foam.CLASS({
                     class: 'net.nanopay.invoice.ui.InvoiceFileView',
                     data: documents[i],
                     fileNumber: i + 1,
+                    removeHidden: true
                   });
                 }
                 return e;
@@ -186,7 +187,6 @@ foam.CLASS({
             })
           
             // Questionaire
-
             .callIf(this.data.questionnaire, function () {
               self
               .start().addClass('container')

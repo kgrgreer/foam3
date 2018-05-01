@@ -190,6 +190,10 @@ foam.CLASS({
     ^ .net-nanopay-ui-ExpandContainer {
       width: 1240px;
     }
+    ^ .net-nanopay-admin-ui-ReviewProfileView{
+      overflow: scroll;
+      height: 500px;
+    }
   `,
 
   properties: [

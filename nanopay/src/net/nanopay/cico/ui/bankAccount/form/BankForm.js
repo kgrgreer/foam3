@@ -44,9 +44,19 @@ foam.CLASS({
     },
     {
       name: 'verifyAmount'
+    },
+    {
+      name: 'userAddress'
     }
   ],
-
+  messages: [
+    { name: 'Accept', message: "I Agree" },
+    { name: 'Next', message: 'Next' },
+    { name: 'Later', message: 'Come back later' },
+    { name: 'Verify', message: 'Verify' },
+    { name: 'Back', message: "Back" },
+    { name: 'Done', message: 'Done' }
+  ],
   methods: [
     function init() {
       this.views = [
@@ -55,13 +65,14 @@ foam.CLASS({
         { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',       view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
         { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',               view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
       ];
-      this.nextLabel = 'Next';
+      this.nextLabel = this.Next;
       this.SUPER();
       this.viewData.user = this.user
       this.viewData.bankAccount = []
     },
     function validations() {
       var accountInfo = this.viewData;
+      this.userAddress = this.viewData.user.address.city == "" ? this.viewData.user.businessAddress : this.viewData.user.address;
 
       if ( accountInfo.accountName.length > 70 ) {
         this.add(this.NotificationMessage.create({ message: 'Account name cannot exceed 70 characters.', type: 'error' }));
@@ -87,19 +98,20 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateStreetNumber(this.viewData.user.address.streetNumber) ) {
+
+      if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateAddress(this.viewData.user.address.streetName) ) {
+      if ( ! this.validateAddress(this.userAddress.streetName) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateCity(this.viewData.user.address.city) ) {
+      if ( ! this.validateCity(this.userAddress.city) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(this.viewData.user.address.postalCode) ) {
+      if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
@@ -120,8 +132,6 @@ foam.CLASS({
         var self = this;
         if ( this.position == 0 ) { 
           // On Submission screen.
-          this.nextLabel = 'Next';
-          // data from form
           var accountInfo = this.viewData;
 
           if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
@@ -148,12 +158,13 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
             return;
           }
+          this.nextLabel = this.Accept;         
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }
         if ( this.position == 1 ) {
           // On Pad Verfication
-          this.nextLabel = 'I Agree';
+          
           var accountInfo = this.viewData.bankAccount[0];
 
           if ( ! this.validations() ) {
@@ -168,7 +179,7 @@ foam.CLASS({
             firstName: this.viewData.user.firstName,
             lastName: this.viewData.user.lastName,
             userId: this.viewData.user.id,
-            address: this.viewData.user.address,
+            address: this.userAddress,
             agree1:this.viewData.agree1,
             agree2:this.viewData.agree2,
             agree3:this.viewData.agree3,
@@ -181,8 +192,8 @@ foam.CLASS({
           this.bankAccountDAO.put(accountInfo).then(function(response) {
             self.viewData.bankAccount = response;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.backLabel = 'Come back later';
-            self.nextLabel = 'Verify';
+            self.backLabel = this.Later;
+            self.nextLabel = this.Verify;
             return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
@@ -198,8 +209,8 @@ foam.CLASS({
             if ( response ) {
               self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = 'Back';
-              self.nextLabel = 'Done';
+              self.backLabel = this.Back;
+              self.nextLabel = this.Done;
             }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
