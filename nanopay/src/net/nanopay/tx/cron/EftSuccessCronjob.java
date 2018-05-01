@@ -5,6 +5,7 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -16,6 +17,7 @@ import static foam.mlang.MLang.EQ;
 public class EftSuccessCronjob implements ContextAgent {
   @Override
   public void execute(X x){
+    Logger logger = (Logger) x.get("logger");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     Calendar currentDate = Calendar.getInstance();
 
@@ -35,5 +37,7 @@ public class EftSuccessCronjob implements ContextAgent {
         }
       }
     });
+
+    logger.debug("EftSuccessCronjob finished");
   }
 }

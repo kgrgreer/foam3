@@ -91,7 +91,7 @@ foam.CLASS({
       code: function (X) {
         var self = this;
 
-        this.inviteToken.generateToken(this.data).then(function (result) {
+        this.inviteToken.generateToken(null, this.data).then(function (result) {
           if ( ! result ) throw new Error('Unable to resend invitation.');
           X.closeDialog();
           self.add(self.NotificationMessage.create({ message: 'Invitation successfully resent.' }));
