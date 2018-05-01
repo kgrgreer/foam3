@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'com.google.gson.Gson',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
@@ -21,10 +22,11 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.nanos.session.Session',
+    'net.nanopay.onboarding.model.ShortLinksRequest',
+    'net.nanopay.onboarding.model.ShortLinksResponse',
     'org.apache.commons.io.IOUtils',
 
     'java.io.BufferedReader',
-    'java.io.BufferedWriter',
     'java.io.InputStreamReader',
     'java.io.OutputStreamWriter',
     'java.net.HttpURLConnection',
@@ -32,7 +34,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.UUID',
+    'java.util.UUID'
   ],
 
   axioms: [
@@ -41,7 +43,9 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
-`protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+`private static final Gson GSON = new Gson();
+
+protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
   @Override
   protected StringBuilder initialValue() {
     return new StringBuilder();
@@ -76,7 +80,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'dfl'
+      name: 'ofl'
     },
     {
       class: 'String',
@@ -101,7 +105,7 @@ return calendar.getTime();`
       name: 'generateTokenWithParameters',
       javaCode:
 `HttpURLConnection conn = null;
-BufferedWriter writer = null;
+OutputStreamWriter writer = null;
 BufferedReader reader = null;
 
 try {
@@ -139,8 +143,11 @@ try {
       .append("&apn=").append(getApn())
       .append("&ibi=").append(getIbi())
       .append("&isi=").append(getIsi())
-      .append("&dfl=").append(getDfl())
+      .append("&ofl=").append(getOfl())
       .toString();
+
+  ShortLinksRequest request = new ShortLinksRequest();
+  request.setLongDynamicLink(dynamicLink);
 
   // post request to short link endpoint
   conn = (HttpURLConnection) new URL("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyAe7vKguMpkERrzme1wepQvTBAv6AAPXu4").openConnection();
@@ -153,20 +160,25 @@ try {
   conn.setDoOutput(true);
 
   // write dynamic link
-  writer = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8));
-  writer.write(dynamicLink);
+  writer = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
+  writer.write(GSON.toJson(request));
+  writer.flush();
 
   // check response code
   int code = conn.getResponseCode();
-  if (code < 200 || code > 299) {
-    throw new RuntimeException("Error creating invite");
-  }
+  boolean success = ( code >= 200 && code <= 299 );
 
   // get response
   StringBuilder builder = sb.get();
-  reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+  reader = new BufferedReader(new InputStreamReader(success ?
+      conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
   for (String line; (line = reader.readLine()) != null; ) {
     builder.append(line);
+  }
+
+  // throw error message
+  if ( ! success ) {
+    throw new RuntimeException(builder.toString());
   }
 
   EmailService email = (EmailService) getEmail();
@@ -174,11 +186,12 @@ try {
       .setTo(new String[]{user.getEmail()})
       .build();
 
+  ShortLinksResponse response = GSON.fromJson(builder.toString(), ShortLinksResponse.class);
   HashMap<String, Object> args = new HashMap<>();
   args.put("name", user.getEmail());
   args.put("email", user.getEmail());
-  args.put("link", builder.toString());
-  if (parameters.containsKey("amount")) {
+  args.put("link", response.getShortLink());
+  if ( parameters != null && parameters.containsKey("amount") ) {
     args.put("amount", parameters.get("amount"));
   }
 
