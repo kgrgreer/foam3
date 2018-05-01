@@ -43,13 +43,13 @@ public class ValidatedPaymentCardDAO
       throw new AccessControlException("User does not have sufficient permissions");
     }
 
-    if ( card.expirationDate != null ) {
+    if ( card.getExpirationDate() != null ) {
       if ( card.isExpired() ) {
         throw new RuntimeException("Card has expired");
       }
     }
 
-    if ( card.type == PaymentCardType.CREDIT || card.type == PaymentCardType.DEBIT ) {
+    if ( card.getType() == PaymentCardType.CREDIT || card.getType() == PaymentCardType.DEBIT ) {
       /*
       *  To validate the credit card, we use Luhn's algorithm
       *  https://en.wikipedia.org/wiki/Luhn_algorithm
@@ -58,7 +58,7 @@ public class ValidatedPaymentCardDAO
       *     card
       *  2. Check if the sum after the algorithm is of mod 10.
       */
-      if ( ! this.validateCard(card.number) ) {
+      if ( ! this.validateCard(card.getNumber()) ) {
         throw new RuntimeException("Invalid card number");
       }
     }

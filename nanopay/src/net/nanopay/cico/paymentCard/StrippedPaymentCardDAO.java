@@ -27,7 +27,7 @@ public class StrippedPaymentCardDAO
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
 
-    card.number = card.number.substring(card.number.length() - 4, card.number.length());
+    card.setNumber(card.getNumber().substring(card.getNumber().length() - 4, card.getNumber().length()));
 
     return getDelegate().put_(x, card);
   }

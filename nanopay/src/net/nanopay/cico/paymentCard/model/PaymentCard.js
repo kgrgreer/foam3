@@ -98,15 +98,15 @@ foam.CLASS({
         return Date().setHours(0,0,0,0) > this.expirationDate.setHours(0,0,0,0);
       },
       javaReturns: 'boolean',
-      javaCode: function() {`
+      javaCode: `
 Calendar today = Calendar.getInstance();
 today.set(Calendar.HOUR_OF_DAY, 0);
-today.set(Calendar.MINUTE_OF_DAY, 0);
-today.set(Calendar.SECOND_OF_DAY, 0);
+today.set(Calendar.MINUTE, 0);
+today.set(Calendar.SECOND, 0);
 return today.getTime().after(this.getExpirationDate());
-      `},
+      `,
       swiftReturns: 'Bool',
-      swiftCode: function() {`
+      swiftCode: `
 let date = Date()
 let cal = Calendar(identifier: .gregorian)
 let today = cal.startOfDay(for: date)
@@ -114,7 +114,7 @@ let today = cal.startOfDay(for: date)
 let expDate = cal.startOfDay(for: self.expirationDate)
 
 return today > expDate
-      `}
+      `
     },
     {
       name: 'getExpiryMonth',
@@ -127,16 +127,16 @@ return today > expDate
         return expirationMonth.toString();
       },
       javaReturns: 'String',
-      javaCode: function() {`
+      javaCode: `
 LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 int month = localDate.getMonthValue();
 if ( month < 10 ) {
   return "0" + month;
 }
 return String.valueOf(month);
-      `},
+      `,
       swiftReturns: 'String',
-      swiftCode: function() {`
+      swiftCode: `
 let calendar = Calendar.current
 
 let month = calendar.component(.month, from: expirationDate)
@@ -144,7 +144,7 @@ if month < 10 {
   return "0\(month)"
 }
 return "\(month)"
-      `}
+      `
     },
     {
       name: 'getExpiryYear',
@@ -153,19 +153,19 @@ return "\(month)"
         return expirationYear.toString().substring(2);
       },
       javaReturns: 'String',
-      javaCode: function() {`
+      javaCode: `
 LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 int year = localDate.getYear();
 return String.valueOf(year).substring(2);
-      `},
+      `,
       swiftReturns: 'String',
-      swiftCode: function() {`
+      swiftCode: `
 let calendar = Calendar.current
 
 let year = calendar.component(.year, from: expirationDate)
 let yearString = String(describing: year)
 return yearString.dropFirst(2)
-      `}
+      `
     }
   ]
 });

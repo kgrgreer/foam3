@@ -9,6 +9,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
+import net.nanopay.cico.paymentCard.model.PaymentCardType;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 
 import java.security.AccessControlException;
@@ -27,15 +28,15 @@ public class NetworkedPaymentCardDAO
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
 
-    if ( card.type == PaymentCardType.CREDIT || card.type == PaymentCardType.DEBIT ) {
-      if ( isVisa(card.number) ) {
-        card.network = PaymentCardNetwork.VISA;
-      } else if ( isMasterCard(card.number) ) {
-        card.network = PaymentCardNetwork.MASTERCARD;
-      } else if ( isDiscover(card.number) ) {
-        card.network = PaymentCardNetwork.DISCOVER;
-      } else if ( isAmex(card.number) ) {
-        card.network = PaymentCardNetwork.AMERICANEXPRESS;
+    if ( card.getType() == PaymentCardType.CREDIT || card.getType() == PaymentCardType.DEBIT ) {
+      if ( isVisa(card.getNumber()) ) {
+        card.setNetwork(PaymentCardNetwork.VISA);
+      } else if ( isMasterCard(card.getNumber()) ) {
+        card.setNetwork(PaymentCardNetwork.MASTERCARD);
+      } else if ( isDiscover(card.getNumber()) ) {
+        card.setNetwork(PaymentCardNetwork.DISCOVER);
+      } else if ( isAmex(card.getNumber()) ) {
+        card.setNetwork(PaymentCardNetwork.AMERICANEXPRESS);
       }
     }
 
