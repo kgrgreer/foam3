@@ -14,10 +14,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'inviteToken',
     'stack',
     'user',
     'userDAO',
-    'inviteToken',
     'validateEmail',
     'validatePhone',
     'validateTitleNumOrAuth'
@@ -232,9 +232,9 @@ foam.CLASS({
       value: false,
       postSet: function (oldValue, newValue) {
         this.displayedLegalName = '';
-        if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
+        if ( this.firstNameField  ) this.displayedLegalName += this.firstNameField;
         if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
-        if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+        if ( this.lastNameField   ) this.displayedLegalName += ' ' + this.lastNameField;
       }
     },
     {
@@ -345,7 +345,7 @@ foam.CLASS({
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
                     .start(this.FIRST_NAME_FIELD, {}, this.nameFieldElement$)
                       .addClass('nameFields')
-                      .on('click', function() { 
+                      .on('click', function() {
                         self.isEditingName = true;
                       })
                     .end()
@@ -514,7 +514,7 @@ foam.CLASS({
       var self = this;
 
       if ( ( this.firstNameField == null || this.firstNameField.trim() == '' ) ||
-      ( this.lastNameField == null || this.lastNameField.trim() == '' ) || 
+      ( this.lastNameField == null || this.lastNameField.trim() == '' ) ||
       ( this.jobTitle == null || this.jobTitle.trim() == '' ) ||
       ( this.emailAddress == null || this.emailAddress.trim() == '' ) ||
       ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
