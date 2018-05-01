@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'com.google.gson.Gson',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
@@ -21,10 +22,11 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.nanos.session.Session',
+    'net.nanopay.onboarding.model.ShortLinksRequest',
+    'net.nanopay.onboarding.model.ShortLinksResponse',
     'org.apache.commons.io.IOUtils',
 
     'java.io.BufferedReader',
-    'java.io.BufferedWriter',
     'java.io.InputStreamReader',
     'java.io.OutputStreamWriter',
     'java.net.HttpURLConnection',
@@ -32,7 +34,7 @@ foam.CLASS({
     'java.nio.charset.StandardCharsets',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.UUID',
+    'java.util.UUID'
   ],
 
   axioms: [
@@ -41,7 +43,9 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
-`protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+`private static final Gson GSON = new Gson();
+
+protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
   @Override
   protected StringBuilder initialValue() {
     return new StringBuilder();
@@ -133,7 +137,6 @@ try {
 
   // generate dynamic link
   String dynamicLink = sb.get()
-      .append("{\\"longDynamicLink\\":\\"")
       .append(FIREBASE_DYNAMIC_URL)
       .append("?link=").append(url).append("/appRedirect")
       .append("?token=").append(token.getData())
@@ -141,8 +144,10 @@ try {
       .append("&ibi=").append(getIbi())
       .append("&isi=").append(getIsi())
       .append("&ofl=").append(getOfl())
-      .append("\\",\\"suffix\\":{\\"option\\":\\"SHORT\\"}}")
       .toString();
+
+  ShortLinksRequest request = new ShortLinksRequest();
+  request.setLongDynamicLink(dynamicLink);
 
   // post request to short link endpoint
   conn = (HttpURLConnection) new URL("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyAe7vKguMpkERrzme1wepQvTBAv6AAPXu4").openConnection();
@@ -156,7 +161,7 @@ try {
 
   // write dynamic link
   writer = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
-  writer.write(dynamicLink);
+  writer.write(GSON.toJson(request));
   writer.flush();
 
   // check response code
@@ -181,10 +186,11 @@ try {
       .setTo(new String[]{user.getEmail()})
       .build();
 
+  ShortLinksResponse response = GSON.fromJson(builder.toString(), ShortLinksResponse.class);
   HashMap<String, Object> args = new HashMap<>();
   args.put("name", user.getEmail());
   args.put("email", user.getEmail());
-  args.put("link", builder.toString());
+  args.put("link", response.getShortLink());
   if ( parameters != null && parameters.containsKey("amount") ) {
     args.put("amount", parameters.get("amount"));
   }
