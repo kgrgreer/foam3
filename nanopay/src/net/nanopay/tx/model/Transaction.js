@@ -30,14 +30,16 @@ foam.CLASS({
   constants: [
     {
       name: 'STATUS_BLACKLIST',
-      type: 'Set<String>',
-      value: `Collections.unmodifiableSet(new HashSet<String>() {
-        {
-          add("Refunded");
-          add("Request");
-        }
-      });`
+      type: 'Set<TransactionStatus>',
+      value: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+        add(TransactionStatus.REFUNDED);
+        add(TransactionStatus.PENDING);
+      }});`
     }
+  ],
+
+  searchColumns: [
+    'id', 'status', 'type'
   ],
 
   properties: [
@@ -65,8 +67,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
+      name: 'referenceNumber'
     },
     {
       class: 'Long',
@@ -245,6 +246,24 @@ foam.CLASS({
       name: 'notes',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction notes'
+    },
+    {
+      class: 'String',
+      name: 'stripeTokenId',
+      documentation: 'For most Stripe users, the source of every charge is a' +
+        ' credit or debit card. Stripe Token ID is the hash of the card' +
+        ' object describing that card. Token IDs cannot be stored or used' +
+        ' more than once.'
+    },
+    {
+      class: 'String',
+      name: 'stripeChargeId',
+      documentation: 'Stripe charge id is a unique identifier for every' +
+        ' Charge object.'
+    },
+    {
+      class: 'String',
+      name: 'messageId'
     }
   ],
 

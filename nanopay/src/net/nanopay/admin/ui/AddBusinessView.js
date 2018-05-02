@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'inviteToken',
     'stack',
     'user',
     'userDAO',
@@ -219,6 +220,9 @@ foam.CLASS({
       background-color: white;
       z-index: 100;
     }
+    ^ .foam-u2-TextField:focus {
+      border: solid 1px #59A5D5;
+    }
   `,
 
   properties: [
@@ -228,9 +232,9 @@ foam.CLASS({
       value: false,
       postSet: function (oldValue, newValue) {
         this.displayedLegalName = '';
-        if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
+        if ( this.firstNameField  ) this.displayedLegalName += this.firstNameField;
         if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
-        if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+        if ( this.lastNameField   ) this.displayedLegalName += ' ' + this.lastNameField;
       }
     },
     {
@@ -248,6 +252,7 @@ foam.CLASS({
       name: 'displayedLegalName',
       value: ''
     },
+    'nameFieldElement',
     {
       class: 'String',
       name: 'firstNameField',
@@ -288,7 +293,8 @@ foam.CLASS({
     {
       name: 'phoneNumber',
       class: 'String'
-    }
+    },
+    'phoneFieldElement'
   ],
 
   messages: [
@@ -324,6 +330,7 @@ foam.CLASS({
                   .addClass('legalNameDisplayField')
                   .on('focus', function() {
                     this.blur();
+                    self.nameFieldElement && self.nameFieldElement.focus();
                     self.isEditingName = true;
                     self.isEditingPhone = false;
                   })
@@ -336,9 +343,9 @@ foam.CLASS({
                   .addClass('nameFieldsCol')
                   .enableClass('firstName', this.isEditingName$, true)
                     .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                    .start(this.FIRST_NAME_FIELD)
+                    .start(this.FIRST_NAME_FIELD, {}, this.nameFieldElement$)
                       .addClass('nameFields')
-                      .on('click', function() { 
+                      .on('click', function() {
                         self.isEditingName = true;
                       })
                     .end()
@@ -413,6 +420,7 @@ foam.CLASS({
                 .addClass('legalNameDisplayField')
                 .on('focus', function() {
                   this.blur();
+                  self.phoneFieldElement && self.phoneFieldElement.focus();
                   self.isEditingPhone = true;
                   self.isEditingName = false;
                 })
@@ -425,7 +433,7 @@ foam.CLASS({
                 .addClass('phoneFieldsCol')
                 .enableClass('firstName', this.isEditingPhone$, true)
                 .start().add(this.CountryCodeLabel).addClass('label').style({ 'margin-bottom': '8px' }).end()
-                .start(this.COUNTRY_CODE)
+                .start(this.COUNTRY_CODE, { mode: foam.u2.DisplayMode.DISABLED })
                   .addClass('countryCodeInput')
                   .on('click', function() {
                     self.isEditingPhone = true;
@@ -436,10 +444,13 @@ foam.CLASS({
                 .addClass('nameFieldsCol')
                 .enableClass('middleName', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                .start(this.PHONE_NUMBER)
+                .start(this.PHONE_NUMBER, {}, this.phoneFieldElement$)
                   .addClass('phoneNumberInput')
                   .on('click', function() {
                     self.isEditingPhone = true;
+                  })
+                  .on('focusout', function() {
+                    self.isEditingPhone = false;
                   })
                 .end()
               .end()
@@ -503,7 +514,7 @@ foam.CLASS({
       var self = this;
 
       if ( ( this.firstNameField == null || this.firstNameField.trim() == '' ) ||
-      ( this.lastNameField == null || this.lastNameField.trim() == '' ) || 
+      ( this.lastNameField == null || this.lastNameField.trim() == '' ) ||
       ( this.jobTitle == null || this.jobTitle.trim() == '' ) ||
       ( this.emailAddress == null || this.emailAddress.trim() == '' ) ||
       ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
@@ -546,7 +557,8 @@ foam.CLASS({
         return;
       }
 
-      this.userDAO.put(newBusiness).then(function(response) {
+      this.inviteToken.generateToken(null, newBusiness).then(function (result) {
+        if ( ! result ) throw new Error();
         self.stack.back();
       }).catch(function (error) {
         self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));

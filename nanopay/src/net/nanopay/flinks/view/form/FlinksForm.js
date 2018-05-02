@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.flinks.view.element.JumpWizardView',
 
   exports: [
-    'isConnecting',
+    'as form',
     'bankImgs',
-    'loadingSpinner',
-    'as form'
+    'isConnecting',
+    'loadingSpinner'
   ],
 
   implements: [
@@ -15,19 +15,29 @@ foam.CLASS({
   ],
 
   imports: [
+    'bankAccountDAO',
+    'email',
     'flinksAuth',
     'institutionDAO',
+    'padCaptureDAO',
     'user',
     'userDAO',
-    'email'
+    'validateAccountNumber',
+    'validateAddress',
+    'validateCity',
+    'validateInstitutionNumber',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'validateTransitNumber'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Country',
+    'foam.nanos.notification.email.EmailMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Institution',
-    'foam.nanos.notification.email.EmailMessage',
+    'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -166,25 +176,33 @@ foam.CLASS({
       this.title = 'Connect to a new bank account';
       this.viewData.answers = [];
       this.viewData.questions = [];
+      this.viewData.user = this.user;
+      this.viewData.bankAccount = [];
       this.viewTitles = [
         'Institution',
         'Connect',
         'Security',
+        'Accounts',
+        'Pad Authorization',
         'Done'
       ],
       this.isCustomNavigation = true;
       this.views = {
-        FlinksInstitutionForm:        { step: 1, view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true},
-        FlinksConnectForm:            { step: 2, view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' }},
-        FlinksXQuestionAnswerForm:    { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' }},
-        FlinksXSelectionAnswerForm:   { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' }},
-        FlinksMultipleChoiceForm:     { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' }},
-        FlinksImageForm:              { step: 3, view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' }},
-        FlinksAccountForm:            { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
-        FlinksFailForm:               { step: 4, view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true}
+        FlinksInstitutionForm:        { step: 1, label: 'Institution', view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true},
+        FlinksConnectForm:            { step: 2, label: 'Connect', view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' }},
+        FlinksXQuestionAnswerForm:    { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' }},
+        FlinksXSelectionAnswerForm:   { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' }},
+        FlinksMultipleChoiceForm:     { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' }},
+        FlinksImageForm:              { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' }},
+        FlinksAccountForm:            { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true},
+        FlinksFailForm:               { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true},
+        PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' }},
+        Complete:                     { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' }},
+
       }
       this.SUPER();
     },
+
     function initE() {
       this.SUPER();
 
@@ -193,30 +211,58 @@ foam.CLASS({
       this
         .addClass(this.myClass())
     },
+
     function otherBank() {
       this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this.parentNode);
     },
+
     function closeTo(view) {
       this.stack.back();
       this.stack.push(view, this.parent);
     },
-    {
-      name: 'MFADisparcher',
-      code: function(msg) {
-        if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
-          if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
-            this.pushViews('FlinksXSelectionAnswerForm');
-          } else {
-            this.pushViews('FlinksXQuestionAnswerForm');
-          }
-        } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' ||  msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
-          this.pushViews('FlinksMultipleChoiceForm');
-        } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
-          this.pushViews('FlinksImageForm');
+
+    function MFADisparcher(msg) {
+      if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
+        if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
+          this.pushViews('FlinksXSelectionAnswerForm');
         } else {
-          this.fail();
+          this.pushViews('FlinksXQuestionAnswerForm');
         }
+      } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' ||  msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
+        this.pushViews('FlinksMultipleChoiceForm');
+      } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
+        this.pushViews('FlinksImageForm');
+      } else {
+        this.fail();
       }
+    },
+
+    function validations() {
+      if ( this.viewData.user.firstName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( this.viewData.user.lastName.length > 70 ) {
+        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateStreetNumber(this.viewData.user.address.streetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAddress(this.viewData.user.address.streetName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateCity(this.viewData.user.address.city) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePostalCode(this.viewData.user.address.postalCode) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return false;
+      }
+      return true;
     }
   ],
 
@@ -231,6 +277,8 @@ foam.CLASS({
         } else if ( this.currentViewId === 'FlinksAccountForm' ) {
           X.stack.back();
         } else if ( this.currentViewId === 'FlinksFailForm' ) {
+          X.stack.back();
+        } else if ( this.currentViewId === 'PADAuthorizationForm') {
           X.stack.back();
         } else {
           this.rollBackView();
@@ -332,7 +380,7 @@ foam.CLASS({
             // Repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
-            
+
             self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
             self.fail();
           });
@@ -344,22 +392,50 @@ foam.CLASS({
             var inNumber = institution.array[0].institutionNumber;
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                X.bankAccountDAO.put(self.BankAccount.create({
+                self.viewData.bankAccount.push(self.BankAccount.create({
                   accountName: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
                   transitNumber: item.TransitNumber,
                   status: 'Verified'
-                })).catch(function(a) {
-                  self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
-                  self.fail();
-                });
+                }))
               }
             });
+            self.pushViews('PADAuthorizationForm');
           });
           self.isConnecting = false;
-          X.stack.back();
           return;
+        }
+        if ( this.currentViewId === 'PADAuthorizationForm' ) {
+          if ( ! this.validations() ) {
+            return;
+          }
+          this.viewData.bankAccount.forEach(function(bank){
+            self.padCaptureDAO.put(self.PadCapture.create({
+              firstName: self.viewData.user.firstName,
+              lastName: self.viewData.user.lastName,
+              userId: self.viewData.user.id,
+              address: self.viewData.user.address,
+              agree1:self.viewData.agree1,
+              agree2:self.viewData.agree2,
+              agree3:self.viewData.agree3,
+              institutionNumber: bank.institutionNumber,
+              transitNumber: bank.transitNumber,
+              accountNumber: bank.accountNumber
+            })).catch(function(error) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            });
+            self.bankAccountDAO.put(bank).then(function(){
+              self.pushViews('Complete');
+              return;
+            }).catch(function(a) {
+              self.parentNode.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+              self.fail();
+            });
+          })
+        }
+        if ( this.currentViewId === 'Complete' ) {
+          return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }
     }

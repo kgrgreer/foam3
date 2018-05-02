@@ -91,7 +91,7 @@ public class FlinksConnectWebAgent
 
       builder.setLength(0);
       builder.append(config.getUrl())
-          .append("service/flinksRedirect")
+          .append("service/appRedirect")
           .append("?loginId=").append(loginId)
           .append("&requestId=").append(response.getRequestId());
 

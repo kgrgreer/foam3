@@ -8,7 +8,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'UserId',
-          javaType: 'Long'
+          javaType: 'long'
         }
       ]
     }

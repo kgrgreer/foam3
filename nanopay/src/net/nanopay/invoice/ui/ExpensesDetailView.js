@@ -4,18 +4,20 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup',
+    'foam.u2.PopupView',
+    'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount'
   ],
 
   imports: [
-    'stack',
+    'accountDAO',
+    'bankAccountDAO',
+    'ctrl',
     'hideSaleSummary',
     'invoiceDAO',
-    'ctrl',
-    'bankAccountDAO',
+    'stack',
     'user'
   ],
 
@@ -114,6 +116,7 @@ foam.CLASS({
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
         .start('h5').add('Invoice from ', this.data.payeeName).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
+        .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
         .start('h2').addClass('light-roboto-h2').style({ "margin-bottom": "0px"})
           .add('Note:')
         .end()
@@ -153,12 +156,22 @@ foam.CLASS({
           return;
         }
 
-        this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.STATUS, 'Verified'), this.EQ(this.BankAccount.OWNER, this.user.id))).limit(1).select().then(function(account) {
-          if ( account.array.length === 0 ) {
-            self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account.', type: 'error' }));
-            return;
+        this.accountDAO.where(this.EQ(this.Account.ID, this.user.id)).limit(1).select().then(function( accountBalance ) {
+          if ( accountBalance.array[0].balance < self.data.amount ) {
+            // Not enough digital cash balance
+            self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, 'Verified'), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
+              if ( account.array.length === 0 ) {
+                self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account or sufficient digital cash balance.', type: 'error' }));
+                return;
+              }
+              X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+            }).catch(function (err) {
+              console.error(err);
+              self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+            });
+          } else {
+            X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
           }
-          X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
         }).catch(function (err) {
           console.error(err);
           self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
@@ -192,24 +205,24 @@ foam.CLASS({
   ],
 
   listeners: [
-    function voidPopUp(){
+    function voidPopUp() {
       var self = this;
       self.payNowPopUp_.remove();
-      if(this.data.paymentMethod.name != 'NONE'){
+      if ( this.data.paymentMethod.name != 'NONE' ) {
         self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
     },
 
-   function schedulePopUp(){
-     var self = this;
-     self.payNowPopUp_.remove();
-     if(this.data.paymentMethod.name != 'NONE'){
-       self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
-       return;
-     }
-     this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
-   }
+    function schedulePopUp() {
+      var self = this;
+      self.payNowPopUp_.remove();
+      if ( this.data.paymentMethod.name != 'NONE' ) {
+        self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        return;
+      }
+      this.ctrl.add(this.Popup.create().tag({class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+    }
   ]
 });

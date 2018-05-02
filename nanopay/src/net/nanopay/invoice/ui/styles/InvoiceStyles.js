@@ -19,39 +19,63 @@ foam.CLASS({
           color: #c82e2e;
           background: white;
           border: 1px solid #c82e2e;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Void {
           border: 1px solid black;
           color: white;
           background: black;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-New  {
           color: #59a5d5;
           background: white;
-          border: 1px solid #59a5d5;
+          border: 1px solid #262626;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Overdue {
           background: #c82e2e;
           color: white;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Due {
           background: #59aadd;
           color: white;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Paid {
           background: #2cab70;
           color: white;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Scheduled {
           color: #2cab70;
           border: 1px solid #2cab70;
           background: white;
           font-size: 10px;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Pending-Approval {
           color: #093649;
           border: 1px solid #093649;
           background: white;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .Invoice-Status-Draft {
           color: #666666;

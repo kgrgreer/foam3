@@ -42,6 +42,10 @@ foam.CLASS({
       name: 'nextInvoiceDate'
     },
     {
+      name: 'selectedUser',
+      value: {}
+    },
+    {
       class: 'String',
       name: 'frequency',
       view: {
@@ -60,10 +64,17 @@ foam.CLASS({
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
+          placeholder: 'Please Select Customer',
           objToChoice: function(user) {
             var username = user.businessName || user.organization;
             return [user.id, username + ' - (' + user.email + ')'];
           }
+        });
+      },
+      postSet: function(ov, nv){
+        var self = this;
+        this.userDAO.find(nv).then(function(u){
+          self.selectedUser = u;
         });
       }
     }
@@ -72,18 +83,6 @@ foam.CLASS({
   css: `
     ^{
       font-weight: 100;
-    }
-    ^ .customer-div {
-      display: inline-block;
-    }
-    ^ .po-amount-div {
-      margin-left: 20px;
-      position: relative;
-      right: 70px;
-    }
-    ^ .frequency-div {
-      display: inline-block;
-      margin: 0 36px 20px 0;
     }
     ^ .enable-recurring-text {
       font-size: 12px;
@@ -114,23 +113,31 @@ foam.CLASS({
       height: 40px;
       margin-top: 10px;
     }
-    ^ .small-margin{
-      margin-top: 15px;
-    }
     ^ .information {
-      height: 200px;
+      height: 110px;
     }
-    ^ .invoice-input{
-      float: right;
-      position: relative;
-      top: -168px;
+    ^ .net-nanopay-ui-BusinessCard{
+      margin-bottom: 30px;
     }
-    ^ .invoice-num{
-      position: relative;
-      top: 25px;
+    ^ .foam-u2-tag-Select{
+      width: 450px;
     }
-    ^ .note-div {
-      height:
+    ^ .container-1{
+      margin-left: 60px;
+      display: inline-block;
+    }
+    ^ .container-2{
+      margin-left: 40px;
+      display: inline-block;
+    }
+    ^ .property-amount{
+      width: 215px;
+    }
+    ^ .customer-div{
+      vertical-align: top;
+      margin-top: 10px;
+      width: 420px;
+      display: inline-block;
     }
   `,
 
@@ -158,22 +165,21 @@ foam.CLASS({
                   .start(this.USER_LIST).end()
                 .endContext()
               .end()
-              .start().addClass('invoice-num')
+              .start().addClass('container-1')
                 .start().addClass('label').add('Invoice #').end()
                 .start(this.Invoice.INVOICE_NUMBER).addClass('small-input-box').end()
+                .start().addClass('label').add('PO #').end()
+                .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
               .end()
-              .start().style({ 'float' : 'right'}).addClass('invoice-input')
-                .start().addClass('po-amount-div float-right')
-                  .start().addClass('label').add('PO #').end()
-                  .start(this.Invoice.PURCHASE_ORDER).addClass('small-input-box').end()
-                .end()
-                .start().addClass('float-right')
-                  .start().addClass('label').add('Due Date').end()
-                  .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
-                  .start().addClass('label').add('Amount').end()
-                  .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
-                .end()
+              .start().addClass('container-2')
+                .start().addClass('label').add('Due Date').end()
+                .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
+                .start().addClass('label').add('Amount').end()
+                .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
+            .end()
+            .start().show(this.selectedUser$.map(function(a){ return a.emailVerified; }))
+              .tag({ class: 'net.nanopay.ui.BusinessCard', business$: this.selectedUser$ })
             .end()
             .start(this.Invoice.INVOICE_FILE).end()
 //            .start()
@@ -226,6 +232,11 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         var dueDate = this.data.dueDate;
+
+        if ( !this.userList ){
+          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Select a Customer.', type: 'error' }));
+          return;
+        }
 
         if (!this.data.amount || this.data.amount < 0){
           this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Amount.', type: 'error' }));            

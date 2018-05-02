@@ -15,7 +15,8 @@ foam.CLASS({
     'validateAge',
     'validateCity',
     'validateStreetNumber',
-    'validateAddress'
+    'validateAddress',
+    'user'
   ],
 
   implements: [
@@ -950,20 +951,20 @@ foam.CLASS({
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
       this.isEditingName = false; // This will change displayedLegalName as well
-      this.jobTitleField = user.jobTitle;
-      this.emailAddressField = user.email;
-      this.phoneNumberField = this.extractPhoneNumber(user.phone);
+      this.jobTitleField = owner.jobTitle;
+      this.emailAddressField = owner.email;
+      this.phoneNumberField = this.extractPhoneNumber(owner.phone);
       this.isEditingPhone = false;
-      this.principleTypeField = user.principleType;
-      this.birthdayField = user.birthday;
+      this.principleTypeField = owner.principleType;
+      this.birthdayField = owner.birthday;
 
-      this.countryField = user.address.countryId;
-      this.streetNumberField = user.address.streetNumber;
-      this.streetNameField = user.address.streetName;
-      this.addressField = user.address.address2;
-      this.provinceField = user.address.regionId;
-      this.cityField = user.address.city;
-      this.postalCodeField = user.address.postalCode;
+      this.countryField = owner.address.countryId;
+      this.streetNumberField = owner.address.streetNumber;
+      this.streetNameField = owner.address.streetName;
+      this.addressField = owner.address.address2;
+      this.provinceField = owner.address.regionId;
+      this.cityField = owner.address.city;
+      this.postalCodeField = owner.address.postalCode;
 
       this.addLabel = 'Update';
 

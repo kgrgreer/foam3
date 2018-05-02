@@ -1,4 +1,4 @@
-package net.nanopay.flinks;
+package net.nanopay.retail;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static foam.mlang.MLang.EQ;
 
-public class FlinksRedirectWebAgent
+public class AppRedirectWebAgent
     implements WebAgent
 {
   protected EnvironmentConfiguration config_ =
@@ -26,7 +26,7 @@ public class FlinksRedirectWebAgent
 
     try {
       EmailTemplate emailTemplate = (EmailTemplate) emailTemplateDAO.inX(x)
-          .find(EQ(EmailTemplate.NAME, "flinksConnect"));
+          .find(EQ(EmailTemplate.NAME, "app-redirect"));
       JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
       resp.getWriter().write(template.render(JtwigModel.newModel()));
     } catch (Throwable ignored) {}

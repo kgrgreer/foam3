@@ -70,39 +70,39 @@ function backup {
     fi
 }
 
-function gen_and_compile {
-    mvn clean
-    ./gen.sh
-    mvn compile
-}
-
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
     # invoke deploY_journals after build_war
     #
-    mvn clean
+    if [ "$CLEAN_BUILD" -eq 1 ]; then
+      mvn clean
 
-    cd "$NANOPAY_HOME"
+      cd "$NANOPAY_HOME"
 
-    # Copy over static web files to ROOT
-    mkdir -p "$WAR_HOME"
+      # Copy over static web files to ROOT
+      mkdir -p "$WAR_HOME"
 
-    cp -r foam2 "$WAR_HOME/foam2"
-    rm -r "$WAR_HOME/foam2/src/com"
-    cp -r interac/src/net "$WAR_HOME/foam2/src/"
-    cp -r nanopay "$WAR_HOME/nanopay"
-    cp -r merchant "$WAR_HOME/merchant"
-    cp -r favicon "$WAR_HOME/favicon"
+      cp -r foam2 "$WAR_HOME"
+      rm -r "$WAR_HOME/foam2/src/com"
+      cp -r interac/src/net "$WAR_HOME/foam2/src/"
+      cp -r nanopay "$WAR_HOME"
+      cp -r merchant "$WAR_HOME"
+      cp -r favicon "$WAR_HOME"
 
-    # Move images to ROOT/images
-    mkdir -p "$WAR_HOME/images"
-    cp -r "nanopay/src/net/nanopay/images" "$WAR_HOME"
-    cp -r "merchant/src/net/nanopay/merchant/images" "$WAR_HOME"
+      # Move images to ROOT/images
+      mkdir -p "$WAR_HOME/images"
+      cp -r "nanopay/src/net/nanopay/images" "$WAR_HOME"
+      cp -r "merchant/src/net/nanopay/merchant/images" "$WAR_HOME"
+    fi
 
     # build and create war
     ./gen.sh
-    mvn install
+    if [ "$CLEAN_BUILD" -ne 1 ]; then
+      mvn install -Dbuild=dev -o
+    else
+      mvn install
+    fi
 }
 
 function undeploy_war {
@@ -135,10 +135,6 @@ function deploy_journals {
         rm "$JOURNAL_HOME"
     fi
 
-    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
-        rmdir "$JOURNAL_HOME"
-    fi
-
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
@@ -149,10 +145,11 @@ function deploy_journals {
         exit 1
     fi
 
-    #cp "$JOURNAL_OUT/"* "$JOURNAL_HOME/"
     while read file; do
         journal_file="$file".0
-        cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
+        if [ -f "$JOURNAL_OUT/$journal_file" ]; then
+            cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
+        fi
     done < $JOURNALS
 
     # one-time copy of runtime journals from /opt/tomcat/bin to /mnt/journals
@@ -214,6 +211,11 @@ function shutdown_tomcat {
     fi
 
     backup
+
+    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+        rmdir "$JOURNAL_HOME"
+        mkdir -p "$JOURNAL_HOME"
+    fi
 }
 
 function start_tomcat {
@@ -258,7 +260,7 @@ function start_nanos {
     mvn install
     mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
     deploy_journals
-    java -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+    java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
 }
 
 function testcatalina {
@@ -268,9 +270,20 @@ function testcatalina {
     fi
 }
 
+function beginswith {
+    # https://stackoverflow.com/a/18558871
+    case $2 in "$1"*) true;; *) false;; esac;
+}
+
 function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+
+    # if running via CodeDeploy set -c flag
+    if beginswith /pkg/stack/stage "$NANOPAY_HOME"; then
+        CLEAN_BUILD=1
+    fi
+
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
@@ -349,7 +362,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Generate source, compile, and deploy war and journals."
-    echo "  -c : Generate source and compile."
+    echo "  -c : Generate source and compile. Run maven under the default-build profile."
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
@@ -363,7 +376,7 @@ function usage {
 ############################
 
 BUILD_ONLY=0
-COMPILE_ONLY=0
+CLEAN_BUILD=0
 DEBUG=0
 FOREGROUND=0
 DELETE_RUNTIME_JOURNALS=0
@@ -372,10 +385,10 @@ RESTART_ONLY=0
 RUN_NANOS=0
 STOP_TOMCAT=0
 
-while getopts "bcdfhinrs" opt ; do
+while getopts "bcdfhijnrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) COMPILE_ONLY=1 ;;
+        c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
         f) FOREGROUND=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
@@ -398,8 +411,6 @@ if [ "$RUN_NANOS" -eq 1 ]; then
 elif [ "$BUILD_ONLY" -eq 1 ]; then
     build_war
     deploy_journals
-elif [ "$COMPILE_ONLY" -eq 1 ]; then
-    gen_and_compile
 elif [ "$STOP_TOMCAT" -eq 1 ]; then
     shutdown_tomcat
     printf "Tomcat stopped.\n"

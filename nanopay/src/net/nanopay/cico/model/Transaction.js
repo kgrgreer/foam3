@@ -28,15 +28,29 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'returnCode'
+      name: 'confirmationLineNumber',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
-      name: 'returnDate'
+      name: 'description',
+      swiftName: 'description_',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
-      name: 'returnType'
+      name: 'returnCode',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'returnDate',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'returnType',
+      visibility: foam.u2.Visibility.RO
     }
   ]
 });

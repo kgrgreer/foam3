@@ -45,10 +45,10 @@ foam.CLASS({
   methods: [
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'compliance') ||
-        { newValue: this.ComplianceStatus.REQUESTED.ordinal };
+        { newValue: this.ComplianceStatus.REQUESTED };
 
       switch ( status.newValue ) {
-        case this.ComplianceStatus.REQUESTED.ordinal:
+        case this.ComplianceStatus.REQUESTED:
           return {
             title: 'Compliance check',
             labelText: 'Requested',
@@ -56,7 +56,7 @@ foam.CLASS({
             icon: 'images/ic-pending.svg'
           };
 
-        case this.ComplianceStatus.PASSED.ordinal:
+        case this.ComplianceStatus.PASSED:
           return {
             title: 'Compliance check',
             labelText: 'Passed',
@@ -64,7 +64,7 @@ foam.CLASS({
             icon: 'images/ic-compliance.svg'
           };
 
-        case this.ComplianceStatus.FAILED.ordinal:
+        case this.ComplianceStatus.FAILED:
           return {
             title: 'Compliance check',
             labelText: 'Failed',

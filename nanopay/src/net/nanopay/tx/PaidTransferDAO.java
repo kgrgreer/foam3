@@ -42,7 +42,7 @@ public class PaidTransferDAO
     User sender = (User) userDAO_.find_(x, transaction.getPayerId());
 
     // Returns if transaction is a payment from a CCShopper to a CCMerchant
-    if (sender.getGroup().equals("ccShopper") && user.getGroup().equals("ccMerchant"))
+    if ( "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(user.getGroup()) )
       return transaction;
 
     // Sends an email when an transfer has gone through
@@ -67,6 +67,7 @@ public class PaidTransferDAO
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending transfer paid email.", t);
     }
+
     return transaction;
   }
 }
