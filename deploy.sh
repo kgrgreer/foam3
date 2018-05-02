@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./build.sh -c
+/pkg/stage/stack/NANOPAY/build.sh -c
