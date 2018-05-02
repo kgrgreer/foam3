@@ -52,6 +52,7 @@ public class PacsWebAgent
     HttpServletResponse resp       = x.get(HttpServletResponse.class);
     HttpParameters      p          = x.get(HttpParameters.class);
     final PrintWriter   out        = x.get(PrintWriter.class);
+    CharBuffer          buffer_     = CharBuffer.allocate(65535);
     String              contentType = req.getHeader("Content-Type");
     Command             command    = (Command) p.get("cmd");
     Format              format     = (Format) p.get("format");
@@ -94,9 +95,10 @@ public class PacsWebAgent
         if ( "008".equals(msg) ) {
           Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
-          if ( pacs00800106 == null || "".equals(pacs00800106) ) {
-            String message = getParsingError(x, data);
-            logger.error(message + ", input: " + data);
+          if ( pacs00800106 == null ) {
+            System.out.println("HIHELLO");
+            String message = getParsingError(x, buffer_.toString());
+            logger.error(message + ", input: " + buffer_.toString());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
             return;
           }
@@ -107,7 +109,7 @@ public class PacsWebAgent
         } else {
           Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
 
-          if ( pacs02800101 == null || "".equals(pacs02800101) ) {
+          if ( pacs02800101 == null ) {
             String message = getParsingError(x, data);
             logger.error(message + ", input: " + data);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -146,7 +148,7 @@ public class PacsWebAgent
    * @return the error message
    */
   protected String getParsingError(X x, String buffer) {
-    //Parser        parser = new foam.lib.json.ExprParser();
+    Parser        parser = new foam.lib.json.ExprParser();
     PStream       ps     = new StringPStream();
     ParserContext psx    = new ParserContextImpl();
 
@@ -154,7 +156,7 @@ public class PacsWebAgent
     psx.set("X", x == null ? new ProxyX() : x);
 
     ErrorReportingPStream eps = new ErrorReportingPStream(ps);
-    //ps = eps.apply(parser, psx);
+    ps = eps.apply(parser, psx);
     return eps.getMessage();
   }
 }
