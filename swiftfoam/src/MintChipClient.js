@@ -177,11 +177,7 @@ return ClientDAO_create([
       name: 'smsService',
       swiftFactory: `
 return ClientTokenService_create([
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)smsToken"
-    ])
-  ])
+  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)smsToken"
 ])
       `,
     },
@@ -191,11 +187,7 @@ return ClientTokenService_create([
       name: 'emailService',
       swiftFactory: `
 return ClientTokenService_create([
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)emailToken"
-    ])
-  ])
+  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)emailToken"
 ])
       `,
     },
@@ -205,9 +197,7 @@ return ClientTokenService_create([
       name: 'resetPasswordService',
       swiftFactory: `
 return ClientTokenService_create([
-  "delegate": HTTPBox_create([
-    "url": "\\(self.httpBoxUrlRoot.rawValue)resetPasswordToken"
-  ])
+  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)resetPasswordToken"
 ])
       `,
     },
@@ -259,6 +249,16 @@ return ClientDAO_create([
       "url": "\\(self.httpBoxUrlRoot.rawValue)invoiceDAO"
     ])
   ])
+])
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.token.ClientTokenService',
+      name: 'firebaseInviteToken',
+      swiftFactory: `
+return ClientTokenService_create([
+  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)auth"
 ])
       `,
     }
