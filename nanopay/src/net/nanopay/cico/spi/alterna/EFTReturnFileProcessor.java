@@ -98,6 +98,7 @@ public class EFTReturnFileProcessor implements ContextAgent
               sendEmail(x, "Transaction was rejected or returned by EFT return file",
                 "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
             } else if ( tran.getStatus() == TransactionStatus.COMPLETED && tran.getReturnType().equals("Return") ) {
+              tran.setStatus(TransactionStatus.DECLINED);
               sendEmail(x, "Transaction was returned outside of the 2 business day return period",
                 "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
             }
