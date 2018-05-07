@@ -99,7 +99,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
               tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
 
               if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
-                tran.setStatus(TransactionStatus.DECLINED);
+                tran.setStatus(TransactionStatus.FAILED);
                 tran.setDescription(eftConfirmationFileRecord.getReason());
                 sendEmail(x, "Transaction was rejected by EFT confirmation file",
                   "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
