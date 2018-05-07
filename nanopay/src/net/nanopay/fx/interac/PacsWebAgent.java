@@ -96,7 +96,6 @@ public class PacsWebAgent
           Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
           if ( pacs00800106 == null ) {
-            System.out.println("HIHELLO");
             String message = getParsingError(x, buffer_.toString());
             logger.error(message + ", input: " + buffer_.toString());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
