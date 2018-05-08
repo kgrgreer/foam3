@@ -39,7 +39,7 @@ public class RealexVerificationPaymentCardDAO
       .addExpiryDate(card.getExpiryMonth() + card.getExpiryYear())
       .addCvn(card.getCvv())
       .addCvnPresenceIndicator(PresenceIndicator.CVN_PRESENT);
-    c.addCardHolderName(card.getCardholderFirstName() + " " + card.getCardholderLastName());
+    c.addCardHolderName(card.getCardholderName());
     if ( card.getNetwork() == PaymentCardNetwork.VISA ) {
       c.addType(CardType.VISA);
     } else if ( card.getNetwork() == PaymentCardNetwork.MASTERCARD ) {
