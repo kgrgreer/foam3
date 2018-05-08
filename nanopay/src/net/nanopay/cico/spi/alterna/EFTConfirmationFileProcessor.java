@@ -74,45 +74,58 @@ public class EFTConfirmationFileProcessor implements ContextAgent
 
         // UploadLog_yyyyMMdd_mintchipcashout.csv.txt -> yyyyMMdd_mintchipcashout.csv
         String uploadCSVFileName = fileNames.get(i).substring(10, 38);
-        InputStream uploadFileStream = channelSftp.get("/Archive/" + uploadCSVFileName);
-
-        List<FObject> uploadFileList = eftUploadCSVFileParser.parse(uploadFileStream);
-
-        for ( int j = 0; j < confirmationFileList.size(); j++ ) {
-          EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
-          AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
-
-          Transaction tran = (Transaction) transactionDao.find(
-            EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
-
-          if (tran != null) {
-            tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-
-            if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
-              tran.setStatus(TransactionStatus.DECLINED);
-              tran.setDescription(eftConfirmationFileRecord.getReason());
-              sendEmail(x, "Transaction was rejected by EFT confirmation file",
-                "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
-                  + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-            } else if ( eftConfirmationFileRecord.getStatus().equals("OK") && tran.getStatus().equals(TransactionStatus.PENDING) ) {
-              tran.setStatus(TransactionStatus.SENT);
-            }
-
-            transactionDao.put(tran);
+        Vector uploadCSVList = channelSftp.ls("/Archive/");
+        boolean uploadCSVExist = false;
+        for ( Object entry : uploadCSVList ) {
+          ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
+          if ( e.getFilename().equals(uploadCSVFileName) ) {
+            uploadCSVExist = true;
           }
+        }
+
+        if ( uploadCSVExist ) {
+          InputStream uploadFileStream = channelSftp.get("/Archive/" + uploadCSVFileName);
+
+          List<FObject> uploadFileList = eftUploadCSVFileParser.parse(uploadFileStream);
+
+          for ( int j = 0; j < confirmationFileList.size(); j++ ) {
+            EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
+            AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
+
+            Transaction tran = (Transaction) transactionDao.find(
+              EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
+
+            if ( tran != null ) {
+              tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+
+              if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
+                tran.setStatus(TransactionStatus.FAILED);
+                tran.setDescription(eftConfirmationFileRecord.getReason());
+                sendEmail(x, "Transaction was rejected by EFT confirmation file",
+                  "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
+                    + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+              } else if ( eftConfirmationFileRecord.getStatus().equals("OK") && tran.getStatus().equals(TransactionStatus.PENDING) ) {
+                tran.setStatus(TransactionStatus.SENT);
+              }
+
+              transactionDao.put(tran);
+            }
+          }
+        } else {
+          logger.error("Can't find the corresponding upload CSV file in Archive folder", uploadCSVFileName);
         }
       }
 
       Vector folderList = channelSftp.ls("/");
-      boolean exist = false;
+      boolean folderExist = false;
       for ( Object entry : folderList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         if ( e.getFilename().equals("Archive_EFTConfirmationFile") ) {
-          exist = true;
+          folderExist = true;
         }
       }
 
-      if (!exist) {
+      if ( ! folderExist ) {
         channelSftp.mkdir("Archive_EFTConfirmationFile");
       }
 
