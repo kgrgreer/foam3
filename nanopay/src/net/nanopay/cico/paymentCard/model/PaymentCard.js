@@ -45,18 +45,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'cardholderFirstName',
+      name: 'cardholderName',
       documentation: 'First name of cardholder'
-    },
-    {
-      class: 'String',
-      name: 'cardholderMiddleName',
-      documentation: 'Middle name of cardholder'
-    },
-    {
-      class: 'String',
-      name: 'cardholderLastName',
-      documentation: 'Last name of cardholder'
     },
     {
       class: 'FObjectProperty',
