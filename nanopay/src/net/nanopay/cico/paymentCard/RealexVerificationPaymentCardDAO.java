@@ -62,9 +62,9 @@ public class RealexVerificationPaymentCardDAO
     //TODO: do not hard code secret
     RealexClient client = new RealexClient("secret", HttpConfiguration);
     try {
-      PaymentResponse respose = client.send(paymentRequest);
-      if ( ! "00".equals(respose.getResult()) ) 
-        throw new RuntimeException("fail to verify by Realex, error message: " + respose.getMessage());
+      PaymentResponse response = client.send(paymentRequest);
+      if ( ! "00".equals(response.getResult()) ) 
+        throw new RuntimeException("fail to verify by Realex, error message: " + response.getMessage());
       return getDelegate().put_(x, obj);
     } catch ( RealexServerException e ) {
       throw new RuntimeException("Can not use Realex otb to verify card");
