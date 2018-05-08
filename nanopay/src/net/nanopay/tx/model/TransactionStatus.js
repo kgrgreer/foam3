@@ -32,6 +32,9 @@ foam.ENUM({
     {
       name: 'ACSC',
       label: 'ACSC'
+    },{
+      name: 'FAILED',
+      label: 'Failed'
     }
   ]
 });
