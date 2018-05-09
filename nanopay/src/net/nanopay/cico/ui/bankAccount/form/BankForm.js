@@ -74,46 +74,52 @@ foam.CLASS({
       var accountInfo = this.viewData;
       this.userAddress = this.viewData.user.address.city == "" ? this.viewData.user.businessAddress : this.viewData.user.address;
 
-      if ( accountInfo.accountName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Account name cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateTransitNumber(accountInfo.transitNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateAccountNumber(accountInfo.accountNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid account number.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateInstitutionNumber(accountInfo.bankNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid institution number.', type: 'error' }));
-        return false;
-      }
-      if ( this.viewData.user.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( this.viewData.user.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
-        return false;
+      // only perform these validations if on 1st screen
+      if ( this.position === 0 ) {
+        if ( accountInfo.accountName.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: 'Account name cannot exceed 70 characters.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateTransitNumber(accountInfo.transitNumber) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateAccountNumber(accountInfo.accountNumber) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid account number.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateInstitutionNumber(accountInfo.bankNumber) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid institution number.', type: 'error' }));
+          return false;
+        }
       }
 
-      if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateAddress(this.userAddress.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateCity(this.userAddress.city) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
-        return false;
+      // only perform these validations if on 2nd screen
+      if ( this.position === 1 ) {
+        if ( this.viewData.user.firstName.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+          return false;
+        }
+        if ( this.viewData.user.lastName.length > 70 ) {
+          this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateAddress(this.userAddress.streetName) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateCity(this.userAddress.city) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+          return false;
+        }
       }
       return true;
     }
