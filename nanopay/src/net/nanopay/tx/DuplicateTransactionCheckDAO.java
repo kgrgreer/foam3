@@ -19,7 +19,8 @@ public class DuplicateTransactionCheckDAO
   }
 
   public Object getLockForId(long id) {
-    return locks_[(int)(id%locks_.length)];
+    // Id's should be positive, but just to be safe, take the ABS
+    return locks_[(int)(Math.abs(id) % locks_.length)];
   }
 
   @Override
