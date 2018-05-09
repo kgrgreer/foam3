@@ -1,6 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
+  
+  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'settlementDate', 'date'],
 
   imports: [
     'addCommas',
