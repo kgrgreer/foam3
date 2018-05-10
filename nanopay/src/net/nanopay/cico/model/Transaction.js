@@ -51,6 +51,11 @@ foam.CLASS({
       class: 'String',
       name: 'returnType',
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'Map',
+      name: 'paymentData',
+      document: 'store data that need for payment platform'
     }
   ]
 });
