@@ -9,6 +9,7 @@ var classes = [
   'foam.swift.ui.DAOTableViewSource',
 
   'foam.blob.Blob',
+  'foam.blob.IdentifiedBlob',
   'foam.box.Box',
   'foam.box.LogBox',
   'foam.box.BoxRegistry',
