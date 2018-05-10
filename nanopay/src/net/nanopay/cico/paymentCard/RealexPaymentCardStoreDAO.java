@@ -6,9 +6,6 @@ import foam.dao.DAO;
 import java.util.Map;
 import foam.dao.ProxyDAO;
 import java.util.UUID;
-
-import javax.management.RuntimeErrorException;
-
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardType;
