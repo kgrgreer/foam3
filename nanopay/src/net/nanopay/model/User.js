@@ -213,6 +213,11 @@ foam.CLASS({
       name: 'inviteAttempts',
       value: 0,
       documentation: 'Counter to count the number of invite attempt',
+    },
+    {
+      class: 'String',
+      name: 'realexPayerReference',
+      documentation: 'used to get stored payment card in Realex'
     }
   ]
 });
