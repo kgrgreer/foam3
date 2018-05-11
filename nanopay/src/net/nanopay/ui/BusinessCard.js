@@ -83,7 +83,8 @@ foam.CLASS({
               class: 'foam.nanos.auth.ProfilePictureView',
               placeholderImage: 'images/business-placeholder.png',
               data$: this.profileImg$,
-              uploadHidden: true
+              uploadHidden: true,
+              boxHidden: true
             })
             .start().addClass('container-1')
               .start().addClass('companyName')
