@@ -185,6 +185,16 @@
       <artifactId>stripe-java</artifactId>
       <version>5.35.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>9.3.11.v20160721</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.3.11.v20160721</version>
+    </dependency>
   </dependencies>
 
   <build>
