@@ -22,6 +22,7 @@ import com.realexpayments.remote.sdk.RealexServerException;
 import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
+//import net.nanopay.cico.model.PaymentType;
 
 public class RealexTransactionDAO
  extends ProxyDAO
@@ -41,33 +42,33 @@ public class RealexTransactionDAO
     //get PaymentDATA
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = null;
-    Map paymentData = transaction.getPaymentData();
-    if ( "mobile".equals(paymentData.get("type")) ) {
+    net.nanopay.cico.model.PaymentData paymentData = transaction.getPaymentData();
+    if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.MOBILE ) {
       paymentRequest = new PaymentRequest()
         .addType(PaymentType.AUTH_MOBILE)
-        .addMerchantId((String) paymentData.get("merchantId")) 
+        .addMerchantId(paymentData.getMerchantId()) 
         .addOrderId(Long.toString(transaction.getId()))
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
-        .addMobile((String) paymentData.get("mobileType")) 
-        .addToken((String) paymentData.get("token"));
-    } else if ( "paymentCard".equals(paymentData.get("type")) ) {
+        .addMobile(paymentData.getMobileType()) 
+        .addToken(paymentData.getToken());
+    } else if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.PAYMENTCARD ) {
       User user = (User) x.get("user");
       DAO paymentCardDAO = user.getPaymentCards(); 
-      long cardId = (long) paymentData.get("paymentCardId"); 
+      long cardId = paymentData.getPaymentCardId(); 
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
       PaymentData myPaymentData = new PaymentData()
-        .addCvnNumber((String) paymentData.get("cvn"));
+        .addCvnNumber(paymentData.getCvn());
       paymentRequest = new PaymentRequest()
         .addType(PaymentType.RECEIPT_IN)
-        .addMerchantId((String) paymentData.get("merchantId"))
+        .addMerchantId(paymentData.getMerchantId())
         .addAmount(transaction.getAmount())
         .addOrderId(Long.toString(transaction.getId()))
-        .addCurrency((String) paymentData.get("currency"))
+        .addCurrency(paymentData.getCurrency())
         .addPayerReference(user.getRealexPayerReference())
         .addPaymentMethod(paymentCard.getRealexCardReference())
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
-    } else if ( "one-off".equals(paymentData.get("type")) ) {
+    } else if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.ONEOFF ) {
       //TODO: do not support right now
     } else {
       throw new RuntimeException("Unknown payment type for Realex platform");

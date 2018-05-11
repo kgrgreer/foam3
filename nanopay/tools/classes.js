@@ -116,7 +116,11 @@ var classes = [
   'foam.nanos.auth.UserUserJunction',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
-  'net.nanopay.fx.interac.model.AcceptExchangeRateFields'
+  'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
+
+  //paymentData
+  'net.nanopay.cico.model.PaymentData',
+  'net.nanopay.cico.model.PaymentType'
 ];
 
 var abstractClasses = [

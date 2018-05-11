@@ -191,6 +191,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
+  { name: 'net/nanopay/cico/model/PaymentData'},
+  { name: 'net/nanopay/cico/model/PaymentType'},
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
