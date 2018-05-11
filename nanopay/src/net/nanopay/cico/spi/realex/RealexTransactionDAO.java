@@ -22,7 +22,6 @@ import com.realexpayments.remote.sdk.RealexServerException;
 import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
-//import net.nanopay.cico.model.PaymentType;
 
 public class RealexTransactionDAO
  extends ProxyDAO
