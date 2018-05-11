@@ -6,6 +6,7 @@ import foam.dao.ProxyDAO;
 import foam.core.FObject;
 import java.util.*;
 import foam.nanos.auth.User;
+import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
@@ -41,53 +42,40 @@ public class RealexTransactionDAO
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = null;
     Map paymentData = transaction.getPaymentData();
-    //type: mobile, paymentCard, or one-off. String type
     if ( "mobile".equals(paymentData.get("type")) ) {
       paymentRequest = new PaymentRequest()
         .addType(PaymentType.AUTH_MOBILE)
-        .addMerchantId((String) paymentData.get("merchantId")) //for Varipay is varipay. String type
+        .addMerchantId((String) paymentData.get("merchantId")) 
         .addOrderId(Long.toString(transaction.getId()))
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
-        .addMobile((String) paymentData.get("mobileType")) //apple-pay or pay-with-google. String type
-        .addToken((String) paymentData.get("token")); //String type
+        .addMobile((String) paymentData.get("mobileType")) 
+        .addToken((String) paymentData.get("token"));
     } else if ( "paymentCard".equals(paymentData.get("type")) ) {
       User user = (User) x.get("user");
-
+      DAO paymentCardDAO = user.getPaymentCards(); 
+      long cardId = (long) paymentData.get("paymentCardId"); 
+      PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
       PaymentData myPaymentData = new PaymentData()
-        .addCvnNumber((String) paymentData.get("cvn")); //three digits. String type
+        .addCvnNumber((String) paymentData.get("cvn"));
       paymentRequest = new PaymentRequest()
         .addType(PaymentType.RECEIPT_IN)
-        .addMerchantId((String) paymentData.get("merchantId")) //for Varipay is varipay. String type
+        .addMerchantId((String) paymentData.get("merchantId"))
         .addAmount(transaction.getAmount())
         .addOrderId(Long.toString(transaction.getId()))
-        .addCurrency("EUR")
-        .addPayerReference("get from User")
-        .addPaymentMethod("get from Card")
+        .addCurrency((String) paymentData.get("currency"))
+        .addPayerReference(user.getRealexPayerReference())
+        .addPaymentMethod(paymentCard.getRealexCardReference())
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
     } else if ( "one-off".equals(paymentData.get("type")) ) {
-      //TODO: need to get card info from user;
-      Card card = new Card()
-        .addType("")
-        .addNumber("")
-        .addExpiryDate("")
-        .addCvn("")
-        .addCvnPresenceIndicator(com.realexpayments.remote.sdk.domain.Cvn.PresenceIndicator.CVN_PRESENT)
-        .addCardHolderName("");
-      paymentRequest = new PaymentRequest()
-        .addType(PaymentType.AUTH)
-        .addMerchantId("")
-        .addOrderId("")
-        .addAccount("")
-        .addAmount(0)
-        .addCurrency("")
-        .addCard(card);
+      //TODO: do not support right now
     } else {
       throw new RuntimeException("Unknown payment type for Realex platform");
     }
-    HttpConfiguration httpConfiguration = new HttpConfiguration();
-    httpConfiguration.setEndpoint("https://test.realexpayments.com/epage-remote.cgi");
-    RealexClient client = new RealexClient("Po8lRRT67a", httpConfiguration);
+    HttpConfiguration HttpConfiguration = new HttpConfiguration();
+    HttpConfiguration.setEndpoint("https://api.sandbox.realexpayments.com/epage-remote.cgi");
+    //TODO: do not hard code secret
+    RealexClient client = new RealexClient("secret", HttpConfiguration);
     PaymentResponse response = null;
     try {
       response = client.send(paymentRequest);

@@ -55,7 +55,21 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'paymentData',
-      document: 'store data that need for payment platform'
+      document: `
+        store data that need for payment platform
+        eg:
+          1) create realex mobile payment
+            type = mobile (String)
+            merchantId = varipay (String)
+            mobileType = apple-pay or pay-with-google (String)
+            token = 'generate from frontEnd' (String)
+          2) create realex store card payment
+            type = paymentCard (String)
+            merchantId = varipay (String)
+            currency = CAD (String)
+            paymentCardId = (long)
+
+      `
     }
   ]
 });
