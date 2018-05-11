@@ -57,6 +57,8 @@ public class RealexTransactionDAO
         paymentRequest.addMobile("apple-pay"); 
     } else if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.PAYMENTCARD ) {
       User user = (User) x.get("user");
+      DAO currencyDAO = (DAO) x.get("currencyDAO");
+      net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(paymentData.getCurrency().toString());
       DAO paymentCardDAO = user.getPaymentCards(); 
       long cardId = paymentData.getPaymentCardId(); 
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
@@ -67,7 +69,7 @@ public class RealexTransactionDAO
         .addMerchantId(paymentData.getMerchantId())
         .addAmount(transaction.getAmount())
         .addOrderId(Long.toString(transaction.getId()))
-        .addCurrency(paymentData.getCurrency())
+        .addCurrency((String) currency.getId())
         .addPayerReference(user.getRealexPayerReference())
         .addPaymentMethod(paymentCard.getRealexCardReference())
         .addPaymentData(myPaymentData)
