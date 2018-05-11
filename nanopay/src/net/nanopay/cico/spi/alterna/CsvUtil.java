@@ -108,8 +108,9 @@ public class CsvUtil {
       AND(
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
-          EQ(Transaction.TYPE, TransactionType.CASHIN),
-          EQ(Transaction.TYPE, TransactionType.CASHOUT)
+            EQ(Transaction.TYPE, TransactionType.CASHIN),
+            EQ(Transaction.TYPE, TransactionType.CASHOUT),
+            EQ(Transaction.TYPE, TransactionType.BANKACCOUNTPAYMENT)
         )
       )
     ).select(new AbstractSink() {
@@ -122,9 +123,9 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION ) {
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION || t.getType() == TransactionType.BANKACCOUNTPAYMENT ) {
             txnType = "DB";
-            user = (User) userDAO.find(t.getPayeeId());
+            user = (User) userDAO.find(t.getPayerId());
           } else if ( t.getType() == TransactionType.CASHOUT ) {
             txnType = "CR";
             user = (User) userDAO.find(t.getPayerId());
