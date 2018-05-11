@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.dao.ClientDAO',
     'foam.dao.DAOSink',
     'foam.nanos.auth.ClientAuthService',
+    'foam.nanos.fs.File',
     'foam.swift.dao.ArrayDAO',
     'foam.swift.dao.CachingDAO',
     'foam.swift.parse.json.FObjectParser',
@@ -256,6 +257,7 @@ return ClientDAO_create([
       `
     },
     {
+      class: 'foam.dao.DAOProperty',
       name: 'invoiceDAO',
       swiftFactory: `
 return ClientDAO_create([
@@ -277,7 +279,21 @@ return ClientTokenService_create([
   "serviceName": "\\(self.httpBoxUrlRoot.rawValue)auth"
 ])
       `,
-    }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'fileDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": File.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)fileDAO"
+    ])
+  ])
+])
+      `,
+    },
   ],
   axioms: [
     foam.pattern.Singleton.create(),
