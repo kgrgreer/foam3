@@ -22,6 +22,7 @@ import com.realexpayments.remote.sdk.RealexServerException;
 import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
+import net.nanopay.cico.model.MobileType;
 
 public class RealexTransactionDAO
  extends ProxyDAO
@@ -48,8 +49,12 @@ public class RealexTransactionDAO
         .addMerchantId(paymentData.getMerchantId()) 
         .addOrderId(Long.toString(transaction.getId()))
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
-        .addMobile(paymentData.getMobileType()) 
+        //.addMobile(paymentData.getMobileType()) 
         .addToken(paymentData.getToken());
+      if ( MobileType.GOOGLEPAY == paymentData.getMobileType() )
+        paymentRequest.addMobile("pay-with-google");
+      else if ( MobileType.APPLEPAY == paymentData.getMobileType() ) 
+        paymentRequest.addMobile("apple-pay"); 
     } else if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.PAYMENTCARD ) {
       User user = (User) x.get("user");
       DAO paymentCardDAO = user.getPaymentCards(); 

@@ -27,9 +27,9 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      class: 'String',
-      name: 'mobileType',
-      documentation: 'apple-pay or pay-with-google'
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.cico.model.MobileType',
+      name: 'mobileType'
     },
     {
       class: 'String',
@@ -37,4 +37,4 @@ foam.CLASS({
       value: 'CAD'
     }
   ]
-})
+});
