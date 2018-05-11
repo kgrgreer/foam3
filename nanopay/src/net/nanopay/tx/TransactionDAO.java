@@ -69,7 +69,7 @@ public class TransactionDAO
       return super.put_(x, obj);
     }
 
-    if ( transaction.getType().equals(TransactionType.CASHIN) ) {
+    if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANKACCOUNTPAYMENT ) {
       return transaction.getStatus().equals(TransactionStatus.COMPLETED) ?
         executeTransaction(x, transaction) :
         super.put_(x, obj) ;
