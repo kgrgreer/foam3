@@ -7,18 +7,16 @@ import foam.dao.DAO;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
-
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.model.BankAccount;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -136,15 +134,11 @@ public class CsvUtil {
           }
 
           // if user null, return
-          if ( user == null ) {
-            return;
-          }
+          if ( user == null ) return;
 
           // get bank account and check if null
           BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
-          if ( bankAccount == null ) {
-            return;
-          }
+          if ( bankAccount == null ) return;
 
           if ( ! "".equals(t.getReferenceNumber()) ) {
             refNo = t.getReferenceNumber();
