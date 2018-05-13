@@ -295,10 +295,8 @@ function setenv {
         JOURNAL_HOME=/mnt/journals
 
         CLEAN_BUILD=1
-        printf "CODE_DEPLOY"
-        exit
     fi
-    exit
+
     export CATALINA_PID="/tmp/catalina_pid"
     touch "$CATALINA_PID"
 
