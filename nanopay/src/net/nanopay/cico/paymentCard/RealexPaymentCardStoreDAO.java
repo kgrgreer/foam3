@@ -61,7 +61,7 @@ public class RealexPaymentCardStoreDAO
     String cardReference = UUID.randomUUID().toString();
     Card myCard = new Card()
       .addNumber(card.getExpiryMonth() + card.getExpiryYear())
-      .addExpiryDate("0519")
+      .addExpiryDate(card.getNumber())
       .addCardHolderName(card.getCardholderName())
       .addReference(cardReference)
       .addPayerReference(payerReference);

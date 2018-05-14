@@ -75,7 +75,7 @@ public class RealexTransactionDAO
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
     } else if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.ONEOFF ) {
-      //TODO: do not support right now
+      throw new RuntimeException("One-off do not support");
     } else {
       throw new RuntimeException("Unknown payment type for Realex platform");
     }
