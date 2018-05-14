@@ -193,7 +193,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
   { name: 'net/nanopay/cico/model/PaymentData'},
   { name: 'net/nanopay/cico/model/PaymentType'},
-  { name: 'net/nanopay/cico/model/MobileType'},
+  { name: 'net/nanopay/cico/model/MobileWallet'},
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},

@@ -1,6 +1,6 @@
 foam.ENUM({
   package: 'net.nanopay.cico.model',
-  name: 'MobileType',
+  name: 'MobileWallet',
   values: [
     {
       name: 'APPLEPAY',

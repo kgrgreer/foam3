@@ -28,8 +28,8 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.cico.model.MobileType',
-      name: 'mobileType'
+      of: 'net.nanopay.cico.model.MobileWallet',
+      name: 'mobileWallet'
     },
     {
       class: 'String',

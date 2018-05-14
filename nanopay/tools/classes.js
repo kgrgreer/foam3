@@ -120,7 +120,7 @@ var classes = [
 
   //paymentData
   'net.nanopay.cico.model.PaymentData',
-  'net.nanopay.cico.model.MobileType',
+  'net.nanopay.cico.model.MobileWallet',
   'net.nanopay.cico.model.PaymentType'
 ];
 
