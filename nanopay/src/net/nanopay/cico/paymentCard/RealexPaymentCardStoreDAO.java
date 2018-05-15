@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import java.util.Map;
 import foam.dao.ProxyDAO;
 import java.util.UUID;
+import java.util.List;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardType;
@@ -22,6 +23,10 @@ import com.realexpayments.remote.sdk.RealexException;
 import com.realexpayments.remote.sdk.RealexServerException;
 import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.domain.Payer;
+import net.nanopay.cico.model.PaymentPlatformUserReference;
+import foam.dao.ArraySink;
+import foam.dao.RelationshipDAO;
+import static foam.mlang.MLang.EQ;
 
 public class RealexPaymentCardStoreDAO
   extends ProxyDAO
@@ -53,7 +58,18 @@ public class RealexPaymentCardStoreDAO
         if ( ! "00".equals(response.getResult()) ) {
           throw new RuntimeException("fail to create Payer by Realex, error message: " + response.getMessage());
         }
-        user.setRealexPayerReference(payerReference);
+        RelationshipDAO paymentPlateformDAO = (RelationshipDAO) user.getPaymentPlatformUserReferences();
+        ArraySink sink = (ArraySink) paymentPlateformDAO.where(EQ(PaymentPlatformUserReference.OWNER, user)).select(new ArraySink());
+        List list = sink.getArray();
+        if ( list.size() == 0 ) {
+          PaymentPlatformUserReference platformReference = new PaymentPlatformUserReference();
+          platformReference.setRealexUserReference(payerReference);
+          paymentPlateformDAO.put(platformReference);
+        } else {
+          PaymentPlatformUserReference platformReference = (PaymentPlatformUserReference) list.get(0);
+          platformReference.setRealexUserReference(payerReference);
+          paymentPlateformDAO.put(platformReference.fclone());
+        }
       } catch ( Throwable e ) {
         throw new RuntimeException("Error to connect to Realex with PayerNew request");
       }

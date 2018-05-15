@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.core.FObject;
+import foam.dao.AbstractSink;
 import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
@@ -23,6 +24,9 @@ import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
 import net.nanopay.cico.model.MobileWallet;
+import static foam.mlang.MLang.EQ;
+import net.nanopay.cico.model.PaymentPlatformUserReference;
+import foam.dao.ArraySink;
 
 public class RealexTransactionDAO
  extends ProxyDAO
@@ -41,10 +45,10 @@ public class RealexTransactionDAO
     if ( ! (payerId == 0) ) return getDelegate().put_(x, obj);
     //get PaymentDATA
     //figure out the type of transaction: mobile, savedbankCard, and one-off
-    PaymentRequest paymentRequest = null;
+    PaymentRequest paymentRequest = new PaymentRequest();
     net.nanopay.cico.model.PaymentData paymentData = transaction.getPaymentData();
     if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.MOBILE ) {
-      paymentRequest = new PaymentRequest()
+      paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
         .addMerchantId(paymentData.getMerchantId()) 
         .addOrderId(Long.toString(transaction.getId()))
@@ -63,16 +67,19 @@ public class RealexTransactionDAO
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
       PaymentData myPaymentData = new PaymentData()
         .addCvnNumber(paymentData.getCvn());
-      paymentRequest = new PaymentRequest()
+      paymentRequest
         .addType(PaymentType.RECEIPT_IN)
         .addMerchantId(paymentData.getMerchantId())
         .addAmount(transaction.getAmount())
         .addOrderId(Long.toString(transaction.getId()))
         .addCurrency((String) currency.getId())
-        .addPayerReference(user.getRealexPayerReference())
         .addPaymentMethod(paymentCard.getRealexCardReference())
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
+      ArraySink sink = (ArraySink) user.getPaymentPlatformUserReferences().where(EQ(PaymentPlatformUserReference.OWNER, user)).select(new ArraySink());
+      List list = sink.getArray();
+      PaymentPlatformUserReference platformReference = (PaymentPlatformUserReference) list.get(0);
+      paymentRequest.addPayerReference(platformReference.getRealexUserReference());
     } else if ( paymentData.getType() == net.nanopay.cico.model.PaymentType.ONEOFF ) {
       throw new RuntimeException("One-off do not support");
     } else {
