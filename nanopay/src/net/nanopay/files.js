@@ -191,6 +191,9 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
+  { name: 'net/nanopay/cico/model/PaymentData'},
+  { name: 'net/nanopay/cico/model/PaymentType'},
+  { name: 'net/nanopay/cico/model/MobileWallet'},
 
   // invoice
   { name: 'net/nanopay/invoice/model/Invoice'},
@@ -297,10 +300,11 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
-  { name: 'net/nanopay/model/Relationships'},
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   //s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice'},
   //Institution
-  { name: 'net/nanopay/model/Institution' }
+  { name: 'net/nanopay/model/Institution' },
+  { name: 'net/nanopay/cico/model/PaymentPlatformUserReference' },
+  { name: 'net/nanopay/model/Relationships'}
 ]);

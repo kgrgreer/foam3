@@ -51,6 +51,11 @@ foam.CLASS({
       class: 'String',
       name: 'returnType',
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'paymentData',
+      of: 'net.nanopay.cico.model.PaymentData'
     }
   ]
 });

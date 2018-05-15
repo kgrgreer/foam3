@@ -79,6 +79,11 @@ foam.CLASS({
       documentation: 'CVV of payment card',
       required: true,
       storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'realexCardReference',
+      documentation: 'used to fetch card that store in Realex'
     }
   ],
 
