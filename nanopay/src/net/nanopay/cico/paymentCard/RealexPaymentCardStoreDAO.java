@@ -10,6 +10,7 @@ import java.util.List;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardType;
+import sun.jvm.hotspot.debugger.posix.elf.ELFSectionHeader;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 import net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform;
 import com.realexpayments.remote.sdk.domain.Card;
@@ -42,7 +43,15 @@ public class RealexPaymentCardStoreDAO
     if ( card.getPaymentPlatform() != PaymentCardPaymentPlatform.REALEX ) 
       return getDelegate().put_(x, obj);
     User user = (User)x.get("user");
-    String payerReference = user.getRealexPayerReference();
+    RelationshipDAO paymentPlateformDAO = (RelationshipDAO) user.getPaymentPlatformUserReferences();
+    ArraySink sink = (ArraySink) paymentPlateformDAO.where(EQ(PaymentPlatformUserReference.OWNER, user)).select(new ArraySink());
+    List list = sink.getArray();
+    PaymentPlatformUserReference platformReference = null;
+    if ( list.size() == 0 ) 
+      platformReference = new PaymentPlatformUserReference();
+    else
+      platformReference = (PaymentPlatformUserReference) list.get(0);
+    String payerReference = platformReference.getRealexUserReference();
     if ( payerReference == null || "".equals(payerReference) ) {
       //create payer reference in Realex if do not exist
       payerReference = UUID.randomUUID().toString();
@@ -58,18 +67,8 @@ public class RealexPaymentCardStoreDAO
         if ( ! "00".equals(response.getResult()) ) {
           throw new RuntimeException("fail to create Payer by Realex, error message: " + response.getMessage());
         }
-        RelationshipDAO paymentPlateformDAO = (RelationshipDAO) user.getPaymentPlatformUserReferences();
-        ArraySink sink = (ArraySink) paymentPlateformDAO.where(EQ(PaymentPlatformUserReference.OWNER, user)).select(new ArraySink());
-        List list = sink.getArray();
-        if ( list.size() == 0 ) {
-          PaymentPlatformUserReference platformReference = new PaymentPlatformUserReference();
-          platformReference.setRealexUserReference(payerReference);
-          paymentPlateformDAO.put(platformReference);
-        } else {
-          PaymentPlatformUserReference platformReference = (PaymentPlatformUserReference) list.get(0);
-          platformReference.setRealexUserReference(payerReference);
-          paymentPlateformDAO.put(platformReference.fclone());
-        }
+        platformReference.setRealexUserReference(payerReference);
+        paymentPlateformDAO.put(platformReference.fclone());
       } catch ( Throwable e ) {
         throw new RuntimeException("Error to connect to Realex with PayerNew request");
       }
