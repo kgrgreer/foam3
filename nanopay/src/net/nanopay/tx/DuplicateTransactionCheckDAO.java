@@ -30,7 +30,8 @@ public class DuplicateTransactionCheckDAO
       Transaction oldTxn = (Transaction) getDelegate().find(obj);
       if ( oldTxn != null ) {
         if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
-          throw new RuntimeException("Unable to update Transaction, if transaction status is accepted or declined");
+          if ( ! curTxn.getStatus().equals(TransactionStatus.DECLINED) )
+            throw new RuntimeException("Unable to update Transaction, if transaction status is accepted or declined");
         }
         if ( compareTransactions(oldTxn, curTxn) != 0 ) {
           throw new RuntimeException("Unable to update Transaction");

@@ -5,26 +5,34 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+
+import java.text.NumberFormat;
 import java.util.*;
+
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
+import net.nanopay.model.Account;
+import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
-import static foam.mlang.MLang.EQ;
-
 public class TransactionDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
   protected final Set<TransactionStatus> STATUS_BLACKLIST =
-    Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
-      add(TransactionStatus.REFUNDED);
-      add(TransactionStatus.PENDING);
-    }});
+      Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+        add(TransactionStatus.REFUNDED);
+        add(TransactionStatus.PENDING);
+      }});
 
   protected DAO userDAO_;
   protected DAO accountDAO_;
   protected DAO invoiceDAO_;
+  protected DAO bankAccountDAO_;
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -56,6 +64,13 @@ public class TransactionDAO
 
     return accountDAO_;
   }
+  protected DAO getBankAccountDAO() {
+    if ( bankAccountDAO_ == null ) {
+      bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
+    }
+
+    return bankAccountDAO_;
+  }
 
   @Override
   public FObject put_(X x, FObject obj) {
@@ -64,24 +79,37 @@ public class TransactionDAO
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
-    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) &&  transaction.getType() != TransactionType.NONE &&
-        transaction.getType() != TransactionType.CASHOUT  ) {
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
+        transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
-    if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANKACCOUNTPAYMENT ) {
+    if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+      if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
+          && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
+        //pay others by bank account directly
+        if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+          transactionReject(x, transaction.getPayeeId(), transaction);
+        } else {
+          transactionReject(x, transaction.getPayerId(), transaction);
+        }
+      }
+    }
+    if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
       return transaction.getStatus().equals(TransactionStatus.COMPLETED) ?
-        executeTransaction(x, transaction) :
-        super.put_(x, obj) ;
+          executeTransaction(x, transaction) :
+          super.put_(x, obj);
     }
 
     if ( transaction.getType().equals(TransactionType.CASHOUT) ) {
       if ( ! transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
-        Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
-        refound.validate(x);
-        refound.execute(x);
+        if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+          Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
+          refound.validate(x);
+          refound.execute(x);
+        }
         return super.put_(x, obj);
       }
 
@@ -145,9 +173,38 @@ public class TransactionDAO
       ts[i].execute(x);
     }
 
-    if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn.getType() == TransactionType.NONE ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
+  }
+  public void sendEmail(X x, String subject, String content,String emailAddress, User user, Transaction transaction) {
+    EmailService emailService = (EmailService) x.get("email");
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    EmailMessage message = new EmailMessage();
+    HashMap<String, Object> args = new HashMap<>();
+
+    // Loads variables that will be represented in the email received
+    args.put("amount", formatter.format(transaction.getAmount() / 100.00));
+    args.put("name", user.getFirstName());
+    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
+
+    message.setTo(new String[]{emailAddress});
+    try {
+      emailService.sendEmailFromTemplate(user, message, "cashin-reject", args);
+    } catch ( Throwable t ) {
+      ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
+    }
+  }
+
+  public void transactionReject(X x, long userId, Transaction transaction) {
+    Account payerAccount = (Account) getAccountDAO().find(userId);
+    payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
+        transaction.getTotal() : 0);
+    getAccountDAO().put_(x, payerAccount.fclone());
+    // if it's a transaction for different user, we need notify both
+    if ( transaction.getPayerId() != transaction.getPayeeId() )
+      sendEmail(x, "Cash in Operate reject ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayeeId()) ).getEmail(), (User) getUserDAO().find(transaction.getPayeeId()), transaction);
+    sendEmail(x, "Cash in Operate reject ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayerId()) ).getEmail(), (User) getUserDAO().find(transaction.getPayerId()), transaction);
   }
 
   @Override
