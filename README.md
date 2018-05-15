@@ -26,59 +26,35 @@ cd NANOPAY
 build.sh -i
 ```
 
-#### Indidual Configuration Components
-##### FOAM2 SubModule
-foam2 is added as a submodule.
-Initialize the submodule
-```
-git submodule init
-git submodule update
-```
-
-##### npm 
-Run npm to install required packages, such iso2022
-```
-npm install
-```
-
-##### Installing tomcat
-
-Go into the NANOPAY/tools directory and run the following commands:
-
-```
-./tomcatInstall.sh
-
-```
-
-##### Tomcat docBase
-To have tomcat automatically reload, add your development path to tomcat's configuration.
-Edit `server.xml` in `$CATALINA_HOME` (defaults to `/Library/Tomcat`) as follows:
-
-NOTE: this can be added/updated at any time by running *build.sh -i*
-```
-/Library/Tomcat/conf/server.xml
-```
-
-```
-<Host>
-  ...
-  <Context docBase="${catalina_doc_base}" path="/dev" />
-</Host> 
-```
-
 ### Build all projects and run Nanos at once
 You can run the script generateAll.sh to build all projects and run the nanos, go to the NANOPAY project root folder and execute:
 
 `./build.sh -n`
 
-### Build all projects and run tomcat at once
-You can run the script generateAll.sh to build all projects and run tomcat, go to the NANOPAY project root folder and execute:
+### Build All Projects and Run Tomcat At Once
+You can run the script `generateAll.sh` to build all projects and run tomcat by going to the NANOPAY project root directory and executing:
 
-`./build.sh`
+`./build.sh -c`
+
+#### Subsequent & Development Builds
+To prevent Maven from re-compiling *all* of the source code everytime you change a single file, please run `./build.sh`. This will:
+- It runs the Maven's development-build profile which will compile code with the `useIncrementalCompilation` flag set to `false`.
+- Maven will not poll for artifact updates, but will use local ones instead.
+- Dependency update checks through Codehaus Mojo will also not be run.
+
+##### CAVEATS
+- You must have run the full build `build.sh -c` at least once before as other files need to be present for the war file to built sucessfully.
+- `./build.sh` will only re-build the Class files that have been updated. As such, any Class renaming or Method renaming that will not propogate the rest of the source code.
+- In case of ClassNotFound or MissingMethod Exceptions, please run the full build again at least once.
 
 ### Loading a project
 
-Visit [http://localhost:8080/static](http://localhost:8080/static) and go into any of the submodules to view that project
+#### Tomcat
+Visit [http://localhost:8080/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static).
+
+#### Nanos
+- **Various Projects :** Visit [http://localhost:8080/service/static](http://localhost:8080/service/static) and go into any of the submodules to view that project.
+- **Nanopay :** Visit [http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html).
 
 ### Building Swift code
 
@@ -99,7 +75,7 @@ Picture of nanopay git flow: https://drive.google.com/file/d/0B1fbZtuULvxQM29JaE
 ### Versioning
 Versioning follows the Semantic Versioning principles: https://semver.org/
 
-### Deployments
+### Demo Deployments
 For each deployment to the servers
 Steps to build:
 1. Fetch latest tags
@@ -109,10 +85,10 @@ Steps to build:
    eg. git pull origin master
 
 4. Create a new tag with the updated code. Increment the previous tag version
-   eg. git tag -a staging-v1.0.7 -m "Some tag message"
+   eg. git tag -a demo-v1.0.7 -m "Some tag message"
 
 5. Push new tag to remote
-  eg git push origin staging-v1.0.7
+  eg git push origin demo-v1.0.7
 
 6. Open Jenkins https://jenkins.prod.nanopay.net
 

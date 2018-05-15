@@ -144,6 +144,11 @@
       <version>1.57</version>
     </dependency>
     <dependency>
+      <groupId>org.mindrot</groupId>
+      <artifactId>jbcrypt</artifactId>
+      <version>0.3m</version>
+    </dependency>
+    <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver</artifactId>
       <version>3.4.2</version>
@@ -175,7 +180,23 @@
       <version>${appengine.sdk.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.stripe</groupId>
+      <artifactId>stripe-java</artifactId>
+      <version>5.35.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>9.3.11.v20160721</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.3.11.v20160721</version>
+    </dependency>
   </dependencies>
+
   <build>
     <sourceDirectory>build</sourceDirectory>
     <!-- for hot reload of the web application-->
@@ -195,21 +216,6 @@
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>2.1</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>display-dependency-updates</goal>
-              <goal>display-plugin-updates</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <executions>
@@ -221,19 +227,6 @@
         </executions>
         <configuration>
           <mainClass>foam.nanos.boot.Boot</mainClass>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1</version>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-          <excludes>
-            <exclude>**/com/chrome/**</exclude>
-          </excludes>
         </configuration>
       </plugin>
 
@@ -281,4 +274,70 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>default-config</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <version>3.7.0</version>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <useIncrementalCompilation>true</useIncrementalCompilation>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <excludes>
+                <exclude>**/com/chrome/**</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+              <execution>
+                <phase>compile</phase>
+                <goals>
+                  <goal>display-dependency-updates</goal>
+                  <goal>display-plugin-updates</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>development-config</id>
+      <activation>
+        <property>
+          <name>build</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <version>3.7.0</version>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <useIncrementalCompilation>false</useIncrementalCompilation>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <excludes>
+                <exclude>**/com/chrome/**</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

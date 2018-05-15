@@ -41,7 +41,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'generateToken',
+      name: 'generateTokenWithParameters',
       javaCode:
 `AuthyApiClient client = getClient();
 // don't send token if already verified

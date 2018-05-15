@@ -199,7 +199,7 @@ foam.CLASS({
       icon: 'images/ic-plus.svg',
       code: function() {
         //this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this);
-        this.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true}, this);
+        this.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true}, this);
       }
     }
   ],
@@ -269,7 +269,7 @@ foam.CLASS({
         },
 
         function verifyAccount() {
-          this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Verification', startAtValue: 1, nextLabelValue: 'Verify', backLabelValue: 'Come back later' }, this);
+          this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Verification', startAtValue: 2, nextLabelValue: 'Verify', backLabelValue: 'Come back later' }, this);
         },
 
         function manageAccount() {

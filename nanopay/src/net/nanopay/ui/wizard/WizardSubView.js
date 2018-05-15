@@ -7,19 +7,19 @@ foam.CLASS({
   documentation: 'The default view that would be used for a view in the substack of the WizardView.',
 
   imports: [
-    'viewData',
-    'errors',
-    'exitLabel',
-    'saveLabel',
     'backLabel',
-    'nextLabel',
+    'complete',
+    'errors',
     'exit',
-    'save',
-    'goTo',
+    'exitLabel',
     'goBack',
     'goNext',
-    'complete',
+    'goTo',
     'isCustomNavigation',
+    'nextLabel',
+    'save',
+    'saveLabel',
+    'viewData',
     'wizard'
   ],
 

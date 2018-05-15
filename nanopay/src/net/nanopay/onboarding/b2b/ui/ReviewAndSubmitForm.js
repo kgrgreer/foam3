@@ -57,6 +57,9 @@ foam.CLASS({
       padding: 0;
       height: inherit;
     }
+    ^ .foam-nanos-auth-ProfilePictureView{
+      width: 150px;
+    }
   `,
 
   messages: [
@@ -133,6 +136,8 @@ foam.CLASS({
             + this.viewData.user.businessAddress.streetName + ', '
             + this.viewData.user.businessAddress.address2 + ' '
             + this.viewData.user.businessAddress.city + ', '
+            + this.viewData.user.businessAddress.regionId + ', '
+            + this.viewData.user.businessAddress.countryId + ', '
             + this.viewData.user.businessAddress.postalCode
           ).addClass('addressDiv').end()
           .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
@@ -155,6 +160,8 @@ foam.CLASS({
               .start().addClass('principalOwnerContainer')
                 .start('p').add('Legal Name').addClass('wizardBoldLabel').end()
                 .start('p').add(data.middleName ? data.firstName + ' ' + data.middleName + ' ' + data.lastName : data.firstName + ' ' + data.lastName).end()
+                .start('p').add('Job Title').addClass('wizardBoldLabel').end()
+                .start('p').add(data.jobTitle).end()
                 .start('p').add('Email Address').addClass('wizardBoldLabel').end()
                 .start('p').add(data.email).end()
                 .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
@@ -169,6 +176,7 @@ foam.CLASS({
                   + data.address.streetName + ', '
                   + data.address.address2 + ', '
                   + data.address.city + ', '
+                  + data.address.regionId + ', '
                   + data.address.postalCode
                 ).addClass('addressDiv').end()
               .end()

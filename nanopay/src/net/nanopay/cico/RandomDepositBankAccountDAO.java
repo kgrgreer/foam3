@@ -11,7 +11,7 @@ import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 
 public class RandomDepositBankAccountDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   protected DAO transactionDAO_;
 
@@ -22,7 +22,7 @@ public class RandomDepositBankAccountDAO
 
   public DAO getTransactionDAO() {
     if ( transactionDAO_ == null ) {
-      transactionDAO_ = (DAO) getX().get("standardCICOTransactionDAO");
+      transactionDAO_ = (DAO) getX().get("transactionDAO");
     }
     return transactionDAO_;
   }
@@ -43,13 +43,13 @@ public class RandomDepositBankAccountDAO
 
       // create new transaction and store
       Transaction transaction = new Transaction.Builder(x)
-          .setPayeeId(user.getId())
-          .setPayerId(user.getId())
-          .setBankAccountId(account.getId())
-          .setAmount(randomDepositAmount)
-          .setType(TransactionType.VERIFICATION)
-          .setStatus(TransactionStatus.PENDING)
-          .build();
+        .setPayeeId(user.getId())
+        .setPayerId(user.getId())
+        .setBankAccountId(account.getId())
+        .setAmount(randomDepositAmount)
+        .setType(TransactionType.VERIFICATION)
+        .setStatus(TransactionStatus.PENDING)
+        .build();
       getTransactionDAO().put(transaction);
     }
 

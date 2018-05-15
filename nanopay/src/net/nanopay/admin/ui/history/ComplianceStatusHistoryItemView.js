@@ -17,23 +17,6 @@ foam.CLASS({
     ^ .iconPosition {
       margin-left: -6px;
     }
-    ^ .messageBox {
-      width: 513px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      border: solid 0.5px #a4b3b8;
-      margin: 10px 0px 0px 31px;
-      padding: 10px;
-    }
-    ^ .messageText {
-      opacity: 0.7;
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      color: #093649;
-      position: relative;
-    }
     ^ .statusBox {
       margin-top: -20px;
       padding-bottom: 22px;
@@ -62,10 +45,10 @@ foam.CLASS({
   methods: [
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'compliance') ||
-        { newValue: this.ComplianceStatus.REQUESTED.ordinal };
+        { newValue: this.ComplianceStatus.REQUESTED };
 
       switch ( status.newValue ) {
-        case this.ComplianceStatus.REQUESTED.ordinal:
+        case this.ComplianceStatus.REQUESTED:
           return {
             title: 'Compliance check',
             labelText: 'Requested',
@@ -73,7 +56,7 @@ foam.CLASS({
             icon: 'images/ic-pending.svg'
           };
 
-        case this.ComplianceStatus.PASSED.ordinal:
+        case this.ComplianceStatus.PASSED:
           return {
             title: 'Compliance check',
             labelText: 'Passed',
@@ -81,7 +64,7 @@ foam.CLASS({
             icon: 'images/ic-compliance.svg'
           };
 
-        case this.ComplianceStatus.FAILED.ordinal:
+        case this.ComplianceStatus.FAILED:
           return {
             title: 'Compliance check',
             labelText: 'Failed',

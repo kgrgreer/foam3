@@ -1,11 +1,13 @@
 package net.nanopay.cico.spi.alterna;
 
 import com.jcraft.jsch.*;
-import foam.core.ContextAwareSupport;
+import foam.core.ContextAgent;
 import foam.core.FObject;
 import foam.core.X;
-import foam.nanos.logger.Logger;
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
@@ -21,12 +23,12 @@ import java.util.regex.Pattern;
 
 import static foam.mlang.MLang.EQ;
 
-public class EFTConfirmationFileProcessor extends ContextAwareSupport
+public class EFTConfirmationFileProcessor implements ContextAgent
 {
-  public void process() {
-    X x = getX();
+  @Override
+  public void execute(X x) {
     Logger logger = (Logger) x.get("logger");
-    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
+    EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 
     EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
     EFTUploadCSVFileParser eftUploadCSVFileParser = new EFTUploadCSVFileParser();
@@ -70,39 +72,60 @@ public class EFTConfirmationFileProcessor extends ContextAwareSupport
         InputStream confirmationFileStream = channelSftp.get("/Returns/" + fileNames.get(i));
         List<FObject> confirmationFileList = eftConfirmationFileParser.parse(confirmationFileStream);
 
-        InputStream uploadFileStream = channelSftp.get("/Archive/" + fileNames.get(i).substring(10, 38));
-        List<FObject> uploadFileList = eftUploadCSVFileParser.parse(uploadFileStream);
+        // UploadLog_yyyyMMdd_mintchipcashout.csv.txt -> yyyyMMdd_mintchipcashout.csv
+        String uploadCSVFileName = fileNames.get(i).substring(10, 38);
+        Vector uploadCSVList = channelSftp.ls("/Archive/");
+        boolean uploadCSVExist = false;
+        for ( Object entry : uploadCSVList ) {
+          ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
+          if ( e.getFilename().equals(uploadCSVFileName) ) {
+            uploadCSVExist = true;
+          }
+        }
 
-        for ( int j = 0; j < confirmationFileList.size(); j++ ) {
-          EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
-          AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
+        if ( uploadCSVExist ) {
+          InputStream uploadFileStream = channelSftp.get("/Archive/" + uploadCSVFileName);
 
-          Transaction tran = (Transaction) transactionDao.find(
-            EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
+          List<FObject> uploadFileList = eftUploadCSVFileParser.parse(uploadFileStream);
 
-          if (tran != null) {
-            tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+          for ( int j = 0; j < confirmationFileList.size(); j++ ) {
+            EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
+            AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
-              tran.setStatus(TransactionStatus.DECLINED);
-              tran.setDescription(eftConfirmationFileRecord.getReason());
-            } else if ( eftConfirmationFileRecord.getStatus().equals("OK") && tran.getStatus().equals(TransactionStatus.PENDING) ) {
-              tran.setStatus(TransactionStatus.SENT);
+            Transaction tran = (Transaction) transactionDao.find(
+              EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
+
+            if ( tran != null ) {
+              tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+
+              if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
+                tran.setStatus(TransactionStatus.FAILED);
+                tran.setDescription(eftConfirmationFileRecord.getReason());
+                sendEmail(x, "Transaction was rejected by EFT confirmation file",
+                  "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
+                    + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+              } else if ( eftConfirmationFileRecord.getStatus().equals("OK") && tran.getStatus().equals(TransactionStatus.PENDING) ) {
+                tran.setStatus(TransactionStatus.SENT);
+              }
+
+              transactionDao.put(tran);
             }
           }
+        } else {
+          logger.error("Can't find the corresponding upload CSV file in Archive folder", uploadCSVFileName);
         }
       }
 
       Vector folderList = channelSftp.ls("/");
-      boolean exist = false;
+      boolean folderExist = false;
       for ( Object entry : folderList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         if ( e.getFilename().equals("Archive_EFTConfirmationFile") ) {
-          exist = true;
+          folderExist = true;
         }
       }
 
-      if (!exist) {
+      if ( ! folderExist ) {
         channelSftp.mkdir("Archive_EFTConfirmationFile");
       }
 
@@ -114,6 +137,7 @@ public class EFTConfirmationFileProcessor extends ContextAwareSupport
         channelSftp.rename(srcFileDirectory + fileNames.get(i), dstFileDirectory + fileNames.get(i));
       }
 
+      logger.debug("EFT Confirmation file processing finished");
       channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {
@@ -122,5 +146,15 @@ public class EFTConfirmationFileProcessor extends ContextAwareSupport
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();
     }
+  }
+
+  public void sendEmail(X x, String subject, String content) {
+    EmailService emailService = (EmailService) x.get("email");
+    EmailMessage message = new EmailMessage();
+
+    message.setTo(new String[]{"ops@nanopay.net"});
+    message.setSubject(subject);
+    message.setBody(content);
+    emailService.sendEmail(message);
   }
 }

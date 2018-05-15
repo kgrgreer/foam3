@@ -30,9 +30,12 @@ foam.CLASS({
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 X x = getX();
-EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("ETFReturnFileCredentials");
 CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
+if ( baos.toByteArray().length == 0 ) {
+  return;
+}
 
+EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 final Logger logger = (Logger) x.get("logger");
 Session session = null;
 Channel channel = null;
@@ -59,7 +62,7 @@ try {
   String filename = CsvUtil.generateFilename(now);
   
   Vector list = channelSftp.ls("/Archive/");
-  Boolean csvFileExist = false;
+  boolean csvFileExist = false;
   
   for ( Object entry : list ) {
     ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
@@ -70,6 +73,7 @@ try {
   
   if ( ! csvFileExist ) {
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
+    logger.debug("CICO CSV file sent");
   } else {
     logger.warning("duplicate csv file not sent", filename, System.getProperty("user.name"));
   } 
@@ -81,7 +85,6 @@ try {
   // close channels
   if ( channel != null ) channel.disconnect();
   if ( session != null ) session.disconnect();
-  System.out.println("Host Session disconnected.");
 }`
     }
   ]

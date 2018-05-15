@@ -27,7 +27,7 @@ public class BankAccountInvoiceDAO
   }
 
   @Override
-  synchronized public FObject put_(X x, FObject obj) {
+  public FObject put_(X x, FObject obj) {
     // If It is a CICO Transaction, does not do anything.
     Transaction txn = (Transaction) obj;
 
@@ -39,10 +39,10 @@ public class BankAccountInvoiceDAO
     if ( txn.getBankAccountId() == null ) return getDelegate().put_(x, obj);
 
     BankAccount bankAccount = (BankAccount) bankAccountDAO_.find(txn.getBankAccountId());
-    
+
     if ( bankAccount == null ) throw new RuntimeException("Bank account doesn't exist");
 
-    txn.setType(TransactionType.CASHIN);
+    txn.setType(TransactionType.BANKACCOUNTPAYMENT);
 
     return getDelegate().put_(x, obj);
   }

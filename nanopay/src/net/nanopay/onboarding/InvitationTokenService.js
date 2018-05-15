@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'appConfig',
     'email',
     'localUserDAO',
     'logger',
@@ -53,7 +52,7 @@ return calendar.getTime();`
       name: 'generateToken',
       javaCode:
 `try {
-  AppConfig config = (AppConfig) getAppConfig();
+  AppConfig config = (AppConfig) getX().get("appConfig");
   EmailService email = (EmailService) getEmail();
   DAO tokenDAO = (DAO) getTokenDAO();
   DAO userDAO = (DAO) getLocalUserDAO();
@@ -87,6 +86,7 @@ return calendar.getTime();`
   user.setWelcomeEmailSent(true);
   user.setPassword(Password.hash(password));
   user.setPasswordExpiry(generateExpiryDate());
+  user.setInviteAttempts(user.getInviteAttempts() + 1);
   userDAO.put(user);
   return true;
 } catch (Throwable t) {

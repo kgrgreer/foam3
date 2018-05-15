@@ -191,10 +191,15 @@ foam.CLASS({
       name: 'data',
       factory: function() {
         return this.transactionDAO.where(
-          this.AND(
-            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-            this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-            this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
+          this.OR(
+            this.AND(
+              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
+              this.NEQ(this.Transaction.PAYER_ID, this.Transaction.PAYEE_ID)),
+            this.AND(
+              this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
+              this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
+              this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
+            )
           )
         );
       }

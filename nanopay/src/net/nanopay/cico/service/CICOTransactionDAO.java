@@ -37,6 +37,11 @@ public class CICOTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj;
+
+    if ( transaction.getType() != TransactionType.CASHOUT && transaction.getType() != TransactionType.CASHIN && transaction.getType() != TransactionType.VERIFICATION ) {
+      return super.put_(x, obj);
+    }
+
     if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }
@@ -64,7 +69,7 @@ public class CICOTransactionDAO
   public FObject addInvoiceCashout(FObject obj) {
 
     Transaction transaction = (Transaction) obj;
-    DAO standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
+    //DAO standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
     DAO bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
     DAO userDAO = (DAO) getX().get("localUserDAO");
 

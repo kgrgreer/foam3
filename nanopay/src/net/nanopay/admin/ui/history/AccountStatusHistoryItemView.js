@@ -17,23 +17,6 @@ foam.CLASS({
     ^ .iconPosition {
       margin-left: -6px;
     }
-    ^ .messageBox {
-      width: 513px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      border: solid 0.5px #a4b3b8;
-      margin: 10px 0px 0px 31px;
-      padding: 10px;
-    }
-    ^ .messageText {
-      opacity: 0.7;
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      color: #093649;
-      position: relative;
-    }
     ^ .statusBox {
       margin-top: -20px;
       padding-bottom: 22px;
@@ -62,10 +45,10 @@ foam.CLASS({
   methods: [
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'status') ||
-        { newValue: this.AccountStatus.PENDING.ordinal };
+        { newValue: this.AccountStatus.PENDING };
 
       switch ( status.newValue ) {
-        case this.AccountStatus.PENDING.ordinal:
+        case this.AccountStatus.PENDING:
           return {
             title: 'Account',
             labelText: 'Pending',
@@ -73,7 +56,7 @@ foam.CLASS({
             icon: 'images/ic-created.svg'
           };
 
-        case this.AccountStatus.SUBMITTED.ordinal:
+        case this.AccountStatus.SUBMITTED:
           return {
             title: 'Registration',
             labelText: 'Submitted',
@@ -81,7 +64,7 @@ foam.CLASS({
             icon: 'images/ic-received.svg'
           };
 
-        case this.AccountStatus.ACTIVE.ordinal:
+        case this.AccountStatus.ACTIVE:
           return {
             title: 'Account',
             labelText: 'Active',
@@ -89,14 +72,14 @@ foam.CLASS({
             icon: 'images/ic-approve.svg'
           };
 
-        case this.AccountStatus.DISABLED.ordinal:
+        case this.AccountStatus.DISABLED:
           return {
             title: 'Account',
             labelText: 'Disabled',
             labelDecoration: 'Invite-Status-Disabled',
             icon: 'images/ic-void.svg'
           };
-        case this.AccountStatus.REVOKED.ordinal:
+        case this.AccountStatus.REVOKED:
           return {
             title: 'Invite',
             labelText: 'Revoked',

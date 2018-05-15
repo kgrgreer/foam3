@@ -92,9 +92,8 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var toActivate = this.data;
-        toActivate.status = toActivate.status === this.AccountStatus.DISABLED ?
-          toActivate.previousStatus : this.AccountStatus.ACTIVE;
-
+        toActivate.status = this.AccountStatus.ACTIVE;
+        
         this.userDAO.put(toActivate)
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to activate profile.');
