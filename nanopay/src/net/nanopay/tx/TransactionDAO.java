@@ -89,9 +89,9 @@ public class TransactionDAO
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         //pay others by bank account directly
         if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-          transactionReject(x, transaction.getPayeeId(), transaction);
+          paymentFromBankAccountReject(x, transaction);
         } else {
-          transactionReject(x, transaction.getPayerId(), transaction);
+          cashinReject(x, transaction);
         }
       }
     }
@@ -128,7 +128,7 @@ public class TransactionDAO
   }
 
   void validateTransfers(Transfer[] ts)
-    throws RuntimeException
+      throws RuntimeException
   {
     if ( ts.length == 0 ) return;
 
@@ -173,11 +173,13 @@ public class TransactionDAO
       ts[i].execute(x);
     }
 
-    if ( txn.getType() == TransactionType.NONE ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn.getType().equals(TransactionType.NONE) || txn.getType().equals(TransactionType.CASHOUT) )
+      txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }
-  public void sendEmail(X x, String subject, String content,String emailAddress, User user, Transaction transaction) {
+  public void sendCashInRejectEmail(X x, String subject, String content,String emailAddress, User user, Transaction
+      transaction) {
     EmailService emailService = (EmailService) x.get("email");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     EmailMessage message = new EmailMessage();
@@ -196,16 +198,49 @@ public class TransactionDAO
     }
   }
 
-  public void transactionReject(X x, long userId, Transaction transaction) {
-    Account payerAccount = (Account) getAccountDAO().find(userId);
+  public void sendPaymentRejectEmail(X x, String subject, String content,String emailAddress, User user, Transaction
+      transaction) {
+    EmailService emailService = (EmailService) x.get("email");
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    EmailMessage message = new EmailMessage();
+    HashMap<String, Object> args = new HashMap<>();
+
+    // Loads variables that will be represented in the email received
+    args.put("amount", formatter.format(transaction.getAmount() / 100.00));
+    args.put("name", user.getFirstName());
+    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
+    args.put("payerName",((User)getUserDAO().find(transaction.getPayerId())).getFirstName());
+    args.put("payeeName",((User)getUserDAO().find(transaction.getPayeeId())).getFirstName());
+
+    message.setTo(new String[]{emailAddress});
+    try {
+      emailService.sendEmailFromTemplate(user, message, "Pay-from-bankaccount-reject", args);
+    } catch ( Throwable t ) {
+      ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
+    }
+  }
+
+  public void cashinReject(X x, Transaction transaction) {
+    Account payerAccount = (Account) getAccountDAO().find(transaction.getPayerId());
+    payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
+        transaction.getTotal() : 0);
+    getAccountDAO().put_(x, payerAccount.fclone());
+    sendCashInRejectEmail(x, "Cash in Operate reject ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayerId()) ).getEmail(), (User) getUserDAO().find(transaction.getPayerId()), transaction);
+  }
+
+  public void paymentFromBankAccountReject(X x, Transaction transaction){
+    Account payerAccount = (Account) getAccountDAO().find(transaction.getPayeeId());
     payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
         transaction.getTotal() : 0);
     getAccountDAO().put_(x, payerAccount.fclone());
     // if it's a transaction for different user, we need notify both
-    if ( transaction.getPayerId() != transaction.getPayeeId() )
-      sendEmail(x, "Cash in Operate reject ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayeeId()) ).getEmail(), (User) getUserDAO().find(transaction.getPayeeId()), transaction);
-    sendEmail(x, "Cash in Operate reject ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayerId()) ).getEmail(), (User) getUserDAO().find(transaction.getPayerId()), transaction);
+    sendPaymentRejectEmail(x, "Payment failed ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayeeId()) )
+        .getEmail
+            (), (User) getUserDAO().find(transaction.getPayeeId()), transaction);
+    sendPaymentRejectEmail(x, "Payment failed ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayerId()) )
+        .getEmail(), (User) getUserDAO().find(transaction.getPayerId()), transaction);
   }
+
 
   @Override
   public FObject remove_(X x, FObject fObject) {
