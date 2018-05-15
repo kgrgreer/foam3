@@ -75,9 +75,9 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Transaction transaction = (Transaction) obj;
-    ArraySink transactions = new ArraySink();
-    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+    Transaction transaction  = (Transaction) obj;
+    ArraySink   transactions = new ArraySink();
+    Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
@@ -134,7 +134,7 @@ public class TransactionDAO
     if ( ts.length == 0 ) return;
 
     long c = 0, d = 0;
-    for ( int i = 0; i < ts.length; i++ ) {
+    for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
       if ( t.getAmount() > 0 ) {
         c += t.getAmount();
@@ -143,8 +143,8 @@ public class TransactionDAO
       }
     }
 
-    if ( c != - d ) throw new RuntimeException("Debits and credits don't match.");
-    if ( c == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
+    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
   /** Sorts array of transfers. **/
@@ -166,11 +166,11 @@ public class TransactionDAO
 
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
-    for ( int i = 0; i < ts.length; i++ ) {
+    for ( int i = 0 ; i < ts.length ; i++ ) {
       ts[i].validate(x);
     }
 
-    for ( int i = 0; i < ts.length; i++ ) {
+    for ( int i = 0 ; i < ts.length ; i++ ) {
       ts[i].execute(x);
     }
 
