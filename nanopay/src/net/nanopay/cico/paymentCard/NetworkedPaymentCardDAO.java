@@ -13,6 +13,8 @@ import net.nanopay.cico.paymentCard.model.PaymentCardType;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 
 import java.security.AccessControlException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static foam.mlang.MLang.EQ;
 
@@ -37,6 +39,10 @@ public class NetworkedPaymentCardDAO
         card.setNetwork(PaymentCardNetwork.DISCOVER);
       } else if ( isAmex(card.getNumber()) ) {
         card.setNetwork(PaymentCardNetwork.AMERICANEXPRESS);
+      } else if ( isDinersClub(card.getNumber()) ) {
+        card.setNetwork(PaymentCardNetwork.DINERSCLUB);
+      } else if ( isJCB(card.getNumber()) ) {
+        card.setNetwork(PaymentCardNetwork.JCB);
       }
     }
 
@@ -44,35 +50,32 @@ public class NetworkedPaymentCardDAO
   }
 
   private boolean isVisa(String number) {
-    if ( number.startsWith("4") ) { return true; }
-    return false;
+    Pattern regex = Pattern.compile("^4[0-9]{12}(?:[0-9]{3})?$");
+    return regex.matcher(number).matches();
   }
 
   private boolean isMasterCard(String number) {
-    if ( number.startsWith("51") ||
-         number.startsWith("52") ||
-         number.startsWith("53") ||
-         number.startsWith("54") ||
-         number.startsWith("55") ) {
-      return true;
-    }
-    return false;
+    Pattern regex = Pattern.compile("^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$");
+    return regex.matcher(number).matches();
   }
 
   private boolean isDiscover(String number) {
-    if ( number.startsWith("6011") ||
-         number.startsWith("644") ||
-         number.startsWith("65") ) {
-      return true;
-    }
-    return false;
+    Pattern regex = Pattern.compile("^6(?:011|5[0-9]{2})[0-9]{12}$");
+    return regex.matcher(number).matches();
   }
 
   private boolean isAmex(String number) {
-    if ( number.startsWith("34") ||
-         number.startsWith("37") ) {
-      return true;
-    }
-    return false;
+    Pattern regex = Pattern.compile("^3[47][0-9]{13}$");
+    return regex.matcher(number).matches();
+  }
+
+  private boolean isDinersClub(String number) {
+    Pattern regex = Pattern.compile("^3(?:0[0-5]|[68][0-9])[0-9]{11}");
+    return regex.matcher(number).matches();
+  }
+
+  private boolean isJCB(String number) {
+    Pattern regex = Pattern.compile("^(?:2131|1800|35\\d{3})\\d{11}$");
+    return regex.matcher(number).matches();
   }
 }
