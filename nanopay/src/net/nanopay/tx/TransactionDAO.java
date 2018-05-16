@@ -64,6 +64,7 @@ public class TransactionDAO
 
     return accountDAO_;
   }
+
   protected DAO getBankAccountDAO() {
     if ( bankAccountDAO_ == null ) {
       bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
@@ -156,10 +157,10 @@ public class TransactionDAO
 
   /** Lock each trasnfer's account then execute the transfers. **/
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
-    if ( i > ts.length-1 ) return execute(x, txn, ts);
+    if ( i > ts.length - 1 ) return execute(x, txn, ts);
 
     synchronized ( ts[i].getLock() ) {
-      return lockAndExecute_(x, txn, ts, i+1);
+      return lockAndExecute_(x, txn, ts, i + 1);
     }
   }
 
@@ -178,7 +179,8 @@ public class TransactionDAO
 
     return getDelegate().put_(x, txn);
   }
-  public void sendCashInRejectEmail(X x, String subject, String content,String emailAddress, User user, Transaction
+
+  public void sendCashInRejectEmail(X x, String emailAddress, User user, Transaction
       transaction) {
     EmailService emailService = (EmailService) x.get("email");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
@@ -198,7 +200,7 @@ public class TransactionDAO
     }
   }
 
-  public void sendPaymentRejectEmail(X x, String subject, String content,String emailAddress, User user, Transaction
+  public void sendPaymentRejectEmail(X x, String emailAddress, User user, Transaction
       transaction) {
     EmailService emailService = (EmailService) x.get("email");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
@@ -209,12 +211,12 @@ public class TransactionDAO
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
     args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
-    args.put("payerName",((User)getUserDAO().find(transaction.getPayerId())).getFirstName());
-    args.put("payeeName",((User)getUserDAO().find(transaction.getPayeeId())).getFirstName());
+    args.put("payerName", ( (User) getUserDAO().find(transaction.getPayerId()) ).getFirstName());
+    args.put("payeeName", ( (User) getUserDAO().find(transaction.getPayeeId()) ).getFirstName());
 
     message.setTo(new String[]{emailAddress});
     try {
-      emailService.sendEmailFromTemplate(user, message, "Pay-from-bankaccount-reject", args);
+      emailService.sendEmailFromTemplate(user, message, "pay-from-bankaccount-reject", args);
     } catch ( Throwable t ) {
       ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
     }
@@ -225,20 +227,20 @@ public class TransactionDAO
     payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
         transaction.getTotal() : 0);
     getAccountDAO().put_(x, payerAccount.fclone());
-    sendCashInRejectEmail(x, "Cash in Operate reject ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayerId()) ).getEmail(), (User) getUserDAO().find(transaction.getPayerId()), transaction);
+    User user = (User) getUserDAO().find(transaction.getPayerId());
+    sendCashInRejectEmail(x, user.getEmail(), user, transaction);
   }
 
-  public void paymentFromBankAccountReject(X x, Transaction transaction){
+  public void paymentFromBankAccountReject(X x, Transaction transaction) {
     Account payerAccount = (Account) getAccountDAO().find(transaction.getPayeeId());
     payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
         transaction.getTotal() : 0);
     getAccountDAO().put_(x, payerAccount.fclone());
     // if it's a transaction for different user, we need notify both
-    sendPaymentRejectEmail(x, "Payment failed ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayeeId()) )
-        .getEmail
-            (), (User) getUserDAO().find(transaction.getPayeeId()), transaction);
-    sendPaymentRejectEmail(x, "Payment failed ", transaction.toString(), ( (User) getUserDAO().find(transaction.getPayerId()) )
-        .getEmail(), (User) getUserDAO().find(transaction.getPayerId()), transaction);
+    User payer = (User) getUserDAO().find(transaction.getPayerId());
+    User payee = (User) getUserDAO().find(transaction.getPayeeId());
+    sendPaymentRejectEmail(x, payer.getEmail(), payer, transaction);
+    sendPaymentRejectEmail(x, payee.getEmail(), payee, transaction);
   }
 
 
