@@ -1,6 +1,7 @@
 foam.CLASS({
   name: 'MintChipClient',
   extends: 'foam.box.Context',
+  
   requires: [
     'foam.box.HTTPBox',
     'foam.box.LogBox',
@@ -15,17 +16,21 @@ foam.CLASS({
     'foam.swift.dao.CachingDAO',
     'foam.swift.parse.json.FObjectParser',
     'foam.nanos.auth.token.ClientTokenService',
+    'net.nanopay.model.PadCapture',
     'net.nanopay.tx.client.ClientUserTransactionLimitService'
   ],
+
   exports: [
     'userDAO',
     'currentUser',
     'invoiceDAO',
+    'padCaptureDAO',
     'refreshTransactionDAO',
     'transactionDAO',
     'stripeTransactionDAO',
     'userUserJunctionDAO'
   ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -294,6 +299,20 @@ return ClientDAO_create([
 ])
       `,
     },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'padCaptureDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": PadCapture.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)padCaptureDAO"
+    ])
+  ])
+])
+      `,
+    }
   ],
   axioms: [
     foam.pattern.Singleton.create(),
