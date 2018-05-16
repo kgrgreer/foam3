@@ -3,16 +3,23 @@ Repository containing b2b, retail, common, ingenico
 
 ## Running locally
 
-### Prerequisites
-1. Brew (`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`)
-2. Realpath from Coreutils (`brew install coreutils`)
-3. Maven (`brew install maven`)
-4. Git (`brew install git`)
-
 ### Setup
 Checkout `NANOPAY`
+
+You will need a [https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/](Personal Access Token) or [https://github.com/settings/keys](SSH) to checkout the NANOPAY repo. 
+
 ```
 git clone https://github.com/nanopayinc/NANOPAY.git
+Username: git_account
+Password: token  (see above)
+```
+
+Checkout `foam2`
+```
+cd NANOPAY
+git submodule init
+
+https://github.com/foam-framework/foam2.git
 ```
 
 ### Configuration
