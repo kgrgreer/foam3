@@ -398,11 +398,12 @@ while getopts "bcdfhijnrs" opt ; do
     esac
 done
 
-setenv
 if [ "$INSTALL" -eq 1 ]; then
     install
     exit 0
 fi
+
+setenv
 if [ "$RUN_NANOS" -eq 1 ]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
