@@ -44,35 +44,25 @@ public class NetworkedPaymentCardDAO
   }
 
   private boolean isVisa(String number) {
-    if ( number.startsWith("4") ) { return true; }
-    return false;
+    return number.startsWith("4");
   }
 
   private boolean isMasterCard(String number) {
-    if ( number.startsWith("51") ||
-         number.startsWith("52") ||
-         number.startsWith("53") ||
-         number.startsWith("54") ||
-         number.startsWith("55") ) {
-      return true;
-    }
-    return false;
+    return number.startsWith("51") ||
+           number.startsWith("52") ||
+           number.startsWith("53") ||
+           number.startsWith("54") ||
+           number.startsWith("55");
   }
 
   private boolean isDiscover(String number) {
-    if ( number.startsWith("6011") ||
-         number.startsWith("644") ||
-         number.startsWith("65") ) {
-      return true;
-    }
-    return false;
+    return number.startsWith("6011") ||
+           number.startsWith("644") ||
+           number.startsWith("65");
   }
 
   private boolean isAmex(String number) {
-    if ( number.startsWith("34") ||
-         number.startsWith("37") ) {
-      return true;
-    }
-    return false;
+    return number.startsWith("34") ||
+           number.startsWith("37");
   }
 }
