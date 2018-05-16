@@ -85,6 +85,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionPurpose',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.cico.model.PaymentData',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
