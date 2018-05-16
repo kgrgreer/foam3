@@ -9,6 +9,9 @@ interac/interac.iml
 nanopay/nanopay.iml
 retail/retail.iml
 
+# Visual Studio
+.vscode/
+
 # CMake
 cmake-build-debug/
 

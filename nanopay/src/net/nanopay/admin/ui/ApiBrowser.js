@@ -15,7 +15,8 @@ foam.CLASS({
 
   imports: [
     'appConfig',
-    'nSpecDAO'
+    'nSpecDAO',
+    'AuthenticatedNSpecDAO'
   ],
 
   exports: [
@@ -115,7 +116,7 @@ foam.CLASS({
         .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'pacs008ISOPurposeDAO' })).end()
         .start().addClass('light-roboto-h2 sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
         .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
-        .select(this.nSpecDAO, function(n) {
+        .select(this.AuthenticatedNSpecDAO, function(n) {
           var model = self.parseClientModel(n);
           if( ! model ) return;
           var dataProps = self.requiredProperties(model);
@@ -236,7 +237,10 @@ foam.CLASS({
 
   implements: [ 'foam.mlang.Expressions' ],
 
-  imports: [ 'nSpecDAO' ],
+  imports: [
+    'nSpecDAO',
+    'AuthenticatedNSpecDAO'
+  ],
 
   requires: [ 'foam.nanos.boot.NSpec' ],
 
@@ -272,7 +276,7 @@ foam.CLASS({
       var self = this;
       this.start().addClass(this.myClass())
       .start().addClass('menu-title').add("Service Menu").end()
-      .select(this.nSpecDAO.orderBy(this.NSpec.NAME), function(n) {
+      .select(this.AuthenticatedNSpecDAO.orderBy(this.NSpec.NAME), function(n) {
         var cls = JSON.parse(n.client);
         var clsName = cls.of ? cls.of : cls.class;
         if (!foam.lookup(clsName, true)) return;

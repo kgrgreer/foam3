@@ -3,15 +3,6 @@ foam.CLASS({
   name: 'FirebaseInvitationTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  imports: [
-    'appConfig',
-    'email',
-    'localTransactionDAO',
-    'localUserDAO',
-    'logger',
-    'tokenDAO'
-  ],
-
   javaImports: [
     'com.google.gson.Gson',
     'foam.dao.DAO',
@@ -22,10 +13,12 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.nanos.session.Session',
+    'net.nanopay.cico.model.TransactionType',
     'net.nanopay.onboarding.model.ShortLinksRequest',
     'net.nanopay.onboarding.model.ShortLinksResponse',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'org.apache.commons.io.IOUtils',
-
     'java.io.BufferedReader',
     'java.io.InputStreamReader',
     'java.io.OutputStreamWriter',
@@ -109,9 +102,10 @@ OutputStreamWriter writer = null;
 BufferedReader reader = null;
 
 try {
-  AppConfig config = (AppConfig) getAppConfig();
-  DAO tokenDAO = (DAO) getTokenDAO();
-  DAO userDAO = (DAO) getLocalUserDAO();
+  AppConfig config = (AppConfig) x.get("appConfig");
+  DAO tokenDAO = (DAO) x.get("tokenDAO");
+  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+  DAO userDAO = (DAO) x.get("localUserDAO");
   String url = config.getUrl().replaceAll("/$", "");
 
   // get current user from session
@@ -134,6 +128,17 @@ try {
       .setData(UUID.randomUUID().toString())
       .setParameters(parameters)
       .build());
+
+  if ( parameters != null && parameters.containsKey("amount") ) {
+    long amount = (long) parameters.get("amount");
+    transactionDAO.put(new Transaction.Builder(getX())
+        .setPayerId(session.getUserId())
+        .setPayeeId(result.getId())
+        .setType(TransactionType.NONE)
+        .setStatus(TransactionStatus.COMPLETED)
+        .setAmount(amount)
+        .build());
+  }
 
   // generate dynamic link
   String dynamicLink = sb.get()
@@ -181,7 +186,7 @@ try {
     throw new RuntimeException(builder.toString());
   }
 
-  EmailService email = (EmailService) getEmail();
+  EmailService email = (EmailService) x.get("email");
   EmailMessage message = new EmailMessage.Builder(x)
       .setTo(new String[]{user.getEmail()})
       .build();
@@ -201,7 +206,7 @@ try {
   userDAO.put(result);
   return true;
 } catch (Throwable t) {
-  ((Logger) getLogger()).error(t);
+  ((Logger) x.get("logger")).error(t);
   return false;
 } finally {
   IOUtils.closeQuietly(writer);
