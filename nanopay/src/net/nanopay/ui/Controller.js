@@ -93,12 +93,12 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.nSpecDAO.find('appConfig').then(function(config){
-        self.appConfig = config.service;
-      });
-
       var self = this;
       self.clientPromise.then(function() {
+        self.__subSubContext__.nSpecDAO.find('appConfig').then(function(config){
+          self.appConfig = config.service;
+        });
+
         self.AppStyles.create(null, self.__subSubContext__);
         self.InvoiceStyles.create(null, self.__subSubContext__);
         self.ModalStyling.create(null, self.__subSubContext__);
@@ -121,7 +121,7 @@ foam.CLASS({
       var self = this;
 
       // get current user, else show login
-      this.auth.getCurrentUser(null).then(function (result) {
+      this.__subSubContext__.auth.getCurrentUser(null).then(function (result) {
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
