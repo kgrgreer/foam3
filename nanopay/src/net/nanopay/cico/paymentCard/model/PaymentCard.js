@@ -216,6 +216,14 @@ foam.ENUM({
     {
       name: 'DISCOVER',
       label: 'Discover'
+    },
+    {
+      name: 'DINERSCLUB',
+      label: 'Diners Club'
+    },
+    {
+      name: 'JCB',
+      label: 'JCB'
     }
   ]
 });
