@@ -1,7 +1,7 @@
 foam.CLASS({
   name: 'MintChipClient',
   extends: 'foam.box.Context',
-  
+
   requires: [
     'foam.box.HTTPBox',
     'foam.box.LogBox',
