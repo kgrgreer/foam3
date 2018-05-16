@@ -118,8 +118,9 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
-  //paymentData
-  'net.nanopay.cico.model.PaymentData',
+  //PaymentAccountInfo
+  'net.nanopay.cico.model.PaymentAccountInfo',
+  'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
   'net.nanopay.cico.model.PaymentType',
   'net.nanopay.cico.model.PaymentPlatformUserReference'

@@ -191,7 +191,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/spi/alterna/client/ClientAlternaSFTPService' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
-  { name: 'net/nanopay/cico/model/PaymentData'},
+  { name: 'net/nanopay/cico/model/PaymentAccountInfo'},
+  { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo'},
   { name: 'net/nanopay/cico/model/PaymentType'},
   { name: 'net/nanopay/cico/model/MobileWallet'},
 

@@ -54,8 +54,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      name: 'paymentData',
-      of: 'net.nanopay.cico.model.PaymentData'
+      name: 'paymentAccountInfo',
+      of: 'net.nanopay.cico.model.PaymentAccountInfo'
     }
   ]
 });

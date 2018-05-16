@@ -1,17 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.cico.model',
-  name: 'PaymentData',
-  documentation: 'PaymentData is used to store payment information that is required to process a transaction by using a specified payment platform',
+  name: 'PaymentAccountInfo',
+  documentation: 'PaymentAccountInfo is used to store payment information that is required to process a transaction by using a specified payment platform',
   properties: [
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.cico.model.PaymentType',
       name: 'type'
-    },
-    {
-      class: 'String',
-      name: 'merchantId',
-      documentation: 'Realex merchantId: varipay'
     },
     {
       class: 'String',
