@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.cico.model',
   name: 'PaymentData',
+  documentation: 'PaymentData is used to store payment information that is required to process a transaction by using a specified payment platform',
   properties: [
     {
       class: 'foam.core.Enum',
@@ -32,9 +33,10 @@ foam.CLASS({
       name: 'mobileWallet'
     },
     {
-      class: 'String',
-      name: 'currency',
-      value: 'CAD'
+      class: 'Reference',
+      targetDAOKey: 'currencyDAO',
+      name: 'currencyId',
+      of: 'net.nanopay.model.Currency'
     }
   ]
 });
