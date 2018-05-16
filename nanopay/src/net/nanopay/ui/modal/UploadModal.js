@@ -31,7 +31,7 @@ foam.CLASS({
       background-color: #093649;
       margin-bottom: 20px;
     }
-    ^ .attachment-input {
+    ^ .invoice-input {
       width: 0.1px;
       height: 0.1px;
       opacity: 0;
@@ -185,10 +185,10 @@ foam.CLASS({
           .end()
           .on('drop', this.onDrop)
           .on('click', self.onAddAttachmentClicked)
-          .start('input').addClass('attachment-input')
+          .start('input').addClass('invoice-input')
             .attrs({
               type: 'file',
-              accept: 'application/pdf',
+              accept: "image/jpg , image/jpeg , image/png , application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document , application/vnd.ms-powerpoint , application/vnd.openxmlformats-officedocument.presentationml.presentation , application/vnd.openxmlformats-officedocument.presentationml.slideshow , application/vnd.oasis.opendocument.text , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet , application/pdf",
               multiple: 'multiple'
             })
             .on('change', this.onChange)
@@ -226,7 +226,7 @@ foam.CLASS({
   ],
   listeners: [
     function onAddAttachmentClicked (e) {
-      this.document.querySelector('.attachment-input').click();
+      this.document.querySelector('.invoice-input').click();
     },
     function onDragOver(e) {
       e.preventDefault();    

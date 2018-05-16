@@ -296,11 +296,6 @@ foam.CLASS({
       background-color: white;
     }
 
-    ^ .boxless-for-drag-drop {
-      border: none !important;
-      width: 100% !important;
-      padding: 10px 0 !important;
-    }
   `,
 
   messages: [

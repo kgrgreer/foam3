@@ -1,6 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
+  
+  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'settlementDate', 'date'],
 
   imports: [
     'addCommas',
@@ -290,7 +292,7 @@ foam.CLASS({
             new Transfer(getPayerId(), -getTotal())
           };
         }
-        if ( getType() == TransactionType.CASHIN ) {
+        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
             new Transfer(getPayeeId(), getTotal())
           };
