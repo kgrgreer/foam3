@@ -14,6 +14,8 @@ foam.INTERFACE({
       returns: 'Promise',
       javaReturns: 'boolean',
       swiftReturns: 'Bool',
+      swiftThrows: true,
+
       args: [
         {
           name: 'bankAccountId',
