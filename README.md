@@ -19,7 +19,7 @@ Checkout `foam2`
 cd NANOPAY
 git submodule init
 
-https://github.com/foam-framework/foam2.git
+git clone https://github.com/foam-framework/foam2.git
 ```
 
 ### Configuration
