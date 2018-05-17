@@ -38,6 +38,14 @@ foam.RELATIONSHIP({
   cardinality: '1:*'
 });
 
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.cico.paymentCard.model.PaymentCard',
+  forwardName: 'paymentCards',
+  inverseName: 'owner',
+  cardinality: '1:*'
+});
+
 /*
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
@@ -101,4 +109,11 @@ foam.RELATIONSHIP({
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
   inverseName: 'partners'
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.cico.model.PaymentPlatformUserReference',
+  forwardName: 'paymentPlatformUserReferences',
+  inverseName: 'owner'
 });

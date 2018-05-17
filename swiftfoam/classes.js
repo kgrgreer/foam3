@@ -9,6 +9,7 @@ var classes = [
   'foam.swift.ui.DAOTableViewSource',
 
   'foam.blob.Blob',
+  'foam.blob.IdentifiedBlob',
   'foam.box.Box',
   'foam.box.LogBox',
   'foam.box.BoxRegistry',
@@ -67,6 +68,7 @@ var classes = [
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.model.Account',
   'net.nanopay.model.BankAccount',
+  'net.nanopay.model.PadCapture',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.tx.UserTransactionLimit',
@@ -83,9 +85,20 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.model.TransactionPurpose',
   'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.cico.model.MobileWallet',
   'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.cico.model.PaymentData',
+  'net.nanopay.cico.model.PaymentType',
   'net.nanopay.invoice.model.Invoice',
-  'net.nanopay.invoice.model.PaymentStatus'
+  'net.nanopay.invoice.model.PaymentStatus',
+  'net.nanopay.cico.model.PaymentType',
+  'net.nanopay.cico.model.PaymentData',
+  'net.nanopay.cico.model.MobileWallet',
+  'net.nanopay.model.PadCapture',
+  'net.nanopay.cico.paymentCard.model.PaymentCard',
+  'net.nanopay.cico.paymentCard.model.PaymentCardType',
+  'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
+  'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform'
 ];
 
 module.exports = {
