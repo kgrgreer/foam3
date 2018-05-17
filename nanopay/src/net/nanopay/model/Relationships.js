@@ -111,9 +111,3 @@ foam.RELATIONSHIP({
   inverseName: 'partners'
 });
 
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.cico.model.PaymentPlatformUserReference',
-  forwardName: 'paymentPlatformUserReferences',
-  inverseName: 'owner'
-});

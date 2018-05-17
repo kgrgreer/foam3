@@ -15,16 +15,14 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.RelationshipDAO;
 import foam.nanos.auth.User;
-import net.nanopay.cico.model.PaymentPlatformUserReference;
+import net.nanopay.cico.model.PaymentProcessorUserReference;
+import net.nanopay.cico.model.PaymentProcessor;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 import net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform;
-
 import java.util.List;
 import java.util.UUID;
-
 import static foam.mlang.MLang.EQ;
 
 public class RealexPaymentCardStoreDAO
@@ -41,20 +39,20 @@ public class RealexPaymentCardStoreDAO
     if ( card.getPaymentPlatform() != PaymentCardPaymentPlatform.REALEX ) 
       return getDelegate().put_(x, obj);
     User user = (User)x.get("user");
-    RelationshipDAO paymentPlateformDAO = (RelationshipDAO) user.getPaymentPlatformUserReferences();
-    ArraySink sink = (ArraySink) paymentPlateformDAO.where(EQ(PaymentPlatformUserReference.OWNER, user)).select(new ArraySink());
+    DAO paymentProcessorUserReferenceDAO = (DAO) x.get("paymentProcessorUserReferenceDAO");
+    ArraySink sink = (ArraySink) paymentProcessorUserReferenceDAO.where(EQ(PaymentProcessorUserReference.USER_ID, (long) user.getId())).select(new ArraySink());
     List list = sink.getArray();
-    PaymentPlatformUserReference platformReference = null;
+    PaymentProcessorUserReference processorReference = null;
     if ( list.size() == 0 ) 
-      platformReference = new PaymentPlatformUserReference();
+      processorReference = new PaymentProcessorUserReference();
     else
-      platformReference = (PaymentPlatformUserReference) list.get(0);
-    String payerReference = platformReference.getRealexUserReference();
-    if ( payerReference == null || "".equals(payerReference) ) {
+      processorReference = (PaymentProcessorUserReference) list.get(0);
+    String reference = processorReference.getReference();
+    if ( reference == null || "".equals(reference) ) {
       //create payer reference in Realex if do not exist
-      payerReference = UUID.randomUUID().toString();
+      reference = UUID.randomUUID().toString();
       Payer myPayer = new Payer()
-        .addRef(payerReference)
+        .addRef(reference)
         .addType("Retail");
       PaymentRequest request = new PaymentRequest()
         .addType(PaymentType.PAYER_NEW)
@@ -65,8 +63,10 @@ public class RealexPaymentCardStoreDAO
         if ( ! "00".equals(response.getResult()) ) {
           throw new RuntimeException("fail to create Payer by Realex, error message: " + response.getMessage());
         }
-        platformReference.setRealexUserReference(payerReference);
-        paymentPlateformDAO.put(platformReference.fclone());
+        processorReference.setReference(reference);
+        processorReference.setUserId(user.getId());
+        processorReference.setPaymentProcessor(PaymentProcessor.REALEX);
+        paymentProcessorUserReferenceDAO.put(processorReference.fclone());
       } catch ( Throwable e ) {
         throw new RuntimeException("Error to connect to Realex with PayerNew request");
       }
@@ -77,7 +77,7 @@ public class RealexPaymentCardStoreDAO
       .addExpiryDate(card.getNumber())
       .addCardHolderName(card.getCardholderName())
       .addReference(cardReference)
-      .addPayerReference(payerReference);
+      .addPayerReference(reference);
     if ( card.getNetwork() == PaymentCardNetwork.VISA ) {
       myCard.addType(CardType.VISA);
     } else if ( card.getNetwork() == PaymentCardNetwork.MASTERCARD ) {
