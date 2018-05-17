@@ -17,7 +17,8 @@ foam.CLASS({
     'foam.swift.parse.json.FObjectParser',
     'foam.nanos.auth.token.ClientTokenService',
     'net.nanopay.model.PadCapture',
-    'net.nanopay.tx.client.ClientUserTransactionLimitService'
+    'net.nanopay.tx.client.ClientUserTransactionLimitService',
+    'net.nanopay.cico.service.ClientBankAccountVerifierService'
   ],
 
   exports: [
@@ -312,6 +313,20 @@ return ClientDAO_create([
   ])
 ])
       `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.cico.service.ClientBankAccountVerifierService',
+      name: 'bankAccountVerification',
+      swiftFactory: `
+return ClientBankAccountVerifierService_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)bankAccountVerification"
+    ])
+  ])
+])
+      `
     }
   ],
   axioms: [
