@@ -12,6 +12,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
@@ -69,8 +70,8 @@ return calendar.getTime();`
         user.setPasswordExpiry(generateExpiryDate());
         
         // save password and generate a valid id.
-        userDAO.put(user);
-
+        user = (User) userDAO.put(user);
+       
         Token token = new Token();
         token.setUserId(user.getId());
         token.setExpiry(generateExpiryDate());
