@@ -8,6 +8,10 @@ foam.CLASS({
       class: 'String',
       name: 'merchantId',
       documentation: 'Realex merchantId: varipay'
+    },
+    {
+      class: 'String',
+      name: 'userReference'
     }
   ]
 });

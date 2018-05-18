@@ -25,7 +25,6 @@ import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
 import net.nanopay.cico.model.MobileWallet;
 import static foam.mlang.MLang.EQ;
-import net.nanopay.cico.model.PaymentPlatformUserReference;
 import foam.dao.ArraySink;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
 
@@ -76,10 +75,7 @@ public class RealexTransactionDAO
         .addPaymentMethod(paymentCard.getRealexCardReference())
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
-      ArraySink sink = (ArraySink) user.getPaymentPlatformUserReferences().where(EQ(PaymentPlatformUserReference.OWNER, user)).select(new ArraySink());
-      List list = sink.getArray();
-      PaymentPlatformUserReference platformReference = (PaymentPlatformUserReference) list.get(0);
-      paymentRequest.addPayerReference(platformReference.getRealexUserReference());
+      paymentRequest.addPayerReference(paymentAccountInfo.getUserReference());
     } else if ( paymentAccountInfo.getType() == net.nanopay.cico.model.PaymentType.ONEOFF ) {
       throw new RuntimeException("One-off do not support");
     } else {

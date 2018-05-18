@@ -193,6 +193,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
   { name: 'net/nanopay/cico/model/PaymentAccountInfo'},
   { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo'},
+  { name: 'net/nanopay/cico/model/PaymentProcessor'},
+  { name: 'net/nanopay/cico/model/PaymentProcessorUserReference'},
   { name: 'net/nanopay/cico/model/PaymentType'},
   { name: 'net/nanopay/cico/model/MobileWallet'},
 
@@ -306,6 +308,5 @@ FOAM_FILES([
   { name: 'net/nanopay/s2h/model/S2HInvoice'},
   //Institution
   { name: 'net/nanopay/model/Institution' },
-  { name: 'net/nanopay/cico/model/PaymentPlatformUserReference' },
   { name: 'net/nanopay/model/Relationships'}
 ]);

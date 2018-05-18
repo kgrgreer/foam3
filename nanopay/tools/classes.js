@@ -123,7 +123,8 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
   'net.nanopay.cico.model.PaymentType',
-  'net.nanopay.cico.model.PaymentPlatformUserReference'
+  'net.nanopay.cico.model.PaymentProcessorUserReference',
+  'net.nanopay.cico.model.PaymentProcessor'
 ];
 
 var abstractClasses = [
