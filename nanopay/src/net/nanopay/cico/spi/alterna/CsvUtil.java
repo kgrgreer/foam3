@@ -110,7 +110,8 @@ public class CsvUtil {
         OR(
             EQ(Transaction.TYPE, TransactionType.CASHIN),
             EQ(Transaction.TYPE, TransactionType.CASHOUT),
-            EQ(Transaction.TYPE, TransactionType.BANKACCOUNTPAYMENT)
+            EQ(Transaction.TYPE, TransactionType.BANKACCOUNTPAYMENT),
+            EQ(Transaction.TYPE, TransactionType.VERIFICATION)
         )
       )
     ).select(new AbstractSink() {
@@ -123,10 +124,10 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION || t.getType() == TransactionType.BANKACCOUNTPAYMENT ) {
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANKACCOUNTPAYMENT ) {
             txnType = "DB";
             user = (User) userDAO.find(t.getPayerId());
-          } else if ( t.getType() == TransactionType.CASHOUT ) {
+          } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
             user = (User) userDAO.find(t.getPayerId());
           } else {
@@ -186,10 +187,10 @@ public class CsvUtil {
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
-          // if a verification transaction, also add a CR with same information
+          // if a verification transaction, also add a DB with same information
           if ( t.getType() == TransactionType.VERIFICATION ) {
             AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
-            cashout.setTxnType("CR");
+            cashout.setTxnType("DB");
             out.put(cashout, sub);
           }
           out.flush();
