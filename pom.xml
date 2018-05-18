@@ -172,16 +172,6 @@
       <version>5.35.1</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
       <groupId>com.realexpayments.remote.sdk</groupId>
       <artifactId>rxp-remote-java</artifactId>
       <version>1.3.1</version>
@@ -199,16 +189,10 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>build</sourceDirectory>
+    <sourceDirectory>.</sourceDirectory>
     <!-- for hot reload of the web application-->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.3.11.v20160721</version>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -274,9 +258,17 @@
               <useIncrementalCompilation>true</useIncrementalCompilation>
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
+              <includes>
+                <include>foam2/src/**/*.java</include>
+                <include>interac/src/**/*.java</include>
+                <include>merchant/src/**/*.java</include>
+                <include>nanopay/src/**/*.java</include>
+                <include>build/**/*.java</include>
+              </includes>
               <excludes>
-                <exclude>**/com/chrome/**</exclude>
-                <exclude>**/foam/dao/DatastoreDAO.java</exclude>
+                <exclude>foam2/src/com/chrome/**</exclude>
+                <exclude>foam2/src/foam/nanos/jetty/**</exclude>
+                <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
               </excludes>
             </configuration>
           </plugin>
@@ -315,9 +307,17 @@
               <useIncrementalCompilation>false</useIncrementalCompilation>
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
+              <includes>
+                <include>foam2/src/**/*.java</include>
+                <include>interac/src/**/*.java</include>
+                <include>merchant/src/**/*.java</include>
+                <include>nanopay/src/**/*.java</include>
+                <include>build/**/*.java</include>
+              </includes>
               <excludes>
-                <exclude>**/com/chrome/**</exclude>
-                <exclude>**/foam/dao/DatastoreDAO.java</exclude>
+                <exclude>foam2/src/com/chrome/**</exclude>
+                <exclude>foam2/src/foam/nanos/jetty/**</exclude>
+                <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
               </excludes>
             </configuration>
           </plugin>
