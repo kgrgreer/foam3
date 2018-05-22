@@ -35,6 +35,12 @@ foam.ENUM({
     },{
       name: 'FAILED',
       label: 'Failed'
+    },{
+      name: 'PAUSED',
+      label: 'Paused'
+    },{
+      name: 'CANCELLED',
+      label: 'Cancelled'
     }
   ]
 });

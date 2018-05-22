@@ -266,6 +266,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'messageId'
+    },
+    {
+      class: 'DateTime',
+      name: 'latestDate',
+      label: 'Latest Modify Date & Time'
     }
   ],
 
