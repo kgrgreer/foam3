@@ -1,6 +1,7 @@
 foam.CLASS({
   name: 'MintChipClient',
   extends: 'foam.box.Context',
+
   requires: [
     'foam.box.HTTPBox',
     'foam.box.LogBox',
@@ -10,21 +11,27 @@ foam.CLASS({
     'foam.dao.ClientDAO',
     'foam.dao.DAOSink',
     'foam.nanos.auth.ClientAuthService',
+    'foam.nanos.fs.File',
     'foam.swift.dao.ArrayDAO',
     'foam.swift.dao.CachingDAO',
     'foam.swift.parse.json.FObjectParser',
     'foam.nanos.auth.token.ClientTokenService',
-    'net.nanopay.tx.client.ClientUserTransactionLimitService'
+    'net.nanopay.model.PadCapture',
+    'net.nanopay.tx.client.ClientUserTransactionLimitService',
+    'net.nanopay.cico.service.ClientBankAccountVerifierService'
   ],
+
   exports: [
     'userDAO',
     'currentUser',
     'invoiceDAO',
+    'padCaptureDAO',
     'refreshTransactionDAO',
     'transactionDAO',
     'stripeTransactionDAO',
     'userUserJunctionDAO'
   ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -157,6 +164,22 @@ return ClientDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'paymentCardDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": PaymentCard.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)paymentCardDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'transactionDAO',
       swiftFactory: `
 return ClientDAO_create([
@@ -240,6 +263,7 @@ return ClientDAO_create([
       `
     },
     {
+      class: 'foam.dao.DAOProperty',
       name: 'invoiceDAO',
       swiftFactory: `
 return ClientDAO_create([
@@ -261,6 +285,48 @@ return ClientTokenService_create([
   "serviceName": "\\(self.httpBoxUrlRoot.rawValue)auth"
 ])
       `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'fileDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": File.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)fileDAO"
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'padCaptureDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": PadCapture.classInfo(),
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)padCaptureDAO"
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.cico.service.ClientBankAccountVerifierService',
+      name: 'bankAccountVerification',
+      swiftFactory: `
+return ClientBankAccountVerifierService_create([
+  "delegate": SessionClientBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)bankAccountVerification"
+    ])
+  ])
+])
+      `
     }
   ],
   axioms: [
