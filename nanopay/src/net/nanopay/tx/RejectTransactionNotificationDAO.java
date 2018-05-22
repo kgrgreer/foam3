@@ -19,7 +19,7 @@ import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 /**
- * RejectTransactionNotificationDAO userd to sent email to users once the some transactions are rejected by EFT
+ * RejectTransactionNotificationDAO used to sent email to users when transactions are rejected by EFT
  * services
  */
 
