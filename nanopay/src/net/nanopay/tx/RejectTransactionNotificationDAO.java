@@ -18,6 +18,11 @@ import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
+/**
+ * RejectTransactionNotificationDAO userd to sent email to users once the some transactions are rejected by EFT
+ * services
+ */
+
 public class RejectTransactionNotificationDAO
     extends ProxyDAO {
   protected DAO userDAO_;
@@ -49,22 +54,15 @@ public class RejectTransactionNotificationDAO
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
-    FObject ret = null;
-    try {
-      ret = super.put_(x, obj);
-    } catch ( RuntimeException exception ) {
-      throw exception;
-    }
-    if ( oldTxn == null )
-      return ret;
-    if ( transaction.getType().equals(TransactionType.CASHIN) ) {
+    FObject ret = super.put_(x, obj);
+    if ( transaction.getType().equals(TransactionType.CASHIN) && oldTxn != null ) {
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         User payer = (User) getUserDAO().find(transaction.getPayerId());
         sendCashInRejectEmail(x, payer.getEmail(), payer, transaction);
       }
     }
-    if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+    if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT && oldTxn != null ) {
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         //pay others by bank account directly

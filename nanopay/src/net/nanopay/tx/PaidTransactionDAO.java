@@ -41,11 +41,8 @@ public class PaidTransactionDAO
     if ( transaction.getPayeeId() == transaction.getPayerId() )
       return transaction;
 
-    if ( transaction.getType() != TransactionType.NONE ) {
-      if ( transaction.getStatus() != TransactionStatus.COMPLETED )
-        return transaction;
-    }
-
+    if ( transaction.getType() != TransactionType.NONE && transaction.getStatus() != TransactionStatus.COMPLETED )
+      return transaction;
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     AppConfig    config    = (AppConfig) x.get("appConfig");
