@@ -16,6 +16,10 @@ var classes = [
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
+  'net.nanopay.cico.paymentCard.model.PaymentCard',
+  'net.nanopay.cico.paymentCard.model.PaymentCardType',
+  'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
+  'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -112,7 +116,15 @@ var classes = [
   'foam.nanos.auth.UserUserJunction',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
-  'net.nanopay.fx.interac.model.AcceptExchangeRateFields'
+  'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
+
+  //PaymentAccountInfo
+  'net.nanopay.cico.model.PaymentAccountInfo',
+  'net.nanopay.cico.model.RealexPaymentAccountInfo',
+  'net.nanopay.cico.model.MobileWallet',
+  'net.nanopay.cico.model.PaymentType',
+  'net.nanopay.cico.model.PaymentProcessorUserReference',
+  'net.nanopay.cico.model.PaymentProcessor'
 ];
 
 var abstractClasses = [

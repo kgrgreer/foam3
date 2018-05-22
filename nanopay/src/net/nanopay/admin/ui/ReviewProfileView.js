@@ -76,10 +76,12 @@ foam.CLASS({
     function initE() {
 
       var self = this;
-
-      this.businessTypeDAO.find(this.data.businessTypeId).then(function(a) {
-        self.businessTypeName = a.name;
-      });
+      if(this.data.businessTypeId)
+      {
+        this.businessTypeDAO.find(this.data.businessTypeId).then(function(a) {
+          self.businessTypeName = a.name;
+        });
+      }
 
       this
         .addClass(this.myClass())

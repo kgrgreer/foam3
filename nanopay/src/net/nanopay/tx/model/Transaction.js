@@ -292,7 +292,7 @@ foam.CLASS({
             new Transfer(getPayerId(), -getTotal())
           };
         }
-        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANKACCOUNTPAYMENT ) {
+        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
             new Transfer(getPayeeId(), getTotal())
           };
