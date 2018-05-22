@@ -269,7 +269,7 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'latestDate',
+      name: 'lastModified',
       label: 'Latest Modify Date & Time'
     }
   ],

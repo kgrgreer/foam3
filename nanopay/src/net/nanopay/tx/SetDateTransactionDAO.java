@@ -23,7 +23,7 @@ public class SetDateTransactionDAO
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
     if ( oldTxn == null )
       txn.setDate(new Date());
-    txn.setLatestDate(new Date());
+    txn.setLastModified(new Date());
     return super.put_(x, obj);
   }
 }
