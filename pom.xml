@@ -11,8 +11,6 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <appengine.app.version>1</appengine.app.version>
-    <appengine.sdk.version>1.9.24</appengine.sdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <prerequisites>
@@ -68,11 +66,6 @@
       <version>2.9.3</version>
     </dependency>
     <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.xero</groupId>
       <artifactId>xero-java-sdk</artifactId>
       <version>0.4.4</version>
@@ -117,6 +110,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
       <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.11</version>
     </dependency>
     <dependency>
       <groupId>com.jcraft</groupId>
@@ -169,31 +167,9 @@
       <version>1.1.0</version>
     </dependency>
     <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-testing</artifactId>
-      <version>${appengine.sdk.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-stubs</artifactId>
-      <version>${appengine.sdk.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.stripe</groupId>
       <artifactId>stripe-java</artifactId>
       <version>5.35.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>9.3.11.v20160721</version>
     </dependency>
     <dependency>
       <groupId>com.realexpayments.remote.sdk</groupId>
@@ -213,16 +189,10 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>build</sourceDirectory>
+    <sourceDirectory>.</sourceDirectory>
     <!-- for hot reload of the web application-->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.3.11.v20160721</version>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -269,24 +239,6 @@
           <warName>ROOT</warName>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>com.google.appengine</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
-        <configuration>
-          <enableJarClasses>false</enableJarClasses>
-          <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
-          <!-- address>0.0.0.0</address>
-          <port>8080</port -->
-          <!-- Comment in the below snippet to enable local debugging with a remote debugger
-               like those included with Eclipse or IntelliJ -->
-          <jvmFlags>
-            <jvmFlag>-Xdebug</jvmFlag>
-            <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
-          </jvmFlags>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -306,8 +258,17 @@
               <useIncrementalCompilation>true</useIncrementalCompilation>
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
+              <includes>
+                <include>foam2/src/**/*.java</include>
+                <include>interac/src/**/*.java</include>
+                <include>merchant/src/**/*.java</include>
+                <include>nanopay/src/**/*.java</include>
+                <include>build/**/*.java</include>
+              </includes>
               <excludes>
-                <exclude>**/com/chrome/**</exclude>
+                <exclude>foam2/src/com/chrome/**</exclude>
+                <exclude>foam2/src/foam/nanos/jetty/**</exclude>
+                <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
               </excludes>
             </configuration>
           </plugin>
@@ -346,8 +307,17 @@
               <useIncrementalCompilation>false</useIncrementalCompilation>
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
+              <includes>
+                <include>foam2/src/**/*.java</include>
+                <include>interac/src/**/*.java</include>
+                <include>merchant/src/**/*.java</include>
+                <include>nanopay/src/**/*.java</include>
+                <include>build/**/*.java</include>
+              </includes>
               <excludes>
-                <exclude>**/com/chrome/**</exclude>
+                <exclude>foam2/src/com/chrome/**</exclude>
+                <exclude>foam2/src/foam/nanos/jetty/**</exclude>
+                <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
               </excludes>
             </configuration>
           </plugin>

@@ -1,3 +1,4 @@
+r({"class":"foam.nanos.boot.NSpec", "name":"http"})
 p({"class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",                  "lazy":true,  "serve":false, "serviceScript":"return new foam.dao.PMDAO(new foam.dao.MDAO( net.nanopay.model.Account.getOwnClassInfo()));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"accountDAO",                       "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new net.nanopay.tx.AuthenticatedAccountDAO(x, x.get(\"localAccountDAO\")));","client":"{\"of\":\"net.nanopay.model.Account\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"branchDAO",                        "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(new foam.dao.SequenceNumberDAO(new foam.dao.JDAO(x, net.nanopay.model.Branch.getOwnClassInfo(), \"branches\")));","client":"{\"of\":\"net.nanopay.model.Branch\"}"})
