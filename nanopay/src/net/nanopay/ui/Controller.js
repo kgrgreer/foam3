@@ -3,8 +3,6 @@ foam.CLASS({
   name: 'Controller',
   extends: 'foam.nanos.controller.ApplicationController',
 
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
-
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
@@ -95,33 +93,35 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.AppStyles.create();
-      this.InvoiceStyles.create();
-      this.ModalStyling.create();
-
-      this.nSpecDAO.find('appConfig').then(function(config){
-        self.appConfig = config.service;
-      });
-
       var self = this;
-      foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+      self.clientPromise.then(function() {
+        self.client.nSpecDAO.find('appConfig').then(function(config){
+          self.appConfig = config.service;
+        });
 
-      this.findAccount();
+        self.AppStyles.create();
+        self.InvoiceStyles.create();
+        self.ModalStyling.create();
 
-      this
-        .addClass(this.myClass())
-        .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
-        .start('div').addClass('stack-wrapper')
-          .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
-        .end()
-        .tag({class: 'net.nanopay.ui.FooterView'});
+        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+
+        self.findAccount();
+
+        self
+          .addClass(self.myClass())
+          .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
+          .start('div').addClass('stack-wrapper')
+            .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
+          .end()
+          .tag({class: 'net.nanopay.ui.FooterView'});
+      });
     },
 
     function getCurrentUser() {
       var self = this;
 
       // get current user, else show login
-      this.auth.getCurrentUser(null).then(function (result) {
+      this.client.auth.getCurrentUser(null).then(function (result) {
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
@@ -178,7 +178,7 @@ foam.CLASS({
 
     function findAccount() {
       var self = this;
-      this.accountDAO.find(this.user.id).then(function (a) {
+      this.client.accountDAO.find(this.user.id).then(function (a) {
         return self.account.copyFrom(a);
       }.bind(this));
     }
