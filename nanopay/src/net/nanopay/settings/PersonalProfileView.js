@@ -262,6 +262,7 @@ foam.CLASS({
         this.lastName = this.user.lastName;
         this.jobTitle = this.user.department;
         this.email = this.user.email;
+        // split the country code and phone number
         [ this.phoneCode, this.phone ] = this.user.phone.number.split(" ");
       }
       this
