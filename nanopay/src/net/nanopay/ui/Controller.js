@@ -84,7 +84,7 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.model.Account',
       name: 'account',
-      factory: function() { return this.Account.create(null, self.__subSubContext__); }
+      factory: function() { return this.Account.create(); }
     },
     {
       name: 'appConfig'
@@ -95,13 +95,13 @@ foam.CLASS({
     function initE() {
       var self = this;
       self.clientPromise.then(function() {
-        self.__subSubContext__.nSpecDAO.find('appConfig').then(function(config){
+        self.client.nSpecDAO.find('appConfig').then(function(config){
           self.appConfig = config.service;
         });
 
-        self.AppStyles.create(null, self.__subSubContext__);
-        self.InvoiceStyles.create(null, self.__subSubContext__);
-        self.ModalStyling.create(null, self.__subSubContext__);
+        self.AppStyles.create();
+        self.InvoiceStyles.create();
+        self.ModalStyling.create();
 
         foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
@@ -121,7 +121,7 @@ foam.CLASS({
       var self = this;
 
       // get current user, else show login
-      this.__subSubContext__.auth.getCurrentUser(null).then(function (result) {
+      this.client.auth.getCurrentUser(null).then(function (result) {
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
@@ -178,7 +178,7 @@ foam.CLASS({
 
     function findAccount() {
       var self = this;
-      this.__subSubContext__.accountDAO.find(this.user.id).then(function (a) {
+      this.client.accountDAO.find(this.user.id).then(function (a) {
         return self.account.copyFrom(a);
       }.bind(this));
     }
