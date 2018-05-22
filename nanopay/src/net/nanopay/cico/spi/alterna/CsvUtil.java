@@ -108,7 +108,7 @@ public class CsvUtil {
         OR(
             EQ(Transaction.TYPE, TransactionType.CASHIN),
             EQ(Transaction.TYPE, TransactionType.CASHOUT),
-            EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT)
+            EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
             EQ(Transaction.TYPE, TransactionType.VERIFICATION)
         )
       )
