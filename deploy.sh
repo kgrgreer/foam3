@@ -63,12 +63,12 @@ tar xvf apache-tomcat-8*tar.gz -C $HOST_CATALINA_HOME --strip-components=1
 cd $HOST_CATALINA_HOME
 chgrp -R tomcat $HOST_CATALINA_HOME
 chmod -R g+rw conf
-chmod g+wx conf
+chmod g+x conf
 chmod +x bin/*.sh
 rm -rf webapps
 mkdir webapps/
-chmod
 chown -R tomcat webapps/ work/ temp/ logs/
+chmod g+wr logs
 "
 
   if ssh $HOST "[[ ! -d $HOST_TEMP ]]"; then
@@ -86,12 +86,6 @@ function deploy_journals {
   if ssh $HOST "[[ ! -d $HOST_JOURNAL_HOME ]]"; then
     ssh $HOST "mkdir $HOST_JOURNAL_HOME"
   fi
-
-  # local JOURNALS=($(find $JOURNAL_HOME -not -name "*.0"))
-  # # In the array the first element is the journals directory. Hence, removed.
-  # for journal in ${JOURNALS[@]:1}; do
-  #     scp $journal $HOST:$HOST_JOURNAL_HOME
-  # done
 
   for journal in $(ls $JOURNAL_HOME); do
     scp $JOURNAL_HOME/$journal $HOST:$HOST_JOURNAL_HOME
@@ -125,6 +119,7 @@ function setup_tomcat_service {
 #. /etc/rc.d/init.d/functions
 export JAVA_HOME=\"$HOST_JAVA_HOME\"
 export JAVA_OPTS=\"$HOST_JAVA_OPTS\"
+export CATALINA_OPTS=\"$HOST_CATALINA_OPTS\"
 TOMCAT_HOME=\"$HOST_CATALINA_HOME\"
 TOMCAT_USER=\"tomcat\"
 SHUTDOWN_WAIT=20
@@ -143,9 +138,14 @@ start() {
     echo \"Starting tomcat\"
     ulimit -n 100000
     umask 007
-    /bin/su -p -s /bin/sh \$TOMCAT_USER \$TOMCAT_HOME/bin/startup.sh
+    #
+    # NOTE: cd to CATALINA_BASE/logs, as this will become
+    # System property 'user.dir', which, for now is the
+    # only way to control where the nano.log is created.
+    #
+    cd \$TOMCAT_HOME/logs
+    /bin/su -p -s /bin/sh \$TOMCAT_USER \"\$TOMCAT_HOME/bin/startup.sh\"
   fi
-
 
   return 0
 }
@@ -219,6 +219,17 @@ function start_tomcat {
   fi
 }
 
+function create_nanopay_dir {
+  if ssh $HOST "[[ ! -d $HOST_NANOPAY_HOME ]]"; then
+    ssh $HOST "mkdir $HOST_NANOPAY_HOME"
+    ssh $HOST "chgrp tomcat $HOST_NANOPAY_HOME"
+    ssh $HOST "chmod g+rw $HOST_NANOPAY_HOME"
+    echo "INFO : $HOST_NANOPAY_HOME : Nanopay directory successfully created."
+  else
+    echo "INFO : $HOST_NANOPAY_HOME : Nanopay directory already exists."
+  fi
+}
+
 function deploy_war {
     scp $WAR_HOME/../ROOT.war $HOST:$HOST_CATALINA_HOME/webapps/ROOT.war.tmp
     ssh $HOST "mv $HOST_CATALINA_HOME/webapps/ROOT.war.tmp $HOST_CATALINA_HOME/webapps/ROOT.war"
@@ -249,6 +260,11 @@ function remove {
   if ssh $HOST "[[ -d $HOST_JOURNAL_HOME ]]"; then
     ssh $HOST "rm -rf $HOST_JOURNAL_HOME"
     echo "INFO : $HOST_JOURNAL_HOME : Journals directory removed."
+  fi
+
+  if ssh $HOST "[[ -d $HOST_NANOPAY_HOME ]]"; then
+    ssh $HOST "rm -rf $HOST_NANOPAY_HOME"
+    echo "INFO : $HOST_NANOPAY_HOME : Nanopay directory removed."
   fi
 
   if ssh $HOST "id tomcat >/dev/null 2>&1"; then
@@ -288,6 +304,7 @@ function setenv {
   HOST_TEMP="/tmp/nanopay"
   HOST_CATALINA_HOME="/opt/tomcat"
   HOST_CATALINA_BASE=$HOST_CATALINA_HOME
+  HOST_CATALINA_DOC_BASE=$HOST_NANOPAY_HOME
   HOST_JAVA_HOME="/usr/lib/jvm/$JAVA_VERSION.x86_64"
   HOST_JOURNAL_HOME="/mnt/journals"
 
@@ -352,19 +369,21 @@ else
     fi
   else
     echo "INFO :: Setting up SSH."
-    setup_ssh
+    # setup_ssh
     echo "INFO :: Installing prerequisites."
-    install_prereqs
+    # install_prereqs
     echo "INFO :: Installing Tomcat on $HOST."
-    install_tomcat
+    # install_tomcat
+    echo "INFO :: Creating NANOPAY directory on $HOST."
+    # create_nanopay_dir
     echo "INFO :: Deploying WAR to $HOST."
-    deploy_war
+    # deploy_war
     echo "INFO :: Deploying journal files to $HOST."
-    deploy_journals
+    # deploy_journals
     echo "INFO :: Setting up Tomcat service."
     setup_tomcat_service
     start_tomcat
-    cleanup
+    # cleanup
   fi
 
   exit 0
