@@ -45,10 +45,32 @@ public class CsvUtil {
    * @return either the current date plus 1 day if current time is before 11 am
    *         or the current date plus 2 days if the current date is after 11 am
    */
-  public static Date generateSettlementDate(Date date) {
+  public static Date generateProcessDate(Date date) {
     Calendar curDate = Calendar.getInstance();
     curDate.setTime(date);
     int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
+    int i = 0;
+    while ( i < k ) {
+      curDate.add(Calendar.DAY_OF_YEAR, 1);
+      if ( curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+        && curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+        && ! cadHolidays.contains(curDate.get(Calendar.DAY_OF_YEAR)) ) {
+        i = i + 1;
+      }
+    }
+    return curDate.getTime();
+  }
+
+  /**
+   * Generates the completion date based on a given date
+   * @param date date used to determine the processing date
+   * @return either the current date plus 3 day if current time is before 11 am
+   *         or the current date plus 4 days if the current date is after 11 am
+   */
+  public static Date generateCompletionDate(Date date) {
+    Calendar curDate = Calendar.getInstance();
+    curDate.setTime(date);
+    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 3 : 4;
     int i = 0;
     while ( i < k ) {
       curDate.add(Calendar.DAY_OF_YEAR, 1);
@@ -120,6 +142,7 @@ public class CsvUtil {
           String txnType;
           String refNo;
           Transaction t = (Transaction) obj;
+          t = (Transaction) t.fclone();
 
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
@@ -172,10 +195,11 @@ public class CsvUtil {
             t.setTxnCode(alternaFormat.getTxnCode());
           }
 
-          alternaFormat.setProcessDate(csvSdf.get().format(generateSettlementDate(now)));
+          alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(now)));
           alternaFormat.setReference(refNo);
 
-          t.setSettlementDate(generateSettlementDate(now));
+          t.setProcessDate(generateProcessDate(now));
+          t.setCompletionDate(generateCompletionDate(now));
           t.setReferenceNumber(refNo);
 
           transactionDAO.put(t);

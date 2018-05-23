@@ -25,12 +25,11 @@ public class EftSuccessCronjob implements ContextAgent {
       @Override
       public void put(Object o, Detachable d) {
         Transaction txn = (Transaction) ((Transaction) o).deepClone();
-        Calendar txnSettlementDate = Calendar.getInstance();
+        Calendar txnCompletionDate = Calendar.getInstance();
 
-        if ( txn.getSettlementDate() != null ) {
-          Date date = txn.getSettlementDate();
-          txnSettlementDate.setTime(date);
-          if ( txnSettlementDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
+        if ( txn.getCompletionDate() != null ) {
+          txnCompletionDate.setTime(txn.getCompletionDate());
+          if ( txnCompletionDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
             txn.setStatus(TransactionStatus.COMPLETED);
             transactionDAO.put(txn);
           }

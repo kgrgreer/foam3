@@ -63,7 +63,8 @@ public class DuplicateTransactionCheckDAO
 
     temp.setPadType(oldtxn.getPadType());
     temp.setTxnCode(oldtxn.getTxnCode());
-    temp.setSettlementDate(oldtxn.getSettlementDate());
+    temp.setProcessDate(oldtxn.getProcessDate());
+    temp.setCompletionDate(oldtxn.getCompletionDate());
     temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
     temp.setDescription(oldtxn.getDescription());
     temp.setReturnCode(oldtxn.getReturnCode());
