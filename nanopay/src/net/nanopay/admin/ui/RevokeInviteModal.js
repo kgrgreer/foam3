@@ -17,7 +17,8 @@ foam.CLASS({
 
   imports: [
     'userDAO',
-    'closeDialog'
+    'closeDialog',
+    'editProfilePopUp'
   ],
 
   css: `
@@ -66,7 +67,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
+      if (this.editProfilePopUp) this.editProfilePopUp.remove();
+      
       this
         .addClass(this.myClass())
         .tag(this.ModalHeader.create({ title: this.title }))
