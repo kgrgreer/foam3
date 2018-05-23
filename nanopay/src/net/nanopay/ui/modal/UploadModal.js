@@ -155,7 +155,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-          
+      this.data = this.exportData
       this
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
