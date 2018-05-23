@@ -7,18 +7,16 @@ import foam.dao.DAO;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
-
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.model.BankAccount;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -108,8 +106,10 @@ public class CsvUtil {
       AND(
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
-          EQ(Transaction.TYPE, TransactionType.CASHIN),
-          EQ(Transaction.TYPE, TransactionType.CASHOUT)
+            EQ(Transaction.TYPE, TransactionType.CASHIN),
+            EQ(Transaction.TYPE, TransactionType.CASHOUT),
+            EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
+            EQ(Transaction.TYPE, TransactionType.VERIFICATION)
         )
       )
     ).select(new AbstractSink() {
@@ -122,10 +122,10 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION ) {
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
-            user = (User) userDAO.find(t.getPayeeId());
-          } else if ( t.getType() == TransactionType.CASHOUT ) {
+            user = (User) userDAO.find(t.getPayerId());
+          } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
             user = (User) userDAO.find(t.getPayerId());
           } else {
@@ -135,15 +135,11 @@ public class CsvUtil {
           }
 
           // if user null, return
-          if ( user == null ) {
-            return;
-          }
+          if ( user == null ) return;
 
           // get bank account and check if null
           BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
-          if ( bankAccount == null ) {
-            return;
-          }
+          if ( bankAccount == null ) return;
 
           if ( ! "".equals(t.getReferenceNumber()) ) {
             refNo = t.getReferenceNumber();
@@ -185,10 +181,10 @@ public class CsvUtil {
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
-          // if a verification transaction, also add a CR with same information
+          // if a verification transaction, also add a DB with same information
           if ( t.getType() == TransactionType.VERIFICATION ) {
             AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
-            cashout.setTxnType("CR");
+            cashout.setTxnType("DB");
             out.put(cashout, sub);
           }
           out.flush();

@@ -11,7 +11,10 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.text.NumberFormat;
 import java.util.HashMap;
+
+import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 // Sends an email when an invoice is PAID
 public class PaidTransactionDAO
@@ -36,6 +39,9 @@ public class PaidTransactionDAO
 
     // Returns if transaction is a cico transaction
     if ( transaction.getPayeeId() == transaction.getPayerId() )
+      return transaction;
+
+    if ( transaction.getType() != TransactionType.NONE && transaction.getStatus() != TransactionStatus.COMPLETED )
       return transaction;
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();

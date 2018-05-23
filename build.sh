@@ -279,18 +279,13 @@ function setenv {
 
     NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
 
-    # if running via CodeDeploy set -c flag
-    if beginswith /pkg/stack/stage "$NANOPAY_HOME"; then
-        CLEAN_BUILD=1
-    fi
-
     JOURNAL_OUT="$NANOPAY_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
        JOURNAL_HOME="$NANOPAY_HOME/journals"
     fi
 
-    if [ "$OSTYPE" == "linux-gnu" ]; then
+    if beginswith "/pkg/stack/stage" $0 ; then
         NANOPAY_HOME=/pkg/stack/stage/NANOPAY
         cd "$NANOPAY_HOME"
         cwd=$(pwd)
@@ -298,6 +293,8 @@ function setenv {
 
         # Production use S3 mount
         JOURNAL_HOME=/mnt/journals
+
+        CLEAN_BUILD=1
     fi
 
     export CATALINA_PID="/tmp/catalina_pid"
@@ -401,11 +398,12 @@ while getopts "bcdfhijnrs" opt ; do
     esac
 done
 
-setenv
 if [ "$INSTALL" -eq 1 ]; then
     install
     exit 0
 fi
+
+setenv
 if [ "$RUN_NANOS" -eq 1 ]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then

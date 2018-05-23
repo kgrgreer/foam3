@@ -3,7 +3,7 @@ p({"class":"foam.nanos.menu.Menu","id":"brokers","label":"Brokers","handler":{"c
 p({"class":"foam.nanos.menu.Menu","id":"dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDashboardView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"banks","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"All Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":1000,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","summaryView":{"class":"net.nanopay.tx.ui.TransactionsView"}} ,"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"subscription","label":"Subscription","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.SubscriptionView"}},"order":1000,"parent":"invoices"})
 p({"class":"foam.nanos.menu.Menu","id":"sales","label":"Receivable","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.SalesView"}},"order":1000,"parent":"invoices"})
 p({"class":"foam.nanos.menu.Menu","id":"expenses","label":"Payable","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.ExpensesView"}},"order":1000,"parent":"invoices"})

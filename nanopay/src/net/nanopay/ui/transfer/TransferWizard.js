@@ -6,12 +6,12 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for e-transfer',
 
   requires: [
-    'net.nanopay.ui.CountdownView',
-    'net.nanopay.tx.model.Transaction',
+    'foam.nanos.notification.email.EmailMessage',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.BankAccount',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.notification.email.EmailMessage'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.ui.CountdownView'
   ],
 
   implements: [
@@ -19,14 +19,14 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
     'account',
     'bankAccountDAO',
     'bankAccountVerification',
-    'transactionDAO',
-    'invoiceDAO',
     'email',
-    'formatCurrency'
+    'formatCurrency',
+    'invoiceDAO',
+    'transactionDAO',
+    'user'
   ],
 
   exports: [
