@@ -452,6 +452,9 @@ foam.CLASS({
                   .on('focusout', function() {
                     self.isEditingPhone = false;
                   })
+                  .attrs({
+                    placeholder: 'format: 000-000-0000'
+                  })
                 .end()
               .end()
             .end()
@@ -528,6 +531,7 @@ foam.CLASS({
         return;
       }
 
+      this.phoneNumber = this.phoneNumber.replace(/[- )(]/g,'');
       var businessPhone = this.Phone.create({
         number: this.countryCode + ' ' + this.phoneNumber
       });

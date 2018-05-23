@@ -233,7 +233,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! businessProfile.businessRegistrationDate ) {
+      if ( ! businessProfile.businessRegistrationDate  || businessProfile.businessRegistrationDate > new Date()) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationDateMessage, type: 'error' }));
         return false;
       }
