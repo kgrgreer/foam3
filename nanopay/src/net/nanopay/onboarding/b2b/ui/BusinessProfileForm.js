@@ -365,8 +365,9 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
+        newValue = newValue.replace(/[- )(]/g,'');
         this.viewData.user.businessPhone = this.Phone.create({
-          number: '+1' + newValue
+          number: '+1 ' + newValue
         });
       }
     },
