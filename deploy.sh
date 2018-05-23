@@ -291,6 +291,28 @@ function install_prereqs {
   echo "INFO :: Pre-requisites installed."
 }
 
+function test_ports {
+  ssh vmware "netstat -plnt | grep $HOST_CATALINA_PORT_HTTP | grep LISTEN" | awk '{
+    if ($7 ~ /java/)
+      print "INFO : Port Check : App is listening on port '$HOST_CATALINA_PORT_HTTP'.";
+    else
+      print "WARNING : Port Check : Port '$HOST_CATALINA_PORT_HTTP' is not being bound by Tomcat. Please check.";
+  } END {
+    if (!NR)
+      print "WARNING : Port Check : Port '$HOST_CATALINA_PORT_HTTP' is blocked. Please configure SELinux to open port.";
+  }'
+
+  ssh vmware "netstat -plnt | grep $HOST_CATALINA_PORT_HTTPS | grep LISTEN" | awk '{
+    if ($7 ~ /java/)
+      print "INFO : Port Check : App is listening on port '$HOST_CATALINA_PORT_HTTPS'.";
+    else
+      print "WARNING : Port Check : Port '$HOST_CATALINA_PORT_HTTPS' is not being bound by Tomcat. Please check.";
+  } END {
+    if (!NR)
+      print "WARNING : Port Check : Port '$HOST_CATALINA_PORT_HTTPS' is blocked. Please configure SELinux to open port.";
+  }'
+}
+
 function setenv {
   JAVA_VERSION=jre-1.8.0-openjdk
 
@@ -328,6 +350,7 @@ function usage {
     echo "  -d            : Only update deployed app (optional)."
     echo "  -r            : Remove all files and server on the host."
     echo "  -s            : Setup SSH key on the Host."
+    echo "  -t            : Test if the app is running on the server."
 }
 
 ################################################################################
@@ -335,13 +358,15 @@ function usage {
 DEPLOY=0
 REMOVE=0
 SETUP_HOST_SSH_KEY=0
+TEST_APP=0
 
-while getopts ":h:u:dsr" opt ; do
+while getopts ":h:u:dsrt" opt ; do
     case $opt in
         d) DEPLOY=1 ;;
         h) HOST=${OPTARG} ;;
         r) REMOVE=1 ;;
         s) SETUP_HOST_SSH_KEY=1 ;;
+        t) TEST_APP=1 ;;
         u) USERNAME=${OPTARG} ;;
         ?) usage ; exit 1 ;;
     esac
@@ -367,23 +392,32 @@ else
     else
       echo "INFO :: Aborting..."
     fi
+  elif [[ $TEST_APP -eq 1 ]]; then
+    test_ports
   else
     echo "INFO :: Setting up SSH."
-    # setup_ssh
+    setup_ssh
     echo "INFO :: Installing prerequisites."
-    # install_prereqs
+    install_prereqs
     echo "INFO :: Installing Tomcat on $HOST."
-    # install_tomcat
+    install_tomcat
     echo "INFO :: Creating NANOPAY directory on $HOST."
-    # create_nanopay_dir
+    create_nanopay_dir
     echo "INFO :: Deploying WAR to $HOST."
-    # deploy_war
+    deploy_war
     echo "INFO :: Deploying journal files to $HOST."
-    # deploy_journals
+    deploy_journals
     echo "INFO :: Setting up Tomcat service."
     setup_tomcat_service
+    echo "INFO :: Starting Tomcat service."
     start_tomcat
-    # cleanup
+    echo "INFO :: Cleaning intermediary files generated for the installation and setup."
+    cleanup
+    echo "INFO :: Checking if the app started and is listening for connections."
+    # NOTE: Must sleep for a while to allow WAR file to be deployed by Tomcat.
+    sleep 7
+    test_ports
+    echo "INFO :: NANOPAY successfully deployed."
   fi
 
   exit 0
