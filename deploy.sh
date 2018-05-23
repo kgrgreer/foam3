@@ -6,8 +6,12 @@ set -e
 
 function setup_ssh_key {
   local PUBKEY=$(cat ~/.ssh/id_rsa.pub)
-  echo $PUBKEY | ssh $HOST "cat >> ~/.ssh/authorized_keys"
-  echo "INFO :: Appended public key (id_rsa.pub) into Host's authorized_keys."
+  if ssh $HOST "grep -Fxq \"$PUBKEY\" ~/.ssh/authorized_keys"; then
+    echo "INFO :: Public key exists in Host's authorized_keys."
+  else
+    echo $PUBKEY | ssh $HOST "cat >> ~/.ssh/authorized_keys"
+    echo "INFO :: Appended public key (id_rsa.pub) into Host's authorized_keys."
+  fi
 }
 
 function setup_ssh {
@@ -233,7 +237,6 @@ function create_nanopay_dir {
 function deploy_war {
     scp $WAR_HOME/../ROOT.war $HOST:$HOST_CATALINA_HOME/webapps/ROOT.war.tmp
     ssh $HOST "mv $HOST_CATALINA_HOME/webapps/ROOT.war.tmp $HOST_CATALINA_HOME/webapps/ROOT.war"
-
     echo "INFO :: New WAR file deployed."
 }
 
@@ -277,6 +280,7 @@ function remove {
     echo "INFO : groupdel : Tomcat group removed from the Host."
   fi
 
+  ssh "yum remove -y vim-enhanced jdk1.8.x86_64"
   echo "INFO :: Removed all files and stopped services from $HOST."
 }
 
@@ -286,9 +290,14 @@ function cleanup {
 }
 
 function install_prereqs {
-  ssh $HOST "yum install -y vim-enhanced $JAVA_VERSION"
-
-  echo "INFO :: Pre-requisites installed."
+  if ssh $HOST "[[ $UID -eq 0]]"; then
+    ssh $HOST "curl -v -j -k -L -H \"Cookie: oraclelicense=accept-securebackup-cookie\" $JAVA_DOWNLOAD_URL -o $HOST_TEMP/$JAVA_VERSION.rpm"
+    ssh $HOST "yum install -y vim-enhanced $HOST_TEMP/$JAVA_VERSION.rpm"
+    echo "INFO :: Pre-requisites installed."
+  else
+    echo "ERROR :: You must be root to setup the server." >&2
+    exit 1
+  fi
 }
 
 function test_ports {
@@ -314,7 +323,9 @@ function test_ports {
 }
 
 function setenv {
-  JAVA_VERSION=jre-1.8.0-openjdk
+  # JAVA_VERSION=jre-1.8.0-openjdk
+  JAVA_VERSION=jdk-8u172-linux-x64
+  JAVA_DOWNLOAD_URL=http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/$JAVA_VERSION.rpm
 
   # Local paths and variables
   NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -327,7 +338,8 @@ function setenv {
   HOST_CATALINA_HOME="/opt/tomcat"
   HOST_CATALINA_BASE=$HOST_CATALINA_HOME
   HOST_CATALINA_DOC_BASE=$HOST_NANOPAY_HOME
-  HOST_JAVA_HOME="/usr/lib/jvm/$JAVA_VERSION.x86_64"
+  # HOST_JAVA_HOME="/usr/lib/jvm/$JAVA_VERSION.x86_64"
+  HOST_JAVA_HOME="/usr/java/jdk1.8.0_172-amd64/jre"
   HOST_JOURNAL_HOME="/mnt/journals"
 
   HOST_JAVA_OPTS="-DJOURNAL_HOME=$HOST_JOURNAL_HOME"
