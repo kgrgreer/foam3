@@ -96,6 +96,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
               EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
 
             if ( tran != null ) {
+              tran = (Transaction) tran.fclone();
               tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
 
               if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
