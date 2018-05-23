@@ -57,12 +57,10 @@ public class EncryptingDAO
   protected JSONParser jsonParser_;
   protected Outputter  outputter_ = new Outputter(OutputterMode.STORAGE);
 
-  public EncryptingDAO(X x, ClassInfo classInfo, DAO delegate)
+  public EncryptingDAO(X x, DAO delegate)
     throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
   {
-    setX(x);
-    setOf(classInfo);
-    setDelegate(delegate);
+    super(x, delegate);
     logger_ = (Logger) x.get("logger");
 
     // TODO: load properly
