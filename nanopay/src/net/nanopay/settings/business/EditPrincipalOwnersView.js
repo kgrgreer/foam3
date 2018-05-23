@@ -862,6 +862,9 @@ foam.CLASS({
                     .on('focusout', function() {
                       self.isEditingPhone = false;
                     })
+                    .attrs({
+                      placeholder:"format: 000-000-0000"
+                    })
                   .end()
                 .end()
               .end()
@@ -1094,6 +1097,7 @@ foam.CLASS({
       principleOwner.middleName = this.middleNameField,
       principleOwner.lastName = this.lastNameField,
       principleOwner.email = this.emailAddressField,
+      this.phoneNumberField = this.phoneNumberField.replace(/[- )(]/g,'');
       principleOwner.phone = this.Phone.create({
         number: this.phoneCountryCodeField + this.phoneNumberField
       }),

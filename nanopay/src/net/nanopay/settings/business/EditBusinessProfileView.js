@@ -627,6 +627,9 @@ foam.CLASS({
                   .on('focusout', function() {
                     self.isEditingPhone = false;
                   })
+                  .attrs({
+                    placeholder:"format: 000-000-0000"
+                  })
                 .end()
               .end()
             .end()
@@ -751,6 +754,7 @@ foam.CLASS({
           return;
         }
         this.user.businessName = this.businessNameField;
+        this.phoneNumberField = this.phoneNumberField.replace(/[- )(]/g,'');
         this.user.businessPhone.number = this.phoneNumberField;
         this.user.website = this.websiteField;
         this.user.businessTypeId = this.businessTypeField;

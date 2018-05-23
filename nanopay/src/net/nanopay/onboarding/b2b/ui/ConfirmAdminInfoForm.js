@@ -303,7 +303,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
         this.viewData.user.phone = this.Phone.create({
-          number: '+1' + newValue
+          number: '+1 ' + newValue
         });
       }
     },
@@ -445,6 +445,9 @@ foam.CLASS({
                   .addClass('phoneNumberInput')
                   .on('click', function() {
                     self.isEditingPhone = true;
+                  })
+                  .attrs({
+                    placeholder: 'format: 000-000-0000'
                   })
                 .end()
               .end()

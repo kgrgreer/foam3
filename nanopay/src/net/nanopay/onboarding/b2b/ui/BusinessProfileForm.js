@@ -606,6 +606,9 @@ foam.CLASS({
                   self.phoneNumberFieldElement && self.phoneNumberFieldElement.focus();
                   self.isEditingPhone = true;
                 })
+                .attrs({
+                  placeholder:"000-000-0000"
+                })
               .end()
             .end()
             .start('div')
@@ -637,6 +640,9 @@ foam.CLASS({
                   })
                   .on('focusout', function() {
                     self.isEditingPhone = false;
+                  })
+                  .attrs({
+                    placeholder:"format: 000-000-0000"
                   })
                 .end()
               .end()

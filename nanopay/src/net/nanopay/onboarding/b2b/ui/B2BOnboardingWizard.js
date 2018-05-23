@@ -202,6 +202,7 @@ foam.CLASS({
         return false;
       }
 
+      var number = editedUser.phone.number.replace(/[- )(]/g,'');
       if ( ! this.validatePhone(editedUser.phone.number) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorAdminNumberMessage, type: 'error' }));
         return false;
@@ -216,6 +217,7 @@ foam.CLASS({
         return false;
       }
 
+      var number = businessProfile.businessPhone.number.replace(/[- )(]/g,'');
       if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePhoneMessage, type: 'error' }));
         return false;
