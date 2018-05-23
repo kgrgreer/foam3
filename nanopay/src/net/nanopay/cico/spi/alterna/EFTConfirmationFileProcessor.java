@@ -95,9 +95,8 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             Transaction tran = (Transaction) transactionDao.find(
               EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
 
-            tran = (Transaction) tran.fclone();
-
             if ( tran != null ) {
+              tran = (Transaction) tran.fclone();
               tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
 
               if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
