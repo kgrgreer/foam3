@@ -122,7 +122,7 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
 
           // get transaction type and user
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
             user = (User) userDAO.find(t.getPayerId());
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
