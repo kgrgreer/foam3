@@ -80,6 +80,8 @@ foam.CLASS({
       var self = this;
       this.hasSaveOption = true;
       this.hasExitOption = true;
+      this.hasNextOption = this.user.status === this.AccountStatus.PENDING;
+
       this.title = 'Registration';
       this.exitLabel = 'Log Out';
       this.viewData.user = this.user;
