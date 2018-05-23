@@ -8,10 +8,12 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.lib.json.OutputterMode;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Max;
+import foam.nanos.logger.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -47,11 +49,13 @@ public class EncryptingDAO
     return random;
   }
 
-  protected File            file_;
-  protected SecretKey       key_;
-  protected KeyStore        keystore_;
-  protected JSONParser      jsonParser_;
-  protected final Outputter outputter_ = new Outputter();
+  protected File       file_;
+  protected SecretKey  key_;
+  protected KeyStore   keystore_;
+
+  protected Logger     logger_;
+  protected JSONParser jsonParser_;
+  protected Outputter  outputter_ = new Outputter(OutputterMode.STORAGE);
 
   public EncryptingDAO(X x, ClassInfo classInfo, DAO delegate)
     throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
@@ -59,6 +63,7 @@ public class EncryptingDAO
     setX(x);
     setOf(classInfo);
     setDelegate(delegate);
+    logger_ = (Logger) x.get("logger");
 
     // TODO: load properly
     String alias = "";
@@ -145,9 +150,8 @@ public class EncryptingDAO
       encryptedObject.setData(Base64.getEncoder().encodeToString(nonceWithCipherText));
 
       return super.put_(x, encryptedObject);
-    } catch (Exception e) {
-      // TODO: rethrow as DAOException
-      e.printStackTrace();
+    } catch (Throwable t) {
+      logger_.error(t);
       return null;
     }
   }
@@ -172,9 +176,9 @@ public class EncryptingDAO
 
       byte[] plainText = cipher.doFinal(cipherText);
       return this.jsonParser_.parseString(new String(plainText));
-    } catch (Exception e) {
+    } catch (Throwable t) {
       // TODO: rethrow as DAOException
-      e.printStackTrace();
+      logger_.error(t);
       return null;
     }
   }
