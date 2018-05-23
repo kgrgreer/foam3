@@ -54,7 +54,6 @@ function setup_ssh {
   fi
 }
 
-# You must be root on the HOST to run this function.
 function install_tomcat {
   local INSTALL_SCRIPT="
 #!/bin/bash
