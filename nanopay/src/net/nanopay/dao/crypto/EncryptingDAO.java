@@ -2,54 +2,32 @@ package net.nanopay.dao.crypto;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
-import foam.core.Detachable;
 import foam.core.X;
-import foam.dao.AbstractDAO;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
-import foam.dao.ProxySink;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Max;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Base64;
-import javax.crypto.*;
-import javax.crypto.spec.GCMParameterSpec;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-class DecryptingSink
-  extends ProxySink
-{
-  protected final AbstractDAO dao_;
-  protected final X           x_;
-
-  public DecryptingSink(X x, AbstractDAO dao, Sink delegate) {
-    super(delegate);
-    x_   = x;
-    dao_ = dao;
-  }
-
-  public void put(Object obj, Detachable sub) {
-    EncryptedObject eo = (EncryptedObject) obj;
-    super.put(dao_.find_(x_, eo.getId()), sub);
-  }
-}
-
 
 /** Adapt objects into EncryptedObject's before being stored. **/
 public class EncryptingDAO
   extends ProxyDAO
 {
-  // TODO: allow support for additional crypto providers
   static {
     // load bouncy castle provider
     BouncyCastleProvider provider = new BouncyCastleProvider();
@@ -58,9 +36,6 @@ public class EncryptingDAO
     }
   }
 
-  // TODO: think of a better alias
-  protected static final String ALIAS            = "keypair";
-  protected static final int    AES_KEY_SIZE     = 256;
   protected static final int    GCM_NONCE_LENGTH = 12;
   protected static final int    GCM_TAG_LENGTH   = 16;
 
@@ -79,59 +54,39 @@ public class EncryptingDAO
   protected final Outputter outputter_ = new Outputter();
 
   public EncryptingDAO(X x, ClassInfo classInfo, DAO delegate)
-    throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
-  {
-    this(x, "keystore.jks", classInfo, delegate);
-  }
-
-  public EncryptingDAO(X x, String keystoreFilename, ClassInfo classInfo, DAO delegate)
-    throws NoSuchProviderException, KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
+    throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
   {
     setX(x);
     setOf(classInfo);
     setDelegate(delegate);
 
+    // TODO: load properly
+    String alias = "";
+    String keyPass = "";
+    String keystoreFile = "";
+    String keystorePass = "";
+
     // get instance of keystore, load keystore file
-    keystore_ = KeyStore.getInstance("BKS", "BC");
-    file_ = new File(keystoreFilename).getAbsoluteFile();
+    keystore_ = KeyStore.getInstance(KeyStore.getDefaultType());
+    file_ = new File(keystoreFile).getAbsoluteFile();
     jsonParser_ = new JSONParser();
     jsonParser_.setX(getX());
 
-    // load keystore if exists, else create it
-    if ( file_.exists() ) {
-      loadKeyStore();
-    } else {
-      createKeyStore();
+    // check if keystore file exists
+    if ( ! file_.exists() ) {
+      throw new RuntimeException("Keystore does not exist.");
     }
 
-    // load secret key if exists, else create it
-    if ( keystore_.containsAlias(ALIAS) ) {
-      loadSecretKey();
-    } else {
-      createSecretKey();
-    }
-  }
+    // load key store
+    loadKeyStore(keystorePass);
 
-  /**
-   * Creates a keystore if one does not exist
-   * @throws IOException
-   * @throws CertificateException
-   * @throws NoSuchAlgorithmException
-   * @throws KeyStoreException
-   */
-  protected void createKeyStore() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-    // TODO: get password from somewhere secure
-    char[] password = "password".toCharArray();
-    FileOutputStream fos = null;
-    try {
-      fos = new FileOutputStream(file_);
-      // keystore must be "loaded" before it can be created
-      keystore_.load(null, password);
-      keystore_.store(fos, password);
-    } finally {
-      if ( fos != null )
-        fos.close();
+    // check if keystore contains loaded alias
+    if ( ! keystore_.containsAlias(alias) ) {
+      throw new RuntimeException("Secret key does not exist.");
     }
+
+    // load secret key
+    loadSecretKey(alias, keyPass);
   }
 
   /**
@@ -140,45 +95,11 @@ public class EncryptingDAO
    * @throws CertificateException
    * @throws NoSuchAlgorithmException
    */
-  protected void loadKeyStore() throws IOException, CertificateException, NoSuchAlgorithmException {
-    // TODO: get password from somewhere secure
-    char[] password = "password".toCharArray();
-    FileInputStream fis = null;
-    try {
-      fis = new FileInputStream(file_);
-      keystore_.load(fis, password);
-    } finally {
-      if ( fis != null )
-        fis.close();
-    }
-  }
-
-  /**
-   * Creates a new AES secret key
-   * @throws NoSuchAlgorithmException
-   * @throws NoSuchProviderException
-   * @throws KeyStoreException
-   */
-  protected void createSecretKey() throws NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException, IOException, CertificateException {
-    // generate AES key using BC as provider
-    KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
-    keygen.init(AES_KEY_SIZE, getSecureRandom());
-    key_ = keygen.generateKey();
-
-    // set secret key entry in keystore
-    // TODO: get password from somewhere secure
-    KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection("password".toCharArray());
-    KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key_);
-    keystore_.setEntry(ALIAS, secretKeyEntry, protectionParameter);
-
-    // save keystore
-    FileOutputStream fos = null;
-    try {
-      fos = new FileOutputStream(file_);
-      keystore_.store(fos, "password".toCharArray());
-    } finally {
-      if ( fos != null )
-        fos.close();
+  protected void loadKeyStore(final String password)
+      throws IOException, CertificateException, NoSuchAlgorithmException
+  {
+    try ( FileInputStream fis = new FileInputStream(file_) ) {
+      keystore_.load(fis, password.toCharArray());
     }
   }
 
@@ -188,11 +109,12 @@ public class EncryptingDAO
    * @throws NoSuchAlgorithmException
    * @throws KeyStoreException
    */
-  protected void loadSecretKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
+  protected void loadSecretKey(final String alias, final String password)
+      throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException
+  {
     // load secret key from keystore
-    // TODO: get password from somewhere secure
-    KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection("password".toCharArray());
-    KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keystore_.getEntry(ALIAS, protectionParameter);
+    KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(password.toCharArray());
+    KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keystore_.getEntry(alias, protectionParameter);
     key_ = secretKeyEntry.getSecretKey();
   }
 
@@ -264,7 +186,6 @@ public class EncryptingDAO
     }
 
     getDelegate().inX(x).select(new DecryptingSink(x, this, decorateSink_(sink, skip, limit, order, predicate)));
-
     return sink;
   }
 }
