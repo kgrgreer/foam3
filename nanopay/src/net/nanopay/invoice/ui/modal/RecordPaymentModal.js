@@ -141,7 +141,6 @@ foam.CLASS({
         
         paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
         
-        
         this.invoice.status = 'Paid';
         this.invoice.paymentDate = paymentDate;
         // Avoids schedule invoice payments in cron.
