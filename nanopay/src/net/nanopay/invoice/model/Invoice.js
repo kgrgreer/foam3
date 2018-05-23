@@ -206,9 +206,9 @@ foam.CLASS({
       },
       javaGetter: `
         if ( getDraft() ) return "Draft";
-        if ( getPaymentMethod().toString() == "VOID" ) return "Void";
-        if ( getPaymentMethod().toString() == "CHEQUE" ) return "Paid";
-        if ( getPaymentMethod().toString() == "NANOPAY" ) return "Paid";
+        if ( getPaymentMethod() == PaymentStatus.VOID ) return "Void";
+        if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
+        if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
         if ( getPaymentId() == -1 ) return "Disputed";
         if ( getPaymentId() > 0 ) return "Paid";
         if ( getPaymentDate() != null ){
