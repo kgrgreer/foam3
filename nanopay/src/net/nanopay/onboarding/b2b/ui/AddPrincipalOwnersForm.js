@@ -696,9 +696,7 @@ foam.CLASS({
       var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
         return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       })
-
-      var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-      subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      this.scrollToTop();
       
       this.addClass(this.myClass())
         .start('div')
@@ -945,8 +943,7 @@ foam.CLASS({
       this.isDisplayMode = false;
 
       if ( scrollToTop ) {
-        var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-        subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        this.scrollToTop();
       }
     },
 

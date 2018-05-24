@@ -582,8 +582,7 @@ foam.CLASS({
       var self = this;
 
       var businessTypeInfoSlot = this.businessTypeField$.map(function(value) { return value !== 'Please select' && value !== '' ? true : false; });
-      var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-      subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      this.scrollToTop();
       
       this
         .addClass(this.myClass())
