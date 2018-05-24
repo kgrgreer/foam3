@@ -23,6 +23,7 @@ var classes = [
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
+  'net.nanopay.model.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
