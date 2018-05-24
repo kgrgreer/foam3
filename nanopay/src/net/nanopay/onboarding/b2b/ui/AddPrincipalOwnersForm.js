@@ -1124,14 +1124,10 @@ foam.CLASS({
         principleOwner.principleType = this.principleTypeField
 
         this.principalOwnersDAO.select().then(function(owners){
-          if (owners) {
-            var i = 0;
-            while (i < owners.array.length){
-              if ( owners.array[i].firstName.toLowerCase() == self.firstNameField.toLowerCase() && owners.array[i].lastName.toLowerCase() == self.lastNameField.toLowerCase() ){
-                self.add(self.NotificationMessage.create({ message: self.PrincipalOwnerError, type: 'error' }));
-                return;
-              }
-              i++;
+          for(i = 0; i < owners.array.length; i++){
+            if ( owners.array[i].firstName.toLowerCase() == self.firstNameField.toLowerCase() && owners.array[i].lastName.toLowerCase() == self.lastNameField.toLowerCase() ){
+              self.add(self.NotificationMessage.create({ message: self.PrincipalOwnerError, type: 'error' }));
+              return;
             }
           }
           // TODO?: Maybe add a loading indicator?
