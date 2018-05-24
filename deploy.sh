@@ -137,12 +137,6 @@ start() {
     echo \"Starting tomcat\"
     ulimit -n 100000
     umask 007
-    #
-    # NOTE: cd to CATALINA_BASE/logs, as this will become
-    # System property 'user.dir', which, for now is the
-    # only way to control where the nano.log is created.
-    #
-    cd \$TOMCAT_HOME/logs
     /bin/su -p -s /bin/sh \$TOMCAT_USER \"\$TOMCAT_HOME/bin/startup.sh\"
   fi
 
