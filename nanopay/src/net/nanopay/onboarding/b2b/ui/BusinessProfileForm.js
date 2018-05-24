@@ -671,7 +671,7 @@ foam.CLASS({
           .start(this.REGISTRATION_AUTHORITY_FIELD).addClass('fullWidthField').end()
 
           .start('p').add(this.RegistrationDateLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.REGISTRATION_DATE_FIELD).addClass('fullWidthField').end()
+          .start(this.REGISTRATION_DATE_FIELD, { placeholder: 'yyyy-mm-dd'}).addClass('fullWidthField').end()
 
           .start('p').add(this.BusinessAddressLabel).addClass('sectionTitle').end()
           .start('p').add(this.CountryLabel).addClass('fieldLabel').end()

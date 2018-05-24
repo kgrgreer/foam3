@@ -757,7 +757,6 @@ foam.CLASS({
         this.user.businessRegistrationNumber = this.businessRegistrationNumberField;
         this.user.businessRegistrationAuthority = this.registrationAuthorityField;
         this.user.businessRegistrationDate = this.registrationDateField;
-
         this.user.businessAddress.countryId = this.countryField;
         this.user.businessAddress.streetNumber = this.streetNumberField;
         this.user.businessAddress.streetName = this.streetNameField;

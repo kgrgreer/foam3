@@ -1040,6 +1040,12 @@ foam.CLASS({
         return false;
       }
 
+      // By pass for safari & mozilla type='date' on input support
+      // Operator checking if dueDate is a date object if not, makes it so or throws notification.
+      if( isNaN(this.birthdayField) && this.birthdayField != null ){
+        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
+        return;
+      }
       if ( ! this.validateAge(this.birthdayField) ) {
         this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
         return false;
