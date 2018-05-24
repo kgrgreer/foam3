@@ -74,10 +74,6 @@ chown -R tomcat webapps/ work/ temp/ logs/
 chmod g+wr logs
 "
 
-  if ssh $HOST "[[ ! -d $HOST_TEMP ]]"; then
-    ssh $HOST "mkdir $HOST_TEMP"
-  fi
-
   echo "${INSTALL_SCRIPT}" | ssh $HOST "cat > $HOST_TEMP/install_tomcat.sh"
   ssh $HOST "chmod +x $HOST_TEMP/install_tomcat.sh"
   ssh $HOST $HOST_TEMP/install_tomcat.sh
@@ -289,7 +285,11 @@ function cleanup {
 }
 
 function install_prereqs {
-  if ssh $HOST "[[ $UID -eq 0]]"; then
+  if ssh $HOST "[[ \$UID -eq 0 ]]"; then
+    if ssh $HOST "[[ ! -d $HOST_TEMP ]]"; then
+      ssh $HOST "mkdir $HOST_TEMP"
+    fi
+
     ssh $HOST "curl -v -j -k -L -H \"Cookie: oraclelicense=accept-securebackup-cookie\" $JAVA_DOWNLOAD_URL -o $HOST_TEMP/$JAVA_VERSION.rpm"
     ssh $HOST "yum install -y vim-enhanced $HOST_TEMP/$JAVA_VERSION.rpm"
     echo "INFO :: Pre-requisites installed."
