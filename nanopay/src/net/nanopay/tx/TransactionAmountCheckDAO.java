@@ -12,7 +12,7 @@ public class TransactionAmountCheckDAO
   protected long amount_;
 
   public TransactionAmountCheckDAO(X x, DAO delegate) {
-    this(x, delegate, 5000000);
+    this(x, delegate, 7500000);
   }
 
   public TransactionAmountCheckDAO(X x, DAO delegate, long amount) {
