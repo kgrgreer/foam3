@@ -635,16 +635,13 @@ foam.CLASS({
                 .addClass('phoneNumberCol')
                 .enableClass('out', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('fieldLabel').end()
-                .start(this.PHONE_NUMBER_FIELD, {}, this.phoneNumberFieldElement$)
+                .start(this.PHONE_NUMBER_FIELD, { placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                   .addClass('fullWidthField')
                   .on('focus', function() {
                     self.isEditingPhone = true;
                   })
                   .on('focusout', function() {
                     self.isEditingPhone = false;
-                  })
-                  .attrs({
-                    placeholder:"format: 000-000-0000"
                   })
                 .end()
               .end()

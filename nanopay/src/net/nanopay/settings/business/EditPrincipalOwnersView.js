@@ -854,16 +854,13 @@ foam.CLASS({
                   .addClass('phoneNumberCol')
                   .enableClass('out', this.isEditingPhone$, true)
                   .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot }, this.phoneNumberFieldElement$)
+                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot, placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                     .addClass('fields')
                     .on('focus', function() {
                       self.isEditingPhone = true;
                     })
                     .on('focusout', function() {
                       self.isEditingPhone = false;
-                    })
-                    .attrs({
-                      placeholder:"format: 000-000-0000"
                     })
                   .end()
                 .end()
