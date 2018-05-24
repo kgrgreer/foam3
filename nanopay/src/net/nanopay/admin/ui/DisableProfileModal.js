@@ -16,11 +16,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'userDAO',
-    'closeDialog',
     'activatePopUp',
+    'approvePopUp',
+    'closeDialog',
     'editProfilePopUp',
-    'approvePopUp'
+    'userDAO'
   ],
 
   css: `

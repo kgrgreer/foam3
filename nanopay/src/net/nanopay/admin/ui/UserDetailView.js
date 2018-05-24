@@ -5,10 +5,10 @@ foam.CLASS({
 
   requires: [
     'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.admin.model.ComplianceStatus',
+    'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.admin.ui.EditBusinessView',
     'net.nanopay.ui.ExpandContainer'
   ],
@@ -19,10 +19,10 @@ foam.CLASS({
   ],
 
   exports: [
-    'as data',
     'activatePopUp',
-    'editProfilePopUp',
-    'approvePopUp'
+    'approvePopUp',
+    'as data',
+    'editProfilePopUp'
   ],
 
   css: `
@@ -380,7 +380,7 @@ foam.CLASS({
           .start('div')
             .add('Disable Profile')
             .on('click', this.disableProfile_)
-          .end()
+          .end();
 
         this.editProfileMenuBtn_.add(this.editProfilePopUp);
       }

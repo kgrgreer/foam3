@@ -16,9 +16,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'userDAO',
     'closeDialog',
-    'editProfilePopUp'
+    'editProfilePopUp',
+    'userDAO'
   ],
 
   css: `

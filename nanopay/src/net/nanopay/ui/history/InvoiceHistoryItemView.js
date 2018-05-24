@@ -172,7 +172,7 @@ foam.CLASS({
       var message = record.updates.find(u => u.name == "Message");
       var scheduledDate = record.updates.find(u => u.name == "Scheduled Date");
       var attributes = view.getAttributes(record);
-      
+
       return parentView
           .style({'padding-left': '20px'})
           .start('div')
