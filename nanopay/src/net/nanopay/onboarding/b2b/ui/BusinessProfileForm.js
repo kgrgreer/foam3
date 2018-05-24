@@ -599,16 +599,13 @@ foam.CLASS({
               .addClass('fullWidthField')
               .enableClass('hidden', this.isEditingPhone$)
               .start('p').add(this.BusinessPhoneLabel).addClass('fieldLabel').end()
-              .start(this.DISPLAYED_PHONE_NUMBER)
+              .start(this.DISPLAYED_PHONE_NUMBER, { placeholder: "format: 000-000-0000" })
                 .addClass('fullWidthField')
                 .addClass('displayOnly')
                 .on('focus', function() {
                   this.blur();
                   self.phoneNumberFieldElement && self.phoneNumberFieldElement.focus();
                   self.isEditingPhone = true;
-                })
-                .attrs({
-                  placeholder:"000-000-0000"
                 })
               .end()
             .end()
