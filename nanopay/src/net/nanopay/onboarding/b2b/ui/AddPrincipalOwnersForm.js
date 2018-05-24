@@ -490,7 +490,8 @@ foam.CLASS({
     { name: 'AddressLabel', message: 'Address' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
-    { name: 'PostalCodeLabel', message: 'Postal Code' }
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.'}
   ],
 
   properties: [
@@ -1100,6 +1101,7 @@ foam.CLASS({
           });
         }
 
+
         principleOwner.firstName = this.firstNameField,
         principleOwner.middleName = this.middleNameField,
         principleOwner.lastName = this.lastNameField,
@@ -1121,13 +1123,25 @@ foam.CLASS({
         principleOwner.jobTitle = this.jobTitleField,
         principleOwner.principleType = this.principleTypeField
 
-        // TODO?: Maybe add a loading indicator?
-        this.principalOwnersDAO.put(principleOwner).then(function(npo) {
-          self.editingPrincipalOwner = null;
-          self.tableViewElement.selection = null;
-          self.clearFields(true);
-          self.isSameAsAdmin = false;
-        });
+        this.principalOwnersDAO.select().then(function(owners){
+          if (owners) {
+            var i = 0;
+            while (i < owners.array.length){
+              if ( owners.array[i].firstName.toLowerCase() == self.firstNameField.toLowerCase() && owners.array[i].lastName.toLowerCase() == self.lastNameField.toLowerCase() ){
+                self.add(self.NotificationMessage.create({ message: self.PrincipalOwnerError, type: 'error' }));
+                return;
+              }
+              i++;
+            }
+          }
+          // TODO?: Maybe add a loading indicator?
+          self.principalOwnersDAO.put(principleOwner).then(function(npo) {
+            self.editingPrincipalOwner = null;
+            self.tableViewElement.selection = null;
+            self.clearFields(true);
+            self.isSameAsAdmin = false;
+          });
+        })
 
         return true;
       }
