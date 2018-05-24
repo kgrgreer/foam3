@@ -490,7 +490,8 @@ foam.CLASS({
     { name: 'AddressLabel', message: 'Address' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
-    { name: 'PostalCodeLabel', message: 'Postal Code' }
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.'}
   ],
 
   properties: [
@@ -695,6 +696,8 @@ foam.CLASS({
       var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
         return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       })
+      this.scrollToTop();
+      
       this.addClass(this.myClass())
         .start('div')
           // TODO: TABLE SHOULD GO HERE
@@ -845,7 +848,7 @@ foam.CLASS({
                   .addClass('phoneNumberCol')
                   .enableClass('out', this.isEditingPhone$, true)
                   .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot }, this.phoneNumberFieldElement$)
+                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot, placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                     .addClass('fields')
                     .on('focus', function() {
                       self.isEditingPhone = true;
@@ -937,8 +940,7 @@ foam.CLASS({
       this.isDisplayMode = false;
 
       if ( scrollToTop ) {
-        var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-        subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        this.scrollToTop();
       }
     },
 
@@ -1038,6 +1040,12 @@ foam.CLASS({
         return false;
       }
 
+      // By pass for safari & mozilla type='date' on input support
+      // Operator checking if dueDate is a date object if not, makes it so or throws notification.
+      if( isNaN(this.birthdayField) && this.birthdayField != null ){
+        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
+        return;
+      }
       if ( ! this.validateAge(this.birthdayField) ) {
         this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
         return false;
@@ -1097,6 +1105,7 @@ foam.CLASS({
           });
         }
 
+
         principleOwner.firstName = this.firstNameField,
         principleOwner.middleName = this.middleNameField,
         principleOwner.lastName = this.lastNameField,
@@ -1117,13 +1126,21 @@ foam.CLASS({
         principleOwner.jobTitle = this.jobTitleField,
         principleOwner.principleType = this.principleTypeField
 
-        // TODO?: Maybe add a loading indicator?
-        this.principalOwnersDAO.put(principleOwner).then(function(npo) {
-          self.editingPrincipalOwner = null;
-          self.tableViewElement.selection = null;
-          self.clearFields(true);
-          self.isSameAsAdmin = false;
-        });
+        this.principalOwnersDAO.select().then(function(owners){
+          for(i = 0; i < owners.array.length; i++){
+            if ( owners.array[i].firstName.toLowerCase() == self.firstNameField.toLowerCase() && owners.array[i].lastName.toLowerCase() == self.lastNameField.toLowerCase() ){
+              self.add(self.NotificationMessage.create({ message: self.PrincipalOwnerError, type: 'error' }));
+              return;
+            }
+          }
+          // TODO?: Maybe add a loading indicator?
+          self.principalOwnersDAO.put(principleOwner).then(function(npo) {
+            self.editingPrincipalOwner = null;
+            self.tableViewElement.selection = null;
+            self.clearFields(true);
+            self.isSameAsAdmin = false;
+          });
+        })
 
         return true;
       }
