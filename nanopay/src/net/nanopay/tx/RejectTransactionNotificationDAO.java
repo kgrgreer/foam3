@@ -111,7 +111,7 @@ public class RejectTransactionNotificationDAO
 
     message.setTo(new String[]{emailAddress});
     try {
-      emailService.sendEmailFromTemplate(user, message, "pay-from-bankaccount-reject", args);
+      emailService.sendEmailFromTemplate(user, message, "pay-from-bank-account-reject", args);
     } catch ( Throwable t ) {
       ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
     }
