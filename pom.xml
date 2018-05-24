@@ -33,32 +33,12 @@
     </repository>
   </repositories>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>aws-java-sdk-bom</artifactId>
-        <version>1.11.264</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.jtwig</groupId>
       <artifactId>jtwig-core</artifactId>
       <version>5.86.1.RELEASE</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-s3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-dynamodb</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -269,6 +249,8 @@
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
+                <exclude>nanopay/src/net/nanopay/blob/AmazonS3BlobStore.java</exclude>
+                <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>
               </excludes>
             </configuration>
           </plugin>
