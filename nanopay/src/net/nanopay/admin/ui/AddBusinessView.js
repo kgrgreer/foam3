@@ -528,7 +528,6 @@ foam.CLASS({
         return;
       }
 
-      this.phoneNumber = this.phoneNumber.replace(/[- )(]/g,'');
       var businessPhone = this.Phone.create({
         number: this.countryCode + ' ' + this.phoneNumber
       });

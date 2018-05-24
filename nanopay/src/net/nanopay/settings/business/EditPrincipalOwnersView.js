@@ -1094,7 +1094,6 @@ foam.CLASS({
       principleOwner.middleName = this.middleNameField,
       principleOwner.lastName = this.lastNameField,
       principleOwner.email = this.emailAddressField,
-      this.phoneNumberField = this.phoneNumberField.replace(/[- )(]/g,'');
       principleOwner.phone = this.Phone.create({
         number: this.phoneCountryCodeField + this.phoneNumberField
       }),

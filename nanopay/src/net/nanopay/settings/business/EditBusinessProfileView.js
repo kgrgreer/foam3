@@ -751,7 +751,6 @@ foam.CLASS({
           return;
         }
         this.user.businessName = this.businessNameField;
-        this.phoneNumberField = this.phoneNumberField.replace(/[- )(]/g,'');
         this.user.businessPhone.number = this.phoneNumberField;
         this.user.website = this.websiteField;
         this.user.businessTypeId = this.businessTypeField;
