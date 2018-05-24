@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus',
     'net.nanopay.model.Institution',
     'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
@@ -397,7 +398,7 @@ foam.CLASS({
                   accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
                   transitNumber: item.TransitNumber,
-                  status: 'Verified'
+                  status: self.BankAccountStatus.VERIFIED
                 }))
               }
             });
