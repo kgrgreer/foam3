@@ -29,7 +29,7 @@ public class BankAccountVerifierService
 
       int verificationAttempts = bankAccount.getVerificationAttempts();
 
-      if (bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
+      if (!"Disabled".equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
         bankAccountDAO.put(bankAccount);
@@ -48,17 +48,17 @@ public class BankAccountVerifierService
         }
       }
 
-      if (bankAccount.getStatus() == "Disabled") {
+      if ("Disabled".equals(bankAccount.getStatus())) {
         throw new RuntimeException("This account has been disabled for security reasons. Please contact customer support for help.");
       }
 
-      if (bankAccount.getStatus() == "Verified") {
+      if ("Verified".equals(bankAccount.getStatus())) {
         return true;
       }
 
       boolean isVerified = false;
 
-      if (bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() == randomDepositAmount) {
+      if (!"Disabled".equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() == randomDepositAmount) {
         bankAccount.setStatus("Verified");
         isVerified = true;
 
