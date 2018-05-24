@@ -109,7 +109,7 @@ foam.CLASS({
 
         self
           .addClass(self.myClass())
-          .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
+          .tag({class: 'foam.nanos.u2.navigation.TopNavigation' })
           .start('div').addClass('stack-wrapper')
             .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
           .end()
