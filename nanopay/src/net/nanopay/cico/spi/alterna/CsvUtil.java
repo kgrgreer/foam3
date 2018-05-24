@@ -84,14 +84,6 @@ public class CsvUtil {
   }
 
   /**
-   * Generates a reference id by concatentating the current time in milliseconds with a randomly generated number
-   * @return a reference id
-   */
-  public static String generateReferenceId() {
-    return new Date().getTime() + "" + (int) (Math.random() * (99999 - 10000) + 10000);
-  }
-
-  /**
    * Generates a filename based on a given date
    * @param date date to use in the filename
    * @return the filename
@@ -167,7 +159,7 @@ public class CsvUtil {
           if ( ! "".equals(t.getReferenceNumber()) ) {
             refNo = t.getReferenceNumber();
           } else {
-            refNo = generateReferenceId();
+            refNo = String.valueOf(t.getId());
           }
 
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
