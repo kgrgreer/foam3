@@ -234,13 +234,7 @@ function start_tomcat {
             ARGS="$ARGS start"
         fi
 
-        #
-        # NOTE: cd to CATALINA_BASE/logs, as this will become
-        # System property 'user.dir', which, for now is the
-        # only way to control where the nano.log is created.
-        #
         mkdir -p "$CATALINA_BASE/logs"
-        cd "$CATALINA_BASE/logs"
         "$CATALINA_HOME/bin/catalina.sh" $ARGS
     fi
 }
