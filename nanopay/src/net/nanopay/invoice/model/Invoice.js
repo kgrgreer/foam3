@@ -192,9 +192,9 @@ foam.CLASS({
       aliases: [ 's' ],
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
-        if ( paymentMethod === PaymentStatus.VOID ) return 'Void';
-        if ( paymentMethod === PaymentStatus.CHEQUE ) return 'Paid';
-        if ( paymentMethod === PaymentStatus.NANOPAY ) return 'Paid';
+        if ( paymentMethod === net.nanopay.invoice.model.PaymentStatus.VOID ) return 'Void';
+        if ( paymentMethod === net.nanopay.invoice.model.PaymentStatus.CHEQUE ) return 'Paid';
+        if ( paymentMethod === net.nanopay.invoice.model.PaymentStatus.NANOPAY ) return 'Paid';
         if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
         if ( paymentId > 0 || paymentDate < Date.now() && paymentId == this.RECORDED_PAYMENT) return 'Paid';
         if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) return ('Scheduled');
