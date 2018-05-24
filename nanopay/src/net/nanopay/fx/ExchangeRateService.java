@@ -33,11 +33,11 @@ public class ExchangeRateService
   {
     PM pm = new PM(this.getClass(), "getRateFromSource");
 
-    if ( sourceCurrency == null || sourceCurrency.equals("") ) {
+    if ( sourceCurrency == null || "".equals(sourceCurrency) ) {
       throw new RuntimeException("Invalid sourceCurrency");
     }
 
-    if ( targetCurrency == null || targetCurrency.equals("") ) {
+    if ( targetCurrency == null || "".equals(targetCurrency) ) {
       throw new RuntimeException("Invalid targetCurrency");
     }
 
@@ -64,7 +64,7 @@ public class ExchangeRateService
         quote.setFee(reqFee);
         quote.setDeliveryTime(reqDlvrTime);
 
-        if ( valueDate == null || valueDate.equals("") ) {
+        if ( valueDate == null || "".equals(valueDate) ) {
           reqExRate.setValueDate((Date) new Date());
         } else {
             //reqExRate.setValueDate(valueDate);
@@ -92,7 +92,7 @@ public class ExchangeRateService
       }
     });
 
-    if ( quote.getCode() == null || (quote.getCode()).equals("") ) {
+    if ( quote.getCode() == null || "".equals(quote.getCode()) ) {
       quote.setCode("400");
     }
 
@@ -116,11 +116,11 @@ public class ExchangeRateService
   {
     PM pm = new PM(this.getClass(), "getRateFromSource");
 
-    if ( sourceCurrency == null || sourceCurrency.equals("") ) {
+    if ( sourceCurrency == null || "".equals(sourceCurrency) ) {
       throw new RuntimeException("Invalid sourceCurrency");
     }
 
-    if ( targetCurrency == null || targetCurrency.equals("") ) {
+    if ( targetCurrency == null || "".equals(targetCurrency) ) {
       throw new RuntimeException("Invalid targetCurrency");
     }
 
@@ -149,7 +149,7 @@ public class ExchangeRateService
         reqExRate.setSourceCurrency(sourceCurrency);
         reqExRate.setTargetCurrency(targetCurrency);
 
-        if ( valueDate == null || valueDate.equals("") ) {
+        if ( valueDate == null || "".equals(valueDate) ) {
           reqExRate.setValueDate((Date) new Date());
         } else {
           try {
@@ -176,7 +176,7 @@ public class ExchangeRateService
       }
     });
 
-    if ( quote.getCode() == null || (quote.getCode()).equals("") ) {
+    if ( quote.getCode() == null || "".equals(quote.getCode()) ) {
       quote.setCode("400");
     }
 
@@ -241,7 +241,7 @@ public class ExchangeRateService
   public AcceptRateApiModel acceptRate(String endToEndId, String dealRefNum)
       throws RuntimeException
   {
-    if ( dealRefNum == null || dealRefNum.equals("")  ) {
+    if ( dealRefNum == null || "".equals(dealRefNum) ) {
       throw new RuntimeException("Invalid dealRefNum");
     }
 

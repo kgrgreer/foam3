@@ -98,13 +98,13 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             if ( tran != null ) {
               tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
 
-              if ( eftConfirmationFileRecord.getStatus().equals("Failed") ) {
+              if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
                 tran.setStatus(TransactionStatus.FAILED);
                 tran.setDescription(eftConfirmationFileRecord.getReason());
                 sendEmail(x, "Transaction was rejected by EFT confirmation file",
                   "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
                     + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-              } else if ( eftConfirmationFileRecord.getStatus().equals("OK") && tran.getStatus().equals(TransactionStatus.PENDING) ) {
+              } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
                 tran.setStatus(TransactionStatus.SENT);
               }
 
@@ -120,7 +120,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       boolean folderExist = false;
       for ( Object entry : folderList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
-        if ( e.getFilename().equals("Archive_EFTConfirmationFile") ) {
+        if ( "Archive_EFTConfirmationFile".equals(e.getFilename()) ) {
           folderExist = true;
         }
       }

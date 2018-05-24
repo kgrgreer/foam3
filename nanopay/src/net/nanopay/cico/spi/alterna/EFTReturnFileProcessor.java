@@ -87,7 +87,7 @@ public class EFTReturnFileProcessor implements ContextAgent
             tran.setReturnCode(item.getReturnCode());
             tran.setReturnDate(item.getReturnDate());
 
-            if ( item.getReturnCode().equals("900") ) {
+            if ( "900".equals(item.getReturnCode()) ) {
               tran.setReturnType("Reject");
             } else {
               tran.setReturnType("Return");
@@ -97,7 +97,7 @@ public class EFTReturnFileProcessor implements ContextAgent
               tran.setStatus(TransactionStatus.DECLINED);
               sendEmail(x, "Transaction was rejected or returned by EFT return file",
                 "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
-            } else if ( tran.getStatus() == TransactionStatus.COMPLETED && tran.getReturnType().equals("Return") ) {
+            } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(tran.getReturnType()) ) {
               tran.setStatus(TransactionStatus.DECLINED);
               sendEmail(x, "Transaction was returned outside of the 2 business day return period",
                 "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
@@ -112,7 +112,7 @@ public class EFTReturnFileProcessor implements ContextAgent
       boolean exist = false;
       for ( Object entry : folderList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
-        if ( e.getFilename().equals("Archive_EFTReturnFile") ) {
+        if ( "Archive_EFTReturnFile".equals(e.getFilename()) ) {
           exist = true;
         }
       }

@@ -39,7 +39,7 @@ public class TermsAndConditionsWebAgent
       e.printStackTrace();
     }
 
-    if ( version.equals("") ) {
+    if ( "".equals(version) ) {
       ArraySink listSink = (ArraySink) tcDAO.orderBy(new foam.mlang.order.Desc(HtmlDoc.ID)).limit(1).select(new ArraySink());
 
       terms = (HtmlDoc) listSink.getArray().get(0);
