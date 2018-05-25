@@ -1,4 +1,4 @@
-foam.CLASS({
+ foam.CLASS({
   package: 'net.nanopay.settings',
   name: 'PersonalProfileView',
   extends: 'foam.u2.View',
@@ -256,6 +256,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
+
       if (this.user.firstName != "")
       {
         this.firstName = this.user.firstName;
@@ -263,7 +264,8 @@ foam.CLASS({
         this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
         // split the country code and phone number
-        [ this.phoneCode, this.phone ] = this.user.phone.number.split(" ");
+        this.phone = this.user.phone.number.split(" ");
+        this.phone = this.phone.substring(1);
       }
       this
       .addClass(this.myClass())
@@ -286,7 +288,7 @@ foam.CLASS({
           .end()
           .start('div')
             .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
-            .start(this.PHONE_CODE).addClass('phoneNumber-Dropdown').end()
+            .start(this.PHONE_CODE, {mode: foam.u2.DisplayMode.DISABLED}).addClass('phoneNumber-Dropdown').end()
             .start(this.PHONE).addClass('phoneNumber-Input').end()
           .end()
           .start('div')
@@ -330,7 +332,7 @@ foam.CLASS({
         this.user.lastName = this.lastName;
         this.user.jobTitle = this.jobTitle;
         this.user.email = this.email;
-        this.user.phone.number = this.phoneCode + " " + this.phone;
+        this.user.phone.number = this.phoneCode.substring(1) + this.phone;
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, clear password fields, show success
           self.user.copyFrom(result);
