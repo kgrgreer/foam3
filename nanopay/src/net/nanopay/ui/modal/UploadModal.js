@@ -150,7 +150,7 @@ foam.CLASS({
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
     { name: 'FileSizeError', message: 'File size exceeds 10MB' },
-    { name: 'NoUploadFile', message: 'Choose any file before submitting' }
+    { name: 'NoUploadFile', message: 'Upload a file before submitting' }
   ],
   methods: [
     function initE(){
