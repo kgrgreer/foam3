@@ -172,6 +172,12 @@ function deploy_journals {
     fi
 }
 
+function migrate_journals {
+    if [ -f "tools/migrate_journals.sh" ]; then
+        ./tools/migrate_journals.sh
+    fi
+}
+
 function status_tomcat {
     ps -a | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" > /dev/null
     return $?
@@ -271,12 +277,12 @@ function beginswith {
 
 function setenv {
 
-    NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+    export NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
 
-    JOURNAL_OUT="$NANOPAY_HOME"/target/journals
+    export JOURNAL_OUT="$NANOPAY_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
-       JOURNAL_HOME="$NANOPAY_HOME/journals"
+       export JOURNAL_HOME="$NANOPAY_HOME/journals"
     fi
 
     if beginswith "/pkg/stack/stage" $0 ; then
@@ -357,6 +363,7 @@ function usage {
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
+    echo "  -m : Run migration scripts"
     echo "  -n : Run nanos."
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
@@ -374,9 +381,10 @@ DELETE_RUNTIME_JOURNALS=0
 INSTALL=0
 RESTART_ONLY=0
 RUN_NANOS=0
+RUN_MIGRATION=0
 STOP_TOMCAT=0
 
-while getopts "bcdfhijnrs" opt ; do
+while getopts "bcdfhijmnrs" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -384,6 +392,7 @@ while getopts "bcdfhijnrs" opt ; do
         f) FOREGROUND=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         i) INSTALL=1 ;;
+        m) RUN_MIGRATION=1 ;;
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
@@ -406,12 +415,15 @@ elif [ "$BUILD_ONLY" -eq 1 ]; then
 elif [ "$STOP_TOMCAT" -eq 1 ]; then
     shutdown_tomcat
     printf "Tomcat stopped.\n"
+elif [ "$RUN_MIGRATION" -eq 1 ]; then
+    migrate_journals
 else
     shutdown_tomcat
     if [ "$RESTART_ONLY" -eq 0 ]; then
         build_war
         undeploy_war
         deploy_journals
+        migrate_journals
         if [ "$FOREGROUND" -eq 1 ]; then
             deploy_war
             start_tomcat
