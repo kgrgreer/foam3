@@ -198,11 +198,14 @@ foam.CLASS({
       }
 
       ^ .net-nanopay-ui-ActionView-goNext {
-        font-size: 10px;
+        margin-left: 40px !important;
+        font-size: 12px;
       }
 
       ^ .net-nanopay-ui-ActionView-goBack {
-        font-size: 10px;
+          min-width: 136px;
+          height: 40px;
+          font-size: 12px;
       }
     */}})
   ],
@@ -269,12 +272,12 @@ foam.CLASS({
               .end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
-          .end()
-        .end()
-        .start('div').addClass('row')
-          .start('div').addClass('navigationContainer')
-            .start(this.GO_BACK, {label$: this.backLabel$}).end()
-            .start(this.GO_NEXT, {label$: this.nextLabel$}).end()
+            .start('div').addClass('row')
+              .start('div').addClass('navigationContainer')
+                .start(this.GO_BACK, {label$: this.backLabel$}).end()
+                .start(this.GO_NEXT, {label$: this.nextLabel$}).end()
+              .end()
+            .end()
           .end()
         .end();
     }
