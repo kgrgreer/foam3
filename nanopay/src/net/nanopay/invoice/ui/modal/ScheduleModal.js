@@ -8,7 +8,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus'
   ],
 
   implements: [
