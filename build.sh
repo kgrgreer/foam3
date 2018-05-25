@@ -407,7 +407,6 @@ if [ "$INSTALL" -eq 1 ]; then
 fi
 
 setenv
-printf "JOURNAL_HOME=$JOURNAL_HOME\n"
 if [ "$RUN_NANOS" -eq 1 ]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
@@ -424,7 +423,7 @@ else
         build_war
         undeploy_war
         deploy_journals
-#       migrate_journals
+        migrate_journals
         if [ "$FOREGROUND" -eq 1 ]; then
             deploy_war
             start_tomcat
