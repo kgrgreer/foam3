@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.dao.crypto',
+  package: 'net.nanopay.security',
   name: 'EncryptedObject',
 
   documentation: 'Represents an encrypted object',

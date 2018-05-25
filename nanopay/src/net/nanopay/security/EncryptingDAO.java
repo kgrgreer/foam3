@@ -1,4 +1,4 @@
-package net.nanopay.dao.crypto;
+package net.nanopay.security;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;
@@ -17,10 +17,9 @@ import foam.nanos.logger.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -38,8 +37,9 @@ public class EncryptingDAO
     }
   }
 
-  protected static final int    GCM_NONCE_LENGTH = 12;
-  protected static final int    GCM_TAG_LENGTH   = 16;
+  protected static final int AES_KEY_SIZE     = 256;
+  protected static final int GCM_NONCE_LENGTH = 12;
+  protected static final int GCM_TAG_LENGTH   = 16;
 
   private static SecureRandom random;
   private static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
@@ -49,76 +49,44 @@ public class EncryptingDAO
     return random;
   }
 
-  protected File       file_;
-  protected SecretKey  key_;
-  protected KeyStore   keystore_;
+  protected String alias_;
+  protected SecretKey key_;
+  protected net.nanopay.security.KeyStoreManager manager_;
 
   protected Logger     logger_;
   protected JSONParser jsonParser_;
   protected Outputter  outputter_ = new Outputter(OutputterMode.STORAGE);
 
-  public EncryptingDAO(X x, DAO delegate)
-    throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException
+  public EncryptingDAO(X x, ClassInfo of, DAO delegate)
+      throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableEntryException, NoSuchProviderException
   {
-    super(x, delegate);
-    logger_ = (Logger) x.get("logger");
+    setX(x);
+    setOf(of);
+    setDelegate(delegate);
 
-    // TODO: load properly
-    String alias = "";
-    String keyPass = "";
-    String keystoreFile = "";
-    String keystorePass = "";
+    alias_ = of.getId();
+    logger_ = (Logger) x.get("logger");
+    manager_ = (net.nanopay.security.KeyStoreManager) x.get("keyStoreManager");
+    jsonParser_ = getX().create(JSONParser.class);
 
     // get instance of keystore, load keystore file
-    keystore_ = KeyStore.getInstance(KeyStore.getDefaultType());
-    file_ = new File(keystoreFile).getAbsoluteFile();
-    jsonParser_ = new JSONParser();
-    jsonParser_.setX(getX());
+    KeyStore keyStore = manager_.getKeyStore();
 
-    // check if keystore file exists
-    if ( ! file_.exists() ) {
-      throw new RuntimeException("Keystore does not exist.");
+    // check if keystore contains alias. load if it does, create if it doesn't
+    if ( ! keyStore.containsAlias(alias_) ) {
+      // generate AES key using BC as provider
+      KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
+      keygen.init(AES_KEY_SIZE, getSecureRandom());
+      key_ = keygen.generateKey();
+
+      // set secret key entry in keystore
+      KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key_);
+      manager_.storeKey(alias_, secretKeyEntry);
+    } else {
+      // load the secret key
+      KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(alias_, null);
+      key_ = entry.getSecretKey();
     }
-
-    // load key store
-    loadKeyStore(keystorePass);
-
-    // check if keystore contains loaded alias
-    if ( ! keystore_.containsAlias(alias) ) {
-      throw new RuntimeException("Secret key does not exist.");
-    }
-
-    // load secret key
-    loadSecretKey(alias, keyPass);
-  }
-
-  /**
-   * Loads keystore from a file
-   * @throws IOException
-   * @throws CertificateException
-   * @throws NoSuchAlgorithmException
-   */
-  protected void loadKeyStore(final String password)
-      throws IOException, CertificateException, NoSuchAlgorithmException
-  {
-    try ( FileInputStream fis = new FileInputStream(file_) ) {
-      keystore_.load(fis, password.toCharArray());
-    }
-  }
-
-  /**
-   * Loads the secret key from the keystore
-   * @throws UnrecoverableEntryException
-   * @throws NoSuchAlgorithmException
-   * @throws KeyStoreException
-   */
-  protected void loadSecretKey(final String alias, final String password)
-      throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException
-  {
-    // load secret key from keystore
-    KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(password.toCharArray());
-    KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keystore_.getEntry(alias, protectionParameter);
-    key_ = secretKeyEntry.getSecretKey();
   }
 
   @Override
@@ -175,7 +143,6 @@ public class EncryptingDAO
       byte[] plainText = cipher.doFinal(cipherText);
       return this.jsonParser_.parseString(new String(plainText));
     } catch (Throwable t) {
-      // TODO: rethrow as DAOException
       logger_.error(t);
       return null;
     }

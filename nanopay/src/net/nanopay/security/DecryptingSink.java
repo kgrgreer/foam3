@@ -1,4 +1,4 @@
-package net.nanopay.dao.crypto;
+package net.nanopay.security;
 
 import foam.core.X;
 import foam.dao.AbstractDAO;

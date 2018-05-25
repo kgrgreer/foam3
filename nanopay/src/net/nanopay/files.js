@@ -1,6 +1,5 @@
 FOAM_FILES([
   { name: 'net/nanopay/blob/AmazonS3BlobStore' },
-  { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccount' },
@@ -228,7 +227,6 @@ FOAM_FILES([
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
-  // { name: 'net/nanopay/settings/business/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessSettingsCard', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },
@@ -240,6 +238,11 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/PreferenceView', flags: ['web'] },
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
+
+  // security
+  { name: 'net/nanopay/security/EncryptedObject' },
+  { name: 'net/nanopay/security/KeyStoreManager' },
+  { name: 'net/nanopay/security/FileKeyStoreManager' },
 
   // bank
   { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
