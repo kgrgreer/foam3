@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -137,7 +138,7 @@ public class CsvUtil {
           t = (Transaction) t.fclone();
 
           // get transaction type and user
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.VERIFICATION || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
             user = (User) userDAO.find(t.getPayerId());
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
@@ -162,7 +163,7 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
           // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if ( ! "".equals(t.getPadType()) ) {
+          if ( ! SafetyUtil.isEmpty(t.getPadType()) ) {
             alternaFormat.setPadType(t.getPadType());
           }
           else {
@@ -178,7 +179,7 @@ public class CsvUtil {
           alternaFormat.setTxnType(txnType);
 
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if ( ! "".equals(t.getTxnCode()) ) {
+          if ( ! SafetyUtil.isEmpty(t.getTxnCode()) ) {
             alternaFormat.setTxnCode(t.getTxnCode());
           } else {
             t.setTxnCode(alternaFormat.getTxnCode());

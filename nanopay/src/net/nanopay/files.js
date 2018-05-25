@@ -1,9 +1,9 @@
 FOAM_FILES([
-  { name: 'net/nanopay/blob/AmazonS3BlobStore' },
   { name: 'net/nanopay/dao/crypto/EncryptedObject' },
   { name: 'net/nanopay/model/Account' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccount' },
+  { name: 'net/nanopay/model/BankAccountStatus' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },

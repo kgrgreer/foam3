@@ -5,6 +5,7 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import net.nanopay.model.BankAccount;
+import net.nanopay.model.BankAccountStatus;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport
@@ -29,12 +30,12 @@ public class BankAccountVerifierService
 
       int verificationAttempts = bankAccount.getVerificationAttempts();
 
-      if (bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
+      if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
         bankAccountDAO.put(bankAccount);
         if (bankAccount.getVerificationAttempts() == 3) {
-          bankAccount.setStatus("Disabled");
+          bankAccount.setStatus(BankAccountStatus.DISABLED);
           bankAccountDAO.put(bankAccount);
         }
         if (bankAccount.getVerificationAttempts() == 1) {
@@ -48,18 +49,18 @@ public class BankAccountVerifierService
         }
       }
 
-      if (bankAccount.getStatus() == "Disabled") {
+      if ( BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) ) {
         throw new RuntimeException("This account has been disabled for security reasons. Please contact customer support for help.");
       }
 
-      if (bankAccount.getStatus() == "Verified") {
+      if ( BankAccountStatus.VERIFIED.equals(bankAccount.getStatus()) ) {
         return true;
       }
 
       boolean isVerified = false;
 
-      if (bankAccount.getStatus() != "Disabled" && bankAccount.getRandomDepositAmount() == randomDepositAmount) {
-        bankAccount.setStatus("Verified");
+      if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() == randomDepositAmount) {
+        bankAccount.setStatus(BankAccountStatus.VERIFIED);
         isVerified = true;
 
         bankAccountDAO.put(bankAccount);

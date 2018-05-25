@@ -16,6 +16,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import net.nanopay.cico.model.PaymentProcessorUserReference;
 import net.nanopay.cico.model.PaymentProcessor;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
@@ -48,7 +49,7 @@ public class RealexPaymentCardStoreDAO
     else
       processorReference = (PaymentProcessorUserReference) list.get(0);
     String reference = processorReference.getReference();
-    if ( reference == null || "".equals(reference) ) {
+    if ( reference == null || SafetyUtil.isEmpty(reference) ) {
       //create payer reference in Realex if do not exist
       reference = UUID.randomUUID().toString();
       Payer myPayer = new Payer()

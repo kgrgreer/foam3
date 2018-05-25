@@ -6,14 +6,19 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
-import java.util.List;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
+import net.nanopay.model.BankAccountStatus;
 import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
-import static foam.mlang.MLang.*;
+import net.nanopay.tx.model.TransactionStatus;
+
+import java.util.List;
+
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
 
 /*
     Cronjob checks Liquidity Settings.
@@ -23,6 +28,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
   protected long             amount_;
   protected TransactionType  type_;
   protected CashOutFrequency frequency_;
+  protected int pendingCashinAmount = 0;
 
   public LiquiditySettingsCheckCron(CashOutFrequency frequency){
     this.frequency_ = frequency;
@@ -36,6 +42,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     DAO  bankAccountDAO_      = (DAO) x.get("localBankAccountDAO");
     DAO  liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
     DAO  groupDAO             = (DAO) x.get("groupDAO");
+    DAO transactionDAO_       = (DAO) x.get("transactionDAO");
     List users                = ((ArraySink)userDAO_.select(new ArraySink())).getArray();
     long balance;
 
@@ -45,7 +52,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       //DAO banks = user.getBankAccounts();
       BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
               EQ(BankAccount.OWNER, user.getId()),
-              EQ(BankAccount.STATUS, "Verified")
+              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
               )
       );
 
@@ -55,6 +62,16 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       } else continue;
 
       LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(user.getId());
+
+      List transactions = ((ArraySink) transactionDAO_.where(AND(
+        EQ(Transaction.STATUS, TransactionStatus.PENDING),
+        EQ(Transaction.TYPE, TransactionType.CASHIN),
+        EQ(Transaction.PAYEE_ID, user.getId()),
+        EQ(Transaction.PAYER_ID, user.getId())
+      )).select(new ArraySink())).getArray();
+      for ( Object transaction: transactions) {
+        pendingCashinAmount += ((Transaction) transaction).getAmount();
+      }
 
       if ( ls != null ) {
         if ( ls.getBankAccountId() > 0 ) {
@@ -80,8 +97,8 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       return true;
     }
 
-    if ( balance < ls.getMinimumBalance() && ls.getEnableCashIn() ) {
-      amount_ = ls.getMinimumBalance() - balance;
+    if ( balance + pendingCashinAmount < ls.getMinimumBalance() && ls.getEnableCashIn() ) {
+      amount_ = ls.getMinimumBalance() - balance - pendingCashinAmount;
       type_ = TransactionType.CASHIN;
       return true;
     }

@@ -6,15 +6,10 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 
-import java.text.NumberFormat;
 import java.util.*;
 
 import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
-import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
 import net.nanopay.model.Account;
-import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
@@ -50,13 +45,6 @@ public class TransactionDAO
     return userDAO_;
   }
 
-  protected DAO getInvoiceDAO() {
-    if ( invoiceDAO_ == null ) {
-      invoiceDAO_ = (DAO) getX().get("invoiceDAO");
-    }
-    return invoiceDAO_;
-  }
-
   protected DAO getAccountDAO() {
     if ( accountDAO_ == null ) {
       accountDAO_ = (DAO) getX().get("localAccountDAO");
@@ -65,18 +53,9 @@ public class TransactionDAO
     return accountDAO_;
   }
 
-  protected DAO getBankAccountDAO() {
-    if ( bankAccountDAO_ == null ) {
-      bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
-    }
-
-    return bankAccountDAO_;
-  }
-
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction  = (Transaction) obj;
-    ArraySink   transactions = new ArraySink();
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
@@ -174,53 +153,11 @@ public class TransactionDAO
       ts[i].execute(x);
     }
 
-    if ( txn.getType().equals(TransactionType.NONE) || txn.getType().equals(TransactionType.CASHOUT) )
-      txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }
 
-  public void sendCashInRejectEmail(X x, String emailAddress, User user, Transaction
-      transaction) {
-    EmailService emailService = (EmailService) x.get("email");
-    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    EmailMessage message = new EmailMessage();
-    HashMap<String, Object> args = new HashMap<>();
-
-    // Loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount() / 100.00));
-    args.put("name", user.getFirstName());
-    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
-
-    message.setTo(new String[]{emailAddress});
-    try {
-      emailService.sendEmailFromTemplate(user, message, "cashin-reject", args);
-    } catch ( Throwable t ) {
-      ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
-    }
-  }
-
-  public void sendPaymentRejectEmail(X x, String emailAddress, User user, Transaction
-      transaction) {
-    EmailService emailService = (EmailService) x.get("email");
-    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    EmailMessage message = new EmailMessage();
-    HashMap<String, Object> args = new HashMap<>();
-
-    // Loads variables that will be represented in the email received
-    args.put("amount", formatter.format(transaction.getAmount() / 100.00));
-    args.put("name", user.getFirstName());
-    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
-    args.put("payerName", ( (User) getUserDAO().find(transaction.getPayerId()) ).getFirstName());
-    args.put("payeeName", ( (User) getUserDAO().find(transaction.getPayeeId()) ).getFirstName());
-
-    message.setTo(new String[]{emailAddress});
-    try {
-      emailService.sendEmailFromTemplate(user, message, "pay-from-bankaccount-reject", args);
-    } catch ( Throwable t ) {
-      ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
-    }
-  }
 
   public void cashinReject(X x, Transaction transaction) {
     Account payerAccount = (Account) getAccountDAO().find(transaction.getPayerId());
@@ -228,7 +165,6 @@ public class TransactionDAO
         transaction.getTotal() : 0);
     getAccountDAO().put_(x, payerAccount.fclone());
     User user = (User) getUserDAO().find(transaction.getPayerId());
-    sendCashInRejectEmail(x, user.getEmail(), user, transaction);
   }
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
@@ -239,8 +175,6 @@ public class TransactionDAO
     // if it's a transaction for different user, we need notify both
     User payer = (User) getUserDAO().find(transaction.getPayerId());
     User payee = (User) getUserDAO().find(transaction.getPayeeId());
-    sendPaymentRejectEmail(x, payer.getEmail(), payer, transaction);
-    sendPaymentRejectEmail(x, payee.getEmail(), payee, transaction);
   }
 
 
