@@ -343,7 +343,8 @@ foam.CLASS({
             }));
           }
 
-        } else if ( this.position == 1 ) { // Review
+        } 
+        if ( this.position == 1 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
