@@ -149,7 +149,8 @@ foam.CLASS({
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
-    { name: 'FileSizeError', message: 'File size exceeds 10MB' }
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
+    { name: 'NoUploadFile', message: 'Upload a file before submitting' }
   ],
   methods: [
     function initE(){
@@ -219,8 +220,12 @@ foam.CLASS({
       name: 'submitButton',
       label: 'Submit',
       code: function(X) {
-        X.closeDialog();
-        this.exportData = this.data;
+        if (this.data == "") {
+          this.add(this.NotificationMessage.create({ message: this.NoUploadFile, type: 'error' }));
+        } else {
+          X.closeDialog();
+          this.exportData = this.data;
+        }
       }
     },
   ],
