@@ -331,14 +331,19 @@ foam.CLASS({
 
         if ( self.viewData.accountCheck ) bankAccountId = self.viewData.account.id;
 
-        if ( this.position == 0 ) {
-          if ( ! self.viewData.accountCheck && this.account.balance < self.viewData.fromAmount ) {
-              //this.add(this.NotificationMessage.create({ message: 'Insufficient digital cash balance. There will
-            // be a cash in from the default bank account to compensate the difference.', type: 'error' }));
-          }
-        }
+        if ( this.position == 0 ) { // Account & Payee
 
-        if ( this.position == 1 ) { // On Review Transfer page.
+          // Check if user has enough digital cash to make the transfer and show
+          // an error message if they don't.
+          var fundsInsufficient = this.account.balance < self.viewData.fromAmount;
+          if ( ! self.viewData.accountCheck && fundsInsufficient ) {
+            this.add(this.NotificationMessage.create({
+              message: 'Unable to process payment: insufficient digital cash.',
+              type: 'error'
+            }));
+          }
+
+        } else if ( this.position == 1 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -366,18 +371,19 @@ foam.CLASS({
               if ( result ) {
                 self.viewData.transaction = result;
               }
-            }).then(function (response) {
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.backLabel = 'Back to Home';
-            self.nextLabel = 'Make New Transfer';
-
-          }).catch(function (err) {
-            self.add(self.NotificationMessage.create({
-              type: 'error',
-              message: err.message + 'Unable to process payment.'
-            }));
-          });
-        } else if ( this.position == 2 ) {
+            })
+            .then(function (response) {
+              self.subStack.push(self.views[self.subStack.pos + 1].view);
+              self.backLabel = 'Back to Home';
+              self.nextLabel = 'Make New Transfer';
+            })
+            .catch(function (err) {
+              self.add(self.NotificationMessage.create({
+                type: 'error',
+                message: 'Unable to process payment: ' + err.message
+              }));
+            });
+        } else if ( this.position == 2 ) { // Successful
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';
