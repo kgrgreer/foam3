@@ -285,14 +285,14 @@ function setenv {
        export JOURNAL_HOME="$NANOPAY_HOME/journals"
     fi
 
-    if beginswith "/pkg/stack/stage" $0 ; then
+    if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
         NANOPAY_HOME=/pkg/stack/stage/NANOPAY
         cd "$NANOPAY_HOME"
         cwd=$(pwd)
         npm install
 
         # Production use S3 mount
-        JOURNAL_HOME=/mnt/journals
+        export JOURNAL_HOME=/mnt/journals
 
         CLEAN_BUILD=1
     fi
@@ -407,6 +407,7 @@ if [ "$INSTALL" -eq 1 ]; then
 fi
 
 setenv
+printf "JOURNAL_HOME=$JOURNAL_HOME\n"
 if [ "$RUN_NANOS" -eq 1 ]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
@@ -423,7 +424,7 @@ else
         build_war
         undeploy_war
         deploy_journals
-        migrate_journals
+#       migrate_journals
         if [ "$FOREGROUND" -eq 1 ]; then
             deploy_war
             start_tomcat
