@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
+import foam.util.SafetyUtil;
 import net.nanopay.fx.interac.model.AcceptExchangeRateFields;
 import net.nanopay.fx.interac.model.AcceptRateApiModel;
 import net.nanopay.fx.model.*;
@@ -33,11 +34,11 @@ public class ExchangeRateService
   {
     PM pm = new PM(this.getClass(), "getRateFromSource");
 
-    if ( sourceCurrency == null || "".equals(sourceCurrency) ) {
+    if ( sourceCurrency == null || SafetyUtil.isEmpty(sourceCurrency) ) {
       throw new RuntimeException("Invalid sourceCurrency");
     }
 
-    if ( targetCurrency == null || "".equals(targetCurrency) ) {
+    if ( targetCurrency == null || SafetyUtil.isEmpty(targetCurrency) ) {
       throw new RuntimeException("Invalid targetCurrency");
     }
 
@@ -64,7 +65,7 @@ public class ExchangeRateService
         quote.setFee(reqFee);
         quote.setDeliveryTime(reqDlvrTime);
 
-        if ( valueDate == null || "".equals(valueDate) ) {
+        if ( valueDate == null || SafetyUtil.isEmpty(valueDate) ) {
           reqExRate.setValueDate((Date) new Date());
         } else {
             //reqExRate.setValueDate(valueDate);
@@ -92,7 +93,7 @@ public class ExchangeRateService
       }
     });
 
-    if ( quote.getCode() == null || "".equals(quote.getCode()) ) {
+    if ( quote.getCode() == null || SafetyUtil.isEmpty(quote.getCode()) ) {
       quote.setCode("400");
     }
 
@@ -116,11 +117,11 @@ public class ExchangeRateService
   {
     PM pm = new PM(this.getClass(), "getRateFromSource");
 
-    if ( sourceCurrency == null || "".equals(sourceCurrency) ) {
+    if ( sourceCurrency == null || SafetyUtil.isEmpty(sourceCurrency) ) {
       throw new RuntimeException("Invalid sourceCurrency");
     }
 
-    if ( targetCurrency == null || "".equals(targetCurrency) ) {
+    if ( targetCurrency == null || SafetyUtil.isEmpty(targetCurrency) ) {
       throw new RuntimeException("Invalid targetCurrency");
     }
 
@@ -149,7 +150,7 @@ public class ExchangeRateService
         reqExRate.setSourceCurrency(sourceCurrency);
         reqExRate.setTargetCurrency(targetCurrency);
 
-        if ( valueDate == null || "".equals(valueDate) ) {
+        if ( valueDate == null || SafetyUtil.isEmpty(valueDate) ) {
           reqExRate.setValueDate((Date) new Date());
         } else {
           try {
@@ -176,7 +177,7 @@ public class ExchangeRateService
       }
     });
 
-    if ( quote.getCode() == null || "".equals(quote.getCode()) ) {
+    if ( quote.getCode() == null || SafetyUtil.isEmpty(quote.getCode()) ) {
       quote.setCode("400");
     }
 
@@ -241,7 +242,7 @@ public class ExchangeRateService
   public AcceptRateApiModel acceptRate(String endToEndId, String dealRefNum)
       throws RuntimeException
   {
-    if ( dealRefNum == null || "".equals(dealRefNum) ) {
+    if ( dealRefNum == null || SafetyUtil.isEmpty(dealRefNum) ) {
       throw new RuntimeException("Invalid dealRefNum");
     }
 

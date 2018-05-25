@@ -3,6 +3,7 @@ package net.nanopay.cico.spi.alterna;
 import foam.lib.parse.PStream;
 import foam.lib.parse.Parser;
 import foam.lib.parse.ParserContext;
+import foam.util.SafetyUtil;
 
 public class EFTStringParser implements Parser
 {
@@ -25,7 +26,7 @@ public class EFTStringParser implements Parser
       ps = ps.tail();
     }
 
-    if ( ! ps.valid() && "".equals(sb.toString()) ) {
+    if ( ! ps.valid() && SafetyUtil.isEmpty(sb.toString()) ) {
       return null;
     }
 
