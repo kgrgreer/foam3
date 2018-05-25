@@ -391,8 +391,8 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId ) {
-          if ( this.viewData.user.businessType == 0 ) {
+        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0) {
+          if ( this.viewData.user.businessTypeId == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
