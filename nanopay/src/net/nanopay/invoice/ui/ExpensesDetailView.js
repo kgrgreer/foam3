@@ -162,7 +162,7 @@ foam.CLASS({
             // Not enough digital cash balance
             self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
               if ( account.array.length === 0 ) {
-                self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account or sufficient digital cash balance.', type: 'error' }));
+                self.add(self.NotificationMessage.create({ message: 'Bank Account should be verified for paying this invoice.', type: 'error' }));
                 return;
               }
               X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });

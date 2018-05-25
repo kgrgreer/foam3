@@ -14,6 +14,7 @@ foam.CLASS({
     // 'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.ui.transfer.TransferUserCard',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus',
     'foam.nanos.auth.User'
   ],
 
