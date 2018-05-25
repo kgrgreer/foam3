@@ -7,10 +7,6 @@
 MIGRATE="tools/journal_migration"
 MIGRATED="$JOURNAL_HOME/migrated"
 
-if [ ! -d "$MIGRATE" ]; then
-    exit;
-fi
-
 mkdir -p "$MIGRATED"
 
 cd "$MIGRATE"
