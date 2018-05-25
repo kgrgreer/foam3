@@ -93,7 +93,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
             Transaction tran = (Transaction) transactionDao.find(
-              EQ(Transaction.REFERENCE_NUMBER, eftUploadFileRecord.getReference()));
+              EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 
             if ( tran != null ) {
               tran = (Transaction) tran.fclone();

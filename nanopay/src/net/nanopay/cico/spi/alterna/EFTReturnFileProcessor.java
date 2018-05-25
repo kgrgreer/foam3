@@ -74,7 +74,7 @@ public class EFTReturnFileProcessor implements ContextAgent
           EFTReturnRecord item = (EFTReturnRecord) list.get(j);
 
           Transaction tran = (Transaction)transactionDao.find(AND(
-            EQ(Transaction.REFERENCE_NUMBER, item.getExternalReference()),
+            EQ(Transaction.ID, item.getExternalReference()),
             EQ(Transaction.AMOUNT, (long)(item.getAmount() * 100)),
             OR(
               EQ(Transaction.TYPE, TransactionType.CASHIN),
