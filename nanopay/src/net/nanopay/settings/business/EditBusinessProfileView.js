@@ -414,8 +414,8 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.user.businessTypeId ) {
-          if ( this.user.businessType == 0 ) {
+        if ( this.user.businessTypeId || this.user.businessTypeId == 0 ) {
+          if ( this.user.businessTypeId == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
@@ -714,7 +714,7 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Business phone required.', type: 'error' }));
           return;
         }
-        if( !this.businessTypeField ) {
+        if( ! (this.businessTypeField || this.businessTypeField === 0) ) {
           this.add(this.NotificationMessage.create({ message: 'Business type required.', type: 'error' }));
           return;
         }
