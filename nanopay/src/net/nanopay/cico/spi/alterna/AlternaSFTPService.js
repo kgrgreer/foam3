@@ -31,6 +31,7 @@ ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 X x = getX();
 CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
+// don't send CSV file if there is no pending transaction
 if ( baos.toByteArray().length == 0 ) {
   return;
 }

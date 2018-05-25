@@ -303,7 +303,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
         this.viewData.user.phone = this.Phone.create({
-          number: '+1' + newValue
+          number: '+1 ' + newValue
         });
       }
     },
@@ -441,7 +441,7 @@ foam.CLASS({
                 .addClass('nameFieldsCol')
                 .enableClass('middleName', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                .start(this.PHONE_NUMBER, {}, this.phoneNumberElement$)
+                .start(this.PHONE_NUMBER, { placeholder: 'format: 000-000-0000' }, this.phoneNumberElement$)
                   .addClass('phoneNumberInput')
                   .on('click', function() {
                     self.isEditingPhone = true;

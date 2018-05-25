@@ -62,19 +62,19 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.model.BankAccountStatus',
       name: 'status',
       tableCellFormatter: function (a) {
-        var colour = ( a == 'Verified' ) ? '#2cab70' : '#f33d3d';
+        var colour = ( a === net.nanopay.model.BankAccountStatus.VERIFIED ) ? '#2cab70' : '#f33d3d';
         this.start()
-          .add(a)
+          .add(a.label)
           .style({
             'color': colour,
             'text-transform': 'capitalize'
           })
         .end();
-      },
-      value: 'Unverified'
+      }
     },
     {
       class: 'String',

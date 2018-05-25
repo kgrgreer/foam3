@@ -1,23 +1,24 @@
 package net.nanopay.tx.cron;
 
 import foam.core.ContextAgent;
-import foam.core.Detachable;
 import foam.core.X;
-import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
-import java.util.List;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
+import net.nanopay.model.BankAccountStatus;
 import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
-import static foam.mlang.MLang.*;
+import java.util.List;
+
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
 
 /*
     Cronjob checks Liquidity Settings.
@@ -51,7 +52,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       //DAO banks = user.getBankAccounts();
       BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
               EQ(BankAccount.OWNER, user.getId()),
-              EQ(BankAccount.STATUS, "Verified")
+              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
               )
       );
 

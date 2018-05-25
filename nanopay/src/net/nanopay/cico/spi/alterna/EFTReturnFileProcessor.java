@@ -84,6 +84,7 @@ public class EFTReturnFileProcessor implements ContextAgent
 
           // if corresponding transaction is found
           if ( tran != null ) {
+            tran = (Transaction) tran.fclone();
             tran.setReturnCode(item.getReturnCode());
             tran.setReturnDate(item.getReturnDate());
 

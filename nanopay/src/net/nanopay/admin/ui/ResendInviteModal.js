@@ -16,6 +16,7 @@ foam.CLASS({
 
   imports: [
     'inviteToken',
+    'editProfilePopUp',
     'closeDialog'
   ],
 
@@ -65,6 +66,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      if (this.editProfilePopUp) this.editProfilePopUp.remove();
 
       this
         .addClass(this.myClass())

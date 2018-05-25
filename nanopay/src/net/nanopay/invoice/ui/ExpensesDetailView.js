@@ -8,7 +8,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.PopupView',
     'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus'
   ],
 
   imports: [
@@ -159,7 +160,7 @@ foam.CLASS({
         this.accountDAO.where(this.EQ(this.Account.ID, this.user.id)).limit(1).select().then(function( accountBalance ) {
           if ( accountBalance.array[0].balance < self.data.amount ) {
             // Not enough digital cash balance
-            self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, 'Verified'), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
+            self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
               if ( account.array.length === 0 ) {
                 self.add(self.NotificationMessage.create({ message: 'Requires a verified bank account or sufficient digital cash balance.', type: 'error' }));
                 return;

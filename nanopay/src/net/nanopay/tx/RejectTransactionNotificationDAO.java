@@ -9,6 +9,7 @@ import foam.dao.ProxyDAO;
 import java.text.NumberFormat;
 import java.util.*;
 
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
@@ -81,11 +82,13 @@ public class RejectTransactionNotificationDAO
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     EmailMessage message = new EmailMessage();
     HashMap<String, Object> args = new HashMap<>();
+    AppConfig config       = (AppConfig) x.get("appConfig");
 
     // Loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
     args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
+    args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});
     try {
@@ -101,6 +104,7 @@ public class RejectTransactionNotificationDAO
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     EmailMessage message = new EmailMessage();
     HashMap<String, Object> args = new HashMap<>();
+    AppConfig config       = (AppConfig) x.get("appConfig");
 
     // Loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
@@ -108,10 +112,11 @@ public class RejectTransactionNotificationDAO
     args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
     args.put("payerName", ( (User) getUserDAO().find(transaction.getPayerId()) ).getFirstName());
     args.put("payeeName", ( (User) getUserDAO().find(transaction.getPayeeId()) ).getFirstName());
+    args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});
     try {
-      emailService.sendEmailFromTemplate(user, message, "pay-from-bankaccount-reject", args);
+      emailService.sendEmailFromTemplate(user, message, "pay-from-bank-account-reject", args);
     } catch ( Throwable t ) {
       ( (Logger) x.get(Logger.class) ).error("Error sending invoice paid email.", t);
     }

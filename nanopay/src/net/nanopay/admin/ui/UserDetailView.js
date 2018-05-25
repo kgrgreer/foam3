@@ -5,10 +5,10 @@ foam.CLASS({
 
   requires: [
     'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.admin.model.ComplianceStatus',
+    'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.admin.ui.EditBusinessView',
     'net.nanopay.ui.ExpandContainer'
   ],
@@ -19,7 +19,10 @@ foam.CLASS({
   ],
 
   exports: [
-    'as data'
+    'activatePopUp',
+    'approvePopUp',
+    'as data',
+    'editProfilePopUp'
   ],
 
   css: `
@@ -162,7 +165,7 @@ foam.CLASS({
 
     ^ .popUpDropDown {
       padding: 0 !important;
-      z-index: 10000;
+      z-index: 10;
       width: 165px;
       background: white;
       opacity: 1;
@@ -191,8 +194,9 @@ foam.CLASS({
       width: 1240px;
     }
     ^ .net-nanopay-admin-ui-ReviewProfileView{
-      overflow: scroll;
+      overflow-y: scroll;
       height: 500px;
+      margin-top: 50px;
     }
   `,
 
@@ -201,66 +205,9 @@ foam.CLASS({
     'activateProfileMenuBtn_',
     'approveProfileMenuBtn_',
     'editProfileMenuBtn_',
-    {
-      name: 'activateProfilePopUp_',
-      factory: function () {
-        var popup = foam.u2.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        });
-
-        popup.addClass('popUpDropDown')
-          .start('div')
-            .add('Disable Profile')
-            .on('click', this.disableProfile_)
-          .end()
-
-        return popup;
-      }
-    },
-    {
-      name: 'approveProfilePopUp_',
-      factory: function () {
-        var popup = foam.u2.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        });
-
-        popup.addClass('popUpDropDown')
-          .start('div')
-            .add('Disable Profile')
-            .on('click', this.disableProfile_)
-          .end()
-        return popup;
-      }
-    },
-    {
-      name: 'editProfilePopUp_',
-      factory: function () {
-        var popup = foam.u2.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        });
-
-        popup.addClass('popUpDropDown')
-          .start('div')
-            .add('Revoke Invite')
-            .on('click', this.revokeInvite)
-          .end()
-          .start('div')
-            .add('Resend Invite')
-            .on('click', this.resendInvite)
-          .end()
-          .start('div')
-            .add('Disable Profile')
-            .on('click', this.disableProfile_)
-          .end()
-        return popup;
-      }
-    }
+    'approvePopUp',
+    'activatePopUp',
+    'editProfilePopUp'
   ],
 
   methods: [
@@ -362,7 +309,20 @@ foam.CLASS({
       name: 'approveProfileDropDown',
       label: '',
       code: function (X) {
-        this.approveProfileMenuBtn_.add(this.approveProfilePopUp_);
+        
+        this.approvePopUp = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        this.approvePopUp.addClass('popUpDropDown')
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile_)
+          .end()
+
+        this.approveProfileMenuBtn_.add(this.approvePopUp);
       }
     },
     {
@@ -376,7 +336,20 @@ foam.CLASS({
       name: 'activateProfileDropDown',
       label: '',
       code: function (X) {
-        this.activateProfileMenuBtn_.add(this.activateProfilePopUp_);
+
+        this.activatePopUp = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        this.activatePopUp.addClass('popUpDropDown')
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile_)
+          .end()
+
+        this.activateProfileMenuBtn_.add(this.activatePopUp);
       }
     },
     {
@@ -390,7 +363,27 @@ foam.CLASS({
       name: 'editProfileDropDown',
       label: '',
       code: function (X) {
-        this.editProfileMenuBtn_.add(this.editProfilePopUp_);
+        this.editProfilePopUp = foam.u2.PopupView.create({
+          width: 165,
+          x: -137,
+          y: 40
+        });
+
+        this.editProfilePopUp.addClass('popUpDropDown')
+          .start('div')
+            .add('Revoke Invite')
+            .on('click', this.revokeInvite)
+          .end()
+          .start('div')
+            .add('Resend Invite')
+            .on('click', this.resendInvite)
+          .end()
+          .start('div')
+            .add('Disable Profile')
+            .on('click', this.disableProfile_)
+          .end();
+
+        this.editProfileMenuBtn_.add(this.editProfilePopUp);
       }
     },
     {

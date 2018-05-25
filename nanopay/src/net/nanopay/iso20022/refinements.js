@@ -127,6 +127,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'java.util.Random',
@@ -247,7 +248,7 @@ foam.CLASS({
                           senderBankAcct.setAccountName("Default");
                           senderBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
                           senderBankAcct.setTransitNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId());
-                          senderBankAcct.setStatus("Verified");
+                          senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
                           senderBankAcct.setVerificationAttempts(1);
                           senderBankAcct.setSetAsDefault(true);
                           senderBankAcct.setOwner(senderId);
@@ -325,7 +326,7 @@ foam.CLASS({
                         receiverBankAcct.setAccountName("Default");
                         receiverBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
                         receiverBankAcct.setTransitNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getBrnchId().getId());
-                        receiverBankAcct.setStatus("Verified");
+                        receiverBankAcct.setStatus(BankAccountStatus.VERIFIED);
                         receiverBankAcct.setVerificationAttempts(1);
                         receiverBankAcct.setSetAsDefault(true);
                         receiverBankAcct.setOwner(receiverId);

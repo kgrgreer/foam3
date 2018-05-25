@@ -414,8 +414,8 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.user.businessTypeId ) {
-          if ( this.user.businessType == 0 ) {
+        if ( this.user.businessTypeId || this.user.businessTypeId == 0 ) {
+          if ( this.user.businessTypeId == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
@@ -619,7 +619,7 @@ foam.CLASS({
                 .addClass('phoneNumberCol')
                 .enableClass('out', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('fieldLabel').end()
-                .start(this.PHONE_NUMBER_FIELD, {}, this.phoneNumberFieldElement$)
+                .start(this.PHONE_NUMBER_FIELD, { placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                   .addClass('fullWidthField')
                   .on('focus', function() {
                     self.isEditingPhone = true;
@@ -714,7 +714,7 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Business phone required.', type: 'error' }));
           return;
         }
-        if( !this.businessTypeField ) {
+        if( ! (this.businessTypeField || this.businessTypeField === 0) ) {
           this.add(this.NotificationMessage.create({ message: 'Business type required.', type: 'error' }));
           return;
         }
@@ -757,7 +757,6 @@ foam.CLASS({
         this.user.businessRegistrationNumber = this.businessRegistrationNumberField;
         this.user.businessRegistrationAuthority = this.registrationAuthorityField;
         this.user.businessRegistrationDate = this.registrationDateField;
-
         this.user.businessAddress.countryId = this.countryField;
         this.user.businessAddress.streetNumber = this.streetNumberField;
         this.user.businessAddress.streetName = this.streetNameField;

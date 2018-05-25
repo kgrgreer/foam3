@@ -153,8 +153,7 @@ public class TransactionDAO
       ts[i].execute(x);
     }
 
-    if ( txn.getType().equals(TransactionType.NONE) || txn.getType().equals(TransactionType.CASHOUT) )
-      txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }

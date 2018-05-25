@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -186,7 +187,7 @@ foam.CLASS({
         return this.bankAccountDAO.where(
           this.AND(
             this.EQ(this.BankAccount.OWNER, this.user.id),
-            this.EQ(this.BankAccount.STATUS, "Verified")
+            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
           )
         );
       }
