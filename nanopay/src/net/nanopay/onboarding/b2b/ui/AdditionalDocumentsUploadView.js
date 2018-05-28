@@ -116,6 +116,7 @@ foam.CLASS({
               class: 'net.nanopay.invoice.ui.InvoiceFileView',
               data: documents[i],
               fileNumber: i + 1,
+              removeHidden:true
             });
           }
           return e;
