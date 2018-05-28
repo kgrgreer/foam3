@@ -31,7 +31,7 @@ public class AccountStatusUserDAO
       PropertyInfo prop = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("status");
 
       // if new status and old status are different then set previous status
-      if (SafetyUtil.compare(prop.get(newUser), prop.get(oldUser)) != 0) {
+      if ( ! SafetyUtil.equals(prop.get(newUser), prop.get(oldUser)) ) {
         newUser.setPreviousStatus(oldUser.getStatus());
       }
     } catch (Throwable t) {
