@@ -35,7 +35,7 @@ public class AccountStatusUserDAO
         newUser.setPreviousStatus(oldUser.getStatus());
       }
     } catch (Throwable t) {
-      logger_.error("Error updated previous status", t);
+      logger_.error("Error updating previous status", t);
     }
 
     return super.put_(x, obj);
