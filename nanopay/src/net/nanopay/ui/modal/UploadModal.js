@@ -24,7 +24,7 @@ foam.CLASS({
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
- 
+
   css:`
     ^ .container{
       height: 600px;
@@ -91,7 +91,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-modal-ModalHeader {
       width: 100%;
-    } 
+    }
     ^ .net-nanopay-ui-ActionView-submitButton {
       font-family: Roboto;
       width: 136px;
@@ -155,7 +155,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-          
+
       this
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
@@ -199,12 +199,13 @@ foam.CLASS({
           .add(this.SUBMIT_BUTTON)
         .end()
       .end()
-      
+
     } ,
     function onInvoiceFileRemoved (fileNumber) {
-      this.document.querySelector('.attachment-input').value = null;
-      this.data.splice(fileNumber - 1, 1);
-      this.data = Array.from(this.data);
+      // this.document.querySelector('.attachment-input').value = null;
+      var data = Array.from(this.data);
+      data.splice(fileNumber - 1, 1);
+      this.data = data;
     }
   ],
   actions:[
@@ -229,14 +230,14 @@ foam.CLASS({
       this.document.querySelector('.invoice-input').click();
     },
     function onDragOver(e) {
-      e.preventDefault();    
+      e.preventDefault();
     },
     function onDropOut(e) {
-      e.preventDefault();  
+      e.preventDefault();
     },
     function onDrop(e) {
-      e.preventDefault();  
-      var files = []; 
+      e.preventDefault();
+      var files = [];
       var inputFile;
       if ( e.dataTransfer.items ) {
         inputFile = e.dataTransfer.items
@@ -245,7 +246,7 @@ foam.CLASS({
             // If dropped items aren't files, reject them
             if ( inputFile[i].kind === 'file' ) {
               var file = inputFile[i].getAsFile();
-              if( this.isImageType(file) ) files.push(file);           
+              if( this.isImageType(file) ) files.push(file);
               else
                 this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
             }
@@ -255,30 +256,30 @@ foam.CLASS({
         inputFile = e.dataTransfer.files
         for (var i = 0; i < inputFile.length; i++) {
           var file = inputFile[i];
-          if( this.isImageType(file) ) files.push(file);            
+          if( this.isImageType(file) ) files.push(file);
           else{
             this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
-          }  
+          }
         }
       }
-      this.addFiles(files) 
+      this.addFiles(files)
     },
     function isImageType(file) {
-      if( file.type === "image/jpg" || 
-          file.type === "image/jpeg" || 
-          file.type === "image/png" || 
-          file.type === "application/msword" || 
-          file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || 
-          file.type === "application/vnd.ms-powerpoint" || 
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" || 
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" || 
-          file.type === "application/vnd.oasis.opendocument.text" || 
-          file.type === "application/vnd.ms-excel" || 
-          file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || 
-          file.type === "application/pdf") return true; 
+      if( file.type === "image/jpg" ||
+          file.type === "image/jpeg" ||
+          file.type === "image/png" ||
+          file.type === "application/msword" ||
+          file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+          file.type === "application/vnd.ms-powerpoint" ||
+          file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+          file.type === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" ||
+          file.type === "application/vnd.oasis.opendocument.text" ||
+          file.type === "application/vnd.ms-excel" ||
+          file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          file.type === "application/pdf") return true;
       return false;
     },
-    function onChange (e) {   
+    function onChange (e) {
       var files = e.target.files;
       this.addFiles(files)
     },
@@ -293,8 +294,8 @@ foam.CLASS({
         }
         var isIncluded = false
         for ( var j = 0 ; j < this.data.length ; j++ ) {
-          if( this.data[j].filename.localeCompare(files[i].name) === 0 ) { 
-            isIncluded = true; 
+          if( this.data[j].filename.localeCompare(files[i].name) === 0 ) {
+            isIncluded = true;
             break
           }
         }

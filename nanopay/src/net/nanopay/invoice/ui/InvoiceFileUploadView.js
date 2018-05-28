@@ -78,9 +78,12 @@ foam.CLASS({
     },
 
     function onInvoiceFileRemoved (fileNumber) {
-      this.document.querySelector('.attachment-input').value = null;
-      this.data.splice(fileNumber - 1, 1);
-      this.data = Array.from(this.data);
+      // this.document.querySelector('.attachment-input').value = null;
+      // this.data.splice(fileNumber - 1, 1);
+      // this.data = Array.from(this.data);
+      var data = Array.from(this.data);
+      data.splice(fileNumber - 1, 1);
+      this.data = data;
     }
   ],
   actions: [
