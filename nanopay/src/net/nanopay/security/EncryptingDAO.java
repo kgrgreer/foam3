@@ -96,14 +96,11 @@ public class EncryptingDAO
       System.arraycopy(nonce, 0, nonceWithCipherText, 0, nonce.length);
       System.arraycopy(cipherText, 0, nonceWithCipherText, nonce.length, cipherText.length);
 
-      // fetch id, convert from long to string if necessary
-      Object id = obj.getProperty("id");
-      String objectId = ( id instanceof String ) ? (String) id : Long.toString((Long) id, 10);
-
       // store encrypted object instead of original object
-      EncryptedObject encryptedObject = new EncryptedObject();
-      encryptedObject.setId(objectId);
-      encryptedObject.setData(Base64.getEncoder().encodeToString(nonceWithCipherText));
+      EncryptedObject encryptedObject = new EncryptedObject.Builder(x)
+          .setId(obj.getProperty("id"))
+          .setData(Base64.getEncoder().encodeToString(nonceWithCipherText))
+          .build();
 
       return super.put_(x, encryptedObject);
     } catch (Throwable t) {
@@ -116,8 +113,7 @@ public class EncryptingDAO
   @Override
   public FObject find_(X x, Object id) {
     try {
-      String objectId = ( id instanceof String ) ? (String) id : Long.toString((Long) id, 10);
-      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, objectId);
+      EncryptedObject encryptedObject = (EncryptedObject) super.find_(x, id);
       byte[] data = Base64.getDecoder().decode(encryptedObject.getData());
 
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];

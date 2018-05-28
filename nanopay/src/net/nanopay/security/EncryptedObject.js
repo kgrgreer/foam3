@@ -6,7 +6,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Object',
       name: 'id'
     },
     {
