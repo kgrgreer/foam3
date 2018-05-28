@@ -157,11 +157,8 @@ public class CsvUtil {
           BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
           if ( bankAccount == null ) return;
 
-          if ( ! SafetyUtil.isEmpty(t.getReferenceNumber()) ) {
-            refNo = t.getReferenceNumber();
-          } else {
-            refNo = String.valueOf(t.getId());
-          }
+          // use transaction ID as the reference number
+          refNo = String.valueOf(t.getId());
 
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
@@ -193,7 +190,6 @@ public class CsvUtil {
 
           t.setProcessDate(generateProcessDate(now));
           t.setCompletionDate(generateCompletionDate(now));
-          t.setReferenceNumber(refNo);
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
