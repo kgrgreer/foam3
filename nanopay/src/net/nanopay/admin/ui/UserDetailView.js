@@ -302,7 +302,7 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: 'Unable to approve profile.', type: 'error' }));
         });
 
-        this.approveProfilePopUp_.remove();
+        this.approvePopUp.remove();
       }
     },
     {
