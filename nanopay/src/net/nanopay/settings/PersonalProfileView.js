@@ -332,7 +332,7 @@
         this.user.lastName = this.lastName;
         this.user.jobTitle = this.jobTitle;
         this.user.email = this.email;
-        this.user.phone.number = this.phoneCode.substring(1) + this.phone;
+        this.user.phone.number = this.phoneCode + this.phone;
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, clear password fields, show success
           self.user.copyFrom(result);
