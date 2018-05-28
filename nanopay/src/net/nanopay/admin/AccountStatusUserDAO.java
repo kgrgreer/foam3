@@ -1,13 +1,13 @@
 package net.nanopay.admin;
 
 import foam.core.FObject;
+import foam.core.PropertyInfo;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.util.SafetyUtil;
-import foam.core.PropertyInfo;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 
 /**
  * This DAO decorator updates the previousStatus property on the user model
@@ -16,26 +16,19 @@ import foam.nanos.logger.Logger;
 public class AccountStatusUserDAO
   extends ProxyDAO
 {
-  protected Logger logger_;
-
   public AccountStatusUserDAO(X x, DAO delegate) {
     super(x, delegate);
-    logger_ = (Logger) x.get("logger");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
-    try {
-      User newUser = (User) obj;
-      User oldUser = (User) getDelegate().find(newUser.getId());
-      PropertyInfo prop = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("status");
+    User newUser = (User) obj;
+    User oldUser = (User) getDelegate().find(newUser.getId());
+    PropertyInfo prop = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("status");
 
-      // if new status and old status are different then set previous status
-      if ( ! SafetyUtil.equals(prop.get(newUser), prop.get(oldUser)) ) {
-        newUser.setPreviousStatus(oldUser.getStatus());
-      }
-    } catch (Throwable t) {
-      logger_.error("Error updating previous status", t);
+    // if new status and old status are different then set previous status
+    if ( oldUser != null && ! SafetyUtil.equals(prop.get(newUser), prop.get(oldUser)) ) {
+      newUser.setPreviousStatus(oldUser.getStatus());
     }
 
     return super.put_(x, obj);
