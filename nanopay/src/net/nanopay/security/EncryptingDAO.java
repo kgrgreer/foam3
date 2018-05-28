@@ -8,7 +8,6 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
-import foam.lib.json.OutputterMode;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
@@ -20,6 +19,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
 
@@ -39,21 +39,11 @@ public class EncryptingDAO
   protected static final int GCM_NONCE_LENGTH = 12;
   protected static final int GCM_TAG_LENGTH   = 16;
 
-  private static SecureRandom random;
-  private static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
-    if ( random == null ) {
-      random = SecureRandom.getInstance("SHA1PRNG");
-    }
-    return random;
-  }
+  protected String          alias_;
+  protected SecretKey       key_;
+  protected KeyStoreManager manager_;
+  protected Logger          logger_;
 
-  protected String alias_;
-  protected SecretKey key_;
-  protected net.nanopay.security.KeyStoreManager manager_;
-
-  protected Logger     logger_;
-  protected JSONParser jsonParser_;
-  protected Outputter  outputter_ = new Outputter(OutputterMode.STORAGE);
 
   public EncryptingDAO(X x, ClassInfo of, DAO delegate)
       throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableEntryException, NoSuchProviderException
@@ -65,7 +55,6 @@ public class EncryptingDAO
     alias_ = of.getId();
     logger_ = (Logger) x.get("logger");
     manager_ = (net.nanopay.security.KeyStoreManager) x.get("keyStoreManager");
-    jsonParser_ = getX().create(JSONParser.class);
 
     // get instance of keystore, load keystore file
     KeyStore keyStore = manager_.getKeyStore();
@@ -74,7 +63,7 @@ public class EncryptingDAO
     if ( ! keyStore.containsAlias(alias_) ) {
       // generate AES key using BC as provider
       KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
-      keygen.init(AES_KEY_SIZE, getSecureRandom());
+      keygen.init(AES_KEY_SIZE, SecureRandom.getInstance("SHA1PRNG"));
       key_ = keygen.generateKey();
 
       // set secret key entry in keystore
@@ -92,12 +81,15 @@ public class EncryptingDAO
     try {
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
-      getSecureRandom().nextBytes(nonce);
+      SecureRandom.getInstance("SHA1PRNG").nextBytes(nonce);
       GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
       cipher.init(Cipher.ENCRYPT_MODE, key_, spec);
 
-      byte[] input = outputter_.stringify(obj).getBytes();
-      byte[] cipherText = cipher.doFinal(input);
+      Outputter outputter = x.create(Outputter.class);
+      byte[] input = outputter.stringify(obj).getBytes(StandardCharsets.UTF_8);
+      byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
+      int updated = cipher.update(input, 0, input.length, cipherText, 0);
+      cipher.doFinal(cipherText, updated);
 
       // prefix cipher text with nonce for decrypting later
       byte[] nonceWithCipherText = new byte[nonce.length + cipherText.length];
@@ -115,7 +107,8 @@ public class EncryptingDAO
 
       return super.put_(x, encryptedObject);
     } catch (Throwable t) {
-      logger_.error(t);
+      logger_.error("Error encrypting object", t);
+      t.printStackTrace();
       return null;
     }
   }
@@ -134,14 +127,20 @@ public class EncryptingDAO
       System.arraycopy(data, 0, nonce, 0, nonce.length);
       System.arraycopy(data, nonce.length, cipherText, 0, cipherText.length);
 
+      // create cipher
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
       GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
       cipher.init(Cipher.DECRYPT_MODE, key_, spec);
 
-      byte[] plainText = cipher.doFinal(cipherText);
-      return this.jsonParser_.parseString(new String(plainText));
+      // decrypt ciphertext
+      JSONParser parser = x.create(JSONParser.class);
+      byte[] plaintext = new byte[cipher.getOutputSize(cipherText.length)];
+      int updated = cipher.update(cipherText, 0, cipherText.length, plaintext, 0);
+      cipher.doFinal(plaintext, updated);
+
+      return parser.parseString(new String(plaintext, StandardCharsets.UTF_8));
     } catch (Throwable t) {
-      logger_.error(t);
+      logger_.error("Error decrypting object", t);
       return null;
     }
   }

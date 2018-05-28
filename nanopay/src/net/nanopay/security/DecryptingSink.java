@@ -18,7 +18,11 @@ public class DecryptingSink
   }
 
   public void put(Object obj, foam.core.Detachable sub) {
-    EncryptedObject eo = (EncryptedObject) obj;
-    super.put(dao_.find_(x_, eo.getId()), sub);
+    try {
+      EncryptedObject eo = (EncryptedObject) obj;
+      super.put(dao_.find_(x_, eo.getId()), sub);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
   }
 }
