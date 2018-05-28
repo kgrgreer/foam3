@@ -55,7 +55,6 @@ public class DuplicateTransactionCheckDAO
     temp.setPayerName(oldtxn.getPayerName());
     temp.setPayeeName(oldtxn.getPayeeName());
     temp.setDeviceId(oldtxn.getDeviceId());
-    temp.setReferenceNumber(oldtxn.getReferenceNumber());
     temp.setNotes(oldtxn.getNotes());
     temp.setChallenge(oldtxn.getChallenge());
     temp.setProviderId(oldtxn.getProviderId());
