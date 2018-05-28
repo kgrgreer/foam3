@@ -55,7 +55,8 @@ public class AuthenticatedBankAccountDAO
     }
 
     BankAccount account = (BankAccount) getDelegate().find_(x, id);
-    if ( account != null && account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_READ) ) {
+
+    if ( account != null && ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_READ) ) {
       return null;
     }
     return account;
