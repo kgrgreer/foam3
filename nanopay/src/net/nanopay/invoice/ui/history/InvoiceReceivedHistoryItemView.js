@@ -48,6 +48,12 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
     }
+    ^ .iconPosition > img {
+      border-radius: 999px;
+      background-color: #A4B3B8;
+      height: 12px;
+      padding: 4px;
+    }
   `,
 
   methods: [
@@ -61,19 +67,19 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
-          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-received.svg' })
+          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-plus.svg' })
         .end()
         .start('div').addClass('statusBox')
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice received from ", this.businessName$)
+              .add("Invoice was created")
             .end()
           .end()
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(this.formatDate(record.timestamp))
+              .add(this.formatDate(record.timestamp), ' by ', this.businessName$)
             .end()
           .end()
         .end()
@@ -84,7 +90,7 @@ foam.CLASS({
       return timestamp.toLocaleTimeString(locale, { hour12: false }) +
         ' ' + timestamp.toLocaleString(locale, { month: 'short' }) +
         ' ' + timestamp.getDate() +
-        ' ' + timestamp.getFullYear();
+        ', ' + timestamp.getFullYear();
     }
   ]
 });
