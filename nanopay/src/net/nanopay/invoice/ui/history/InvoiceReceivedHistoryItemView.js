@@ -48,12 +48,6 @@ foam.CLASS({
       letter-spacing: 0.2px;
       color: #093649;
     }
-    ^ .iconPosition > img {
-      border-radius: 999px;
-      background-color: #A4B3B8;
-      height: 12px;
-      padding: 4px;
-    }
   `,
 
   methods: [
@@ -67,7 +61,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
-          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-plus.svg' })
+          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' })
         .end()
         .start('div').addClass('statusBox')
           .start('div')
