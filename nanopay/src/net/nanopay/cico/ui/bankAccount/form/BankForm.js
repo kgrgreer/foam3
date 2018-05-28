@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.PadCapture',
+    'foam.nanos.auth.Address',
   ],
 
   imports: [
@@ -72,7 +73,14 @@ foam.CLASS({
     },
     function validations() {
       var accountInfo = this.viewData;
-      this.userAddress = this.viewData.user.address.city == "" ? this.viewData.user.businessAddress : this.viewData.user.address;
+
+      // PAD (Pre-Authorized Debit) requires all users to have an address and at
+      // times, some business users wouldn't have one. This checks if the user
+      // has a normal `.address` and if they don't, uses their business address
+      // instead.
+      this.userAddress = this.Address.isInstance(this.viewData.user.address)
+        ? this.viewData.user.address
+        : this.viewData.user.businessAddress;
 
       // only perform these validations if on 1st screen
       if ( this.position === 0 ) {

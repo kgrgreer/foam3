@@ -260,9 +260,10 @@ foam.CLASS({
       {
         this.firstName = this.user.firstName;
         this.lastName = this.user.lastName;
-        this.jobTitle = this.user.department;
+        this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
-        this.phone = this.user.phone.number;
+        // split the country code and phone number
+        [ this.phoneCode, this.phone ] = this.user.phone.number.split(" ");
       }
       this
       .addClass(this.myClass())
@@ -327,9 +328,9 @@ foam.CLASS({
 
         this.user.firstName = this.firstName;
         this.user.lastName = this.lastName;
-        this.user.department = this.jobTitle;
+        this.user.jobTitle = this.jobTitle;
         this.user.email = this.email;
-        this.user.phone.number = this.phone;
+        this.user.phone.number = this.phoneCode + " " + this.phone;
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, clear password fields, show success
           self.user.copyFrom(result);

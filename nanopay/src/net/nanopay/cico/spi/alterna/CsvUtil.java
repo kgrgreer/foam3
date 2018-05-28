@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class CsvUtil {
    * @return either the current date plus 1 day if current time is before 11 am
    *         or the current date plus 2 days if the current date is after 11 am
    */
-  public static Date generateSettlementDate(Date date) {
+  public static Date generateProcessDate(Date date) {
     Calendar curDate = Calendar.getInstance();
     curDate.setTime(date);
     int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
@@ -62,11 +63,25 @@ public class CsvUtil {
   }
 
   /**
-   * Generates a reference id by concatentating the current time in milliseconds with a randomly generated number
-   * @return a reference id
+   * Generates the completion date based on a given date
+   * @param date date used to determine the processing date
+   * @return either the current date plus 3 day if current time is before 11 am
+   *         or the current date plus 4 days if the current date is after 11 am
    */
-  public static String generateReferenceId() {
-    return new Date().getTime() + "" + (int) (Math.random() * (99999 - 10000) + 10000);
+  public static Date generateCompletionDate(Date date) {
+    Calendar curDate = Calendar.getInstance();
+    curDate.setTime(date);
+    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 3 : 4;
+    int i = 0;
+    while ( i < k ) {
+      curDate.add(Calendar.DAY_OF_YEAR, 1);
+      if ( curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+        && curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+        && ! cadHolidays.contains(curDate.get(Calendar.DAY_OF_YEAR)) ) {
+        i = i + 1;
+      }
+    }
+    return curDate.getTime();
   }
 
   /**
@@ -120,6 +135,7 @@ public class CsvUtil {
           String txnType;
           String refNo;
           Transaction t = (Transaction) obj;
+          t = (Transaction) t.fclone();
 
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
@@ -141,16 +157,13 @@ public class CsvUtil {
           BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
           if ( bankAccount == null ) return;
 
-          if ( ! "".equals(t.getReferenceNumber()) ) {
-            refNo = t.getReferenceNumber();
-          } else {
-            refNo = generateReferenceId();
-          }
+          // use transaction ID as the reference number
+          refNo = String.valueOf(t.getId());
 
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
           // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if ( ! "".equals(t.getPadType()) ) {
+          if ( ! SafetyUtil.isEmpty(t.getPadType()) ) {
             alternaFormat.setPadType(t.getPadType());
           }
           else {
@@ -166,17 +179,17 @@ public class CsvUtil {
           alternaFormat.setTxnType(txnType);
 
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if ( ! "".equals(t.getTxnCode()) ) {
+          if ( ! SafetyUtil.isEmpty(t.getTxnCode()) ) {
             alternaFormat.setTxnCode(t.getTxnCode());
           } else {
             t.setTxnCode(alternaFormat.getTxnCode());
           }
 
-          alternaFormat.setProcessDate(csvSdf.get().format(generateSettlementDate(now)));
+          alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(now)));
           alternaFormat.setReference(refNo);
 
-          t.setSettlementDate(generateSettlementDate(now));
-          t.setReferenceNumber(refNo);
+          t.setProcessDate(generateProcessDate(now));
+          t.setCompletionDate(generateCompletionDate(now));
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);

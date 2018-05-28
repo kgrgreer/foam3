@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
   
-  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'settlementDate', 'date'],
+  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
     'addCommas',
@@ -154,7 +154,11 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'settlementDate'
+      name: 'processDate'
+    },
+    {
+      class: 'DateTime',
+      name: 'completionDate'
     },
     {
       class: 'String',

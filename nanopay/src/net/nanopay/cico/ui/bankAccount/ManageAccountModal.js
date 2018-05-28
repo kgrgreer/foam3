@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus'
   ],
 
   imports: [
@@ -143,7 +144,7 @@ foam.CLASS({
         return this.bankAccountDAO.where(
           this.AND(
             this.EQ(this.BankAccount.OWNER, this.user.id),
-            this.EQ(this.BankAccount.STATUS, "Verified")
+            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
           )
         );
       }
@@ -216,8 +217,7 @@ foam.CLASS({
       name: 'verifyButton',
       label: 'Verify',
       isAvailable: function() {
-        var self = this;
-        return self.selectedAccount.status == 'Unverified';
+        return this.selectedAccount.status == this.BankAccountStatus.UNVERIFIED;
       },
       code: function(X) {
         X.closeDialog();
@@ -228,8 +228,7 @@ foam.CLASS({
       name: 'defaultButton',
       label: 'Set As Default',
       isAvailable: function() {
-        var self = this;
-        return self.selectedAccount.status == "Verified";
+        return this.selectedAccount.status == this.BankAccountStatus.VERIFIED;
       },
       code: function(X) {
         if ( ! X.selectedAccount.setAsDefault ) {
@@ -245,8 +244,7 @@ foam.CLASS({
       label: 'Delete',
       confirmationRequired: true,
       isAvailable: function() {
-        var self = this;
-        return self.selectedAccount.status != 'Unverified';
+        return this.selectedAccount.status != this.BankAccountStatus.UNVERIFIED;
       },
       code: function(X) {
         var self = this;

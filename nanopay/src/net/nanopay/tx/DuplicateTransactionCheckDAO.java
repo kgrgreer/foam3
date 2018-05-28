@@ -55,7 +55,6 @@ public class DuplicateTransactionCheckDAO
     temp.setPayerName(oldtxn.getPayerName());
     temp.setPayeeName(oldtxn.getPayeeName());
     temp.setDeviceId(oldtxn.getDeviceId());
-    temp.setReferenceNumber(oldtxn.getReferenceNumber());
     temp.setNotes(oldtxn.getNotes());
     temp.setChallenge(oldtxn.getChallenge());
     temp.setProviderId(oldtxn.getProviderId());
@@ -63,7 +62,8 @@ public class DuplicateTransactionCheckDAO
 
     temp.setPadType(oldtxn.getPadType());
     temp.setTxnCode(oldtxn.getTxnCode());
-    temp.setSettlementDate(oldtxn.getSettlementDate());
+    temp.setProcessDate(oldtxn.getProcessDate());
+    temp.setCompletionDate(oldtxn.getCompletionDate());
     temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
     temp.setDescription(oldtxn.getDescription());
     temp.setReturnCode(oldtxn.getReturnCode());

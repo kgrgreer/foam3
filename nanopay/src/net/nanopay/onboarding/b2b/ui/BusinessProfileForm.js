@@ -366,7 +366,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
         this.viewData.user.businessPhone = this.Phone.create({
-          number: '+1' + newValue
+          number: '+1 ' + newValue
         });
       }
     },
@@ -391,8 +391,8 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId ) {
-          if ( this.viewData.user.businessType == 0 ) {
+        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0) {
+          if ( this.viewData.user.businessTypeId == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
@@ -581,7 +581,8 @@ foam.CLASS({
       var self = this;
 
       var businessTypeInfoSlot = this.businessTypeField$.map(function(value) { return value !== 'Please select' && value !== '' ? true : false; });
-
+      this.scrollToTop();
+      
       this
         .addClass(this.myClass())
         .start('div').addClass('widthWrapper')
@@ -598,7 +599,7 @@ foam.CLASS({
               .addClass('fullWidthField')
               .enableClass('hidden', this.isEditingPhone$)
               .start('p').add(this.BusinessPhoneLabel).addClass('fieldLabel').end()
-              .start(this.DISPLAYED_PHONE_NUMBER)
+              .start(this.DISPLAYED_PHONE_NUMBER, { placeholder: "format: 000-000-0000" })
                 .addClass('fullWidthField')
                 .addClass('displayOnly')
                 .on('focus', function() {
@@ -630,7 +631,7 @@ foam.CLASS({
                 .addClass('phoneNumberCol')
                 .enableClass('out', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('fieldLabel').end()
-                .start(this.PHONE_NUMBER_FIELD, {}, this.phoneNumberFieldElement$)
+                .start(this.PHONE_NUMBER_FIELD, { placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                   .addClass('fullWidthField')
                   .on('focus', function() {
                     self.isEditingPhone = true;
@@ -667,7 +668,7 @@ foam.CLASS({
           .start(this.REGISTRATION_AUTHORITY_FIELD).addClass('fullWidthField').end()
 
           .start('p').add(this.RegistrationDateLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.REGISTRATION_DATE_FIELD).addClass('fullWidthField').end()
+          .start(this.REGISTRATION_DATE_FIELD, { placeholder: 'yyyy-mm-dd'}).addClass('fullWidthField').end()
 
           .start('p').add(this.BusinessAddressLabel).addClass('sectionTitle').end()
           .start('p').add(this.CountryLabel).addClass('fieldLabel').end()

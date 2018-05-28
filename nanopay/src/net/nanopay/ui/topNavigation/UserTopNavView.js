@@ -21,7 +21,7 @@ foam.CLASS({
     ^ h1 {
       margin: 0;
       padding: 15px;
-      font-size: 16px;
+      font-size: 14px;
       display: inline-block;
       font-weight: 100;
       color: white;

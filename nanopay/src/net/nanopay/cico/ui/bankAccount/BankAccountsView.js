@@ -16,7 +16,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount'
+    'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus'
   ],
 
   css: `
@@ -211,6 +212,7 @@ foam.CLASS({
 
       requires: [
         'net.nanopay.model.BankAccount',
+        'net.nanopay.model.BankAccountStatus',
         'foam.u2.dialog.Popup',
         'foam.u2.dialog.NotificationMessage'
       ],
@@ -234,7 +236,7 @@ foam.CLASS({
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if ( newValue && newValue.status != 'Disabled' ) {
+            if ( newValue && newValue.status != this.BankAccountStatus.DISABLED ) {
               this.selectedAccount = newValue;
               this.manageAccount();
               return oldValue;
@@ -293,17 +295,17 @@ foam.CLASS({
           self.allBanksCount = count.value;
         });
 
-        var verifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Verified"));
+        var verifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED));
         verifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.verifiedBanksCount = count.value;
         });
 
-        var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Unverified"));
+        var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.UNVERIFIED));
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
         });
 
-        var disabledBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, "Disabled"));
+        var disabledBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED));
         disabledBanksDAO.select(this.COUNT()).then(function(count) {
           self.disabledBanksCount = count.value;
         });

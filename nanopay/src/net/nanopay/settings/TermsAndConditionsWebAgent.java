@@ -11,6 +11,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
 import foam.nanos.auth.HtmlDoc;
+import foam.util.SafetyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +40,7 @@ public class TermsAndConditionsWebAgent
       e.printStackTrace();
     }
 
-    if ( version.equals("") ) {
+    if ( SafetyUtil.isEmpty(version) ) {
       ArraySink listSink = (ArraySink) tcDAO.orderBy(new foam.mlang.order.Desc(HtmlDoc.ID)).limit(1).select(new ArraySink());
 
       terms = (HtmlDoc) listSink.getArray().get(0);

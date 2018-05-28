@@ -31,7 +31,7 @@ public class UpdateInvoiceTransactionDAO
         if ( invoice == null ) {
           throw new RuntimeException("Invoice not found");
         }
-        if ( invoice.getStatus() == "Paid" ) {
+        if ( "Paid".equals(invoice.getStatus()) ) {
           throw new RuntimeException("Invoice already paid");
         }
         invoice.setPaymentId(transaction.getId());
