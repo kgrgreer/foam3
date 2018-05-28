@@ -17,6 +17,10 @@ foam.ENUM({
     {
       name: 'VOID',
       label: 'Void'
+    },
+    {
+      name: 'PENDING',
+      label: 'Pending'
     }
   ]
 });
@@ -195,6 +199,7 @@ foam.CLASS({
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
         if ( paymentMethod === this.PaymentStatus.VOID ) return 'Void';
+        if ( paymentMethod === this.PaymentStatus.PENDING ) return 'Pending';
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return 'Paid';
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return 'Paid';
         if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
@@ -209,6 +214,7 @@ foam.CLASS({
       javaGetter: `
         if ( getDraft() ) return "Draft";
         if ( getPaymentMethod() == PaymentStatus.VOID ) return "Void";
+        if ( getPaymentMethod() == PaymentStatus.PENDING ) return "Pending";
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
         if ( getPaymentId() == -1 ) return "Disputed";
