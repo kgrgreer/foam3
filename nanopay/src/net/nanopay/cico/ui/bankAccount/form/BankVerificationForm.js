@@ -64,6 +64,29 @@ foam.CLASS({
           -webkit-appearance: none;
           margin: 0;
         }
+        ^ .property-tenthCent{
+          background: none;
+          border: none;
+          font-size: 30px;
+          font-weight: 300;
+          position: relative;
+          font-family: 'Roboto', sans-serif;
+          top: 5px;
+          width: 25px;
+          border-bottom: 2px solid black;
+        }
+        ^ .property-cent{
+          background: none;
+          border: none;
+          font-size: 30px;
+          font-weight: 300;
+          position: relative;
+          margin-left: 5px;
+          font-family: 'Roboto', sans-serif;
+          top: 5px;
+          width: 25px;
+          border-bottom: 2px solid black;
+        }
       */}
     })
   ],
