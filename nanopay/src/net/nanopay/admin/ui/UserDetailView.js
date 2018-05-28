@@ -237,8 +237,9 @@ foam.CLASS({
                     return this.E('span')
                       .start(self.APPROVE_PROFILE_DROP_DOWN, null, self.approveProfileMenuBtn_$).end()
                       .start(self.APPROVE_PROFILE).end()
+
                   case self.AccountStatus.DISABLED:
-                    return this.E('span').start(self.ACTIVATE_PROFILE).end();
+                    return this.E('span').start(self.APPROVE_PROFILE).end();
                 }
               } else if ( compliance == self.ComplianceStatus.PASSED ) {
                 switch ( status ) {
