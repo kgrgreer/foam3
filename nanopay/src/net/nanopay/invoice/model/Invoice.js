@@ -21,6 +21,10 @@ foam.ENUM({
     {
       name: 'PENDING',
       label: 'Pending'
+    },
+    {
+      name: 'UNSUCCESS',
+      label: 'Unsuccess'
     }
   ]
 });
@@ -200,6 +204,7 @@ foam.CLASS({
         if ( draft ) return 'Draft';
         if ( paymentMethod === this.PaymentStatus.VOID ) return 'Void';
         if ( paymentMethod === this.PaymentStatus.PENDING ) return 'Pending';
+        if ( paymentMethod === this.PaymentStatus.UNSUCCESS ) return 'Unsuccess';
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return 'Paid';
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return 'Paid';
         if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
@@ -215,6 +220,7 @@ foam.CLASS({
         if ( getDraft() ) return "Draft";
         if ( getPaymentMethod() == PaymentStatus.VOID ) return "Void";
         if ( getPaymentMethod() == PaymentStatus.PENDING ) return "Pending";
+        if ( getPaymentMethod() == PaymentStatus.UNSUCCESS ) return "Unsuccess";
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
         if ( getPaymentId() == -1 ) return "Disputed";

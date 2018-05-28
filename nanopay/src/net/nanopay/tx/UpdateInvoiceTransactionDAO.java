@@ -50,13 +50,12 @@ public class UpdateInvoiceTransactionDAO
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO_.put(invoice);
       }
-//      if(transaction.getStatus() == TransactionStatus.DECLINED){
-//        invoice.setPaymentId(transaction.getId());
-//        invoice.setPaymentDate(transaction.getDate());
-//        invoice.setPaymentMethod(PaymentStatus.NONE);
-//        invoice.setStatus("Unpaid");
-//        invoiceDAO_.put(invoice);
-//      }
+      if(transaction.getStatus() == TransactionStatus.DECLINED){
+        invoice.setPaymentId(transaction.getId());
+        invoice.setPaymentDate(transaction.getDate());
+        invoice.setPaymentMethod(PaymentStatus.UNSUCCESS);
+        invoiceDAO_.put(invoice);
+      }
     }
 
     return ret;
