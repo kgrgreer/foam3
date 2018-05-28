@@ -20,9 +20,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import java.io.IOException;
 import java.security.*;
-import java.security.cert.CertificateException;
 import java.util.Base64;
 
 /** Adapt objects into EncryptedObject's before being stored. **/
@@ -84,7 +82,7 @@ public class EncryptingDAO
       manager_.storeKey(alias_, secretKeyEntry);
     } else {
       // load the secret key
-      KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(alias_, null);
+      KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) manager_.loadKey(alias_);
       key_ = entry.getSecretKey();
     }
   }

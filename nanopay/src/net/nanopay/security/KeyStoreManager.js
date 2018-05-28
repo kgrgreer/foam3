@@ -9,6 +9,17 @@ foam.INTERFACE({
       documentation: 'Fetches a keystore'
     },
     {
+      name: 'loadKey',
+      javaReturns: 'java.security.KeyStore.Entry',
+      documentation: 'Loads a key from the keystore',
+      args: [
+        {
+          name: 'alias',
+          javaType: 'String'
+        }
+      ]
+    },
+    {
       name: 'storeKey',
       javaReturns: 'void',
       documentation: 'Stores a new key',
