@@ -108,6 +108,24 @@ foam.CLASS({
           var e = this.E()
             .start('span')
             .addClass('attachments')
+            .add('Uploaded Attachments')
+            .end();
+
+          for ( var i = 0 ; i < documents.length ; i++ ) {
+            e.tag({
+              class: 'net.nanopay.invoice.ui.InvoiceFileView',
+              data: documents[i],
+              fileNumber: i + 1,
+            });
+          }
+          return e;
+        }, this.user.additionalDocuments$))
+        .add(this.slot(function (documents) {
+          if ( documents.length <= 0 ) return;
+
+          var e = this.E()
+            .start('span')
+            .addClass('attachments')
             .add('Attachments')
             .end();
 
@@ -133,11 +151,12 @@ foam.CLASS({
   actions: [
     {
       name: 'saveButton',
-      label: 'Save',
+      label: 'Upload File(s)',
       code: function (X) {
         var self = this;
+        X.user.additionalDocuments = (X.user.additionalDocuments.length == 0)? this.additionalDocuments:  X.user.additionalDocuments.concat(this.additionalDocuments)
+        this.additionalDocuments = []
 
-        X.user.additionalDocuments = this.additionalDocuments
         X.userDAO.put(X.user).then(function (result) {
           if ( ! result ) throw new Error(self.UploadFailure);
           X.user.copyFrom(result);
