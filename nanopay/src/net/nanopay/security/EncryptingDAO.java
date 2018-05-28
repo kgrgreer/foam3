@@ -53,7 +53,7 @@ public class EncryptingDAO
 
     alias_ = of.getId();
     logger_ = (Logger) x.get("logger");
-    manager_ = (net.nanopay.security.KeyStoreManager) x.get("keyStoreManager");
+    manager_ = (KeyStoreManager) x.get("keyStoreManager");
 
     // get instance of keystore, load keystore file
     KeyStore keyStore = manager_.getKeyStore();
