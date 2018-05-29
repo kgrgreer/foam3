@@ -120,13 +120,13 @@ foam.CLASS({
           .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
           .start().addClass(this.myClass('cashflow-summary'))
             .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
-            .start().addClass('overall-receivables inline').add()
+            .start().addClass('overall-receivables').addClass('inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
               .start('h4').add('+', this.formattedReceivableAmount$.map(function(a){
                 return a == "$NaN" ? '...' : a;
               })).end()
             .end()
-            .start().addClass('overall-payables inline').add()
+            .start().addClass('overall-payables').addClass('inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
               .start('h4').add('-', this.formattedPayableAmount$.map(function(a){
                 return a == "$NaN" ? '...' : a;

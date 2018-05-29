@@ -115,7 +115,7 @@ foam.CLASS({
         .end()
         .start().style({ float: 'right'})
           .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true })
-          .addClass('import-button hide')
+          .addClass('import-button').addClass('hide')
           .enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) )
           .end()
         .end()
