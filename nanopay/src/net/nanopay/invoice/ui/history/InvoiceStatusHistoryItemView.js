@@ -54,6 +54,8 @@ foam.CLASS({
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'status')
 
+      if ( ! status ) status = { newValue: 'Scheduled' };
+
       switch ( status.newValue ) {
         case "Void":
           return {
@@ -102,10 +104,7 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       var self = this;
       var attributes = this.getAttributes(record);
-
-      this.invoiceDAO.find(record.objectId).then(function(inv){
-        self.paymentDate = inv.paymentDate;
-      });
+      var displayDate = new Date(record.updates.find(u => u.name === 'paymentDate').newValue);
 
       return parentView
         .addClass(this.myClass())
@@ -122,10 +121,9 @@ foam.CLASS({
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
                 .start('span').style({ 'margin-left' : '4px'})
-                  .add(this.paymentDate$.map(function(date){
-                    if(!date) return;
-                    return self.formatDate(date);
-                  }))
+                  .callIf(displayDate, function() {
+                    this.add(self.formatDate(displayDate));
+                  })
                 .end()
               .end()
             .end()
