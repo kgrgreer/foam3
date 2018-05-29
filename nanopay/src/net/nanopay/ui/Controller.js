@@ -136,9 +136,27 @@ foam.CLASS({
                 return;
 
               case self.AccountStatus.SUBMITTED:
-              case self.AccountStatus.DISABLED:
-                self.loginSuccess = false;
                 self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+                self.loginSuccess = false;
+                return;
+
+              case self.AccountStatus.DISABLED:
+
+                // If the user submitted the form before their account was
+                // disabled but before it was activated, they should see page
+                // 5 of the onboarding wizard to be able to review what they
+                // submitted.
+                if ( self.user.previousStatus === self.AccountStatus.SUBMITTED ) {
+                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+
+                // Otherwise, if they haven't submitted yet, or were already
+                // activated, they shouldn't need to be able to review their
+                // submission, so they should just see the simple "account
+                // disabled" view.
+                } else {
+                  self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+                }
+                self.loginSuccess = false;
                 return;
 
               // show onboarding screen if user hasn't clicked "Go To Portal" button

@@ -131,7 +131,7 @@ foam.CLASS({
             .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
             .start().addClass('label').add('Note:').end()
             .start(this.NOTE).addClass('half-small-input-box').end()
-            .start(this.TRANSFER_VALUE).addClass('blue-button btn').end()
+            .start(this.TRANSFER_VALUE).addClass('blue-button').addClass('btn').end()
           .endContext()
         .end()
       .end();

@@ -244,7 +244,7 @@ foam.CLASS({
           label = label + ' ' + obj.paymentDate.toISOString().substring(0,10);
         }
 
-        this.start().addClass('generic-status Invoice-Status-' + state).add(label).end();
+        this.start().addClass('generic-status').addClass('Invoice-Status-' + state).add(label).end();
       }
     },
     {

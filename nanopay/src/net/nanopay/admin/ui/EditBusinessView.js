@@ -312,7 +312,7 @@ foam.CLASS({
           .start()
             .start('p').addClass('label').add(this.EmailLabel).end()
             .start(this.User.EMAIL, { data$: this.data.email$, mode: foam.u2.DisplayMode.RO })
-              .addClass('largeInput readOnly')
+              .addClass('largeInput').addClass('readOnly')
               .on('focus', function () {
                 self.isEditingName = false;
                 self.isEditingPhone = false;

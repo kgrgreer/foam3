@@ -121,8 +121,9 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().addClass('count').add(this.count$).end()
           .start().addClass('amount').add(this.formattedAmount$).end()
-          .start().addClass(this.status + ' label special-status-tag').add(this.status).end()
+          .start().addClass(this.status).addClass('label').addClass('special-status-tag').add(this.status).end()
         .end()
+
     },
   ]
 });
