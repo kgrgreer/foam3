@@ -379,7 +379,7 @@ foam.CLASS({
             .end()
           .end()
 
-          .start().addClass('inline ')
+          .start().addClass('inline')
             .start().add(this.LabelStreetNumber).addClass('infoLabel').end()
             .start(this.STREET_NUMBER).addClass('inputLarge').end()
           .end()
@@ -388,7 +388,7 @@ foam.CLASS({
             .start(this.STREET_NAME).addClass('inputLarge').end()
           .end()
 
-          .start().addClass('inline ')
+          .start().addClass('inline')
             .start().add(this.LabelSuite).addClass('infoLabel').end()
             .start(this.SUITE).addClass('inputLarge').end()
           .end()
@@ -423,7 +423,7 @@ foam.CLASS({
               .start().add(self.LabelTransit).addClass('infoLabel').end()
               .start().add(data.transitNumber).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
-            .start().addClass('inline float-right')
+            .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
               .start().add(data.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
