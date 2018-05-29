@@ -226,7 +226,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'total',
       visibility: foam.u2.Visibility.RO,
-      label: 'Amount',
+      label: 'Total Amount',
       transient: true,
       expression: function (amount, tip) {
         return amount + tip;
