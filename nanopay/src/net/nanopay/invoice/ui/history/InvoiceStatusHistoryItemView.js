@@ -104,7 +104,10 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       var self = this;
       var attributes = this.getAttributes(record);
-      var displayDate = new Date(record.updates.find(u => u.name === 'paymentDate').newValue);
+      var hasDisplayDate = record.updates.some(u => u.name === 'paymentDate');
+      var displayDate = hasDisplayDate
+        ? new Date(record.updates.find(u => u.name === 'paymentDate').newValue)
+        : null;
 
       return parentView
         .addClass(this.myClass())
@@ -121,7 +124,7 @@ foam.CLASS({
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
                 .start('span').style({ 'margin-left' : '4px'})
-                  .callIf(displayDate, function() {
+                  .callIf(hasDisplayDate, function() {
                     this.add(self.formatDate(displayDate));
                   })
                 .end()
