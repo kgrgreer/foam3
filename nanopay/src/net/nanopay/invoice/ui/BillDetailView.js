@@ -51,7 +51,9 @@ foam.CLASS({
         name: 'userList',
         view: function(_,X) {
           return foam.u2.view.ChoiceView.create({
-            dao: X.userDAO.where(X.data.NEQ(X.data.User.ID, X.user.id)),
+            dao: X.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id), 
+            // exclude the disabled users
+            X.data.NEQ(X.data.user.STATUS,'DISABLED'))),
             placeholder: 'Please Select Customer',
             objToChoice: function(user) {
               var username = user.businessName || user.organization;
