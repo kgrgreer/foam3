@@ -112,10 +112,10 @@ foam.CLASS({
                 return a.businessPhone.number;
               }))
             .end()
-            .start().addClass('companyName inline')
+            .start().addClass('companyName').addClass('inline')
               .add('Business')
             .end()
-            .start().addClass('generic-status Invoice-Status-Paid')
+            .start().addClass('generic-status').addClass('Invoice-Status-Paid')
              .add(this.business$.map(function(a){ 
                if(!a.status) return;
                return a.status.label; 

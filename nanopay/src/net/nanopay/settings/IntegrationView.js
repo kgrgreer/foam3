@@ -153,7 +153,7 @@ foam.CLASS({
             .end()
         .end()
         .start().addClass('labelContent centerDiv').add("Can’t find your software? Tell us about it.").end()
-        .start().addClass('centerDiv inputLine')
+        .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
           .start().add("submit").addClass('submit-BTN').end()
         .end()
