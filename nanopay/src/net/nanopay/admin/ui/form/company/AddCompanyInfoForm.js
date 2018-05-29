@@ -161,7 +161,7 @@ foam.CLASS({
               .start(this.PHONE_NUMBER).addClass('full-width-input').end()
             .end()
             .start().addClass('full-width-input-1')
-              .start().add(this.PasswordLabel).addClass('infoLabel').addClass(' position-label').end()
+              .start().add(this.PasswordLabel).addClass('infoLabel').addClass('position-label').end()
               .start(this.PASSWORD).addClass('full-width-input').end()
             .end()
             .start()
