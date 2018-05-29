@@ -148,7 +148,7 @@ foam.CLASS({
         .start('div').addClass('row').addClass('amountSpacing')
           .start('p').addClass('zeroLabel').add('0.').end()
           .start(this.TENTH_CENT, {onKey: true, maxLength: 1}).addClass('property-cent').end()
-          .start(this.CENT, {onKey: true, maxLength: 1}).end()
+          .tag(this.CENT, {onKey: true, maxLength: 1})
         .end()
         .start('p')
           .addClass('pDefault')

@@ -61,7 +61,6 @@ return calendar.getTime();`
         String url = config.getUrl()
             .replaceAll("/$", "");
 
-
         // keep generating a new password until a valid one is generated
         String password = passgen.generate(8);
         while ( ! Password.isValid(password) ) {

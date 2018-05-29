@@ -245,7 +245,8 @@
       class: 'String',
       name: 'phone'
     },
-    {
+    { 
+      //We'll have to account for user country code when internationalize.
       class: 'String',
       name: 'phoneCode',
       value: '+1'
@@ -264,8 +265,7 @@
         this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
         // split the country code and phone number
-        this.phone = this.user.phone.number.split(" ");
-        this.phone = this.phone.substring(1);
+        this.phone = this.user.phone.number.replace(this.phoneCode, "");
       }
       this
       .addClass(this.myClass())
