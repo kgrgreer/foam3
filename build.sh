@@ -73,7 +73,7 @@ function backup {
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
-    # invoke deploY_journals after build_war
+    # invoke deploy_journals after build_war
     #
     if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
