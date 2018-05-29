@@ -487,7 +487,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'AddressLabel', message: 'Address 2 (optional)' },
+    { name: 'AddressHint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -888,6 +889,7 @@ foam.CLASS({
             .end()
             .start('p').add(this.AddressLabel).addClass('infoLabel').end()
             .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.AddressHint).addClass('addressHint').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .start(this.PROVINCE_FIELD, { mode$: modeSlot }).end()

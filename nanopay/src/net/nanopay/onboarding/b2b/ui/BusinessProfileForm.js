@@ -296,6 +296,20 @@ foam.CLASS({
       background-color: white;
     }
 
+    ^ .addressHint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
   `,
 
   messages: [
@@ -314,7 +328,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'AddressLabel', message: 'Address 2 (optional)' },
+    { name: 'AddressHint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -688,6 +703,7 @@ foam.CLASS({
           .end()
           .start('p').add(this.AddressLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
+          .start('p').add(this.AddressHint).addClass('addressHint').end()
           .start('p').add(this.ProvinceLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start('div').addClass('dropdownContainer')
             .start(this.PROVINCE_FIELD).end()
