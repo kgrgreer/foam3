@@ -152,6 +152,11 @@ function deploy_journals {
         fi
     done < $JOURNALS
 
+    # If not running nanos standalone, disable built in http server.
+    if [ "$RUN_NANOS" -eq 0 ]; then
+        echo 'r({"class":"foam.nanos.boot.NSpec", "name":"http"})' >> "$JOURNAL_HOME/services.0"
+    fi
+
     # one-time copy of runtime journals from /opt/tomcat/bin to /mnt/journals
     if [ "$CATALINA_HOME" == "/opt/tomcat" ]; then
         COUNT="$(ls -l $JOURNAL_HOME | grep -v '.0' | wc -l | sed 's/ //g')"
@@ -257,10 +262,11 @@ function start_nanos {
     mvn clean
     ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
     ./gen.sh
-    mvn install
-    mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
+
+    mvn -f pom-standalone.xml install
     deploy_journals
-    exec java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+
+    exec java $JAVA_OPTS -jar target/root-0.0.1.jar
 }
 
 function testcatalina {
