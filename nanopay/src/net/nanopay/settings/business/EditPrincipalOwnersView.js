@@ -219,10 +219,12 @@ foam.CLASS({
       opacity: 0;
       // transform: translateX(64px);
     }
+
     ^ .nameFieldsCol.middleName {
       opacity: 0;
       transform: translateX(-166.66px);
     }
+
     ^ .nameFieldsCol.lastName {
       opacity: 0;
       transform: translateX(-166.66px);
@@ -424,6 +426,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }
+
     .bottomActions{
       position: fixed;
       bottom: 0;
@@ -432,19 +435,21 @@ foam.CLASS({
       background: white;
       z-index: 10;
     }
+
     ^ .widthWrapper {
       margin: auto;
       width: 540px;
       padding-bottom: 75px;
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Save{
+    .bottomActions > .net-nanopay-ui-ActionView-Save {
       float: right;
       background: #59a5d5;
       color: white;
       margin-right: 100px;
       margin-left: 40px;  
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Cancel{
+
+    .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
     }
 
@@ -458,10 +463,12 @@ foam.CLASS({
       padding: 1px 5px;
       box-sizing: border-box;
     }
+
     ^ .deleteButton img, ^ .editButton img {
       display: inline-block;
       vertical-align: middle;
     }
+
     ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
       width: 29px;
       font-size: 10px;
@@ -471,6 +478,7 @@ foam.CLASS({
       text-align: center;
       margin: 0;
     }
+
     ^ .deleteButton:hover, ^ .editButton:hover,
     ^ .deleteButton:focus, ^ .editButton:focus {
       cursor: pointer;
