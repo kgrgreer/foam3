@@ -87,7 +87,11 @@ function deploy_journals {
   fi
 
   for journal in $(ls $JOURNAL_HOME); do
-    scp $JOURNAL_HOME/$journal $HOST:$HOST_JOURNAL_HOME
+    if [[ -f $JOURNAL_HOME/$journal ]]; then
+      scp $JOURNAL_HOME/$journal $HOST:$HOST_JOURNAL_HOME
+    else
+      echo "INFO : Journal Deployment : $journal is not a regular file; hence skipping for deployment."
+    fi
   done
 
   ssh $HOST "chgrp -R tomcat $HOST_JOURNAL_HOME"
