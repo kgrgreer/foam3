@@ -260,7 +260,7 @@ function start_nanos {
     mvn install
     mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
     deploy_journals
-    java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+    exec java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
 }
 
 function testcatalina {
