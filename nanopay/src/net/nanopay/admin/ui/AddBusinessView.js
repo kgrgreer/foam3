@@ -565,7 +565,7 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           return;
         }
-        self.add(self.NotificationMessage.create({ message: 'Email already exist.', type: 'error' }));
+        self.add(self.NotificationMessage.create({ message: 'Adding the business failed.', type: 'error' }));
       });
     },
     function notEditingName() {
