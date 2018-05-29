@@ -94,7 +94,7 @@ public class XeroComplete
     account.setXeroId(xero.getAccountID());
     account.setAccountName(xero.getName());
     account.setCurrencyCode(xero.getCurrencyCode().value());
-    if (code == "US" && xero.getCurrencyCode()== CurrencyCode.USD){
+    if ("US".equals(code) && xero.getCurrencyCode()== CurrencyCode.USD){
       account.setBankNumber("0");
       account.setTransitNumber(""+xero.getBankAccountNumber().substring(0,9));
       account.setAccountNumber(""+xero.getBankAccountNumber().substring(10));

@@ -3,7 +3,6 @@ require('../src/net/nanopay/files.js');
 
 var classes = [
   'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.blob.AmazonS3BlobStore',
   'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionType',
@@ -23,6 +22,7 @@ var classes = [
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
+  'net.nanopay.model.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',

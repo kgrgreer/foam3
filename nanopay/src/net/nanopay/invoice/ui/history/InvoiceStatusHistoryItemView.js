@@ -53,7 +53,6 @@ foam.CLASS({
   methods: [
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'status')
-      console.log(status)
 
       switch ( status.newValue ) {
         case "Void":

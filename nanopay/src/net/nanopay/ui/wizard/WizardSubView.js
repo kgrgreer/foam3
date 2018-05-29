@@ -27,6 +27,10 @@ foam.CLASS({
     function init() {
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
+    },
+    function scrollToTop(){
+      var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
+      subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
     }
   ],
 

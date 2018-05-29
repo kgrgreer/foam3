@@ -444,7 +444,7 @@ foam.CLASS({
                 .addClass('nameFieldsCol')
                 .enableClass('middleName', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                .start(this.PHONE_NUMBER, {}, this.phoneFieldElement$)
+                .start(this.PHONE_NUMBER, { placeholder: 'format: 000-000-0000' }, this.phoneFieldElement$)
                   .addClass('phoneNumberInput')
                   .on('click', function() {
                     self.isEditingPhone = true;

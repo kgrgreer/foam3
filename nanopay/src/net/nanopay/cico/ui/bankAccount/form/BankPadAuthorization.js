@@ -300,8 +300,9 @@ foam.CLASS({
       name: 'country',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
+        var choices = X.countryDAO.where(expr.EQ(foam.nanos.auth.Country.CODE, 'CA'));
         return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO,
+          dao: choices,
           objToChoice: function(a){
             return [a.id, a.name];
           }

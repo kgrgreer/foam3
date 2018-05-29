@@ -36,7 +36,7 @@ public class AccountVerifiedEmailDAO
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if the status of the account isn't verified
-    if ( ! account.getStatus().equals("Verified") )
+    if ( ! "Verified".equals(account.getStatus()) )
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if account has been previously verified
