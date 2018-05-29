@@ -77,6 +77,6 @@ public class DeviceAuthService
     session.setUserId(user.getId());
     session.setContext(session.getContext().put("user", user));
     sessionDAO_.put(session);
-    return (User) Password.sanitize(user);
+    return user;
   }
 }
