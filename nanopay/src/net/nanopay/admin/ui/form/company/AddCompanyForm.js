@@ -215,7 +215,7 @@ foam.CLASS({
             group: (this.user.group==='s2hAdmin'?'s2hCustomer':'business'),
             phone: businessPhone,
             address: businessAddress,
-            password: companyInfo.password,
+            desiredPassword: companyInfo.password,
             profilePicture: companyInfo.profilePicture,
             businessIdentificationNumber: companyInfo.registrationNumber,
             website: companyInfo.website,

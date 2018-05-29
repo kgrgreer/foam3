@@ -194,7 +194,7 @@ foam.CLASS({
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
-            password: shopperInfo.password,
+            desiredPassword: shopperInfo.password,
             portalAdminCreated: true,
             profilePicture: shopperInfo.profilePicture
           });
