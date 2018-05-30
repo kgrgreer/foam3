@@ -27,7 +27,7 @@ public class LiquidityDAO extends ProxyDAO {
       throw exception;
     }
 
-    if ( txn.getType() != TransactionType.NONE ) {
+    if ( txn.getType() == TransactionType.NONE ) {
       LiquidityService ls = (LiquidityService) x.get("liquidityService");
       ls.liquifyUser(txn.getPayerId());
       ls.liquifyUser(txn.getPayeeId());
