@@ -215,6 +215,10 @@ foam.CLASS({
         }
         if ( this.position == 2 ) {
           // On Verification screen
+          if ( this.BankAccount.isInstance(self.viewData.bankAccount) ){
+            this.newBankAccount = self.viewData.bankAccount;
+          }
+
           if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
             this.newBankAccount = this.selectedAccount;
           }
