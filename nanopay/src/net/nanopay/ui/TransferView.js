@@ -107,8 +107,8 @@ foam.CLASS({
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.data.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id),
-          // exclude the disabled users
-          X.data.NEQ(X.data.user.STATUS,'DISABLED'))),
+          // only retrieve the active users
+          X.data.EQ(X.data.user.STATUS,'ACTIVE'))),
           objToChoice: function(user) {
             return [user.id, user.label() + ' - (' + user.email + ')'];
           }
