@@ -7,13 +7,14 @@ if [ -z "$HOME" ]; then
 fi
 HOME="$HOME"/keys
 
-if [ -f "$HOME/passphrase" ]; then
+if [ -d "$HOME" ]; then
     printf "keystore already setup.\n"
     exit 0;
+else
+    mkdir -p $HOME
 fi
 
-mkdir -p $HOME
-
+# create passphrase
 python -c 'print open("/dev/random").read(24).encode("base64").strip("=\n")' > "$HOME/passphrase"
 
 # creates a keystore with a dummy entry
