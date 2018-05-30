@@ -335,13 +335,10 @@ foam.CLASS({
       margin-left: 40px;
     }
     
-    ^ .addressHint {
+    ^ .address2Hint {
       height: 14px;
       font-family: Roboto;
       font-size: 12px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 1.17;
       letter-spacing: 0.2px;
       text-align: left;
@@ -367,8 +364,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address 2 (optional)' },
-    { name: 'AddressHint', message: 'Apartment, suite, unit, building, floor, etc.' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -658,9 +655,9 @@ foam.CLASS({
               .start(this.STREET_NAME_FIELD).addClass('streetNameField').end()
             .end()
           .end()
-          .start('p').add(this.AddressLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
+          .start('p').add(this.Address2Label).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
-          .start('p').add(this.AddressHint).addClass('addressHint').end()
+          .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .start('p').add(this.ProvinceLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start('div').addClass('dropdownContainer')
             .start(this.PROVINCE_FIELD).end()
