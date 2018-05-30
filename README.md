@@ -112,15 +112,3 @@ Steps to build:
 12. On the deployment group you can see success or failures for each build.
 
 13. If there is a failure, a stack trace will be provided.
-
-
-## Style guide
-The [style guide](https://github.com/foam-framework/foam2/blob/master/doc/guides/StyleGuide.md) is enforced through eslint.
-Almost all code editors have an eslint plugin, which will highlight the styling issues during development, and even fix them.
-
-[**vsCode**](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-[**atom**](https://atom.io/packages/linter-eslint)
-[**emacs**](http://flycheck.readthedocs.io/en/latest/)
-[**IntelliJ**](http://plugins.jetbrains.com/plugin/7494-eslint)
-
-**Note:** There are many styling issues in the code base currently so we can't add linting as a test. Feel free to correct them, so later we can add linting as a test before merges.
