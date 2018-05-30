@@ -35,6 +35,7 @@ function install {
 
     cd tools
     ./tomcatInstall.sh
+    cd ..
 
     setenv
     set_doc_base
@@ -284,7 +285,11 @@ function beginswith {
 function setenv {
 
     if [ -z "$NANOPAY_HOME" ]; then
-       export NANOPAY_HOME="/opt/nanopay"
+        export NANOPAY_HOME="/opt/nanopay"
+    fi
+
+    if [ -z "$LOG_HOME" ]; then
+        LOG_HOME="$NANOPAY_HOME/logs"
     fi
 
     export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -314,6 +319,8 @@ function setenv {
         #printf "Searching for catalina... "
         testcatalina /Library/Tomcat
         if [ ! -z "$CATALINA_HOME" ]; then
+            # local development
+            LOG_HOME="$CATALINA_HOME/logs"
             break
         fi
         testcatalina /opt/tomcat
@@ -346,7 +353,8 @@ function setenv {
         # remove journal file that find.sh was creating
         rm "$JOURNAL_HOME"
     fi
-    mkdir -p $JOURNAL_HOME
+    mkdir -p "$JOURNAL_HOME"
+    mkdir -p "$LOG_HOME"
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
@@ -355,7 +363,7 @@ function setenv {
     fi
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$CATALINA_BASE/logs"
+    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     if [ -z "$CATALINA_OPTS" ]; then
         export CATALINA_OPTS=""
@@ -363,6 +371,13 @@ function setenv {
     CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
     CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
     CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
+
+    # keystore
+    if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
+        cd "$PROJECT_HOME"
+        printf "generating keystore\n"
+        sudo ./tools/keystore.sh
+    fi
 }
 
 function usage {
