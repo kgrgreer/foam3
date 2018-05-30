@@ -24,7 +24,7 @@ foam.CLASS({
     'findAccount',
     'formatCurrency',
     'bankAccountDAO',
-    'payeeDAO',
+    'userDAO',
     'account',
     'user',
     'type'
@@ -181,7 +181,7 @@ foam.CLASS({
       name: 'payees',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.payeeDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
+        this.userDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
           var payee = a.array[0];
           self.viewData.payee = payee;
           self.payeeCard.user = payee;
@@ -189,7 +189,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.payeeDAO,
+          dao: X.data.userDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
             if ( X.data.invoiceMode ) {
