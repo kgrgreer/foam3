@@ -266,6 +266,7 @@
         this.email = this.user.email;
         // split the country code and phone number
         this.phone = this.user.phone.number.replace(this.phoneCode, "");
+        this.phone = this.phone.replace(/\s/g, "");
       }
       this
       .addClass(this.myClass())
@@ -332,7 +333,7 @@
         this.user.lastName = this.lastName;
         this.user.jobTitle = this.jobTitle;
         this.user.email = this.email;
-        this.user.phone.number = this.phoneCode + this.phone;
+        this.user.phone.number = this.phoneCode + " " + this.phone;
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, clear password fields, show success
           self.user.copyFrom(result);
