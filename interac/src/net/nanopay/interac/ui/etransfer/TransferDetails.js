@@ -21,7 +21,7 @@ foam.CLASS({
     'pacs008ISOPurposeDAO',
     'pacs008IndiaPurposeDAO',
     'bankAccountDAO',
-    'payeeDAO'
+    'userDAO'
   ],
 
   axioms: [
@@ -167,7 +167,7 @@ foam.CLASS({
       name: 'payees',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.payeeDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
+        this.userDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
           var payee = a.array[0];
           self.viewData.payee = payee;
           self.payeeCard.user = payee;
@@ -175,7 +175,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.payeeDAO.where(X.data.NEQ(X.data.User.ID, 1)),
+          dao: X.data.userDAO.where(X.data.NEQ(X.data.User.ID, 1)),
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
             if ( X.data.invoiceMode ) {
@@ -251,7 +251,7 @@ foam.CLASS({
         this.notes = this.viewData.notes;
       }
 
-      this.payeeDAO.find(1).then(function(user) {
+      this.userDAO.find(1).then(function(user) {
         self.fromUser = user;
       });
       this.SUPER()
