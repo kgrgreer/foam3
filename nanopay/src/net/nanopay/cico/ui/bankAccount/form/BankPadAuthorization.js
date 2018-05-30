@@ -212,6 +212,21 @@ foam.CLASS({
     ^ .pDefault{
       margin-bottom: 14 !important;
     }
+
+    ^ .addressHint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: -15px;
+      margin-bottom: 15px;
+    }
   `,
 
   messages: [
@@ -222,7 +237,8 @@ foam.CLASS({
     { name: 'LabelCountry',         message: 'Country' },
     { name: 'LabelStreetNumber',    message: 'Street Number' },
     { name: 'LabelStreetName',      message: 'Street Name' },
-    { name: 'LabelSuite',           message: 'Suite' },
+    { name: 'LabelAddress2',         message: 'Address 2 (optional)' },
+    { name: 'AddressHint',          message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'LabelCity',            message: 'City' },
     { name: 'LabelRegion',          message: 'Region' },
     { name: 'LabelPostal',          message: 'Postal Code' },
@@ -278,12 +294,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'suite',
+      name: 'addressOptional',
       factory: function() {
-        return this.viewData.user.address.suite;
+        return this.viewData.user.address.addressOptional;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.suite = newValue;
+        this.viewData.user.address.addressOptional = newValue;
       }
     },
     {
@@ -389,8 +405,9 @@ foam.CLASS({
           .end()
 
           .start().addClass('inline')
-            .start().add(this.LabelSuite).addClass('infoLabel').end()
-            .start(this.SUITE).addClass('inputLarge').end()
+            .start().add(this.LabelAddress2).addClass('infoLabel').end()
+            .start(this.ADDRESS_OPTIONAL).addClass('inputLarge').end()
+            .start('p').add(this.AddressHint).addClass('addressHint').end()
           .end()
           .start().addClass('inline').addClass('float-right')
             .start().add(this.LabelCity).addClass('infoLabel').end()
