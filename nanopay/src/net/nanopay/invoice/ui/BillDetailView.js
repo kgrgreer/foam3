@@ -53,7 +53,7 @@ foam.CLASS({
           return foam.u2.view.ChoiceView.create({
             dao: X.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id), 
             // only retrieve the active users
-            X.data.EQ(X.data.user.STATUS,'ACTIVE'))),
+            X.data.EQ(X.data.User.STATUS,'ACTIVE'))),
             placeholder: 'Please Select Customer',
             objToChoice: function(user) {
               var username = user.businessName || user.organization;
