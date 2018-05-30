@@ -63,14 +63,18 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-
+        case 'Pending':
+          return {
+            labelText: 'Pending',
+            labelDecoration: 'Invoice-Status-Pending',
+            icon: 'images/ic-pending.svg',
+          };
         case "Paid":
           return {
             labelText: 'Paid',
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
-
         case "Scheduled":
           return {
             labelText: 'Scheduled',
@@ -124,7 +128,7 @@ foam.CLASS({
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
                 .start('span').style({ 'margin-left' : '4px'})
-                  .callIf(hasDisplayDate, function() {
+                  .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {
                     this.add(self.formatDate(displayDate));
                   })
                 .end()

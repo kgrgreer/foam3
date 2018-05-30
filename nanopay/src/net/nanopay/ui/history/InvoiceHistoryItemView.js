@@ -116,6 +116,14 @@ foam.CLASS({
             icon: 'images/ic-approve.svg',
             anonymous: true
           };
+        case 'Pending':
+          return {
+            title: 'Invoice payment is',
+            labelDecoration: 'Invoice-Status-Pending',
+            labelText: statusChange.newValue,
+            icon: 'images/ic-pending.svg',
+            anonymous: true
+          };
         case 'Scheduled':
           return {
             title: 'Invoice has been marked as',
