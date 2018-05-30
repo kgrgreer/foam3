@@ -234,8 +234,11 @@ foam.CLASS({
       javaGetter: `return getAmount() + getTip();`,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
+        var refund = ( X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
+              X.type == net.nanopay.cico.model.TransactionType.REFUND );
+
         this
-          .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
+          .start().addClass( refund ? 'amount-Color-Red' : 'amount-Color-Green' )
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
