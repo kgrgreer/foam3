@@ -6,7 +6,7 @@ Repository containing b2b, retail, common, ingenico
 ### Setup
 Checkout `NANOPAY`
 
-You will need a [https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/](Personal Access Token) or [https://github.com/settings/keys](SSH) to checkout the NANOPAY repo. 
+You will need a [https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/](Personal Access Token) or [https://github.com/settings/keys](SSH) to checkout the NANOPAY repo.
 
 ```
 git clone https://github.com/nanopayinc/NANOPAY.git
@@ -69,9 +69,9 @@ To build Swift code run the following command
 
 `node swiftfoam/gen_swift.js`
 
-### Branching 
-We are following the OneFlow git branching strategy as described http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow and https://barro.github.io/2016/02/a-succesful-git-branching-model-considered-harmful/.  It is similar to GitFlow http://nvie.com/posts/a-successful-git-branching-model/ with the exception of using rebase and not using developer sub team branches (branches just shared between developers). 
-* `master` branch is the lastest stable release. 
+### Branching
+We are following the OneFlow git branching strategy as described http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow and https://barro.github.io/2016/02/a-succesful-git-branching-model-considered-harmful/.  It is similar to GitFlow http://nvie.com/posts/a-successful-git-branching-model/ with the exception of using rebase and not using developer sub team branches (branches just shared between developers).
+* `master` branch is the lastest stable release.
 * `development` branch is the work in progress.
 * `staging` is similar to the documented `release` branches.
 * `staging` bugfixes are PR'd on the staging branch and will be merged/cherry-picked back into `development` branch.
@@ -111,4 +111,16 @@ Steps to build:
 
 12. On the deployment group you can see success or failures for each build.
 
-13. If there is a failure, a stack trace will be provided.  
+13. If there is a failure, a stack trace will be provided.
+
+
+## Style guide
+The [style guide](https://github.com/foam-framework/foam2/blob/master/doc/guides/StyleGuide.md) is enforced through eslint.
+Almost all code editors have an eslint plugin, which will highlight the styling issues during development, and even fix them.
+
+[**vsCode**](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+[**atom**](https://atom.io/packages/linter-eslint)
+[**emacs**](http://flycheck.readthedocs.io/en/latest/)
+[**IntelliJ**](http://plugins.jetbrains.com/plugin/7494-eslint)
+
+**Note:** There are many styling issues in the code base currently so we can't add linting as a test. Feel free to correct them, so later we can add linting as a test before merges.
