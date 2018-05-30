@@ -24,6 +24,10 @@ foam.ENUM({
     {
       name: 'BANK_ACCOUNT_PAYMENT',
       label: 'BankAccountPayment'
+    },
+    {
+      name: 'REFUND',
+      label: 'Refund'
     }
   ]
 });

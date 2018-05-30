@@ -10,6 +10,11 @@ foam.CLASS({
     'showHeader'
   ],
 
+  requires: [
+    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
+
   css: `
     ^ {
       height: 100%;
@@ -163,7 +168,8 @@ foam.CLASS({
 
       var user = this.transactionUser;
       // if not a refund, use the total; else use amount
-      var refund = ( this.transaction.status === 'Refund' || this.transaction.status === 'Refunded' );
+      var refund = ( this.transaction.status === this.TransactionType.REFUND ||
+            this.transaction.status === this.TransactionStatus.REFUNDED );
       var amount = ( ! refund ) ? this.transaction.total : this.transaction.amount;
 
       this
