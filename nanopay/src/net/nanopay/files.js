@@ -296,7 +296,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/UserTopNavView', flags: ['web'] },
-  { name: 'net/nanopay/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },
   { name: 'net/nanopay/ui/Placeholder', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
