@@ -26,7 +26,7 @@ function install {
         return
     fi
 
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
 
     git submodule init
     git submodule update
@@ -78,7 +78,7 @@ function build_war {
     if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
 
-      cd "$NANOPAY_HOME"
+      cd "$PROJECT_HOME"
 
       # Copy over static web files to ROOT
       mkdir -p "$WAR_HOME"
@@ -128,7 +128,7 @@ function deploy_war {
 
 function deploy_journals {
     # prepare journals
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
 
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was previously creating
@@ -138,7 +138,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
 
     if [ ! -f $JOURNALS ]; then
         echo "ERROR: missing $JOURNALS file."
@@ -258,9 +258,9 @@ function start_nanos {
         exit 1;
     }
 
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
     mvn clean
-    ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     ./gen.sh
 
     mvn -f pom-standalone.xml install
@@ -283,17 +283,21 @@ function beginswith {
 
 function setenv {
 
-    export NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+    if [ -z "$NANOPAY_HOME" ]; then
+       export NANOPAY_HOME="/opt/nanopay"
+    fi
 
-    export JOURNAL_OUT="$NANOPAY_HOME"/target/journals
+    export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+
+    export JOURNAL_OUT="$PROJECT_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
-       export JOURNAL_HOME="$NANOPAY_HOME/journals"
+       export JOURNAL_HOME="$PROJECT_HOME/journals"
     fi
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
-        NANOPAY_HOME=/pkg/stack/stage/NANOPAY
-        cd "$NANOPAY_HOME"
+        PROJECT_HOME=/pkg/stack/stage/NANOPAY
+        cd "$PROJECT_HOME"
         cwd=$(pwd)
         npm install
 
@@ -336,7 +340,7 @@ function setenv {
         export CATALINA_PORT_HTTPS=8443
     fi
     if [ -z "$CATALINA_DOC_BASE" ]; then
-        export CATALINA_DOC_BASE="$NANOPAY_HOME"
+        export CATALINA_DOC_BASE="$PROJECT_HOME"
     fi
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was creating
@@ -344,11 +348,12 @@ function setenv {
     fi
     mkdir -p $JOURNAL_HOME
 
-    WAR_HOME="$NANOPAY_HOME"/target/root-0.0.1
+    WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
     if [ -z "$JAVA_OPTS" ]; then
         export JAVA_OPTS=""
     fi
+    JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$CATALINA_BASE/logs"
 
