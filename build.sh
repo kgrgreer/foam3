@@ -347,6 +347,7 @@ function setenv {
     if [ -z "$JAVA_OPTS" ]; then
         export JAVA_OPTS=""
     fi
+    JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$CATALINA_BASE/logs"
 
