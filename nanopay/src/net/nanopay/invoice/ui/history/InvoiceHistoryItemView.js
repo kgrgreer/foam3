@@ -32,17 +32,10 @@ foam.CLASS({
   methods: [
     function outputRecord(parentView, record) {
       var updates = record.updates;
-      if(updates.length == 0){
+      if ( updates.length === 0 ) {
         this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
-      }
-
-      for ( var i = 0 ; i < updates.length ; i++ ) {
-        var update = updates[i];
-        switch ( update.name ) {
-          case 'status':
-            this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
-            break;
-        }
+      } else if ( updates.some(update => update.name === 'status' || update.name === 'paymentDate') ) {
+        this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
       }
     }
   ]
