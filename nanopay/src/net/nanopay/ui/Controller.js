@@ -180,6 +180,7 @@ foam.CLASS({
 
           // check if user email verified
           if ( ! self.user.emailVerified ) {
+            self.loginSuccess = false;
             self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
             return;
           }

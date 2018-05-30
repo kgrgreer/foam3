@@ -64,6 +64,18 @@ foam.CLASS({
           -webkit-appearance: none;
           margin: 0;
         }
+        ^ .property-cent{
+          background: none;
+          border: none;
+          font-size: 30px;
+          font-weight: 300;
+          position: relative;
+          margin-left: 5px;
+          font-family: 'Roboto', sans-serif;
+          top: 5px;
+          width: 25px;
+          border-bottom: 2px solid black;
+        }
       */}
     })
   ],
@@ -135,7 +147,7 @@ foam.CLASS({
         .start('p').addClass('pDefault').addClass('stepBottomMargin').add(this.Instructions2)
         .start('div').addClass('row').addClass('amountSpacing')
           .start('p').addClass('zeroLabel').add('0.').end()
-          .tag(this.TENTH_CENT, {onKey: true, maxLength: 1})
+          .start(this.TENTH_CENT, {onKey: true, maxLength: 1}).addClass('property-cent').end()
           .tag(this.CENT, {onKey: true, maxLength: 1})
         .end()
         .start('p')
