@@ -315,6 +315,12 @@ function setenv {
     export CATALINA_PID="/tmp/catalina_pid"
     touch "$CATALINA_PID"
 
+    # Handle old machines which have CATALINA_HOME defined
+    if [ -n "$CATALINA_HOME" ]; then
+        if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
+            LOG_HOME="$CATALINA_HOME/logs"
+        fi
+    fi
     while [ -z "$CATALINA_HOME" ]; do
         #printf "Searching for catalina... "
         testcatalina /Library/Tomcat
