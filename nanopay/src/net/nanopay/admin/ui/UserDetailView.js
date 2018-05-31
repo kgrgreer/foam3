@@ -74,7 +74,15 @@ foam.CLASS({
       text-align: center;
       color: #093649;
     }
-
+    ^ .net-nanopay-ui-ActionView-enableProfile {
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
+      float: right;
+      margin-right: 1px;
+      position: sticky;
+      z-index: 10;
+    }
     ^ .net-nanopay-ui-ActionView-approveProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
@@ -237,8 +245,9 @@ foam.CLASS({
                     return this.E('span')
                       .start(self.APPROVE_PROFILE_DROP_DOWN, null, self.approveProfileMenuBtn_$).end()
                       .start(self.APPROVE_PROFILE).end()
+
                   case self.AccountStatus.DISABLED:
-                    return this.E('span').start(self.ACTIVATE_PROFILE).end();
+                    return this.E('span').start(self.ENABLE_PROFILE).end();
                 }
               } else if ( compliance == self.ComplianceStatus.PASSED ) {
                 switch ( status ) {
@@ -285,6 +294,24 @@ foam.CLASS({
       }
     },
     {
+      name: 'enableProfile',
+      code: function (X) {
+        var self = this;
+        var toPending = this.data;
+        toPending.status = this.AccountStatus.PENDING;
+
+        this.userDAO.put(toPending)
+        .then(function (result) {
+          if ( ! result ) throw new Error('Unable to set pending profile.');
+          self.data.copyFrom(result);
+          self.add(self.NotificationMessage.create({ message: 'Profile successfully set to pending.' }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: 'Unable to set profile to pending.', type: 'error' }));
+        });
+      }
+    },
+    {
       name: 'approveProfile',
       label: 'Approve Profile',
       code: function (X) {
@@ -301,8 +328,6 @@ foam.CLASS({
         .catch(function (err) {
           self.add(self.NotificationMessage.create({ message: 'Unable to approve profile.', type: 'error' }));
         });
-
-        this.approvePopUp.remove();
       }
     },
     {

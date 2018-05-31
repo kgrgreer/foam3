@@ -39,7 +39,7 @@ methods: [
     this
       .addClass(this.myClass())
       .start()
-        .start('p').add(this.Step).addClass('pDefault stepTopMargin').end()
+        .start('p').add(this.Step).addClass('pDefault').addClass('stepTopMargin').end()
         .start('p').add(this.Description).addClass('description').end()
       .end();
   }

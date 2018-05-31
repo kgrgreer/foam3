@@ -141,7 +141,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var refund = ( this.transaction.status === 'Refund' );
+      var refund = ( this.transaction.status === this.TransactionType.REFUND ||
+            this.transaction.status === this.TransactionStatus.REFUNDED );
 
       this
         .addClass(this.myClass())

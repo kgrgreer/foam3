@@ -3,7 +3,6 @@ require('../src/net/nanopay/files.js');
 
 var classes = [
   'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
@@ -124,7 +123,12 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
   'net.nanopay.cico.model.PaymentType',
   'net.nanopay.cico.model.PaymentProcessorUserReference',
-  'net.nanopay.cico.model.PaymentProcessor'
+  'net.nanopay.cico.model.PaymentProcessor',
+
+  // security
+  'net.nanopay.security.EncryptedObject',
+  'net.nanopay.security.KeyStoreManager',
+  'net.nanopay.security.FileKeyStoreManager'
 ];
 
 var abstractClasses = [

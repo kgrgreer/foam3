@@ -1,10 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'AccountRevokedView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   imports: [
-    'stack'
+    'stack',
+    'auth'
   ],
 
   css: `
@@ -68,6 +69,15 @@ foam.CLASS({
       text-align: left;
       color: #093649;
     }
+
+    ^ .net-nanopay-ui-ActionView-signIn{
+      background: none;
+      width: 50px;
+      position: relative;
+      right: 25px;
+      height: 0;
+      color: #59a5d5;
+    }
   `,
 
   methods: [
@@ -94,13 +104,21 @@ foam.CLASS({
         .br()
         .start().addClass('wrong-account')
           .add('Wrong account? ')
-          .start('span').addClass('link')
-            .add('Sign in.')
-            .on('click', function () {
-              self.stack.push({ class: 'foam.nanos.auth.SignInView' });
-            })
-          .end()
+          .start(this.SIGN_IN).end()
         .end()
+    }
+  ],
+
+  actions: [
+    {
+      name: 'signIn',
+      label: 'Sign in.',
+      code: function(X){
+        this.auth.logout().then(function() {
+          this.window.location.hash = '';
+          this.window.location.reload();
+        });
+      }
     }
   ]
 });

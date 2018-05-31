@@ -56,7 +56,7 @@ foam.CLASS({
           .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start(this.PAY).addClass('blue-button btn').end()
+          .start(this.PAY).addClass('blue-button').addClass('btn').end()
         .end()
       .end();
     }

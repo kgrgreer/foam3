@@ -42,7 +42,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('p').add(this.Step).addClass('pDefault stepTopMargin stepTwoBottomMargin').end()
+          .start('p').add(this.Step).addClass('pDefault').addClass('stepTopMargin').addClass('stepTwoBottomMargin').end()
           .start().add(this.AmountLabel).addClass('infoLabel').end()
           .start(this.AMOUNT).addClass('inputLarge').end()
         .end();

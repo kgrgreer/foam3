@@ -72,7 +72,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn white-blue-button btn').end()
+          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn').addClass('white-blue-button').addClass('btn').end()
           .end()
         .end();
     },
