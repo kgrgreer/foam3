@@ -309,7 +309,6 @@ foam.CLASS({
     ^ .shopperImage {
       margin-left: 20px;
     }
-
     ^ .bottomActions {
       position: fixed;
       bottom: 0;
@@ -318,11 +317,9 @@ foam.CLASS({
       background: white;
       z-index: 1;
     }
-
     ^ .foam-nanos-auth-ProfilePictureView {
       background: #edf0f5;
     }
-
     ^ .net-nanopay-ui-ActionView-Save {
       float: right;
       background: #59a5d5;
@@ -330,11 +327,9 @@ foam.CLASS({
       margin-right: 100px;
       margin-left: 40px;  
     }
-
     .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
     }
-    
     ^ .address2Hint {
       height: 14px;
       font-family: Roboto;

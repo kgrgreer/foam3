@@ -105,7 +105,6 @@ foam.CLASS({
       font-size: 14px;
       margin-top: 10px;
     }
-
     ^ .full-width-input-label{
       width: 474px;
       height: 17px;
@@ -113,7 +112,6 @@ foam.CLASS({
       font-size: 14px;
       margin: 8px 0px 20px 0px;
     }
-
     ^ .inputLarge-label{
       height: 17px;
       margin-bottom: 20px;
@@ -121,12 +119,10 @@ foam.CLASS({
       margin-top: 10px;
       width: 196px
     }
-
     ^ .regionContainer {
       position: relative;
       margin-bottom: 20px;
     }
-
     ^ .countryContainer {
       position: relative;
       margin-bottom: 20px;
@@ -134,7 +130,6 @@ foam.CLASS({
     ^ .caret {
       position: relative;
     }
-
     ^ .caret:before {
       content: '';
       position: absolute;
@@ -153,11 +148,9 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
-
     ^ .longcaret {
       position: relative;
     }
-
     ^ .longcaret:before {
       content: '';
       position: absolute;
@@ -167,7 +160,6 @@ foam.CLASS({
       border-left: 7px solid transparent;
       border-right: 7px solid transparent;
     }
-
     ^ .longcaret:after {
       content: '';
       position: absolute;
@@ -177,17 +169,14 @@ foam.CLASS({
       border-left: 0px solid transparent;
       border-right: 0px solid transparent;
     }
-
     ^ .property-region{
       padding: 10px 0px;
       width: 218px;
     }
-
     ^ .property-country{
       padding: 10px 0px;
       width: 497px;
     }
-
     ^ .infoContainer-wizard{
       width: 496px;
       background: white;
@@ -195,7 +184,6 @@ foam.CLASS({
       overflow-y: scroll;
       padding: 20px;
     }
-
     ^ .notEditable{
       font-size: 12px;
       font-weight: normal;
@@ -208,7 +196,6 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 10px;
     }
-
     ^ .header{
       padding-bottom: 10px;
       font-size: 12px;
@@ -219,11 +206,9 @@ foam.CLASS({
       letter-spacing: 0.2px;
       background-color: #ffffff;
     }
-
     ^ .link{
       color: #59a5d5;
     }
-
     ^ .pDefault{
       margin-bottom: 14 !important;
     }
@@ -306,12 +291,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressOptional',
+      name: 'suite',
       factory: function() {
-        return this.viewData.user.address.addressOptional;
+        return this.viewData.user.address.suite;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.address.addressOptional = newValue;
+        this.viewData.user.address.suite = newValue;
       }
     },
     {
@@ -418,7 +403,7 @@ foam.CLASS({
 
           .start().addClass('inline')
             .start().add(this.LabelAddress2).addClass('infoLabel').end()
-            .start(this.ADDRESS_OPTIONAL).addClass('inputLarge').end()
+            .start(this.SUITE).addClass('inputLarge').end()
             .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .end()
           .start().addClass('inline').addClass('float-right')
