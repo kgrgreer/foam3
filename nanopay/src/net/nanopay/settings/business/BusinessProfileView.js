@@ -184,8 +184,8 @@ foam.CLASS({
           .start().addClass('profileImgDiv')
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
+              ProfilePictureImage$: this.user.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png',
-              data$: this.user.businessProfilePicture$,
               uploadHidden: true,
               boxHidden: true
             })
