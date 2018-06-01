@@ -73,15 +73,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
 
       var self = this;
-      if(this.data.businessTypeId)
-      {
-        this.businessTypeDAO.find(this.data.businessTypeId).then(function(a) {
-          self.businessTypeName = a.name;
-        });
-      }
+      this.businessTypeName = typeof this.data.businessTypeId === 'number'
+        ? (await this.businessTypeDAO.find(this.data.businessTypeId)).name
+        : 'Unrecognized Business Type';
 
       this
         .addClass(this.myClass())
