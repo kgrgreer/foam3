@@ -144,7 +144,7 @@ foam.CLASS({
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.data.businessProfilePicture,
+              ProfilePictureImage$: self.data.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png',
               uploadHidden: true
             })

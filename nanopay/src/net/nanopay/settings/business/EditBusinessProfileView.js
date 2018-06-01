@@ -764,8 +764,7 @@ foam.CLASS({
         this.user.businessAddress.regionId = this.provinceField;
         this.user.businessAddress.city = this.cityField;
         this.user.businessAddress.postalCode = this.postalCodeField;
-        this.user.businessProfilePicture = self.businessProfilePicture;
-        // debugger;
+        this.user.businessProfilePicture = this.businessProfilePicture;
         this.userDAO.put(this.user).then(function(a){
           if(!a){          
             ctrl.add(self.NotificationMessage.create({ message: 'Could not update user.', type: 'error' }));

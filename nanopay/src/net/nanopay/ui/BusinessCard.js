@@ -82,7 +82,7 @@ foam.CLASS({
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
               placeholderImage: 'images/business-placeholder.png',
-              data$: this.profileImg$,
+              ProfilePictureImage$: self.profileImg$,
               uploadHidden: true,
               boxHidden: true
             })
