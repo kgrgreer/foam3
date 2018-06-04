@@ -353,7 +353,11 @@ foam.CLASS({
               .addClass('nameFieldsCol')
               .enableClass('middleName', this.isEditingPhone$, true)
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-              .start(this.User.PHONE_NUMBER, { data$: this.data.phone.number$.map(function(a){ return a.substring(3, a.length); })})
+              .start(this.User.PHONE_NUMBER, {
+                data$: this.data.phone.number$.map( function(a) {
+                return a.replace( self.countryCode, '' );
+                })
+              })
                 .addClass('phoneNumberInput')
                 .on('click', function() {
                   self.isEditingPhone = true;
