@@ -67,7 +67,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice was received from ", this.name$)
+              .add("Invoice received from ", this.name$)
             .end()
           .end()
           .start('div')
