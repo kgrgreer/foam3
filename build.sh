@@ -39,6 +39,9 @@ function install {
 
     setenv
     set_doc_base
+
+    # git hooks
+    git config core.hooksPath .githooks
 }
 
 function set_doc_base {
