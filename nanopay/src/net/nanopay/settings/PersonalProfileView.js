@@ -1,4 +1,4 @@
-foam.CLASS({
+ foam.CLASS({
   package: 'net.nanopay.settings',
   name: 'PersonalProfileView',
   extends: 'foam.u2.View',
@@ -245,7 +245,8 @@ foam.CLASS({
       class: 'String',
       name: 'phone'
     },
-    {
+    { 
+      //We'll have to account for user country code when internationalize.
       class: 'String',
       name: 'phoneCode',
       value: '+1'
@@ -256,6 +257,7 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
+
       if (this.user.firstName != "")
       {
         this.firstName = this.user.firstName;
@@ -263,7 +265,8 @@ foam.CLASS({
         this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
         // split the country code and phone number
-        [ this.phoneCode, this.phone ] = this.user.phone.number.split(" ");
+        this.phone = this.user.phone.number.replace(this.phoneCode, "");
+        this.phone = this.phone.replace(/\s/g, "");
       }
       this
       .addClass(this.myClass())
@@ -286,7 +289,7 @@ foam.CLASS({
           .end()
           .start('div')
             .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
-            .start(this.PHONE_CODE).addClass('phoneNumber-Dropdown').end()
+            .start(this.PHONE_CODE, {mode: foam.u2.DisplayMode.DISABLED}).addClass('phoneNumber-Dropdown').end()
             .start(this.PHONE).addClass('phoneNumber-Input').end()
           .end()
           .start('div')

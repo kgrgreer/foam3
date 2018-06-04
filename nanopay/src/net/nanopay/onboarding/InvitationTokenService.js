@@ -12,18 +12,19 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
+    'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.util.Password',
-    'org.apache.commons.text.CharacterPredicates',
-    'org.apache.commons.text.RandomStringGenerator',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.UUID'
+    'java.util.UUID',
+    'org.apache.commons.text.CharacterPredicates',
+    'org.apache.commons.text.RandomStringGenerator'
   ],
 
   axioms: [
@@ -60,7 +61,6 @@ return calendar.getTime();`
         String url = config.getUrl()
             .replaceAll("/$", "");
 
-
         // keep generating a new password until a valid one is generated
         String password = passgen.generate(8);
         while ( ! Password.isValid(password) ) {
@@ -68,7 +68,7 @@ return calendar.getTime();`
         }
         user.setPassword(Password.hash(password));
         user.setPasswordExpiry(generateExpiryDate());
-        
+
         // save password and generate a valid id.
         user = (User) userDAO.put(user);
        
@@ -99,7 +99,7 @@ return calendar.getTime();`
         return true;
       } catch (Throwable t) {
         ((Logger) getLogger()).error("Error generating invitation", t);
-        return false;
+        throw new RuntimeException(t.getMessage());
       }`
     }
   ]

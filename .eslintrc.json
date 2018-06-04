@@ -1,0 +1,33 @@
+{
+    "root": true,
+    "extends": ["google"],
+    "plugins": [
+        "foam-style"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2015,
+        "ecmaFeatures": {
+            "templateStrings": true
+        }
+    },
+    "globals": {
+        "foam": true
+    },
+    "rules": {
+        "no-with": "off",
+        "no-var": "off",
+        "comma-dangle": "off",
+        "new-cap": [ "error", { "properties": false }],
+        "object-curly-spacing": ["error", "always"],
+        "max-len": [ "error", { "ignoreTemplateLiterals": true, "ignoreComments": true } ],
+        "prefer-rest-params": "off",
+        "space-unary-ops": [
+            1,{
+                "words": true,
+                "nonwords": true
+            }
+        ],
+        "require-jsdoc": "off",
+        "foam-style/exploded-statements": "error"
+    }
+}

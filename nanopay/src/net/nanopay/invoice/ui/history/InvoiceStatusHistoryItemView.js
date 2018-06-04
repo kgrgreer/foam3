@@ -54,6 +54,8 @@ foam.CLASS({
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'status')
 
+      if ( ! status ) status = { newValue: 'Scheduled' };
+
       switch ( status.newValue ) {
         case "Void":
           return {
@@ -61,14 +63,18 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-
+        case 'Pending':
+          return {
+            labelText: 'Pending',
+            labelDecoration: 'Invoice-Status-Pending',
+            icon: 'images/ic-pending.svg',
+          };
         case "Paid":
           return {
             labelText: 'Paid',
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
-
         case "Scheduled":
           return {
             labelText: 'Scheduled',
@@ -102,10 +108,10 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       var self = this;
       var attributes = this.getAttributes(record);
-
-      this.invoiceDAO.find(record.objectId).then(function(inv){
-        self.paymentDate = inv.paymentDate;
-      });
+      var hasDisplayDate = record.updates.some(u => u.name === 'paymentDate');
+      var displayDate = hasDisplayDate
+        ? new Date(record.updates.find(u => u.name === 'paymentDate').newValue)
+        : null;
 
       return parentView
         .addClass(this.myClass())
@@ -122,10 +128,9 @@ foam.CLASS({
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
                 .start('span').style({ 'margin-left' : '4px'})
-                  .add(this.paymentDate$.map(function(date){
-                    if(!date) return;
-                    return self.formatDate(date);
-                  }))
+                  .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {
+                    this.add(self.formatDate(displayDate));
+                  })
                 .end()
               .end()
             .end()

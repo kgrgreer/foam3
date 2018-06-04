@@ -561,7 +561,11 @@ foam.CLASS({
         if ( ! result ) throw new Error();
         self.stack.back();
       }).catch(function (error) {
-        self.add(self.NotificationMessage.create({ message: "Unable to add business", type: 'error' }));
+        if ( error.message ){
+          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          return;
+        }
+        self.add(self.NotificationMessage.create({ message: 'Adding the business failed.', type: 'error' }));
       });
     },
     function notEditingName() {
