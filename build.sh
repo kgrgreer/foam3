@@ -39,6 +39,10 @@ function install {
 
     setenv
     set_doc_base
+
+    # git hooks
+    git config core.hooksPath .githooks
+    git config submodule.recurse true
 }
 
 function set_doc_base {
