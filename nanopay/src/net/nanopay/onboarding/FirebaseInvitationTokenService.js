@@ -7,6 +7,7 @@ foam.CLASS({
     'com.google.gson.Gson',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
+    'foam.core.FObject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
@@ -36,7 +37,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
-`private static final Gson GSON = new Gson();
+            `private static final Gson GSON = new Gson();
 
 protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
   @Override
@@ -51,7 +52,7 @@ protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     return b;
   }
 };`
-        }))
+        }));
       }
     }
   ],
@@ -89,7 +90,7 @@ protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     {
       name: 'generateExpiryDate',
       javaCode:
-`Calendar calendar = Calendar.getInstance();
+        `Calendar calendar = Calendar.getInstance();
 calendar.add(Calendar.DAY_OF_MONTH, 30);
 return calendar.getTime();`
     },
@@ -97,14 +98,13 @@ return calendar.getTime();`
     {
       name: 'generateTokenWithParameters',
       javaCode:
-`HttpURLConnection conn = null;
+        `HttpURLConnection conn = null;
 OutputStreamWriter writer = null;
 BufferedReader reader = null;
 
 try {
   AppConfig config = (AppConfig) x.get("appConfig");
   DAO tokenDAO = (DAO) x.get("tokenDAO");
-  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
   DAO userDAO = (DAO) x.get("localUserDAO");
   String url = config.getUrl().replaceAll("/$", "");
 
@@ -119,7 +119,7 @@ try {
   user.setSpid("nanopay");
   user.setGroup("shopper");
   user.setInvitedBy(session.getUserId());
-  User result = (User) userDAO.put(user);
+  User result = (User) ( (FObject) userDAO.put(user)).fclone();
 
   // generate token
   Token token = (Token) tokenDAO.put(new Token.Builder(getX())
@@ -130,6 +130,7 @@ try {
       .build());
 
   if ( parameters != null && parameters.containsKey("amount") ) {
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     long amount = (long) parameters.get("amount");
     transactionDAO.put(new Transaction.Builder(getX())
         .setPayerId(session.getUserId())
