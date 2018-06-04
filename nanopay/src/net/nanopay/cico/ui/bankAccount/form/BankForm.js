@@ -205,6 +205,8 @@ foam.CLASS({
           });
           this.bankAccountDAO.put(accountInfo).then(function(response) {
             self.viewData.bankAccount = response;
+            self.backLabel = self.Later;
+            self.nextLabel = self.Verify;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.backLabel = this.Later;
             self.nextLabel = this.Verify;
