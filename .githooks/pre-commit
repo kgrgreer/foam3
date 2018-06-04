@@ -19,15 +19,9 @@ fi
 # If you want to allow non-ASCII filenames set this variable to true.
 allownonascii=$(git config --bool hooks.allownonascii)
 
-diffstr=`git diff --cached $against | grep -e '^\+.*DONOTCOMMIT.*$'`
-if [[ -n "$diffstr" ]] ; then
-    echo "You have left DONOTCOMMIT in your changes, you can't commit until it has been removed."
-    exit 1
-fi
-
 # Enforce NANOPAY branch naming conventions
 branch_name=`git rev-parse --abbrev-ref HEAD`
-echo branch_name=$branch_name
+#echo branch_name=$branch_name
 
 REGEX='^([fh]|[b]/[sd])/NP-[0-9]{4}/[a-zA-Z0-9_\-]*$'
 if [[ ! "$branch_name" =~ $REGEX ]]; then
@@ -37,6 +31,7 @@ Error: Invalid branch name.
 Must follow convention x/[y/]NP-####/Title
 where x is one of b|f|h and optional y is one of d|s when x is b.
 See guidelines at https://github.com/nanoPayinc/NANOPAY/wiki/Branching-&-Versioning
+
 EOF
         exit 1
 fi
@@ -69,5 +64,4 @@ EOF
 fi
 
 # If there are whitespace errors, print the offending file names and fail.
-exec git diff-index --check --cached $against --
-
+#exec git diff-index --check --cached $against --
