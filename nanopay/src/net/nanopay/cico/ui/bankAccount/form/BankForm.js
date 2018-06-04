@@ -144,8 +144,9 @@ foam.CLASS({
       name: 'goNext',
       code: function() {
         var self = this;
-        if ( this.position == 0 ) { 
-          // On Submission screen.
+
+        // Account Info Screen
+        if ( this.position === 0 ) {
           var accountInfo = this.viewData;
 
           if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
@@ -172,13 +173,14 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
             return;
           }
+
           this.nextLabel = this.Accept;         
           self.subStack.push(self.views[self.subStack.pos + 1].view);
           return;
         }
-        if ( this.position == 1 ) {
-          // On Pad Verfication
-          
+
+        // Pad Verfication Screen
+        if ( this.position === 1 ) {
           var accountInfo = this.viewData.bankAccount[0];
 
           if ( ! this.validations() ) {
@@ -189,34 +191,36 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: accountInfo.errors_[0][1], type: 'error' }));
             return;
           }
+
           this.padCaptureDAO.put(self.PadCapture.create({
             firstName: this.viewData.user.firstName,
             lastName: this.viewData.user.lastName,
             userId: this.viewData.user.id,
             address: this.userAddress,
-            agree1:this.viewData.agree1,
-            agree2:this.viewData.agree2,
-            agree3:this.viewData.agree3,
+            agree1: this.viewData.agree1,
+            agree2: this.viewData.agree2,
+            agree3: this.viewData.agree3,
             institutionNumber: this.viewData.bankAccount[0].institutionNumber,
             transitNumber: this.viewData.bankAccount[0].transitNumber,
             accountNumber: this.viewData.bankAccount[0].accountNumber         
           })).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
+
           this.bankAccountDAO.put(accountInfo).then(function(response) {
             self.viewData.bankAccount = response;
             self.backLabel = self.Later;
             self.nextLabel = self.Verify;
             self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.backLabel = this.Later;
-            self.nextLabel = this.Verify;
             return;
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
         }
-        if ( this.position == 2 ) {
-          // On Verification screen
+
+        // Verification screen
+        if ( this.position === 2 ) { 
+
           if ( this.BankAccount.isInstance(self.viewData.bankAccount) ){
             this.newBankAccount = self.viewData.bankAccount;
           }
@@ -237,7 +241,8 @@ foam.CLASS({
           });
         }
 
-        if ( this.subStack.pos == this.views.length - 1 ) { // If last page
+        // Done Screen
+        if ( this.subStack.pos === this.views.length - 1 ) {
           return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
         }
       }
