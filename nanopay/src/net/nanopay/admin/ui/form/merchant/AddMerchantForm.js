@@ -225,7 +225,7 @@ foam.CLASS({
             group: 'ccMerchant',
             phone: merchantPhone,
             address: merchantAddress,
-            password: merchantInfo.password,
+            desiredPassword: merchantInfo.password,
             profilePicture: merchantInfo.profilePicture,
             businessIdentificationNumber: merchantInfo.registrationNumber,
             website: merchantInfo.website,

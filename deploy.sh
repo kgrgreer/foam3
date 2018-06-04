@@ -217,13 +217,13 @@ function start_tomcat {
 }
 
 function create_nanopay_dir {
-  if ssh $HOST "[[ ! -d $HOST_NANOPAY_HOME ]]"; then
-    ssh $HOST "mkdir $HOST_NANOPAY_HOME"
-    ssh $HOST "chgrp tomcat $HOST_NANOPAY_HOME"
-    ssh $HOST "chmod g+rw $HOST_NANOPAY_HOME"
-    echo "INFO : $HOST_NANOPAY_HOME : Nanopay directory successfully created."
+  if ssh $HOST "[[ ! -d $NANOPAY_HOME ]]"; then
+    ssh $HOST "mkdir $NANOPAY_HOME"
+    ssh $HOST "chgrp tomcat $NANOPAY_HOME"
+    ssh $HOST "chmod g+rw $NANOPAY_HOME"
+    echo "INFO : $NANOPAY_HOME : Nanopay directory successfully created."
   else
-    echo "INFO : $HOST_NANOPAY_HOME : Nanopay directory already exists."
+    echo "INFO : $NANOPAY_HOME : Nanopay directory already exists."
   fi
 }
 
@@ -258,9 +258,9 @@ function remove {
     echo "INFO : $HOST_JOURNAL_HOME : Journals directory removed."
   fi
 
-  if ssh $HOST "[[ -d $HOST_NANOPAY_HOME ]]"; then
-    ssh $HOST "rm -rf $HOST_NANOPAY_HOME"
-    echo "INFO : $HOST_NANOPAY_HOME : Nanopay directory removed."
+  if ssh $HOST "[[ -d $NANOPAY_HOME ]]"; then
+    ssh $HOST "rm -rf $NANOPAY_HOME"
+    echo "INFO : $NANOPAY_HOME : Nanopay directory removed."
   fi
 
   if ssh $HOST "id tomcat >/dev/null 2>&1"; then
@@ -325,16 +325,16 @@ function setenv {
   JAVA_DOWNLOAD_URL=http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/$JAVA_VERSION.rpm
 
   # Local paths and variables
-  NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
-  WAR_HOME="$NANOPAY_HOME"/target/root-0.0.1
-  JOURNAL_HOME="$NANOPAY_HOME/journals"
+  PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+  WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
+  JOURNAL_HOME="$PROJECT_HOME/journals"
 
   # Remote paths and variables
-  HOST_NANOPAY_HOME="/usr/local/nanopay"
+  NANOPAY_HOME="/usr/local/nanopay"
   HOST_TEMP="/tmp/nanopay"
   HOST_CATALINA_HOME="/opt/tomcat"
   HOST_CATALINA_BASE=$HOST_CATALINA_HOME
-  HOST_CATALINA_DOC_BASE=$HOST_NANOPAY_HOME
+  HOST_CATALINA_DOC_BASE=$NANOPAY_HOME
   # HOST_JAVA_HOME="/usr/lib/jvm/$JAVA_VERSION.x86_64"
   HOST_JAVA_HOME="/usr/java/jdk1.8.0_172-amd64/jre"
   HOST_JOURNAL_HOME="/mnt/journals"
