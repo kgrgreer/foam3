@@ -54,7 +54,7 @@ public class CICOTransactionDAO
     }
 
     try {
-      if ( getDelegate().find(transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);
+      if ( getDelegate().find_(x, transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);
       // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...
       if ( transaction.getType() == null ) {
         transaction.setType(TransactionType.CASHOUT);
