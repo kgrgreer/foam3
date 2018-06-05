@@ -469,6 +469,18 @@ foam.CLASS({
     ^ .foam-u2-view-TableView tbody > tr:hover {
       cursor: auto;
     }
+
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
   `,
 
   messages: [
@@ -487,7 +499,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -886,8 +899,9 @@ foam.CLASS({
                 .start(this.STREET_NAME_FIELD, { mode$: modeSlot }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
-            .start('p').add(this.AddressLabel).addClass('infoLabel').end()
+            .start('p').add(this.Address2Label).addClass('infoLabel').end()
             .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.Address2Hint).addClass('address2Hint').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .start(this.PROVINCE_FIELD, { mode$: modeSlot }).end()
@@ -963,7 +977,7 @@ foam.CLASS({
       this.countryField = user.address.countryId;
       this.streetNumberField = user.address.streetNumber;
       this.streetNameField = user.address.streetName;
-      this.addressField = user.address.address2;
+      this.addressField = user.address.suite;
       this.provinceField = user.address.regionId;
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
@@ -1117,7 +1131,7 @@ foam.CLASS({
         principleOwner.address = this.Address.create({
           streetNumber: this.streetNumberField,
           streetName: this.streetNameField,
-          address2: this.addressField,
+          suite: this.addressField,
           city: this.cityField,
           postalCode: this.postalCodeField,
           countryId: this.countryField,
