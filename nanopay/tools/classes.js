@@ -47,17 +47,17 @@ var classes = [
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
-  'net.nanopay.fresh.FreshConfig',  
-  'net.nanopay.fresh.model.FreshToken',  
-  'net.nanopay.fresh.model.FreshBusiness',  
-  'net.nanopay.fresh.model.FreshBusinessMembership',    
-  'net.nanopay.fresh.model.FreshCurrent',  
+  'net.nanopay.fresh.FreshConfig',
+  'net.nanopay.fresh.model.FreshToken',
+  'net.nanopay.fresh.model.FreshBusiness',
+  'net.nanopay.fresh.model.FreshBusinessMembership',
+  'net.nanopay.fresh.model.FreshCurrent',
   'net.nanopay.fresh.model.FreshResponse',
-  'net.nanopay.fresh.model.FreshInvoiceResponse',   
-  'net.nanopay.fresh.model.FreshInvoiceResult',   
-  'net.nanopay.fresh.model.FreshInvoicePages',   
-  'net.nanopay.fresh.model.FreshInvoice',   
-  'net.nanopay.fresh.model.FreshInvoiceAmount',   
+  'net.nanopay.fresh.model.FreshInvoiceResponse',
+  'net.nanopay.fresh.model.FreshInvoiceResult',
+  'net.nanopay.fresh.model.FreshInvoicePages',
+  'net.nanopay.fresh.model.FreshInvoice',
+  'net.nanopay.fresh.model.FreshInvoiceAmount',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
@@ -117,7 +117,7 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
-  //PaymentAccountInfo
+  // PaymentAccountInfo
   'net.nanopay.cico.model.PaymentAccountInfo',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
@@ -128,7 +128,11 @@ var classes = [
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
-  'net.nanopay.security.FileKeyStoreManager'
+  'net.nanopay.security.FileKeyStoreManager',
+  'net.nanopay.security.csp.CSPViolationReport',
+  'net.nanopay.security.csp.CSPReporter',
+  'net.nanopay.security.csp.ClientCSPReportService',
+  'net.nanopay.security.csp.CSPReportService'
 ];
 
 var abstractClasses = [
@@ -140,7 +144,8 @@ var skeletons = [
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth'
+  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.security.csp.CSPReporter'
 ];
 
 var proxies = [
@@ -152,4 +157,4 @@ module.exports = {
     abstractClasses: abstractClasses,
     skeletons: skeletons,
     proxies: proxies
-}
+};
