@@ -977,7 +977,7 @@ foam.CLASS({
       this.countryField = user.address.countryId;
       this.streetNumberField = user.address.streetNumber;
       this.streetNameField = user.address.streetName;
-      this.addressField = user.address.address2;
+      this.addressField = user.address.suite;
       this.provinceField = user.address.regionId;
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
@@ -1131,7 +1131,7 @@ foam.CLASS({
         principleOwner.address = this.Address.create({
           streetNumber: this.streetNumberField,
           streetName: this.streetNameField,
-          address2: this.addressField,
+          suite: this.addressField,
           city: this.cityField,
           postalCode: this.postalCodeField,
           countryId: this.countryField,
