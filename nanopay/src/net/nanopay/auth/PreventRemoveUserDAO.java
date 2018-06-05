@@ -29,15 +29,23 @@ public class PreventRemoveUserDAO
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 
-    total = ((Count) transactionDAO.where(OR(
-        EQ(Transaction.PAYER_ID, user.getId()),
-        EQ(Transaction.PAYEE_ID, user.getId())
-    )).limit(1).select(count)).getValue();
 
-    total += ((Count) invoiceDAO.where(OR(
-      EQ(Invoice.PAYEE_ID, user.getId()),
-      EQ(Invoice.PAYER_ID, user.getId())
-    )).limit(1).select(count)).getValue();
+    total = ((Count) transactionDAO.where(
+        EQ(Transaction.PAYER_ID, user.getId())).limit(1).select(count)).getValue();
+    
+    if ( total == 0 )
+      total += ((Count) transactionDAO.where(
+        EQ(Transaction.PAYEE_ID, user.getId())).limit(1).select(count)).getValue();
+
+    if ( total == 0 ) {
+      total += ((Count) invoiceDAO.where(
+        EQ(Invoice.PAYEE_ID, user.getId())).limit(1).select(count)).getValue();
+    }
+
+    if ( total == 0 ) {
+      total += ((Count) invoiceDAO.where(
+        EQ(Invoice.PAYER_ID, user.getId())).limit(1).select(count)).getValue();
+    }
 
     if ( total > 0 ) {
       user.setEnabled(false);
