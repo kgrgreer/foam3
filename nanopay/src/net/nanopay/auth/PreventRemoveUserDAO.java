@@ -21,12 +21,6 @@ public class PreventRemoveUserDAO
   }
 
   @Override
-  public FObject put_(X x, FObject obj) {
-    User result    = (User) super.put_(x, obj);
-    return result;
-  }
-
-  @Override
   public FObject remove_(X x, FObject obj) {
     User user = (User) obj;
 
