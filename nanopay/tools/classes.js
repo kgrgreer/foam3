@@ -130,9 +130,7 @@ var classes = [
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
   'net.nanopay.security.csp.CSPViolationReport',
-  'net.nanopay.security.csp.CSPReporter',
-  'net.nanopay.security.csp.ClientCSPReportService',
-  'net.nanopay.security.csp.CSPReportService'
+  'net.nanopay.security.csp.CSPReportWebAgent'
 ];
 
 var abstractClasses = [
@@ -144,8 +142,7 @@ var skeletons = [
   'net.nanopay.cico.spi.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth',
-  'net.nanopay.security.csp.CSPReporter'
+  'net.nanopay.tx.model.LiquidityAuth'
 ];
 
 var proxies = [
