@@ -355,7 +355,7 @@ foam.CLASS({
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
               .start(this.User.PHONE_NUMBER, {
                 data$: this.data.phone.number$.map( function(a) {
-                return a.replace( self.countryCode, '' );
+                  return a.replace( self.countryCode, '' );
                 })
               })
                 .addClass('phoneNumberInput')
