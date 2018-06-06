@@ -26,13 +26,13 @@ public class PreventRemoveUserDAO
 
     Count count = new Count();
     long total;
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 
 
     total = ((Count) transactionDAO.where(
         EQ(Transaction.PAYER_ID, user.getId())).limit(1).select(count)).getValue();
-    
+
     if ( total == 0 )
       total += ((Count) transactionDAO.where(
         EQ(Transaction.PAYEE_ID, user.getId())).limit(1).select(count)).getValue();
