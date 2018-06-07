@@ -21,7 +21,6 @@ fi
 function test_branchname {
     # Enforce NANOPAY branch naming conventions
     branch_name=`git rev-parse --abbrev-ref HEAD`
-    #echo branch_name=$branch_name
 
     REGEX='^([fh]|[b]/[sd])/NP-[0-9]{4}/[a-zA-Z0-9_\-]*$'
     if [[ ! "$branch_name" =~ $REGEX ]]; then
@@ -66,14 +65,7 @@ EOF
     fi
 }
 
-# function test_whitespace {
-#     # If there are whitespace errors, print the offending file names and fail.
-#     #exec git diff-index --check --cached $against --
-# }
-
 function test_codereview {
-    #printf "test_codereview\n"
-    #printf "$PWD\n"
     if [ -f ".githooks/code_review" ]; then
         ./.githooks/code_review
         return_value=$?
@@ -98,6 +90,5 @@ function test_local {
 
 test_branchname
 test_filename
-#test_whitespace
 test_codereview
 test_local
