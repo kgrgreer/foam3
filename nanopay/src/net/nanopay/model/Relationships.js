@@ -1,9 +1,41 @@
+// foam.RELATIONSHIP({
+//   sourceModel: 'net.nanopay.model.BankAccount',
+//   targetModel: 'net.nanopay.model.Branch',
+//   forwardName: 'bankAccount',
+//   inverseName: 'bankNumber'
+// });
+
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.BankAccount',
-  targetModel: 'net.nanopay.model.Branch',
-  forwardName: 'bankAccount',
-  inverseName: 'bankNumber'
+  sourceModel: 'net.nanopay.model.Branch',
+  targetModel: 'net.nanopay.model.BankAccount',
+  forwardName: 'bankAccounts',
+  inverseName: 'branch',
+  cardinality: '1:*',
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.TransactionPurpose',
+  targetModel: 'net.nanopay.payment.InstitutionPurposeCode',
+  forwardName: 'institutions',
+  inverseName: 'transactionPurposeId',
+  cardinality: '1:*',
+});
+
+// foam.RELATIONSHIP({
+//   sourceModel: 'net.nanopay.payment.Institution',
+//   targetModel: 'net.nanopay.tx.TransactionPurpose',
+//   forwardName: 'purposes',
+//   inverseName: 'institution',
+//   cardinality: '1:*',
+// });
+
+// foam.RELATIONSHIP({
+//   sourceModel: 'net.nanopay.payment.Institution',
+//   targetModel: 'net.nanopay.model.Branch',
+//   forwardName: 'branches',
+//   inverseName: 'owner',
+//   cardinality: '1:*',
+// });
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',

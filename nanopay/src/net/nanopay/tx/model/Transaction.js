@@ -69,14 +69,16 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber'
-    },
-    {
-      class: 'Long',
-      name: 'impsReferenceNumber',
-      label: 'IMPS Reference Number',
+      name: 'referenceNumber',
       visibility: foam.u2.Visibility.RO
     },
+    // TODO/REVIEW: this should just use referenceNumber
+    // {
+    //   class: 'Long',
+    //   name: 'impsReferenceNumber',
+    //   label: 'IMPS Reference Number',
+    //   visibility: foam.u2.Visibility.RO
+    // },
     {
       class: 'String',
       name: 'payerName',
@@ -244,9 +246,11 @@ foam.CLASS({
       }
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionPurpose',
-      name: 'purpose',
+      //class: 'FObjectProperty',
+      class: 'Reference',
+      of: 'net.nanopay.tx.TransactionPurpose',
+      name: 'purposeId',
+      label: 'Purpose',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction purpose'
     },

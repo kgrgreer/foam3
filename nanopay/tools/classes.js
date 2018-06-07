@@ -17,7 +17,10 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCard',
   'net.nanopay.cico.paymentCard.model.PaymentCardType',
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
-  'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
+  'net.nanopay.payment.PaymentPlatform',
+  'net.nanopay.payment.PaymentPlatformUserReference',
+  'net.nanopay.payment.Institution',
+  'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
@@ -71,6 +74,7 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredAccountFields',
   'net.nanopay.fx.interac.model.RequiredAgentFields',
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
+  'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
   'net.nanopay.tx.UserTransactionLimit',
@@ -90,12 +94,10 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
-  'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
-  // Institution model
-  'net.nanopay.model.Institution',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
@@ -117,13 +119,11 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
-  //PaymentAccountInfo
+  // PaymentAccountInfo
+  'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
-  'net.nanopay.cico.model.PaymentType',
-  'net.nanopay.cico.model.PaymentProcessorUserReference',
-  'net.nanopay.cico.model.PaymentProcessor',
 
   // security
   'net.nanopay.security.EncryptedObject',
@@ -152,4 +152,4 @@ module.exports = {
     abstractClasses: abstractClasses,
     skeletons: skeletons,
     proxies: proxies
-}
+};

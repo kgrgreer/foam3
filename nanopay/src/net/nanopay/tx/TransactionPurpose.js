@@ -1,7 +1,8 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.tx',
   name: 'TransactionPurpose',
   documentation: 'Purpose of the transaction',
+  // relationships: Processor
   properties: [
     {
       class: 'String',
@@ -13,7 +14,8 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
       name: 'country',
       documentation: 'If the format type is "Proprietary", assign it to the country it belongs to'
     },
@@ -52,6 +54,12 @@ foam.CLASS({
       factory: function() {
         return true;
       }
-    }
+    },
+    {
+      documentation: 'Should this purpose code be sent to Interac?',
+      class: 'Boolean',
+      name: 'interacApplicable',
+      value: false
+    },
   ]
 });

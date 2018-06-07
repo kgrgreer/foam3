@@ -46,7 +46,7 @@ public class RealexTransactionDAO
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
-    if ( paymentAccountInfo.getType() == net.nanopay.cico.model.PaymentType.MOBILE ) {
+    if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
         .addMerchantId(paymentAccountInfo.getMerchantId()) 
@@ -57,7 +57,7 @@ public class RealexTransactionDAO
         paymentRequest.addMobile("pay-with-google");
       else if ( MobileWallet.APPLEPAY == paymentAccountInfo.getMobileWallet() ) 
         paymentRequest.addMobile("apple-pay"); 
-    } else if ( paymentAccountInfo.getType() == net.nanopay.cico.model.PaymentType.PAYMENTCARD ) {
+    } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
       User user = (User) x.get("user");
       DAO currencyDAO = (DAO) x.get("currencyDAO");
       net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(paymentAccountInfo.getCurrencyId().toString());
@@ -76,7 +76,7 @@ public class RealexTransactionDAO
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
       paymentRequest.addPayerReference(paymentAccountInfo.getUserReference());
-    } else if ( paymentAccountInfo.getType() == net.nanopay.cico.model.PaymentType.ONEOFF ) {
+    } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.ONEOFF ) {
       throw new RuntimeException("One-off do not support");
     } else {
       throw new RuntimeException("Unknown payment type for Realex platform");

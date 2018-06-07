@@ -28,8 +28,7 @@ foam.CLASS({
       documentation: 'Credit/Debit Network owner. To be determined by decorator.'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
+      class: 'String',
       name: 'paymentPlatform',
       documentation: 'Payment platform that should be used to process this payment card'
     },
@@ -228,31 +227,3 @@ foam.ENUM({
   ]
 });
 
-foam.ENUM({
-  package: 'net.nanopay.cico.paymentCard.model',
-  name: 'PaymentCardPaymentPlatform',
-  documentation: 'Payment platform to use to process the transaction using this payment card.',
-
-  values: [
-    {
-      name: 'UNSUPPORTED',
-      label: 'Unsupported'
-    },
-    {
-      name: 'STRIPE',
-      label: 'Stripe'
-    },
-    {
-      name: 'AUTHORIZE',
-      label: 'Authorize.net'
-    },
-    {
-      name: 'REALEX',
-      label: 'Realex'
-    },
-    {
-      name: 'GLOBALPAYMENTS',
-      label: 'Global Payments'
-    }
-  ]
-});
