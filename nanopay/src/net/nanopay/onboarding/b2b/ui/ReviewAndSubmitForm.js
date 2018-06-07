@@ -130,7 +130,7 @@ foam.CLASS({
           .start('p').add(this.viewData.user.businessRegistrationDate.toISOString().substring(0, 10)).end()
           .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
           .start('p').add(((a) => {
-            return (a.address2 ? a.address2 + '-' : '')
+            return (a.suite ? a.suite + '-' : '')
                 + a.streetNumber + ' '
                 + a.streetName + ', '
                 + a.city + ', '
