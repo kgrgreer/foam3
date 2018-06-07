@@ -642,7 +642,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       value: ''
     },
     {
@@ -900,7 +900,7 @@ foam.CLASS({
               .end()
             .end()
             .start('p').add(this.Address2Label).addClass('infoLabel').end()
-            .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start(this.SUITE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
             .start('p').add(this.Address2Hint).addClass('address2Hint').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
@@ -943,7 +943,7 @@ foam.CLASS({
       this.countryField = 'CA';
       this.streetNumberField = '';
       this.streetNameField = '';
-      this.addressField = '';
+      this.suiteField = '';
       this.provinceField = 'AB';
       this.cityField = '';
       this.postalCodeField = '';
@@ -977,7 +977,7 @@ foam.CLASS({
       this.countryField = user.address.countryId;
       this.streetNumberField = user.address.streetNumber;
       this.streetNameField = user.address.streetName;
-      this.addressField = user.address.suite;
+      this.suiteField = user.address.suite;
       this.provinceField = user.address.regionId;
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
@@ -1018,7 +1018,7 @@ foam.CLASS({
            this.birthdayField ||
            this.streetNumberField ||
            this.streetNameField ||
-           this.addressField ||
+           this.suiteField ||
            this.cityField ||
            this.postalCodeField) {
         return true;
@@ -1073,7 +1073,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
         return false;
       }
-      if ( this.addressField.length > 0 && ! this.validateAddress(this.addressField) ) {
+      if ( this.suiteField.length > 0 && ! this.validateAddress(this.suiteField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
         return false;
       }
@@ -1131,7 +1131,7 @@ foam.CLASS({
         principleOwner.address = this.Address.create({
           streetNumber: this.streetNumberField,
           streetName: this.streetNameField,
-          suite: this.addressField,
+          suite: this.suiteField,
           city: this.cityField,
           postalCode: this.postalCodeField,
           countryId: this.countryField,
