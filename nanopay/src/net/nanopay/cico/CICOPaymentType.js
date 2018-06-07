@@ -1,6 +1,6 @@
 foam.ENUM({
-  package: 'net.nanopay.cico.model',
-  name: 'PaymentType',
+  package: 'net.nanopay.cico',
+  name: 'CICOPaymentType',
   values: [
     {
       name: 'MOBILE',
@@ -15,4 +15,4 @@ foam.ENUM({
       label: 'one-off'
     }
   ]
-})
+});

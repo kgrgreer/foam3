@@ -1,0 +1,9 @@
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"--",  "name":"None", "abbreviation":"NONE"})
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"REALEX",  "name":"Realex Global Payments", "abbreviation":"REALEX"})
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"STRIPE",  "name":"Stripe",                 "abbreviation":"STRIPE"})
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"DWOLLA",  "name":"Dwolla",                 "abbreviation":"DWOLLA"})
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"NABCO",   "name":"NABCO",                  "abbreviation":"NABCO"})
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"IMPS",    "name":"Immediate Payment System", "abbreviation":"IMPS", "countryId": "IN", "description":"An instance real-time inter-bank electronic funds transfer system in India."})
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"IFT",     "name":"Inward Fund Transfer", "abbreviation":"IFT", "countryId": "IN", "description":""});
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"NEFT",    "name":"National Electronic Funds Transfer", "abbreviation":"NEFT", "countryId": "IN", "description":"A system of electronic tranfer of money from one bank or branch to another, in India."});
+p({"class":"net.nanopay.payment.PaymentPlatform", "id":"RTGS",    "name":"Real Time Gross Settlement", "abbreviation":"RTGS", "countryId": "IN", "description":"A real-time electronic fund transfer in India for high value transactions"});
