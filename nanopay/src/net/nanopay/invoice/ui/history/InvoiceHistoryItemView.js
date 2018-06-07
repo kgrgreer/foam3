@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   documentation: 'View displaying history for each history object.',
-  
+
   properties: [
     {
       name: 'invoiceStatusHistoryItemView',
@@ -38,7 +38,11 @@ foam.CLASS({
 
   methods: [
     function outputRecord(parentView, record) {
-      if ( record.updates.length === 0 ) {
+      const isFirstHistoryEvent = record.updates.length === 0;
+      const updatesContainRelevantChange = record.updates.some((update) => {
+        return update.name === 'status' || update.name === 'paymentDate';
+      });
+      if ( isFirstHistoryEvent ) {
         var user = ctrl.user;
         var currentUser = `${user.firstName}, ${user.lastName}(${user.id})`;
         if ( currentUser === record.user ) {
@@ -46,7 +50,7 @@ foam.CLASS({
         } else {
           this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
         }
-      } else if ( record.updates.some(update => update.name === 'status' || update.name === 'paymentDate') ) {
+      } else if ( updatesContainRelevantChange ) {
         this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
       }
     }
