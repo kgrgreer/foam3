@@ -66,6 +66,7 @@ return calendar.getTime();`
         while ( ! Password.isValid(password) ) {
           password = passgen.generate(8);
         }
+        user = (User) user.fclone();
         user.setPassword(Password.hash(password));
         user.setPasswordExpiry(generateExpiryDate());
 

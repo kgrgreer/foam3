@@ -115,6 +115,7 @@ try {
   }
 
   // set invited and invited by and store user
+  user = (User) user.fclone();
   user.setInvited(true);
   user.setSpid("nanopay");
   user.setGroup("shopper");
