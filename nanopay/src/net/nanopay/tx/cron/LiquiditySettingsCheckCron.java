@@ -42,7 +42,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     DAO  bankAccountDAO_      = (DAO) x.get("localBankAccountDAO");
     DAO  liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
     DAO  groupDAO             = (DAO) x.get("groupDAO");
-    DAO transactionDAO_       = (DAO) x.get("transactionDAO");
+    DAO transactionDAO_       = (DAO) x.get("localTransactionDAO");
     List users                = ((ArraySink)userDAO_.select(new ArraySink())).getArray();
     long balance;
 
