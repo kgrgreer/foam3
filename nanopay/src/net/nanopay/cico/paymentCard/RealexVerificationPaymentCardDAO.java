@@ -31,7 +31,7 @@ public class RealexVerificationPaymentCardDAO
   @Override
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
-    if ( card.getPaymentPlatform() != net.nanopay.payment.PaymentPlatform.REALEX ) {
+    if ( ! net.nanopay.payment.PaymentPlatform.REALEX.equals(card.getPaymentPlatform()) ) {
       return getDelegate().put_(x, obj);
     }
     Card c = new Card();
