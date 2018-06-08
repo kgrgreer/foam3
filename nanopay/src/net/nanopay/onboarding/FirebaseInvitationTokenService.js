@@ -202,6 +202,7 @@ try {
   }
 
   email.sendEmailFromTemplate(result, message, "welcome-email", args);
+  result = (User) result.fclone();
   result.setPortalAdminCreated(false);
   result.setWelcomeEmailSent(true);
   userDAO.put(result);
