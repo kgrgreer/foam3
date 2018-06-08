@@ -2,7 +2,6 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 
@@ -65,7 +64,7 @@ public class TransactionDAO
     }
 
     if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-      if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
+      if ( oldTxn != null && oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         //pay others by bank account directly
         if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
