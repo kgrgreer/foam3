@@ -11,6 +11,9 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'branch',
   cardinality: '1:*',
+  sourceProperty: {
+    hidden: true
+  }
 });
 
 foam.RELATIONSHIP({
@@ -29,13 +32,13 @@ foam.RELATIONSHIP({
 //   cardinality: '1:*',
 // });
 
-// foam.RELATIONSHIP({
-//   sourceModel: 'net.nanopay.payment.Institution',
-//   targetModel: 'net.nanopay.model.Branch',
-//   forwardName: 'branches',
-//   inverseName: 'owner',
-//   cardinality: '1:*',
-// });
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.payment.Institution',
+  targetModel: 'net.nanopay.model.Branch',
+  forwardName: 'branches',
+  inverseName: 'owner',
+  cardinality: '1:*',
+});
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
