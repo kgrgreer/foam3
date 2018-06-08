@@ -1,8 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
-  
-  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
+
+  tableColumns: ['status', 'payerName', 'payeeName',
+    'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
     'addCommas',
@@ -80,6 +81,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'payerName',
+      storageTransient: true,
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'payerEmail',
+      storageTransient: true,
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -87,56 +95,35 @@ foam.CLASS({
       name: 'payerId',
       label: 'Payer',
       visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payerId, X) {
-        var self = this;
-        X.userDAO.find(payerId).then(function(payer) {
-          self.start()
-            .start('h4').style({ 'margin-bottom': 0 }).add(payer.firstName).end()
-            .start('p').style({ 'margin-top': 0 }).add(payer.email).end()
+      tableCellFormatter: function(payerId, obj, axiom) {
+        this.start()
+          .start('h4').style({ 'margin-bottom': 0 }).add(obj.payerName).end()
+          .start('p').style({ 'margin-top': 0 }).add(obj.payerEmail).end()
           .end();
-        })
-      },
-      postSet: function(oldValue, newValue){
-        var self = this;
-        var dao = this.__context__.userDAO;
-        dao.find(newValue).then(function(a) {
-          if ( a ) {
-            self.payerName = a.label();
-          } else {
-            self.payerName = 'Unknown Id: ' + newValue;
-          }
-        });
       }
     },
     {
       class: 'String',
       name: 'payeeName',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.Visibility.RO,
+      storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'payeeEmail',
+      visibility: foam.u2.Visibility.RO,
+      storageTransient: true
     },
     {
       class: 'Long',
       name: 'payeeId',
       label: 'Payee',
       visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payeeId, X) {
-        var self = this;
-        X.userDAO.find(payeeId).then(function(payee) {
-          self.start()
-            .start('h4').style({ 'margin-bottom': 0 }).add(payee.firstName).end()
-            .start('p').style({ 'margin-top': 0 }).add(payee.email).end()
+      tableCellFormatter: function(payeeId, obj, axiom) {
+        this.start()
+          .start('h4').style({ 'margin-bottom': 0 }).add(obj.payeeName).end()
+          .start('p').style({ 'margin-top': 0 }).add(obj.payerEmail).end()
           .end();
-        })
-      },
-      postSet: function(oldValue, newValue){
-        var self = this;
-        var dao = this.__context__.userDAO;
-        dao.find(newValue).then(function(a) {
-          if ( a ) {
-            self.payeeName = a.label();
-          } else {
-            self.payeeName = 'Unknown Id: ' + newValue;
-          }
-        });
       }
     },
     {
@@ -205,8 +192,8 @@ foam.CLASS({
       class: 'Double',
       name: 'rate',
       visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(rate){
-        this.start().add(rate.toFixed(2)).end()
+      tableCellFormatter: function(rate) {
+        this.start().add(rate.toFixed(2)).end();
       }
     },
     {
@@ -228,17 +215,19 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
       label: 'Total Amount',
       transient: true,
-      expression: function (amount, tip) {
+      expression: function(amount, tip) {
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
-        var refund = ( X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
+        var refund =
+          (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
               X.type == net.nanopay.cico.model.TransactionType.REFUND );
 
         this
-          .start().addClass( refund ? 'amount-Color-Red' : 'amount-Color-Green' )
+          .start()
+          .addClass(refund ? 'amount-Color-Red' : 'amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
