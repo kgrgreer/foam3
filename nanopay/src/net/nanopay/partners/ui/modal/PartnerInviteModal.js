@@ -13,8 +13,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.modal.ModalHeader',
     'foam.u2.tag.TextArea',
+    'net.nanopay.ui.modal.ModalHeader',
   ],
 
   implements: [
