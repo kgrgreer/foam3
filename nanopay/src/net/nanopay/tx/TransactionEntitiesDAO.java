@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionEntity;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 
@@ -58,23 +59,13 @@ public class TransactionEntitiesDAO extends ProxyDAO
   private FObject fillEntitiesInfo(FObject obj)
   {
     FObject clone = obj.fclone();
-    Transaction tx =  (Transaction) clone;
-    fillPayerInfo(tx, tx.getPayerId());
-    fillPayeeInfo(tx, tx.getPayeeId());
-    return clone;
-  }
-
-  private void fillPayerInfo(Transaction tx, long payerId)
-  {
+    Transaction tx = (Transaction) clone;
     User payer = (User) userDAO_.find(tx.getPayerId());
-    tx.setPayerName(payer.getFirstName());
-    tx.setPayerEmail(payer.getEmail());
-  }
-
-  private void fillPayeeInfo(Transaction tx, long payerId)
-  {
     User payee = (User) userDAO_.find(tx.getPayeeId());
-    tx.setPayeeName(payee.getFirstName());
-    tx.setPayeeEmail(payee.getEmail());
+    TransactionEntity payerEnitity = new TransactionEntity(payer);
+    TransactionEntity payeeEnitity = new TransactionEntity(payee);
+    tx.setPayee(payeeEnitity);
+    tx.setPayer(payerEnitity);
+    return clone;
   }
 }

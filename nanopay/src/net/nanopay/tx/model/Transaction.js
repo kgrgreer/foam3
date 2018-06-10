@@ -79,16 +79,16 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'String',
-      name: 'payerName',
-      storageTransient: true,
-      visibility: foam.u2.Visibility.RO
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payee',
+      storageTransient: true
     },
     {
-      class: 'String',
-      name: 'payerEmail',
-      storageTransient: true,
-      visibility: foam.u2.Visibility.RO
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payer',
+      storageTransient: true
     },
     {
       class: 'Long',
@@ -97,22 +97,12 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payerId, obj, axiom) {
         this.start()
-          .start('h4').style({ 'margin-bottom': 0 }).add(obj.payerName).end()
-          .start('p').style({ 'margin-top': 0 }).add(obj.payerEmail).end()
+          .start('h4').style({ 'margin-bottom': 0 })
+            .add(obj.payer.firstName)
+          .end()
+          .start('p').style({ 'margin-top': 0 }).add(obj.payer.email).end()
           .end();
       }
-    },
-    {
-      class: 'String',
-      name: 'payeeName',
-      visibility: foam.u2.Visibility.RO,
-      storageTransient: true
-    },
-    {
-      class: 'String',
-      name: 'payeeEmail',
-      visibility: foam.u2.Visibility.RO,
-      storageTransient: true
     },
     {
       class: 'Long',
@@ -121,8 +111,12 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payeeId, obj, axiom) {
         this.start()
-          .start('h4').style({ 'margin-bottom': 0 }).add(obj.payeeName).end()
-          .start('p').style({ 'margin-top': 0 }).add(obj.payerEmail).end()
+            .start('h4').style({ 'margin-bottom': 0 })
+              .add(obj.payee.firstName)
+            .end()
+            .start('p').style({ 'margin-top': 0 })
+              .add(obj.payee.email)
+            .end()
           .end();
       }
     },
