@@ -5,6 +5,8 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.merchant.ui.transaction.TransactionDetailView'
   ],
 
@@ -131,57 +133,48 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
+      of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'transactionUser',
-      factory: function () { return this.User.create(); }
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-      var refund = ( this.transaction.status === this.TransactionType.REFUND ||
-            this.transaction.status === this.TransactionStatus.REFUNDED );
+      var refund = (this.transaction.status === this.TransactionType.REFUND ||
+        this.transaction.status === this.TransactionStatus.REFUNDED);
 
-      this
-        .addClass(this.myClass())
-        .on('click', this.onClick)
-        .call(function () {
-          Promise.resolve().then(function () {
-            if ( self.transaction.payerId === self.user.id ) {
-              return self.userDAO.find(self.transaction.payeeId);
-            } else if ( self.transaction.payeeId === self.user.id ) {
-              return self.userDAO.find(self.transaction.payerId);
-            }
-          })
-          .then(function (user) {
-            self.transactionUser.copyFrom(user);
-            self.start('div').addClass('transaction-item')
-              .start().addClass('transaction-item-icon')
-                .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
-              .end()
-              .start().addClass('transaction-item-name')
-                .add(user.firstName + ' ' + user.lastName)
-              .end()
-              .start().addClass('transaction-item-datetime')
-                .add(self.transaction.date.toString())
-              .end()
-              .start().addClass('transaction-item-amount').addClass( refund ? 'refund' : '')
-                .add( '$' + ( self.transaction.total / 100 ).toFixed(2))
-              .end()
-            .end();
-          });
-        });
+      this.transactionUser = this.user.id == this.transaction.payerId ?
+        this.transaction.payee : this.transaction.payer;
+
+      this.addClass(this.myClass())
+        .on('click', this.onClick).start('div').addClass('transaction-item')
+        .start()
+        .addClass('transaction-item-icon').tag({
+          class: 'foam.u2.tag.Image',
+          data: this.transactionUser.profilePicture ?
+            this.transactionUser.profilePicture : 'images/ic-placeholder.png'
+        }).end()
+        .start().addClass('transaction-item-name')
+        .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
+        .end()
+        .start().addClass('transaction-item-datetime')
+        .add(this.transaction.date.toString())
+        .end()
+        .start().addClass('transaction-item-amount')
+        .addClass(refund ? 'refund' : '')
+        .add('$' + (this.transaction.total / 100).toFixed(2))
+        .end()
+        .end();
     }
   ],
 
   listeners: [
-    function onClick (e) {
+    function onClick(e) {
       this.stack.push(this.TransactionDetailView.create({
         transaction: this.transaction,
         transactionUser: this.transactionUser
       }));
     }
   ]
-})
+});
