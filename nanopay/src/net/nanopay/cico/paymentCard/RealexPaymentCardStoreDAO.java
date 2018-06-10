@@ -52,6 +52,8 @@ public class RealexPaymentCardStoreDAO
       processorReference = new PaymentPlatformUserReference();
     else
       processorReference = (PaymentPlatformUserReference) list.get(0);
+
+    processorReference = processorReference.fclone();
     String reference = processorReference.getReference();
     if ( reference == null || SafetyUtil.isEmpty(reference) ) {
       //create payer reference in Realex if do not exist
@@ -71,9 +73,9 @@ public class RealexPaymentCardStoreDAO
         processorReference.setReference(reference);
         processorReference.setUserId(user.getId());
         processorReference.setPaymentPlatformId(net.nanopay.payment.PaymentPlatform.REALEX);
-        paymentPlatformUserReferenceDAO.put(processorReference.fclone());
+        paymentPlatformUserReferenceDAO.put(processorReference);
       } catch ( Throwable e ) {
-        throw new RuntimeException("Error to connect to Realex with PayerNew request");
+        throw new RuntimeException(e);
       }
     }
     String cardReference = UUID.randomUUID().toString();
@@ -90,7 +92,9 @@ public class RealexPaymentCardStoreDAO
     } else if ( card.getNetwork() == PaymentCardNetwork.AMERICANEXPRESS ) {
       myCard.addType(CardType.AMEX);
     } else if ( card.getNetwork() == PaymentCardNetwork.DISCOVER ) {
-      //miss discover cardType in SDK
+      throw new RuntimeException("Do not support DISCOVER");
+    } else {
+      throw new RuntimeException("Card Type do not support");
     }
     PaymentRequest request = new PaymentRequest()
       .addType(PaymentType.CARD_NEW)
@@ -103,7 +107,7 @@ public class RealexPaymentCardStoreDAO
       }
       card.setRealexCardReference(cardReference);
     } catch ( Throwable e ) {
-      throw new RuntimeException("Error to connect to Realex with CardNew request");
+      throw new RuntimeException(e);
     }
     return getDelegate().put_(x, card);
   }
