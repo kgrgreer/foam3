@@ -27,6 +27,7 @@ import net.nanopay.cico.model.MobileWallet;
 import static foam.mlang.MLang.EQ;
 import foam.dao.ArraySink;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
+import net.nanopay.payment.PaymentPlatform;
 
 public class RealexTransactionDAO
  extends ProxyDAO
@@ -40,9 +41,9 @@ public class RealexTransactionDAO
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
     //If transaction is realex payment
-    long payerId = transaction.getPayerId();
-    //TODO: change to realex user id
-    if ( ! (payerId == 0) ) return getDelegate().put_(x, obj);
+    String paymentPlatformId = (String) transaction.getPaymentPlatformId();
+    if ( ! PaymentPlatform.DWOLLA.equals(paymentPlatformId) ) 
+      return getDelegate().put_(x, obj);
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
@@ -92,11 +93,13 @@ public class RealexTransactionDAO
       if ( ! "00".equals(response.getResult()) ) 
         throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
     } catch ( RealexServerException e ) {
-      throw new RuntimeException("Error to send transaction with Realex");
+      throw new RuntimeException(e);
     } catch ( RealexException e ) {
-      throw new RuntimeException("Error to send transaction with Realex");
+      throw new RuntimeException(e);
+    } catch ( Throwable e ) {
+      throw new RuntimeException(e);
     } finally {
-      if ( "00".equals(response.getResult()) )
+      if ( response != null && "00".equals(response.getResult()) )
         transaction.setStatus(TransactionStatus.COMPLETED);
       else
         transaction.setStatus(TransactionStatus.DECLINED);
