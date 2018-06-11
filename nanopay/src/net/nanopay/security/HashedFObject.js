@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.security',
   name: 'HashedFObject',
 
+  documentation: 'Wrapper for FObject which stores the hashed version',
+
   properties: [
     {
       class: 'Object',

@@ -1,10 +1,15 @@
 foam.CLASS({
   package: 'net.nanopay.security',
   name: 'HashingJournal',
-  extends: 'foam.dao.ProxyJournal',
+  extends: 'foam.dao.FileJournal',
 
   javaImports: [
-    'org.bouncycastle.util.encoders.Base64'
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'foam.lib.json.JSONParser',
+    'foam.util.SafetyUtil',
+    'org.bouncycastle.util.encoders.Base64',
+    'java.io.BufferedReader'
   ],
 
   axioms: [
@@ -54,8 +59,67 @@ foam.CLASS({
     {
       name: 'replay',
       javaCode: `
-        return;
+        // count number of lines successfully read
+        int successReading = 0;
+        JSONParser parser = getX().create(JSONParser.class);
 
+        try ( BufferedReader reader = getReader() ) {
+          for ( String line ; ( line = reader.readLine() ) != null ; ) {
+            if ( SafetyUtil.isEmpty(line)        ) continue;
+            if ( COMMENT.matcher(line).matches() ) continue;
+
+            try {
+              char operation = line.charAt(0);
+              int length = line.trim().length();
+              line = line.trim().substring(2, length - 1);
+
+              HashedFObject hashedObject = (HashedFObject) parser.parseString(line, HashedFObject.class);
+              if ( hashedObject == null ) {
+                getLogger().error("parse error", getParsingErrorMessage(line), "line:", line);
+                continue;
+              }
+
+              // verify digest not empty
+              String digest = hashedObject.getDigest();
+              if ( SafetyUtil.isEmpty(digest) ) {
+                // TODO: log, report
+                throw new RuntimeException("Digest not found");
+              }
+
+              // verify digest
+              FObject object = hashedObject.getValue();
+              if ( ! digest.equals(digest(object, hashedObject.getAlgorithm())) ) {
+                // TODO: log, report
+                throw new RuntimeException("Digest verification failed");
+              }
+
+              switch ( operation ) {
+                case 'p':
+                  PropertyInfo id = (PropertyInfo) dao.getOf().getAxiomByName("id");
+                  FObject old = dao.find(id.get(object));
+                  if ( old != null ) {
+                    // merge difference
+                    object = mergeFObject(old.fclone(), object);
+                  }
+
+                  dao.put(object);
+                  break;
+
+                case 'r':
+                  dao.remove(object);
+                  break;
+              }
+
+              successReading++;
+            } catch ( Throwable t ) {
+              getLogger().error("error replaying journal line:", line, t);
+            }
+          }
+        } catch ( Throwable t) {
+          getLogger().error("failed to read from journal", t);
+        } finally {
+          getLogger().log("Successfully read " + successReading + " entries from file: " + getFilename());
+        }
       `
     },
     {
