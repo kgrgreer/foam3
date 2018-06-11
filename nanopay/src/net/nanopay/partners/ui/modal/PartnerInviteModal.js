@@ -9,11 +9,14 @@ foam.CLASS({
   documentation: 'Modal to invite partners to the platform',
 
   imports: [
+    'invitationDAO',
     'user',
   ],
 
   requires: [
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.tag.TextArea',
+    'net.nanopay.model.Invitation',
     'net.nanopay.ui.modal.ModalHeader',
   ],
 
@@ -28,8 +31,8 @@ foam.CLASS({
     {
       name: 'message',
       view: 'foam.u2.tag.TextArea',
-      value: ''
-    }
+      value: '',
+    },
   ],
 
   css: `
@@ -83,7 +86,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.message = `${this.user.firstName} from nanopay invites you to try out B2B payment platform. Instant transfers and secure transactions. Try it out now!`;
+      this.message = this.user.firstName + ' from nanopay invites you to try ' +
+          'out B2B payment platform. Instant transfers and secure ' +
+          'transactions. Try it out now!';
       this.SUPER();
       this
         .tag(this.ModalHeader.create({ title: 'New Invite' }))
@@ -116,15 +121,42 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'emailSent',
+      message: 'Invite sent!'
+    },
+    {
+      name: 'inviteSendError',
+      message: 'There was a problem sending the invite email.'
+    },
+  ],
+
   actions: [
     {
       name: 'sendNewInvite',
       label: 'Send',
-      help: 'Invite someone to the nanopay platform via email',
-      code: (X) => {
-        // TODO
+      help: 'Invite someone to the nanopay platform',
+      code: async function(X) {
+        var invite = this.Invitation.create();
+        invite.email = this.emailAddress;
+        invite.createdBy = this.user.id;
+        invite.message = this.message;
+        try {
+          // See InvitationLogicDAO.java
+          await this.invitationDAO.put(invite)
+          this.add(this.NotificationMessage.create({
+            message: this.emailSent,
+          }));
+        } catch (err) {
+          console.error(err);
+          this.add(this.NotificationMessage.create({
+            message: this.inviteSendError,
+            type: 'error',
+          }));
+        }
         X.closeDialog();
       }
-    }
-  ]
+    },
+  ],
 });
