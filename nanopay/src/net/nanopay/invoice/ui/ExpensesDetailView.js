@@ -161,7 +161,6 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          // Present or past tense message
           this.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }

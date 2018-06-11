@@ -53,7 +53,7 @@ public class UpdateInvoiceTransactionDAO
         }
         if ( transaction.getStatus() == TransactionStatus.DECLINED ) {
           invoice.setPaymentId(0);
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(null);
           invoice.setPaymentMethod(PaymentStatus.NONE);
           invoiceDAO_.put(invoice);
         }
