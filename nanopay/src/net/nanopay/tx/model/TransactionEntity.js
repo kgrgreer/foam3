@@ -7,6 +7,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
       class: 'String',
       name: 'firstName',
       visibility: foam.u2.Visibility.RO
@@ -31,6 +36,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public TransactionEntity(User user) {
+            setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
             setEmail(user.getEmail());
