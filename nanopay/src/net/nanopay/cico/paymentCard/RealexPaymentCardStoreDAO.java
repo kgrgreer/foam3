@@ -53,7 +53,7 @@ public class RealexPaymentCardStoreDAO
     else
       processorReference = (PaymentPlatformUserReference) list.get(0);
 
-    processorReference = processorReference.fclone();
+    processorReference = (PaymentPlatformUserReference) processorReference.fclone();
     String reference = processorReference.getReference();
     if ( reference == null || SafetyUtil.isEmpty(reference) ) {
       //create payer reference in Realex if do not exist
