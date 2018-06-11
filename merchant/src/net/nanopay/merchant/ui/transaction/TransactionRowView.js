@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.nanos.auth.User',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.merchant.ui.transaction.TransactionDetailView',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.merchant.ui.transaction.TransactionDetailView'
+    'net.nanopay.cico.model.TransactionType',
+    'foam.nanos.auth.User'
   ],
 
   imports: [
@@ -141,30 +141,32 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var refund = (this.transaction.status === this.TransactionType.REFUND ||
-        this.transaction.status === this.TransactionStatus.REFUNDED);
+      var refund = this.transaction.status === this.TransactionType.REFUND ||
+        this.transaction.status === this.TransactionStatus.REFUNDED;
 
       this.transactionUser = this.user.id == this.transaction.payerId ?
         this.transaction.payee : this.transaction.payer;
 
       this.addClass(this.myClass())
         .on('click', this.onClick).start('div').addClass('transaction-item')
-        .start()
-        .addClass('transaction-item-icon').tag({
-          class: 'foam.u2.tag.Image',
-          data: this.transactionUser.profilePicture ?
-            this.transactionUser.profilePicture : 'images/ic-placeholder.png'
-        }).end()
-        .start().addClass('transaction-item-name')
-        .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
-        .end()
-        .start().addClass('transaction-item-datetime')
-        .add(this.transaction.date.toString())
-        .end()
-        .start().addClass('transaction-item-amount')
-        .addClass(refund ? 'refund' : '')
-        .add('$' + (this.transaction.total / 100).toFixed(2))
-        .end()
+          .start()
+            .addClass('transaction-item-icon').tag({
+              class: 'foam.u2.tag.Image',
+              data: this.transactionUser.profilePicture ?
+                this.transactionUser.profilePicture :
+                'images/ic-placeholder.png'
+              }).end()
+          .start().addClass('transaction-item-name')
+            .add(this.transactionUser.firstName + ' '
+              + this.transactionUser.lastName)
+          .end()
+          .start().addClass('transaction-item-datetime')
+            .add(this.transaction.date.toString())
+          .end()
+          .start().addClass('transaction-item-amount')
+            .addClass(refund ? 'refund' : '')
+            .add('$' + (this.transaction.total / 100).toFixed(2))
+          .end()
         .end();
     }
   ],

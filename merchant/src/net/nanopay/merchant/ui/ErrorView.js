@@ -166,9 +166,9 @@ foam.CLASS({
         self.document.removeEventListener('touchend', self.onTouchStarted);
       });
       // if not a refund, use the total; else use amount
-      var refund = ( this.transaction.status === this.TransactionType.REFUND ||
-            this.transaction.status === this.TransactionStatus.REFUNDED );
-      var amount = (! refund) ?
+      var refund = this.transaction.status === this.TransactionType.REFUND ||
+            this.transaction.status === this.TransactionStatus.REFUNDED;
+      var amount = ! refund ?
         this.transaction.total : this.transaction.amount;
 
       this

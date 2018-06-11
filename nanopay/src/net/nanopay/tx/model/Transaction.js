@@ -111,13 +111,13 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payeeId, obj, axiom) {
         this.start()
-            .start('h4').style({ 'margin-bottom': 0 })
-              .add(obj.payee.firstName)
-            .end()
-            .start('p').style({ 'margin-top': 0 })
-              .add(obj.payee.email)
-            .end()
-          .end();
+              .start('h4').style({ 'margin-bottom': 0 })
+                .add(obj.payee.firstName)
+              .end()
+              .start('p').style({ 'margin-top': 0 })
+                .add(obj.payee.email)
+              .end()
+            .end();
       }
     },
     {
