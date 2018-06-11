@@ -69,3 +69,6 @@ sha256/
 # Logs
 *.lck
 *nano.log*
+
+# githooks
+.githooks/pre-commit.local

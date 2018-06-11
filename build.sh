@@ -22,11 +22,13 @@ function rmfile {
 
 function install {
     # Only support MacOS install/setup
-    if [ "$OSTYPE" != darwin17 ]; then
-        return
+    MACOS='darwin*'
+    if [[ ! "$OSTYPE" =~ $MACOS ]]; then
+        printf "install is only supported on MacOS.\n"
+        exit 1
     fi
 
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
 
     git submodule init
     git submodule update
@@ -35,9 +37,14 @@ function install {
 
     cd tools
     ./tomcatInstall.sh
+    cd ..
 
     setenv
     set_doc_base
+
+    # git hooks
+    git config core.hooksPath .githooks
+    git config submodule.recurse true
 }
 
 function set_doc_base {
@@ -73,12 +80,12 @@ function backup {
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
-    # invoke deploY_journals after build_war
+    # invoke deploy_journals after build_war
     #
     if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
 
-      cd "$NANOPAY_HOME"
+      cd "$PROJECT_HOME"
 
       # Copy over static web files to ROOT
       mkdir -p "$WAR_HOME"
@@ -128,7 +135,7 @@ function deploy_war {
 
 function deploy_journals {
     # prepare journals
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
 
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was previously creating
@@ -138,7 +145,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
 
     if [ ! -f $JOURNALS ]; then
         echo "ERROR: missing $JOURNALS file."
@@ -151,6 +158,11 @@ function deploy_journals {
             cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
         fi
     done < $JOURNALS
+
+    # If not running nanos standalone, disable built in http server.
+    if [ "$RUN_NANOS" -eq 0 ]; then
+        echo 'r({"class":"foam.nanos.boot.NSpec", "name":"http"})' >> "$JOURNAL_HOME/services.0"
+    fi
 
     # one-time copy of runtime journals from /opt/tomcat/bin to /mnt/journals
     if [ "$CATALINA_HOME" == "/opt/tomcat" ]; then
@@ -248,19 +260,19 @@ function start_tomcat {
 function start_nanos {
     printf "starting nanos\n"
 
-    command -v realpath >/dev/null 2>&1 || {
-        echo >&2 "'realpath' required but it's not installed.  Aborting.";
-        exit 1;
-    }
+    command -v realpath >/dev/null 2>&1 || realpath() {
+            [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+        }
 
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
     mvn clean
-    ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     ./gen.sh
-    mvn install
-    mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
+
+    mvn -f pom-standalone.xml install
     deploy_journals
-    java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+
+    exec java $JAVA_OPTS -jar target/root-0.0.1.jar
 }
 
 function testcatalina {
@@ -277,17 +289,25 @@ function beginswith {
 
 function setenv {
 
-    export NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+    if [ -z "$NANOPAY_HOME" ]; then
+        export NANOPAY_HOME="/opt/nanopay"
+    fi
 
-    export JOURNAL_OUT="$NANOPAY_HOME"/target/journals
+    if [ -z "$LOG_HOME" ]; then
+        LOG_HOME="$NANOPAY_HOME/logs"
+    fi
+
+    export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+
+    export JOURNAL_OUT="$PROJECT_HOME"/target/journals
 
     if [ -z "$JOURNAL_HOME" ]; then
-       export JOURNAL_HOME="$NANOPAY_HOME/journals"
+       export JOURNAL_HOME="$PROJECT_HOME/journals"
     fi
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
-        NANOPAY_HOME=/pkg/stack/stage/NANOPAY
-        cd "$NANOPAY_HOME"
+        PROJECT_HOME=/pkg/stack/stage/NANOPAY
+        cd "$PROJECT_HOME"
         cwd=$(pwd)
         npm install
 
@@ -300,10 +320,18 @@ function setenv {
     export CATALINA_PID="/tmp/catalina_pid"
     touch "$CATALINA_PID"
 
+    # Handle old machines which have CATALINA_HOME defined
+    if [ -n "$CATALINA_HOME" ]; then
+        if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
+            LOG_HOME="$CATALINA_HOME/logs"
+        fi
+    fi
     while [ -z "$CATALINA_HOME" ]; do
         #printf "Searching for catalina... "
         testcatalina /Library/Tomcat
         if [ ! -z "$CATALINA_HOME" ]; then
+            # local development
+            LOG_HOME="$CATALINA_HOME/logs"
             break
         fi
         testcatalina /opt/tomcat
@@ -330,21 +358,23 @@ function setenv {
         export CATALINA_PORT_HTTPS=8443
     fi
     if [ -z "$CATALINA_DOC_BASE" ]; then
-        export CATALINA_DOC_BASE="$NANOPAY_HOME"
+        export CATALINA_DOC_BASE="$PROJECT_HOME"
     fi
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was creating
         rm "$JOURNAL_HOME"
     fi
-    mkdir -p $JOURNAL_HOME
+    mkdir -p "$JOURNAL_HOME"
+    mkdir -p "$LOG_HOME"
 
-    WAR_HOME="$NANOPAY_HOME"/target/root-0.0.1
+    WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
     if [ -z "$JAVA_OPTS" ]; then
         export JAVA_OPTS=""
     fi
+    JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$CATALINA_BASE/logs"
+    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     if [ -z "$CATALINA_OPTS" ]; then
         export CATALINA_OPTS=""
@@ -352,6 +382,13 @@ function setenv {
     CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
     CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
     CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
+
+    # keystore
+    if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
+        cd "$PROJECT_HOME"
+        printf "generating keystore\n"
+        sudo ./tools/keystore.sh
+    fi
 }
 
 function usage {
@@ -364,7 +401,7 @@ function usage {
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
     echo "  -m : Run migration scripts"
-    echo "  -n : Run nanos."
+    echo "  -n : Run nanos. URL: http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html"
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
     echo "  -f : Run Tomcat in foreground."

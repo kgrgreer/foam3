@@ -14,11 +14,12 @@ foam.CLASS({
   documentation: 'View for displaying create date and received company on invoice history',
 
   imports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'userDAO',
   ],
 
   properties: [
-    'businessName'
+    'name'
   ],
 
   css: `
@@ -51,29 +52,28 @@ foam.CLASS({
   `,
 
   methods: [
-    function outputRecord(parentView, record) {
-      var self = this;
-      this.invoiceDAO.find(record.objectId).then(function(inv){
-        self.businessName = inv.payeeName;
-      });
+    async function outputRecord(parentView, record) {
+      var invoice = await this.invoiceDAO.find(record.objectId);
+      var user = await this.userDAO.find(invoice.createdBy);
+      this.name = user.label();
 
       return parentView
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
-          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' })
+          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-received.svg' })
         .end()
         .start('div').addClass('statusBox')
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice was created")
+              .add("Invoice received from ", this.name$)
             .end()
           .end()
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(this.formatDate(record.timestamp), ' by ', this.businessName$)
+              .add(this.formatDate(record.timestamp))
             .end()
           .end()
         .end()
@@ -84,7 +84,7 @@ foam.CLASS({
       return timestamp.toLocaleTimeString(locale, { hour12: false }) +
         ' ' + timestamp.toLocaleString(locale, { month: 'short' }) +
         ' ' + timestamp.getDate() +
-        ', ' + timestamp.getFullYear();
+        ' ' + timestamp.getFullYear();
     }
   ]
 });

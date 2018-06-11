@@ -469,6 +469,18 @@ foam.CLASS({
     ^ .foam-u2-view-TableView tbody > tr:hover {
       cursor: auto;
     }
+
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
   `,
 
   messages: [
@@ -487,7 +499,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -886,8 +899,9 @@ foam.CLASS({
                 .start(this.STREET_NAME_FIELD, { mode$: modeSlot }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
-            .start('p').add(this.AddressLabel).addClass('infoLabel').end()
+            .start('p').add(this.Address2Label).addClass('infoLabel').end()
             .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.Address2Hint).addClass('address2Hint').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .start(this.PROVINCE_FIELD, { mode$: modeSlot }).end()
@@ -963,7 +977,7 @@ foam.CLASS({
       this.countryField = user.address.countryId;
       this.streetNumberField = user.address.streetNumber;
       this.streetNameField = user.address.streetName;
-      this.addressField = user.address.address2;
+      this.addressField = user.address.suite;
       this.provinceField = user.address.regionId;
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
@@ -1090,57 +1104,64 @@ foam.CLASS({
       isEnabled: function(isDisplayMode) {
         return ! isDisplayMode;
       },
-      code: function() {
+      code: async function() {
         if ( ! this.validatePrincipalOwner() ) return;
 
-        var self = this;
-
-        var principleOwner;
+        var principalOwner;
 
         if ( this.editingPrincipalOwner ) {
-          principleOwner = this.editingPrincipalOwner;
+          principalOwner = this.editingPrincipalOwner;
         } else {
-          principleOwner = this.User.create({
+          principalOwner = this.User.create({
             id: this.principalOwnersCount + 1
           });
         }
 
-
-        principleOwner.firstName = this.firstNameField,
-        principleOwner.middleName = this.middleNameField,
-        principleOwner.lastName = this.lastNameField,
-        principleOwner.email = this.emailAddressField,
-        principleOwner.phone = this.Phone.create({
+        principalOwner.firstName = this.firstNameField;
+        principalOwner.middleName = this.middleNameField;
+        principalOwner.lastName = this.lastNameField;
+        principalOwner.email = this.emailAddressField;
+        principalOwner.phone = this.Phone.create({
           number: this.phoneCountryCodeField + this.phoneNumberField
-        }),
-        principleOwner.birthday = this.birthdayField,
-        principleOwner.address = this.Address.create({
+        });
+        principalOwner.birthday = this.birthdayField;
+        principalOwner.address = this.Address.create({
           streetNumber: this.streetNumberField,
           streetName: this.streetNameField,
-          address2: this.addressField,
+          suite: this.addressField,
           city: this.cityField,
           postalCode: this.postalCodeField,
           countryId: this.countryField,
           regionId: this.provinceField
-        }),
-        principleOwner.jobTitle = this.jobTitleField,
-        principleOwner.principleType = this.principleTypeField
+        });
+        principalOwner.jobTitle = this.jobTitleField;
+        principalOwner.principleType = this.principleTypeField;
 
-        this.principalOwnersDAO.select().then(function(owners){
-          for(i = 0; i < owners.array.length; i++){
-            if ( owners.array[i].firstName.toLowerCase() == self.firstNameField.toLowerCase() && owners.array[i].lastName.toLowerCase() == self.lastNameField.toLowerCase() ){
-              self.add(self.NotificationMessage.create({ message: self.PrincipalOwnerError, type: 'error' }));
-              return;
-            }
-          }
-          // TODO?: Maybe add a loading indicator?
-          self.principalOwnersDAO.put(principleOwner).then(function(npo) {
-            self.editingPrincipalOwner = null;
-            self.tableViewElement.selection = null;
-            self.clearFields(true);
-            self.isSameAsAdmin = false;
+        if ( ! this.editingPrincipalOwner ) {
+          var owners = (await this.principalOwnersDAO.select()).array;
+          var nameTaken = owners.some(owner => {
+            var ownerFirst = owner.firstName.toLowerCase();
+            var ownerLast = owner.lastName.toLowerCase();
+            var formFirst = this.firstNameField.toLowerCase();
+            var formLast = this.lastNameField.toLowerCase();
+            return ownerFirst === formFirst && ownerLast === formLast; 
           });
-        })
+          if ( nameTaken ) {
+            this.add(this.NotificationMessage.create({
+              message: this.PrincipalOwnerError,
+              type: 'error'
+            }));
+            return;
+          }
+        }
+
+        // TODO?: Maybe add a loading indicator?
+
+        await this.principalOwnersDAO.put(principalOwner);
+        this.editingPrincipalOwner = null;
+        this.tableViewElement.selection = null;
+        this.clearFields(true);
+        this.isSameAsAdmin = false;
 
         return true;
       }
