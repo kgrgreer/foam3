@@ -504,9 +504,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       factory: function() {
-        if ( this.user.businessAddress.address2 ) return this.user.businessAddress.address2;
+        if ( this.user.businessAddress.suite ) return this.user.businessAddress.suite;
       }
     },
     {
@@ -651,7 +651,7 @@ foam.CLASS({
             .end()
           .end()
           .start('p').add(this.Address2Label).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
+          .start(this.SUITE_FIELD).addClass('fullWidthField').end()
           .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .start('p').add(this.ProvinceLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start('div').addClass('dropdownContainer')
@@ -745,7 +745,7 @@ foam.CLASS({
         this.user.businessAddress.countryId = this.countryField;
         this.user.businessAddress.streetNumber = this.streetNumberField;
         this.user.businessAddress.streetName = this.streetNameField;
-        this.user.businessAddress.address2 = this.addressField;
+        this.user.businessAddress.suite = this.suiteField;
         this.user.businessAddress.regionId = this.provinceField;
         this.user.businessAddress.city = this.cityField;
         this.user.businessAddress.postalCode = this.postalCodeField;
