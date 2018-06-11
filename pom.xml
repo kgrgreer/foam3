@@ -51,6 +51,11 @@
       <version>3.1.5</version>
     </dependency>
     <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20180130</version>
+    </dependency>
+    <dependency>
       <groupId>com.xero</groupId>
       <artifactId>xero-java-sdk</artifactId>
       <version>0.4.4</version>

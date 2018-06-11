@@ -5,12 +5,24 @@ foam.CLASS({
   documentation: `DAO to store all of the reported Content Security Policy
     violations.`,
 
+  ids: ['uuid'],
+
   properties: [
     {
       class: 'String',
       name: 'uuid',
       documentation: `UUID Version 1 (time-based), generated at the time at
         which the report was received.`
+    },
+    {
+      class: 'DateTime',
+      name: 'date',
+      documentation: `Date and time when the report was logged.`
+    },
+    {
+      class: 'String',
+      name: 'ip',
+      documentation: 'IP address of the violator.'
     },
     {
       class: 'String',
