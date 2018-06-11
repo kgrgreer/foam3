@@ -21,6 +21,12 @@ foam.CLASS({
       name: 'DWOLLA',
       value: 'DWOLLA',
       swiftType: 'String',
+    },
+    {
+      type: 'String',
+      name: 'ALTERNA',
+      value: 'ALTERNA',
+      swiftType: 'String',
     }
   ],
 

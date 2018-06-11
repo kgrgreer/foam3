@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
   
-  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
+  tableColumns: [ 'status', 'paymentPlatformId', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
     'addCommas',
@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.payment.PaymentPlatform',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -50,6 +51,13 @@ foam.CLASS({
       name: 'id',
       label: 'Transaction ID',
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.payment.PaymentPlatform',
+      name: 'paymentPlatformId',
+      label: 'Payment Platform',
+      value: 'ATERNA'
     },
     {
       class: 'Long',
