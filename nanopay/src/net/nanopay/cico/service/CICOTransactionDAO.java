@@ -42,6 +42,10 @@ public class CICOTransactionDAO
       return super.put_(x, obj);
     }
 
+    if ( transaction.getPaymentAccountInfo() != null ) {
+      return getDelegate().put_(x, obj);
+    }
+
     if ( transaction.getBankAccountId() == null ) {
       throw new RuntimeException("Invalid bank account");
     }

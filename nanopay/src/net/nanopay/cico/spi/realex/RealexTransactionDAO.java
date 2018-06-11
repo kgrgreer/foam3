@@ -24,10 +24,12 @@ import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
 import net.nanopay.cico.model.MobileWallet;
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 import foam.dao.ArraySink;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
 import net.nanopay.payment.PaymentPlatform;
+import net.nanopay.payment.PaymentPlatformUserReference;
+import java.util.UUID;
 
 public class RealexTransactionDAO
  extends ProxyDAO
@@ -42,7 +44,7 @@ public class RealexTransactionDAO
     Transaction transaction = (Transaction) obj;
     //If transaction is realex payment
     String paymentPlatformId = (String) transaction.getPaymentPlatformId();
-    if ( ! PaymentPlatform.DWOLLA.equals(paymentPlatformId) ) 
+    if ( ! PaymentPlatform.REALEX.equals(paymentPlatformId) )
       return getDelegate().put_(x, obj);
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
@@ -50,33 +52,43 @@ public class RealexTransactionDAO
     if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
-        .addMerchantId(paymentAccountInfo.getMerchantId()) 
+        .addMerchantId(paymentAccountInfo.getMerchantId())
         .addOrderId(Long.toString(transaction.getId()))
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
         .addToken(paymentAccountInfo.getToken());
       if ( MobileWallet.GOOGLEPAY == paymentAccountInfo.getMobileWallet() )
         paymentRequest.addMobile("pay-with-google");
-      else if ( MobileWallet.APPLEPAY == paymentAccountInfo.getMobileWallet() ) 
-        paymentRequest.addMobile("apple-pay"); 
+      else if ( MobileWallet.APPLEPAY == paymentAccountInfo.getMobileWallet() )
+        paymentRequest.addMobile("apple-pay");
     } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
       User user = (User) x.get("user");
       DAO currencyDAO = (DAO) x.get("currencyDAO");
       net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(paymentAccountInfo.getCurrencyId().toString());
-      DAO paymentCardDAO = user.getPaymentCards(); 
-      long cardId = paymentAccountInfo.getPaymentCardId(); 
+      DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
+      long cardId = paymentAccountInfo.getPaymentCardId();
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
+      DAO paymentPlatformUserReferenceDAO = (DAO) x.get("paymentPlatformUserReferenceDAO");
+      ArraySink sink = (ArraySink) paymentPlatformUserReferenceDAO.where(AND(
+        EQ(PaymentPlatformUserReference.PAYMENT_PLATFORM_ID, paymentPlatformId),
+        EQ(PaymentPlatformUserReference.USER_ID, user.getId())
+      )).select(new ArraySink());
+      List list = sink.getArray();
+      if ( list.size() == 0 ) {
+        throw new RuntimeException("asdfdasfasdf");
+      }
+      PaymentPlatformUserReference userReference = (PaymentPlatformUserReference) list.get(0);
       PaymentData myPaymentData = new PaymentData()
         .addCvnNumber(paymentAccountInfo.getCvn());
       paymentRequest
         .addType(PaymentType.RECEIPT_IN)
         .addMerchantId(paymentAccountInfo.getMerchantId())
         .addAmount(transaction.getAmount())
-        .addOrderId(Long.toString(transaction.getId()))
+        .addOrderId(UUID.randomUUID().toString())
         .addCurrency((String) currency.getId())
         .addPaymentMethod(paymentCard.getRealexCardReference())
         .addPaymentData(myPaymentData)
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
-      paymentRequest.addPayerReference(paymentAccountInfo.getUserReference());
+      paymentRequest.addPayerReference(userReference.getReference());
     } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.ONEOFF ) {
       throw new RuntimeException("One-off do not support");
     } else {
@@ -90,7 +102,7 @@ public class RealexTransactionDAO
     try {
       response = client.send(paymentRequest);
       // '00' == success
-      if ( ! "00".equals(response.getResult()) ) 
+      if ( ! "00".equals(response.getResult()) )
         throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
     } catch ( RealexServerException e ) {
       throw new RuntimeException(e);

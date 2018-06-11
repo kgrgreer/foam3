@@ -48,7 +48,7 @@ public class RealexPaymentCardStoreDAO
       )).select(new ArraySink());
     List list = sink.getArray();
     PaymentPlatformUserReference processorReference = null;
-    if ( list.size() == 0 ) 
+    if ( list.size() == 0 )
       processorReference = new PaymentPlatformUserReference();
     else
       processorReference = (PaymentPlatformUserReference) list.get(0);
@@ -63,7 +63,7 @@ public class RealexPaymentCardStoreDAO
         .addType("Retail");
       PaymentRequest request = new PaymentRequest()
         .addType(PaymentType.PAYER_NEW)
-        .addMerchantId(card.getExternalParameters().get("merchantid").toString())
+        .addMerchantId(card.getExternalParameters().get("merchantId").toString())
         .addPayer(myPayer);
       try {
         PaymentResponse response = call(request);
@@ -80,8 +80,8 @@ public class RealexPaymentCardStoreDAO
     }
     String cardReference = UUID.randomUUID().toString();
     Card myCard = new Card()
-      .addNumber(card.getExpiryMonth() + card.getExpiryYear())
-      .addExpiryDate(card.getNumber())
+      .addNumber(card.getNumber())
+      .addExpiryDate(card.getExpiryMonth() + card.getExpiryYear())
       .addCardHolderName(card.getCardholderName())
       .addReference(cardReference)
       .addPayerReference(reference);
@@ -98,7 +98,7 @@ public class RealexPaymentCardStoreDAO
     }
     PaymentRequest request = new PaymentRequest()
       .addType(PaymentType.CARD_NEW)
-      .addMerchantId(card.getExternalParameters().get("merchantid").toString())
+      .addMerchantId(card.getExternalParameters().get("merchantId").toString())
       .addCard(myCard);
     try {
       PaymentResponse response = call(request);

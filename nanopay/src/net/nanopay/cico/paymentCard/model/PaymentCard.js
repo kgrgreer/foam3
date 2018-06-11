@@ -67,7 +67,6 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      swiftType: 'Date',
       name: 'expirationDate',
       documentation: 'Expiration date of payment card',
       required: true
@@ -106,7 +105,7 @@ let date = Date()
 let cal = Calendar(identifier: .gregorian)
 let today = cal.startOfDay(for: date)
 
-let expDate = cal.startOfDay(for: self.expirationDate)
+let expDate = cal.startOfDay(for: self.expirationDate as! Date)
 
 return today > expDate
       `
@@ -134,7 +133,7 @@ return String.valueOf(month);
       swiftCode: `
 let calendar = Calendar.current
 
-let month = calendar.component(.month, from: expirationDate)
+let month = calendar.component(.month, from: expirationDate as! Date)
 if month < 10 {
   return "0\(month)"
 }
@@ -157,7 +156,7 @@ return String.valueOf(year).substring(2);
       swiftCode: `
 let calendar = Calendar.current
 
-let year = calendar.component(.year, from: expirationDate)
+let year = calendar.component(.year, from: expirationDate as! Date)
 let yearString = String(describing: year)
 return String(yearString.dropFirst(2))
       `
@@ -226,4 +225,3 @@ foam.ENUM({
     }
   ]
 });
-
