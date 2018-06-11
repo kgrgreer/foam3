@@ -22,8 +22,10 @@ function rmfile {
 
 function install {
     # Only support MacOS install/setup
-    if [ "$OSTYPE" != darwin17 ]; then
-        return
+    MACOS='darwin*'
+    if [[ ! "$OSTYPE" =~ $MACOS ]]; then
+        printf "install is only supported on MacOS.\n"
+        exit 1
     fi
 
     cd "$PROJECT_HOME"
@@ -258,10 +260,9 @@ function start_tomcat {
 function start_nanos {
     printf "starting nanos\n"
 
-    command -v realpath >/dev/null 2>&1 || {
-        echo >&2 "'realpath' required but it's not installed.  Aborting.";
-        exit 1;
-    }
+    command -v realpath >/dev/null 2>&1 || realpath() {
+            [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+        }
 
     cd "$PROJECT_HOME"
     mvn clean
@@ -400,7 +401,7 @@ function usage {
     echo "  -j : Delete runtime journals"
     echo "  -i : Install npm and tomcat libraries"
     echo "  -m : Run migration scripts"
-    echo "  -n : Run nanos."
+    echo "  -n : Run nanos. URL: http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html"
     echo "  -r : Just restart the existing running Tomcat."
     echo "  -s : Stop Tomcat."
     echo "  -f : Run Tomcat in foreground."
