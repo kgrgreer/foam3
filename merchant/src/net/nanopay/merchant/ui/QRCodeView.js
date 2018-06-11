@@ -22,6 +22,7 @@ foam.CLASS({
     'tipEnabled',
     'toolbarIcon',
     'toolbarTitle',
+    'transactionDAO',
     'transactionSuccessDAO',
     'transactionErrorDAO'
   ],
@@ -136,7 +137,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'challenge',
-      factory: function () {
+      factory: function() {
         return this.generateChallenge();
       }
     }
@@ -171,7 +172,7 @@ foam.CLASS({
       )).listen({ put: this.onTransactionError });
 
       this.document.addEventListener('keydown', this.onKeyPressed);
-      this.onDetach(function () {
+      this.onDetach(function() {
         successSub.detach(); // detach success listener when view is removed
         errorSub.detach(); // detach error listener when view is removed
         self.document.removeEventListener('keydown', self.onKeyPressed);
@@ -191,10 +192,12 @@ foam.CLASS({
             .add(this.instruction2).br()
             .add(this.instruction3).br()
           .end()
-        .end()
+        .end();
 
-      var worker = new Worker('../../../../../merchant/src/net/nanopay/merchant/libs/qrcode/qrcode.js');
-      worker.addEventListener('message', function (e) {
+      var worker = new Worker(
+        '../../../../../merchant/src/net/nanopay/merchant/libs/qrcode/qrcode.js'
+      );
+      worker.addEventListener('message', function(e) {
         var wrapper = self.document.querySelector('.qr-code');
         wrapper.innerHTML = e.data;
       }, false);
@@ -210,9 +213,9 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onKeyPressed (e) {
+    function onKeyPressed(e) {
       var key = e.key || e.keyCode;
-      if ( key === 'Backspace' || key === 27 || key === 8  ) {
+      if ( key === 'Backspace' || key === 27 || key === 8 ) {
         this.toolbarTitle = 'Home';
         this.toolbarIcon = 'menu';
         this.stack.back();
@@ -220,32 +223,28 @@ foam.CLASS({
     },
     {
       name: 'onTransactionCreated',
-      code: function (obj, s) {
+      code: function(obj, s) {
         var self = this;
-
-        this.userDAO.find(obj.payerId)
-        .then(function (user) {
+        this.transactionDAO.find(obj.id).then(function(transaction) {
           self.stack.push(self.SuccessView.create({
-            transaction: obj,
-            transactionUser: user
+            transaction: transaction,
+            transactionUser: transaction.payer
           }));
         });
       }
     },
     {
       name: 'onTransactionError',
-      code: function (obj, s) {
+      code: function(obj, s) {
         var self = this;
-
-        this.userDAO.find(obj.payerId)
-        .then(function (user) {
+        this.transactionDAO.find(obj.id).then(function(transaction) {
           self.stack.push(self.ErrorView.create({
             showHome: true,
-            transaction: obj,
-            transactionUser: user
+            transaction: transaction,
+            transactionUser: transaction.payer
           }));
         });
       }
     }
   ]
-})
+});

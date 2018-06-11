@@ -239,7 +239,7 @@ foam.CLASS({
               .add('$' + ( this.transaction.total / 100).toFixed(2))
             .end()
           .end()
-        .end()
+        .end();
 
       if ( this.transaction.status != this.TransactionStatus.REFUNDED
             && this.transaction.type != this.TransactionType.REFUND ) {
@@ -248,19 +248,19 @@ foam.CLASS({
             .add('Refund')
             .on('click', this.onRefundClicked)
           .end()
-        .end()
+        .end();
       } else {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refunded-button')
             .add('Refunded')
           .end()
-        .end()
+        .end();
       }
     }
   ],
 
   listeners: [
-    function onRefundClicked (e) {
+    function onRefundClicked(e) {
       this.stack.push(this.RefundView.create({
         transaction: this.transaction,
         transactionUser: this.transactionUser
