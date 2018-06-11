@@ -99,7 +99,14 @@ foam.CLASS({
 
   properties: [
     'voidMenuBtn_',
-    'voidPopUp_'
+    'voidPopUp_',
+    {
+      name: 'verbTenseMsg',
+      documentation: 'Past or present message on invoice status notification',
+      expression: function(data) {
+        return data.paymentMethod == this.PaymentStatus.PENDING ? 'Invoice is' : 'Invoice has been';
+      }
+    }
   ],
 
   methods: [
@@ -153,7 +160,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + this.data.paymentMethod.label + '.', type: 'error' }));
           return;
         }
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
@@ -186,7 +193,7 @@ foam.CLASS({
       var self = this;
       self.voidPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({ message: 'Invoice has been ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + this.data.paymentMethod.label + '.', type: 'error' }));
         return;
       }
       this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
