@@ -260,13 +260,17 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-        this.userDAO.where(this.NEQ(this.User.ID, this.user.id))
-          .select(this.COUNT()).then(function(p) {
+        this.userDAO.where(
+          this.AND(this.NEQ(this.User.ID, this.user.id),
+            this.EQ(this.User.GROUP, 'business'))
+        ).select(this.COUNT()).then(function(p) {
           self.partnerCount = 'Showing ' + p.value.toString() + ' Businesses';
         });
 
         var partnersData = this.userDAO.where(
-          this.NEQ(this.User.ID, this.user.id));
+          this.AND(this.NEQ(this.User.ID, this.user.id),
+            this.EQ(this.User.GROUP, 'business'))
+        );
         this.createContactCardView(partnersData);
       }
     },
@@ -291,13 +295,17 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-        this.userDAO.where(this.NEQ(this.User.ID, this.user.id))
-          .select(this.COUNT()).then(function(p) {
-          self.partnerCount = p.value.toString() + ' Businesses';
+        this.userDAO.where(
+          this.AND(this.NEQ(this.User.ID, this.user.id),
+            this.EQ(this.User.GROUP, 'business'))
+        ).select(this.COUNT()).then(function(p) {
+          self.partnerCount = 'Showing ' + p.value.toString() + ' Businesses';
         });
 
         var partnersData = this.userDAO.where(
-          this.NEQ(this.User.ID, this.user.id));
+          this.AND(this.NEQ(this.User.ID, this.user.id),
+            this.EQ(this.User.GROUP, 'business'))
+        );
         this.createContactCardView(partnersData);
         this.connected_button_select = false;
         this.contacts_button_select = true;
