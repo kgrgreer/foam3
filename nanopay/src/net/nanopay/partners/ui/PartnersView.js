@@ -184,11 +184,6 @@ foam.CLASS({
         z-index: 100;
         max-width: 60%;
     }
-    ^ .plus-icon {
-        width: 24px;
-        height: 24px;
-        margin-top: 12px;
-    }
     ^ .show {
       margin-top: 75px;
     }
@@ -207,12 +202,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('floating-action-button')
-          .start({
-            class: 'foam.u2.tag.Image',
-            data: 'images/ic-plus.png'
-          }).addClass('plus-icon').end()
-        .end()
         .start('div').addClass('button-container')
           .start('div').addClass('button-div')
             .tag({
