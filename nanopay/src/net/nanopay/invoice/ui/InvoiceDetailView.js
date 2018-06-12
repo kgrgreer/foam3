@@ -83,8 +83,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
+    ^ {
       font-weight: 100;
+      width: 970px;
+      margin: auto;
     }
     ^ .enable-recurring-text {
       font-size: 12px;
