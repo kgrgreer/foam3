@@ -56,12 +56,12 @@ To prevent Maven from re-compiling *all* of the source code everytime you change
 
 ### Loading a project
 
-#### Tomcat
-Visit [http://localhost:8080/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static).
+#### nanopay (default) 
+Visit [http://localhost:8080](http://localhost:8080).
+- default admin login: admin@nanopay.net / adminAb1
 
 #### Nanos
-- **Various Projects :** Visit [http://localhost:8080/service/static](http://localhost:8080/service/static) and go into any of the submodules to view that project.
-- **Nanopay :** Visit [http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html).
+Visit [http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html](http://localhost:8080/service/static/nanopay/src/net/nanopay/index.html).
 
 ### Building Swift code
 
