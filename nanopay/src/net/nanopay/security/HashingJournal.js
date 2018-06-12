@@ -141,9 +141,9 @@ foam.CLASS({
             previousHash_ = obj.hash(algorithm, previousHash_);
             return Base64.toBase64String(previousHash_);
           }
-        } else {
-          return Base64.toBase64String(obj.hash(algorithm, null));
         }
+
+        return Base64.toBase64String(obj.hash(algorithm, null));
       `
     }
   ]
