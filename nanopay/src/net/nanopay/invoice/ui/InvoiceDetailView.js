@@ -217,7 +217,8 @@ foam.CLASS({
       name: 'deleteDraft',
       label: 'Delete Draft',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     },
     {
@@ -293,7 +294,8 @@ foam.CLASS({
         //   X.dao.put(this);
         // }
 
-        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     }
   ]

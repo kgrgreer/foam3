@@ -6,7 +6,9 @@ foam.CLASS({
   requires: [
     'foam.u2.PopupView',
     'net.nanopay.invoice.model.Invoice',
-    'foam.comics.DAOCreateControllerView'
+    'foam.comics.DAOCreateControllerView',
+    'net.nanopay.invoice.ui.BillDetailView',
+    'net.nanopay.invoice.ui.InvoiceDetailView'
   ],
 
   imports: ['business', 'stack', 'invoiceDAO'],
@@ -321,43 +323,17 @@ foam.CLASS({
     },
 
     function onCreateInvoice() {
-      var self = this;
-      var view = foam.u2.ListCreateController.CreateController.create(
-        null,
-        this.__context__.createSubContext({
-          detailView: net.nanopay.invoice.ui.InvoiceDetailView,
-          back: this.stack.back.bind(this.stack),
-          dao: this.invoiceDAO,
-          factory: function() {
-            return self.Invoice.create({
-              fromBusinessId: self.data.id,
-              fromBusinessName: self.data.name,
-              toBusinessId: self.business.id,
-              toBusinessName: self.business.name
-            });
-          }
-        }));
+      var view = this.InvoiceDetailView.create({
+        userList: this.data.id
+      });
       this.stack.push(view);
       self.remove();
     },
 
     function onCreateBill() {
-      var self = this;
-      var view = foam.u2.ListCreateController.CreateController.create(
-        null,
-        this.__context__.createSubContext({
-          detailView: net.nanopay.invoice.ui.BillDetailView,
-          back: this.stack.back.bind(this.stack),
-          dao: this.invoiceDAO,
-          factory: function() {
-            return self.Invoice.create({
-              toBusinessId: self.data.id,
-              toBusinessName: self.data.name,
-              fromBusinessId: self.business.id,
-              fromBusinessName: self.business.name
-            });
-          }
-        }));
+      var view = this.BillDetailView.create({
+        userList: this.data.id
+      });
       this.stack.push(view);
       self.remove();
     },
