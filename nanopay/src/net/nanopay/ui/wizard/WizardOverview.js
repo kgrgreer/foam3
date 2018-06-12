@@ -6,155 +6,151 @@ foam.CLASS({
   documentation: 'A view that displays the position of the user in the WizardView Stack.',
 
   imports: [
-    'viewData',
-    'complete'
+    'complete',
+    'viewData'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .guideColumn {
-          display: inline-block;
-          vertical-align: top;
-          margin-right: 10px;
-        }
+  css: `
+    ^ .guideColumn {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 10px;
+    }
 
-        ^ .titleColumn {
-          display: inline-block;
-          width: 75%;
-          vertical-align: top;
-        }
+    ^ .titleColumn {
+      display: inline-block;
+      width: 75%;
+      vertical-align: top;
+    }
 
-        ^ .positionCircle {
-          position: relative;
-          width: 21px;
-          height: 21px;
-          box-sizing: border-box;
-          border-radius: 10.5px;
-          background-color: #a4b3b8;
-          margin: auto;
+    ^ .positionCircle {
+      position: relative;
+      width: 21px;
+      height: 21px;
+      box-sizing: border-box;
+      border-radius: 10.5px;
+      background-color: #a4b3b8;
+      margin: auto;
 
-          overflow: hidden;
+      overflow: hidden;
 
-          -webkit-transition: all .15s ease-in-out;
-          -moz-transition: all .15s ease-in-out;
-          -ms-transition: all .15s ease-in-out;
-          -o-transition: all .15s ease-in-out;
-          transition: all .15s ease-in-out;
-        }
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
+    }
 
-        ^ .positionCircle img {
-          position: absolute;
-          top: 0;
-          left: 0;
+    ^ .positionCircle img {
+      position: absolute;
+      top: 0;
+      left: 0;
 
-          opacity: 0;
+      opacity: 0;
 
-          width: 0;
-          height: 0;
+      width: 0;
+      height: 0;
 
-          z-index: 11;
+      z-index: 11;
 
-          -webkit-transition: all .15s ease-in-out;
-          -moz-transition: all .15s ease-in-out;
-          -ms-transition: all .15s ease-in-out;
-          -o-transition: all .15s ease-in-out;
-          transition: all .15s ease-in-out;
-        }
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
+    }
 
-        ^ .positionCircle.complete img {
-          width: 21px;
-          height: 21px;
+    ^ .positionCircle.complete img {
+      width: 21px;
+      height: 21px;
 
-          opacity: 1;
-        }
+      opacity: 1;
+    }
 
-        ^ .positionCircle:first-child {
-          margin-top: 4px;
-        }
+    ^ .positionCircle:first-child {
+      margin-top: 4px;
+    }
 
-        ^ .positionCircle.current {
-          background-color: #1cc2b7;
-        }
+    ^ .positionCircle.current {
+      background-color: #1cc2b7;
+    }
 
-        ^ .positionCircle p {
-          color: white;
-          padding-top: 0.5px;
-          line-height: 21px;
-          width: 21px;
-          font-size: 12px;
-          text-align: center;
-          margin: 0;
+    ^ .positionCircle p {
+      color: white;
+      padding-top: 0.5px;
+      line-height: 21px;
+      width: 21px;
+      font-size: 12px;
+      text-align: center;
+      margin: 0;
 
-          -webkit-transition: font-size .25s ease-in-out;
-          -moz-transition: font-size .25s ease-in-out;
-          -ms-transition: font-size .25s ease-in-out;
-          -o-transition: font-size .25s ease-in-out;
-          transition: font-size .25s ease-in-out;
+      -webkit-transition: font-size .25s ease-in-out;
+      -moz-transition: font-size .25s ease-in-out;
+      -ms-transition: font-size .25s ease-in-out;
+      -o-transition: font-size .25s ease-in-out;
+      transition: font-size .25s ease-in-out;
 
-          z-index: 10;
-        }
+      z-index: 10;
+    }
 
-        ^ .positionCircle.complete {
-          background-color: #1cc2b7;
-        }
+    ^ .positionCircle.complete {
+      background-color: #1cc2b7;
+    }
 
-        ^ .positionCircle.complete p {
-          font-size: 0;
-        }
+    ^ .positionCircle.complete p {
+      font-size: 0;
+    }
 
-        ^ .positionLine {
-          width: 1px;
-          height: 20px;
-          background-color: #a4b3b8;
-          margin: 5px auto;
-        }
+    ^ .positionLine {
+      width: 1px;
+      height: 20px;
+      background-color: #a4b3b8;
+      margin: 5px auto;
+    }
 
-        ^ .progressLine {
-          width: 100%;
-          height: 0;
-          background-color: #1cc2b7;
+    ^ .progressLine {
+      width: 100%;
+      height: 0;
+      background-color: #1cc2b7;
 
-          -webkit-transition: all .25s ease-in-out;
-          -moz-transition: all .25s ease-in-out;
-          -ms-transition: all .25s ease-in-out;
-          -o-transition: all .25s ease-in-out;
-          transition: all .25s ease-in-out;
-        }
+      -webkit-transition: all .25s ease-in-out;
+      -moz-transition: all .25s ease-in-out;
+      -ms-transition: all .25s ease-in-out;
+      -o-transition: all .25s ease-in-out;
+      transition: all .25s ease-in-out;
+    }
 
-        ^ .progressLine.progressed {
-          height: 100%;
-        }
+    ^ .progressLine.progressed {
+      height: 100%;
+    }
 
-        ^ .progressLine.complete {
-          background-color: #2cab70;
-          height: 100%;
-        }
+    ^ .progressLine.complete {
+      background-color: #2cab70;
+      height: 100%;
+    }
 
-        ^ .positionTitle {
-          margin: 0;
-          height: 21px;
-          line-height: 30px;
-          margin-bottom: 30px;
+    ^ .positionTitle {
+      margin: 0;
+      height: 21px;
+      line-height: 30px;
+      margin-bottom: 30px;
 
-          font-size: 12px;
-          letter-spacing: 0.3px;
-          font-family: Roboto;
-          color: #093649;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      font-family: Roboto;
+      color: #093649;
 
-          -webkit-transition: all .15s ease-in-out;
-          -moz-transition: all .15s ease-in-out;
-          -ms-transition: all .15s ease-in-out;
-          -o-transition: all .15s ease-in-out;
-          transition: all .15s ease-in-out;
-        }
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
+    }
 
-        ^ .positionTitle.inactive {
-          color: #a4b3b8;
-        }
-      */}
-    })
-  ],
+    ^ .positionTitle.inactive {
+      color: #a4b3b8;
+    }
+  `,
 
   properties: [
     'titles',
@@ -194,7 +190,7 @@ foam.CLASS({
               .add(title)
             .end();
           }).end()
-        .end()
+        .end();
     }
   ]
 });

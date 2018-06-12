@@ -11,6 +11,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
 import net.nanopay.model.BankAccount;
+import net.nanopay.model.BankAccountStatus;
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
@@ -36,7 +37,7 @@ public class AccountVerifiedEmailDAO
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if the status of the account isn't verified
-    if ( ! account.getStatus().equals("Verified") )
+    if ( ! BankAccountStatus.VERIFIED.equals(account.getStatus()) )
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if account has been previously verified

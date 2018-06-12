@@ -3,8 +3,6 @@ foam.CLASS({
   name: 'Controller',
   extends: 'foam.nanos.controller.ApplicationController',
 
-  arequire: function() { return foam.nanos.client.ClientBuilder.create(); },
-
   documentation: 'Nanopay Top-Level Application Controller.',
 
   implements: [
@@ -95,33 +93,35 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.AppStyles.create();
-      this.InvoiceStyles.create();
-      this.ModalStyling.create();
-
-      this.nSpecDAO.find('appConfig').then(function(config){
-        self.appConfig = config.service;
-      });
-
       var self = this;
-      foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+      self.clientPromise.then(function() {
+        self.client.nSpecDAO.find('appConfig').then(function(config){
+          self.appConfig = config.service;
+        });
 
-      this.findAccount();
+        self.AppStyles.create();
+        self.InvoiceStyles.create();
+        self.ModalStyling.create();
 
-      this
-        .addClass(this.myClass())
-        .tag({class: 'net.nanopay.ui.topNavigation.TopNav' })
-        .start('div').addClass('stack-wrapper')
-          .tag({class: 'foam.u2.stack.StackView', data: this.stack, showActions: false})
-        .end()
-        .tag({class: 'net.nanopay.ui.FooterView'});
+        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+
+        self.findAccount();
+
+        self
+          .addClass(self.myClass())
+          .tag({class: 'foam.nanos.u2.navigation.TopNavigation' })
+          .start('div').addClass('stack-wrapper')
+            .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
+          .end()
+          .tag({class: 'net.nanopay.ui.FooterView'});
+      });
     },
 
     function getCurrentUser() {
       var self = this;
 
       // get current user, else show login
-      this.auth.getCurrentUser(null).then(function (result) {
+      this.client.auth.getCurrentUser(null).then(function (result) {
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
@@ -136,9 +136,27 @@ foam.CLASS({
                 return;
 
               case self.AccountStatus.SUBMITTED:
-              case self.AccountStatus.DISABLED:
-                self.loginSuccess = false;
                 self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+                self.loginSuccess = false;
+                return;
+
+              case self.AccountStatus.DISABLED:
+
+                // If the user submitted the form before their account was
+                // disabled but before it was activated, they should see page
+                // 5 of the onboarding wizard to be able to review what they
+                // submitted.
+                if ( self.user.previousStatus === self.AccountStatus.SUBMITTED ) {
+                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+
+                // Otherwise, if they haven't submitted yet, or were already
+                // activated, they shouldn't need to be able to review their
+                // submission, so they should just see the simple "account
+                // disabled" view.
+                } else {
+                  self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+                }
+                self.loginSuccess = false;
                 return;
 
               // show onboarding screen if user hasn't clicked "Go To Portal" button
@@ -162,6 +180,7 @@ foam.CLASS({
 
           // check if user email verified
           if ( ! self.user.emailVerified ) {
+            self.loginSuccess = false;
             self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
             return;
           }
@@ -178,7 +197,7 @@ foam.CLASS({
 
     function findAccount() {
       var self = this;
-      this.accountDAO.find(this.user.id).then(function (a) {
+      this.client.accountDAO.find(this.user.id).then(function (a) {
         return self.account.copyFrom(a);
       }.bind(this));
     }

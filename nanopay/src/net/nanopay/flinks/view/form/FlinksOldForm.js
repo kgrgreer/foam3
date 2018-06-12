@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Country',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus',
     'net.nanopay.model.Institution',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -316,7 +317,7 @@ foam.CLASS({
                   accountName: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionNumber: inNumber,
-                  status: 'Verified'
+                  status: self.BankAccountStatus.VERIFIED
                 })).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
                 });

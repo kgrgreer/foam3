@@ -42,7 +42,7 @@ public class BankAccountInvoiceDAO
 
     if ( bankAccount == null ) throw new RuntimeException("Bank account doesn't exist");
 
-    txn.setType(TransactionType.BANKACCOUNTPAYMENT);
+    txn.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
 
     return getDelegate().put_(x, obj);
   }

@@ -13,14 +13,19 @@ foam.INTERFACE({
       name: 'verify',
       returns: 'Promise',
       javaReturns: 'boolean',
+      swiftReturns: 'Bool',
+      swiftThrows: true,
+
       args: [
         {
           name: 'bankAccountId',
-          javaType: 'long'
+          javaType: 'long',
+          swiftType: 'Int'
         },
         {
           name: 'randomDepositAmount',
-          javaType: 'long'
+          javaType: 'long',
+          swiftType: 'Int'
         }
       ]
     }

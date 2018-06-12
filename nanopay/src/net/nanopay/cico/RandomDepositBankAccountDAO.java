@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import net.nanopay.model.BankAccountStatus;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.BankAccount;
@@ -34,7 +35,7 @@ public class RandomDepositBankAccountDAO
 
     // if new account and status is unverified make micro deposit
     // TODO: prevent a user from submitting their own status
-    if ( newAccount && "Unverified".equals(account.getStatus()) ) {
+    if ( newAccount && BankAccountStatus.UNVERIFIED.equals(account.getStatus()) ) {
       User user = (User) x.get("user");
 
       // generate random deposit amount and set in bank account model

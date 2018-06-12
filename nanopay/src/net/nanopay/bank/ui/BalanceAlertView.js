@@ -75,7 +75,7 @@ foam.CLASS({
       this.SUPER()
       this
       .addClass(this.myClass())
-      .start().addClass('float-left light-roboto-h2')
+      .start().addClass('float-left').addClass('light-roboto-h2')
         .add(this.title)
       .end()
       .start()

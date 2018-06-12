@@ -59,7 +59,7 @@ public class FlinksAuthService
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if it is image selection
-        if ( ((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType().equals("ImageSelection")) {
+        if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
           decodeMsg((FlinksMFAResponse) feedback);
         }
       } else {
@@ -79,7 +79,7 @@ public class FlinksAuthService
     //TODO: security check
     try {
       ResponseMsg respMsg = null;
-      if ( type.equals("ImageSelection") ) {
+      if ( "ImageSelection".equals(type) ) {
         encodeMsg(map1);
       }
       RequestMsg reqMsg = FlinksRequestGenerator.getMFARequest(getX(), institution, username, requestId, map1);
@@ -99,7 +99,7 @@ public class FlinksAuthService
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
-        if ( ((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType().equals("ImageSelection")) {
+        if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
           decodeMsg((FlinksMFAResponse) feedback);
         }
       } else {     

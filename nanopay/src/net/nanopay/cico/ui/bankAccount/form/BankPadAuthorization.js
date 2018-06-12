@@ -212,6 +212,18 @@ foam.CLASS({
     ^ .pDefault{
       margin-bottom: 14 !important;
     }
+
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: -15px;
+      margin-bottom: 15px;
+    }
   `,
 
   messages: [
@@ -222,7 +234,8 @@ foam.CLASS({
     { name: 'LabelCountry',         message: 'Country' },
     { name: 'LabelStreetNumber',    message: 'Street Number' },
     { name: 'LabelStreetName',      message: 'Street Name' },
-    { name: 'LabelSuite',           message: 'Suite' },
+    { name: 'LabelAddress2',         message: 'Address 2 (optional)' },
+    { name: 'Address2Hint',          message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'LabelCity',            message: 'City' },
     { name: 'LabelRegion',          message: 'Region' },
     { name: 'LabelPostal',          message: 'Postal Code' },
@@ -300,8 +313,9 @@ foam.CLASS({
       name: 'country',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
+        var choices = X.countryDAO.where(expr.EQ(foam.nanos.auth.Country.CODE, 'CA'));
         return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO,
+          dao: choices,
           objToChoice: function(a){
             return [a.id, a.name];
           }
@@ -363,7 +377,7 @@ foam.CLASS({
             .start().add(this.LabelFirstName).addClass('infoLabel').end()
             .start(this.FIRST_NAME).addClass('inputLarge').end()
           .end()
-          .start().addClass('inline float-right')
+          .start().addClass('inline').addClass('float-right')
             .start().add(this.LabelLastName).addClass('infoLabel').end()
             .start(this.LAST_NAME).addClass('inputLarge').end()
           .end()
@@ -378,20 +392,21 @@ foam.CLASS({
             .end()
           .end()
 
-          .start().addClass('inline ')
+          .start().addClass('inline')
             .start().add(this.LabelStreetNumber).addClass('infoLabel').end()
             .start(this.STREET_NUMBER).addClass('inputLarge').end()
           .end()
-          .start().addClass('inline float-right')
+          .start().addClass('inline').addClass('float-right')
             .start().add(this.LabelStreetName).addClass('infoLabel').end()
             .start(this.STREET_NAME).addClass('inputLarge').end()
           .end()
 
-          .start().addClass('inline ')
-            .start().add(this.LabelSuite).addClass('infoLabel').end()
+          .start().addClass('inline')
+            .start().add(this.LabelAddress2).addClass('infoLabel').end()
             .start(this.SUITE).addClass('inputLarge').end()
+            .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .end()
-          .start().addClass('inline float-right')
+          .start().addClass('inline').addClass('float-right')
             .start().add(this.LabelCity).addClass('infoLabel').end()
             .start(this.CITY).addClass('inputLarge').end()
           .end()
@@ -403,7 +418,7 @@ foam.CLASS({
               .start().addClass('caret').end()
             .end()
           .end()
-          .start().addClass('inline float-right')
+          .start().addClass('inline').addClass('float-right')
             .start().add(this.LabelPostal).addClass('infoLabel').end()
             .start(this.POSTAL_CODE).addClass('inputLarge').end()
           .end()
@@ -416,15 +431,15 @@ foam.CLASS({
             }) 
             .start().addClass('inline')
               .start().add(self.LabelInstitute).addClass('infoLabel').end()
-              .start().add(data.institutionNumber).addClass('notEditable full-width-input-label').end()
+              .start().add(data.institutionNumber).addClass('notEditable').addClass('full-width-input-label').end()
             .end()
             .start().addClass('inline')
               .start().add(self.LabelTransit).addClass('infoLabel').end()
-              .start().add(data.transitNumber).addClass('notEditable inputLarge-label').end()
+              .start().add(data.transitNumber).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
-            .start().addClass('inline float-right')
+            .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
-              .start().add(data.accountNumber).addClass('notEditable inputLarge-label').end()
+              .start().add(data.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
           }).end()
 
@@ -435,11 +450,11 @@ foam.CLASS({
             .end()
             .start('p')
               .add('Recourse/Reimbursement').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody link').add(this.link).on('click',this.goToPayment).end().end()
+              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
             .end()
             .start('p')
               .add('Cancellation').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody link').add(this.link).on('click',this.goToPayment).end().end()
+              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
             .end()
           .end() 
         .end()

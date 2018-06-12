@@ -6,88 +6,84 @@ foam.CLASS({
   documentation: 'User card used in transfers',
 
   imports: [
-    'invoiceMode',
     'accountDAO',
     'branchDAO',
+    'invoiceMode',
     'type'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .userContainer {
-          box-sizing: border-box;
-          border-radius: 2px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          margin-bottom: 20px;
-          width: 300px;
-          padding: 20px;
-        }
+  css: `
+    ^ .userContainer {
+      box-sizing: border-box;
+      border-radius: 2px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      margin-bottom: 20px;
+      width: 300px;
+      padding: 20px;
+    }
 
-        ^ .userRow {
-          margin-bottom: 20px;
-        }
+    ^ .userRow {
+      margin-bottom: 20px;
+    }
 
-        ^ .userName {
-          display: inline-block;
-          margin-bottom: 0 !important;
-        }
+    ^ .userName {
+      display: inline-block;
+      margin-bottom: 0 !important;
+    }
 
-        ^ .nationalityContainer {
-          display: inline-block;
-          vertical-align: top;
-          float: right;
-        }
+    ^ .nationalityContainer {
+      display: inline-block;
+      vertical-align: top;
+      float: right;
+    }
 
-        ^ .nationalityLabel {
-          display: inline-block;
-          vertical-align: top;
-          margin: 0;
-          margin-left: 5px;
-        }
+    ^ .nationalityLabel {
+      display: inline-block;
+      vertical-align: top;
+      margin: 0;
+      margin-left: 5px;
+    }
 
-        ^ .pDetails {
-          opacity: 0.7;
-          font-size: 12px;
-          line-height: 1.17;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
+    ^ .pDetails {
+      opacity: 0.7;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      color: #093649;
+    }
 
-        ^ .bold {
-          font-weight: bold;
-          margin-bottom: 20px;
-          letter-spacing: 0.4px;
-          opacity: 1;
-        }
+    ^ .bold {
+      font-weight: bold;
+      margin-bottom: 20px;
+      letter-spacing: 0.4px;
+      opacity: 1;
+    }
 
-        ^ .bankInfoContainer {
-          margin-top: 18px;
-          width: 100%;
-        }
+    ^ .bankInfoContainer {
+      margin-top: 18px;
+      width: 100%;
+    }
 
-        ^ .bankInfoRow {
-          width: 100%;
-          margin-bottom: 5px;
-        }
+    ^ .bankInfoRow {
+      width: 100%;
+      margin-bottom: 5px;
+    }
 
-        ^ .bankInfoRow:last-child {
-          margin-bottom: 0;
-        }
+    ^ .bankInfoRow:last-child {
+      margin-bottom: 0;
+    }
 
-        ^ .bankInfoText {
-          display: inline-block;
-          vertical-align: top;
-          margin: 0;
-        }
+    ^ .bankInfoText {
+      display: inline-block;
+      vertical-align: top;
+      margin: 0;
+    }
 
-        ^ .bankInfoLabel {
-          width: 85px;
-        }
-      */}
-    })
-  ],
+    ^ .bankInfoLabel {
+      width: 85px;
+    }
+  `,
 
   properties: [
     'user',

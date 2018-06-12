@@ -11,7 +11,7 @@ import net.nanopay.tx.model.Transaction;
 // TODO: make Transaction implement an interface like CreatedAware and
 // then make this decorator generic.
 public class SetDateTransactionDAO
-  extends ProxyDAO
+    extends ProxyDAO
 {
   public SetDateTransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -20,7 +20,10 @@ public class SetDateTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
-    txn.setDate(new Date());
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+    if ( oldTxn == null )
+      txn.setDate(new Date());
+    txn.setLastModified(new Date());
     return super.put_(x, obj);
   }
 }

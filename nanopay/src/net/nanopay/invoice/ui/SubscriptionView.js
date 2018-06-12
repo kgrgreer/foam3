@@ -59,7 +59,7 @@ foam.CLASS({
         .start().enableClass('hide', this.hideActionButton$)
           .start().addClass('button-div')
             .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-            .start().addClass('inline float-right')
+            .start().addClass('inline').addClass('float-right')
             .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-print.png', text: 'Print'}}).addClass('import-button').end()
             .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-export.png', text: 'Export'}}).addClass('import-button').end()
             .end()

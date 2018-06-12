@@ -2,6 +2,9 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
 
+  tableColumns: ['status', 'payerName', 'payeeName',
+    'amount', 'processDate', 'completionDate', 'date'],
+
   imports: [
     'addCommas',
     'userDAO'
@@ -76,65 +79,45 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'String',
-      name: 'payerName',
-      visibility: foam.u2.Visibility.RO
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payee',
+      storageTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payer',
+      storageTransient: true
     },
     {
       class: 'Long',
       name: 'payerId',
       label: 'Payer',
       visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payerId, X) {
-        var self = this;
-        X.userDAO.find(payerId).then(function(payer) {
-          self.start()
-            .start('h4').style({ 'margin-bottom': 0 }).add(payer.firstName).end()
-            .start('p').style({ 'margin-top': 0 }).add(payer.email).end()
+      tableCellFormatter: function(payerId, obj, axiom) {
+        this.start()
+          .start('h4').style({ 'margin-bottom': 0 })
+            .add(obj.payer.firstName)
+          .end()
+          .start('p').style({ 'margin-top': 0 }).add(obj.payer.email).end()
           .end();
-        })
-      },
-      postSet: function(oldValue, newValue){
-        var self = this;
-        var dao = this.__context__.userDAO;
-        dao.find(newValue).then(function(a) {
-          if ( a ) {
-            self.payerName = a.label();
-          } else {
-            self.payerName = 'Unknown Id: ' + newValue;
-          }
-        });
       }
-    },
-    {
-      class: 'String',
-      name: 'payeeName',
-      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
       name: 'payeeId',
       label: 'Payee',
       visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payeeId, X) {
-        var self = this;
-        X.userDAO.find(payeeId).then(function(payee) {
-          self.start()
-            .start('h4').style({ 'margin-bottom': 0 }).add(payee.firstName).end()
-            .start('p').style({ 'margin-top': 0 }).add(payee.email).end()
-          .end();
-        })
-      },
-      postSet: function(oldValue, newValue){
-        var self = this;
-        var dao = this.__context__.userDAO;
-        dao.find(newValue).then(function(a) {
-          if ( a ) {
-            self.payeeName = a.label();
-          } else {
-            self.payeeName = 'Unknown Id: ' + newValue;
-          }
-        });
+      tableCellFormatter: function(payeeId, obj, axiom) {
+        this.start()
+              .start('h4').style({ 'margin-bottom': 0 })
+                .add(obj.payee.firstName)
+              .end()
+              .start('p').style({ 'margin-top': 0 })
+                .add(obj.payee.email)
+              .end()
+            .end();
       }
     },
     {
@@ -152,7 +135,11 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'settlementDate'
+      name: 'processDate'
+    },
+    {
+      class: 'DateTime',
+      name: 'completionDate'
     },
     {
       class: 'String',
@@ -199,8 +186,8 @@ foam.CLASS({
       class: 'Double',
       name: 'rate',
       visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(rate){
-        this.start().add(rate.toFixed(2)).end()
+      tableCellFormatter: function(rate) {
+        this.start().add(rate.toFixed(2)).end();
       }
     },
     {
@@ -220,16 +207,21 @@ foam.CLASS({
       class: 'Currency',
       name: 'total',
       visibility: foam.u2.Visibility.RO,
-      label: 'Amount',
+      label: 'Total Amount',
       transient: true,
-      expression: function (amount, tip) {
+      expression: function(amount, tip) {
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
+        var refund =
+          (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
+              X.type == net.nanopay.cico.model.TransactionType.REFUND );
+
         this
-          .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
+          .start()
+          .addClass(refund ? 'amount-Color-Red' : 'amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
@@ -264,6 +256,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'messageId'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      label: 'Latest Modify Date & Time'
     }
   ],
 
@@ -290,7 +287,7 @@ foam.CLASS({
             new Transfer(getPayerId(), -getTotal())
           };
         }
-        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANKACCOUNTPAYMENT ) {
+        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
             new Transfer(getPayeeId(), getTotal())
           };

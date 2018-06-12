@@ -296,6 +296,17 @@ foam.CLASS({
       background-color: white;
     }
 
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
   `,
 
   messages: [
@@ -314,7 +325,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -366,7 +378,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
         this.viewData.user.businessPhone = this.Phone.create({
-          number: '+1' + newValue
+          number: '+1 ' + newValue
         });
       }
     },
@@ -391,8 +403,8 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId ) {
-          if ( this.viewData.user.businessType == 0 ) {
+        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0) {
+          if ( this.viewData.user.businessTypeId == 0 ) {
             this.businessTypeInfo = this.BusinessTypeDescriptionSole;
           }
 
@@ -515,12 +527,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.address2 ) return this.viewData.user.businessAddress.address2;
+        if ( this.viewData.user.businessAddress.suite ) return this.viewData.user.businessAddress.suite;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.address2 = newValue.trim();
+        this.viewData.user.businessAddress.suite = newValue.trim();
       }
     },
     {
@@ -581,7 +593,8 @@ foam.CLASS({
       var self = this;
 
       var businessTypeInfoSlot = this.businessTypeField$.map(function(value) { return value !== 'Please select' && value !== '' ? true : false; });
-
+      this.scrollToTop();
+      
       this
         .addClass(this.myClass())
         .start('div').addClass('widthWrapper')
@@ -598,7 +611,7 @@ foam.CLASS({
               .addClass('fullWidthField')
               .enableClass('hidden', this.isEditingPhone$)
               .start('p').add(this.BusinessPhoneLabel).addClass('fieldLabel').end()
-              .start(this.DISPLAYED_PHONE_NUMBER)
+              .start(this.DISPLAYED_PHONE_NUMBER, { placeholder: "format: 000-000-0000" })
                 .addClass('fullWidthField')
                 .addClass('displayOnly')
                 .on('focus', function() {
@@ -630,7 +643,7 @@ foam.CLASS({
                 .addClass('phoneNumberCol')
                 .enableClass('out', this.isEditingPhone$, true)
                 .start('p').add(this.PhoneNumberLabel).addClass('fieldLabel').end()
-                .start(this.PHONE_NUMBER_FIELD, {}, this.phoneNumberFieldElement$)
+                .start(this.PHONE_NUMBER_FIELD, { placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                   .addClass('fullWidthField')
                   .on('focus', function() {
                     self.isEditingPhone = true;
@@ -667,7 +680,7 @@ foam.CLASS({
           .start(this.REGISTRATION_AUTHORITY_FIELD).addClass('fullWidthField').end()
 
           .start('p').add(this.RegistrationDateLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.REGISTRATION_DATE_FIELD).addClass('fullWidthField').end()
+          .start(this.REGISTRATION_DATE_FIELD, { placeholder: 'yyyy-mm-dd'}).addClass('fullWidthField').end()
 
           .start('p').add(this.BusinessAddressLabel).addClass('sectionTitle').end()
           .start('p').add(this.CountryLabel).addClass('fieldLabel').end()
@@ -685,8 +698,9 @@ foam.CLASS({
               .start(this.STREET_NAME_FIELD).addClass('streetNameField').end()
             .end()
           .end()
-          .start('p').add(this.AddressLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
+          .start('p').add(this.Address2Label).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
+          .start(this.SUITE_FIELD).addClass('fullWidthField').end()
+          .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .start('p').add(this.ProvinceLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start('div').addClass('dropdownContainer')
             .start(this.PROVINCE_FIELD).end()
@@ -701,7 +715,7 @@ foam.CLASS({
           .start('div')
             .start({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data$: self.businessProfilePicture$,
+              ProfilePictureImage$: self.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png'
             }).end()
         .end()

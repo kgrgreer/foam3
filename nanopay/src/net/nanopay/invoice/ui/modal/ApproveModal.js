@@ -67,7 +67,7 @@ foam.CLASS({
       .start()
         .start().addClass('mainMessage-Text').add(this.Instructions).end()
         .start(this.NOTE).addClass('input-Box').end()
-        .start().addClass('blue-button btn').add('Approve').end()
+        .start().addClass('blue-button').addClass('btn').add('Approve').end()
       .end()
     .end()
     } 

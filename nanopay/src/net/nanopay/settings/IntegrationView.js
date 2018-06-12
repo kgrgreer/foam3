@@ -145,15 +145,15 @@ foam.CLASS({
             .end()
             .on('click', this.addFresh)
           .end()
-          .start().addClass('integrationImgDiv last-integrationImgDiv')
+          .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
           .start({class:'foam.u2.tag.Image', data:'images/setting/integration/intacct.png'}).addClass('integrationImg')
             .attrs({
                 srcset: 'images/setting/integration/intacct@2x.png 2x, images/setting/integration/intacct@3x.png 3x'
                 })
             .end()
         .end()
-        .start().addClass('labelContent centerDiv').add("Can’t find your software? Tell us about it.").end()
-        .start().addClass('centerDiv inputLine')
+        .start().addClass('labelContent').addClass('centerDiv').add("Can’t find your software? Tell us about it.").end()
+        .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
           .start().add("submit").addClass('submit-BTN').end()
         .end()

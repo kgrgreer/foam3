@@ -107,7 +107,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('status')
           .start('p').addClass('account-status').add('Account ID ' + this.user.id).end()
-          .start().addClass('generic-status Invoice-Status-Paid').add('Active').end()
+          .start().addClass('generic-status').addClass('Invoice-Status-Paid').add('Active').end()
         .end()
         .start().addClass('line').end()
         .start().addClass('Container')

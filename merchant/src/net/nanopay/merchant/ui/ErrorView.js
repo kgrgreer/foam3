@@ -10,6 +10,11 @@ foam.CLASS({
     'showHeader'
   ],
 
+  requires: [
+    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
+
   css: `
     ^ {
       height: 100%;
@@ -146,7 +151,7 @@ foam.CLASS({
 
   messages: [
     { name: 'paymentError', message: 'Payment failed. Please try again' },
-    { name: 'refundError',  message: 'Refund failed. Please try again' }
+    { name: 'refundError', message: 'Refund failed. Please try again' }
   ],
 
   methods: [
@@ -156,15 +161,15 @@ foam.CLASS({
 
       this.document.addEventListener('keyup', this.onKeyPressed);
       this.document.addEventListener('touchend', this.onTouchStarted);
-      this.onDetach(function () {
+      this.onDetach(function() {
         self.document.removeEventListener('keyup', self.onKeyPressed);
         self.document.removeEventListener('touchend', self.onTouchStarted);
       });
-
-      var user = this.transactionUser;
       // if not a refund, use the total; else use amount
-      var refund = ( this.transaction.status === 'Refund' || this.transaction.status === 'Refunded' );
-      var amount = ( ! refund ) ? this.transaction.total : this.transaction.amount;
+      var refund = this.transaction.status === this.TransactionType.REFUND ||
+            this.transaction.status === this.TransactionStatus.REFUNDED;
+      var amount = ! refund ?
+        this.transaction.total : this.transaction.amount;
 
       this
         .addClass(this.myClass())
@@ -172,20 +177,30 @@ foam.CLASS({
           .start('div').addClass('error-icon')
             .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.svg' })
           .end()
-          .start().addClass('error-message').add( ! refund ? this.paymentError : this.refundError ).end()
-          .start().addClass('error-amount').add('$' + ( amount / 100 ).toFixed(2)).end()
-          .start().addClass('error-from-to').add( ! refund ? 'From' : 'To' ).end()
-          .start().addClass('error-profile')
+        .start().addClass('error-message')
+          .add(! refund ? this.paymentError : this.refundError).end()
+        .start().addClass('error-amount')
+          .add('$' + (amount / 100).toFixed(2)).end()
+            .start().addClass('error-from-to')
+              .add( ! refund ? 'From' : 'To' ).end()
+            .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')
-              .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
+              .tag({
+                class: 'foam.u2.tag.Image',
+                data: this.transactionUser.profilePicture ?
+                  this.transactionUser.profilePicture :
+                  'images/ic-placeholder.png'
+              })
             .end()
             .start().addClass('error-profile-name')
-              .add(user.firstName + ' ' + user.lastName)
+                .add(
+                  this.transactionUser.firstName + ' '
+                   + this.transactionUser.lastName)
             .end()
           .end()
         .end();
 
-      this.refresh = setTimeout(function () {
+      this.refresh = setTimeout(function() {
         if ( self.showHome ) {
           self.showHomeView();
         } else {
@@ -205,9 +220,11 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onKeyPressed (e) {
+    function onKeyPressed(e) {
       var key = e.key || e.keyCode;
-      if ( key === 'Backspace' || key === 'Enter' || key === 'Escape' || key === 8 || key === 13 || key === 27 ) {
+      if ( key === 'Backspace'
+        || key === 'Enter' || key === 'Escape'
+        || key === 8 || key === 13 || key === 27 ) {
         e.preventDefault();
         clearTimeout(this.refresh);
         if ( this.showHome ) {
@@ -219,7 +236,7 @@ foam.CLASS({
       }
     },
 
-    function onTouchStarted (e) {
+    function onTouchStarted(e) {
       e.preventDefault();
       clearTimeout(this.refresh);
       if ( this.showHome ) {
@@ -230,4 +247,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

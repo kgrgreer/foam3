@@ -7,6 +7,7 @@ import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.fresh.model.*;
 import net.nanopay.invoice.model.Invoice;
 import org.apache.http.HttpResponse;
@@ -129,15 +130,15 @@ public class FreshBook
         String newStr = invoice.getAmount().getAmount().replace(".", "");
         account.setAmount(Long.parseLong(newStr));
         Date date;
-        if(!invoice.getCreate_date().equals("")) {
+        if(!SafetyUtil.isEmpty(invoice.getCreate_date())) {
           date = new SimpleDateFormat("yyyy-MM-dd").parse(invoice.getCreate_date());
           account.setIssueDate(date);
         }
-        if(!invoice.getDue_date().equals("")) {
+        if(!SafetyUtil.isEmpty(invoice.getDue_date())) {
           date = new SimpleDateFormat("yyyy-MM-dd").parse(invoice.getDue_date());
           account.setDueDate(date);
         }
-        if(!invoice.getDate_paid().equals("")) {
+        if(!SafetyUtil.isEmpty(invoice.getDate_paid())) {
           date = new SimpleDateFormat("yyyy-MM-dd").parse(invoice.getDate_paid());
           account.setPaymentDate(date);
         }

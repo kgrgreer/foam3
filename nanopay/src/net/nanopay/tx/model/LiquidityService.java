@@ -11,6 +11,8 @@ import foam.nanos.NanoService;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
+import net.nanopay.model.BankAccountStatus;
+
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
@@ -174,14 +176,14 @@ public class LiquidityService
       bankAccount = (BankAccount) getBankAccountDAO().find(
           AND(
               EQ(BankAccount.OWNER, userID),
-              EQ(BankAccount.STATUS, "Verified")
+              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
           ));
     } else {
       bankAccount = (BankAccount) getBankAccountDAO().find(
           AND(
               EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
               EQ(BankAccount.OWNER, liquiditySettings.getId()),
-              EQ(BankAccount.STATUS, "Verified")
+              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
           ));
     }
 
