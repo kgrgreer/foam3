@@ -168,6 +168,10 @@ foam.CLASS({
       -ms-transform: translate(120px, -76px);
       transform: translate(120px, -76px);
     }
+    ^ .optionsDropDown2:after {
+      -ms-transform: translate(120px, -46px);
+      transform: translate(120px, -46px);
+    }
     ^ .optionsDropDown-content {
       text-align: center;
     }
@@ -306,14 +310,14 @@ foam.CLASS({
           y: - 7,
           padding: 0.01,
         });
-        p.addClass('optionsDropDown')
+        // optionsDropDown2 is to set the postion of the transform arrow for connection dropdown
+        p.addClass('optionsDropDown').addClass('optionsDropDown2')
         .start('div').addClass('optionsDropDown-content')
           .add('Connect')
-          .on('click', this.onCreateConnect)
+          .on('click', this.onClickConnect)
         .end();
       }
       this.popupMenu_.add(p);
-      this.options_icon_select = true;
     },
 
     function onCreateInvoice() {
@@ -358,7 +362,7 @@ foam.CLASS({
       self.remove();
     },
 
-    function onCreateConnect() {
+    function onClickConnect() {
     }
   ]
 });
