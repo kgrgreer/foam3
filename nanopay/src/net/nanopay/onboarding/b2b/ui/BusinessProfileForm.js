@@ -527,12 +527,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.address2 ) return this.viewData.user.businessAddress.address2;
+        if ( this.viewData.user.businessAddress.suite ) return this.viewData.user.businessAddress.suite;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.address2 = newValue.trim();
+        this.viewData.user.businessAddress.suite = newValue.trim();
       }
     },
     {
@@ -699,7 +699,7 @@ foam.CLASS({
             .end()
           .end()
           .start('p').add(this.Address2Label).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
+          .start(this.SUITE_FIELD).addClass('fullWidthField').end()
           .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .start('p').add(this.ProvinceLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start('div').addClass('dropdownContainer')
