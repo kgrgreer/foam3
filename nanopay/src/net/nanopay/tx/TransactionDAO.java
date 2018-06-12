@@ -46,7 +46,7 @@ public class TransactionDAO
 
   protected DAO getAccountDAO() {
     if ( accountDAO_ == null ) {
-      accountDAO_ = (DAO) getX().get("localAccountDAO");
+      accountDAO_ = (DAO) getX().get("localBalanceDAO");
     }
 
     return accountDAO_;
