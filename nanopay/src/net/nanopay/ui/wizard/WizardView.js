@@ -239,6 +239,13 @@ foam.CLASS({
       value: false
     },
 
+    // If true, displays the Next Action
+    {
+      class: 'Boolean',
+      name: 'hasNextOption',
+      value: true
+    },
+
     // Label for the back button
     {
       class: 'String',
@@ -356,7 +363,9 @@ foam.CLASS({
               .end()
               .start('div').addClass('backNextContainer')
                 .start(this.GO_BACK, {label$: this.backLabel$}).addClass('plainAction').end()
-                .tag(this.GO_NEXT, {label$: this.nextLabel$})
+                .callIf(this.hasNextOption, function () {
+                  this.tag(self.GO_NEXT, {label$: self.nextLabel$})
+                })
               .end()
             .end()
           .end();

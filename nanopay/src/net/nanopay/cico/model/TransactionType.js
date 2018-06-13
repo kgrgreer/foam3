@@ -20,6 +20,14 @@ foam.ENUM({
     {
       name: 'VERIFICATION',
       label: 'Verification'
+    },
+    {
+      name: 'BANK_ACCOUNT_PAYMENT',
+      label: 'BankAccountPayment'
+    },
+    {
+      name: 'REFUND',
+      label: 'Refund'
     }
   ]
 });

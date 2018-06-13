@@ -70,7 +70,7 @@ foam.CLASS({
           .end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start(this.VOIDED).addClass('blue-button btn').end()
+          .start(this.VOIDED).addClass('blue-button').addClass('btn').end()
         .end()
       .end()
     } 

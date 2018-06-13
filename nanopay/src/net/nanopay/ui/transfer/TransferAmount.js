@@ -13,132 +13,128 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .transferRateContainer {
-          position: relative;
-          width: 100%;
-          margin-bottom: 30px;
-        }
+  css: `
+    ^ .transferRateContainer {
+      position: relative;
+      width: 100%;
+      margin-bottom: 30px;
+    }
 
-        ^ .invoiceMarginOverride {
-          margin-bottom: 0px;
-        }
+    ^ .invoiceMarginOverride {
+      margin-bottom: 0px;
+    }
 
-        ^ .currencyContainer {
-          box-sizing: border-box;
-          width: 320px;
-          height: 40px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          margin-bottom: 13px;
-        }
+    ^ .currencyContainer {
+      box-sizing: border-box;
+      width: 320px;
+      height: 40px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      margin-bottom: 13px;
+    }
 
-        ^ .currencyDenominationContainer {
-          display: inline-block;
-          width: 85px;
-          height: 100%;
-          padding: 8px;
-          box-sizing: border-box;
-        }
+    ^ .currencyDenominationContainer {
+      display: inline-block;
+      width: 85px;
+      height: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
 
-        ^ .currencyFlag {
-          display: inline-block;
-          width: 24px;
-          height: 14px;
-          margin: 4px 0;
-        }
+    ^ .currencyFlag {
+      display: inline-block;
+      width: 24px;
+      height: 14px;
+      margin: 4px 0;
+    }
 
-        ^ .currencyName {
-          display: inline-block;
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          color: #093649;
+    ^ .currencyName {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      color: #093649;
 
-          vertical-align: top;
-          margin: 5px 0;
-          margin-left: 15px;
-        }
+      vertical-align: top;
+      margin: 5px 0;
+      margin-left: 15px;
+    }
 
-        ^ .currencyContainer:last-child {
-          margin-bottom: 0;
-        }
+    ^ .currencyContainer:last-child {
+      margin-bottom: 0;
+    }
 
-        ^ .rateLabel {
-          line-height: 20px;
-          height: 20px;
-        }
+    ^ .rateLabel {
+      line-height: 20px;
+      height: 20px;
+    }
 
-        ^ .rateLabelMargin {
-          margin-left: 100px;
-          margin-bottom: 13px;
-        }
+    ^ .rateLabelMargin {
+      margin-left: 100px;
+      margin-bottom: 13px;
+    }
 
-        ^ .rateDivider {
-          position: absolute;
-          width: 2px;
-          height: 100%;
-          background-color: #a4b3b8;
-          opacity: 0.3;
-          top: 0;
-          left: 86px;
-        }
+    ^ .rateDivider {
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      background-color: #a4b3b8;
+      opacity: 0.3;
+      top: 0;
+      left: 86px;
+    }
 
-        ^ .property-fromAmount,
-          .property-toAmount {
-          display: inline-block;
-          box-sizing: border-box;
-          vertical-align: top;
-          float: right;
-          width: 231px;
-          height: 38px;
-          padding: 0 20px;
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          border: none;
-          outline: none;
-        }
+    ^ .property-fromAmount,
+      .property-toAmount {
+      display: inline-block;
+      box-sizing: border-box;
+      vertical-align: top;
+      float: right;
+      width: 231px;
+      height: 38px;
+      padding: 0 20px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border: none;
+      outline: none;
+    }
 
-        ^ .property-fromAmount:focus,
-          .property-toAmount:focus {
-          border: solid 1px #59A5D5;
-          padding: 0 19px;
-        }
+    ^ .property-fromAmount:focus,
+      .property-toAmount:focus {
+      border: solid 1px #59A5D5;
+      padding: 0 19px;
+    }
 
-        ^ input[type=number]::-webkit-inner-spin-button,
-        ^ input[type=number]::-webkit-outer-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
+    ^ input[type=number]::-webkit-inner-spin-button,
+    ^ input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
-        ^ .net-nanopay-interac-ui-shared-LoadingSpinner {
-          margin-left: 100px;
-          margin-bottom: 13px;
-        }
+    ^ .net-nanopay-interac-ui-shared-LoadingSpinner {
+      margin-left: 100px;
+      margin-bottom: 13px;
+    }
 
-        ^ .from-amount {
-          float: none;
-          margin-bottom: 20px;
-        }
+    ^ .from-amount {
+      float: none;
+      margin-bottom: 20px;
+    }
 
-        ^ .label{
-          margin-left: 0;
-        }
+    ^ .label{
+      margin-left: 0;
+    }
 
-        ^ .invoice-amount{
-          font-size: 40px;
-          margin: 20px 0;
-          font-weight: 300;
-        }
-      */}
-    })
-  ],
+    ^ .invoice-amount{
+      font-size: 40px;
+      margin: 20px 0;
+      font-weight: 300;
+    }
+  `,
 
   messages: [
     { name: 'AmountError', message: 'Amount needs to be greater than $0.00' },
@@ -260,7 +256,7 @@ foam.CLASS({
       var self = this;
 
       // TODO: Get FX Rate
-      if(this.type == 'foreign'){
+      if ( this.type == 'foreign' ) {
         this.countdownView.onExpiry = function() {
           self.refreshRate();
         };

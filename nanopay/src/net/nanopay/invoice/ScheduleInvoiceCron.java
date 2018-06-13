@@ -77,9 +77,6 @@ public class ScheduleInvoiceCron
 
         try {
           Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
-          invoice.setPaymentId(completedTransaction.getId());
-          invoice.setPaymentDate((Date) new Date());
-          invoiceDAO_.put(invoice);
           logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
           logger.error(this.getClass(), e.getMessage());

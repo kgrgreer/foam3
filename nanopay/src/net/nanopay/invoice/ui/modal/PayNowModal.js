@@ -23,23 +23,19 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*    
-      ^{
-        width: 448px;
-        margin: auto;
-        font-family: Roboto;
-      }
-    */}
-    })
-  ],
-  
+  css: `
+    ^{
+      width: 448px;
+      margin: auto;
+      font-family: Roboto;
+    }
+  `,
+
   methods: [
     function initE(){
       this.SUPER();
       var self = this;
-      
+
       this
       .tag(this.ModalHeader.create({
         title: 'Pay Now'
@@ -60,10 +56,10 @@ foam.CLASS({
           .start('select').addClass('full-width-input').end()
           .start().addClass('label').add("Note").end()
           .start(this.NOTE).addClass('input-box').end()
-          .start(this.PAY).addClass('blue-button btn').end()
+          .start(this.PAY).addClass('blue-button').addClass('btn').end()
         .end()
-      .end()
-    } 
+      .end();
+    }
   ],
 
   actions: [
@@ -71,10 +67,10 @@ foam.CLASS({
       name: 'pay',
       label: 'Pay Now',
       code: function(X){
-        /* 
+        /*
           Create transaction & continue flow here.
           Invoice Data is accessible through X.data.invoice
-        */ 
+        */
         X.closeDialog();
       }
     }

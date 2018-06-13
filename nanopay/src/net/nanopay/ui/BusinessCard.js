@@ -82,8 +82,9 @@ foam.CLASS({
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
               placeholderImage: 'images/business-placeholder.png',
-              data$: this.profileImg$,
-              uploadHidden: true
+              ProfilePictureImage$: self.profileImg$,
+              uploadHidden: true,
+              boxHidden: true
             })
             .start().addClass('container-1')
               .start().addClass('companyName')
@@ -111,10 +112,10 @@ foam.CLASS({
                 return a.businessPhone.number;
               }))
             .end()
-            .start().addClass('companyName inline')
+            .start().addClass('companyName').addClass('inline')
               .add('Business')
             .end()
-            .start().addClass('generic-status Invoice-Status-Paid')
+            .start().addClass('generic-status').addClass('Invoice-Status-Paid')
              .add(this.business$.map(function(a){ 
                if(!a.status) return;
                return a.status.label; 
@@ -128,7 +129,7 @@ foam.CLASS({
       var formattedAddress;
       if(!address) return;
       if(address.streetNumber){
-        formattedAddress = address.address2 + ' ' + address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
+        formattedAddress = address.suite + '-' + address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
       }
       return formattedAddress;
     }

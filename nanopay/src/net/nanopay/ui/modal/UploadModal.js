@@ -31,7 +31,7 @@ foam.CLASS({
       background-color: #093649;
       margin-bottom: 20px;
     }
-    ^ .attachment-input {
+    ^ .document-input {
       width: 0.1px;
       height: 0.1px;
       opacity: 0;
@@ -149,13 +149,14 @@ foam.CLASS({
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
-    { name: 'FileSizeError', message: 'File size exceeds 10MB' }
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
+    { name: 'NoUploadFile', message: 'Upload a file before submitting' }
   ],
   methods: [
     function initE(){
       this.SUPER();
       var self = this;
-          
+      this.data = this.exportData
       this
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
@@ -185,10 +186,10 @@ foam.CLASS({
           .end()
           .on('drop', this.onDrop)
           .on('click', self.onAddAttachmentClicked)
-          .start('input').addClass('attachment-input')
+          .start('input').addClass('document-input')
             .attrs({
               type: 'file',
-              accept: 'application/pdf',
+              accept: "image/jpg , image/jpeg , image/png , application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document , application/vnd.ms-powerpoint , application/vnd.openxmlformats-officedocument.presentationml.presentation , application/vnd.openxmlformats-officedocument.presentationml.slideshow , application/vnd.oasis.opendocument.text , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet , application/pdf",
               multiple: 'multiple'
             })
             .on('change', this.onChange)
@@ -202,7 +203,7 @@ foam.CLASS({
       
     } ,
     function onInvoiceFileRemoved (fileNumber) {
-      this.document.querySelector('.attachment-input').value = null;
+      this.document.querySelector('.document-input').value = null;
       this.data.splice(fileNumber - 1, 1);
       this.data = Array.from(this.data);
     }
@@ -219,14 +220,27 @@ foam.CLASS({
       name: 'submitButton',
       label: 'Submit',
       code: function(X) {
-        X.closeDialog();
-        this.exportData = this.data;
+        if (this.data == "") {
+          this.add(this.NotificationMessage.create({ message: this.NoUploadFile, type: 'error' }));
+        } else {
+          X.closeDialog();
+          this.exportData = this.data;
+        }
       }
     },
   ],
   listeners: [
-    function onAddAttachmentClicked (e) {
-      this.document.querySelector('.attachment-input').click();
+    function onAddAttachmentClicked(e) {
+      if ( typeof e.target != 'undefined' ) {
+        if ( e.target.tagName != 'SPAN' && e.target.tagName != 'A' ) {
+          this.document.querySelector('.document-input').click();
+        }
+      } else {
+        // For IE browser
+        if ( e.srcElement.tagName != 'SPAN' && e.srcElement.tagName != 'A' ) {
+          this.document.querySelector('.document-input').click();
+        }
+      }
     },
     function onDragOver(e) {
       e.preventDefault();    

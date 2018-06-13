@@ -312,7 +312,7 @@ foam.CLASS({
           .start()
             .start('p').addClass('label').add(this.EmailLabel).end()
             .start(this.User.EMAIL, { data$: this.data.email$, mode: foam.u2.DisplayMode.RO })
-              .addClass('largeInput readOnly')
+              .addClass('largeInput').addClass('readOnly')
               .on('focus', function () {
                 self.isEditingName = false;
                 self.isEditingPhone = false;
@@ -353,7 +353,11 @@ foam.CLASS({
               .addClass('nameFieldsCol')
               .enableClass('middleName', this.isEditingPhone$, true)
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-              .start(this.User.PHONE_NUMBER, { data$: this.data.phone.number$.map(function(a){ return a.substring(3, a.length); })})
+              .start(this.User.PHONE_NUMBER, {
+                data$: this.data.phone.number$.map( function(a) {
+                  return a.replace( self.countryCode, '' );
+                })
+              })
                 .addClass('phoneNumberInput')
                 .on('click', function() {
                   self.isEditingPhone = true;

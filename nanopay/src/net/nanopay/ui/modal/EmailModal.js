@@ -41,7 +41,7 @@ foam.CLASS({
         .start('input').addClass('full-width-input').end()
         .start().addClass('label').add("Note").end()
         .start('input').addClass('input-box').end()
-        .start().addClass('blue-button btn').add('Confirm').end()
+        .start().addClass('blue-button').addClass('btn').add('Confirm').end()
       .end()
     } 
   ]

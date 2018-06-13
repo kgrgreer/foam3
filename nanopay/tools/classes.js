@@ -3,8 +3,6 @@ require('../src/net/nanopay/files.js');
 
 var classes = [
   'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.blob.AmazonS3BlobStore',
-  'net.nanopay.dao.crypto.EncryptedObject',
   'net.nanopay.cico.model.ServiceProvider',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
@@ -16,9 +14,14 @@ var classes = [
   'net.nanopay.cico.spi.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
+  'net.nanopay.cico.paymentCard.model.PaymentCard',
+  'net.nanopay.cico.paymentCard.model.PaymentCardType',
+  'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
+  'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
   'net.nanopay.model.Account',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
+  'net.nanopay.model.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
@@ -44,17 +47,17 @@ var classes = [
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
-  'net.nanopay.fresh.FreshConfig',  
-  'net.nanopay.fresh.model.FreshToken',  
-  'net.nanopay.fresh.model.FreshBusiness',  
-  'net.nanopay.fresh.model.FreshBusinessMembership',    
-  'net.nanopay.fresh.model.FreshCurrent',  
+  'net.nanopay.fresh.FreshConfig',
+  'net.nanopay.fresh.model.FreshToken',
+  'net.nanopay.fresh.model.FreshBusiness',
+  'net.nanopay.fresh.model.FreshBusinessMembership',
+  'net.nanopay.fresh.model.FreshCurrent',
   'net.nanopay.fresh.model.FreshResponse',
-  'net.nanopay.fresh.model.FreshInvoiceResponse',   
-  'net.nanopay.fresh.model.FreshInvoiceResult',   
-  'net.nanopay.fresh.model.FreshInvoicePages',   
-  'net.nanopay.fresh.model.FreshInvoice',   
-  'net.nanopay.fresh.model.FreshInvoiceAmount',   
+  'net.nanopay.fresh.model.FreshInvoiceResponse',
+  'net.nanopay.fresh.model.FreshInvoiceResult',
+  'net.nanopay.fresh.model.FreshInvoicePages',
+  'net.nanopay.fresh.model.FreshInvoice',
+  'net.nanopay.fresh.model.FreshInvoiceAmount',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
@@ -83,6 +86,7 @@ var classes = [
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
@@ -112,7 +116,20 @@ var classes = [
   'foam.nanos.auth.UserUserJunction',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
-  'net.nanopay.fx.interac.model.AcceptExchangeRateFields'
+  'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
+
+  //PaymentAccountInfo
+  'net.nanopay.cico.model.PaymentAccountInfo',
+  'net.nanopay.cico.model.RealexPaymentAccountInfo',
+  'net.nanopay.cico.model.MobileWallet',
+  'net.nanopay.cico.model.PaymentType',
+  'net.nanopay.cico.model.PaymentProcessorUserReference',
+  'net.nanopay.cico.model.PaymentProcessor',
+
+  // security
+  'net.nanopay.security.EncryptedObject',
+  'net.nanopay.security.KeyStoreManager',
+  'net.nanopay.security.FileKeyStoreManager'
 ];
 
 var abstractClasses = [

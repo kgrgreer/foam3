@@ -203,7 +203,8 @@ function addToClasses(classes, models) {
  * @param {String}    modelType CLASS or ENUM, default CLASS
  * @return {Object}        Object containing model name and string representation
  */
-function genModel(m, modelType = 'CLASS') {
+function genModel(m, modelType) {
+  modelType = modelType || 'CLASS';
   return {
     name: m.name,
     class: '// WARNING: GENERATED CODE, DO NOT MODIFY BY HAND!\nfoam.' +

@@ -53,7 +53,11 @@ foam.CLASS({
     function initE(){
       this.SUPER();
       var self = this;
-      debugger;
+      
+      var host = ('localhost'===(window.location.hostname)) 
+      ? window.location.hostname+":"+window.location.port
+      : window.location.hostname;
+      path = window.location.protocol+"//"+host+"/"
       this
       .start()
         .tag(this.ModalHeader.create({
@@ -62,14 +66,14 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('iframe').addClass('iframe-container')
-          .attrs({id:'print-iframe',name:'print-iframe',src:this.appConfig.url+"service/terms?version="+((this.exportData === undefined )?" ":this.exportData)})
+          .attrs({id:'print-iframe',name:'print-iframe',src:path+"service/terms?version="+((this.exportData === undefined )?"":this.exportData)})
         .end()
         .start('div')
-          .start(this.PRINT_BUTTON).addClass('btn blue-button')
+          .start(this.PRINT_BUTTON).addClass('btn').addClass('blue-button')
           .end()
           .callIf( this.user.email != "",function(){
             this
-            .start(self.EMAIL_BUTTON).addClass('btn blue-button')
+            .start(self.EMAIL_BUTTON).addClass('btn').addClass('blue-button')
             .end()
           })
         .end()

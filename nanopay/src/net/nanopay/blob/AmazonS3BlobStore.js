@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.blob.InputStreamBlob',
     'foam.nanos.app.AppConfig',
     'org.apache.commons.io.IOUtils',
-    'org.apache.geronimo.mail.util.Hex',
+    'org.apache.commons.codec.binary.Hex',
 
     'java.io.File',
     'java.io.FileInputStream',
@@ -81,7 +81,7 @@ try {
 
   // generate digest, create input stream, create metadata
   AppConfig config = (AppConfig) getX().get("appConfig");
-  String key = config.getMode().name() + "/" + new String(Hex.encode(os.digest()));
+  String key = config.getMode().name() + "/" + Hex.encodeHexString(os.digest());
   InputStream is = new FileInputStream(tmp);
   ObjectMetadata metadata = new ObjectMetadata();
   metadata.setContentLength(tmp.length());

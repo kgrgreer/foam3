@@ -12,5 +12,5 @@ permissions:
       - file
 hooks:
   AfterInstall:
-    - location: build.sh
+    - location: aws-deploy.sh
       runas: root

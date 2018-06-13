@@ -19,7 +19,8 @@ public class DuplicateTransactionCheckDAO
   }
 
   public Object getLockForId(long id) {
-    return locks_[(int)(id%locks_.length)];
+    // Id's should be positive, but just to be safe, take the ABS
+    return locks_[(int)(Math.abs(id) % locks_.length)];
   }
 
   @Override
@@ -29,11 +30,12 @@ public class DuplicateTransactionCheckDAO
       Transaction oldTxn = (Transaction) getDelegate().find(obj);
       if ( oldTxn != null ) {
         if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
-          throw new RuntimeException("Unable to update Transaction, if transaction status is accepted or declined");
+          if ( ! curTxn.getStatus().equals(TransactionStatus.DECLINED) )
+            throw new RuntimeException("Unable to update Transaction, if transaction status is accepted or declined");
         }
-        if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-          throw new RuntimeException("Unable to update Transaction");
-        }
+//        if ( compareTransactions(oldTxn, curTxn) != 0 ) {
+//          throw new RuntimeException("Unable to update Transaction");
+//        }
       }
       return super.put_(x, obj);
     }
@@ -50,10 +52,9 @@ public class DuplicateTransactionCheckDAO
     temp.setInvoiceId(oldtxn.getInvoiceId());
     //temp.setCicoStatus(oldtxn.getCicoStatus());
     temp.setDate(oldtxn.getDate());
-    temp.setPayerName(oldtxn.getPayerName());
-    temp.setPayeeName(oldtxn.getPayeeName());
+    temp.setPayerId(oldtxn.getPayerId());
+    temp.setPayeeId(oldtxn.getPayeeId());
     temp.setDeviceId(oldtxn.getDeviceId());
-    temp.setReferenceNumber(oldtxn.getReferenceNumber());
     temp.setNotes(oldtxn.getNotes());
     temp.setChallenge(oldtxn.getChallenge());
     temp.setProviderId(oldtxn.getProviderId());
@@ -61,7 +62,8 @@ public class DuplicateTransactionCheckDAO
 
     temp.setPadType(oldtxn.getPadType());
     temp.setTxnCode(oldtxn.getTxnCode());
-    temp.setSettlementDate(oldtxn.getSettlementDate());
+    temp.setProcessDate(oldtxn.getProcessDate());
+    temp.setCompletionDate(oldtxn.getCompletionDate());
     temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
     temp.setDescription(oldtxn.getDescription());
     temp.setReturnCode(oldtxn.getReturnCode());

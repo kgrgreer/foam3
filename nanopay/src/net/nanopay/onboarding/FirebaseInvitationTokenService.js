@@ -3,15 +3,6 @@ foam.CLASS({
   name: 'FirebaseInvitationTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  imports: [
-    'appConfig',
-    'email',
-    'localTransactionDAO',
-    'localUserDAO',
-    'logger',
-    'tokenDAO'
-  ],
-
   javaImports: [
     'com.google.gson.Gson',
     'foam.dao.DAO',
@@ -111,10 +102,10 @@ OutputStreamWriter writer = null;
 BufferedReader reader = null;
 
 try {
-  AppConfig config = (AppConfig) getAppConfig();
-  DAO tokenDAO = (DAO) getTokenDAO();
-  DAO transactionDAO = (DAO) getLocalTransactionDAO();
-  DAO userDAO = (DAO) getLocalUserDAO();
+  AppConfig config = (AppConfig) x.get("appConfig");
+  DAO tokenDAO = (DAO) x.get("tokenDAO");
+  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+  DAO userDAO = (DAO) x.get("localUserDAO");
   String url = config.getUrl().replaceAll("/$", "");
 
   // get current user from session
@@ -124,6 +115,7 @@ try {
   }
 
   // set invited and invited by and store user
+  user = (User) user.fclone();
   user.setInvited(true);
   user.setSpid("nanopay");
   user.setGroup("shopper");
@@ -195,7 +187,7 @@ try {
     throw new RuntimeException(builder.toString());
   }
 
-  EmailService email = (EmailService) getEmail();
+  EmailService email = (EmailService) x.get("email");
   EmailMessage message = new EmailMessage.Builder(x)
       .setTo(new String[]{user.getEmail()})
       .build();
@@ -210,12 +202,13 @@ try {
   }
 
   email.sendEmailFromTemplate(result, message, "welcome-email", args);
+  result = (User) result.fclone();
   result.setPortalAdminCreated(false);
   result.setWelcomeEmailSent(true);
   userDAO.put(result);
   return true;
 } catch (Throwable t) {
-  ((Logger) getLogger()).error(t);
+  ((Logger) x.get("logger")).error(t);
   return false;
 } finally {
   IOUtils.closeQuietly(writer);

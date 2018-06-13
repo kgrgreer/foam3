@@ -14,6 +14,7 @@ foam.CLASS({
     // 'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.ui.transfer.TransferUserCard',
     'net.nanopay.model.BankAccount',
+    'net.nanopay.model.BankAccountStatus',
     'foam.nanos.auth.User'
   ],
 
@@ -23,7 +24,7 @@ foam.CLASS({
     'findAccount',
     'formatCurrency',
     'bankAccountDAO',
-    'payeeDAO',
+    'userDAO',
     'account',
     'user',
     'type'
@@ -167,7 +168,7 @@ foam.CLASS({
       view: function(_,X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, 'Verified')),
+          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, net.nanopay.model.BankAccountStatus.VERIFIED)),
           objToChoice: function(account) {
             return [account.id, account.accountName + ' ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
@@ -180,7 +181,7 @@ foam.CLASS({
       name: 'payees',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.payeeDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
+        this.userDAO.where(this.EQ(this.User.ID, newValue)).select().then(function(a){
           var payee = a.array[0];
           self.viewData.payee = payee;
           self.payeeCard.user = payee;
@@ -188,7 +189,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.payeeDAO,
+          dao: X.data.userDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
             if ( X.data.invoiceMode ) {
@@ -391,7 +392,7 @@ foam.CLASS({
       var self = this;
       this.user.bankAccounts.where(
         this.AND(
-          this.EQ(this.BankAccount.STATUS, 'Verified'),
+          this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
           this.EQ(this.BankAccount.SET_AS_DEFAULT, true)
         )
       ).select().then( function (a) {

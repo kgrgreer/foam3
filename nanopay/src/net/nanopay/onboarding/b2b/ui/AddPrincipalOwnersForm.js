@@ -469,6 +469,18 @@ foam.CLASS({
     ^ .foam-u2-view-TableView tbody > tr:hover {
       cursor: auto;
     }
+
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
   `,
 
   messages: [
@@ -487,10 +499,12 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
-    { name: 'PostalCodeLabel', message: 'Postal Code' }
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.'}
   ],
 
   properties: [
@@ -628,7 +642,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       value: ''
     },
     {
@@ -695,6 +709,8 @@ foam.CLASS({
       var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
         return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       })
+      this.scrollToTop();
+      
       this.addClass(this.myClass())
         .start('div')
           // TODO: TABLE SHOULD GO HERE
@@ -845,7 +861,7 @@ foam.CLASS({
                   .addClass('phoneNumberCol')
                   .enableClass('out', this.isEditingPhone$, true)
                   .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
-                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot }, this.phoneNumberFieldElement$)
+                  .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot, placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                     .addClass('fields')
                     .on('focus', function() {
                       self.isEditingPhone = true;
@@ -883,8 +899,9 @@ foam.CLASS({
                 .start(this.STREET_NAME_FIELD, { mode$: modeSlot }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
-            .start('p').add(this.AddressLabel).addClass('infoLabel').end()
-            .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.Address2Label).addClass('infoLabel').end()
+            .start(this.SUITE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.Address2Hint).addClass('address2Hint').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .start(this.PROVINCE_FIELD, { mode$: modeSlot }).end()
@@ -926,7 +943,7 @@ foam.CLASS({
       this.countryField = 'CA';
       this.streetNumberField = '';
       this.streetNameField = '';
-      this.addressField = '';
+      this.suiteField = '';
       this.provinceField = 'AB';
       this.cityField = '';
       this.postalCodeField = '';
@@ -937,8 +954,7 @@ foam.CLASS({
       this.isDisplayMode = false;
 
       if ( scrollToTop ) {
-        var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-        subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        this.scrollToTop();
       }
     },
 
@@ -951,20 +967,20 @@ foam.CLASS({
       this.middleNameField = user.middleName;
       this.lastNameField = user.lastName;
       this.isEditingName = false; // This will change displayedLegalName as well
-      this.jobTitleField = owner.jobTitle;
-      this.emailAddressField = owner.email;
-      this.phoneNumberField = this.extractPhoneNumber(owner.phone);
+      this.jobTitleField = user.jobTitle;
+      this.emailAddressField = user.email;
+      this.phoneNumberField = this.extractPhoneNumber(user.phone);
       this.isEditingPhone = false;
-      this.principleTypeField = owner.principleType;
-      this.birthdayField = owner.birthday;
+      this.principleTypeField = user.principleType;
+      this.birthdayField = user.birthday;
 
-      this.countryField = owner.address.countryId;
-      this.streetNumberField = owner.address.streetNumber;
-      this.streetNameField = owner.address.streetName;
-      this.addressField = owner.address.address2;
-      this.provinceField = owner.address.regionId;
-      this.cityField = owner.address.city;
-      this.postalCodeField = owner.address.postalCode;
+      this.countryField = user.address.countryId;
+      this.streetNumberField = user.address.streetNumber;
+      this.streetNameField = user.address.streetName;
+      this.suiteField = user.address.suite;
+      this.provinceField = user.address.regionId;
+      this.cityField = user.address.city;
+      this.postalCodeField = user.address.postalCode;
 
       this.addLabel = 'Update';
 
@@ -1002,7 +1018,7 @@ foam.CLASS({
            this.birthdayField ||
            this.streetNumberField ||
            this.streetNameField ||
-           this.addressField ||
+           this.suiteField ||
            this.cityField ||
            this.postalCodeField) {
         return true;
@@ -1038,6 +1054,12 @@ foam.CLASS({
         return false;
       }
 
+      // By pass for safari & mozilla type='date' on input support
+      // Operator checking if dueDate is a date object if not, makes it so or throws notification.
+      if( isNaN(this.birthdayField) && this.birthdayField != null ){
+        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
+        return;
+      }
       if ( ! this.validateAge(this.birthdayField) ) {
         this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
         return false;
@@ -1051,7 +1073,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
         return false;
       }
-      if ( this.addressField.length > 0 && ! this.validateAddress(this.addressField) ) {
+      if ( this.suiteField.length > 0 && ! this.validateAddress(this.suiteField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
         return false;
       }
@@ -1082,48 +1104,64 @@ foam.CLASS({
       isEnabled: function(isDisplayMode) {
         return ! isDisplayMode;
       },
-      code: function() {
+      code: async function() {
         if ( ! this.validatePrincipalOwner() ) return;
 
-        var self = this;
-
-        var principleOwner;
+        var principalOwner;
 
         if ( this.editingPrincipalOwner ) {
-          principleOwner = this.editingPrincipalOwner;
+          principalOwner = this.editingPrincipalOwner;
         } else {
-          principleOwner = this.User.create({
+          principalOwner = this.User.create({
             id: this.principalOwnersCount + 1
           });
         }
 
-        principleOwner.firstName = this.firstNameField,
-        principleOwner.middleName = this.middleNameField,
-        principleOwner.lastName = this.lastNameField,
-        principleOwner.email = this.emailAddressField,
-        principleOwner.phone = this.Phone.create({
+        principalOwner.firstName = this.firstNameField;
+        principalOwner.middleName = this.middleNameField;
+        principalOwner.lastName = this.lastNameField;
+        principalOwner.email = this.emailAddressField;
+        principalOwner.phone = this.Phone.create({
           number: this.phoneCountryCodeField + this.phoneNumberField
-        }),
-        principleOwner.birthday = this.birthdayField,
-        principleOwner.address = this.Address.create({
+        });
+        principalOwner.birthday = this.birthdayField;
+        principalOwner.address = this.Address.create({
           streetNumber: this.streetNumberField,
           streetName: this.streetNameField,
-          address2: this.addressField,
+          suite: this.suiteField,
           city: this.cityField,
           postalCode: this.postalCodeField,
           countryId: this.countryField,
           regionId: this.provinceField
-        }),
-        principleOwner.jobTitle = this.jobTitleField,
-        principleOwner.principleType = this.principleTypeField
+        });
+        principalOwner.jobTitle = this.jobTitleField;
+        principalOwner.principleType = this.principleTypeField;
+
+        if ( ! this.editingPrincipalOwner ) {
+          var owners = (await this.principalOwnersDAO.select()).array;
+          var nameTaken = owners.some(owner => {
+            var ownerFirst = owner.firstName.toLowerCase();
+            var ownerLast = owner.lastName.toLowerCase();
+            var formFirst = this.firstNameField.toLowerCase();
+            var formLast = this.lastNameField.toLowerCase();
+            return ownerFirst === formFirst && ownerLast === formLast; 
+          });
+          if ( nameTaken ) {
+            this.add(this.NotificationMessage.create({
+              message: this.PrincipalOwnerError,
+              type: 'error'
+            }));
+            return;
+          }
+        }
 
         // TODO?: Maybe add a loading indicator?
-        this.principalOwnersDAO.put(principleOwner).then(function(npo) {
-          self.editingPrincipalOwner = null;
-          self.tableViewElement.selection = null;
-          self.clearFields(true);
-          self.isSameAsAdmin = false;
-        });
+
+        await this.principalOwnersDAO.put(principalOwner);
+        this.editingPrincipalOwner = null;
+        this.tableViewElement.selection = null;
+        this.clearFields(true);
+        this.isSameAsAdmin = false;
 
         return true;
       }

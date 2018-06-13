@@ -142,7 +142,7 @@ foam.CLASS({
             .start('h4').add('$', this.addCommas((this.data.amount/100).toFixed(2))).end()
             .start('h3')
               .add(this.data.status$.map(function(a) {
-                return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring(0,10) : a).addClass('generic-status Invoice-Status-' + a);
+                return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring(0,10) : a).addClass('generic-status').addClass('Invoice-Status-' + a);
               }))
           .end()
         .end()

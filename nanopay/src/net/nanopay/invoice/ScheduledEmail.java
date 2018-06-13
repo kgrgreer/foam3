@@ -65,6 +65,7 @@ public class ScheduledEmail
       args.put("name",    user.getFirstName());
       args.put("toEmail", payee.getEmail());
       email.sendEmailFromTemplate(user, message, "schedule-paid", args);
+      invoice = (Invoice) invoice.fclone();
       invoice.setScheduledEmailSent(true);
       invoiceDAO.put(invoice);
     }

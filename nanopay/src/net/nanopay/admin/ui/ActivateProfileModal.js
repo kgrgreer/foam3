@@ -35,7 +35,6 @@ foam.CLASS({
       margin-bottom: 60px;
     }
     ^ .net-nanopay-ui-ActionView {
-      width: 135px;
       height: 40px;
       border-radius: 2px;
       overflow: hidden;
@@ -92,9 +91,8 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         var toActivate = this.data;
-        toActivate.status = toActivate.status === this.AccountStatus.DISABLED ?
-          toActivate.previousStatus : this.AccountStatus.ACTIVE;
-
+        toActivate.status = this.AccountStatus.ACTIVE;
+        
         this.userDAO.put(toActivate)
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to activate profile.');
