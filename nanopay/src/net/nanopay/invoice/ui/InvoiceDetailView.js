@@ -271,8 +271,8 @@ foam.CLASS({
           invoiceFile: this.data.invoiceFile
         });
 
-        X.dao.put(inv);
-        
+        this.user.sales.put(inv);
+
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
         //     frequency: X.frequency,

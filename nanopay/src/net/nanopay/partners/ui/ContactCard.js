@@ -11,7 +11,7 @@ foam.CLASS({
     'net.nanopay.invoice.ui.InvoiceDetailView'
   ],
 
-  imports: ['business', 'stack', 'invoiceDAO'],
+  imports: ['user', 'stack', 'invoiceDAO'],
 
   properties: [
     'popupMenu_',
@@ -323,19 +323,55 @@ foam.CLASS({
     },
 
     function onCreateInvoice() {
-      var view = this.InvoiceDetailView.create({
+      var self = this;
+      var invoiceDetailView = this.InvoiceDetailView.create({
         userList: this.data.id
       });
+
+      var view = foam.u2.ListCreateController.CreateController.create(
+        null,
+        this.__context__.createSubContext({
+          detailView: invoiceDetailView,
+          back: this.stack.back.bind(this.stack),
+          dao: this.invoiceDAO,
+          factory: function() {
+            return self.Invoice.create({
+              payerId: self.data.id,
+              payerName: self.data.name,
+              payeeId: self.user.id,
+              payeeName: self.user.name
+            });
+          }
+        })
+      );
       this.stack.push(view);
-      self.remove();
+      this.remove();
     },
 
     function onCreateBill() {
-      var view = this.BillDetailView.create({
+      var self = this;
+      var billDetailView = this.BillDetailView.create({
         userList: this.data.id
       });
+
+      var view = foam.u2.ListCreateController.CreateController.create(
+        null,
+        this.__context__.createSubContext({
+          detailView: billDetailView,
+          back: this.stack.back.bind(this.stack),
+          dao: this.invoiceDAO,
+          factory: function() {
+            return self.Invoice.create({
+              payeeId: self.data.id,
+              payeeName: self.data.name,
+              payerId: self.user.id,
+              payerName: self.user.name
+            });
+          }
+        })
+      );
       this.stack.push(view);
-      self.remove();
+      this.remove();
     },
 
     function onClickConnect() {
