@@ -207,7 +207,7 @@ foam.CLASS({
       var i = this.data;
       var self = this;
       // check parters connection status
-      i.partnered.dao.find(ctrl.user.id).then(function(res) {
+      i.partnered.dao.find(this.user.id).then(function(res) {
         if ( typeof res !== 'undefined' ) {
           self.status = 'connected';
         }
@@ -312,7 +312,7 @@ foam.CLASS({
           y: - 7,
           padding: 0.01,
         });
-        // optionsDropDown2 is to set the postion of the transform arrow for connection dropdown
+        // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
         p.addClass('optionsDropDown').addClass('optionsDropDown2')
         .start('div').addClass('optionsDropDown-content')
           .add('Connect')
