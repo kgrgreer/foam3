@@ -35,6 +35,7 @@ foam.CLASS({
     {
       writeToSwiftClass: function(cls) {
         cls.method(foam.swift.Method.create({
+          static: true,
           name: 'fromUser',
           returnType: 'TransactionEntity',
           args: [
