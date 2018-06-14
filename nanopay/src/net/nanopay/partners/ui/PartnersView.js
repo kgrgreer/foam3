@@ -6,51 +6,22 @@ foam.CLASS({
   documentation: 'Partners tab View',
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.User',
+  ],
+
+  exports: [
+    'as data',
+    'filter',
+    'filteredData',
   ],
 
   imports: [
     'user',
     'userDAO'
-  ],
-
-  properties: [
-    'partnerCount',
-    'contactCardsView_',
-    'contactCardsView',
-    {
-      class: 'Boolean',
-      name: 'connected_button_select',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'contacts_button_select',
-      value: true
-    },
-    {
-      name: 'getAllBusinessUser',
-      expression: function() {
-        return this.userDAO.limit(50).where(this.AND(
-          this.NEQ(this.User.ID, this.user.id),
-          this.EQ(this.User.GROUP, 'business')
-        ));
-      }
-    }
-  ],
-
-
-  requires: [
-    'foam.dao.FnSink',
-    'foam.nanos.auth.User',
-    'net.nanopay.partners.ui.ContactCardView'
-  ],
-
-  messages: [
-    {
-      name: 'placeholderText',
-      message: 'Your partners’ business card will be shown up here.'
-    }
   ],
 
   css: `
@@ -113,19 +84,6 @@ foam.CLASS({
       margin-left: 5px;
       margin-top: 8px;
     }
-    // ^ .new-invite-button {
-    //   background-color: #59AADD;
-    //   width: 135px;
-    //   height: 40px;
-    //   border-radius: 2px;
-    //   color: white;
-    //   margin-left: 5px;
-    //   text-align: center;
-    //   vertical-align: top;
-    //   display: inline-block;
-    //   line-height: 40px;
-    //   cursor: pointer;
-    // }
     ^ .contacts-button {
       width: 153px;
       height: 40px;
@@ -196,17 +154,78 @@ foam.CLASS({
     ^ .show {
       margin-top: 75px;
     }
-`,
+  `,
+
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'data',
+      factory: function() {
+        return this.userDAO.limit(50).where(
+            this.AND(
+                this.NEQ(this.User.ID, this.user.id),
+                this.EQ(this.User.GROUP, 'business')));
+      }
+    },
+    {
+      class: 'String',
+      name: 'filter',
+      view: {
+        class: 'foam.u2.TextField',
+        type: 'search',
+        placeholder: 'Search',
+        onKey: true
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredData',
+      expression: function(data, filter) {
+        var self = this;
+        var rtn = data.where(
+            this.OR(
+                this.CONTAINS_IC(this.User.BUSINESS_NAME, filter),
+                this.CONTAINS_IC(this.User.FIRST_NAME, filter),
+                this.CONTAINS_IC(this.User.LAST_NAME, filter),
+                this.CONTAINS_IC(this.User.EMAIL, filter)));
+        rtn.select(this.COUNT()).then(function(queryResult) {
+          var count = queryResult.value;
+          self.partnerCount = self.connected_button_select
+              ? `${count} Connected Contacts`
+              : `Showing ${count} Businesses`;
+        });
+        return rtn;
+      },
+      view: { class: 'net.nanopay.partners.ui.ContactCardView' }
+    },
+    'partnerCount',
+    {
+      class: 'Boolean',
+      name: 'connected_button_select',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'contacts_button_select',
+      value: true
+    }
+  ],
+
+  messages: [
+    {
+      name: 'PlaceholderText',
+      message: 'Your partners’ business card will show up here.'
+    }
+  ],
 
   methods: [
     function initE() {
-      this.user.partners.dao.sub(this.onDAOUpdate);
-      this.onDAOUpdate();
-
       this
         .addClass(this.myClass())
-        .start('div').addClass('button-container')
-          .start('div').addClass('button-div')
+        .start()
+          .addClass('button-container')
+          .start()
+            .addClass('button-div')
             .tag({
               class: 'net.nanopay.ui.ActionButton',
               data: {
@@ -217,86 +236,57 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
               .addClass('searchIcon')
             .end()
-            .start('input').addClass('filter-search')
-            .end()
-            // .start('div').addClass('invite-div')
-            //   .start('div').addClass('new-invite-button')
-            //     .add('New Invite')
-            //   .end()
-            // .end()
+            .start(this.FILTER).addClass('filter-search').end()
           .end()
-          .start('div').addClass('button-div')
-            .start('div').addClass('contacts-button')
-              .add('nanopay Network').enableClass('contacts-button-select',
-                this.contacts_button_select$)
+          .start()
+            .addClass('button-div')
+            .start()
+              .addClass('contacts-button')
+              .add('nanopay Network')
+              .enableClass(
+                  'contacts-button-select',
+                  this.contacts_button_select$)
               .on('click', this.nanopayNetworkOnClick)
             .end()
-            .start('div').addClass('connected-contacts-button')
-              .add('Connected').enableClass('connected-button-select',
-                this.connected_button_select$)
+            .start()
+              .addClass('connected-contacts-button')
+              .add('Connected')
+              .enableClass(
+                  'connected-button-select',
+                  this.connected_button_select$)
               .on('click', this.connectedOnClick)
             .end()
-            .start('h5').addClass('connected-contacts')
+            .start('h5')
+              .addClass('connected-contacts')
               .add(this.partnerCount$)
             .end()
           .end()
         .end()
-        .start('div').addClass('partners-container')
-          .start('span', null, this.contactCardsView$)
-          .end()
-      .end();
-    },
-
-    function createContactCardView(data) {
-    if ( this.contactCardsView_ ) this.contactCardsView_.remove();
-      this.contactCardsView_ = this.ContactCardView.create({
-        data: data
-      });
-
-      this.contactCardsView.add(this.contactCardsView_);
+        .start()
+          .addClass('partners-container')
+          .add(this.FILTERED_DATA)
+        .end();
     }
   ],
 
   listeners: [
     {
-      name: 'onDAOUpdate',
-      isFramed: true,
-      code: function() {
-        var self = this;
-        var partnersData = this.getAllBusinessUser;
-        this.createContactCardView(this.getAllBusinessUser);
-        partnersData.select(this.COUNT()).then(function(p) {
-          self.partnerCount = 'Showing ' + p.value.toString() + ' Businesses';
-        });
-      }
-    },
-    {
       name: 'connectedOnClick',
       isFramed: true,
       code: function() {
-        var self = this;
-        this.user.partners.dao.select(this.COUNT()).then(function(p) {
-          self.partnerCount = p.value.toString() + ' Connected Contacts';
-        });
-
-        var partnersData = this.user.partners.dao;
-        this.createContactCardView(partnersData);
+        this.data = this.user.partners.dao;
         this.connected_button_select = true;
         this.contacts_button_select = false;
       }
     },
-
     {
       name: 'nanopayNetworkOnClick',
       isFramed: true,
       code: function() {
-        var self = this;
-        var partnersData = this.getAllBusinessUser;
-        this.createContactCardView(partnersData);
-
-        partnersData.select(this.COUNT()).then(function(p) {
-          self.partnerCount = 'Showing ' + p.value.toString() + ' Businesses';
-        });
+        this.data = this.userDAO.limit(50).where(
+            this.AND(
+                this.NEQ(this.User.ID, this.user.id),
+                this.EQ(this.User.GROUP, 'business')));
         this.connected_button_select = false;
         this.contacts_button_select = true;
       }
