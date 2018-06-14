@@ -18,7 +18,6 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
           protected byte[] previousHash_ = null;
-          protected final Object lock_ = new Object();
 
           public String digest(foam.core.FObject obj) {
             return digest(obj, getAlgorithm());
@@ -136,14 +135,26 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( rollHashes_ ) {
-          synchronized ( lock_ ) {
-            previousHash_ = obj.hash(algorithm, previousHash_);
-            return Base64.toBase64String(previousHash_);
-          }
+        return ! rollHashes_ ?  Base64.toBase64String(obj.hash(algorithm, null)) : rollDigest(obj, algorithm);
+      `
+    },
+    {
+      name: 'rollDigest',
+      javaReturns: 'String',
+      synchronized: true,
+      args: [
+        {
+          class: 'FObjectProperty',
+          name: 'obj'
+        },
+        {
+          class: 'String',
+          name: 'algorithm'
         }
-
-        return Base64.toBase64String(obj.hash(algorithm, null));
+      ],
+      javaCode: `
+        previousHash_ = obj.hash(algorithm, previousHash_);
+        return Base64.toBase64String(previousHash_);
       `
     }
   ]
