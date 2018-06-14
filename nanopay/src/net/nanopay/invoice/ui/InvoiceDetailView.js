@@ -63,9 +63,11 @@ foam.CLASS({
       name: 'userList',
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id),
-          // only retrieve the active users
-          X.data.EQ(X.data.User.STATUS,'ACTIVE'))),
+          dao: X.userDAO.where(X.data.AND(
+            X.data.NEQ(X.data.User.ID, X.user.id),
+            // only retrieve the active users
+            X.data.EQ(X.data.User.STATUS, 'ACTIVE')
+          )),
           placeholder: 'Please Select Customer',
           objToChoice: function(user) {
             var username = user.businessName || user.organization;
@@ -83,8 +85,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
+    ^ {
       font-weight: 100;
+      width: 970px;
+      margin: auto;
     }
     ^ .enable-recurring-text {
       font-size: 12px;
@@ -217,7 +221,8 @@ foam.CLASS({
       name: 'deleteDraft',
       label: 'Delete Draft',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     },
     {
@@ -268,8 +273,8 @@ foam.CLASS({
           invoiceFile: this.data.invoiceFile
         });
 
-        X.dao.put(inv);
-        
+        this.user.sales.put(inv);
+
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
         //     frequency: X.frequency,
@@ -293,7 +298,8 @@ foam.CLASS({
         //   X.dao.put(this);
         // }
 
-        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     }
   ]
