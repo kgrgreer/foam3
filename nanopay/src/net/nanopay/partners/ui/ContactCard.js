@@ -297,45 +297,7 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'onClick',
-      icon: 'images/ic-options.png',
-      code: function() {
-        if ( this.status === 'connected' ) {
-          var p = this.PopupView.create({
-            height: 60,
-            x: - 110,
-            y: - 7,
-            padding: 0.01,
-          });
-          p.addClass('optionsDropDown')
-          .start('div').addClass('optionsDropDown-content')
-            .add('Create New Invoice')
-            .on('click', this.onCreateInvoice.bind(this))
-          .end()
-          .start('div').addClass('optionsDropDown-content')
-            .add('Create New Bill')
-            .on('click', this.onCreateBill.bind(this))
-          .end();
-        } else {
-          var p = this.PopupView.create({
-            height: 30,
-            x: - 110,
-            y: - 7,
-            padding: 0.01,
-          });
-          // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
-          p.addClass('optionsDropDown').addClass('optionsDropDown2')
-          .start('div').addClass('optionsDropDown-content')
-            .add('Connect')
-            .on('click', this.onClickConnect.bind(this))
-          .end();
-        }
-        this.popupMenu_.add(p);
-      }
-    },
-
+  listeners: [
     function onCreateInvoice() {
       var self = this;
       var invoiceDetailView = this.InvoiceDetailView.create({
@@ -386,6 +348,46 @@ foam.CLASS({
       );
       this.stack.push(view);
       this.remove();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'onClick',
+      icon: 'images/ic-options.png',
+      code: function() {
+        if ( this.status === 'connected' ) {
+          var p = this.PopupView.create({
+            height: 60,
+            x: - 110,
+            y: - 7,
+            padding: 0.01,
+          });
+          p.addClass('optionsDropDown')
+          .start('div').addClass('optionsDropDown-content')
+            .add('Create New Invoice')
+            .on('click', this.onCreateInvoice)
+          .end()
+          .start('div').addClass('optionsDropDown-content')
+            .add('Create New Bill')
+            .on('click', this.onCreateBill)
+          .end();
+        } else {
+          var p = this.PopupView.create({
+            height: 30,
+            x: - 110,
+            y: - 7,
+            padding: 0.01,
+          });
+          // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
+          p.addClass('optionsDropDown').addClass('optionsDropDown2')
+          .start('div').addClass('optionsDropDown-content')
+            .add('Connect')
+            .on('click', this.onClickConnect.bind(this))
+          .end();
+        }
+        this.popupMenu_.add(p);
+      }
     },
 
     // send out the partnership invitation
