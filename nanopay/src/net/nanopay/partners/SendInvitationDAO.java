@@ -59,6 +59,10 @@ public class SendInvitationDAO
     if ( userExists ) invite.setInviteeId(recipient.getId());
     invite.setInternal(userExists);
 
+    // TEMPORARY: For now we're only sending the email if the user exists. The
+    // external user case is still being thought through in the UX stage.
+    if ( ! userExists ) return invite;
+
     // Find the last time an invite was sent to this user. Applies whether the
     // recipient exists or not because multiple invites could be sent before
     // they sign up.
@@ -85,10 +89,6 @@ public class SendInvitationDAO
 
     // Put to the DAO, then send email
     invite = (Invitation) super.put_(x, invite);
-
-    // TEMPORARY: For now we're only sending the email if the user exists. The
-    // external user case is still being thought through in the UX stage.
-    if ( ! userExists ) return invite;
 
     AppConfig config = (AppConfig) x.get("appConfig");
     EmailService email = (EmailService) x.get("email");
