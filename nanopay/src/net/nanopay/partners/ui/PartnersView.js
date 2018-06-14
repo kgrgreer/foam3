@@ -191,13 +191,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var sub = this.user.partners.dao.listen(this.FnSink.create({
-        fn: this.onDAOUpdate
-      }));
-      this.onunload.sub(function() {
-        sub.detach();
-      });
-
+      this.user.partners.dao.sub(this.onDAOUpdate);
       this.onDAOUpdate();
 
       this
