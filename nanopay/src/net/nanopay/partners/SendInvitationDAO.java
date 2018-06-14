@@ -28,10 +28,10 @@ import java.text.NumberFormat;
  *    sending either an invite to join email or a request to connect email
  *    accordingly.
  */
-public class InvitationLogicDAO
+public class SendInvitationDAO
   extends ProxyDAO
 {
-  public InvitationLogicDAO(X x, DAO delegate) {
+  public SendInvitationDAO(X x, DAO delegate) {
     super(x, delegate);
   }
 
