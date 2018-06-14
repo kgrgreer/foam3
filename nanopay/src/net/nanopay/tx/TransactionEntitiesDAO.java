@@ -8,13 +8,15 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionEntity;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.logger.Logger;
 
 public class TransactionEntitiesDAO extends ProxyDAO
 {
   protected DAO userDAO_;
-
+  protected Logger logger_;
   private class DecoratedSink extends foam.dao.ProxySink
   {
     public DecoratedSink(X x, Sink delegate)
@@ -34,6 +36,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     super(x, delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
+    logger_ = (Logger) x.get("logger");
   }
 
   @Override
@@ -58,23 +61,27 @@ public class TransactionEntitiesDAO extends ProxyDAO
   private FObject fillEntitiesInfo(FObject obj)
   {
     FObject clone = obj.fclone();
-    Transaction tx =  (Transaction) clone;
-    fillPayerInfo(tx, tx.getPayerId());
-    fillPayeeInfo(tx, tx.getPayeeId());
-    return clone;
-  }
-
-  private void fillPayerInfo(Transaction tx, long payerId)
-  {
+    Transaction tx = (Transaction) clone;
     User payer = (User) userDAO_.find(tx.getPayerId());
-    tx.setPayerName(payer.getFirstName());
-    tx.setPayerEmail(payer.getEmail());
-  }
-
-  private void fillPayeeInfo(Transaction tx, long payerId)
-  {
     User payee = (User) userDAO_.find(tx.getPayeeId());
-    tx.setPayeeName(payee.getFirstName());
-    tx.setPayeeEmail(payee.getEmail());
+
+    if (payer == null) {
+      logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), tx.getPayerId()));
+      tx.setPayer(null);
+    }
+    else {
+      TransactionEntity payerEnitity = new TransactionEntity(payer);
+      tx.setPayer(payerEnitity);
+    }
+
+    if (payee == null) {
+      logger_.error(String.format("Transaction: %d Payee with Id: %d not found", tx.getId(), tx.getPayeeId()));
+      tx.setPayee(null);
+    }
+    else {
+      TransactionEntity payeeEnitity = new TransactionEntity(payee);
+      tx.setPayee(payeeEnitity);
+    }
+    return clone;
   }
 }

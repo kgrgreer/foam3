@@ -22,8 +22,10 @@ function rmfile {
 
 function install {
     # Only support MacOS install/setup
-    if [ "$OSTYPE" != darwin17 ]; then
-        return
+    MACOS='darwin*'
+    if [[ ! "$OSTYPE" =~ $MACOS ]]; then
+        printf "install is only supported on MacOS.\n"
+        exit 1
     fi
 
     cd "$PROJECT_HOME"

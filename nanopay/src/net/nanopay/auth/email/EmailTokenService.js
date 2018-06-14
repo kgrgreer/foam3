@@ -6,7 +6,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'foam.nanos.auth.User'
   ],
 
   methods: [
@@ -45,6 +46,7 @@ foam.CLASS({
 
   String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
   email.sendEmailFromTemplate(user, message, template, args);
+  user = (User) user.fclone();
   user.setPortalAdminCreated(false);
   user.setWelcomeEmailSent(true);
   userDAO.put(user);
