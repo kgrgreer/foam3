@@ -101,6 +101,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquiditySettings' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
+  { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },

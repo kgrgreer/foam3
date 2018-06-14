@@ -254,7 +254,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( businessAddress.address2 && ! this.validateAddress(businessAddress.address2) ) {
+      if ( businessAddress.suite && ! this.validateAddress(businessAddress.suite) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
         return false;
       }
