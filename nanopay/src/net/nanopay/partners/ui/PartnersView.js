@@ -279,7 +279,7 @@ foam.CLASS({
           self.partnerCount = p.value.toString() + ' Connected Contacts';
         });
 
-        var partnersData = this.user.partners.dao;
+        var partnersData = this.user.partners.dao.limit(50);
         this.createContactCardView(partnersData);
         this.connected_button_select = true;
         this.contacts_button_select = false;
