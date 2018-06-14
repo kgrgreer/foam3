@@ -5,17 +5,26 @@ foam.CLASS({
 
   requires: [
     'foam.u2.PopupView',
-    'net.nanopay.invoice.model.Invoice',
     'foam.comics.DAOCreateControllerView',
+    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.ui.BillDetailView',
     'net.nanopay.invoice.ui.InvoiceDetailView'
   ],
 
-  imports: ['user', 'stack', 'invoiceDAO'],
+  imports: [
+    'invoiceDAO',
+    'stack',
+    'user'
+  ],
 
   properties: [
     'popupMenu_',
-    'status'
+    'status',
+    {
+      class: 'String',
+      name: 'whitespace',
+      value: '  '
+    }
   ],
 
   css: `
@@ -208,9 +217,7 @@ foam.CLASS({
       var self = this;
       // check parters connection status
       i.partnered.dao.find(this.user.id).then(function(res) {
-        if ( typeof res !== 'undefined' ) {
-          self.status = 'connected';
-        }
+        if ( typeof res !== 'undefined' ) self.status = 'connected';
       });
 
       this.addClass(this.myClass())
@@ -221,9 +228,9 @@ foam.CLASS({
           uploadHidden: true,
           boxHidden: true
         }).addClass('profilePicture').end()
-        .start('div').addClass('companyInfoDiv')
+        .start().addClass('companyInfoDiv')
           .start('h2').addClass('companyName')
-            .add(i.businessName ? i.businessName : '  ')
+            .add(i.businessName ? i.businessName : this.whitespace)
           .end()
           .start('h2').addClass('companyAddress').add(this.getAddress()).end()
           .start('h2').addClass('companyAddress')
@@ -231,7 +238,7 @@ foam.CLASS({
           .end()
           .start('h2').addClass('companyAddress')
             .add(i.businessAddress.postalCode ?
-              i.businessAddress.postalCode : '  ')
+              i.businessAddress.postalCode : this.whitespace)
           .end()
         .end()
         .start('span', null, this.popupMenu_$)
@@ -241,12 +248,13 @@ foam.CLASS({
             }).addClass('optionsIcon').on('click', this.onClick)
           .end()
         .end()
-        .start('div').addClass('contactInfoDiv')
+        .start().addClass('contactInfoDiv')
           .start('h2').addClass('contactName')
             .add(i.firstName + ' ' + i.lastName).end()
           .start('h5').addClass('contactInfoDetail').add(i.email).end()
           .start('h5').addClass('contactInfoDetail')
-            .add(i.businessPhone.number ? i.businessPhone.number : '  ')
+            .add(i.businessPhone.number ?
+              i.businessPhone.number : this.whitespace)
           .end()
         .end()
         .start().addClass(this.myClass('bottom-status'))
@@ -269,7 +277,7 @@ foam.CLASS({
           return fullAddress;
         }
       } else {
-        return '  ';
+        return this.whitespace;
       }
     },
 
@@ -282,7 +290,7 @@ foam.CLASS({
       } else if ( i.countryId ) {
         return i.countryId;
       } else {
-      return '  ';
+      return this.whitespace;
     }
   }
 ],
@@ -374,6 +382,7 @@ foam.CLASS({
       this.remove();
     },
 
+    // send out the partnership invitation
     function onClickConnect() {
     }
   ]
