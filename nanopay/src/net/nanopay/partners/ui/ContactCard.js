@@ -144,6 +144,9 @@ foam.CLASS({
       height: 24px;
       cursor: pointer;
     }
+    ^ .optionsIcon img {
+      width: 24px;
+    }
     ^ .optionsDropDown {
       padding: 0px;
       z-index: 10000;
@@ -231,7 +234,9 @@ foam.CLASS({
           .start('h2').addClass('companyName')
             .add(i.businessName ? i.businessName : this.whitespace)
           .end()
-          .start('h2').addClass('companyAddress').add(this.getAddress()).end()
+          .start('h2').addClass('companyAddress')
+            .add(this.getAddress())
+          .end()
           .start('h2').addClass('companyAddress')
             .add(this.getRegionCountry())
           .end()
@@ -241,11 +246,9 @@ foam.CLASS({
           .end()
         .end()
         .start('span', null, this.popupMenu_$)
-          .start({
-            class: 'foam.u2.tag.Image',
-            data: 'images/ic-options.png'
-            }).addClass('optionsIcon').on('click', this.onClick)
-          .end()
+          .startContext({ data: this })
+            .start(this.ON_CLICK).addClass('optionsIcon').end()
+          .endContext()
         .end()
         .start().addClass('contactInfoDiv')
           .start('h2').addClass('contactName')
@@ -290,43 +293,47 @@ foam.CLASS({
         return i.countryId;
       } else {
       return this.whitespace;
-    }
-  }
-],
-
-  listeners: [
-    function onClick(evt) {
-      if ( this.status === 'connected' ) {
-        var p = this.PopupView.create({
-          height: 60,
-          x: - 110,
-          y: - 7,
-          padding: 0.01,
-        });
-        p.addClass('optionsDropDown')
-        .start('div').addClass('optionsDropDown-content')
-          .add('Create New Invoice')
-          .on('click', this.onCreateInvoice)
-        .end()
-        .start('div').addClass('optionsDropDown-content')
-          .add('Create New Bill')
-          .on('click', this.onCreateBill)
-        .end();
-      } else {
-        var p = this.PopupView.create({
-          height: 30,
-          x: - 110,
-          y: - 7,
-          padding: 0.01,
-        });
-        // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
-        p.addClass('optionsDropDown').addClass('optionsDropDown2')
-        .start('div').addClass('optionsDropDown-content')
-          .add('Connect')
-          .on('click', this.onClickConnect)
-        .end();
       }
-      this.popupMenu_.add(p);
+    }
+  ],
+
+  actions: [
+    {
+      name: 'onClick',
+      icon: 'images/ic-options.png',
+      code: function() {
+        if ( this.status === 'connected' ) {
+          var p = this.PopupView.create({
+            height: 60,
+            x: - 110,
+            y: - 7,
+            padding: 0.01,
+          });
+          p.addClass('optionsDropDown')
+          .start('div').addClass('optionsDropDown-content')
+            .add('Create New Invoice')
+            .on('click', this.onCreateInvoice.bind(this))
+          .end()
+          .start('div').addClass('optionsDropDown-content')
+            .add('Create New Bill')
+            .on('click', this.onCreateBill.bind(this))
+          .end();
+        } else {
+          var p = this.PopupView.create({
+            height: 30,
+            x: - 110,
+            y: - 7,
+            padding: 0.01,
+          });
+          // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
+          p.addClass('optionsDropDown').addClass('optionsDropDown2')
+          .start('div').addClass('optionsDropDown-content')
+            .add('Connect')
+            .on('click', this.onClickConnect.bind(this))
+          .end();
+        }
+        this.popupMenu_.add(p);
+      }
     },
 
     function onCreateInvoice() {
