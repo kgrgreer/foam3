@@ -284,36 +284,6 @@ foam.CLASS({
             .add(this.status$).enableClass('connectionIcon', this.status$)
           .end()
         .end();
-    },
-
-    function getAddress() {
-      var i = this.data.businessAddress;
-      if ( i.streetName && i.streetNumber ) {
-        if ( i.suite ) {
-          var fullAddress = i.suite + ', '
-          + i.getAddress() + ', ' + i.city;
-          return fullAddress;
-        } else {
-          var fullAddress = i.getAddress() + ', '
-          + i.city;
-          return fullAddress;
-        }
-      } else {
-        return this.whitespace;
-      }
-    },
-
-    function getRegionCountry() {
-      var i = this.data.businessAddress;
-      if ( i.regionId && i.countryId ) {
-        return i.regionId + ', ' + i.countryId;
-      } else if ( i.regionId ) {
-        return regionId;
-      } else if ( i.countryId ) {
-        return i.countryId;
-      } else {
-      return this.whitespace;
-      }
     }
   ],
 
