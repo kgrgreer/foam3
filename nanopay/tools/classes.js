@@ -30,6 +30,7 @@ var classes = [
   'net.nanopay.model.PadCapture',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
+  'net.nanopay.model.Invitation',
   'net.nanopay.liquidity.model.Threshold',
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
