@@ -1,9 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.partners.ui',
   name: 'ContactCardView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
 
   documentation: 'View for displaying Contact Card',
+
+  requires: [
+    'net.nanopay.partners.ui.ContactCard'
+  ],
 
   css: `
     ^ {
@@ -15,16 +19,19 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'data'
+    }
+  ],
+
   methods: [
     function initE() {
       this
-        .select(this.data, function(partner) {
-          this.addClass(this.myClass())
-            .tag({
-              class: 'net.nanopay.partners.ui.ContactCard'
-            }, {
-              data: partner
-            });
+        .addClass(this.myClass())
+        .select(this.data$proxy, function(partner) {
+          return this.ContactCard.create({ data: partner });
         });
     }
   ]
