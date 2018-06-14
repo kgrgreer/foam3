@@ -159,30 +159,30 @@ foam.CLASS({
       color: white;
     }
     ^ .connected-contacts {
-        opacity: 0.6;
-        font-family: Roboto;
-        font-size: 14px;
-        line-height: 12px;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #093649;
-        float: right;
-        margin-right: 15px;
+      opacity: 0.6;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 12px;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      float: right;
+      margin-right: 15px;
     }
     ^ .floating-action-button {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background: #1cc2b7;
-        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.19);
-        cursor: pointer;
-        position: fixed;
-        text-align: center;
-        position: fixed;
-        right: 2%;
-        bottom: 8%;
-        z-index: 100;
-        max-width: 60%;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1cc2b7;
+      box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.19);
+      cursor: pointer;
+      position: fixed;
+      text-align: center;
+      position: fixed;
+      right: 2%;
+      bottom: 8%;
+      z-index: 100;
+      max-width: 60%;
     }
     ^ .show {
       margin-top: 75px;

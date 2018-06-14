@@ -29,30 +29,30 @@ foam.CLASS({
 
   css: `
     ^ {
-        display: inline-block;
-        background-color: #ffffff;
-        padding: 20px 20px 20px 20px;
-        margin: 0;
-        width: 300px;
-        height: 181px;
-        display: inline-block;
-        margin: 10px; 10px; 10px; 10px;
-        position: relative;
-        vertical-align: top;
+      display: inline-block;
+      background-color: #ffffff;
+      padding: 20px 20px 20px 20px;
+      margin: 0;
+      width: 300px;
+      height: 181px;
+      display: inline-block;
+      margin: 10px; 10px; 10px; 10px;
+      position: relative;
+      vertical-align: top;
       }
     ^ h5 {
-        font-family: 'Roboto';
-        font-weight: normal;
-        letter-spacing: 0.2px;
-        padding-bottom: 4px;
-        margin: 0;
-        color: #093649;
+      font-family: 'Roboto';
+      font-weight: normal;
+      letter-spacing: 0.2px;
+      padding-bottom: 4px;
+      margin: 0;
+      color: #093649;
     } 
     ^ .profilePicture {
-        width: 50px;
-        height: 50px;
-        margin-right: 20px;
-        display: inline-block;
+      width: 50px;
+      height: 50px;
+      margin-right: 20px;
+      display: inline-block;
     }
     ^ .profilePicture .boxless-for-drag-drop {
       width: 50px;
@@ -61,43 +61,42 @@ foam.CLASS({
       border: 0px;
       padding: 0px;
      }
-
     ^ .profilePicture .boxless-for-drag-drop .shopperImage {
-        width: 50px;
-        height: 50px;
-        display: inline-block;
+      width: 50px;
+      height: 50px;
+      display: inline-block;
     }
     ^ .contactInfoDiv {
-        float: bottom;
-        padding-top: 36px;
+      float: bottom;
+      padding-top: 36px;
     }
     ^ .contactInfoDetail {
       height: 14px;
     } 
     ^ .companyInfoDiv {
-        display: inline-block;
-        height: 40px;
-        vertical-align: top
+      display: inline-block;
+      height: 40px;
+      vertical-align: top
     }
     ^ .contactName {
-        font-family: 'Roboto';
-        font-size: 14px;
-        font-weight: bold;
-        letter-spacing: 0.2px;
-        color: #093649;
-        padding-bottom: 10px;
-        margin: 0;
+      font-family: 'Roboto';
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      color: #093649;
+      padding-bottom: 10px;
+      margin: 0;
     }
     ^ .companyName {
-        width: 200px;
-        height: 16px;
-        font-family: 'Roboto';
-        font-size: 12px;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #093649;
-        // margin: 0;
+      width: 200px;
+      height: 16px;
+      font-family: 'Roboto';
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      // margin: 0;
     }
     ^ .companyAddress {
       width: 200px;
@@ -114,36 +113,36 @@ foam.CLASS({
       margin: 0;
     }
     ^ .vendor {
-        width: 200px;
-        height: 12px;
-        opacity: 0.6;
-        font-family: 'Roboto';
-        font-size: 14px;
-        line-height: 0.86;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #093649;
-        padding-top: 15px;
-        margin: 0;
+      width: 200px;
+      height: 12px;
+      opacity: 0.6;
+      font-family: 'Roboto';
+      font-size: 14px;
+      line-height: 0.86;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      padding-top: 15px;
+      margin: 0;
     }
     ^ .connectionIcon {
-        width: 80px;
-        height: 20px;
-        float: right;
-        color: white;
-        border-radius: 100px;
-        background-color: #2cab70;
-        text-align: center;
-        padding-bottom: 0px;
-        padding-top: 5px;
+      width: 80px;
+      height: 20px;
+      float: right;
+      color: white;
+      border-radius: 100px;
+      background-color: #2cab70;
+      text-align: center;
+      padding-bottom: 0px;
+      padding-top: 5px;
     }
     ^ .optionsIcon {
-        background-color: white;
-        vertical-align: top;
-        float: right;
-        width: 24px;
-        height: 24px;
-        cursor: pointer;
+      background-color: white;
+      vertical-align: top;
+      float: right;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
     }
     ^ .optionsDropDown {
       padding: 0px;
