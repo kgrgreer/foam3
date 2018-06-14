@@ -27,6 +27,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'contacts_button_select',
       value: true
+    },
+    {
+      name: 'getAllBusinessUser',
+      expression: function() {
+        return this.userDAO.limit(50).where(this.AND(
+          this.NEQ(this.User.ID, this.user.id),
+          this.EQ(this.User.GROUP, 'business')
+        ));
+      }
     }
   ],
 
@@ -254,12 +263,8 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-        var partnersData = this.userDAO.where(
-          this.AND(this.NEQ(this.User.ID, this.user.id),
-            this.EQ(this.User.GROUP, 'business'))
-        );
-        this.createContactCardView(partnersData);
-
+        var partnersData = this.getAllBusinessUser;
+        this.createContactCardView(this.getAllBusinessUser);
         partnersData.select(this.COUNT()).then(function(p) {
           self.partnerCount = 'Showing ' + p.value.toString() + ' Businesses';
         });
@@ -286,10 +291,7 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var self = this;
-        var partnersData = this.userDAO.where(
-          this.AND(this.NEQ(this.User.ID, this.user.id),
-            this.EQ(this.User.GROUP, 'business'))
-        );
+        var partnersData = this.getAllBusinessUser;
         this.createContactCardView(partnersData);
 
         partnersData.select(this.COUNT()).then(function(p) {
