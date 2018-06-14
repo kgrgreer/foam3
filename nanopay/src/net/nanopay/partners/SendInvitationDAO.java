@@ -4,22 +4,22 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.app.AppConfig;
 import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
+import static foam.mlang.MLang.*;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import static foam.mlang.MLang.*;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import net.nanopay.model.Invitation;
-import java.text.NumberFormat;
 
 /**
  * Handles all logic related to Invitations, including:

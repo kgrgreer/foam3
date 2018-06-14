@@ -10,18 +10,18 @@ foam.CLASS({
 
   imports: [
     'invitationDAO',
-    'user',
+    'user'
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.tag.TextArea',
     'net.nanopay.model.Invitation',
-    'net.nanopay.ui.modal.ModalHeader',
+    'net.nanopay.ui.modal.ModalHeader'
   ],
 
   implements: [
-    'net.nanopay.ui.modal.ModalStyling',
+    'net.nanopay.ui.modal.ModalStyling'
   ],
 
   properties: [
@@ -31,8 +31,8 @@ foam.CLASS({
     {
       name: 'message',
       view: 'foam.u2.tag.TextArea',
-      value: '',
-    },
+      value: ''
+    }
   ],
 
   css: `
@@ -91,7 +91,7 @@ foam.CLASS({
           'transactions. Try it out now!';
       this.SUPER();
       this
-        .tag(this.ModalHeader.create({ title: 'New Invite' }))
+        .tag(this.ModalHeader.create({ title: this.ModalTitle }))
         .addClass(this.myClass())
           .start().addClass('two-col')
             .start()
@@ -123,13 +123,17 @@ foam.CLASS({
 
   messages: [
     {
-      name: 'emailSent',
-      message: 'Invite sent!'
+      name: 'InviteSendSuccess',
+      message: 'Invitation sent!'
     },
     {
-      name: 'inviteSendError',
-      message: 'There was a problem sending the invite email.'
+      name: 'InviteSendError',
+      message: 'There was a problem sending the invitation.'
     },
+    {
+      name: 'ModalTitle',
+      message: 'New Invite'
+    }
   ],
 
   actions: [
@@ -138,25 +142,26 @@ foam.CLASS({
       label: 'Send',
       help: 'Invite someone to the nanopay platform',
       code: async function(X) {
-        var invite = this.Invitation.create();
-        invite.email = this.emailAddress;
-        invite.createdBy = this.user.id;
-        invite.message = this.message;
+        var invite = this.Invitation.create({
+          email: this.emailAddress,
+          createdBy: this.user.id,
+          message:  this.message
+        });
         try {
           // See InvitationLogicDAO.java
           await this.invitationDAO.put(invite)
           this.add(this.NotificationMessage.create({
-            message: this.emailSent,
+            message: this.InviteSendSuccess,
           }));
         } catch (err) {
           console.error(err);
           this.add(this.NotificationMessage.create({
-            message: this.inviteSendError,
+            message: this.InviteSendError,
             type: 'error',
           }));
         }
         X.closeDialog();
       }
-    },
-  ],
+    }
+  ]
 });

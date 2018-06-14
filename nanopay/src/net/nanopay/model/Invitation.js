@@ -2,7 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Invitation',
 
-  documentation: 'An invitation to join the B2B platform',
+  documentation: 'Objects will determine whether an invitation to the ' +
+      'platform or a connection request will be sent',
 
   properties: [
     {
@@ -34,6 +35,6 @@ foam.CLASS({
       name: 'internal',
       documentation: 'True if the invited user already existed, false ' +
           'otherwise',
-    },
-  ],
+    }
+  ]
 });
