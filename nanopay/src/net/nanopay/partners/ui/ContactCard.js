@@ -17,16 +17,6 @@ foam.CLASS({
     'user'
   ],
 
-  properties: [
-    'popupMenu_',
-    'status',
-    {
-      class: 'String',
-      name: 'whitespace',
-      value: '  '
-    }
-  ],
-
   css: `
     ^ {
       display: inline-block;
@@ -68,7 +58,7 @@ foam.CLASS({
     }
     ^ .contactInfoDiv {
       float: bottom;
-      padding-top: 36px;
+      padding-top: 45px;
     }
     ^ .contactInfoDetail {
       height: 14px;
@@ -213,6 +203,37 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    'popupMenu_',
+    'status',
+    {
+      name: 'addressLine1',
+      expression: function(data) {
+        var address = data.businessAddress;
+        return ( address.suite ? address.suite + ', ': '' ) +
+        ( address.streetNumber ? address.streetNumber + ' ' : '' ) +
+        ( address.streetName ? address.streetName + ', ' : '' ) +
+        ( address.city ? address.city : '' );
+      }
+    },
+    {
+      name: 'addressLine2',
+      expression: function(data) {
+        var address = data.businessAddress;
+
+        return ( address.regionId ? address.regionId + ', ' : '' ) +
+        ( address.countryId ? address.countryId : '' );
+      }
+    },
+    {
+      name: 'postalCode',
+      expression: function(data) {
+        var address = data.businessAddress;
+        return address.postalCode ? address.postalCode : '';
+      }
+    }
+  ],
+
   methods: [
     function initE() {
       var i = this.data;
@@ -232,17 +253,16 @@ foam.CLASS({
         }).addClass('profilePicture').end()
         .start().addClass('companyInfoDiv')
           .start('h2').addClass('companyName')
-            .add(i.businessName ? i.businessName : this.whitespace)
+            .add(i.businessName ? i.businessName : '')
           .end()
           .start('h2').addClass('companyAddress')
-            .add(this.getAddress())
+            .add(this.addressLine1)
           .end()
           .start('h2').addClass('companyAddress')
-            .add(this.getRegionCountry())
+            .add(this.addressLine2)
           .end()
           .start('h2').addClass('companyAddress')
-            .add(i.businessAddress.postalCode ?
-              i.businessAddress.postalCode : this.whitespace)
+            .add(this.postalCode)
           .end()
         .end()
         .start('span', null, this.popupMenu_$)
@@ -256,7 +276,7 @@ foam.CLASS({
           .start('h5').addClass('contactInfoDetail').add(i.email).end()
           .start('h5').addClass('contactInfoDetail')
             .add(i.businessPhone.number ?
-              i.businessPhone.number : this.whitespace)
+              i.businessPhone.number : '')
           .end()
         .end()
         .start().addClass(this.myClass('bottom-status'))
@@ -264,36 +284,6 @@ foam.CLASS({
             .add(this.status$).enableClass('connectionIcon', this.status$)
           .end()
         .end();
-    },
-
-    function getAddress() {
-      var i = this.data.businessAddress;
-      if ( i.streetName && i.streetNumber ) {
-        if ( i.suite ) {
-          var fullAddress = i.suite + ', '
-          + i.getAddress() + ', ' + i.city;
-          return fullAddress;
-        } else {
-          var fullAddress = i.getAddress() + ', '
-          + i.city;
-          return fullAddress;
-        }
-      } else {
-        return this.whitespace;
-      }
-    },
-
-    function getRegionCountry() {
-      var i = this.data.businessAddress;
-      if ( i.regionId && i.countryId ) {
-        return i.regionId + ', ' + i.countryId;
-      } else if ( i.regionId ) {
-        return regionId;
-      } else if ( i.countryId ) {
-        return i.countryId;
-      } else {
-      return this.whitespace;
-      }
     }
   ],
 
@@ -348,6 +338,9 @@ foam.CLASS({
       );
       this.stack.push(view);
       this.remove();
+    },
+    function onClickConnect() {
+      // send out the partnership invitation
     }
   ],
 
@@ -383,15 +376,11 @@ foam.CLASS({
           p.addClass('optionsDropDown').addClass('optionsDropDown2')
           .start('div').addClass('optionsDropDown-content')
             .add('Connect')
-            .on('click', this.onClickConnect.bind(this))
+            .on('click', this.onClickConnect)
           .end();
         }
         this.popupMenu_.add(p);
       }
-    },
-
-    // send out the partnership invitation
-    function onClickConnect() {
     }
   ]
 });

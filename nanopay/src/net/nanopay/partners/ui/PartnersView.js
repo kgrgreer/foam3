@@ -274,7 +274,7 @@ foam.CLASS({
       name: 'connectedOnClick',
       isFramed: true,
       code: function() {
-        this.data = this.user.partners.dao;
+        this.data = this.user.partners.dao.limit(50);
         this.connected_button_select = true;
         this.contacts_button_select = false;
       }
