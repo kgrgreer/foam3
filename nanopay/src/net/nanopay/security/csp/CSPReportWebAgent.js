@@ -52,7 +52,7 @@ UUID uuid = timeBasedGenerator.generate();
 
 report.setUuid(uuid.toString());
 //Convert from ns to ms; then rebase from 1582-10-15 to 1970-01-01.
-report.setDate(new Date(((uuid.timestamp() / 10000L) + 12219292800L)));
+report.setDate(new Date((uuid.timestamp() / 10000L) - 12219292800000L));
 report.setIp(req.getRemoteAddr());
 
 StringBuffer sb = new StringBuffer();
@@ -100,10 +100,19 @@ try {
         report.setScriptSample(CSPReport.getString(name));
         break;
       case "status-code":
-        report.setStatusCode(CSPReport.getString(name));
+        report.setStatusCode(CSPReport.getInt(name));
         break;
       case "violated-directive":
         report.setViolatedDirective(CSPReport.getString(name));
+        break;
+      case "source-file":
+        report.setSourceFile(CSPReport.getString(name));
+        break;
+      case "line-number":
+        report.setLineNumber(CSPReport.getInt(name));
+        break;
+      case "column-number":
+        report.setColumnNumber(CSPReport.getInt(name));
         break;
       default:
         logger.warning("CSPReportWebAgent : " + name + " : Invalid field in CSPReport.");

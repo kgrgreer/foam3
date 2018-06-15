@@ -68,7 +68,7 @@ foam.CLASS({
         handler, or style that caused the violation.`
     },
     {
-      class: 'String',
+      class: 'Int',
       name: 'statusCode',
       documentation: `The HTTP status code of the resource on which the global
         object was instantiated.`
@@ -77,6 +77,24 @@ foam.CLASS({
       class: 'String',
       name: 'violatedDirective',
       documentation: 'The name of the policy section that was violated.'
+    },
+    {
+      class: 'String',
+      name: 'sourceFile',
+      documentation: `The URL of the resource where the violation occurred,
+        stripped for reporting.`
+    },
+    {
+      class: 'Int',
+      name: 'lineNumber',
+      documentation: `The line number in source-file on which the violation
+        occurred.`
+    },
+    {
+      class: 'Int',
+      name: 'columnNumber',
+      documentation: `The column number in source-file on which the violation
+        occurred.`
     }
   ]
 });
