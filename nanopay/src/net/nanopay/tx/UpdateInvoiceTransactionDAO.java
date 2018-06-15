@@ -36,25 +36,27 @@ public class UpdateInvoiceTransactionDAO
 
 
     // find invoice
-    if ( transaction.getPayerId() != transaction.getPayeeId() ) {
+    if ( transaction.getInvoiceId() != 0 ) {
+      if ( transaction.getPayerId() != transaction.getPayeeId() ) {
 
-      if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
-        invoice.setPaymentId(transaction.getId());
-        invoice.setPaymentDate(transaction.getDate());
-        invoice.setPaymentMethod(PaymentStatus.CHEQUE);
-        invoiceDAO_.put(invoice);
-      }
-      if ( transaction.getStatus() == TransactionStatus.PENDING ) {
-        invoice.setPaymentId(transaction.getId());
-        invoice.setPaymentDate(transaction.getDate());
-        invoice.setPaymentMethod(PaymentStatus.PENDING);
-        invoiceDAO_.put(invoice);
-      }
-      if(transaction.getStatus() == TransactionStatus.DECLINED){
-        invoice.setPaymentId(0);
-        invoice.setPaymentDate(transaction.getDate());
-        invoice.setPaymentMethod(PaymentStatus.NONE);
-        invoiceDAO_.put(invoice);
+        if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
+          invoice.setPaymentId(transaction.getId());
+          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
+          invoiceDAO_.put(invoice);
+        }
+        if ( transaction.getStatus() == TransactionStatus.PENDING ) {
+          invoice.setPaymentId(transaction.getId());
+          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentMethod(PaymentStatus.PENDING);
+          invoiceDAO_.put(invoice);
+        }
+        if ( transaction.getStatus() == TransactionStatus.DECLINED ) {
+          invoice.setPaymentId(0);
+          invoice.setPaymentDate(null);
+          invoice.setPaymentMethod(PaymentStatus.NONE);
+          invoiceDAO_.put(invoice);
+        }
       }
     }
 

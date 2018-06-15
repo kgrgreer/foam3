@@ -212,6 +212,18 @@ foam.CLASS({
     ^ .pDefault{
       margin-bottom: 14 !important;
     }
+
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: -15px;
+      margin-bottom: 15px;
+    }
   `,
 
   messages: [
@@ -222,7 +234,8 @@ foam.CLASS({
     { name: 'LabelCountry',         message: 'Country' },
     { name: 'LabelStreetNumber',    message: 'Street Number' },
     { name: 'LabelStreetName',      message: 'Street Name' },
-    { name: 'LabelSuite',           message: 'Suite' },
+    { name: 'LabelAddress2',         message: 'Address 2 (optional)' },
+    { name: 'Address2Hint',          message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'LabelCity',            message: 'City' },
     { name: 'LabelRegion',          message: 'Region' },
     { name: 'LabelPostal',          message: 'Postal Code' },
@@ -389,8 +402,9 @@ foam.CLASS({
           .end()
 
           .start().addClass('inline')
-            .start().add(this.LabelSuite).addClass('infoLabel').end()
+            .start().add(this.LabelAddress2).addClass('infoLabel').end()
             .start(this.SUITE).addClass('inputLarge').end()
+            .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .end()
           .start().addClass('inline').addClass('float-right')
             .start().add(this.LabelCity).addClass('infoLabel').end()

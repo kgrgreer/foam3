@@ -115,6 +115,7 @@ try {
   }
 
   // set invited and invited by and store user
+  user = (User) user.fclone();
   user.setInvited(true);
   user.setSpid("nanopay");
   user.setGroup("shopper");
@@ -201,6 +202,7 @@ try {
   }
 
   email.sendEmailFromTemplate(result, message, "welcome-email", args);
+  result = (User) result.fclone();
   result.setPortalAdminCreated(false);
   result.setWelcomeEmailSent(true);
   userDAO.put(result);

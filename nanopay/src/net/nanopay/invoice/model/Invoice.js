@@ -40,21 +40,16 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'dueDate', 'amount', 'status'/*, 'payNow'*/
+    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
   javaImports: [ 'java.util.Date' ],
-
-  constants: {
-    RECORDED_PAYMENT: -2,
-    DISPUTED_INVOICE: -1
-  },
 
   properties: [
     {
       name: 'search',
       transient: true,
-      searchView: { class: "foam.u2.search.TextSearchView", of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
+      searchView: { class: 'foam.u2.search.TextSearchView', of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
     },
     {
       class: 'Long',
@@ -64,25 +59,38 @@ foam.CLASS({
       class: 'String',
       name: 'invoiceNumber',
       label: 'Invoice #',
-      aliases: [ 'invoice', 'i' ],
+      aliases: [
+        'invoice',
+        'i'
+      ],
       visibility: foam.u2.Visibility.FINAL
     },
     {
       class: 'String',
       name: 'purchaseOrder',
       label: 'PO #',
-      aliases: [ 'purchase', 'po', 'p' ],
+      aliases: [
+        'purchase',
+        'po',
+        'p'
+      ]
     },
     {
       class: 'Date',
       name: 'issueDate',
       label: 'Issue Date',
       required: true,
-      factory: function() { return new Date(); },
+      factory: function() {
+        return new Date();
+      },
       javaFactory: 'return new Date();',
-      aliases: [ 'issueDate', 'issue', 'issued' ],
+      aliases: [
+        'issueDate',
+        'issue',
+        'issued'
+      ],
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+        this.add(date ? date.toISOString().substring(0, 10) : '');
       }
     },
     {
@@ -91,7 +99,7 @@ foam.CLASS({
       label: 'Date Due',
       aliases: [ 'dueDate', 'due', 'd', 'issued' ],
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+        this.add(date ? date.toISOString().substring(0, 10) : '');
       }
     },
     {
@@ -164,11 +172,15 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      aliases: [ 'a' ],
+      aliases: [
+        'a'
+      ],
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
-        this.start().style({'padding-right': '20px'}).add('$' + X.addCommas((a/100).toFixed(2))).end();
+        this.start().style({ 'padding-right': '20px' })
+          .add('$' + X.addCommas((a/100).toFixed(2)))
+        .end();
       }
     },
     {
@@ -195,16 +207,16 @@ foam.CLASS({
       class: 'String',
       name: 'status',
       transient: true,
-      aliases: [ 's' ],
+      aliases: [
+        's'
+      ],
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return 'Draft';
         if ( paymentMethod === this.PaymentStatus.VOID ) return 'Void';
         if ( paymentMethod === this.PaymentStatus.PENDING ) return 'Pending';
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return 'Paid';
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return 'Paid';
-        if ( paymentId === this.DISPUTED_INVOICE ) return 'Disputed';
-        if ( paymentId > 0 || paymentDate < Date.now() && paymentId == this.RECORDED_PAYMENT) return 'Paid';
-        if ( paymentDate > Date.now() && paymentId == 0 || paymentDate > Date.now() && paymentId == this.RECORDED_PAYMENT) return ('Scheduled');
+        if ( paymentDate > Date.now() && paymentId == 0 ) return ('Scheduled');
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return 'Overdue';
           if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
@@ -217,10 +229,8 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.PENDING ) return "Pending";
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
-        if ( getPaymentId() == -1 ) return "Disputed";
-        if ( getPaymentId() > 0 ) return "Paid";
         if ( getPaymentDate() != null ){
-          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 || getPaymentDate().after(new Date()) && getPaymentId() == -2 ) return "Scheduled";
+          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 ) return "Scheduled";
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
@@ -228,17 +238,26 @@ foam.CLASS({
         }
         return "Due";
       `,
-      searchView: { class: "foam.u2.search.GroupBySearchView", width: 40, viewSpec: { class: 'foam.u2.view.ChoiceView', size: 8 } },
+      searchView: {
+        class: 'foam.u2.search.GroupBySearchView',
+        width: 40,
+        viewSpec: {
+          class: 'foam.u2.view.ChoiceView',
+          size: 8
+        }
+      },
       tableCellFormatter: function(state, obj, rel) {
-        function formatDate(d) { return d ? d.toISOString().substring(0,10) : ''; }
-
         var label;
         label = state;
-        if ( state === 'Scheduled') {
-          label = label + ' ' + obj.paymentDate.toISOString().substring(0,10);
+        if ( state === 'Scheduled' ) {
+          label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
         }
 
-        this.start().addClass('generic-status').addClass('Invoice-Status-' + state).add(label).end();
+        this.start()
+          .addClass('generic-status')
+          .addClass('Invoice-Status-' + state)
+          .add(label)
+        .end();
       }
     },
     {
@@ -250,7 +269,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'scheduledEmailSent',
-      value: false,      
+      value: false
     }
   ],
 
@@ -263,7 +282,10 @@ foam.CLASS({
         return status !== 'Paid' && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
       },
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.interac.ui.etransfer.TransferWizard', invoice: this })
+        X.stack.push({
+          class: 'net.nanopay.interac.ui.etransfer.TransferWizard',
+          invoice: this
+        });
       }
     }
   ]
@@ -280,12 +302,12 @@ foam.RELATIONSHIP({
   targetProperty: {
     label: 'Vendor',
     searchView: {
-      class: "foam.u2.search.GroupBySearchView",
+      class: 'foam.u2.search.GroupBySearchView',
       width: 40,
       aFormatLabel: function(key) {
         var dao = this.__context__.userDAO;
-        return new Promise(function (resolve, reject) {
-          dao.find(key).then(function (user) {
+        return new Promise(function(resolve, reject) {
+          dao.find(key).then(function(user) {
             resolve(user ? user.label() : 'Unknown User: ' + key);
           });
         });
@@ -293,17 +315,16 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then(function (o) {
+      this.__context__[rel.targetDAOKey].find(value).then(function(o) {
         this.add(o.label());
       }.bind(this));
     },
-    postSet: function(oldValue, newValue){
+    postSet: function(oldValue, newValue) {
       var self = this;
       var dao = this.__context__.userDAO;
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payeeName = a.label();
-          // if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
           self.payeeName = 'Unknown Id: ' + newValue;
         }
@@ -323,14 +344,13 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     label: 'Customer',
-//    aliases: [ 'from', 'customer' ],
     searchView: {
-      class: "foam.u2.search.GroupBySearchView",
+      class: 'foam.u2.search.GroupBySearchView',
       width: 40,
       aFormatLabel: function(key) {
         var dao = this.__context__.userDAO;
-        return new Promise(function (resolve, reject) {
-          dao.find(key).then(function (user) {
+        return new Promise( function(resolve, reject) {
+          dao.find(key).then( function(user) {
             resolve(user ? user.label() : 'Unknown User: ' + key);
           });
         });
@@ -338,17 +358,16 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then(function (o) {
+      this.__context__[rel.targetDAOKey].find(value).then( function(o) {
         this.add(o.label());
       }.bind(this));
     },
-    postSet: function(oldValue, newValue){
+    postSet: function(oldValue, newValue) {
       var self = this;
       var dao = this.__context__.userDAO;
       dao.find(newValue).then(function(a) {
         if ( a ) {
           self.payerName = a.label();
-          // if ( a.address ) self.currencyType = a.address.countryId + 'D';
         } else {
           self.payerName = 'Unknown Id: ' + newValue;
         }

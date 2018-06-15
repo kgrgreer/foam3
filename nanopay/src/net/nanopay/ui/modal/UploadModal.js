@@ -31,7 +31,7 @@ foam.CLASS({
       background-color: #093649;
       margin-bottom: 20px;
     }
-    ^ .invoice-input {
+    ^ .document-input {
       width: 0.1px;
       height: 0.1px;
       opacity: 0;
@@ -186,7 +186,7 @@ foam.CLASS({
           .end()
           .on('drop', this.onDrop)
           .on('click', self.onAddAttachmentClicked)
-          .start('input').addClass('invoice-input')
+          .start('input').addClass('document-input')
             .attrs({
               type: 'file',
               accept: "image/jpg , image/jpeg , image/png , application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document , application/vnd.ms-powerpoint , application/vnd.openxmlformats-officedocument.presentationml.presentation , application/vnd.openxmlformats-officedocument.presentationml.slideshow , application/vnd.oasis.opendocument.text , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet , application/pdf",
@@ -203,7 +203,7 @@ foam.CLASS({
       
     } ,
     function onInvoiceFileRemoved (fileNumber) {
-      this.document.querySelector('.attachment-input').value = null;
+      this.document.querySelector('.document-input').value = null;
       this.data.splice(fileNumber - 1, 1);
       this.data = Array.from(this.data);
     }
@@ -230,8 +230,17 @@ foam.CLASS({
     },
   ],
   listeners: [
-    function onAddAttachmentClicked (e) {
-      this.document.querySelector('.invoice-input').click();
+    function onAddAttachmentClicked(e) {
+      if ( typeof e.target != 'undefined' ) {
+        if ( e.target.tagName != 'SPAN' && e.target.tagName != 'A' ) {
+          this.document.querySelector('.document-input').click();
+        }
+      } else {
+        // For IE browser
+        if ( e.srcElement.tagName != 'SPAN' && e.srcElement.tagName != 'A' ) {
+          this.document.querySelector('.document-input').click();
+        }
+      }
     },
     function onDragOver(e) {
       e.preventDefault();    
