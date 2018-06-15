@@ -12,6 +12,7 @@ import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.alterna.AlternaTxn;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -92,11 +93,11 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            Transaction tran = (Transaction) transactionDao.find(
-              EQ(Transaction.ID, eftUploadFileRecord.getReference()));
+            AlternaTxn tran = (AlternaTxn) transactionDao.find(
+              EQ(AlternaTxn.ID, eftUploadFileRecord.getReference()));
 
             if ( tran != null ) {
-              tran = (Transaction) tran.fclone();
+              tran = (AlternaTxn) tran.fclone();
               tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
 
               if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {

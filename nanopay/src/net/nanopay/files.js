@@ -102,6 +102,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
+  { name: 'net/nanopay/cico/model/TransactionType' },
+  { name: 'net/nanopay/tx/Txn' },
+  { name: 'net/nanopay/tx/AbstractTxn' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
@@ -122,7 +125,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
-  { name: 'net/nanopay/retail/model/Transaction' },
+  //{ name: 'net/nanopay/retail/model/Transaction' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
@@ -175,8 +178,8 @@ FOAM_FILES([
 
   // cico
   { name: 'net/nanopay/cico/model/ServiceProvider' },
-  { name: 'net/nanopay/cico/model/TransactionType' },
-  { name: 'net/nanopay/cico/model/Transaction' },
+//  { name: 'net/nanopay/cico/model/TransactionType' },
+//  { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },

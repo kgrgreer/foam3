@@ -91,11 +91,14 @@ var classes = [
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
+  'net.nanopay.tx.Txn',
+  'net.nanopay.tx.AbstractTxn',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
+  'net.nanopay.tx.alterna.AlternaTxn',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
@@ -145,7 +148,8 @@ var skeletons = [
 ];
 
 var proxies = [
-  'net.nanopay.cico.service.BankAccountVerifier'
+  'net.nanopay.cico.service.BankAccountVerifier',
+  'net.nanopay.tx.Txn'
 ];
 
 module.exports = {

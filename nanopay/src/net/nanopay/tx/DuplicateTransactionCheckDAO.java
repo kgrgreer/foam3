@@ -54,11 +54,11 @@ public class DuplicateTransactionCheckDAO
     temp.setDate(oldtxn.getDate());
     temp.setPayerId(oldtxn.getPayerId());
     temp.setPayeeId(oldtxn.getPayeeId());
-    temp.setDeviceId(oldtxn.getDeviceId());
+    //temp.setDeviceId(oldtxn.getDeviceId());
     temp.setNotes(oldtxn.getNotes());
     temp.setChallenge(oldtxn.getChallenge());
     temp.setProviderId(oldtxn.getProviderId());
-    temp.setBrokerId(oldtxn.getBrokerId());
+    //temp.setBrokerId(oldtxn.getBrokerId());
 
     temp.setPadType(oldtxn.getPadType());
     temp.setTxnCode(oldtxn.getTxnCode());

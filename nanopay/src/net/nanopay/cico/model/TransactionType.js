@@ -22,10 +22,12 @@ foam.ENUM({
       label: 'Verification'
     },
     {
+      // REVIEW - how is this used? - Joel
       name: 'BANK_ACCOUNT_PAYMENT',
       label: 'BankAccountPayment'
     },
     {
+      // REVIEW - how is this used? - Joel
       name: 'REFUND',
       label: 'Refund'
     }

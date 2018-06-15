@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
-  
+
   tableColumns: [ 'status', 'paymentPlatformId', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
@@ -50,6 +50,12 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       label: 'Transaction ID',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.cico.model.TransactionType',
+      name: 'type',
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -143,85 +149,15 @@ foam.CLASS({
       }
     },
     {
-      class: 'DateTime',
-      name: 'processDate'
-    },
-    {
-      class: 'DateTime',
-      name: 'completionDate'
-    },
-    {
-      class: 'String',
-      name: 'padType'
-    },
-    {
-      class: 'String',
-      name: 'txnCode'
-    },
-    {
-      class: 'Currency',
-      name: 'receivingAmount',
-      label: 'Receiving Amount',
-      visibility: foam.u2.Visibility.RO,
-      transient: true,
-      expression: function(amount, rate) {
-        var receivingAmount = amount * rate;
-        return receivingAmount;
-      },
-      tableCellFormatter: function(receivingAmount, X) {
-        this
-          .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-            .add(' INR ₹', X.addCommas(( receivingAmount/100 ).toFixed(2)))
-          .end();
-      }
-    },
-    {
-      class: 'String',
-      name: 'challenge',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Randomly generated challenge'
-    },
-    {
-      class: 'DateTime',
-      name: 'date',
-      label: 'Date & Time'
-    },
-    {
-      class: 'Currency',
-      name: 'tip',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'Double',
-      name: 'rate',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(rate) {
-        this.start().add(rate.toFixed(2)).end();
-      }
-    },
-    {
-      class: 'FObjectArray',
-      visibility: foam.u2.Visibility.RO,
-      name: 'feeTransactions',
-      of: 'net.nanopay.tx.model.Transaction'
-    },
-    {
-      class: 'FObjectArray',
-      name: 'informationalFees',
-      visibility: foam.u2.Visibility.RO,
-      of: 'net.nanopay.tx.model.Fee'
-    },
-    // TODO: field for tax as well? May need a more complex model for that
-    {
       class: 'Currency',
       name: 'total',
       visibility: foam.u2.Visibility.RO,
       label: 'Total Amount',
       transient: true,
-      expression: function(amount, tip) {
-        return amount + tip;
+      expression: function(amount) {
+        return amount;
       },
-      javaGetter: `return getAmount() + getTip();`,
+      javaGetter: `return getAmount();`,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         var refund =
@@ -235,6 +171,81 @@ foam.CLASS({
           .end();
       }
     },
+    {
+      // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
+      class: 'Reference',
+      of: 'net.nanopay.model.BankAccount',
+      name: 'bankAccountId',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'DateTime',
+      name: 'processDate'
+    },
+    {
+      class: 'DateTime',
+      name: 'completionDate'
+    },
+    {
+      // REVIEW: what is this - Joel
+      class: 'String',
+      name: 'padType'
+    },
+    {
+      class: 'String',
+      name: 'txnCode'
+    },
+    // {
+    //   class: 'Currency',
+    //   name: 'receivingAmount',
+    //   label: 'Receiving Amount',
+    //   visibility: foam.u2.Visibility.RO,
+    //   transient: true,
+    //   expression: function(amount, rate) {
+    //     var receivingAmount = amount * rate;
+    //     return receivingAmount;
+    //   },
+    //   tableCellFormatter: function(receivingAmount, X) {
+    //     this
+    //       .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
+    //         .add(' INR ₹', X.addCommas(( receivingAmount/100 ).toFixed(2)))
+    //       .end();
+    //   }
+    // },
+    {
+      // REVIEW: what is this for - Joel
+      class: 'String',
+      name: 'challenge',
+      visibility: foam.u2.Visibility.RO,
+      documentation: 'Randomly generated challenge'
+    },
+    {
+      // REVIEW: is this created date? - Joel
+      class: 'DateTime',
+      name: 'date',
+      label: 'Date & Time'
+    },
+    // {
+    //   class: 'Double',
+    //   name: 'rate',
+    //   visibility: foam.u2.Visibility.RO,
+    //   tableCellFormatter: function(rate) {
+    //     this.start().add(rate.toFixed(2)).end();
+    //   }
+    // },
+    // {
+    //   class: 'FObjectArray',
+    //   visibility: foam.u2.Visibility.RO,
+    //   name: 'feeTransactions',
+    //   of: 'net.nanopay.tx.model.Transaction'
+    // },
+    // {
+    //   class: 'FObjectArray',
+    //   name: 'informationalFees',
+    //   visibility: foam.u2.Visibility.RO,
+    //   of: 'net.nanopay.tx.model.Fee'
+    // },
+    // TODO: field for tax as well? May need a more complex model for that
     {
       //class: 'FObjectProperty',
       class: 'Reference',
@@ -252,17 +263,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'stripeTokenId',
-      documentation: 'For most Stripe users, the source of every charge is a' +
-        ' credit or debit card. Stripe Token ID is the hash of the card' +
-        ' object describing that card. Token IDs cannot be stored or used' +
-        ' more than once.'
-    },
-    {
-      class: 'String',
-      name: 'stripeChargeId',
-      documentation: 'Stripe charge id is a unique identifier for every' +
-        ' Charge object.'
+      name: 'description',
+      swiftName: 'description_',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
@@ -272,6 +275,18 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       label: 'Latest Modify Date & Time'
+    },
+    {
+      //class: 'FObjectProperty',
+      //class: 'Reference', 
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'delegate'
+    },
+    {
+      documentation: `Payment Platform specific data.`,
+      class: 'FObjectProperty',
+      name: 'paymentAccountInfo',
+      of: 'net.nanopay.cico.model.PaymentAccountInfo'
     }
   ],
 

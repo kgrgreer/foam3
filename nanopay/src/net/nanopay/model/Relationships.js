@@ -31,6 +31,13 @@ foam.RELATIONSHIP({
 //   inverseName: 'institution',
 //   cardinality: '1:*',
 // });
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.TransactionPurpose',
+  targetModel: 'net.nanopay.payment.InstitutionPurposeCode',
+  forwardName: 'institutions',
+  inverseName: 'transactionPurposeId',
+  cardinality: '1:*',
+});
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.payment.Institution',
