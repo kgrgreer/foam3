@@ -131,7 +131,10 @@ var classes = [
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
   'net.nanopay.security.HashedFObject',
-  'net.nanopay.security.HashingJournal'
+  'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.KeyPairEntry',
+  'net.nanopay.security.PrivateKeyEntry',
+  'net.nanopay.security.PublicKeyEntry'
 ];
 
 var abstractClasses = [
