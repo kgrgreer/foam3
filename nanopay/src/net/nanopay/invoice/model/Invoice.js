@@ -200,6 +200,16 @@ foam.CLASS({
       name: 'iso20022'
     },
     {
+      class: 'FObjectProperty',
+      name: 'targetCurrency',
+      of: 'net.nanopay.model.Currency'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'sourceCurrency',
+      of: 'net.nanopay.model.Currency'
+    },
+    {
       class: 'Long',
       name: 'accountId'
     },
