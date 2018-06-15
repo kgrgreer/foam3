@@ -57,18 +57,18 @@ public class DuplicateTransactionCheckDAO
     //temp.setDeviceId(oldtxn.getDeviceId());
     temp.setNotes(oldtxn.getNotes());
     temp.setChallenge(oldtxn.getChallenge());
-    temp.setProviderId(oldtxn.getProviderId());
+    //temp.setProviderId(oldtxn.getProviderId());
     //temp.setBrokerId(oldtxn.getBrokerId());
 
     temp.setPadType(oldtxn.getPadType());
     temp.setTxnCode(oldtxn.getTxnCode());
     temp.setProcessDate(oldtxn.getProcessDate());
     temp.setCompletionDate(oldtxn.getCompletionDate());
-    temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
+    //temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
     temp.setDescription(oldtxn.getDescription());
-    temp.setReturnCode(oldtxn.getReturnCode());
-    temp.setReturnDate(oldtxn.getReturnDate());
-    temp.setReturnType(oldtxn.getReturnType());
+    //temp.setReturnCode(oldtxn.getReturnCode());
+    //temp.setReturnDate(oldtxn.getReturnDate());
+    //temp.setReturnType(oldtxn.getReturnType());
 
     return oldtxn.compareTo(temp);
   }

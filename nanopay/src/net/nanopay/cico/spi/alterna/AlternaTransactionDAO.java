@@ -4,7 +4,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.Txn;
+import net.nanopay.tx.alterna.AlternaTxn;
 
 public class AlternaTransactionDAO
   extends ProxyDAO
@@ -16,12 +17,14 @@ public class AlternaTransactionDAO
     setX(x);
     setDelegate(delegate);
   }
-  private static final Long ALTERNA_ID = 1L;
+  // private static final Long ALTERNA_ID = 1L;
 
-  @Override
-  public FObject put_(X x, FObject obj) throws RuntimeException {
-    Transaction transaction = (Transaction) obj;
-    transaction.setProviderId(ALTERNA_ID);
-    return getDelegate().put_(x, transaction);
-  }
+  // @Override
+  // public FObject put_(X x, FObject obj) throws RuntimeException {
+  //   Txn txn = (Txn) obj;
+  //   if ( txn instanceof AlternaTxn ) {
+  //     ((AlternaTxn) txn).setProviderId(ALTERNA_ID);
+  //   }
+  //   return getDelegate().put_(x, txn);
+  // }
 }

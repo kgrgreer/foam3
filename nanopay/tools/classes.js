@@ -99,6 +99,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.alterna.AlternaTxn',
+  'net.nanopay.tx.stripe.StripeTxn',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
