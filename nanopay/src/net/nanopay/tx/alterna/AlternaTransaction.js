@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
-  name: 'AlternaTxn',
-  extends: 'net.nanopay.tx.AbstractTxn',
+  name: 'AlternaTransaction',
+  extends: 'net.nanopay.tx.model.Transaction',
 
   properties: [
     {

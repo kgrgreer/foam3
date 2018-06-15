@@ -5,8 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
-import net.nanopay.tx.Txn;
-import net.nanopay.tx.stripe.StripeTxn;
+import net.nanopay.tx.stripe.StripeTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -34,8 +33,8 @@ public class StripeTransactionDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    if ( obj instanceof StripeTxn ) {
-      StripeTxn transaction = (StripeTxn) obj.fclone();
+    if ( obj instanceof StripeTransaction ) {
+      StripeTransaction transaction = (StripeTransaction) obj.fclone();
       //transaction.setProviderId(STRIPE_ID);
       transaction.setStatus(TransactionStatus.PENDING);
       getDelegate().put_(x, transaction);

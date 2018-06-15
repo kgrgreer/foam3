@@ -277,8 +277,7 @@ foam.CLASS({
       label: 'Latest Modify Date & Time'
     },
     {
-      //class: 'FObjectProperty',
-      //class: 'Reference', 
+      class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'delegate'
     },

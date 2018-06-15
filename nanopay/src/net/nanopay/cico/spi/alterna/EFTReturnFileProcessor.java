@@ -13,7 +13,7 @@ import net.nanopay.cico.model.EFTReturnRecord;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.alterna.AlternaTxn;
+import net.nanopay.tx.alterna.AlternaTransaction;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -74,18 +74,18 @@ public class EFTReturnFileProcessor implements ContextAgent
         for ( int j = 0; j < list.size(); j++ ) {
           EFTReturnRecord item = (EFTReturnRecord) list.get(j);
 
-          AlternaTxn tran = (AlternaTxn)transactionDao.find(AND(
-            EQ(AlternaTxn.ID, item.getExternalReference()),
-            EQ(AlternaTxn.AMOUNT, (long)(item.getAmount() * 100)),
+          AlternaTransaction tran = (AlternaTransaction)transactionDao.find(AND(
+            EQ(AlternaTransaction.ID, item.getExternalReference()),
+            EQ(AlternaTransaction.AMOUNT, (long)(item.getAmount() * 100)),
             OR(
-              EQ(AlternaTxn.TYPE, TransactionType.CASHIN),
-              EQ(AlternaTxn.TYPE,TransactionType.CASHOUT))
+              EQ(AlternaTransaction.TYPE, TransactionType.CASHIN),
+              EQ(AlternaTransaction.TYPE,TransactionType.CASHOUT))
             )
           );
 
           // if corresponding transaction is found
           if ( tran != null ) {
-            tran = (AlternaTxn) tran.fclone();
+            tran = (AlternaTransaction) tran.fclone();
             tran.setReturnCode(item.getReturnCode());
             tran.setReturnDate(item.getReturnDate());
 

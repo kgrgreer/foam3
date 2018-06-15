@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'RetailTxn',
+  name: 'RetailTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
   properties: [
