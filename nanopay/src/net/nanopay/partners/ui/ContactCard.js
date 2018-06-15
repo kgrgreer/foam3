@@ -345,10 +345,7 @@ foam.CLASS({
 
     // Send out the partnership invitation
     async function onClickConnect() {
-      var invite = this.Invitation.create({
-        email: this.data.email,
-        createdBy: this.user.id
-      });
+      var invite = this.Invitation.create({ email: this.data.email });
       try {
         await this.invitationDAO.put(invite);
         this.add(this.NotificationMessage.create({

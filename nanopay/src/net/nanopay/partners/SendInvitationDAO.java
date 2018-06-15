@@ -39,9 +39,8 @@ public class SendInvitationDAO
   public FObject put_(X x, FObject obj) {
     DAO userDAO = (DAO) x.get("localUserDAO");
     Invitation invite = (Invitation) obj;
-
-    // The sender should always exist, so this should never throw an error
-    User sender = (User) userDAO.find_(x, invite.getCreatedBy());
+    User sender = (User) x.get("user");
+    invite.setCreatedBy(sender.getId());
 
     // Set the timestamp on the invite here instead of on the frontend so it
     // can't be manually set by a tech-savvy user
