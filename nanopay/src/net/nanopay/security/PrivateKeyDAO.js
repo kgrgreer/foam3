@@ -48,8 +48,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'alias',
-      documentation: 'Alias for key used to encrypt private key',
-      javaFactory: `return java.util.UUID.randomUUID().toString();`
+      documentation: 'Alias for key used to encrypt private key'
     },
     {
       class: 'Object',
@@ -99,6 +98,7 @@ foam.CLASS({
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.WRAP_MODE, key, getSecureRandom());
           entry.setEncryptedPrivateKey(Base64.encodeBase64String(cipher.wrap(privateKey)));
+          entry.setAlias(getAlias());
           entry.setPrivateKey(null);
           return super.put_(x, entry);
         } catch ( Throwable t ) {

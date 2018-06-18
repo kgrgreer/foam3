@@ -15,6 +15,11 @@ foam.CLASS({
       documentation: 'Private Key algorithm. Used for unwrapping'
     },
     {
+      class: 'String',
+      name: 'alias',
+      documentation: 'Alias of the encrypting key'
+    },
+    {
       class: 'Object',
       name: 'privateKey',
       javaType: 'java.security.PrivateKey',
