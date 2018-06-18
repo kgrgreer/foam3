@@ -15,8 +15,16 @@ foam.CLASS({
       documentation: 'Public Key algorithm'
     },
     {
-      class: 'String',
+      class: 'Object',
       name: 'publicKey',
+      javaType: 'java.security.PublicKey',
+      documentation: 'Hidden & transient public key to enable passing key to DAO delegates',
+      hidden: true,
+      transient: true
+    },
+    {
+      class: 'String',
+      name: 'encodedPublicKey',
       documentation: 'Public Key bytes encoded in Base64'
     }
   ]

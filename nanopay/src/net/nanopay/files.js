@@ -245,6 +245,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/FileKeyStoreManager' },
+  { name: 'net/nanopay/security/KeyPairDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
 
   // bank
