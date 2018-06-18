@@ -134,7 +134,8 @@ var classes = [
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.KeyPairEntry',
   'net.nanopay.security.PrivateKeyEntry',
-  'net.nanopay.security.PublicKeyEntry'
+  'net.nanopay.security.PublicKeyEntry',
+  'net.nanopay.security.UserKeyPairGenerationDAO'
 ];
 
 var abstractClasses = [
