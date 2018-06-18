@@ -182,7 +182,7 @@ foam.CLASS({
             postalCode: shopperInfo.postalCode,
             regionId: shopperInfo.province
           });
-
+          debugger;
           var newShopper = this.User.create({
             firstName: shopperInfo.firstName,
             lastName: shopperInfo.lastName,
@@ -190,7 +190,7 @@ foam.CLASS({
             businessName: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Personal',
-            group: 'ccShopper',
+            group: 'ccAdmin'===(this.user.group)?'ccShopper':'shopper',
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
