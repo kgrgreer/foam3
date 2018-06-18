@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
-    'net.nanopay.tx.tp.TnxProcessor',
+    'net.nanopay.tx.tp.TxnProcessor',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -60,7 +60,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.tx.tp.TnxProcessor',
+      of: 'net.nanopay.tx.tp.TxnProcessor',
       name: 'txnProcessorId',
       label: 'Processor',
       value: 'ATERNA'
@@ -68,7 +68,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.tp.TxnProcessorData',
-      name: 'processorData'
+      name: 'txnProcessorData'
     },
     {
       class: 'Long',

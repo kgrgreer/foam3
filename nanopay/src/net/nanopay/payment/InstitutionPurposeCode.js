@@ -26,7 +26,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.tx.tp.TnxProcessor',
+      of: 'net.nanopay.tx.tp.TxnProcessor',
       name: 'txnProcessorId',
       label: 'Payment Platform'
     }

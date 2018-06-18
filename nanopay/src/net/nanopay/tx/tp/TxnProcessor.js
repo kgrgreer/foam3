@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.tp',
-  name: 'TnxProcessor',
-  documentation: 'Tx.Tp information.',
+  name: 'TxnProcessor',
+  documentation: 'Transaction Processor information.',
 
   searchColumns: [],
 
@@ -62,7 +62,7 @@ foam.CLASS({
       name: 'apiBaseUrl'
     },
     {
-      documentation: 'Tx.Tp User account.',
+      documentation: 'Transaction Processor User account.',
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',

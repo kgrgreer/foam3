@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.tx.tp.alterna.AlternaTransactionData;
 
 public class AlternaTransactionDAO
   extends ProxyDAO

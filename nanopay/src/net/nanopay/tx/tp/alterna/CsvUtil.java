@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.BankAccount;
-import net.nanopay.tx.tp.TnxProcessor;
+import net.nanopay.tx.tp.TxnProcessor;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
@@ -117,8 +117,8 @@ public class CsvUtil {
     final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    String txnProcessorId = TnxProcessor.ALTERNA;
-    TnxProcessor txnProcessor = (TnxProcessor) x.get(TnxProcessor.class);
+    String txnProcessorId = TxnProcessor.ALTERNA;
+    TxnProcessor txnProcessor = (TxnProcessor) x.get(TxnProcessor.class);
     if ( txnProcessor != null ) {
       txnProcessorId = txnProcessor.getId();
     }
@@ -126,7 +126,7 @@ public class CsvUtil {
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
       AND(
-        EQ(Transaction.TX.TP_ID, txnProcessorId),
+        EQ(Transaction.TXN_PROCESSOR_ID, txnProcessorId),
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
             EQ(Transaction.TYPE, TransactionType.CASHIN),

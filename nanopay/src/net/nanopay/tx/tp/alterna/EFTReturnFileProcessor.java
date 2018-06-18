@@ -13,7 +13,7 @@ import net.nanopay.cico.model.EFTReturnRecord;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.alterna.AlternaTransactionData;
+import net.nanopay.tx.tp.alterna.AlternaTxnProcessorData;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -87,11 +87,11 @@ public class EFTReturnFileProcessor implements ContextAgent
           if ( tran != null ) {
             tran = (Transaction) tran.fclone();
 
-            AlternaTransactionData data = (AlternaTransactionData) tran.getCicoTransactionData();
+            AlternaTxnProcessorData data = (AlternaTxnProcessorData) tran.getTxnProcessorData();
             if ( data == null ) {
-              data = new AlternaTransactionData();
+              data = new AlternaTxnProcessorData();
             } else {
-              data = (AlternaTransactionData) data.fclone();
+              data = (AlternaTxnProcessorData) data.fclone();
             }
             data.setReturnCode(item.getReturnCode());
             data.setReturnDate(item.getReturnDate());
@@ -101,7 +101,7 @@ public class EFTReturnFileProcessor implements ContextAgent
             } else {
               data.setReturnType("Return");
             }
-            tran.setCicoTransactionData(data);
+            tran.setTxnProcessorData(data);
 
             if ( tran.getStatus() == TransactionStatus.SENT ) {
               tran.setStatus(TransactionStatus.DECLINED);

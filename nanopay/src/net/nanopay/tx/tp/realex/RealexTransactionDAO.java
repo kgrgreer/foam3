@@ -27,8 +27,8 @@ import net.nanopay.cico.model.MobileWallet;
 import static foam.mlang.MLang.*;
 import foam.dao.ArraySink;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
-import net.nanopay.tx.tp.TnxProcessor;
-import net.nanopay.tx.tp.TnxProcessorUserReference;
+import net.nanopay.tx.tp.TxnProcessor;
+import net.nanopay.tx.tp.TxnProcessorUserReference;
 import java.util.UUID;
 
 public class RealexTransactionDAO
@@ -44,7 +44,7 @@ public class RealexTransactionDAO
     Transaction transaction = (Transaction) obj;
     //If transaction is realex payment
     String txnProcessorId = (String) transaction.getTxnProcessorId();
-    if ( ! TnxProcessor.REALEX.equals(txnProcessorId) )
+    if ( ! TxnProcessor.REALEX.equals(txnProcessorId) )
       return getDelegate().put_(x, obj);
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
@@ -69,14 +69,14 @@ public class RealexTransactionDAO
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
       DAO txnProcessorUserReferenceDAO = (DAO) x.get("txnProcessorUserReferenceDAO");
       ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO.where(AND(
-        EQ(TnxProcessorUserReference.DRIVER_ID, txnProcessorId),
-        EQ(TnxProcessorUserReference.USER_ID, user.getId())
+        EQ(TxnProcessorUserReference.DRIVER_ID, txnProcessorId),
+        EQ(TxnProcessorUserReference.USER_ID, user.getId())
       )).select(new ArraySink());
       List list = sink.getArray();
       if ( list.size() == 0 ) {
         throw new RuntimeException("asdfdasfasdf");
       }
-      TnxProcessorUserReference userReference = (TnxProcessorUserReference) list.get(0);
+      TxnProcessorUserReference userReference = (TxnProcessorUserReference) list.get(0);
       PaymentData myPaymentData = new PaymentData()
         .addCvnNumber(paymentAccountInfo.getCvn());
       paymentRequest

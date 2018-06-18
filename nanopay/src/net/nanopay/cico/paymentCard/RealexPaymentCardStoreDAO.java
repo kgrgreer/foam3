@@ -17,7 +17,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.tx.tp.TnxProcessorUserReference;
+import net.nanopay.tx.tp.TxnProcessorUserReference;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 import java.util.List;
@@ -36,24 +36,24 @@ public class RealexPaymentCardStoreDAO
   @Override
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
-    if ( ! net.nanopay.tx.tp.TnxProcessor.REALEX.equals(card.getTxnProcessor()) ) {
+    if ( ! net.nanopay.tx.tp.TxnProcessor.REALEX.equals(card.getTxnProcessor()) ) {
       return getDelegate().put_(x, obj);
     }
     User user = (User)x.get("user");
     DAO txnProcessorUserReferenceDAO = (DAO) x.get("txnProcessorUserReferenceDAO");
     ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO.where(
       AND(
-        EQ(TnxProcessorUserReference.USER_ID, (long) user.getId()),
-        EQ(TnxProcessorUserReference.DRIVER_ID, card.getTxnProcessor())
+        EQ(TxnProcessorUserReference.USER_ID, (long) user.getId()),
+        EQ(TxnProcessorUserReference.DRIVER_ID, card.getTxnProcessor())
       )).select(new ArraySink());
     List list = sink.getArray();
-    TnxProcessorUserReference processorReference = null;
+    TxnProcessorUserReference processorReference = null;
     if ( list.size() == 0 )
-      processorReference = new TnxProcessorUserReference();
+      processorReference = new TxnProcessorUserReference();
     else
-      processorReference = (TnxProcessorUserReference) list.get(0);
+      processorReference = (TxnProcessorUserReference) list.get(0);
 
-    processorReference = (TnxProcessorUserReference) processorReference.fclone();
+    processorReference = (TxnProcessorUserReference) processorReference.fclone();
     String reference = processorReference.getReference();
     if ( reference == null || SafetyUtil.isEmpty(reference) ) {
       //create payer reference in Realex if do not exist
@@ -72,7 +72,7 @@ public class RealexPaymentCardStoreDAO
         }
         processorReference.setReference(reference);
         processorReference.setUserId(user.getId());
-        processorReference.setDriverId(net.nanopay.tx.tp.TnxProcessor.REALEX);
+        processorReference.setDriverId(net.nanopay.tx.tp.TxnProcessor.REALEX);
         txnProcessorUserReferenceDAO.put(processorReference);
       } catch ( Throwable e ) {
         throw new RuntimeException(e);
