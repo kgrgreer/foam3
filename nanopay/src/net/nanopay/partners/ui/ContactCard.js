@@ -59,63 +59,30 @@ foam.CLASS({
       height: 50px;
       display: inline-block;
     }
-    ^ .contactInfoDiv {
-      float: bottom;
-      padding-top: 45px;
-    }
-    ^ .contactInfoDetail {
-      height: 14px;
-    } 
     ^ .companyInfoDiv {
       display: inline-block;
       height: 40px;
-      vertical-align: top
+      vertical-align: top;
+    }
+    ^ .contactInfoDiv {
+      margin-top: 45px;
     }
     ^ .contactName {
-      font-family: 'Roboto';
       font-size: 14px;
-      font-weight: bold;
-      letter-spacing: 0.2px;
-      color: #093649;
       padding-bottom: 10px;
       margin: 0;
     }
     ^ .companyName {
       width: 200px;
       height: 16px;
-      font-family: 'Roboto';
       font-size: 12px;
       font-weight: 300;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      // margin: 0;
     }
     ^ .companyAddress {
       width: 200px;
       height: 16px;
-      font-family: 'Roboto';
       font-size: 12px;
       font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      margin: 0;
-    }
-    ^ .vendor {
-      width: 200px;
-      height: 12px;
-      opacity: 0.6;
-      font-family: 'Roboto';
-      font-size: 14px;
-      line-height: 0.86;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      padding-top: 15px;
       margin: 0;
     }
     ^ .connectionIcon {
@@ -141,21 +108,14 @@ foam.CLASS({
       width: 24px;
     }
     ^ .optionsDropDown {
-      padding: 0px;
-      z-index: 10000;
-      width: 157px;
-      height: 60px;
       background: white;
-      opacity: 1;
       box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
       position: absolute;
     }
     ^ .optionsDropDown > div {
       width: 157px;
-      height: 30px;
       font-size: 14px;
       font-weight: 300;
-      letter-spacing: 0.2px;
       color: #093649;
       line-height: 30px;
     }
@@ -180,29 +140,6 @@ foam.CLASS({
     }
     ^ .optionsDropDown-content {
       text-align: center;
-    }
-    ^ .bottom-status {
-      background: #093649;
-      width: 340px;
-      height: 30px;
-      position: relative;
-      top: -15px;
-      text-align: left;
-      font-weight: 100;
-      margin-left: 10px;
-    }
-    ^ .bottom-status img {
-      display: inline-block;
-      position: relative;
-      top: 3;
-      right: 10;
-    }
-    ^ .bottom-status p {
-      display: inline-block;
-      color: #093649;
-      position: relative;
-      top: -7px;
-      left: 10;
     }
   `,
 
