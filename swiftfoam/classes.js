@@ -81,6 +81,7 @@ var classes = [
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.Transaction',
+  'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',

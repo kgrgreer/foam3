@@ -250,4 +250,17 @@ class swiftfoamTests: XCTestCase {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
   }
+
+  func testTransactionEntity() {
+    let x = Context.GLOBAL
+    let u = x.create(User.self)!
+    u.firstName = "Mike"
+    u.lastName = "C"
+    u.email = "mike@c.com"
+
+    let t = TransactionEntity.fromUser(u)
+    XCTAssertEqual(t.firstName, u.firstName)
+    XCTAssertEqual(t.lastName, u.lastName)
+    XCTAssertEqual(t.email, u.email)
+  }
 }
