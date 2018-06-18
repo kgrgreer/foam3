@@ -84,7 +84,7 @@ public class TransactionDAO
       if ( transaction.getStatus() != TransactionStatus.DECLINED ) {
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
-        if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+        if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
           Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
           refound.validate(x);
           refound.execute(x);
