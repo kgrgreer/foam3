@@ -2,16 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
 
-  tableColumns: [
-    'status',
-    'txnProcessorId',
-    'payerName',
-    'payeeName',
-    'amount',
-    'processDate',
-    'completionDate',
-    'date'
-  ],
+  tableColumns: [ 'status', 'txnProcessorId', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
     'addCommas',
@@ -72,7 +63,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.tp.TxnProcessor',
       name: 'txnProcessorId',
       label: 'Processor',
-      value: 'NONE'
+      value: 'ATERNA'
     },
     {
       class: 'FObjectProperty',
@@ -336,6 +327,6 @@ foam.CLASS({
             new Transfer(getPayeeId(),  getTotal())
         };
       `
-    }
+    },
   ]
 });

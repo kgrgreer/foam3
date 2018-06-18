@@ -117,16 +117,10 @@ public class CsvUtil {
     final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    String txnProcessorId = TxnProcessor.ALTERNA;
-    TxnProcessor txnProcessor = (TxnProcessor) x.get(TxnProcessor.class);
-    if ( txnProcessor != null ) {
-      txnProcessorId = txnProcessor.getId();
-    }
-
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
       AND(
-        EQ(Transaction.TXN_PROCESSOR_ID, txnProcessorId),
+        EQ(Transaction.TXN_PROCESSOR_ID, TxnProcessor.ALTERNA), /* TODO: make configuration on CsvUtil */
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
             EQ(Transaction.TYPE, TransactionType.CASHIN),
