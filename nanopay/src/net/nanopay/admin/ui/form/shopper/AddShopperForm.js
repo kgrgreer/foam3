@@ -182,7 +182,6 @@ foam.CLASS({
             postalCode: shopperInfo.postalCode,
             regionId: shopperInfo.province
           });
-          debugger;
           var newShopper = this.User.create({
             firstName: shopperInfo.firstName,
             lastName: shopperInfo.lastName,
