@@ -142,13 +142,9 @@ foam.CLASS({
       label: 'Send',
       help: 'Invite someone to the nanopay platform',
       code: async function(X) {
-        var invite = this.Invitation.create({
-          email: this.emailAddress,
-          createdBy: this.user.id,
-          message:  this.message
-        });
+        var invite = this.Invitation.create({ email: this.emailAddress });
         try {
-          // See InvitationLogicDAO.java
+          // See SendInvitationDAO.java
           await this.invitationDAO.put(invite)
           this.add(this.NotificationMessage.create({
             message: this.InviteSendSuccess,
