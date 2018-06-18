@@ -282,7 +282,7 @@ return ClientDAO_create([
       name: 'firebaseInviteToken',
       swiftFactory: `
 return ClientTokenService_create([
-  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)auth"
+  "serviceName": "\\(self.httpBoxUrlRoot.rawValue)firebaseInviteToken"
 ])
       `,
     },
