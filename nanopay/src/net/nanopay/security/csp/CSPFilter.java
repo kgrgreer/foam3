@@ -7,12 +7,12 @@ import javax.servlet.http.*;
 public class CSPFilter
   implements Filter {
 
-  private FilterConfig config;
-  private String csp_ = "default-src 'none'; script-src 'self' 'unsafe-eval'; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; child-src 'self'; report-uri service/CSPReportWebAgent;";
+  protected FilterConfig config_;
+  protected String csp_;
 
   public void init(FilterConfig filterConfig) throws ServletException {
-    this.config = filterConfig;
-    csp_ = config.getInitParameter("CONTENT_SECURITY_POLICY");
+    this.config_ = filterConfig;
+    csp_ = config_.getInitParameter("CONTENT_SECURITY_POLICY");
   }
 
   @Override

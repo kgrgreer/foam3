@@ -1,18 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.security.csp',
-  name: 'CSPViolationReport',
+  name: 'CSPViolation',
 
-  documentation: `DAO to store all of the reported Content Security Policy
-    violations.`,
-
-  ids: ['uuid'],
+  documentation: `Content Security Policy violation report.`,
 
   properties: [
     {
-      class: 'String',
-      name: 'uuid',
-      documentation: `UUID Version 1 (time-based), generated at the time at
-        which the report was received.`
+      class: 'Int',
+      name: 'id',
+      doumentation: 'Sequence number.'
     },
     {
       class: 'DateTime',
@@ -87,13 +83,13 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'lineNumber',
-      documentation: `The line number in source-file on which the violation
+      documentation: `The line number in the source-file where the violation
         occurred.`
     },
     {
       class: 'Int',
       name: 'columnNumber',
-      documentation: `The column number in source-file on which the violation
+      documentation: `The column number in the source-file where the violation
         occurred.`
     }
   ]

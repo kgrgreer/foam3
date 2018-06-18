@@ -24,12 +24,24 @@ foam.CLASS({
     'java.io.BufferedReader',
     'java.io.IOException',
     'java.io.UnsupportedEncodingException',
-    'java.util.UUID',
     'java.util.Date',
 
-    'org.json.*',
+    'net.nanopay.security.csp.CSPViolation',
+    'net.nanopay.security.csp.CSPViolationReport',
 
-    'com.fasterxml.uuid.*'
+    'com.google.gson.Gson',
+    'com.google.gson.JsonSyntaxException'
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `private static final Gson GSON = new Gson();`
+        }));
+      }
+    }
   ],
 
   methods: [
@@ -46,13 +58,9 @@ foam.CLASS({
 HttpServletRequest req = x.get(HttpServletRequest.class);
 BufferedReader reader = null;
 DAO CSPViolationsDAO = (DAO) getX().get("CSPViolationsDAO");
-CSPViolationReport report = new CSPViolationReport();
-NoArgGenerator timeBasedGenerator = Generators.timeBasedGenerator();
-UUID uuid = timeBasedGenerator.generate();
+CSPViolation report = new CSPViolation();
 
-report.setUuid(uuid.toString());
-//Convert from ns to ms; then rebase from 1582-10-15 to 1970-01-01.
-report.setDate(new Date((uuid.timestamp() / 10000L) - 12219292800000L));
+report.setDate(new Date(System.currentTimeMillis()));
 report.setIp(req.getRemoteAddr());
 
 StringBuffer sb = new StringBuffer();
@@ -73,53 +81,21 @@ try {
 }
 
 try {
-  JSONObject data =  new JSONObject(sb.toString());
-  JSONObject CSPReport = (JSONObject) data.get("csp-report");
+  CSPViolationReport CSPReport = GSON.fromJson(sb.toString(), CSPViolationReport.class);
 
-  for( String name : JSONObject.getNames(CSPReport) ){
-    switch ( name ) {
-      case "blocked-uri":
-        report.setBlockedURI(CSPReport.getString(name));
-        break;
-      case "disposition":
-        report.setDisposition(CSPReport.getString(name));
-        break;
-      case "document-uri":
-        report.setDocumentURI(CSPReport.getString(name));
-        break;
-      case "effective-directive":
-        report.setEffectiveDirective(CSPReport.getString(name));
-        break;
-      case "original-policy":
-        report.setOriginalPolicy(CSPReport.getString(name));
-        break;
-      case "referrer":
-        report.setReferrer(CSPReport.getString(name));
-        break;
-      case "script-sample":
-        report.setScriptSample(CSPReport.getString(name));
-        break;
-      case "status-code":
-        report.setStatusCode(CSPReport.getInt(name));
-        break;
-      case "violated-directive":
-        report.setViolatedDirective(CSPReport.getString(name));
-        break;
-      case "source-file":
-        report.setSourceFile(CSPReport.getString(name));
-        break;
-      case "line-number":
-        report.setLineNumber(CSPReport.getInt(name));
-        break;
-      case "column-number":
-        report.setColumnNumber(CSPReport.getInt(name));
-        break;
-      default:
-        logger.warning("CSPReportWebAgent : " + name + " : Invalid field in CSPReport.");
-        break;
-    }
-  }
-} catch (JSONException e) {
+  report.setBlockedURI(CSPReport.getCSPReport().getBlockedUri());
+  report.setDisposition(CSPReport.getCSPReport().getDisposition());
+  report.setDocumentURI(CSPReport.getCSPReport().getDocumentUri());
+  report.setEffectiveDirective(CSPReport.getCSPReport().getEffectiveDirective());
+  report.setOriginalPolicy(CSPReport.getCSPReport().getOriginalPolicy());
+  report.setReferrer(CSPReport.getCSPReport().getReferrer());
+  report.setScriptSample(CSPReport.getCSPReport().getScriptSample());
+  report.setStatusCode(CSPReport.getCSPReport().getStatusCode());
+  report.setViolatedDirective(CSPReport.getCSPReport().getViolatedDirective());
+  report.setSourceFile(CSPReport.getCSPReport().getSourceFile());
+  report.setLineNumber(CSPReport.getCSPReport().getLineNumber());
+  report.setColumnNumber(CSPReport.getCSPReport().getColumnNumber());
+} catch (JsonSyntaxException e) {
   logger.error("CSPReportWebAgent :: Error parsing JSON request string.");
   return;
 }

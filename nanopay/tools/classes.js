@@ -129,7 +129,7 @@ var classes = [
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
-  'net.nanopay.security.csp.CSPViolationReport',
+  'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent'
 ];
 
