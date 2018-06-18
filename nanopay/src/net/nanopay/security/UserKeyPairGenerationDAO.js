@@ -36,12 +36,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'algorithm',
-      documentation: 'Key Pair algorithm'
+      documentation: 'Key Pair algorithm',
+      value: 'RSA'
     },
     {
       class: 'Int',
       name: 'keySize',
-      documentation: 'Key Size'
+      documentation: 'Key Size',
+      value: 4096
     }
   ],
 
