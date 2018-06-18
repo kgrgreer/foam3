@@ -21,6 +21,7 @@ foam.CLASS({
         }
 
         entry.setEncodedPublicKey(Base64.encodeBase64String(publicKey.getEncoded()));
+        entry.setPublicKey(null);
         return super.put_(x, entry);
       `
     }
