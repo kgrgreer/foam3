@@ -136,6 +136,7 @@ var classes = [
   'net.nanopay.security.PrivateKeyEntry',
   'net.nanopay.security.PublicKeyEntry',
   'net.nanopay.security.KeyPairDAO',
+  'net.nanopay.security.PublicKeyDAO',
   'net.nanopay.security.UserKeyPairGenerationDAO'
 ];
 
