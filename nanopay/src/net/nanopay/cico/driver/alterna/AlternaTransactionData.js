@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.alterna',
-  name: 'AlternaTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  package: 'net.nanopay.cico.driver.alterna',
+  name: 'AlternaTransactionData',
+  extends: 'net.nanopay.cico.driver.CICOTransactionData',
 
   properties: [
     {

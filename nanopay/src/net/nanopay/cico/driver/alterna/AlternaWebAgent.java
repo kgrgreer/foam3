@@ -1,4 +1,4 @@
-package net.nanopay.cico.spi.alterna;
+package net.nanopay.cico.driver.alterna;
 
 import foam.core.X;
 import foam.lib.json.OutputterMode;

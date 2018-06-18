@@ -17,8 +17,8 @@ public class PaymentCardSanitizeDAO
   @Override
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
-    String paymentPlatformId = card.getPaymentPlatform();
-    if ( paymentPlatformId == null ) {
+    String cicoDriverId = card.getCicoDriver();
+    if ( cicoDriverId == null ) {
       throw new RuntimeException("Do not choose payment card platform");
     }
     return getDelegate().put_(x, obj);

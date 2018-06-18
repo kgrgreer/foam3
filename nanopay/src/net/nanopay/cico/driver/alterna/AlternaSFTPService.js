@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.spi.alterna',
+  package: 'net.nanopay.cico.driver.alterna',
   name: 'AlternaSFTPService',
 
   implements: [
-    'net.nanopay.cico.spi.alterna.SFTPService'
+    'net.nanopay.cico.driver.alterna.SFTPService'
   ],
 
   javaImports: [

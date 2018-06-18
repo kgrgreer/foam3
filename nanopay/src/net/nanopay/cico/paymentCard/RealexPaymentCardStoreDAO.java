@@ -17,7 +17,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.payment.PaymentPlatformUserReference;
+import net.nanopay.cico.driver.CICODriverUserReference;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 import java.util.List;
@@ -36,24 +36,24 @@ public class RealexPaymentCardStoreDAO
   @Override
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
-    if ( ! net.nanopay.payment.PaymentPlatform.REALEX.equals(card.getPaymentPlatform()) ) {
+    if ( ! net.nanopay.cico.driver.CICODriver.REALEX.equals(card.getCicoDriver()) ) {
       return getDelegate().put_(x, obj);
     }
     User user = (User)x.get("user");
-    DAO paymentPlatformUserReferenceDAO = (DAO) x.get("paymentPlatformUserReferenceDAO");
-    ArraySink sink = (ArraySink) paymentPlatformUserReferenceDAO.where(
+    DAO cicoDriverUserReferenceDAO = (DAO) x.get("cicoDriverUserReferenceDAO");
+    ArraySink sink = (ArraySink) cicoDriverUserReferenceDAO.where(
       AND(
-        EQ(PaymentPlatformUserReference.USER_ID, (long) user.getId()),
-        EQ(PaymentPlatformUserReference.PAYMENT_PLATFORM_ID, card.getPaymentPlatform())
+        EQ(CICODriverUserReference.USER_ID, (long) user.getId()),
+        EQ(CICODriverUserReference.DRIVER_ID, card.getCicoDriver())
       )).select(new ArraySink());
     List list = sink.getArray();
-    PaymentPlatformUserReference processorReference = null;
+    CICODriverUserReference processorReference = null;
     if ( list.size() == 0 )
-      processorReference = new PaymentPlatformUserReference();
+      processorReference = new CICODriverUserReference();
     else
-      processorReference = (PaymentPlatformUserReference) list.get(0);
+      processorReference = (CICODriverUserReference) list.get(0);
 
-    processorReference = (PaymentPlatformUserReference) processorReference.fclone();
+    processorReference = (CICODriverUserReference) processorReference.fclone();
     String reference = processorReference.getReference();
     if ( reference == null || SafetyUtil.isEmpty(reference) ) {
       //create payer reference in Realex if do not exist
@@ -72,8 +72,8 @@ public class RealexPaymentCardStoreDAO
         }
         processorReference.setReference(reference);
         processorReference.setUserId(user.getId());
-        processorReference.setPaymentPlatformId(net.nanopay.payment.PaymentPlatform.REALEX);
-        paymentPlatformUserReferenceDAO.put(processorReference);
+        processorReference.setDriverId(net.nanopay.cico.driver.CICODriver.REALEX);
+        cicoDriverUserReferenceDAO.put(processorReference);
       } catch ( Throwable e ) {
         throw new RuntimeException(e);
       }

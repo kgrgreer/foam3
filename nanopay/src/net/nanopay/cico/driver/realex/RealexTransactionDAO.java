@@ -1,4 +1,4 @@
-package net.nanopay.cico.spi.realex;
+package net.nanopay.cico.driver.realex;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -27,8 +27,8 @@ import net.nanopay.cico.model.MobileWallet;
 import static foam.mlang.MLang.*;
 import foam.dao.ArraySink;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
-import net.nanopay.payment.PaymentPlatform;
-import net.nanopay.payment.PaymentPlatformUserReference;
+import net.nanopay.cico.driver.CICODriver;
+import net.nanopay.cico.driver.CICODriverUserReference;
 import java.util.UUID;
 
 public class RealexTransactionDAO
@@ -43,8 +43,8 @@ public class RealexTransactionDAO
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
     //If transaction is realex payment
-    String paymentPlatformId = (String) transaction.getPaymentPlatformId();
-    if ( ! PaymentPlatform.REALEX.equals(paymentPlatformId) )
+    String cicoDriverId = (String) transaction.getCicoDriverId();
+    if ( ! CICODriver.REALEX.equals(cicoDriverId) )
       return getDelegate().put_(x, obj);
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
@@ -67,16 +67,16 @@ public class RealexTransactionDAO
       DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
       long cardId = paymentAccountInfo.getPaymentCardId();
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
-      DAO paymentPlatformUserReferenceDAO = (DAO) x.get("paymentPlatformUserReferenceDAO");
-      ArraySink sink = (ArraySink) paymentPlatformUserReferenceDAO.where(AND(
-        EQ(PaymentPlatformUserReference.PAYMENT_PLATFORM_ID, paymentPlatformId),
-        EQ(PaymentPlatformUserReference.USER_ID, user.getId())
+      DAO cicoDriverUserReferenceDAO = (DAO) x.get("cicoDriverUserReferenceDAO");
+      ArraySink sink = (ArraySink) cicoDriverUserReferenceDAO.where(AND(
+        EQ(CICODriverUserReference.DRIVER_ID, cicoDriverId),
+        EQ(CICODriverUserReference.USER_ID, user.getId())
       )).select(new ArraySink());
       List list = sink.getArray();
       if ( list.size() == 0 ) {
         throw new RuntimeException("asdfdasfasdf");
       }
-      PaymentPlatformUserReference userReference = (PaymentPlatformUserReference) list.get(0);
+      CICODriverUserReference userReference = (CICODriverUserReference) list.get(0);
       PaymentData myPaymentData = new PaymentData()
         .addCvnNumber(paymentAccountInfo.getCvn());
       paymentRequest

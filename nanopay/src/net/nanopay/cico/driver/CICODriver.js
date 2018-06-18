@@ -1,7 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.payment',
-  name: 'PaymentPlatform',
-  documentation: 'Payment Partner, Payment Rail, ... ',
+  package: 'net.nanopay.cico.driver',
+  name: 'CICODriver',
+  documentation: 'CICO Driver information.',
+
+  searchColumns: [],
 
   constants: [
     {
@@ -33,7 +35,8 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id'
+      name: 'id',
+      required: true
     },
     {
       class: 'String',
@@ -48,6 +51,27 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true
+    },
+    {
+      class: 'String',
+      name: 'apiBaseUrl'
+    },
+    {
+      documentation: 'CICO Driver User account.',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'userId',
+      label: 'User'
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      name: 'fee',
+      of: 'net.nanopay.tx.model.Fee'
     }
   ]
 });

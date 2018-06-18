@@ -1,4 +1,4 @@
-package net.nanopay.cico.spi.alterna;
+package net.nanopay.cico.driver.alterna;
 
 import foam.lib.parse.PStream;
 import foam.lib.parse.Parser;

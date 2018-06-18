@@ -1,4 +1,4 @@
-package net.nanopay.cico.spi.alterna;
+package net.nanopay.cico.driver.alterna;
 
 import foam.core.Detachable;
 import foam.core.X;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.model.BankAccount;
-import net.nanopay.payment.PaymentPlatform;
+import net.nanopay.cico.driver.CICODriver;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
@@ -117,16 +117,16 @@ public class CsvUtil {
     final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    String paymentPlatformId = PaymentPlatform.ALTERNA;
-    PaymentPlatform paymentPlatform = (PaymentPlatform) x.get(PaymentPlatform.class);
-    if ( paymentPlatform != null ) {
-      paymentPlatformId = paymentPlatform.getId();
+    String cicoDriverId = CICODriver.ALTERNA;
+    CICODriver cicoDriver = (CICODriver) x.get(CICODriver.class);
+    if ( cicoDriver != null ) {
+      cicoDriverId = cicoDriver.getId();
     }
 
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
       AND(
-        EQ(Transaction.PAYMENT_PLATFORM_ID, paymentPlatformId),
+        EQ(Transaction.CICO_DRIVER_ID, cicoDriverId),
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
             EQ(Transaction.TYPE, TransactionType.CASHIN),

@@ -10,7 +10,7 @@ foam.CLASS({
     // },
     // {
     //   class: 'Reference',
-    //   of: 'net.nanopay.cico.model.ServiceProvider',
+    //   of: 'net.nanopay.cico.driver.CICODriver',
     //   name: 'providerId',
     //   visibility: foam.u2.Visibility.RO
     // },

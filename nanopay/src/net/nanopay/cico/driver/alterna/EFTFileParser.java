@@ -1,4 +1,4 @@
-package net.nanopay.cico.spi.alterna;
+package net.nanopay.cico.driver.alterna;
 
 import foam.core.ClassInfo;
 import foam.core.ContextAwareSupport;

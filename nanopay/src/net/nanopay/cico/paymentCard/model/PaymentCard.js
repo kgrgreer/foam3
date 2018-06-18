@@ -29,7 +29,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'paymentPlatform',
+      name: 'cicoDriver',
       documentation: 'Payment platform that should be used to process this payment card'
     },
     {

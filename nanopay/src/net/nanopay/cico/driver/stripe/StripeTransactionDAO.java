@@ -1,11 +1,12 @@
-package net.nanopay.cico.spi.stripe;
+package net.nanopay.cico.driver.stripe;
 
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
-import net.nanopay.tx.stripe.StripeTransaction;
+import net.nanopay.cico.driver.CICODriver;
+import net.nanopay.cico.driver.stripe.StripeTransactionData;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -33,11 +34,9 @@ public class StripeTransactionDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    if ( obj instanceof StripeTransaction ) {
-      StripeTransaction transaction = (StripeTransaction) obj.fclone();
-      //transaction.setProviderId(STRIPE_ID);
+    Transaction transaction = (Transaction) obj.fclone();
+    if ( CICODriver.STRIPE.equals(transaction.getCicoDriverId()) ) {
       transaction.setStatus(TransactionStatus.PENDING);
-      getDelegate().put_(x, transaction);
 
       Map<String, Object> chargeMap = new HashMap<String, Object>();
       chargeMap.put("amount", transaction.getAmount());
@@ -45,12 +44,16 @@ public class StripeTransactionDAO extends ProxyDAO {
 
       String notes = transaction.getNotes();
       chargeMap.put("description", SafetyUtil.isEmpty(notes) ? null : notes);
-      chargeMap.put("source", transaction.getStripeTokenId());
+
+      StripeTransactionData data = (StripeTransactionData) transaction.getCicoTransactionData();
+      if ( data != null ) {
+        chargeMap.put("source", data.getStripeTokenId());
+      }
 
       Charge charge = null;
       try {
         charge = Charge.create(chargeMap, this.options_);
-        transaction.setStripeChargeId(charge.getId());
+        data.setStripeChargeId(charge.getId());
       } catch (StripeException e){
         if(SafetyUtil.isEmpty(e.getMessage()))
           throw new RuntimeException("Stripe transaction failed.");

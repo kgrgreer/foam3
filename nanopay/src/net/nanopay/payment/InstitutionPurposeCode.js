@@ -26,8 +26,8 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.payment.PaymentPlatform',
-      name: 'paymentPlatformId',
+      of: 'net.nanopay.cico.driver.CICODriver',
+      name: 'cicoDriverId',
       label: 'Payment Platform'
     }
   ]

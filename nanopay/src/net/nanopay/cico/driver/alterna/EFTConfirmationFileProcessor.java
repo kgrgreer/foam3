@@ -1,4 +1,4 @@
-package net.nanopay.cico.spi.alterna;
+package net.nanopay.cico.driver.alterna;
 
 import com.jcraft.jsch.*;
 import foam.core.ContextAgent;
@@ -12,7 +12,7 @@ import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.alterna.AlternaTransaction;
+import net.nanopay.cico.driver.alterna.AlternaTransactionData;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -93,12 +93,19 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
-              EQ(AlternaTransaction.ID, eftUploadFileRecord.getReference()));
+            Transaction tran = (Transaction) transactionDao.find(
+              EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 
             if ( tran != null ) {
-              tran = (AlternaTransaction) tran.fclone();
-              tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+              tran = (Transaction) tran.fclone();
+              AlternaTransactionData data = (AlternaTransactionData) tran.getCicoTransactionData();
+              if ( data == null ) {
+                data = new AlternaTransactionData();
+              } else {
+                data = (AlternaTransactionData) data.fclone();
+              }
+              data.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+              tran.setCicoTransactionData(data);
 
               if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
                 tran.setStatus(TransactionStatus.FAILED);
