@@ -8,12 +8,12 @@ import net.nanopay.model.Account;
 import net.nanopay.model.MultiBalance;
 
 /**
- * BalanceDAO is DAO to help transaction to support multi-currency. Every record include UserID, CurrencyCode,
+ * BalanceAdapterAccountDAO is DAO to help transaction to support multi-currency. Every record include UserID, CurrencyCode,
  * Balance. UserID + CurrencyCode could use as combine primary to confirm the balance.
  */
 
-public class BalanceDAO extends ProxyDAO {
-  public BalanceDAO(X x, DAO delegate) {
+public class BalanceAdapterAccountDAO extends ProxyDAO {
+  public BalanceAdapterAccountDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
