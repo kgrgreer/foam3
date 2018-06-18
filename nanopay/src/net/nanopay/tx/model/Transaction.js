@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
-  
+
   tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
@@ -278,6 +278,11 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       label: 'Latest Modify Date & Time'
+    },
+    {
+      class: 'String',
+      name: 'CurrencyCode',
+      label: 'CurrencyCode'
     }
   ],
 

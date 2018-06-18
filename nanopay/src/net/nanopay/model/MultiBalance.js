@@ -4,7 +4,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'userId'
+      name: 'id'
     },
     {
       class: 'Long',
