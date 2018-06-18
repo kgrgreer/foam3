@@ -14,7 +14,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'java.security.KeyPair',
-    'java.security.KeyPairGenerator'
+    'java.security.KeyPairGenerator',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -48,34 +49,37 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        try {
-          User user = (User) obj;
+        User user = (User) obj;
+        DAO keyPairDAO = (DAO) getKeyPairDAO();
 
-          // TODO: allow for usage of AlgorithmParameterSpec initializer to allow for more powerful keypair generator
-          // initialize keygen
-          KeyPairGenerator keygen = KeyPairGenerator.getInstance(getAlgorithm());
-          keygen.initialize(getKeySize(), getSecureRandom());
+        // check to see if we have a keypair already
+        if ( keyPairDAO.inX(x).find(EQ(KeyPairEntry.OWNER, user.getId())) == null ) {
+          try {
+            // TODO: allow for usage of AlgorithmParameterSpec initializer to allow for more powerful keypair generator
+            // initialize keygen
+            KeyPairGenerator keygen = KeyPairGenerator.getInstance(getAlgorithm());
+            keygen.initialize(getKeySize(), getSecureRandom());
 
-          // generate keypair
-          KeyPair keypair = keygen.generateKeyPair();
+            // generate keypair
+            KeyPair keypair = keygen.generateKeyPair();
 
-          // create keypair entry
-          KeyPairEntry keyPairEntry = new KeyPairEntry.Builder(getX())
-            .setAlgorithm(getAlgorithm())
-            .setOwner(user.getId())
-            .setPrivateKey(keypair.getPrivate())
-            .setPublicKey(keypair.getPublic())
-            .build();
+            // create keypair entry
+            KeyPairEntry keyPairEntry = new KeyPairEntry.Builder(getX())
+              .setAlgorithm(getAlgorithm())
+              .setOwner(user.getId())
+              .setPrivateKey(keypair.getPrivate())
+              .setPublicKey(keypair.getPublic())
+              .build();
 
-          // store keypair entry
-          DAO keyPairDAO = (DAO) getKeyPairDAO();
-          if ( keyPairDAO.put(keyPairEntry) == null ) {
-            // TODO: log error
-            throw new RuntimeException("Failed to create keypair");
+            // store keypair entry
+            if ( keyPairDAO.put(keyPairEntry) == null ) {
+              // TODO: log error
+              throw new RuntimeException("Failed to create keypair");
+            }
+          } catch ( Throwable t ) {
+            // TODO: log
+            throw new RuntimeException(t);
           }
-        } catch ( Throwable t ) {
-          // TODO: log exception
-          throw new RuntimeException(t);
         }
 
         return super.put_(x, obj);
