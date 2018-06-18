@@ -10,7 +10,7 @@ foam.CLASS({
     // },
     // {
     //   class: 'Reference',
-    //   of: 'net.nanopay.cico.driver.CICODriver',
+    //   of: 'net.nanopay.tx.tp.TnxProcessor',
     //   name: 'providerId',
     //   visibility: foam.u2.Visibility.RO
     // },

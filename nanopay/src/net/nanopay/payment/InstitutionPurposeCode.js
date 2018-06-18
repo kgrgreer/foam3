@@ -26,8 +26,8 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.cico.driver.CICODriver',
-      name: 'cicoDriverId',
+      of: 'net.nanopay.tx.tp.TnxProcessor',
+      name: 'txnProcessorId',
       label: 'Payment Platform'
     }
   ]

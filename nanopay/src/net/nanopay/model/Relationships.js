@@ -110,14 +110,14 @@ foam.CLASS({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.cico.driver.CICODriver',
+  sourceModel: 'net.nanopay.tx.tp.TnxProcessor',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
   inverseName: 'owner'
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.cico.driver.CICODriver',
+  sourceModel: 'net.nanopay.tx.tp.TnxProcessor',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
   inverseName: 'owner'

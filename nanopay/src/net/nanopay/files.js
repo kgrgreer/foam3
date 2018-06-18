@@ -1,8 +1,8 @@
 FOAM_FILES([
   // Payment
-  { name: 'net/nanopay/cico/driver/CICODriver' },
-  { name: 'net/nanopay/cico/driver/CICOTransactionData' },
-  { name: 'net/nanopay/cico/driver/CICODriverUserReference' },
+  { name: 'net/nanopay/tx.tp/TnxProcessor' },
+  { name: 'net/nanopay/tx.tp/TxnProcessorData' },
+  { name: 'net/nanopay/tx.tp/TnxProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
 
@@ -177,7 +177,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   // cico
-  { name: 'net/nanopay/cico/driver/CICODriver' },
+  { name: 'net/nanopay/tx.tp/TnxProcessor' },
 //  { name: 'net/nanopay/cico/model/TransactionType' },
 //  { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
@@ -195,10 +195,10 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/ManageAccountModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
-  { name: 'net/nanopay/cico/driver/alterna/AlternaFormat' },
-  { name: 'net/nanopay/cico/driver/alterna/SFTPService' },
-  { name: 'net/nanopay/cico/driver/alterna/AlternaSFTPService' },
-  { name: 'net/nanopay/cico/driver/alterna/client/ClientAlternaSFTPService' },
+  { name: 'net/nanopay/tx.tp/alterna/AlternaFormat' },
+  { name: 'net/nanopay/tx.tp/alterna/SFTPService' },
+  { name: 'net/nanopay/tx.tp/alterna/AlternaSFTPService' },
+  { name: 'net/nanopay/tx.tp/alterna/client/ClientAlternaSFTPService' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
   { name: 'net/nanopay/cico/CICOPaymentType' },

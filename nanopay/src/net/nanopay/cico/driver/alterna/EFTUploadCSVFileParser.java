@@ -1,4 +1,4 @@
-package net.nanopay.cico.driver.alterna;
+package net.nanopay.tx.tp.alterna;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;

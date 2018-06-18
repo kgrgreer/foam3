@@ -1,11 +1,11 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.driver.alterna.client',
+  package: 'net.nanopay.tx.tp.alterna.client',
   name: 'ClientAlternaSFTPService',
 
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.cico.driver.alterna.SFTPService',
+      of: 'net.nanopay.tx.tp.alterna.SFTPService',
       name: 'delegate'
     }
   ]

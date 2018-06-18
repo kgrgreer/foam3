@@ -3,19 +3,19 @@ require('../src/net/nanopay/files.js');
 
 var classes = [
   'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.cico.driver.CICODriver',
-  'net.nanopay.cico.driver.CICOTransactionData',
+  'net.nanopay.tx.tp.TnxProcessor',
+  'net.nanopay.tx.tp.CICOTransactionData',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
-  'net.nanopay.cico.driver.CICODriverUserReference',
-  'net.nanopay.cico.driver.alterna.AlternaTransactionData',
-  'net.nanopay.cico.driver.alterna.AlternaFormat',
-  'net.nanopay.cico.driver.alterna.SFTPService',
-  'net.nanopay.cico.driver.alterna.AlternaSFTPService',
-  'net.nanopay.cico.driver.alterna.client.ClientAlternaSFTPService',
-  'net.nanopay.cico.driver.stripe.StripeTransactionData',
+  'net.nanopay.tx.tp.TnxProcessorUserReference',
+  'net.nanopay.tx.tp.alterna.AlternaTransactionData',
+  'net.nanopay.tx.tp.alterna.AlternaFormat',
+  'net.nanopay.tx.tp.alterna.SFTPService',
+  'net.nanopay.tx.tp.alterna.AlternaSFTPService',
+  'net.nanopay.tx.tp.alterna.client.ClientAlternaSFTPService',
+  'net.nanopay.tx.tp.stripe.StripeTransactionData',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -143,7 +143,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.cico.service.BankAccountVerifier',
-  'net.nanopay.cico.driver.alterna.SFTPService',
+  'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth'

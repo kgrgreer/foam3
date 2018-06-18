@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
 
-  tableColumns: [ 'status', 'cicoDriverId', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
+  tableColumns: [ 'status', 'txnProcessorId', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
     'addCommas',
@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
-    'net.nanopay.cico.driver.CICODriver',
+    'net.nanopay.tx.tp.TnxProcessor',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -60,16 +60,15 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.cico.driver.CICODriver',
-      name: 'cicoDriverId',
-      label: 'CICO Driver',
+      of: 'net.nanopay.tx.tp.TnxProcessor',
+      name: 'txnProcessorId',
+      label: 'Processor',
       value: 'ATERNA'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.cico.driver.CICOTransactionData',
-      name: 'cicoTransactionData',
-      label: 'CICO Data'
+      of: 'net.nanopay.tx.tp.TxnProcessorData',
+      name: 'processorData'
     },
     {
       class: 'Long',

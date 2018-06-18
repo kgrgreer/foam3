@@ -1,5 +1,5 @@
 foam.INTERFACE({
-  package: 'net.nanopay.cico.driver.alterna',
+  package: 'net.nanopay.tx.tp.alterna',
   name: 'SFTPService',
 
   methods: [

@@ -1,10 +1,10 @@
-package net.nanopay.cico.driver.alterna;
+package net.nanopay.tx.tp.alterna;
 
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.cico.driver.alterna.AlternaTransactionData;
+import net.nanopay.tx.tp.alterna.AlternaTransactionData;
 
 public class AlternaTransactionDAO
   extends ProxyDAO

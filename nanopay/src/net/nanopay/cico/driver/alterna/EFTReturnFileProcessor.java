@@ -1,4 +1,4 @@
-package net.nanopay.cico.driver.alterna;
+package net.nanopay.tx.tp.alterna;
 
 import com.jcraft.jsch.*;
 import foam.core.ContextAgent;
@@ -13,7 +13,7 @@ import net.nanopay.cico.model.EFTReturnRecord;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.driver.alterna.AlternaTransactionData;
+import net.nanopay.tx.tp.alterna.AlternaTransactionData;
 
 import java.io.InputStream;
 import java.util.ArrayList;

@@ -26,7 +26,6 @@ declare -a arr=(
   "brokers"
   "businessSectors"
   "businessTypes"
-  "cicoDrivers"
   "corridors"
   "countries"
   "cronjobs"
@@ -51,6 +50,7 @@ declare -a arr=(
   "tests"
   "transactionLimits"
   "transactionPurposes"
+  "txnProcessors"
   "users"
   )
 

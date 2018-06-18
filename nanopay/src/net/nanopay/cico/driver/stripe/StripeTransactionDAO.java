@@ -1,12 +1,12 @@
-package net.nanopay.cico.driver.stripe;
+package net.nanopay.tx.tp.stripe;
 
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
-import net.nanopay.cico.driver.CICODriver;
-import net.nanopay.cico.driver.stripe.StripeTransactionData;
+import net.nanopay.tx.tp.TnxProcessor;
+import net.nanopay.tx.tp.stripe.StripeTransactionData;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -35,7 +35,7 @@ public class StripeTransactionDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction transaction = (Transaction) obj.fclone();
-    if ( CICODriver.STRIPE.equals(transaction.getCicoDriverId()) ) {
+    if ( TnxProcessor.STRIPE.equals(transaction.getTxnProcessorId()) ) {
       transaction.setStatus(TransactionStatus.PENDING);
 
       Map<String, Object> chargeMap = new HashMap<String, Object>();

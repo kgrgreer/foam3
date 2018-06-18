@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.driver',
-  name: 'CICODriver',
-  documentation: 'CICO Driver information.',
+  package: 'net.nanopay.tx.tp',
+  name: 'TnxProcessor',
+  documentation: 'Tx.Tp information.',
 
   searchColumns: [],
 
@@ -62,7 +62,7 @@ foam.CLASS({
       name: 'apiBaseUrl'
     },
     {
-      documentation: 'CICO Driver User account.',
+      documentation: 'Tx.Tp User account.',
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',

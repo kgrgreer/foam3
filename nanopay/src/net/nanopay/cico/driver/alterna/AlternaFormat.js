@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.driver.alterna',
+  package: 'net.nanopay.tx.tp.alterna',
   name: 'AlternaFormat',
 
   documentation: 'Cashout and Cashin CSV Format for alterna.',
