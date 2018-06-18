@@ -86,6 +86,7 @@ var classes = [
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
@@ -129,6 +130,8 @@ var classes = [
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
+  'net.nanopay.security.HashedFObject',
+  'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent'
 ];

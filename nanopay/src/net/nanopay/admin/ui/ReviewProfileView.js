@@ -130,9 +130,11 @@ foam.CLASS({
             })).end()
             .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
             .start('p').add(
-              this.data.businessAddress.streetNumber + ' '
+              (this.data.businessAddress.suite
+                  ? this.data.businessAddress.suite + '-'
+                  : '')
+              + this.data.businessAddress.streetNumber + ' '
               + this.data.businessAddress.streetName + ', '
-              + this.data.businessAddress.address2 + ' '
               + this.data.businessAddress.city + ', '
               + this.data.businessAddress.regionId + ', '
               + this.data.businessAddress.countryId + ', '
@@ -141,7 +143,7 @@ foam.CLASS({
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data: this.data.businessProfilePicture,
+              ProfilePictureImage$: self.data.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png',
               uploadHidden: true
             })
@@ -172,9 +174,11 @@ foam.CLASS({
                       .start('p').add(data.birthday.toISOString().substring(0,10)).end()
                       .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                       .start('p').add(
-                          data.address.streetNumber + ' '
+                        (data.address.suite
+                            ? data.address.suite + '-'
+                            : '')
+                        + data.address.streetNumber + ' '
                         + data.address.streetName + ', '
-                        + data.address.address2 + ' '
                         + data.address.city + ', '
                         + data.address.regionId + ', '
                         + data.address.postalCode

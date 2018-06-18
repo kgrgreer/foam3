@@ -129,19 +129,20 @@ foam.CLASS({
           .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessRegistrationDate.toISOString().substring(0, 10)).end()
           .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
-          .start('p').add(
-            this.viewData.user.businessAddress.streetNumber + ' '
-            + this.viewData.user.businessAddress.streetName + ', '
-            + this.viewData.user.businessAddress.address2 + ' '
-            + this.viewData.user.businessAddress.city + ', '
-            + this.viewData.user.businessAddress.regionId + ', '
-            + this.viewData.user.businessAddress.countryId + ', '
-            + this.viewData.user.businessAddress.postalCode
-          ).addClass('addressDiv').end()
+          .start('p').add(((a) => {
+            return (a.suite ? a.suite + '-' : '')
+                + a.streetNumber + ' '
+                + a.streetName + ', '
+                + a.city + ', '
+                + a.regionId + ', '
+                + a.countryId + ', '
+                + a.postalCode;
+          })(this.viewData.user.businessAddress))
+          .addClass('addressDiv').end()
           .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
           .tag({
             class: 'foam.nanos.auth.ProfilePictureView',
-            data: this.viewData.user.businessProfilePicture,
+            ProfilePictureImage: self.viewData.user.businessProfilePicture,
             placeholderImage: 'images/business-placeholder.png',
             uploadHidden: true
           })
@@ -170,14 +171,14 @@ foam.CLASS({
                 .start('p').add(data.birthday.toISOString().substring(0,10)).end()
                 .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                 .start('p').add(
-                    data.address.streetNumber + ' '
+                    (data.address.suite ? data.address.suite + '-' : '')
+                  + data.address.streetNumber + ' '
                   + data.address.streetName + ', '
-                  + data.address.address2 + ', '
                   + data.address.city + ', '
                   + data.address.regionId + ', '
                   + data.address.postalCode
                 ).addClass('addressDiv').end()
-              .end()
+              .end();
             }).end()
           .end()
 

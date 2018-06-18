@@ -82,7 +82,7 @@ foam.CLASS({
             .tag({
               class: 'foam.nanos.auth.ProfilePictureView',
               placeholderImage: 'images/business-placeholder.png',
-              data$: this.profileImg$,
+              ProfilePictureImage$: self.profileImg$,
               uploadHidden: true,
               boxHidden: true
             })
@@ -129,7 +129,7 @@ foam.CLASS({
       var formattedAddress;
       if(!address) return;
       if(address.streetNumber){
-        formattedAddress = address.address2 + ' ' + address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
+        formattedAddress = address.suite + '-' + address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
       }
       return formattedAddress;
     }

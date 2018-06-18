@@ -94,6 +94,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquiditySettings' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
+  { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
@@ -224,6 +225,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceReceivedHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
