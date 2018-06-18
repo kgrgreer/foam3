@@ -4,15 +4,18 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.PopupView',
     'foam.comics.DAOCreateControllerView',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.ui.BillDetailView',
-    'net.nanopay.invoice.ui.InvoiceDetailView'
+    'net.nanopay.invoice.ui.InvoiceDetailView',
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
     'invoiceDAO',
+    'invitationDAO',
     'stack',
     'user'
   ],
@@ -339,8 +342,33 @@ foam.CLASS({
       this.stack.push(view);
       this.remove();
     },
-    function onClickConnect() {
-      // send out the partnership invitation
+
+    // Send out the partnership invitation
+    async function onClickConnect() {
+      var invite = this.Invitation.create({ email: this.data.email });
+      try {
+        await this.invitationDAO.put(invite);
+        this.add(this.NotificationMessage.create({
+          message: this.InviteSendSuccess,
+        }));
+      } catch (err) {
+        console.error(err);
+        this.add(this.NotificationMessage.create({
+          message: this.InviteSendError,
+          type: 'error',
+        }));
+      }
+    }
+  ],
+
+  messages: [
+    {
+      name: 'InviteSendSuccess',
+      message: 'Invitation sent!'
+    },
+    {
+      name: 'InviteSendError',
+      message: 'There was a problem sending the invitation.'
     }
   ],
 
