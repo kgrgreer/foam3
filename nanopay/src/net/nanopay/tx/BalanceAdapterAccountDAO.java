@@ -26,6 +26,6 @@ public class BalanceAdapterAccountDAO extends ProxyDAO {
     balance.setId((long) userId);
     balance.setCurrencyCode(currentCurrency);
 
-    return getDelegate().find_(x, AND(EQ(Account.ID, balance.getId()), EQ(Account.CURRENCY_CODE, balance.getCurrencyCode())));
+    return getDelegate().inX(x).find(AND(EQ(Account.ID, balance.getId()), EQ(Account.CURRENCY_CODE, balance.getCurrencyCode())));
   }
 }
