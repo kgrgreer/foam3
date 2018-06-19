@@ -118,7 +118,7 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
-  //PaymentAccountInfo
+  // PaymentAccountInfo
   'net.nanopay.cico.model.PaymentAccountInfo',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
@@ -129,7 +129,11 @@ var classes = [
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
-  'net.nanopay.security.FileKeyStoreManager'
+  'net.nanopay.security.FileKeyStoreManager',
+  'net.nanopay.security.HashedFObject',
+  'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.csp.CSPViolation',
+  'net.nanopay.security.csp.CSPReportWebAgent'
 ];
 
 var abstractClasses = [
@@ -153,4 +157,4 @@ module.exports = {
     abstractClasses: abstractClasses,
     skeletons: skeletons,
     proxies: proxies
-}
+};

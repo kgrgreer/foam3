@@ -74,8 +74,9 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
         pendingCashinAmount += ((Transaction) transaction).getAmount();
       }
 
-      if ( ls != null ) {
-        if ( ls.getBankAccountId() > 0 ) {
+      if ( ls != null  ) {
+        if ( ls.getBankAccountId() > 0 && bankAccountDAO_.find(ls.getBankAccountId()) != null ) {
+          if ( ((BankAccount) bankAccountDAO_.find(ls.getBankAccountId())).getStatus() == BankAccountStatus.VERIFIED )
           bankId = ls.getBankAccountId();
         }
         if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
