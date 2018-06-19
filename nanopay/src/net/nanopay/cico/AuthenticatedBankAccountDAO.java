@@ -86,7 +86,7 @@ public class AuthenticatedBankAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    if ( ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_DELETE) ) {
+    if ( account != null && ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 
