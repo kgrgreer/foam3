@@ -2,7 +2,6 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import net.nanopay.model.Account;
@@ -27,10 +26,6 @@ public class BalanceAdapterAccountDAO extends ProxyDAO {
     balance.setId((long) userId);
     balance.setCurrencyCode(currentCurrency);
 
-    ArraySink result = new ArraySink();
-    getDelegate().where(AND(EQ(Account.ID, balance.getId()), EQ(Account.CURRENCY_CODE, balance
-      .getCurrencyCode()))).select(result);
-    if ( result == null || result.getArray().size() != 1 ) throw new RuntimeException("currency is not correct");
-    return (FObject) result.getArray().get(0);
+    return getDelegate().find_(x, AND(EQ(Account.ID, balance.getId()), EQ(Account.CURRENCY_CODE, balance.getCurrencyCode())));
   }
 }
