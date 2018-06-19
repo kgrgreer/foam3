@@ -42,7 +42,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'keySize',
-      documentation: 'Key size for key used to encryp private key',
+      documentation: 'Key size for key used to encrypt private key',
       value: 256
     },
     {
