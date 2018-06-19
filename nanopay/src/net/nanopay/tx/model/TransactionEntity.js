@@ -33,6 +33,30 @@ foam.CLASS({
   ],
   axioms: [
     {
+      writeToSwiftClass: function(cls) {
+        cls.method(foam.swift.Method.create({
+          static: true,
+          name: 'fromUser',
+          returnType: 'TransactionEntity',
+          args: [
+            foam.swift.Argument.create({
+              type: 'User',
+              localName: 'u',
+            }),
+            foam.swift.Argument.create({
+              type: 'Context',
+              externalName: 'x',
+              localName: 'x',
+              defaultValue: 'Context.GLOBAL',
+            })
+          ],
+          body: `
+            let t = x.create(TransactionEntity.self)!
+            t.copyFrom(u)
+            return t
+          `
+        }))
+      },
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public TransactionEntity(User user) {
