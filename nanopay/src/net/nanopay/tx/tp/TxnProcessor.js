@@ -8,6 +8,12 @@ foam.CLASS({
   constants: [
     {
       type: 'String',
+      name: 'NONE',
+      value: 'NONE',
+      swiftType: 'String',
+    },
+    {
+      type: 'String',
       name: 'REALEX',
       value: 'REALEX',
       swiftType: 'String',
