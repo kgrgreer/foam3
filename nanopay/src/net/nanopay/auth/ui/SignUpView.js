@@ -12,6 +12,59 @@ foam.CLASS({
     'ctrl'
   ],
 
+  methods: [
+    function initE() {
+      var self = this;
+
+      this
+        .addClass(this.myClass())
+        .start()
+          .start('h1').add('Sign Up').end()
+          .start().addClass('registration-container')
+            .start().addClass('business-registration-input')
+              .start().addClass('input-container')
+                .start('label').add('First Name').end()
+                  .add(this.FIRST_NAME)
+              .end()
+              .start().addClass('input-container-right')
+                .start('label').add('Last Name').end()
+                  .add(this.LAST_NAME)
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Company Name').end()
+                  .add(this.ORGANIZATION)
+              .end()
+              .start().addClass('input-container-right')
+                .start('label').add('Job Title').end()
+                  .add(this.DEPARTMENT)
+              .end()
+              .start().addClass('input-container')
+                .start('label').add('Email Address').end()
+                  .add(this.EMAIL)
+              .end()
+              .start().addClass('input-container-right')
+                .start('label').add('Phone Number').end()
+                  .add(this.PHONE)
+              .end()
+              .start().addClass('input-container-full-width')
+                .start('label').add('Password').end()
+                  .add(this.PASSWORD)
+              .end()
+            .end()
+            .start().addClass('term-conditions')
+              .start().add(this.SIGN_UP).end()
+            .end()
+          .end()
+          .start('p').add('Already have an account?').end()
+          .start('p').addClass('link')
+            .add('Sign in.')
+            .on('click', function(){ self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' }) })
+          .end()
+        .end()
+      .end()
+    },
+  ],
+
   actions: [
     {
       name: 'signUp',
@@ -28,7 +81,7 @@ foam.CLASS({
           desiredPassword: self.password,
           organization: self.organization,
           businessName: self.organization,
-          department: self.department,
+          jobTitle: self.department,
           group: 'business',
           type: 'Business',
           invited: true
