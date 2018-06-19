@@ -12,10 +12,9 @@ import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.model.TransactionStatus;
 
-import static foam.mlang.MLang.*;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
 
 public class AuthenticatedTransactionDAO
   extends ProxyDAO
