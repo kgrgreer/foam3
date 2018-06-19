@@ -12,7 +12,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'algorithm',
-      documentation: 'Private Key algorithm. Used for unwrapping'
+      documentation: 'Private Key algorithm'
     },
     {
       class: 'String',
