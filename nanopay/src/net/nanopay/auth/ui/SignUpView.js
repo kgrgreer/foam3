@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'SignUpView',
   extends: 'foam.nanos.auth.SignUpView',
 
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
   imports: [
     'businessRegistrationDAO'
   ],
@@ -19,18 +23,23 @@ foam.CLASS({
           firstName: self.firstName,
           lastName: self.lastName,
           email: self.email,
-          phone: self.phone,
+          businessPhone: self.phone,
           desiredPassword: self.password,
           organization: self.organization,
+          businessName: self.organization,
           department: self.department,
+          group: 'business',
           type: 'Business',
-          invited: true,
+          invited: true
         });
 
         this.businessRegistrationDAO.put(user).then(function(user) {
           self.user = user;
-          X.add(self.NotificationMessage.create({ message: 'User Created.' }));
+          self.add(self.NotificationMessage.create({ message: 'User Created.' }));
           X.stack.push({ class: 'foam.nanos.auth.SignInView' });
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }
     }

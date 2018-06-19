@@ -200,6 +200,22 @@ foam.CLASS({
       this.client.accountDAO.find(this.user.id).then(function (a) {
         return self.account.copyFrom(a);
       }.bind(this));
+    },
+    
+    function requestLogin() {
+      var self = this;
+
+      // don't go to log in screen if going to reset password screen
+      if ( location.hash != null && location.hash === '#reset' )
+        return new Promise(function(resolve, reject) {
+          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+          self.loginSuccess$.sub(resolve);
+        });
+
+      return new Promise(function(resolve, reject) {
+        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        self.loginSuccess$.sub(resolve);
+      });
     }
   ],
 
