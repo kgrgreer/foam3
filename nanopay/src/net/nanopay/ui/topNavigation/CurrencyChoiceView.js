@@ -106,7 +106,7 @@ foam.CLASS({
       of: 'net.nanopay.model.Currency',
       name: 'lastCurrency',
       expression: function() {
-        this.currencyDAO.find(this.currentCurrency).then(function(c) {this.lastCurrency = c;} );
+        this.currencyDAO.find(this.currentCurrency).then(function(c) { this.lastCurrency = c; });
       }
     }
   ],
@@ -116,10 +116,8 @@ foam.CLASS({
     function initE() {
       this
         .addClass(this.myClass())
-        /* .select(this.currencyDAO.where(this.EQ(this.Currency.ALPHABETIC_CODE, this.currentCurrency)), function(cur) {
-        }) */
         this.start('span', null, this.optionsBtn_$).end()
-        .start(this.CURRENCY_CHOICE, {label$: this.currentCurrency$, showLabel:true }).start('div')
+        .start(this.CURRENCY_CHOICE, { label$: this.currentCurrency$, showLabel:true }).start('div')
         .addClass(this.myClass('carrot'))
       .end().end()
     }
@@ -129,7 +127,7 @@ foam.CLASS({
     {
       name: 'currencyChoice',
       label: '',
-      code: function (X) {
+      code: function () {
         var self = this;
         self.optionPopup_ = this.PopupView.create({
           width: 165,
@@ -140,7 +138,7 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.currencyDAO, function(cur){
+          .select(this.currencyDAO, function(cur) {
             if ( cur.flagImage != null )
             this.start('div').start('img')
             .attrs({ src: cur.flagImage })
@@ -151,17 +149,6 @@ foam.CLASS({
             })
           })
           .end()
-          /* .start('div').add('CAD')
-          .on('click', this.currencyUpdate)
-          .end()
-          .start('div').add('USD')
-            .on('click', this.currencyUpdate)
-          .end()
-          .start('div').add('RUP')
-          .on('click', this.currencyUpdate)
-          .end()
-          .end(); */
-          //localStorage.currency = this.currentCurrency;
         self.optionsBtn_.add(self.optionPopup_);
       }
     }

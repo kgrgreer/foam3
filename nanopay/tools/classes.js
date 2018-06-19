@@ -95,7 +95,6 @@ var classes = [
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
-  'net.nanopay.model.MultiBalance',
   // Institution model
   'net.nanopay.model.Institution',
   'net.nanopay.fx.ascendantfx.AscendantFX',
