@@ -8,7 +8,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'businessRegistrationDAO'
+    'businessRegistrationDAO',
+    'ctrl'
   ],
 
   actions: [
@@ -35,8 +36,9 @@ foam.CLASS({
 
         this.businessRegistrationDAO.put(user).then(function(user) {
           self.user = user;
-          self.add(self.NotificationMessage.create({ message: 'User Created.' }));
-          X.stack.push({ class: 'foam.nanos.auth.SignInView' });
+
+          X.ctrl.add(self.NotificationMessage.create({ message: 'User Created.' }));
+          X.stack.push({ class: 'net.nanopay.auth.ui.SignInView', userCreated: true });
         })
         .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
