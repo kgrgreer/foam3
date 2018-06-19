@@ -65,6 +65,7 @@ foam.CLASS({
     }
     ^ input {
       width: 100%;
+      height: 40px;
     }
     ^ .blue-button {
       margin: 20px 0; /* Override */
