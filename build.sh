@@ -469,6 +469,7 @@ else
             # NOTE: Tomcat needs to be running to property unpack and deploy war
             # on the linux production instances. Either work on macos localhost.
             #
+            deploy_journals
             start_tomcat
             deploy_war
         fi
