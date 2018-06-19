@@ -95,6 +95,7 @@ var classes = [
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.s2h.model.S2HInvoice',
+  'net.nanopay.model.MultiBalance',
   // Institution model
   'net.nanopay.model.Institution',
   'net.nanopay.fx.ascendantfx.AscendantFX',
@@ -129,7 +130,9 @@ var classes = [
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
-  'net.nanopay.security.FileKeyStoreManager'
+  'net.nanopay.security.FileKeyStoreManager',
+
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
 ];
 
 var abstractClasses = [

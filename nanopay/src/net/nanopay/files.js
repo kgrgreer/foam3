@@ -313,5 +313,7 @@ FOAM_FILES([
   { name: 'net/nanopay/s2h/model/S2HInvoice'},
   //Institution
   { name: 'net/nanopay/model/Institution' },
-  { name: 'net/nanopay/model/Relationships'}
+  { name: 'net/nanopay/model/Relationships'},
+
+  { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView'}
 ]);
