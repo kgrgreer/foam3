@@ -24,7 +24,9 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.security.PrivateKeyEntry',
       name: 'privateKeyId',
-      documentation: 'Reference to private key entry'
+      documentation: 'Reference to private key entry',
+      hidden: true,
+      networkTransient: true
     },
     {
       class: 'Object',
