@@ -16,6 +16,11 @@ foam.CLASS({
       documentation: 'Id of invitee if currently a user',
     },
     {
+      class: 'String',
+      name: 'message',
+      documentation: 'Custom message for invitee'
+    },
+    {
       class: 'EMail',
       name: 'email',
       documentation: 'Email address of the invitee',

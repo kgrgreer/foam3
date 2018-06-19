@@ -95,10 +95,11 @@ public class SendInvitationDAO
     message.setTo(new String[]{invite.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     String url = config.getUrl();
+    String urlPath = userExists ? "#notifications" : "#signUp";
 
-    args.put("message", invite.getMessage());
+    // args.put("message", invite.getMessage());
     args.put("inviterName", sender.getLegalName());
-    args.put("link", url + "#notifications");
+    args.put("link", url + urlPath);
 
     String template = userExists ? "partners-internal-invite" : "partners-external-invite";
 
