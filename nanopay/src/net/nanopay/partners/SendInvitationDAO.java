@@ -96,10 +96,11 @@ public class SendInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     String url = config.getUrl();
 
+    args.put("message", invite.getMessage());
     args.put("inviterName", sender.getLegalName());
     args.put("link", url + "#notifications");
 
-    String template = userExists ? "partners-internal-invite" : "TODO";
+    String template = userExists ? "partners-internal-invite" : "partners-external-invite";
 
     try {
       email.sendEmailFromTemplate(sender, message, template, args);
