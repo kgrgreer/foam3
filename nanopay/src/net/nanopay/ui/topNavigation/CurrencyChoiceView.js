@@ -9,9 +9,9 @@ foam.CLASS({
 
   imports: [
     'currencyDAO',
-    'userDAO',
     'currentCurrency',
-    'stack'
+    'stack',
+    'userDAO'
   ],
 
   requires: [

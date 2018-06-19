@@ -1,4 +1,4 @@
- foam.CLASS({
+foam.CLASS({
   refines: 'net.nanopay.tx.model.Transaction',
 
   properties: [
