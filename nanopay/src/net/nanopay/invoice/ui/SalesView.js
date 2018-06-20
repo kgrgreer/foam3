@@ -120,6 +120,11 @@ foam.CLASS({
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
       imports: [ 'salesDAO' , 'hideSaleSummary'],
+
+      exports: [
+        'selection'
+      ],
+
       properties: [ 
         'selection', 
         { name: 'data', factory: function() { return this.salesDAO; }}

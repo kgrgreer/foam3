@@ -147,11 +147,8 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        if ( this.hideReceivableSummary ) {
-          X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView' });
-        } else {
-          X.stack.back();
-        }
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     },
     {

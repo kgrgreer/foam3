@@ -123,6 +123,10 @@ foam.CLASS({
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
       imports: [ 'expensesDAO' ],
 
+      exports: [
+        'selection'
+      ],
+
       properties: [ 
         'selection', 
         { name: 'data', factory: function() { return this.expensesDAO; }}
