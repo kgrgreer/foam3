@@ -44,7 +44,7 @@ public class RealexPaymentCardStoreDAO
     ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO.where(
       AND(
         EQ(TxnProcessorUserReference.USER_ID, (long) user.getId()),
-        EQ(TxnProcessorUserReference.DRIVER_ID, card.getTxnProcessor())
+        EQ(TxnProcessorUserReference.PROCESSOR_ID, card.getTxnProcessor())
       )).select(new ArraySink());
     List list = sink.getArray();
     TxnProcessorUserReference processorReference = null;
@@ -72,7 +72,7 @@ public class RealexPaymentCardStoreDAO
         }
         processorReference.setReference(reference);
         processorReference.setUserId(user.getId());
-        processorReference.setDriverId(net.nanopay.tx.tp.TxnProcessor.REALEX);
+        processorReference.setProcessorId(net.nanopay.tx.tp.TxnProcessor.REALEX);
         txnProcessorUserReferenceDAO.put(processorReference);
       } catch ( Throwable e ) {
         throw new RuntimeException(e);

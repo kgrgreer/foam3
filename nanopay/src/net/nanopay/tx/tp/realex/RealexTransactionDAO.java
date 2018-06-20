@@ -69,7 +69,7 @@ public class RealexTransactionDAO
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
       DAO txnProcessorUserReferenceDAO = (DAO) x.get("txnProcessorUserReferenceDAO");
       ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO.where(AND(
-        EQ(TxnProcessorUserReference.DRIVER_ID, txnProcessorId),
+        EQ(TxnProcessorUserReference.PROCESSOR_ID, txnProcessorId),
         EQ(TxnProcessorUserReference.USER_ID, user.getId())
       )).select(new ArraySink());
       List list = sink.getArray();

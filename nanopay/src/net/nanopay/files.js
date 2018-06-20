@@ -176,10 +176,9 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
-  // cico
-  { name: 'net/nanopay/cico/model/ServiceProvider' },
+  //
   { name: 'net/nanopay/cico/model/TransactionType' },
-  { name: 'net/nanopay/cico/model/Transaction' },
+  { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
@@ -306,6 +305,7 @@ FOAM_FILES([
 
   // ui
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
@@ -318,7 +318,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
-  { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView'}
 
   // s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice' },

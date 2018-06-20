@@ -14,8 +14,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.tp.TxnProcessor',
-      name: 'driverId',
-      label: 'Tx.Tp'
+      name: 'processorId',
+      label: 'Processor'
     },
     {
       class: 'Reference',
