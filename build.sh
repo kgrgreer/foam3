@@ -55,8 +55,8 @@ function set_doc_base {
     if [ -f "$CATALINA_HOME/conf/server.xml" ]; then
         if ! grep -q "docBase" "$CATALINA_HOME/conf/server.xml"; then
             printf "adding docBase\n"
-            # TODO: figure how ot insert \n before <\Host> on macos
-            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" /></Host>,g" "$CATALINA_HOME/conf/server.xml"
+            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" />\\
+        </Host>,g" "$CATALINA_HOME/conf/server.xml"
         else
             sed -i -e "s,docBase=.*path=,docBase=\"\${catalina_doc_base}\" path=,g" "$CATALINA_HOME/conf/server.xml"
         fi
@@ -90,6 +90,14 @@ function setup_csp_valve {
     rm -rf build
     popd
     echo "INFO :: CSP Valve setup."
+  fi
+  if [[ -f "$CATALINA_HOME/conf/server.xml" ]]; then
+      if ! grep -q "CSPValve" "$CATALINA_HOME/conf/server.xml"; then
+          sed -i -e "s,</Host>,\\
+          <Valve className=\"net.nanopay.security.csp.CSPValve\" />\\
+      </Host>,g" "$CATALINA_HOME/conf/server.xml"
+          printf "INFO :: Added CSP Valve to server.xml\n"
+      fi
   fi
 }
 
