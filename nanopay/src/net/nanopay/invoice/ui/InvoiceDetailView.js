@@ -8,9 +8,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack',
     'hideReceivableSummary',
+    'notificationDAO',
     'recurringInvoiceDAO',
+    'stack',
     'userDAO',
     'user'
   ],
@@ -22,9 +23,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice',
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.NewInvoiceNotification'
   ],
 
   properties: [
@@ -273,6 +275,15 @@ foam.CLASS({
           invoiceFile: this.data.invoiceFile
         });
 
+        var notification = this.NewInvoiceNotification.create({
+          userId: this.userList,
+          invoiceNumber: this.data.invoiceNumber,
+          amount: this.data.amount,
+          senderName: this.user.firstName,
+          notificationType: 'Invoice Received',
+          invoiceType: 'receivable'
+        });
+        this.notificationDAO.put(notification);
         this.user.sales.put(inv);
 
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
