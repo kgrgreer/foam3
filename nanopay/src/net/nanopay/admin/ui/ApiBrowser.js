@@ -138,36 +138,42 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.start().addClass(this.myClass())
-        .add(this.serviceListView.create())
-        .start('h2').add('API Documentation').end()
-        .start().addClass('light-roboto-h2').add(this.introMessage).end()
-        .start('h2').add('Making Requests').end()
-        .start().addClass('light-roboto-h2').add(this.makingRequests).br().br().end()
-        .start().addClass('light-roboto-h2').addClass('sml').add('Below is an example GET request to the pacs008ISOPurposeDAO using curl:').end()
-        .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'pacs008ISOPurposeDAO' })).end()
-        .start().addClass('light-roboto-h2').addClass('sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
-        .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
-        .select(this.AuthenticatedNSpecDAO, function(n) {
-          var model = self.parseClientModel(n);
-          if ( ! model ) return;
-          var dataProps = self.requiredProperties(model);
-          this.start().addClass(n.name)
-            .style({ 'font-size' : '25px', 'margin' : '30px 0px', 'font-weight': '500'})
-            .add(n.name)
-            .attrs({ id : n.name })
-          .end()
-          .tag(self.SimpleClassView.create({ data: model }))
-          .tag(self.GetRequestView.create({ data: n.name }))
-          .tag(self.PutRequestView.create({ data: { n : n, props : dataProps }}))
-        })
-      .end();
-      this.start().addClass('selected-model')
-        .start('h1').add('Selected Class').end()
-        .add(this.slot(function(selectedClass) {
-          if ( ! selectedClass ) return '';
-          return this.SimpleClassView.create({ data: selectedClass });
-        }))
+      this.start()
+        .start().addClass(this.myClass())
+          .add(this.serviceListView.create())
+          .start('h2').add('API Documentation').end()
+          .start().addClass('light-roboto-h2').add(this.introMessage).end()
+          .start('h2').add('Making Requests').end()
+          .start().addClass('light-roboto-h2').add(this.makingRequests).br().br().end()
+          .start().addClass('light-roboto-h2').addClass('sml').add('Below is an example GET request to the pacs008ISOPurposeDAO using curl:').end()
+          .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'pacs008ISOPurposeDAO' })).end()
+          .start().addClass('light-roboto-h2').addClass('sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
+          .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
+          .select(this.AuthenticatedNSpecDAO, function(n) {
+            var model = self.parseClientModel(n);
+            if ( ! model ) return;
+            var dataProps = self.requiredProperties(model);
+            this.start().addClass(n.name)
+              .style({ 'font-size' : '25px', 'margin' : '30px 0px', 'font-weight': '500'})
+              .add(n.name)
+              .attrs({ id : n.name })
+            .end()
+            .tag(self.SimpleClassView.create({ data: model }))
+            .tag(self.GetRequestView.create({ data: n.name }))
+            .tag(self.PutRequestView.create({ data: { n : n, props : dataProps }}))
+          })
+        .end();
+        this.start().addClass('selected-model')
+          .startContext({ data: this })
+          .start('h4').add('Search class').end()
+          .start().add(this.PATH).end()
+          .endContext()
+          .start('h1').add('Selected Class').end()
+          .add(this.slot(function(selectedClass) {
+            if ( ! selectedClass ) return '';
+            return this.SimpleClassView.create({ data: selectedClass });
+          }))
+        .end()
       .end();
     },
 
