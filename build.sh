@@ -77,6 +77,22 @@ function backup {
     fi
 }
 
+function setup_csp_valve {
+  if [[ ! -f $CATALINA_HOME/lib/CSPValve.jar ]]; then
+    pushd .
+    cd nanopay/src/net/nanopay/security/csp
+    mkdir build
+    javac -cp ~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar:~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar:/Library/Tomcat/lib/servlet-api.jar -d ./build CSPValve.java
+    cd build
+    jar cvf CSPValve.jar *
+    mv CSPValve.jar $CATALINA_HOME/lib
+    cd ..
+    rm -rf build
+    popd
+    echo "INFO :: CSP Valve setup."
+  fi
+}
+
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
@@ -109,6 +125,7 @@ function build_war {
       mvn install -Dbuild=dev -o
     else
       mvn install
+      setup_csp_valve
     fi
 }
 
