@@ -134,6 +134,7 @@ function build_war {
     else
       mvn install
       setup_csp_valve
+      mvn com.redhat.victims.maven:security-versions:check
     fi
 }
 
