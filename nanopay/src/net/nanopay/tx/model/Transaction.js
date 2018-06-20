@@ -290,11 +290,6 @@ foam.CLASS({
       label: 'Latest Modify Date & Time'
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Transaction',
-      name: 'delegate'
-    },
-    {
       documentation: `Payment Platform specific data.`,
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',
