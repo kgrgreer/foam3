@@ -134,7 +134,13 @@ var classes = [
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
   'net.nanopay.security.HashedFObject',
-  'net.nanopay.security.HashingJournal'
+  'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.csp.CSPViolation',
+  'net.nanopay.security.csp.CSPReportWebAgent',
+  
+  //topnavigation
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+
 ];
 
 var abstractClasses = [

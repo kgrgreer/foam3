@@ -25,7 +25,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
   { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/email/EmailTokenService'},
+  { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
@@ -67,12 +67,12 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
 
   // ascendant fx
-  { name: 'net/nanopay/fx/ascendantfx/AscendantFX'},
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
 
   // interac
-  { name: 'net/nanopay/fx/interac/model/PayoutOptions'},
-  { name: 'net/nanopay/fx/interac/model/Corridor'},
-  { name: 'net/nanopay/fx/interac/model/RequiredUserFields'},
+  { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
+  { name: 'net/nanopay/fx/interac/model/Corridor' },
+  { name: 'net/nanopay/fx/interac/model/RequiredUserFields' },
 
   // lianlian pay
   { name: 'net/nanopay/fx/lianlianpay/LianLianPay' },
@@ -176,6 +176,10 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
+  // cico
+  { name: 'net/nanopay/cico/model/ServiceProvider' },
+  { name: 'net/nanopay/cico/model/TransactionType' },
+  { name: 'net/nanopay/cico/model/Transaction' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
@@ -249,6 +253,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/FileKeyStoreManager' },
+  { name: 'net/nanopay/security/csp/CSPViolation'},
 
   // bank
   { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
@@ -313,6 +318,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView'}
 
   // s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice' },
