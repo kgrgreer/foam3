@@ -227,11 +227,10 @@ foam.CLASS({
     //   }
     // },
     {
-      // REVIEW: what is this for - Joel
       class: 'String',
       name: 'challenge',
       visibility: foam.u2.Visibility.RO,
-      documentation: 'Randomly generated challenge'
+      documentation: 'Randomly generated challenge. Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction, used in the merchant app and is transfered to the mobile applications as a property of the QrCode. Can be moved to retail Transaction.'
     },
     {
       // REVIEW: is this created date? - Joel
