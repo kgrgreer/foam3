@@ -44,7 +44,7 @@ public class TransactionDAO
     return userDAO_;
   }
 
-  protected DAO getAccountDAO() {
+  protected DAO getBalanceDAO() {
     if ( accountDAO_ == null ) {
       accountDAO_ = (DAO) getX().get("localBalanceDAO");
     }
@@ -159,18 +159,18 @@ public class TransactionDAO
 
 
   public void cashinReject(X x, Transaction transaction) {
-    Account payerAccount = (Account) getAccountDAO().find(transaction.getPayerId());
+    Account payerAccount = (Account) getBalanceDAO().find(transaction.getPayerId());
     payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
         transaction.getTotal() : 0);
-    getAccountDAO().put_(x, payerAccount.fclone());
+    getBalanceDAO().put_(x, payerAccount.fclone());
     User user = (User) getUserDAO().find(transaction.getPayerId());
   }
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
-    Account payerAccount = (Account) getAccountDAO().find(transaction.getPayeeId());
+    Account payerAccount = (Account) getBalanceDAO().find(transaction.getPayeeId());
     payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
         transaction.getTotal() : 0);
-    getAccountDAO().put_(x, payerAccount.fclone());
+    getBalanceDAO().put_(x, payerAccount.fclone());
     // if it's a transaction for different user, we need notify both
     User payer = (User) getUserDAO().find(transaction.getPayerId());
     User payee = (User) getUserDAO().find(transaction.getPayeeId());
