@@ -13,12 +13,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'password',
-      value: '1a2$3d4f'
+      value: 'xT4ZiutU'
     },
     {
       class: 'String',
       name: 'host',
-      value: ''
+      value: 'ftp.eftcanada.com'
     },
     {
       class: 'Int',
