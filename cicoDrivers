@@ -1,9 +1,0 @@
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"--",  "name":"None", "abbreviation":"NONE"})
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"REALEX",  "name":"Realex Global Payments", "abbreviation":"REALEX"})
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"STRIPE",  "name":"Stripe",                 "abbreviation":"STRIPE"})
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"DWOLLA",  "name":"Dwolla",                 "abbreviation":"DWOLLA"})
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"NABCO",   "name":"NABCO",                  "abbreviation":"NABCO"})
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"IMPS",    "name":"Immediate Payment System", "abbreviation":"IMPS", "countryId": "IN", "description":"An instance real-time inter-bank electronic funds transfer system in India."})
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"IFT",     "name":"Inward Fund Transfer", "abbreviation":"IFT", "countryId": "IN", "description":""});
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"NEFT",    "name":"National Electronic Funds Transfer", "abbreviation":"NEFT", "countryId": "IN", "description":"A system of electronic tranfer of money from one bank or branch to another, in India."});
-p({"class":"net.nanopay.cico.driver.CICODriver", "id":"RTGS",    "name":"Real Time Gross Settlement", "abbreviation":"RTGS", "countryId": "IN", "description":"A real-time electronic fund transfer in India for high value transactions"});
