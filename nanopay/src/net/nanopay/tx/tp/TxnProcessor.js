@@ -11,30 +11,35 @@ foam.CLASS({
       name: 'NONE',
       value: 'NONE',
       swiftType: 'String',
+      swiftValue: '"NONE"'
     },
     {
       type: 'String',
       name: 'REALEX',
       value: 'REALEX',
       swiftType: 'String',
+      swiftValue: '"REALEX"'
     },
     {
       type: 'String',
       name: 'STRIPE',
       value: 'STRIPE',
       swiftType: 'String',
+      swiftValue: '"STRIPE"'
     },
     {
       type: 'String',
       name: 'DWOLLA',
       value: 'DWOLLA',
       swiftType: 'String',
+      swiftValue: '"DWOLLA"'
     },
     {
       type: 'String',
       name: 'ALTERNA',
       value: 'ALTERNA',
       swiftType: 'String',
+      swiftValue: '"ALTERNA"'
     }
   ],
 
@@ -56,7 +61,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'description'
+      name: 'description',
+      swiftName: 'swiftDescription'
     },
     {
       class: 'Boolean',

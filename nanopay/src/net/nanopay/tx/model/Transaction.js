@@ -300,6 +300,27 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',
       of: 'net.nanopay.cico.model.PaymentAccountInfo'
+    },
+    {
+      documentation: `For retail purposes. Tip`,
+      class: 'Currency',
+      name: 'tip',
+      label: 'Tip',
+      visibility: foam.u2.Visibility.RO,
+      tableCellFormatter: function(tip, X) {
+        var formattedAmount = tip/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+    {
+      documentation: `For retail purposes. DeviceId refers to the device used to display the QR code for this transaction.`,
+      class: 'Reference',
+      of: 'net.nanopay.retail.model.Device',
+      name: 'deviceId',
+      visibility: foam.u2.Visibility.RO
     }
   ],
 
