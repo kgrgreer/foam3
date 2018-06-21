@@ -239,13 +239,12 @@ public class ExchangeRateService
           builder.append(line);
         }
 
-        System.out.println(builder.toString());
-
         JSONParser parser = getX().create(JSONParser.class);
         FixerIOExchangeRate response = (FixerIOExchangeRate) parser
           .parseString(builder.toString(), FixerIOExchangeRate.class);
 
-        System.out.println(response.toJSON());
+        // add one day to expiration date since api fetches rates every day
+        calendar.add(Calendar.DATE, 1);
 
         Map rates = response.getRates();
         for ( Object key : rates.keySet() ) {
