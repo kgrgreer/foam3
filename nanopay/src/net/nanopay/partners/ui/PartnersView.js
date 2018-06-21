@@ -154,6 +154,11 @@ foam.CLASS({
     ^ .show {
       margin-top: 75px;
     }
+    ^ .net-nanopay-ui-ActionView-partnersModal{
+      float: right;
+      background-color: #59a5d5;
+      color: white;
+    }
   `,
 
   properties: [
@@ -237,6 +242,9 @@ foam.CLASS({
               .addClass('searchIcon')
             .end()
             .start(this.FILTER).addClass('filter-search').end()
+            .startContext({ data: this })
+              .start(this.PARTNERS_MODAL).end()
+            .endContext()
           .end()
           .start()
             .addClass('button-div')
@@ -289,6 +297,16 @@ foam.CLASS({
                 this.EQ(this.User.GROUP, 'business')));
         this.connected_button_select = false;
         this.contacts_button_select = true;
+      }
+    }
+  ],
+  
+  actions: [
+    {
+      name: 'partnersModal',
+      label: 'New Invite',
+      code: function(X) {
+        this.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.partners.ui.modal.PartnerInviteModal' }));
       }
     }
   ]

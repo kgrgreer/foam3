@@ -41,7 +41,6 @@ public class SendInvitationDAO
     Invitation invite = (Invitation) obj;
     User sender = (User) x.get("user");
     invite.setCreatedBy(sender.getId());
-
     // Set the timestamp on the invite here instead of on the frontend so it
     // can't be manually set by a tech-savvy user
     invite.setTimestamp(new Date());
@@ -57,10 +56,6 @@ public class SendInvitationDAO
         : null;
     if ( userExists ) invite.setInviteeId(recipient.getId());
     invite.setInternal(userExists);
-
-    // TEMPORARY: For now we're only sending the email if the user exists. The
-    // external user case is still being thought through in the UX stage.
-    if ( ! userExists ) return invite;
 
     // Find the last time an invite was sent to this user. Applies whether the
     // recipient exists or not because multiple invites could be sent before
@@ -83,7 +78,9 @@ public class SendInvitationDAO
       long diff = now.getTime() - previousInvite.getTimestamp().getTime();
       long diffInHours = hoursUnit.convert(diff, TimeUnit.MILLISECONDS);
       // NOTE: convert() will truncate down to the nearest full hour
-      if ( diffInHours <= 2 ) return invite;
+      if ( diffInHours <= 2 ) {
+        throw new RuntimeException("Cannot send invitation more than once every 2 hours");
+      }
     }
 
     // Put to the DAO, then send email
@@ -95,11 +92,14 @@ public class SendInvitationDAO
     message.setTo(new String[]{invite.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     String url = config.getUrl();
+    String urlPath = userExists ? "#notifications" : "#sign-up";
+
+    args.put("message", invite.getMessage());
 
     args.put("inviterName", sender.getLegalName());
-    args.put("link", url + "#notifications");
+    args.put("link", url + urlPath);
 
-    String template = userExists ? "partners-internal-invite" : "TODO";
+    String template = userExists ? "partners-internal-invite" : "partners-external-invite";
 
     try {
       email.sendEmailFromTemplate(sender, message, template, args);

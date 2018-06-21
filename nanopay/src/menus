@@ -13,6 +13,7 @@ p({"class":"foam.nanos.menu.Menu","id":"cctransfer","label":"Transfer","handler"
 p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.UserView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.resetPassword.ResetView"}},"order":1000,"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.auth.ui.SignUpView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.SubMenu"},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"bank-dashboard","label":"CIP/Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.DashboardView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"set-personal","label":"Personal","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PersonalProfileView"}},"order":30,"parent":"settings"})
