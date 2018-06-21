@@ -40,8 +40,15 @@ foam.CLASS({
       value: 'ALTERNA',
       swiftType: 'String',
       swiftValue: '"ALTERNA"'
-    }
-  ],
+    },
+    {
+      type: 'String',
+      name: 'INTERAC',
+      value: 'INTERAC',
+      swiftType: 'String',
+      swiftValue: '"INTERAC"'
+    },
+   ],
 
   properties: [
     {
