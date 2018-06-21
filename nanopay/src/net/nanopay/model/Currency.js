@@ -39,6 +39,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'leftOrRight'
+    },
+    {
+      class: 'String',
+      name: 'flagImage'
     }
   ]
 });

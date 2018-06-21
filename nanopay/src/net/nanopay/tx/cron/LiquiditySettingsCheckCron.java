@@ -28,7 +28,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
   protected long             amount_;
   protected TransactionType  type_;
   protected CashOutFrequency frequency_;
-  protected int pendingCashinAmount = 0;
+  protected int pendingCashinAmount;
 
   public LiquiditySettingsCheckCron(CashOutFrequency frequency){
     this.frequency_ = frequency;
@@ -37,12 +37,12 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
   @Override
   public void execute(X x) {
     long bankId;
-    DAO  userDAO_             = (DAO) x.get("userDAO");
+    DAO  userDAO_             = (DAO) x.get("localUserDAO");
     DAO  accountDAO_          = (DAO) x.get("localAccountDAO");
     DAO  bankAccountDAO_      = (DAO) x.get("localBankAccountDAO");
     DAO  liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
     DAO  groupDAO             = (DAO) x.get("groupDAO");
-    DAO transactionDAO_       = (DAO) x.get("transactionDAO");
+    DAO transactionDAO_       = (DAO) x.get("localTransactionDAO");
     List users                = ((ArraySink)userDAO_.select(new ArraySink())).getArray();
     long balance;
 
@@ -69,12 +69,14 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
         EQ(Transaction.PAYEE_ID, user.getId()),
         EQ(Transaction.PAYER_ID, user.getId())
       )).select(new ArraySink())).getArray();
+      pendingCashinAmount = 0;
       for ( Object transaction: transactions) {
         pendingCashinAmount += ((Transaction) transaction).getAmount();
       }
 
-      if ( ls != null ) {
-        if ( ls.getBankAccountId() > 0 ) {
+      if ( ls != null  ) {
+        if ( ls.getBankAccountId() > 0 && bankAccountDAO_.find(ls.getBankAccountId()) != null ) {
+          if ( ((BankAccount) bankAccountDAO_.find(ls.getBankAccountId())).getStatus() == BankAccountStatus.VERIFIED )
           bankId = ls.getBankAccountId();
         }
         if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
