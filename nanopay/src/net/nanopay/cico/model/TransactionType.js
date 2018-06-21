@@ -30,6 +30,10 @@ foam.ENUM({
       documentation: 'This is used to process a refund from a merchant to a mint chip user. The flow for this is currently not implemented.',
       name: 'REFUND',
       label: 'Refund'
+    },
+    {
+      name: 'REQUEST',
+      label: 'Request'
     }
   ]
 });

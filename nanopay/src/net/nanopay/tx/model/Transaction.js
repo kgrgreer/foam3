@@ -290,6 +290,11 @@ foam.CLASS({
       label: 'Latest Modify Date & Time'
     },
     {
+      class: 'String',
+      name: 'CurrencyCode',
+      label: 'CurrencyCode'
+    },
+    {
       documentation: `Payment Platform specific data.`,
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',

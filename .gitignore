@@ -68,8 +68,11 @@ sha256/
 /journals
 
 # Logs
-*.lck
 *nano.log*
+
+# Locks
+*.lck
+package-lock.json
 
 # githooks
 .githooks/pre-commit.local
