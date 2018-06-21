@@ -19,11 +19,18 @@
     "xmldom": "^0.1.27"
   },
   "scripts": {
-    "lint-nanopay": "./node_modules/.bin/eslint . --ext .js --ignore-pattern node_modules/"
+    "test": "JASMINE_CONFIG_PATH=jasmine_node.json jasmine",
+    "testDebug": "JASMINE_CONFIG_PATH=jasmine_node.json node --inspect --debug-brk node_modules/jasmine/bin/jasmine.js",
+    "testThirdParty": "test/third_party/install.sh && test/third_party/run_tests.sh",
+    "coverage": "JASMINE_CONFIG_PATH=jasmine_coverage.json istanbul cover -- jasmine \n istanbul instrument ./src/ -o ./tmp_cov___/ \n rm -rf ./tmp_cov___",
+    "benchmarks": "JASMINE_CONFIG_PATH=jasmine_benchmarks.json jasmine",
+    "benchmarksDebug": "JASMINE_CONFIG_PATH=jasmine_benchmarks.json node-debug -c node_modules/jasmine/bin/jasmine.js"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
-    "eslint-plugin-foam-style": "file:./tools/style"
+    "eslint-plugin-foam-style": "file:./tools/style",
+    "istanbul": "^0.4.2",
+    "jasmine": "^2.4.1"
   }
 }
