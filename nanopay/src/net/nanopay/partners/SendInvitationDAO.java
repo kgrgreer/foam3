@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import net.nanopay.model.Invitation;
+import net.nanopay.partners.InvitationStatus;
+import net.nanopay.partners.ui.PartnerInvitationNotification;
 
 /**
  * Handles all logic related to Invitations, including:
@@ -38,6 +40,7 @@ public class SendInvitationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO notificationDAO = (DAO) x.get("notificationDAO");
     Invitation invite = (Invitation) obj;
     User sender = (User) x.get("user");
     invite.setCreatedBy(sender.getId());
@@ -45,6 +48,7 @@ public class SendInvitationDAO
     // Set the timestamp on the invite here instead of on the frontend so it
     // can't be manually set by a tech-savvy user
     invite.setTimestamp(new Date());
+    invite.setStatus(InvitationStatus.SENT);
 
     // See if the recipient is an existing user or not
     ArraySink usersWithMatchingEmail = (ArraySink) userDAO
@@ -107,6 +111,15 @@ public class SendInvitationDAO
       Logger logger = ((Logger) x.get(Logger.class));
       logger.error("Error sending invitation email.", t);
     }
+
+    // Send notification
+    PartnerInvitationNotification notification =
+        new PartnerInvitationNotification();
+    notification.setUserId(recipient.getId());
+    notification.setCreatedBy(sender.getId());
+    notification.setBody(sender.getLegalName() + " invited you to connect.");
+    notification.setNotificationType("Partner invitation");
+    notificationDAO.put(notification);
 
     return invite;
   }
