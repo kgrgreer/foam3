@@ -58,33 +58,33 @@ public class TransactionDAO
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
-    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! transaction.getType().equals(TransactionType.NONE) &&
-         ! transaction.getType().equals(TransactionType.CASHOUT) ) {
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
+        transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
     if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-      if ( oldTxn != null && oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
-          && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
+      if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED
+        && transaction.getStatus() == TransactionStatus.DECLINED ) {
         //pay others by bank account directly
-        if ( transaction.getType().equals(TransactionType.BANK_ACCOUNT_PAYMENT) ) {
+        if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           paymentFromBankAccountReject(x, transaction);
         } else {
           cashinReject(x, transaction);
         }
       }
     }
-    if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType().equals(TransactionType.BANK_ACCOUNT_PAYMENT) ) {
-      return transaction.getStatus().equals(TransactionStatus.COMPLETED) ?
+    if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+      return transaction.getStatus() == TransactionStatus.COMPLETED ?
         executeTransaction(x, transaction) :
         super.put_(x, obj);
     }
 
-    if ( transaction.getType().equals(TransactionType.CASHOUT) ) {
-      if ( ! transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
+    if ( transaction.getType() == TransactionType.CASHOUT ) {
+      if ( transaction.getStatus() != TransactionStatus.DECLINED ) {
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
-        if ( oldTxn != null && ! oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
+        if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
           Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
           refound.validate(x);
           refound.execute(x);
