@@ -32,6 +32,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 962px;
+      margin: auto;
     }
     ^ h5{
       opacity: 0.6;
