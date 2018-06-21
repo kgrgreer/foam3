@@ -34,6 +34,7 @@ var classes = [
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
+  'net.nanopay.model.MultiBalance',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
