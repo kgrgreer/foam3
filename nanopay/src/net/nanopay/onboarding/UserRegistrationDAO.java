@@ -9,6 +9,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import foam.nanos.session.Session;
 import static foam.mlang.MLang.EQ;
 
 public class UserRegistrationDAO
@@ -16,6 +17,7 @@ public class UserRegistrationDAO
 {
   protected String spid_;
   protected String group_;
+  protected DAO sessionDAO_;
 
   public UserRegistrationDAO(X x, String group, DAO delegate) {
     this(x, "nanopay", group, delegate);
@@ -31,7 +33,13 @@ public class UserRegistrationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) obj;
-    
+    sessionDAO_  = (DAO) getX().get("sessionDAO");
+
+    Session session = x.get(Session.class);
+    session.setUserId(user.getId());
+    session.setContext(session.getContext().put("user", user));
+    sessionDAO_.put(session);
+
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }

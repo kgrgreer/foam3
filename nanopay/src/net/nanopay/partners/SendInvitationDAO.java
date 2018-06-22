@@ -66,18 +66,28 @@ public class SendInvitationDAO
    * @param {Invitation} invite The invitation to send
    * @param {User} currentUser The current user
    */
-  private void sendInvitationEmail(X x, Invitation invite, User currentUser) {
+  private void sendInvitationEmail(
+      X x,
+      Invitation invite,
+      User currentUser,
+      boolean userExists
+  ) {
     AppConfig config = (AppConfig) x.get("appConfig");
     EmailService email = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{invite.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     String url = config.getUrl();
+    String urlPath = userExists ? "#notifications" : "#sign-up";
+
+    args.put("message", invite.getMessage());
 
     args.put("inviterName", currentUser.getLegalName());
-    args.put("link", url + "#notifications");
+    args.put("link", url + urlPath);
 
-    String template = "partners-internal-invite";
+    String template = userExists
+        ? "partners-internal-invite"
+        : "partners-external-invite";
 
     try {
       email.sendEmailFromTemplate(currentUser, message, template, args);
@@ -134,6 +144,9 @@ public class SendInvitationDAO
     Invitation existingInvite =
         getExistingInvite(invite.getEmail(), currentUser.getId());
 
+    User recipient = getUserByEmail(userDAO, invite.getEmail());
+    if ( recipient.getId() == currentUser.getId() ) return null;
+
     if ( existingInvite != null ) {
       
       // This is here because if it wasn't, MakeConnectionDAO wouldn't be able
@@ -147,7 +160,7 @@ public class SendInvitationDAO
       long hoursSinceLastSend = getHoursSinceLastSend(existingInvite);
       boolean noResponse = existingInvite.getStatus() == InvitationStatus.SENT;
       if ( hoursSinceLastSend >= 2 && noResponse ) {
-        sendInvitationEmail(x, existingInvite, currentUser);
+        sendInvitationEmail(x, existingInvite, currentUser, recipient != null);
         existingInvite.setTimestamp(new Date());
       }
       return super.put_(x, existingInvite);
@@ -159,10 +172,6 @@ public class SendInvitationDAO
     newInvite.setCreatedBy(currentUser.getId());
     newInvite.setTimestamp(new Date());
 
-    User recipient = getUserByEmail(userDAO, newInvite.getEmail());
-
-    if ( recipient.getId() == currentUser.getId() ) return null;
-
     if ( recipient != null  ) {
       newInvite.setInviteeId(recipient.getId());
       newInvite.setInternal(true);
@@ -171,7 +180,7 @@ public class SendInvitationDAO
       return newInvite;
     }
 
-    sendInvitationEmail(x, newInvite, currentUser);
+    sendInvitationEmail(x, newInvite, currentUser, recipient != null);
     sendInvitationNotification(notificationDAO, currentUser, recipient);
 
     return super.put_(x, newInvite);

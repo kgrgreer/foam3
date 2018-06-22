@@ -65,6 +65,7 @@ foam.CLASS({
     }
     ^ input {
       width: 100%;
+      height: 40px;
     }
     ^ .blue-button {
       margin: 20px 0; /* Override */
@@ -141,22 +142,29 @@ foam.CLASS({
       name: 'sendNewInvite',
       label: 'Send',
       help: 'Invite someone to the nanopay platform',
-      code: async function(X) {
-        var invite = this.Invitation.create({ email: this.emailAddress });
-        try {
-          // See SendInvitationDAO.java
-          await this.invitationDAO.put(invite)
-          this.add(this.NotificationMessage.create({
-            message: this.InviteSendSuccess,
+      code: function(X) {
+        var self = this;
+        if ( ! this.emailAddress ) {
+          this.add(this.NotificationMessage.create({ message: 'Email Address Required.', type: 'error' }));
+          return;
+        }
+        var invite = this.Invitation.create({
+          email: this.emailAddress,
+          message: this.message
+        });
+
+        // See SendInvitationDAO.java
+        this.invitationDAO.put(invite).then(function(a) {
+          X.ctrl.add(self.NotificationMessage.create({
+            message: self.InviteSendSuccess,
           }));
-        } catch (err) {
-          console.error(err);
-          this.add(this.NotificationMessage.create({
-            message: this.InviteSendError,
+          X.closeDialog();
+        }).catch(function(err) {
+          X.ctrl.add(self.NotificationMessage.create({
+            message: err.message,
             type: 'error',
           }));
-        }
-        X.closeDialog();
+        });
       }
     }
   ]
