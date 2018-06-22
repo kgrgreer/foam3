@@ -28,6 +28,90 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start(this.CONNECT).end();
+    },
+
+    /**
+     * Get the relevant invitation from the DAO
+     * @returns {Invitation}
+     */
+    async function getInvitation() {
+      var queryResult = await this.invitationDAO
+          .where(this.AND(
+              this.EQ(this.Invitation.INVITEE_ID, this.user.id),
+              this.EQ(this.Invitation.CREATED_BY, this.data.createdBy)))
+          .orderBy(this.DESC(this.Invitation.TIMESTAMP))
+          .select();
+      if ( queryResult.array.length === 0 ) {
+        this.add(this.NotificationMessage.create({
+          message: this.InviteNotFound,
+          type: 'error'
+        }));
+        throw new Error(`Invitation not found`);
+      } else if ( queryResult.array.length > 1 ) {
+        console.warn(`There are multiple invitations from user
+            ${this.data.createdBy} to ${this.user.id}. There should only be
+            one. The most recent one will be used.`);
+      }
+      return queryResult.array[0];
+    },
+
+    /**
+     * Check if an invitation has already been responded to by the invitee
+     * @param {Invitation} invitation An invitation to check
+     * @returns {Boolean} True if the invitee has responded to the invitation
+     */
+    function hasBeenRespondedTo(invitation) {
+      return invitation.status === this.InvitationStatus.ACCEPTED ||
+          invitation.status === this.InvitationStatus.CONNECTED;
+    },
+
+    /**
+     * Send an invitation
+     * @param {Invitation} invitation An invitation to send
+     */
+    async function sendInvitation(invitation) {
+      try {
+        await this.invitationDAO.put(invitation);
+      } catch (err) {
+        this.add(this.NotificationMessage.create({
+          message: this.ErrorFromBackend,
+          type: 'error'
+        }));
+        throw err;
+      }
+    },
+
+    /**
+     * Notify the user that their response went through correctly
+     * @param {InvitationStatus} status Their response to the invitation
+     */
+    function sendSuccessNotificationMessage(status) {
+      var message;
+      switch ( status ) {
+        case this.InvitationStatus.ACCEPTED:
+          message = this.Connected;
+          break;
+        default:
+          throw new Error(`Unsupported response type: ${status}`);
+      }
+      this.add(this.NotificationMessage.create({ message: message }));
+    },
+
+    /**
+     * Respond to an invitation
+     * @param {InvitationStatus} status The response to use
+     */
+    async function respondToInvitation(status) {
+      var invite = await this.getInvitation();
+      if ( this.hasBeenRespondedTo(invite) ) {
+        this.add(this.NotificationMessage.create({
+          message: this.AlreadyAccepted
+        }));
+        return;
+      }
+      invite.status = status;
+      await this.sendInvitation(invite);
+      this.sendSuccessNotificationMessage(status);
     }
   ],
 
@@ -50,7 +134,7 @@ foam.CLASS({
     },
     {
       name: 'AlreadyAccepted',
-      message: "You've already accepted this request"
+      message: `You've already accepted this request`
     }
   ],
 
@@ -58,52 +142,9 @@ foam.CLASS({
     {
       name: 'connect',
       label: 'Connect',
-      code: async function() {
-        var queryResult = await this.invitationDAO
-            .where(this.AND(
-                this.EQ(this.Invitation.INVITEE_ID, this.user.id),
-                this.EQ(this.Invitation.CREATED_BY, this.data.createdBy)))
-            .orderBy(this.DESC(this.Invitation.TIMESTAMP))
-            .select();
-
-        if ( queryResult.array.length === 0 ) {
-          this.add(this.NotificationMessage.create({
-            message: this.InviteNotFound,
-            type: 'error'
-          }));
-          return;
-        } else if ( queryResult.array.length > 1 ) {
-          console.warn(`There are multiple invitations from user
-              ${this.data.createdBy} to ${this.user.id}. There should only be
-              one. The most recent one will be used.`);
-        }
-
-        var invite = queryResult.array[0];
-
-        switch ( invite.status ) {
-          case this.InvitationStatus.ACCEPTED:
-          case this.InvitationStatus.CONNECTED:
-            this.add(this.NotificationMessage.create({
-              message: this.AlreadyAccepted
-            }));
-            return;
-        }
-
-        invite.status = this.InvitationStatus.ACCEPTED;
-
-        try {
-          await this.invitationDAO.put(invite);
-        } catch (err) {
-          console.log(err);
-          this.add(this.NotificationMessage.create({
-            message: this.ErrorFromBackend,
-            type: 'error'
-          }));
-          return;
-        }
-
-        this.add(this.NotificationMessage.create({ message: this.Connected }));
+      code: function() {
+        this.respondToInvitation(this.InvitationStatus.ACCEPTED);
       }
     }
   ]
-})
+});

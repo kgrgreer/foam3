@@ -23,13 +23,6 @@ import net.nanopay.model.Invitation;
 import net.nanopay.partners.InvitationStatus;
 import net.nanopay.partners.ui.PartnerInvitationNotification;
 
-/**
- * Handles all logic related to Invitations, including:
- *  - Only sending invite if not already invited in last 2 hours
- *  - Checking if this invited user is already on the platform or not and
- *    sending either an invite to join email or a request to connect email
- *    accordingly.
- */
 public class SendInvitationDAO
   extends ProxyDAO
 {
@@ -37,62 +30,43 @@ public class SendInvitationDAO
     super(x, delegate);
   }
 
-  @Override
-  public FObject put_(X x, FObject obj) {
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO notificationDAO = (DAO) x.get("notificationDAO");
-    Invitation invite = (Invitation) obj;
-    User sender = (User) x.get("user");
-    invite.setCreatedBy(sender.getId());
-
-    // Set the timestamp on the invite here instead of on the frontend so it
-    // can't be manually set by a tech-savvy user
-    invite.setTimestamp(new Date());
-    invite.setStatus(InvitationStatus.SENT);
-
-    // See if the recipient is an existing user or not
-    ArraySink usersWithMatchingEmail = (ArraySink) userDAO
-        .where(EQ(User.EMAIL, invite.getEmail()))
+  /**
+   * Get an existing invitation from one user to another
+   * @param {String} email The email address of the recipient
+   * @param {Long} userId The userId of the user who sent the invite
+   * @returns {Invitation} Or null if no invite found.
+   */
+  private Invitation getExistingInvite(String email, Long userId) {
+    ArraySink existingInvites = (ArraySink) this
+        .where(AND(
+          EQ(Invitation.EMAIL, email),
+          EQ(Invitation.CREATED_BY, userId)))
         .limit(1)
         .select(new ArraySink());
-    Boolean userExists = usersWithMatchingEmail.getArray().size() == 1;
-    User recipient = userExists
-        ? (User) usersWithMatchingEmail.getArray().get(0)
-        : null;
-    if ( userExists ) invite.setInviteeId(recipient.getId());
-    invite.setInternal(userExists);
+    boolean inviteExists = existingInvites.getArray().size() == 1;
+    return inviteExists ? (Invitation) existingInvites.getArray().get(0) : null;
+  }
 
-    // TEMPORARY: For now we're only sending the email if the user exists. The
-    // external user case is still being thought through in the UX stage.
-    if ( ! userExists ) return invite;
+  /**
+   * Get the number of hours since the given invitation was last sent
+   * @param {Invitation} invite The invitation to check
+   * @returns {long} The number of hours since last sent
+   */
+  private long getHoursSinceLastSend(Invitation invite) {
+    TimeUnit hoursUnit = TimeUnit.HOURS;
+    Date now = new Date();
+    long diff = now.getTime() - invite.getTimestamp().getTime();
+    // NOTE: convert() will truncate down to the nearest full hour
+    return hoursUnit.convert(diff, TimeUnit.MILLISECONDS);
+  }
 
-    // Find the last time an invite was sent to this user. Applies whether the
-    // recipient exists or not because multiple invites could be sent before
-    // they sign up.
-    ArraySink previousInvites = (ArraySink) this
-        .where(EQ(Invitation.EMAIL, invite.getEmail()))
-        .orderBy(new foam.mlang.order.Desc(Invitation.TIMESTAMP))
-        .limit(1)
-        .select(new ArraySink());
-    Boolean previouslyInvited = previousInvites.getArray().size() > 0;
-    Invitation previousInvite = previouslyInvited
-        ? (Invitation) previousInvites.getArray().get(0)
-        : null;
-
-    // Don't send the invitation if one has already been sent to that address
-    // in the last 2 hours
-    if ( previouslyInvited ) {
-      TimeUnit hoursUnit = TimeUnit.HOURS;
-      Date now = new Date();
-      long diff = now.getTime() - previousInvite.getTimestamp().getTime();
-      long diffInHours = hoursUnit.convert(diff, TimeUnit.MILLISECONDS);
-      // NOTE: convert() will truncate down to the nearest full hour
-      if ( diffInHours <= 2 ) return invite;
-    }
-
-    // Put to the DAO, then send email
-    invite = (Invitation) super.put_(x, invite);
-
+  /**
+   * Send an email invitation
+   * @param {X} x The context
+   * @param {Invitation} invite The invitation to send
+   * @param {User} currentUser The current user
+   */
+  private void sendInvitationEmail(X x, Invitation invite, User currentUser) {
     AppConfig config = (AppConfig) x.get("appConfig");
     EmailService email = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
@@ -100,27 +74,106 @@ public class SendInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     String url = config.getUrl();
 
-    args.put("inviterName", sender.getLegalName());
+    args.put("inviterName", currentUser.getLegalName());
     args.put("link", url + "#notifications");
 
-    String template = userExists ? "partners-internal-invite" : "TODO";
+    String template = "partners-internal-invite";
 
     try {
-      email.sendEmailFromTemplate(sender, message, template, args);
+      email.sendEmailFromTemplate(currentUser, message, template, args);
     } catch(Throwable t) {
       Logger logger = ((Logger) x.get(Logger.class));
       logger.error("Error sending invitation email.", t);
     }
+  }
 
-    // Send notification
+  /**
+   * Send a notification inviting the user to connect
+   * @param {DAO} notificationDAO The notification DAO to write to
+   * @param {User} currentUser The current user
+   * @param {User} recipient The user being invited
+   */
+  private void sendInvitationNotification(
+      DAO notificationDAO,
+      User currentUser,
+      User recipient
+  ) {
     PartnerInvitationNotification notification =
         new PartnerInvitationNotification();
     notification.setUserId(recipient.getId());
-    notification.setCreatedBy(sender.getId());
-    notification.setBody(sender.getLegalName() + " invited you to connect.");
+    notification.setCreatedBy(currentUser.getId());
+    notification.setBody(currentUser.getLegalName() +
+        " invited you to connect.");
     notification.setNotificationType("Partner invitation");
     notificationDAO.put(notification);
+  }
 
-    return invite;
+  /**
+   * Get a user by their email address
+   * @param {DAO} userDAO The user DAO to search
+   * @param {String} emailAddress The email address
+   * @returns {User} The matching user or null
+   */
+  private User getUserByEmail(DAO userDAO, String emailAddress) {
+    ArraySink usersWithMatchingEmail = (ArraySink) userDAO
+        .where(EQ(User.EMAIL, emailAddress))
+        .limit(1)
+        .select(new ArraySink());
+    return usersWithMatchingEmail.getArray().size() == 1
+        ? (User) usersWithMatchingEmail.getArray().get(0)
+        : null;
+  }
+
+  @Override
+  public FObject put_(X x, FObject obj) {
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO notificationDAO = (DAO) x.get("notificationDAO");
+    Invitation invite = (Invitation) obj;
+    User currentUser = (User) x.get("user");
+
+    Invitation existingInvite =
+        getExistingInvite(invite.getEmail(), currentUser.getId());
+
+    if ( existingInvite != null ) {
+      
+      // This is here because if it wasn't, MakeConnectionDAO wouldn't be able
+      // to set the status because this DAO decorator would overwrite it. We
+      // can't just pass on invite instead of existingInvite at the bottom of
+      // this block either because that's a security risk. Users could set
+      // fields like createdBy or inviteeId to be things they shouldn't. This
+      // probably isn't the best solution.
+      existingInvite.setStatus(invite.getStatus());
+
+      long hoursSinceLastSend = getHoursSinceLastSend(existingInvite);
+      boolean noResponse = existingInvite.getStatus() == InvitationStatus.SENT;
+      if ( hoursSinceLastSend >= 2 && noResponse ) {
+        sendInvitationEmail(x, existingInvite, currentUser);
+        existingInvite.setTimestamp(new Date());
+      }
+      return super.put_(x, existingInvite);
+    }
+
+    Invitation newInvite = new Invitation();
+    newInvite.setEmail(invite.getEmail());
+    newInvite.setStatus(InvitationStatus.SENT);
+    newInvite.setCreatedBy(currentUser.getId());
+    newInvite.setTimestamp(new Date());
+
+    User recipient = getUserByEmail(userDAO, newInvite.getEmail());
+
+    if ( recipient.getId() == currentUser.getId() ) return null;
+
+    if ( recipient != null  ) {
+      newInvite.setInviteeId(recipient.getId());
+      newInvite.setInternal(true);
+    } else {
+      // TEMPORARY: We don't support external users yet
+      return newInvite;
+    }
+
+    sendInvitationEmail(x, newInvite, currentUser);
+    sendInvitationNotification(notificationDAO, currentUser, recipient);
+
+    return super.put_(x, newInvite);
   }
 }
