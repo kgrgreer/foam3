@@ -119,6 +119,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'currencyType'
+    },
+    {
+      class: 'String',
       name: 'payeeName',
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
@@ -174,14 +178,15 @@ foam.CLASS({
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
+        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
         this.start().style({ 'padding-right': '20px' })
-          .add('$' + X.addCommas((a/100).toFixed(2)))
+          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
         .end();
       }
     },
     {
       class: 'Currency',
-      name: 'targetAmount',
+      name: 'sourceAmount',
       aliases: [
         'a'
       ],
@@ -195,16 +200,20 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'exchangeRate'
+      name: 'sourceAccountId'
     },
     {
       class: 'Long',
-      name: 'sourceAccountId'
+      name: 'exchangeRate'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod'
+    },
+    {
+      class: 'String',
+      name: 'currencyCode'
     },
     {
       name: 'iso20022'

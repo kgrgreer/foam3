@@ -22,87 +22,88 @@ foam.CLASS({
       expression: function(data, user){
         return user.id != data.payeeId
       }
+    },
+    {
+      name: 'currency',
+      expression: function(data){
+        return data.targetCurrency ? data.targetCurrency.alphabeticCode + ' ' : '$';
+      }
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^table-header{
-          width: 962px;
-          height: 40px;
-          background-color: rgba(110, 174, 195, 0.2);
-          padding-bottom: 10px;
-          margin: 0;
-        }
-        ^ h3{
-          width: 150px;
-          display: inline-block;
-          font-size: 14px;
-          line-height: 1;
-          font-weight: 500;
-          text-align: center;
-          color: #093649;
-        }
-        ^ h4{
-          width: 150px;
-          display: inline-block;
-          font-size: 14px;
-          line-height: 1;
-          font-weight: 500;
-          text-align: center;
-          color: #093649;
-        }
-        ^table-body{
-          width: 962px;
-          height: 40px;
-          background: white;
-          padding: 10px 0 20px 0;
-          margin: 0;
-        }
-        ^ p{
-          display: inline-block;
-          width: 90px;
-        }
-        ^table-body h3{
-          font-weight: 300;
-          font-size: 12px;
-        }
-        ^table-body h4{
-          font-weight: 300;
-          font-size: 12px;
-        }
-        ^ .table-attachment {
-          width: 20px;
-          height: 20px;
-          float: left;
-          padding: 10px 0 0 10px;
-        }
-        ^ .table-attachment img {
-          width: 20px;
-          height: 20px;
-          object-fit: contain;
-          cursor: pointer;
-          position: sticky;
-          z-index: 10;
-        }
-        ^ .dropdown {
-          position: relative;
-          display: inline-block;
-        }
-        ^ .dropdown-content {
-          position: absolute;
-          background-color: #ffffff;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          z-index: 1;
-        }
-        ^ .hidden {
-          display: none;
-        }
-        */
-      }
-    })
-  ],
+  css: `
+    ^table-header{
+      width: 962px;
+      height: 40px;
+      background-color: rgba(110, 174, 195, 0.2);
+      padding-bottom: 10px;
+      margin: 0;
+    }
+    ^ h3{
+      width: 150px;
+      display: inline-block;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 500;
+      text-align: center;
+      color: #093649;
+    }
+    ^ h4{
+      width: 150px;
+      display: inline-block;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 500;
+      text-align: center;
+      color: #093649;
+    }
+    ^table-body{
+      width: 962px;
+      height: 40px;
+      background: white;
+      padding: 10px 0 20px 0;
+      margin: 0;
+    }
+    ^ p{
+      display: inline-block;
+      width: 90px;
+    }
+    ^table-body h3{
+      font-weight: 300;
+      font-size: 12px;
+    }
+    ^table-body h4{
+      font-weight: 300;
+      font-size: 12px;
+    }
+    ^ .table-attachment {
+      width: 20px;
+      height: 20px;
+      float: left;
+      padding: 10px 0 0 10px;
+    }
+    ^ .table-attachment img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      cursor: pointer;
+      position: sticky;
+      z-index: 10;
+    }
+    ^ .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    ^ .dropdown-content {
+      position: absolute;
+      background-color: #ffffff;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    ^ .hidden {
+      display: none;
+    }
+  `,
 
   methods: [
     function initE(){
@@ -139,7 +140,7 @@ foam.CLASS({
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
             .start('h4').add(this.data.dueDate ? this.data.dueDate.toISOString().substring(0,10) : '').end()
-            .start('h4').add('$', this.addCommas((this.data.amount/100).toFixed(2))).end()
+            .start('h4').add(this.currency, this.addCommas((this.data.amount/100).toFixed(2))).end()
             .start('h3')
               .add(this.data.status$.map(function(a) {
                 return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring(0,10) : a).addClass('generic-status').addClass('Invoice-Status-' + a);
