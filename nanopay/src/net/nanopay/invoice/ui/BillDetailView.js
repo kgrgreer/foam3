@@ -48,10 +48,14 @@ foam.CLASS({
         value: 'Daily'
       },
       {
+        name: 'currencyChoice',
+        view: 'net.nanopay.tx.ui.CurrencyChoice'
+      },
+      {
         name: 'userList',
         view: function(_,X) {
           return foam.u2.view.ChoiceView.create({
-            dao: X.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id), 
+            dao: X.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id),
             // only retrieve the active users
             X.data.EQ(X.data.User.STATUS,'ACTIVE'))),
             placeholder: 'Please Select Customer',
@@ -139,6 +143,7 @@ foam.CLASS({
         function initE() {
           this.SUPER();
           this.hideSaleSummary = true;
+
           this
           .addClass(this.myClass())
           .start().addClass('button-row')
@@ -167,6 +172,9 @@ foam.CLASS({
                 .start().addClass('label').add('Due Date').end()
                 .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
                 .start().addClass('label').add('Amount').end()
+                .startContext({data: this})
+                  .start(this.CURRENCY_CHOICE).end()
+                .endContext()
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
