@@ -24,6 +24,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'foreignExchange',
+      expression: function(data){
+        if( data.sourceCurrency == null ) return;
+        return data.targetCurrency === data.sourceCurrency;
+      }
+    },
+    {
       name: 'currency',
       expression: function(data){
         return data.targetCurrency ? data.targetCurrency.alphabeticCode + ' ' : '$';
@@ -110,7 +118,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.stack.sub(function(){self.itemUpdate()});
-
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
@@ -124,7 +131,14 @@ foam.CLASS({
               self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end()
             })
             .start('h4').add('Date Due').end()
-            .start('h4').add('Amount').end()
+            .callIf(this.foreignExchange, function(){
+              this.start('h4').add('Requested Amount').end()
+              .start('h3').add('Sending Amount').end()
+              .start('h4').add('Exch Rate').end()
+            })
+            .callIf(! this.foreignExchange, function(){
+              this.start('h4').add('Amount').end()
+            })
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
@@ -140,7 +154,14 @@ foam.CLASS({
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
             .start('h4').add(this.data.dueDate ? this.data.dueDate.toISOString().substring(0,10) : '').end()
-            .start('h4').add(this.currency, this.addCommas((this.data.amount/100).toFixed(2))).end()
+            .callIf(this.foreignExchange, function(){
+              this.start('h4').add(self.data.targetAmount).end()
+              .start('h3').add(self.data.sourceAmount).end()
+              .start('h4').add(self.data.exchangeRate).end()
+            })
+            .callIf(! this.foreignExchange, function(){
+              this.start('h4').add(self.currency, self.addCommas((self.data.amount/100).toFixed(2))).end()
+            })
             .start('h3')
               .add(this.data.status$.map(function(a) {
                 return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring(0,10) : a).addClass('generic-status').addClass('Invoice-Status-' + a);

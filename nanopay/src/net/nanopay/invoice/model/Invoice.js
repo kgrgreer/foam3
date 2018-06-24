@@ -173,7 +173,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       aliases: [
-        'a'
+        'a', 'targetAmount'
       ],
       precision: 2,
       required: true,

@@ -2,3 +2,4 @@ p({"class":"net.nanopay.model.Currency","name":"US Dollar","alphabeticCode":"USD
 p({"class":"net.nanopay.model.Currency","name":"Canadian Dollar","alphabeticCode":"CAD","numericCode":124,"precision":2,"country":"CA","owner":1, "flagImage":"images/flags/cad.png"})
 //p({"class":"net.nanopay.model.Currency","name":"Yuan Renminbi","alphabeticCode":"CNY","numericCode":156,"precision":2,"country":"CN","owner":1})
 p({"class":"net.nanopay.model.Currency","name":"India Rupee","alphabeticCode":"INR","numericCode":356,"precision":2,"country":"IN","owner":1, "flagImage":"images/flags/india.png"})
+p({"class":"net.nanopay.model.Currency","name":"None","alphabeticCode":"N/A","numericCode":000,"precision":2,"country":"","owner":1, "flagImage":""})
