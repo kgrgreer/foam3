@@ -130,12 +130,24 @@ foam.CLASS({
     }
     ^ .property-amount{
       width: 215px;
+      padding-left: 115px;
     }
     ^ .customer-div{
       vertical-align: top;
       margin-top: 10px;
       width: 420px;
       display: inline-block;
+    }
+    ^ .net-nanopay-tx-ui-CurrencyChoice{
+      position: absolute;
+      top: 346px;
+      width: 85px;
+      margin-left: 7px;
+      border-right: 1px solid lightgrey;
+    }
+    ^ .foam-u2-PopupView{
+      left: -20px !important;
+      top: 45px !important;
     }
     `,
 
@@ -260,6 +272,7 @@ foam.CLASS({
             amount: this.data.amount,
             dueDate: offsetDate,
             purchaseOrder: this.data.purchaseOrder,
+            targetCurrency: this.currencyType,
             note: this.data.note,
             invoiceFile: this.data.invoiceFile,
             invoiceNumber: this.data.invoiceNumber

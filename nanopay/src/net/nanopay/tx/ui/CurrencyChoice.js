@@ -30,7 +30,7 @@ foam.CLASS({
     border-top: 5px solid black;
     display: inline-block;
     float: right;
-    margin-top: 10px;
+    margin-top: 8px;
     margin-left: 7px;
   }
   ^ .net-nanopay-ui-ActionView-currencyChoice{
@@ -45,10 +45,10 @@ foam.CLASS({
   }
   ^ .net-nanopay-ui-ActionView-currencyChoice > span{
     font-family: Roboto;
-    font-size: 16px;
+    font-size: 12px;
     position: relative;
     font-weight: 300;
-    top: 3px;
+    top: 4px;
     margin-left: 10px;
   }
   ^ .popUpDropDown > div {
@@ -63,8 +63,6 @@ foam.CLASS({
     line-height: 30px;
   }
   ^ .foam-u2-PopupView {
-    left: -40 !important;
-    top: 53px !important;
     padding: 0 !important;
     z-index: 1000;
     width: 110px !important;
@@ -90,6 +88,11 @@ foam.CLASS({
   ^ .popUpDropDown > div {
     display: flex;
   }
+  ^ .net-nanopay-ui-ActionView-currencyChoice img{
+    width: 27px;
+    position: relative;
+    top: 2px;
+  }
   ^ .flag {
     width: 30px !important;
     height: 17.6px;
@@ -109,6 +112,9 @@ foam.CLASS({
       expression: function() {
         var self = this;
         this.currencyDAO.find(this.currentCurrency).then(function(c) { self.currency = c; });
+      },
+      postSet: function(){
+        this.data = this.currency;
       }
     }
   ],
@@ -140,7 +146,7 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.currencyDAO, function(cur) {
+          .select(this.currencyDAO.where(this.EQ(this.Currency.ALPHABETIC_CODE, 'CAD')), function(cur) {
             if ( cur.flagImage != null )
             this.start('div').start('img')
             .attrs({ src: cur.flagImage })
