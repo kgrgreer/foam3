@@ -28,6 +28,10 @@ foam.ENUM({
     {
       name: 'REFUND',
       label: 'Refund'
+    },
+    {
+      name: 'REQUEST',
+      label: 'Request'
     }
   ]
 });

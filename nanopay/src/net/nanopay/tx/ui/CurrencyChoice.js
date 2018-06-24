@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.ui.topNavigation',
-  name: 'CurrencyChoiceView',
+  package: 'net.nanopay.tx.ui',
+  name: 'CurrencyChoice',
   extends: 'foam.u2.View',
 
   implements: [
@@ -27,10 +27,10 @@ foam.CLASS({
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid white;
+    border-top: 5px solid black;
     display: inline-block;
     float: right;
-    margin-top: 7px;
+    margin-top: 10px;
     margin-left: 7px;
   }
   ^ .net-nanopay-ui-ActionView-currencyChoice{
@@ -46,9 +46,10 @@ foam.CLASS({
   ^ .net-nanopay-ui-ActionView-currencyChoice > span{
     font-family: Roboto;
     font-size: 16px;
+    position: relative;
     font-weight: 300;
-    letter-spacing: 0.2px;
-    color: #ffffff;
+    top: 3px;
+    margin-left: 10px;
   }
   ^ .popUpDropDown > div {
     width: 100%;
@@ -104,9 +105,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
-      name: 'lastCurrency',
+      name: 'currency',
       expression: function() {
-        this.currencyDAO.find(this.currentCurrency).then(function(c) { this.lastCurrency = c; });
+        var self = this;
+        this.currencyDAO.find(this.currentCurrency).then(function(c) { self.currency = c; });
       }
     }
   ],
@@ -117,7 +119,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         this.start('span', null, this.optionsBtn_$).end()
-        .start(this.CURRENCY_CHOICE, { label$: this.currentCurrency$, showLabel:true }).start('div')
+        .start(this.CURRENCY_CHOICE, { icon$: this.currency$.dot('flagImage').map(function(v) { return v || ' ';}), label$: this.currency$.dot('alphabeticCode'), showLabel:true }).start('div')
         .addClass(this.myClass('carrot'))
       .end().end()
     }
@@ -144,8 +146,7 @@ foam.CLASS({
             .attrs({ src: cur.flagImage })
             .addClass('flag').end().add(cur.alphabeticCode)
             .on('click', function() {
-              self.currentCurrency = cur.alphabeticCode;
-              localStorage.currency = self.currentCurrency;
+              self.currency = cur;
             })
           })
           .end()
@@ -153,4 +154,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

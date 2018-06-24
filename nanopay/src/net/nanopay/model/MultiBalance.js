@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.model',
-  name: 'Account',
+  name: 'MultiBalance',
   properties: [
     {
       class: 'Long',

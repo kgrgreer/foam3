@@ -48,7 +48,7 @@ foam.CLASS({
         value: 'Daily'
       },
       {
-        name: 'currencyChoice',
+        name: 'currencyType',
         view: 'net.nanopay.tx.ui.CurrencyChoice'
       },
       {
@@ -172,8 +172,8 @@ foam.CLASS({
                 .start().addClass('label').add('Due Date').end()
                 .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
                 .start().addClass('label').add('Amount').end()
-                .startContext({data: this})
-                  .start(this.CURRENCY_CHOICE).end()
+                .startContext({ data: this })
+                  .start(this.CURRENCY_TYPE).end()
                 .endContext()
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
