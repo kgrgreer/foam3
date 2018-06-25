@@ -80,6 +80,7 @@ var classes = [
   'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
+  'net.nanopay.fx.model.FixerIOExchangeRate',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -138,7 +139,7 @@ var classes = [
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
-  
+
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView'
 
