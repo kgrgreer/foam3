@@ -33,7 +33,7 @@ public class AuthenticatedInvitationDAO
   public FObject put_(X x, FObject obj) {
     AuthService auth = (AuthService) x.get("auth");
     Invitation invite = (Invitation) obj;
-    Invitation existingInvite = this.getExistingInvite(invite);
+    Invitation existingInvite = (Invitation) getDelegate().find(invite);
 
     if ( auth.check(x, GLOBAL_INVITATION_UPDATE) ) {
       return super.put_(x, invite);
@@ -109,19 +109,6 @@ public class AuthenticatedInvitationDAO
     if ( ! hasPermission ) {
       throw new RuntimeException("Permission denied");
     }
-  }
-
-  protected Invitation getExistingInvite(Invitation invite) {
-    long inviterId = invite.getCreatedBy();
-    long inviteeId = invite.getInviteeId();
-    ArraySink existingInvites = (ArraySink) getDelegate()
-        .where(AND(
-          EQ(Invitation.CREATED_BY, inviterId),
-          EQ(Invitation.INVITEE_ID, inviteeId)))
-        .limit(1)
-        .select(new ArraySink());
-    boolean inviteExists = existingInvites.getArray().size() == 1;
-    return inviteExists ? (Invitation) existingInvites.getArray().get(0) : null;
   }
 
   protected DAO getSecureDAO(X x, String permission) {
