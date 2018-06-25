@@ -6,32 +6,56 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.ui.NewInvoiceNotification;
 
 import java.util.Date;
 
 public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO userDAO_;
+  protected DAO notificationDAO_;
+
+  enum InvoiceType {
+    RECEIVABLE, PAYABLE;
+  }
 
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
+    notificationDAO_ = (DAO) x.get("notificationDAO");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    User    payer   = (User) userDAO_.find_(x, invoice.getPayerId() );
-
-    // Set the timestamp on the invoice here
-    invoice.setIssueDate(new Date());
-
-    // Makes sure the notification isn't sent if the creator is the receiver
-    if ( payer.getId() == invoice.getCreatedBy() )
-      return getDelegate().put_(x, obj);
-
+    sendInvoiceNotification(notificationDAO_, invoice);
     // Put to the DAO
-    invoice = (Invoice) super.put_(x, invoice);
-    return invoice;
+    return super.put_(x, invoice);
+  }
+
+  private void sendInvoiceNotification(DAO notificationDAO, Invoice invoice) {
+    Long sendToUserId;
+    Long fromUserId;
+    String invoiceType;
+    Long payeeId = (Long) invoice.getPayeeId();
+    Long payerId = (Long) invoice.getPayerId();
+    // for the notification of receivable invoice
+    if (payeeId == invoice.getCreatedBy()) {
+      sendToUserId = payerId;
+      fromUserId = payeeId;
+      invoiceType = InvoiceType.RECEIVABLE.name();
+    } else {
+      sendToUserId = payeeId;
+      fromUserId = payerId;
+      invoiceType = InvoiceType.PAYABLE.name();
+    }
+
+    NewInvoiceNotification notification = new NewInvoiceNotification();
+    notification.setUserId(sendToUserId);
+    notification.setFromUserId(fromUserId);
+    notification.setNotificationType("Invoice received");
+    notification.setInvoiceType(invoiceType);
+    notification.setAmount(invoice.getAmount());
+    notificationDAO.put(notification);
   }
 }

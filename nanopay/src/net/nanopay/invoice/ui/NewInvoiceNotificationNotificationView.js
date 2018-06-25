@@ -5,9 +5,10 @@ foam.CLASS({
 
   imports: [
     'addCommas',
+    'hideReceivableSummary',
     'invoiceDAO',
     'stack',
-    'hideReceivableSummary'
+    'userDAO'
   ],
 
   exports: [
@@ -15,6 +16,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'name',
     'searchResult'
   ],
 
@@ -28,25 +30,32 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var i = this.data;
-
       var self = this;
-      this.invoiceDAO.find(i.id).then(function(a) {
-        self.searchResult = a;
+      this.invoiceDAO.find(i.id).then(function(result) {
+        self.searchResult = result;
+      });
+      /*
+        get sender's name from userDAO since result.payeeName and payerName
+        are the empty strings for the first retrieval from invoiceDAO
+      */
+      this.userDAO.find(i.fromUserId).then(function(user) {
+        self.name = user.label();
       });
 
       this.addClass(this.myClass())
       .start().addClass('message')
-        .add(`${i.senderName} just send you a ${i.invoiceType} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
+        .add(this.name$)
+        .add(` just send you a ${i.invoiceType.toLowerCase()} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
       .end()
       .start(this.LINK).end();
-   }
+    }
   ],
 
   actions: [{
     name: 'link',
     label: 'View Invoice',
     code: function() {
-      if ( this.data.invoiceType === 'receivable' ) {
+      if ( this.data.invoiceType === 'RECEIVABLE' ) {
         this.stack.push({
           class: 'net.nanopay.invoice.ui.SalesDetailView',
           data: this.searchResult

@@ -264,15 +264,6 @@ foam.CLASS({
             invoiceNumber: this.data.invoiceNumber
           });
 
-          var notification = this.NewInvoiceNotification.create({
-            userId: this.userList,
-            invoiceNumber: this.data.invoiceNumber,
-            amount: this.data.amount,
-            senderName: this.user.firstName,
-            notificationType: 'Invoice Received',
-            invoiceType: 'payable'
-          });
-          this.notificationDAO.put(notification);
           this.user.expenses.put(inv);
 
           // if(X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount){

@@ -15,8 +15,8 @@ foam.CLASS({
       precision: 2
     },
     {
-      class: 'String',
-      name: 'senderName'
+      class: 'Long',
+      name: 'fromUserId'
     },
     {
       class: 'String',
