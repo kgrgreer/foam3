@@ -5,13 +5,13 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.u2.PopupView',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'foam.u2.PopupView',
+    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Account',
     'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.model.BankAccountStatus'
   ],
 
   imports: [
@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   css: `
@@ -112,12 +112,13 @@ foam.CLASS({
     {
       name: 'verbTenseMsg',
       expression: function(data) {
-        return data.paymentMethod == this.PaymentStatus.PENDING ? 'Invoice is' : 'Invoice has been';
+        return data.paymentMethod == this.PaymentStatus.PENDING ?
+              'Invoice is' : 'Invoice has been';
       }
     },
     {
       name: 'foreignExchange',
-      factory: function(){
+      factory: function() {
         if ( this.data.sourceCurrency == null ) return false;
         return this.data.targetCurrency != this.data.sourceCurrency;
       }
@@ -135,21 +136,37 @@ foam.CLASS({
         .start(this.BACK_ACTION).end()
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
+        .start(this.EXPORT_BUTTON,
+          { icon: 'images/ic-export.png', showLabel: true }
+        ).end()
         .start('h5')
           .add('Invoice from ', this.data.payeeName)
-          .callIf(this.foreignExchange, function(){
-            this.start({class: 'foam.u2.tag.Image', data: 'images/ic-crossborder.svg'}).end()
+          .callIf(this.foreignExchange, function() {
+            this.start({
+              class: 'foam.u2.tag.Image',
+              data: 'images/ic-crossborder.svg'
+            }).end();
           })
         .end()
-        .callIf(this.foreignExchange, function(){
-          this.tag({ class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView', data: self.data })
+        .callIf(this.foreignExchange, function() {
+          this.tag({
+            class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView',
+            data: self.data
+          });
         })
-        .callIf(! this.foreignExchange, function(){
-          this.tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: self.data })
-        }) 
-        .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
-        .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })
+        .callIf(! this.foreignExchange, function() {
+          this.tag({
+            class: 'net.nanopay.invoice.ui.shared.SingleItemView',
+            data: self.data
+          });
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
+          id: this.data.id
+        })
+        .start('h2')
+          .addClass('light-roboto-h2')
+          .style({ 'margin-bottom': '0px' })
           .add('Note:')
         .end()
         .start('br').end()
@@ -159,7 +176,11 @@ foam.CLASS({
     },
 
     function openExportModal() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: this.data }));
+      this.add(this.Popup.create()
+      .tag({
+        class: 'net.nanopay.ui.modal.ExportModal',
+        exportObj: this.data
+      }));
     }
   ],
 
@@ -184,11 +205,18 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          this.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
+          this.add(
+            self.NotificationMessage.create({
+              message: this.verbTenseMsg + ' ' +
+              this.data.paymentMethod.label + '.',
+              type: 'error'
+            }));
           return;
         }
 
-        this.accountDAO.where(this.EQ(this.Account.ID, this.user.id)).limit(1).select().then(function( accountBalance ) {
+        this.accountDAO
+        .where(this.EQ(this.Account.ID, this.user.id))
+        .limit(1).select().then(function( accountBalance ) {
           if ( accountBalance.array[0].balance < self.data.amount ) {
             // Not enough digital cash balance
             self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
