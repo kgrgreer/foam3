@@ -4,11 +4,15 @@ foam.CLASS({
 
   documentation: 'S2H Invoice model.',
 
-  imports: [ 'invoiceDAO' ],
+  imports: [
+    'currencyDAO',
+    'invoiceDAO'
+  ],
 
   javaImports: [
     'foam.dao.DAO',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.model.Currency',
     'java.util.Date'
   ],
 
@@ -130,7 +134,8 @@ foam.CLASS({
         javaReturns: 'net.nanopay.invoice.model.Invoice',
         javaCode: `
           DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
-
+          DAO currencyDAO = (DAO) getX().get("currencyDAO");
+          Currency currency = (Currency) currencyDAO.find(getCurrencyCode());
           Invoice inv = new Invoice();
           inv.setX(getX());
 
@@ -142,7 +147,7 @@ foam.CLASS({
           inv.setDraft(false);
           inv.setNote(getNotes());
           inv.setAmount(getTotal());
-          inv.setTargetCurrency(getCurrencyCode());
+          inv.setTargetCurrency(currency);
           inv.setStatus(getStatus());
           inv.setPayeeId(2);
           inv.setPayerId(getUserId());

@@ -117,21 +117,23 @@ foam.CLASS({
     `,
   
     methods: [
-      function initE(){
+      function initE() {
         this.SUPER();
         var self = this;
-        this.stack.sub(function(){self.itemUpdate()});
+        this.stack.sub(function() {
+          self.itemUpdate();
+        });
 
         this
           .addClass(this.myClass())
           .start('div').addClass('invoice-detail')
             .start().addClass(this.myClass('table-header'))
-              .callIf(this.data.invoiceFile[0], function(){
-                this.start().addClass('table-attachment').end()
+              .callIf(this.data.invoiceFile[0], function() {
+                this.start().addClass('table-attachment').end();
               })
               .start('h3').add('Invoice #').end()
               .start('h3').add('PO #').end()
-              .call(function(){
+              .call(function() {
                 self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end()
               })
               .start('h3').add('Date Due').end()
@@ -141,7 +143,7 @@ foam.CLASS({
               .start('h3').add('Status').end()
             .end()
             .start().addClass(this.myClass('table-body'))
-              .callIf(this.data.invoiceFile[0], function(){
+              .callIf(this.data.invoiceFile[0], function() {
                 this.start().addClass('table-attachment')
                   .start('span', null, self.popupMenu_$)
                     .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
