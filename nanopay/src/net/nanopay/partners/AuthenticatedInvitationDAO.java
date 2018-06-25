@@ -166,6 +166,10 @@ public class AuthenticatedInvitationDAO
       throw e;
     }
 
+    if ( user.getEmail().equals(invite.getEmail()) )  {
+      throw new RuntimeException("Cannot invite yourself to be partners");
+    }
+
     long createdBy = invite.getCreatedBy();
     this.copyReadOnlyFields(new Invitation(), invite);
     invite.setCreatedBy(createdBy);
