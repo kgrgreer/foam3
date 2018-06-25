@@ -7,6 +7,10 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'createdBy'
+    },
+    {
+      class: 'String',
+      name: 'inviterName'
     }
   ]
 });

@@ -112,8 +112,7 @@ public class SendInvitationDAO
         new PartnerInvitationNotification();
     notification.setUserId(recipient.getId());
     notification.setCreatedBy(currentUser.getId());
-    notification.setBody(currentUser.getLegalName() +
-        " invited you to connect.");
+    notification.setInviterName(currentUser.getLegalName());
     notification.setNotificationType("Partner invitation");
     notificationDAO.put(notification);
   }

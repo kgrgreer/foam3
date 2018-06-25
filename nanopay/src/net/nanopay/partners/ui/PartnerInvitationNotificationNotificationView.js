@@ -25,9 +25,14 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+
       this
         .addClass(this.myClass())
-        .start(this.CONNECT).end();
+        .start('div')
+          .addClass('msg')
+          .add(`${this.data.inviterName} invited you to connect.`)
+        .end()
+        .tag(this.CONNECT);
     },
 
     /**
