@@ -10,6 +10,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.model.Invitation;
 
 import java.security.AccessControlException;
@@ -34,17 +35,24 @@ public class AuthenticatedInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = this.getUser(x);
     Invitation invite = (Invitation) obj;
-
-    this.checkPermissions(x, user, invite, GLOBAL_INVITATION_UPDATE);
-
-    // Make fields `createdBy` and `inviteeId` read-only
     Invitation existingInvite = this.getExistingInvite(invite);
 
     if ( existingInvite != null ) {
-      invite.setCreatedBy(existingInvite.getCreatedBy());
-      invite.setInviteeId(existingInvite.getInviteeId());
+      this.checkPermissions(x, existingInvite, GLOBAL_INVITATION_UPDATE);
+      this.copyReadOnlyFields(existingInvite, invite);
+    } else {
+      try {
+        this.checkCreatedByCurrentUser(x, invite);
+      } catch (RuntimeException e) {
+        Logger logger = (Logger) x.get("logger");
+        logger.error("If you want to create a new invite, you have to set " +
+            "`createdBy` to the id of the current user.");
+        throw e;
+      }
+      long id = invite.getCreatedBy();
+      this.copyReadOnlyFields(new Invitation(), invite);
+      invite.setCreatedBy(id);
     }
 
     return super.put_(x, invite);
@@ -52,12 +60,11 @@ public class AuthenticatedInvitationDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    User user = this.getUser(x);
     Invitation invite = (Invitation) getDelegate().find_(x, id);
 
     if ( invite == null ) return null;
 
-    this.checkPermissions(x, user, invite, GLOBAL_INVITATION_READ);
+    this.checkPermissions(x, invite, GLOBAL_INVITATION_READ);
     return invite;
   }
 
@@ -70,19 +77,17 @@ public class AuthenticatedInvitationDAO
       Comparator order,
       Predicate predicate
   ) {
-    User user = this.getUser(x);
-    DAO dao = this.getDao(x, user.getId(), GLOBAL_INVITATION_READ);
+    DAO dao = this.getDaoWithAppropriateSecurity(x, GLOBAL_INVITATION_READ);
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    User user = this.getUser(x);
     Invitation invite = (Invitation) obj;
 
     if ( invite == null ) return null;
 
-    this.checkPermissions(x, user, invite, GLOBAL_INVITATION_DELETE);
+    this.checkPermissions(x, invite, GLOBAL_INVITATION_DELETE);
     return super.remove_(x, obj);
   }
 
@@ -94,17 +99,12 @@ public class AuthenticatedInvitationDAO
       Comparator order,
       Predicate predicate
   ) {
-    User user = this.getUser(x);
-    DAO dao = this.getDao(x, user.getId(), GLOBAL_INVITATION_DELETE);
+    DAO dao = this.getDaoWithAppropriateSecurity(x, GLOBAL_INVITATION_DELETE);
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 
-  protected void checkPermissions(
-      X x,
-      User user,
-      Invitation invite,
-      String permission
-  ) {
+  protected void checkPermissions(X x, Invitation invite, String permission) {
+    User user = this.getUser(x);
     AuthService auth = (AuthService) x.get("auth");
     boolean hasPermission =
         this.isOwner(user, invite) || auth.check(x, permission);
@@ -127,7 +127,9 @@ public class AuthenticatedInvitationDAO
     return inviteExists ? (Invitation) existingInvites.getArray().get(0) : null;
   }
 
-  protected DAO getDao(X x, long id, String permission) {
+  protected DAO getDaoWithAppropriateSecurity(X x, String permission) {
+    User user = this.getUser(x);
+    long id = user.getId();
     AuthService auth = (AuthService) x.get("auth");
     boolean hasGlobalPermission = auth.check(x, permission);
     return hasGlobalPermission
@@ -149,5 +151,22 @@ public class AuthenticatedInvitationDAO
     boolean isInvitee = user.getId() == invite.getInviteeId();
     boolean isInviter = user.getId() == invite.getCreatedBy();
     return isInvitee || isInviter;
+  }
+
+  protected void copyReadOnlyFields(Invitation from, Invitation to) {
+    to.setCreatedBy(from.getCreatedBy());
+    to.setInviteeId(from.getInviteeId());
+  }
+
+  protected void checkCreatedByCurrentUser(X x, Invitation invite) {
+    User user = this.getUser(x);
+    long id = user.getId();
+    boolean userCreatedInvite = invite.getCreatedBy() == id;
+
+    if ( ! userCreatedInvite ) {
+      throw new RuntimeException(user.getLegalName() + " (id = " + id + ") " +
+          "does not match the createdBy property (" + invite.getCreatedBy() +
+          ") for the Invitation with id = " + invite.getId());
+    }
   }
 }
