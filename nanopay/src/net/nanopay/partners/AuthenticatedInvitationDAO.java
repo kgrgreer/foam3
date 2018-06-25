@@ -35,8 +35,13 @@ public class AuthenticatedInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    AuthService auth = (AuthService) x.get("auth");
     Invitation invite = (Invitation) obj;
     Invitation existingInvite = this.getExistingInvite(invite);
+
+    if ( auth.check(x, GLOBAL_INVITATION_UPDATE) ) {
+      return super.put_(x, invite);
+    }
 
     if ( existingInvite != null ) {
       this.checkPermissions(x, existingInvite, GLOBAL_INVITATION_UPDATE);
