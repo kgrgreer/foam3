@@ -264,7 +264,7 @@ foam.CLASS({
           if ( dueDate ){
             var offsetDate = dueDate.setMinutes(dueDate.getMinutes() + new Date().getTimezoneOffset());
           }
-
+          
           var inv = this.Invoice.create({
             payerId: this.user.id,
             payeeId: this.userList,

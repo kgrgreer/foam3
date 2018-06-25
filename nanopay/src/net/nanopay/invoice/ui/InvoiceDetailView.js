@@ -60,6 +60,10 @@ foam.CLASS({
       value: 'Daily'
     },
     {
+      name: 'currencyType',
+      view: 'net.nanopay.tx.ui.CurrencyChoice'
+    },
+    {
       name: 'userList',
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
@@ -134,12 +138,24 @@ foam.CLASS({
     }
     ^ .property-amount{
       width: 215px;
+      padding-left: 115px;
     }
     ^ .customer-div{
       vertical-align: top;
       margin-top: 10px;
       width: 420px;
       display: inline-block;
+    }
+    ^ .net-nanopay-tx-ui-CurrencyChoice{
+      position: absolute;
+      top: 346px;
+      width: 85px;
+      margin-left: 7px;
+      border-right: 1px solid lightgrey;
+    }
+    ^ .foam-u2-PopupView{
+      left: -20px !important;
+      top: 45px !important;
     }
   `,
 
@@ -177,6 +193,9 @@ foam.CLASS({
                 .start().addClass('label').add('Due Date').end()
                 .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
                 .start().addClass('label').add('Amount').end()
+                .startContext({ data: this })
+                  .start(this.CURRENCY_TYPE).end()
+                .endContext()
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
@@ -263,9 +282,10 @@ foam.CLASS({
           amount: this.data.amount,
           dueDate: offsetDate,
           purchaseOrder: this.data.purchaseOrder,
-          invoiceNumber: this.data.invoiceNumber,
+          targetCurrency: this.currencyType,
           note: this.data.note,
-          invoiceFile: this.data.invoiceFile
+          invoiceFile: this.data.invoiceFile,
+          invoiceNumber: this.data.invoiceNumber
         });
 
         X.dao.put(inv);

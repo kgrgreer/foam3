@@ -95,6 +95,11 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ h5 img{
+      margin-left: 20px;
+      position: relative;
+      top: 3px;
+    }
   `,
 
   properties: [
@@ -119,6 +124,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       this.hideReceivableSummary = true;
 
       this
