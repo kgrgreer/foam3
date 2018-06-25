@@ -171,13 +171,20 @@ public class AuthenticatedInvitationDAO
     }
 
     long createdBy = invite.getCreatedBy();
+    String email = invite.getEmail();
     this.copyReadOnlyFields(new Invitation(), invite);
     invite.setCreatedBy(createdBy);
+    invite.setEmail(email);
   }
 
   protected void copyReadOnlyFields(Invitation from, Invitation to) {
     to.setCreatedBy(from.getCreatedBy());
     to.setInviteeId(from.getInviteeId());
+    to.setEmail(from.getEmail());
+    to.setId(from.getId());
+    to.setInternal(from.getInternal());
+    to.setTimestamp(from.getTimestamp());
+    to.setMessage(from.getMessage());
   }
 
   protected void checkCreatedByCurrentUser(X x, Invitation invite) {
