@@ -18,13 +18,13 @@ public class SecurityUtil {
   private static SecureRandom srand_ = null;
 
   /**
-   * Generates a SecureRandom using SHA256PRNG as the default algorithm
+   * Generates a SecureRandom using SHA1PRNG as the default algorithm
    *
    * @return secure random instance
    * @throws NoSuchAlgorithmException
    */
   public static SecureRandom GetSecureRandom() throws NoSuchAlgorithmException {
-    return GetSecureRandom("SHA256PRNG");
+    return GetSecureRandom("SHA1PRNG");
   }
 
   /**
