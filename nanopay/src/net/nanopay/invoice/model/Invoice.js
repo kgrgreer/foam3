@@ -187,9 +187,6 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'sourceAmount',
-      aliases: [
-        'a'
-      ],
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
@@ -203,7 +200,8 @@ foam.CLASS({
       name: 'sourceAccountId'
     },
     {
-      class: 'Long',
+      class: 'Currency',
+      precision: 2,
       name: 'exchangeRate'
     },
     {

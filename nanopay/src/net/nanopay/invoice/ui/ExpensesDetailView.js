@@ -99,6 +99,11 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ h5 img{
+      margin-left: 20px;
+      position: relative;
+      top: 3px;
+    }
   `,
 
   properties: [
@@ -111,13 +116,18 @@ foam.CLASS({
       }
     },
     {
-      name: 'foreignExchange'
+      name: 'foreignExchange',
+      factory: function(){
+        if ( this.data.sourceCurrency == null ) return false;
+        return this.data.targetCurrency != this.data.sourceCurrency;
+      }
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       this.hideSaleSummary = true;
 
       this
@@ -132,7 +142,12 @@ foam.CLASS({
             this.start({class: 'foam.u2.tag.Image', data: 'images/ic-crossborder.svg'}).end()
           })
         .end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
+        .callIf(this.foreignExchange, function(){
+          this.tag({ class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView', data: self.data })
+        })
+        .callIf(! this.foreignExchange, function(){
+          this.tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: self.data })
+        }) 
         .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })
           .add('Note:')
