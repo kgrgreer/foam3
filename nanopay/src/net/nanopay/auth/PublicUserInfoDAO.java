@@ -29,13 +29,13 @@ import foam.nanos.auth.User;
  *   },
  *   {
  *    class: 'FObjectProperty',
- *    of: 'net.nanopay.tx.model.TransactionEntity',
- *    name: 'payee',
+ *    of: 'net.nanopay.auth.PublicUserInfo',
+ *    name: 'payer',
  *    storageTransient: true
  *   },
  *   {
  *    class: 'Long',
- *    name: 'payeeId'
+ *    name: 'payerId'
  *   },
  *   {
  *     ...
