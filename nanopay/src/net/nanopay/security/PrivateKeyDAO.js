@@ -11,6 +11,7 @@ foam.CLASS({
 
   javaImports: [
     'com.google.api.client.util.Base64',
+    'net.nanopay.security.util.SecurityUtil',
     'javax.crypto.Cipher',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
@@ -19,20 +20,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'Object',
-      name: 'secureRandom',
-      documentation: 'Secure Random used to seed key generation',
-      javaType: 'java.security.SecureRandom',
-      javaFactory: `
-        try {
-          return java.security.SecureRandom.getInstance("SHA1PRNG");
-        } catch ( Throwable t ) {
-          // TODO: log exception
-          throw new RuntimeException(t);
-        }
-      `
-    },
     {
       class: 'String',
       name: 'algorithm',
@@ -69,7 +56,7 @@ foam.CLASS({
 
           // initialize keygen
           KeyGenerator keygen = KeyGenerator.getInstance(getAlgorithm());
-          keygen.init(getKeySize(), getSecureRandom());
+          keygen.init(getKeySize(), SecurityUtil.GetSecureRandom());
 
           // generate secret key and store
           SecretKey key = keygen.generateKey();
@@ -96,7 +83,7 @@ foam.CLASS({
         try {
           SecretKey key = getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
-          cipher.init(Cipher.WRAP_MODE, key, getSecureRandom());
+          cipher.init(Cipher.WRAP_MODE, key, SecurityUtil.GetSecureRandom());
           entry.setEncryptedPrivateKey(Base64.encodeBase64String(cipher.wrap(privateKey)));
           entry.setAlias(getAlias());
           entry.setPrivateKey(null);

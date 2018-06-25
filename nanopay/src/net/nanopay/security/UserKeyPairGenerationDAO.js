@@ -13,26 +13,13 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'net.nanopay.security.util.SecurityUtil',
     'java.security.KeyPair',
     'java.security.KeyPairGenerator',
     'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
-    {
-      class: 'Object',
-      name: 'secureRandom',
-      documentation: 'Secure Random used to seed key generation',
-      javaType: 'java.security.SecureRandom',
-      javaFactory: `
-        try {
-          return java.security.SecureRandom.getInstance("SHA1PRNG");
-        } catch ( Throwable t ) {
-          // TODO: log exception
-          throw new RuntimeException(t);
-        }
-      `
-    },
     {
       class: 'String',
       name: 'algorithm',
@@ -60,7 +47,7 @@ foam.CLASS({
             // TODO: allow for usage of AlgorithmParameterSpec initializer to allow for more powerful keypair generator
             // initialize keygen
             KeyPairGenerator keygen = KeyPairGenerator.getInstance(getAlgorithm());
-            keygen.initialize(getKeySize(), getSecureRandom());
+            keygen.initialize(getKeySize(), SecurityUtil.GetSecureRandom());
 
             // generate keypair
             KeyPair keypair = keygen.generateKeyPair();
