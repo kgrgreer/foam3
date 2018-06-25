@@ -119,10 +119,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'currencyType'
-    },
-    {
-      class: 'String',
       name: 'payeeName',
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
@@ -208,10 +204,6 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod'
-    },
-    {
-      class: 'String',
-      name: 'currencyCode'
     },
     {
       name: 'iso20022'

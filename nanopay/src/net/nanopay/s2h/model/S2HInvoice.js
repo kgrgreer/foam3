@@ -142,7 +142,7 @@ foam.CLASS({
           inv.setDraft(false);
           inv.setNote(getNotes());
           inv.setAmount(getTotal());
-          inv.setCurrencyCode(getCurrencyCode());
+          inv.setTargetCurrency(getCurrencyCode());
           inv.setStatus(getStatus());
           inv.setPayeeId(2);
           inv.setPayerId(getUserId());
