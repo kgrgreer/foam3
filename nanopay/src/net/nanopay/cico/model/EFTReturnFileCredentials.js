@@ -8,12 +8,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'user',
-      value: 'eftcadtest2'
+      value: 'mintchip'
     },
     {
       class: 'String',
       name: 'password',
-      value: 'xT4ZiutU'
+      value: '8mmPHuqI'
     },
     {
       class: 'String',
