@@ -1,19 +1,13 @@
 package net.nanopay.auth;
 
-import foam.dao.*;
 import foam.core.FObject;
-import foam.core.PropertyInfo;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
-import foam.nanos.auth.User;
-import net.nanopay.tx.model.Transaction;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.logger.Logger;
-
-import net.nanopay.auth.PublicUserInfo;
+import foam.nanos.auth.User;
 
 /**
  * Populate a model returned from find or select with a small subset of public

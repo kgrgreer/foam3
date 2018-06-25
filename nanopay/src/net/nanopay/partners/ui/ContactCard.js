@@ -4,19 +4,19 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.comics.DAOCreateControllerView',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.PopupView',
-    'foam.comics.DAOCreateControllerView',
+    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.ui.BillDetailView',
     'net.nanopay.invoice.ui.InvoiceDetailView',
-    'net.nanopay.model.Invitation',
-    'net.nanopay.auth.PublicUserInfo'
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
-    'invoiceDAO',
     'invitationDAO',
+    'invoiceDAO',
     'stack',
     'user'
   ],
