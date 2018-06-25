@@ -19,7 +19,9 @@ foam.CLASS({
     'net.nanopay.model.Currency'
   ],
 
-  exports: [ 'as data' ],
+  exports: [
+    'as data'
+  ],
 
   css: `
   ^carrot {
@@ -72,8 +74,8 @@ foam.CLASS({
   }
   ^ .popUpDropDown > div:hover{
     background-color: #59a5d5;
-        color: white;
-        cursor: pointer;
+    color: white;
+    cursor: pointer;
   }
   ^ .popUpDropDown::before {
     content: ' ';
@@ -111,9 +113,11 @@ foam.CLASS({
       name: 'currency',
       expression: function() {
         var self = this;
-        this.currencyDAO.find(this.currentCurrency).then(function(c) { self.currency = c; });
+        this.currencyDAO.find(this.currentCurrency).then(function(c) {
+          self.currency = c;
+        });
       },
-      postSet: function(){
+      postSet: function() {
         this.data = this.currency;
       }
     }
@@ -124,10 +128,18 @@ foam.CLASS({
     function initE() {
       this
         .addClass(this.myClass())
-        this.start('span', null, this.optionsBtn_$).end()
-        .start(this.CURRENCY_CHOICE, { icon$: this.currency$.dot('flagImage').map(function(v) { return v || ' ';}), label$: this.currency$.dot('alphabeticCode'), showLabel:true }).start('div')
-        .addClass(this.myClass('carrot'))
-      .end().end()
+        .start('span', null, this.optionsBtn_$).end()
+        .start(this.CURRENCY_CHOICE,
+          { icon$: this.currency$.dot('flagImage').map(function(v) {
+                    return v || ' ';
+                  }),
+            label$: this.currency$.dot('alphabeticCode'),
+            showLabel: true
+          })
+          .start('div')
+            .addClass(this.myClass('carrot'))
+          .end()
+        .end();
     }
   ],
 
@@ -135,27 +147,30 @@ foam.CLASS({
     {
       name: 'currencyChoice',
       label: '',
-      code: function () {
+      code: function() {
         var self = this;
         self.optionPopup_ = this.PopupView.create({
           width: 165,
-          x: -137,
+          x: - 137,
           y: 40
         }).on('click', function() {
           return self.optionPopup_.remove();
         });
 
-        self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.currencyDAO.where(this.EQ(this.Currency.ALPHABETIC_CODE, 'CAD')), function(cur) {
-            if ( cur.flagImage != null )
-            this.start('div').start('img')
-            .attrs({ src: cur.flagImage })
-            .addClass('flag').end().add(cur.alphabeticCode)
-            .on('click', function() {
-              self.currency = cur;
-            })
+        self.optionPopup_ = self.optionPopup_.start('div')
+        .addClass('popUpDropDown')
+          .select(this.currencyDAO.where(
+            this.EQ(this.Currency.ALPHABETIC_CODE, 'CAD')), function(cur) {
+            if ( cur.flagImage != null ) {
+              this.start('div').start('img')
+              .attrs({ src: cur.flagImage })
+              .addClass('flag').end().add(cur.alphabeticCode)
+              .on('click', function() {
+                self.currency = cur;
+              });
+            }
           })
-          .end()
+          .end();
         self.optionsBtn_.add(self.optionPopup_);
       }
     }
