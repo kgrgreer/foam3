@@ -107,7 +107,7 @@ public class AuthenticatedInvitationDAO
   ) {
     AuthService auth = (AuthService) x.get("auth");
     boolean hasPermission =
-        this.isOwner(user, invite) || auth.check(x, GLOBAL_INVITATION_READ);
+        this.isOwner(user, invite) || auth.check(x, permission);
 
     if ( ! hasPermission ) {
       throw new RuntimeException("Permission denied");
