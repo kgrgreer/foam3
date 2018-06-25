@@ -35,6 +35,16 @@ var classes = [
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
 
+  //sps
+  'net.nanopay.sps.model.GeneralRequestPacket',
+  'net.nanopay.sps.model.GeneralRequestResponse',
+  'net.nanopay.sps.model.BatchDetailRequestPacket',
+  'net.nanopay.sps.model.BatchDetailGeneralResponse',
+  'net.nanopay.sps.model.DetailResponse',
+  'net.nanopay.sps.model.RequestMessage',
+  'net.nanopay.sps.model.HostError',
+  'net.nanopay.sps.model.UserInfo',
+
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.admin.model.AccountStatus',
@@ -134,7 +144,7 @@ var classes = [
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
-  
+
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView'
 
