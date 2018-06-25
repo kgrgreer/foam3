@@ -56,7 +56,6 @@ var classes = [
   'foam.nanos.auth.token.TokenService',
   'foam.nanos.auth.resetPassword.ResetPasswordTokenService',
   'foam.nanos.fs.File',
-  'foam.swift.box.RPCReturnBox',
   'foam.swift.parse.StringPStream',
   'foam.swift.parse.json.output.Outputter',
   'foam.swift.ui.DAOTableViewSource',
