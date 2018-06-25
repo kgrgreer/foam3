@@ -45,19 +45,15 @@ public class AuthenticatedInvitationDAO
 
     if ( existingInvite != null ) {
       this.checkPermissions(x, existingInvite, GLOBAL_INVITATION_UPDATE);
+
+      // TODO: Handle the different valid ways to update an invitation from a
+      // business perspective here. At the time of writing there are no valid
+      // reasons to update an invitation, so trying to put an existing invite
+      // will just send the existing one down the DAO decorator chain.
+
       this.copyReadOnlyFields(existingInvite, invite);
     } else {
-      try {
-        this.checkCreatedByCurrentUser(x, invite);
-      } catch (RuntimeException e) {
-        Logger logger = (Logger) x.get("logger");
-        logger.error("If you want to create a new invite, you have to set " +
-            "`createdBy` to the id of the current user.");
-        throw e;
-      }
-      long id = invite.getCreatedBy();
-      this.copyReadOnlyFields(new Invitation(), invite);
-      invite.setCreatedBy(id);
+      this.prepareNewInvite(x, invite);
     }
 
     return super.put_(x, invite);
@@ -156,6 +152,23 @@ public class AuthenticatedInvitationDAO
     boolean isInvitee = user.getId() == invite.getInviteeId();
     boolean isInviter = user.getId() == invite.getCreatedBy();
     return isInvitee || isInviter;
+  }
+
+  protected void prepareNewInvite(X x, Invitation invite) {
+    User user = this.getUser(x);
+
+    try {
+      this.checkCreatedByCurrentUser(x, invite);
+    } catch (RuntimeException e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.debug("If you want to create a new invite, you have to set " +
+          "`createdBy` to the id of the current user.");
+      throw e;
+    }
+
+    long createdBy = invite.getCreatedBy();
+    this.copyReadOnlyFields(new Invitation(), invite);
+    invite.setCreatedBy(createdBy);
   }
 
   protected void copyReadOnlyFields(Invitation from, Invitation to) {
