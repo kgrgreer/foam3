@@ -136,10 +136,16 @@ var classes = [
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
+  'net.nanopay.security.KeyPairEntry',
+  'net.nanopay.security.PrivateKeyEntry',
+  'net.nanopay.security.PublicKeyEntry',
+  'net.nanopay.security.KeyPairDAO',
+  'net.nanopay.security.PublicKeyDAO',
+  'net.nanopay.security.PrivateKeyDAO',
+  'net.nanopay.security.UserKeyPairGenerationDAO',
 
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView'
-
 ];
 
 var abstractClasses = [
