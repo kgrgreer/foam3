@@ -261,6 +261,11 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       label: 'Latest Modify Date & Time'
+    },
+    {
+      class: 'String',
+      name: 'CurrencyCode',
+      label: 'CurrencyCode'
     }
   ],
 

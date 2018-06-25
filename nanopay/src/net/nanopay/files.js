@@ -55,6 +55,7 @@ FOAM_FILES([
   // fx
   { name: 'net/nanopay/fx/model/ExchangeRate' },
   { name: 'net/nanopay/fx/model/ExchangeRateQuote' },
+  { name: 'net/nanopay/fx/model/FixerIOExchangeRate' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
 
@@ -321,5 +322,7 @@ FOAM_FILES([
   { name: 'net/nanopay/s2h/model/S2HInvoice' },
   // Institution
   { name: 'net/nanopay/model/Institution' },
-  { name: 'net/nanopay/model/Relationships' }
+  { name: 'net/nanopay/model/Relationships'},
+
+  { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView'}
 ]);

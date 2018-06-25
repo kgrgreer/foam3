@@ -34,6 +34,7 @@ var classes = [
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
+  'net.nanopay.model.MultiBalance',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -73,6 +74,7 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.model.ExchangeRate',
   'net.nanopay.fx.model.ExchangeRateQuote',
+  'net.nanopay.fx.model.FixerIOExchangeRate',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -141,6 +143,9 @@ var classes = [
   'net.nanopay.security.PublicKeyDAO',
   'net.nanopay.security.PrivateKeyDAO',
   'net.nanopay.security.UserKeyPairGenerationDAO'
+
+  //topnavigation
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
 ];
 
 var abstractClasses = [

@@ -166,6 +166,16 @@
       <artifactId>jaxb-impl</artifactId>
       <version>2.2.6</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-catalina</artifactId>
+      <version>9.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.redhat.victims.maven</groupId>
+      <artifactId>security-versions</artifactId>
+      <version>1.0.6</version>
+    </dependency>
   </dependencies>
 
   <build>

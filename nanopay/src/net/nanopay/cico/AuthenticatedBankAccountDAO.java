@@ -9,6 +9,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import net.nanopay.model.BankAccount;
 
 import java.security.AccessControlException;
@@ -42,6 +43,7 @@ public class AuthenticatedBankAccountDAO
     if ( account.getOwner() == null || ! auth.check(x, GLOBAL_BANK_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_BANK_ACCOUNT_UPDATE) ) {
       account.setOwner(user.getId());
     }
+
     return super.put_(x, obj);
   }
 
@@ -54,11 +56,12 @@ public class AuthenticatedBankAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
+    // fetch account from delegate and verify user either owns the account or has global read access
     BankAccount account = (BankAccount) getDelegate().find_(x, id);
-
-    if ( account != null && ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_READ) ) {
+    if ( account != null && ! SafetyUtil.equals(account.getOwner(), user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_READ) ) {
       return null;
     }
+
     return account;
   }
 
@@ -86,7 +89,7 @@ public class AuthenticatedBankAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    if ( ! account.getOwner().equals(user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_DELETE) ) {
+    if ( account != null && ! SafetyUtil.equals(account.getOwner(), user.getId()) && ! auth.check(x, GLOBAL_BANK_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 
