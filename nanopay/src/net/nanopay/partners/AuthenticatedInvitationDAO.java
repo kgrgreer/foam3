@@ -24,10 +24,6 @@ public class AuthenticatedInvitationDAO
   public final static String GLOBAL_INVITATION_UPDATE = "invitation.update.x";
   public final static String GLOBAL_INVITATION_DELETE = "invitation.delete.x";
 
-  public AuthenticatedInvitationDAO(DAO delegate) {
-    setDelegate(delegate);
-  }
-
   public AuthenticatedInvitationDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -78,7 +74,7 @@ public class AuthenticatedInvitationDAO
       Comparator order,
       Predicate predicate
   ) {
-    DAO dao = this.getDaoWithAppropriateSecurity(x, GLOBAL_INVITATION_READ);
+    DAO dao = this.getSecureDAO(x, GLOBAL_INVITATION_READ);
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
@@ -100,7 +96,7 @@ public class AuthenticatedInvitationDAO
       Comparator order,
       Predicate predicate
   ) {
-    DAO dao = this.getDaoWithAppropriateSecurity(x, GLOBAL_INVITATION_DELETE);
+    DAO dao = this.getSecureDAO(x, GLOBAL_INVITATION_DELETE);
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 
@@ -128,7 +124,7 @@ public class AuthenticatedInvitationDAO
     return inviteExists ? (Invitation) existingInvites.getArray().get(0) : null;
   }
 
-  protected DAO getDaoWithAppropriateSecurity(X x, String permission) {
+  protected DAO getSecureDAO(X x, String permission) {
     User user = this.getUser(x);
     long id = user.getId();
     AuthService auth = (AuthService) x.get("auth");
@@ -141,17 +137,16 @@ public class AuthenticatedInvitationDAO
   }
 
   protected User getUser(X x) {
-      User user = (User) x.get("user");
-      if ( user == null ) {
-        throw new AccessControlException("User is not logged in");
-      }
-      return user;
+    User user = (User) x.get("user");
+    if ( user == null ) {
+      throw new AccessControlException("User is not logged in");
+    }
+    return user;
   }
 
   protected boolean isOwner(User user, Invitation invite) {
-    boolean isInvitee = user.getId() == invite.getInviteeId();
-    boolean isInviter = user.getId() == invite.getCreatedBy();
-    return isInvitee || isInviter;
+    long id = user.getId();
+    return invite.getInviteeId() == id || invite.getCreatedBy() == id;
   }
 
   protected void prepareNewInvite(X x, Invitation invite) {
