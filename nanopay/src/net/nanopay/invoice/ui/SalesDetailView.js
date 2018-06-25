@@ -106,6 +106,13 @@ foam.CLASS({
       expression: function(data) {
         return data.paymentMethod == this.PaymentStatus.PENDING ? 'Invoice is' : 'Invoice has been';
       }
+    },
+    {
+      name: 'foreignExchange',
+      factory: function(){
+        if ( this.data.sourceCurrency == null ) return false;
+        return this.data.targetCurrency != this.data.sourceCurrency;
+      }
     }
   ],
 
@@ -122,8 +129,18 @@ foam.CLASS({
         })
         .start(this.RECORD_PAYMENT).end()
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
-        .start('h5').add('Bill to ', this.data.payerName).end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
+        .start('h5')
+          .add('Bill to ', this.data.payerName)
+          .callIf(this.foreignExchange, function(){
+            this.start({class: 'foam.u2.tag.Image', data: 'images/ic-crossborder.svg'}).end()
+          })
+        .end()
+        .callIf(this.foreignExchange, function(){
+          this.tag({ class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView', data: self.data })
+        })
+        .callIf(! this.foreignExchange, function(){
+          this.tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: self.data })
+        }) 
         .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })
           .add('Note:')
