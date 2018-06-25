@@ -15,7 +15,7 @@ public class SecurityUtil {
     }
   }
 
-  private static SecureRandom srand = null;
+  private static SecureRandom srand_ = null;
 
   /**
    * Generates a SecureRandom using SHA256PRNG as the default algorithm
@@ -35,9 +35,9 @@ public class SecurityUtil {
    * @throws NoSuchAlgorithmException
    */
   public static SecureRandom GetSecureRandom(String algorithm) throws NoSuchAlgorithmException {
-    if ( srand == null ) {
-      srand = SecureRandom.getInstance(algorithm);
+    if ( srand_ == null ) {
+      srand_ = SecureRandom.getInstance(algorithm);
     }
-    return srand;
+    return srand_;
   }
 }
