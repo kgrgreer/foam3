@@ -52,7 +52,8 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       Properties config = new Properties();
       config.put("StrictHostKeyChecking", "no");
       session.setConfig(config);
-      session.connect();
+      session.setTimeout(60000);
+      session.connect(60000);
 
       // open SFTP connection and download file
       channel = session.openChannel("sftp");
@@ -147,7 +148,6 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       }
 
       logger.debug("EFT Confirmation file processing finished");
-      channelSftp.exit();
 
     } catch ( JSchException | SftpException e ) {
       logger.error(e);

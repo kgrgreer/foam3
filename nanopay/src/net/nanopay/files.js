@@ -254,6 +254,13 @@ FOAM_FILES([
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/FileKeyStoreManager' },
   { name: 'net/nanopay/security/csp/CSPViolation'},
+  { name: 'net/nanopay/security/KeyPairEntry' },
+  { name: 'net/nanopay/security/PublicKeyEntry' },
+  { name: 'net/nanopay/security/PrivateKeyEntry' },
+  { name: 'net/nanopay/security/KeyPairDAO' },
+  { name: 'net/nanopay/security/PublicKeyDAO' },
+  { name: 'net/nanopay/security/PrivateKeyDAO' },
+  { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
 
   // bank
   { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
