@@ -8,9 +8,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack',
     'hideReceivableSummary',
+    'notificationDAO',
     'recurringInvoiceDAO',
+    'stack',
     'userDAO',
     'user'
   ],
@@ -22,9 +23,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice',
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.NewInvoiceNotification'
   ],
 
   properties: [
