@@ -9,6 +9,11 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance'
+    },
+    {
+      class: 'String',
+      name: 'currencyCode',
+      value: 'CAD'
     }
   ]
 });

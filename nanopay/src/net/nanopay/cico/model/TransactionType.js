@@ -22,12 +22,18 @@ foam.ENUM({
       label: 'Verification'
     },
     {
+      // REVIEW - how is this used? - Joel
       name: 'BANK_ACCOUNT_PAYMENT',
       label: 'BankAccountPayment'
     },
     {
+      documentation: 'This is used to process a refund from a merchant to a mint chip user. The flow for this is currently not implemented.',
       name: 'REFUND',
       label: 'Refund'
+    },
+    {
+      name: 'REQUEST',
+      label: 'Request'
     }
   ]
 });

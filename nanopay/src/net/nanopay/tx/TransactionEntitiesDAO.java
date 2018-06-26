@@ -11,11 +11,12 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionEntity;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.logger.Logger;
 
 public class TransactionEntitiesDAO extends ProxyDAO
 {
   protected DAO userDAO_;
-
+  protected Logger logger_;
   private class DecoratedSink extends foam.dao.ProxySink
   {
     public DecoratedSink(X x, Sink delegate)
@@ -35,6 +36,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     super(x, delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
+    logger_ = (Logger) x.get("logger");
   }
 
   @Override
@@ -62,10 +64,24 @@ public class TransactionEntitiesDAO extends ProxyDAO
     Transaction tx = (Transaction) clone;
     User payer = (User) userDAO_.find(tx.getPayerId());
     User payee = (User) userDAO_.find(tx.getPayeeId());
-    TransactionEntity payerEnitity = new TransactionEntity(payer);
-    TransactionEntity payeeEnitity = new TransactionEntity(payee);
-    tx.setPayee(payeeEnitity);
-    tx.setPayer(payerEnitity);
+
+    if (payer == null) {
+      logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), tx.getPayerId()));
+      tx.setPayer(null);
+    }
+    else {
+      TransactionEntity payerEnitity = new TransactionEntity(payer);
+      tx.setPayer(payerEnitity);
+    }
+
+    if (payee == null) {
+      logger_.error(String.format("Transaction: %d Payee with Id: %d not found", tx.getId(), tx.getPayeeId()));
+      tx.setPayee(null);
+    }
+    else {
+      TransactionEntity payeeEnitity = new TransactionEntity(payee);
+      tx.setPayee(payeeEnitity);
+    }
     return clone;
   }
 }

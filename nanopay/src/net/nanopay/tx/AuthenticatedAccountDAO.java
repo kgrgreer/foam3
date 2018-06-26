@@ -10,6 +10,8 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import java.security.AccessControlException;
+
+import foam.util.SafetyUtil;
 import net.nanopay.model.Account;
 import static foam.mlang.MLang.EQ;
 
@@ -17,7 +19,7 @@ public class AuthenticatedAccountDAO
   extends ProxyDAO
 {
   public final static String GLOBAL_ACCOUNT_CREATE = "account.create.x";
-  public final static String GLOBAL_ACCOUNT_READ   = "account.read.x";
+  public final static String GLOBAL_ACCOUNT_READ = "account.read.x";
   public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.x";
   public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.x";
 
@@ -28,12 +30,11 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User        user    = (User) x.get("user");
-    Account     account = (Account) obj;
-    AuthService auth    = (AuthService) x.get("auth");
+    User user = (User) x.get("user");
+    Account account = (Account) obj;
+    AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      new Exception().printStackTrace();
       throw new AccessControlException("User is not logged in");
     }
 
@@ -54,8 +55,9 @@ public class AuthenticatedAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
+    // fetch account from delegate and verify user either owns the account or has global read access
     Account account = (Account) getDelegate().find_(x, id);
-    if ( account != null && account.getId() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
+    if ( account != null && ! SafetyUtil.equals(account.getId(), user.getId()) && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
       return null;
     }
 
@@ -64,7 +66,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User        user = (User) x.get("user");
+    User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -78,15 +80,15 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    User        user    = (User) x.get("user");
-    Account     account = (Account) obj;
-    AuthService auth    = (AuthService) x.get("auth");
+    User user = (User) x.get("user");
+    Account account = (Account) obj;
+    AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
 
-    if ( account != null && account.getId() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
+    if ( account != null && ! SafetyUtil.equals(account.getId(), user.getId()) && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 
@@ -95,7 +97,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    User        user = (User) x.get("user");
+    User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {

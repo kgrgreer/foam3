@@ -18,11 +18,13 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'fromCurrency'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'toCurrency'
     },
     {
@@ -31,18 +33,23 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
+      name: 'created'
+    },
+    {
+      class: 'DateTime',
       name: 'expirationDate'
     },
-
     /*Interac*/
+    /* REVIEW: can this be replaced by created Date */
     {
       class: 'DateTime',
       name: 'valueDate'
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.ExchangeRateStatus',
       name: 'fxStatus',
-      value: 'Quoted'
+      value: 'QUOTED' /*'Quoted'*/
     },
     {
       class: 'String',

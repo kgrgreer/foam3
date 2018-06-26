@@ -86,11 +86,13 @@ foam.CLASS({
         name: 'valueDate'
       },
       {
-        class: 'String',
+        class: 'Reference',
+        of: 'net.nanopay.model.Currency',
         name: 'sourceCurrency'
       },
       {
-        class: 'String',
+        class: 'Reference',
+        of: 'net.nanopay.model.Currency',
         name: 'targetCurrency'
       },
       {

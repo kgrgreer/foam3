@@ -28,9 +28,8 @@ foam.CLASS({
       documentation: 'Credit/Debit Network owner. To be determined by decorator.'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
-      name: 'paymentPlatform',
+      class: 'String',
+      name: 'txnProcessor',
       documentation: 'Payment platform that should be used to process this payment card'
     },
     {
@@ -68,7 +67,6 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      swiftType: 'Date',
       name: 'expirationDate',
       documentation: 'Expiration date of payment card',
       required: true
@@ -107,7 +105,7 @@ let date = Date()
 let cal = Calendar(identifier: .gregorian)
 let today = cal.startOfDay(for: date)
 
-let expDate = cal.startOfDay(for: self.expirationDate)
+let expDate = cal.startOfDay(for: self.expirationDate as! Date)
 
 return today > expDate
       `
@@ -135,7 +133,7 @@ return String.valueOf(month);
       swiftCode: `
 let calendar = Calendar.current
 
-let month = calendar.component(.month, from: expirationDate)
+let month = calendar.component(.month, from: expirationDate as! Date)
 if month < 10 {
   return "0\(month)"
 }
@@ -158,7 +156,7 @@ return String.valueOf(year).substring(2);
       swiftCode: `
 let calendar = Calendar.current
 
-let year = calendar.component(.year, from: expirationDate)
+let year = calendar.component(.year, from: expirationDate as! Date)
 let yearString = String(describing: year)
 return String(yearString.dropFirst(2))
       `
@@ -224,35 +222,6 @@ foam.ENUM({
     {
       name: 'JCB',
       label: 'JCB'
-    }
-  ]
-});
-
-foam.ENUM({
-  package: 'net.nanopay.cico.paymentCard.model',
-  name: 'PaymentCardPaymentPlatform',
-  documentation: 'Payment platform to use to process the transaction using this payment card.',
-
-  values: [
-    {
-      name: 'UNSUPPORTED',
-      label: 'Unsupported'
-    },
-    {
-      name: 'STRIPE',
-      label: 'Stripe'
-    },
-    {
-      name: 'AUTHORIZE',
-      label: 'Authorize.net'
-    },
-    {
-      name: 'REALEX',
-      label: 'Realex'
-    },
-    {
-      name: 'GLOBALPAYMENTS',
-      label: 'Global Payments'
     }
   ]
 });
