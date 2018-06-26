@@ -20,6 +20,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
+  { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/liquidity/model/Threshold' },
   { name: 'net/nanopay/liquidity/model/Liquidity' },
   { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
