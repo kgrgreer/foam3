@@ -255,9 +255,11 @@ foam.CLASS({
             // If dropped items aren't files, reject them
             if ( inputFile[i].kind === 'file' ) {
               var file = inputFile[i].getAsFile();
-              if( this.isImageType(file) ) files.push(file);
-              else
+              if ( this.isImageType(file) ) {
+                files.push(file);
+              } else {
                 this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+              }
             }
           }
         }
@@ -265,7 +267,7 @@ foam.CLASS({
         inputFile = e.dataTransfer.files
         for (var i = 0; i < inputFile.length; i++) {
           var file = inputFile[i];
-          if( this.isImageType(file) ) files.push(file);
+          if ( this.isImageType(file) ) files.push(file);
           else{
             this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
           }
@@ -303,7 +305,7 @@ foam.CLASS({
         }
         var isIncluded = false
         for ( var j = 0 ; j < this.data.length ; j++ ) {
-          if( this.data[j].filename.localeCompare(files[i].name) === 0 ) {
+          if ( this.data[j].filename.localeCompare(files[i].name) === 0 ) {
             isIncluded = true;
             break
           }
