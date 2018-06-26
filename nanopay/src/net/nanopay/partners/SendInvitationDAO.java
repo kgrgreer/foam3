@@ -2,11 +2,10 @@ package net.nanopay.partners;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
 import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
-import static foam.mlang.MLang.*;
+import foam.dao.DAO;
+import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -15,13 +14,14 @@ import foam.nanos.notification.email.EmailService;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import net.nanopay.model.Invitation;
-import net.nanopay.partners.InvitationStatus;
+import net.nanopay.model.InvitationStatus;
 import net.nanopay.partners.ui.PartnerInvitationNotification;
+import static foam.mlang.MLang.*;
 
 public class SendInvitationDAO
   extends ProxyDAO
@@ -144,16 +144,22 @@ public class SendInvitationDAO
         getExistingInvite(invite.getEmail(), currentUser.getId());
 
     User recipient = getUserByEmail(userDAO, invite.getEmail());
-    if ( recipient.getId() == currentUser.getId() ) return null;
+
+    if ( recipient != null ) {
+      if ( recipient.getId() == currentUser.getId() ) {
+        throw new RuntimeException("Cannot send invitation to self.");
+      }
+    }
 
     if ( existingInvite != null ) {
-      
+
       // This is here because if it wasn't, MakeConnectionDAO wouldn't be able
       // to set the status because this DAO decorator would overwrite it. We
       // can't just pass on invite instead of existingInvite at the bottom of
       // this block either because that's a security risk. Users could set
       // fields like createdBy or inviteeId to be things they shouldn't. This
       // probably isn't the best solution.
+      existingInvite = (Invitation) existingInvite.fclone();
       existingInvite.setStatus(invite.getStatus());
 
       long hoursSinceLastSend = getHoursSinceLastSend(existingInvite);
@@ -174,13 +180,12 @@ public class SendInvitationDAO
     if ( recipient != null  ) {
       newInvite.setInviteeId(recipient.getId());
       newInvite.setInternal(true);
+      sendInvitationNotification(notificationDAO, currentUser, recipient);
     } else {
-      // TEMPORARY: We don't support external users yet
-      return newInvite;
+      newInvite.setInternal(false);
     }
 
     sendInvitationEmail(x, newInvite, currentUser, recipient != null);
-    sendInvitationNotification(notificationDAO, currentUser, recipient);
 
     return super.put_(x, newInvite);
   }

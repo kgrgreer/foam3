@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.partners.InvitationStatus',
+      of: 'net.nanopay.model.InvitationStatus',
       name: 'status'
     }
   ]

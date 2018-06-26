@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.partners',
+  package: 'net.nanopay.model',
   name: 'InvitationStatus',
 
   documentation: 'Invitation status (open, accepted, connected, rejected)',

@@ -6,7 +6,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.Invitation',
-    'net.nanopay.partners.InvitationStatus'
+    'net.nanopay.model.InvitationStatus'
   ],
 
   implements: [

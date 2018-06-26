@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
 import net.nanopay.model.Invitation;
+import net.nanopay.model.InvitationStatus;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;

@@ -18,6 +18,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/Invitation' },
+  { name: 'net/nanopay/model/InvitationStatus' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -336,16 +337,12 @@ FOAM_FILES([
 
   // s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice' },
-  // Institution
-  { name: 'net/nanopay/model/Institution' },
-
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
-  { name: 'net/nanopay/partners/InvitationStatus' },
   { name: 'net/nanopay/auth/PublicUserInfo' },
 
   // relationships
