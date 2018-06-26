@@ -189,7 +189,7 @@ foam.CLASS({
             businessName: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Personal',
-            group: 'ccAdmin'===(this.user.group)?'ccShopper':'shopper',
+            group: 'ccAdmin'==(this.user.group)?'ccShopper':'shopper',
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
