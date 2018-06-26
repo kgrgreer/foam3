@@ -6,7 +6,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'id',
       doumentation: 'Sequence number.'
     },
