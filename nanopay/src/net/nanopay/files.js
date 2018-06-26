@@ -337,6 +337,7 @@ FOAM_FILES([
 
   // s2h
   { name: 'net/nanopay/s2h/model/S2HInvoice' },
+
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
