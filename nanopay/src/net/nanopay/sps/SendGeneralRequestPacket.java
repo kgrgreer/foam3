@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateGeneralRequestPacket implements ContextAgent {
+public class SendGeneralRequestPacket implements ContextAgent {
 
   @Override
   public void execute(X x) {
