@@ -221,6 +221,13 @@ foam.CLASS({
           self.loginSuccess$.sub(resolve);
         });
 
+      // don't go to log in screen if going to sign up password screen
+      if ( location.hash != null && location.hash === '#sign-up' )
+        return new Promise(function(resolve, reject) {
+          self.stack.push({ class: 'net.nanopay.auth.ui.SignUpView' });
+          self.loginSuccess$.sub(resolve);
+        });
+
       return new Promise(function(resolve, reject) {
         self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
