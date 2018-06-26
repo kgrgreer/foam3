@@ -55,8 +55,8 @@ function set_doc_base {
     if [ -f "$CATALINA_HOME/conf/server.xml" ]; then
         if ! grep -q "docBase" "$CATALINA_HOME/conf/server.xml"; then
             printf "adding docBase\n"
-            # TODO: figure how ot insert \n before <\Host> on macos
-            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" /></Host>,g" "$CATALINA_HOME/conf/server.xml"
+            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" />\\
+        </Host>,g" "$CATALINA_HOME/conf/server.xml"
         else
             sed -i -e "s,docBase=.*path=,docBase=\"\${catalina_doc_base}\" path=,g" "$CATALINA_HOME/conf/server.xml"
         fi
@@ -75,6 +75,30 @@ function backup {
 
         cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
     fi
+}
+
+function setup_csp_valve {
+  if [[ ! -f $CATALINA_HOME/lib/CSPValve.jar ]]; then
+    pushd .
+    cd nanopay/src/net/nanopay/security/csp
+    mkdir build
+    javac -cp ~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar:~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar:/Library/Tomcat/lib/servlet-api.jar -d ./build CSPValve.java
+    cd build
+    jar cvf CSPValve.jar *
+    mv CSPValve.jar $CATALINA_HOME/lib
+    cd ..
+    rm -rf build
+    popd
+    echo "INFO :: CSP Valve setup."
+  fi
+  if [[ -f "$CATALINA_HOME/conf/server.xml" ]]; then
+      if ! grep -q "CSPValve" "$CATALINA_HOME/conf/server.xml"; then
+          sed -i -e "s,</Host>,\\
+          <Valve className=\"net.nanopay.security.csp.CSPValve\" />\\
+      </Host>,g" "$CATALINA_HOME/conf/server.xml"
+          printf "INFO :: Added CSP Valve to server.xml\n"
+      fi
+  fi
 }
 
 function build_war {
@@ -109,6 +133,8 @@ function build_war {
       mvn install -Dbuild=dev -o
     else
       mvn install
+      setup_csp_valve
+      mvn com.redhat.victims.maven:security-versions:check
     fi
 }
 

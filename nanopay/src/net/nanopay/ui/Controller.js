@@ -29,6 +29,7 @@ foam.CLASS({
     'account',
     'appConfig',
     'as ctrl',
+    'currentCurrency',
     'findAccount',
     'privacyUrl',
     'termsUrl'
@@ -88,7 +89,15 @@ foam.CLASS({
     },
     {
       name: 'appConfig'
-    }
+    },
+    {
+      class: 'String',
+      name: 'currentCurrency',
+      factory: function () {
+        return ( localStorage.currency ) ?
+          localStorage.currency : 'CAD';
+      }
+    },
   ],
 
   methods: [
