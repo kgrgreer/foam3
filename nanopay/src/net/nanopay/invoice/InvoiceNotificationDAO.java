@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.ui.NewInvoiceNotification;
+import net.nanopay.invoice.notification.NewInvoiceNotification;
 
 import java.util.Date;
 
