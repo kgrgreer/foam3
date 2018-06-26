@@ -185,7 +185,7 @@ foam.CLASS({
   `,
   
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
       this.getDefaultBank();
@@ -199,7 +199,12 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
-              .start().addClass('value').add(this.type ? this.invoice.payeeName : this.invoice.payerName).end()
+              .start()
+                .addClass('value')
+                .add(this.type
+                  ? this.invoice.payee.label()
+                  : this.invoice.payer.label())
+              .end()
             .end()
             .start()
               .start().addClass('key').add("Amount").end()

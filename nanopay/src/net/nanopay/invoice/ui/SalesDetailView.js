@@ -122,7 +122,7 @@ foam.CLASS({
         })
         .start(this.RECORD_PAYMENT).end()
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
-        .start('h5').add('Bill to ', this.data.payerName).end()
+        .start('h5').add('Bill to ', this.data.payer.label()).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })

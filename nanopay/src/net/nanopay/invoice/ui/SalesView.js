@@ -98,7 +98,9 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
-            factory: function() { return self.Invoice.create({ payeeId: self.user.id, payeeName: self.user.name }); },
+            factory: function() {
+              return self.Invoice.create({ payeeId: self.user.id });
+            },
             createLabel: 'New Invoice',
             createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },

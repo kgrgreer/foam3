@@ -24,8 +24,8 @@ foam.CLASS({
     'invoice',
     {
       name: 'type',
-      expression: function(invoice, user){
-        return user.id != invoice.payeeId
+      expression: function(invoice, user) {
+        return user.id !== invoice.payeeId;
       }
     },
     {
@@ -35,58 +35,66 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      ^{
-        width: 448px;
-        margin: auto;
-        font-family: Roboto;
-      }
-    */}
-    })
-  ],
-  
+  css: `
+    ^{
+      width: 448px;
+      margin: auto;
+      font-family: Roboto;
+    }
+  `,
+
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
-      var self = this;
 
       this
-      .tag(this.ModalHeader.create({
-        title: 'Void'
-      }))
-      .addClass(this.myClass())
-        .start()
-          .start().addClass('key-value-container')
+        .tag(this.ModalHeader.create({ title: 'Void' }))
+        .addClass(this.myClass())
+          .start()
             .start()
-              .start().addClass('key').add("Company").end()
-              .start().addClass('value').add(this.type ? this.invoice.payeeName : this.invoice.payerName).end()
+              .addClass('key-value-container')
+              .start()
+                .start().addClass('key').add('Company').end()
+                .start()
+                  .addClass('value')
+                  .add(this.type
+                    ? this.invoice.payee.label()
+                    : this.invoice.payer.label())
+                .end()
+              .end()
+              .start()
+                .start().addClass('key').add('Amount').end()
+                .start()
+                  .addClass('value')
+                  .add(
+                      this.invoice.currencyType,
+                      ' ',
+                      (this.invoice.amount/100).toFixed(2))
+                .end()
+              .end()
             .end()
-            .start()
-              .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add(this.invoice.currencyType, ' ', (this.invoice.amount/100).toFixed(2)).end()
-            .end()
+            .start().addClass('label').add('Note').end()
+            .start(this.NOTE).addClass('input-box').end()
+            .start(this.VOIDED).addClass('blue-button').addClass('btn').end()
           .end()
-          .start().addClass('label').add("Note").end()
-          .start(this.NOTE).addClass('input-box').end()
-          .start(this.VOIDED).addClass('blue-button').addClass('btn').end()
-        .end()
-      .end()
-    } 
+        .end();
+    }
   ],
 
   actions: [
     {
       name: 'voided',
       label: 'Void',
-      code: function(X){
-        this.invoice.paymentMethod = "VOID";
+      code: function(X) {
+        this.invoice.paymentMethod = 'VOID';
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.NotificationMessage.create({ message: 'Invoice voided.', type: '' }));        
+        ctrl.add(this.NotificationMessage.create({
+          message: 'Invoice voided.',
+          type: ''
+        }));
         X.closeDialog();
       }
     }
   ]
-})
+});

@@ -123,7 +123,7 @@ foam.CLASS({
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
-        .start('h5').add('Invoice from ', this.data.payeeName).end()
+        .start('h5').add('Invoice from ', this.data.payee.label()).end()
         .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
         .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
         .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })

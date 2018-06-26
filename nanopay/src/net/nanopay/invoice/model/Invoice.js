@@ -122,18 +122,18 @@ foam.CLASS({
       name: 'currencyType'
     },
     {
-      class: 'String',
-      name: 'payeeName',
-      label: 'Vendor',
-      aliases: [ 'to', 'vendor', 'v' ],
-      transient: true
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payee',
+      documentation: 'The party that received the payment',
+      storageTransient: true
     },
     {
-      class: 'String',
-      name: 'payerName',
-      label: 'Customer',
-      aliases: [ 'from', 'customer', 'c' ],
-      transient: true
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payer',
+      documentation: 'The party that made the payment',
+      storageTransient: true
     },
     {
       class: 'Long',
@@ -318,17 +318,6 @@ foam.RELATIONSHIP({
       this.__context__[rel.targetDAOKey].find(value).then(function(o) {
         this.add(o.label());
       }.bind(this));
-    },
-    postSet: function(oldValue, newValue) {
-      var self = this;
-      var dao = this.__context__.userDAO;
-      dao.find(newValue).then(function(a) {
-        if ( a ) {
-          self.payeeName = a.label();
-        } else {
-          self.payeeName = 'Unknown Id: ' + newValue;
-        }
-      });
     }
   }
 });
@@ -361,17 +350,6 @@ foam.RELATIONSHIP({
       this.__context__[rel.targetDAOKey].find(value).then( function(o) {
         this.add(o.label());
       }.bind(this));
-    },
-    postSet: function(oldValue, newValue) {
-      var self = this;
-      var dao = this.__context__.userDAO;
-      dao.find(newValue).then(function(a) {
-        if ( a ) {
-          self.payerName = a.label();
-        } else {
-          self.payerName = 'Unknown Id: ' + newValue;
-        }
-      });
     }
   }
 });

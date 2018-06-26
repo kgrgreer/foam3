@@ -64,12 +64,13 @@ foam.CLASS({
         */
       }
     })
-  ], 
+  ],
 
   messages: [
     {
       name: 'placeholderText',
-      message: 'You don’t have any bills to pay now. When you receive an invoice from your partners, it will show up here.'
+      message: 'You don’t have any bills to pay now. When you receive an ' +
+          'invoice from your partners, it will show up here.'
     }
   ],
 
@@ -101,17 +102,23 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
-            factory: function() { return self.Invoice.create({ payerId: self.user.id, payerName: self.user.name }); },
             createLabel: 'New Bill',
-            createDetailView: { class: 'net.nanopay.invoice.ui.BillDetailView' },
+            createDetailView: {
+              class: 'net.nanopay.invoice.ui.BillDetailView'
+            },
             detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
             summaryView: this.ExpensesTableView.create(),
             showActions: false
           })
         .end()
-        .start().enableClass('hide', this.hideSaleSummary$)        
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.expensesDAO, message: this.placeholderText, image: 'images/ic-bankempty.svg'})
-        .end()
+        .start().enableClass('hide', this.hideSaleSummary$)
+          .tag({
+            class: 'net.nanopay.ui.Placeholder',
+            dao: this.expensesDAO,
+            message: this.placeholderText,
+            image: 'images/ic-bankempty.svg'
+          })
+        .end();
     },
   ],
 
