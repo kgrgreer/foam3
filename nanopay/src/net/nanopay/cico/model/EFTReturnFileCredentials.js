@@ -7,23 +7,19 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'user',
-      value: 'mintchip'
+      name: 'user'
     },
     {
       class: 'String',
-      name: 'password',
-      value: '8mmPHuqI'
+      name: 'password'
     },
     {
       class: 'String',
-      name: 'host',
-      value: 'ftp.eftcanada.com'
+      name: 'host'
     },
     {
       class: 'Int',
-      name: 'port',
-      value: 22
+      name: 'port'
     }
   ]
 });
