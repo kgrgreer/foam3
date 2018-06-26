@@ -38,7 +38,6 @@ foam.CLASS({
     width: max-content;
     cursor: pointer;
     margin-right: 27px;
-    padding-bottom: 5;
   }
   ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
     align-items: center;
@@ -63,7 +62,7 @@ foam.CLASS({
   }
   ^ .foam-u2-PopupView {
     left: -40 !important;
-    top: 53px !important;
+    top: 51px !important;
     padding: 0 !important;
     z-index: 1000;
     width: 110px !important;
@@ -72,9 +71,9 @@ foam.CLASS({
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
   }
   ^ .popUpDropDown > div:hover{
-    background-color: #59a5d5;
-        color: white;
-        cursor: pointer;
+    background-color: #1cc2b7;
+    color: white;
+    cursor: pointer;
   }
   ^ .popUpDropDown::before {
     content: ' ';
@@ -97,6 +96,10 @@ foam.CLASS({
     padding-left: 10px;
     margin-right: 23px;
   }
+  ^ img {
+    height: 17.6px !important;
+    margin-right: 4;
+  }
   `,
 
   properties: [
@@ -104,22 +107,32 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
-      name: 'lastCurrency',
-      expression: function() {
-        this.currencyDAO.find(this.currentCurrency).then(function(c) { this.lastCurrency = c; });
-      }
+      name: 'lastCurrency'
     }
   ],
 
   methods: [
 
     function initE() {
+      var self = this;
+      this.currentCurrency$.sub(this.updateCurrency)
+      this.updateCurrency();
+
       this
         .addClass(this.myClass())
         this.start('span', null, this.optionsBtn_$).end()
-        .start(this.CURRENCY_CHOICE, { label$: this.currentCurrency$, showLabel:true }).start('div')
+        .start(this.CURRENCY_CHOICE, { icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}), label$: this.lastCurrency$.dot('alphabeticCode'), showLabel:true }).start('div')
         .addClass(this.myClass('carrot'))
       .end().end()
+    }
+  ],
+
+  listeners: [
+    function updateCurrency(){
+      var self = this;
+      this.currencyDAO.find(this.currentCurrency).then(function(c) {
+        self.lastCurrency = c;
+      });
     }
   ],
 

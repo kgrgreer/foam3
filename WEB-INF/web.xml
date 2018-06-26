@@ -42,7 +42,7 @@
     <location>/nanopay/src/net/nanopay/error.html</location>
   </error-page>
 
-  <filter>
+  <!-- <filter>
     <filter-name>CSPFilter</filter-name>
     <filter-class>net.nanopay.security.csp.CSPFilter</filter-class>
     <init-param>
@@ -53,17 +53,17 @@
         worker-src 'self';
         connect-src 'self' data: blob: filesystem:;
         script-src 'self' 'unsafe-eval';
-        style-src 'self' https://fonts.googleapis.com/css data: chrome-extension-resource: 'unsafe-inline';
+        style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
         font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
         img-src 'self' data: blob: filesystem:;
         media-src * data: blob: filesystem:;
         frame-src 'self' data: chrome-extension-resource:;
-        report-uri service/CSPReportWebAgent;
+        report-uri /service/CSPReportWebAgent;
       </param-value>
   	</init-param>
   </filter>
   <filter-mapping>
     <filter-name>CSPFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping>
+  </filter-mapping> -->
 </web-app>
