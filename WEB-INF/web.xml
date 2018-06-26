@@ -42,7 +42,7 @@
     <location>/nanopay/src/net/nanopay/error.html</location>
   </error-page>
 
-  <!-- <filter>
+  <filter>
     <filter-name>CSPFilter</filter-name>
     <filter-class>net.nanopay.security.csp.CSPFilter</filter-class>
     <init-param>
@@ -65,5 +65,5 @@
   <filter-mapping>
     <filter-name>CSPFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping> -->
+  </filter-mapping>
 </web-app>
