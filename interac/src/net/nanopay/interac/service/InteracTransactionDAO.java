@@ -38,12 +38,12 @@ public class InteracTransactionDAO
       throw new RuntimeException("Invalid amount");
     }
 
-    if ( transaction.getRate() <= 0 ) {
-      throw new RuntimeException("Invalid rate");
-    }
+    // if ( transaction.getRate() <= 0 ) {
+    //   throw new RuntimeException("Invalid rate");
+    // }
 
-    if ( transaction.getPurpose() == null ) {
-      throw new RuntimeException("Invalid purpose");
+    if ( transaction.getPurposeId() == null ) {
+      throw new RuntimeException("Invalid purposeId");
     }
 
     try {
