@@ -36,6 +36,11 @@ var classes = [
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
 
+  // Partners
+  'net.nanopay.partners.ui.PartnerInvitationNotification',
+  'net.nanopay.partners.InvitationStatus',
+  'net.nanopay.auth.PublicUserInfo',
+
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.admin.model.AccountStatus',
@@ -48,6 +53,7 @@ var classes = [
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.ui.NewInvoiceNotification',
   'net.nanopay.fresh.FreshConfig',
   'net.nanopay.fresh.model.FreshToken',
   'net.nanopay.fresh.model.FreshBusiness',

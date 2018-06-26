@@ -9,6 +9,7 @@ foam.CLASS({
 
     imports: [
       'hideSaleSummary',
+      'notificationDAO',
       'stack',
       'user',
       'userDAO'
@@ -17,7 +18,8 @@ foam.CLASS({
     requires: [
       'foam.nanos.auth.User',
       'foam.u2.dialog.NotificationMessage',
-      'net.nanopay.invoice.model.Invoice'
+      'net.nanopay.invoice.model.Invoice',
+      'net.nanopay.invoice.ui.NewInvoiceNotification'
     ],
 
     properties: [

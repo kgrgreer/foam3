@@ -229,6 +229,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceReceivedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/NewInvoiceNotification' },
+  { name: 'net/nanopay/invoice/ui/NewInvoiceNotificationNotificationView' },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
@@ -323,5 +325,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
-  { name: 'net/nanopay/model/Relationships' }
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/partners/InvitationStatus' },
+  { name: 'net/nanopay/auth/PublicUserInfo' },
+  { name: 'net/nanopay/model/Relationships' },
+  { name: 'net/nanopay/partners/UserUserJunctionRefinement' }
 ]);

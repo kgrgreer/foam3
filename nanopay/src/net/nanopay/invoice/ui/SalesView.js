@@ -120,6 +120,11 @@ foam.CLASS({
       requires: [ 'net.nanopay.invoice.model.Invoice' ],
 
       imports: [ 'salesDAO' , 'hideSaleSummary'],
+
+      exports: [
+        'selection'
+      ],
+
       properties: [ 
         'selection', 
         { name: 'data', factory: function() { return this.salesDAO; }}
@@ -133,13 +138,13 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
-              config: {
-                amount: { 
-                  tableCellView: function(obj, e) {
-                  return e.E().add('- $', obj.amount).style({color: '#c82e2e'})
-                  }
-                }
-              },
+              // config: {
+              //   amount: { 
+              //     tableCellView: function(obj, e) {
+              //     return e.E().add('- $', obj.amount).style({color: '#c82e2e'})
+              //     }
+              //   }
+              // },
               columns: [
                 'id', 'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate', 'amount', 'status'
               ]
