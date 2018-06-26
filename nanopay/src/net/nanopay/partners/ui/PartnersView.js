@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'net.nanopay.auth.PublicUserInfo',
   ],
 
   exports: [
@@ -187,12 +188,24 @@ foam.CLASS({
       name: 'filteredData',
       expression: function(data, filter) {
         var self = this;
-        var rtn = data.where(
+        var rtn;
+        if ( data.of.id === this.PublicUserInfo.id ) {
+          rtn = data.where(
             this.OR(
-                this.CONTAINS_IC(this.User.BUSINESS_NAME, filter),
-                this.CONTAINS_IC(this.User.FIRST_NAME, filter),
-                this.CONTAINS_IC(this.User.LAST_NAME, filter),
-                this.CONTAINS_IC(this.User.EMAIL, filter)));
+              this.CONTAINS_IC(this.PublicUserInfo.BUSINESS_NAME, filter),
+              this.CONTAINS_IC(this.PublicUserInfo.FIRST_NAME, filter),
+              this.CONTAINS_IC(this.PublicUserInfo.LAST_NAME, filter),
+              this.CONTAINS_IC(this.PublicUserInfo.EMAIL, filter)));
+        } else if ( data.of.id === this.User.id ) {
+          rtn = data.where(
+            this.OR(
+              this.CONTAINS_IC(this.User.BUSINESS_NAME, filter),
+              this.CONTAINS_IC(this.User.FIRST_NAME, filter),
+              this.CONTAINS_IC(this.User.LAST_NAME, filter),
+              this.CONTAINS_IC(this.User.EMAIL, filter)));
+        } else {
+          throw Error('Unsupported DAO model');
+        }
         rtn.select(this.COUNT()).then(function(queryResult) {
           var count = queryResult.value;
           self.partnerCount = self.connected_button_select
@@ -282,7 +295,27 @@ foam.CLASS({
       name: 'connectedOnClick',
       isFramed: true,
       code: function() {
-        this.data = this.user.partners.dao.limit(50);
+        var self = this;
+
+        // We have to do some work here to convert the UserUserJunction objects
+        // into PublicUserInfo objects so that the `filteredDAO` expression
+        // above has something to query properly.
+        var mdao = foam.dao.MDAO.create({ of: this.PublicUserInfo });
+        this.user.partners.junctionDAO
+          .select()
+          .then(function(objs) {
+            objs.array.map(function(obj) {
+              var partnerInfo = obj.partnerOneInfo.id === self.user.id
+                  ? obj.partnerTwoInfo
+                  : obj.partnerOneInfo;
+              mdao.put(partnerInfo);
+            });
+            self.data = mdao.limit(50);
+          })
+          .catch(function(err) {
+            console.log(`Couldn't get partners from junctionDAO`);
+            console.log(err);
+          });
         this.connected_button_select = true;
         this.contacts_button_select = false;
       }

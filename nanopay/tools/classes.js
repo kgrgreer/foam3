@@ -36,6 +36,11 @@ var classes = [
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
 
+  // Partners
+  'net.nanopay.partners.ui.PartnerInvitationNotification',
+  'net.nanopay.partners.InvitationStatus',
+  'net.nanopay.auth.PublicUserInfo',
+
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.admin.model.AccountStatus',

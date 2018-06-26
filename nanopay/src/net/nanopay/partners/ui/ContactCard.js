@@ -4,9 +4,10 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.comics.DAOCreateControllerView',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.PopupView',
-    'foam.comics.DAOCreateControllerView',
+    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.ui.BillDetailView',
     'net.nanopay.invoice.ui.InvoiceDetailView',
@@ -14,8 +15,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'invoiceDAO',
     'invitationDAO',
+    'invoiceDAO',
     'stack',
     'user'
   ],
@@ -178,10 +179,24 @@ foam.CLASS({
     function initE() {
       var i = this.data;
       var self = this;
-      // check parters connection status
-      i.partnered.dao.find(this.user.id).then(function(res) {
-        if ( typeof res !== 'undefined' ) self.status = 'connected';
-      });
+
+      // Check if the user being displayed on the card is a partner of the user
+      // logged in
+      this.user.partners.junctionDAO
+        .select()
+        .then(function(res) {
+          var isPartner = res.array.some(function(uuJunc) {
+            var partnerInfo = self.user.id === uuJunc.partnerOneInfo.id
+                ? uuJunc.partnerTwoInfo
+                : uuJunc.partnerOneInfo;
+            return partnerInfo.id === i.id;
+          });
+          self.status = isPartner ? 'connected' : self.status;
+        })
+        .catch(function(err) {
+          console.log(`Error: Couldn't select from junctionDAO`);
+          console.error(err);
+        });
 
       this.addClass(this.myClass())
         .start({

@@ -323,5 +323,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
-  { name: 'net/nanopay/model/Relationships' }
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/partners/InvitationStatus' },
+  { name: 'net/nanopay/auth/PublicUserInfo' },
+  { name: 'net/nanopay/model/Relationships' },
+  { name: 'net/nanopay/partners/UserUserJunctionRefinement' }
 ]);

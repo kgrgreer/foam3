@@ -40,6 +40,11 @@ foam.CLASS({
       name: 'internal',
       documentation: 'True if the invited user already existed, false ' +
           'otherwise',
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.partners.InvitationStatus',
+      name: 'status'
     }
   ]
 });
