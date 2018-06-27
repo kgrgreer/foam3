@@ -25,8 +25,9 @@ foam.CLASS({
     },
     {
       name: 'currency',
-      expression: function() {
-        return this.data.targetCurrency ? this.data.targetCurrency.alphabeticCode : '$';
+      expression: function(data) {
+        return data.targetCurrency ?
+               data.targetCurrency.alphabeticCode + ' ' : '$';
       }
     }
   ],

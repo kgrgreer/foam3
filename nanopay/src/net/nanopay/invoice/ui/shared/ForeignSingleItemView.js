@@ -225,7 +225,7 @@ foam.CLASS({
         p.addClass('dropdown-content')
         .call(function() {
           var files = this.data.invoiceFile;
-          for ( var i = 0; i < files.length; i++ ) {
+          for ( var i = 0; i < files.length; i ++ ) {
             p.tag({
               class: 'net.nanopay.invoice.ui.InvoiceFileView',
               data: files[i],
