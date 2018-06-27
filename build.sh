@@ -105,20 +105,25 @@ function setup_jce {
   local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)"/\1/p;')
   local JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk-$JAVA_VER.jdk/Contents/Home/lib/security"
 
-  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
-      mkdir tmp_jce
-      cd tmp_jce
-      curl -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
-      unzip jce_policy-8.zip
-      sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      cd ..
-      rm -rf tmp_jce
+  # For Java 8
+  if [[ $JAVA_LIB_SECURITY = *"_"* ]]; then
+    JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk$JAVA_VER.jdk/Contents/Home/jre/lib/security"
+  fi
 
-      if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
-        echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
-      else
-        echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
-      fi
+  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
+    mkdir tmp_jce
+    cd tmp_jce
+    curl -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
+    unzip jce_policy-8.zip
+    sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+    cd ..
+    rm -rf tmp_jce
+
+    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
+      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
+    else
+      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
+    fi
   fi
 }
 
