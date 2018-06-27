@@ -117,12 +117,13 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().startContext({ data: this })
-          .start(this.BACK_ACTION).end()
-        .endContext()
+        .start()
+          .startContext({ data: this })
+            .start(this.BACK_ACTION).end()
+          .endContext()
         .end()
         .callIf(this.data.createdBy == this.user.id, function() {
-          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
+          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end();
         })
         .start(this.RECORD_PAYMENT).end()
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
