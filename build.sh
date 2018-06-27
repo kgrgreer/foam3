@@ -127,7 +127,11 @@ function build_war {
     # NOTE: this removes the target directory where journal preparation occurs.
     # invoke deploy_journals after build_war
     #
-    setup_jce
+
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+      # Preventing this from running on AWS
+      setup_jce
+    fi
 
     if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
