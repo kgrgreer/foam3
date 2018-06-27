@@ -20,12 +20,6 @@ foam.CLASS({
     'searchResult'
   ],
 
-  css: `
-  ^ .message {
-    margin-left: 20px;
-  }
-  `,
-
   methods: [
     function initE() {
       this.SUPER();
@@ -43,7 +37,7 @@ foam.CLASS({
       });
 
       this.addClass(this.myClass())
-      .start().addClass('message')
+      .start().addClass('msg')
         .add(this.name$)
         .add(` just send you a ${i.invoiceType.toLowerCase()} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
       .end()
