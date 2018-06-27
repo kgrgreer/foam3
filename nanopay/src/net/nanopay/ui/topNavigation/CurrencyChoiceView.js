@@ -98,7 +98,8 @@ foam.CLASS({
   }
   ^ img {
     height: 17.6px !important;
-    margin-right: 4;
+    margin-right: 6;
+    width: auto;
   }
   `,
 
