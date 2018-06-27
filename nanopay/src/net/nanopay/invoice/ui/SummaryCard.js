@@ -20,6 +20,7 @@ foam.CLASS({
       margin-left: 6px;
       border-radius: 3px;
       overflow: hidden;
+      border: 3px solid white;
     }
     ^ .Pending{
       width: 105px;
@@ -57,7 +58,6 @@ foam.CLASS({
       border-radius: 100px;
       padding: 3px 0 0 10px;
     }
-
     ^ .New{
       color: #59a5d5;
       width: 40px;
@@ -97,6 +97,9 @@ foam.CLASS({
       float: right;
       margin-right: 15px;
     }
+    ^.active{
+      border: 3px solid #1cc2b7;
+    }
   `,
 
   properties: [
@@ -109,18 +112,31 @@ foam.CLASS({
     },
     'amount',
     'count',
-    'status'
+    'status',
+    {
+      class: 'Boolean',
+      name: 'active',
+      value: false
+    }
  ],
 
   methods: [
     function initE() {
       this
         .addClass(this.myClass())
+        .enableClass('active', this.active$)
           .start().addClass('count').add(this.count$).end()
           .start().addClass('amount').add(this.formattedAmount$).end()
-          .start().addClass(this.status).addClass('label').addClass('special-status-tag').add(this.status).end()
-        .end()
-
+          .start()
+            .addClass(this.status)
+            .addClass('label')
+            .addClass('special-status-tag')
+            .add(this.status)
+          .end()
+        .end();
     },
+    function toggle() {
+      this.active = ! this.active;
+    }
   ]
 });

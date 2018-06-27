@@ -12,6 +12,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.BillDetailView',
+    'net.nanopay.invoice.ui.ExpensesDetailView',
     'net.nanopay.invoice.ui.PayableSummaryView'
   ],
 
@@ -36,7 +38,33 @@ foam.CLASS({
         return this.user.expenses;
       }
     },
-    'tableView'
+    {
+      name: 'tableView',
+      factory: function() {
+        return this.ExpensesTableView.create();
+      }
+    },
+    {
+      name: 'summaryView',
+      factory: function() {
+        var view = this.PayableSummaryView.create();
+        view.sub('statusChange', this.updateTableDAO);
+        view.sub('statusReset', this.resetTableDAO);
+        return view;
+      }
+    },
+    {
+      name: 'billDetailView',
+      factory: function() {
+        return this.BillDetailView.create();
+      }
+    },
+    {
+      name: 'expensesDetailView',
+      factory: function() {
+        return this.ExpensesDetailView.create();
+      }
+    }
   ],
 
   css: `
@@ -45,7 +73,7 @@ foam.CLASS({
       margin: auto;
     }
     ^ .net-nanopay-invoice-ui-SummaryCard{
-      width: 16.5995%;
+      width: 15.8%;
     }
     ^ .optionsDropDown {
       left: -92 !important;
@@ -82,18 +110,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-
-      this.tableView = this.ExpensesTableView.create();
-
-      var summaryView = this.PayableSummaryView.create();
-      summaryView.sub('statusChange', this.updateTableDAO);
-      summaryView.sub('statusReset', this.resetTableDAO);
 
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)
-          .add(summaryView)
+          .add(this.summaryView)
           .start().addClass('container')
             .start().addClass('button-div')
               // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
@@ -113,19 +134,9 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
-            factory: function() {
-              return self.Invoice.create({
-                payerId: self.user.id,
-                payerName: self.user.name
-              });
-            },
             createLabel: 'New Bill',
-            createDetailView: {
-              class: 'net.nanopay.invoice.ui.BillDetailView'
-            },
-            detailView: {
-              class: 'net.nanopay.invoice.ui.ExpensesDetailView'
-            },
+            createDetailView: this.billDetailView,
+            detailView: this.expensesDetailView,
             summaryView: this.tableView,
             showActions: false
           })
