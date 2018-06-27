@@ -141,23 +141,6 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
-              // config: {
-              //   amount: { 
-              //     tableCellView: function(obj, e) {
-              //       return e.E().add('+ $', obj.amount).style({color: '#2cab70'})
-              //     } 
-              //   },
-              //   status: { 
-              //     tableCellView: function(obj, e) {
-              //       var statusCircle = obj.status == 'Scheduled' ? { border: '3px solid #59a5d5' } : 
-              //       { border: '3px solid #2cab70', background: '#2cab70'};
-
-              //       var statusColor = obj.status == 'Scheduled' ? { color: '#59a5d5'} : { color: '#2cab70'};
-                    
-              //       return e.E().start('span').style(statusCircle).end().add(obj.status).style(statusColor);
-              //     }
-              //   }
-              // },
               columns: [
                 'id', 'invoiceNumber', 'purchaseOrder', 'payeeId', 'dueDate', 'amount', 'status'
               ],

@@ -105,6 +105,9 @@ foam.CLASS({
       height: 24px;
       cursor: pointer;
     }
+    ^ .optionsIcon:hover {
+      background-color: rgba(164, 179, 184, 0.3);
+    }
     ^ .optionsIcon img {
       width: 24px;
     }
