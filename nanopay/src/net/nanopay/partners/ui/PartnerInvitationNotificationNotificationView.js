@@ -36,28 +36,40 @@ foam.CLASS({
     },
 
     /**
+     * Respond to an invitation
+     * @param {InvitationStatus} status The response to use
+     */
+    async function respondToInvitation(status) {
+      var invite = await this.getInvitation();
+      if ( this.hasBeenRespondedTo(invite) ) {
+        this.add(this.NotificationMessage.create({
+          message: this.AlreadyAccepted
+        }));
+        return;
+      }
+      invite.status = status;
+      await this.sendInvitation(invite);
+      this.sendSuccessNotificationMessage(status);
+    },
+
+    /**
      * Get the relevant invitation from the DAO
      * @returns {Invitation}
      */
     async function getInvitation() {
-      var queryResult = await this.invitationDAO
-          .where(this.AND(
-              this.EQ(this.Invitation.INVITEE_ID, this.user.id),
-              this.EQ(this.Invitation.CREATED_BY, this.data.createdBy)))
-          .orderBy(this.DESC(this.Invitation.TIMESTAMP))
-          .select();
-      if ( queryResult.array.length === 0 ) {
+      var searchInvite = this.Invitation.create({
+        inviteeId: this.user.id,
+        createdBy: this.data.createdBy
+      });
+      var result = await this.invitationDAO.find(searchInvite);
+      if ( ! this.Invitation.isInstance(result) ) {
         this.add(this.NotificationMessage.create({
           message: this.InviteNotFound,
           type: 'error'
         }));
         throw new Error(`Invitation not found`);
-      } else if ( queryResult.array.length > 1 ) {
-        console.warn(`There are multiple invitations from user
-            ${this.data.createdBy} to ${this.user.id}. There should only be
-            one. The most recent one will be used.`);
       }
-      return queryResult.array[0];
+      return result;
     },
 
     /**
@@ -66,8 +78,7 @@ foam.CLASS({
      * @returns {Boolean} True if the invitee has responded to the invitation
      */
     function hasBeenRespondedTo(invitation) {
-      return invitation.status === this.InvitationStatus.ACCEPTED ||
-          invitation.status === this.InvitationStatus.CONNECTED;
+      return invitation.status !== this.InvitationStatus.SENT;
     },
 
     /**
@@ -100,23 +111,6 @@ foam.CLASS({
           throw new Error(`Unsupported response type: ${status}`);
       }
       this.add(this.NotificationMessage.create({ message: message }));
-    },
-
-    /**
-     * Respond to an invitation
-     * @param {InvitationStatus} status The response to use
-     */
-    async function respondToInvitation(status) {
-      var invite = await this.getInvitation();
-      if ( this.hasBeenRespondedTo(invite) ) {
-        this.add(this.NotificationMessage.create({
-          message: this.AlreadyAccepted
-        }));
-        return;
-      }
-      invite.status = status;
-      await this.sendInvitation(invite);
-      this.sendSuccessNotificationMessage(status);
     }
   ],
 
