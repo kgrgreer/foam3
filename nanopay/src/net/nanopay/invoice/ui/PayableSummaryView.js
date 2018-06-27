@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.SummaryCard'
   ],
 
   imports: [
@@ -115,6 +116,10 @@ foam.CLASS({
       expression: function(payableAmount) {
         return this.formatCurrency(payableAmount/100);
       }
+    },
+    {
+      name: 'summaryCards',
+      value: []
     }
   ],
 
@@ -131,49 +136,43 @@ foam.CLASS({
             .addClass('thin-align')
             .add(this.formattedPayableAmount$)
           .end()
-          .on('click', () => { this.pub('statusReset'); })
+          .on('click', () => {
+            this.disableAllSummaryCards();
+            this.pub('statusReset');
+          })
         .end()
-        .start({
-          class: 'net.nanopay.invoice.ui.SummaryCard',
-          count$: this.overDueCount$,
-          amount$: this.overDueAmount$,
-          status: this.overDueLabel
-        })
-          .on('click', () => { this.pub('statusChange', 'Overdue'); })
-        .end()
-        .start({
-          class: 'net.nanopay.invoice.ui.SummaryCard',
-          count$: this.dueCount$,
-          amount$: this.dueAmount$,
-          status: this.dueLabel
-        })
-          .on('click', () => { this.pub('statusChange', 'Due'); })
-        .end()
-        .start({
-          class: 'net.nanopay.invoice.ui.SummaryCard',
-          count$: this.pendingCount$,
-          amount$: this.pendingAmount$,
-          status: this.pendingLabel
-        })
-          .on('click', () => { this.pub('statusChange', 'Pending'); })
-        .end()
-        .start({
-          class: 'net.nanopay.invoice.ui.SummaryCard',
-          count$: this.scheduledCount$,
-          amount$: this.scheduledAmount$,
-          status: this.scheduledLabel
-        })
-          .on('click', () => { this.pub('statusChange', 'Scheduled'); })
-        .end()
-        .start({
-          class: 'net.nanopay.invoice.ui.SummaryCard',
-          count$: this.paidCount$,
-          amount$: this.paidAmount$,
-          status: this.paidLabel
-        })
-          .on('click', () => { this.pub('statusChange', 'Paid'); })
-        .end();
+        .add(this.buildSummaryCard('Overdue', 'overDue'))
+        .add(this.buildSummaryCard('Due', 'due'))
+        .add(this.buildSummaryCard('Pending', 'pending'))
+        .add(this.buildSummaryCard('Scheduled', 'scheduled'))
+        .add(this.buildSummaryCard('Paid', 'paid'));
     },
+
+    function disableAllSummaryCards() {
+      this.summaryCards
+          .filter((card) => card.active)
+          .forEach((card) => card.toggle());
+    },
+
+    function buildSummaryCard(status, propertyNamePrefix) {
+      var card = this.SummaryCard.create({
+        count$: this[`${propertyNamePrefix}Count$`],
+        amount$: this[`${propertyNamePrefix}Amount$`],
+        status: this[`${propertyNamePrefix}Label`]
+      });
+      card.on('click', () => {
+        if ( card.active ) {
+          this.pub('statusReset');
+        } else {
+          this.disableAllSummaryCards();
+          this.pub('statusChange', status);
+        }
+        card.toggle();
+      });
+      this.summaryCards.push(card);
+      return card;
+    },
+
     async function calculatePropertiesForStatus(status, propertyNamePrefix) {
       var dao = this.dao.where(this.EQ(this.Invoice.STATUS, status));
       var count = await dao.select(this.COUNT());

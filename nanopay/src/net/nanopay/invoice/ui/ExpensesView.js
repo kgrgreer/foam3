@@ -73,7 +73,7 @@ foam.CLASS({
       margin: auto;
     }
     ^ .net-nanopay-invoice-ui-SummaryCard{
-      width: 16.5995%;
+      width: 15.8%;
     }
     ^ .optionsDropDown {
       left: -92 !important;
