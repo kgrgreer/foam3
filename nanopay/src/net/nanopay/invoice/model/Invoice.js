@@ -186,8 +186,9 @@ foam.CLASS({
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
+        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
         this.start().style({ 'padding-right': '20px' })
-          .add('$' + X.addCommas((a/100).toFixed(2)))
+          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
         .end();
       }
     },

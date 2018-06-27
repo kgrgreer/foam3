@@ -16,11 +16,17 @@ foam.CLASS({
 
   properties: [
     'popupMenu_',
-    [ 'hidden', true ],
+    ['hidden', true],
     {
       name: 'type',
-      expression: function(data, user){
-        return user.id != data.payeeId
+      expression: function(data, user) {
+        return user.id != data.payeeId;
+      }
+    },
+    {
+      name: 'currency',
+      expression: function() {
+        return this.data.targetCurrency ? this.data.targetCurrency.alphabeticCode : '$';
       }
     }
   ],
@@ -100,46 +106,49 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
-      this.stack.sub(function(){self.itemUpdate()});
+      this.stack.sub(function() {
+        self.itemUpdate();
+      });
+
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
-            .callIf(this.data.invoiceFile[0], function(){
-              this.start().addClass('table-attachment').end()
+            .callIf(this.data.invoiceFile[0], function() {
+              this.start().addClass('table-attachment').end();
             })
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
-            .call(function(){
-              self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end()
+            .call(function() {
+              self.type ? this.start('h3').add('Vendor').end() : this.start('h3').add('Customer').end();
             })
             .start('h3').add('Date Due').end()
             .start('h4').add('Amount').end()
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
-            .callIf(this.data.invoiceFile[0], function(){
+            .callIf(this.data.invoiceFile[0], function() {
               this.start().addClass('table-attachment')
                 .start('span', null, self.popupMenu_$)
                   .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-attachment.svg' })
                   .on('click', self.onAttachmentButtonClick)
                 .end()
-              .end()
+              .end();
             })
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3').add(this.type ? this.data.payeeName : this.data.payerName).end()
             .start('h3').add(this.data.dueDate ? this.data.dueDate.toISOString().substring(0,10) : '').end()
-            .start('h4').add('$' + this.addCommas((this.data.amount/100).toFixed(2))).end()
+            .start('h4').add(this.currency + ' ' + this.addCommas((this.data.amount/100).toFixed(2))).end()
             .start('h3')
               .add(this.data.status$.map(function(a) {
-                return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring(0,10) : a).addClass('generic-status').addClass('Invoice-Status-' + a);
+                return self.E().add(self.data.paymentDate > Date.now() ? a + ' ' + self.data.paymentDate.toISOString().substring( 0, 10) : a).addClass('generic-status').addClass('Invoice-Status-' + a);
               }))
           .end()
-        .end()
+        .end();
     }
   ],
 
@@ -157,7 +166,7 @@ foam.CLASS({
     },
     {
       name: 'onAttachmentButtonClick',
-      code: function (e) {
+      code: function(e) {
         var p = this.PopupView.create({
           minWidth: 175,
           width: 275,
@@ -167,15 +176,15 @@ foam.CLASS({
         });
 
         p.addClass('dropdown-content')
-        .call(function () {
+        .call(function() {
           var files = this.data.invoiceFile;
-          for ( var i = 0 ; i < files.length ; i++ ) {
+          for ( var i = 0; i < files.length; i++ ) {
             p.tag({
               class: 'net.nanopay.invoice.ui.InvoiceFileView',
               data: files[i],
               fileNumber: i + 1,
               removeHidden: true
-            })
+            });
           }
         }.bind(this));
 
