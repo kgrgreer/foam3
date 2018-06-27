@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.ReceivablesSummaryView'
   ],
 
   imports: [
@@ -36,7 +37,8 @@ foam.CLASS({
       factory: function() {
         return this.user.sales;
       }
-    }
+    },
+    'tableView'
   ],
 
   messages: [
@@ -81,10 +83,16 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      this.tableView = this.SalesTableView.create();
+
+      var summaryView = this.ReceivablesSummaryView.create();
+      summaryView.sub('statusChange', this.updateTableDAO);
+      summaryView.sub('statusReset', this.resetTableDAO);
+
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideReceivableSummary$)
-          .tag({ class: 'net.nanopay.invoice.ui.ReceivablesSummaryView' })
+          .add(summaryView)
           .start().addClass('container')
             .start().addClass('button-div')
               // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
@@ -117,7 +125,7 @@ foam.CLASS({
             detailView: {
               class: 'net.nanopay.invoice.ui.SalesDetailView'
             },
-            summaryView: this.SalesTableView.create(),
+            summaryView: this.tableView,
             showActions: false
           })
         .end()
@@ -129,6 +137,24 @@ foam.CLASS({
             image: 'images/ic-receivable.png'
           })
         .end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateTableDAO',
+      code: function(_, __, newStatus) {
+        this.tableView.data = this.salesDAO
+            .where(this.EQ(this.Invoice.STATUS, newStatus))
+            .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      }
+    },
+    {
+      name: 'resetTableDAO',
+      code: function() {
+        this.tableView.data = this.salesDAO
+            .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      }
     }
   ],
 
@@ -162,7 +188,7 @@ foam.CLASS({
             .start({
               class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
-              data: this.data,
+              data$: this.data$,
               config: {
                 amount: {
                   tableCellView: function(obj, e) {

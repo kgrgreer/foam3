@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.PayableSummaryView'
   ],
 
   imports: [
@@ -19,8 +20,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'hideSaleSummary',
-    'expensesDAO'
+    'hideSaleSummary'
   ],
 
   properties: [
@@ -35,7 +35,8 @@ foam.CLASS({
       factory: function() {
         return this.user.expenses;
       }
-    }
+    },
+    'tableView'
   ],
 
   css: `
@@ -83,10 +84,16 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      this.tableView = this.ExpensesTableView.create();
+
+      var summaryView = this.PayableSummaryView.create();
+      summaryView.sub('statusChange', this.updateTableDAO);
+      summaryView.sub('statusReset', this.resetTableDAO);
+
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)
-          .tag({ class: 'net.nanopay.invoice.ui.PayableSummaryView' })
+          .add(summaryView)
           .start().addClass('container')
             .start().addClass('button-div')
               // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
@@ -119,7 +126,7 @@ foam.CLASS({
             detailView: {
               class: 'net.nanopay.invoice.ui.ExpensesDetailView'
             },
-            summaryView: this.ExpensesTableView.create(),
+            summaryView: this.tableView,
             showActions: false
           })
         .end()
@@ -133,6 +140,24 @@ foam.CLASS({
           })
         .end();
     },
+  ],
+
+  listeners: [
+    {
+      name: 'updateTableDAO',
+      code: function(_, __, newStatus) {
+        this.tableView.data = this.expensesDAO
+            .where(this.EQ(this.Invoice.STATUS, newStatus))
+            .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      }
+    },
+    {
+      name: 'resetTableDAO',
+      code: function() {
+        this.tableView.data = this.expensesDAO
+            .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      }
+    }
   ],
 
   classes: [
@@ -166,7 +191,7 @@ foam.CLASS({
             .start({
               class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
-              data: this.data,
+              data$: this.data$,
               config: {
                 amount: {
                   tableCellView: function(obj, e) {

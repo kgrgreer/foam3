@@ -27,6 +27,9 @@ foam.CLASS({
     ^{
       margin-bottom: 20px;
     }
+    ^:hover{
+      cursor: pointer;
+    }
   `,
 
   messages: [
@@ -128,37 +131,48 @@ foam.CLASS({
             .addClass('thin-align')
             .add(this.formattedPayableAmount$)
           .end()
+          .on('click', () => { this.pub('statusReset'); })
         .end()
-        .tag({
+        .start({
           class: 'net.nanopay.invoice.ui.SummaryCard',
           count$: this.overDueCount$,
           amount$: this.overDueAmount$,
           status: this.overDueLabel
         })
-        .tag({
+          .on('click', () => { this.pub('statusChange', 'Overdue'); })
+        .end()
+        .start({
           class: 'net.nanopay.invoice.ui.SummaryCard',
           count$: this.dueCount$,
           amount$: this.dueAmount$,
           status: this.dueLabel
         })
-        .tag({
+          .on('click', () => { this.pub('statusChange', 'Due'); })
+        .end()
+        .start({
           class: 'net.nanopay.invoice.ui.SummaryCard',
           count$: this.pendingCount$,
           amount$: this.pendingAmount$,
           status: this.pendingLabel
         })
-        .tag({
+          .on('click', () => { this.pub('statusChange', 'Pending'); })
+        .end()
+        .start({
           class: 'net.nanopay.invoice.ui.SummaryCard',
           count$: this.scheduledCount$,
           amount$: this.scheduledAmount$,
           status: this.scheduledLabel
         })
-        .tag({
+          .on('click', () => { this.pub('statusChange', 'Scheduled'); })
+        .end()
+        .start({
           class: 'net.nanopay.invoice.ui.SummaryCard',
           count$: this.paidCount$,
           amount$: this.paidAmount$,
           status: this.paidLabel
-        });
+        })
+          .on('click', () => { this.pub('statusChange', 'Paid'); })
+        .end();
     },
     async function calculatePropertiesForStatus(status, propertyNamePrefix) {
       var dao = this.dao.where(this.EQ(this.Invoice.STATUS, status));
