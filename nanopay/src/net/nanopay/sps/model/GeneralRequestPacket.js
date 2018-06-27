@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'GeneralRequestPacket',
+  extends: 'net.nanopay.sps.model.RequestPacket',
 
   properties: [
     {
@@ -29,8 +30,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.sps.model.XMLField',
-      name: 'xmlField'
+      of: 'net.nanopay.sps.model.UserInfo',
+      name: 'userInfo'
     },
     {
       class: 'String',
@@ -95,7 +96,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-
+    'java.util.*',
+    'foam.core.*'
   ],
 
   axioms: [
@@ -103,18 +105,34 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-          //System.out.println("222");
+{
+list = new ArrayList<>();
+list.add(MSG_NUM);
+list.add(PACKET_NUM);
+list.add(MESSAGE_MODIFIER_CODE);
+list.add(LOCAL_TRANSACTION_TIME);
+list.add(TEXT_MSG);
+list.add(TID);
+list.add(USER_INFO);
+list.add(MICR);
+list.add(ROUTE_CODE);
+list.add(ACCOUNT);
+list.add(CHECK_NUM);
+list.add(AMOUNT);
+list.add(INVOICE);
+list.add(CLERK_ID);
+list.add(MAX_DETAIL_ITEMS_PER_TRANSMISSION);
+list.add(SOCIAL_SECURITY_NUM);
+list.add(ITEM_ID);
+list.add(OPTIONS_SELECTED);
+list.add(DRIVERS_LICENSE);
+list.add(DLSTATE_CODE);
+list.add(DATE_OF_BIRTH);
+list.add(PHONE_NUMBER);
+}
         `);
       }
     }
-  ],
-
-  methods: [
-    {
-      name: 'generateGeneralRequestPacket',
-      javaCode:
-        `System.out.println("111");
-`
-    }
   ]
+
 });

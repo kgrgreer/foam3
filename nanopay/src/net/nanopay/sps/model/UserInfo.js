@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'UserInfo',
+  extends: 'net.nanopay.sps.model.RequestPacket',
 
   properties: [
     {
@@ -34,12 +35,45 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'java.util.*',
+    'foam.core.*'
+  ],
 
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(`
+{
+list = new ArrayList<>();
+list.add(UserInfo.NAME);
+list.add(UserInfo.ACCT);
+list.add(UserInfo.OTHER);
+list.add(UserInfo.LOCATION);
+list.add(UserInfo.TYPE);
+list.add(UserInfo.SECC);
+list.add(UserInfo.PTC);
+}
+
+public String toSPSString() {
+  StringBuilder sb = new StringBuilder();   
+  //interate list
+  for (int i = 0; i < list.size(); i++) {
+    PropertyInfo propertyInfo = list.get(i);
+    sb.append("[" + propertyInfo.getName().toUpperCase() + "]" + propertyInfo.get(this) + "[/" + propertyInfo.getName().toUpperCase() + "]");
+ 
+  }
+            
+  return sb.toString();
+}
+        `);
+      }
+    }
   ],
 
   methods: [
     {
-      name: 'generateGeneralRequestPacket',
+      name: 'test',
       javaCode:
         `System.out.println("111");
 `
