@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Branch',
-
-  documentation: 'Bank information.',
+  // relationships: Processor
+  documentation: 'Bank/Institution Branch Information.',
 
   properties: [
     {
@@ -12,25 +12,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      label: 'Name',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'financialId'
-    },
-    {
-      class: 'String',
-      name: 'BIC'
-    },
-    {
-      class: 'String',
-      name: 'branchId'
-    },
-    {
-      class: 'String',
-      name: 'memberIdentification'
+      name: 'branchId',
+      required: true,
+      documentation: 'Institution Branch identifier - such as the Indian Financial System Code',
     },
     {
       class: 'String',

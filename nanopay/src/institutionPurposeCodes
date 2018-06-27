@@ -1,0 +1,8 @@
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":1,"transactionPurposeId":"91", "institutionId": "22", "code":"P106", "txnProcessorId":"NEFT"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":2,"transactionPurposeId":"90", "institutionId": "22", "code":"P108", "txnProcessorId":"NEFT"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":3,"transactionPurposeId":"33", "institutionId": "22", "code":"P109", "txnProcessorId":"NEFT"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":4,"transactionPurposeId":"40", "institutionId": "22", "code":"P103", "txnProcessorId":"NEFT"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":5,"transactionPurposeId":"42", "institutionId": "22", "code":"P103", "txnProcessorId":"NEFT"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":6,"transactionPurposeId":"43", "institutionId": "22", "code":"P103", "txnProcessorId":"NEFT"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":7,"transactionPurposeId":"76", "institutionId": "22", "code":"P101", "txnProcessorId":"IMPS"})
+p({"class":"net.nanopay.payment.InstitutionPurposeCode","id":8,"transactionPurposeId":"92", "institutionId": "22", "code":"P102", "txnProcessorId":"IMPS"})

@@ -53,6 +53,7 @@ nanopay-bin.js
 
 # npm
 node_modules/
+package-lock.json
 
 # xsd generated code
 nanopay/src/net/nanopay/fx/ascendantfx/model/

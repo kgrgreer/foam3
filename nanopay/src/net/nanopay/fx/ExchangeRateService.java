@@ -103,7 +103,7 @@ public class ExchangeRateService
         reqExRate.setSourceCurrency(sourceCurrency);
         reqExRate.setTargetCurrency(targetCurrency);
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
-        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
+        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus().getLabel());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
         reqExRate.setTargetAmount((sourceAmount - feeAmount) * reqExRate.getRate());
         reqExRate.setSourceAmount(sourceAmount);
@@ -183,7 +183,7 @@ public class ExchangeRateService
         }
 
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
-        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
+        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus().getLabel());
         quote.setCode(((ExchangeRate) obj).getCode());
 
         reqExRate.setSourceAmount((targetAmount / reqExRate.getRate()) + feeAmount);
