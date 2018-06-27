@@ -74,7 +74,7 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
-        FObject obj = super.find_(x, id);
+        foam.core.FObject obj = super.find_(x, id);
         PrivateKeyEntry entry = (PrivateKeyEntry) obj;
         if ( entry == null ) {
           throw new RuntimeException("Private key not found");
@@ -82,7 +82,17 @@ foam.CLASS({
 
         try {
           // initialize cipher for key unwrapping
-          SecretKey key = getSecretKey();
+          KeyStoreManager manager = (KeyStoreManager) getKeyStoreManager();
+          KeyStore keyStore = manager.getKeyStore();
+
+          // check if key store contains alias
+          if ( ! keyStore.containsAlias(entry.getAlias()) ) {
+            throw new RuntimeException("Private key not found");
+          }
+
+          // load secret key from keystore
+          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(entry.getAlias());
+          SecretKey key = keyStoreEntry.getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.UNWRAP_MODE, key);
 
