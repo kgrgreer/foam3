@@ -12,7 +12,9 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.ReceivablesSummaryView'
+    'net.nanopay.invoice.ui.InvoiceDetailView',
+    'net.nanopay.invoice.ui.ReceivablesSummaryView',
+    'net.nanopay.invoice.ui.SalesDetailView'
   ],
 
   imports: [
@@ -38,7 +40,33 @@ foam.CLASS({
         return this.user.sales;
       }
     },
-    'tableView'
+    {
+      name: 'tableView',
+      factory: function() {
+        return this.SalesTableView.create();
+      }
+    },
+    {
+      name: 'summaryView',
+      factory: function() {
+        var view = this.ReceivablesSummaryView.create();
+        view.sub('statusChange', this.updateTableDAO);
+        view.sub('statusReset', this.resetTableDAO);
+        return view;
+      }
+    },
+    {
+      name: 'invoiceDetailView',
+      factory: function() {
+        return this.InvoiceDetailView.create();
+      }
+    },
+    {
+      name: 'salesDetailView',
+      factory: function() {
+        return this.SalesDetailView.create();
+      }
+    }
   ],
 
   messages: [
@@ -81,18 +109,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-
-      this.tableView = this.SalesTableView.create();
-
-      var summaryView = this.ReceivablesSummaryView.create();
-      summaryView.sub('statusChange', this.updateTableDAO);
-      summaryView.sub('statusReset', this.resetTableDAO);
 
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideReceivableSummary$)
-          .add(summaryView)
+          .add(this.summaryView)
           .start().addClass('container')
             .start().addClass('button-div')
               // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
@@ -112,19 +133,9 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
-            factory: function() {
-              return self.Invoice.create({
-                payeeId: self.user.id,
-                payeeName: self.user.name
-              });
-            },
             createLabel: 'New Invoice',
-            createDetailView: {
-              class: 'net.nanopay.invoice.ui.InvoiceDetailView'
-            },
-            detailView: {
-              class: 'net.nanopay.invoice.ui.SalesDetailView'
-            },
+            createDetailView: this.invoiceDetailView,
+            detailView: this.salesDetailView,
             summaryView: this.tableView,
             showActions: false
           })
