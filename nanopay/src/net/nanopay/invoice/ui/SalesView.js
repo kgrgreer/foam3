@@ -6,15 +6,25 @@ foam.CLASS({
 
   documentation: 'Summary View of Sales Invoices.',
 
-  implements: [ 'foam.mlang.Expressions' ],
+  implements: [
+    'foam.mlang.Expressions'
+  ],
 
-  requires: [ 'net.nanopay.invoice.model.Invoice' ],
+  requires: [
+    'net.nanopay.invoice.model.Invoice'
+  ],
 
-  imports: [ 'user', 'stack' ],
+  imports: [
+    'user',
+    'stack'
+  ],
 
-  exports: [ 'hideReceivableSummary', 'salesDAO' ],  
+  exports: [
+    'hideReceivableSummary',
+    'salesDAO'
+  ],
 
-  properties: [ 
+  properties: [
     'selection',
     {
       class: 'Boolean',
@@ -32,53 +42,49 @@ foam.CLASS({
   messages: [
     {
       name: 'placeholderText',
-      message: 'You haven’t sent any invoices yet. After you send an invoice to your partners, it will show up here.'
+      message: 'You haven’t sent any invoices yet. After you send an invoice ' +
+          'to your partners, it will show up here.'
     }
   ],
-  
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          width: 970px;
-          margin: auto;
-        }
-        ^ .net-nanopay-invoice-ui-SummaryCard{
-          width: 20.8%;
-        }
-        ^ .optionsDropDown {
-          left: -117 !important;
-          top: 30 !important;
-        }
-        ^ .net-nanopay-ui-ActionView-create{
-          position: relative;
-          top: -32;
-          margin-right: 5px;
-        }
-        ^ .foam-u2-view-TableView-row:hover {
-          cursor: pointer;
-          background: %TABLEHOVERCOLOR%;
-        }
-        ^ .foam-u2-view-TableView-row {
-          height: 40px;
-        }
-        ^ .button-div{
-          height: 40px;
-        }
-        */
-      }
-    })
-  ],
+
+  css: `
+    ^{
+      width: 970px;
+      margin: auto;
+    }
+    ^ .net-nanopay-invoice-ui-SummaryCard{
+      width: 20.9%;
+    }
+    ^ .optionsDropDown {
+      left: -117 !important;
+      top: 30 !important;
+    }
+    ^ .net-nanopay-ui-ActionView-create{
+      position: relative;
+      top: -32;
+      margin-right: 5px;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      cursor: pointer;
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
+    }
+    ^ .button-div{
+      height: 40px;
+    }
+  `,
 
   methods: [
     function initE() {
-      this.SUPER();      
+      this.SUPER();
       var self = this;
 
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideReceivableSummary$)
-          .start({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'}).end()
+          .tag({ class: 'net.nanopay.invoice.ui.ReceivablesSummaryView' })
           .start().addClass('container')
             .start().addClass('button-div')
               // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
@@ -86,7 +92,7 @@ foam.CLASS({
               //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
               //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
               //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
-              // .end()          
+              // .end()
               // .start().addClass('inline')
               //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
               //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
@@ -98,17 +104,31 @@ foam.CLASS({
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
-            factory: function() { return self.Invoice.create({ payeeId: self.user.id, payeeName: self.user.name }); },
+            factory: function() {
+              return self.Invoice.create({
+                payeeId: self.user.id,
+                payeeName: self.user.name
+              });
+            },
             createLabel: 'New Invoice',
-            createDetailView: { class: 'net.nanopay.invoice.ui.InvoiceDetailView' },
-            detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
+            createDetailView: {
+              class: 'net.nanopay.invoice.ui.InvoiceDetailView'
+            },
+            detailView: {
+              class: 'net.nanopay.invoice.ui.SalesDetailView'
+            },
             summaryView: this.SalesTableView.create(),
-            showActions: false            
+            showActions: false
           })
         .end()
-        .start().enableClass('hide', this.hideReceivableSummary$)        
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.salesDAO, message: this.placeholderText, image: 'images/ic-receivable.png' })
-        .end()
+        .start().enableClass('hide', this.hideReceivableSummary$)
+          .tag({
+            class: 'net.nanopay.ui.Placeholder',
+            dao: this.salesDAO,
+            message: this.placeholderText,
+            image: 'images/ic-receivable.png'
+          })
+        .end();
     }
   ],
 
@@ -117,33 +137,46 @@ foam.CLASS({
       name: 'SalesTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.invoice.model.Invoice' ],
+      requires: [
+        'net.nanopay.invoice.model.Invoice'
+      ],
 
-      imports: [ 'salesDAO' , 'hideSaleSummary'],
-      properties: [ 
-        'selection', 
-        { name: 'data', factory: function() { return this.salesDAO; }}
+      imports: [
+        'salesDAO',
+        'hideSaleSummary'
+      ],
+
+      properties: [
+        'selection',
+        {
+          name: 'data',
+          factory: function() {
+            return this.salesDAO;
+          }
+        }
       ],
 
       methods: [
         function initE() {
-
           this
             .start({
               class: 'foam.u2.view.ScrollTableView',
               selection$: this.selection$,
               data: this.data,
               config: {
-                amount: { 
+                amount: {
                   tableCellView: function(obj, e) {
-                  return e.E().add('- $', obj.amount).style({color: '#c82e2e'})
+                    return e.E()
+                        .add('- $', obj.amount)
+                        .style({ color: '#c82e2e' });
                   }
                 }
               },
               columns: [
-                'id', 'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate', 'amount', 'status'
+                'id', 'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate',
+                'amount', 'status'
               ]
-            }).addClass(this.myClass('table')).end()
+            }).addClass(this.myClass('table')).end();
         }
       ],
     }

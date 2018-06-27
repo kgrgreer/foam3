@@ -19,36 +19,36 @@ foam.CLASS({
     'user'
   ],
 
-  exports: [ 'as data' ],
-
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          margin-bottom: 20px;
-        }
-      */}
-    })
+  exports: [
+    'as data'
   ],
 
+  css: `
+    ^{
+      margin-bottom: 20px;
+    }
+  `,
+
   messages: [
-    { name: 'title',          message: 'Payables' },
-    { name: 'dueLabel',      message: 'Due' },
-    { name: 'overDueLabel',       message: 'Overdue' },
-    { name: 'newLabel',       message: 'New' },
+    { name: 'title', message: 'Payables' },
+    { name: 'dueLabel', message: 'Due' },
+    { name: 'overDueLabel', message: 'Overdue' },
+    { name: 'newLabel', message: 'New' },
     { name: 'scheduledLabel', message: 'Scheduled' },
-    { name: 'paidLabel',      message: 'Paid' }
+    { name: 'paidLabel', message: 'Paid' }
   ],
 
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.user.expenses; }
+      factory: function() {
+        return this.user.expenses;
+      }
     },
     {
       class: 'Int',
       name: 'scheduledCount',
-      value: "..."
+      value: '...'
     },
     {
       class: 'Double',
@@ -90,10 +90,6 @@ foam.CLASS({
       name: 'newCount',
       value: '...'
     },
-    // {
-    //   class: 'Double',
-    //   name: 'newAmount',
-    // },
     {
       class: 'Double',
       name: 'payableAmount',
@@ -102,7 +98,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'formattedPayableAmount',
-      expression: function(payableAmount) { return this.formatCurrency(payableAmount/100); }
+      expression: function(payableAmount) {
+        return this.formatCurrency(payableAmount/100);
+      }
     }
   ],
 
@@ -115,14 +113,43 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('blue-card-title')
           .add(this.title)
-          .start().addClass('thin-align').add(this.formattedPayableAmount$).end()
+          .start()
+            .addClass('thin-align')
+            .add(this.formattedPayableAmount$)
+          .end()
         .end()
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
-        // .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.newCount$, amount$: this.newAmount$, status: this.newLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
+        .tag({
+          class: 'net.nanopay.invoice.ui.SummaryCard',
+          count$: this.overDueCount$,
+          amount$: this.overDueAmount$,
+          status: this.overDueLabel
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.SummaryCard',
+          count$: this.dueCount$,
+          amount$: this.dueAmount$,
+          status: this.dueLabel
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.SummaryCard',
+          count$: this.scheduledCount$,
+          amount$: this.scheduledAmount$,
+          status: this.scheduledLabel
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.SummaryCard',
+          count$: this.paidCount$,
+          amount$: this.paidAmount$,
+          status: this.paidLabel
+        });
     },
+    async function calculatePropertiesForStatus(status, propertyNamePrefix) {
+      var dao = this.dao.where(this.EQ(this.Invoice.STATUS, status));
+      var count = await dao.select(this.COUNT());
+      var sum = await dao.select(this.SUM(this.Invoice.AMOUNT));
+      this[`${propertyNamePrefix}Count`] = count.value;
+      this[`${propertyNamePrefix}Amount`] = sum.value.toFixed(2);
+    }
   ],
 
   listeners: [
@@ -130,61 +157,15 @@ foam.CLASS({
       name: 'onDAOUpdate',
       isFramed: true,
       code: function() {
-        var self = this;
+        this.dao
+            .where(this.NEQ(this.Invoice.STATUS, 'Void'))
+            .select(this.SUM(this.Invoice.AMOUNT))
+            .then((sum) => { this.payableAmount = sum.value.toFixed(2); });
 
-        var payablesSumDAO = this.dao.where(
-          this.NEQ(this.Invoice.STATUS, "Void")
-        );
-
-        payablesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.payableAmount = sum.value.toFixed(2);
-        });
-        // These two queries could be combined into a SEQ() to save on a
-        // network round-trip when used with a network DAO.
-        // var newDAO = this.dao.where(this.EQ(this.Invoice.STATUS, "New"));
-
-        // newDAO.select(this.COUNT()).then(function(count) {
-        //   self.newCount = count.value;
-        // });
-        // newDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-        //   self.newAmount = sum.value.toFixed(2);
-        // });
-
-        var overDueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Overdue'));
-
-        overDueDAO.select(this.COUNT()).then(function(count) {
-          self.overDueCount = count.value;
-        });
-        overDueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.overDueAmount = sum.value.toFixed(2);
-        });
-
-        var dueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Due'));
-
-        dueDAO.select(this.COUNT()).then(function(count) {
-          self.dueCount = count.value;
-        });
-        dueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.dueAmount = sum.value.toFixed(2);
-        });
-
-        var scheduledDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Scheduled'));
-
-        scheduledDAO.select(this.COUNT()).then(function(count) {
-          self.scheduledCount = count.value;
-        });
-        scheduledDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.scheduledAmount = sum.value.toFixed(2);
-        });
-
-        var paidDAO = this.dao.where(this.EQ(this.Invoice.STATUS,'Paid'));
-
-        paidDAO.select(this.COUNT()).then(function(count) {
-          self.paidCount = count.value;
-        });
-        paidDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.paidAmount = sum.value.toFixed(2);
-        });
+        this.calculatePropertiesForStatus('Overdue', 'overDue');
+        this.calculatePropertiesForStatus('Due', 'due');
+        this.calculatePropertiesForStatus('Scheduled', 'scheduled');
+        this.calculatePropertiesForStatus('Paid', 'paid');
       }
     }
   ]
