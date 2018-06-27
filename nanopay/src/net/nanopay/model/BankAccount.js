@@ -22,6 +22,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.payment.Institution',
+      name: 'institutionId',
+      label: 'Institution'
+    },
+    {
+      // TODO: deprecate and replace with institutionId
       class: 'String',
       name: 'institutionNumber',
       label: 'Institution No.',
@@ -81,14 +88,16 @@ foam.CLASS({
       name: 'xeroId'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'currencyCode'
     },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Branch',
-      name: 'branchId'
-    },
+    // Handled via Relationship
+    // {
+    //   class: 'Reference',
+    //   of: 'net.nanopay.model.Branch',
+    //   name: 'branchId'
+    // },
     {
       class: 'Long',
       name: 'randomDepositAmount',

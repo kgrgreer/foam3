@@ -37,7 +37,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.BankAccountStatus',
-    'net.nanopay.model.Institution',
+    'net.nanopay.payment.Institution',
     'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -389,7 +389,7 @@ foam.CLASS({
         }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
-          X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution){
+          X.institutionDAO.where(this.EQ(this.Institution.NAME, this.viewData.institution)).select().then(function(institution){
             var inNumber = institution.array[0].institutionNumber;
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {

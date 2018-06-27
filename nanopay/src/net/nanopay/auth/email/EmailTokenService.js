@@ -6,7 +6,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'foam.nanos.auth.User'
   ],
 
   methods: [
@@ -38,13 +39,14 @@ foam.CLASS({
   // add app store / play store links
   if (user.getType().equals("Personal")){
     if (user.getPortalAdminCreated()) {
-      args.put("applink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://www.apple.com/lae/ios/app-store/");
-      args.put("playlink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=https://play.google.com/store?hl=en");
+      args.put("applink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect="+appConfig.getAppLink());
+      args.put("playlink", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect="+appConfig.getPlayLink());
     }
   }
 
   String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
   email.sendEmailFromTemplate(user, message, template, args);
+  user = (User) user.fclone();
   user.setPortalAdminCreated(false);
   user.setWelcomeEmailSent(true);
   userDAO.put(user);
