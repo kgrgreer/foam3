@@ -31,7 +31,7 @@ foam.CLASS({
       this.SUPER();
       var i = this.data;
       var self = this;
-      this.invoiceDAO.find(i.id).then(function(result) {
+      this.invoiceDAO.find(i.invoiceId).then(function(result) {
         self.searchResult = result;
       });
       /*

@@ -8,8 +8,6 @@ import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.ui.NewInvoiceNotification;
 
-import java.util.Date;
-
 public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO userDAO_;
@@ -43,11 +41,13 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     if (payeeId == invoice.getCreatedBy()) {
       sendToUserId = payerId;
       fromUserId = payeeId;
-      invoiceType = InvoiceType.RECEIVABLE.name();
+      // for the receiver, the invoice is payable type
+      invoiceType = InvoiceType.PAYABLE.name();
     } else {
       sendToUserId = payeeId;
       fromUserId = payerId;
-      invoiceType = InvoiceType.PAYABLE.name();
+      // for the receiver, the invoice is receivable type
+      invoiceType = InvoiceType.RECEIVABLE.name();
     }
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
@@ -55,6 +55,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.setFromUserId(fromUserId);
     notification.setNotificationType("Invoice received");
     notification.setInvoiceType(invoiceType);
+    notification.setInvoiceId(invoice.getId());
     notification.setAmount(invoice.getAmount());
     notificationDAO.put(notification);
   }
