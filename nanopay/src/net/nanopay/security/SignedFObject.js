@@ -1,5 +1,5 @@
 foam.CLASS({
-    package: 'foam.core',
+    package: 'net.nanopay.security',
     name: 'SignedFObject',
 
     documentation: 'Wrapper for FObject which stores the signature',
