@@ -35,7 +35,8 @@ foam.CLASS({
     { name: 'overDueLabel', message: 'Overdue' },
     { name: 'newLabel', message: 'New' },
     { name: 'scheduledLabel', message: 'Scheduled' },
-    { name: 'paidLabel', message: 'Paid' }
+    { name: 'paidLabel', message: 'Paid' },
+    { name: 'pendingLabel', message: 'Pending' },
   ],
 
   properties: [
@@ -87,6 +88,16 @@ foam.CLASS({
     },
     {
       class: 'Int',
+      name: 'pendingCount',
+      value: '...'
+    },
+    {
+      class: 'Double',
+      name: 'pendingAmount',
+      value: ''
+    },
+    {
+      class: 'Int',
       name: 'newCount',
       value: '...'
     },
@@ -132,6 +143,12 @@ foam.CLASS({
         })
         .tag({
           class: 'net.nanopay.invoice.ui.SummaryCard',
+          count$: this.pendingCount$,
+          amount$: this.pendingAmount$,
+          status: this.pendingLabel
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.SummaryCard',
           count$: this.scheduledCount$,
           amount$: this.scheduledAmount$,
           status: this.scheduledLabel
@@ -166,6 +183,7 @@ foam.CLASS({
         this.calculatePropertiesForStatus('Due', 'due');
         this.calculatePropertiesForStatus('Scheduled', 'scheduled');
         this.calculatePropertiesForStatus('Paid', 'paid');
+        this.calculatePropertiesForStatus('Pending', 'pending');
       }
     }
   ]
