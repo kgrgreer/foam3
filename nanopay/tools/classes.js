@@ -146,6 +146,7 @@ var classes = [
   'net.nanopay.security.PublicKeyDAO',
   'net.nanopay.security.PrivateKeyDAO',
   'net.nanopay.security.UserKeyPairGenerationDAO',
+  'net.nanopay.security.SigningJournal',
 
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView'
