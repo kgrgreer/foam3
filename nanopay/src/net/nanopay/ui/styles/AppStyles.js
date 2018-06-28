@@ -307,7 +307,7 @@ foam.CLASS({
           margin: 10px 0 0 0;
         }
         .blue-card-title{
-          
+          border: 3px solid %SECONDARYCOLOR%;
           display: block;
           width: 135px;
           height: 70px;

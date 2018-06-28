@@ -22,12 +22,12 @@ foam.INTERFACE({
         {
           name: 'timeFrame',
           javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-          swiftType: 'TransactionLimitTimeFrame'
+          of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
         },
         {
           name: 'type',
           javaType: 'net.nanopay.tx.model.TransactionLimitType',
-          swiftType: 'TransactionLimitType'
+          of: 'net.nanopay.tx.model.TransactionLimitType',
         }
       ]
     },
@@ -46,12 +46,12 @@ foam.INTERFACE({
         {
           name: 'timeFrame',
           javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-          swiftType: 'TransactionLimitTimeFrame'
+          of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
         },
         {
           name: 'type',
           javaType: 'net.nanopay.tx.model.TransactionLimitType',
-          swiftType: 'TransactionLimitType'
+          of: 'net.nanopay.tx.model.TransactionLimitType',
         }
       ]
     }

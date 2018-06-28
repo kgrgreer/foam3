@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'com.google.api.client.util.Base64',
     'net.nanopay.security.util.SecurityUtil',
+    'org.bouncycastle.util.encoders.Base64',
     'javax.crypto.Cipher',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
@@ -120,9 +120,7 @@ foam.CLASS({
           SecretKey key = getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.WRAP_MODE, key, SecurityUtil.GetSecureRandom());
-
-          // wrap private key
-          entry.setEncryptedPrivateKey(Base64.encodeBase64String(cipher.wrap(privateKey)));
+          entry.setEncryptedPrivateKey(Base64.toBase64String(cipher.wrap(privateKey)));
           entry.setAlias(getAlias());
           entry.setPrivateKey(null);
           return super.put_(x, entry);
