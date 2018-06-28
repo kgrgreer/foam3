@@ -174,10 +174,8 @@ foam.CLASS({
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
-        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
-        this.start().style({ 'padding-right': '20px' })
-          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
-        .end();
+        var e = this;
+        X.formatCurrencyAmount(a, e, X);
       }
     },
     {
@@ -186,10 +184,8 @@ foam.CLASS({
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
-        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
-        this.start().style({ 'padding-right': '20px' })
-          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
-        .end();
+        var e = this;
+        X.formatCurrencyAmount(a, e, X);
       }
     },
     {
@@ -292,6 +288,15 @@ foam.CLASS({
       value: false
     }
   ],
+
+  methods: [
+    function formatCurrencyAmount(a, e, X) {
+      var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
+      e.start().style({ 'padding-right': '20px' })
+        .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+      .end();
+    }
+  ],\
 
   actions: [
     {

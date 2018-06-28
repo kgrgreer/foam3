@@ -109,15 +109,15 @@ foam.CLASS({
       name: 'verbTenseMsg',
       documentation: 'Past or present message on invoice status notification',
       expression: function(data) {
-        return data.paymentMethod == this.PaymentStatus.PENDING ?
+        return data.paymentMethod === this.PaymentStatus.PENDING ?
                'Invoice is' : 'Invoice has been';
       }
     },
     {
       name: 'foreignExchange',
       factory: function() {
-        if ( this.data.sourceCurrency == null ) return false;
-        return this.data.targetCurrency != this.data.sourceCurrency;
+        if ( this.data.sourceCurrency === null ) return false;
+        return this.data.targetCurrency !== this.data.sourceCurrency;
       }
     }
   ],

@@ -112,15 +112,15 @@ foam.CLASS({
     {
       name: 'verbTenseMsg',
       expression: function(data) {
-        return data.paymentMethod == this.PaymentStatus.PENDING ?
+        return data.paymentMethod === this.PaymentStatus.PENDING ?
               'Invoice is' : 'Invoice has been';
       }
     },
     {
       name: 'foreignExchange',
       factory: function() {
-        if ( this.data.sourceCurrency == null ) return false;
-        return this.data.targetCurrency != this.data.sourceCurrency;
+        if ( this.data.sourceCurrency === null ) return false;
+        return this.data.targetCurrency !== this.data.sourceCurrency;
       }
     }
   ],
@@ -176,8 +176,7 @@ foam.CLASS({
     },
 
     function openExportModal() {
-      this.add(this.Popup.create()
-      .tag({
+      this.add(this.Popup.create().tag({
         class: 'net.nanopay.ui.modal.ExportModal',
         exportObj: this.data
       }));
@@ -214,25 +213,53 @@ foam.CLASS({
           return;
         }
 
-        this.accountDAO
-        .where(this.EQ(this.Account.ID, this.user.id))
-        .limit(1).select().then(function( accountBalance ) {
+        this.accountDAO.where(
+          this.EQ(this.Account.ID, this.user.id)
+        ).limit(1).select().then(function( accountBalance ) {
           if ( accountBalance.array[0].balance < self.data.amount ) {
             // Not enough digital cash balance
-            self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
+            self.bankAccountDAO.where(
+              self.AND(
+                self.EQ(
+                  self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
+                ),
+                self.EQ(
+                  self.BankAccount.OWNER, self.user.id
+                )
+              )
+            ).limit(1).select().then(function(account) {
               if ( account.array.length === 0 ) {
-                self.add(self.NotificationMessage.create({ message: 'Bank Account should be verified for paying this invoice.', type: 'error' }));
+                self.add(self.NotificationMessage.create({
+                  message: 'Bank Account should be' +
+                  'verified for paying this invoice.',
+                  type: 'error'
+                }));
+
                 return;
               }
-              X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+              X.stack.push({
+                class: 'net.nanopay.ui.transfer.TransferWizard',
+                type: 'regular',
+                invoice: self.data
+              });
             }).catch(function(err) {
-              self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+              self.add(self.NotificationMessage.create({
+                message: 'Could not continue. Please contact customer support.',
+                type: 'error'
+              }));
             });
           } else {
-            X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+            X.stack.push({
+              class: 'net.nanopay.ui.transfer.TransferWizard',
+              type: 'regular',
+              invoice: self.data
+            });
           }
         }).catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+          self.add(self.NotificationMessage.create({
+            message: 'Could not continue. Please contact customer support.',
+            type: 'error'
+          }));
         });
       }
     },
@@ -267,20 +294,34 @@ foam.CLASS({
       var self = this;
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: this.verbTenseMsg + ' ' +
+          this.data.paymentMethod.label + '.',
+          type: 'error'
+        }));
         return;
       }
-      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.DisputeModal',
+        invoice: this.data
+      }));
     },
 
     function schedulePopUp() {
       var self = this;
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: this.verbTenseMsg + ' ' +
+          this.data.paymentMethod.label + '.',
+          type: 'error'
+        }));
         return;
       }
-      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.ScheduleModal',
+        invoice: this.data
+      }));
     }
   ]
 });
