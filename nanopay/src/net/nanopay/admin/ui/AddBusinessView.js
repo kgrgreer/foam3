@@ -539,6 +539,7 @@ foam.CLASS({
         jobTitle: this.jobTitle,
         email: this.emailAddress,
         type: 'Business',
+        spid: this.user.spid,
         group: this.user.group === 's2hAdmin' ?
           's2hCustomer' : 'business',
         status: this.AccountStatus.PENDING,

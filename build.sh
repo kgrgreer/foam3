@@ -55,8 +55,8 @@ function set_doc_base {
     if [ -f "$CATALINA_HOME/conf/server.xml" ]; then
         if ! grep -q "docBase" "$CATALINA_HOME/conf/server.xml"; then
             printf "adding docBase\n"
-            # TODO: figure how ot insert \n before <\Host> on macos
-            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" /></Host>,g" "$CATALINA_HOME/conf/server.xml"
+            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" />\\
+        </Host>,g" "$CATALINA_HOME/conf/server.xml"
         else
             sed -i -e "s,docBase=.*path=,docBase=\"\${catalina_doc_base}\" path=,g" "$CATALINA_HOME/conf/server.xml"
         fi
@@ -77,11 +77,67 @@ function backup {
     fi
 }
 
+function setup_csp_valve {
+  if [[ ! -f $CATALINA_HOME/lib/CSPValve.jar ]]; then
+    pushd .
+    cd nanopay/src/net/nanopay/security/csp
+    mkdir build
+    javac -cp ~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar:~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar:/Library/Tomcat/lib/servlet-api.jar -d ./build CSPValve.java
+    cd build
+    jar cvf CSPValve.jar *
+    mv CSPValve.jar $CATALINA_HOME/lib
+    cd ..
+    rm -rf build
+    popd
+    echo "INFO :: CSP Valve setup."
+  fi
+  if [[ -f "$CATALINA_HOME/conf/server.xml" ]]; then
+      if ! grep -q "CSPValve" "$CATALINA_HOME/conf/server.xml"; then
+          sed -i -e "s,</Host>,\\
+          <Valve className=\"net.nanopay.security.csp.CSPValve\" />\\
+      </Host>,g" "$CATALINA_HOME/conf/server.xml"
+          printf "INFO :: Added CSP Valve to server.xml\n"
+      fi
+  fi
+}
+
+function setup_jce {
+  local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)".*/\1/p;')
+  local JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk-$JAVA_VER.jdk/Contents/Home/lib/security"
+
+  # For Java 8
+  if [[ $JAVA_LIB_SECURITY = *"_"* ]]; then
+    JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk$JAVA_VER.jdk/Contents/Home/jre/lib/security"
+  fi
+
+  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
+    mkdir tmp_jce
+    cd tmp_jce
+    curl -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
+    unzip jce_policy-8.zip
+    sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+    cd ..
+    rm -rf tmp_jce
+
+    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
+      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
+    else
+      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
+    fi
+  fi
+}
+
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
     # invoke deploy_journals after build_war
     #
+
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+      # Preventing this from running on AWS
+      setup_jce
+    fi
+
     if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
 
@@ -109,6 +165,8 @@ function build_war {
       mvn install -Dbuild=dev -o
     else
       mvn install
+      setup_csp_valve
+      mvn com.redhat.victims.maven:security-versions:check
     fi
 }
 
@@ -476,5 +534,8 @@ else
         start_tomcat
     fi
 fi
+
+# Unset error on exit
+set +e
 
 exit 0
