@@ -32,6 +32,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 962px;
+      margin: auto;
     }
     ^ h5{
       opacity: 0.6;
@@ -116,9 +117,13 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start(this.BACK_ACTION).end()
+        .start()
+          .startContext({ data: this })
+            .start(this.BACK_ACTION).end()
+          .endContext()
+        .end()
         .callIf(this.data.createdBy == this.user.id, function() {
-          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
+          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end();
         })
         .start(this.RECORD_PAYMENT).end()
         .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
@@ -144,7 +149,8 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView' });
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     },
     {

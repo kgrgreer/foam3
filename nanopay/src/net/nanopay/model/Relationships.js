@@ -150,6 +150,6 @@ foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
-  inverseName: 'partners'
+  inverseName: 'partnered'
 });
 
