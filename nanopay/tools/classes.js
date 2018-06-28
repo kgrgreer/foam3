@@ -45,6 +45,7 @@ var classes = [
   'net.nanopay.sps.model.HostError',
   'net.nanopay.sps.model.UserInfo',
   'net.nanopay.sps.model.RequestPacket',
+  'net.nanopay.sps.model.ParsePacket',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',

@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'GeneralRequestResponse',
+  extends: 'net.nanopay.sps.model.ParsePacket',
 
   properties: [
     {
@@ -48,7 +49,7 @@ foam.CLASS({
       name: 'checkNum'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'amount'
     },
     {
@@ -66,6 +67,40 @@ foam.CLASS({
     {
       class: 'String',
       name: 'originalRequestStatus'
+    }
+  ],
+
+  javaImports: [
+    'java.util.*',
+    'foam.core.*'
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(`
+static {
+list = new ArrayList<>();
+list.add(MSG_NUM);
+list.add(PACKET_NUM);
+list.add(MESSAGE_MODIFIER_CODE);
+list.add(APPROVAL_CODE);
+list.add(TEXT_MSG);
+list.add(SYNC_COUNTERS_INCREMENT);
+list.add(ITEM_ID);
+list.add(BATCH_ID);
+list.add(ROUTE_CODE);
+list.add(ACCOUNT);
+list.add(CHECK_NUM);
+list.add(AMOUNT);
+list.add(INVOICE);
+list.add(CLERK_ID);
+list.add(LOCAL_TRANSACTION_TIME);
+list.add(ORIGINAL_REQUEST_STATUS);
+}
+        `);
+      }
     }
   ]
 });

@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'BatchDetailGeneralResponse',
+  extends: 'net.nanopay.sps.model.ParsePacket',
 
   properties: [
     {
@@ -62,6 +63,39 @@ foam.CLASS({
     {
       class: 'String',
       name: 'hostCreditAmount'
+    }
+  ],
+
+  javaImports: [
+    'java.util.*',
+    'foam.core.*'
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(`
+{
+list = new ArrayList<>();
+list.add(MSG_NUM);
+list.add(PACKET_NUM);
+list.add(MESSAGE_MODIFIER_CODE);
+list.add(BATCH_STATUS_CODE);
+list.add(TEXT_MSG);
+list.add(HOST_SYNC_COUNTER);
+list.add(BATCH_ID);
+list.add(HOST_CHECK_APPROVAL_COUNT);
+list.add(HOST_CHECK_APPROVAL_AMOUNT);
+list.add(HOST_DECLINE_COUNT);
+list.add(HOST_DECLINE_AMOUNT);
+list.add(HOST_VOID_COUNT);
+list.add(HOST_VOID_AMOUNT);
+list.add(HOST_CREDIT_COUNT);
+list.add(HOST_CREDIT_AMOUNT);
+}
+        `);
+      }
     }
   ]
 });
