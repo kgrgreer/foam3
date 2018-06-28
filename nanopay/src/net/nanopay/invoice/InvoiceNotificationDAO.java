@@ -48,20 +48,19 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     User    payer   = (User) userDAO_.find_(x, invoice.getPayerId());
 
     //sets approriate arguments
-    Boolean invoiceType = payeeId == invoice.getCreatedBy();
+    Boolean invType = (Boolean) (invoice.getPayeeId() == (Long) invoice.getCreatedBy());
 
     notification.getEmailArgs().put("amount",    formatter.format(invoice.getAmount()/100.00));
     notification.getEmailArgs().put("account",   invoice.getId());
-    notification.getEmailArgs().put("name",      invoiceType ? payer.getFirstName() : payee.getFirstName());
-    notification.getEmailArgs().put("fromEmail", invoiceType ? payee.getEmail() : payer.getEmail());
-    notification.getEmailArgs().put("fromName",  invoiceType ? payee.getEmail() : payer.getEmail());
+    notification.getEmailArgs().put("name",      invType ? payer.getFirstName() : payee.getFirstName());
+    notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
+    notification.getEmailArgs().put("fromName",  invType ? payee.label() : payer.label());
 
     if ( invoice.getDueDate() != null ) {
       notification.getEmailArgs().put("date",      dateFormat.format(invoice.getDueDate()));
-
     }
+    
     notification.getEmailArgs().put("link",      config.getUrl());
-
     return notification;
   }
 
@@ -73,7 +72,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Long payeeId = (Long) invoice.getPayeeId();
     Long payerId = (Long) invoice.getPayerId();
 
-    InvoiceType invoiceType = payeeId == invoice.getCreatedBy() ? InvoiceType.PAYABLE.name() : InvoiceType.RECEIVABLE.name();
+    String invType = payeeId == invoice.getCreatedBy() ? InvoiceType.PAYABLE.name() : InvoiceType.RECEIVABLE.name();
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
     //Set email values on notification
@@ -84,7 +83,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.setUserId(payeeId == invoice.getCreatedBy() ? payerId : payeeId);
     notification.setFromUserId(payeeId != invoice.getCreatedBy() ? payerId : payeeId);
     notification.setNotificationType("Invoice received");
-    notification.setInvoiceType(invoiceType);
+    notification.setInvoiceType(invType);
     notification.setInvoiceId(invoice.getId());
     notification.setAmount(invoice.getAmount());
     notificationDAO.put(notification);
