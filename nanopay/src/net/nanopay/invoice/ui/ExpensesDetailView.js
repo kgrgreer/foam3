@@ -36,6 +36,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 962px;
+      margin: auto;
     }
     ^ h5{
       opacity: 0.6;
@@ -133,7 +134,11 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start(this.BACK_ACTION).end()
+        .start()
+          .startContext({ data: this })
+            .start(this.BACK_ACTION).end()
+          .endContext()
+        .end()
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
         .start(this.EXPORT_BUTTON,
@@ -188,7 +193,8 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
+        this.hideSaleSummary = false;
+        X.stack.back();
       }
     },
     {

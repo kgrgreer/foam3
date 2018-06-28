@@ -2,11 +2,11 @@
 
 sudo mkdir -p /usr/local
 cd /usr/local
-sudo curl -o apache-tomcat-8.5.31.zip http://mirror.csclub.uwaterloo.ca/apache/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.zip
-sudo unzip apache-tomcat-8.5.31.zip
-sudo rm apache-tomcat-8.5.31.zip
+sudo curl -o apache-tomcat-8.5.32.zip http://mirror.csclub.uwaterloo.ca/apache/tomcat/tomcat-8/v8.5.32/bin/apache-tomcat-8.5.32.zip
+sudo unzip apache-tomcat-8.5.32.zip
+sudo rm apache-tomcat-8.5.32.zip
 sudo rm -rf /Library/Tomcat
-sudo ln -s /usr/local/apache-tomcat-8.5.31 /Library/Tomcat
+sudo ln -s /usr/local/apache-tomcat-8.5.32 /Library/Tomcat
 sudo chmod +x /Library/Tomcat/bin/*.sh
 cd /Library/Tomcat
 sudo rm -rf webapps/

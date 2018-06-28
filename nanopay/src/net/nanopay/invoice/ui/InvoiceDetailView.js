@@ -8,9 +8,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack',
     'hideReceivableSummary',
+    'notificationDAO',
     'recurringInvoiceDAO',
+    'stack',
     'userDAO',
     'user'
   ],
@@ -22,9 +23,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice',
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.NewInvoiceNotification'
   ],
 
   properties: [
@@ -67,9 +69,11 @@ foam.CLASS({
       name: 'userList',
       view: function(_,X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.userDAO.where(X.data.AND(X.data.NEQ(X.data.User.ID, X.user.id),
-          // only retrieve the active users
-          X.data.EQ(X.data.User.STATUS,'ACTIVE'))),
+          dao: X.userDAO.where(X.data.AND(
+            X.data.NEQ(X.data.User.ID, X.user.id),
+            // only retrieve the active users
+            X.data.EQ(X.data.User.STATUS, 'ACTIVE')
+          )),
           placeholder: 'Please Select Customer',
           objToChoice: function(user) {
             var username = user.businessName || user.organization;
@@ -87,8 +91,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
+    ^ {
       font-weight: 100;
+      width: 970px;
+      margin: auto;
     }
     ^ .enable-recurring-text {
       font-size: 12px;
@@ -236,7 +242,8 @@ foam.CLASS({
       name: 'deleteDraft',
       label: 'Delete Draft',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     },
     {
@@ -288,8 +295,8 @@ foam.CLASS({
           invoiceNumber: this.data.invoiceNumber
         });
 
-        X.dao.put(inv);
-        
+        this.user.sales.put(inv);
+
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
         //     frequency: X.frequency,
@@ -313,7 +320,8 @@ foam.CLASS({
         //   X.dao.put(this);
         // }
 
-        X.stack.push({class: 'net.nanopay.invoice.ui.SalesView'});
+        this.hideReceivableSummary = false;
+        X.stack.back();
       }
     }
   ]

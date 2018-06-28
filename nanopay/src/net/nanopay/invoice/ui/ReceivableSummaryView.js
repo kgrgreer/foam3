@@ -11,7 +11,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.SummaryCard'
   ],
 
   imports: [
@@ -19,22 +20,34 @@ foam.CLASS({
     'user'
   ],
 
-  exports: [ 'as data' ],
+  exports: [
+    'as data'
+  ],
 
-  css: '^{ margin-bottom: 20px; }',
+  css: `
+    ^{
+      margin-bottom: 20px;
+    }
+    ^:hover{
+      cursor: pointer;
+    }
+  `,
 
   messages: [
-    { name: 'title',          message: 'Receivables' },
-    { name: 'dueLabel',      message: 'Due' },
-    { name: 'overDueLabel',       message: 'Overdue' },
+    { name: 'title', message: 'Receivables' },
+    { name: 'dueLabel', message: 'Due' },
+    { name: 'overDueLabel', message: 'Overdue' },
     { name: 'scheduledLabel', message: 'Scheduled' },
-    { name: 'paidLabel',      message: 'Paid' }
+    { name: 'paidLabel', message: 'Paid' },
+    { name: 'pendingLabel', message: 'Pending' }
   ],
 
   properties: [
     {
       name: 'dao',
-      factory: function() { return this.user.sales; }
+      factory: function() {
+        return this.user.sales;
+      }
     },
     {
       class: 'Int',
@@ -56,7 +69,6 @@ foam.CLASS({
       name: 'overDueAmount',
       value: ''
     },
-
     {
       class: 'Int',
       name: 'scheduledCount',
@@ -67,7 +79,6 @@ foam.CLASS({
       name: 'scheduledAmount',
       value: ''
     },
-
     {
       class: 'Int',
       name: 'paidCount',
@@ -79,6 +90,16 @@ foam.CLASS({
       value: ''
     },
     {
+      class: 'Int',
+      name: 'pendingCount',
+      value: '...'
+    },
+    {
+      class: 'Double',
+      name: 'pendingAmount',
+      value: ''
+    },
+    {
       class: 'Double',
       name: 'receivableAmount',
       value: ''
@@ -86,7 +107,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'formattedReceivableAmount',
-      expression: function(receivableAmount) { return this.formatCurrency(receivableAmount/100); }
+      expression: function(receivableAmount) {
+        return this.formatCurrency(receivableAmount/100);
+      }
+    },
+    {
+      name: 'summaryCards',
+      value: []
     }
   ],
 
@@ -99,13 +126,54 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass('blue-card-title')
           .add(this.title)
-          .start().addClass('thin-align').add(this.formattedReceivableAmount$).end()
+          .start()
+            .addClass('thin-align')
+            .add(this.formattedReceivableAmount$)
+          .end()
+          .on('click', () => {
+            this.disableAllSummaryCards();
+            this.pub('statusReset');
+          })
         .end()
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.overDueCount$, amount$: this.overDueAmount$, status: this.overDueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.dueCount$, amount$: this.dueAmount$, status: this.dueLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.scheduledCount$, amount$: this.scheduledAmount$, status: this.scheduledLabel })
-        .tag({ class: 'net.nanopay.invoice.ui.SummaryCard', count$: this.paidCount$, amount$: this.paidAmount$, status: this.paidLabel })
+        .add(this.buildSummaryCard('Overdue', 'overDue'))
+        .add(this.buildSummaryCard('Due', 'due'))
+        .add(this.buildSummaryCard('Pending', 'pending'))
+        .add(this.buildSummaryCard('Scheduled', 'scheduled'))
+        .add(this.buildSummaryCard('Paid', 'paid'));
     },
+
+    function disableAllSummaryCards() {
+      this.summaryCards
+          .filter((card) => card.active)
+          .forEach((card) => card.toggle());
+    },
+
+    function buildSummaryCard(status, propertyNamePrefix) {
+      var card = this.SummaryCard.create({
+        count$: this[`${propertyNamePrefix}Count$`],
+        amount$: this[`${propertyNamePrefix}Amount$`],
+        status: this[`${propertyNamePrefix}Label`]
+      });
+      card.on('click', () => {
+        if ( card.active ) {
+          this.pub('statusReset');
+        } else {
+          this.disableAllSummaryCards();
+          this.pub('statusChange', status);
+        }
+        card.toggle();
+      });
+      this.summaryCards.push(card);
+      return card;
+    },
+
+    async function calculatePropertiesForStatus(status, propertyNamePrefix) {
+      var dao = this.dao.where(this.EQ(this.Invoice.STATUS, status));
+      var count = await dao.select(this.COUNT());
+      var sum = await dao.select(this.SUM(this.Invoice.AMOUNT));
+      this[`${propertyNamePrefix}Count`] = count.value;
+      this[`${propertyNamePrefix}Amount`] = sum.value.toFixed(2);
+    }
   ],
 
   listeners: [
@@ -113,54 +181,16 @@ foam.CLASS({
       name: 'onDAOUpdate',
       isFramed: true,
       code: function() {
-        var self = this;
+        this.dao
+            .where(this.NEQ(this.Invoice.STATUS, 'Void'))
+            .select(this.SUM(this.Invoice.AMOUNT))
+            .then((sum) => { this.receivableAmount = sum.value.toFixed(2); });
 
-        var receivablesSumDAO = this.dao.where(
-          this.NEQ(this.Invoice.STATUS, "Void")
-        );
-
-        receivablesSumDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum){
-          self.receivableAmount = sum.value.toFixed(2);
-        });
-
-        // These two queries could be combined into a SEQ() to save on a
-        // network round-trip when used with a network DAO.
-        var overDueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, "Overdue"));
-
-        overDueDAO.select(this.COUNT()).then(function(count) {
-          self.overDueCount = count.value;
-        });
-
-        overDueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.overDueAmount = sum.value.toFixed(2);
-        });
-
-        var dueDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Due'));
-
-        dueDAO.select(this.COUNT()).then(function(count) {
-          self.dueCount = count.value;
-        });
-        dueDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.dueAmount = sum.value.toFixed(2);
-        });
-
-        var scheduledDAO = this.dao.where(this.EQ(this.Invoice.STATUS, 'Scheduled'));
-
-        scheduledDAO.select(this.COUNT()).then(function(count) {
-          self.scheduledCount = count.value;
-        });
-        scheduledDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.scheduledAmount = sum.value.toFixed(2);
-        });
-
-        var paidDAO = this.dao.where(this.EQ(this.Invoice.STATUS,'Paid'));
-
-        paidDAO.select(this.COUNT()).then(function(count) {
-          self.paidCount = count.value;
-        });
-        paidDAO.select(this.SUM(this.Invoice.AMOUNT)).then(function(sum) {
-          self.paidAmount = sum.value.toFixed(2);
-        });
+        this.calculatePropertiesForStatus('Overdue', 'overDue');
+        this.calculatePropertiesForStatus('Due', 'due');
+        this.calculatePropertiesForStatus('Scheduled', 'scheduled');
+        this.calculatePropertiesForStatus('Paid', 'paid');
+        this.calculatePropertiesForStatus('Pending', 'pending');
       }
     }
   ]
