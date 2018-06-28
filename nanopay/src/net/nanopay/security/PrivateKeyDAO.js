@@ -72,6 +72,41 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'find_',
+      javaCode: `
+        foam.core.FObject obj = super.find_(x, id);
+        PrivateKeyEntry entry = (PrivateKeyEntry) obj;
+        if ( entry == null ) {
+          throw new RuntimeException("Private key not found");
+        }
+
+        try {
+          // initialize cipher for key unwrapping
+          KeyStoreManager manager = (KeyStoreManager) getKeyStoreManager();
+          KeyStore keyStore = manager.getKeyStore();
+
+          // check if key store contains alias
+          if ( ! keyStore.containsAlias(entry.getAlias()) ) {
+            throw new RuntimeException("Private key not found");
+          }
+
+          // load secret key from keystore
+          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(entry.getAlias());
+          SecretKey key = keyStoreEntry.getSecretKey();
+          Cipher cipher = Cipher.getInstance(key.getAlgorithm());
+          cipher.init(Cipher.UNWRAP_MODE, key);
+
+          // unwrap private key
+          byte[] encryptedBytes = Base64.decodeBase64(entry.getEncryptedPrivateKey());
+          PrivateKey privateKey = (PrivateKey) cipher.unwrap(encryptedBytes, entry.getAlgorithm(), Cipher.PRIVATE_KEY);
+          entry.setPrivateKey(privateKey);
+          return entry;
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
       name: 'put_',
       javaCode: `
         PrivateKeyEntry entry = (PrivateKeyEntry) obj;
@@ -81,6 +116,7 @@ foam.CLASS({
         }
 
         try {
+          // initialize cipher for key wrapping
           SecretKey key = getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.WRAP_MODE, key, SecurityUtil.GetSecureRandom());
