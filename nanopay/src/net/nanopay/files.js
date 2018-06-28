@@ -239,6 +239,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/NewInvoiceNotification' },
   { name: 'net/nanopay/invoice/ui/NewInvoiceNotificationNotificationView' },
+  { name: 'net/nanopay/invoice/notification/ReceivePaymentNotification' },
+  { name: 'net/nanopay/invoice/notification/ReceivePaymentNotificationNotificationView' },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
