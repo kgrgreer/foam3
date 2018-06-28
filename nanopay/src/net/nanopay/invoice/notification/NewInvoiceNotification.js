@@ -5,8 +5,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'invoiceNumber'
+      class: 'Long',
+      name: 'invoiceId'
     },
     {
       class: 'Currency',

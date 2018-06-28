@@ -29,6 +29,7 @@ foam.CLASS({
     'account',
     'appConfig',
     'as ctrl',
+    'currentCurrency',
     'findAccount',
     'privacyUrl',
     'termsUrl'
@@ -88,7 +89,15 @@ foam.CLASS({
     },
     {
       name: 'appConfig'
-    }
+    },
+    {
+      class: 'String',
+      name: 'currentCurrency',
+      factory: function () {
+        return ( localStorage.currency ) ?
+          localStorage.currency : 'CAD';
+      }
+    },
   ],
 
   methods: [
@@ -209,6 +218,13 @@ foam.CLASS({
       if ( location.hash != null && location.hash === '#reset' )
         return new Promise(function(resolve, reject) {
           self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+          self.loginSuccess$.sub(resolve);
+        });
+
+      // don't go to log in screen if going to sign up password screen
+      if ( location.hash != null && location.hash === '#sign-up' )
+        return new Promise(function(resolve, reject) {
+          self.stack.push({ class: 'net.nanopay.auth.ui.SignUpView' });
           self.loginSuccess$.sub(resolve);
         });
 

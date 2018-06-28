@@ -5,11 +5,9 @@ foam.CLASS({
   documentation: 'Objects will determine whether an invitation to the ' +
       'platform or a connection request will be sent',
 
+  ids: ['createdBy', 'inviteeId'],
+
   properties: [
-    {
-      class: 'Long',
-      name: 'id',
-    },
     {
       class: 'Long',
       name: 'inviteeId',
@@ -40,6 +38,11 @@ foam.CLASS({
       name: 'internal',
       documentation: 'True if the invited user already existed, false ' +
           'otherwise',
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.model.InvitationStatus',
+      name: 'status'
     }
   ]
 });

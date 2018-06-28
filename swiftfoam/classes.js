@@ -56,7 +56,6 @@ var classes = [
   'foam.nanos.auth.token.TokenService',
   'foam.nanos.auth.resetPassword.ResetPasswordTokenService',
   'foam.nanos.fs.File',
-  'foam.swift.box.RPCReturnBox',
   'foam.swift.parse.StringPStream',
   'foam.swift.parse.json.output.Outputter',
   'foam.swift.ui.DAOTableViewSource',
@@ -85,11 +84,11 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
-  'net.nanopay.tx.model.TransactionPurpose',
+  'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.MobileWallet',
   'net.nanopay.cico.model.TransactionType',
-  'net.nanopay.cico.model.PaymentType',
+  'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.model.PaymentStatus',
@@ -99,7 +98,9 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCard',
   'net.nanopay.cico.paymentCard.model.PaymentCardType',
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
-  'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform'
+  'net.nanopay.cico.model.RealexPaymentAccountInfo',
+  'net.nanopay.tx.tp.TxnProcessorData',
+  'net.nanopay.tx.tp.TxnProcessor'
 ];
 
 module.exports = {

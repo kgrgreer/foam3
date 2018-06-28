@@ -20,18 +20,12 @@ foam.CLASS({
     'searchResult'
   ],
 
-  css: `
-  ^ .message {
-    margin-left: 20px;
-  }
-  `,
-
   methods: [
     function initE() {
       this.SUPER();
       var i = this.data;
       var self = this;
-      this.invoiceDAO.find(i.id).then(function(result) {
+      this.invoiceDAO.find(i.invoiceId).then(function(result) {
         self.searchResult = result;
       });
       /*
@@ -43,7 +37,7 @@ foam.CLASS({
       });
 
       this.addClass(this.myClass())
-      .start().addClass('message')
+      .start().addClass('msg')
         .add(this.name$)
         .add(` just send you a ${i.invoiceType.toLowerCase()} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
       .end()
