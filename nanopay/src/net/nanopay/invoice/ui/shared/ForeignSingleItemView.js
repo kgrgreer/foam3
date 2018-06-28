@@ -159,10 +159,7 @@ foam.CLASS({
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3')
-              .add(
-                this.type ? this.data.payeeName :
-                this.data.payerName
-              )
+              .add(this.type ? this.data.payeeName : this.data.payerName)
             .end()
             .start('h3')
               .add(

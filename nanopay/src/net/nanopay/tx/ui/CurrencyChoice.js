@@ -149,6 +149,9 @@ foam.CLASS({
       label: '',
       code: function() {
         var self = this;
+        var dao = this.currencyDAO
+            .where(this.EQ(this.Currency.ALPHABETIC_CODE, 'CAD'));
+
         self.optionPopup_ = this.PopupView.create({
           width: 165,
           x: - 137,
@@ -157,20 +160,26 @@ foam.CLASS({
           return self.optionPopup_.remove();
         });
 
-        self.optionPopup_ = self.optionPopup_.start('div')
-        .addClass('popUpDropDown')
-          .select(this.currencyDAO.where(
-            this.EQ(this.Currency.ALPHABETIC_CODE, 'CAD')), function(cur) {
-            if ( cur.flagImage != null ) {
-              this.start('div').start('img')
-              .attrs({ src: cur.flagImage })
-              .addClass('flag').end().add(cur.alphabeticCode)
-              .on('click', function() {
-                self.currency = cur;
-              });
-            }
-          })
+        self.optionPopup_ = self.optionPopup_
+          .start('div')
+            .addClass('popUpDropDown')
+            .select(dao, function(currency) {
+              if ( typeof currency.flagImage === 'string' ) {
+                this
+                  .start('div')
+                    .start('img')
+                      .attrs({ src: currency.flagImage })
+                      .addClass('flag')
+                    .end()
+                    .add(currency.alphabeticCode)
+                    .on('click', function() {
+                      self.currency = currency;
+                    })
+                  .end();
+              }
+            })
           .end();
+
         self.optionsBtn_.add(self.optionPopup_);
       }
     }
