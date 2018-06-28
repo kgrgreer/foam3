@@ -102,7 +102,7 @@ function setup_csp_valve {
 }
 
 function setup_jce {
-  local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)"/\1/p;')
+  local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)".*/\1/p;')
   local JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk-$JAVA_VER.jdk/Contents/Home/lib/security"
 
   # For Java 8
