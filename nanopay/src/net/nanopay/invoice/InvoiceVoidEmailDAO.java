@@ -33,7 +33,7 @@ public class InvoiceVoidEmailDAO
     User    payer   = (User) userDAO_.find_(x, invoice.getPayerId() );
 
     // Checks to make sure invoice is set to Void
-    if ( ! PaymentStatus.VOID.equals(invoice.getPaymentMethod()) )
+    if (  PaymentStatus.VOID != invoice.getPaymentMethod() )
       return getDelegate().put_(x, obj);
 
     // Makes sure an email isn't sent if the creator is the payer of the invoice

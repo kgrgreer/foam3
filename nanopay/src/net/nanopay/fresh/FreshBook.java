@@ -143,7 +143,6 @@ public class FreshBook
           account.setPaymentDate(date);
         }
         account.setFreshbooksInvoiceNumber(invoice.getInvoice_number());
-        // account.setCurrencyCode(invoice.getAmount().getCode());
         account.setPayeeId(user.getId());
         account.setCreatedBy(user.getId());
         account.setPayerId(Long.parseLong("1350"));
