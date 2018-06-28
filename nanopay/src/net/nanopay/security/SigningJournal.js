@@ -3,47 +3,100 @@ foam.CLASS({
   name: 'SigningJournal',
   extends: 'foam.dao.FileJournal',
 
+  imports: [
+    'keyPairDAO',
+    'publicKeyDAO',
+    'privateKeyDAO'
+  ],
+
+  javaImports: [    
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'foam.lib.json.JSONParser',
+    'foam.util.SafetyUtil',
+    'org.bouncycastle.util.encoders.Base64',
+    'java.io.BufferedReader',
+    'foam.nanos.auth.User',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.EQ'
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'algorithm',
       documentation: 'Signing algorithm',
       value: 'SHA256withRSA'
-    },
+    }
+  ],
+
+  methods: [
     {
       name: 'replay',
       javaCode: `
-        /**
-         * objectId
-         * User
-         * algorithm
-         * signature
-         * value of the object
-         * 
-         * 
-         * Goal => We get an object, and we want to make sure its signature is what we would expect
-         * 
-         * 
-         * Psuedocode =>
-         * 
-         * check that all the values exist and that the user is valid and has a key
-         * then
-         * try {
-         * if ( algorithm.sign(value, user.privateKey) != signature) {
-         *  throw exception
-         * }
-         * }
-         * catch {
-         *  logger.log(errorMessage)
-         * }
-         * finally{
-         *  successfully read the entry....
-         * }
-         * 
-         * 
-        */
-       
-      `
-    },
-  ]
+
+  // count number of lines successfully read
+  long successReading = 0;
+  JSONParser parser = getX().create(JSONParser.class);
+  
+  try ( BufferedReader reader = getReader() ) {
+    for ( String line ; ( line = reader.readLine() ) != null ; ) {
+      if ( SafetyUtil.isEmpty(line)        ) continue;
+      if ( COMMENT.matcher(line).matches() ) continue;
+      try {
+        char operation = line.charAt(0);
+        int length = line.trim().length();
+        line = line.trim().substring(2, length - 1);
+        
+        SignedFObject signedFObj = (SignedFObject) parser.parseString(line, SignedFObject.class);
+        if ( signedFObj == null ) {
+          getLogger().error("parse error","line:", line);
+          continue;
+        }
+        
+        User user = (User) signedFObj.getSignedBy();
+        if ( user == null ) {
+          throw new Exception("User is not logged in");
+        }
+        
+        // verify signature
+        byte[] signature = Base64.decode(signedFObj.getSignature()); 
+        DAO keyPairDAO = (DAO) getKeyPairDAO();
+        DAO publicKeyDAO = (DAO) getPublicKeyDAO();
+        KeyPairEntry keyPairEntry = (KeyPairEntry) keyPairDAO.inX(getX()).find(EQ(KeyPairEntry.OWNER, user.getId()));
+        PublicKeyEntry entry = (PublicKeyEntry) publicKeyDAO.find(keyPairEntry.getPublicKeyId());
+        
+        if ( ! signedFObj.verify(signature, signedFObj.getAlgorithm(), entry.getPublicKey())) {
+          throw new Exception("Error verifying signature");
+        }
+
+        FObject object = signedFObj.getValue();
+        switch ( operation ) {
+          case 'p':
+            PropertyInfo id = (PropertyInfo) dao.getOf().getAxiomByName("id");
+            FObject old = dao.find(id.get(object));
+            if ( old != null ) {
+              // merge difference
+              object = mergeFObject(old.fclone(), object);
+            }
+            dao.put(object);
+            break;
+          case 'r':
+            dao.remove(object);
+            break;
+        }
+        successReading++;
+
+      } catch ( Throwable t ) {
+        getLogger().error("encoutered an error while replaying journal: ", line, t);
+      }
+    }
+  } catch ( Throwable t) {
+    getLogger().error("failed to read from journal", t);
+  } finally {
+    getLogger().log("Successfully read " + successReading + " entries from file: " + getFilename());
+  }
+    `
+    }
+]
 });
