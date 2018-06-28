@@ -9,6 +9,7 @@ foam.CLASS({
     'privateKeyDAO'
   ],
 
+
   javaImports: [    
     'foam.core.FObject',
     'foam.core.PropertyInfo',
