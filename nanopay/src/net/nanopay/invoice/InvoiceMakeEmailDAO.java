@@ -56,6 +56,7 @@ public class InvoiceMakeEmailDAO
     args.put("name",      payer.getFirstName());
     args.put("fromEmail", payee.getEmail());
     args.put("fromName",  payee.getFirstName());
+    
     if ( invoice.getDueDate() != null ) {
       args.put("date",      dateFormat.format(invoice.getDueDate()));
     }

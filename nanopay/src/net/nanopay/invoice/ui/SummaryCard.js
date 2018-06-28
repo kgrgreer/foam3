@@ -13,7 +13,7 @@ foam.CLASS({
   css: `
     ^{
       display: inline-block;
-      width: 16%;
+      width: 145px;
       background: white;
       height: 100px;
       vertical-align: top;
