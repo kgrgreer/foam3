@@ -97,7 +97,7 @@ foam.CLASS({
           cipher.init(Cipher.UNWRAP_MODE, key);
 
           // unwrap private key
-          byte[] encryptedBytes = Base64.decodeBase64(entry.getEncryptedPrivateKey());
+          byte[] encryptedBytes = Base64.decode(entry.getEncryptedPrivateKey());
           PrivateKey privateKey = (PrivateKey) cipher.unwrap(encryptedBytes, entry.getAlgorithm(), Cipher.PRIVATE_KEY);
           entry.setPrivateKey(privateKey);
           return entry;
