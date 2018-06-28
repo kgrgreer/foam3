@@ -32,6 +32,32 @@ foam.CLASS({
     'userUserJunctionDAO'
   ],
 
+  classes: [
+    {
+      name: 'UserDAODecorator',
+      extends: 'foam.dao.ProxyDAO',
+      imports: [
+        {
+          name: 'currentUser',
+          key: 'currentUser',
+          swiftType: 'foam_nanos_auth_User?',
+        },
+      ],
+      methods: [
+        {
+          name: 'put',
+          swiftCode: `
+let putObj = try delegate.put(obj) as? foam_nanos_auth_User
+if currentUser != nil && putObj != nil && FOAM_utils.equals(currentUser!.id, putObj!.id) {
+  currentUser = putObj
+}
+return putObj
+          `,
+        },
+      ],
+    },
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -64,11 +90,15 @@ return ClientAuthService_create([
       class: 'foam.dao.DAOProperty',
       name: 'userDAO',
       swiftFactory: `
-return ClientDAO_create([
-  "of": foam_nanos_auth_User.classInfo(),
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
+// TODO: Nuke this UserDAODecorator in favor of listening to a dao when we're
+// able to.
+return UserDAODecorator_create([
+  "delegate": ClientDAO_create([
+    "of": foam_nanos_auth_User.classInfo(),
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)userDAO"
+      ])
     ])
   ])
 ])
@@ -329,10 +359,35 @@ return ClientBankAccountVerifierService_create([
       `
     }
   ],
-  axioms: [
-    foam.pattern.Singleton.create(),
-  ],
   methods: [
+    {
+      name: 'login',
+      args: [
+        {
+          swiftType: 'String',
+          name: 'email',
+        },
+        {
+          swiftType: 'String',
+          name: 'password',
+        },
+      ],
+      swiftThrows: true,
+      returns: 'foam.nanos.auth.User',
+      swiftCode: `
+let u = try clientAuthService.loginByEmail(__context__, email, password)
+currentUser = u
+return u
+      `,
+    },
+    {
+      name: 'logout',
+      swiftThrows: true,
+      swiftCode: `
+try clientAuthService.logout(__context__)
+clearProperty("currentUser")
+      `,
+    },
     {
       name: 'refreshTransactionDAO',
       swiftCode: `
