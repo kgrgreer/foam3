@@ -20,22 +20,22 @@ foam.CLASS({
     {
       name: 'type',
       expression: function(data, user) {
-        return user.id != data.payeeId;
+        return user.id !== data.payeeId;
       }
     },
     {
       class: 'Boolean',
       name: 'foreignExchange',
-      factory: function() {
-        if ( this.data.sourceCurrency == null ) return false;
-        return this.data.targetCurrency != this.data.sourceCurrency;
+      factory: function(data) {
+        if ( data.sourceCurrency == null ) return false;
+        return data.targetCurrency != data.sourceCurrency;
       }
     },
     {
       name: 'currency',
       expression: function(data) {
         return data.targetCurrency ?
-        data.targetCurrency.alphabeticCode + ' ' : '$';
+            data.targetCurrency.alphabeticCode + ' ' : '$';
       }
     }
   ],
@@ -121,9 +121,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.stack.sub(function() {
-        self.itemUpdate();
-      });
+      this.stack.sub(this.itemUpdate);
 
       this
         .addClass(this.myClass())
@@ -136,7 +134,7 @@ foam.CLASS({
             .start('h3').add('PO #').end()
             .call(function() {
               self.type ? this.start('h3').add('Vendor').end() :
-              this.start('h3').add('Customer').end();
+                  this.start('h3').add('Customer').end();
             })
             .start('h3').add('Date Due').end()
           .start('h4').add('Requested Amount').end()
@@ -164,20 +162,20 @@ foam.CLASS({
             .start('h3')
               .add(
                 this.data.dueDate ?
-                this.data.dueDate.toISOString().substring(0, 10) : ''
+                    this.data.dueDate.toISOString().substring(0, 10) : ''
               )
             .end()
             .start('h4')
               .add(
                 this.data.targetCurrency.alphabeticCode +
-                ' $' + this.addCommas((this.data.amount/100).toFixed(2))
+                    ' $' + this.addCommas((this.data.amount/100).toFixed(2))
               )
               .end()
             .start('h3')
               .addClass('source-amount')
               .add(
                 this.data.sourceCurrency.alphabeticCode +
-                ' $' + this.addCommas((this.data.sourceAmount/100).toFixed(2))
+                    ' $' + this.addCommas((this.data.sourceAmount/100).toFixed(2))
               )
             .end()
             .start('h4')
@@ -186,8 +184,10 @@ foam.CLASS({
             .start('h3')
               .add(this.data.status$.map(function(a) {
                 return self.E()
-                  .add(self.data.paymentDate > Date.now() ? a + ' ' +
-                    self.data.paymentDate.toISOString().substring(0, 10) : a)
+                  .add(
+                    self.data.paymentDate > Date.now() ? a + ' ' +
+                        self.data.paymentDate.toISOString().substring(0, 10) : a
+                  )
                   .addClass('generic-status')
                   .addClass('Invoice-Status-' + a);
               }))

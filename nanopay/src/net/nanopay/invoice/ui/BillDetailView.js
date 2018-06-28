@@ -146,7 +146,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-tx-ui-CurrencyChoice{
       position: absolute;
-      top: 346px;
+      top: 272px;
       width: 85px;
       margin-left: 7px;
       border-right: 1px solid lightgrey;

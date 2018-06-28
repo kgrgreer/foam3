@@ -120,7 +120,7 @@ foam.CLASS({
     {
       name: 'foreignExchange',
       factory: function() {
-        if ( this.data.sourceCurrency === null ) return false;
+        if ( this.data.sourceCurrency == undefined ) return false;
         return this.data.targetCurrency !== this.data.sourceCurrency;
       }
     }

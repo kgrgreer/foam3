@@ -296,7 +296,7 @@ foam.CLASS({
         .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
       .end();
     }
-  ],\
+  ],
 
   actions: [
     {

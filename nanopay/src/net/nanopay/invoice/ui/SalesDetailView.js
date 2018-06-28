@@ -180,8 +180,7 @@ foam.CLASS({
     },
 
     function openExportModal() {
-      this.add(this.Popup.create()
-      .tag({
+      this.add(this.Popup.create().tag({
         class: 'net.nanopay.ui.modal.ExportModal',
         exportObj: this.data
       }));
@@ -219,8 +218,7 @@ foam.CLASS({
           );
           return;
         }
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X)
-        .tag({
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.data
         }));
@@ -253,17 +251,14 @@ foam.CLASS({
       var self = this;
       self.voidPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(
-          self.NotificationMessage.create({
-            message: this.verbTenseMsg +
-            this.data.paymentMethod.label + '.',
-            type: 'error'
-          })
-        );
+        self.add(self.NotificationMessage.create({
+          message: this.verbTenseMsg +
+          this.data.paymentMethod.label + '.',
+          type: 'error'
+        }));
         return;
       }
-      this.ctrl.add(this.Popup.create()
-      .tag({
+      this.ctrl.add(this.Popup.create().tag({
         class: 'net.nanopay.invoice.ui.modal.DisputeModal',
         invoice: this.data
       }));
