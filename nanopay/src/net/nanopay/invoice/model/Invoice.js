@@ -163,7 +163,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'invoiceImageUrl'
+      name: 'invoiceImageUrl',
     },
     {
       class: 'Currency',
