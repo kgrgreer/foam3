@@ -210,6 +210,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/MobileWallet' },
 
   // invoice
+  { name: 'net/nanopay/invoice/model/PaymentStatus' },
   { name: 'net/nanopay/invoice/model/Invoice' },
   { name: 'net/nanopay/invoice/model/RecurringInvoice' },
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
