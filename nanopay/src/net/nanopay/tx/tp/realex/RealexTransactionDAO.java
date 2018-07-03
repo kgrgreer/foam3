@@ -59,7 +59,7 @@ public class RealexTransactionDAO
         .addMerchantId(paymentAccountInfo.getMerchantId())
         .addOrderId(Long.toString(transaction.getId()))
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
-        .addToken(paymentAccountInfo.getToken());
+        //.addToken(paymentAccountInfo.getToken());
       if ( MobileWallet.GOOGLEPAY == paymentAccountInfo.getMobileWallet() )
         paymentRequest.addMobile("pay-with-google");
       else if ( MobileWallet.APPLEPAY == paymentAccountInfo.getMobileWallet() )
