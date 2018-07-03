@@ -135,11 +135,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
-          .startContext({ data: this })
-            .start(this.BACK_ACTION).end()
-          .endContext()
-        .end()
+        .startContext({ data: this })
+          .start(this.BACK_ACTION).end()
+        .endContext()
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
         .start(this.EXPORT_BUTTON,

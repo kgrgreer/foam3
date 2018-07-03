@@ -118,7 +118,7 @@ foam.CLASS({
     {
       name: 'foreignExchange',
       factory: function() {
-        if ( this.data.sourceCurrency === null ) return false;
+        if ( this.data.sourceCurrency == null ) return false;
         return this.data.targetCurrency !== this.data.sourceCurrency;
       }
     }
@@ -132,11 +132,9 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
-          .startContext({ data: this })
-            .start(this.BACK_ACTION).end()
-          .endContext()
-        .end()
+        .startContext({ data: this })
+          .start(this.BACK_ACTION).end()
+        .endContext()
         .callIf(this.data.createdBy == this.user.id, function() {
           this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end();
         })
