@@ -93,8 +93,9 @@ function setup_csp_valve {
     cd nanopay/src/net/nanopay/security/csp
     mkdir build
 
-    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
-      # AWS servers don't have .
+    MACOS='darwin*'
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || ! $OSTYPE =~ $MACOS ]]; then
+      # AWS servers don't have .m2 directory. Additionally, this should also run for Linux builds.
       curl -O https://search.maven.org/remotecontent?filepath=org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar
       JAR_TOMCAT_CATALINA="./tomcat-catalina-9.0.8.jar"
       curl -O https://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar
