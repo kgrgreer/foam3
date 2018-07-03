@@ -61,8 +61,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'accountCheck',
-      documentation: 'UI toggle choice between payments using account' +
-      ' or digital cash. Used to set bankAccountId on transaction on create.',
+      documentation: `UI toggle choice between payments using account or digital
+          cash. Used to set bankAccountId on transaction on create.`,
       value: false,
       preSet: function(oldValue, newValue) {
         if ( ! this.digitalCash && oldValue ) {
@@ -204,8 +204,7 @@ foam.CLASS({
               .start().addClass('key').add('Company').end()
               .start().addClass('value')
                 .add(
-                  this.type ? this.invoice.payeeName :
-                  this.invoice.payerName
+                  this.type ? this.invoice.payeeName : this.invoice.payerName
                 )
               .end()
             .end()
@@ -276,8 +275,8 @@ foam.CLASS({
           return;
         } else if ( X.data.paymentDate < Date.now() ) {
           this.add(this.NotificationMessage.create({
-            message: 'Cannot schedule a payment date for the past.' +
-                     'Please try again.',
+            message: 'Cannot schedule a payment date for the past. Please try' +
+                ' again.',
             type: 'error'
           }));
           return;

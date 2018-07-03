@@ -27,7 +27,8 @@ foam.CLASS({
       name: 'currency',
       expression: function(data) {
         return data.targetCurrency ?
-            data.targetCurrency.alphabeticCode + ' ' : '$';
+            data.targetCurrency.alphabeticCode + ' ' :
+            '$';
       }
     }
   ],
@@ -149,7 +150,8 @@ foam.CLASS({
             .start('h3')
               .add(
                 this.data.dueDate ?
-                    this.data.dueDate.toISOString().substring(0, 10) : ''
+                    this.data.dueDate.toISOString().substring(0, 10) :
+                    ''
               )
             .end()
             .start('h4')
@@ -159,16 +161,15 @@ foam.CLASS({
               )
             .end()
             .start('h3')
-              .add(this.data.status$.map(function(a) {
+              .add(this.data.status$.map(function(status) {
+                var dateString = self.data.paymentDate.toISOString();
+                var toAdd = self.data.paymentDate > Date.now() ?
+                    `${status} ${dateString.substring(0, 10)}` :
+                    status;
                 return self.E()
-                  .add(
-                    self.data.paymentDate > Date.now() ? a + ' ' +
-                        self.data.paymentDate
-                        .toISOString()
-                        .substring( 0, 10) : a
-                  )
+                  .add(toAdd)
                   .addClass('generic-status')
-                  .addClass('Invoice-Status-' + a);
+                  .addClass('Invoice-Status-' + status);
               }))
           .end()
         .end();
