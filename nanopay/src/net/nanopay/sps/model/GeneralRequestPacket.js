@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'checkNum'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'amount'
     },
     {
@@ -66,7 +66,7 @@ foam.CLASS({
       name: 'maxDetailItemsPerTransmission'
     },
     {
-      class: 'Int',
+      class: 'String',
       name: 'socialSecurityNum'
     },
     {
