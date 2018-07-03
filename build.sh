@@ -109,7 +109,7 @@ function setup_csp_valve {
     cd ..
     rm -rf build
 
-    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || ! $OSTYPE =~ $MACOS ]]; then
       rm $JAR_JAVAX_SERVLET $JAR_TOMCAT_CATALINA
     fi
 
