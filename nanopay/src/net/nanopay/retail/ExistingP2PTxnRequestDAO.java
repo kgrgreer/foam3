@@ -107,7 +107,7 @@ public class ExistingP2PTxnRequestDAO
       .setStatus(TransactionStatus.PENDING)
       .build();
 
-    DAO txnDAO = (DAO) getX().get("transactionDAO");
+    DAO txnDAO = (DAO) getX().get("localTransactionDAO");
     txnDAO.put(txn);
   }
 
