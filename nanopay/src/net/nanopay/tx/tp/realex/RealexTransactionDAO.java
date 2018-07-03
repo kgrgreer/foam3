@@ -130,6 +130,7 @@ public class RealexTransactionDAO
         }
       } else
         transaction.setStatus(TransactionStatus.DECLINED);
+      paymentAccountInfo.setToken("");
       return getDelegate().put_(x, transaction);
     }
   }
