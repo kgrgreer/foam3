@@ -35,11 +35,17 @@ var classes = [
   'net.nanopay.model.PadCapture',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
+  'net.nanopay.model.Invitation',
+  'net.nanopay.model.InvitationStatus',
   'net.nanopay.liquidity.model.Threshold',
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
   'net.nanopay.model.MultiBalance',
+
+  // Partners
+  'net.nanopay.partners.ui.PartnerInvitationNotification',
+  'net.nanopay.auth.PublicUserInfo',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -53,6 +59,7 @@ var classes = [
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.fresh.FreshConfig',
   'net.nanopay.fresh.model.FreshToken',
   'net.nanopay.fresh.model.FreshBusiness',
