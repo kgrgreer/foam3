@@ -162,12 +162,12 @@ foam.CLASS({
             .end()
             .start('h3')
               .add(this.data.status$.map(function(status) {
-                var dateString = self.data.paymentDate.toISOString();
-                var toAdd = self.data.paymentDate > Date.now() ?
-                    `${status} ${dateString.substring(0, 10)}` :
-                    status;
                 return self.E()
-                  .add(toAdd)
+                  .add(
+                    self.data.paymentDate > Date.now() ?
+                        self.data.paymentDate.toISOString().substring(0, 10) :
+                        status
+                  )
                   .addClass('generic-status')
                   .addClass('Invoice-Status-' + status);
               }))
