@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.ui',
+  package: 'net.nanopay.invoice.notification',
   name: 'NewInvoiceNotification',
   extends: 'foam.nanos.notification.Notification',
 

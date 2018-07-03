@@ -1,30 +1,3 @@
-foam.ENUM({
-  package: 'net.nanopay.invoice.model',
-  name: 'PaymentStatus',
-  values: [
-    {
-      name: 'NONE',
-      label: 'None'
-    },
-    {
-      name: 'NANOPAY',
-      label: 'Nanopaid'
-    },
-    {
-      name: 'CHEQUE',
-      label: 'Paid'
-    },
-    {
-      name: 'VOID',
-      label: 'Void'
-    },
-    {
-      name: 'PENDING',
-      label: 'Pending'
-    }
-  ]
-});
-
 foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
@@ -48,6 +21,7 @@ foam.CLASS({
   properties: [
     {
       name: 'search',
+      documentation: ``, // TODO
       transient: true,
       searchView: { class: 'foam.u2.search.TextSearchView', of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
     },
@@ -58,6 +32,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'invoiceNumber',
+      documentation: `A number used by the user to identify the invoice.`,
       label: 'Invoice #',
       aliases: [
         'invoice',
@@ -68,6 +43,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purchaseOrder',
+      documentation: `A number used by the user to identify the purchase order
+          associated with the invoice.`,
       label: 'PO #',
       aliases: [
         'purchase',
@@ -78,6 +55,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'issueDate',
+      documentation: `The date that the invoice was issued (created).`,
       label: 'Issue Date',
       required: true,
       factory: function() {
@@ -96,6 +74,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'dueDate',
+      documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
       aliases: [ 'dueDate', 'due', 'd', 'issued' ],
       tableCellFormatter: function(date) {
@@ -105,6 +84,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'paymentDate',
+      documentation: `The date that the invoice was paid.`,
       label: 'Received',
       aliases: [ 'scheduled', 'paid' ],
       tableCellFormatter: function(date) {
@@ -115,11 +95,13 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'createdBy'
+      name: 'createdBy',
+      documentation: `The id of the user who created the invoice.`,
     },
     {
       class: 'String',
       name: 'payeeName',
+      documentation: `The name of the party receiving the payment.`,
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
       transient: true
@@ -127,47 +109,57 @@ foam.CLASS({
     {
       class: 'String',
       name: 'payerName',
+      documentation: `The name of the party making the payment.`,
       label: 'Customer',
       aliases: [ 'from', 'customer', 'c' ],
       transient: true
     },
     {
       class: 'Long',
-      name: 'paymentId'
+      name: 'paymentId',
+      documentation: ``, // TODO
     },
     {
       class: 'Boolean',
       name: 'draft',
+      documentation: `Used to track whether an invoice is finalized or not.`,
       value: false
     },
     {
       class: 'String',
-      name: 'freshbooksInvoiceId'
+      name: 'freshbooksInvoiceId',
+      documentation: ``, // TODO
     },
     {
       class: 'String',
-      name: 'freshbooksInvoiceNumber'
+      name: 'freshbooksInvoiceNumber',
+      documentation: ``, // TODO
     },
     {
       class: 'String',
-      name: 'freshbooksInvoicePurchaseOrder'
+      name: 'freshbooksInvoicePurchaseOrder',
+      documentation: ``, // TODO
     },
     {
       class: 'String',
-      name: 'invoiceFileUrl'
+      name: 'invoiceFileUrl',
+      documentation: ``, // TODO
     },
     {
       class: 'String',
       name: 'note',
+      documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
     },
     {
       class: 'String',
       name: 'invoiceImageUrl',
+      documentation: ``, // TODO
     },
     {
       class: 'Currency',
       name: 'amount',
+      documentation: `The amount of money the invoice is for.`,
       aliases: [
         'a', 'targetAmount'
       ],
@@ -190,7 +182,8 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'sourceAccountId'
+      name: 'sourceAccountId',
+      documentation: `` // TODO
     },
     {
       class: 'Currency',
@@ -200,10 +193,8 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
-      name: 'paymentMethod'
-    },
-    {
-      name: 'iso20022'
+      name: 'paymentMethod',
+      documentation: `The state of payment of the invoice.`
     },
     {
       class: 'FObjectProperty',
@@ -216,12 +207,20 @@ foam.CLASS({
       of: 'net.nanopay.model.Currency'
     },
     {
+      name: 'iso20022',
+      documentation: `` // TODO
+    },
+    {
       class: 'Long',
-      name: 'accountId'
+      name: 'accountId',
+      documentation: `` // TODO
     },
     {
       class: 'String',
       name: 'status',
+      documentation: `The state of the invoice regarding payment. This is a
+          calculated property used to determine whether an invoice is due, void,
+          pending, paid, scheduled, or overdue.`,
       transient: true,
       aliases: [
         's'
@@ -285,6 +284,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'scheduledEmailSent',
+      documentation: `Used to track whether an email has been sent to the payer
+          informing them that the payment they scheduled is near.`,
       value: false
     }
   ],
@@ -301,6 +302,7 @@ foam.CLASS({
   actions: [
     {
       name: 'payNow',
+      documentation: `Let the user pay an invoice immediately.`,
       label: 'Pay now',
       isAvailable: function(status) {
         return false;

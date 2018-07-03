@@ -26,7 +26,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.NewInvoiceNotification'
+    'net.nanopay.invoice.notification.NewInvoiceNotification'
   ],
 
   properties: [

@@ -10,7 +10,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.ui.NewInvoiceNotification;
+import net.nanopay.invoice.notification.NewInvoiceNotification;
 import foam.nanos.notification.email.EmailService;
 
 public class InvoiceNotificationDAO extends ProxyDAO {
