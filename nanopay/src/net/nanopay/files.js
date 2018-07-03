@@ -286,9 +286,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/history/InvoiceHistoryItemView', flags: ['web'] },
 
   // modal
-  { name: 'net/nanopay/invoice/ui/modal/ApproveModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/DisputeModal', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/modal/PayNowModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/ScheduleModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/RecordPaymentModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/EmailModal', flags: ['web'] },

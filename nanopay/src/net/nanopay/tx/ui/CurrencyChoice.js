@@ -163,16 +163,16 @@ foam.CLASS({
           .start('div')
             .addClass('popUpDropDown')
             .select(dao, function(currency) {
-              if ( typeof chosenCurrency.flagImage === 'string' ) {
+              if ( typeof currency.flagImage === 'string' ) {
                 this
                   .start('div')
                     .start('img')
-                      .attrs({ src: chosenCurrency.flagImage })
+                      .attrs({ src: currency.flagImage })
                       .addClass('flag')
                     .end()
-                    .add(chosenCurrency.alphabeticCode)
+                    .add(currency.alphabeticCode)
                     .on('click', function() {
-                      self.chosenCurrency = chosenCurrency;
+                      self.chosenCurrency = currency;
                     })
                   .end();
               }
