@@ -114,7 +114,8 @@ foam.CLASS({
       name: 'verbTenseMsg',
       expression: function(data) {
         return data.paymentMethod === this.PaymentStatus.PENDING ?
-              'Invoice is' : 'Invoice has been';
+            'Invoice is' :
+            'Invoice has been';
       }
     },
     {
@@ -208,12 +209,10 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          this.add(
-            self.NotificationMessage.create({
-              message: this.verbTenseMsg + ' ' +
-              this.data.paymentMethod.label + '.',
-              type: 'error'
-            }));
+          this.add(self.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+            type: 'error'
+          }));
           return;
         }
 
@@ -234,8 +233,8 @@ foam.CLASS({
             ).limit(1).select().then(function(account) {
               if ( account.array.length === 0 ) {
                 self.add(self.NotificationMessage.create({
-                  message: 'Bank Account should be' +
-                  'verified for paying this invoice.',
+                  message: 'Bank Account should be verified for paying this '
+                      + 'invoice.',
                   type: 'error'
                 }));
 
@@ -299,8 +298,7 @@ foam.CLASS({
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
         self.add(self.NotificationMessage.create({
-          message: this.verbTenseMsg + ' ' +
-          this.data.paymentMethod.label + '.',
+          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
           type: 'error'
         }));
         return;
@@ -316,8 +314,7 @@ foam.CLASS({
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
         self.add(self.NotificationMessage.create({
-          message: this.verbTenseMsg + ' ' +
-          this.data.paymentMethod.label + '.',
+          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
           type: 'error'
         }));
         return;

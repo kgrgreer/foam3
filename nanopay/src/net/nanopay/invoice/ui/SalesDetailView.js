@@ -111,7 +111,8 @@ foam.CLASS({
       documentation: 'Past or present message on invoice status notification',
       expression: function(data) {
         return data.paymentMethod === this.PaymentStatus.PENDING ?
-               'Invoice is' : 'Invoice has been';
+            'Invoice is' :
+            'Invoice has been';
       }
     },
     {
@@ -207,13 +208,10 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          self.add(
-            self.NotificationMessage.create({
-              message: this.verbTenseMsg +
-              this.data.paymentMethod.label + '.',
-              type: 'error'
-            })
-          );
+          self.add(self.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+            type: 'error'
+          }));
           return;
         }
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
@@ -250,8 +248,7 @@ foam.CLASS({
       self.voidPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
         self.add(self.NotificationMessage.create({
-          message: this.verbTenseMsg +
-          this.data.paymentMethod.label + '.',
+          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
           type: 'error'
         }));
         return;

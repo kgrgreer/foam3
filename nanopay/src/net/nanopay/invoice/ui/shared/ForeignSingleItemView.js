@@ -5,9 +5,9 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'user',
     'invoiceDAO',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [
@@ -35,7 +35,8 @@ foam.CLASS({
       name: 'currency',
       expression: function(data) {
         return data.targetCurrency ?
-            data.targetCurrency.alphabeticCode + ' ' : '$';
+            data.targetCurrency.alphabeticCode + ' ' :
+            '$';
       }
     }
   ],
@@ -133,7 +134,8 @@ foam.CLASS({
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function() {
-              self.type ? this.start('h3').add('Vendor').end() :
+              self.type ?
+                  this.start('h3').add('Vendor').end() :
                   this.start('h3').add('Customer').end();
             })
             .start('h3').add('Date Due').end()
@@ -162,7 +164,8 @@ foam.CLASS({
             .start('h3')
               .add(
                 this.data.dueDate ?
-                    this.data.dueDate.toISOString().substring(0, 10) : ''
+                    this.data.dueDate.toISOString().substring(0, 10) :
+                    ''
               )
             .end()
             .start('h4')
@@ -219,8 +222,7 @@ foam.CLASS({
           y: 20
         });
 
-        p.addClass('dropdown-content')
-        .call(function() {
+        p.addClass('dropdown-content').call(function() {
           var files = this.data.invoiceFile;
           for ( var i = 0; i < files.length; i ++ ) {
             p.tag({
