@@ -1,16 +1,15 @@
 package net.nanopay.retail;
 
+import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.User;
 import net.nanopay.retail.model.P2PTxnRequest;
 import net.nanopay.retail.model.P2PTxnRequestStatus;
-import net.nanopay.tx.TransactionDAO;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import foam.core.FObject;
-import foam.nanos.auth.User;
-import foam.dao.ArraySink;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,17 +40,17 @@ public class ExistingP2PTxnRequestDAO
     P2PTxnRequest existingRequest = getExistingRequest(request);
 
     // is a new request
-    if (existingRequest == null) {
+    if ( existingRequest == null ) {
       return getDelegate().put_(x, obj);
     }
 
     checkValidOperationOnRequest(x, request, existingRequest);
 
-    if (checkReadOnlyFields(request, existingRequest) != 0) {
+    if ( checkReadOnlyFields(request, existingRequest) != 0 ) {
       throw new RuntimeException("Unable to update the request.");
     }
 
-    if (request.getStatus().equals(P2PTxnRequestStatus.ACCEPTED)) {
+    if ( request.getStatus().equals(P2PTxnRequestStatus.ACCEPTED) ) {
       createTxn(request);
     }
 
@@ -68,19 +67,19 @@ public class ExistingP2PTxnRequestDAO
     User currentUser = (User) x.get("user");
 
     // if old status not pending, then invalid operation.
-    if (!existingRequest.getStatus().equals(P2PTxnRequestStatus.PENDING)) {
+    if ( ! existingRequest.getStatus().equals(P2PTxnRequestStatus.PENDING) ) {
       throw new RuntimeException("Invalid operation on the request.");
     }
 
     // current user is requestee
-    if (currentUser.getEmail().equals(request.getRequesteeEmail())) {
-      if (!REQUESTEE_OPERATIONS.contains(request.getStatus())) {
+    if ( currentUser.getEmail().equals(request.getRequesteeEmail()) ) {
+      if ( ! REQUESTEE_OPERATIONS.contains(request.getStatus()) ) {
         throw new RuntimeException("Requestee can't perform this action");
       }
     }
     // current user is requestor
-    else if (currentUser.getEmail().equals(request.getRequestorEmail())) {
-      if (!REQUESTOR_OPERATIONS.contains(request.getStatus())) {
+    else if ( currentUser.getEmail().equals(request.getRequestorEmail()) ) {
+      if ( ! REQUESTOR_OPERATIONS.contains(request.getStatus()) ) {
         throw new RuntimeException("Requestor can't perform this action.");
       }
     }
@@ -114,7 +113,11 @@ public class ExistingP2PTxnRequestDAO
   private User getUserByEmail(String emailAddress) {
     DAO userDAO = (DAO) getX().get("localUserDAO");
 
-    ArraySink users = (ArraySink) userDAO.where(EQ(User.EMAIL, emailAddress)).limit(1).select(new ArraySink());
-    return users.getArray().size() == 1 ? (User) users.getArray().get(0) : null;
+    ArraySink users = (ArraySink) userDAO
+        .where(EQ(User.EMAIL, emailAddress))
+        .limit(1)
+        .select(new ArraySink());
+    return users.getArray().size() == 1 ?
+    (User) users.getArray().get(0) : null;
   }
 }

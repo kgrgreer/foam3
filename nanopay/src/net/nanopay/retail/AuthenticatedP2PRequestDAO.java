@@ -1,8 +1,5 @@
 package net.nanopay.retail;
 
-import java.lang.reflect.Array;
-import java.security.AccessControlException;
-
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -12,11 +9,13 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
+import java.security.AccessControlException;
+
 import net.nanopay.retail.model.P2PTxnRequest;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
-import foam.util.SafetyUtil;
 
 public class AuthenticatedP2PRequestDAO
   extends ProxyDAO
@@ -30,16 +29,16 @@ public class AuthenticatedP2PRequestDAO
   public FObject put_(X x, FObject obj) throws RuntimeException {
     User user = getCurrentUser(x);
 
-    if (obj == null) {
+    if ( obj == null ) {
       throw new RuntimeException("Request can't be null");
     }
 
     P2PTxnRequest request = (P2PTxnRequest) obj;
 
-    if (!isUserAssociatedWithRequest(user, request)) {
+    if ( ! isUserAssociatedWithRequest(user, request) ) {
       throw new RuntimeException("Invalid Request.");
     }
-    if (!checkIfUsersExist(request)) {
+    if ( ! checkIfUsersExist(request) ) {
       throw new RuntimeException("User does not exist.");
     }
 
@@ -51,7 +50,7 @@ public class AuthenticatedP2PRequestDAO
     P2PTxnRequest request = (P2PTxnRequest) getDelegate().find_(x, id);
     User currentUser = getCurrentUser(x);
 
-    if (request == null || !isUserAssociatedWithRequest(currentUser, request) ) {
+    if ( request == null || ! isUserAssociatedWithRequest(currentUser, request) ) {
       return null;
     }
     return (FObject) request;
@@ -80,13 +79,13 @@ public class AuthenticatedP2PRequestDAO
 
   private boolean isUserAssociatedWithRequest(User user, P2PTxnRequest request) {
 
-    if (SafetyUtil.isEmpty(request.getRequestorEmail()) ||
-    SafetyUtil.isEmpty(request.getRequestorEmail())) {
+    if ( SafetyUtil.isEmpty(request.getRequestorEmail()) ||
+    SafetyUtil.isEmpty(request.getRequestorEmail()) ) {
       return false;
     }
 
-    if (SafetyUtil.compare(request.getRequestorEmail(), user.getEmail()) != 0 &&
-    SafetyUtil.compare(request.getRequesteeEmail(), user.getEmail()) != 0) {
+    if ( SafetyUtil.compare(request.getRequestorEmail(), user.getEmail()) != 0 &&
+    SafetyUtil.compare(request.getRequesteeEmail(), user.getEmail()) != 0 ) {
       return false;
     }
     return true;
@@ -95,8 +94,8 @@ public class AuthenticatedP2PRequestDAO
   private boolean checkIfUsersExist(P2PTxnRequest request) {
 
     // NOTE: Change the condition when Requestee is allowed to not exist on the system.
-    if (getUserByEmail(request.getRequesteeEmail()) == null ||
-      getUserByEmail(request.getRequestorEmail()) == null) {
+    if ( getUserByEmail(request.getRequesteeEmail()) == null ||
+      getUserByEmail(request.getRequestorEmail()) == null ) {
       return false;
     }
     return true;
@@ -114,7 +113,7 @@ public class AuthenticatedP2PRequestDAO
 
   private User getCurrentUser(X x) {
     User user = (User) x.get("user");
-    if (user == null) {
+    if ( user == null ) {
       throw new AccessControlException("User is not logged in");
     }
     return user;
