@@ -103,6 +103,8 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
+  'net.nanopay.retail.model.P2PTxnRequestStatus',
+  'net.nanopay.retail.model.P2PTxnRequest',
   'net.nanopay.s2h.model.S2HInvoice',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
@@ -149,7 +151,7 @@ var classes = [
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
 
-  //topnavigation
+  // topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView'
 ];
 
