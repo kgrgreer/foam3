@@ -23,8 +23,8 @@ function rmfile {
 function install {
     # Only support MacOS install/setup
     MACOS='darwin*'
-    if [[ ! "$OSTYPE" =~ $MACOS ]]; then
-        printf "install is only supported on MacOS.\n"
+    if [[ ! $OSTYPE =~ $MACOS ]]; then
+        printf "ERROR :: Install is only supported on MacOS.\n"
         exit 1
     fi
 
@@ -36,7 +36,9 @@ function install {
     npm install
 
     cd tools
-    ./tomcatInstall.sh
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      ./tomcatInstall.sh
+    fi
     cd ..
 
     setenv
