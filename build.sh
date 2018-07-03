@@ -64,17 +64,22 @@ function set_doc_base {
 }
 
 function backup {
-    BACKUP_HOME="/opt/backup"
+  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    # Preventing this from running on non AWS
+    return
+  fi
 
-    # backup journals in event of file incompatiblity between versions
-    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-        printf "backup\n"
-        DATE=$(date +%Y%m%d_%H%M%S)
-        mkdir -p "$BACKUP_HOME/$DATE"
-        COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+  BACKUP_HOME="/opt/backup"
 
-        cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-    fi
+  # backup journals in event of file incompatiblity between versions
+  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
+      printf "backup\n"
+      DATE=$(date +%Y%m%d_%H%M%S)
+      mkdir -p "$BACKUP_HOME/$DATE"
+      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+
+      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
+  fi
 }
 
 function setup_csp_valve {
