@@ -32,7 +32,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'invoiceNumber',
-      documentation: `A number used by the user to identify the invoice`,
+      documentation: `A number used by the user to identify the invoice.`,
       label: 'Invoice #',
       aliases: [
         'invoice',
@@ -44,7 +44,7 @@ foam.CLASS({
       class: 'String',
       name: 'purchaseOrder',
       documentation: `A number used by the user to identify the purchase order
-          associated with the invoice`,
+          associated with the invoice.`,
       label: 'PO #',
       aliases: [
         'purchase',
@@ -55,7 +55,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'issueDate',
-      documentation: `The date that the invoice was issued (created)`,
+      documentation: `The date that the invoice was issued (created).`,
       label: 'Issue Date',
       required: true,
       factory: function() {
@@ -74,7 +74,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'dueDate',
-      documentation: `The date that the invoice must be paid by`,
+      documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
       aliases: [ 'dueDate', 'due', 'd', 'issued' ],
       tableCellFormatter: function(date) {
@@ -84,7 +84,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'paymentDate',
-      documentation: `The date that the invoice was paid`,
+      documentation: `The date that the invoice was paid.`,
       label: 'Received',
       aliases: [ 'scheduled', 'paid' ],
       tableCellFormatter: function(date) {
@@ -96,7 +96,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'createdBy',
-      documentation: `The id of the user who created the invoice`,
+      documentation: `The id of the user who created the invoice.`,
     },
     {
       class: 'String',
@@ -106,7 +106,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'payeeName',
-      documentation: `The name of the party receiving the payment`,
+      documentation: `The name of the party receiving the payment.`,
       label: 'Vendor',
       aliases: [ 'to', 'vendor', 'v' ],
       transient: true
@@ -114,7 +114,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'payerName',
-      documentation: `The name of the party making the payment`,
+      documentation: `The name of the party making the payment.`,
       label: 'Customer',
       aliases: [ 'from', 'customer', 'c' ],
       transient: true
@@ -127,7 +127,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'draft',
-      documentation: `Used to track whether an invoice is finalized or not`,
+      documentation: `Used to track whether an invoice is finalized or not.`,
       value: false
     },
     {
@@ -153,7 +153,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'note',
-      documentation: `A written note that the user may add to the invoice`,
+      documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
     },
     {
@@ -164,7 +164,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of money the invoice is for`,
+      documentation: `The amount of money the invoice is for.`,
       aliases: [
         'a'
       ],
@@ -185,7 +185,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
-      documentation: `The state of payment of the invoice`
+      documentation: `The state of payment of the invoice.`
     },
     {
       class: 'String',
@@ -271,7 +271,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'scheduledEmailSent',
       documentation: `Used to track whether an email has been sent to the payer
-          informing them that the payment they scheduled is near`,
+          informing them that the payment they scheduled is near.`,
       value: false
     }
   ],
@@ -279,7 +279,7 @@ foam.CLASS({
   actions: [
     {
       name: 'payNow',
-      documentation: `Let the user pay an invoice immediately`,
+      documentation: `Let the user pay an invoice immediately.`,
       label: 'Pay now',
       isAvailable: function(status) {
         return false;
