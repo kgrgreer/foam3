@@ -5,16 +5,12 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.*;
 import net.nanopay.invoice.notification.ReceivePaymentNotification;
 
 public class PaymentNotificationDAO extends ProxyDAO {
 
   protected DAO notificationDAO_;
-
-  enum PaymentStatus {
-    NANOPAY, CHEQUE;
-  }
 
   public PaymentNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -24,11 +20,11 @@ public class PaymentNotificationDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    Long payeeId = (Long) invoice.getPayeeId();
-    Long payerId = (Long) invoice.getPayerId();
+    long payeeId = (long) invoice.getPayeeId();
+    long payerId = (long) invoice.getPayerId();
 
-    if ( PaymentStatus.NANOPAY.toString().equals(invoice.getPaymentMethod().toString()) 
-        || PaymentStatus.CHEQUE.toString().equals(invoice.getPaymentMethod().toString())) {
+    if ( PaymentStatus.NANOPAY == invoice.getPaymentMethod()
+        || PaymentStatus.CHEQUE == invoice.getPaymentMethod()) {
       ReceivePaymentNotification notification = new ReceivePaymentNotification();
       notification.setUserId(payeeId);
       notification.setFromUserId(payerId);
