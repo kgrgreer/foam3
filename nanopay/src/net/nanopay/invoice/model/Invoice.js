@@ -146,18 +146,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'freshbooksInvoiceId'
-    },
-    {
-      class: 'String',
-      name: 'freshbooksInvoiceNumber'
-    },
-    {
-      class: 'String',
-      name: 'freshbooksInvoicePurchaseOrder'
-    },
-    {
-      class: 'String',
       name: 'invoiceFileUrl'
     },
     {
