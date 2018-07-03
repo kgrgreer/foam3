@@ -540,8 +540,7 @@ foam.CLASS({
         email: this.emailAddress,
         type: 'Business',
         spid: this.user.spid,
-        group: this.user.group === 's2hAdmin' ?
-          's2hCustomer' : 'business',
+        group: 'business',
         status: this.AccountStatus.PENDING,
         compliance: this.ComplianceStatus.REQUESTED,
         phone: businessPhone,
