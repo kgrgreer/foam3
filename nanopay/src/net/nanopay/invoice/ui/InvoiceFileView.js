@@ -88,7 +88,7 @@ foam.CLASS({
         .start().addClass('attachment-number')
           .add(this.formatFileNumber())
         .end()
-        .start().addClass('attachment-filename')
+        .start().addClass('attachment-filename').style({'width': '200'})
           .start('a')
             .attrs({
               href: this.data$.map(function (data) {

@@ -135,8 +135,12 @@ foam.CLASS({
             class: 'foam.u2.ListCreateController',
             dao: this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
             createLabel: 'New Bill',
-            createDetailView: this.billDetailView,
-            detailView: this.expensesDetailView,
+            createDetailView: {
+              class: 'net.nanopay.invoice.ui.BillDetailView'
+            },
+            detailView: {
+              class: 'net.nanopay.invoice.ui.ExpensesDetailView'
+            },
             summaryView: this.tableView,
             showActions: false
           })
@@ -182,6 +186,10 @@ foam.CLASS({
 
       imports: [
         'expensesDAO'
+      ],
+
+      exports: [
+        'selection'
       ],
 
       properties: [
