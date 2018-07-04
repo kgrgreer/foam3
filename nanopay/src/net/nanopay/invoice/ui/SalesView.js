@@ -104,6 +104,10 @@ foam.CLASS({
     ^ .button-div{
       height: 40px;
     }
+    ^ .foam-u2-ListCreateController{
+      top: 30px;
+      position: relative;
+    }
   `,
 
   methods: [
@@ -114,20 +118,6 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideReceivableSummary$)
           .add(this.summaryView)
-          .start().addClass('container')
-            .start().addClass('button-div')
-              // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              // .start().addClass('inline')
-              //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
-              // .end()
-              // .start().addClass('inline')
-              //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
-              // .end()
-            .end()
-          .end()
         .end()
         .start()
           .tag({
@@ -186,7 +176,7 @@ foam.CLASS({
         'salesDAO',
         'hideSaleSummary'
       ],
-      
+
       exports: [
         'selection'
       ],
