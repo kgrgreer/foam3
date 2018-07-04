@@ -127,34 +127,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'freshbooksInvoiceId',
-      documentation: ``, // TODO
-    },
-    {
-      class: 'String',
-      name: 'freshbooksInvoiceNumber',
-      documentation: ``, // TODO
-    },
-    {
-      class: 'String',
-      name: 'freshbooksInvoicePurchaseOrder',
-      documentation: ``, // TODO
-    },
-    {
-      class: 'String',
-      name: 'invoiceFileUrl',
-      documentation: ``, // TODO
+      name: 'invoiceFileUrl'
     },
     {
       class: 'String',
       name: 'note',
       documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
-    },
-    {
-      class: 'String',
-      name: 'invoiceImageUrl',
-      documentation: ``, // TODO
     },
     {
       class: 'Currency',
