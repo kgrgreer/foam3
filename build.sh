@@ -21,12 +21,7 @@ function rmfile {
 }
 
 function install {
-    # Only support MacOS install/setup
     MACOS='darwin*'
-    if [[ ! "$OSTYPE" =~ $MACOS ]]; then
-        printf "install is only supported on MacOS.\n"
-        exit 1
-    fi
 
     cd "$PROJECT_HOME"
 
@@ -36,7 +31,9 @@ function install {
     npm install
 
     cd tools
-    ./tomcatInstall.sh
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      ./tomcatInstall.sh
+    fi
     cd ..
 
     setenv
@@ -64,30 +61,53 @@ function set_doc_base {
 }
 
 function backup {
-    BACKUP_HOME="/opt/backup"
+  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    # Preventing this from running on non AWS
+    return
+  fi
 
-    # backup journals in event of file incompatiblity between versions
-    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-        printf "backup\n"
-        DATE=$(date +%Y%m%d_%H%M%S)
-        mkdir -p "$BACKUP_HOME/$DATE"
-        COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+  BACKUP_HOME="/opt/backup"
 
-        cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-    fi
+  # backup journals in event of file incompatiblity between versions
+  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
+      printf "backup\n"
+      DATE=$(date +%Y%m%d_%H%M%S)
+      mkdir -p "$BACKUP_HOME/$DATE"
+      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+
+      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
+  fi
 }
 
 function setup_csp_valve {
   if [[ ! -f $CATALINA_HOME/lib/CSPValve.jar ]]; then
+    local JAR_TOMCAT_CATALINA="~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar"
+    local JAR_JAVAX_SERVLET="~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar"
+
     pushd .
     cd nanopay/src/net/nanopay/security/csp
     mkdir build
-    javac -cp ~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar:~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar:/Library/Tomcat/lib/servlet-api.jar -d ./build CSPValve.java
+
+    MACOS='darwin*'
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || ! $OSTYPE =~ $MACOS ]]; then
+      # AWS servers don't have .m2 directory. Additionally, this should also run for Linux builds.
+      curl -O https://search.maven.org/remotecontent?filepath=org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar
+      JAR_TOMCAT_CATALINA="./tomcat-catalina-9.0.8.jar"
+      curl -O https://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar
+      JAR_JAVAX_SERVLET="./javax.servlet-api-4.0.1.jar"
+    fi
+
+    javac -cp $JAR_TOMCAT_CATALINA:$JAR_JAVAX_SERVLET:$CATALINA_HOME/lib/servlet-api.jar -d ./build CSPValve.java
     cd build
     jar cvf CSPValve.jar *
     mv CSPValve.jar $CATALINA_HOME/lib
     cd ..
     rm -rf build
+
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || ! $OSTYPE =~ $MACOS ]]; then
+      rm $JAR_JAVAX_SERVLET $JAR_TOMCAT_CATALINA
+    fi
+
     popd
     echo "INFO :: CSP Valve setup."
   fi
@@ -101,11 +121,43 @@ function setup_csp_valve {
   fi
 }
 
+function setup_jce {
+  local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)".*/\1/p;')
+  local JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk-$JAVA_VER.jdk/Contents/Home/lib/security"
+
+  # For Java 8
+  if [[ $JAVA_LIB_SECURITY = *"_"* ]]; then
+    JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk$JAVA_VER.jdk/Contents/Home/jre/lib/security"
+  fi
+
+  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
+    mkdir tmp_jce
+    cd tmp_jce
+    curl -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
+    unzip jce_policy-8.zip
+    sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+    cd ..
+    rm -rf tmp_jce
+
+    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
+      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
+    else
+      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
+    fi
+  fi
+}
+
 function build_war {
     #
     # NOTE: this removes the target directory where journal preparation occurs.
     # invoke deploy_journals after build_war
     #
+
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+      # Preventing this from running on AWS
+      setup_jce
+    fi
+
     if [ "$CLEAN_BUILD" -eq 1 ]; then
       mvn clean
 
@@ -495,6 +547,7 @@ else
             # NOTE: Tomcat needs to be running to property unpack and deploy war
             # on the linux production instances. Either work on macos localhost.
             #
+            deploy_journals
             start_tomcat
             deploy_war
         fi
@@ -502,5 +555,8 @@ else
         start_tomcat
     fi
 fi
+
+# Unset error on exit
+set +e
 
 exit 0
