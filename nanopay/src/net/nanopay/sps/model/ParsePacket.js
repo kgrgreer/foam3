@@ -40,12 +40,10 @@ public void parseSPSResponse(String response) throws IllegalAccessException, Ins
   
   System.out.println("list size = " + list.size());
   System.out.println("values length = " + values.length);
-
-  if ( values.length == list.size() ) {
-    for ( int i = 0; i < list.size(); i++ ) {
-      // System.out.println(values[i]);
-      ((PropertyInfo)list.get(i)).set(this, ((PropertyInfo)list.get(i)).fromString((String) values[i]));
-     }
+  
+  for ( int i = 0; i < list.size(); i++ ) {
+    // System.out.println(values[i]);
+    ((PropertyInfo)list.get(i)).set(this, ((PropertyInfo)list.get(i)).fromString((String) values[i]));
   }
 
 }

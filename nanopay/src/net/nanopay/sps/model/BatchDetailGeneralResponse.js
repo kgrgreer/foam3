@@ -45,7 +45,7 @@ foam.CLASS({
       name: 'hostDeclineCount'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'hostDeclineAmount'
     },
     {

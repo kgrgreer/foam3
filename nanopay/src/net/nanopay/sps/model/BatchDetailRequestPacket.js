@@ -26,7 +26,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'notUsed'
+      name: 'field6NotUsed',
+      value: ''
     },
     {
       class: 'String',
@@ -45,7 +46,7 @@ foam.CLASS({
       name: 'declineCount'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'declineAmount'
     },
     {
@@ -91,7 +92,7 @@ list.add(PACKET_NUM);
 list.add(MESSAGE_MODIFIER_CODE);
 list.add(LOCAL_TRANSACTION_TIME);
 list.add(TID);
-list.add(NOT_USED);
+list.add(FIELD6NOT_USED);
 list.add(OPTIONALLY_ENTERED_DATE);
 list.add(CHECK_APPROVAL_COUNT);
 list.add(CHECK_APPROVAL_AMOUNT);

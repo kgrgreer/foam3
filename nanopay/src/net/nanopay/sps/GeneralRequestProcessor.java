@@ -36,8 +36,9 @@ public class GeneralRequestProcessor {
     generalRequestPacketTest.setMsgNum(20);
     generalRequestPacketTest.setPacketNum(2010);
     generalRequestPacketTest.setMessageModifierCode(10);
-    generalRequestPacketTest.setLocalTransactionTime("20180702115959");
-    generalRequestPacketTest.setTextMsg("");
+    generalRequestPacketTest.setLocalTransactionTime("20180703115959");
+    //not used
+    //generalRequestPacketTest.setTextMsg("");
     generalRequestPacketTest.setTID("ZYX80");
 
     // user info
@@ -58,7 +59,7 @@ public class GeneralRequestProcessor {
     generalRequestPacketTest.setInvoice("");
     generalRequestPacketTest.setClerkID("");
     // not used
-    generalRequestPacketTest.setMaxDetailItemsPerTransmission("");
+    //generalRequestPacketTest.setMaxDetailItemsPerTransmission("");
     generalRequestPacketTest.setSocialSecurityNum("");
     generalRequestPacketTest.setItemID("");
     generalRequestPacketTest.setOptionsSelected("EV");

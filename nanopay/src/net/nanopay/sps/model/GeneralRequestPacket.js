@@ -22,7 +22,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'textMsg'
+      name: 'field5NotUsed',
+      value: ''
     },
     {
       class: 'String',
@@ -63,7 +64,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'maxDetailItemsPerTransmission'
+      name: 'field15NotUsed',
+      value: ''
     },
     {
       class: 'String',
@@ -111,7 +113,7 @@ list.add(MSG_NUM);
 list.add(PACKET_NUM);
 list.add(MESSAGE_MODIFIER_CODE);
 list.add(LOCAL_TRANSACTION_TIME);
-list.add(TEXT_MSG);
+list.add(FIELD5NOT_USED);
 list.add(TID);
 list.add(USER_INFO);
 list.add(MICR);
@@ -121,7 +123,7 @@ list.add(CHECK_NUM);
 list.add(AMOUNT);
 list.add(INVOICE);
 list.add(CLERK_ID);
-list.add(MAX_DETAIL_ITEMS_PER_TRANSMISSION);
+list.add(FIELD15NOT_USED);
 list.add(SOCIAL_SECURITY_NUM);
 list.add(ITEM_ID);
 list.add(OPTIONS_SELECTED);
