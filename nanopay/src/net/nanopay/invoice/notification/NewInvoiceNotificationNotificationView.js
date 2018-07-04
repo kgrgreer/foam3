@@ -39,7 +39,7 @@ foam.CLASS({
       this.addClass(this.myClass())
       .start().addClass('msg')
         .add(this.name$)
-        .add(` just send you a ${i.invoiceType.toLowerCase()} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
+        .add(` just sent you a ${i.invoiceType.toLowerCase()} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
       .end()
       .start(this.LINK).end();
     }
