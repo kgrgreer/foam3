@@ -186,7 +186,12 @@ function build_war {
     else
       mvn install
       setup_csp_valve
-      mvn com.redhat.victims.maven:security-versions:check
+
+      if [[ $INTERNET -ne 0 ]]; then
+        # Only run this if connected to the internet to prevent the build from
+        # failing.
+        mvn com.redhat.victims.maven:security-versions:check
+      fi
     fi
 }
 
@@ -467,6 +472,10 @@ function setenv {
         printf "generating keystore\n"
         sudo ./tools/keystore.sh
     fi
+
+
+    # Check if connected to the interwebs
+    ping -q -W1 -c1 google.com &>/dev/null && INTERNET=1 || INTERNET=0
 }
 
 function usage {
