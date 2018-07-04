@@ -107,14 +107,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
-      documentation: `The party receiving the payment`,
+      documentation: `The party receiving the payment.`,
       storageTransient: true
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
-      documentation: `The party making the payment`,
+      documentation: `The party making the payment.`,
       storageTransient: true
     },
     {
