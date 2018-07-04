@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   implements: [
@@ -23,9 +24,12 @@ foam.CLASS({
   properties: [
     'invoice',
     {
-      name: 'type',
+      name: 'otherPartyName',
+      documentation: `The name of the other party involved with the invoice.`,
       expression: function(invoice, user) {
-        return user.id !== invoice.payeeId;
+        return user.id !== invoice.payeeId ?
+            this.invoice.payee.label() :
+            this.invoice.payer.label();
       }
     },
     {
@@ -43,6 +47,13 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    {
+      name: 'VoidSuccess',
+      message: 'Invoice voided.'
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -55,29 +66,21 @@ foam.CLASS({
               .addClass('key-value-container')
               .start()
                 .start().addClass('key').add('Company').end()
-                .start()
-                  .addClass('value')
-                  .add(this.type
-                    ? this.invoice.payee.label()
-                    : this.invoice.payer.label())
-                .end()
+                .start().addClass('value').add(this.otherPartyName).end()
               .end()
               .start()
                 .start().addClass('key').add('Amount').end()
-                .start()
-                  .addClass('value')
-                  .add(
-                      this.invoice.currencyType,
-                      ' ',
-                      (this.invoice.amount/100).toFixed(2))
-                .end()
+                .start().addClass('value')
+                  .add(this.invoice.targetCurrency.alphabeticCode)
+                  .add(' ')
+                  .add((this.invoice.amount/100).toFixed(2))
+                  .end()
               .end()
             .end()
             .start().addClass('label').add('Note').end()
             .start(this.NOTE).addClass('input-box').end()
             .start(this.VOIDED).addClass('blue-button').addClass('btn').end()
-          .end()
-        .end();
+          .end();
     }
   ],
 
@@ -86,11 +89,11 @@ foam.CLASS({
       name: 'voided',
       label: 'Void',
       code: function(X) {
-        this.invoice.paymentMethod = 'VOID';
+        this.invoice.paymentMethod = this.PaymentStatus.VOID;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
         ctrl.add(this.NotificationMessage.create({
-          message: 'Invoice voided.',
+          message: this.VoidSuccess,
           type: ''
         }));
         X.closeDialog();

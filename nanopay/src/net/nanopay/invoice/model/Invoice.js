@@ -99,11 +99,6 @@ foam.CLASS({
       documentation: `The id of the user who created the invoice.`,
     },
     {
-      class: 'String',
-      name: 'currencyType',
-      documentation: ``, // TODO
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
@@ -164,14 +159,23 @@ foam.CLASS({
       name: 'amount',
       documentation: `The amount of money the invoice is for.`,
       aliases: [
-        'a'
+        'a', 'targetAmount'
       ],
       precision: 2,
       required: true,
       tableCellFormatter: function(a, X) {
-        this.start().style({ 'padding-right': '20px' })
-          .add('$' + X.addCommas((a/100).toFixed(2)))
-        .end();
+        var e = this;
+        X.formatCurrencyAmount(a, e, X);
+      }
+    },
+    {
+      class: 'Currency',
+      name: 'sourceAmount',
+      precision: 2,
+      required: true,
+      tableCellFormatter: function(a, X) {
+        var e = this;
+        X.formatCurrencyAmount(a, e, X);
       }
     },
     {
@@ -180,15 +184,25 @@ foam.CLASS({
       documentation: `` // TODO
     },
     {
+      class: 'Currency',
+      precision: 2,
+      name: 'exchangeRate'
+    },
+    {
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'String',
-      name: 'currencyCode',
-      documentation: `` // TODO
+      class: 'FObjectProperty',
+      name: 'targetCurrency',
+      of: 'net.nanopay.model.Currency'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'sourceCurrency',
+      of: 'net.nanopay.model.Currency'
     },
     {
       name: 'iso20022',
@@ -271,6 +285,15 @@ foam.CLASS({
       documentation: `Used to track whether an email has been sent to the payer
           informing them that the payment they scheduled is near.`,
       value: false
+    }
+  ],
+
+  methods: [
+    function formatCurrencyAmount(a, e, X) {
+      var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
+      e.start().style({ 'padding-right': '20px' })
+        .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+      .end();
     }
   ],
 

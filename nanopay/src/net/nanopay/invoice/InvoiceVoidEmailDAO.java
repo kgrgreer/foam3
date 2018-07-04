@@ -10,6 +10,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class InvoiceVoidEmailDAO
     User    payer   = (User) userDAO_.find_(x, invoice.getPayerId() );
 
     // Checks to make sure invoice is set to Void
-    if ( ! "VOID".equals(invoice.getPaymentMethod().name()) )
+    if (  PaymentStatus.VOID != invoice.getPaymentMethod() )
       return getDelegate().put_(x, obj);
 
     // Makes sure an email isn't sent if the creator is the payer of the invoice
