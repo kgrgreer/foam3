@@ -27,7 +27,7 @@ public class FillPublicUserDAO
   ) {
     super(x, delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
-    publicUserDAO_ = (DAO) x.get("publicUserDAO");
+    publicUserDAO_ = (DAO) x.get("localPublicUserDAO");
   }
 
   @Override
