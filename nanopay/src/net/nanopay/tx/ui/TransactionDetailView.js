@@ -28,8 +28,8 @@ foam.CLASS({
     }
   `,
 
-  methods:[
-    function initE(){
+  methods: [
+    function initE() {
 
       this
       .addClass(this.myClass())
