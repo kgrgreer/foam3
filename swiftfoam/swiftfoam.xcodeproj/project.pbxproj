@@ -254,6 +254,8 @@
 		103D3E2820E3FFCE00CE9AA8 /* foam_swift_parse_parser_Substring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103D3D3620E3FFCD00CE9AA8 /* foam_swift_parse_parser_Substring.swift */; };
 		103D3E2920E3FFCE00CE9AA8 /* foam_dao_Sink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103D3D3720E3FFCD00CE9AA8 /* foam_dao_Sink.swift */; };
 		103D3E2A20E3FFCE00CE9AA8 /* foam_nanos_auth_AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103D3D3820E3FFCE00CE9AA8 /* foam_nanos_auth_AuthService.swift */; };
+		7584747020EC21DF00A17646 /* net_nanopay_retail_model_P2PTxnRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7584746E20EC21DE00A17646 /* net_nanopay_retail_model_P2PTxnRequest.swift */; };
+		7584747120EC21DF00A17646 /* net_nanopay_retail_model_P2PTxnRequestStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7584746F20EC21DE00A17646 /* net_nanopay_retail_model_P2PTxnRequestStatus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -517,6 +519,8 @@
 		103D3D3620E3FFCD00CE9AA8 /* foam_swift_parse_parser_Substring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_swift_parse_parser_Substring.swift; sourceTree = "<group>"; };
 		103D3D3720E3FFCD00CE9AA8 /* foam_dao_Sink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_dao_Sink.swift; sourceTree = "<group>"; };
 		103D3D3820E3FFCE00CE9AA8 /* foam_nanos_auth_AuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foam_nanos_auth_AuthService.swift; sourceTree = "<group>"; };
+		7584746E20EC21DE00A17646 /* net_nanopay_retail_model_P2PTxnRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_retail_model_P2PTxnRequest.swift; sourceTree = "<group>"; };
+		7584746F20EC21DE00A17646 /* net_nanopay_retail_model_P2PTxnRequestStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = net_nanopay_retail_model_P2PTxnRequestStatus.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -580,6 +584,8 @@
 		0644011C1F796785003E3692 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				7584746E20EC21DE00A17646 /* net_nanopay_retail_model_P2PTxnRequest.swift */,
+				7584746F20EC21DE00A17646 /* net_nanopay_retail_model_P2PTxnRequestStatus.swift */,
 				103D3CF720E3FFC300CE9AA8 /* foam_blob_AbstractBlob.swift */,
 				103D3C8320E3FFA900CE9AA8 /* foam_blob_Blob.swift */,
 				103D3CCD20E3FFB900CE9AA8 /* foam_blob_IdentifiedBlob.swift */,
@@ -970,6 +976,7 @@
 				103D3D4620E3FFCE00CE9AA8 /* foam_box_Message.swift in Sources */,
 				103D3E1520E3FFCE00CE9AA8 /* net_nanopay_tx_model_TransactionLimitTimeFrame.swift in Sources */,
 				103D3DBD20E3FFCE00CE9AA8 /* foam_nanos_auth_token_Token.swift in Sources */,
+				7584747020EC21DF00A17646 /* net_nanopay_retail_model_P2PTxnRequest.swift in Sources */,
 				103D3E0720E3FFCE00CE9AA8 /* foam_mlang_order_ThenBy.swift in Sources */,
 				103D3DC320E3FFCE00CE9AA8 /* foam_swift_core_ExpressionSlot.swift in Sources */,
 				103D3E0A20E3FFCE00CE9AA8 /* foam_dao_OrderedSink.swift in Sources */,
@@ -1107,6 +1114,7 @@
 				103D3DA120E3FFCE00CE9AA8 /* foam_dao_ExternalException.swift in Sources */,
 				103D3DDA20E3FFCE00CE9AA8 /* foam_nanos_auth_token_TokenService.swift in Sources */,
 				103D3DD720E3FFCE00CE9AA8 /* foam_swift_parse_parser_Seq.swift in Sources */,
+				7584747120EC21DF00A17646 /* net_nanopay_retail_model_P2PTxnRequestStatus.swift in Sources */,
 				103D3DD120E3FFCE00CE9AA8 /* foam_box_ClientBoxRegistry.swift in Sources */,
 				103D3D6520E3FFCE00CE9AA8 /* foam_dao_PipeSink.swift in Sources */,
 				103D3D4020E3FFCE00CE9AA8 /* foam_swift_parse_parser_Parser.swift in Sources */,
