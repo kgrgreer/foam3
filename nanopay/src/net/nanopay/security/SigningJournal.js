@@ -9,7 +9,6 @@ foam.CLASS({
     'privateKeyDAO'
   ],
 
-
   javaImports: [    
     'foam.core.FObject',
     'foam.core.PropertyInfo',
@@ -19,6 +18,7 @@ foam.CLASS({
     'java.io.BufferedReader',
     'foam.nanos.auth.User',
     'foam.dao.DAO',
+    'java.security.AccessControlException',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -98,6 +98,30 @@ foam.CLASS({
     getLogger().log("Successfully read " + successReading + " entries from file: " + getFilename());
   }
     `
+    },
+    {
+      name: 'put',
+      javaCode: `
+        FObject fobj = (FObject) obj;
+        User user = (User) getX().get("user");
+        DAO keyPairDAO = (DAO) getKeyPairDAO();
+        DAO privateKeyDAO = (DAO) getPrivateKeyDAO();
+
+        if ( user == null ) {
+          throw new AccessControlException("User is not logged in");
+        }
+
+        KeyPairEntry keyPairEntry = (KeyPairEntry) keyPairDAO.inX(getX()).find(EQ(KeyPairEntry.OWNER, user.getId()));
+        PrivateKeyEntry entry = (PrivateKeyEntry) privateKeyDAO.find(keyPairEntry.getPrivateKeyId());
+        String signature = Base64.toBase64String(fobj.sign(getAlgorithm(), entry.getPrivateKey()));
+
+        super.put(new SignedFObject.Builder(getX())
+          .setId(fobj.getProperty("id"))
+          .setAlgorithm(getAlgorithm())
+          .setSignature(signature)
+          .setValue(fobj)
+          .build(), sub);
+      `
     }
-]
+  ]
 });

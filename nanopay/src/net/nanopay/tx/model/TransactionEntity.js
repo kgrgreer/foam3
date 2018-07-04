@@ -37,10 +37,10 @@ foam.CLASS({
         cls.method(foam.swift.Method.create({
           static: true,
           name: 'fromUser',
-          returnType: 'TransactionEntity',
+          returnType: net.nanopay.tx.model.TransactionEntity.model_.swiftName,
           args: [
             foam.swift.Argument.create({
-              type: 'User',
+              type: foam.nanos.auth.User.model_.swiftName,
               localName: 'u',
             }),
             foam.swift.Argument.create({
@@ -51,7 +51,7 @@ foam.CLASS({
             })
           ],
           body: `
-            let t = x.create(TransactionEntity.self)!
+            let t = x.create(net_nanopay_tx_model_TransactionEntity.self)!
             t.copyFrom(u)
             return t
           `
