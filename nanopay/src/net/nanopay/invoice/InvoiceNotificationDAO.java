@@ -18,6 +18,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   protected DAO userDAO_;
   protected DAO notificationDAO_;
   protected AppConfig config;
+  protected DAO invoiceDAO_;
 
   enum InvoiceType {
     RECEIVABLE, PAYABLE;
@@ -28,14 +29,16 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     userDAO_ = (DAO) x.get("localUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
     config     = (AppConfig) x.get("appConfig");
-
-
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    sendInvoiceNotification(x, notificationDAO_, invoice);
+    Invoice existingInvoice = (Invoice) super.find(invoice.getId());
+
+    if ( existingInvoice == null ) {
+      sendInvoiceNotification(x, notificationDAO_, invoice);
+    }
     // Put to the DAO
     return super.put_(x, invoice);
   }
