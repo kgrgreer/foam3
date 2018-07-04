@@ -18,7 +18,6 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   protected DAO userDAO_;
   protected DAO notificationDAO_;
   protected AppConfig config;
-  protected DAO invoiceDAO_;
 
   enum InvoiceType {
     RECEIVABLE, PAYABLE;
@@ -37,13 +36,13 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
 
     if ( existingInvoice == null ) {
-      sendInvoiceNotification(x, notificationDAO_, invoice);
+      sendInvoiceNotification(x, invoice);
     }
     // Put to the DAO
     return super.put_(x, invoice);
   }
 
-  public NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
+  private NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
     NumberFormat     formatter  = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
@@ -51,7 +50,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     User    payer   = (User) userDAO_.find_(x, invoice.getPayerId());
 
     //sets approriate arguments
-    Boolean invType = (Boolean) (invoice.getPayeeId() == (Long) invoice.getCreatedBy());
+    boolean invType = (boolean) ((long) invoice.getPayeeId() == invoice.getCreatedBy());
 
     notification.getEmailArgs().put("amount",    formatter.format(invoice.getAmount()/100.00));
     notification.getEmailArgs().put("account",   invoice.getId());
@@ -67,13 +66,9 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     return notification;
   }
 
-  private void sendInvoiceNotification(X x, DAO notificationDAO, Invoice invoice) {
-    Long sendToUserId;
-    Long fromUserId;
-    String invoiceType;
-
-    Long payeeId = (Long) invoice.getPayeeId();
-    Long payerId = (Long) invoice.getPayerId();
+  private void sendInvoiceNotification(X x, Invoice invoice) {
+    long payeeId = (long) invoice.getPayeeId();
+    long payerId = (long) invoice.getPayerId();
 
     String invType = payeeId == invoice.getCreatedBy() ? InvoiceType.PAYABLE.name() : InvoiceType.RECEIVABLE.name();
     NewInvoiceNotification notification = new NewInvoiceNotification();
@@ -89,6 +84,6 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.setInvoiceType(invType);
     notification.setInvoiceId(invoice.getId());
     notification.setAmount(invoice.getAmount());
-    notificationDAO.put(notification);
+    notificationDAO_.put(notification);
   }
 }
