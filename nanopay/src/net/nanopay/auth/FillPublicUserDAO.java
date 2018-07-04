@@ -27,7 +27,7 @@ public class FillPublicUserDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User result    = (User) super.put_(x, obj);
+    User result = (User) super.put_(x, obj);
 
     // TODO: Implement privacy setting logic to avoid creating public users for private accounts.
     PublicUserInfo entity = new PublicUserInfo(result);

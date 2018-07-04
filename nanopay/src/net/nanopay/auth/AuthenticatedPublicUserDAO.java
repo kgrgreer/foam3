@@ -31,12 +31,11 @@ public class AuthenticatedPublicUserDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User        user    = (User) x.get("user");
-    AuthService auth    = (AuthService) x.get("auth");
+    User        user = (User) x.get("user");
+    AuthService auth = (AuthService) x.get("auth");
 
     PublicUserInfo toPut = (PublicUserInfo) obj;
-    if ( toPut != null &&
-      ! auth.check(x, GLOBAL_PUBLIC_USER_UPDATE) ) {
+    if ( toPut != null && ! auth.check(x, GLOBAL_PUBLIC_USER_UPDATE) ) {
       throw new RuntimeException("Unable to update user");
     }
 
