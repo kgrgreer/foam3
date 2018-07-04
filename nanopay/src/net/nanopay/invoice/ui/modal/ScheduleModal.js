@@ -26,9 +26,12 @@ foam.CLASS({
   properties: [
     'invoice',
     {
-      name: 'type',
-      expression: function(invoice, user){
-        return user.id != invoice.payeeId;
+      name: 'otherPartyName',
+      documentation: `The name of the other party involved with the invoice.`,
+      expression: function(invoice, user) {
+        return user.id !== invoice.payeeId ?
+            this.invoice.payee.label() :
+            this.invoice.payer.label();
       }
     },
     {
@@ -199,12 +202,7 @@ foam.CLASS({
           .start().addClass('key-value-container')
             .start()
               .start().addClass('key').add("Company").end()
-              .start()
-                .addClass('value')
-                .add(this.type
-                  ? this.invoice.payee.label()
-                  : this.invoice.payer.label())
-              .end()
+              .start().addClass('value').add(this.otherPartyName).end()
             .end()
             .start()
               .start().addClass('key').add("Amount").end()
