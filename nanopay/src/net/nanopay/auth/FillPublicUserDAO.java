@@ -34,18 +34,4 @@ public class FillPublicUserDAO
     publicUserDAO_.put(entity);
     return super.put_(x, obj);
   }
-
-  @Override
-  public FObject remove_(X x, FObject obj) {
-    publicUserDAO_.remove_(x, obj);
-
-    return super.remove_(x, obj);
-  }
-
-  @Override
-  public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    publicUserDAO_.removeAll_(x, skip, limit, order, predicate);
-
-    getDelegate().removeAll_(x, skip, limit, order, predicate);
-  }
 }
