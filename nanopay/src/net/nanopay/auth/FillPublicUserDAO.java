@@ -10,6 +10,11 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import net.nanopay.auth.PublicUserInfo;
 
+/*
+  Decorator on localUserDAO that updates or creates new public users & places them
+  within the publicUserDAO. Public users information reflect user info.
+*/
+
 public class FillPublicUserDAO
   extends ProxyDAO
 {
