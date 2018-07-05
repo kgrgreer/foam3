@@ -144,7 +144,7 @@ foam.CLASS({
           { icon: 'images/ic-export.png', showLabel: true }
         ).end()
         .start('h5')
-          .add('Invoice from ', this.data.payeeName)
+          .add('Invoice from ', this.data.payee.label())
           .callIf(this.foreignExchange, function() {
             this.start({
               class: 'foam.u2.tag.Image',

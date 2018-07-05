@@ -12,9 +12,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.InvoiceDetailView',
     'net.nanopay.invoice.ui.ReceivablesSummaryView',
-    'net.nanopay.invoice.ui.SalesDetailView'
   ],
 
   imports: [
@@ -53,18 +51,6 @@ foam.CLASS({
         view.sub('statusChange', this.updateTableDAO);
         view.sub('statusReset', this.resetTableDAO);
         return view;
-      }
-    },
-    {
-      name: 'invoiceDetailView',
-      factory: function() {
-        return this.InvoiceDetailView.create();
-      }
-    },
-    {
-      name: 'salesDetailView',
-      factory: function() {
-        return this.SalesDetailView.create();
       }
     }
   ],
@@ -127,9 +113,7 @@ foam.CLASS({
             createDetailView: {
               class: 'net.nanopay.invoice.ui.InvoiceDetailView'
             },
-            detailView: {
-              class: 'net.nanopay.invoice.ui.SalesDetailView'
-            },
+            detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
             summaryView: this.tableView,
             showActions: false
           })

@@ -143,7 +143,7 @@ foam.CLASS({
           { icon: 'images/ic-export.png', showLabel: true }
         ).end()
         .start('h5')
-          .add('Bill to ', this.data.payerName)
+          .add('Bill to ', this.data.payer.label())
           .callIf(this.foreignExchange, function() {
             this.start({
               class: 'foam.u2.tag.Image',

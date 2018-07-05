@@ -24,21 +24,18 @@ foam.CLASS({
   properties: [
     'invoice',
     {
-      name: 'type',
+      name: 'otherPartyName',
+      documentation: `The name of the other party involved with the invoice.`,
       expression: function(invoice, user) {
-        return user.id != invoice.payeeId;
+        return user.id !== invoice.payeeId ?
+            this.invoice.payee.label() :
+            this.invoice.payer.label();
       }
     },
     {
       name: 'note',
       view: 'foam.u2.tag.TextArea',
       value: ''
-    },
-    {
-      name: 'companyName',
-      expression: function(type) {
-        return type ? this.invoice.payeeName : this.invoice.payerName;
-      }
     }
   ],
 
@@ -65,12 +62,11 @@ foam.CLASS({
         .tag(this.ModalHeader.create({ title: 'Void' }))
         .addClass(this.myClass())
           .start()
-            .start().addClass('key-value-container')
+            .start()
+              .addClass('key-value-container')
               .start()
                 .start().addClass('key').add('Company').end()
-                .start().addClass('value')
-                  .add(this.companyName)
-                .end()
+                .start().addClass('value').add(this.otherPartyName).end()
               .end()
               .start()
                 .start().addClass('key').add('Amount').end()
@@ -84,8 +80,7 @@ foam.CLASS({
             .start().addClass('label').add('Note').end()
             .start(this.NOTE).addClass('input-box').end()
             .start(this.VOIDED).addClass('blue-button').addClass('btn').end()
-          .end()
-        .end();
+          .end();
     }
   ],
 
