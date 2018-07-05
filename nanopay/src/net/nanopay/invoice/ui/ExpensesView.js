@@ -12,8 +12,6 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.BillDetailView',
-    'net.nanopay.invoice.ui.ExpensesDetailView',
     'net.nanopay.invoice.ui.PayableSummaryView'
   ],
 
@@ -51,18 +49,6 @@ foam.CLASS({
         view.sub('statusChange', this.updateTableDAO);
         view.sub('statusReset', this.resetTableDAO);
         return view;
-      }
-    },
-    {
-      name: 'billDetailView',
-      factory: function() {
-        return this.BillDetailView.create();
-      }
-    },
-    {
-      name: 'expensesDetailView',
-      factory: function() {
-        return this.ExpensesDetailView.create();
       }
     }
   ],
@@ -125,8 +111,10 @@ foam.CLASS({
             class: 'foam.u2.ListCreateController',
             dao: this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
             createLabel: 'New Bill',
-            createDetailView: this.billDetailView,
-            detailView: this.expensesDetailView,
+            createDetailView: {
+              class: 'net.nanopay.invoice.ui.BillDetailView'
+            },
+            detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
             summaryView: this.tableView,
             showActions: false
           })
