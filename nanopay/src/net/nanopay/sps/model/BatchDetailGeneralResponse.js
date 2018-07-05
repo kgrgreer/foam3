@@ -98,4 +98,5 @@ list.add(HOST_CREDIT_AMOUNT);
       }
     }
   ]
+
 });

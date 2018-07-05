@@ -54,6 +54,7 @@ var classes = [
   'net.nanopay.sps.model.UserInfo',
   'net.nanopay.sps.model.RequestPacket',
   'net.nanopay.sps.model.ParsePacket',
+  'net.nanopay.sps.model.DetailResponseItemContent',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
