@@ -57,7 +57,7 @@ public class RealexTransactionDAO
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
         .addMerchantId(paymentAccountInfo.getMerchantId())
-        .addOrderId(Long.toString(transaction.getId()))
+        .addOrderId(UUID.randomUUID().toString())
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
         .addToken(paymentAccountInfo.getToken());
       if ( MobileWallet.GOOGLEPAY == paymentAccountInfo.getMobileWallet() )
@@ -108,29 +108,27 @@ public class RealexTransactionDAO
       // '00' == success
       if ( ! "00".equals(response.getResult()) )
         throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
-    } catch ( RealexServerException e ) {
-      throw new RuntimeException(e);
-    } catch ( RealexException e ) {
-      throw new RuntimeException(e);
     } catch ( Throwable e ) {
       throw new RuntimeException(e);
     } finally {
       if ( response != null && "00".equals(response.getResult()) ) {
         transaction.setStatus(TransactionStatus.COMPLETED);
-        if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
-          //create new transaction for the fee
-          localTransactionDAO.put(new Transaction.Builder(getX())
-            .setPayerId(transaction.getPayerId())
-            .setPayeeId(1) //TODO: create fee collector user
-            .setType(TransactionType.NONE)
-            .setStatus(TransactionStatus.COMPLETED)
-            .setAmount(paymentAccountInfo.getFee())
-            .build());
-        }
-      } else
+      } else {
         transaction.setStatus(TransactionStatus.DECLINED);
+      }
       paymentAccountInfo.setToken("");
-      return getDelegate().put_(x, transaction);
+      Transaction txn = (Transaction) getDelegate().put_(x, transaction);
+      if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE && txn.getStatus() == TransactionStatus.COMPLETED ) {
+        //create new transaction for the fee
+        localTransactionDAO.put(new Transaction.Builder(getX())
+          .setPayerId(transaction.getPayerId())
+          .setPayeeId(1) //TODO: create fee collector user
+          .setType(TransactionType.NONE)
+          .setStatus(TransactionStatus.COMPLETED)
+          .setAmount(paymentAccountInfo.getFee())
+          .build());
+      }
+      return txn;
     }
   }
 }
