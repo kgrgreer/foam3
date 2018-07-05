@@ -61,6 +61,7 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.ui.NewInvoiceNotification',
   'net.nanopay.invoice.notification.ReceivePaymentNotification',
+  'net.nanopay.invoice.notification.RecordPaymentNotification',
   'net.nanopay.fresh.FreshConfig',
   'net.nanopay.fresh.model.FreshToken',
   'net.nanopay.fresh.model.FreshBusiness',

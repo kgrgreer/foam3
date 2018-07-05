@@ -5,7 +5,6 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'invoiceDAO',
     'stack',
     'userDAO'
   ],
@@ -15,30 +14,25 @@ foam.CLASS({
   ],
 
   properties: [
-    'name',
-    'searchResult'
+    'name'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var i = this.data;
+      var invoice = this.data.invoice;
+      debugger;
       var self = this;
-      this.invoiceDAO.find(i.invoiceId).then(function(result) {
-        self.searchResult = result;
-      });
-      /*
-        get sender's name from userDAO since result.payeeName and payerName
-        are the empty strings for the first retrieval from invoiceDAO
-      */
-      this.userDAO.find(i.fromUserId).then(function(user) {
+
+      this.userDAO.find(invoice.payerId).then(function(user) {
         self.name = user.label();
       });
 
       this.addClass(this.myClass())
       .start().addClass('msg')
-        .add(this.name$)
-        .add(` just paid your invoice #${i.invoiceNumber} of $${this.addCommas((i.amount/100).toFixed(2))}.`)
+      .add(this.name$)
+        .add(` just paid your invoice #${invoice.invoiceNumber} of $
+            ${this.addCommas((invoice.amount/100).toFixed(2))}.`)
       .end()
       .start(this.LINK).end();
     }
@@ -49,13 +43,12 @@ foam.CLASS({
       name: 'link',
       label: 'View Invoice',
       code: function() {
-          this.stack.push({
-            class: 'net.nanopay.invoice.ui.SalesDetailView',
-            data: this.searchResult
-          }, this);
-        }
+        this.stack.push({
+          class: 'net.nanopay.invoice.ui.SalesDetailView',
+          data: invoice
+        }, this);
+      }
     }
   ]
-
 
 });
