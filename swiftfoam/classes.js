@@ -102,9 +102,11 @@ var classes = [
   'net.nanopay.tx.tp.TxnProcessorData',
   'net.nanopay.tx.tp.TxnProcessor',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
-  'net.nanopay.retail.model.P2PTxnRequest'
+  'net.nanopay.retail.model.P2PTxnRequest',
+  'net.nanopay.auth.PublicUserInfo',
+  'net.nanopay.model.Currency'
 ];
 
 module.exports = {
   classes: classes,
-}
+};
