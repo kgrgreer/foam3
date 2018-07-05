@@ -50,7 +50,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     User    payer   = (User) userDAO_.find_(x, invoice.getPayerId());
 
     //sets approriate arguments
-    boolean invType = (boolean) ((long) invoice.getPayeeId() == invoice.getCreatedBy());
+    boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
 
     notification.getEmailArgs().put("amount",    formatter.format(invoice.getAmount()/100.00));
     notification.getEmailArgs().put("account",   invoice.getId());
