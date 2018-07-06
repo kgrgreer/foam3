@@ -6,7 +6,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
 
-  { name: 'net/nanopay/model/Account' },
+  { name: 'net/nanopay/account/CurrentBalance' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccount' },
   { name: 'net/nanopay/model/BankAccountStatus' },

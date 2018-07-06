@@ -4,8 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.model.Account;
-import net.nanopay.model.MultiBalance;
+import net.nanopay.account.CurrentBalance;
 
 import static foam.mlang.MLang.*;
 
@@ -20,12 +19,12 @@ public class BalanceAdapterAccountDAO extends ProxyDAO {
     setDelegate(delegate);
   }
 
-  public FObject find_(X x, Object userId) {
-    String currentCurrency = x.get("currentCurrency") == null ? "CAD" : (String) x.get("currentCurrency");
-    Account balance = new Account();
-    balance.setId((long) userId);
-    balance.setCurrencyCode(currentCurrency);
+  // public FObject find_(X x, Object userId) {
+  //   String currentCurrency = x.get("currentCurrency") == null ? "CAD" : (String) x.get("currentCurrency");
+  //   Account balance = new Account();
+  //   balance.setId((long) userId);
+  //   balance.setCurrencyCode(currentCurrency);
 
-    return getDelegate().inX(x).find(AND(EQ(Account.ID, balance.getId()), EQ(Account.CURRENCY_CODE, balance.getCurrencyCode())));
-  }
+  //   return getDelegate().inX(x).find(AND(EQ(Account.ID, balance.getId()), EQ(Account.CURRENCY_CODE, balance.getCurrencyCode())));
+  // }
 }

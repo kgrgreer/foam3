@@ -9,7 +9,6 @@ import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
 import foam.nanos.auth.User;
-import net.nanopay.model.Account;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;

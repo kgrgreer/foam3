@@ -23,7 +23,7 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.model.Account',
+  'net.nanopay.account.CurrentBalance',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
   'net.nanopay.model.BankAccountStatus',
@@ -41,7 +41,6 @@ var classes = [
   'net.nanopay.liquidity.model.ThresholdResolve',
   'net.nanopay.liquidity.model.BalanceAlert',
   'net.nanopay.liquidity.model.Liquidity',
-  'net.nanopay.model.MultiBalance',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
