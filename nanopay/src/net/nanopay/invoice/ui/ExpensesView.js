@@ -12,8 +12,6 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.BillDetailView',
-    'net.nanopay.invoice.ui.ExpensesDetailView',
     'net.nanopay.invoice.ui.PayableSummaryView'
   ],
 
@@ -52,18 +50,6 @@ foam.CLASS({
         view.sub('statusReset', this.resetTableDAO);
         return view;
       }
-    },
-    {
-      name: 'billDetailView',
-      factory: function() {
-        return this.BillDetailView.create();
-      }
-    },
-    {
-      name: 'expensesDetailView',
-      factory: function() {
-        return this.ExpensesDetailView.create();
-      }
     }
   ],
 
@@ -97,6 +83,10 @@ foam.CLASS({
     ^ .foam-u2-view-TableView td{
       width: 8px;
     }
+    ^ .foam-u2-ListCreateController{
+      top: 30px;
+      position: relative;
+    }
   `,
 
   messages: [
@@ -115,20 +105,6 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)
           .add(this.summaryView)
-          .start().addClass('container')
-            .start().addClass('button-div')
-              // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              // .start().addClass('inline')
-              //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
-              // .end()
-              // .start().addClass('inline')
-              //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
-              // .end()
-            .end()
-          .end()
         .end()
         .start()
           .tag({
@@ -138,9 +114,7 @@ foam.CLASS({
             createDetailView: {
               class: 'net.nanopay.invoice.ui.BillDetailView'
             },
-            detailView: {
-              class: 'net.nanopay.invoice.ui.ExpensesDetailView'
-            },
+            detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
             summaryView: this.tableView,
             showActions: false
           })

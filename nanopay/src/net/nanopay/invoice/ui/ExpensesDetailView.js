@@ -5,17 +5,17 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.u2.PopupView',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'foam.u2.PopupView',
-    'net.nanopay.model.Account',
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.account.CurrentBalance',
     'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.model.BankAccountStatus'
   ],
 
   imports: [
-    'accountDAO',
+    'currentBalanceDAO',
     'bankAccountDAO',
     'ctrl',
     'hideSaleSummary',
@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   css: `
@@ -100,6 +100,11 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ h5 img{
+      margin-left: 20px;
+      position: relative;
+      top: 3px;
+    }
   `,
 
   properties: [
@@ -108,7 +113,16 @@ foam.CLASS({
     {
       name: 'verbTenseMsg',
       expression: function(data) {
-        return data.paymentMethod == this.PaymentStatus.PENDING ? 'Invoice is' : 'Invoice has been';
+        return data.paymentMethod === this.PaymentStatus.PENDING ?
+            'Invoice is' :
+            'Invoice has been';
+      }
+    },
+    {
+      name: 'foreignExchange',
+      factory: function() {
+        if ( this.data.sourceCurrency == undefined ) return false;
+        return this.data.targetCurrency !== this.data.sourceCurrency;
       }
     }
   ],
@@ -116,22 +130,47 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       this.hideSaleSummary = true;
 
       this
         .addClass(this.myClass())
-        .start()
-          .startContext({ data: this })
-            .start(this.BACK_ACTION).end()
-          .endContext()
-        .end()
+        .startContext({ data: this })
+          .start(this.BACK_ACTION).end()
+        .endContext()
         .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
         .start(this.PAY_NOW).end()
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
-        .start('h5').add('Invoice from ', this.data.payeeName).end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
-        .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
-        .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })
+        .start(this.EXPORT_BUTTON,
+          { icon: 'images/ic-export.png', showLabel: true }
+        ).end()
+        .start('h5')
+          .add('Invoice from ', this.data.payee.label())
+          .callIf(this.foreignExchange, function() {
+            this.start({
+              class: 'foam.u2.tag.Image',
+              data: 'images/ic-crossborder.svg'
+            }).end();
+          })
+        .end()
+        .callIf(this.foreignExchange, function() {
+          this.tag({
+            class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView',
+            data: self.data
+          });
+        })
+        .callIf(! this.foreignExchange, function() {
+          this.tag({
+            class: 'net.nanopay.invoice.ui.shared.SingleItemView',
+            data: self.data
+          });
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
+          id: this.data.id
+        })
+        .start('h2')
+          .addClass('light-roboto-h2')
+          .style({ 'margin-bottom': '0px' })
           .add('Note:')
         .end()
         .start('br').end()
@@ -141,7 +180,10 @@ foam.CLASS({
     },
 
     function openExportModal() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: this.data }));
+      this.add(this.Popup.create().tag({
+        class: 'net.nanopay.ui.modal.ExportModal',
+        exportObj: this.data
+      }));
     }
   ],
 
@@ -167,27 +209,60 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          this.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
+          this.add(self.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+            type: 'error'
+          }));
           return;
         }
 
-        this.accountDAO.where(this.EQ(this.Account.ID, this.user.id)).limit(1).select().then(function( accountBalance ) {
+        this.currentBalanceDAO.where(
+          this.EQ(this.CurrentBalance.ID, this.user.id)
+        ).limit(1).select().then(function( accountBalance ) {
           if ( accountBalance.array[0].balance < self.data.amount ) {
             // Not enough digital cash balance
-            self.bankAccountDAO.where(self.AND(self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED), self.EQ(self.BankAccount.OWNER, self.user.id))).limit(1).select().then(function(account) {
+            self.bankAccountDAO.where(
+              self.AND(
+                self.EQ(
+                  self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
+                ),
+                self.EQ(
+                  self.BankAccount.OWNER, self.user.id
+                )
+              )
+            ).limit(1).select().then(function(account) {
               if ( account.array.length === 0 ) {
-                self.add(self.NotificationMessage.create({ message: 'Bank Account should be verified for paying this invoice.', type: 'error' }));
+                self.add(self.NotificationMessage.create({
+                  message: 'Bank Account should be verified for paying this '
+                      + 'invoice.',
+                  type: 'error'
+                }));
+
                 return;
               }
-              X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+              X.stack.push({
+                class: 'net.nanopay.ui.transfer.TransferWizard',
+                type: 'regular',
+                invoice: self.data
+              });
             }).catch(function(err) {
-              self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+              self.add(self.NotificationMessage.create({
+                message: 'Could not continue. Please contact customer support.',
+                type: 'error'
+              }));
             });
           } else {
-            X.stack.push({ class: 'net.nanopay.ui.transfer.TransferWizard', type: 'regular', invoice: self.data });
+            X.stack.push({
+              class: 'net.nanopay.ui.transfer.TransferWizard',
+              type: 'regular',
+              invoice: self.data
+            });
           }
         }).catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: 'Could not continue. Please contact customer support.', type: 'error' }));
+          self.add(self.NotificationMessage.create({
+            message: 'Could not continue. Please contact customer support.',
+            type: 'error'
+          }));
         });
       }
     },
@@ -222,20 +297,32 @@ foam.CLASS({
       var self = this;
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+          type: 'error'
+        }));
         return;
       }
-      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.DisputeModal',
+        invoice: this.data
+      }));
     },
 
     function schedulePopUp() {
       var self = this;
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + ' ' + this.data.paymentMethod.label + '.', type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+          type: 'error'
+        }));
         return;
       }
-      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.invoice.ui.modal.ScheduleModal', invoice: this.data }));
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.ScheduleModal',
+        invoice: this.data
+      }));
     }
   ]
 });

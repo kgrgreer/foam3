@@ -7,7 +7,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 import net.nanopay.model.BankAccount;
 import net.nanopay.model.BankAccountStatus;
 import net.nanopay.tx.model.CashOutFrequency;
@@ -38,7 +38,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
   public void execute(X x) {
     long bankId;
     DAO  userDAO_             = (DAO) x.get("localUserDAO");
-    DAO  accountDAO_          = (DAO) x.get("localAccountDAO");
+    DAO  currentBalanceDAO_   = (DAO) x.get("localCurrentBalanceDAO");
     DAO  bankAccountDAO_      = (DAO) x.get("localBankAccountDAO");
     DAO  liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
     DAO  groupDAO             = (DAO) x.get("groupDAO");
@@ -48,7 +48,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
 
     for ( int i = 0 ; i < users.size() ; i++ ) {
       User    user = (User) users.get(i);
-      Account acc  = (Account) accountDAO_.find(((User) users.get(i)).getId());
+      CurrentBalance currentBalance  = (CurrentBalance) currentBalanceDAO_.find(((User) users.get(i)).getId());
       //DAO banks = user.getBankAccounts();
       BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
               EQ(BankAccount.OWNER, user.getId()),
@@ -56,8 +56,8 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
               )
       );
 
-      if ( bank != null && acc != null ){
-        balance = acc.getBalance();
+      if ( bank != null && currentBalance != null ){
+        balance = currentBalance.getBalance();
         bankId = bank.getId();
       } else continue;
 

@@ -11,7 +11,7 @@ import foam.dao.AbstractSink;
 import foam.nanos.auth.User;
 import net.nanopay.liquidity.model.Liquidity;
 import net.nanopay.liquidity.model.BalanceAlert;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 import net.nanopay.liquidity.model.Threshold;
 import net.nanopay.liquidity.model.ThresholdResolve;
 import static foam.mlang.MLang.*;
@@ -24,7 +24,7 @@ public class LiquidityCron
     protected DAO userDAO_;
     protected DAO thresholdResolveDAO_;
     protected DAO liquidityDAO_;
-    protected DAO accountDAO_;
+    protected DAO currentBalanceDAO_;
 
     //fetch bank users based on type
     public void fetchUsers() {
@@ -51,16 +51,16 @@ public class LiquidityCron
 
     //Checks for accounts on user, if exist proceed with script
     public void createLiquidity(User bank){
-      Account account = (Account) accountDAO_.find(bank.getId());
-      if( account != null ){
+      CurrentBalance currentBalance = (CurrentBalance) currentBalanceDAO_.find(bank.getId());
+      if( currentBalance != null ){
         try{
           Liquidity liquidity = new Liquidity();
-          liquidity.setBalance(account.getBalance());
+          liquidity.setBalance(currentBalance.getBalance());
           liquidity.setUser(bank.getId());
           liquidity.setCreated(new Date());
           liquidityDAO_.put(liquidity);
           System.out.println("Creating Liquidity Snapshot...");
-          bankThresholds(bank, account);
+          bankThresholds(bank, currentBalance);
         } catch (Throwable e) {
           e.printStackTrace();
           throw new RuntimeException(e);
@@ -69,7 +69,7 @@ public class LiquidityCron
     }
 
     //Looks for bank thresholds, start of balance alert creation.
-    public void bankThresholds(User bank, Account account){
+    public void bankThresholds(User bank, CurrentBalance currentBalance){
       try{
         System.out.println("Finding Thresholds...");
         ArraySink sink = (ArraySink) thresholdDAO_.where(
@@ -82,7 +82,7 @@ public class LiquidityCron
           }
           for(int i = 0; i < thresholdList.size(); i++) {
             Threshold threshold = (Threshold) thresholdList.get(i);
-            iterateThresholdResolve(threshold, bank, account);
+            iterateThresholdResolve(threshold, bank, currentBalance);
           }
         } catch (Throwable e) {
           e.printStackTrace();
@@ -94,7 +94,7 @@ public class LiquidityCron
       if exists, deletes threshold resolution if balance is greater then limit, if not creates balance alert if balance is lower.
       (balance alerts are created based on the existence of threshold resolutions.)
     */
-    public void iterateThresholdResolve(Threshold threshold, User bank, Account account){
+    public void iterateThresholdResolve(Threshold threshold, User bank, CurrentBalance currentBalance){
       System.out.println("Iterating through ThresholdResolve");
       ArraySink sink = (ArraySink) thresholdResolveDAO_.where(
         AND(
@@ -104,15 +104,15 @@ public class LiquidityCron
       ).select(new ArraySink());
       List thresholdResolveList = sink.getArray();
       if(thresholdResolveList.size() < 1){
-        createBalanceAlert(threshold, account, bank);
+        createBalanceAlert(threshold, currentBalance, bank);
       } else {
-        deleteThresholdLimit(thresholdResolveList, threshold, account);
+        deleteThresholdLimit(thresholdResolveList, threshold, currentBalance);
       }
     }
 
     //Checks to see if account balance is higher than threshold, if so deletes the threshold resolve. (enabling future alerts to be created)
-    public void deleteThresholdLimit(List thresholdResolveList, Threshold threshold, Account account){
-      long balance = account.getBalance();
+    public void deleteThresholdLimit(List thresholdResolveList, Threshold threshold, CurrentBalance currentBalance){
+      long balance = currentBalance.getBalance();
       long limit = threshold.getBalance();
       System.out.println("Checking Balance...");
       if( balance > limit ){
@@ -125,8 +125,8 @@ public class LiquidityCron
     }
 
     //Balance Alert Creation, creates if balance is lower then threshold limit.
-    public void createBalanceAlert(Threshold threshold, Account account, User bank){
-      long balance = account.getBalance();
+    public void createBalanceAlert(Threshold threshold, CurrentBalance currentBalance, User bank){
+      long balance = currentBalance.getBalance();
       long limit = threshold.getBalance();
       System.out.println("Checking balance...");
       if( balance < limit ){
@@ -152,7 +152,7 @@ public class LiquidityCron
       balanceAlertDAO_ = (DAO) getX().get("balanceAlertDAO");
       thresholdDAO_ = (DAO) getX().get("thresholdDAO");
       thresholdResolveDAO_ = (DAO) getX().get("thresholdResolveDAO");
-      accountDAO_ = (DAO) getX().get("localAccountDAO");
+      currentBalanceDAO_ = (DAO) getX().get("localCurrentBalanceDAO");
       liquidityDAO_ = (DAO) getX().get("liquidityDAO");
       System.out.println("DAO's fetched...");
       fetchUsers();
