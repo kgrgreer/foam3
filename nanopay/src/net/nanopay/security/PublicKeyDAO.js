@@ -6,11 +6,38 @@ foam.CLASS({
   documentation: 'Stores the encoded version of the public key',
 
   javaImports: [
-    'com.google.api.client.util.Base64',
-    'java.security.PublicKey'
+    'org.bouncycastle.util.encoders.Base64',
+    'java.security.KeyFactory',
+    'java.security.PublicKey',
+    'java.security.spec.X509EncodedKeySpec'
   ],
 
   methods: [
+    {
+      name: 'find_',
+      javaCode: `
+        foam.core.FObject obj = super.find_(x, id);
+        PublicKeyEntry entry = (PublicKeyEntry) obj;
+        if ( entry == null ) {
+          throw new RuntimeException("Public key not found");
+        }
+
+        try {
+          // initialize key factory to rebuild public key
+          KeyFactory factory = KeyFactory.getInstance(entry.getAlgorithm());
+
+          // decode base64 public key bytes, create key spec, and generate public key
+          byte[] encodedBytes = Base64.decode(entry.getEncodedPublicKey());
+          X509EncodedKeySpec spec = new X509EncodedKeySpec(encodedBytes);
+          PublicKey publicKey = factory.generatePublic(spec);
+
+          entry.setPublicKey(publicKey);
+          return entry;
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
+      `
+    },
     {
       name: 'put_',
       javaCode: `
@@ -20,7 +47,7 @@ foam.CLASS({
           throw new RuntimeException("Public key not found");
         }
 
-        entry.setEncodedPublicKey(Base64.encodeBase64String(publicKey.getEncoded()));
+        entry.setEncodedPublicKey(Base64.toBase64String(publicKey.getEncoded()));
         entry.setPublicKey(null);
         return super.put_(x, entry);
       `

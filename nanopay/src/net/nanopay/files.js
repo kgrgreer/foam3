@@ -17,6 +17,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PadCapture' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
+  { name: 'net/nanopay/model/Invitation' },
+  { name: 'net/nanopay/model/InvitationStatus' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -28,6 +30,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/ui/SignUpView', flags: ['web'] },
+  { name: 'net/nanopay/auth/ui/SignInView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -120,6 +124,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
@@ -179,8 +184,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   //
-  { name: 'net/nanopay/cico/model/TransactionType' },
-  { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
@@ -208,6 +211,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/MobileWallet' },
 
   // invoice
+  { name: 'net/nanopay/invoice/model/PaymentStatus' },
   { name: 'net/nanopay/invoice/model/Invoice' },
   { name: 'net/nanopay/invoice/model/RecurringInvoice' },
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
@@ -219,6 +223,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SummaryCard', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/shared/ActionInterfaceButton', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/shared/SingleItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/shared/ForeignSingleItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/shared/SingleSubscriptionView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/BillDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView', flags: ['web'] },
@@ -235,6 +240,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceReceivedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/notification/NewInvoiceNotification' },
+  { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView' },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
@@ -280,9 +287,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/history/InvoiceHistoryItemView', flags: ['web'] },
 
   // modal
-  { name: 'net/nanopay/invoice/ui/modal/ApproveModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/DisputeModal', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/modal/PayNowModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/ScheduleModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/RecordPaymentModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/EmailModal', flags: ['web'] },
@@ -295,6 +300,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/co/CashOutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/CashInSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/modal/PartnerInviteModal', flags: ['web'] },
 
   // util
   { name: 'net/nanopay/util/AddCommaFormatter' },
@@ -328,9 +334,15 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
 
-  // s2h
-  { name: 'net/nanopay/s2h/model/S2HInvoice' },
+  // partners
+  { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/auth/PublicUserInfo' },
 
-  // Relationships
-  { name: 'net/nanopay/model/Relationships' }
+  // relationships
+  { name: 'net/nanopay/model/Relationships' },
+  { name: 'net/nanopay/partners/UserUserJunctionRefinement' }
 ]);

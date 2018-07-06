@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'com.google.api.client.util.Base64',
     'net.nanopay.security.util.SecurityUtil',
+    'org.bouncycastle.util.encoders.Base64',
     'javax.crypto.Cipher',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
@@ -72,6 +72,41 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'find_',
+      javaCode: `
+        foam.core.FObject obj = super.find_(x, id);
+        PrivateKeyEntry entry = (PrivateKeyEntry) obj;
+        if ( entry == null ) {
+          throw new RuntimeException("Private key not found");
+        }
+
+        try {
+          // initialize cipher for key unwrapping
+          KeyStoreManager manager = (KeyStoreManager) getKeyStoreManager();
+          KeyStore keyStore = manager.getKeyStore();
+
+          // check if key store contains alias
+          if ( ! keyStore.containsAlias(entry.getAlias()) ) {
+            throw new RuntimeException("Private key not found");
+          }
+
+          // load secret key from keystore
+          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(entry.getAlias());
+          SecretKey key = keyStoreEntry.getSecretKey();
+          Cipher cipher = Cipher.getInstance(key.getAlgorithm());
+          cipher.init(Cipher.UNWRAP_MODE, key);
+
+          // unwrap private key
+          byte[] encryptedBytes = Base64.decode(entry.getEncryptedPrivateKey());
+          PrivateKey privateKey = (PrivateKey) cipher.unwrap(encryptedBytes, entry.getAlgorithm(), Cipher.PRIVATE_KEY);
+          entry.setPrivateKey(privateKey);
+          return entry;
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
       name: 'put_',
       javaCode: `
         PrivateKeyEntry entry = (PrivateKeyEntry) obj;
@@ -81,10 +116,11 @@ foam.CLASS({
         }
 
         try {
+          // initialize cipher for key wrapping
           SecretKey key = getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.WRAP_MODE, key, SecurityUtil.GetSecureRandom());
-          entry.setEncryptedPrivateKey(Base64.encodeBase64String(cipher.wrap(privateKey)));
+          entry.setEncryptedPrivateKey(Base64.toBase64String(cipher.wrap(privateKey)));
           entry.setAlias(getAlias());
           entry.setPrivateKey(null);
           return super.put_(x, entry);
