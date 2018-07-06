@@ -6,6 +6,10 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
 
+  // implements: [
+  //   'foam.net.nanos.auth.CreatedByAware'
+  // ],
+
   imports: [ 'addCommas' ],
 
   searchColumns: [
@@ -94,25 +98,25 @@ foam.CLASS({
       }
     },
     {
+      //class: 'Reference',
+      //of: 'foam.nanos.auth.User',
       class: 'Long',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
     },
     {
-      class: 'String',
-      name: 'payeeName',
-      documentation: `The name of the party receiving the payment.`,
-      label: 'Vendor',
-      aliases: [ 'to', 'vendor', 'v' ],
-      transient: true
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payee',
+      documentation: `The party receiving the payment.`,
+      storageTransient: true
     },
     {
-      class: 'String',
-      name: 'payerName',
-      documentation: `The name of the party making the payment.`,
-      label: 'Customer',
-      aliases: [ 'from', 'customer', 'c' ],
-      transient: true
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payer',
+      documentation: `The party making the payment.`,
+      storageTransient: true
     },
     {
       class: 'Long',
@@ -324,17 +328,6 @@ foam.RELATIONSHIP({
       this.__context__[rel.targetDAOKey].find(value).then(function(o) {
         this.add(o.label());
       }.bind(this));
-    },
-    postSet: function(oldValue, newValue) {
-      var self = this;
-      var dao = this.__context__.userDAO;
-      dao.find(newValue).then(function(a) {
-        if ( a ) {
-          self.payeeName = a.label();
-        } else {
-          self.payeeName = 'Unknown Id: ' + newValue;
-        }
-      });
     }
   }
 });
@@ -367,17 +360,6 @@ foam.RELATIONSHIP({
       this.__context__[rel.targetDAOKey].find(value).then( function(o) {
         this.add(o.label());
       }.bind(this));
-    },
-    postSet: function(oldValue, newValue) {
-      var self = this;
-      var dao = this.__context__.userDAO;
-      dao.find(newValue).then(function(a) {
-        if ( a ) {
-          self.payerName = a.label();
-        } else {
-          self.payerName = 'Unknown Id: ' + newValue;
-        }
-      });
     }
   }
 });

@@ -111,7 +111,7 @@ foam.CLASS({
             .start(this.CANCEL_SUBSCRIPTION).addClass('float-right').addClass('white-blue-button').end()
           .end() 
           .start()
-          .add('Recurring Invoice for ', this.data.payerName).addClass('light-roboto-h2')
+          .add('Recurring Invoice for ', this.data.payer.label()).addClass('light-roboto-h2')
           .end()
           .tag({ class: 'net.nanopay.invoice.ui.shared.SingleSubscriptionView', data: this.data })
           .start().addClass(this.myClass('view-invoices')).enableClass('blue' ,this.showInvoices$)

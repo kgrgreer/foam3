@@ -88,8 +88,7 @@ function setup_csp_valve {
     cd nanopay/src/net/nanopay/security/csp
     mkdir build
 
-    MACOS='darwin*'
-    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || ! $OSTYPE =~ $MACOS ]]; then
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || $IS_MAC -ne 1 ]]; then
       # AWS servers don't have .m2 directory. Additionally, this should also run for Linux builds.
       curl -O https://search.maven.org/remotecontent?filepath=org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar
       JAR_TOMCAT_CATALINA="./tomcat-catalina-9.0.8.jar"
@@ -104,7 +103,7 @@ function setup_csp_valve {
     cd ..
     rm -rf build
 
-    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || ! $OSTYPE =~ $MACOS ]]; then
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || $IS_MAC -ne 1 ]]; then
       rm $JAR_JAVAX_SERVLET $JAR_TOMCAT_CATALINA
     fi
 
@@ -122,12 +121,11 @@ function setup_csp_valve {
 }
 
 function setup_jce {
-  local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)".*/\1/p;')
-  local JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk-$JAVA_VER.jdk/Contents/Home/lib/security"
+  local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
 
-  # For Java 8
-  if [[ $JAVA_LIB_SECURITY = *"_"* ]]; then
-    JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk$JAVA_VER.jdk/Contents/Home/jre/lib/security"
+  # For Java 8; including on linux
+  if [[ $JAVA_LIB_SECURITY = *"_"* || $JAVA_LIB_SECURITY = *"java-8-oracle"* ]]; then
+    JAVA_LIB_SECURITY="$JAVA_HOME/jre/lib/security"
   fi
 
   if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
@@ -473,6 +471,24 @@ function setenv {
         sudo ./tools/keystore.sh
     fi
 
+    local MACOS='darwin*'
+    local LINUXOS='*linux-gnu*'
+    IS_MAC=0
+    IS_LINUX=0
+
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      IS_MAC=1
+    elif [[ $OSTYPE =~ $LINUXOS ]]; then
+      IS_LINUX=1
+    fi
+
+    if [[ -z $JAVA_HOME ]]; then
+      if [[ $IS_MAC -eq 1 ]]; then
+        JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
+      elif [[ $IS_LINUX -eq 1 ]]; then
+        JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+      fi
+    fi
 
     # Check if connected to the interwebs
     ping -q -W1 -c1 google.com &>/dev/null && INTERNET=1 || INTERNET=0

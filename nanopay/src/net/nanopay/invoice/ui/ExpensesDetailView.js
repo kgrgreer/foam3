@@ -9,13 +9,13 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.model.Account',
+    'net.nanopay.account.CurrentBalance',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.BankAccountStatus'
   ],
 
   imports: [
-    'accountDAO',
+    'currentBalanceDAO',
     'bankAccountDAO',
     'ctrl',
     'hideSaleSummary',
@@ -144,7 +144,7 @@ foam.CLASS({
           { icon: 'images/ic-export.png', showLabel: true }
         ).end()
         .start('h5')
-          .add('Invoice from ', this.data.payeeName)
+          .add('Invoice from ', this.data.payee.label())
           .callIf(this.foreignExchange, function() {
             this.start({
               class: 'foam.u2.tag.Image',
@@ -216,8 +216,8 @@ foam.CLASS({
           return;
         }
 
-        this.accountDAO.where(
-          this.EQ(this.Account.ID, this.user.id)
+        this.currentBalanceDAO.where(
+          this.EQ(this.CurrentBalance.ID, this.user.id)
         ).limit(1).select().then(function( accountBalance ) {
           if ( accountBalance.array[0].balance < self.data.amount ) {
             // Not enough digital cash balance
