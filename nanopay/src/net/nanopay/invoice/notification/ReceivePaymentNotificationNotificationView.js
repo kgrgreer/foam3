@@ -13,25 +13,14 @@ foam.CLASS({
     'as data',
   ],
 
-  properties: [
-    'name'
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
       var invoice = this.data.invoice;
-      var self = this;
-
-      // get payer's name from userDAO since invoice.payerName is empty
-      this.userDAO.find(invoice.payerId).then(function(user) {
-        self.name = user.label();
-      });
 
       this.addClass(this.myClass())
       .start().addClass('msg')
-        .add(this.name$)
-        .add(` just paid your invoice #${invoice.invoiceNumber} of $
+        .add(`${invoice.payer.label()} just paid your invoice #${invoice.invoiceNumber} of $
             ${this.addCommas((invoice.amount/100).toFixed(2))}.`)
       .end()
       .start(this.LINK).end();
