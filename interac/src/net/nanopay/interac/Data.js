@@ -57,8 +57,6 @@ foam.CLASS({
 //            purchaseOrder:    10000+i,
 //            payerId:   fromUser.id,
 //            payeeId:     toUser.id,
-//            payerName: fromUser.name || fromUser.organization || (fromUser.firstName + ' ' + fromUser.lastName),
-//            payeeName:   toUser.name || toUser.organization   || (toUser.firstName   + ' ' + toUser.lastName),
 //            issueDate:        dd,
 //            amount:           amount
 //          });

@@ -144,4 +144,3 @@ foam.RELATIONSHIP({
   forwardName: 'partners',
   inverseName: 'partnered'
 });
-
