@@ -106,16 +106,12 @@ public class RealexTransactionDAO
     try {
       response = client.send(paymentRequest);
       // '00' == success
-      if ( ! "00".equals(response.getResult()) )
-        throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
-    } catch ( Throwable e ) {
-      throw new RuntimeException(e);
-    } finally {
-      if ( response != null && "00".equals(response.getResult()) ) {
-        transaction.setStatus(TransactionStatus.COMPLETED);
-      } else {
+      if ( ! "00".equals(response.getResult()) ) {
         transaction.setStatus(TransactionStatus.DECLINED);
+        getDelegate().put_(x, transaction);
+        throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
       }
+      transaction.setStatus(TransactionStatus.COMPLETED);
       paymentAccountInfo.setToken("");
       Transaction txn = (Transaction) getDelegate().put_(x, transaction);
       if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE && txn.getStatus() == TransactionStatus.COMPLETED ) {
@@ -129,6 +125,12 @@ public class RealexTransactionDAO
           .build());
       }
       return txn;
+    } catch ( RealexServerException e ) {
+      throw new RuntimeException(e);
+    } catch ( RealexException e ) {
+      throw new RuntimeException(e);
+    } catch ( Throwable e ) {
+      throw new RuntimeException(e);
     }
   }
 }
