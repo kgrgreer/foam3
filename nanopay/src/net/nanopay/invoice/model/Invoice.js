@@ -6,6 +6,10 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
 
+  // implements: [
+  //   'foam.net.nanos.auth.CreatedByAware'
+  // ],
+
   imports: [ 'addCommas' ],
 
   searchColumns: [
@@ -94,6 +98,8 @@ foam.CLASS({
       }
     },
     {
+      //class: 'Reference',
+      //of: 'foam.nanos.auth.User',
       class: 'Long',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,

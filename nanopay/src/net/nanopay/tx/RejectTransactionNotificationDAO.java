@@ -27,7 +27,7 @@ import net.nanopay.tx.model.Transaction;
 public class RejectTransactionNotificationDAO
     extends ProxyDAO {
   protected DAO userDAO_;
-  protected DAO accountDAO_;
+  protected DAO currentBalanceDAO_;
   protected DAO invoiceDAO_;
   protected DAO bankAccountDAO_;
 

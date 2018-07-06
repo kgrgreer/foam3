@@ -33,7 +33,7 @@ foam.CLASS({
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.model.Account',
+    'net.nanopay.account.CurrentBalance',
     'net.nanopay.model.BankAccount',
     'net.nanopay.tx.tp.TxnProcessor',
     'net.nanopay.tx.Transfer'
@@ -85,8 +85,9 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Long',
-      name: 'invoiceId'
+      class: 'Reference',
+      of: 'net.nanopay.invoice.model.Invoice',
+      name: 'invoiceId',
     },
     {
       class: 'foam.core.Enum',
@@ -108,18 +109,22 @@ foam.CLASS({
     //   visibility: foam.u2.Visibility.RO
     // },
     {
+      // REVIEW: how is this used?
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
       storageTransient: true
     },
     {
+      // REVIEW: how is this used?
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       storageTransient: true
     },
     {
+      //class: 'Reference',
+      //of: 'foam.nanos.auth.User',
       class: 'Long',
       name: 'payerId',
       label: 'Payer',
@@ -134,6 +139,8 @@ foam.CLASS({
       }
     },
     {
+      //class: 'Reference',
+      //of: 'foam.nanos.auth.User',
       class: 'Long',
       name: 'payeeId',
       label: 'Payee',
@@ -190,6 +197,14 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.BankAccount',
       name: 'bankAccountId',
+      //name: 'payerAccountId',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
+      class: 'Reference',
+      of: 'net.nanopay.model.BankAccount',
+      name: 'payeeAccountId',
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -290,11 +305,13 @@ foam.CLASS({
       label: 'Latest Modify Date & Time'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'CurrencyCode',
       label: 'CurrencyCode'
     },
     {
+      // REVIEW: move to TxnProcessorData
       documentation: `Payment Platform specific data.`,
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',

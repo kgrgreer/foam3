@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 
 // TODO: I don't think this is required anymore
 public class CreateAccountOnUserCreateDAO
@@ -19,13 +19,13 @@ public class CreateAccountOnUserCreateDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User result    = (User) super.put_(x, obj);
-    DAO accountDAO = (DAO) getX().get("localAccountDAO");
+    DAO currentBalanceDAO = (DAO) getX().get("localCurrentBalanceDAO");
 
-    if ( accountDAO.find(result.getId()) == null ) {
-      Account account = new Account();
-      account.setId(result.getId());
-      account.setBalance(0);
-      accountDAO.put(account);
+    if ( currentBalanceDAO.find(result.getId()) == null ) {
+      CurrentBalance currentBalance = new CurrentBalance();
+      currentBalance.setId(result.getId());
+      currentBalance.setBalance(0);
+      currentBalanceDAO.put(currentBalance);
     }
 
     return result;

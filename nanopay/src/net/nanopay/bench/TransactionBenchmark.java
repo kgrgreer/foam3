@@ -6,7 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
@@ -15,16 +15,16 @@ public class TransactionBenchmark
   implements Benchmark
 {
   List users = null;
-  List accounts = null;
+  List currentBalances = null;
 
   protected DAO userDAO_;
-  protected DAO accountDAO_;
+  protected DAO currentBalanceDAO_;
   protected DAO transactionDAO_;
 
   @Override
   public void setup(X x) {
     userDAO_ = (DAO) x.get("localUserDAO");
-    accountDAO_ = (DAO) x.get("localAccountDAO");
+    currentBalanceDAO_ = (DAO) x.get("localCurrentBalanceDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
 
     Sink sink = new ArraySink();
@@ -32,23 +32,23 @@ public class TransactionBenchmark
     users = ((ArraySink) sink).getArray();
 
     sink = new ArraySink();
-    sink = accountDAO_.select(sink);
-    accounts = ((ArraySink) sink).getArray();
+    sink = currentBalanceDAO_.select(sink);
+    currentBalances = ((ArraySink) sink).getArray();
 
-    for ( int i = 0 ; i < accounts.size() ; i++ ) {
-      Account account = (Account) accounts.get(i);
-      account.setBalance(1000000);
-      accountDAO_.put(account);
+    for ( int i = 0 ; i < currentBalances.size() ; i++ ) {
+      CurrentBalance currentBalance = (CurrentBalance) currentBalances.get(i);
+      currentBalance.setBalance(1000000);
+      currentBalanceDAO_.put(currentBalance);
     }
 
     for ( int i = 0 ; i < users.size() ; i++ ) {
       User user = (User) users.get(i);
-      Account account = (Account) accountDAO_.find(user.getId());
-      if ( account == null ) {
-        account = new Account();
-        account.setId(user.getId());
-        account.setBalance(1000000);
-        accountDAO_.put(account);
+      CurrentBalance currentBalance = (CurrentBalance) currentBalanceDAO_.find(user.getId());
+      if ( currentBalance == null ) {
+        currentBalance = new CurrentBalance();
+        currentBalance.setId(user.getId());
+        currentBalance.setBalance(1000000);
+        currentBalanceDAO_.put(currentBalance);
       }
     }
   }
