@@ -5,20 +5,18 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import foam.nanos.notification.Notification;
-import net.nanopay.invoice.model.*;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.invoice.notification.ReceivePaymentNotification;
 import net.nanopay.invoice.notification.RecordPaymentNotification;
 
 public class PaymentNotificationDAO extends ProxyDAO {
 
   protected DAO notificationDAO_;
-  protected User user;
 
   public PaymentNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     notificationDAO_ = (DAO) x.get("notificationDAO");
-    user = (User) x.get("user");
   }
 
   @Override
@@ -27,37 +25,29 @@ public class PaymentNotificationDAO extends ProxyDAO {
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
 
     if(existingInvoice != null) {
-
-      if ( (invoice.getPaymentMethod() == PaymentStatus.NANOPAY
-          || invoice.getPaymentMethod() == PaymentStatus.CHEQUE) 
+      // check if the invoice payment status is changed from NONE to NANOPAY/CHEQUE (Paid)
+      if ((invoice.getPaymentMethod() == PaymentStatus.NANOPAY
+          || invoice.getPaymentMethod() == PaymentStatus.CHEQUE)
           && existingInvoice.getPaymentMethod() == PaymentStatus.NONE) {
 
+        User user = (User) x.get("user");
         long payeeId = (long) invoice.getPayeeId();
         long payerId = (long) invoice.getPayerId();
 
-        System.out.println("user.getId(): " + user.getId());
-        System.out.println("user.getFirstName(): " + user.getFirstName());
-        System.out.println("user.getLastName(): " + user.getLastName());
-
-        System.out.println("invoice.getCreatedBy(): " + invoice.getCreatedBy());
-        System.out.println("payerId: " + payerId);
-        System.out.println("payeeId: "+ payeeId);
-
-        if (invoice.getCreatedBy() == payerId) {
+        if (user.getId() == payerId) {
           ReceivePaymentNotification notification = new ReceivePaymentNotification();
           notification.setUserId(payeeId);
           notification.setInvoice(invoice);
           notification.setNotificationType("Payment received");
           notificationDAO_.put(notification);
-        } else if (invoice.getCreatedBy() == payeeId) {
+        } else if (user.getId() == payeeId) {
           RecordPaymentNotification notification = new RecordPaymentNotification();
           notification.setUserId(payerId);
           notification.setInvoice(invoice);
-          notification.setNotificationType("Record Payment");
+          notification.setNotificationType("Record payment");
           notificationDAO_.put(notification);
         } else {
-          System.out.println("Entered else branch ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-          // throw new RuntimeException("Error in the payment notification.");
+          throw new RuntimeException("Error in the payment notification.");
         }
       }
     }

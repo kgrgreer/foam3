@@ -21,16 +21,16 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var invoice = this.data.invoice;
-      debugger;
       var self = this;
 
+      // get payer's name from userDAO since invoice.payerName is empty
       this.userDAO.find(invoice.payerId).then(function(user) {
         self.name = user.label();
       });
 
       this.addClass(this.myClass())
       .start().addClass('msg')
-      .add(this.name$)
+        .add(this.name$)
         .add(` just paid your invoice #${invoice.invoiceNumber} of $
             ${this.addCommas((invoice.amount/100).toFixed(2))}.`)
       .end()
@@ -45,7 +45,7 @@ foam.CLASS({
       code: function() {
         this.stack.push({
           class: 'net.nanopay.invoice.ui.SalesDetailView',
-          data: invoice
+          data: this.data.invoice
         }, this);
       }
     }
