@@ -56,6 +56,17 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
   ],
+
+  methods: [
+    function label() {
+      return typeof this.firstName === 'string' && this.firstName.length > 0
+        ? typeof this.lastName === 'string' && this.lastName.length > 0
+          ? `${this.firstName} ${this.lastName}`
+          : this.firstName
+        : 'Unknown';
+    }
+  ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {
