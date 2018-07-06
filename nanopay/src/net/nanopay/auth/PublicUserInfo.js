@@ -58,12 +58,23 @@ foam.CLASS({
   ],
 
   methods: [
-    function label() {
-      return typeof this.firstName === 'string' && this.firstName.length > 0
-        ? typeof this.lastName === 'string' && this.lastName.length > 0
-          ? `${this.firstName} ${this.lastName}`
-          : this.firstName
-        : 'Unknown';
+    {
+      name: 'label',
+      code: function() {
+        return typeof this.firstName === 'string' && this.firstName.length > 0
+          ? typeof this.lastName === 'string' && this.lastName.length > 0
+            ? `${this.firstName} ${this.lastName}`
+            : this.firstName
+          : 'Unknown';
+      },
+      javaReturns: 'String',
+      javaCode: `
+        return this.getFirstName() instanceof String && this.getFirstName().length() > 0
+        ? this.getLastName() instanceof String && this.getLastName().length() > 0
+          ? this.getFirstName() + " " + this.getLastName()
+          : this.getFirstName()
+        : "Unknown";
+      `
     }
   ],
 
