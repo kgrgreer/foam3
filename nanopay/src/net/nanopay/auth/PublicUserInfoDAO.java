@@ -84,6 +84,13 @@ public class PublicUserInfoDAO
   }
 
   @Override
+  public FObject put_(X x, FObject obj) {
+    obj = fillPublicInfo(obj);
+    getDelegate().put_(x, obj);
+    return obj;
+  }
+
+  @Override
   public FObject find_(X x, Object id) {
     FObject obj = getDelegate().find_(x, id);
     if ( obj != null ) {

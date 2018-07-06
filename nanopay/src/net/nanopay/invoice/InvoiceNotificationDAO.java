@@ -5,13 +5,11 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
-import foam.nanos.auth.User;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import net.nanopay.auth.PublicUserInfo;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
-import foam.nanos.notification.email.EmailService;
 
 public class InvoiceNotificationDAO extends ProxyDAO {
 
@@ -46,9 +44,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     NumberFormat     formatter  = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
-    User    payee   = (User) userDAO_.find_(x, invoice.getPayeeId());
-    User    payer   = (User) userDAO_.find_(x, invoice.getPayerId());
-
+//    Invoice invoiceAb = (Invoice) super.put_(x, invoice);
+    PublicUserInfo    payee   =  invoice.getPayee();
+    PublicUserInfo    payer   =  invoice.getPayer();
+    
     //sets approriate arguments
     boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
 
@@ -61,7 +60,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     if ( invoice.getDueDate() != null ) {
       notification.getEmailArgs().put("date",      dateFormat.format(invoice.getDueDate()));
     }
-    
+
     notification.getEmailArgs().put("link",      config.getUrl());
     return notification;
   }
