@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
-  name: 'RequestMessage',
-  extends: 'net.nanopay.sps.model.ParsePacket',
+  name: 'RequestMessageAndErrors',
+  extends: 'net.nanopay.sps.utils.ResponsePacketParser',
 
   properties: [
     {

@@ -49,12 +49,12 @@ var classes = [
   'net.nanopay.sps.model.BatchDetailRequestPacket',
   'net.nanopay.sps.model.BatchDetailGeneralResponse',
   'net.nanopay.sps.model.DetailResponse',
-  'net.nanopay.sps.model.RequestMessage',
+  'net.nanopay.sps.model.RequestMessageAndErrors',
   'net.nanopay.sps.model.HostError',
   'net.nanopay.sps.model.UserInfo',
-  'net.nanopay.sps.model.RequestPacket',
-  'net.nanopay.sps.model.ParsePacket',
   'net.nanopay.sps.model.DetailResponseItemContent',
+  'net.nanopay.sps.utils.RequestPacketGenerator',
+  'net.nanopay.sps.utils.ResponsePacketParser',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

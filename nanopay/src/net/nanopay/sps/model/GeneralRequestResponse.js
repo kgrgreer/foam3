@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'GeneralRequestResponse',
-  extends: 'net.nanopay.sps.model.ParsePacket',
+  extends: 'net.nanopay.sps.utils.ResponsePacketParser',
 
   properties: [
     {
