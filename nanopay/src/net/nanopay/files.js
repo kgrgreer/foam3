@@ -5,7 +5,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/tp/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
-
+  { name: 'net/nanopay/account/Balance' },
+  { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/account/CurrentBalance' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/BankAccount' },

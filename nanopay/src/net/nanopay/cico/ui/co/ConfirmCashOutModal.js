@@ -15,6 +15,7 @@ foam.CLASS({
     'amount',
     'bankAccountDAO',
     'bankList',
+    'currentCurrency',
     'closeDialog',
     'onCashOutSuccess',
     'cashOut',
@@ -248,7 +249,8 @@ foam.CLASS({
           payerId: X.user.id,
           amount: X.amount,
           bankAccountId: X.bankList,
-          type: this.TransactionType.CASHOUT
+          type: this.TransactionType.CASHOUT,
+          currencyCode: this.currentCurrency
         });
 
         X.transactionDAO.put(cashOutTransaction).then(function(response) {

@@ -24,6 +24,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.account.CurrentBalance',
+  'net.nanopay.account.Balance',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
   'net.nanopay.model.BankAccountStatus',

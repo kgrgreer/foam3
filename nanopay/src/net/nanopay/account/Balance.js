@@ -1,10 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
-  name: 'MultiBalance',
+  package: 'net.nanopay.account',
+  name: 'Balance',
+
+  ids: [ 'accountId', 'currencyCode' ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'accountId'
     },
     {
       class: 'Long',

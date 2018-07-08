@@ -23,6 +23,7 @@ foam.CLASS({
   imports: [
     'currentBalanceDAO',
     'currentBalance',
+    'currentCurrency',
     'addCommas',
     'bankAccountDAO',
     'stack',
@@ -206,7 +207,7 @@ foam.CLASS({
     },
     {
       name: 'cicoTransactions',
-      expression: function(transactionDAO) {
+      expression: function(transactionDAO, currentCurrency) {
         var user = this.user;
 
         return transactionDAO.where(
@@ -215,8 +216,10 @@ foam.CLASS({
               this.EQ(this.Transaction.PAYER_ID, user.id),
               this.EQ(this.Transaction.PAYEE_ID, user.id)),
             this.OR(
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN))));
+              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
+              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT)),
+            this.EQ(this.Transaction.CURRENCY_CODE, currentCurrency)
+          ));
       }
     },
     {
@@ -246,6 +249,7 @@ foam.CLASS({
 
       this.transactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
+      this.currentCurrency$.sub(this.onDAOUpdate);
 
       this
         .addClass(this.myClass())
@@ -374,7 +378,7 @@ foam.CLASS({
           this
             .start({
               class: 'foam.u2.view.ScrollTableView',
-              data: this.cicoTransactions,
+              data$: this.cicoTransactions$,
               columns: [
                 'id', 'date', 'amount', 'type', 'status'
               ]

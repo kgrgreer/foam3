@@ -9,12 +9,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance'
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'currencyCode',
-      value: 'CAD'
     }
   ]
 });

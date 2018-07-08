@@ -26,6 +26,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
   protected DAO bankAccountDAO_;
   protected DAO groupDAO_;
   protected Logger logger_;
+  protected String currency_;
 
   public LiquidityCashOutDAO(X x, DAO delegate) {
     setDelegate(delegate);
@@ -57,6 +58,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     CurrentBalance payerCurrentBalance = (CurrentBalance) currentBalanceDAO_.find(txn.getPayerId());
     long payerId = payerCurrentBalance.getId();
 
+    currency_ = txn.getCurrencyCode();
     //get user payer and payee
     User payer = (User) userDAO_.find(payerId);
     User payee = (User) userDAO_.find(payeeId);
@@ -108,6 +110,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
       .setAmount(amount)
       .setType(transactionType)
       .setBankAccountId(bankAccountId)
+      .setCurrencyCode(currency_)
       .build();
     DAO txnDAO = (DAO) x.get("transactionDAO");
     txnDAO.put_(x, transaction);

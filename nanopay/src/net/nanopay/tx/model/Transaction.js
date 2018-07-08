@@ -305,9 +305,9 @@ foam.CLASS({
       label: 'Latest Modify Date & Time'
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'CurrencyCode',
+      class: 'String',
+      name: 'currencyCode',
+      value: 'CAD',
       label: 'CurrencyCode'
     },
     {
@@ -360,17 +360,17 @@ foam.CLASS({
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
-            new Transfer(getPayerId(), -getTotal())
+             new Transfer(getPayerId(), -getTotal(), getCurrencyCode())
           };
         }
         if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
-            new Transfer(getPayeeId(), getTotal())
+            new Transfer(getPayeeId(), getTotal(), getCurrencyCode())
           };
         }
         return new Transfer[] {
-            new Transfer(getPayerId(), -getTotal()),
-            new Transfer(getPayeeId(),  getTotal())
+             new Transfer(getPayerId(), -getTotal(), getCurrencyCode()),
+             new Transfer(getPayeeId(),  getTotal(), getCurrencyCode())
         };
       `
     }

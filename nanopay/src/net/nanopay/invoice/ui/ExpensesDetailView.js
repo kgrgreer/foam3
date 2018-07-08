@@ -216,10 +216,10 @@ foam.CLASS({
           return;
         }
 
-        this.currentBalanceDAO.where(
-          this.EQ(this.CurrentBalance.ID, this.user.id)
-        ).limit(1).select().then(function( accountBalance ) {
-          if ( accountBalance.array[0].balance < self.data.amount ) {
+        this.currentBalanceDAO.find(
+          this.user.id
+        ).then(function( accountBalance ) {
+          if ( accountBalance.balance < self.data.amount ) {
             // Not enough digital cash balance
             self.bankAccountDAO.where(
               self.AND(

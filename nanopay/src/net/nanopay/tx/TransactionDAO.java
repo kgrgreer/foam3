@@ -12,6 +12,10 @@ import net.nanopay.account.CurrentBalance;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.account.Balance;
+
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
 
 public class TransactionDAO
     extends ProxyDAO
@@ -24,9 +28,7 @@ public class TransactionDAO
       }});
 
   protected DAO userDAO_;
-  protected DAO currentBalanceDAO_;
-  protected DAO invoiceDAO_;
-  protected DAO bankAccountDAO_;
+  protected DAO balanceDAO_;
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -44,12 +46,12 @@ public class TransactionDAO
     return userDAO_;
   }
 
-  protected DAO getCurrentBalanceDAO() {
-    if ( currentBalanceDAO_ == null ) {
-      currentBalanceDAO_ = (DAO) getX().get("localCurrentBalanceDAO");
+  protected DAO getBalanceDAO() {
+    if (balanceDAO_ == null ) {
+      balanceDAO_ = (DAO) getX().get("localBalanceDAO");
     }
 
-    return currentBalanceDAO_;
+    return balanceDAO_;
   }
 
   @Override
@@ -85,7 +87,7 @@ public class TransactionDAO
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
+          Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal(), transaction.getCurrencyCode());
           refound.validate(x);
           refound.execute(x);
         }
@@ -159,18 +161,17 @@ public class TransactionDAO
 
 
   public void cashinReject(X x, Transaction transaction) {
-    CurrentBalance payerCurrentBalance = (CurrentBalance) getCurrentBalanceDAO().find(transaction.getPayerId());
-    payerCurrentBalance.setBalance(payerCurrentBalance.getBalance() > transaction.getTotal() ? payerCurrentBalance.getBalance() -
-        transaction.getTotal() : 0);
-    getCurrentBalanceDAO().put_(x, payerCurrentBalance.fclone());
-    User user = (User) getUserDAO().find(transaction.getPayerId());
+    Balance payerBalance = (Balance) getBalanceDAO().find((AND(EQ(Balance.ACCOUNT_ID, transaction.getPayerId()), EQ(Balance.CURRENCY_CODE, transaction.getCurrencyCode()))));
+        payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
+      transaction.getTotal() : 0);
+    getBalanceDAO().put(payerBalance);
   }
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
-    CurrentBalance payerCurrentBalance = (CurrentBalance) getCurrentBalanceDAO().find(transaction.getPayeeId());
-    payerCurrentBalance.setBalance(payerCurrentBalance.getBalance() > transaction.getTotal() ? payerCurrentBalance.getBalance() -
-        transaction.getTotal() : 0);
-    getCurrentBalanceDAO().put_(x, payerCurrentBalance.fclone());
+    Balance payeeBalance = (Balance) getBalanceDAO().find((AND(EQ(Balance.ACCOUNT_ID, transaction.getPayeeId()), EQ(Balance.CURRENCY_CODE, transaction.getCurrencyCode()))));
+        payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
+      transaction.getTotal() : 0);
+    getBalanceDAO().put(payeeBalance);
     // if it's a transaction for different user, we need notify both
     User payer = (User) getUserDAO().find(transaction.getPayerId());
     User payee = (User) getUserDAO().find(transaction.getPayeeId());
