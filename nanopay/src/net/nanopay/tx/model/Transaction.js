@@ -34,7 +34,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.tp.TxnProcessor',
     'net.nanopay.tx.Transfer'
   ],
@@ -85,8 +85,9 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.invoice.model.Invoice',
+      //class: 'Reference',
+      //of: 'net.nanopay.invoice.model.Invoice',
+      class: 'Long',
       name: 'invoiceId',
     },
     {
@@ -195,7 +196,7 @@ foam.CLASS({
     {
       // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
       class: 'Reference',
-      of: 'net.nanopay.model.BankAccount',
+      of: 'net.nanopay.bank.BankAccount',
       name: 'bankAccountId',
       //name: 'payerAccountId',
       visibility: foam.u2.Visibility.RO
@@ -203,7 +204,7 @@ foam.CLASS({
     {
       // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
       class: 'Reference',
-      of: 'net.nanopay.model.BankAccount',
+      of: 'net.nanopay.bank.BankAccount',
       name: 'payeeAccountId',
       visibility: foam.u2.Visibility.RO
     },

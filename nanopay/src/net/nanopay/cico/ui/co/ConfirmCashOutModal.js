@@ -191,7 +191,7 @@ foam.CLASS({
               .addClass('bankName')
               .call(function() {
                 self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                  this.add(bank.accountName);
+                  this.add(bank.name);
                 }.bind(this));
               })
             .end()

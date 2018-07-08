@@ -14,8 +14,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -199,7 +199,7 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: self.userBankAccounts,
           objToChoice: function(a) {
-            return [a.id, a.accountName];
+            return [a.id, a.name];
           }
         });
       }

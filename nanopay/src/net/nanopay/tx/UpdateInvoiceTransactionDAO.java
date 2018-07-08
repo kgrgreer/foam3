@@ -24,7 +24,7 @@ public class UpdateInvoiceTransactionDAO
     Transaction transaction = (Transaction) obj;
     Invoice invoice = (Invoice) invoiceDAO_.find(transaction.getInvoiceId());
 
-    if ( transaction.getInvoiceId() != null ) {
+    if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice not found");
       }
@@ -36,7 +36,7 @@ public class UpdateInvoiceTransactionDAO
 
 
     // find invoice
-    if ( transaction.getInvoiceId() != null ) {
+    if ( transaction.getInvoiceId() != 0 ) {
       if ( transaction.getPayerId() != transaction.getPayeeId() ) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {

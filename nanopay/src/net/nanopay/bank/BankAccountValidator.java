@@ -1,5 +1,7 @@
-package net.nanopay.model;
+package net.nanopay.bank;
 
+import net.nanopay.model.Branch;
+import net.nanopay.payment.Institution;
 import foam.core.FObject;
 import foam.core.Validator;
 import foam.util.SafetyUtil;
@@ -39,12 +41,12 @@ public class BankAccountValidator
     BankAccount account = (BankAccount) obj;
 
     // validate account name
-    String accountName = account.getAccountName();
-    if ( SafetyUtil.isEmpty(accountName) ) {
+    String name = account.getName();
+    if ( SafetyUtil.isEmpty(name) ) {
       throw new IllegalStateException("Please enter an account name.");
     }
 
-    if ( accountName.length() > 70 ) {
+    if ( name.length() > 70 ) {
       throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
     }
 
@@ -59,21 +61,19 @@ public class BankAccountValidator
     }
 
     // validate transit number
-    String transitNumber = account.getTransitNumber();
-    if ( SafetyUtil.isEmpty(transitNumber) ) {
-      throw new IllegalStateException("Please enter a transit number");
+    if ( account.getBranch() == null || ((Branch)account.getBranch()).getId() == 0 ) {
+      throw new IllegalStateException("Please enter a branch number");
     }
 
-    if ( ! TRANSIT_NUMBER.matcher(transitNumber).matches() ) {
-      throw new IllegalStateException("Invalid transit number.");
+    if ( ! TRANSIT_NUMBER.matcher(String.valueOf(((Branch)account.getBranch()).getBranchId())).matches() ) {
+      throw new IllegalStateException("Invalid branch.");
     }
 
-    String institutionNumber = account.getInstitutionNumber();
-    if ( SafetyUtil.isEmpty(institutionNumber) ) {
-      throw new IllegalStateException("Please enter an instituion number");
+  if ( account.getInstitution() == null || ((Institution)account.getInstitution()).getId() == 0 ) {
+      throw new IllegalStateException("Please enter an institution number");
     }
 
-    if ( ! INSTITUTION_NUMBER.matcher(institutionNumber).matches() ) {
+  if ( ! INSTITUTION_NUMBER.matcher(String.valueOf(((Institution)account.getInstitution()).getInstitutionNumber())).matches() ) {
       throw new IllegalStateException("Invalid institution number.");
     }
   }

@@ -10,8 +10,8 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
-import net.nanopay.model.BankAccount;
-import net.nanopay.model.BankAccountStatus;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO

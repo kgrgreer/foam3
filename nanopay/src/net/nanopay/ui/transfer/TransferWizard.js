@@ -9,7 +9,6 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.model.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView'
   ],
@@ -20,8 +19,6 @@ foam.CLASS({
 
   imports: [
     'currentBalance',
-    'bankAccountDAO',
-    'bankAccountVerification',
     'email',
     'formatCurrency',
     'invoiceDAO',

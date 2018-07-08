@@ -13,8 +13,8 @@ foam.CLASS({
     // 'net.nanopay.interac.model.Pacs008ISOPurpose',
     // 'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.ui.transfer.TransferUserCard',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.User'
   ],
 
@@ -168,9 +168,9 @@ foam.CLASS({
       view: function(_,X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, net.nanopay.model.BankAccountStatus.VERIFIED)),
+          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.bank.BankAccount.STATUS, net.nanopay.bank.BankAccountStatus.VERIFIED)),
           objToChoice: function(account) {
-            return [account.id, account.accountName + ' ' +
+            return [account.id, account.name + ' ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
                     ];
           }

@@ -7,8 +7,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
@@ -84,11 +84,11 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.user.bankAccounts.where(
                 expr.EQ(
-                  net.nanopay.model.BankAccount.STATUS,
-                  net.nanopay.model.BankAccountStatus.VERIFIED
+                  net.nanopay.bank.BankAccount.STATUS,
+                  net.nanopay.bank.BankAccountStatus.VERIFIED
                 )),
           objToChoice: function(account) {
-            return [account.id, account.accountName + ' ' +
+            return [account.id, account.name + ' ' +
                      '***' +
                      account.accountNumber.substring(
                        account.accountNumber.length - 4,
@@ -222,7 +222,7 @@ foam.CLASS({
               .start('p').addClass('confirmationLabel')
                 .add(
                   'Digital Cash Balance: $',
-                  (this.account.balance/100).toFixed(2))
+                  (this.currentBalance.balance/100).toFixed(2))
               .end()
             .end()
             .start('div').addClass('confirmationContainer')
