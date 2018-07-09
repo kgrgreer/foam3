@@ -16,11 +16,13 @@ import net.nanopay.retail.model.P2PTxnRequest;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.getCurrentUser;
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.getUserByEmail;
 
-public class AuthenticatedP2PRequestDAO
+public class AuthenticatedP2PTxnRequestDAO
   extends ProxyDAO
 {
-  public AuthenticatedP2PRequestDAO(X x, DAO delegate) {
+  public AuthenticatedP2PTxnRequestDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
@@ -38,7 +40,7 @@ public class AuthenticatedP2PRequestDAO
     if ( ! isUserAssociatedWithRequest(user, request) ) {
       throw new RuntimeException("Invalid Request.");
     }
-    if ( ! checkIfUsersExist(request) ) {
+    if ( ! checkIfUsersExist(x, request) ) {
       throw new RuntimeException("User does not exist.");
     }
 
@@ -91,31 +93,13 @@ public class AuthenticatedP2PRequestDAO
     return true;
   }
 
-  private boolean checkIfUsersExist(P2PTxnRequest request) {
+  private boolean checkIfUsersExist(X x, P2PTxnRequest request) {
 
     // NOTE: Change the condition when Requestee is allowed to not exist on the system.
-    if ( getUserByEmail(request.getRequesteeEmail()) == null ||
-      getUserByEmail(request.getRequestorEmail()) == null ) {
+    if ( getUserByEmail(x, request.getRequesteeEmail()) == null ||
+      getUserByEmail(x, request.getRequestorEmail()) == null ) {
       return false;
     }
     return true;
-  }
-
-  private User getUserByEmail(String emailAddress) {
-    DAO userDAO = (DAO) getX().get("localUserDAO");
-
-    ArraySink users = (ArraySink) userDAO
-      .where(EQ(User.EMAIL, emailAddress))
-      .limit(1)
-      .select(new ArraySink());
-    return users.getArray().size() == 1 ? (User) users.getArray().get(0) : null;
-  }
-
-  private User getCurrentUser(X x) {
-    User user = (User) x.get("user");
-    if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
-    }
-    return user;
   }
 }

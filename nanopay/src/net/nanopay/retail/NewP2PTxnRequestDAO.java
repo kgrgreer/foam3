@@ -26,7 +26,7 @@ public class NewP2PTxnRequestDAO
       return getDelegate().put_(x, obj);
     }
 
-    checkValidRequest(x, request);
+    validateRequest(x, request);
 
     P2PTxnRequest requestClone = (P2PTxnRequest) obj.fclone();
 
@@ -43,7 +43,7 @@ public class NewP2PTxnRequestDAO
     return this.find_(getX(), request) == null;
   }
 
-  private void checkValidRequest(X x,P2PTxnRequest request)
+  private void validateRequest(X x,P2PTxnRequest request)
   throws RuntimeException {
     User currentUser = (User) x.get("user");
 

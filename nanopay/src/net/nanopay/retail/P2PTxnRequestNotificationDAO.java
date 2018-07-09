@@ -15,6 +15,7 @@ import net.nanopay.retail.model.P2PTxnRequest;
 import net.nanopay.retail.model.P2PTxnRequestStatus;
 
 import static foam.mlang.MLang.EQ;
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.getUserByEmail;
 
 public class P2PTxnRequestNotificationDAO
 extends ProxyDAO {
@@ -32,14 +33,14 @@ extends ProxyDAO {
 
     P2PTxnRequest request = (P2PTxnRequest) getDelegate().put_(x, obj);
 
-    if (isNewRequest(request) && request.getStatus().equals(P2PTxnRequestStatus.PENDING)) {
+    if ( isNewRequest(request) && request.getStatus().equals(P2PTxnRequestStatus.PENDING) ) {
 
-      User user = getUserByEmail(request.getRequesteeEmail());
+      User user = getUserByEmail(x, request.getRequesteeEmail());
 
-      if (user != null && !SafetyUtil.isEmpty(user.getDeviceToken())) {
+      if ( user != null && ! SafetyUtil.isEmpty(user.getDeviceToken()) ) {
         PushService push = (PushService) x.get("push");
         Map data = createNotificationData(request);
-        push.sendPush(user, "Money Request!", data);
+        push.sendPush(user, "Money request!", data);
       } else {
         logger_.error("Can't send push no device Id found");
       }
@@ -58,12 +59,5 @@ extends ProxyDAO {
 
   private boolean isNewRequest(P2PTxnRequest request) {
     return this.find_(getX(), request) == null;
-  }
-
-  private User getUserByEmail(String emailAddress) {
-    DAO userDAO = (DAO) getX().get("localUserDAO");
-
-    ArraySink users = (ArraySink) userDAO.where(EQ(User.EMAIL, emailAddress)).limit(1).select(new ArraySink());
-    return users.getArray().size() == 1 ? (User) users.getArray().get(0) : null;
   }
 }

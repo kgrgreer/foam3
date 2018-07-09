@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static foam.mlang.MLang.EQ;
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.*;
 
 public class ExistingP2PTxnRequestDAO
   extends ProxyDAO
@@ -44,14 +45,14 @@ public class ExistingP2PTxnRequestDAO
       return getDelegate().put_(x, obj);
     }
 
-    checkValidOperationOnRequest(x, request, existingRequest);
+    validateOperationOnRequest(x, request, existingRequest);
 
-    if ( checkReadOnlyFields(request, existingRequest) != 0 ) {
+    if ( ! checkReadOnlyFields(request, existingRequest) ) {
       throw new RuntimeException("Unable to update the request.");
     }
 
     if ( request.getStatus().equals(P2PTxnRequestStatus.ACCEPTED) ) {
-      createTxn(request);
+      acceptRequest(x, request);
     }
 
     return getDelegate().put_(x, obj);
@@ -61,10 +62,10 @@ public class ExistingP2PTxnRequestDAO
     return (P2PTxnRequest) this.find_(getX(), request);
   }
 
-  private void checkValidOperationOnRequest(X x, P2PTxnRequest request, P2PTxnRequest existingRequest)
+  private void validateOperationOnRequest(X x, P2PTxnRequest request, P2PTxnRequest existingRequest)
       throws RuntimeException {
     // check who is updating the request
-    User currentUser = (User) x.get("user");
+    User currentUser = getCurrentUser(x);
 
     // if old status not pending, then invalid operation.
     if ( ! existingRequest.getStatus().equals(P2PTxnRequestStatus.PENDING) ) {
@@ -89,35 +90,37 @@ public class ExistingP2PTxnRequestDAO
     }
   }
 
-  private int checkReadOnlyFields(P2PTxnRequest request, P2PTxnRequest existingRequest) {
+  private boolean checkReadOnlyFields(P2PTxnRequest request, P2PTxnRequest existingRequest) {
     // check if the readonly fields (all fields but the status) are not changed.
-    P2PTxnRequest tempRequest = (P2PTxnRequest) request.fclone();
-    tempRequest.setStatus(existingRequest.getStatus());
-    return existingRequest.compareTo(tempRequest);
+    return request.getId() == existingRequest.getId() &&
+      request.getRequesteeEmail().equals(existingRequest.getRequesteeEmail()) &&
+      request.getRequestorEmail().equals(existingRequest.getRequestorEmail()) &&
+      request.getAmount() == existingRequest.getAmount() &&
+      request.getDateRequested().equals(existingRequest.getDateRequested());
   }
 
-  private void createTxn(P2PTxnRequest request) {
-    User requestee = getUserByEmail(request.getRequesteeEmail());
-    User requestor = getUserByEmail(request.getRequestorEmail());
+  private void acceptRequest(X x, P2PTxnRequest request) {
+    User requestee = getUserByEmail(x, request.getRequesteeEmail());
+    User requestor = getUserByEmail(x, request.getRequestorEmail());
+    processTxn(requestee, requestor, request.getAmount());
+
+    // if not partners, make partners!
+    if ( ! isPartner(x, requestee, requestor) ) {
+      User requesteeClone = (User) requestee.fclone();
+      requesteeClone.setX(x);
+      requesteeClone.getPartners().add(requestor);
+    }
+  }
+
+  private void processTxn(User requestee, User requestor, long amount) {
     Transaction txn  = new Transaction.Builder(getX())
       .setPayerId(requestee.getId())
       .setPayeeId(requestor.getId())
-      .setAmount(request.getAmount())
+      .setAmount(amount)
       .setStatus(TransactionStatus.PENDING)
       .build();
 
     DAO txnDAO = (DAO) getX().get("localTransactionDAO");
     txnDAO.put(txn);
-  }
-
-  private User getUserByEmail(String emailAddress) {
-    DAO userDAO = (DAO) getX().get("localUserDAO");
-
-    ArraySink users = (ArraySink) userDAO
-        .where(EQ(User.EMAIL, emailAddress))
-        .limit(1)
-        .select(new ArraySink());
-    return users.getArray().size() == 1 ?
-    (User) users.getArray().get(0) : null;
   }
 }
