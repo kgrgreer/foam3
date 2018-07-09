@@ -1,13 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
-  name: 'SingleItemView',
+  name: 'ForeignSingleItemView',
   extends: 'foam.u2.View',
 
   imports: [
     'addCommas',
-    'user',
     'invoiceDAO',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [
@@ -21,6 +21,14 @@ foam.CLASS({
       name: 'type',
       expression: function(data, user) {
         return user.id !== data.payeeId;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'foreignExchange',
+      factory: function(data) {
+        if ( data.sourceCurrency == null ) return false;
+        return data.targetCurrency != data.sourceCurrency;
       }
     },
     {
@@ -42,7 +50,7 @@ foam.CLASS({
       margin: 0;
     }
     ^ h3{
-      width: 150px;
+      width: 100px;
       display: inline-block;
       font-size: 14px;
       line-height: 1;
@@ -105,6 +113,9 @@ foam.CLASS({
     ^ .hidden {
       display: none;
     }
+    ^ .source-amount{
+      width: 125px;
+    }
   `,
 
   methods: [
@@ -123,11 +134,14 @@ foam.CLASS({
             .start('h3').add('Invoice #').end()
             .start('h3').add('PO #').end()
             .call(function() {
-              self.type ? this.start('h3').add('Vendor').end() :
+              self.type ?
+                  this.start('h3').add('Vendor').end() :
                   this.start('h3').add('Customer').end();
             })
             .start('h3').add('Date Due').end()
-            .start('h4').add('Amount').end()
+          .start('h4').add('Requested Amount').end()
+          .start('h3').addClass('source-amount').add('Sending Amount').end()
+          .start('h4').add('Exch Rate').end()
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
@@ -145,11 +159,7 @@ foam.CLASS({
             .start('h3').add(this.data.invoiceNumber).end()
             .start('h3').add(this.data.purchaseOrder).end()
             .start('h3')
-              .add(
-                this.type ?
-                    this.data.payee.label() :
-                    this.data.payer.label()
-              )
+              .add(this.type ? this.data.payeeName : this.data.payerName)
             .end()
             .start('h3')
               .add(
@@ -160,20 +170,29 @@ foam.CLASS({
             .end()
             .start('h4')
               .add(
-                this.currency + ' ' +
-                    this.addCommas((this.data.amount/100).toFixed(2))
+                this.data.targetCurrency.alphabeticCode +
+                    ' $' + this.addCommas((this.data.amount/100).toFixed(2))
+              )
+              .end()
+            .start('h3')
+              .addClass('source-amount')
+              .add(
+                this.data.sourceCurrency.alphabeticCode +
+                    ' $' + this.addCommas((this.data.sourceAmount/100).toFixed(2))
               )
             .end()
+            .start('h4')
+              .add(this.addCommas((this.data.exchangeRate/100).toFixed(2)))
+            .end()
             .start('h3')
-              .add(this.data.status$.map(function(status) {
+              .add(this.data.status$.map(function(a) {
                 return self.E()
                   .add(
-                    self.data.paymentDate > Date.now() ?
-                        self.data.paymentDate.toISOString().substring(0, 10) :
-                        status
+                    self.data.paymentDate > Date.now() ? a + ' ' +
+                        self.data.paymentDate.toISOString().substring(0, 10) : a
                   )
                   .addClass('generic-status')
-                  .addClass('Invoice-Status-' + status);
+                  .addClass('Invoice-Status-' + a);
               }))
           .end()
         .end();
@@ -203,8 +222,7 @@ foam.CLASS({
           y: 20
         });
 
-        p.addClass('dropdown-content')
-        .call(function() {
+        p.addClass('dropdown-content').call(function() {
           var files = this.data.invoiceFile;
           for ( var i = 0; i < files.length; i ++ ) {
             p.tag({
