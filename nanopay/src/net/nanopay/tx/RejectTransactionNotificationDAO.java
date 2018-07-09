@@ -45,7 +45,7 @@ public class RejectTransactionNotificationDAO
 
   protected DAO getBankAccountDAO() {
     if ( bankAccountDAO_ == null ) {
-      bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
+      bankAccountDAO_ = (DAO) getX().get("localAccountDAO");
     }
 
     return bankAccountDAO_;

@@ -125,7 +125,6 @@ foam.CLASS({
     'java.util.Date',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.account.CurrentBalance',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.payment.Institution',
@@ -180,7 +179,7 @@ foam.CLASS({
               pacs00200109.getFIToFIPmtStsRpt().setGrpHdr(grpHdr53);
 
               DAO userDAO        = (DAO) getX().get("userDAO");
-              DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
+              DAO bankAccountDAO = (DAO) getX().get("accountDAO");
               DAO branchDAO      = (DAO) getX().get("branchDAO");
               DAO institutionDAO = (DAO) getX().get("institutionDAO");
               String addrLine = "";
@@ -248,7 +247,7 @@ foam.CLASS({
                           senderBankAcct.setId(senderId);
                           senderBankAcct.setX(getX());
                           senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
-                          senderBankAcct.setCurrencyCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getCcy());
+                          senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getCcy());
                           senderBankAcct.setName("Default");
 
                           Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
@@ -266,7 +265,7 @@ foam.CLASS({
                           }
                           senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
                           senderBankAcct.setVerificationAttempts(1);
-                          senderBankAcct.setSetAsDefault(true);
+                          senderBankAcct.setIsDefault(true);
                           senderBankAcct.setOwner(senderId);
 
                           bankAccountDAO.put(senderBankAcct);
@@ -338,7 +337,7 @@ foam.CLASS({
                         receiverBankAcct.setId(receiverId);
                         receiverBankAcct.setX(getX());
                         receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAcct().getId().getOthr().getId());
-                        receiverBankAcct.setCurrencyCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getIntrBkSttlmAmt().getCcy());
+                        receiverBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getIntrBkSttlmAmt().getCcy());
                         receiverBankAcct.setName("Default");
 //                        receiverBankAcct.setInstitution((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
 //                        receiverBankAcct.setBranch((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getBrnchId().getId());
@@ -359,7 +358,7 @@ foam.CLASS({
 
                         receiverBankAcct.setStatus(BankAccountStatus.VERIFIED);
                         receiverBankAcct.setVerificationAttempts(1);
-                        receiverBankAcct.setSetAsDefault(true);
+                        receiverBankAcct.setIsDefault(true);
                         receiverBankAcct.setOwner(receiverId);
 
                         bankAccountDAO.put(receiverBankAcct);

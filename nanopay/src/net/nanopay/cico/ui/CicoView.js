@@ -21,11 +21,12 @@ foam.CLASS({
   ],
 
   imports: [
+    // TODO: remove/replace
     'currentBalanceDAO',
     'currentBalance',
     'currentCurrency',
     'addCommas',
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'stack',
     'transactionDAO',
     'user',

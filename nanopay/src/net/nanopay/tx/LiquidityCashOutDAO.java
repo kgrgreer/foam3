@@ -33,7 +33,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     setX(x);
     // initialize our DAO
     userDAO_ = (DAO) x.get("localUserDAO");
-    bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
+    bankAccountDAO_ = (DAO) x.get("localAccountDAO");
     currentBalanceDAO_ = (DAO) x.get("localCurrentBalanceDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
     groupDAO_ = (DAO) x.get("groupDAO");

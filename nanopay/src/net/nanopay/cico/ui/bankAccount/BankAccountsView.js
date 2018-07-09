@@ -12,7 +12,7 @@ foam.CLASS({
   imports: [
     'user',
     'stack',
-    'bankAccountDAO'
+    'accountDAO as bankAccountDAO'
   ],
 
   requires: [
@@ -219,7 +219,7 @@ foam.CLASS({
       ],
 
       imports: [
-        'bankAccountDAO',
+        'accountDAO as bankAccountDAO',
         'stack',
         'user'
       ],

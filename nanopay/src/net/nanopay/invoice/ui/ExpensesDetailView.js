@@ -16,7 +16,7 @@ foam.CLASS({
 
   imports: [
     'currentBalanceDAO',
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'ctrl',
     'hideSaleSummary',
     'invoiceDAO',

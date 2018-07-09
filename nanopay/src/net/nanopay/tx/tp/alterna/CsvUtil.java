@@ -116,7 +116,7 @@ public class CsvUtil {
   public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
     final Date now            = new Date();
 
-    final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
+    final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
     final DAO  userDAO        = (DAO) x.get("localUserDAO");
 

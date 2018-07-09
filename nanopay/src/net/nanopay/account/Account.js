@@ -32,10 +32,11 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'FObjectProperty',
-      name: 'unitOfBalance'
+      documentation: 'Unit of measure of the balance - such as Currency. The value of the denomication is the currency code, for example.',
+      class: 'String',
+      name: 'denomination'
     }
-    // TDODO: access: public, private
+    // TDODO: access/scope: public, private
   ],
 
   methods: [

@@ -313,7 +313,7 @@ foam.CLASS({
             var inst = institution.array[0];
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                X.bankAccountDAO.put(self.BankAccount.create({
+                X.accountDAO.put(self.BankAccount.create({
                   name: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionId: inst.id,

@@ -13,7 +13,7 @@ foam.CLASS({
 
   imports: [
     'amount',
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'bankList',
     'currentCurrency',
     'closeDialog',

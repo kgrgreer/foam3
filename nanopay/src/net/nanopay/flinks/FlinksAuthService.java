@@ -32,7 +32,7 @@ public class FlinksAuthService
   public void start() {
     userDAO_        = (DAO) getX().get("localUserDAO");
     sessionDAO_     = (DAO) getX().get("sessionDAO");
-    bankAccountDAO_ = (DAO) getX().get("bankAccountDAO");
+    bankAccountDAO_ = (DAO) getX().get("accountDAO");
     institutionDAO_ = (DAO) getX().get("institutionDAO");
     flinksService.setX(getX());
   }

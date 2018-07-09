@@ -41,7 +41,7 @@ public class LiquidityService
   }
 
   protected DAO getBankAccountDAO() {
-    if ( bankAccountDAO_ == null ) bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
+    if ( bankAccountDAO_ == null ) bankAccountDAO_ = (DAO) getX().get("localAccountDAO");
 
     return bankAccountDAO_;
   }

@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'email',
     'flinksAuth',
     'institutionDAO',

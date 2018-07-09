@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountDAO', 
+    'accountDAO as bankAccountDAO', 
     'closeDialog', 
     'manageAccountNotification',
     'selectedAccount',
@@ -248,7 +248,8 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this;
-        X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
+        // bankAccountDAO
+        X.accountDAO.remove(X.selectedAccount).then(function(response) {
           X.manageAccountNotification('Bank account successfully deleted', '');
           X.closeDialog();
         }).catch(function(error) {

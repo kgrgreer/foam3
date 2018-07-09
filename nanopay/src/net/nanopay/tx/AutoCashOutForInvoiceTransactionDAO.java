@@ -45,7 +45,7 @@ public class AutoCashOutForInvoiceTransactionDAO
       invoice.setPaymentMethod(PaymentStatus.CHEQUE);
       invoiceDAO.put(invoice);
 
-      DAO      bankAccountDAO = (DAO) x.get("localBankAccountDAO");
+      DAO      bankAccountDAO = (DAO) x.get("localAccountDAO");
       ArraySink listSink      = (ArraySink) bankAccountDAO
         .where(EQ(BankAccount.OWNER, txn.getPayeeId()))
         .limit(1)

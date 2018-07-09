@@ -7,6 +7,8 @@ foam.CLASS({
 
   tableColumns: ['name', 'institution', 'accountNumber', 'status', 'actionsMenu'],
 
+  // relationships: branch (Branch)
+
   properties: [
     {
       class: 'String',
@@ -40,9 +42,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'currencyCode'
+      class: 'String',
+      name: 'unitOfBalance',
+      aliases: ['currencyCode', 'currency'],
+      value: 'CAD'
     },
     {
       class: 'Reference',
@@ -50,8 +53,6 @@ foam.CLASS({
       name: 'institution',
       label: 'Institution'
     },
-    // Relationship branch
-    // Relationship owner (user)
     {
       class: 'Long',
       name: 'randomDepositAmount',
@@ -65,7 +66,9 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'setAsDefault',
+      name: 'isDefault',
+      aliases: ['setAsDefault'],
+      label: 'Set As Default',
       value: false
     },
   ],

@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'padCaptureDAO',
     'bankAccountVerification',
     'selectedAccount',

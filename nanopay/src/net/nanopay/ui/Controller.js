@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.u2.stack.StackView',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.account.CurrentBalance',
+    'net.nanopay.account.Balance',
     'net.nanopay.model.Currency',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
@@ -27,10 +27,9 @@ foam.CLASS({
   exports: [
     'appConfig',
     'as ctrl',
-    'currentBalance',
-    'currentBalance as account',
+    // 'balance',
     'currentCurrency',
-    'findCurrentBalance',
+    // 'findBalance',
     'privacyUrl',
     'termsUrl'
   ],
@@ -81,12 +80,12 @@ foam.CLASS({
   properties: [
     'privacyUrl',
     'termsUrl',
-    {
-      class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.account.CurrentBalance',
-      name: 'currentBalance',
-      factory: function() { return this.CurrentBalance.create(); }
-    },
+    // {
+    //   class: 'foam.core.FObjectProperty',
+    //   of: 'net.nanopay.account.Balance',
+    //   name: 'balance',
+    //   factory: function() { return this.Balance.create(); }
+    // },
     {
       name: 'appConfig'
     },
@@ -114,7 +113,7 @@ foam.CLASS({
 
         foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-        self.findCurrentBalance();
+        //self.findBalance();
 
         self
           .addClass(self.myClass())
@@ -204,13 +203,25 @@ foam.CLASS({
       });
     },
 
-    function findCurrentBalance() {
-      var self = this;
-      this.client.currentBalanceDAO.find(this.user.id).then(function (a) {
-        return self.currentBalance.copyFrom(a);
-      }.bind(this));
-    },
-    
+    // function findBalance() {
+    //   var self = this;
+    //   this.user.accounts.then(function(accounts) {
+    //     self.client.balanceDAO.select(
+    //       self.AND(
+    //         self.EQ(self.Balance.UNIT_OF_BALANCE, self.currentCurrency),
+    //         self.IN(self.Balance.ACCOUNT_ID, accounts.map(function(a) {
+    //           return a.id;
+    //         }))
+    //       )
+    //     ).then(function(sink) {
+    //       if ( sink && sink.array && sink.array.length == 1 ) {
+    //         return self.balance.copyFrom(sink.array[0]);
+    //         // Balance has multi-part primary key on accountId and currencyCode, so there should never be more than one.
+    //       }
+    //     });
+    //   });
+    // },
+
     function requestLogin() {
       var self = this;
 
@@ -235,10 +246,10 @@ foam.CLASS({
     }
   ],
 
-  listeners: [
-    function onUserUpdate() {
-      this.SUPER();
-      this.findCurrentBalance();
-    }
-  ]
+  // listeners: [
+  //   function onUserUpdate() {
+  //     this.SUPER();
+  //     this.findBalance();
+  //   }
+  // ]
 });

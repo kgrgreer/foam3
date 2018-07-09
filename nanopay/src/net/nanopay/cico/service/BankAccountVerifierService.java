@@ -74,6 +74,6 @@ public class BankAccountVerifierService
 
   @Override
   public void start() {
-    bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
+    bankAccountDAO = (DAO) getX().get("localAccountDAO");
   }
 }

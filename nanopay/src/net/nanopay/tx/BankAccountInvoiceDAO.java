@@ -22,7 +22,7 @@ public class BankAccountInvoiceDAO
     setDelegate(delegate);
     setX(x);
     userDAO_        = (DAO) x.get("localUserDAO");
-    bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
+    bankAccountDAO_ = (DAO) x.get("localAccountDAO");
   }
 
   @Override

@@ -71,7 +71,7 @@ public class CICOTransactionDAO
 
     Transaction transaction = (Transaction) obj;
     //DAO standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
-    DAO bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
+    DAO bankAccountDAO = (DAO) getX().get("localAccountDAO");
     DAO userDAO = (DAO) getX().get("localUserDAO");
 
     long payeeId = transaction.getPayeeId();

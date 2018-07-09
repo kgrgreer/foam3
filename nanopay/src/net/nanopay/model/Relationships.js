@@ -27,6 +27,17 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.account.Account',
+  forwardName: 'accounts',
+  inverseName: 'owner',
+  cardinality: '1:*',
+  sourceProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.bank.BankAccount',
   forwardName: 'bankAccounts',
   inverseName: 'owner',
