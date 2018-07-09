@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
 
-  tableColumns: ['status', 'payerName', 'payeeName',
+  tableColumns: ['id', 'status', 'payerName', 'payeeName',
     'amount', 'processDate', 'completionDate', 'date'],
 
   imports: [
