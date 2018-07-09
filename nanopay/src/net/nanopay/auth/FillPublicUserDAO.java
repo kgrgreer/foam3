@@ -18,7 +18,6 @@ import net.nanopay.auth.PublicUserInfo;
 public class FillPublicUserDAO
   extends ProxyDAO
 {
-  protected DAO userDAO_;
   protected DAO publicUserDAO_;
 
   public FillPublicUserDAO(
@@ -26,7 +25,6 @@ public class FillPublicUserDAO
       DAO delegate
   ) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
     publicUserDAO_ = (DAO) x.get("localPublicUserDAO");
   }
 
@@ -37,6 +35,6 @@ public class FillPublicUserDAO
     // TODO: Implement privacy setting logic to avoid creating public users for private accounts.
     PublicUserInfo entity = new PublicUserInfo(result);
     publicUserDAO_.put(entity);
-    return super.put_(x, obj);
+    return result;
   }
 }
