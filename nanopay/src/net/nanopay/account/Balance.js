@@ -2,21 +2,17 @@ foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Balance',
 
-  ids: [ 'accountId', 'currencyCode' ],
-
   properties: [
     {
-      class: 'Long',
-      name: 'accountId'
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'account',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
-      name: 'balance'
-    },
-    {
-      class: 'String',
-      name: 'currencyCode',
-      value: 'CAD'
+      name: 'balance',
+      visibility: foam.u2.Visibility.RO
     }
   ]
 });

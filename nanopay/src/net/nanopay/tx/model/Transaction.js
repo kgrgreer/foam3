@@ -205,7 +205,7 @@ foam.CLASS({
       // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
       class: 'Reference',
       of: 'net.nanopay.bank.BankAccount',
-      name: 'payeeAccountId',
+      name: 'payeeAccount',
       visibility: foam.u2.Visibility.RO
     },
     {

@@ -161,14 +161,16 @@ public class TransactionDAO
 
 
   public void cashinReject(X x, Transaction transaction) {
-    Balance payerBalance = (Balance) getBalanceDAO().find((AND(EQ(Balance.ACCOUNT_ID, transaction.getPayerId()), EQ(Balance.CURRENCY_CODE, transaction.getCurrencyCode()))));
+    // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.
+    Balance payerBalance = (Balance) getBalanceDAO().find(EQ(Balance.ACCOUNT, transaction.getBankAccountId()));
         payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payerBalance);
   }
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
-    Balance payeeBalance = (Balance) getBalanceDAO().find((AND(EQ(Balance.ACCOUNT_ID, transaction.getPayeeId()), EQ(Balance.CURRENCY_CODE, transaction.getCurrencyCode()))));
+    // TODO/REVIEW: ACCOUNT_REFACTOR PayeeAccountId is not yet setup/populated.
+    Balance payeeBalance = (Balance) getBalanceDAO().find(EQ(Balance.ACCOUNT, transaction.getPayeeAccount()));
         payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payeeBalance);

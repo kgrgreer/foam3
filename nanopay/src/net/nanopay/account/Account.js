@@ -1,9 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Account',
+  abstract: true,
 
   documentation: 'Base model of all Accounts',
 
+  // relationships: owner (User)
   properties: [
     {
       class: 'Long',
@@ -19,8 +21,21 @@ foam.CLASS({
       name: 'desc',
       label: 'Description'
     },
-    // type: CI, CO, ...
-    // access: public, private
+    {
+      class: 'Boolean',
+      name: 'transferIn',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'transferOut',
+      value: true
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'unitOfBalance'
+    }
+    // TDODO: access: public, private
   ],
 
   methods: [

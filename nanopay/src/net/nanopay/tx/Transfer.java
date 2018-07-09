@@ -63,11 +63,10 @@ public class Transfer
     user_ = user;
 
     DAO     balanceDAO = (DAO) x.get("localBalanceDAO");
-    Balance balance    = (Balance) balanceDAO.find((AND(EQ(Balance.ACCOUNT_ID, getAccountId()), EQ(Balance.CURRENCY_CODE, getCurrency()))));
+    Balance balance    = (Balance) balanceDAO.find(EQ(Balance.ACCOUNT, getAccountId()));
     if ( balance == null ) {
       balance_ = new Balance();
-      balance_.setCurrencyCode(getCurrency());
-      balance_.setAccountId(getAccountId());
+      balance_.setAccount(getAccountId());
     } else {
       balance_ = balance;
     }
