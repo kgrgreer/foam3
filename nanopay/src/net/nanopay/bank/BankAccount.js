@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'unitOfBalance',
+      name: 'denomination',
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
     },
