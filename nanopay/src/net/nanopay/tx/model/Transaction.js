@@ -306,12 +306,6 @@ foam.CLASS({
       label: 'Latest Modify Date & Time'
     },
     {
-      class: 'String',
-      name: 'currencyCode',
-      value: 'CAD',
-      label: 'CurrencyCode'
-    },
-    {
       // REVIEW: move to TxnProcessorData
       documentation: `Payment Platform specific data.`,
       class: 'FObjectProperty',
