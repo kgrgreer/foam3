@@ -114,9 +114,10 @@ public class PublicUserInfoDAO
     if ( user == null ) {
       clone.setProperty(userProperty_, null);
     }
-
-    PublicUserInfo entity = new PublicUserInfo(user);
-    clone.setProperty(userProperty_, entity);
+    else {
+      PublicUserInfo entity = new PublicUserInfo(user);
+      clone.setProperty(userProperty_, entity);
+    }
 
     return clone;
   }
