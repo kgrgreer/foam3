@@ -4,6 +4,7 @@ import foam.core.*;
 import foam.dao.*;
 import foam.nanos.auth.User;
 import java.util.*;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.invoice.model.Invoice;
@@ -31,7 +32,7 @@ public class AutoCashOutForInvoiceTransactionDAO
     Transaction txn = (Transaction) super.put_(x, obj);
 
     // If paying an Invoice
-    if ( txn.getInvoiceId() != null ) {
+    if ( txn.getInvoiceId() != 0 ) {
       DAO     invoiceDAO = (DAO) x.get("invoiceDAO");
       Invoice invoice    = (Invoice) invoiceDAO.find(txn.getInvoiceId());
 

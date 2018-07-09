@@ -10,7 +10,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
 
 // Sends an email when a Bank account is created
 public class BankEmailDAO

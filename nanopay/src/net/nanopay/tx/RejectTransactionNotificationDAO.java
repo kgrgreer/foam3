@@ -14,7 +14,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;

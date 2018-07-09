@@ -31,7 +31,7 @@ public class PaidTransferDAO
     Transaction transaction = (Transaction) super.put_(x, obj);
 
     // Returns if transaction is an invoice
-    if ( transaction.getInvoiceId() != null )
+    if ( transaction.getInvoiceId() != 0 )
       return transaction;
 
     // Returns if transaction is a cico transaction

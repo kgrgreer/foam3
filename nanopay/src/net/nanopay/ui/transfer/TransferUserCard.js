@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'User card used in transfers',
 
   imports: [
-    'accountDAO',
+    'currentBalanceDAO',
     'branchDAO',
     'invoiceMode',
     'type'

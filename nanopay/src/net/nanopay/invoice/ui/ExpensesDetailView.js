@@ -10,8 +10,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   imports: [

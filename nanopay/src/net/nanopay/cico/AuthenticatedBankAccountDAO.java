@@ -10,7 +10,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
 
 import java.security.AccessControlException;
 

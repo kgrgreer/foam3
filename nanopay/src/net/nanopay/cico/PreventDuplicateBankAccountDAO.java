@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
 
 /**
  * This DAO prevents the adding of duplicate bank accounts
@@ -35,7 +35,7 @@ public class PreventDuplicateBankAccountDAO
       // prevent registration of account with same account name
       count = (Count) bankAccountDAO.where(AND(
           EQ(BankAccount.OWNER, account.getOwner()),
-          EQ(BankAccount.ACCOUNT_NAME, account.getAccountName())
+          EQ(BankAccount.NAME, account.getName())
       )).limit(1).select(count);
       if ( count.getValue() == 1 ) {
         throw new RuntimeException("Bank account with same name already registered");
@@ -43,11 +43,13 @@ public class PreventDuplicateBankAccountDAO
 
       // prevent registration of account with same account details
       count = new Count();
+      // REVIEW: AccountRefactor - switched TRANSIT_NUMBER to BRANCH and
+      // INSTITUTION_ID to INSTITUION
       count = (Count) bankAccountDAO.where(AND(
           EQ(BankAccount.OWNER, account.getOwner()),
           EQ(BankAccount.ACCOUNT_NUMBER, account.getAccountNumber()),
-          EQ(BankAccount.TRANSIT_NUMBER, account.getTransitNumber()),
-          EQ(BankAccount.INSTITUTION_NUMBER, account.getInstitutionNumber())
+          EQ(BankAccount.BRANCH, account.getBranch()),
+          EQ(BankAccount.INSTITUTION, account.getInstitution())
       )).limit(1).select(count);
       if ( count.getValue() == 1 ) {
         throw new RuntimeException("Bank account with same details already registered");

@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'account'
+    'currentBalance'
   ],
 
   documentation: 'View displaying high-level Bank Liquidity Values',
@@ -22,7 +22,7 @@ foam.CLASS({
 
       this
       .addClass(this.myClass())
-      .tag({ class: 'net.nanopay.ui.BalanceView', data: this.account })
+      .tag({ class: 'net.nanopay.ui.BalanceView', data: this.currentBalance })
       .tag({ class: 'net.nanopay.liquidity.ui.BalanceAlertView' });
     }
   ]

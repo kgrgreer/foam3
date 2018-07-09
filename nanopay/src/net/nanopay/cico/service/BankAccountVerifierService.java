@@ -4,8 +4,8 @@ import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
-import net.nanopay.model.BankAccount;
-import net.nanopay.model.BankAccountStatus;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport

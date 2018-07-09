@@ -19,15 +19,14 @@ foam.CLASS({
       name: 'abbreviation',
     },
     {
+      class: 'String',
+      name: 'institutionNumber'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'countryId',
       label: 'Country'
-    },
-    {
-      class: 'String',
-      name: 'institutionNumber',
-      documentation: 'Financial system specific Institution number. Such as Canadian Financial Institution Number'
     }
   ]
 });

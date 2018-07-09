@@ -19,7 +19,6 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'

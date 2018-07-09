@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   imports: [
@@ -180,7 +180,7 @@ foam.CLASS({
     function setNewDefaultBank() {
       var self = this;
       self.selectedAccount.setAsDefault = true;
-      self.selectedAccount.accountName += ' (Default)';
+      self.selectedAccount.name += ' (Default)';
       self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
         self.manageAccountNotification('Bank account successfully set as default.', '');
         self.closeDialog();
@@ -194,7 +194,7 @@ foam.CLASS({
           self.setNewDefaultBank();
         } else {
           a.array[0].setAsDefault = false;
-          a.array[0].accountName = a.array[0].accountName.replace(' (Default)', '');
+          a.array[0].name = a.array[0].name.replace(' (Default)', '');
           self.bankAccountDAO.put(a.array[0]).then( function(a) {
             self.setNewDefaultBank();
           }).catch( function( error ) {

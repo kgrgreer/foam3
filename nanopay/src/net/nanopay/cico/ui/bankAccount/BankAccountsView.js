@@ -16,8 +16,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   css: `
@@ -182,6 +182,7 @@ foam.CLASS({
             .tag({
                 class: 'foam.u2.ListCreateController',
                 dao: this.data,
+                // REVIEW: AccountRefactor - what type of bank account to create? - Joel
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
                 },
@@ -211,8 +212,8 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [
-        'net.nanopay.model.BankAccount',
-        'net.nanopay.model.BankAccountStatus',
+        'net.nanopay.bank.BankAccount',
+        'net.nanopay.bank.BankAccountStatus',
         'foam.u2.dialog.Popup',
         'foam.u2.dialog.NotificationMessage'
       ],
@@ -265,7 +266,7 @@ foam.CLASS({
               data: this.data,
               selection$: this.selection$,
               columns: [
-                'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
+                'name', 'institutionId', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         },

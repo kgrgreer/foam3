@@ -10,8 +10,8 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.account.CurrentBalance;
-import net.nanopay.model.BankAccount;
-import net.nanopay.model.BankAccountStatus;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
