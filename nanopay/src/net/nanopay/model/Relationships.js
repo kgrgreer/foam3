@@ -125,13 +125,6 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.liquidity.model.Threshold',
-  forwardName: 'thresholds',
-  inverseName: 'owner'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.liquidity.model.BalanceAlert',
   forwardName: 'balanceAlerts',
   inverseName: 'owner'
