@@ -48,6 +48,13 @@ foam.CLASS({
       factory: function() {
         return this.SalesTableView.create();
       }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
+      factory: function() {
+        return this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      }
     }
   ],
 
@@ -107,13 +114,13 @@ foam.CLASS({
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
+            dao: this.filteredDAO$proxy,
             createLabel: 'New Invoice',
             createDetailView: {
               class: 'net.nanopay.invoice.ui.InvoiceDetailView'
             },
             detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
-            summaryView: this.tableView,
+            summaryView: this.SalesTableView,
             showActions: false
           })
         .end()
@@ -139,7 +146,7 @@ foam.CLASS({
     {
       name: 'updateTableDAO',
       code: function(_, __, newStatus) {
-        this.tableView.data = this.salesDAO
+        this.filteredDAO = this.salesDAO
             .where(this.EQ(this.Invoice.STATUS, newStatus))
             .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
@@ -147,7 +154,7 @@ foam.CLASS({
     {
       name: 'resetTableDAO',
       code: function() {
-        this.tableView.data = this.salesDAO
+        this.filteredDAO = this.salesDAO
             .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     }
