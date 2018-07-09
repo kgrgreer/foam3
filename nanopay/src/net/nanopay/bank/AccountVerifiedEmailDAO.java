@@ -27,6 +27,10 @@ public class AccountVerifiedEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.put_(x, obj);
+    }
+
     BankAccount account    = (BankAccount) obj;
     User        owner      = (User) userDAO_.find_(x, account.getOwner());
     AppConfig   config     = (AppConfig) x.get("appConfig");
