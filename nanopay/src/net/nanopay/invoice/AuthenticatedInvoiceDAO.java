@@ -34,11 +34,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     if (invoice == null) {
       throw new RuntimeException("Cannot put null");
     }
-    // check if the user is the creator of invoice or if the user is admin
-    if ( invoice.getCreatedBy() != user.getId() && !isAdmin(user)) {
-      throw new RuntimeException("User is not the creator of invoice & not admin");
+    // Check if the user is the creator of the invoice or if the user is admin.
+    if ( invoice.getCreatedBy() != user.getId() && ! isAdmin(user)) {
+      throw new RuntimeException("Permission denied");
     }
-    // whether the invoice exist or not, utilize put method and dao will handle it
+    // Whether the invoice exist or not, utilize put method and dao will handle it.
     return getDelegate().put_(x, invoice);
   }
 
@@ -48,9 +48,9 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     Invoice invoice = (Invoice) super.find_(x, id);
 
     if (invoice != null) {
-      // check if user is related to the invoice, or user is admin,
-      // or user has the authentication
-      if (!this.isRelated(user, invoice) && !isAdmin(user) && !auth.check(x, GLOBAL_INVOICE_READ)) {
+      // Check if user is related to the invoice, or user is admin,
+      // or user has the authentication.
+      if (! this.isRelated(user, invoice) && ! isAdmin(user) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
         throw new RuntimeException("Permission denied");
       }
     }
@@ -59,13 +59,12 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-
     User user = this.getUser(x);
     long id = user.getId();
     boolean global = auth.check(x, GLOBAL_INVOICE_READ) || isAdmin(user);
 
-    // if user has the global access permission, get all the invoices; otherwise,
-    // only return related invoices
+    // If user has the global access permission, get all the invoices; otherwise,
+    // only return related invoices.
     DAO dao = global ? getDelegate() :
         getDelegate().where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
     return dao.select_(x, sink, skip, limit, order, predicate);
@@ -79,7 +78,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     return user;
   }
 
-  // if the user is payee or payer of the invoice
+  // If the user is payee or payer of the invoice.
   protected boolean isRelated(User user, Invoice invoice) {
     long id = user.getId();
     return (long) invoice.getPayeeId() == id || (long) invoice.getPayerId() == id;
