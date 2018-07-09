@@ -26,7 +26,6 @@ public class LiquidityService
   protected DAO    accountDAO_;
   protected DAO    liquiditySettingsDAO_;
   protected DAO    balanceDAO_;
-  protected DAO    bankAccountDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
 
@@ -41,13 +40,6 @@ public class LiquidityService
 
     return accountDAO_;
   }
-
-
- /* protected DAO getBankAccountDAO() {
-    if ( bankAccountDAO_ == null ) bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
-
-    return bankAccountDAO_;
-  }*/
 
   protected DAO getBalanceDAO() {
     if ( balanceDAO_ == null ) balanceDAO_ = (DAO) getX().get("localBalanceDAO");
@@ -130,13 +122,13 @@ public class LiquidityService
   /*
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
    */
-  public FObject addCICOTransaction(long userId, long amount, long bankAccountId, TransactionType transactionType, X x)
+  public FObject addCICOTransaction(long accountId, long amount, long bankAccountId, TransactionType transactionType, X x)
     throws RuntimeException
   {
     Transaction transaction = new Transaction.Builder(x)
         .setStatus(TransactionStatus.PENDING)
-        .setPayeeId(userId)
-        .setPayerId(userId)
+        .setPayeeId(accountId)
+        .setPayerId(accountId)
         .setAmount(amount)
         .setType(transactionType)
         .setBankAccountId(bankAccountId)
