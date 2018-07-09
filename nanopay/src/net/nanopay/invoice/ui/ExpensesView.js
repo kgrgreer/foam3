@@ -12,7 +12,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.PayableSummaryView'
+    'net.nanopay.invoice.ui.InvoiceSummaryView'
   ],
 
   imports: [
@@ -25,6 +25,11 @@ foam.CLASS({
 
   properties: [
     'selection',
+    {
+      name: 'summaryView',
+      documentation: `A named reference to the summary view so we can subscribe
+          to events emitted from it.`,
+    },
     {
       class: 'Boolean',
       name: 'hideSaleSummary',
@@ -40,15 +45,6 @@ foam.CLASS({
       name: 'tableView',
       factory: function() {
         return this.ExpensesTableView.create();
-      }
-    },
-    {
-      name: 'summaryView',
-      factory: function() {
-        var view = this.PayableSummaryView.create();
-        view.sub('statusChange', this.updateTableDAO);
-        view.sub('statusReset', this.resetTableDAO);
-        return view;
       }
     }
   ],
@@ -104,7 +100,10 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().enableClass('hide', this.hideSaleSummary$)
-          .add(this.summaryView)
+          .tag(this.InvoiceSummaryView, {
+            sumLabel: 'Payables',
+            dao: this.user.expenses
+          }, this.summaryView$)
         .end()
         .start()
           .tag({
@@ -128,6 +127,13 @@ foam.CLASS({
             image: 'images/ic-bankempty.svg'
           })
         .end();
+
+      // When a SummaryCard is clicked on, it will toggle between two states:
+      // active and inactive. When it changes state it will emit one of the two
+      // following events. We subscribe to them here and update the table view
+      // based on the card that was selected.
+      this.summaryView.sub('statusChange', this.updateTableDAO);
+      this.summaryView.sub('statusReset', this.resetTableDAO);
     },
   ],
 

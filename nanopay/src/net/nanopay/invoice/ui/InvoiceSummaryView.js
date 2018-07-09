@@ -1,10 +1,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
-  name: 'PayableSummaryView',
+  name: 'InvoiceSummaryView',
   extends: 'foam.u2.View',
 
-  documentation: 'Top-level payable summary view.',
+  documentation: 'Top-level invoice summary view.',
 
   implements: [
     'foam.mlang.Expressions'
@@ -34,7 +34,6 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'title', message: 'Payables' },
     { name: 'dueLabel', message: 'Due' },
     { name: 'overDueLabel', message: 'Overdue' },
     { name: 'newLabel', message: 'New' },
@@ -45,10 +44,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'dao',
-      factory: function() {
-        return this.user.expenses;
-      }
+      name: 'sumLabel',
+      documentation: `The label to put on the total sum card.`
+    },
+    {
+      name: 'dao'
     },
     {
       class: 'Int',
@@ -107,20 +107,33 @@ foam.CLASS({
     },
     {
       class: 'Double',
-      name: 'payableAmount',
+      name: 'sumTotal',
       value: ''
     },
     {
       class: 'String',
-      name: 'formattedPayableAmount',
-      expression: function(payableAmount) {
-        return this.formatCurrency(payableAmount/100);
+      name: 'formattedSum',
+      expression: function(sumTotal) {
+        return this.formatCurrency(sumTotal / 100);
       }
     },
     {
       name: 'summaryCards',
-      value: []
-    }
+      expression: function(
+          overDueSummaryCard,
+          dueSummaryCard,
+          pendingSummaryCard,
+          scheduledSummaryCard,
+          paidSummaryCard
+      ) {
+        return Array.from(arguments).filter((summaryCard) => !!summaryCard);
+      }
+    },
+    'overDueSummaryCard',
+    'dueSummaryCard',
+    'pendingSummaryCard',
+    'scheduledSummaryCard',
+    'paidSummaryCard',
   ],
 
   methods: [
@@ -131,21 +144,76 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('blue-card-title')
-          .add(this.title)
+          .add(this.sumLabel)
           .start()
             .addClass('thin-align')
-            .add(this.formattedPayableAmount$)
+            .add(this.formattedSum$)
           .end()
           .on('click', () => {
             this.disableAllSummaryCards();
             this.pub('statusReset');
           })
         .end()
-        .add(this.buildSummaryCard('Overdue', 'overDue'))
-        .add(this.buildSummaryCard('Due', 'due'))
-        .add(this.buildSummaryCard('Pending', 'pending'))
-        .add(this.buildSummaryCard('Scheduled', 'scheduled'))
-        .add(this.buildSummaryCard('Paid', 'paid'));
+        .start('span')
+          .tag(this.SummaryCard, {
+            count$: this.overDueCount$,
+            amount$: this.overDueAmount$,
+            status: this.overDueLabel
+          }, this.overDueSummaryCard$)
+          .on('click', this.handleClick(this.overDueSummaryCard$, 'Overdue'))
+        .end()
+        .start('span')
+          .tag(this.SummaryCard, {
+            count$: this.dueCount$,
+            amount$: this.dueAmount$,
+            status: this.dueLabel
+          }, this.dueSummaryCard$)
+          .on('click', this.handleClick(this.dueSummaryCard$, 'Due'))
+        .end()
+        .start('span')
+          .tag(this.SummaryCard, {
+            count$: this.pendingCount$,
+            amount$: this.pendingAmount$,
+            status: this.pendingLabel
+          }, this.pendingSummaryCard$)
+          .on('click', this.handleClick(this.pendingSummaryCard$, 'Pending'))
+        .end()
+        .start('span')
+          .tag(this.SummaryCard, {
+            count$: this.scheduledCount$,
+            amount$: this.scheduledAmount$,
+            status: this.scheduledLabel
+          }, this.scheduledSummaryCard$)
+          .on('click',
+              this.handleClick(this.scheduledSummaryCard$, 'Scheduled'))
+        .end()
+        .start('span')
+          .tag(this.SummaryCard, {
+            count$: this.paidCount$,
+            amount$: this.paidAmount$,
+            status: this.paidLabel
+          }, this.paidSummaryCard$)
+          .on('click', this.handleClick(this.paidSummaryCard$, 'Paid'))
+        .end();
+    },
+
+    /**
+     * When a summary card is clicked, toggle its state between active and
+     * inactive. Will also publish an event broadcasting the new state.
+     * @param {Slot<SummaryCard>} card$ A slot of a card.
+     * @param {String} status An invoice status.
+     */
+    function handleClick(card$, status) {
+      return () => {
+        var card = card$.get();
+        if ( card.active ) {
+          this.pub('statusReset');
+        } else {
+          this.disableAllSummaryCards();
+          this.pub('statusChange', status);
+        }
+        card.toggle();
+      }
     },
 
     function disableAllSummaryCards() {
@@ -154,25 +222,14 @@ foam.CLASS({
           .forEach((card) => card.toggle());
     },
 
-    function buildSummaryCard(status, propertyNamePrefix) {
-      var card = this.SummaryCard.create({
-        count$: this[`${propertyNamePrefix}Count$`],
-        amount$: this[`${propertyNamePrefix}Amount$`],
-        status: this[`${propertyNamePrefix}Label`]
-      });
-      card.on('click', () => {
-        if ( card.active ) {
-          this.pub('statusReset');
-        } else {
-          this.disableAllSummaryCards();
-          this.pub('statusChange', status);
-        }
-        card.toggle();
-      });
-      this.summaryCards.push(card);
-      return card;
-    },
-
+    /**
+     * Calculate properties on this model that store the number of invoices in
+     * each status as well as the sum of the amounts of the invoices in each
+     * status.
+     * @param {String} status An invoice status.
+     * @param {String} propertyNamePrefix The prefix of the property names on
+     * this model that are going to store the values.
+     */
     async function calculatePropertiesForStatus(status, propertyNamePrefix) {
       var dao = this.dao.where(this.EQ(this.Invoice.STATUS, status));
       var count = await dao.select(this.COUNT());
@@ -190,7 +247,7 @@ foam.CLASS({
         this.dao
             .where(this.NEQ(this.Invoice.STATUS, 'Void'))
             .select(this.SUM(this.Invoice.AMOUNT))
-            .then((sum) => { this.payableAmount = sum.value.toFixed(2); });
+            .then((sum) => { this.sumTotal = sum.value.toFixed(2); });
 
         this.calculatePropertiesForStatus('Overdue', 'overDue');
         this.calculatePropertiesForStatus('Due', 'due');
