@@ -26,6 +26,10 @@ public class AccountDeletedEmailDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.remove_(x, obj);
+    }
+
     BankAccount  account = (BankAccount) super.remove_(x, obj);
     AppConfig    config  = (AppConfig) x.get("appConfig");
     User         owner   = (User) userDAO_.find_(x, account.getOwner());

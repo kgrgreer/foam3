@@ -1,4 +1,4 @@
-package net.nanopay.cico;
+package net.nanopay.bank;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -30,6 +30,10 @@ public class RandomDepositBankAccountDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.put_(x, obj);
+    }
+
     BankAccount account = (BankAccount) obj;
     boolean newAccount = ( getDelegate().find(account.getId()) == null );
 

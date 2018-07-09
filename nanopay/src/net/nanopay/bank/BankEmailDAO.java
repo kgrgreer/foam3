@@ -26,6 +26,9 @@ public class BankEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.put_(x, obj);
+    }
 
     BankAccount account = (BankAccount) obj;
     User        user    = (User) userDAO_.find_(x, account.getOwner());
