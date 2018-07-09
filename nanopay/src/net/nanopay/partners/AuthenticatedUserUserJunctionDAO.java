@@ -80,8 +80,11 @@ public class AuthenticatedUserUserJunctionDAO
   @Override
   public FObject find_(X x, Object id) {
     FObject result = super.find_(x, id);
+    if (result == null) {
+      return null;
+    }
     checkOwnership(x, result, GLOBAL_USER_USER_JUNCTION_READ);
-    return super.find_(x, id);
+    return result;
   }
 
   @Override
