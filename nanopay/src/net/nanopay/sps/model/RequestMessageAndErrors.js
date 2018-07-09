@@ -6,11 +6,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
-      name: 'msgNum',
+      name: 'msgType',
     },
     {
       class: 'Int',
-      name: 'packetNum'
+      name: 'packetType'
     },
     {
       class: 'String',
@@ -30,8 +30,8 @@ foam.CLASS({
         cls.extras.push(`
 {
 list = new ArrayList<>();
-list.add(MSG_NUM);
-list.add(PACKET_NUM);
+list.add(MSG_TYPE);
+list.add(PACKET_TYPE);
 list.add(TEXT_MESSAGE);
 }
         `);

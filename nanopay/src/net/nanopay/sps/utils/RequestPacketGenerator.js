@@ -16,11 +16,10 @@ foam.CLASS({
 protected List<PropertyInfo> list;
 public String toSPSString() {
   StringBuilder sb = new StringBuilder();   
-  //interate list
+
   for (int i = 0; i < list.size(); i++) {
     PropertyInfo propertyInfo = list.get(i);
     if (propertyInfo.isSet(this) && propertyInfo.get(this) != null ) {
- 
       if ( propertyInfo instanceof AbstractFObjectPropertyInfo ) {
        // append xml field
         sb.append(((RequestPacketGenerator)propertyInfo.get(this)).toSPSString());

@@ -57,7 +57,7 @@ list.add(UserInfo.PTC);
 
 public String toSPSString() {
   StringBuilder sb = new StringBuilder();   
-  //interate list
+  
   for (int i = 0; i < list.size(); i++) {
     PropertyInfo propertyInfo = list.get(i);
     sb.append("[" + propertyInfo.getName().toUpperCase() + "]" + propertyInfo.get(this) + "[/" + propertyInfo.getName().toUpperCase() + "]");
@@ -69,14 +69,6 @@ public String toSPSString() {
         `);
       }
     }
-  ],
-
-  methods: [
-    {
-      name: 'test',
-      javaCode:
-        `System.out.println("111");
-`
-    }
   ]
+
 });

@@ -17,10 +17,9 @@ foam.CLASS({
         cls.extras.push(`
 protected static List<PropertyInfo> list;
 public void parseSPSResponse(String response) throws IllegalAccessException, InstantiationException{
-  //String[] temp = response.split("");
   ClassInfo classInfo = classInfo_;
-  System.out.println("aaa");
-  if ( response == null ) {
+  if ( response == null && response.length() == 0 ) {
+    return;
   }
   
   Object[] values;
@@ -32,9 +31,7 @@ public void parseSPSResponse(String response) throws IllegalAccessException, Ins
   ps.setString(response);
   Parser parser = new Repeat(new SPSStringParser(), new Literal("" + delimiter));
   PStream ps1 = ps.apply(parser, null);
-  System.out.println("bbb");
   if ( ps1 == null ) throw new RuntimeException("format error");
-  System.out.println("ccc");
   
   values = (Object[]) ps1.value();
   
@@ -42,7 +39,6 @@ public void parseSPSResponse(String response) throws IllegalAccessException, Ins
   System.out.println("values length = " + values.length);
   
   for ( int i = 0; i < list.size(); i++ ) {
-    // System.out.println(values[i]);
     ((PropertyInfo)list.get(i)).set(this, ((PropertyInfo)list.get(i)).fromString((String) values[i]));
   }
 
