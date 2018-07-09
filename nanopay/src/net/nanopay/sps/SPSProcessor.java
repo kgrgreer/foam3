@@ -8,11 +8,15 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -24,76 +28,77 @@ public class SPSProcessor {
     //Logger logger = (Logger) x.get("logger");
 
     String generatedData = generateTestGeneralRequest();
+    String url = "https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi";
+
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPost post = new HttpPost(url);
+
+    List<NameValuePair> urlParameters = new ArrayList<>();
+    urlParameters.add(new BasicNameValuePair("packet", generatedData));
 
     try {
-      String url = "https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi";
-
-      HttpClient client = new DefaultHttpClient();
-      HttpPost post = new HttpPost(url);
-
-      List<NameValuePair> urlParameters = new ArrayList<>();
-      urlParameters.add(new BasicNameValuePair("packet", generatedData));
       post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
-      HttpResponse httpResponse = client.execute(post);
+      try (CloseableHttpResponse httpResponse = httpClient.execute(post)) {
+        System.out.println("Sending 'POST' request to URL : " + url);
+        System.out.println("Response Code : " + httpResponse.getStatusLine().getStatusCode());
 
-      System.out.println("Sending 'POST' request to URL : " + url);
-      System.out.println("Post parameters : " + post.getEntity());
-      System.out.println("Response Code : " +
-        httpResponse.getStatusLine().getStatusCode());
+        BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 
-      BufferedReader rd = new BufferedReader(
-        new InputStreamReader(httpResponse.getEntity().getContent()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+          sb.append(line);
+        }
 
-      StringBuilder sb = new StringBuilder();
-      String line;
-      while ((line = rd.readLine()) != null) {
-        sb.append(line);
-      }
+        String response = sb.toString();
+        System.out.println(response);
 
-      String response = sb.toString();
-      System.out.println(response);
+        String responsePacketType = response.substring(4, 8);
+        System.out.println("type: " + responsePacketType);
 
-      String responsePacketType = response.substring(4, 8);
-      System.out.println("type: " + responsePacketType);
-
-      switch (responsePacketType) {
-        case "2011":
-          // GeneralRequestResponse
-          GeneralRequestResponse generalRequestResponse = new GeneralRequestResponse();
-          generalRequestResponse.parseSPSResponse(response);
-          System.out.println("2011-GeneralRequestResponse: " + generalRequestResponse);
-          break;
-        case "2031":
-          // BatchDetailGeneralResponse
-          BatchDetailGeneralResponse batchDetailGeneralResponse = new BatchDetailGeneralResponse();
-          batchDetailGeneralResponse.parseSPSResponse(response);
-          System.out.println("2031-BatchDetailGeneralResponse: " + batchDetailGeneralResponse);
-          break;
-        case "2033":
-          // DetailResponse
-          DetailResponse detailResponse = new DetailResponse();
-          detailResponse.parseSPSResponse(response);
-          System.out.println("2033-BatchDetailGeneralResponse: " + detailResponse);
-          break;
-        case "2090":
-          // RequestMessageAndErrors
-          RequestMessageAndErrors requestMessageAndErrors = new RequestMessageAndErrors();
-          requestMessageAndErrors.parseSPSResponse(response);
-          System.out.println("2090-BatchDetailGeneralResponse: " + requestMessageAndErrors);
-          break;
-        case "2091":
-          // HostError
-          HostError hostError = new HostError();
-          hostError.parseSPSResponse(response);
-          System.out.println("2091-BatchDetailGeneralResponse: " + hostError);
-          break;
+        switch (responsePacketType) {
+          case "2011":
+            // GeneralRequestResponse
+            GeneralRequestResponse generalRequestResponse = new GeneralRequestResponse();
+            generalRequestResponse.parseSPSResponse(response);
+            System.out.println("2011-GeneralRequestResponse: " + generalRequestResponse);
+            break;
+          case "2031":
+            // BatchDetailGeneralResponse
+            BatchDetailGeneralResponse batchDetailGeneralResponse = new BatchDetailGeneralResponse();
+            batchDetailGeneralResponse.parseSPSResponse(response);
+            System.out.println("2031-BatchDetailGeneralResponse: " + batchDetailGeneralResponse);
+            break;
+          case "2033":
+            // DetailResponse
+            DetailResponse detailResponse = new DetailResponse();
+            detailResponse.parseSPSResponse(response);
+            System.out.println("2033-BatchDetailGeneralResponse: " + detailResponse);
+            break;
+          case "2090":
+            // RequestMessageAndErrors
+            RequestMessageAndErrors requestMessageAndErrors = new RequestMessageAndErrors();
+            requestMessageAndErrors.parseSPSResponse(response);
+            System.out.println("2090-BatchDetailGeneralResponse: " + requestMessageAndErrors);
+            break;
+          case "2091":
+            // HostError
+            HostError hostError = new HostError();
+            hostError.parseSPSResponse(response);
+            System.out.println("2091-BatchDetailGeneralResponse: " + hostError);
+            break;
+        }
       }
     } catch (IOException | IllegalAccessException | InstantiationException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        httpClient.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
-
-
   }
 
   private String generateTestGeneralRequest() {
