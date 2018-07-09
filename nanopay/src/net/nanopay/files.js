@@ -23,10 +23,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/AppConfig' },
-  { name: 'net/nanopay/liquidity/model/Threshold' },
-  { name: 'net/nanopay/liquidity/model/Liquidity' },
-  { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
-  { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
@@ -268,12 +264,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PublicKeyDAO' },
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
-
-  // bank
-  { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/BankDetailView', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
