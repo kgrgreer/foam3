@@ -158,8 +158,8 @@ foam.CLASS({
 
       var self = this;
       this.transactionDAO.put(this.Transaction.create({
-        payerId: this.user.id,
-        payeeId: this.transactionUser.id,
+        sourceAccount: this.user.id,
+        destinationAccount: this.transactionUser.id,
         amount: this.transaction.amount,
         deviceId: this.device.id,
         refundTransactionId: this.transaction.id,

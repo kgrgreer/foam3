@@ -8,13 +8,14 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import net.nanopay.account.CurrentBalance;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.account.DigitalAccount;
 
 import java.util.List;
 
 public class TransactionBenchmark
   implements Benchmark
 {
-  List users = null;
+  List accounts = null;
   List currentBalances = null;
 
   protected DAO userDAO_;
@@ -29,7 +30,7 @@ public class TransactionBenchmark
 
     Sink sink = new ArraySink();
     sink = userDAO_.select(sink);
-    users = ((ArraySink) sink).getArray();
+    accounts = ((ArraySink) sink).getArray();
 
     sink = new ArraySink();
     sink = currentBalanceDAO_.select(sink);
@@ -41,8 +42,8 @@ public class TransactionBenchmark
       currentBalanceDAO_.put(currentBalance);
     }
 
-    for ( int i = 0 ; i < users.size() ; i++ ) {
-      User user = (User) users.get(i);
+    for ( int i = 0 ; i < accounts.size() ; i++ ) {
+      DigitalAccount user = (DigitalAccount) accounts.get(i);
       CurrentBalance currentBalance = (CurrentBalance) currentBalanceDAO_.find(user.getId());
       if ( currentBalance == null ) {
         currentBalance = new CurrentBalance();
@@ -55,17 +56,17 @@ public class TransactionBenchmark
 
   @Override
   public void execute(X x) {
-    int fi = (int) (Math.random() * users.size());
-    int ti = (int) (Math.random() * users.size());
+    int fi = (int) (Math.random() * accounts.size());
+    int ti = (int) (Math.random() * accounts.size());
     int amount = (int) ((Math.random() + 0.1) * 10000);
 
-    long payeeId = ((User) users.get(ti)).getId();
-    long payerId = ((User) users.get(fi)).getId();
+    long destinationAccount = ((DigitalAccount) accounts.get(ti)).getId();
+    long sourceAccount = ((DigitalAccount) accounts.get(fi)).getId();
 
-    if ( payeeId != payerId ) {
+    if ( sourceAccount != destinationAccount ) {
       Transaction transaction = new Transaction();
-      transaction.setPayeeId(payeeId);
-      transaction.setPayerId(payerId);
+      transaction.setSourceAccount(sourceAccount);
+      transaction.setDestinationAccount(destinationAccount);
       transaction.setAmount(amount);
       transactionDAO_.put(transaction);
     }

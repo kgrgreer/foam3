@@ -26,7 +26,7 @@ public class InteracTransactionDAO
     DAO indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
 
     Transaction transaction = (Transaction) obj;
-    if ( transaction.getPayerId() <= 0 ) {
+    if ( transaction.getSourceAccount() <= 0 ) {
       throw new RuntimeException("Invalid Payer id");
     }
 

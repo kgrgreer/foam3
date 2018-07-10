@@ -8,10 +8,12 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.interac.ui.CountdownView',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.DigitalAccount'
   ],
 
   imports: [
+    'accountDAO',
     'user',
     'transactionDAO'
   ],
@@ -302,10 +304,14 @@ foam.CLASS({
           this.countdownView.hide();
           this.countdownView.reset();
 
+          var destinationAccount = this.accountDAO.find(this.AND(
+            this.EQ(this.DigitalAccount.DENOMINATION, this.this.invoice.targetCurrency),
+            this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id)
+          ));
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
-            payerId: this.user.id,
-            payeeId: this.viewData.payee.id,
+            sourceAccountId: this.user.id,
+            destinationAccount: destinationAccount.id,
             amount: Math.round(this.viewData.fromAmount * 100),
             rate: this.viewData.rate.toString(),
             fees: Math.round(this.viewData.fees * 100),

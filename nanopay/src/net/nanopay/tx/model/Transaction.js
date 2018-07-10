@@ -127,8 +127,8 @@ foam.CLASS({
       //class: 'Reference',
       //of: 'foam.nanos.auth.User',
       class: 'Long',
-      name: 'payerId',
-      label: 'Payer',
+      name: 'sourceAccount',
+      label: 'Source account',
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payerId, obj, axiom) {
         this.start()
@@ -143,8 +143,8 @@ foam.CLASS({
       //class: 'Reference',
       //of: 'foam.nanos.auth.User',
       class: 'Long',
-      name: 'payeeId',
-      label: 'Payee',
+      name: 'destinationAccount',
+      label: 'Destination Account',
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payeeId, obj, axiom) {
         this.start()
@@ -193,7 +193,7 @@ foam.CLASS({
           .end();
       }
     },
-    {
+     {
       // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
       class: 'Reference',
       of: 'net.nanopay.bank.BankAccount',
@@ -355,17 +355,17 @@ foam.CLASS({
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
-             new Transfer(getPayerId(), -getTotal(), getCurrencyCode())
+             new Transfer(getSourceAccount(), -getTotal())
           };
         }
         if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
-            new Transfer(getPayeeId(), getTotal(), getCurrencyCode())
+            new Transfer(getDestinationAccount(), getTotal())
           };
         }
         return new Transfer[] {
-             new Transfer(getPayerId(), -getTotal(), getCurrencyCode()),
-             new Transfer(getPayeeId(),  getTotal(), getCurrencyCode())
+             new Transfer(getSourceAccount(), -getTotal()),
+             new Transfer(getDestinationAccount(),  getTotal())
         };
       `
     }

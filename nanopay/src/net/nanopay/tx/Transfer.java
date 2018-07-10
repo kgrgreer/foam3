@@ -19,10 +19,9 @@ public class Transfer
   protected Balance balance_ = null;
   protected String  currency_;
 
-  public Transfer(long accountId, long amount, String currency) {
+  public Transfer(long accountId, long amount) {
     accountId_ = accountId;
     amount_ = amount;
-    currency_ = currency;
   }
 
   public Object getLock() {
@@ -41,7 +40,6 @@ public class Transfer
     return balance_;
   }
 
-  public String getCurrency() { return currency_; }
 
   public int compareTo(Object other) {
     Transfer t2 = (Transfer) other;
@@ -63,7 +61,7 @@ public class Transfer
     user_ = user;
 
     DAO     balanceDAO = (DAO) x.get("localBalanceDAO");
-    Balance balance    = (Balance) balanceDAO.find(EQ(Balance.ACCOUNT, getAccountId()));
+    Balance balance    = (Balance) balanceDAO.find(getAccountId());
     if ( balance == null ) {
       balance_ = new Balance();
       balance_.setAccount(getAccountId());
