@@ -63,14 +63,7 @@ foam.CLASS({
       name: 'verificationAttempts',
       value: 0,
       visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'Boolean',
-      name: 'isDefault',
-      aliases: ['setAsDefault'],
-      label: 'Set As Default',
-      value: false
-    },
+    }
   ],
 
   methods: [

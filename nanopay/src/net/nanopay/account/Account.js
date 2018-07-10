@@ -35,7 +35,13 @@ foam.CLASS({
       documentation: 'Unit of measure of the balance - such as Currency. The value of the denomication is the currency code, for example.',
       class: 'String',
       name: 'denomination'
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'isDefault',
+      label: 'Set As Default',
+      value: false
+    },
     // TDODO: access/scope: public, private
   ],
 
