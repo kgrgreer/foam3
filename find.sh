@@ -92,6 +92,32 @@ do
       cat deployment/$MODE/$INSTANCE/$VERSION/$file >> "$OUT_DIR/$journal_file"
   fi
 
+  # .jnl files - transition
+  if  [[ -f "foam2/src/${file}.jnl" ]]; then
+      cat "foam2/src/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "nanopay/src/${file}.jnl" ]]; then
+      cat "nanopay/src/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "interac/src/${file}.jnl" ]]; then
+      cat "interac/src/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "deployment/${file}.jnl" ]]; then
+      cat "deployment/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "deployment/$MODE/${file}.jnl" ]]; then
+      cat "deployment/$MODE/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "deployment/$MODE/$INSTANCE/${file}.jnl" ]]; then
+      cat "deployment/$MODE/$INSTANCE/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "deployment/$MODE/$VERSION/${file}.jnl" ]]; then
+      cat "deployment/$MODE/$VERSION/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jnl" ]]; then
+      cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jnl" >> "$OUT_DIR/$journal_file"
+  fi
+
 done
 
 exit 0
