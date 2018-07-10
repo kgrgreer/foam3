@@ -142,6 +142,7 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAO',
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
+  'net.nanopay.security.MessageDigest',
 
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView'

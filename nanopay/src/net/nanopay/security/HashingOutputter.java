@@ -1,6 +1,8 @@
 package net.nanopay.security;
 
+import foam.core.FObject;
 import foam.lib.json.OutputterMode;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,6 +44,38 @@ public class HashingOutputter
     this.mode_ = mode;
     this.writer_ = new HashingWriter(algorithm, writer);
     this.hashingWriter_ = (HashingWriter) this.writer_;
+  }
+
+  @Override
+  public String stringify(FObject obj) {
+    super.stringify(obj);
+    outputDigest();
+    return stringWriter_.toString();
+  }
+
+  @Override
+  public String stringifyDelta(FObject oldFObject, FObject newFObject) {
+    super.stringifyDelta(oldFObject, newFObject);
+    outputDigest();
+    return stringWriter_.toString();
+  }
+
+  protected void outputDigest() {
+    String algorithm = hashingWriter_.getAlgorithm();
+    String digest = Hex.toHexString(hashingWriter_.digest());
+    stringWriter_.append(",{")
+      .append(beforeKey_())
+      .append("algorithm")
+      .append(afterKey_())
+      .append(":\"")
+      .append(escape(algorithm))
+      .append("\",")
+      .append(beforeKey_())
+      .append("digest")
+      .append(afterKey_())
+      .append(":\"")
+      .append(digest)
+      .append("\"}");
   }
 
   public byte[] digest() {
