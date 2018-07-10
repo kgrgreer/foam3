@@ -17,10 +17,16 @@ public class HashedFObjectParser
   public HashedFObjectParser(final Class defaultClass) {
     super(
       new Parser() {
+
+        private Parser parser1 = new FObjectParser(defaultClass);
+        private Parser parser2 = new Seq1(1,
+          new Optional(new Literal(",")),
+          new FObjectParser(net.nanopay.security.MessageDigest.class));
+
         @Override
         public PStream parse(PStream ps, ParserContext x) {
           // parse FObject
-          PStream ps1 = ps.apply(new FObjectParser(defaultClass), x);
+          PStream ps1 = ps.apply(parser1, x);
           if ( ps1 == null || ps1.value() == null ) {
             throw new RuntimeException("Digest verification failed");
           }
@@ -29,10 +35,7 @@ public class HashedFObjectParser
           String message = ps.substring(ps1);
 
           // parse message digest
-          PStream ps2 = ps1.apply(new Seq1(1,
-            new Optional(new Literal(",")),
-            new FObjectParser(net.nanopay.security.MessageDigest.class)
-          ), x);
+          PStream ps2 = ps1.apply(parser2, x);
           if ( ps2 == null ) {
             return ps.setValue(ps1.value());
           }
