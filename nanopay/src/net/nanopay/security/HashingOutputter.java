@@ -43,4 +43,8 @@ public class HashingOutputter
     this.writer_ = new HashingWriter(algorithm, writer);
     this.hashingWriter_ = (HashingWriter) this.writer_;
   }
+
+  public byte[] digest() {
+    return hashingWriter_.digest();
+  }
 }
