@@ -9,6 +9,7 @@ import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
@@ -39,22 +40,25 @@ public class TransactionLimitCheckDAO
   public FObject put_(X x, FObject fObject) throws RuntimeException {
     Transaction transaction = (Transaction) fObject;
 
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
+    Account payerAcc = (Account) accountDAO.find(transaction.getSourceAccount());
+    Account payeeAcc = (Account) accountDAO.find(transaction.getSourceAccount());
     DAO userDAO = (DAO)  getX().get("localUserDAO");
-    User payee  = (User) userDAO.find(transaction.getPayeeId());
-    User payer  = (User) userDAO.find(transaction.getPayerId());
+    User payee  = (User) payeeAcc.getOwner();
+    User payer  = (User) payerAcc.getOwner();
 
     if ( payee == null || payer == null ) {
       throw new RuntimeException("No Payer or Payee.");
     }
 
     // If It's CICO transaction, ignore transaction limits.
-    if ( transaction.getPayeeId() == transaction.getPayerId() ) {
+    if ( payerAcc == payeeAcc ) {
       return getDelegate().put_(x, transaction);
     }
 
 
-    Object firstLock  = String.valueOf(transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayerId() : transaction.getPayeeId()).intern();
-    Object secondLock = String.valueOf(transaction.getPayerId() < transaction.getPayeeId() ? transaction.getPayeeId() : transaction.getPayerId()).intern();
+    Object firstLock  = String.valueOf(transaction.getSourceAccount() < transaction.getDestinationAccount() ? transaction.getSourceAccount() : transaction.getDestinationAccount()).intern();
+    Object secondLock = String.valueOf(transaction.getSourceAccount() < transaction.getDestinationAccount() ? transaction.getDestinationAccount() : transaction.getSourceAccount()).intern();
 
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {
@@ -142,7 +146,7 @@ public class TransactionLimitCheckDAO
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
     DAO list = getDelegate().where(AND(
-        EQ(user.getId(), ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
+        EQ(user.getId(), ( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ) ),
         NEQ(Transaction.TYPE, TransactionType.CASHOUT ),
         NEQ(Transaction.TYPE, TransactionType.CASHIN ),
         GTE(Transaction.DATE, firstDate ),

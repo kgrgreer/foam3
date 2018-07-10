@@ -6,6 +6,8 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
+import net.nanopay.account.Balance;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.account.CurrentBalance;
 import net.nanopay.bank.BankAccount;
@@ -37,21 +39,21 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
   @Override
   public void execute(X x) {
     long bankId;
-    DAO  userDAO_             = (DAO) x.get("localUserDAO");
-    DAO  currentBalanceDAO_   = (DAO) x.get("localCurrentBalanceDAO");
+    DAO  accountDAO_             = (DAO) x.get("localAccountDAO");
+    DAO  balanceDAO_   = (DAO) x.get("localBalanceDAO");
     DAO  bankAccountDAO_      = (DAO) x.get("localAccountDAO");
     DAO  liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
     DAO  groupDAO             = (DAO) x.get("groupDAO");
     DAO transactionDAO_       = (DAO) x.get("localTransactionDAO");
-    List users                = ((ArraySink)userDAO_.select(new ArraySink())).getArray();
+    List accounts                = ((ArraySink)accountDAO_.select(new ArraySink())).getArray();
     long balance;
 
-    for ( int i = 0 ; i < users.size() ; i++ ) {
-      User    user = (User) users.get(i);
-      CurrentBalance currentBalance  = (CurrentBalance) currentBalanceDAO_.find(((User) users.get(i)).getId());
+    for ( int i = 0 ; i < accounts.size() ; i++ ) {
+      Account    account = (Account) accounts.get(i);
+      Balance currentBalance  = (Balance) balanceDAO_.find(((Account) accounts.get(i)).getId());
       //DAO banks = user.getBankAccounts();
       BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
-              EQ(BankAccount.OWNER, user.getId()),
+              EQ(BankAccount.OWNER, account.getOwner()),
               EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
               )
       );
@@ -61,13 +63,13 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
         bankId = bank.getId();
       } else continue;
 
-      LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(user.getId());
+      LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(account.getId());
 
       List transactions = ((ArraySink) transactionDAO_.where(AND(
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         EQ(Transaction.TYPE, TransactionType.CASHIN),
-        EQ(Transaction.PAYEE_ID, user.getId()),
-        EQ(Transaction.PAYER_ID, user.getId())
+        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
+        EQ(Transaction.SOURCE_ACCOUNT, account.getId())
       )).select(new ArraySink())).getArray();
       pendingCashinAmount = 0;
       for ( Object transaction: transactions) {
@@ -80,13 +82,13 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
           bankId = ls.getBankAccountId();
         }
         if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-          addTransaction(x, user.getId(), bankId);
+          addTransaction(x, account.getId(), bankId);
         }
-      } else{
-        Group group = (Group) groupDAO.find(user.getGroup());
+      } else {
+        Group group = (Group) groupDAO.find(((User) account.getOwner()).getGroup());
         ls = group.getLiquiditySettings();
         if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-          addTransaction(x, user.getId(), bankId);
+          addTransaction(x, account.getId(), bankId);
         }
       }
     }
@@ -108,10 +110,10 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     return false;
   }
 
-  public void addTransaction(X x, long userId, long bankId){
+  public void addTransaction(X x, long accountId, long bankId){
     Transaction transaction = new Transaction.Builder(x)
-            .setPayeeId(userId)
-            .setPayerId(userId)
+            .setDestinationAccount(accountId)
+            .setSourceAccount(accountId)
             .setAmount(amount_)
             .setType(type_)
             .setBankAccountId(bankId)

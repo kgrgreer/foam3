@@ -73,8 +73,8 @@ public class ScheduleInvoiceCron
         }
 
         long invAmount = invoice.getAmount();
-        transaction.setDestinationAccount((Long) invoice.getDestinationId());
-        transaction.setSourceAccount((Long) invoice.getSourceId());
+        transaction.setDestinationAccount((Long) invoice.getDestinationAccount());
+        transaction.setSourceAccount((Long) invoice.getAccount());
         transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
 
