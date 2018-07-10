@@ -35,7 +35,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new RuntimeException("Cannot put null");
     }
     // Check if the user is the creator of the invoice or if the user is admin.
-    if ( invoice.getCreatedBy() != user.getId() && ! isAdmin(user)) {
+    if ( ! this.isRelated(user, invoice) && ! isAdmin(user)) {
       throw new RuntimeException("Permission denied");
     }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
