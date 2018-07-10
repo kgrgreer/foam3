@@ -22,7 +22,7 @@ foam.CLASS({
       },
       javaReturns: 'Object',
       javaCode: `
-        return OL;
+        return 0L;
       `
     }
   ]

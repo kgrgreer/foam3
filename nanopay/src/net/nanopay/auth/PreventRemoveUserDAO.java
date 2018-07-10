@@ -2,12 +2,17 @@ package net.nanopay.auth;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.dao.Sink;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
@@ -29,13 +34,14 @@ public class PreventRemoveUserDAO
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 
+    List accounts= ((ArraySink) user.getAccounts().select(new ArraySink())).getArray();
 
     total = ((Count) transactionDAO.where(
-        EQ(Transaction.PAYER_ID, user.getId())).limit(1).select(count)).getValue();
+        EQ(Transaction.SOURCE_ACCOUNT, accounts)).limit(1).select(count)).getValue();
 
     if ( total == 0 )
       total += ((Count) transactionDAO.where(
-        EQ(Transaction.PAYEE_ID, user.getId())).limit(1).select(count)).getValue();
+        EQ(Transaction.DESTINATION_ACCOUNT, accounts)).limit(1).select(count)).getValue();
 
     if ( total == 0 ) {
       total += ((Count) invoiceDAO.where(

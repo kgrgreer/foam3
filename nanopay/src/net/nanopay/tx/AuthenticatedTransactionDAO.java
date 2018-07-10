@@ -41,7 +41,7 @@ public class AuthenticatedTransactionDAO
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ! SafetyUtil.equals(t.getPayerId(), user.getId()) && ! TransactionType.REQUEST.equals(t.getType()) ) {
+    if ( ! SafetyUtil.equals(t.getSourceAccount(), user.getId()) && ! TransactionType.REQUEST.equals(t.getType()) ) {
       throw new RuntimeException("User is not the payer");
     }
 
@@ -58,7 +58,7 @@ public class AuthenticatedTransactionDAO
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
-    if ( t != null && t.getPayerId() != user.getId() && t.getPayeeId() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t != null && t.getSourceAccount() != user.getId() && t.getDestinationAccount() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
 
@@ -76,7 +76,7 @@ public class AuthenticatedTransactionDAO
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
     DAO dao = global ? getDelegate() : getDelegate().where(
-      OR(EQ(Transaction.PAYER_ID, user.getId()), EQ(Transaction.PAYEE_ID, user.getId())));
+      OR(EQ(Transaction.SOURCE_ACCOUNT, user.getId()), EQ(Transaction.DESTINATION_ACCOUNT, user.getId())));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

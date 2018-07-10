@@ -30,7 +30,7 @@ public class InteracTransactionDAO
       throw new RuntimeException("Invalid Payer id");
     }
 
-    if ( transaction.getPayeeId() <= 0 ) {
+    if ( transaction.getDestinationAccount() <= 0 ) {
       throw new RuntimeException("Invalid Payee id");
     }
 

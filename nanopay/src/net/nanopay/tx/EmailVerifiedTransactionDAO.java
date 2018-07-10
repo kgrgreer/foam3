@@ -20,7 +20,7 @@ public class EmailVerifiedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    User user = (User) userDAO_.find_(x, transaction.getPayerId());
+    User user = (User) userDAO_.find_(x, transaction.getSourceAccount());
 
     if ( user == null || ! user.getEmailVerified() ) {
       switch ( transaction.getType() ) {

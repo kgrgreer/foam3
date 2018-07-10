@@ -145,10 +145,10 @@ public class CsvUtil {
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
-            user = (User) userDAO.find(t.getPayerId());
+            user = (User) userDAO.find(t.getSourceAccount());
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
-            user = (User) userDAO.find(t.getPayerId());
+            user = (User) userDAO.find(t.getSourceAccount());
           } else {
             // don't output if for whatever reason we get here and
             // the transaction is not a cash in or cash out

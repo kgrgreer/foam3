@@ -30,9 +30,9 @@ public class BankAccountInvoiceDAO
     // If It is a CICO Transaction, does not do anything.
     Transaction txn = (Transaction) obj;
 
-    if ( txn.getPayeeId() == txn.getPayerId() ) return super.put_(x, obj);
+    if ( txn.getDestinationAccount() == txn.getSourceAccount() ) return super.put_(x, obj);
 
-    long payerId = txn.getPayerId();
+    long payerId = txn.getSourceAccount();
     long amount  = txn.getAmount();
 
     if ( txn.getBankAccountId() == null ) return getDelegate().put_(x, obj);

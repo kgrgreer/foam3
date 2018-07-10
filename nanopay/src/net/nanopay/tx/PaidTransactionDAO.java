@@ -38,7 +38,7 @@ public class PaidTransactionDAO
       return transaction;
 
     // Returns if transaction is a cico transaction
-    if ( transaction.getPayeeId() == transaction.getPayerId() )
+    if ( transaction.getDestinationAccount() == transaction.getSourceAccount() )
       return transaction;
 
     if ( transaction.getType() != TransactionType.NONE && transaction.getStatus() != TransactionStatus.COMPLETED )
@@ -46,8 +46,8 @@ public class PaidTransactionDAO
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     AppConfig    config    = (AppConfig) x.get("appConfig");
-    User         user      = (User) userDAO_.find_(x, transaction.getPayeeId());
-    User         sender    = (User) userDAO_.find_(x, transaction.getPayerId());
+    User         user      = (User) userDAO_.find_(x, transaction.getDestinationAccount());
+    User         sender    = (User) userDAO_.find_(x, transaction.getSourceAccount());
     EmailService email     = (EmailService) x.get("email");
     EmailMessage message   = new EmailMessage();
 

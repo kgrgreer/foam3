@@ -127,8 +127,8 @@ public class LiquidityService
   {
     Transaction transaction = new Transaction.Builder(x)
         .setStatus(TransactionStatus.PENDING)
-        .setPayeeId(accountId)
-        .setPayerId(accountId)
+        .setDestinationAccount(accountId)
+        .setSourceAccount(accountId)
         .setAmount(amount)
         .setType(transactionType)
         .setBankAccountId(bankAccountId)
@@ -136,7 +136,7 @@ public class LiquidityService
     return getLocalTransactionDAO().put_(x, transaction);
   }
 
-  public long getCashInAmount(Long payerId, Long payerMinBalance) {
+  public long getCashInAmount(Long accountId, Long payerMinBalance) {
     ArraySink pendingBalanceList = new ArraySink();
 
     getLocalTransactionDAO().where(
@@ -145,11 +145,11 @@ public class LiquidityService
                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
                 EQ(Transaction.STATUS, TransactionStatus.SENT)),
             EQ(Transaction.TYPE, TransactionType.CASHIN),
-            EQ(Transaction.PAYER_ID, payerId),
-            EQ(Transaction.PAYEE_ID, payerId)))
+            EQ(Transaction.SOURCE_ACCOUNT, accountId),
+            EQ(Transaction.DESTINATION_ACCOUNT, accountId)))
         .select(pendingBalanceList);
 
-    long cashInAmount = payerMinBalance - ( (CurrentBalance) getBalanceDAO().find(payerId) ).getBalance();
+    long cashInAmount = payerMinBalance - ( (CurrentBalance) getBalanceDAO().find(accountId) ).getBalance();
     for ( Object object : pendingBalanceList.getArray() ) {
       Transaction transaction = (Transaction) getLocalTransactionDAO().find(object);
       if ( transaction.getStatus() == TransactionStatus.COMPLETED || transaction.getStatus() == TransactionStatus.DECLINED )

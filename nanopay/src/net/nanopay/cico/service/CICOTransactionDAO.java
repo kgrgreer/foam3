@@ -48,10 +48,10 @@ public class CICOTransactionDAO
     }
 
     //For cico, there is a transaction between the same acccount
-    if ( transaction.getPayeeId() == 0 &&  transaction.getPayerId() != 0 ) {
-      transaction.setPayeeId(transaction.getPayerId());
-    } else if ( transaction.getPayerId() == 0 &&  transaction.getPayeeId() != 0 ) {
-      transaction.setPayerId(transaction.getPayeeId());
+    if ( transaction.getDestinationAccount() == 0 &&  transaction.getSourceAccount() != 0 ) {
+      transaction.setDestinationAccount(transaction.getSourceAccount());
+    } else if ( transaction.getSourceAccount() == 0 &&  transaction.getDestinationAccount() != 0 ) {
+      transaction.setSourceAccount(transaction.getDestinationAccount());
     }
 
     try {
@@ -74,9 +74,9 @@ public class CICOTransactionDAO
     DAO bankAccountDAO = (DAO) getX().get("localAccountDAO");
     DAO userDAO = (DAO) getX().get("localUserDAO");
 
-    long payeeId = transaction.getPayeeId();
-    long payerId = transaction.getPayerId();
-    User payee = (User) userDAO.find(transaction.getPayeeId());
+    long payeeId = transaction.getSourceAccount();
+    long payerId = transaction.getSourceAccount();
+    User payee = (User) userDAO.find(transaction.getDestinationAccount());
     long total = transaction.getTotal();
     payee.setX(getX());
 
@@ -88,8 +88,8 @@ public class CICOTransactionDAO
 
     // Cashout invoice payee
     Transaction t = new Transaction();
-    t.setPayeeId(payeeId);
-    t.setPayerId(payeeId);
+    t.setDestinationAccount(payeeId);
+    t.setSourceAccount(payeeId);
     t.setBankAccountId(bankAccountPayee.getId());
     t.setInvoiceId(0);
     t.setAmount(total);

@@ -87,7 +87,7 @@ public class TransactionDAO
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal(), transaction.getCurrencyCode());
+          Transfer refound = new Transfer(transaction.getSourceAccount(), transaction.getTotal());
           refound.validate(x);
           refound.execute(x);
         }
@@ -174,9 +174,6 @@ public class TransactionDAO
         payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payeeBalance);
-    // if it's a transaction for different user, we need notify both
-    User payer = (User) getUserDAO().find(transaction.getPayerId());
-    User payee = (User) getUserDAO().find(transaction.getPayeeId());
   }
 
 
