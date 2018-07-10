@@ -10,7 +10,9 @@ foam.CLASS({
     'foam.doc.SimpleClassView',
     'foam.doc.GetRequestView',
     'foam.doc.PutRequestView',
-    'foam.doc.serviceListView'
+    'foam.doc.ServiceListView',
+    'foam.doc.ExampleRequestView',
+    'foam.doc.IntroductionView'
   ],
 
   imports: [
@@ -51,10 +53,13 @@ foam.CLASS({
       factory: function() {
         var path = 'foam.core.Property';
 
-        this.document.location.search.substring(1).split('&').forEach(function(s) {
-          s = s.split('=');
-          if ( s[0] === 'path' ) path = s[1];
-        });
+        this.document.location.search
+            .substring(1)
+            .split('&')
+            .forEach(function(s) {
+              s = s.split('=');
+              if ( s[0] === 'path' ) path = s[1];
+            });
 
         return path;
       }
@@ -126,11 +131,18 @@ foam.CLASS({
       width: 600px;
       overflow: scroll;
     }
+    ^ .className {
+      font-size: 25px;
+      margin: 30px 0px;
+      font-weight: 500;
+    }
   `,
 
   messages: [
-    { name: 'introMessage', message: 'Welcome to the nanopay API documentation. This API will give you the ability to connect your software to banking infrastructure to move money, store funds, and verify bank accounts.'},
-    { name: 'makingRequests', message: 'Request and response bodies are JSON encoded. Requests must contain api credentials (email/password provided by nanopay) on the authorization tag. Data contained in the table views below model details display available properties on the model. Those that are required are added to the examples shown on each service call.' }
+    {
+      name: 'Title',
+      message: 'API Documentation'
+    }
   ],
 
   methods: [
@@ -140,27 +152,36 @@ foam.CLASS({
 
       this.start()
         .start().addClass(this.myClass())
-          .add(this.serviceListView.create())
-          .start('h2').add('API Documentation').end()
-          .start().addClass('light-roboto-h2').add(this.introMessage).end()
-          .start('h2').add('Making Requests').end()
-          .start().addClass('light-roboto-h2').add(this.makingRequests).br().br().end()
-          .start().addClass('light-roboto-h2').addClass('sml').add('Below is an example GET request to the pacs008ISOPurposeDAO using curl:').end()
-          .start().addClass('small-roboto').add(this.GetRequestView.create({ data: 'pacs008ISOPurposeDAO' })).end()
-          .start().addClass('light-roboto-h2').addClass('sml').br().add('Below is an example POST request to the pacs008ISOPurposeDAO using curl (POST requests can create and update objects):').end()
-          .start().addClass('small-roboto').add(this.PutRequestView.create({ data: { n: { name : 'pacs008ISOPurposeDAO' }, props : '"type":"String"'}})).end()
+          .add(this.ServiceListView.create())
+          .start('h2')
+            .add(this.Title)
+          .end()
+          .start()
+            .add(this.ExampleRequestView.create())
+          .end()
           .select(this.AuthenticatedNSpecDAO, function(n) {
             var model = self.parseClientModel(n);
             if ( ! model ) return;
             var dataProps = self.requiredProperties(model);
-            this.start().addClass(n.name)
-              .style({ 'font-size' : '25px', 'margin' : '30px 0px', 'font-weight': '500'})
+            this.start().addClass(n.name).addClass('className')
               .add(n.name)
-              .attrs({ id : n.name })
+              .attrs({
+                id: n.name
+              })
             .end()
+            .callIf(n.description, function() {
+              this.start()
+                .add('Description: ', n.description)
+              .end();
+            })
             .tag(self.SimpleClassView.create({ data: model }))
             .tag(self.GetRequestView.create({ data: n.name }))
-            .tag(self.PutRequestView.create({ data: { n : n, props : dataProps }}))
+            .tag(self.PutRequestView.create({
+              data: {
+                n: n,
+                props: dataProps
+              }
+            }));
           })
         .end();
         this.start().addClass('selected-model')
@@ -202,10 +223,93 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.doc',
+  name: 'ExampleRequestView',
+  extends: 'foam.u2.View',
+
+  requires: [
+    'foam.doc.GetRequestView',
+    'foam.doc.PutRequestView'
+  ],
+
+  messages: [
+    {
+      name: 'Title',
+      message: 'Making Requests'
+    },
+    {
+      name: 'IntroMessage',
+      message: 'Welcome to the nanopay API documentation. ' +
+          'This API will give you the ability to connect your ' +
+          'software to banking infrastructure to move money, ' +
+          'store funds, and verify bank accounts. '
+    },
+    {
+      name: 'MakingRequests',
+      message: 'Request and response bodies are JSON encoded. Requests ' +
+          'must contain api credentials (email/password provided by nanopay) ' +
+          'on the authorization tag. Data contained in the table views ' +
+          'below model details display available properties on the model. ' +
+          'Those that are required are added ' +
+          'to the examples shown on the service call.'
+    },
+    {
+      name: 'Pacs008ExampleGetLabel',
+      message: 'Below is an example GET request ' +
+          'to the pacs008ISOPurposeDAO using curl:'
+    },
+    {
+      name: 'Pacs008ExamplePostLabel',
+      message: 'Below is an example POST request ' +
+          'to the pacs008ISOPurposeDAO using curl ' +
+          '(POST requests can create and update objects):'
+    }
+  ],
+
+  methods: [
+    function initE() {
+      this.start().addClass('light-roboto-h2')
+        .add(this.IntroMessage)
+      .end()
+      .start('h2')
+        .add(this.Title)
+      .end()
+      .start().addClass('light-roboto-h2')
+        .add(this.MakingRequests).br().br()
+      .end()
+      .start().addClass('light-roboto-h2').addClass('sml')
+        .add(this.Pacs008ExampleGetLabel)
+      .end()
+      .start().addClass('small-roboto')
+        .add(this.GetRequestView.create({
+          data: 'pacs008ISOPurposeDAO'
+        }))
+      .end()
+      .start().addClass('light-roboto-h2').addClass('sml')
+        .br()
+        .add(this.Pacs008ExamplePostLabel)
+      .end()
+      .start().addClass('small-roboto')
+        .add(this.PutRequestView.create({
+          data: {
+            n: {
+              name: 'pacs008ISOPurposeDAO'
+            },
+            props: '"type":"String"'
+          }
+        }))
+      .end();
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.doc',
   name: 'GetRequestView',
   extends: 'foam.u2.View',
 
-  imports: [ 'appConfig' ],
+  imports: [
+    'appConfig'
+  ],
 
   properties: [
     {
@@ -226,12 +330,13 @@ foam.CLASS({
           .start().addClass('small-roboto')
             .add('curl -X GET').br()
             .add(this.url$.map(function(a) {
-              return self.E().start().add("'" + a + 'service/dig?dao=' + self.data + "'");
+              return self.E().start()
+                  .add('\'' + a + 'service/dig?dao=' + self.data + '\'');
             }))
-            .add("-u 'username/password'").br()
-            .add("-H 'accept: application/json'").br()
-            .add("-H 'cache-control: no-cache'").br()
-            .add("-H 'content-type: application/json'")
+            .add('-u \'username/password\'').br()
+            .add('-H \'accept: application/json\'').br()
+            .add('-H \'cache-control: no-cache\'').br()
+            .add('-H \'content-type: application/json\'')
           .end()
         .end()
       .end();
@@ -244,7 +349,9 @@ foam.CLASS({
   name: 'PutRequestView',
   extends: 'foam.u2.View',
 
-  imports: [ 'appConfig' ],
+  imports: [
+    'appConfig'
+  ],
 
   properties: [
     {
@@ -259,19 +366,22 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.addClass(this.myClass())
-      .start().addClass('light-roboto-h2').style({ 'margin-top': '25px' }).add('POST Request (Create & Update): ').end()
-        .start().addClass('black-box')
-          .start().addClass('small-roboto')
-            .add('curl -X POST').br()
-            .add(this.url$.map(function(a) {
-              return self.E().start().add("'" + a + 'service/dig?dao=' + self.data.n.name + "'");
-            }))
-            .add("-u 'username/password'").br()
-            .add('-d "{' + this.data.props + "}" ).br()
-            .add("-H 'accept: application/json'").br()
-            .add("-H 'cache-control: no-cache'").br()
-            .add("-H 'content-type: application/json'")
-          .end()
+      .start().addClass('light-roboto-h2')
+        .style({ 'margin-top': '25px' })
+        .add('POST Request (Create & Update): ')
+      .end()
+      .start().addClass('black-box')
+        .start().addClass('small-roboto')
+          .add('curl -X POST').br()
+          .add(this.url$.map(function(a) {
+            return self.E().start()
+                .add('\'' + a + 'service/dig?dao=' + self.data.n.name + '\'');
+          }))
+          .add('-u \'username/password\'').br()
+          .add('-d \'{' + this.data.props + '}' ).br()
+          .add('-H \'accept: application/json\'').br()
+          .add('-H \'cache-control: no-cache\'').br()
+          .add('-H \'content-type: application/json\'')
         .end()
       .end();
     }
@@ -280,17 +390,21 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.doc',
-  name: 'serviceListView',
+  name: 'ServiceListView',
   extends: 'foam.u2.View',
 
-  implements: [ 'foam.mlang.Expressions' ],
+  implements: [
+    'foam.mlang.Expressions'
+  ],
 
   imports: [
     'nSpecDAO',
     'AuthenticatedNSpecDAO'
   ],
 
-  requires: [ 'foam.nanos.boot.NSpec' ],
+  requires: [
+    'foam.nanos.boot.NSpec'
+  ],
 
   css: `
     ^ {

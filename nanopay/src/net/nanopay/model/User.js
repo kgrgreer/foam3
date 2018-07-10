@@ -1,6 +1,9 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
+  documentation: 'Base user in the system. Utlized for authentication,' +
+      ' personal information & permitting certain actions.',
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -11,17 +14,14 @@ foam.CLASS({
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
+      documentation: 'Proprietor details for business.'
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
-    },
-    {
-      class: 'String',
-      name: 'branchId',
-      label: 'Branch ID'
+      documentation: 'General economic grouping for business'
     },
     {
       class: 'String',
