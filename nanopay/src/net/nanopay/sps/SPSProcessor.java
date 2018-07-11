@@ -4,28 +4,25 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 import net.nanopay.sps.model.*;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SPSProcessor {
+public class SPSProcessor implements ContextAgent{
 
-  public void execute() {
-    //Logger logger = (Logger) x.get("logger");
+  @Override
+  public void execute(X x) {
+    Logger logger = (Logger) x.get("logger");
 
     String generatedData = generateTestGeneralRequest();
     String url = "https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi";
@@ -38,8 +35,9 @@ public class SPSProcessor {
 
     try {
       post.setEntity(new UrlEncodedFormEntity(urlParameters));
+      CloseableHttpResponse httpResponse = httpClient.execute(post);
 
-      try (CloseableHttpResponse httpResponse = httpClient.execute(post)) {
+      try {
         System.out.println("Sending 'POST' request to URL : " + url);
         System.out.println("Response Code : " + httpResponse.getStatusLine().getStatusCode());
 
@@ -47,7 +45,7 @@ public class SPSProcessor {
 
         StringBuilder sb = new StringBuilder();
         String line;
-        while ((line = rd.readLine()) != null) {
+        while ( (line = rd.readLine()) != null ) {
           sb.append(line);
         }
 
@@ -57,7 +55,7 @@ public class SPSProcessor {
         String responsePacketType = response.substring(4, 8);
         System.out.println("type: " + responsePacketType);
 
-        switch (responsePacketType) {
+        switch ( responsePacketType ) {
           case "2011":
             // GeneralRequestResponse
             GeneralRequestResponse generalRequestResponse = new GeneralRequestResponse();
@@ -89,20 +87,22 @@ public class SPSProcessor {
             System.out.println("2091-BatchDetailGeneralResponse: " + hostError);
             break;
         }
+      } finally {
+        httpResponse.close();
       }
     } catch (IOException | IllegalAccessException | InstantiationException e) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       try {
         httpClient.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        logger.error(e);
       }
     }
   }
 
   private String generateTestGeneralRequest() {
-    String testData = "20<FS>2010<FS>10<FS>20180708115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
+    String testData = "20<FS>2010<FS>10<FS>20180710115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
       "[OTHER]1234567890-0001[/OTHER][LOCATION]NANOPAY[/LOCATION][TYPE]P[/TYPE][SECC]WEB[/SECC][PTC]S[/PTC]<FS><FS>" +
       "122000247<FS>9988998899<FS>9999<FS>550.00<FS><FS><FS><FS><FS><FS>EV<FS><FS><FS><FS>";
 
@@ -112,7 +112,7 @@ public class SPSProcessor {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMessageModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180708115959");
+    generalRequestPacket.setLocalTransactionTime("20180710115959");
     //not used
     //generalRequestPacketTest.setTextMsg("");
     generalRequestPacket.setTID("ZYX80");
@@ -155,14 +155,14 @@ public class SPSProcessor {
   }
 
   private String generateTestBatchDetailRequest() {
-    String testData = "20<FS>2030<FS>60<FS>20180704115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
+    String testData = "20<FS>2030<FS>60<FS>20180710115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
 
     BatchDetailRequestPacket batchDetailRequestPacket = new BatchDetailRequestPacket();
 
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMessageModifierCode(60);
-    batchDetailRequestPacket.setLocalTransactionTime("20180704115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180710115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setOptionallyEnteredDate("");
