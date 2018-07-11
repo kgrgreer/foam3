@@ -23,6 +23,10 @@ public class HashingWriter extends PrintWriter {
     return md_.getAlgorithm();
   }
 
+  public synchronized void update(byte[] input) {
+    md_.update(input);
+  }
+
   public synchronized byte[] digest() {
     return md_.digest();
   }
