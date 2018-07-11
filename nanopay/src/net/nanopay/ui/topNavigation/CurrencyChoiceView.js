@@ -8,13 +8,16 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'currencyDAO',
-    'currentCurrency',
+    'currentAccount',
     'stack',
-    'userDAO'
+    'userDAO',
+    'user'
   ],
 
   requires: [
+    'net.nanopay.account.DigitalAccount',
     'foam.u2.PopupView',
     'net.nanopay.model.Currency'
   ],
@@ -116,7 +119,7 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      this.currentCurrency$.sub(this.updateCurrency)
+      this.currentAccount$.sub(this.updateCurrency)
       this.updateCurrency();
 
       this
@@ -131,7 +134,7 @@ foam.CLASS({
   listeners: [
     function updateCurrency(){
       var self = this;
-      this.currencyDAO.find(this.currentCurrency).then(function(c) {
+      this.currencyDAO.find(this.currentAccount.denomination).then(function(c) {
         self.lastCurrency = c;
       });
     }
@@ -158,8 +161,14 @@ foam.CLASS({
             .attrs({ src: cur.flagImage })
             .addClass('flag').end().add(cur.alphabeticCode)
             .on('click', function() {
-              self.currentCurrency = cur.alphabeticCode;
-              localStorage.currency = self.currentCurrency;
+              /* self.currentCurrency = cur.alphabeticCode;
+              localStorage.currency = self.currentCurrency; */
+              var account = this.accountDAO.find(this.AND(
+                this.EQ(this.DigitalAccount.DENOMINATION, cur.alphabeticCode),
+                this.EQ(this.DigitalAccount.OWNER, this.user.id)
+              ));
+              self.currentAccount = account.id;
+              localStorage.account = self.currentAccount;
             })
           })
           .end()

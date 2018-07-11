@@ -15,6 +15,7 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
 
 public class PreventRemoveUserDAO
@@ -37,11 +38,11 @@ public class PreventRemoveUserDAO
     List accounts= ((ArraySink) user.getAccounts().select(new ArraySink())).getArray();
 
     total = ((Count) transactionDAO.where(
-        EQ(Transaction.SOURCE_ACCOUNT, accounts)).limit(1).select(count)).getValue();
+        IN(Transaction.SOURCE_ACCOUNT, accounts)).limit(1).select(count)).getValue();
 
     if ( total == 0 )
       total += ((Count) transactionDAO.where(
-        EQ(Transaction.DESTINATION_ACCOUNT, accounts)).limit(1).select(count)).getValue();
+        IN(Transaction.DESTINATION_ACCOUNT, accounts)).limit(1).select(count)).getValue();
 
     if ( total == 0 ) {
       total += ((Count) invoiceDAO.where(

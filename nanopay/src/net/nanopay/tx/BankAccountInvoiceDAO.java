@@ -31,6 +31,9 @@ public class BankAccountInvoiceDAO
     // If It is a CICO Transaction, does not do anything.
     Transaction txn = (Transaction) obj;
 
+    if ( txn.getType() == TransactionType.CASHIN || txn.getType() == TransactionType.CASHOUT || txn.getType() == TransactionType.VERIFICATION ) return super.put_(x, obj);
+
+
     try {
       if ( ((Account) txn.getDestinationAccount()).getOwner() != ((BankAccount) txn.getSourceAccount()).getOwner() ) {
         txn.setType(TransactionType.BANK_ACCOUNT_PAYMENT);

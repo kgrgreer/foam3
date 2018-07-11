@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Balance',
+  ids: ['account'],
 
   properties: [
     {

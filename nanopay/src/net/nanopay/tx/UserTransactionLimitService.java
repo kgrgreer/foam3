@@ -103,7 +103,7 @@ public class UserTransactionLimitService
         calendarType = Calendar.DAY_OF_YEAR;
     }
 
-    long spentAmount = getTransactionAmounts(userId, calendarType, isPayer);
+    long spentAmount = getTransactionAmounts(user, calendarType, isPayer);
 
     return userTotalLimit - spentAmount;
   }
@@ -117,11 +117,11 @@ public class UserTransactionLimitService
   }
 
   // Getting user amount spent given a time period
-  private long getTransactionAmounts(long userId, int calendarType, boolean isPayer) {
+  private long getTransactionAmounts(User user, int calendarType, boolean isPayer) {
     Date firstDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN);
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
-    DAO list = transactionDAO_.where(AND(EQ(userId, ( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ) ),
+    DAO list = transactionDAO_.where(AND(IN(( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ), user.getAccounts() ),
         GTE(Transaction.DATE, firstDate ),
         LTE(Transaction.DATE, lastDate )
     ));

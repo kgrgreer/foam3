@@ -40,8 +40,8 @@ public class PaidTransferDAO
     if ( transaction.getDestinationAccount() == transaction.getSourceAccount() )
       return transaction;
 
-    User user   = (User) ((Account) accountDAO_.find_(x, transaction.getDestinationAccount())).getOwner();
-    User sender = (User) ((Account) accountDAO_.find_(x, transaction.getSourceAccount())).getOwner();
+    User user   = (User) ((Account) transaction.getDestinationAccount()).getOwner();
+    User sender = (User) ((Account) transaction.getSourceAccount()).getOwner();
 
     // Returns if transaction is a payment from a CCShopper to a CCMerchant
     if ( "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(user.getGroup()) )

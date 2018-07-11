@@ -27,9 +27,9 @@ foam.CLASS({
   exports: [
     'appConfig',
     'as ctrl',
-    // 'balance',
-    'currentCurrency',
-    // 'findBalance',
+    'balance',
+    'currentAccount',
+    'findBalance',
     'privacyUrl',
     'termsUrl'
   ],
@@ -80,21 +80,21 @@ foam.CLASS({
   properties: [
     'privacyUrl',
     'termsUrl',
-    // {
-    //   class: 'foam.core.FObjectProperty',
-    //   of: 'net.nanopay.account.Balance',
-    //   name: 'balance',
-    //   factory: function() { return this.Balance.create(); }
-    // },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.account.Balance',
+      name: 'balance',
+      factory: function() { return this.Balance.create(); }
+    },
     {
       name: 'appConfig'
     },
     {
-      class: 'String',
-      name: 'currentCurrency',
+      class: 'Int',
+      name: 'currentAccount',
       factory: function () {
-        return ( localStorage.currency ) ?
-          localStorage.currency : 'CAD';
+        return ( localStorage.account ) ?
+          localStorage.account : null;
       }
     },
   ],
@@ -113,7 +113,7 @@ foam.CLASS({
 
         foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-        //self.findBalance();
+        self.findBalance();
 
         self
           .addClass(self.myClass())
@@ -203,24 +203,11 @@ foam.CLASS({
       });
     },
 
-    // function findBalance() {
-    //   var self = this;
-    //   this.user.accounts.then(function(accounts) {
-    //     self.client.balanceDAO.select(
-    //       self.AND(
-    //         self.EQ(self.Balance.UNIT_OF_BALANCE, self.currentCurrency),
-    //         self.IN(self.Balance.ACCOUNT_ID, accounts.map(function(a) {
-    //           return a.id;
-    //         }))
-    //       )
-    //     ).then(function(sink) {
-    //       if ( sink && sink.array && sink.array.length == 1 ) {
-    //         return self.balance.copyFrom(sink.array[0]);
-    //         // Balance has multi-part primary key on accountId and currencyCode, so there should never be more than one.
-    //       }
-    //     });
-    //   });
-    // },
+    function findBalance() {
+      var self = this;
+      this.client.balanceDAO.find(this.currentAccount).then(function (a) {
+        return self.balance.copyFrom(a);
+      }.bind(this));},
 
     function requestLogin() {
       var self = this;
@@ -246,10 +233,10 @@ foam.CLASS({
     }
   ],
 
-  // listeners: [
-  //   function onUserUpdate() {
-  //     this.SUPER();
-  //     this.findBalance();
-  //   }
-  // ]
+  listeners: [
+    function onUserUpdate() {
+      this.SUPER();
+      this.findBalance();
+    }
+  ]
 });

@@ -15,6 +15,7 @@ import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
 
 public class AuthenticatedTransactionDAO
@@ -77,7 +78,7 @@ public class AuthenticatedTransactionDAO
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
     DAO dao = global ? getDelegate() : getDelegate().where(
-      OR(EQ(Transaction.SOURCE_ACCOUNT, user.getId()), EQ(Transaction.DESTINATION_ACCOUNT, user.getId())));
+      OR(IN(Transaction.SOURCE_ACCOUNT, user.getAccounts()), IN(Transaction.DESTINATION_ACCOUNT, user.getAccounts())));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

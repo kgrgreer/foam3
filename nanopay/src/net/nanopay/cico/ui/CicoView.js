@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
     'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.account.CurrentBalance',
+    'net.nanopay.account.Balance',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
@@ -22,10 +22,10 @@ foam.CLASS({
 
   imports: [
     // TODO: remove/replace
-    'currentBalanceDAO',
-    'currentBalance',
-    'currentCurrency',
+    'balanceDAO',
+    'currentAccount',
     'addCommas',
+    'balance',
     'accountDAO as bankAccountDAO',
     'stack',
     'transactionDAO',
@@ -208,18 +208,18 @@ foam.CLASS({
     },
     {
       name: 'cicoTransactions',
-      expression: function(transactionDAO, currentCurrency) {
+      expression: function(transactionDAO, currentAccount) {
         var user = this.user;
 
         return transactionDAO.where(
           this.AND(
-            this.AND(
-              this.EQ(this.Transaction.PAYER_ID, user.id),
-              this.EQ(this.Transaction.PAYEE_ID, user.id)),
             this.OR(
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT)),
-            this.EQ(this.Transaction.CURRENCY_CODE, currentCurrency)
+            this.AND(
+              this.OR(this.Transaction.SOURCE_ACCOUNT, currentAccount),
+              this.OR(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
+            )
           ));
       }
     },
@@ -250,7 +250,7 @@ foam.CLASS({
 
       this.transactionDAO.listen(this.FnSink.create({fn:this.onDAOUpdate}));
       this.onDAOUpdate();
-      this.currentCurrency$.sub(this.onDAOUpdate);
+      this.currentAccount$.sub(this.onDAOUpdate);
 
       this
         .addClass(this.myClass())
@@ -351,8 +351,8 @@ foam.CLASS({
       // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        this.currentBalanceDAO.find(this.user.id).then(function (b) {
-          self.currentBalance.copyFrom(b);
+        this.balanceDAO.find(this.currentAccount).then(function (b) {
+          self.balance.copyFrom(b);
           self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
         });
       }

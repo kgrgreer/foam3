@@ -42,8 +42,7 @@ public class TransactionLimitCheckDAO
 
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     Account payerAcc = (Account) accountDAO.find(transaction.getSourceAccount());
-    Account payeeAcc = (Account) accountDAO.find(transaction.getSourceAccount());
-    DAO userDAO = (DAO)  getX().get("localUserDAO");
+    Account payeeAcc = (Account) accountDAO.find(transaction.getDestinationAccount());
     User payee  = (User) payeeAcc.getOwner();
     User payer  = (User) payerAcc.getOwner();
 
@@ -52,7 +51,7 @@ public class TransactionLimitCheckDAO
     }
 
     // If It's CICO transaction, ignore transaction limits.
-    if ( payerAcc == payeeAcc ) {
+    if ( payer == payee ) {
       return getDelegate().put_(x, transaction);
     }
 
