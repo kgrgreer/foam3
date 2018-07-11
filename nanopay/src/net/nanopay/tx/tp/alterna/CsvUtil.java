@@ -95,7 +95,7 @@ public class CsvUtil {
    * @return the filename
    */
   public static String generateFilename(Date date) {
-    return filenameSdf.get().format(date) + "_mintchipcashout.csv";
+    return filenameSdf.get().format(date) + "_B2B.csv";
   }
 
   /**
@@ -196,8 +196,13 @@ public class CsvUtil {
           alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(now)));
           alternaFormat.setReference(refNo);
 
-          t.setProcessDate(generateProcessDate(now));
-          t.setCompletionDate(generateCompletionDate(now));
+          if ( t.getProcessDate() == null ) {
+            t.setProcessDate(generateProcessDate(now));
+          }
+
+          if (t.getCompletionDate() == null) {
+            t.setCompletionDate(generateCompletionDate(now));
+          }
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);

@@ -185,7 +185,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
-  //
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
@@ -339,5 +338,9 @@ FOAM_FILES([
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
-  { name: 'net/nanopay/partners/UserUserJunctionRefinement' }
+  { name: 'net/nanopay/partners/UserUserJunctionRefinement' },
+
+  // flinks
+  { name: 'net/nanopay/flinks/FlinksAuth' },
+  { name: 'net/nanopay/flinks/ClientFlinksAuthService' }
 ]);

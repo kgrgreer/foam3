@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'Transaction',
 
   tableColumns: [
+    'id',
     'status',
     'txnProcessorId',
     'payerName',
