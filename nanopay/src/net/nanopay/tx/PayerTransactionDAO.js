@@ -22,9 +22,9 @@ foam.CLASS({
         return new Promise(function(resolve, reject) {
           if ( obj.sourceAccount == null ) {
             var txn = obj;
-            if ( obj.frozen ) {
+            // if ( obj.frozen ) {
               txn = obj.fclone();
-            }
+            // }
             this.digitalAccount(txn.payerId, txn.sourceCurrency).then(function(account) {
               txn.sourceAccount = account;
               resolve(this.getDelegate.put_(x, txn));

@@ -27,11 +27,11 @@ public class InteracTransactionDAO
 
     Transaction transaction = (Transaction) obj;
     if ( transaction.getSourceAccount() == null ) {
-      throw new RuntimeException("Invalid Payer id");
+      throw new RuntimeException("Invalid Source/Payer Account");
     }
 
     if ( transaction.getDestinationAccount() == null ) {
-      throw new RuntimeException("Invalid Payee id");
+      throw new RuntimeException("Invalid Destination/Payee Account");
     }
 
     if ( transaction.getAmount() < 0 ) {
@@ -42,8 +42,8 @@ public class InteracTransactionDAO
     //   throw new RuntimeException("Invalid rate");
     // }
 
-    if ( transaction.getPurposeId() == null ) {
-      throw new RuntimeException("Invalid purposeId");
+    if ( transaction.getPurpose() == null ) {
+      throw new RuntimeException("Invalid purpose");
     }
 
     try {

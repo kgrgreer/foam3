@@ -45,9 +45,9 @@ foam.CLASS({
         return new Promise(function(resolve, reject) {
           if ( obj.destinationAccount == null ) {
             var txn = obj;
-            if ( obj.frozen ) {
+            // if ( obj.frozen ) {
               txn = obj.fclone();
-            }
+            // }
             this.digitalAccount(txn.payeeId, txn.destinationCurrency).then(function(account) {
               txn.destinationAccount = account;
               resolve(this.getDelegate.put_(x, txn));

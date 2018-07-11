@@ -36,7 +36,6 @@ foam.CLASS({
     'net.nanopay.account.CurrentBalance',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.tp.TxnProcessor',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -69,8 +68,7 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.tx.tp.TxnProcessor',
+      class: 'String',
       name: 'txnProcessorId',
       label: 'Processor',
       value: 'NONE'
@@ -273,7 +271,7 @@ foam.CLASS({
       //class: 'FObjectProperty',
       class: 'Reference',
       of: 'net.nanopay.tx.TransactionPurpose',
-      name: 'purposeId',
+      name: 'purpose',
       label: 'Purpose',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction purpose'
