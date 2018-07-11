@@ -42,7 +42,6 @@ public class HashingJDAO
 
     journal_ = new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
-      .setRollHashes(rollHashes)
       .setDao(delegate)
       .setFilename(filename)
       .setCreateFile(true)
@@ -55,12 +54,10 @@ public class HashingJDAO
         new HashingJournal.Builder(getX())
           .setFilename(filename + ".0")
           .setAlgorithm(algorithm)
-          .setRollHashes(rollHashes)
           .build(),
         new HashingJournal.Builder(getX())
           .setFilename(filename)
           .setAlgorithm(algorithm)
-          .setRollHashes(rollHashes)
           .build()
       })
       .build().replay(delegate);
