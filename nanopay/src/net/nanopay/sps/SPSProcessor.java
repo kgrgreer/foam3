@@ -18,13 +18,21 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SPSProcessor implements ContextAgent{
+public class SPSProcessor {
 
-  @Override
-  public void execute(X x) {
+  public void sendGeneralRequestPacketAndParseResponse(X x) {
+    String generatedData = generateTestGeneralRequest();
+    execute(x, generatedData);
+  }
+
+  public void sendBatchDetailRequestPacketAndParseResponse(X x) {
+    String generatedData = generateTestBatchDetailRequest();
+    execute(x, generatedData);
+  }
+
+  public void execute(X x, String generatedData) {
     Logger logger = (Logger) x.get("logger");
 
-    String generatedData = generateTestGeneralRequest();
     String url = "https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi";
 
     CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -102,9 +110,9 @@ public class SPSProcessor implements ContextAgent{
   }
 
   private String generateTestGeneralRequest() {
-    String testData = "20<FS>2010<FS>10<FS>20180710115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
-      "[OTHER]1234567890-0001[/OTHER][LOCATION]NANOPAY[/LOCATION][TYPE]P[/TYPE][SECC]WEB[/SECC][PTC]S[/PTC]<FS><FS>" +
-      "122000247<FS>9988998899<FS>9999<FS>550.00<FS><FS><FS><FS><FS><FS>EV<FS><FS><FS><FS>";
+//    String testData = "20<FS>2010<FS>10<FS>20180710115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
+//      "[OTHER]1234567890-0001[/OTHER][LOCATION]NANOPAY[/LOCATION][TYPE]P[/TYPE][SECC]WEB[/SECC][PTC]S[/PTC]<FS><FS>" +
+//      "122000247<FS>9988998899<FS>9999<FS>550.00<FS><FS><FS><FS><FS><FS>EV<FS><FS><FS><FS>";
 
     GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
     UserInfo userInfo = new UserInfo();
@@ -147,15 +155,12 @@ public class SPSProcessor implements ContextAgent{
     String generatedData = generalRequestPacket.toSPSString();
 
     System.out.println(generatedData);
-    if (generatedData.equals(testData)) {
-      System.out.println("right");
-    }
 
     return generalRequestPacket.toSPSString();
   }
 
   private String generateTestBatchDetailRequest() {
-    String testData = "20<FS>2030<FS>60<FS>20180710115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
+    // String testData = "20<FS>2030<FS>60<FS>20180710115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
 
     BatchDetailRequestPacket batchDetailRequestPacket = new BatchDetailRequestPacket();
 
@@ -180,9 +185,6 @@ public class SPSProcessor implements ContextAgent{
     String generatedData = batchDetailRequestPacket.toSPSString();
 
     System.out.println(generatedData);
-    if (generatedData.equals(testData)) {
-      System.out.println("right");
-    }
 
     return batchDetailRequestPacket.toSPSString();
   }
