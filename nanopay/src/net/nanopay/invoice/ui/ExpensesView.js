@@ -133,8 +133,8 @@ foam.CLASS({
       // active and inactive. When it changes state it will emit one of the two
       // following events. We subscribe to them here and update the table view
       // based on the card that was selected.
-      this.summaryView.sub('statusChange', this.updateTableDAO);
-      this.summaryView.sub('statusReset', this.resetTableDAO);
+      this.summaryView.statusChange.sub(this.updateTableDAO);
+      this.summaryView.statusReset.sub(this.resetTableDAO);
     },
   ],
 
