@@ -11,23 +11,15 @@ import java.security.NoSuchAlgorithmException;
 public class HashingOutputter
   extends foam.lib.json.Outputter
 {
-  protected boolean rollDigests_ = false;
-  protected byte[] previousDigest_ = null;
   protected HashingWriter hashingWriter_ = null;
 
   public HashingOutputter(String algorithm, OutputterMode mode)
     throws NoSuchAlgorithmException
   {
-    this(algorithm, false, mode);
+    this(algorithm, null, mode);
   }
 
-  public HashingOutputter(String algorithm, boolean rollDigests, OutputterMode mode)
-    throws NoSuchAlgorithmException
-  {
-    this(algorithm, rollDigests, null, mode);
-  }
-
-  public HashingOutputter(String algorithm, boolean rollDigests, PrintWriter writer, OutputterMode mode)
+  public HashingOutputter(String algorithm, PrintWriter writer, OutputterMode mode)
     throws NoSuchAlgorithmException
   {
     if ( writer == null ) {
@@ -36,14 +28,12 @@ public class HashingOutputter
     }
 
     this.mode_ = mode;
-    this.rollDigests_ = rollDigests;
     this.writer_ = new HashingWriter(algorithm, writer);
     this.hashingWriter_ = (HashingWriter) this.writer_;
   }
 
   @Override
   public synchronized String stringify(FObject obj) {
-    rollDigests();
     super.stringify(obj);
     outputDigest();
     return stringWriter_.toString();
@@ -51,22 +41,15 @@ public class HashingOutputter
 
   @Override
   public synchronized String stringifyDelta(FObject oldFObject, FObject newFObject) {
-    rollDigests();
     super.stringifyDelta(oldFObject, newFObject);
     outputDigest();
     return stringWriter_.toString();
   }
 
-  protected synchronized void rollDigests() {
-    if ( rollDigests_ && previousDigest_ != null ) {
-      hashingWriter_.update(previousDigest_);
-    }
-  }
 
   protected synchronized void outputDigest() {
     String algorithm = hashingWriter_.getAlgorithm();
-    previousDigest_ = hashingWriter_.digest();
-    String digest = Hex.toHexString(previousDigest_);
+    String digest = Hex.toHexString(hashingWriter_.digest());
     stringWriter_.append(",{")
       .append(beforeKey_())
       .append("algorithm")
