@@ -12,6 +12,8 @@ import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
 
+import static foam.mlang.MLang.EQ;
+
 public class TransactionBenchmark
   implements Benchmark
 {
@@ -30,6 +32,10 @@ public class TransactionBenchmark
     userDAO_ = (DAO) x.get("localUserDAO");
     currentBalanceDAO_ = (DAO) x.get("localCurrentBalanceDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
+
+    // If we don't use users with verfied emails, the transactions won't go
+    // through for those users.
+    userDAO_ = userDAO_.where(EQ(User.EMAIL_VERIFIED, true));
 
     Sink sink = new ArraySink();
     sink = userDAO_.select(sink);
