@@ -25,14 +25,14 @@ public class MirrorToPublicUserUserDAO
   ) {
     super(x, delegate);
     publicUserDAO_ = (DAO) x.get("localPublicUserDAO"); 
-    // ArraySink sink = (ArraySink) super.select(new ArraySink());
-    // List users = sink.getArray();
+    ArraySink sink = (ArraySink) getDelegate().select(new ArraySink());
+    List users = sink.getArray();
 
-    // for ( int i = 0 ; i < users.size() ; i++ ) {
-    //   User user = (User) users.get(i);
-    //   PublicUserInfo publicUser = new PublicUserInfo(user);
-    //   publicUserDAO_.put(publicUser);
-    // }
+    for ( int i = 0 ; i < users.size() ; i++ ) {
+      User user = (User) users.get(i);
+      PublicUserInfo publicUser = new PublicUserInfo(user);
+      publicUserDAO_.put(publicUser);
+    }
   }
 
   @Override
