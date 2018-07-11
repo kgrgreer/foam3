@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'PublicUserInfo',
   documentation: `This model represents a public subset of a user's properties`,
 
-  javaImports: ['foam.nanos.auth.User'],
+  javaImports: [
+    'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
+  ],
 
   properties: [
     {
@@ -69,8 +72,8 @@ foam.CLASS({
       },
       javaReturns: 'String',
       javaCode: `
-        return this.getFirstName() instanceof String && this.getFirstName().length() > 0
-        ? this.getLastName() instanceof String && this.getLastName().length() > 0
+        return ! SafetyUtil.isEmpty(this.getFirstName())
+        ? ! SafetyUtil.isEmpty(this.getLastName())
           ? this.getFirstName() + " " + this.getLastName()
           : this.getFirstName()
         : "Unknown";

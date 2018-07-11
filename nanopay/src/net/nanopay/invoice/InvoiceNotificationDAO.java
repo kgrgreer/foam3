@@ -44,10 +44,9 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     NumberFormat     formatter  = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
-//    Invoice invoiceAb = (Invoice) super.put_(x, invoice);
     PublicUserInfo    payee   =  invoice.getPayee();
     PublicUserInfo    payer   =  invoice.getPayer();
-    
+
     //sets approriate arguments
     boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
 
@@ -58,10 +57,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.getEmailArgs().put("fromName",  invType ? payee.label() : payer.label());
 
     if ( invoice.getDueDate() != null ) {
-      notification.getEmailArgs().put("date",      dateFormat.format(invoice.getDueDate()));
+      notification.getEmailArgs().put("date", dateFormat.format(invoice.getDueDate()));
     }
 
-    notification.getEmailArgs().put("link",      config.getUrl());
+    notification.getEmailArgs().put("link", config.getUrl());
     return notification;
   }
 
