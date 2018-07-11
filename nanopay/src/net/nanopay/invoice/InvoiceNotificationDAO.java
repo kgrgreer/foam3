@@ -17,15 +17,11 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   protected DAO notificationDAO_;
   protected AppConfig config;
 
-  enum InvoiceType {
-    RECEIVABLE, PAYABLE;
-  }
-
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
-    config     = (AppConfig) x.get("appConfig");
+    config = (AppConfig) x.get("appConfig");
   }
 
   @Override
@@ -47,7 +43,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     PublicUserInfo    payee   =  invoice.getPayee();
     PublicUserInfo    payer   =  invoice.getPayer();
 
-    //sets approriate arguments
+    // If invType is true, then payee sends payer the email and notification.
     boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
 
     notification.getEmailArgs().put("amount",    formatter.format(invoice.getAmount()/100.00));
@@ -68,20 +64,15 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     long payeeId = (long) invoice.getPayeeId();
     long payerId = (long) invoice.getPayerId();
 
-    String invType = payeeId == invoice.getCreatedBy() ? InvoiceType.PAYABLE.name() : InvoiceType.RECEIVABLE.name();
     NewInvoiceNotification notification = new NewInvoiceNotification();
-
-    //Set email values on notification
+    // Set email values on notification.
     notification = setEmailArgs(x, invoice, notification);
     notification.setEmailName("newInvoice");
     notification.setEmailIsEnabled(true);
 
     notification.setUserId(payeeId == invoice.getCreatedBy() ? payerId : payeeId);
-    notification.setFromUserId(payeeId != invoice.getCreatedBy() ? payerId : payeeId);
+    notification.setInvoice(invoice);
     notification.setNotificationType("Invoice received");
-    notification.setInvoiceType(invType);
-    notification.setInvoiceId(invoice.getId());
-    notification.setAmount(invoice.getAmount());
     notificationDAO_.put(notification);
   }
 }
