@@ -48,12 +48,14 @@ public class TransactionBenchmark
 
     for ( int i = 0 ; i < currentBalances.size() ; i++ ) {
       CurrentBalance currentBalance = (CurrentBalance) currentBalances.get(i);
+      currentBalance = (CurrentBalance) currentBalance.fclone();
       currentBalance.setBalance(STARTING_BALANCE);
       currentBalanceDAO_.put(currentBalance);
     }
 
     for ( int i = 0 ; i < users.size() ; i++ ) {
       User user = (User) users.get(i);
+      user = (User) user.fclone();
       CurrentBalance currentBalance =
           (CurrentBalance) currentBalanceDAO_.find(user.getId());
       if ( currentBalance == null ) {
