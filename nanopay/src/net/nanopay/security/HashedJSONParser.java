@@ -1,7 +1,6 @@
 package net.nanopay.security;
 
 import foam.core.FObject;
-import foam.lib.json.ExprParser;
 import foam.lib.json.JSONParser;
 import foam.lib.parse.Parser;
 import foam.lib.parse.ParserContext;
