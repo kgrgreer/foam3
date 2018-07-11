@@ -189,8 +189,8 @@
   </dependencies>
 
   <build>
-    <!-- for hot reload of the web application-->
     <sourceDirectory>.</sourceDirectory>
+    <!-- for hot reload of the web application-->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
@@ -268,7 +268,6 @@
               <excludes>
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/jetty/**</exclude>
-                <exclude>build/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3BlobStore.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>
@@ -320,7 +319,6 @@
               <excludes>
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/jetty/**</exclude>
-                <exclude>build/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3BlobStore.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>

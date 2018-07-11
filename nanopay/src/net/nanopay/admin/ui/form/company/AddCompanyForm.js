@@ -212,7 +212,7 @@ foam.CLASS({
             issuingAuthority: companyInfo.issuingAuthority,
             department: companyInfo.jobTitle,
             type: 'Business',
-            group: 'business',
+            group: (this.user.group==='s2hAdmin'?'s2hCustomer':'business'),
             phone: businessPhone,
             address: businessAddress,
             desiredPassword: companyInfo.password,

@@ -197,11 +197,6 @@
       <artifactId>jetty-servlet</artifactId>
       <version>${jetty.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-catalina</artifactId>
-      <version>9.0.8</version>
-    </dependency>
   </dependencies>
 
   <build>
