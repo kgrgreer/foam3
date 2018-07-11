@@ -4,8 +4,6 @@ import foam.core.FObject;
 import foam.lib.json.OutputterMode;
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
@@ -15,22 +13,10 @@ public class HashingOutputter
 {
   protected HashingWriter hashingWriter_ = null;
 
-  public HashingOutputter(String algorithm)
-    throws NoSuchAlgorithmException
-  {
-    this(algorithm, OutputterMode.FULL);
-  }
-
   public HashingOutputter(String algorithm, OutputterMode mode)
     throws NoSuchAlgorithmException
   {
-    this(algorithm, (PrintWriter) null, mode);
-  }
-
-  public HashingOutputter(String algorithm, File file, OutputterMode mode)
-    throws FileNotFoundException, NoSuchAlgorithmException
-  {
-    this(algorithm, new PrintWriter(file), mode);
+    this(algorithm, null, mode);
   }
 
   public HashingOutputter(String algorithm, PrintWriter writer, OutputterMode mode)
