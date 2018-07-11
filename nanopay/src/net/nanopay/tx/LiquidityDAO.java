@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.LiquidityService;
 import net.nanopay.tx.model.Transaction;
@@ -29,8 +30,8 @@ public class LiquidityDAO extends ProxyDAO {
 
     if ( txn.getType() == TransactionType.NONE ) {
       LiquidityService ls = (LiquidityService) x.get("liquidityService");
-      ls.liquifyUser(txn.getSourceAccount());
-      ls.liquifyUser(txn.getDestinationAccount());
+      ls.liquifyUser(((Account)txn.getSourceAccount()).getId());
+      ls.liquifyUser(((Account)txn.getDestinationAccount()).getId());
     }
     return ret;
   }

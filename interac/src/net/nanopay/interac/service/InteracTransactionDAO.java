@@ -26,11 +26,11 @@ public class InteracTransactionDAO
     DAO indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
 
     Transaction transaction = (Transaction) obj;
-    if ( transaction.getSourceAccount() <= 0 ) {
+    if ( transaction.getSourceAccount() == null ) {
       throw new RuntimeException("Invalid Payer id");
     }
 
-    if ( transaction.getDestinationAccount() <= 0 ) {
+    if ( transaction.getDestinationAccount() == null ) {
       throw new RuntimeException("Invalid Payee id");
     }
 

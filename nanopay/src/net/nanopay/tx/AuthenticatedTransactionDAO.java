@@ -10,6 +10,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
@@ -58,7 +59,7 @@ public class AuthenticatedTransactionDAO
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
-    if ( t != null && t.getSourceAccount() != user.getId() && t.getDestinationAccount() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t != null && ((User)((Account)t.getDestinationAccount()).getOwner()).getId() != user.getId() && ((User)((Account)t.getSourceAccount()).getOwner()).getId() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
 

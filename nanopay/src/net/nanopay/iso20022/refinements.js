@@ -384,7 +384,6 @@ foam.CLASS({
                       .setPayeeId(receiverId)
                       .setAmount(longTxAmt)
                       .setType(TransactionType.NONE)
-                      .setBankAccountId(receiverId)
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId())
                       .build();
                       DAO txnDAO = (DAO) getX().get("transactionDAO");

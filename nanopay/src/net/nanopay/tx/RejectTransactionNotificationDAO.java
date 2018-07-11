@@ -14,6 +14,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
@@ -87,7 +88,7 @@ public class RejectTransactionNotificationDAO
     // Loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
-    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
+    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getSourceAccount()) ).getAccountNumber());
     args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});
@@ -109,9 +110,9 @@ public class RejectTransactionNotificationDAO
     // Loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
-    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
-    args.put("payerName", ( (User) getUserDAO().find(transaction.getSourceAccount()) ).getFirstName());
-    args.put("payeeName", ( (User) getUserDAO().find(transaction.getDestinationAccount()) ).getFirstName());
+    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getSourceAccount()) ).getAccountNumber());
+    args.put("payerName", ((User) ((Account) transaction.getSourceAccount()).getOwner()).getFirstName());
+    args.put("payeeName", ((User) ((Account) transaction.getDestinationAccount()).getOwner()).getFirstName());
     args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});

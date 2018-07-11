@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.model.Branch;
@@ -142,13 +144,15 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
           t = (Transaction) t.fclone();
 
+          BankAccount bankAccount = null;
+          user = (User) ((Account) t.getSourceAccount()).getOwner();
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
-            user = (User) userDAO.find(t.getSourceAccount());
+            bankAccount = (BankAccount) t.getSourceAccount();
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
-            user = (User) userDAO.find(t.getSourceAccount());
+            bankAccount = (BankAccount) t.getDestinationAccount();
           } else {
             // don't output if for whatever reason we get here and
             // the transaction is not a cash in or cash out
@@ -159,7 +163,6 @@ public class CsvUtil {
           if ( user == null ) return;
 
           // get bank account and check if null
-          BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
           if ( bankAccount == null ) return;
 
           // use transaction ID as the reference number

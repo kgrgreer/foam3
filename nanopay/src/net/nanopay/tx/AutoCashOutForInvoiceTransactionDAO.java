@@ -28,7 +28,7 @@ public class AutoCashOutForInvoiceTransactionDAO
   }
 
   // @Override
-  public FObject put_(X x, FObject obj)
+  /*public FObject put_(X x, FObject obj)
     throws RuntimeException
   {
     Transaction txn = (Transaction) super.put_(x, obj);
@@ -60,12 +60,11 @@ public class AutoCashOutForInvoiceTransactionDAO
         BankAccount bankAcc = (BankAccount) list.get(0);
         Transaction t       = new Transaction();
 
-        t.setDestinationAccount(txn.getDestinationAccount());
+        t.setDestinationAccount(bankAcc.getId());
         t.setSourceAccount(txn.getSourceAccount());
         t.setAmount(txn.getTotal());
         t.setType(TransactionType.CASHOUT);
         t.setStatus(TransactionStatus.PENDING);
-        t.setBankAccountId(bankAcc.getId());
 
         DAO transacionDAO = (DAO) x.get("localTransactionDAO");
         transacionDAO.put(t);
@@ -73,5 +72,5 @@ public class AutoCashOutForInvoiceTransactionDAO
     }
 
     return txn;
-  }
+   }*/
 }

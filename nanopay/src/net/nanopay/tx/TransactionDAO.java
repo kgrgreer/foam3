@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import java.util.*;
 
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
 import net.nanopay.account.CurrentBalance;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
@@ -87,7 +88,7 @@ public class TransactionDAO
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer(transaction.getSourceAccount(), transaction.getTotal());
+          Transfer refound = new Transfer(((User)((Account)transaction.getSourceAccount()).getOwner()).getId(), transaction.getTotal());
           refound.validate(x);
           refound.execute(x);
         }
@@ -162,7 +163,7 @@ public class TransactionDAO
 
   public void cashinReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.
-    Balance payerBalance = (Balance) getBalanceDAO().find(EQ(Balance.ACCOUNT, transaction.getBankAccountId()));
+    Balance payerBalance = (Balance) getBalanceDAO().find(EQ(Balance.ACCOUNT, transaction.getSourceAccount()));
         payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payerBalance);
@@ -170,7 +171,7 @@ public class TransactionDAO
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR PayeeAccountId is not yet setup/populated.
-    Balance payeeBalance = (Balance) getBalanceDAO().find(EQ(Balance.ACCOUNT, transaction.getPayeeAccount()));
+    Balance payeeBalance = (Balance) getBalanceDAO().find(EQ(Balance.ACCOUNT, transaction.getSourceAccount()));
         payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payeeBalance);

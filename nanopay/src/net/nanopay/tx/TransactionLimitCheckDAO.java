@@ -57,8 +57,8 @@ public class TransactionLimitCheckDAO
     }
 
 
-    Object firstLock  = String.valueOf(transaction.getSourceAccount() < transaction.getDestinationAccount() ? transaction.getSourceAccount() : transaction.getDestinationAccount()).intern();
-    Object secondLock = String.valueOf(transaction.getSourceAccount() < transaction.getDestinationAccount() ? transaction.getDestinationAccount() : transaction.getSourceAccount()).intern();
+    Object firstLock  = String.valueOf(((Account)transaction.getSourceAccount()).getId() < ((Account)transaction.getDestinationAccount()).getId() ? transaction.getSourceAccount() : transaction.getDestinationAccount()).intern();
+    Object secondLock = String.valueOf(((Account)transaction.getSourceAccount()).getId() < ((Account)transaction.getDestinationAccount()).getId() ? transaction.getDestinationAccount() : transaction.getSourceAccount()).intern();
 
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {

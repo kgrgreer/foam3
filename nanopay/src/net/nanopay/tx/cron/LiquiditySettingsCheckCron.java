@@ -112,12 +112,16 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
 
   public void addTransaction(X x, long accountId, long bankId){
     Transaction transaction = new Transaction.Builder(x)
-            .setDestinationAccount(accountId)
-            .setSourceAccount(accountId)
             .setAmount(amount_)
             .setType(type_)
-            .setBankAccountId(bankId)
             .build();
+    if ( type_ == TransactionType.CASHIN ) {
+      transaction.setDestinationAccount(accountId);
+      transaction.setSourceAccount(bankId);
+    } else if ( type_ == TransactionType.CASHOUT ) {
+      transaction.setDestinationAccount(bankId);
+      transaction.setSourceAccount(accountId);
+    }
     DAO txnDAO = (DAO) x.get("transactionDAO");
     txnDAO.put_(x, transaction);
   }

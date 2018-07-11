@@ -127,12 +127,17 @@ public class LiquidityService
   {
     Transaction transaction = new Transaction.Builder(x)
         .setStatus(TransactionStatus.PENDING)
-        .setDestinationAccount(accountId)
-        .setSourceAccount(accountId)
         .setAmount(amount)
         .setType(transactionType)
-        .setBankAccountId(bankAccountId)
         .build();
+
+    if ( transactionType == TransactionType.CASHIN ) {
+      transaction.setDestinationAccount(accountId);
+      transaction.setSourceAccount(bankAccountId);
+    } else if ( transactionType == TransactionType.CASHOUT ) {
+      transaction.setDestinationAccount(bankAccountId);
+      transaction.setSourceAccount(accountId);
+    }
     return getLocalTransactionDAO().put_(x, transaction);
   }
 

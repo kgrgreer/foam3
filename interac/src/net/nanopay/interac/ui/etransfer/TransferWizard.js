@@ -305,19 +305,24 @@ foam.CLASS({
           this.countdownView.reset();
 
           var destinationAccount = this.accountDAO.find(this.AND(
-            this.EQ(this.DigitalAccount.DENOMINATION, this.this.invoice.targetCurrency),
+            this.EQ(this.DigitalAccount.DENOMINATION, this.invoice.targetCurrency),
             this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id)
           ));
+
           // NOTE: payerID, payeeID, amount in cents, rate, purpose
           var transaction = this.Transaction.create({
-            sourceAccountId: this.user.id,
-            destinationAccount: destinationAccount.id,
+            destinationAccount: destinationAccount,
             amount: Math.round(this.viewData.fromAmount * 100),
             rate: this.viewData.rate.toString(),
             fees: Math.round(this.viewData.fees * 100),
             purpose: this.viewData.purpose,
             notes: this.viewData.notes
           });
+          if ( ! this.viewData.digitalCash ) {
+            transaction.sourceAccount = this.viewData.account;
+          } else {
+            transaction.payeeId = this.viewData.payee.id;
+          }
 
           this.transactionDAO.put(transaction)
           .then(function (result) {

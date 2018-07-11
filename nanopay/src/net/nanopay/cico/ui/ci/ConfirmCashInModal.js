@@ -13,7 +13,7 @@ foam.CLASS({
     'amount',
     'accountDAO as bankAccountDAO',
     'bankList',
-    'currentCurrency',
+    'currentAccount',
     'cashIn',
     'closeDialog',
     'onCashInSuccess',
@@ -250,11 +250,10 @@ foam.CLASS({
         var self = this;
 
         var cashInTransaction = this.Transaction.create({
-          payeeId: X.user.id,
+          destinationAccount: this.currentAccount,
+          sourceAccount:X.bankList,
           amount: X.amount,
-          bankAccountId: X.bankList,
-          type: this.TransactionType.CASHIN,
-          currencyCode: this.currentCurrency
+          type: this.TransactionType.CASHIN
         });
 
         X.transactionDAO.put(cashInTransaction).then(function(response) {

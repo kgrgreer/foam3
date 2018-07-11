@@ -43,61 +43,16 @@ public class CICOTransactionDAO
       return getDelegate().put_(x, obj);
     }
 
-    if ( transaction.getBankAccountId() == null ) {
-      throw new RuntimeException("Invalid bank account");
-    }
-
-    //For cico, there is a transaction between the same acccount
-    if ( transaction.getDestinationAccount() == 0 &&  transaction.getSourceAccount() != 0 ) {
-      transaction.setDestinationAccount(transaction.getSourceAccount());
-    } else if ( transaction.getSourceAccount() == 0 &&  transaction.getDestinationAccount() != 0 ) {
-      transaction.setSourceAccount(transaction.getDestinationAccount());
-    }
-
     try {
       if ( getDelegate().find_(x, transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);
       // Change later to check whether payeeId or payerId are ACTIVE brokers to set CASHIN OR CASHOUT...
       if ( transaction.getType() == null ) {
         transaction.setType(TransactionType.CASHOUT);
       }
-
       return getDelegate().put_(x, transaction);
-    } catch (RuntimeException e) {
+    }
+    catch (RuntimeException e) {
       throw e;
     }
   }
-
-  public FObject addInvoiceCashout(FObject obj) {
-
-    Transaction transaction = (Transaction) obj;
-    //DAO standardCICOTransactionDAO = (DAO) getX().get("standardCICOTransactionDAO");
-    DAO bankAccountDAO = (DAO) getX().get("localAccountDAO");
-    DAO userDAO = (DAO) getX().get("localUserDAO");
-
-    long payeeId = transaction.getSourceAccount();
-    long payerId = transaction.getSourceAccount();
-    User payee = (User) userDAO.find(transaction.getDestinationAccount());
-    long total = transaction.getTotal();
-    payee.setX(getX());
-
-    Sink sinkBank = new ArraySink();
-    sinkBank = bankAccountDAO.inX(getX()).where(MLang.EQ(BankAccount.OWNER, payee.getId())).limit(1).select(sinkBank);
-
-    List dataBank = ((ArraySink) sinkBank).getArray();
-    BankAccount bankAccountPayee = (BankAccount) dataBank.get(0);
-
-    // Cashout invoice payee
-    Transaction t = new Transaction();
-    t.setDestinationAccount(payeeId);
-    t.setSourceAccount(payeeId);
-    t.setBankAccountId(bankAccountPayee.getId());
-    t.setInvoiceId(0);
-    t.setAmount(total);
-    t.setDate(new Date());
-
-    return getDelegate().put_(getX(), t);
-
-  }
-
-
 }

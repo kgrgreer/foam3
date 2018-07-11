@@ -48,9 +48,8 @@ public class RandomDepositBankAccountDAO
 
       // create new transaction and store
       Transaction transaction = new Transaction.Builder(x)
-        .setDestinationAccount(user.getDigitalAccount(account.getDenomination()).getId())
-        .setSourceAccount(user.getDigitalAccount(account.getDenomination()).getId())
-        .setBankAccountId(account.getId())
+        .setDestinationAccount(account.getId())
+        .setPayerId(user.getId())
         .setAmount(randomDepositAmount)
         .setType(TransactionType.VERIFICATION)
         .setStatus(TransactionStatus.PENDING)

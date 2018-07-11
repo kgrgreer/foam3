@@ -34,6 +34,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.CurrentBalance',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.tp.TxnProcessor',
     'net.nanopay.tx.Transfer'
@@ -124,9 +125,8 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.User',
-      class: 'Long',
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
       label: 'Source account',
       visibility: foam.u2.Visibility.RO,
@@ -140,9 +140,18 @@ foam.CLASS({
       }
     },
     {
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.User',
       class: 'Long',
+      name: 'payeeId',
+      transient: true,
+    },
+    {
+      class: 'Long',
+      name: 'payerId',
+      transient: true,
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
       label: 'Destination Account',
       visibility: foam.u2.Visibility.RO,
@@ -192,21 +201,6 @@ foam.CLASS({
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
-    },
-     {
-      // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
-      class: 'Reference',
-      of: 'net.nanopay.bank.BankAccount',
-      name: 'bankAccountId',
-      //name: 'payerAccountId',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
-      class: 'Reference',
-      of: 'net.nanopay.bank.BankAccount',
-      name: 'payeeAccount',
-      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'DateTime',
@@ -355,17 +349,17 @@ foam.CLASS({
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
-             new Transfer(getSourceAccount(), -getTotal())
+             new Transfer(((Account)getSourceAccount()).getId(), -getTotal())
           };
         }
         if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
-            new Transfer(getDestinationAccount(), getTotal())
+            new Transfer(((Account)getDestinationAccount()).getId(), getTotal())
           };
         }
         return new Transfer[] {
-             new Transfer(getSourceAccount(), -getTotal()),
-             new Transfer(getDestinationAccount(),  getTotal())
+             new Transfer(((Account)getSourceAccount()).getId(), -getTotal()),
+             new Transfer(((Account)getDestinationAccount()).getId(),  getTotal())
         };
       `
     }

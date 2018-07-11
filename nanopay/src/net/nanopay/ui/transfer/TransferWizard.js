@@ -353,15 +353,23 @@ foam.CLASS({
           if ( this.invoiceMode ){
             invoiceId = this.invoice.id;
           }
+          var destinationAccount = this.accountDAO.find(this.AND(
+            this.EQ(this.DigitalAccount.DENOMINATION, this.invoice.targetCurrency),
+            this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id)
+          ));
 
           transaction = self.Transaction.create({
-            payerId: self.user.id,
-            payeeId: self.viewData.payee.id,
+            destinationAccount: destinationAccount,
             amount: self.viewData.fromAmount,
             bankAccountId: bankAccountId,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });
+          if ( ! this.viewData.digitalCash ) {
+            transaction.sourceAccount = this.viewData.account;
+          } else {
+            transaction.payeeId = this.viewData.payee.id;
+          }
 
           // Make the transfer
           self.transactionDAO.put(transaction)

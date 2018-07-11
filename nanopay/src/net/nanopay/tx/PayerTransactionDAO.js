@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'PayerTransactionDAO',
-  extends: 'net.nanopay.tx.UserDestinationTransactionDAO',
+  //extends: 'net.nanopay.tx.UserDestinationTransactionDAO',
 
   documentation: `Determine source account based on payer, when account is not provided.`,
 
