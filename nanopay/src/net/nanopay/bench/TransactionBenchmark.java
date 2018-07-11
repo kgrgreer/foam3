@@ -9,7 +9,6 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import net.nanopay.account.CurrentBalance;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.account.DigitalAccount;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import static foam.mlang.MLang.EQ;
 public class TransactionBenchmark
   implements Benchmark
 {
-  List accounts = null;
+  List users = null;
   List currentBalances = null;
 
   protected DAO userDAO_;
@@ -41,7 +40,7 @@ public class TransactionBenchmark
 
     Sink sink = new ArraySink();
     sink = userDAO_.select(sink);
-    accounts = ((ArraySink) sink).getArray();
+    users = ((ArraySink) sink).getArray();
 
     sink = new ArraySink();
     sink = currentBalanceDAO_.select(sink);
@@ -79,13 +78,13 @@ public class TransactionBenchmark
     int ti = (int) (Math.random() * users.size());
     int amount = (int) ((Math.random() + 0.1) * 10000);
 
-    long destinationAccount = ((DigitalAccount) accounts.get(ti)).getId();
-    long sourceAccount = ((DigitalAccount) accounts.get(fi)).getId();
+    long payeeId = ((User) users.get(ti)).getId();
+    long payerId = ((User) users.get(fi)).getId();
 
-    if ( sourceAccount != destinationAccount ) {
+    if ( payeeId != payerId ) {
       Transaction transaction = new Transaction();
-      transaction.setSourceAccount(sourceAccount);
-      transaction.setDestinationAccount(destinationAccount);
+      transaction.setPayeeId(payeeId);
+      transaction.setPayerId(payerId);
       transaction.setAmount(amount);
       transactionDAO_.put(transaction);
     }
