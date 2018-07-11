@@ -42,11 +42,8 @@ public class HashingOutputter
   }
 
   @Override
-  public String stringify(FObject obj) {
-    if ( rollDigests_ ) {
-      rollDigests();
-    }
-
+  public synchronized String stringify(FObject obj) {
+    rollDigests();
     super.stringify(obj);
     outputDigest();
     return stringWriter_.toString();
@@ -54,17 +51,14 @@ public class HashingOutputter
 
   @Override
   public synchronized String stringifyDelta(FObject oldFObject, FObject newFObject) {
-    if ( rollDigests_ ) {
-      rollDigests();
-    }
-
+    rollDigests();
     super.stringifyDelta(oldFObject, newFObject);
     outputDigest();
     return stringWriter_.toString();
   }
 
   protected synchronized void rollDigests() {
-    if ( previousDigest_ != null ) {
+    if ( rollDigests_ && previousDigest_ != null ) {
       hashingWriter_.update(previousDigest_);
     }
   }

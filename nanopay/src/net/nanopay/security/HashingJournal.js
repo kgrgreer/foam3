@@ -14,12 +14,17 @@ foam.CLASS({
       value: 'SHA-256'
     },
     {
+      class: 'Boolean',
+      name: 'rollDigests',
+      value: false
+    },
+    {
       class: 'Object',
       name: 'outputter',
       javaType: 'net.nanopay.security.HashingOutputter',
       javaFactory: `
         try {
-          return new HashingOutputter(getAlgorithm(), OutputterMode.STORAGE);
+          return new HashingOutputter(getAlgorithm(), getRollDigests(), OutputterMode.STORAGE);
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }
