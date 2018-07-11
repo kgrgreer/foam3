@@ -28,7 +28,8 @@ public class PaymentNotificationDAO extends ProxyDAO {
       // check if the invoice payment status is changed from NONE to NANOPAY/CHEQUE (Paid)
       if ((invoice.getPaymentMethod() == PaymentStatus.NANOPAY
           || invoice.getPaymentMethod() == PaymentStatus.CHEQUE)
-          && existingInvoice.getPaymentMethod() == PaymentStatus.NONE) {
+          && (existingInvoice.getPaymentMethod() == PaymentStatus.NONE
+          || existingInvoice.getPaymentMethod() == PaymentStatus.PENDING)) {
 
         User user = (User) x.get("user");
         long payeeId = (long) invoice.getPayeeId();
