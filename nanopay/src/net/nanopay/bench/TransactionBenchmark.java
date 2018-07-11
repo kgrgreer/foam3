@@ -23,6 +23,7 @@ public class TransactionBenchmark
   protected DAO userDAO_;
   protected DAO currentBalanceDAO_;
   protected DAO transactionDAO_;
+  protected int STARTING_BALANCE = 1000000;
 
   @Override
   public void setup(X x) {
@@ -47,18 +48,21 @@ public class TransactionBenchmark
 
     for ( int i = 0 ; i < currentBalances.size() ; i++ ) {
       CurrentBalance currentBalance = (CurrentBalance) currentBalances.get(i);
-      currentBalance.setBalance(1000000);
+      currentBalance.setBalance(STARTING_BALANCE);
       currentBalanceDAO_.put(currentBalance);
     }
 
     for ( int i = 0 ; i < users.size() ; i++ ) {
       User user = (User) users.get(i);
-      CurrentBalance currentBalance = (CurrentBalance) currentBalanceDAO_.find(user.getId());
+      CurrentBalance currentBalance =
+          (CurrentBalance) currentBalanceDAO_.find(user.getId());
       if ( currentBalance == null ) {
         currentBalance = new CurrentBalance();
         currentBalance.setId(user.getId());
-        currentBalance.setBalance(1000000);
-        currentBalanceDAO_.put(currentBalance);
+        currentBalance.setBalance(STARTING_BALANCE);
+        CurrentBalance result =
+            (CurrentBalance) currentBalanceDAO_.put(currentBalance);
+        assert result.getBalance() == STARTING_BALANCE : result.getBalance();
       }
     }
   }
