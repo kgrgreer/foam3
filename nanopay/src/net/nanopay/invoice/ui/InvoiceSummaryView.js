@@ -24,6 +24,11 @@ foam.CLASS({
     'as data'
   ],
 
+  topics: [
+    'statusChange',
+    'statusReset'
+  ],
+
   css: `
     ^{
       margin-bottom: 20px;
@@ -151,7 +156,7 @@ foam.CLASS({
           .end()
           .on('click', () => {
             this.disableAllSummaryCards();
-            this.pub('statusReset');
+            this.statusReset.pub();
           })
         .end()
         .start('span')
@@ -207,10 +212,10 @@ foam.CLASS({
       return () => {
         var card = card$.get();
         if ( card.active ) {
-          this.pub('statusReset');
+          this.statusReset.pub();
         } else {
           this.disableAllSummaryCards();
-          this.pub('statusChange', status);
+          this.statusChange.pub(status);
         }
         card.toggle();
       }
