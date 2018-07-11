@@ -13,6 +13,13 @@ foam.CLASS({
     'date'
   ],
 
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
+
   imports: [
     'addCommas',
     'userDAO'
@@ -60,6 +67,28 @@ foam.CLASS({
       name: 'id',
       label: 'Transaction ID',
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'Date',
+      name: 'created',
+      documentation: `The date the invoice was created.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: `The id of the user who created the invoice.`,
+    },
+    {
+      class: 'Date',
+      name: 'lastModified',
+      documentation: `The date the invoice was last modified.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The id of the user who last modified the invoice.`,
     },
     {
       class: 'foam.core.Enum',
