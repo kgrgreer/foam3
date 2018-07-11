@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import net.nanopay.account.CurrentBalance;
@@ -23,6 +24,9 @@ public class TransactionBenchmark
 
   @Override
   public void setup(X x) {
+    AppConfig config = (AppConfig) x.get("appConfig");
+    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
+
     userDAO_ = (DAO) x.get("localUserDAO");
     currentBalanceDAO_ = (DAO) x.get("localCurrentBalanceDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
@@ -55,6 +59,9 @@ public class TransactionBenchmark
 
   @Override
   public void execute(X x) {
+    AppConfig config = (AppConfig) x.get("appConfig");
+    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
+
     int fi = (int) (Math.random() * users.size());
     int ti = (int) (Math.random() * users.size());
     int amount = (int) ((Math.random() + 0.1) * 10000);
