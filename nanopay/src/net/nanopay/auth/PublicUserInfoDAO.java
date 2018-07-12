@@ -86,8 +86,7 @@ public class PublicUserInfoDAO
   @Override
   public FObject put_(X x, FObject obj) {
     obj = fillPublicInfo(obj);
-    getDelegate().put_(x, obj);
-    return obj;
+    return getDelegate().put_(x, obj);
   }
 
   @Override
