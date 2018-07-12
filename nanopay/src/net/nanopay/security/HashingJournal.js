@@ -24,9 +24,7 @@ foam.CLASS({
       javaType: 'byte[]'
     },
     {
-      class: 'Object',
       name: 'outputter',
-      javaType: 'net.nanopay.security.HashingOutputter',
       javaFactory: `
         try {
           return new HashingOutputter(getAlgorithm(), OutputterMode.STORAGE);
@@ -36,10 +34,8 @@ foam.CLASS({
       `
     },
     {
-      class: 'Object',
       name: 'parser',
-      javaType: 'net.nanopay.security.HashedJSONParser',
-      javaGetter: 'return getX().create(HashedJSONParser.class);'
+      javaFactory: `return getX().create(HashedJSONParser.class);`
     }
   ]
 });
