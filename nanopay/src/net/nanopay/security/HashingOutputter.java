@@ -13,23 +13,19 @@ public class HashingOutputter
   extends foam.lib.json.Outputter
 {
   protected HashingWriter hashingWriter_ = null;
+  protected HashingJournal hashingJournal_ = null;
 
-  public HashingOutputter(String algorithm, OutputterMode mode)
+  public HashingOutputter(HashingJournal hashingJournal, OutputterMode mode)
     throws NoSuchAlgorithmException
   {
-    this(algorithm, null, mode);
-  }
-
-  public HashingOutputter(String algorithm, PrintWriter writer, OutputterMode mode)
-    throws NoSuchAlgorithmException
-  {
-    if ( writer == null ) {
-      stringWriter_ = new StringWriter();
-      writer = new PrintWriter(stringWriter_);
-    }
-
+    // set mode and hashing journal
     this.mode_ = mode;
-    this.writer_ = new HashingWriter(algorithm, writer);
+    this.hashingJournal_ = hashingJournal;
+
+    // create writers
+    stringWriter_ = new StringWriter();
+    this.writer_ = new HashingWriter(hashingJournal_.getAlgorithm(),
+      new PrintWriter(stringWriter_));
     this.hashingWriter_ = (HashingWriter) this.writer_;
   }
 

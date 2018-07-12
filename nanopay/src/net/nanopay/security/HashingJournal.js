@@ -26,7 +26,7 @@ foam.CLASS({
       name: 'outputter',
       javaFactory: `
         try {
-          return new HashingOutputter(getAlgorithm(), OutputterMode.STORAGE);
+          return new HashingOutputter(this, OutputterMode.STORAGE);
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }
