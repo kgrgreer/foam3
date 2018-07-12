@@ -70,7 +70,7 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'created',
       documentation: `The date the invoice was created.`,
     },
@@ -81,7 +81,7 @@ foam.CLASS({
       documentation: `The id of the user who created the invoice.`,
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the invoice was last modified.`,
     },
@@ -325,11 +325,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency'
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      label: 'Latest Modify Date & Time'
     },
     {
       // REVIEW: move to TxnProcessorData
