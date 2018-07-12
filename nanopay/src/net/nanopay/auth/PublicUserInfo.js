@@ -72,6 +72,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public PublicUserInfo(User user) {
+            if ( user == null ) return;
             setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
