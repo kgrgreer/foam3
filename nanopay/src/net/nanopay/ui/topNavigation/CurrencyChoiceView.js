@@ -12,6 +12,7 @@ foam.CLASS({
     'currencyDAO',
     'currentAccount',
     'stack',
+    'transactionDAO',
     'userDAO',
     'user'
   ],
@@ -134,9 +135,15 @@ foam.CLASS({
   listeners: [
     function updateCurrency(){
       var self = this;
-      this.currencyDAO.find(this.currentAccount.denomination).then(function(c) {
-        self.lastCurrency = c;
-      });
+      self.accountDAO.find(this.currentAccount).then(function(acc){
+        var denomination = 'CAD';
+        if ( acc ){
+          denomination = acc.denomination;
+        }
+        self.currencyDAO.find(denomination).then(function(c) {
+          self.lastCurrency = c;
+        });
+      })
     }
   ],
 
@@ -163,12 +170,13 @@ foam.CLASS({
             .on('click', function() {
               /* self.currentCurrency = cur.alphabeticCode;
               localStorage.currency = self.currentCurrency; */
-              var account = this.accountDAO.find(this.AND(
-                this.EQ(this.DigitalAccount.DENOMINATION, cur.alphabeticCode),
-                this.EQ(this.DigitalAccount.OWNER, this.user.id)
-              ));
-              self.currentAccount = account.id;
-              localStorage.account = self.currentAccount;
+              self.accountDAO.find(self.AND(
+                self.EQ(self.DigitalAccount.DENOMINATION, cur.alphabeticCode),
+                self.EQ(self.DigitalAccount.OWNER, self.user.id)
+              )).then(function(acc){
+                self.currentAccount = acc.id;
+                localStorage.account = self.currentAccount;
+              });
             })
           })
           .end()

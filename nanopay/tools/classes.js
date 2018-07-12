@@ -2,6 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
+  'net.nanopay.tx.PayerTransactionDAO',
+  'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
