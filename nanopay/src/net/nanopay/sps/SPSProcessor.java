@@ -67,30 +67,35 @@ public class SPSProcessor {
             // GeneralRequestResponse
             GeneralRequestResponse generalRequestResponse = new GeneralRequestResponse();
             generalRequestResponse.parseSPSResponse(response);
+            // TODO: change transaction based on the response
             System.out.println("2011-GeneralRequestResponse: " + generalRequestResponse);
             break;
           case "2031":
             // BatchDetailGeneralResponse
             BatchDetailGeneralResponse batchDetailGeneralResponse = new BatchDetailGeneralResponse();
             batchDetailGeneralResponse.parseSPSResponse(response);
+            // TODO: change transaction based on the response
             System.out.println("2031-BatchDetailGeneralResponse: " + batchDetailGeneralResponse);
             break;
           case "2033":
             // DetailResponse
             DetailResponse detailResponse = new DetailResponse();
             detailResponse.parseSPSResponse(response);
+            // TODO: change transaction based on the response
             System.out.println("2033-BatchDetailGeneralResponse: " + detailResponse);
             break;
           case "2090":
             // RequestMessageAndErrors
             RequestMessageAndErrors requestMessageAndErrors = new RequestMessageAndErrors();
             requestMessageAndErrors.parseSPSResponse(response);
+            // TODO: change transaction based on the response
             System.out.println("2090-BatchDetailGeneralResponse: " + requestMessageAndErrors);
             break;
           case "2091":
             // HostError
             HostError hostError = new HostError();
             hostError.parseSPSResponse(response);
+            // TODO: change transaction based on the response
             System.out.println("2091-BatchDetailGeneralResponse: " + hostError);
             break;
         }
