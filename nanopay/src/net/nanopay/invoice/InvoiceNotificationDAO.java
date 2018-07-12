@@ -71,7 +71,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.setEmailIsEnabled(true);
 
     notification.setUserId(payeeId == invoice.getCreatedBy() ? payerId : payeeId);
-    notification.setInvoice(invoice);
+    notification.setInvoiceId(invoice.getId());
     notification.setNotificationType("Invoice received");
     notificationDAO_.put(notification);
   }

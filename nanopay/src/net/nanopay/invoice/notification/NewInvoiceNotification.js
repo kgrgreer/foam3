@@ -1,8 +1,8 @@
 foam.ENUM({
   package: 'net.nanopay.invoice.notification',
-  name: 'InvoiceType',
+  name: 'InvoiceNotificationType',
 
-  documentation: 'Invoice type',
+  documentation: 'Invoice notification type',
 
   values: [
     {
@@ -25,9 +25,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoice',
+      class: 'Long',
+      name: 'invoiceId'
     }
   ]
 });
