@@ -73,10 +73,9 @@ foam.CLASS({
       javaReturns: 'String',
       javaCode: `
         return ! SafetyUtil.isEmpty(this.getFirstName())
-        ? ! SafetyUtil.isEmpty(this.getLastName())
-          ? this.getFirstName() + " " + this.getLastName()
-          : this.getFirstName()
-        : "Unknown";
+            ? ! SafetyUtil.isEmpty(this.getLastName())
+                ? this.getFirstName() + " " + this.getLastName() : this.getFirstName()
+                    : "Unknown";
       `
     }
   ],

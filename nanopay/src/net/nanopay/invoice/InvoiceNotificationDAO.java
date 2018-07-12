@@ -32,6 +32,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     if ( existingInvoice == null ) {
       sendInvoiceNotification(x, invoice);
     }
+    
     // Put to the DAO
     return super.put_(x, invoice);
   }
@@ -65,6 +66,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     long payerId = (long) invoice.getPayerId();
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
+
     // Set email values on notification.
     notification = setEmailArgs(x, invoice, notification);
     notification.setEmailName("newInvoice");

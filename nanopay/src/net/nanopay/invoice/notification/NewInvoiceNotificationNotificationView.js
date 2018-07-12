@@ -27,7 +27,7 @@ foam.CLASS({
       this.SUPER();
       this.invoice = await this.invoiceDAO.find(this.data.invoiceId);
       var senderName = this.invoice.payeeId !== this.invoice.createdBy
-          ? this.invoice.payer.label() : this.invoice.payee.label();
+        ? this.invoice.payer.label() : this.invoice.payee.label();
 
       this.addClass(this.myClass())
       .start().addClass('msg')
@@ -37,11 +37,12 @@ foam.CLASS({
       .start(this.LINK).end();
     },
     function getInvoiceNotificationType() {
-      // if invoice.payeeId is equal to invoice.createdBy
-      // for notification receiver, it is payable invoice
-      // for notification sender, it is receivable invoice
+      /* if invoice.payeeId is equal to invoice.createdBy
+         for notification receiver, it is payable invoice
+         for notification sender, it is receivable invoice
+      */ 
       return this.invoice.payeeId === this.invoice.createdBy
-          ? this.InvoiceNotificationType.PAYABLE: this.InvoiceNotificationType.RECEIVABLE;
+        ? this.InvoiceNotificationType.PAYABLE: this.InvoiceNotificationType.RECEIVABLE;
     }
   ],
 
