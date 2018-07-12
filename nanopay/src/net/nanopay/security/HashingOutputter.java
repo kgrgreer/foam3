@@ -2,6 +2,7 @@ package net.nanopay.security;
 
 import foam.core.FObject;
 import foam.lib.json.OutputterMode;
+import foam.util.SafetyUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.PrintWriter;
@@ -48,6 +49,12 @@ public class HashingOutputter
 
 
   protected synchronized void outputDigest() {
+    // don't output digest if empty, reset digest
+    if ( SafetyUtil.isEmpty(stringWriter_.toString()) ) {
+      hashingWriter_.reset();
+      return;
+    }
+
     String algorithm = hashingWriter_.getAlgorithm();
     String digest = Hex.toHexString(hashingWriter_.digest());
     stringWriter_.append(",{")
