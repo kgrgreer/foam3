@@ -9,7 +9,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 import net.nanopay.model.BankAccount;
 import net.nanopay.model.BankAccountStatus;
 
@@ -23,7 +23,7 @@ public class LiquidityService
 {
   protected DAO    userDAO_;
   protected DAO    liquiditySettingsDAO_;
-  protected DAO    accountDAO_;
+  protected DAO    currentBalanceDAO_;
   protected DAO    bankAccountDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
@@ -46,10 +46,10 @@ public class LiquidityService
     return bankAccountDAO_;
   }
 
-  protected DAO getAccountDAO() {
-    if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
+  protected DAO getCurrentBalanceDAO() {
+    if ( currentBalanceDAO_ == null ) currentBalanceDAO_ = (DAO) getX().get("localCurrentBalanceDAO");
 
-    return accountDAO_;
+    return currentBalanceDAO_;
   }
 
   protected DAO getLiquiditySettingsDAO() {
@@ -83,7 +83,7 @@ public class LiquidityService
       return null;
     }
 
-    long currentBalance = ( (Account) getAccountDAO().find(userId) ).getBalance();
+    long currentBalance = ( (CurrentBalance) getCurrentBalanceDAO().find(userId) ).getBalance();
     long minBalance     = liquiditySettings.getMinimumBalance();
     long maxBalance     = liquiditySettings.getMaximumBalance();
 
@@ -154,7 +154,7 @@ public class LiquidityService
             EQ(Transaction.PAYEE_ID, payerId)))
         .select(pendingBalanceList);
 
-    long cashInAmount = payerMinBalance - ( (Account) getAccountDAO().find(payerId) ).getBalance();
+    long cashInAmount = payerMinBalance - ( (CurrentBalance) getCurrentBalanceDAO().find(payerId) ).getBalance();
     for ( Object object : pendingBalanceList.getArray() ) {
       Transaction transaction = (Transaction) getLocalTransactionDAO().find(object);
       if ( transaction.getStatus() == TransactionStatus.COMPLETED || transaction.getStatus() == TransactionStatus.DECLINED )

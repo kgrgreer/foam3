@@ -18,7 +18,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.Account',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
     'foam.u2.dialog.NotificationMessage',

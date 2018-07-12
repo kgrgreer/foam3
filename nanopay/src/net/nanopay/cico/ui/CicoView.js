@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
     'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.model.Account',
+    'net.nanopay.account.CurrentBalance',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
@@ -21,8 +21,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
-    'account',
+    'currentBalanceDAO',
+    'currentBalance',
     'addCommas',
     'bankAccountDAO',
     'stack',
@@ -346,9 +346,9 @@ foam.CLASS({
       // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        this.accountDAO.find(this.user.id).then(function (a) {
-          self.account.copyFrom(a);
-          self.formattedBalance = '$' + (a.balance / 100).toFixed(2);
+        this.currentBalanceDAO.find(this.user.id).then(function (b) {
+          self.currentBalance.copyFrom(b);
+          self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
         });
       }
     }

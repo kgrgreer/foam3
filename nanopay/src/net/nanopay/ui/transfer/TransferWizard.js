@@ -19,7 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'account',
+    'currentBalance',
     'bankAccountDAO',
     'bankAccountVerification',
     'email',
@@ -335,7 +335,7 @@ foam.CLASS({
 
           // Check if user has enough digital cash to make the transfer and show
           // an error message if they don't.
-          var fundsInsufficient = this.account.balance < self.viewData.fromAmount;
+          var fundsInsufficient = this.currentBalance.balance < self.viewData.fromAmount;
           if ( ! self.viewData.accountCheck && fundsInsufficient ) {
             this.add(this.NotificationMessage.create({
               message: 'Unable to process payment: insufficient digital cash.',

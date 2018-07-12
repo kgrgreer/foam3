@@ -8,7 +8,7 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 import net.nanopay.model.BankAccount;
 import net.nanopay.model.BankAccountStatus;
 import net.nanopay.tx.model.CashOutFrequency;
@@ -22,7 +22,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
 
   protected DAO userDAO_;
   protected DAO liquiditySettingsDAO_;
-  protected DAO accountDAO_;
+  protected DAO currentBalanceDAO_;
   protected DAO bankAccountDAO_;
   protected DAO groupDAO_;
   protected Logger logger_;
@@ -33,7 +33,7 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     // initialize our DAO
     userDAO_ = (DAO) x.get("localUserDAO");
     bankAccountDAO_ = (DAO) x.get("localBankAccountDAO");
-    accountDAO_ = (DAO) x.get("localAccountDAO");
+    currentBalanceDAO_ = (DAO) x.get("localCurrentBalanceDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
     groupDAO_ = (DAO) x.get("groupDAO");
     logger_ = (Logger) x.get("logger");
@@ -52,10 +52,10 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     }
 
     // get payer and payee account
-    Account payeeAccount = (Account) accountDAO_.find(txn.getPayeeId());
-    long payeeId = payeeAccount.getId();
-    Account payerAccount = (Account) accountDAO_.find(txn.getPayerId());
-    long payerId = payerAccount.getId();
+    CurrentBalance payeeCurrentBalance = (CurrentBalance) currentBalanceDAO_.find(txn.getPayeeId());
+    long payeeId = payeeCurrentBalance.getId();
+    CurrentBalance payerCurrentBalance = (CurrentBalance) currentBalanceDAO_.find(txn.getPayerId());
+    long payerId = payerCurrentBalance.getId();
 
     //get user payer and payee
     User payer = (User) userDAO_.find(payerId);
@@ -87,8 +87,8 @@ public class LiquidityCashOutDAO extends ProxyDAO {
       transactionAmount = 0;
     }
     try {
-      liquidityPayerCashOut(x, payerLiquiditySetting, payerAccount, transactionAmount, payerBankAccountID);
-      liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeAccount, txn.getTotal(), payeeBankAccountID);
+      liquidityPayerCashOut(x, payerLiquiditySetting, payerCurrentBalance, transactionAmount, payerBankAccountID);
+      liquidityPayeeCashOut(x, payeeLiquiditySetting, payeeCurrentBalance, txn.getTotal(), payeeBankAccountID);
     } catch ( RuntimeException rexp ) {
       // Do nothing if cash out is not success, cash out is not a necessary process for the payer to pay money
       logger_.error(rexp.getMessage());
@@ -173,25 +173,25 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     return false;
   }
 
-  public void liquidityPayeeCashOut(X x, LiquiditySettings liquiditySettings, Account account, long
+  public void liquidityPayeeCashOut(X x, LiquiditySettings liquiditySettings, CurrentBalance currentBalance, long
     transactionAmount, long bankAccountId) {
     long maxBalance = 0;
     if ( liquiditySettings != null ) {
       maxBalance = liquiditySettings.getMaximumBalance();
     }
     if ( ifCheckRangePerTransaction(liquiditySettings) ) {
-      if ( account.getBalance() + transactionAmount > maxBalance ) {
+      if ( currentBalance.getBalance() + transactionAmount > maxBalance ) {
         if ( checkCashOutStatus(liquiditySettings) ) {
-          long cashOutAmount = account.getBalance() - maxBalance + transactionAmount;
+          long cashOutAmount = currentBalance.getBalance() - maxBalance + transactionAmount;
           if ( checkBankAccountAvailable(bankAccountId) )
-            addCICOTransaction(account.getId(), cashOutAmount,
+            addCICOTransaction(currentBalance.getId(), cashOutAmount,
               bankAccountId, TransactionType.CASHOUT, x);
         }
       }
     }
   }
 
-  public void liquidityPayerCashOut(X x, LiquiditySettings liquiditySettings, Account account, long
+  public void liquidityPayerCashOut(X x, LiquiditySettings liquiditySettings, CurrentBalance currentBalance, long
     transactionAmount, long bankAccountId) throws RuntimeException {
     long maxBalance = 0;
     if ( liquiditySettings != null ) {
@@ -199,9 +199,9 @@ public class LiquidityCashOutDAO extends ProxyDAO {
     }
     if ( ifCheckRangePerTransaction(liquiditySettings) ) {
 
-      if ( account.getBalance() - transactionAmount > maxBalance ) {
+      if ( currentBalance.getBalance() - transactionAmount > maxBalance ) {
         if ( checkCashOutStatus(liquiditySettings) ) {
-          addCICOTransaction(account.getId(), account.getBalance() - transactionAmount - maxBalance, bankAccountId,
+          addCICOTransaction(currentBalance.getId(), currentBalance.getBalance() - transactionAmount - maxBalance, bankAccountId,
             TransactionType.CASHOUT, x);
         }
       }

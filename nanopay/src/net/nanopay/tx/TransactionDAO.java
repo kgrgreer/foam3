@@ -8,7 +8,7 @@ import foam.dao.ProxyDAO;
 import java.util.*;
 
 import foam.nanos.auth.User;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
@@ -24,7 +24,7 @@ public class TransactionDAO
       }});
 
   protected DAO userDAO_;
-  protected DAO accountDAO_;
+  protected DAO currentBalanceDAO_;
   protected DAO invoiceDAO_;
   protected DAO bankAccountDAO_;
 
@@ -44,12 +44,12 @@ public class TransactionDAO
     return userDAO_;
   }
 
-  protected DAO getBalanceDAO() {
-    if ( accountDAO_ == null ) {
-      accountDAO_ = (DAO) getX().get("localBalanceDAO");
+  protected DAO getCurrentBalanceDAO() {
+    if ( currentBalanceDAO_ == null ) {
+      currentBalanceDAO_ = (DAO) getX().get("localCurrentBalanceDAO");
     }
 
-    return accountDAO_;
+    return currentBalanceDAO_;
   }
 
   @Override
@@ -159,18 +159,18 @@ public class TransactionDAO
 
 
   public void cashinReject(X x, Transaction transaction) {
-    Account payerAccount = (Account) getBalanceDAO().find(transaction.getPayerId());
-    payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
+    CurrentBalance payerCurrentBalance = (CurrentBalance) getCurrentBalanceDAO().find(transaction.getPayerId());
+    payerCurrentBalance.setBalance(payerCurrentBalance.getBalance() > transaction.getTotal() ? payerCurrentBalance.getBalance() -
         transaction.getTotal() : 0);
-    getBalanceDAO().put_(x, payerAccount.fclone());
+    getCurrentBalanceDAO().put_(x, payerCurrentBalance.fclone());
     User user = (User) getUserDAO().find(transaction.getPayerId());
   }
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
-    Account payerAccount = (Account) getBalanceDAO().find(transaction.getPayeeId());
-    payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
+    CurrentBalance payerCurrentBalance = (CurrentBalance) getCurrentBalanceDAO().find(transaction.getPayeeId());
+    payerCurrentBalance.setBalance(payerCurrentBalance.getBalance() > transaction.getTotal() ? payerCurrentBalance.getBalance() -
         transaction.getTotal() : 0);
-    getBalanceDAO().put_(x, payerAccount.fclone());
+    getCurrentBalanceDAO().put_(x, payerCurrentBalance.fclone());
     // if it's a transaction for different user, we need notify both
     User payer = (User) getUserDAO().find(transaction.getPayerId());
     User payee = (User) getUserDAO().find(transaction.getPayeeId());
