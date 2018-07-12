@@ -19,9 +19,8 @@ foam.CLASS({
       value: false
     },
     {
-      class: 'Object',
-      name: 'previousDigest',
-      javaType: 'byte[]'
+      class: 'String',
+      name: 'previousDigest'
     },
     {
       name: 'outputter',
