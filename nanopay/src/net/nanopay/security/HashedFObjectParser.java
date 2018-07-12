@@ -25,10 +25,10 @@ public class HashedFObjectParser
 
         @Override
         public PStream parse(PStream ps, ParserContext x) {
-          // parse FObject
+          // parse FObject returning null upon error
           PStream ps1 = ps.apply(parser1, x);
           if ( ps1 == null || ps1.value() == null ) {
-            throw new RuntimeException("Digest verification failed");
+            return null;
           }
 
           // get journal entry as a string
