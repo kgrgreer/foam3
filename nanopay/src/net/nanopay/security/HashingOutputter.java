@@ -51,8 +51,15 @@ public class HashingOutputter
       return;
     }
 
+    // update digest with previous digest
+    if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
+      hashingWriter_.update(Hex.decode(hashingJournal_.getPreviousDigest()));
+    }
+
     String algorithm = hashingWriter_.getAlgorithm();
     String digest = Hex.toHexString(hashingWriter_.digest());
+    hashingJournal_.setPreviousDigest(digest);
+
     stringWriter_.append(",{")
       .append(beforeKey_())
       .append("algorithm")
