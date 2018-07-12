@@ -14,6 +14,16 @@ foam.CLASS({
       value: 'SHA-256'
     },
     {
+      class: 'Boolean',
+      name: 'rollDigests',
+      value: false
+    },
+    {
+      class: 'Object',
+      name: 'previousDigest',
+      javaType: 'byte[]'
+    },
+    {
       class: 'Object',
       name: 'outputter',
       javaType: 'net.nanopay.security.HashingOutputter',
