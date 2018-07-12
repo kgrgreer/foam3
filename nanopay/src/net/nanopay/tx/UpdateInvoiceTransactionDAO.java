@@ -42,7 +42,7 @@ public class UpdateInvoiceTransactionDAO
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
-          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
+          invoice.setPaymentMethod(PaymentStatus.NANOPAY);
           invoiceDAO_.put(invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.PENDING ) {
