@@ -21,7 +21,7 @@ public String toSPSString() {
     PropertyInfo propertyInfo = list.get(i);
     if (propertyInfo.isSet(this) && propertyInfo.get(this) != null ) {
       if ( propertyInfo instanceof AbstractFObjectPropertyInfo ) {
-       // append xml field
+       // append sps style xml field
         sb.append(((RequestPacketGenerator)propertyInfo.get(this)).toSPSString());
       } else {
         sb.append(propertyInfo.get(this));

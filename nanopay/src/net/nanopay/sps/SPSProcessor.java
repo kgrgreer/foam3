@@ -1,6 +1,5 @@
 package net.nanopay.sps;
 
-import foam.core.ContextAgent;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 import net.nanopay.sps.model.*;
@@ -20,12 +19,12 @@ import java.util.List;
 
 public class SPSProcessor {
 
-  public void sendGeneralRequestPacketAndParseResponse(X x) {
+  public void sendGeneralReqAndParseResp(X x) {
     String generatedData = generateTestGeneralRequest();
     execute(x, generatedData);
   }
 
-  public void sendBatchDetailRequestPacketAndParseResponse(X x) {
+  public void sendBatchDetailReqAndParseResp(X x) {
     String generatedData = generateTestBatchDetailRequest();
     execute(x, generatedData);
   }
@@ -46,8 +45,8 @@ public class SPSProcessor {
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
       try {
-        System.out.println("Sending 'POST' request to URL : " + url);
-        System.out.println("Response Code : " + httpResponse.getStatusLine().getStatusCode());
+        // System.out.println("Sending 'POST' request to URL : " + url);
+        // System.out.println("Response Code : " + httpResponse.getStatusLine().getStatusCode());
 
         BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 
@@ -58,10 +57,10 @@ public class SPSProcessor {
         }
 
         String response = sb.toString();
-        System.out.println(response);
+        // System.out.println(response);
 
         String responsePacketType = response.substring(4, 8);
-        System.out.println("type: " + responsePacketType);
+        // System.out.println("type: " + responsePacketType);
 
         switch ( responsePacketType ) {
           case "2011":
@@ -98,7 +97,7 @@ public class SPSProcessor {
       } finally {
         httpResponse.close();
       }
-    } catch (IOException | IllegalAccessException | InstantiationException e) {
+    } catch (IOException e) {
       logger.error(e);
     } finally {
       try {
@@ -110,7 +109,7 @@ public class SPSProcessor {
   }
 
   private String generateTestGeneralRequest() {
-//    String testData = "20<FS>2010<FS>10<FS>20180710115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
+//    String testData = "20<FS>2010<FS>10<FS>20180711115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
 //      "[OTHER]1234567890-0001[/OTHER][LOCATION]NANOPAY[/LOCATION][TYPE]P[/TYPE][SECC]WEB[/SECC][PTC]S[/PTC]<FS><FS>" +
 //      "122000247<FS>9988998899<FS>9999<FS>550.00<FS><FS><FS><FS><FS><FS>EV<FS><FS><FS><FS>";
 
@@ -120,7 +119,7 @@ public class SPSProcessor {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMessageModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180710115959");
+    generalRequestPacket.setLocalTransactionTime("20180711115959");
     //not used
     //generalRequestPacketTest.setTextMsg("");
     generalRequestPacket.setTID("ZYX80");
@@ -152,22 +151,18 @@ public class SPSProcessor {
     generalRequestPacket.setDateOfBirth("");
     generalRequestPacket.setPhoneNumber("");
 
-    String generatedData = generalRequestPacket.toSPSString();
-
-    System.out.println(generatedData);
-
     return generalRequestPacket.toSPSString();
   }
 
   private String generateTestBatchDetailRequest() {
-    // String testData = "20<FS>2030<FS>60<FS>20180710115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
+    // String testData = "20<FS>2030<FS>60<FS>20180711115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
 
     BatchDetailRequestPacket batchDetailRequestPacket = new BatchDetailRequestPacket();
 
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMessageModifierCode(60);
-    batchDetailRequestPacket.setLocalTransactionTime("20180710115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180711115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setOptionallyEnteredDate("");
@@ -181,10 +176,6 @@ public class SPSProcessor {
     batchDetailRequestPacket.setSyncCounter("0");
     batchDetailRequestPacket.setCreditCount("");
     batchDetailRequestPacket.setCreditAmount("");
-
-    String generatedData = batchDetailRequestPacket.toSPSString();
-
-    System.out.println(generatedData);
 
     return batchDetailRequestPacket.toSPSString();
   }

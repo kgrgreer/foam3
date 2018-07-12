@@ -80,7 +80,7 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-static {
+{
 list = new ArrayList<>();
 list.add(MSG_TYPE);
 list.add(PACKET_TYPE);

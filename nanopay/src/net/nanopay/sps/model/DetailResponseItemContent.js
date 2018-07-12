@@ -62,10 +62,10 @@ list.add(CLERK_ID);
 
 public String toSPSString() {
   StringBuilder sb = new StringBuilder();
-  //interate list
-  for (int i = 0; i < list.size(); i++) {
-    PropertyInfo propertyInfo = list.get(i);
-    sb.append("[" + propertyInfo.getName().toUpperCase() + "]" + propertyInfo.get(this) + "[/" + propertyInfo.getName().toUpperCase() + "]");
+  
+  for (PropertyInfo propertyInfo : list) {
+    sb.append("[").append(propertyInfo.getName().toUpperCase()).append("]").append(propertyInfo.get(this))
+      .append("[/").append(propertyInfo.getName().toUpperCase()).append("]");
   }
 
   return sb.toString();

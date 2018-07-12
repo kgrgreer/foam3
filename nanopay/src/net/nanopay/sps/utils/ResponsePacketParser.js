@@ -16,9 +16,8 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
 protected static List<PropertyInfo> list;
-public void parseSPSResponse(String response) throws IllegalAccessException, InstantiationException{
-  ClassInfo classInfo = classInfo_;
-  if ( response == null && response.length() == 0 ) {
+public void parseSPSResponse(String response) {
+  if ( response == null || response.length() == 0 ) {
     return;
   }
   
@@ -35,13 +34,9 @@ public void parseSPSResponse(String response) throws IllegalAccessException, Ins
   
   values = (Object[]) ps1.value();
   
-  System.out.println("list size = " + list.size());
-  System.out.println("values length = " + values.length);
-  
   for ( int i = 0; i < list.size(); i++ ) {
-    ((PropertyInfo)list.get(i)).set(this, ((PropertyInfo)list.get(i)).fromString((String) values[i]));
+    list.get(i).set(this, list.get(i).fromString((String) values[i]));
   }
-
 }
 
 private static class SPSStringParser implements Parser {
