@@ -18,6 +18,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+  'foam.nanos.auth.User',
+  'net.nanopay.tx.model.Transaction',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.dao.Sink',
@@ -59,10 +61,10 @@ foam.CLASS({
       },
       javaReturns: 'foam.core.FObject',
       javaCode: `
-        Transaction txn = obj;
+        Transaction txn = (Transaction) obj;
         if ( txn.getDestinationAccount() == null ) {
           txn = (Transaction) obj.fclone();
-          txn.setDestinationAccount(digitalAccount(txn.getDestinationUser(), txn.getDestinationCurrency()));
+          txn.setDestinationAccount(digitalAccount(txn.getPayeeId(), txn.getSourceCurrency()));
         }
         return getDelegate().put_(x, txn);
 `
@@ -114,7 +116,7 @@ foam.CLASS({
           if ( currency == null ) {
             currency = "CAD";
           }
-          DAO userDAO = getX().get("userDAO");
+          DAO userDAO = (DAO) getX().get("userDAO");
           User user = (User) userDAO.find(userId);
           DAO accountDAO = user.getAccounts();
           Sink accountSink = new ArraySink();
@@ -140,5 +142,17 @@ foam.CLASS({
           return digital;
 `
     }
+  ],
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+public PayeeTransactionDAO(foam.core.X x, foam.dao.DAO delegate) {
+  System.err.println("Direct constructor use is deprecated. Use Builder instead.");
+  setDelegate(delegate);
+}
+        `);
+      },
+    },
   ]
 });

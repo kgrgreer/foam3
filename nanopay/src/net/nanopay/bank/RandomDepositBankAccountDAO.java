@@ -53,8 +53,9 @@ public class RandomDepositBankAccountDAO
         .setAmount(randomDepositAmount)
         .setType(TransactionType.VERIFICATION)
         .setStatus(TransactionStatus.PENDING)
+        .setSourceCurrency(account.getDenomination())
         .build();
-      getTransactionDAO().put(transaction);
+      getTransactionDAO().put_(x,transaction);
     }
 
     return super.put_(x, account);
