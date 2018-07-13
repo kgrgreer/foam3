@@ -6,6 +6,14 @@ foam.CLASS({
     'net.nanopay.cico.spi.alterna.SFTPService'
   ],
 
+  properties: [
+    {
+      class: 'Int',
+      name: 'holdTimeInBusinessDays',
+      value: 0
+    }
+  ],
+
   javaImports: [
     'com.jcraft.jsch.Channel',
     'com.jcraft.jsch.ChannelSftp',

@@ -65,13 +65,16 @@ public class CsvUtil {
   /**
    * Generates the completion date based on a given date
    * @param date date used to determine the processing date
-   * @return either the current date plus 3 day if current time is before 11 am
-   *         or the current date plus 4 days if the current date is after 11 am
+   * @return either the current date plus (1 + holdTimeInBusinessDays) days if current time is before 11 am
+   *         or the current date plus (2 + holdTimeInBusinessDays) days if the current date is after 11 am
    */
-  public static Date generateCompletionDate(Date date) {
+  public static Date generateCompletionDate(X x, Date date) {
+    AlternaSFTPService alternaSFTPService = (AlternaSFTPService) x.get("alternaSftp");
+    int holdTimeInBusinessDays = alternaSFTPService.getHoldTimeInBusinessDays();
+
     Calendar curDate = Calendar.getInstance();
     curDate.setTime(date);
-    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 3 : 4;
+    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? (1 + holdTimeInBusinessDays) : (2 + holdTimeInBusinessDays);
     int i = 0;
     while ( i < k ) {
       curDate.add(Calendar.DAY_OF_YEAR, 1);
@@ -193,7 +196,7 @@ public class CsvUtil {
           }
 
           if (t.getCompletionDate() == null) {
-            t.setCompletionDate(generateCompletionDate(now));
+            t.setCompletionDate(generateCompletionDate(x, now));
           }
 
           transactionDAO.put(t);
