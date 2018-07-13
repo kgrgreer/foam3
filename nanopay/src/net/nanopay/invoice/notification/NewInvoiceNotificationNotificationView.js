@@ -19,32 +19,35 @@ foam.CLASS({
   ],
 
   properties: [
-    'invoice'
+    'invoice',
+    'message'
   ],
 
   methods: [
-    async function initE() {
+    function initE() {
       this.SUPER();
 
-      this.invoice = await this.invoiceDAO.find(this.data.invoiceId);
-      var senderName = this.invoice.payeeId !== this.invoice.createdBy
-          ? this.invoice.payer.label()
-          : this.invoice.payee.label();
-      var invoiceType = this.getInvoiceNotificationType();
-      var amount = this.addCommas((this.invoice.amount / 100).toFixed(2));
-      var message = `${senderName} just sent you a ${invoiceType.label} invoice
-          of $${amount}.`
-
+      var self = this;
+      this.invoiceDAO.find(this.data.invoiceId).then(function(result) {
+        self.invoice = result;
+        var senderName = self.invoice.payeeId !== self.invoice.createdBy
+            ? self.invoice.payer.label()
+            : self.invoice.payee.label();
+        var invoiceType = self.getInvoiceNotificationType(self.invoice);
+        var amount = self.addCommas((self.invoice.amount / 100).toFixed(2));
+        self.message = `${senderName} just sent you a ${invoiceType.label} invoice
+            of $${amount}.`;
+      });
       this
         .addClass(this.myClass())
         .start()
           .addClass('msg')
-          .add(message)
+          .add(this.message$)
         .end()
         .start(this.LINK).end();
     },
-    function getInvoiceNotificationType() {
-      return this.invoice.payeeId === this.invoice.createdBy
+    function getInvoiceNotificationType(invoice) {
+      return invoice.payeeId === invoice.createdBy
           ? this.InvoiceNotificationType.PAYABLE
           : this.InvoiceNotificationType.RECEIVABLE;
     }
@@ -54,7 +57,8 @@ foam.CLASS({
     name: 'link',
     label: 'View Invoice',
     code: function() {
-      if ( this.getInvoiceNotificationType() === this.InvoiceNotificationType.RECEIVABLE ) {
+      if ( this.getInvoiceNotificationType(this.invoice)
+          === this.InvoiceNotificationType.RECEIVABLE ) {
         this.stack.push({
           class: 'net.nanopay.invoice.ui.SalesDetailView',
           data: this.invoice
