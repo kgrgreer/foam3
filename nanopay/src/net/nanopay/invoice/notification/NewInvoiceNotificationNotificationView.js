@@ -25,24 +25,28 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
+
       this.invoice = await this.invoiceDAO.find(this.data.invoiceId);
       var senderName = this.invoice.payeeId !== this.invoice.createdBy
-        ? this.invoice.payer.label() : this.invoice.payee.label();
+          ? this.invoice.payer.label()
+          : this.invoice.payee.label();
+      var invoiceType = this.getInvoiceNotificationType();
+      var amount = this.addCommas((this.invoice.amount / 100).toFixed(2));
+      var message = `${senderName} just sent you a ${invoiceType.label} invoice
+          of $${amount}.`
 
-      this.addClass(this.myClass())
-      .start().addClass('msg')
-        .add(`${senderName} just sent you a ${this.getInvoiceNotificationType().label} 
-            invoice of $${this.addCommas((this.invoice.amount/100).toFixed(2))}.`)
-      .end()
-      .start(this.LINK).end();
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass('msg')
+          .add(message)
+        .end()
+        .start(this.LINK).end();
     },
     function getInvoiceNotificationType() {
-      /* if invoice.payeeId is equal to invoice.createdBy
-         for notification receiver, it is payable invoice
-         for notification sender, it is receivable invoice
-      */ 
       return this.invoice.payeeId === this.invoice.createdBy
-        ? this.InvoiceNotificationType.PAYABLE: this.InvoiceNotificationType.RECEIVABLE;
+          ? this.InvoiceNotificationType.PAYABLE
+          : this.InvoiceNotificationType.RECEIVABLE;
     }
   ],
 

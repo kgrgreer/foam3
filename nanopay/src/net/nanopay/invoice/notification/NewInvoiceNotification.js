@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.invoice.notification',
   name: 'InvoiceNotificationType',
 
-  documentation: 'Invoice notification type',
+  documentation: 'Invoice notification type.',
 
   values: [
     {
@@ -21,7 +21,7 @@ foam.CLASS({
   name: 'NewInvoiceNotification',
   extends: 'foam.nanos.notification.Notification',
 
-  documentation: 'Notification for new payable/receivale invoice',
+  documentation: 'Notification for a new payable or receivable invoice.',
 
   properties: [
     {
