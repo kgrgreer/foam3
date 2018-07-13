@@ -3,12 +3,15 @@ foam.CLASS({
   name: 'NewInvoiceNotificationNotificationView',
   extends: 'foam.nanos.notification.NotificationView',
 
+  requires: [
+    'net.nanopay.invoice.notification.InvoiceNotificationType'
+  ],
+
   imports: [
     'addCommas',
     'hideReceivableSummary',
     'invoiceDAO',
-    'stack',
-    'userDAO'
+    'stack'
   ],
 
   exports: [
@@ -16,32 +19,34 @@ foam.CLASS({
   ],
 
   properties: [
-    'name',
-    'searchResult'
+    'invoice'
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
-      var i = this.data;
-      var self = this;
-      this.invoiceDAO.find(i.invoiceId).then(function(result) {
-        self.searchResult = result;
-      });
-      /*
-        get sender's name from userDAO since result.payeeName and payerName
-        are the empty strings for the first retrieval from invoiceDAO
-      */
-      this.userDAO.find(i.fromUserId).then(function(user) {
-        self.name = user.label();
-      });
 
-      this.addClass(this.myClass())
-      .start().addClass('msg')
-        .add(this.name$)
-        .add(` just send you a ${i.invoiceType.toLowerCase()} invoice of $${this.addCommas((i.amount/100).toFixed(2))}.`)
-      .end()
-      .start(this.LINK).end();
+      this.invoice = await this.invoiceDAO.find(this.data.invoiceId);
+      var senderName = this.invoice.payeeId !== this.invoice.createdBy
+          ? this.invoice.payer.label()
+          : this.invoice.payee.label();
+      var invoiceType = this.getInvoiceNotificationType();
+      var amount = this.addCommas((this.invoice.amount / 100).toFixed(2));
+      var message = `${senderName} just sent you a ${invoiceType.label} invoice
+          of $${amount}.`
+
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass('msg')
+          .add(message)
+        .end()
+        .start(this.LINK).end();
+    },
+    function getInvoiceNotificationType() {
+      return this.invoice.payeeId === this.invoice.createdBy
+          ? this.InvoiceNotificationType.PAYABLE
+          : this.InvoiceNotificationType.RECEIVABLE;
     }
   ],
 
@@ -49,15 +54,15 @@ foam.CLASS({
     name: 'link',
     label: 'View Invoice',
     code: function() {
-      if ( this.data.invoiceType === 'RECEIVABLE' ) {
+      if ( this.getInvoiceNotificationType() === this.InvoiceNotificationType.RECEIVABLE ) {
         this.stack.push({
           class: 'net.nanopay.invoice.ui.SalesDetailView',
-          data: this.searchResult
+          data: this.invoice
         }, this);
       } else {
         this.stack.push({
           class: 'net.nanopay.invoice.ui.ExpensesDetailView',
-          data: this.searchResult
+          data: this.invoice
         }, this);
       }
     }
