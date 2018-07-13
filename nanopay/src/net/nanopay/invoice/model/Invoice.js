@@ -101,7 +101,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'created',
       documentation: `The date the invoice was created.`,
     },
@@ -112,7 +112,7 @@ foam.CLASS({
       documentation: `The id of the user who created the invoice.`,
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the invoice was last modified.`,
     },
