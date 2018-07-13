@@ -85,7 +85,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
           addTransaction(x, account.getId(), bankId);
         }
       } else {
-        Group group = (Group) groupDAO.find(((User) account.getOwner()).getGroup());
+        Group group = (Group) groupDAO.find(((User) ((DAO)x.get("localUserDAO")).find_(x,account.getOwner())).getGroup());
         ls = group.getLiquiditySettings();
         if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
           addTransaction(x, account.getId(), bankId);

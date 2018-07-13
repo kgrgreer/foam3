@@ -38,7 +38,7 @@ public class UpdateInvoiceTransactionDAO
 
     // find invoice
     if ( transaction.getInvoiceId() != 0 ) {
-      if ( ((Account) transaction.getSourceAccount()).getOwner() != ((Account) transaction.getDestinationAccount()).getOwner() ) {
+      if ( (long) ((Account) transaction.getSourceAccount()).getOwner() != (long) ((Account) transaction.getDestinationAccount()).getOwner() ) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());

@@ -60,7 +60,7 @@ public class RejectTransactionNotificationDAO
     if ( transaction.getType().equals(TransactionType.CASHIN) && oldTxn != null ) {
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
-        User payer = (User) ((Account) transaction.getSourceAccount()).getOwner();
+        User payer = (User) userDAO_.find_(x,((Account) transaction.getSourceAccount()).getOwner());
         sendCashInRejectEmail(x, payer.getEmail(), payer, transaction);
       }
     }
@@ -68,8 +68,8 @@ public class RejectTransactionNotificationDAO
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         //pay others by bank account directly
-        User payer = (User) ((Account) transaction.getSourceAccount()).getOwner();
-        User payee = (User) ((Account) transaction.getDestinationAccount()).getOwner();
+        User payer = (User) userDAO_.find_(x,((Account) transaction.getSourceAccount()).getOwner());
+        User payee = (User) userDAO_.find_(x,((Account) transaction.getDestinationAccount()).getOwner());
         sendPaymentRejectEmail(x, payer.getEmail(), payer, transaction);
         sendPaymentRejectEmail(x, payee.getEmail(), payee, transaction);
       }
@@ -111,8 +111,8 @@ public class RejectTransactionNotificationDAO
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
     args.put("account", ( (BankAccount) transaction.getSourceAccount() ).getAccountNumber());
-    args.put("payerName", ((User) ((Account) transaction.getSourceAccount()).getOwner()).getFirstName());
-    args.put("payeeName", ((User) ((Account) transaction.getDestinationAccount()).getOwner()).getFirstName());
+    args.put("payerName", ((User) userDAO_.find_(x,((Account) transaction.getSourceAccount()).getOwner())).getFirstName());
+    args.put("payeeName", ((User) userDAO_.find_(x,((Account) transaction.getDestinationAccount()).getOwner())).getFirstName());
     args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});

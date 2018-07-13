@@ -145,7 +145,7 @@ public class CsvUtil {
           t = (Transaction) t.fclone();
 
           BankAccount bankAccount = null;
-          user = (User) ((Account) t.getSourceAccount()).getOwner();
+          user = (User) userDAO.find_(x,((Account) t.getSourceAccount()).getOwner());
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";

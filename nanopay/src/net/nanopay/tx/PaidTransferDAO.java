@@ -20,10 +20,12 @@ public class PaidTransferDAO
   extends ProxyDAO
 {
   protected DAO accountDAO_;
+  protected DAO userDAO_;
 
   public PaidTransferDAO(X x, DAO delegate) {
     super(x, delegate);
     accountDAO_ = (DAO) x.get("localAccountDAO");
+    userDAO_= (DAO) x.get("localUserDAO");
   }
 
   @Override
@@ -40,8 +42,8 @@ public class PaidTransferDAO
     if ( transaction.getDestinationAccount() == transaction.getSourceAccount() )
       return transaction;
 
-    User user   = (User) ((Account) transaction.getDestinationAccount()).getOwner();
-    User sender = (User) ((Account) transaction.getSourceAccount()).getOwner();
+    User user   = (User) userDAO_.find_(x,((Account) transaction.getDestinationAccount()).getOwner());
+    User sender = (User) userDAO_.find_(x,((Account) transaction.getSourceAccount()).getOwner());
 
     // Returns if transaction is a payment from a CCShopper to a CCMerchant
     if ( "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(user.getGroup()) )

@@ -43,7 +43,7 @@ public class AuthenticatedTransactionDAO
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ! SafetyUtil.equals(t.getSourceAccount(), user.getId()) && ! TransactionType.REQUEST.equals(t.getType()) ) {
+    if ( ((Long)((Account)t.getSourceAccount()).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) ) {
       throw new RuntimeException("User is not the payer");
     }
 
@@ -60,7 +60,7 @@ public class AuthenticatedTransactionDAO
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
-    if ( t != null && ((User)((Account)t.getDestinationAccount()).getOwner()).getId() != user.getId() && ((User)((Account)t.getSourceAccount()).getOwner()).getId() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t != null && ((Long)((Account)t.getDestinationAccount()).getOwner()).longValue() != user.getId() && ((Long)((Account)t.getSourceAccount()).getOwner()).longValue() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
 

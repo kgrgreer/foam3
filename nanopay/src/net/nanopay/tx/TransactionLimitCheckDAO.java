@@ -43,8 +43,8 @@ public class TransactionLimitCheckDAO
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     Account payerAcc = (Account) accountDAO.find(transaction.getSourceAccount());
     Account payeeAcc = (Account) accountDAO.find(transaction.getDestinationAccount());
-    User payee  = (User) payeeAcc.getOwner();
-    User payer  = (User) payerAcc.getOwner();
+    User payee  = (User) ((DAO) x.get("localUserDAO")).find_(x,payeeAcc.getOwner());
+    User payer  = (User) ((DAO) x.get("localUserDAO")).find_(x,payerAcc.getOwner());
 
     if ( payee == null || payer == null ) {
       throw new RuntimeException("No Payer or Payee.");

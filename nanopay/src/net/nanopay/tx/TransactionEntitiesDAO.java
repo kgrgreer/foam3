@@ -18,6 +18,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
 {
   protected DAO accountDAO_;
   protected Logger logger_;
+  protected DAO userDAO_;
   private class DecoratedSink extends foam.dao.ProxySink
   {
     public DecoratedSink(X x, Sink delegate)
@@ -38,6 +39,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
     super(x, delegate);
     accountDAO_ = (DAO) x.get("localAccountDAO");
     logger_ = (Logger) x.get("logger");
+    userDAO_ = (DAO) x.get("localUserDAO");
   }
 
   @Override
@@ -63,8 +65,8 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     FObject clone = obj.fclone();
     Transaction tx = (Transaction) clone;
-    User payer = (User) ((Account) accountDAO_.find(tx.getSourceAccount())).getOwner();
-    User payee = (User) ((Account) accountDAO_.find(tx.getDestinationAccount())).getOwner();
+    User payer = (User) userDAO_.find(((Account) accountDAO_.find(tx.getSourceAccount())).getOwner());
+    User payee = (User) userDAO_.find(((Account) accountDAO_.find(tx.getDestinationAccount())).getOwner());
 
     if (payer == null) {
       logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), payer.getId()));
