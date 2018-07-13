@@ -31,6 +31,7 @@ public class HashingOutputter
 
   @Override
   public synchronized String stringify(FObject obj) {
+    rollDigests();
     super.stringify(obj);
     outputDigest();
     return stringWriter_.toString();
@@ -38,22 +39,23 @@ public class HashingOutputter
 
   @Override
   public synchronized String stringifyDelta(FObject oldFObject, FObject newFObject) {
+    rollDigests();
     super.stringifyDelta(oldFObject, newFObject);
     outputDigest();
     return stringWriter_.toString();
   }
 
+  protected synchronized void rollDigests() {
+    if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
+      hashingWriter_.update(Hex.decode(hashingJournal_.getPreviousDigest()));
+    }
+  }
 
   protected synchronized void outputDigest() {
     // don't output digest if empty, reset digest
     if ( SafetyUtil.isEmpty(stringWriter_.toString()) ) {
       hashingWriter_.reset();
       return;
-    }
-
-    // update digest with previous digest
-    if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
-      hashingWriter_.update(Hex.decode(hashingJournal_.getPreviousDigest()));
     }
 
     String algorithm = hashingWriter_.getAlgorithm();

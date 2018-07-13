@@ -11,12 +11,13 @@ import foam.lib.parse.StringPStream;
 public class HashedJSONParser
   extends JSONParser
 {
+  protected Parser parser;
   protected HashingJournal hashingJournal_;
-  protected Parser parser = new HashedFObjectParser();
 
   public HashedJSONParser(X x, HashingJournal hashingJournal) {
     setX(x);
     hashingJournal_ = hashingJournal;
+    parser = new HashedFObjectParser(hashingJournal);
   }
 
   @Override
@@ -26,7 +27,9 @@ public class HashedJSONParser
     ps.setString(data);
     ParserContext x = new ParserContextImpl();
     x.set("X", getX());
-    ps = (StringPStream) ps.apply(defaultClass == null ? parser : new HashedFObjectParser(defaultClass), x);
+
+    ps = (StringPStream) ps.apply(defaultClass == null ?
+      parser : new HashedFObjectParser(hashingJournal_, defaultClass), x);
 
     return ps == null ? null : (FObject) ps.value();
   }

@@ -16,7 +16,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'rollDigests',
-      value: false
+      value: true
     },
     {
       class: 'String',
@@ -34,7 +34,7 @@ foam.CLASS({
     },
     {
       name: 'parser',
-      javaFactory: `return getX().create(HashedJSONParser.class);`
+      javaFactory: `return new HashedJSONParser(getX(), this);`
     }
   ]
 });
