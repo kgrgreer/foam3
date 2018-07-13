@@ -21,6 +21,10 @@ fi
 function test_branchname {
     # Enforce NANOPAY branch naming conventions
     branch_name=`git rev-parse --abbrev-ref HEAD`
+    # ignore if commiting during REBASE
+    if [[ "$branch_name" =~ "HEAD" ]]; then
+        return;
+    fi
 
     REGEX='^([fh]|[b]/[sd])/NP-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
     if [[ ! "$branch_name" =~ $REGEX ]]; then

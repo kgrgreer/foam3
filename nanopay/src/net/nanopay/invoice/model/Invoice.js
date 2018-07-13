@@ -6,6 +6,10 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
 
+  // implements: [
+  //   'foam.net.nanos.auth.CreatedByAware'
+  // ],
+
   imports: [ 'addCommas' ],
 
   searchColumns: [
@@ -94,6 +98,8 @@ foam.CLASS({
       }
     },
     {
+      //class: 'Reference',
+      //of: 'foam.nanos.auth.User',
       class: 'Long',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
@@ -279,7 +285,6 @@ foam.CLASS({
   actions: [
     {
       name: 'payNow',
-      documentation: `Let the user pay an invoice immediately.`,
       label: 'Pay now',
       isAvailable: function(status) {
         return false;
