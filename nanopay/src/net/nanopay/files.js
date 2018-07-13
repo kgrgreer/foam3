@@ -128,7 +128,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
-  //{ name: 'net/nanopay/retail/model/Transaction' },
+  // { name: 'net/nanopay/retail/model/Transaction' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
@@ -255,7 +255,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/FileKeyStoreManager' },
-  { name: 'net/nanopay/security/csp/CSPViolation'},
+  { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },
   { name: 'net/nanopay/security/PrivateKeyEntry' },
@@ -336,5 +336,9 @@ FOAM_FILES([
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },
-  { name: 'net/nanopay/flinks/ClientFlinksAuthService' }
+  { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
+
+
+  // test
+  { name: 'net/test/ModeledTest' }
 ]);

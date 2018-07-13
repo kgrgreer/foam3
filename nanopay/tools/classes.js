@@ -138,9 +138,11 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAO',
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
-
   //topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView',
+
+  // tests
+  'net.test.ModeledTest'
 ];
 
 var abstractClasses = [
