@@ -57,7 +57,7 @@ foam.CLASS({
       name: 'businessProfilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       visibility: foam.u2.Visibility.RO
-    },
+    }
   ],
 
   methods: [
