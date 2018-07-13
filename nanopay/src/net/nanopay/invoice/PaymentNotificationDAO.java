@@ -35,16 +35,16 @@ public class PaymentNotificationDAO extends ProxyDAO {
         long payeeId = (long) invoice.getPayeeId();
         long payerId = (long) invoice.getPayerId();
 
-        if (user.getId() == payerId) {
+        if (invoice.getPaymentMethod() == PaymentStatus.NANOPAY) {
           ReceivePaymentNotification notification = new ReceivePaymentNotification();
           notification.setUserId(payeeId);
-          notification.setInvoice(invoice);
+          notification.setInvoiceId(invoice.getId());
           notification.setNotificationType("Payment received");
           notificationDAO_.put(notification);
-        } else if (user.getId() == payeeId) {
+        } else if (invoice.getPaymentMethod() == PaymentStatus.CHEQUE) {
           RecordPaymentNotification notification = new RecordPaymentNotification();
           notification.setUserId(payerId);
-          notification.setInvoice(invoice);
+          notification.setInvoiceId(invoice.getId());
           notification.setNotificationType("Record payment");
           notificationDAO_.put(notification);
         } else {

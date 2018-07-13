@@ -5,25 +5,38 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'stack',
-    'userDAO'
+    'invoiceDAO',
+    'stack'
   ],
 
   exports: [
     'as data',
   ],
 
+  properties: [
+    'invoice',
+    'message'
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
-      var invoice = this.data.invoice;
 
-      this.addClass(this.myClass())
-      .start().addClass('msg')
-        .add(`${invoice.payee.label()} has marked your invoice #${invoice.invoiceNumber} of $
-            ${this.addCommas((invoice.amount/100).toFixed(2))}.`)
-      .end()
-      .start(this.LINK).end();
+      var self = this;
+      this.invoiceDAO.find(this.data.invoiceId).then(function(result) {
+        self.invoice = result;
+        var senderName = self.invoice.payee.label();
+        var invoiceNumber = self.invoice.invoiceNumber;
+        var amount = self.addCommas((self.invoice.amount/100).toFixed(2));
+        self.message = `${senderName} has marked your invoice #${invoiceNumber} of $${amount}.`;
+      });
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass('msg')
+          .add(this.message$)
+        .end()
+        .start(this.LINK).end();
     }
   ],
 
@@ -34,7 +47,7 @@ foam.CLASS({
       code: function() {
         this.stack.push({
           class: 'net.nanopay.invoice.ui.ExpensesDetailView',
-          data: this.data.invoice
+          data: this.invoice
         }, this);
       }
     }
