@@ -15,12 +15,12 @@ public class HashingJDAO
     this(x, algorithm, false, new MapDAO(classInfo), filename);
   }
 
-  public HashingJDAO(X x, boolean rollHashes, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", rollHashes, new MapDAO(classInfo), filename);
+  public HashingJDAO(X x, boolean rollDigests, ClassInfo classInfo, String filename) {
+    this(x, "SHA-256", rollDigests, new MapDAO(classInfo), filename);
   }
 
-  public HashingJDAO(X x, String algorithm, boolean rollHashes, ClassInfo classInfo, String filename) {
-    this(x, algorithm, rollHashes, new MapDAO(classInfo), filename);
+  public HashingJDAO(X x, String algorithm, boolean rollDigests, ClassInfo classInfo, String filename) {
+    this(x, algorithm, rollDigests, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, DAO delegate, String filename) {
@@ -31,17 +31,18 @@ public class HashingJDAO
     this(x, algorithm, false, delegate, filename);
   }
 
-  public HashingJDAO(X x, boolean rollHashes, DAO delegate, String filename) {
-    this(x, "SHA-256", rollHashes, delegate, filename);
+  public HashingJDAO(X x, boolean rollDigests, DAO delegate, String filename) {
+    this(x, "SHA-256", rollDigests, delegate, filename);
   }
 
-  public HashingJDAO(X x, String algorithm, boolean rollHashes, DAO delegate, String filename) {
+  public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename) {
     setX(x);
     setOf(delegate.getOf());
     setDelegate(delegate);
 
     journal_ = new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
+      .setRollDigests(rollDigests)
       .setDao(delegate)
       .setFilename(filename)
       .setCreateFile(true)
@@ -54,10 +55,12 @@ public class HashingJDAO
         new HashingJournal.Builder(getX())
           .setFilename(filename + ".0")
           .setAlgorithm(algorithm)
+          .setRollDigests(rollDigests)
           .build(),
         new HashingJournal.Builder(getX())
           .setFilename(filename)
           .setAlgorithm(algorithm)
+          .setRollDigests(rollDigests)
           .build()
       })
       .build().replay(delegate);
