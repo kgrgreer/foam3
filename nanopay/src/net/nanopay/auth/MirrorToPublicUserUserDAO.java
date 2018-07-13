@@ -1,13 +1,14 @@
 package net.nanopay.auth;
 
+import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.*;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
-import net.nanopay.auth.PublicUserInfo;
 import java.util.List;
+import net.nanopay.auth.PublicUserInfo;
 
 /*
   Decorator on localUserDAO that updates or creates new public users & places them
@@ -25,14 +26,14 @@ public class MirrorToPublicUserUserDAO
   ) {
     super(x, delegate);
     publicUserDAO_ = (DAO) x.get("localPublicUserDAO"); 
-    ArraySink sink = (ArraySink) getDelegate().select(new ArraySink());
-    List users = sink.getArray();
 
-    for ( int i = 0 ; i < users.size() ; i++ ) {
-      User user = (User) users.get(i);
-      PublicUserInfo publicUser = new PublicUserInfo(user);
-      publicUserDAO_.put(publicUser);
-    }
+    ArraySink sink = (ArraySink) getDelegate().select(new ArraySink() {
+      @Override
+      public void put(Object user, Detachable d) {
+        PublicUserInfo publicUser = new PublicUserInfo((User) user);
+        publicUserDAO_.put(publicUser);
+      }
+    });
   }
 
   @Override
