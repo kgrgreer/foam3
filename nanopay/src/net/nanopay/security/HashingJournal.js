@@ -11,16 +11,19 @@ foam.CLASS({
     {
       class: 'String',
       name: 'algorithm',
-      value: 'SHA-256'
+      value: 'SHA-256',
+      documentation: 'Hashing algorithm to use'
     },
     {
       class: 'Boolean',
       name: 'rollDigests',
-      value: true
+      value: false,
+      documentation: 'Roll digests together'
     },
     {
       class: 'String',
-      name: 'previousDigest'
+      name: 'previousDigest',
+      documentation: 'Previous digest to use in rolling'
     },
     {
       name: 'outputter',
