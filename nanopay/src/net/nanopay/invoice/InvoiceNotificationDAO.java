@@ -30,45 +30,20 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
 
     if ( existingInvoice == null ) {
-      sendInvoiceNotification(x, invoice);
+      sendInvoiceNotification(invoice);
     }
-    
-    // Put to the DAO
+
     return super.put_(x, invoice);
   }
 
-  private NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
-    NumberFormat     formatter  = NumberFormat.getCurrencyInstance();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-
-    PublicUserInfo    payee   =  invoice.getPayee();
-    PublicUserInfo    payer   =  invoice.getPayer();
-
-    // If invType is true, then payee sends payer the email and notification.
-    boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
-
-    notification.getEmailArgs().put("amount",    formatter.format(invoice.getAmount()/100.00));
-    notification.getEmailArgs().put("account",   invoice.getId());
-    notification.getEmailArgs().put("name",      invType ? payer.getFirstName() : payee.getFirstName());
-    notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
-    notification.getEmailArgs().put("fromName",  invType ? payee.label() : payer.label());
-
-    if ( invoice.getDueDate() != null ) {
-      notification.getEmailArgs().put("date", dateFormat.format(invoice.getDueDate()));
-    }
-
-    notification.getEmailArgs().put("link", config.getUrl());
-    return notification;
-  }
-
-  private void sendInvoiceNotification(X x, Invoice invoice) {
+  private void sendInvoiceNotification(Invoice invoice) {
     long payeeId = (long) invoice.getPayeeId();
     long payerId = (long) invoice.getPayerId();
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
     // Set email values on notification.
-    notification = setEmailArgs(x, invoice, notification);
+    notification = setEmailArgs(invoice, notification);
     notification.setEmailName("newInvoice");
     notification.setEmailIsEnabled(true);
 
@@ -76,5 +51,29 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.setInvoiceId(invoice.getId());
     notification.setNotificationType("Invoice received");
     notificationDAO_.put(notification);
+  }
+
+  private NewInvoiceNotification setEmailArgs(Invoice invoice, NewInvoiceNotification notification) {
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+
+    PublicUserInfo payee = invoice.getPayee();
+    PublicUserInfo payer = invoice.getPayer();
+
+    // If invType is true, then payee sends payer the email and notification.
+    boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
+
+    notification.getEmailArgs().put("amount", formatter.format(invoice.getAmount()/100.00));
+    notification.getEmailArgs().put("account", invoice.getId());
+    notification.getEmailArgs().put("name", invType ? payer.getFirstName() : payee.getFirstName());
+    notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
+    notification.getEmailArgs().put("fromName", invType ? payee.label() : payer.label());
+
+    if ( invoice.getDueDate() != null ) {
+      notification.getEmailArgs().put("date", dateFormat.format(invoice.getDueDate()));
+    }
+
+    notification.getEmailArgs().put("link", config.getUrl());
+    return notification;
   }
 }
