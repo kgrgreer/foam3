@@ -9,6 +9,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
+      name: 'cutOffTime',
+      value: 11
+    },
+    {
+      class: 'Int',
       name: 'holdTimeInBusinessDays',
       value: 0
     }
