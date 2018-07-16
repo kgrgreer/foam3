@@ -150,7 +150,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of money the invoice is for.`,
+      documentation: `The amount of required to pay invoice.`,
       aliases: [
         'a', 'targetAmount'
       ],
@@ -164,6 +164,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'sourceAmount',
+      documentation: 'The amount used to pay the invoice, prior to exchange rates & fees.',
       precision: 2,
       tableCellFormatter: function(a, X) {
         var e = this;
@@ -178,7 +179,8 @@ foam.CLASS({
     {
       class: 'Currency',
       precision: 2,
-      name: 'exchangeRate'
+      name: 'exchangeRate',
+      documentation: 'Exchange rate captured on time of payment.'
     },
     {
       class: 'Enum',
@@ -190,11 +192,13 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'targetCurrency',
       of: 'net.nanopay.model.Currency',
+      documentation: 'Currency payee will receive.',
       required: true
     },
     {
       class: 'FObjectProperty',
       name: 'sourceCurrency',
+      documentation: 'Currency payer will pay with.',
       of: 'net.nanopay.model.Currency'
     },
     {
@@ -314,6 +318,7 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
+  documentation: '(REQUIRED) The receiver of the amount stated in the invoice.',
   required: true,
   sourceProperty: {
     hidden: true
@@ -347,6 +352,7 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
+  documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
   required: true,
   sourceProperty: {
     hidden: true

@@ -12,7 +12,7 @@ foam.CLASS({
     'foam.doc.PutRequestView',
     'foam.doc.ServiceListView',
     'foam.doc.ExampleRequestView',
-    'foam.doc.IntroductionView'
+    'foam.doc.ClientServiceView'
   ],
 
   imports: [
@@ -174,7 +174,16 @@ foam.CLASS({
                 .add('Description: ', n.description)
               .end();
             })
-            .tag(self.SimpleClassView.create({ data: model }))
+            .callIf(n.boxClass, function() {
+              this.tag(self.ClientServiceView.create({
+                data: self.parseInterface(n)
+              }));
+            })
+            .callIf(! n.boxClass, function() {
+              this.tag(self.SimpleClassView.create({
+                data: model
+              }));
+            })
             .tag(self.GetRequestView.create({ data: n.name }))
             .tag(self.PutRequestView.create({
               data: {
@@ -198,6 +207,12 @@ foam.CLASS({
       .end();
     },
 
+    function parseInterface(n) {
+      var cls = this.parseClientModel(n);
+      var clientService = cls.axiomMap_.delegate;
+      return foam.lookup(clientService.of, true);
+    },
+
     function parseClientModel(n) {
       var cls = JSON.parse(n.client);
       var clsName = cls.of ? cls.of : cls.class;
@@ -209,7 +224,7 @@ foam.CLASS({
       var dataString;
       for ( var key in m.axiomMap_ ) {
         var a  = m.axiomMap_[key];
-        if (a.required) {
+        if ( a.required ) {
           if(a.cls_.name != "Import") {
             reqProps.push('"', key, '"', ":", '"', a.cls_.name, '"');
           }
@@ -217,6 +232,88 @@ foam.CLASS({
       }
       dataString = reqProps.join('');
       return dataString;
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.doc',
+  name: 'ClientServiceView',
+  extends: 'foam.u2.View',
+
+  requires: [
+    'foam.doc.ServiceMethodView'
+  ],
+
+  css: `
+    ^ .interfaceLabel {
+      font-size: 20px;
+      font-weight: bold;
+      color: grey;
+      margin-bottom: 20px;
+    }
+    ^ .methodCall {
+      background: #1e1c3a;
+      color: white;
+      margin: 20px 0;
+      padding: 20px;
+    }
+    ^ .methodName {
+      margin-bottom: 10px;
+    }
+    ^ .methodArguments {
+
+    }
+    ^ .argumentItems {
+
+    }
+    ^ .light-roboto-h2{
+      margin-bottom: 0;
+    }
+  `,
+
+  methods: [
+    function initE() {
+      var cls = this.data.axiomMap_;
+
+      this.start().addClass(this.myClass())
+        .start().addClass('interfaceLabel').add('(Interface)').end()
+        .start().addClass('light-roboto-h2').add('Methods:').end()
+        .call(function() {
+          for ( var key in cls ) {
+            if ( cls[key].cls_ === foam.core.internal.InterfaceMethod ) {
+              this.start().addClass('methodCall')
+                .start().addClass('small-roboto').addClass('methodName')
+                  .add(cls[key].name)
+                .end()
+                .start().addClass('methodArguments')
+                  .forEach(cls[key].args, function(arg) {
+                    this.start().addClass('argumentItems')
+                      .add('( name: ', arg.name, ', type: ', arg.javaType, ' )')
+                    .end();
+                  })
+                .end()
+              .end();
+            }
+          }
+        })
+      .end();
+    }
+  ],
+});
+
+foam.CLASS({
+  package: 'foam.doc',
+  name: 'ServiceMethodView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function initE() {
+      this.start()
+        .forEach(this.data.args, function(a) {
+          console.log('this is the methods args', a);
+        })
+      .end();
     }
   ]
 });
