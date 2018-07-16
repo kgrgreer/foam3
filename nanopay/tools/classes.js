@@ -143,7 +143,9 @@ var classes = [
   'net.nanopay.ui.topNavigation.CurrencyChoiceView',
 
   // tests
-  'net.test.ModeledTest'
+  'net.test.ModeledTest',
+  'net.nanopay.auth.PublicUserInfoDAOTest',
+  'net.nanopay.auth.TestWidget',
 ];
 
 var abstractClasses = [
