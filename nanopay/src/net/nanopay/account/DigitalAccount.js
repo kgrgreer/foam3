@@ -12,6 +12,11 @@ foam.CLASS({
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
     },
+    {
+      class: 'Boolean',
+      name: 'isDIgitalAccount',
+      valur: true
+    }
   ],
 
   methods: [

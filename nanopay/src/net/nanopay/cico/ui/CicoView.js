@@ -216,9 +216,9 @@ foam.CLASS({
             this.OR(
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT)),
-            this.AND(
-              this.OR(this.Transaction.SOURCE_ACCOUNT, currentAccount),
-              this.OR(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
+            this.OR(
+              this.EQ(this.Transaction.SOURCE_ACCOUNT, currentAccount),
+              this.EQ(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
             )
           ));
       }

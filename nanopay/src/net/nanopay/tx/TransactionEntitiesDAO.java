@@ -65,8 +65,8 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     FObject clone = obj.fclone();
     Transaction tx = (Transaction) clone;
-    User payer = (User) userDAO_.find(((Account) accountDAO_.find(tx.getSourceAccount())).getOwner());
-    User payee = (User) userDAO_.find(((Account) accountDAO_.find(tx.getDestinationAccount())).getOwner());
+    User payer = (User) userDAO_.find(tx.findSourceAccount(x_).getOwner());
+    User payee = (User) userDAO_.find( tx.findDestinationAccount(x_).getOwner());
 
     if (payer == null) {
       logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), payer.getId()));

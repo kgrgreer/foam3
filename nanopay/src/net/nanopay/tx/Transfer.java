@@ -3,6 +3,7 @@ package net.nanopay.tx;
 import foam.core.*;
 import foam.dao.*;
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
 import net.nanopay.account.CurrentBalance;
 import net.nanopay.account.Balance;
 
@@ -15,7 +16,7 @@ public class Transfer
 {
   protected long    accountId_;
   protected long    amount_;
-  protected User    user_    = null;
+  protected Account    account_    = null;
   protected Balance balance_ = null;
   protected String  currency_;
 
@@ -54,11 +55,11 @@ public class Transfer
     throws RuntimeException
   {
     DAO  userDAO = (DAO) x.get("localUserDAO");
-    User user    = (User) userDAO.find(getAccountId());
+    Account account    = (Account) ((DAO)x.get("localAccountDAO")).find(getAccountId());
 
-    if ( user == null ) throw new RuntimeException("Uknown user " + getAccountId());
+    if ( account == null ) throw new RuntimeException("Uknown user " + getAccountId());
 
-    user_ = user;
+    account_ = account;
 
     DAO     balanceDAO = (DAO) x.get("localBalanceDAO");
     Balance balance    = (Balance) balanceDAO.find(getAccountId());
@@ -70,7 +71,7 @@ public class Transfer
     }
     if ( getAmount() < 0 ) {
       if ( -getAmount() > balance_.getBalance() ) {
-        System.out.println("Transfer.validate user: "+getAccountId()+", amount: "+getAmount()+", balance: "+balance.getBalance());
+        System.out.println("Transfer.validate user: "+getAccountId()+", amount: "+getAmount()+", balance: "+balance_.getBalance());
 
         throw new RuntimeException("Insufficient balance in account " + getAccountId());
       }

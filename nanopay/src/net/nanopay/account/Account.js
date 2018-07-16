@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Account',
-  abstract: true,
+  //abstract: true,
 
   documentation: 'Base model of all Accounts',
 

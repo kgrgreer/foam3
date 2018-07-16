@@ -11,7 +11,7 @@ import foam.nanos.NanoService;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.account.CurrentBalance;
+import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 
@@ -154,7 +154,7 @@ public class LiquidityService
             EQ(Transaction.DESTINATION_ACCOUNT, accountId)))
         .select(pendingBalanceList);
 
-    long cashInAmount = payerMinBalance - ( (CurrentBalance) getBalanceDAO().find(accountId) ).getBalance();
+    long cashInAmount = payerMinBalance - ( (Balance) getBalanceDAO().find(accountId) ).getBalance();
     for ( Object object : pendingBalanceList.getArray() ) {
       Transaction transaction = (Transaction) getLocalTransactionDAO().find(object);
       if ( transaction.getStatus() == TransactionStatus.COMPLETED || transaction.getStatus() == TransactionStatus.DECLINED )

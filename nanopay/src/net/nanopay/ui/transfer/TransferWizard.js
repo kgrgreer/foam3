@@ -10,7 +10,8 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.CountdownView'
+    'net.nanopay.ui.CountdownView',
+    'net.nanopay.account.DigitalAccount'
   ],
 
   implements: [
@@ -18,7 +19,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'currentBalance',
+    'accountDAO',
+    'balance',
     'email',
     'formatCurrency',
     'invoiceDAO',
@@ -332,7 +334,7 @@ foam.CLASS({
 
           // Check if user has enough digital cash to make the transfer and show
           // an error message if they don't.
-          var fundsInsufficient = this.currentBalance.balance < self.viewData.fromAmount;
+          var fundsInsufficient = this.balance.balance < self.viewData.fromAmount;
           if ( ! self.viewData.accountCheck && fundsInsufficient ) {
             this.add(this.NotificationMessage.create({
               message: 'Unable to process payment: insufficient digital cash.',
@@ -361,14 +363,15 @@ foam.CLASS({
           transaction = self.Transaction.create({
             destinationAccount: destinationAccount,
             amount: self.viewData.fromAmount,
-            bankAccountId: bankAccountId,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });
-          if ( ! this.viewData.digitalCash ) {
-            transaction.sourceAccount = this.viewData.account;
-          } else {
+          if ( this.viewData.digitalCash === undefined ) {
             transaction.payeeId = this.viewData.payee.id;
+          } else if ( ! this.viewData.digitalCash ) {
+            transaction.sourceAccount = this.viewData.account;
+            transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
+
           }
 
           // Make the transfer

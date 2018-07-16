@@ -41,8 +41,8 @@ public class TransactionLimitCheckDAO
     Transaction transaction = (Transaction) fObject;
 
     DAO accountDAO = (DAO) x.get("localAccountDAO");
-    Account payerAcc = (Account) accountDAO.find(transaction.getSourceAccount());
-    Account payeeAcc = (Account) accountDAO.find(transaction.getDestinationAccount());
+    Account payerAcc = (Account) transaction.findSourceAccount(x);
+    Account payeeAcc = (Account) transaction.findDestinationAccount(x);
     User payee  = (User) ((DAO) x.get("localUserDAO")).find_(x,payeeAcc.getOwner());
     User payer  = (User) ((DAO) x.get("localUserDAO")).find_(x,payerAcc.getOwner());
 
@@ -56,8 +56,8 @@ public class TransactionLimitCheckDAO
     }
 
 
-    Object firstLock  = String.valueOf(((Account)transaction.getSourceAccount()).getId() < ((Account)transaction.getDestinationAccount()).getId() ? transaction.getSourceAccount() : transaction.getDestinationAccount()).intern();
-    Object secondLock = String.valueOf(((Account)transaction.getSourceAccount()).getId() < ((Account)transaction.getDestinationAccount()).getId() ? transaction.getDestinationAccount() : transaction.getSourceAccount()).intern();
+    Object firstLock  = String.valueOf(((Account)transaction.findSourceAccount(x)).getId() < ((Account)transaction.findDestinationAccount(x)).getId() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x)).intern();
+    Object secondLock = String.valueOf(((Account)transaction.findSourceAccount(x)).getId() < ((Account)transaction.findDestinationAccount(x)).getId() ? transaction.findDestinationAccount(x) : transaction.findSourceAccount(x)).intern();
 
     synchronized ( firstLock ) {
       synchronized ( secondLock ) {

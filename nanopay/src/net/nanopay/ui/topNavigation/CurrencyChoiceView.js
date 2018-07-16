@@ -162,21 +162,18 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.currencyDAO, function(cur) {
-            if ( cur.flagImage != null )
-            this.start('div').start('img')
-            .attrs({ src: cur.flagImage })
-            .addClass('flag').end().add(cur.alphabeticCode)
-            .on('click', function() {
-              /* self.currentCurrency = cur.alphabeticCode;
-              localStorage.currency = self.currentCurrency; */
-              self.accountDAO.find(self.AND(
-                self.EQ(self.DigitalAccount.DENOMINATION, cur.alphabeticCode),
-                self.EQ(self.DigitalAccount.OWNER, self.user.id)
-              )).then(function(acc){
-                self.currentAccount = acc.id;
-                localStorage.account = self.currentAccount;
-              });
+          .select(this.accountDAO.where(this.EQ(this.DigitalAccount.OWNER, this.user )), function(acc) {
+            this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur){
+              if ( cur.flagImage != null )
+              this.start('div').start('img')
+              .attrs({ src: cur.flagImage })
+              .addClass('flag').end().add(cur.alphabeticCode)
+              .on('click', function() {
+                /* self.currentCurrency = cur.alphabeticCode;
+                localStorage.currency = self.currentCurrency; */
+                  self.currentAccount = acc.id;
+                  localStorage.account = self.currentAccount;
+              })
             })
           })
           .end()

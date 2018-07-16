@@ -47,8 +47,8 @@ public class PaidTransactionDAO
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     AppConfig    config    = (AppConfig) x.get("appConfig");
-    User         user      = (User) userDAO_.find_(x, ((Account)transaction.getDestinationAccount()).getOwner());
-    User         sender    = (User) userDAO_.find_(x, ((Account)transaction.getSourceAccount()).getOwner());
+    User         user      = (User) userDAO_.find_(x, ((Account)transaction.findDestinationAccount(x)).getOwner());
+    User         sender    = (User) userDAO_.find_(x, ((Account)transaction.findSourceAccount(x)).getOwner());
     EmailService email     = (EmailService) x.get("email");
     EmailMessage message   = new EmailMessage();
 

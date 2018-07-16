@@ -376,17 +376,17 @@ foam.CLASS({
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
-             new Transfer(((Account)getSourceAccount()).getId(), -getTotal())
+             new Transfer((Long) getSourceAccount(), -getTotal())
           };
         }
         if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
-            new Transfer(((Account)getDestinationAccount()).getId(), getTotal())
+            new Transfer((Long) getDestinationAccount(), getTotal())
           };
         }
         return new Transfer[] {
-             new Transfer(((Account)getSourceAccount()).getId(), -getTotal()),
-             new Transfer(((Account)getDestinationAccount()).getId(),  getTotal())
+             new Transfer((Long) getSourceAccount(), -getTotal()),
+             new Transfer((Long) getDestinationAccount(),  getTotal())
         };
       `
     }

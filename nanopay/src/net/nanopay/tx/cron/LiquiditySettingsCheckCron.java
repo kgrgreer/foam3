@@ -9,7 +9,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.cico.model.TransactionType;
-import net.nanopay.account.CurrentBalance;
+import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.model.CashOutFrequency;

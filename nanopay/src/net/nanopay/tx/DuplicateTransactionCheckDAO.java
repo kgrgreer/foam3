@@ -52,7 +52,7 @@ public class DuplicateTransactionCheckDAO
     temp.setInvoiceId(oldtxn.getInvoiceId());
     //temp.setCicoStatus(oldtxn.getCicoStatus());
     temp.setDate(oldtxn.getDate());
-    temp.setSourceAccount(oldtxn.getSourceAccount());
+    temp.setSourceAccount(oldtxn.findSourceAccount(x_));
     temp.setDestinationAccount(oldtxn.getDestinationAccount());
     //temp.setDeviceId(oldtxn.getDeviceId());
     temp.setNotes(oldtxn.getNotes());

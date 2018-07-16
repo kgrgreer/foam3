@@ -9,13 +9,15 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.account.CurrentBalance',
+    'net.nanopay.account.Balance',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
 
   imports: [
-    'currentBalanceDAO',
+    'userDAO',
+    'balanceDAO',
+    'currentAccount',
     'accountDAO as bankAccountDAO',
     'ctrl',
     'hideSaleSummary',
@@ -216,8 +218,8 @@ foam.CLASS({
           return;
         }
 
-        this.currentBalanceDAO.find(
-          this.user.id
+        this.balanceDAO.find(
+          this.currentAccount
         ).then(function( accountBalance ) {
           if ( accountBalance.balance < self.data.amount ) {
             // Not enough digital cash balance

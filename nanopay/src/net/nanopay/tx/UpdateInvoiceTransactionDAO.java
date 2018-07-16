@@ -23,7 +23,7 @@ public class UpdateInvoiceTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    Invoice invoice = (Invoice) invoiceDAO_.find(transaction.getInvoiceId());
+    Invoice invoice = (Invoice) invoiceDAO_.find_(x, transaction.getInvoiceId());
 
     if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
@@ -38,7 +38,7 @@ public class UpdateInvoiceTransactionDAO
 
     // find invoice
     if ( transaction.getInvoiceId() != 0 ) {
-      if ( (long) ((Account) transaction.getSourceAccount()).getOwner() != (long) ((Account) transaction.getDestinationAccount()).getOwner() ) {
+      if ( (long) ((Account) transaction.findSourceAccount(x)).getOwner() != (long) ((Account) transaction.findDestinationAccount(x)).getOwner() ) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());

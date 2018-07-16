@@ -145,14 +145,14 @@ public class CsvUtil {
           t = (Transaction) t.fclone();
 
           BankAccount bankAccount = null;
-          user = (User) userDAO.find_(x,((Account) t.getSourceAccount()).getOwner());
+          user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
-            bankAccount = (BankAccount) t.getSourceAccount();
+            bankAccount = (BankAccount) t.findSourceAccount(x);
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
-            bankAccount = (BankAccount) t.getDestinationAccount();
+            bankAccount = (BankAccount) t.findDestinationAccount(x);
           } else {
             // don't output if for whatever reason we get here and
             // the transaction is not a cash in or cash out

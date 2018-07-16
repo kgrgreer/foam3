@@ -88,7 +88,7 @@ public class TransactionDAO
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer((Long)((Account)transaction.getSourceAccount()).getOwner(), transaction.getTotal());
+          Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
           refound.validate(x);
           refound.execute(x);
         }
@@ -163,7 +163,7 @@ public class TransactionDAO
 
   public void cashinReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.
-    Balance payerBalance = (Balance) getBalanceDAO().find(transaction.getSourceAccount());
+    Balance payerBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
         payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payerBalance);
@@ -171,7 +171,7 @@ public class TransactionDAO
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR PayeeAccountId is not yet setup/populated.
-    Balance payeeBalance = (Balance) getBalanceDAO().find(transaction.getSourceAccount());
+    Balance payeeBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
         payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payeeBalance);
