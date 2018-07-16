@@ -22,10 +22,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
-          .addClass('msg')
-          .add(this.data.message)
-        .end()
         .start(this.LINK).end();
     }
   ],
