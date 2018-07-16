@@ -1,6 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.fx.interac.model',
   name: 'Corridor',
+
+  documentation: 'Agreement between two countries' +
+      ' permitting specified currencies & payout options.',
+
   properties: [
     {
       class: 'Long',
@@ -10,21 +14,25 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'sourceCountry',
+      documentation: '1st party involved in agreement.',
       required: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'targetCountry',
+      documentation: '2nd party involved in agreement.',
       required: true
     },
     {
       class: 'StringArray',
-      name: 'currencies'
+      name: 'currencies',
+      documentation: 'Agreed upon currencies.'
     },
     {
       class: 'StringArray',
-      name: 'payoutOptions'
+      name: 'payoutOptions',
+      documentation: 'Agreed upon payout options.'
     }
   ]
 });

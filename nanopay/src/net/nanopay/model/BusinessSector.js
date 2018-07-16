@@ -12,7 +12,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      documentation: 'Name of business sector.'
     }
   ]
 });
