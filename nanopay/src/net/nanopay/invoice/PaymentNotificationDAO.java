@@ -7,8 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.invoice.notification.ReceivePaymentNotification;
-import net.nanopay.invoice.notification.RecordPaymentNotification;
+import net.nanopay.invoice.notification.InvoicePaymentNotification;
 
 public class PaymentNotificationDAO extends ProxyDAO {
 
@@ -47,17 +46,29 @@ public class PaymentNotificationDAO extends ProxyDAO {
       long payerId = (long) invoice.getPayerId();
 
       if ( newStatus == PaymentStatus.NANOPAY ) {
-        ReceivePaymentNotification notification =
-            new ReceivePaymentNotification();
+        InvoicePaymentNotification notification =
+            new InvoicePaymentNotification();
         notification.setUserId(payeeId);
-        notification.setInvoiceId(invoice.getId());
+        notification.setInvoice(invoice);
+        String senderName = invoice.getPayer().label();
+        String invoiceNumber = invoice.getInvoiceNumber();
+        String amount = Double.toString(invoice.getAmount()/100.0);
+        String message = senderName + " just paid your invoice #"
+            + invoiceNumber + " of $" + amount;
+        notification.setBody(message);
         notification.setNotificationType("Payment received");
         notificationDAO_.put(notification);
       } else if ( newStatus == PaymentStatus.CHEQUE ) {
-        RecordPaymentNotification notification =
-            new RecordPaymentNotification();
+        InvoicePaymentNotification notification =
+            new InvoicePaymentNotification();
         notification.setUserId(payerId);
-        notification.setInvoiceId(invoice.getId());
+        notification.setInvoice(invoice);
+        String senderName = invoice.getPayee().label();
+        String invoiceNumber = invoice.getInvoiceNumber();
+        String amount = Double.toString(invoice.getAmount()/100.0);
+        String message = senderName + " has marked your invoice #"
+            + invoiceNumber + " of $" + amount;
+        notification.setBody(message);
         notification.setNotificationType("Record payment");
         notificationDAO_.put(notification);
       }

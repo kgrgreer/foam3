@@ -55,8 +55,7 @@ var classes = [
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
-  'net.nanopay.invoice.notification.ReceivePaymentNotification',
-  'net.nanopay.invoice.notification.RecordPaymentNotification',
+  'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
