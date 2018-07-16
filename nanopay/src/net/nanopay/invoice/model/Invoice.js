@@ -285,7 +285,6 @@ foam.CLASS({
   actions: [
     {
       name: 'payNow',
-      documentation: `Let the user pay an invoice immediately.`,
       label: 'Pay now',
       isAvailable: function(status) {
         return false;

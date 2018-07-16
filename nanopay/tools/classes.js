@@ -37,10 +37,6 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
-  'net.nanopay.liquidity.model.Threshold',
-  'net.nanopay.liquidity.model.ThresholdResolve',
-  'net.nanopay.liquidity.model.BalanceAlert',
-  'net.nanopay.liquidity.model.Liquidity',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

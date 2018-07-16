@@ -23,10 +23,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/model/AppConfig' },
-  { name: 'net/nanopay/liquidity/model/Threshold' },
-  { name: 'net/nanopay/liquidity/model/Liquidity' },
-  { name: 'net/nanopay/liquidity/model/ThresholdResolve' },
-  { name: 'net/nanopay/liquidity/model/BalanceAlert' },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
@@ -185,7 +181,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
-  //
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
@@ -243,7 +238,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceReceivedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotification' },
-  { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView' },
+  { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
@@ -270,12 +265,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PublicKeyDAO' },
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
-
-  // bank
-  { name: 'net/nanopay/bank/ui/BankView', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/BankDetailView', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/BalanceAlertView', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/DashboardView', flags: ['web'] },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -345,5 +334,9 @@ FOAM_FILES([
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
-  { name: 'net/nanopay/partners/UserUserJunctionRefinement' }
+  { name: 'net/nanopay/partners/UserUserJunctionRefinement' },
+
+  // flinks
+  { name: 'net/nanopay/flinks/FlinksAuth' },
+  { name: 'net/nanopay/flinks/ClientFlinksAuthService' }
 ]);
