@@ -125,7 +125,7 @@ foam.CLASS({
     'java.util.Date',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Account',
+    'net.nanopay.account.CurrentBalance',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.BankAccountStatus',
     'foam.nanos.auth.Address',

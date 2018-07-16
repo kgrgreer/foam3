@@ -11,14 +11,12 @@ import foam.dao.Sink;
 import foam.mlang.MLang;
 import java.util.Date;
 import java.util.List;
-import net.nanopay.model.Account;
 import net.nanopay.model.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.model.Account;
 import net.nanopay.tx.model.Transaction;
 
 public class CICOTransactionDAO

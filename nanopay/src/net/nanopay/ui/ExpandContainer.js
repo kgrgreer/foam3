@@ -79,13 +79,16 @@ foam.CLASS({
       width: 952px;
       height: auto;
       overflow: hidden;
-      transition: max-height 1.2s ease;
+      transition: max-height 1.6s ease-out;
       max-height: 1725px;
       margin: 0 auto;
       margin-right: 0;
+      -webkit-transition: -webkit-transform 1.6s ease-out;
+      -moz-transition: -moz-transform 1.6s ease-out;
+      -ms-transition: -ms-transform 1.6s ease-out;
     }
     ^ .expandTrue{
-      max-height: 0;
+      max-height: 0px;
     }
     ^ .link-tag{
       display: inline-block;

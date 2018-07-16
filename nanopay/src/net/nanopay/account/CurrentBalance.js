@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
-  name: 'Account',
+  package: 'net.nanopay.account',
+  name: 'CurrentBalance',
   properties: [
     {
       class: 'Long',
@@ -11,7 +11,8 @@ foam.CLASS({
       name: 'balance'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'currencyCode',
       value: 'CAD'
     }
