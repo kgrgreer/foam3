@@ -368,7 +368,7 @@ foam.CLASS({
           });
           if ( this.viewData.digitalCash === undefined ) {
             transaction.payeeId = this.viewData.payee.id;
-          } else if ( ! this.viewData.digitalCash ) {
+          } else if ( ! this.viewData.digitalCash) {
             transaction.sourceAccount = this.viewData.account;
             transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
 
