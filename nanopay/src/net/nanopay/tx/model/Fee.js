@@ -1,6 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Fee',
+
+  documentation: 'Describes the fee type.',
+
   abstract: true,
   implements: ['net.nanopay.tx.model.FeeInterface'],
   properties: [

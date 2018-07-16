@@ -164,7 +164,8 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'sourceAmount',
-      documentation: 'The amount used to pay the invoice, prior to exchange rates & fees.',
+      documentation: 'The amount used to pay the' +
+          ' invoice, prior to exchange rates & fees.',
       precision: 2,
       tableCellFormatter: function(a, X) {
         var e = this;
@@ -174,7 +175,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'sourceAccountId',
-      documentation: `` // TODO
+      documentation: 'Account used to pay invoice.'
     },
     {
       class: 'Currency',
@@ -203,12 +204,11 @@ foam.CLASS({
     },
     {
       name: 'iso20022',
-      documentation: `` // TODO
     },
     {
       class: 'Long',
       name: 'accountId',
-      documentation: `` // TODO
+      documentation: 'Target account where invoice payment will go into.'
     },
     {
       class: 'String',
