@@ -53,8 +53,8 @@ var classes = [
   'net.nanopay.sps.model.HostError',
   'net.nanopay.sps.model.UserInfo',
   'net.nanopay.sps.model.DetailResponseItemContent',
-  'net.nanopay.sps.utils.RequestPacketGenerator',
-  'net.nanopay.sps.utils.ResponsePacketParser',
+  'net.nanopay.sps.utils.RequestPacket',
+  'net.nanopay.sps.utils.ResponsePacket',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

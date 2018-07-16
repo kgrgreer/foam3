@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sps.utils',
-  name: 'ResponsePacketParser',
+  name: 'ResponsePacket',
   abstract: true,
 
   javaImports: [

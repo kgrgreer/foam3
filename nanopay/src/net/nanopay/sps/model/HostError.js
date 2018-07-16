@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'HostError',
-  extends: 'net.nanopay.sps.utils.ResponsePacketParser',
+  extends: 'net.nanopay.sps.utils.ResponsePacket',
 
   properties: [
     {

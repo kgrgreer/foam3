@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sps.utils',
-  name: 'RequestPacketGenerator',
+  name: 'RequestPacket',
   abstract: true,
 
   javaImports: [
@@ -22,7 +22,7 @@ public String toSPSString() {
     if (propertyInfo.isSet(this) && propertyInfo.get(this) != null ) {
       if ( propertyInfo instanceof AbstractFObjectPropertyInfo ) {
        // append sps style xml field
-        sb.append(((RequestPacketGenerator)propertyInfo.get(this)).toSPSString());
+        sb.append(((RequestPacket)propertyInfo.get(this)).toSPSString());
       } else {
         sb.append(propertyInfo.get(this));
       }

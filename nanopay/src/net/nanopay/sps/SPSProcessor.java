@@ -1,8 +1,9 @@
 package net.nanopay.sps;
 
-import foam.core.X;
-import foam.nanos.logger.Logger;
+import foam.core.ContextAwareSupport;
 import net.nanopay.sps.model.*;
+import net.nanopay.sps.utils.RequestPacket;
+import net.nanopay.sps.utils.ResponsePacket;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -17,39 +18,41 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SPSProcessor {
+public class SPSProcessor extends ContextAwareSupport {
 
-  public void sendGeneralReqAndParseResp(X x) {
-    String generatedData = generateTestGeneralRequest();
-    execute(x, generatedData);
+  public final String URL = "https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi";
+
+  public void sendGeneralReqAndParseResp() {
+    GeneralRequestPacket generatedData = generateTestGeneralRequest();
+    GeneralRequestResponse generalRequestResponse = (GeneralRequestResponse) request(generatedData);
+    System.out.println(generalRequestResponse);
   }
 
-  public void sendBatchDetailReqAndParseResp(X x) {
-    String generatedData = generateTestBatchDetailRequest();
-    execute(x, generatedData);
+  public void sendBatchDetailReqAndParseResp() {
+    BatchDetailRequestPacket generatedData = generateTestBatchDetailRequest();
+    BatchDetailGeneralResponse batchDetailGeneralResponse = (BatchDetailGeneralResponse) request(generatedData);
+    System.out.println(batchDetailGeneralResponse);
   }
 
-  public void execute(X x, String generatedData) {
-    Logger logger = (Logger) x.get("logger");
+  public ResponsePacket request(RequestPacket requestPacket) {
+    //Logger logger = (Logger) x.get("logger");
 
-    String url = "https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi";
+    String requestMsg = requestPacket.toSPSString();
 
     CloseableHttpClient httpClient = HttpClients.createDefault();
-    HttpPost post = new HttpPost(url);
+    HttpPost post = new HttpPost(URL);
 
     List<NameValuePair> urlParameters = new ArrayList<>();
-    urlParameters.add(new BasicNameValuePair("packet", generatedData));
+    urlParameters.add(new BasicNameValuePair("packet", requestMsg));
+
+    ResponsePacket responsePacket = null;
 
     try {
       post.setEntity(new UrlEncodedFormEntity(urlParameters));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
       try {
-        // System.out.println("Sending 'POST' request to URL : " + url);
-        // System.out.println("Response Code : " + httpResponse.getStatusLine().getStatusCode());
-
         BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-
         StringBuilder sb = new StringBuilder();
         String line;
         while ( (line = rd.readLine()) != null ) {
@@ -57,63 +60,59 @@ public class SPSProcessor {
         }
 
         String response = sb.toString();
-        // System.out.println(response);
-
         String responsePacketType = response.substring(4, 8);
-        // System.out.println("type: " + responsePacketType);
 
         switch ( responsePacketType ) {
           case "2011":
             // GeneralRequestResponse
             GeneralRequestResponse generalRequestResponse = new GeneralRequestResponse();
             generalRequestResponse.parseSPSResponse(response);
-            // TODO: change transaction based on the response
-            System.out.println("2011-GeneralRequestResponse: " + generalRequestResponse);
+            responsePacket = generalRequestResponse;
             break;
           case "2031":
             // BatchDetailGeneralResponse
             BatchDetailGeneralResponse batchDetailGeneralResponse = new BatchDetailGeneralResponse();
             batchDetailGeneralResponse.parseSPSResponse(response);
-            // TODO: change transaction based on the response
-            System.out.println("2031-BatchDetailGeneralResponse: " + batchDetailGeneralResponse);
+            responsePacket = batchDetailGeneralResponse;
             break;
           case "2033":
             // DetailResponse
             DetailResponse detailResponse = new DetailResponse();
             detailResponse.parseSPSResponse(response);
-            // TODO: change transaction based on the response
-            System.out.println("2033-BatchDetailGeneralResponse: " + detailResponse);
+            responsePacket = detailResponse;
             break;
           case "2090":
             // RequestMessageAndErrors
             RequestMessageAndErrors requestMessageAndErrors = new RequestMessageAndErrors();
             requestMessageAndErrors.parseSPSResponse(response);
-            // TODO: change transaction based on the response
-            System.out.println("2090-BatchDetailGeneralResponse: " + requestMessageAndErrors);
+            responsePacket = requestMessageAndErrors;
             break;
           case "2091":
             // HostError
             HostError hostError = new HostError();
             hostError.parseSPSResponse(response);
-            // TODO: change transaction based on the response
-            System.out.println("2091-BatchDetailGeneralResponse: " + hostError);
+            responsePacket = hostError;
             break;
         }
       } finally {
         httpResponse.close();
       }
     } catch (IOException e) {
-      logger.error(e);
+      // logger.error(e);
+      e.printStackTrace();
     } finally {
       try {
         httpClient.close();
       } catch (IOException e) {
-        logger.error(e);
+        // logger.error(e);
+        e.printStackTrace();
       }
     }
+
+    return responsePacket;
   }
 
-  private String generateTestGeneralRequest() {
+  private GeneralRequestPacket generateTestGeneralRequest() {
 //    String testData = "20<FS>2010<FS>10<FS>20180711115959<FS><FS>ZYX80<FS>[NAME]John Jones[/NAME][ACCT]C[/ACCT]" +
 //      "[OTHER]1234567890-0001[/OTHER][LOCATION]NANOPAY[/LOCATION][TYPE]P[/TYPE][SECC]WEB[/SECC][PTC]S[/PTC]<FS><FS>" +
 //      "122000247<FS>9988998899<FS>9999<FS>550.00<FS><FS><FS><FS><FS><FS>EV<FS><FS><FS><FS>";
@@ -124,7 +123,7 @@ public class SPSProcessor {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMessageModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180711115959");
+    generalRequestPacket.setLocalTransactionTime("20180715115959");
     //not used
     //generalRequestPacketTest.setTextMsg("");
     generalRequestPacket.setTID("ZYX80");
@@ -156,10 +155,10 @@ public class SPSProcessor {
     generalRequestPacket.setDateOfBirth("");
     generalRequestPacket.setPhoneNumber("");
 
-    return generalRequestPacket.toSPSString();
+    return generalRequestPacket;
   }
 
-  private String generateTestBatchDetailRequest() {
+  private BatchDetailRequestPacket generateTestBatchDetailRequest() {
     // String testData = "20<FS>2030<FS>60<FS>20180711115959<FS>ZYX80<FS><FS><FS><FS><FS><FS><FS><FS><FS>5<FS>0<FS><FS>";
 
     BatchDetailRequestPacket batchDetailRequestPacket = new BatchDetailRequestPacket();
@@ -167,7 +166,7 @@ public class SPSProcessor {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMessageModifierCode(60);
-    batchDetailRequestPacket.setLocalTransactionTime("20180711115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180715115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setOptionallyEnteredDate("");
@@ -182,6 +181,6 @@ public class SPSProcessor {
     batchDetailRequestPacket.setCreditCount("");
     batchDetailRequestPacket.setCreditAmount("");
 
-    return batchDetailRequestPacket.toSPSString();
+    return batchDetailRequestPacket;
   }
 }
