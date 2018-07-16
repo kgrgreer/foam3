@@ -42,36 +42,28 @@ public class PaymentNotificationDAO extends ProxyDAO {
 
     if ( invoiceIsBeingPaid ) {
       User user = (User) x.get("user");
-      long payeeId = (long) invoice.getPayeeId();
-      long payerId = (long) invoice.getPayerId();
+      String invoiceNumber = invoice.getInvoiceNumber();
+      String message = "";
+      InvoicePaymentNotification notification =
+          new InvoicePaymentNotification();
+      notification.setInvoice(invoice);
 
       if ( newStatus == PaymentStatus.NANOPAY ) {
-        InvoicePaymentNotification notification =
-            new InvoicePaymentNotification();
-        notification.setUserId(payeeId);
-        notification.setInvoice(invoice);
+        notification.setUserId((long) invoice.getPayeeId());
         String senderName = invoice.getPayer().label();
-        String invoiceNumber = invoice.getInvoiceNumber();
-        String amount = Double.toString(invoice.getAmount()/100.0);
-        String message = senderName + " just paid your invoice #"
-            + invoiceNumber + " of $" + amount;
-        notification.setBody(message);
+        message = senderName + " just paid your invoice #" +
+            invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
         notification.setNotificationType("Payment received");
-        notificationDAO_.put(notification);
       } else if ( newStatus == PaymentStatus.CHEQUE ) {
-        InvoicePaymentNotification notification =
-            new InvoicePaymentNotification();
-        notification.setUserId(payerId);
-        notification.setInvoice(invoice);
+        notification.setUserId((long) invoice.getPayerId());
         String senderName = invoice.getPayee().label();
-        String invoiceNumber = invoice.getInvoiceNumber();
-        String amount = Double.toString(invoice.getAmount()/100.0);
-        String message = senderName + " has marked your invoice #"
-            + invoiceNumber + " of $" + amount;
-        notification.setBody(message);
+        message = senderName + " has marked your invoice #" +
+            invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
         notification.setNotificationType("Record payment");
-        notificationDAO_.put(notification);
       }
+
+      notification.setBody(message);
+      notificationDAO_.put(notification);
     }
 
     return super.put_(x, invoice);
