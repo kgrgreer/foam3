@@ -31,18 +31,14 @@ foam.CLASS({
       name: 'link',
       label: 'View Invoice',
       code: function() {
-        if ( this.data.invoice.paymentMethod === this.PaymentStatus.NANOPAY ) {
-          this.stack.push({
-            class: 'net.nanopay.invoice.ui.SalesDetailView',
-            data: this.data.invoice
-          }, this);
-        } else if ( this.data.invoice.paymentMethod
-              === this.PaymentStatus.CHEQUE ) {
-          this.stack.push({
-            class: 'net.nanopay.invoice.ui.ExpensesDetailView',
-            data: this.data.invoice
-          }, this);
-        }
+        var paymentMethod = this.data.invoice.paymentMethod;
+        var linkView = paymentMethod === this.PaymentStatus.NANOPAY
+            ? 'net.nanopay.invoice.ui.SalesDetailView'
+            : 'net.nanopay.invoice.ui.ExpensesDetailView';
+        this.stack.push({
+          class: linkView,
+          data: this.data.invoice
+        }, this);
       }
     }
   ]
