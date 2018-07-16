@@ -25,7 +25,6 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.account.CurrentBalance',
   'net.nanopay.account.Balance',
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',

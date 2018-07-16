@@ -9,7 +9,7 @@ import java.util.*;
 
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
-import net.nanopay.account.CurrentBalance;
+import net.nanopay.account.Balance;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;

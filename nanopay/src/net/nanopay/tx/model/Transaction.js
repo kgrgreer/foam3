@@ -41,7 +41,7 @@ foam.CLASS({
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.account.CurrentBalance',
+    'net.nanopay.account.Balance',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.Transfer'

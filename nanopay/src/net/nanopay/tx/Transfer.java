@@ -4,7 +4,7 @@ import foam.core.*;
 import foam.dao.*;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
-import net.nanopay.account.CurrentBalance;
+import net.nanopay.account.Balance;
 import net.nanopay.account.Balance;
 
 import static foam.mlang.MLang.AND;
