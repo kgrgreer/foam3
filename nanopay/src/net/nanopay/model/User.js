@@ -125,6 +125,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'welcomeEmailSent',
+      documentation: 'Determines whether welcome email has been sent.',
+      value: false,
+    },
+    {
+      class: 'Boolean',
       name: 'portalAdminCreated',
       documentation: 'Determines whether user was created by an admin user.',
       value: false,
@@ -230,7 +236,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'createdPwd',
       value: false,
-      documentation: 'determines whether user is using' +
+      documentation: 'Determines whether user is using' +
           ' his own unique password or one that was system generated.'
     },
     {

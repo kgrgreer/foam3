@@ -2,32 +2,42 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: 'Invoice model. Amount is set to double type.',
+  documentation: ' Model used by users to present' +
+      ' and monitor transactional documents between' +
+      ' one another and ensure the terms of their trading' +
+      ' agreements are being met.',
 
-  requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
+  requires: [
+    'net.nanopay.invoice.model.PaymentStatus'
+  ],
 
-  // implements: [
-  //   'foam.net.nanos.auth.CreatedByAware'
-  // ],
-
-  imports: [ 'addCommas' ],
+  imports: [
+    'addCommas'
+  ],
 
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
+    'invoiceNumber', 'purchaseOrder', 'payerId',
+    'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
-  javaImports: [ 'java.util.Date' ],
+  javaImports: [
+    'java.util.Date'
+  ],
 
   properties: [
     {
       name: 'search',
-      documentation: ``, // TODO
+      documentation: `View and value used to filter invoices.`, // TODO
       transient: true,
-      searchView: { class: 'foam.u2.search.TextSearchView', of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
+      searchView: {
+        class: 'foam.u2.search.TextSearchView',
+        of: 'net.nanopay.invoice.model.Invoice',
+        richSearch: true
+      }
     },
     {
       class: 'Long',
@@ -80,7 +90,7 @@ foam.CLASS({
       name: 'dueDate',
       documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
-      aliases: [ 'dueDate', 'due', 'd', 'issued' ],
+      aliases: ['dueDate', 'due', 'd', 'issued'],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0, 10) : '');
       }
@@ -90,16 +100,14 @@ foam.CLASS({
       name: 'paymentDate',
       documentation: `The date that the invoice was paid.`,
       label: 'Received',
-      aliases: [ 'scheduled', 'paid' ],
+      aliases: ['scheduled', 'paid'],
       tableCellFormatter: function(date) {
         if ( date ) {
-          this.add(date.toISOString().substring(0,10));
+          this.add(date.toISOString().substring(0, 10));
         }
       }
     },
     {
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.User',
       class: 'Long',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
@@ -121,7 +129,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'paymentId',
-      documentation: ``, // TODO
+      documentation: `Transaction Id used to pay invoice.`,
     },
     {
       class: 'Boolean',
@@ -157,7 +165,6 @@ foam.CLASS({
       class: 'Currency',
       name: 'sourceAmount',
       precision: 2,
-      required: true,
       tableCellFormatter: function(a, X) {
         var e = this;
         X.formatCurrencyAmount(a, e, X);
@@ -182,7 +189,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'targetCurrency',
-      of: 'net.nanopay.model.Currency'
+      of: 'net.nanopay.model.Currency',
+      required: true
     },
     {
       class: 'FObjectProperty',
@@ -306,6 +314,7 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
+  required: true,
   sourceProperty: {
     hidden: true
   },
@@ -338,6 +347,7 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
+  required: true,
   sourceProperty: {
     hidden: true
   },
