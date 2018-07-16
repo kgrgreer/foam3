@@ -357,17 +357,18 @@ foam.CLASS({
           }
           var destinationAccount = this.accountDAO.find(this.AND(
             this.EQ(this.DigitalAccount.DENOMINATION, this.invoice.targetCurrency),
-            this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id)
+            this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id),
+            this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
           ));
 
           transaction = self.Transaction.create({
-            destinationAccount: destinationAccount,
+            payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });
           if ( this.viewData.digitalCash === undefined ) {
-            transaction.payeeId = this.viewData.payee.id;
+            transaction.payerId = this.user.id;
           } else if ( ! this.viewData.digitalCash) {
             transaction.sourceAccount = this.viewData.account;
             transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;

@@ -64,7 +64,7 @@ foam.CLASS({
         Transaction txn = (Transaction) obj;
         if ( txn.getDestinationAccount() == null ) {
           txn = (Transaction) obj.fclone();
-          txn.setDestinationAccount(digitalAccount(txn.getPayeeId(), txn.getSourceCurrency()).getId());
+          txn.setDestinationAccount(digitalAccount(txn.getPayeeId(), txn.getSourceCurrency(), x).getId());
         }
         return getDelegate().put_(x, txn);
 `
@@ -108,22 +108,26 @@ foam.CLASS({
         {
           name: 'denomination',
           of: 'String'
+        },
+        {
+          name: 'x',
+          of: 'foam.core.X'
         }
       ],
       javaReturns: 'net.nanopay.account.DigitalAccount',
       javaCode: `
           String currency = denomination;
-          if ( currency == null ) {
+          if ( currency == null || currency == "" ) {
             currency = "CAD";
           }
-          DAO userDAO = (DAO) getX().get("userDAO");
-          User user = (User) userDAO.find(userId);
+          DAO userDAO = (DAO) x.get("userDAO");
+          User user = (User) userDAO.find_(x,userId);
           DAO accountDAO = user.getAccounts();
           Sink accountSink = new ArraySink();
           accountDAO = accountDAO.where(
                                         EQ(Account.DENOMINATION, currency)
                                         );
-          accountSink = accountDAO.select(accountSink);
+          accountSink = accountDAO.select_(x, accountSink, 0, 0,null,null);
           List<Account> accounts = ((ArraySink) accountSink).getArray();
           DigitalAccount digital = null;
           Iterator i = accounts.iterator();
