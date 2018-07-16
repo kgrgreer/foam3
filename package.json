@@ -12,9 +12,6 @@
     "url": "https://github.com/nanopayinc/NANOPAY/issues"
   },
   "homepage": "https://github.com/nanopayinc/NANOPAY#readme",
-  "scripts": {
-    "test": ""
-  },
   "dependencies": {
     "json-stringify-pretty-compact": "^1.0.4",
     "mkdirp": "^0.5.1",
