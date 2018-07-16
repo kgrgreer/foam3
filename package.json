@@ -12,6 +12,9 @@
     "url": "https://github.com/nanopayinc/NANOPAY/issues"
   },
   "homepage": "https://github.com/nanopayinc/NANOPAY#readme",
+  "scripts": {
+    "test": "JASMINE_CONFIG_PATH=jasmine_node.json jasmine"
+  },
   "dependencies": {
     "json-stringify-pretty-compact": "^1.0.4",
     "mkdirp": "^0.5.1",
@@ -22,6 +25,7 @@
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
-    "eslint-plugin-foam-style": "file:./tools/style"
+    "eslint-plugin-foam-style": "file:./tools/style",
+    "jasmine": "^3.1.0"
   }
 }

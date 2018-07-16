@@ -76,3 +76,6 @@ package-lock.json
 
 # githooks
 .githooks/pre-commit.local
+
+# yarn
+yarn-error.log
