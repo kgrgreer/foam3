@@ -24,36 +24,45 @@ public class PaymentNotificationDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
 
-    if(existingInvoice != null) {
-      // check if the invoice payment status is changed from NONE to NANOPAY/CHEQUE (Paid)
-      if ((invoice.getPaymentMethod() == PaymentStatus.NANOPAY
-          || invoice.getPaymentMethod() == PaymentStatus.CHEQUE)
-          && (existingInvoice.getPaymentMethod() == PaymentStatus.NONE
-          || existingInvoice.getPaymentMethod() == PaymentStatus.PENDING)) {
+    if ( existingInvoice == null ) {
+      return super.put_(x, obj);
+    }
 
-        User user = (User) x.get("user");
-        long payeeId = (long) invoice.getPayeeId();
-        long payerId = (long) invoice.getPayerId();
+    PaymentStatus newStatus = invoice.getPaymentMethod();
+    PaymentStatus oldStatus = existingInvoice.getPaymentMethod();
+    boolean invoiceIsBeingPaid =
+        (
+          newStatus == PaymentStatus.NANOPAY ||
+          newStatus == PaymentStatus.CHEQUE
+        )
+        &&
+        (
+          oldStatus == PaymentStatus.NONE ||
+          oldStatus == PaymentStatus.PENDING
+        );
 
-        if (invoice.getPaymentMethod() == PaymentStatus.NANOPAY) {
-          ReceivePaymentNotification notification = new ReceivePaymentNotification();
-          notification.setUserId(payeeId);
-          notification.setInvoiceId(invoice.getId());
-          notification.setNotificationType("Payment received");
-          notificationDAO_.put(notification);
-        } else if (invoice.getPaymentMethod() == PaymentStatus.CHEQUE) {
-          RecordPaymentNotification notification = new RecordPaymentNotification();
-          notification.setUserId(payerId);
-          notification.setInvoiceId(invoice.getId());
-          notification.setNotificationType("Record payment");
-          notificationDAO_.put(notification);
-        } else {
-          throw new RuntimeException("Error in the payment notification.");
-        }
+    if ( invoiceIsBeingPaid ) {
+      User user = (User) x.get("user");
+      long payeeId = (long) invoice.getPayeeId();
+      long payerId = (long) invoice.getPayerId();
+
+      if ( newStatus == PaymentStatus.NANOPAY ) {
+        ReceivePaymentNotification notification =
+            new ReceivePaymentNotification();
+        notification.setUserId(payeeId);
+        notification.setInvoiceId(invoice.getId());
+        notification.setNotificationType("Payment received");
+        notificationDAO_.put(notification);
+      } else if ( newStatus == PaymentStatus.CHEQUE ) {
+        RecordPaymentNotification notification =
+            new RecordPaymentNotification();
+        notification.setUserId(payerId);
+        notification.setInvoiceId(invoice.getId());
+        notification.setNotificationType("Record payment");
+        notificationDAO_.put(notification);
       }
     }
 
-    // Put to the DAO
     return super.put_(x, invoice);
   }
 }
