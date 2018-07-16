@@ -552,10 +552,9 @@ setenv
 if [[ $TEST -eq 1 ]]; then
   echo "INFO :: Running all tests..."
   JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
-  start_nanos
 fi
 
-if [ "$RUN_NANOS" -eq 1 ]; then
+if [[ $RUN_NANOS -eq 1 || $TEST -eq 1 ]]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
     build_war
