@@ -229,7 +229,7 @@ foam.CLASS({
                   self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
                 ),
                 self.EQ(
-                  self.BankAccount.OWNER, self.user.id
+                  self.BankAccount.OWNER, self.user
                 )
               )
             ).limit(1).select().then(function(account) {

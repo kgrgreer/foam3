@@ -138,7 +138,7 @@ foam.CLASS({
     {
       name: 'data',
       factory: function () {
-        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+        return this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.OWNER, this.user.id), this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
       }
     }
   ],
@@ -247,7 +247,7 @@ foam.CLASS({
         {
           name: 'data',
           factory: function() {
-            return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+            return this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.OWNER, this.user.id), this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
           }
         }
       ],

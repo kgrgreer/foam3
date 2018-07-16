@@ -162,7 +162,7 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.accountDAO.where(this.EQ(this.DigitalAccount.OWNER, this.user )), function(acc) {
+          .select(this.accountDAO.where(this.AND(this.EQ(this.DigitalAccount.OWNER, this.user ), this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true))), function(acc) {
             this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur){
               if ( cur.flagImage != null )
               this.start('div').start('img')

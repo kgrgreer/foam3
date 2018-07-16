@@ -319,7 +319,7 @@ foam.CLASS({
 
     function getDefaultBank() {
       var self = this;
-      self.userBankAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+      self.userBankAccounts.where(self.EQ(self.BankAccount.IS_DEFAULT, true)).select().then( function(a) {
         if( a.array.length == 0 ) return;
         self.bankList = a.array[0].id;
       });
