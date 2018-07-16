@@ -11,7 +11,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
@@ -195,7 +197,9 @@ foam.CLASS({
             address: shopperAddress,
             desiredPassword: shopperInfo.password,
             portalAdminCreated: true,
-            profilePicture: shopperInfo.profilePicture
+            profilePicture: shopperInfo.profilePicture,
+            status: this.AccountStatus.ACTIVE,
+            compliance: this.ComplianceStatus.PASSED
           });
 
           if ( newShopper.errors_ ) {

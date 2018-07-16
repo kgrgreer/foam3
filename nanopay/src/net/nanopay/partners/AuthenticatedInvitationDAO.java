@@ -8,7 +8,6 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
@@ -22,10 +21,6 @@ import static foam.mlang.MLang.OR;
 public class AuthenticatedInvitationDAO
   extends ProxyDAO
 {
-  public final static String GLOBAL_INVITATION_READ = "invitation.read.x";
-  public final static String GLOBAL_INVITATION_UPDATE = "invitation.update.x";
-  public final static String GLOBAL_INVITATION_DELETE = "invitation.delete.x";
-
   public AuthenticatedInvitationDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -33,12 +28,6 @@ public class AuthenticatedInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    AuthService auth = (AuthService) x.get("auth");
-
-    if ( auth.check(x, GLOBAL_INVITATION_UPDATE) ) {
-      return super.put_(x, obj);
-    }
-
     Invitation invite = (Invitation) obj;
 
     if ( invite == null ) {
@@ -49,7 +38,7 @@ public class AuthenticatedInvitationDAO
     Invitation existingInvite = (Invitation) getDelegate().find_(x, invite);
 
     if ( existingInvite != null ) {
-      this.checkPermissions(x, existingInvite, GLOBAL_INVITATION_UPDATE);
+      this.checkPermissions(x, existingInvite);
 
       // Valid business case #1: User is responding to an invite
       User user = this.getUser(x);
@@ -85,7 +74,7 @@ public class AuthenticatedInvitationDAO
 
     if ( invite == null ) return null;
 
-    this.checkPermissions(x, invite, GLOBAL_INVITATION_READ);
+    this.checkPermissions(x, invite);
     return invite;
   }
 
@@ -98,7 +87,7 @@ public class AuthenticatedInvitationDAO
       Comparator order,
       Predicate predicate
   ) {
-    DAO dao = this.getSecureDAO(x, GLOBAL_INVITATION_READ);
+    DAO dao = this.getSecureDAO(x);
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
@@ -108,7 +97,7 @@ public class AuthenticatedInvitationDAO
 
     if ( invite == null ) return null;
 
-    this.checkPermissions(x, invite, GLOBAL_INVITATION_DELETE);
+    this.checkPermissions(x, invite);
     return super.remove_(x, obj);
   }
 
@@ -120,31 +109,25 @@ public class AuthenticatedInvitationDAO
       Comparator order,
       Predicate predicate
   ) {
-    DAO dao = this.getSecureDAO(x, GLOBAL_INVITATION_DELETE);
+    DAO dao = this.getSecureDAO(x);
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 
-  protected void checkPermissions(X x, Invitation invite, String permission) {
+  protected void checkPermissions(X x, Invitation invite) {
     User user = this.getUser(x);
-    AuthService auth = (AuthService) x.get("auth");
-    boolean hasPermission =
-        this.isOwner(user, invite) || auth.check(x, permission);
+    boolean hasPermission = this.isOwner(user, invite);
 
     if ( ! hasPermission ) {
       throw new RuntimeException("Permission denied");
     }
   }
 
-  protected DAO getSecureDAO(X x, String permission) {
+  protected DAO getSecureDAO(X x) {
     User user = this.getUser(x);
     long id = user.getId();
-    AuthService auth = (AuthService) x.get("auth");
-    boolean hasGlobalPermission = auth.check(x, permission);
-    return hasGlobalPermission
-      ? getDelegate()
-      : getDelegate().where(OR(
-          EQ(Invitation.CREATED_BY, id),
-          EQ(Invitation.INVITEE_ID, id)));
+    return getDelegate().where(OR(
+        EQ(Invitation.CREATED_BY, id),
+        EQ(Invitation.INVITEE_ID, id)));
   }
 
   protected User getUser(X x) {
