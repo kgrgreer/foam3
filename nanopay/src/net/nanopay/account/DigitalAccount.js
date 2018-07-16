@@ -14,8 +14,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isDIgitalAccount',
-      valur: true
+      name: 'isDigitalAccount',
+      value: true
     }
   ],
 

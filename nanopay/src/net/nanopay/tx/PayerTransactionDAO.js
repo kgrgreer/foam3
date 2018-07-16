@@ -62,7 +62,7 @@ foam.CLASS({
             ((DAO)x.get("localAccountDAO")).put_(x, digitalAccount );
           }
           txn = (Transaction) obj.fclone();
-          txn.setSourceAccount(digitalAccount);
+          txn.setSourceAccount(digitalAccount.getId());
         }
         return getDelegate().put_(x, txn);
 `
