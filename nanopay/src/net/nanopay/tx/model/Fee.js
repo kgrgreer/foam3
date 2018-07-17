@@ -10,7 +10,8 @@ foam.CLASS({
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.FeeType',
-      name: 'type'
+      name: 'type',
+      documentation: 'Determines fee type.'
     }
   ]
  });
