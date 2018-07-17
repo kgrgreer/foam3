@@ -9,6 +9,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * This Outputter hashes all data that goes through it and appends the digest
+ * to the end of the output
+ */
 public class HashingOutputter
   extends foam.lib.json.Outputter
 {
@@ -45,12 +49,18 @@ public class HashingOutputter
     return stringWriter_.toString();
   }
 
+  /**
+   * Updates the hash function with the previously stored digest
+   */
   protected synchronized void rollDigests() {
     if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
       hashingWriter_.update(Hex.decode(hashingJournal_.getPreviousDigest()));
     }
   }
 
+  /**
+   * Appends the output of the hash function
+   */
   protected synchronized void outputDigest() {
     // don't output digest if empty, reset digest
     if ( SafetyUtil.isEmpty(stringWriter_.toString()) ) {
@@ -77,6 +87,10 @@ public class HashingOutputter
       .append("\"}");
   }
 
+  /**
+   * Calculates the output of the hash function
+   * @return the output of the hash function
+   */
   public byte[] digest() {
     return hashingWriter_.digest();
   }
