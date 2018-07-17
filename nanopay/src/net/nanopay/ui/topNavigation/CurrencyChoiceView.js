@@ -177,7 +177,7 @@ foam.CLASS({
                   /* self.currentCurrency = cur.alphabeticCode;
                      localStorage.currency = self.currentCurrency; */
                   self.currentAccount = acc;
-                  localStorage.account = self.currentAccount;
+                  localStorage.account = self.currentAccount.id;
                 });
               }
             });

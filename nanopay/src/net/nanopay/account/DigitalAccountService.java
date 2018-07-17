@@ -7,6 +7,7 @@ import foam.dao.ArraySink;
 import foam.mlang.MLang;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
@@ -39,7 +40,8 @@ public class DigitalAccountService
         DAO dao = (DAO) getX().get("localAccountDAO");
         List accounts = ((ArraySink) dao.where(
                                                AND(
-                                                   EQ(Account.TYPE, DigitalAccount.class.getSimpleName()),
+                                                   //EQ(Account.TYPE, DigitalAccount.class.getSimpleName()),
+                                                   INSTANCE_OF(DigitalAccount.class),
                                                    EQ(Account.OWNER, user.getId()),
                                                    EQ(Account.DENOMINATION, currency),
                                                    EQ(Account.IS_DEFAULT, true)
