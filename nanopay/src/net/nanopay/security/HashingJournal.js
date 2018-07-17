@@ -16,6 +16,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'digestRequired',
+      value: false,
+      documentation: 'Flag to determine if digest is required when parsing'
+    },
+    {
+      class: 'Boolean',
       name: 'rollDigests',
       value: false,
       documentation: 'Roll digests together'

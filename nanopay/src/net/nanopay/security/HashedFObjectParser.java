@@ -11,14 +11,10 @@ public class HashedFObjectParser
   extends ProxyParser
 {
   public HashedFObjectParser(HashingJournal hashingJournal) {
-    this(hashingJournal, false);
+    this(hashingJournal, null);
   }
 
-  public HashedFObjectParser(HashingJournal hashingJournal, boolean digestRequired) {
-    this(hashingJournal, digestRequired, null);
-  }
-
-  public HashedFObjectParser(HashingJournal hashingJournal, boolean digestRequired, final Class defaultClass) {
+  public HashedFObjectParser(HashingJournal hashingJournal, final Class defaultClass) {
     setDelegate(new Parser() {
       private Parser parser1 = new FObjectParser(defaultClass);
       private Parser parser2 = new Seq1(1,
@@ -38,7 +34,7 @@ public class HashedFObjectParser
 
         // parse message digest
         PStream ps2 = ps1.apply(parser2, x);
-        if ( ps2 == null && ! digestRequired ) {
+        if ( ps2 == null && ! hashingJournal.getDigestRequired() ) {
           return ps.setValue(ps1.value());
         }
 
