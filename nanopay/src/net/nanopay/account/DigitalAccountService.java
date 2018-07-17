@@ -19,14 +19,14 @@ import java.util.List;
 
 public class DigitalAccountService
   extends ContextAwareSupport
-  implements DigitalAccountInterface, NanoService {
+  implements DigitalAccountInterface {
 
-  public DigitalAccount getDefault(Long userId, String denomination) {
+  public DigitalAccount getDefault(String denomination) {
     Logger logger = (Logger) getX().get("logger");
     logger.info(this.getClass().getSimpleName(), "getDefault");
 
     DAO userDAO = (DAO) getX().get("localUserDAO");
-    User user = (User) userDAO.find(userId);
+    User user = (User) getX().get("user");
 
     DigitalAccount account = null;
     if ( user != null ) {
@@ -40,7 +40,7 @@ public class DigitalAccountService
         List accounts = ((ArraySink) dao.where(
                                                AND(
                                                    EQ(Account.TYPE, DigitalAccount.class.getSimpleName()),
-                                                   EQ(Account.OWNER, userId),
+                                                   EQ(Account.OWNER, user.getId()),
                                                    EQ(Account.DENOMINATION, currency),
                                                    EQ(Account.IS_DEFAULT, true)
                                                    )
@@ -49,24 +49,21 @@ public class DigitalAccountService
           account = (DigitalAccount) accounts.get(0);
         } else if ( accounts.size() == 0 ) {
           account = new DigitalAccount();
-          account.setOwner(userId);
+          account.setOwner(user);
           account.setDenomination(currency);
           account.setIsDefault(true);
           account = (DigitalAccount) dao.put(account);
-          logger.debug(this.getClass().getSimpleName(), "getDefault", "user", userId, "denomination", currency, account.toString());
+          logger.debug(this.getClass().getSimpleName(), "getDefault", "user", user.getId(), "denomination", currency, account.toString());
           return account;
         } else {
-          logger.warning(this.getClass().getSimpleName(), "getDefault", "user", userId, "multiple default accounts found for denomination", currency,                       " Using first found.");
+          logger.warning(this.getClass().getSimpleName(), "getDefault", "user", user.getId(), "multiple default accounts found for denomination", currency,                 " Using first found.");
           account = (DigitalAccount) accounts.get(0);
         }
       }
     } else {
-      logger.warning(this.getClass().getSimpleName(), "getDefault", "user", userId, "not found.");
+      logger.warning(this.getClass().getSimpleName(), "getDefault", "user", user.getId(), "not found.");
     }
 
     return account;
-  }
-
-  public void start() {
   }
 }

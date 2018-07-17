@@ -18,9 +18,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.model.Currency',
     'foam.u2.PopupView',
-    'net.nanopay.model.Currency'
   ],
 
   exports: [ 'as data' ],
@@ -135,15 +136,15 @@ foam.CLASS({
   listeners: [
     function updateCurrency(){
       var self = this;
-      self.accountDAO.find(this.currentAccount).then(function(acc){
+      self.accountDAO.find(this.currentAccount).then(function(acc) {
         var denomination = 'CAD';
-        if ( acc ){
+        if ( acc ) {
           denomination = acc.denomination;
         }
         self.currencyDAO.find(denomination).then(function(c) {
           self.lastCurrency = c;
         });
-      })
+      });
     }
   ],
 
@@ -151,7 +152,7 @@ foam.CLASS({
     {
       name: 'currencyChoice',
       label: '',
-      code: function () {
+      code: function() {
         var self = this;
         self.optionPopup_ = this.PopupView.create({
           width: 165,
@@ -162,21 +163,26 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.accountDAO.where(this.AND(this.EQ(this.DigitalAccount.OWNER, this.user ), this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true))), function(acc) {
-            this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur){
-              if ( cur.flagImage != null )
-              this.start('div').start('img')
-              .attrs({ src: cur.flagImage })
-              .addClass('flag').end().add(cur.alphabeticCode)
-              .on('click', function() {
-                /* self.currentCurrency = cur.alphabeticCode;
-                localStorage.currency = self.currentCurrency; */
-                  self.currentAccount = acc.id;
+          .select(this.accountDAO.where(
+            this.AND(
+              this.EQ(this.Account.OWNER, this.user),
+              this.EQ(this.Account.TYPE, this.DigitalAccount.cls_.name)
+            ))), function(acc) {
+            this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
+              if ( cur.flagImage != null ) {
+                this.start('div').start('img')
+                .attrs({ src: cur.flagImage })
+                .addClass('flag').end().add(cur.alphabeticCode)
+                .on('click', function() {
+                  /* self.currentCurrency = cur.alphabeticCode;
+                     localStorage.currency = self.currentCurrency; */
+                  self.currentAccount = acc;
                   localStorage.account = self.currentAccount;
-              })
-            })
-          })
-          .end()
+                });
+              }
+            });
+            }
+          .end();
         self.optionsBtn_.add(self.optionPopup_);
       }
     }

@@ -13,7 +13,7 @@ else create one.`,
   ],
 
   imports: [
-    'digitalAccountService'
+    'digitalAccount'
   ],
 
   requires: [
@@ -39,7 +39,7 @@ else create one.`,
         currency = currency || 'CAD';
         return new Promise(function(resolve, reject) {
           console.log('findDigitalAccount');
-          this.digitalAccountService.getDefault(this.id, currency)
+          this.digitalAccount.getDefault(currency)
             .then(function(account) {
               if ( account != null ) {
                 resolve(account);
@@ -54,8 +54,8 @@ else create one.`,
       javaCode: `
         Logger logger = (Logger) x.get("logger");
         logger.info("User.findDigitalAccount");
-        DigitalAccountService service = (DigitalAccountService) x.get("digitalAccountService");
-        DigitalAccount account = service.getDefault(this.getId(), currency);
+        DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
+        DigitalAccount account = service.getDefault(currency);
         return account;
 `
     }
