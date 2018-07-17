@@ -324,7 +324,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'sourceCurrency'
+      name: 'sourceCurrency',
+      value: 'CAD'
     },
     {
       // REVIEW: move to TxnProcessorData

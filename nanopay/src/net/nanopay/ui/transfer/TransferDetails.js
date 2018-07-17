@@ -168,7 +168,7 @@ foam.CLASS({
       view: function(_,X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.bank.BankAccount.STATUS, net.nanopay.bank.BankAccountStatus.VERIFIED)),
+          dao: X.user.accounts.where(expr.EQ(net.nanopay.bank.BankAccount.STATUS, net.nanopay.bank.BankAccountStatus.VERIFIED)),
           objToChoice: function(account) {
             return [account.id, account.name + ' ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)

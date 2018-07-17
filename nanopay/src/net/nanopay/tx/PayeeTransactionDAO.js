@@ -23,6 +23,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.dao.Sink',
+    'static foam.mlang.MLang.AND',
+    'net.nanopay.bank.BankAccount',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -124,9 +126,11 @@ foam.CLASS({
           User user = (User) userDAO.find_(x,userId);
           DAO accountDAO = user.getAccounts();
           Sink accountSink = new ArraySink();
-          accountDAO = accountDAO.where(
-                                        EQ(Account.DENOMINATION, currency)
-                                        );
+          accountDAO = ((DAO)x.get("localAccountDAO")).where(AND(
+                                                      EQ(Account.DENOMINATION, currency),
+                          EQ(Account.OWNER, user.getId()),
+                          EQ(BankAccount.IS_BANK_ACCOUNT, true)
+                                                      ));
           accountSink = accountDAO.select_(x, accountSink, 0, 0,null,null);
           List<Account> accounts = ((ArraySink) accountSink).getArray();
           DigitalAccount digital = null;
@@ -141,6 +145,7 @@ foam.CLASS({
           if ( digital == null ) {
             digital = new DigitalAccount();
             digital.setDenomination(currency);
+            digital.setOwner(user.getId());
             digital = (DigitalAccount) accountDAO.put(digital);
           }
           return digital;
