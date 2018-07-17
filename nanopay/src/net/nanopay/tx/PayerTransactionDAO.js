@@ -11,12 +11,18 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'foam.nanos.auth.User'
   ],
 
   imports: [
-    'accountDAO'
+    'localUserDAO'
   ],
+
+  requires: [
+    'foam.nanos.auth.User',
+  ],
+
   implements: [
     'foam.mlang.Expressions',
   ],
@@ -41,9 +47,11 @@ foam.CLASS({
             // if ( obj.frozen ) {
               txn = obj.fclone();
             // }
-            this.accountDAO.find(this.AND(this.EQ(this.DigitalAccount.OWNER, txn.payerId), this.EQ(this.DigitalAccount.DENOMINATION, txn.sourceCurrency))).then(function(account) {
-              txn.sourceAccount = account;
-              resolve(this.getDelegate.put_(x, txn));
+            this.localUserDAO.find(txn.payerId).then(function(user) {
+              user.findDigitalAccount(x, txn.sourceCurrency).then(function(account) {
+                txn.sourceAccount = account;
+                resolve(this.getDelegate.put_(x, txn));
+              }).bind(this);
             }).bind(this);
           } else {
             resolve(this.getDelegate.put_(x, obj));
@@ -54,15 +62,10 @@ foam.CLASS({
       javaCode: `
         Transaction txn = (Transaction) obj;
         if ( txn.getSourceAccount() == null ) {
-        DigitalAccount digitalAccount = (DigitalAccount) ((DAO)x.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER, txn.getPayerId()),EQ(DigitalAccount.DENOMINATION, txn.getSourceCurrency())));
-          if ( digitalAccount == null ) {
-            digitalAccount = new DigitalAccount();
-            digitalAccount.setDenomination(txn.getSourceCurrency())  ;
-            digitalAccount.setOwner(txn.getPayerId());
-            ((DAO)x.get("localAccountDAO")).put_(x, digitalAccount );
-          }
+          User user = (User) ((DAO) x.get("localUserDAO")).find(txn.getPayerId());
+          DigitalAccount digitalAccount = user.findDigitalAccount(x, txn.getSourceCurrency());
           txn = (Transaction) obj.fclone();
-          txn.setSourceAccount(digitalAccount.getId());
+          txn.setSourceAccount(digitalAccount);
         }
         return getDelegate().put_(x, txn);
 `

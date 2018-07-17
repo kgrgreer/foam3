@@ -14,6 +14,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.admin.model.AccountStatus',
@@ -29,6 +30,7 @@ foam.CLASS({
     'as ctrl',
     'balance',
     'currentAccount',
+    'findAccount',
     'findBalance',
     'privacyUrl',
     'termsUrl'
@@ -77,6 +79,14 @@ foam.CLASS({
     }
   `,
 
+  constants: [
+    {
+      type: 'String',
+      name: 'ACCOUNT',
+      value: 'account',
+    }
+  ],
+
   properties: [
     'privacyUrl',
     'termsUrl',
@@ -90,17 +100,22 @@ foam.CLASS({
       name: 'appConfig'
     },
     {
-      class: 'Int',
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.account.Account',
       name: 'currentAccount',
-      factory: function () {
-        return ( localStorage.account ) ?
-          localStorage.account : null;
+      factory: function() {
+        // this.findAccount();
+        return net.nanopay.account.DigitalAccount.create({
+          owner: this.user,
+          denomination: 'CAD'
+        });
       }
-    },
+    }
   ],
 
   methods: [
     function initE() {
+      console.log('Controller.initE');
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config){
@@ -196,18 +211,36 @@ foam.CLASS({
           self.onUserUpdate();
         }
       })
-      .catch(function (err) {
-        self.requestLogin().then(function () {
+      .catch(function(err) {
+        self.requestLogin().then(function() {
           self.getCurrentUser();
         });
       });
     },
 
+    function findAccount() {
+      console.log('findAccount', 'localStorage.account', localStorage.getItem(this.ACCOUNT));
+      if ( localStorage.getItem(this.ACCOUNT) == null ) {
+        return this.user.findDigitalAccount(this.client, null).then(function(account) {
+          this.currentAccount.copyFrom(account);
+          localStorage.setItem(this.ACCOUNT, this.currentAccount.id);
+          return this.currentAccount;
+        }.bind(this));
+      } else {
+        return this.client.accountDAO.find(localStorage.getItem(this.ACCOUNT)).then(function(account) {
+          this.currentAccount.copyFrom(account);
+          return this.currentAccount;
+        }.bind(this));
+      }
+    },
+
     function findBalance() {
-      var self = this;
-      this.client.balanceDAO.find(this.currentAccount).then(function (a) {
-        return self.balance.copyFrom(a);
-      }.bind(this));},
+      return this.findAccount().then(function(account) {
+        this.client.balanceDAO.find(account).then(function(balance) {
+          return this.balance.copyFrom(balance);
+        }.bind(this));
+      }.bind(this));
+    },
 
     function requestLogin() {
       var self = this;

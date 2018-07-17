@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.dao.ArraySink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
@@ -77,8 +78,14 @@ public class AuthenticatedTransactionDAO
     }
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
-    DAO dao = global ? getDelegate() : getDelegate().where(
-      OR(IN(Transaction.SOURCE_ACCOUNT, user.getAccounts()), IN(Transaction.DESTINATION_ACCOUNT, user.getAccounts())));
+    DAO dao = global ?
+      getDelegate() :
+      getDelegate().where(
+                          OR(
+                             IN(Transaction.SOURCE_ACCOUNT, ((ArraySink)user.getAccounts().select(new ArraySink())).getArray()),
+                             IN(Transaction.DESTINATION_ACCOUNT, ((ArraySink)user.getAccounts().select(new ArraySink())).getArray())
+                             )
+                          );
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

@@ -27,6 +27,7 @@ foam.CLASS({
     'addCommas',
     'balance',
     'accountDAO as bankAccountDAO',
+    'findAccount',
     'stack',
     'transactionDAO',
     'user',
@@ -351,9 +352,13 @@ foam.CLASS({
       // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        this.balanceDAO.find(this.currentAccount).then(function (b) {
-          self.balance.copyFrom(b);
-          self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
+        this.findAccount().then(function(account) {
+          self.balanceDAO.find(account).then(function(b) {
+            if ( b != null ) {
+              self.balance.copyFrom(b);
+            }
+            self.formattedBalance = '$' + (self.balance.balance / 100).toFixed(2);
+          });
         });
       }
     }
