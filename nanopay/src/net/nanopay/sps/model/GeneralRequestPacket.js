@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sps.model',
   name: 'GeneralRequestPacket',
-  extends: 'net.nanopay.sps.utils.RequestPacket',
+  extends: 'net.nanopay.sps.model.RequestPacket',
 
   properties: [
     {
