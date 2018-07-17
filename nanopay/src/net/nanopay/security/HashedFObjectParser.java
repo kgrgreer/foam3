@@ -10,16 +10,16 @@ import java.nio.charset.StandardCharsets;
 public class HashedFObjectParser
   extends ProxyParser
 {
-  protected HashingJournal hashingJournal_;
-
   public HashedFObjectParser(HashingJournal hashingJournal) {
-    this(hashingJournal, null);
+    this(hashingJournal, false);
   }
 
-  public HashedFObjectParser(HashingJournal hashingJournal, final Class defaultClass) {
-    hashingJournal_ = hashingJournal;
-    setDelegate(new Parser() {
+  public HashedFObjectParser(HashingJournal hashingJournal, boolean digestRequired) {
+    this(hashingJournal, digestRequired, null);
+  }
 
+  public HashedFObjectParser(HashingJournal hashingJournal, boolean digestRequired, final Class defaultClass) {
+    setDelegate(new Parser() {
       private Parser parser1 = new FObjectParser(defaultClass);
       private Parser parser2 = new Seq1(1,
         new Optional(new Literal(",")),
@@ -38,8 +38,13 @@ public class HashedFObjectParser
 
         // parse message digest
         PStream ps2 = ps1.apply(parser2, x);
-        if ( ps2 == null ) {
+        if ( ps2 == null && ! digestRequired ) {
           return ps.setValue(ps1.value());
+        }
+
+        // check for message digest
+        if ( ps2 == null ) {
+          throw new RuntimeException("Digest not found");
         }
 
         // get message digest value
@@ -52,11 +57,11 @@ public class HashedFObjectParser
           md = java.security.MessageDigest.getInstance(messageDigest.getAlgorithm());
 
           // update digest with previous digest
-          if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
-            md.update(Hex.decode(hashingJournal_.getPreviousDigest()));
+          if ( hashingJournal.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal.getPreviousDigest()) ) {
+            md.update(Hex.decode(hashingJournal.getPreviousDigest()));
           }
 
-          hashingJournal_.setPreviousDigest(messageDigest.getDigest());
+          hashingJournal.setPreviousDigest(messageDigest.getDigest());
           md.update(message.getBytes(StandardCharsets.UTF_8));
         } catch ( Throwable t ) {
           throw new RuntimeException("Digest verification failed");
@@ -70,7 +75,6 @@ public class HashedFObjectParser
 
         return ps.setValue(ps1.value());
       }
-
     });
   }
 }
