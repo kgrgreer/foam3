@@ -8,40 +8,41 @@ public class HashingJDAO
   extends JDAO
 {
   public HashingJDAO(X x, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, new MapDAO(classInfo), filename);
+    this(x, "SHA-256", false, false, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, ClassInfo classInfo, String filename) {
-    this(x, algorithm, false, new MapDAO(classInfo), filename);
+    this(x, algorithm, false, false, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", rollDigests, new MapDAO(classInfo), filename);
+    this(x, "SHA-256", false, rollDigests, new MapDAO(classInfo), filename);
   }
 
-  public HashingJDAO(X x, String algorithm, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, algorithm, rollDigests, new MapDAO(classInfo), filename);
+  public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, ClassInfo classInfo, String filename) {
+    this(x, algorithm, digestRequired, rollDigests, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, DAO delegate, String filename) {
-    this(x, "SHA-256", false, delegate, filename);
+    this(x, "SHA-256", false, false, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, DAO delegate, String filename) {
-    this(x, algorithm, false, delegate, filename);
+    this(x, algorithm, false, false, delegate, filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, DAO delegate, String filename) {
-    this(x, "SHA-256", rollDigests, delegate, filename);
+    this(x, "SHA-256", false, rollDigests, delegate, filename);
   }
 
-  public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename) {
+  public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename) {
     setX(x);
     setOf(delegate.getOf());
     setDelegate(delegate);
 
     journal_ = new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
+      .setDigestRequired(digestRequired)
       .setRollDigests(rollDigests)
       .setDao(delegate)
       .setFilename(filename)
@@ -55,11 +56,13 @@ public class HashingJDAO
         new HashingJournal.Builder(getX())
           .setFilename(filename + ".0")
           .setAlgorithm(algorithm)
+          .setDigestRequired(digestRequired)
           .setRollDigests(rollDigests)
           .build(),
         new HashingJournal.Builder(getX())
           .setFilename(filename)
           .setAlgorithm(algorithm)
+          .setDigestRequired(digestRequired)
           .setRollDigests(rollDigests)
           .build()
       })
