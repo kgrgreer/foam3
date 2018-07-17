@@ -32,11 +32,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
 
     if (invoice == null) {
-      throw new RuntimeException("Cannot put null");
+      throw new IllegalArgumentException("Cannot put null");
     }
     // Check if the user is the creator of the invoice or if the user is admin.
     if (! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
-      throw new RuntimeException("Permission denied");
+      throw new IllegalArgumentException("Permission denied");
     }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
     return getDelegate().put_(x, invoice);
@@ -51,7 +51,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       // Check if user is related to the invoice, or user is admin,
       // or user has the authentication.
       if (! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
-        throw new RuntimeException("Permission denied");
+        throw new IllegalArgumentException("Permission denied");
       }
     }
     return invoice;
