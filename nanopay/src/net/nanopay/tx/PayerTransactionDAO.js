@@ -49,7 +49,7 @@ foam.CLASS({
             // }
             this.localUserDAO.find(txn.payerId).then(function(user) {
               user.findDigitalAccount(x, txn.sourceCurrency).then(function(account) {
-                txn.sourceAccount = account;
+                txn.sourceAccount = account.id;
                 resolve(this.getDelegate.put_(x, txn));
               }).bind(this);
             }).bind(this);
@@ -61,11 +61,11 @@ foam.CLASS({
       javaReturns: 'foam.core.FObject',
       javaCode: `
         Transaction txn = (Transaction) obj;
-        if ( txn.getSourceAccount() == null ) {
+        if ( txn.findSourceAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find(txn.getPayerId());
           DigitalAccount digitalAccount = user.findDigitalAccount(x, txn.getSourceCurrency());
           txn = (Transaction) obj.fclone();
-          txn.setSourceAccount(digitalAccount);
+          txn.setSourceAccount(digitalAccount.getId());
         }
         return getDelegate().put_(x, txn);
 `

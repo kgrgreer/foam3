@@ -32,7 +32,8 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'auth',
-    'window'
+    'window',
+    'findBalance'
   ],
 
   exports: [
@@ -357,7 +358,7 @@ foam.CLASS({
             if ( b != null ) {
               self.balance.copyFrom(b);
             }
-            self.formattedBalance = '$' + (self.balance.balance / 100).toFixed(2);
+            self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
           });
         });
       }
