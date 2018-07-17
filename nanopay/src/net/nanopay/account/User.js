@@ -52,6 +52,8 @@ else create one.`,
       },
       javaReturns: 'net.nanopay.account.DigitalAccount',
       javaCode: `
+        Logger logger = (Logger) x.get("logger");
+        logger.info("User.findDigitalAccount");
         DigitalAccountService service = (DigitalAccountService) x.get("digitalAccountService");
         DigitalAccount account = service.getDefault(this.getId(), currency);
         return account;
