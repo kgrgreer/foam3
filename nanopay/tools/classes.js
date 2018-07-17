@@ -55,6 +55,7 @@ var classes = [
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
+  'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
@@ -140,7 +141,10 @@ var classes = [
   'net.nanopay.security.MessageDigest',
 
   //topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView',
+
+  // tests
+  'net.test.ModeledTest'
 ];
 
 var abstractClasses = [

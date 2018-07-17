@@ -352,7 +352,6 @@ function start_nanos {
 
     mvn -f pom-standalone.xml install
     deploy_journals
-
     exec java $JAVA_OPTS -jar target/root-0.0.1.jar
 }
 
@@ -523,8 +522,9 @@ RESTART_ONLY=0
 RUN_NANOS=0
 RUN_MIGRATION=0
 STOP_TOMCAT=0
+TEST=0
 
-while getopts "bcdfhijmnrs" opt ; do
+while getopts "bcdfhijmnrst" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -536,6 +536,7 @@ while getopts "bcdfhijmnrs" opt ; do
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
+        t) TEST=1 ;;
         h) usage ; exit 0 ;;
         ?) usage ; exit 1 ;;
     esac
@@ -547,7 +548,13 @@ if [ "$INSTALL" -eq 1 ]; then
 fi
 
 setenv
-if [ "$RUN_NANOS" -eq 1 ]; then
+
+if [[ $TEST -eq 1 ]]; then
+  echo "INFO :: Running all tests..."
+  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+fi
+
+if [[ $RUN_NANOS -eq 1 || $TEST -eq 1 ]]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
     build_war
