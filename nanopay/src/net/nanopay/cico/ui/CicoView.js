@@ -352,8 +352,9 @@ foam.CLASS({
       code: function onDAOUpdate() {
         var self = this;
         this.balanceDAO.find(this.currentAccount).then(function (b) {
+          if ( b != null )
           self.balance.copyFrom(b);
-          self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
+          self.formattedBalance = '$' + (self.balance.balance / 100).toFixed(2);
         });
       }
     }

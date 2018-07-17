@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: 'Base class/model of all BankAccounts',
 
-  tableColumns: ['name', 'institution', 'accountNumber', 'status', 'actionsMenu'],
+  tableColumns: ['name', 'status','actionsMenu'],
 
   // relationships: branch (Branch)
 
