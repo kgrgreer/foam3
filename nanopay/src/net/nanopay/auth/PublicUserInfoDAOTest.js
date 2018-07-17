@@ -36,6 +36,7 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.nanos.auth.Address',
@@ -53,6 +54,7 @@ foam.CLASS({
       javaReturns: 'void',
       javaCode: `
         // Create a subcontext to avoid polluting the DAOs we're working with.
+        X x = getX();
         x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
 
         DAO widgetDAO = new MDAO(TestWidget.getOwnClassInfo());
