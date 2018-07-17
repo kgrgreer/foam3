@@ -8,7 +8,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      required: true\
+      required: true
     },
     {
       class: 'String',

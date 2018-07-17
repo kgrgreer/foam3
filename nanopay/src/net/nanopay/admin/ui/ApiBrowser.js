@@ -130,11 +130,19 @@ foam.CLASS({
       height: 700px;
       width: 600px;
       overflow: scroll;
+      padding: 20px;
+      background: white;
     }
     ^ .className {
       font-size: 25px;
       margin: 30px 0px;
       font-weight: 500;
+    }
+    ^ .foam-u2-view-TableView td {
+      white-space: normal;
+    }
+    .selected-model .foam-u2-view-TableView {
+      width: 600px;
     }
   `,
 
