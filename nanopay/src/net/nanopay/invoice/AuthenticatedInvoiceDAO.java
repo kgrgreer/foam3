@@ -35,7 +35,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new RuntimeException("Cannot put null");
     }
     // Check if the user is the creator of the invoice or if the user is admin.
-    if ( ! this.isRelated(user, invoice) && ! isAdmin(user)) {
+    if (! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
       throw new RuntimeException("Permission denied");
     }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
@@ -50,7 +50,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     if (invoice != null) {
       // Check if user is related to the invoice, or user is admin,
       // or user has the authentication.
-      if (! this.isRelated(user, invoice) && ! isAdmin(user) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
+      if (! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
         throw new RuntimeException("Permission denied");
       }
     }
@@ -61,7 +61,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     User user = this.getUser(x);
     long id = user.getId();
-    boolean global = auth.check(x, GLOBAL_INVOICE_READ) || isAdmin(user);
+    boolean global = auth.check(x, GLOBAL_INVOICE_READ);
 
     // If user has the global access permission, get all the invoices; otherwise,
     // only return related invoices.
@@ -82,9 +82,5 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   protected boolean isRelated(User user, Invoice invoice) {
     long id = user.getId();
     return (long) invoice.getPayeeId() == id || (long) invoice.getPayerId() == id;
-  }
-
-  protected boolean isAdmin(User user) {
-    return "admin".equals(user.getGroup());
   }
 }
