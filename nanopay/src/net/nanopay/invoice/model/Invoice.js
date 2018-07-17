@@ -302,11 +302,19 @@ foam.CLASS({
   ],
 
   methods: [
-    function formatCurrencyAmount(a, e, X) {
-      var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
-      e.start().style({ 'padding-right': '20px' })
-        .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
-      .end();
+    {
+      name: 'formatCurrencyAmount',
+      code: function(a, e, X) {
+        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
+        e.start().style({ 'padding-right': '20px' })
+          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+        .end();
+      },
+      javaReturns: 'String',
+      javaCode: `
+        double amount = getAmount() / 100.0;
+        return String.format(java.util.Locale.CANADA, "$%,.2f", amount);
+      `
     }
   ],
 

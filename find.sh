@@ -41,6 +41,7 @@ declare -a arr=(
   "institutionPurposeCodes"
   "languages"
   "menus"
+  "notificationTemplates"
   "payoutOptions"
   "permissions"
   "questionnaires"
