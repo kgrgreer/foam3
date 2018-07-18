@@ -267,7 +267,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
 
   // security tests
-  { name: 'net/nanopay/security/HashedFObjectParserTest' },
   { name: 'net/nanopay/security/HashedJSONParserTest' },
   { name: 'net/nanopay/security/HashingJDAOTest' },
   { name: 'net/nanopay/security/HashingJournalTest' },

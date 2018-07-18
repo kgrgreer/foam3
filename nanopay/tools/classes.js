@@ -141,7 +141,6 @@ var classes = [
   'net.nanopay.security.MessageDigest',
 
   // security tests
-  'net.nanopay.security.HashedFObjectParserTest',
   'net.nanopay.security.HashedJSONParserTest',
   'net.nanopay.security.HashingJDAOTest',
   'net.nanopay.security.HashingJournalTest',
