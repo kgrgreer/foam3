@@ -120,7 +120,7 @@ foam.CLASS({
       javaCode: `
         StringBuilder builder = sb.get().append(getMessage()).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
         HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
-        test(parser.parseString(builder.toString()) != null, "User with " + algorithm + " message digest parsed successfully");
+        test(parser.parseString(builder.toString()) != null, algorithm + " message digest parsed successfully");
       `
     },
     {
@@ -135,7 +135,7 @@ foam.CLASS({
           HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
           parser.parseString(builder.toString());
         } catch ( Throwable t ) {
-          test("Digest verification failed".equals(t.getMessage()), "Exception with message \\"Digest verification failed\\" thrown");
+          test("Digest verification failed".equals(t.getMessage()), "Exception thrown for invalid digest");
         }
       `
     },
@@ -149,7 +149,7 @@ foam.CLASS({
       javaCode: `
         StringBuilder builder = sb.get().append(getMessage()).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
         HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build());
-        test(parser.parseString(builder.toString()) != null, "User with " + algorithm + " chained message digest parsed successfully");
+        test(parser.parseString(builder.toString()) != null, algorithm + " chained message digest parsed successfully");
       `
     },
     {
@@ -165,7 +165,7 @@ foam.CLASS({
           HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build());
           parser.parseString(builder.toString());
         } catch ( Throwable t ) {
-          test("Digest verification failed".equals(t.getMessage()), "Exception with message \\"Digest verification failed\\" thrown");
+          test("Digest verification failed".equals(t.getMessage()), "Exception thrown for invalid chained digest");
         }
       `
     }
