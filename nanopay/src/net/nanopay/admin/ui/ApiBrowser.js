@@ -222,8 +222,7 @@ foam.CLASS({
         .end();
 
         this.start().addClass('doc-sub-nav')
-          .start(this.serviceContainer)
-            .addClass('service-list-container')
+          .start(this.serviceContainer).addClass('service-list-container')
             .tag(this.ServiceListView)
           .end()
           .start(this.selectedModelContainer)
@@ -329,6 +328,22 @@ foam.CLASS({
       .end();
     }
   ],
+});
+
+foam.CLASS({
+  package: 'foam.doc',
+  name: 'ServiceMethodView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function initE() {
+      this.start()
+        .forEach(this.data.args, function(a) {
+          console.log('this is the methods args', a);
+        })
+      .end();
+    }
+  ]
 });
 
 foam.CLASS({

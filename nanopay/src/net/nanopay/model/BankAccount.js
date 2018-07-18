@@ -98,7 +98,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
       name: 'currencyCode',
-      documentation: 'Curreny of bank account.'
+      documentation: 'Currency bank uses account.'
     },
     {
       class: 'Long',
@@ -116,7 +116,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'setAsDefault',
-      documentation: 'Determines users primary account. Transactions default to this account.',
+      documentation: 'Determines user\' primary account. Transactions default to this account.',
       value: false
     }
   ],

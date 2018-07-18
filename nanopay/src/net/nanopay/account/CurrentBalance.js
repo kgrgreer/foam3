@@ -9,7 +9,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance',
-      documentation: 'Balance associated & gathered' +
+      documentation: 'Balance calculated' +
           ' from transactions related to account.'
     },
     {

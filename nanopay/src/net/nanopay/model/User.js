@@ -2,7 +2,7 @@ foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
   documentation: 'Base user in the system. Utlized for authentication,' +
-      ' personal information & permitting certain actions.',
+      ' personal information and permitting certain actions.',
 
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
@@ -40,7 +40,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
-      documentation: 'Stores the users previous status'
+      documentation: 'Stores the users previous status.'
     },
     {
       class: 'foam.core.Enum',
@@ -80,7 +80,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
-      documentation: 'Admin user account approval status',
+      documentation: 'Admin user account approval status.',
       tableCellFormatter: function(status) {
         return status.label;
       }
@@ -89,12 +89,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
-      documentation: 'Questionnaire response'
+      documentation: 'Questionnaire response.'
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
-      documentation: 'Additional documents for compliance verification',
+      documentation: 'Additional documents for compliance verification.',
       view: {
         class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
       }
@@ -121,7 +121,7 @@ foam.CLASS({
       class: 'String',
       name: 'principleType',
       label: 'Principal Type',
-      documentation: 'Type of principle owner (shareholder, owner etc...)'
+      documentation: 'Type of principle owner. (shareholder, owner etc...)'
     },
     {
       class: 'Boolean',
@@ -150,7 +150,7 @@ foam.CLASS({
       name: 'businessIdentificationNumber',
       transient: true,
       documentation: 'A number issued by an Issuing Authority such' +
-          ' a the CRA. Used as an identified as well as for tax purposes.',
+          ' as the CRA. Used as an identified as well as for tax purposes.',
       getter: function() {
         return this.businessRegistrationNumber;
       },
@@ -194,7 +194,7 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationAuthority',
       documentation: 'An organization that has the' +
-          ' power to issue & process a business registration.',
+          ' power to issue and process a business registration.',
       width: 35,
       validateObj: function(businessRegistrationAuthority) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
@@ -229,7 +229,7 @@ foam.CLASS({
       name: 'onboarded',
       documentation: 'Signifies completion of business ' +
           'registration. Dictates portal views after' +
-          'compliance & account approval.',
+          'compliance and account approval.',
       value: false
     },
     {
@@ -243,7 +243,7 @@ foam.CLASS({
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,
-      documentation: 'Counter to count the number of invite attempt',
+      documentation: 'Number of invite attempt.',
     }
   ]
 });
