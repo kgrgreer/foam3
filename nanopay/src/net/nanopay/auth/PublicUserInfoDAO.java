@@ -68,6 +68,15 @@ public class PublicUserInfoDAO
     idProperty_ = idProperty;
     userProperty_ = userProperty;
     userDAO_ = (DAO) x.get("localUserDAO");
+
+    // Check if the given properties exist on the model.
+    foam.core.ClassInfo classInfo = delegate.getOf();
+
+    if ( classInfo.getAxiomByName(idProperty) == null ) {
+      throw new IllegalArgumentException("Property '" + idProperty + "' does not exist on model '" + classInfo.getId() + "'.");
+    } else if ( classInfo.getAxiomByName(userProperty) == null ) {
+      throw new IllegalArgumentException("Property '" + userProperty + "' does not exist on model '" + classInfo.getId() + "'.");
+    }
   }
 
   /** Used to apply the replacement logic to each item returned by a select */
@@ -119,10 +128,10 @@ public class PublicUserInfoDAO
 
     if ( user == null ) {
       clone.setProperty(userProperty_, null);
+    } else {
+      PublicUserInfo entity = new PublicUserInfo(user);
+      clone.setProperty(userProperty_, entity);
     }
-
-    PublicUserInfo entity = new PublicUserInfo(user);
-    clone.setProperty(userProperty_, entity);
 
     return clone;
   }
