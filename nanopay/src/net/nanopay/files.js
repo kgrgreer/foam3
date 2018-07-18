@@ -266,6 +266,13 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
 
+  // security tests
+  { name: 'net/nanopay/security/HashedFObjectParserTest' },
+  { name: 'net/nanopay/security/HashedJSONParserTest' },
+  { name: 'net/nanopay/security/HashingJDAOTest' },
+  { name: 'net/nanopay/security/HashingJournalTest' },
+  { name: 'net/nanopay/security/HashingOutputterTest' },
+
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
