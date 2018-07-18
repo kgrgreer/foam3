@@ -190,15 +190,15 @@ foam.CLASS({
             .callIf(! n.boxClass, function() {
               this.tag(self.SimpleClassView.create({
                 data: model
+              }))
+              .tag(self.GetRequestView.create({ data: n.name }))
+              .tag(self.PutRequestView.create({
+                data: {
+                  n: n,
+                  props: dataProps
+                }
               }));
-            })
-            .tag(self.GetRequestView.create({ data: n.name }))
-            .tag(self.PutRequestView.create({
-              data: {
-                n: n,
-                props: dataProps
-              }
-            }));
+            });
           })
         .end();
         this.start().addClass('selected-model')
