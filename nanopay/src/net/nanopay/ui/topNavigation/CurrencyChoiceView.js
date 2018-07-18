@@ -136,7 +136,7 @@ foam.CLASS({
   listeners: [
     function updateCurrency(){
       var self = this;
-      self.accountDAO.find(this.currentAccount).then(function(acc) {
+      self.accountDAO.find(this.currentAccount.id).then(function(acc) {
         var denomination = 'CAD';
         if ( acc ) {
           denomination = acc.denomination;
@@ -167,8 +167,8 @@ foam.CLASS({
             this.AND(
               this.EQ(this.Account.OWNER, this.user),
               // this.EQ(this.Account.TYPE, this.DigitalAccount.cls_.name)
-              this.INSTANCE_OF(this.DigitalAccount.getOwnClassInfo())
-            ))), function(acc) {
+              this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
+            )), function(acc) {
               if ( acc != null ) {
                 this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
                   if ( cur.flagImage != null ) {
@@ -181,7 +181,7 @@ foam.CLASS({
                   }
                 });
               }
-            }
+            })
           .end();
         self.optionsBtn_.add(self.optionPopup_);
       }

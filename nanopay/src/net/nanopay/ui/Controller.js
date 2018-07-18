@@ -227,7 +227,7 @@ foam.CLASS({
           return this.currentAccount;
         }.bind(this));
       } else {
-        return this.client.accountDAO.find(this.currentAccount).then(function(account) {
+        return this.client.accountDAO.find(this.currentAccount.id).then(function(account) {
           this.currentAccount.copyFrom(account);
           return this.currentAccount;
         }.bind(this));

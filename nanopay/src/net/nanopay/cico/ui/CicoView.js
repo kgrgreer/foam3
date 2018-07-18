@@ -353,7 +353,7 @@ foam.CLASS({
       // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-          self.balanceDAO.find(this.currentAccount).then(function(b) {
+          self.balanceDAO.find(this.currentAccount.id).then(function(b) {
             if ( b != null ) {
               self.balance.copyFrom(b);
             }
