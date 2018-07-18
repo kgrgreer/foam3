@@ -12,7 +12,8 @@ foam.CLASS({
     'foam.doc.PutRequestView',
     'foam.doc.ServiceListView',
     'foam.doc.ExampleRequestView',
-    'foam.doc.ClientServiceView'
+    'foam.doc.ClientServiceView',
+    'foam.doc.ExpandContainer'
   ],
 
   imports: [
@@ -122,16 +123,13 @@ foam.CLASS({
       }
     }
     .selected-model{
-      position: fixed;
-      top: 100px;
-      right: 300px;
       vertical-align: top;
       display: block;
       height: 700px;
       width: 600px;
       overflow: scroll;
-      padding: 20px;
       background: white;
+      margin-top: 20px;
     }
     ^ .className {
       font-size: 25px;
@@ -143,6 +141,21 @@ foam.CLASS({
     }
     .selected-model .foam-u2-view-TableView {
       width: 600px;
+    }
+    .service-list-container{
+      width: 350px !important;
+      position: fixed;
+      right: 600px;
+      top: 65px;
+      border-right: 1px solid lightblue;
+      z-index: 1;
+    }
+    .selected-model-container{
+      width: 600px !important;
+      position: fixed;
+      right: 0;
+      top: 65px;
+      z-index: 1;
     }
   `,
 
@@ -158,61 +171,75 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      var ServiceContainer = this.ExpandContainer.create({
+        title: 'Service Menu'
+      });
+      var SelectedModelContainer = this.ExpandContainer.create({
+        title: 'Model Search'
+      });
+
       this.start()
         .start().addClass(this.myClass())
-          .add(this.ServiceListView.create())
-          .start('h2')
-            .add(this.Title)
-          .end()
-          .start()
-            .add(this.ExampleRequestView.create())
-          .end()
-          .select(this.AuthenticatedNSpecDAO, function(n) {
-            var model = self.parseClientModel(n);
-            if ( ! model ) return;
-            var dataProps = self.requiredProperties(model);
-            this.start().addClass(n.name).addClass('className')
-              .add(n.name)
-              .attrs({
-                id: n.name
-              })
+          .start().addClass('api-browser-container')
+            .start('h2')
+              .add(this.Title)
             .end()
-            .callIf(n.description, function() {
-              this.start()
-                .add('Description: ', n.description)
-              .end();
+            .start()
+              .add(this.ExampleRequestView.create())
+            .end()
+            .select(this.AuthenticatedNSpecDAO, function(n) {
+              var model = self.parseClientModel(n);
+              if ( ! model ) return;
+              var dataProps = self.requiredProperties(model);
+              this.start().addClass(n.name).addClass('className')
+                .add(n.name)
+                .attrs({
+                  id: n.name
+                })
+              .end()
+              .callIf(n.description, function() {
+                this.start()
+                  .add('Description: ', n.description)
+                .end();
+              })
+              .callIf(n.boxClass, function() {
+                this.tag(self.ClientServiceView.create({
+                  data: self.parseInterface(n)
+                }));
+              })
+              .callIf(! n.boxClass, function() {
+                this.tag(self.SimpleClassView.create({
+                  data: model
+                }))
+                .tag(self.GetRequestView.create({ data: n.name }))
+                .tag(self.PutRequestView.create({
+                  data: {
+                    n: n,
+                    props: dataProps
+                  }
+                }));
+              });
             })
-            .callIf(n.boxClass, function() {
-              this.tag(self.ClientServiceView.create({
-                data: self.parseInterface(n)
-              }));
-            })
-            .callIf(! n.boxClass, function() {
-              this.tag(self.SimpleClassView.create({
-                data: model
-              }))
-              .tag(self.GetRequestView.create({ data: n.name }))
-              .tag(self.PutRequestView.create({
-                data: {
-                  n: n,
-                  props: dataProps
-                }
-              }));
-            });
-          })
+          .end()
         .end();
-        this.start().addClass('selected-model')
-          .startContext({ data: this })
-          .start('h4').add('Search class').end()
-          .start().add(this.PATH).end()
-          .endContext()
-          .start('h1').add('Selected Class').end()
-          .add(this.slot(function(selectedClass) {
-            if ( ! selectedClass ) return '';
-            return this.SimpleClassView.create({ data: selectedClass });
-          }))
-        .end()
-      .end();
+
+        this.start().addClass('doc-sub-nav')
+          .start(ServiceContainer).addClass('service-list-container')
+            .tag(this.ServiceListView)
+          .end()
+          .start(SelectedModelContainer).addClass('selected-model-container')
+            .start().addClass('selected-model')
+              .startContext({ data: this })
+                .start().add(this.PATH).end()
+              .endContext()
+                .add(this.slot(function(selectedClass) {
+                  if ( ! selectedClass ) return '';
+                  return this.SimpleClassView.create({ data: selectedClass });
+                }))
+              .end()
+            .end()
+          .end()
+        .end();
     },
 
     function parseInterface(n) {
@@ -268,12 +295,6 @@ foam.CLASS({
     }
     ^ .methodName {
       margin-bottom: 10px;
-    }
-    ^ .methodArguments {
-
-    }
-    ^ .argumentItems {
-
     }
     ^ .light-roboto-h2{
       margin-bottom: 0;
@@ -513,26 +534,25 @@ foam.CLASS({
 
   css: `
     ^ {
-      position: fixed;
-      right: 0;
-      float: right;
-      width: 200px;
+      width: 275px;
       overflow: scroll;
-      height: 80vh;
-      padding: 20px;
-      font-weight: 100;
-      color: white;
-      background: #093649;
+      height: 300px;
+      margin-top: 30px;
+      font-weight: 300;
     }
     ^ .menu-title{
       font-size: 20px;
       font-weight: 300;
       padding-bottom: 20px;
     }
-    ^ .menuItem:hover{
+    ^ .menuItem {
       border-bottom: 1px solid white;
-      width: auto;
-      display: initial;
+      height: 15px;
+      margin-top: 8px;
+    }
+    ^ .menuItem:hover{
+      border-bottom: 1px solid black;
+      width: max-content;
       cursor: pointer;
     }
   `,
@@ -542,7 +562,6 @@ foam.CLASS({
       this.SUPER();
 
       this.start().addClass(this.myClass())
-      .start().addClass('menu-title').add('Service Menu').end()
       .select(this.AuthenticatedNSpecDAO.orderBy(this.NSpec.NAME), function(n) {
         var cls = JSON.parse(n.client);
         var clsName = cls.of ? cls.of : cls.class;
@@ -554,6 +573,148 @@ foam.CLASS({
           })
         .end();
       });
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.doc',
+  name: 'ExpandContainer',
+  extends: 'foam.u2.Element',
+  documentation: 'Provide an expandable div' +
+      ' which take content to display inside.',
+
+  imports: [
+    'stack'
+  ],
+
+  properties: [
+    {
+      name: 'expandBox',
+      value: false
+    },
+    'title',
+    'link',
+    'linkView'
+  ],
+
+  css: `
+    ^ {
+      width: 962px;
+      min-height: 80px;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 2px;
+      background-color: white;
+      box-sizing: border-box;
+      margin: auto;
+    }
+    ^ .boxTitle {
+      opacity: 0.6;
+      font-family: 'Roboto';
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 20px;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #093649;
+      display: inline-block;
+      position: relative;
+      top: 10px;
+    }
+    ^ .expand-BTN{
+      width: 135px;
+      height: 40px;
+      border-radous: 2px;
+      background-color: #59a5d5;
+      border-radius: 2px;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 2.86;
+      letter-spacing: 0.2px;
+      text-align: center;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-block;
+      float: right;
+      position: relative;
+    }
+    ^ .close-BTN{
+      width: 135px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      font-family: 2px;
+      font-size: 14px;
+      line-height: 2.86;
+      letter-spacing: 0.2px;
+      text-align: center;
+      color: #093649;
+      cursor: pointer;
+      display: inline-block;
+      float: right;
+    }
+    ^ .expand-Container{
+      width: 952px;
+      height: auto;
+      overflow: hidden;
+      transition: max-height 1.6s ease-out;
+      max-height: 1725px;
+      margin: 0 auto;
+      margin-right: 0;
+      -webkit-transition: -webkit-transform 1.6s ease-out;
+      -moz-transition: -moz-transform 1.6s ease-out;
+      -ms-transition: -ms-transform 1.6s ease-out;
+    }
+    ^ .expandTrue{
+      max-height: 0px;
+    }
+    ^ .link-tag{
+      display: inline-block;
+      border-bottom: 1px solid #59a5d5;
+      color: #59a5d5;
+      margin-left: 50px;
+      position: relative;
+      top: 10px;
+      cursor: pointer;
+    }
+  `,
+
+  methods: [
+    function init() {
+      var self = this;
+      this
+      .addClass(this.myClass())
+      .start()
+        .start().addClass('boxTitle')
+          .add(this.title)
+        .end()
+        .callIf(this.link, function() {
+          this.start().addClass('link-tag')
+            .add(self.link).on('click', function() {
+              self.stack.push({ class: self.linkView });
+            })
+          .end();
+        })
+        .start()
+          .addClass('expand-BTN')
+          .enableClass('close-BTN', this.expandBox$, true)
+          .add(this.expandBox$.map(function(e) {
+            return e ? 'Expand' : 'Close';
+          }))
+          .enableClass('', self.expandBox = (self.expandBox ? false : true))
+          .on('click', function() {
+            self.expandBox = ( self.expandBox ? false : true );
+          })
+        .end()
+        .start()
+          .addClass('expand-Container')
+          .enableClass('expandTrue', self.expandBox$)
+          .start('div', null, this.content$).end()
+        .end()
+      .end();
     }
   ]
 });
