@@ -218,8 +218,9 @@ foam.CLASS({
     },
 
     function findAccount() {
-      console.log('findAccount', this.currentAccount.id);
-      if ( this.currentAccount == null || this.currentAccount.id == 0 ) {
+      console.log('findAccount', 'currentAccount.id', this.currentAccount.id, 'user', this.user.id);
+      if ( this.currentAccount == null || this.currentAccount.id == 0 ||
+           this.currentAccount.owner != null && this.currentAccount.owner.id != this.user.id ) {
         return this.user.findDigitalAccount(this.client, null).then(function(account) {
           console.log('findAccount account:', account);
           this.currentAccount.copyFrom(account);

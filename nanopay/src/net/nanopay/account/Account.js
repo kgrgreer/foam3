@@ -43,18 +43,6 @@ foam.CLASS({
       value: false
     },
     // TDODO: access/scope: public, private
-    {
-      class: 'String',
-      name: 'type',
-      transient: true,
-      visibility: foam.u2.Visibility.RO,
-      factory: function() {
-        return this.cls_.name;
-      },
-      javaFactory: `
-        return getClass().getSimpleName();
-`
-    }
   ],
 
   methods: [
