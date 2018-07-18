@@ -166,7 +166,7 @@ foam.CLASS({
           .select(this.accountDAO.where(
             this.AND(
               this.EQ(this.Account.OWNER, this.user),
-              this.EQ(this.Account.TYPE, 'net.nanopay.account.DigitalAccount')
+              this.EQ(this.Account.TYPE, 'DigitalAccount')
             )), function(acc) {
             this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
               if ( cur.flagImage != null ) {

@@ -9,6 +9,10 @@ foam.INTERFACE({
       javaReturns: 'net.nanopay.account.DigitalAccount',
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
           name: 'denomination',
           javaType: 'String'
         }

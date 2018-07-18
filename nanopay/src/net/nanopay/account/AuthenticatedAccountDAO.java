@@ -58,7 +58,7 @@ public class AuthenticatedAccountDAO
 
     // fetch account from delegate and verify user either owns the account or has global read access
     Account account = (Account) getDelegate().find_(x, id);
-    if ( account != null && ((User)account.getOwner()).getId() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
+    if ( account != null && ((Long)account.getOwner()).longValue() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
       return null;
     }
 

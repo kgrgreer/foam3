@@ -39,7 +39,7 @@ else create one.`,
         currency = currency || 'CAD';
         return new Promise(function(resolve, reject) {
           console.log('findDigitalAccount');
-          this.digitalAccount.getDefault(currency)
+          this.digitalAccount.getDefault(x, currency)
             .then(function(account) {
               if ( account != null ) {
                 resolve(account);
@@ -55,7 +55,7 @@ else create one.`,
         Logger logger = (Logger) x.get("logger");
         logger.info("User.findDigitalAccount");
         DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
-        DigitalAccount account = service.getDefault(currency);
+        DigitalAccount account = service.getDefault(x, currency);
         return account;
 `
     }

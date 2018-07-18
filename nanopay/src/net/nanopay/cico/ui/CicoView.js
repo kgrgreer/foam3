@@ -353,14 +353,12 @@ foam.CLASS({
       // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-        this.findAccount().then(function(account) {
-          self.balanceDAO.find(account).then(function(b) {
+          self.balanceDAO.find(this.currentAccount).then(function(b) {
             if ( b != null ) {
               self.balance.copyFrom(b);
             }
             self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
           });
-        });
       }
     }
   ],
