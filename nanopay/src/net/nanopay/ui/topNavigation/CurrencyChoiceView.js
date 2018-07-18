@@ -166,8 +166,8 @@ foam.CLASS({
           .select(this.accountDAO.where(
             this.AND(
               this.EQ(this.Account.OWNER, this.user),
-              this.EQ(this.Account.TYPE, this.DigitalAccount.cls_.name)
-            ))), function(acc) {
+              this.EQ(this.Account.TYPE, 'net.nanopay.account.DigitalAccount')
+            )), function(acc) {
             this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
               if ( cur.flagImage != null ) {
                 this.start('div').start('img')
@@ -180,7 +180,7 @@ foam.CLASS({
                 });
               }
             });
-            }
+            })
           .end();
         self.optionsBtn_.add(self.optionPopup_);
       }
