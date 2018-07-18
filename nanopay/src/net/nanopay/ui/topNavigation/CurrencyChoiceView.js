@@ -166,21 +166,22 @@ foam.CLASS({
           .select(this.accountDAO.where(
             this.AND(
               this.EQ(this.Account.OWNER, this.user),
-              this.EQ(this.Account.TYPE, 'DigitalAccount')
-            )), function(acc) {
-            this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
-              if ( cur.flagImage != null ) {
-                this.start('div').start('img')
-                .attrs({ src: cur.flagImage })
-                .addClass('flag').end().add(cur.alphabeticCode)
-                .on('click', function() {
-                  /* self.currentCurrency = cur.alphabeticCode;
-                     localStorage.currency = self.currentCurrency; */
-                  self.currentAccount = acc;
+              // this.EQ(this.Account.TYPE, this.DigitalAccount.cls_.name)
+              this.INSTANCE_OF(this.DigitalAccount.getOwnClassInfo())
+            ))), function(acc) {
+              if ( acc != null ) {
+                this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
+                  if ( cur.flagImage != null ) {
+                    this.start('div').start('img')
+                      .attrs({ src: cur.flagImage })
+                      .addClass('flag').end().add(cur.alphabeticCode)
+                      .on('click', function() {
+                        self.currentAccount = acc;
+                      });
+                  }
                 });
               }
-            });
-            })
+            }
           .end();
         self.optionsBtn_.add(self.optionPopup_);
       }

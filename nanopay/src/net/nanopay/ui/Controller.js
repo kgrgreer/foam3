@@ -104,7 +104,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'currentAccount',
       factory: function() {
-        // this.findAccount();
         return net.nanopay.account.DigitalAccount.create({
           owner: this.user,
           denomination: 'CAD'
@@ -219,9 +218,10 @@ foam.CLASS({
     },
 
     function findAccount() {
-      console.log('findAccount', 'localStorage.account', localStorage.getItem(this.ACCOUNT));
-      if ( this.currentAccount == null ) {
+      console.log('findAccount', this.currentAccount.id);
+      if ( this.currentAccount == null || this.currentAccount.id == 0 ) {
         return this.user.findDigitalAccount(this.client, null).then(function(account) {
+          console.log('findAccount account:', account);
           this.currentAccount.copyFrom(account);
           return this.currentAccount;
         }.bind(this));
@@ -235,9 +235,11 @@ foam.CLASS({
 
     function findBalance() {
       return this.findAccount().then(function(account) {
-        this.client.balanceDAO.find(account).then(function(balance) {
-          return this.balance.copyFrom(balance);
-        }.bind(this));
+        if ( account != null ) {
+          this.client.balanceDAO.find(account).then(function(balance) {
+            return this.balance.copyFrom(balance);
+          }.bind(this));
+        }
       }.bind(this));
     },
 

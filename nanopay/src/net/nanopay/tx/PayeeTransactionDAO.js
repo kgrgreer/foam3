@@ -9,8 +9,6 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.DigitalAccount',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
     'foam.dao.DAO',
     'foam.nanos.auth.User'
   ],
@@ -20,11 +18,11 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.User'
   ],
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   methods: [
