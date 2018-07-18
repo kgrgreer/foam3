@@ -51,7 +51,7 @@ else create one.`,
         currency = currency || 'CAD';
         return new Promise(function(resolve, reject) {
           console.log('findDigitalAccount');
-          this.digitalAccount.getDefault(x, currency)
+          this.digitalAccount.getDefault(null, currency)
             .then(function(account) {
               if ( account != null ) {
                 resolve(account);
