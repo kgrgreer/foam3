@@ -140,6 +140,12 @@ var classes = [
   'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
 
+  // security tests
+  'net.nanopay.security.HashedJSONParserTest',
+  'net.nanopay.security.HashingJDAOTest',
+  'net.nanopay.security.HashingJournalTest',
+  'net.nanopay.security.HashingOutputterTest',
+
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView',
 
