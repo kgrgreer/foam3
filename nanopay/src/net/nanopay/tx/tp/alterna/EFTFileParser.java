@@ -17,9 +17,9 @@ public abstract class EFTFileParser extends ContextAwareSupport
 
     String line;
     Object[] values;
-    while ( (line = reader.readLine()) != null ) {
+    while ( (line = reader.readLine()) != null && line.length() > 0 ) {
       StringPStream ps = new StringPStream();
-      if ( line.length() != 0 && line.charAt(line.length() - 1) == '|' ) {
+      if (line.charAt(line.length() - 1) == '|') {
         line += " ";
       }
 

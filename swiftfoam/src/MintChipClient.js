@@ -147,6 +147,20 @@ return ClientDAO_create([
       `,
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'currentBalanceDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": net_nanopay_account_CurrentBalance.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": HTTPBox_create([
+      "url": "\\(self.httpBoxUrlRoot.rawValue)currentBalanceDAO"
+    ])
+  ])
+])
+      `,
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.client.ClientUserTransactionLimitService',
       name: 'userTransactionLimitService',
@@ -155,22 +169,6 @@ return ClientUserTransactionLimitService_create([
   "delegate": SessionClientBox_create([
     "delegate": HTTPBox_create([
       "url": "\\(self.httpBoxUrlRoot.rawValue)userTransactionLimit"
-    ])
-  ])
-])
-      `,
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'accountDAO',
-      swiftFactory: `
-return ClientDAO_create([
-  "of": net_nanopay_model_Account.classInfo(),
-  "delegate": LogBox_create([
-    "delegate": SessionClientBox_create([
-      "delegate": HTTPBox_create([
-        "url": "\\(self.httpBoxUrlRoot.rawValue)accountDAO"
-      ])
     ])
   ])
 ])

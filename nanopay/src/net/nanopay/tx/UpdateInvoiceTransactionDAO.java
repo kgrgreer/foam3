@@ -42,20 +42,20 @@ public class UpdateInvoiceTransactionDAO
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
-          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
-          invoiceDAO_.put(invoice);
+          invoice.setPaymentMethod(PaymentStatus.NANOPAY);
+          invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.PENDING ) {
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.PENDING);
-          invoiceDAO_.put(invoice);
+          invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.DECLINED ) {
           invoice.setPaymentId(0);
           invoice.setPaymentDate(null);
           invoice.setPaymentMethod(PaymentStatus.NONE);
-          invoiceDAO_.put(invoice);
+          invoiceDAO_.put_(x, invoice);
         }
       }
     }
