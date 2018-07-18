@@ -125,7 +125,7 @@ foam.CLASS({
     .selected-model{
       vertical-align: top;
       display: block;
-      height: 700px;
+      height: 600px;
       width: 600px;
       overflow: scroll;
       background: white;
@@ -142,20 +142,19 @@ foam.CLASS({
     .selected-model .foam-u2-view-TableView {
       width: 600px;
     }
-    .service-list-container{
-      width: 350px !important;
-      position: fixed;
-      right: 600px;
-      top: 65px;
-      border-right: 1px solid lightblue;
-      z-index: 1;
+    .foam-doc-ExpandContainer {
+      display: inline-block;
+      height: 650px;
+      vertical-align: top;
+      border-right: 1px solid lightgray;
     }
-    .selected-model-container{
-      width: 600px !important;
-      position: fixed;
-      right: 0;
-      top: 65px;
+    .doc-sub-nav{
       z-index: 1;
+      float: right;
+      width: auto;
+      position: fixed;
+      top: 65px;
+      right: 0;
     }
   `,
 
@@ -536,7 +535,7 @@ foam.CLASS({
     ^ {
       width: 275px;
       overflow: scroll;
-      height: 300px;
+      height: 575px;
       margin-top: 30px;
       font-weight: 300;
     }
@@ -601,7 +600,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 962px;
+      min-width: 100px;
       min-height: 80px;
       margin-bottom: 20px;
       padding: 20px;
@@ -624,8 +623,9 @@ foam.CLASS({
       top: 10px;
     }
     ^ .expand-BTN{
-      width: 135px;
+      width: 50px;
       height: 40px;
+      margin-top: 25px;
       border-radous: 2px;
       background-color: #59a5d5;
       border-radius: 2px;
@@ -641,8 +641,9 @@ foam.CLASS({
       position: relative;
     }
     ^ .close-BTN{
-      width: 135px;
+      width: 50px;
       height: 40px;
+      margin-top: 25px;
       border-radius: 2px;
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
@@ -657,10 +658,11 @@ foam.CLASS({
       float: right;
     }
     ^ .expand-Container{
-      width: 952px;
       height: auto;
+      display: inline-block;
       overflow: hidden;
       transition: max-height 1.6s ease-out;
+      transition: width 1.6s ease-out;
       max-height: 1725px;
       margin: 0 auto;
       margin-right: 0;
@@ -670,6 +672,7 @@ foam.CLASS({
     }
     ^ .expandTrue{
       max-height: 0px;
+      width: 0px;
     }
     ^ .link-tag{
       display: inline-block;
@@ -680,6 +683,11 @@ foam.CLASS({
       top: 10px;
       cursor: pointer;
     }
+    ^ .action-container{
+      float: right;
+      width: 60px;
+      display: inline-block;
+    }
   `,
 
   methods: [
@@ -688,28 +696,30 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .start()
-        .start().addClass('boxTitle')
-          .add(this.title)
-        .end()
-        .callIf(this.link, function() {
-          this.start().addClass('link-tag')
-            .add(self.link).on('click', function() {
-              self.stack.push({ class: self.linkView });
-            })
-          .end();
-        })
-        .start()
-          .addClass('expand-BTN')
-          .enableClass('close-BTN', this.expandBox$, true)
-          .add(this.expandBox$.map(function(e) {
-            return e ? 'Expand' : 'Close';
-          }))
-          .enableClass('', self.expandBox = (self.expandBox ? false : true))
-          .on('click', function() {
-            self.expandBox = ( self.expandBox ? false : true );
+        .start().addClass('action-container')
+          .start().addClass('boxTitle')
+            .add(this.title)
+          .end()
+          .callIf(this.link, function() {
+            this.start().addClass('link-tag')
+              .add(self.link).on('click', function() {
+                self.stack.push({ class: self.linkView });
+              })
+            .end();
           })
+          .start()
+            .addClass('expand-BTN')
+            .enableClass('close-BTN', this.expandBox$, true)
+            .add(this.expandBox$.map(function(e) {
+              return e ? '<' : '>';
+            }))
+            .enableClass('', self.expandBox = (self.expandBox ? false : true))
+            .on('click', function() {
+              self.expandBox = ( self.expandBox ? false : true );
+            })
+          .end()
         .end()
-        .start()
+        .start().addClass('expand-container')
           .addClass('expand-Container')
           .enableClass('expandTrue', self.expandBox$)
           .start('div', null, this.content$).end()
