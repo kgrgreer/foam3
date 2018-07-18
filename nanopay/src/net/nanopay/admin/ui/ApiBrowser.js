@@ -48,6 +48,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'serviceContainer',
+      factory: function() {
+        return this.ExpandContainer.create({ title: 'Service Menu' });
+      }
+    },
+    {
+      name: 'selectedModelContainer',
+      factory: function() {
+        return this.ExpandContainer.create({ title: 'Model Search' });
+      }
+    },
+    {
       class: 'String',
       name: 'path',
       width: 80,
@@ -170,22 +182,13 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      var ServiceContainer = this.ExpandContainer.create({
-        title: 'Service Menu'
-      });
-      var SelectedModelContainer = this.ExpandContainer.create({
-        title: 'Model Search'
-      });
-
       this.start()
         .start().addClass(this.myClass())
           .start().addClass('api-browser-container')
             .start('h2')
               .add(this.Title)
             .end()
-            .start()
-              .add(this.ExampleRequestView.create())
-            .end()
+            .tag(this.ExampleRequestView.create())
             .select(this.AuthenticatedNSpecDAO, function(n) {
               var model = self.parseClientModel(n);
               if ( ! model ) return;
@@ -196,11 +199,7 @@ foam.CLASS({
                   id: n.name
                 })
               .end()
-              .callIf(n.description, function() {
-                this.start()
-                  .add('Description: ', n.description)
-                .end();
-              })
+              .tag('Description: ', n.description)
               .callIf(n.boxClass, function() {
                 this.tag(self.ClientServiceView.create({
                   data: self.parseInterface(n)
@@ -223,10 +222,12 @@ foam.CLASS({
         .end();
 
         this.start().addClass('doc-sub-nav')
-          .start(ServiceContainer).addClass('service-list-container')
+          .start(this.serviceContainer)
+            .addClass('service-list-container')
             .tag(this.ServiceListView)
           .end()
-          .start(SelectedModelContainer).addClass('selected-model-container')
+          .start(this.selectedModelContainer)
+            .addClass('selected-model-container')
             .start().addClass('selected-model')
               .startContext({ data: this })
                 .start().add(this.PATH).end()
