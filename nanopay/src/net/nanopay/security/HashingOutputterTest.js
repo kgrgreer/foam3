@@ -118,6 +118,23 @@ foam.CLASS({
         HashingOutputter_StringifyWithChaining_CorrectOutput("SHA-512",
             "63db4efa26eacbd290dd58102acef2b361f324069e500d51d5aefe041b21c8dcd7d1cf2ecd064af8eff518ad31c5f3c5fb4737f6b04341a0b179657aaf827977",
             "712e96d25ddde037abd4b979b3234f3be70ba6e84ae6783e1080a1e616e623c81b28840054349942f715497fc409356175371d605d68c542742bc4f03cf4244b");
+
+        // chained non-delta output tests
+        HashingOutputter_StringifyDeltaWithChaining_CorrectOutput("MD5",
+            "40c6f1a0484b0a37adb5e4382aa2b711",
+            "8236fcff61d67f38ce8075710a467804");
+        HashingOutputter_StringifyDeltaWithChaining_CorrectOutput("SHA-1",
+            "153789a503f9cb3f7c62f573e4ac6a22d4c9241f",
+            "3c74f91d9f132b9a98acbee48b5aa6b13b646133");
+        HashingOutputter_StringifyDeltaWithChaining_CorrectOutput("SHA-256",
+            "1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11ba90f5d5",
+            "3449c5174acd4ef98afe77e1f6203c8664186f4447b01f19b4c847aec7968aec");
+        HashingOutputter_StringifyDeltaWithChaining_CorrectOutput("SHA-384",
+            "be26403b1c55166a8770134a1a7b4b6ed358faebf7e3dc96c7f75a2221b687ca6da6d789d57498112ec0091eb1246f8d",
+            "d4d4fd6e1bd8f8bb64554738cbc513dc6ceedba7af7b514465434de921ccdbffa7126d6a2c7029ff98e249d9c6fc7978");
+        HashingOutputter_StringifyDeltaWithChaining_CorrectOutput("SHA-512",
+            "63db4efa26eacbd290dd58102acef2b361f324069e500d51d5aefe041b21c8dcd7d1cf2ecd064af8eff518ad31c5f3c5fb4737f6b04341a0b179657aaf827977",
+            "484c523a9b4dd684d5b2c9a62461c0252db554b957f663c0fb5fca3ed379577a42efa2825d0e36bafc5c0747b7cb842e920c97dc32310fb20878b434ae86d15f");
       `
     },
     {
@@ -171,8 +188,19 @@ foam.CLASS({
     },
     {
       name: 'HashingOutputter_StringifyDeltaWithChaining_CorrectOutput',
+      args: [
+        { class: 'String', name: 'algorithm' },
+        { class: 'String', name: 'previousDigest' },
+        { class: 'String', name: 'chainedDigest' }
+      ],
       javaCode: `
-        return;
+        try {
+          StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
+          HashingOutputter outputter = new HashingOutputter(new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build(), STORAGE);
+          test(outputter.stringifyDelta(INPUT, INPUT_DELTA).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta chained output of: " + builder.toString());
+        } catch ( Throwable t ) {
+          test(false, "HashingOutputter should not throw an exception");
+        }
       `
     }
   ]
