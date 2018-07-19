@@ -38,18 +38,39 @@ foam.CLASS({
       type: 'User',
       name: 'INPUT',
       documentation: 'Original input',
-      value: `new User.Builder(EmptyX.instance())
-        .setId(1000)
-        .setFirstName(\"Kirk\")
-        .setLastName(\"Eaton\")
-        .setEmail(\"kirk@nanopay.net\")
-        .build()`
+      value: `
+        new User.Builder(EmptyX.instance())
+          .setId(1000)
+          .setFirstName(\"Kirk\")
+          .setLastName(\"Eaton\")
+          .setEmail(\"kirk@nanopay.net\")
+          .build()
+      `
+    },
+    {
+      type: 'User',
+      name: 'INPUT_DELTA',
+      documentation: 'Delta input',
+      value: `
+        new User.Builder(EmptyX.instance())
+          .setId(1000)
+          .setFirstName("Kirk")
+          .setLastName("Eaton")
+          .setEmail("kirk@mintchip.ca")
+          .build();
+      `
     },
     {
       type: 'String',
       name: 'EXPECTED',
       documentation: 'Expected output',
       value: '{\"class\":\"foam.nanos.auth.User\",\"id\":1000,\"firstName\":\"Kirk\",\"lastName\":\"Eaton\",\"email\":\"kirk@nanopay.net\"}'
+    },
+    {
+      type: 'String',
+      name: 'EXPECTED_DELTA',
+      documentation: 'Expected delta output',
+      value: '{\"class\":\"foam.nanos.auth.User\",\"id\":1000,\"email\":\"kirk@mintchip.ca\"}'
     }
   ],
 
@@ -68,6 +89,18 @@ foam.CLASS({
             "be26403b1c55166a8770134a1a7b4b6ed358faebf7e3dc96c7f75a2221b687ca6da6d789d57498112ec0091eb1246f8d");
         HashingOutputter_StringifyWithoutChaining_CorrectOutput("SHA-512",
             "63db4efa26eacbd290dd58102acef2b361f324069e500d51d5aefe041b21c8dcd7d1cf2ecd064af8eff518ad31c5f3c5fb4737f6b04341a0b179657aaf827977");
+
+        // non-chained delta output tests
+        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("MD5",
+          "6139573a13f6ee7e9f92e9e1da2cfd01");
+        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-1",
+          "7c46c39e4c46f85b217b800c6973952097e4dfc5");
+        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-256",
+          "e0dbb6fcf5a1d18e1fd03feb7b3fef729b035c84bc196d3fb722625a8d9e3d89");
+        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-384",
+          "82764fc922c0b3eb7d55a50cf5ea4cf23340c6d9cb516ac6ead6fa12b9eef8f7ee41985e962e2cc9d8854802b2fc0441");
+        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-512",
+          "e71605cf07f2d2cd1f95387a998136a048f276a05cec1be3d26de5754e8db8791ed817b3c6f26ac57a4522fc29500067f439208695180d13bc0c48129f9275fa");
 
         // chained non-delta output tests
         HashingOutputter_StringifyWithChaining_CorrectOutput("MD5",
@@ -104,6 +137,22 @@ foam.CLASS({
       `
     },
     {
+      name: 'HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput',
+      args: [
+        { class: 'String', name: 'algorithm' },
+        { class: 'String', name: 'digest' }
+      ],
+      javaCode: `
+        try {
+          StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
+          HashingOutputter outputter = new HashingOutputter(new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build(), STORAGE);
+          test(outputter.stringifyDelta(INPUT, INPUT_DELTA).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta output of: " + builder.toString());
+        } catch ( Throwable t ) {
+          test(false, "HashingOutputter should not throw an exception");
+        }
+      `
+    },
+    {
       name: 'HashingOutputter_StringifyWithChaining_CorrectOutput',
       args: [
         { class: 'String', name: 'algorithm' },
@@ -118,6 +167,12 @@ foam.CLASS({
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }
+      `
+    },
+    {
+      name: 'HashingOutputter_StringifyDeltaWithChaining_CorrectOutput',
+      javaCode: `
+        return;
       `
     }
   ]
