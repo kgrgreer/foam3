@@ -268,7 +268,6 @@ FOAM_FILES([
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
-  { name: 'net/nanopay/security/HashingJDAOTest' },
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
 
