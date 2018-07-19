@@ -69,7 +69,6 @@ else create one.`,
       javaReturns: 'net.nanopay.account.DigitalAccount',
       javaCode: `
     Logger logger = (Logger) x.get("logger");
-    logger.info(this.getClass().getSimpleName(), "findDigitalAccount", "user", getId());
     DigitalAccount account = null;
       synchronized(this) {
 
@@ -88,14 +87,12 @@ else create one.`,
                                                ).select(new ArraySink())).getArray();
         if ( accounts.size() == 1 ) {
           account = (DigitalAccount) accounts.get(0);
-          logger.debug(this.getClass().getSimpleName(), "findDigitalAccount", "user", getId(), "denomination", denomination, "found", account.toString());
         } else if ( accounts.size() == 0 ) {
           account = new DigitalAccount();
           account.setOwner(getId());
           account.setDenomination(denomination);
           account.setIsDefault(true);
           account = (DigitalAccount) dao.put_(x, account);
-          logger.debug(this.getClass().getSimpleName(), "findDigitalAccount", "user", getId(), "denomination", denomination, "created", account.toString());
           return account;
         } else {
           logger.warning(this.getClass().getSimpleName(), "findDigitalAccount", "user", getId(), "multiple default accounts found for denomination", denomination, "Using first found.");
