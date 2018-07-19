@@ -246,7 +246,7 @@ foam.CLASS({
         var self = this;
 
         var cashOutTransaction = this.Transaction.create({
-          payerId: this.user.id,
+          sourceAccount: this.currentAccount.id,
           destinationAccount:X.bankList,
           amount: X.amount,
           type: this.TransactionType.CASHOUT
