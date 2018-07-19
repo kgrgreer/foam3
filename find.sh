@@ -102,28 +102,77 @@ do
   fi
 
   # .jnl files - transition
+  # rename the files as you go
   for s in ${sources[*]}
   do
     for f in $(find $s -name "${file}.jnl")
     do
         cat $f >> "$OUT_DIR/$journal_file"
+        case $f in
+          *.jnl )
+            mv "$f" "$(dirname $f)/$(basename "$f" .jnl).jrl"
+            ;;
+        esac
+    done
+    for f in $(find $s -name "${file}.jrl")
+    do
+      cat $f >> "$OUT_DIR/$journal_file"
     done
   done
 
   if  [[ -f "deployment/${file}.jnl" ]]; then
       cat "deployment/${file}.jnl" >> "$OUT_DIR/$journal_file"
+      case $f in
+        *.jnl )
+        mv "deployment/${file}.jnl" "deployment/${file}.jrl"
+        ;;
+      esac
+  elif [[ -f "deployment/${file}.jrl" ]]; then
+    cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
+
   if  [[ -f "deployment/$MODE/${file}.jnl" ]]; then
       cat "deployment/$MODE/${file}.jnl" >> "$OUT_DIR/$journal_file"
+      case $f in
+        *.jnl )
+        mv "deployment/$MODE/${file}.jnl" "deployment/$MODE/${file}.jrl"
+        ;;
+      esac
+  elif [[ -f "deployment/$MODE/${file}.jnl" ]]; then
+      cat "deployment/$MODE/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
+
   if  [[ -f "deployment/$MODE/$INSTANCE/${file}.jnl" ]]; then
       cat "deployment/$MODE/$INSTANCE/${file}.jnl" >> "$OUT_DIR/$journal_file"
+      case $f in
+        *.jnl )
+        mv "deployment/$MODE/$INSTANCE/${file}.jnl" "deployment/$MODE/$INSTANCE/${file}.jrl"
+        ;;
+      esac
+  elif [[ -f "deployment/$MODE/$INSTANCE/${file}.jrl" ]]; then
+    cat "deployment/$MODE/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
+
   if  [[ -f "deployment/$MODE/$VERSION/${file}.jnl" ]]; then
       cat "deployment/$MODE/$VERSION/${file}.jnl" >> "$OUT_DIR/$journal_file"
+      case $f in
+        *.jnl )
+        mv "deployment/$MODE/$VERSION/${file}.jnl" "deployment/$MODE/$VERSION/${file}.jrl"
+        ;;
+      esac
+  elif [[ -f "deployment/$MODE/$VERSION/${file}.jrl" ]]; then
+      cat "deployment/$MODE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
+
   if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jnl" ]]; then
       cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jnl" >> "$OUT_DIR/$journal_file"
+      case $f in
+        *.jnl )
+        mv "deployment/$MODE/$INSTANCE/$VERSION/${file}.jnl" "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl"
+        ;;
+      esac
+  elif [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" ]]; then
+    cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
 
 done
