@@ -5,13 +5,12 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.mlang.order.Comparator;
+import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
 import net.nanopay.invoice.model.Invoice;
 import java.security.AccessControlException;
-
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
@@ -53,6 +52,8 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       if (! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ)) {
         throw new IllegalArgumentException("Permission denied");
       }
+    } else {
+      throw new IllegalArgumentException("Cannot find null");
     }
     return invoice;
   }
@@ -63,10 +64,14 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     long id = user.getId();
     boolean global = auth.check(x, GLOBAL_INVOICE_READ);
 
+    if(! global && ! "business".equals(user.getGroup())) {
+      throw new IllegalArgumentException("Permission denied");
+    }
+    
     // If user has the global access permission, get all the invoices; otherwise,
     // only return related invoices.
-    DAO dao = global ? getDelegate() :
-        getDelegate().where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
+    DAO dao = global ? getDelegate() : getDelegate().
+        where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
@@ -81,6 +86,12 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   // If the user is payee or payer of the invoice.
   protected boolean isRelated(User user, Invoice invoice) {
     long id = user.getId();
-    return (long) invoice.getPayeeId() == id || (long) invoice.getPayerId() == id;
+    if ("business".equals(user.getGroup())) {
+      boolean isPayee = (long) invoice.getPayeeId() == id;
+      boolean isPayer = (long) invoice.getPayerId() == id;
+      return  isPayee || isPayer;
+    } else {
+      return false;
+    }
   }
 }
