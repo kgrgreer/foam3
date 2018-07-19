@@ -52,7 +52,7 @@ public class HashingOutputter
   /**
    * Updates the hash function with the previously stored digest
    */
-  protected synchronized void rollDigests() {
+  private synchronized void rollDigests() {
     if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
       hashingWriter_.update(Hex.decode(hashingJournal_.getPreviousDigest()));
     }
@@ -61,7 +61,7 @@ public class HashingOutputter
   /**
    * Appends the output of the hash function
    */
-  protected synchronized void outputDigest() {
+  private synchronized void outputDigest() {
     // don't output digest if empty, reset digest
     if ( SafetyUtil.isEmpty(stringWriter_.toString()) ) {
       hashingWriter_.reset();
