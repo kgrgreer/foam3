@@ -25,7 +25,8 @@ else create one.`,
   ],
 
   imports: [
-    'digitalAccount'
+    'digitalAccount',
+    'exchangeRate'
   ],
 
   requires: [
@@ -39,11 +40,13 @@ else create one.`,
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          // of: 'foam.core.X',
+          javaType: 'foam.core.X'
         },
         {
           name: 'currency',
-          of: 'String'
+          // of: 'String',
+          javaType: 'String'
         }
       ],
       // Client Side

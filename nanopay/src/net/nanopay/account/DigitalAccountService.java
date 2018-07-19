@@ -1,9 +1,10 @@
 package net.nanopay.account;
 
-import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.core.ContextAwareSupport;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.session.Session;
 
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -16,10 +17,7 @@ public class DigitalAccountService
   implements DigitalAccountInterface {
 
   public DigitalAccount getDefault(X x, String denomination) {
-    Logger logger = (Logger) x.get("logger");
-
     User user = (User) x.get("user");
-    logger.info(this.getClass().getSimpleName(), "getDefault", "user", user.getId(), "denomination", denomination);
     return user.findDigitalAccount(x, denomination);
   }
 }

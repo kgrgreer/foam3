@@ -5,7 +5,6 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getDefault',
-      returns: 'Promise',
       javaReturns: 'net.nanopay.account.DigitalAccount',
       args: [
         {
