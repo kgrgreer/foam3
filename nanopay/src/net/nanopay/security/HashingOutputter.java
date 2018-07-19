@@ -86,12 +86,4 @@ public class HashingOutputter
       .append(digest)
       .append("\"}");
   }
-
-  /**
-   * Calculates the output of the hash function
-   * @return the output of the hash function
-   */
-  public byte[] digest() {
-    return hashingWriter_.digest();
-  }
 }
