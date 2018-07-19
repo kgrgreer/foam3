@@ -250,7 +250,7 @@ foam.CLASS({
         var self = this;
 
         var cashInTransaction = this.Transaction.create({
-          payeeId: this.user.id,
+          destinationAccount: this.currentAccount.id,
           sourceAccount:X.bankList,
           amount: X.amount,
           type: this.TransactionType.CASHIN
