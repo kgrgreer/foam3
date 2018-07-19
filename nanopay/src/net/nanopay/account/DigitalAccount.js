@@ -11,11 +11,6 @@ foam.CLASS({
       name: 'denomination',
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
-    },
-    {
-      class: 'Boolean',
-      name: 'isDigitalAccount',
-      value: true
     }
   ],
 

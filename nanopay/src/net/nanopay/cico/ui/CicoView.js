@@ -358,11 +358,9 @@ foam.CLASS({
           if ( b != null ) {
             self.balance.copyFrom(b);
             amount = self.balance.balance;
-          } else {
-            console.log('CivoView.onDAOUpdate balance not found for account', this.currentAccount.id);
           }
           self.formattedBalance = '$' + (amount / 100).toFixed(2);
-        }.bind(this));
+        });
       }
     }
   ],
