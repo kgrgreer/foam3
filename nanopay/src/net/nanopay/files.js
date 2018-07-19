@@ -128,7 +128,7 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
-  //{ name: 'net/nanopay/retail/model/Transaction' },
+  // { name: 'net/nanopay/retail/model/Transaction' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
@@ -257,7 +257,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/FileKeyStoreManager' },
-  { name: 'net/nanopay/security/csp/CSPViolation'},
+  { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },
   { name: 'net/nanopay/security/PrivateKeyEntry' },
@@ -265,6 +265,12 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PublicKeyDAO' },
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
+
+  // security tests
+  { name: 'net/nanopay/security/HashedJSONParserTest' },
+  { name: 'net/nanopay/security/HashingJDAOTest' },
+  { name: 'net/nanopay/security/HashingJournalTest' },
+  { name: 'net/nanopay/security/HashingOutputterTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -338,5 +344,9 @@ FOAM_FILES([
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },
-  { name: 'net/nanopay/flinks/ClientFlinksAuthService' }
+  { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
+
+  // tests
+  { name: 'net/test/ModeledTest' },
+  { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
 ]);
