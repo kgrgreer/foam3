@@ -1,5 +1,8 @@
 package net.nanopay.security;
 
+import foam.util.SafetyUtil;
+import org.bouncycastle.util.encoders.Hex;
+
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -37,8 +40,11 @@ public class HashingWriter extends PrintWriter {
 
   @Override
   public synchronized PrintWriter append(CharSequence csq) {
-    md_.update(StandardCharsets.UTF_8.encode(csq.toString()));
-    return super.append(csq);
+    if ( csq != null && ! SafetyUtil.isEmpty(csq.toString()) ) {
+      md_.update(StandardCharsets.UTF_8.encode(csq.toString()));
+      return super.append(csq);
+    }
+    return this;
   }
 
   @Override
