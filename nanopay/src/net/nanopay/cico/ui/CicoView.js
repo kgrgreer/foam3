@@ -353,12 +353,16 @@ foam.CLASS({
       // isMerged: true,
       code: function onDAOUpdate() {
         var self = this;
-          self.balanceDAO.find(this.currentAccount.id).then(function(b) {
-            if ( b != null ) {
-              self.balance.copyFrom(b);
-            }
-            self.formattedBalance = '$' + (b.balance / 100).toFixed(2);
-          });
+        self.balanceDAO.find(this.currentAccount.id).then(function(b) {
+          var amount = 0;
+          if ( b != null ) {
+            self.balance.copyFrom(b);
+            amount = self.balance.balance;
+          } else {
+            console.log('CivoView.onDAOUpdate balance not found for account', this.currentAccount.id);
+          }
+          self.formattedBalance = '$' + (amount / 100).toFixed(2);
+        }.bind(this));
       }
     }
   ],
