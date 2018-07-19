@@ -37,7 +37,7 @@ foam.CLASS({
       type: 'String',
       name: 'INPUT',
       documentation: 'Original input',
-      value: '{\"class\":\"foam.nanos.auth.User\",\"id\":1000,\"firstName\":\"Kirk\",\"lastName\":\"Eaton\",\"email\":\"kirk@nanopay.net\"}'
+      value: '{"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"}'
     }
   ],
 

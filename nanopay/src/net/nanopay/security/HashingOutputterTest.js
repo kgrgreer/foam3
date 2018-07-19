@@ -41,9 +41,9 @@ foam.CLASS({
       value: `
         new User.Builder(EmptyX.instance())
           .setId(1000)
-          .setFirstName(\"Kirk\")
-          .setLastName(\"Eaton\")
-          .setEmail(\"kirk@nanopay.net\")
+          .setFirstName("Kirk")
+          .setLastName("Eaton")
+          .setEmail("kirk@nanopay.net")
           .build()
       `
     },
@@ -64,13 +64,13 @@ foam.CLASS({
       type: 'String',
       name: 'EXPECTED',
       documentation: 'Expected output',
-      value: '{\"class\":\"foam.nanos.auth.User\",\"id\":1000,\"firstName\":\"Kirk\",\"lastName\":\"Eaton\",\"email\":\"kirk@nanopay.net\"}'
+      value: '{"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"}'
     },
     {
       type: 'String',
       name: 'EXPECTED_DELTA',
       documentation: 'Expected delta output',
-      value: '{\"class\":\"foam.nanos.auth.User\",\"id\":1000,\"email\":\"kirk@mintchip.ca\"}'
+      value: '{"class":"foam.nanos.auth.User","id":1000,"email":"kirk@mintchip.ca"}'
     }
   ],
 
