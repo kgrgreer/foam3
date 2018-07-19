@@ -119,7 +119,7 @@ foam.CLASS({
             "63db4efa26eacbd290dd58102acef2b361f324069e500d51d5aefe041b21c8dcd7d1cf2ecd064af8eff518ad31c5f3c5fb4737f6b04341a0b179657aaf827977",
             "712e96d25ddde037abd4b979b3234f3be70ba6e84ae6783e1080a1e616e623c81b28840054349942f715497fc409356175371d605d68c542742bc4f03cf4244b");
 
-        // chained non-delta output tests
+        // chained delta output tests
         HashingOutputter_StringifyDeltaWithChaining_CorrectOutput("MD5",
             "40c6f1a0484b0a37adb5e4382aa2b711",
             "8236fcff61d67f38ce8075710a467804");
