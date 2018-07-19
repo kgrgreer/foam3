@@ -147,13 +147,14 @@ var classes = [
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
 
-  //topnavigation
+  // topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView',
 
   // tests
   'net.test.ModeledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
+  'net.nanopay.invoice.AuthenticatedInvoiceDAOTest'
 ];
 
 var abstractClasses = [
