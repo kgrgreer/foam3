@@ -34,6 +34,11 @@ public class SPSProcessor extends ContextAwareSupport {
     return (BatchDetailGeneralResponse) parse(request(batchDetailRequestPacket));
   }
 
+  public DetailResponse DetailInfoService(BatchDetailRequestPacket batchDetailRequestPacket)
+    throws ClientErrorException, HostErrorException {
+    return (DetailResponse) parse(request(batchDetailRequestPacket));
+  }
+
   private String request(RequestPacket requestPacket) {
     X x = getX();
     Logger logger = (Logger) x.get("logger");
@@ -98,9 +103,21 @@ public class SPSProcessor extends ContextAwareSupport {
         break;
       case "2033":
         // DetailResponse
+        System.out.println("response: " + response);
+
         DetailResponse detailResponse = new DetailResponse();
         detailResponse.parseSPSResponse(response);
         responsePacket = detailResponse;
+
+        System.out.println("item: " + detailResponse.getItemContent());
+
+        DetailResponseItemContent[] array = detailResponse.getItemContent();
+        System.out.println("size: " + array.length);
+        for (int i = 0; i < array.length; i++) {
+          System.out.println(array[i].getItemID());
+          System.out.println(array[i].getOriginalRequestStatus());
+          System.out.println(array[i].getManualEntryIndicator());
+        }
         break;
       case "2090":
         // RequestMessageAndErrors
@@ -119,11 +136,12 @@ public class SPSProcessor extends ContextAwareSupport {
 
   public void test() {
     try {
-      ResponsePacket responsePacket1 = GeneralReqService(generateTestGeneralRequest());
-      System.out.println("generalRequestResponse: " + responsePacket1);
+      //GeneralRequestResponse generalRequestResponse = GeneralReqService(generateTestGeneralRequest());
+      //System.out.println("generalRequestResponse: " + generalRequestResponse);
 
-      ResponsePacket responsePacket2 = BatchDetailReqService(generateTestBatchDetailRequest());
-      System.out.println("batchDetailGeneralResponse: " + responsePacket2);
+      //BatchDetailGeneralResponse batchDetailGeneralResponse = BatchDetailReqService(generateTestBatchDetailRequest());
+      DetailResponse detailResponse = DetailInfoService(generateTestBatchDetailRequest());
+      System.out.println("batchDetailGeneralResponse: " + detailResponse);
     } catch (ClientErrorException e) {
       System.out.println(e.getError());
     } catch (HostErrorException e) {
@@ -137,7 +155,7 @@ public class SPSProcessor extends ContextAwareSupport {
 
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
-    generalRequestPacket.setMessageModifierCode(10);
+    generalRequestPacket.setMsgModifierCode(10);
     generalRequestPacket.setLocalTransactionTime("20180716115959");
     //not used
     //generalRequestPacketTest.setTextMsg("");
@@ -178,7 +196,8 @@ public class SPSProcessor extends ContextAwareSupport {
 
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
-    batchDetailRequestPacket.setMessageModifierCode(60);
+    //batchDetailRequestPacket.setMessageModifierCode(60);
+    batchDetailRequestPacket.setMsgModifierCode(50);
     batchDetailRequestPacket.setLocalTransactionTime("20180714115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
@@ -196,4 +215,6 @@ public class SPSProcessor extends ContextAwareSupport {
 
     return batchDetailRequestPacket;
   }
+
+
 }

@@ -16,9 +16,9 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
 protected static List<PropertyInfo> list;
-public void parseSPSResponse(String response) {
+public ResponsePacket parseSPSResponse(String response) {
   if ( response == null || response.length() == 0 ) {
-    return;
+    return null;
   }
   
   Object[] values;
@@ -37,6 +37,8 @@ public void parseSPSResponse(String response) {
   for ( int i = 0; i < list.size(); i++ ) {
     list.get(i).set(this, list.get(i).fromString((String) values[i]));
   }
+  
+  return this;
 }
 
 private static class SPSStringParser implements Parser {

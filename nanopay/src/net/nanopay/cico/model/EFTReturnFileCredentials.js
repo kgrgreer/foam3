@@ -11,15 +11,15 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'password',
+      name: 'password'
     },
     {
       class: 'String',
-      name: 'host',
+      name: 'host'
     },
     {
       class: 'Int',
-      name: 'port',
+      name: 'port'
     }
   ]
 });

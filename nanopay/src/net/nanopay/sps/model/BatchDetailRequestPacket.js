@@ -14,7 +14,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'messageModifierCode'
+      name: 'msgModifierCode'
     },
     {
       class: 'String',
@@ -89,7 +89,7 @@ foam.CLASS({
 list = new ArrayList<>();
 list.add(MSG_TYPE);
 list.add(PACKET_TYPE);
-list.add(MESSAGE_MODIFIER_CODE);
+list.add(MSG_MODIFIER_CODE);
 list.add(LOCAL_TRANSACTION_TIME);
 list.add(TID);
 list.add(FIELD6NOT_USED);
