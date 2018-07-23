@@ -166,7 +166,8 @@ foam.CLASS({
           .select(this.accountDAO.where(
             this.AND(
               this.EQ(this.Account.OWNER, this.user),
-              this.EQ(this.Account.TYPE, this.DigitalAccount.name)
+              this.EQ(this.Account.TYPE, this.DigitalAccount.name),
+              this.EQ(this.Account.IS_DEFAULT, true)
               //this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
             )), function(acc) {
               if ( acc != null ) {
