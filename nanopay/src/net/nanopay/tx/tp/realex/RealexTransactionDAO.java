@@ -116,7 +116,7 @@ public class RealexTransactionDAO
         //create new transaction for the fee
         localTransactionDAO.put(new Transaction.Builder(getX())
           .setPayerId(transaction.getPayerId())
-          .setPayeeId(1) //TODO: create fee collector user
+          .setPayeeId(3797) //TODO: create fee collector user
           .setType(TransactionType.NONE)
           .setStatus(TransactionStatus.COMPLETED)
           .setAmount(paymentAccountInfo.getFee())
