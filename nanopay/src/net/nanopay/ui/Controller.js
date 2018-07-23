@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.u2.stack.StackView',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.model.Account',
+    'net.nanopay.account.CurrentBalance',
     'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
     'net.nanopay.ui.modal.ModalStyling',
@@ -26,11 +26,12 @@ foam.CLASS({
   ],
 
   exports: [
-    'account',
     'appConfig',
     'as ctrl',
+    'currentBalance',
+    'currentBalance as account',
     'currentCurrency',
-    'findAccount',
+    'findCurrentBalance',
     'privacyUrl',
     'termsUrl'
   ],
@@ -83,9 +84,9 @@ foam.CLASS({
     'termsUrl',
     {
       class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.model.Account',
-      name: 'account',
-      factory: function() { return this.Account.create(); }
+      of: 'net.nanopay.account.CurrentBalance',
+      name: 'currentBalance',
+      factory: function() { return this.CurrentBalance.create(); }
     },
     {
       name: 'appConfig'
@@ -114,7 +115,7 @@ foam.CLASS({
 
         foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
 
-        self.findAccount();
+        self.findCurrentBalance();
 
         self
           .addClass(self.myClass())
@@ -204,10 +205,10 @@ foam.CLASS({
       });
     },
 
-    function findAccount() {
+    function findCurrentBalance() {
       var self = this;
-      this.client.accountDAO.find(this.user.id).then(function (a) {
-        return self.account.copyFrom(a);
+      this.client.currentBalanceDAO.find(this.user.id).then(function (a) {
+        return self.currentBalance.copyFrom(a);
       }.bind(this));
     },
     
@@ -238,7 +239,7 @@ foam.CLASS({
   listeners: [
     function onUserUpdate() {
       this.SUPER();
-      this.findAccount();
+      this.findCurrentBalance();
     }
   ]
 });

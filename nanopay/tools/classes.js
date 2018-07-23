@@ -23,7 +23,7 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.model.Account',
+  'net.nanopay.account.CurrentBalance',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BankAccount',
   'net.nanopay.model.BankAccountStatus',
@@ -37,11 +37,6 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
-  'net.nanopay.liquidity.model.Threshold',
-  'net.nanopay.liquidity.model.ThresholdResolve',
-  'net.nanopay.liquidity.model.BalanceAlert',
-  'net.nanopay.liquidity.model.Liquidity',
-  'net.nanopay.model.MultiBalance',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -60,17 +55,7 @@ var classes = [
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
-  'net.nanopay.fresh.FreshConfig',
-  'net.nanopay.fresh.model.FreshToken',
-  'net.nanopay.fresh.model.FreshBusiness',
-  'net.nanopay.fresh.model.FreshBusinessMembership',
-  'net.nanopay.fresh.model.FreshCurrent',
-  'net.nanopay.fresh.model.FreshResponse',
-  'net.nanopay.fresh.model.FreshInvoiceResponse',
-  'net.nanopay.fresh.model.FreshInvoiceResult',
-  'net.nanopay.fresh.model.FreshInvoicePages',
-  'net.nanopay.fresh.model.FreshInvoice',
-  'net.nanopay.fresh.model.FreshInvoiceAmount',
+  'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
@@ -110,7 +95,6 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
-  'net.nanopay.s2h.model.S2HInvoice',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
@@ -142,7 +126,6 @@ var classes = [
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
-  'net.nanopay.security.HashedFObject',
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
@@ -155,9 +138,22 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAO',
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
+  'net.nanopay.security.MessageDigest',
+
+  // security tests
+  'net.nanopay.security.HashedJSONParserTest',
+  'net.nanopay.security.HashingJDAOTest',
+  'net.nanopay.security.HashingJournalTest',
+  'net.nanopay.security.HashingOutputterTest',
+  'net.nanopay.security.HashingWriterTest',
 
   //topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView',
+
+  // tests
+  'net.test.ModeledTest',
+  'net.nanopay.auth.PublicUserInfoDAOTest',
+  'net.nanopay.auth.TestWidget',
 ];
 
 var abstractClasses = [

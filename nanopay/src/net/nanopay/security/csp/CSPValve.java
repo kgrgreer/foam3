@@ -11,7 +11,7 @@ public class CSPValve extends ValveBase {
   protected String csp_ = "default-src 'none';"
     + "child-src 'self';"
     + "worker-src 'self';"
-    + "connect-src 'self' data: blob: filesystem:;"
+    + "connect-src 'self' data: blob: filesystem: ws:;"
     + "script-src 'self' 'unsafe-eval';"
     + "style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';"
     + "font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;"

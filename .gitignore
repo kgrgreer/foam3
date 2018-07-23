@@ -53,7 +53,6 @@ nanopay-bin.js
 
 # npm
 node_modules/
-package-lock.json
 
 # xsd generated code
 nanopay/src/net/nanopay/fx/ascendantfx/model/
@@ -72,7 +71,11 @@ sha256/
 
 # Locks
 *.lck
-package-lock.json
 
 # githooks
 .githooks/pre-commit.local
+
+# yarn
+yarn-error.log
+
+testindex

@@ -21,11 +21,11 @@ foam.CLASS({
   imports: [
     // 'pacs008ISOPurposeDAO',
     // 'pacs008IndiaPurposeDAO',
-    'findAccount',
+    'findCurrentBalance',
     'formatCurrency',
     'bankAccountDAO',
     'userDAO',
-    'account',
+    'currentBalance',
     'user',
     'type'
   ],
@@ -315,7 +315,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.getDefaultBank();
-      this.findAccount();
+      this.findCurrentBalance();
 
       this
         .addClass(this.myClass())
@@ -325,7 +325,7 @@ foam.CLASS({
           .start().addClass("choice")
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
-              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.account.balance$.map(function(balance) {
+              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.currentBalance.balance$.map(function(balance) {
                             return (balance/100).toFixed(2)}))
               .end()
             .end()

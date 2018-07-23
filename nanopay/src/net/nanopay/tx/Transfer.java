@@ -3,7 +3,7 @@ package net.nanopay.tx;
 import foam.core.*;
 import foam.dao.*;
 import foam.nanos.auth.User;
-import net.nanopay.model.Account;
+import net.nanopay.account.CurrentBalance;
 
 /** Represents a transfer of assets from one account to another. **/
 public class Transfer
@@ -12,7 +12,7 @@ public class Transfer
   protected long    userId_;
   protected long    amount_;
   protected User    user_    = null;
-  protected Account account_ = null;
+  protected CurrentBalance currentBalance_ = null;
 
   public Transfer(long userId, long amount) {
     userId_ = userId;
@@ -31,8 +31,8 @@ public class Transfer
     return amount_;
   }
 
-  public Account getAccount() {
-    return account_;
+  public CurrentBalance getCurrentBalance() {
+    return currentBalance_;
   }
 
   public int compareTo(Object other) {
@@ -54,23 +54,27 @@ public class Transfer
 
     user_ = user;
 
-    DAO     accountDAO = (DAO) x.get("localAccountDAO");
-    Account account    = (Account) accountDAO.find(getUserId());
+    DAO     currentBalanceDAO = (DAO) x.get("localCurrentBalanceDAO");
+    CurrentBalance currentBalance  = (CurrentBalance) currentBalanceDAO.find(getUserId());
 
-    account_ = account == null ? new Account() : account;
+    currentBalance_ = currentBalance == null ? new CurrentBalance() : currentBalance;
 
     if ( getAmount() < 0 ) {
-      if ( -getAmount() > account_.getBalance() ) throw new RuntimeException("Insufficient balance in account " + getUserId());
+      if ( -getAmount() > currentBalance_.getBalance() ) {
+        System.out.println("Transfer.validate user: "+getUserId()+", amount: "+getAmount()+", currentBalance: "+currentBalance.getBalance());
+
+        throw new RuntimeException("Insufficient balance in account " + getUserId());
+      }
     }
   }
 
   /** Execute the balance transfer, updating the user's balance. **/
   public void execute(X x) {
-    DAO     accountDAO = (DAO) x.get("localAccountDAO");
-    Account account    = getAccount();
+    DAO     currentBalanceDAO = (DAO) x.get("localCurrentBalanceDAO");
+    CurrentBalance currentBalance  = getCurrentBalance();
 
-    account.setBalance(account.getBalance() + getAmount());
+    currentBalance.setBalance(currentBalance.getBalance() + getAmount());
 
-    accountDAO.put(account);
+    currentBalanceDAO.put(currentBalance);
   }
 }

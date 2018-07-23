@@ -21,12 +21,7 @@ function rmfile {
 }
 
 function install {
-    # Only support MacOS install/setup
     MACOS='darwin*'
-    if [[ ! "$OSTYPE" =~ $MACOS ]]; then
-        printf "install is only supported on MacOS.\n"
-        exit 1
-    fi
 
     cd "$PROJECT_HOME"
 
@@ -36,7 +31,9 @@ function install {
     npm install
 
     cd tools
-    ./tomcatInstall.sh
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      ./tomcatInstall.sh
+    fi
     cd ..
 
     setenv
@@ -64,30 +61,52 @@ function set_doc_base {
 }
 
 function backup {
-    BACKUP_HOME="/opt/backup"
+  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    # Preventing this from running on non AWS
+    return
+  fi
 
-    # backup journals in event of file incompatiblity between versions
-    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-        printf "backup\n"
-        DATE=$(date +%Y%m%d_%H%M%S)
-        mkdir -p "$BACKUP_HOME/$DATE"
-        COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+  BACKUP_HOME="/opt/backup"
 
-        cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-    fi
+  # backup journals in event of file incompatiblity between versions
+  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
+      printf "backup\n"
+      DATE=$(date +%Y%m%d_%H%M%S)
+      mkdir -p "$BACKUP_HOME/$DATE"
+      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+
+      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
+  fi
 }
 
 function setup_csp_valve {
   if [[ ! -f $CATALINA_HOME/lib/CSPValve.jar ]]; then
+    local JAR_TOMCAT_CATALINA="~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar"
+    local JAR_JAVAX_SERVLET="~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar"
+
     pushd .
     cd nanopay/src/net/nanopay/security/csp
     mkdir build
-    javac -cp ~/.m2/repository/org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar:~/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar:/Library/Tomcat/lib/servlet-api.jar -d ./build CSPValve.java
+
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || $IS_MAC -ne 1 ]]; then
+      # AWS servers don't have .m2 directory. Additionally, this should also run for Linux builds.
+      curl -O https://search.maven.org/remotecontent?filepath=org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar
+      JAR_TOMCAT_CATALINA="./tomcat-catalina-9.0.8.jar"
+      curl -O https://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar
+      JAR_JAVAX_SERVLET="./javax.servlet-api-4.0.1.jar"
+    fi
+
+    javac -cp $JAR_TOMCAT_CATALINA:$JAR_JAVAX_SERVLET:$CATALINA_HOME/lib/servlet-api.jar -d ./build CSPValve.java
     cd build
     jar cvf CSPValve.jar *
     mv CSPValve.jar $CATALINA_HOME/lib
     cd ..
     rm -rf build
+
+    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || $IS_MAC -ne 1 ]]; then
+      rm $JAR_JAVAX_SERVLET $JAR_TOMCAT_CATALINA
+    fi
+
     popd
     echo "INFO :: CSP Valve setup."
   fi
@@ -102,12 +121,11 @@ function setup_csp_valve {
 }
 
 function setup_jce {
-  local JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\..*\..*\)".*/\1/p;')
-  local JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk-$JAVA_VER.jdk/Contents/Home/lib/security"
+  local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
 
-  # For Java 8
-  if [[ $JAVA_LIB_SECURITY = *"_"* ]]; then
-    JAVA_LIB_SECURITY="/Library/Java/JavaVirtualMachines/jdk$JAVA_VER.jdk/Contents/Home/jre/lib/security"
+  # For Java 8; including on linux
+  if [[ $JAVA_LIB_SECURITY = *"_"* || $JAVA_LIB_SECURITY = *"java-8-oracle"* ]]; then
+    JAVA_LIB_SECURITY="$JAVA_HOME/jre/lib/security"
   fi
 
   if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
@@ -166,7 +184,12 @@ function build_war {
     else
       mvn install
       setup_csp_valve
-      mvn com.redhat.victims.maven:security-versions:check
+
+      if [[ $INTERNET -ne 0 ]]; then
+        # Only run this if connected to the internet to prevent the build from
+        # failing.
+        mvn com.redhat.victims.maven:security-versions:check
+      fi
     fi
 }
 
@@ -287,8 +310,7 @@ function shutdown_tomcat {
     fi
 
     backup
-
-    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 ]]; then
         rmdir "$JOURNAL_HOME"
         mkdir -p "$JOURNAL_HOME"
     fi
@@ -329,7 +351,6 @@ function start_nanos {
 
     mvn -f pom-standalone.xml install
     deploy_journals
-
     exec java $JAVA_OPTS -jar target/root-0.0.1.jar
 }
 
@@ -359,8 +380,15 @@ function setenv {
 
     export JOURNAL_OUT="$PROJECT_HOME"/target/journals
 
-    if [ -z "$JOURNAL_HOME" ]; then
+    if [[ -z $JOURNAL_HOME ]]; then
        export JOURNAL_HOME="$PROJECT_HOME/journals"
+
+       if [[ $TEST -eq 1 ]]; then
+         rmdir /tmp/nanopay
+         mkdir /tmp/nanopay
+         JOURNAL_HOME=/tmp/nanopay
+         echo "INFO :: Cleaned up temporary journal files."
+       fi
     fi
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
@@ -447,6 +475,28 @@ function setenv {
         printf "generating keystore\n"
         sudo ./tools/keystore.sh
     fi
+
+    local MACOS='darwin*'
+    local LINUXOS='linux-gnu'
+    IS_MAC=0
+    IS_LINUX=0
+
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      IS_MAC=1
+    elif [[ $OSTYPE =~ $LINUXOS ]]; then
+      IS_LINUX=1
+    fi
+
+    if [[ -z $JAVA_HOME ]]; then
+      if [[ $IS_MAC -eq 1 ]]; then
+        JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
+      elif [[ $IS_LINUX -eq 1 ]]; then
+        JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+      fi
+    fi
+
+    # Check if connected to the interwebs
+    ping -q -W1 -c1 google.com &>/dev/null && INTERNET=1 || INTERNET=0
 }
 
 function usage {
@@ -478,8 +528,9 @@ RESTART_ONLY=0
 RUN_NANOS=0
 RUN_MIGRATION=0
 STOP_TOMCAT=0
+TEST=0
 
-while getopts "bcdfhijmnrs" opt ; do
+while getopts "bcdfhijmnrst" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -491,6 +542,7 @@ while getopts "bcdfhijmnrs" opt ; do
         n) RUN_NANOS=1 ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_TOMCAT=1 ;;
+        t) TEST=1 ;;
         h) usage ; exit 0 ;;
         ?) usage ; exit 1 ;;
     esac
@@ -502,7 +554,13 @@ if [ "$INSTALL" -eq 1 ]; then
 fi
 
 setenv
-if [ "$RUN_NANOS" -eq 1 ]; then
+
+if [[ $TEST -eq 1 ]]; then
+  echo "INFO :: Running all tests..."
+  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+fi
+
+if [[ $RUN_NANOS -eq 1 || $TEST -eq 1 ]]; then
     start_nanos
 elif [ "$BUILD_ONLY" -eq 1 ]; then
     build_war
