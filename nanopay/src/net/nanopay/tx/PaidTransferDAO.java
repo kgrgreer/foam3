@@ -11,17 +11,21 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.text.NumberFormat;
 import java.util.HashMap;
+
+import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 
 // Sends an email when an transfer has gone through
 public class PaidTransferDAO
   extends ProxyDAO
 {
+  protected DAO accountDAO_;
   protected DAO userDAO_;
 
   public PaidTransferDAO(X x, DAO delegate) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    accountDAO_ = (DAO) x.get("localAccountDAO");
+    userDAO_= (DAO) x.get("localUserDAO");
   }
 
   @Override
@@ -31,15 +35,15 @@ public class PaidTransferDAO
     Transaction transaction = (Transaction) super.put_(x, obj);
 
     // Returns if transaction is an invoice
-    if ( transaction.getInvoiceId() != null )
+    if ( transaction.getInvoiceId() != 0 )
       return transaction;
 
     // Returns if transaction is a cico transaction
-    if ( transaction.getPayeeId() == transaction.getPayerId() )
+    if ( transaction.getDestinationAccount() == transaction.getSourceAccount() )
       return transaction;
 
-    User user   = (User) userDAO_.find_(x, transaction.getPayeeId());
-    User sender = (User) userDAO_.find_(x, transaction.getPayerId());
+    User user   = (User) userDAO_.find_(x,((Account) transaction.findDestinationAccount(x)).getOwner());
+    User sender = (User) userDAO_.find_(x,((Account) transaction.findSourceAccount(x)).getOwner());
 
     // Returns if transaction is a payment from a CCShopper to a CCMerchant
     if ( "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(user.getGroup()) )

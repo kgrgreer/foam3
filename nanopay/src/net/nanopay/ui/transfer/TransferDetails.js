@@ -13,19 +13,19 @@ foam.CLASS({
     // 'net.nanopay.interac.model.Pacs008ISOPurpose',
     // 'net.nanopay.interac.model.Pacs008IndiaPurpose',
     'net.nanopay.ui.transfer.TransferUserCard',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.User'
   ],
 
   imports: [
     // 'pacs008ISOPurposeDAO',
     // 'pacs008IndiaPurposeDAO',
-    'findCurrentBalance',
+    'findBalance',
     'formatCurrency',
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'userDAO',
-    'currentBalance',
+    'balance',
     'user',
     'type'
   ],
@@ -160,7 +160,7 @@ foam.CLASS({
       name: 'accounts',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.user.bankAccounts.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
+        this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.ID, newValue), this.EQ(this.BankAccount.OWNER, this.user.id))).select().then(function(a){
           var account = a.array[0];
           self.viewData.account = account;
         });
@@ -168,9 +168,9 @@ foam.CLASS({
       view: function(_,X) {
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, net.nanopay.model.BankAccountStatus.VERIFIED)),
+          dao: X.user.accounts.where(expr.EQ(net.nanopay.bank.BankAccount.STATUS, net.nanopay.bank.BankAccountStatus.VERIFIED)),
           objToChoice: function(account) {
-            return [account.id, account.accountName + ' ' +
+            return [account.id, account.name + ' ' +
                                 '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
                     ];
           }
@@ -315,19 +315,19 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.getDefaultBank();
-      this.findCurrentBalance();
+      this.findBalance();
 
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
           .start('p').add(self.TransferFromLabel).addClass('bold').end()
-          // .start('p').add(self.AccountLabel).end()
+           .start('p').add(self.AccountLabel).end()
           .start().addClass("choice")
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
-              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.currentBalance.balance$.map(function(balance) {
-                            return (balance/100).toFixed(2)}))
-              .end()
+               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.balance.balance$.map(function(balance) {
+                  return (balance/100).toFixed(2)}))
+               .end()
             .end()
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
@@ -390,10 +390,11 @@ foam.CLASS({
 
     function getDefaultBank() {
       var self = this;
-      this.user.bankAccounts.where(
+      this.bankAccountDAO.where(
         this.AND(
           this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
-          this.EQ(this.BankAccount.SET_AS_DEFAULT, true)
+          //this.EQ(this.BankAccount.IS_DEFAULT, true),
+          this.EQ(this.BankAccount.OWNER, this.user)
         )
       ).select().then( function (a) {
         if ( a.array.length == 0 ) return;

@@ -5,15 +5,18 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.dao.ArraySink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
 
 public class AuthenticatedTransactionDAO
@@ -41,7 +44,7 @@ public class AuthenticatedTransactionDAO
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ! SafetyUtil.equals(t.getPayerId(), user.getId()) && ! TransactionType.REQUEST.equals(t.getType()) ) {
+    if ( ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) ) {
       throw new RuntimeException("User is not the payer");
     }
 
@@ -58,7 +61,7 @@ public class AuthenticatedTransactionDAO
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
-    if ( t != null && t.getPayerId() != user.getId() && t.getPayeeId() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t != null && ((Long)t.findDestinationAccount(x).getOwner()).longValue() != user.getId() && ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
 
@@ -75,8 +78,14 @@ public class AuthenticatedTransactionDAO
     }
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
-    DAO dao = global ? getDelegate() : getDelegate().where(
-      OR(EQ(Transaction.PAYER_ID, user.getId()), EQ(Transaction.PAYEE_ID, user.getId())));
+    DAO dao = global ?
+      getDelegate() :
+      getDelegate().where(
+                          OR(
+                             IN(Transaction.SOURCE_ACCOUNT, ((ArraySink)user.getAccounts().select(new ArraySink())).getArray()),
+                             IN(Transaction.DESTINATION_ACCOUNT, ((ArraySink)user.getAccounts().select(new ArraySink())).getArray())
+                             )
+                          );
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

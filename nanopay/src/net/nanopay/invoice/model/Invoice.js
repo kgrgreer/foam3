@@ -6,9 +6,12 @@ foam.CLASS({
 
   requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
 
-  // implements: [
-  //   'foam.net.nanos.auth.CreatedByAware'
-  // ],
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
 
   imports: [ 'addCommas' ],
 
@@ -98,11 +101,26 @@ foam.CLASS({
       }
     },
     {
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.User',
-      class: 'Long',
+      class: 'DateTime',
+      name: 'created',
+      documentation: `The date the invoice was created.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: `The date the invoice was last modified.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The id of the user who last modified the invoice.`,
     },
     {
       class: 'FObjectProperty',
@@ -142,9 +160,11 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of money the invoice is for.`,
+      documentation: `The amount of money the invoice is for. The amount of money that will be deposited into the destination account.  If fees or exchange applies the source amount may have to be adjusted.`,
       aliases: [
-        'a', 'targetAmount'
+        'a',
+        'targetAmount',
+        'destinationAmount'
       ],
       precision: 2,
       required: true,
@@ -153,7 +173,8 @@ foam.CLASS({
         X.formatCurrencyAmount(a, e, X);
       }
     },
-    {
+    { // How is this used? - display only?
+      documentation: `Amount of funds to be withdrawn to pay for the invoice. This amount may be higher than the 'amount' (destination amount) if fees and/or exchange is involved.`,
       class: 'Currency',
       name: 'sourceAmount',
       precision: 2,
@@ -164,9 +185,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
-      name: 'sourceAccountId',
-      documentation: `` // TODO
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      documentation: `Account funds with be deposited into.`
     },
     {
       class: 'Currency',
@@ -180,23 +202,29 @@ foam.CLASS({
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'FObjectProperty',
-      name: 'targetCurrency',
-      of: 'net.nanopay.model.Currency'
+      class: 'Reference',
+      name: 'destinationCurrency',
+      of: 'net.nanopay.model.Currency',
+      documentation: `Currency of the account the funds with be deposited into.`,
     },
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       name: 'sourceCurrency',
-      of: 'net.nanopay.model.Currency'
+      of: 'net.nanopay.model.Currency',
+      documentation: `Currency of the account the funds with be withdran from.`,
     },
     {
       name: 'iso20022',
       documentation: `` // TODO
     },
     {
-      class: 'Long',
-      name: 'accountId',
-      documentation: `` // TODO
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'account',
+      aliases: [
+        'sourceAccount'
+      ],
+      documentation: `Invoiced account. The account funds will be withdrawn from.`
     },
     {
       class: 'String',

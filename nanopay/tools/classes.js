@@ -2,6 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
+  'net.nanopay.tx.PayerTransactionDAO',
+  'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
@@ -23,10 +25,15 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.account.CurrentBalance',
+  'net.nanopay.account.Balance',
   'net.nanopay.model.Branch',
-  'net.nanopay.model.BankAccount',
-  'net.nanopay.model.BankAccountStatus',
+  'net.nanopay.account.Account',
+  'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DigitalAccountInterface',
+  'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.CADBankAccount',
+  'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
@@ -161,6 +168,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
+  'net.nanopay.account.DigitalAccountInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

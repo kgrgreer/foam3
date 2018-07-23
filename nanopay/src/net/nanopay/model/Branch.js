@@ -1,15 +1,16 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Branch',
-  // relationships: Processor
+  // relationship: Institution
   documentation: 'Bank/Institution Branch Information.',
 
   properties: [
     {
       class: 'Long',
       name: 'id',
-      required: true
-    },
+      required: true,
+      visibility: foam.u2.Visibility.RO
+   },
     {
       class: 'String',
       name: 'branchId',
@@ -24,7 +25,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      documentation: 'Bank branch address'
+      documentation: 'Bank branch address',
+      factory: function() {
+        return new foam.nanos.auth.Address();
+      }
     }
   ]
 });

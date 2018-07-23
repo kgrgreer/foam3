@@ -5,6 +5,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 
 public class EmailVerifiedTransactionDAO
@@ -20,7 +22,14 @@ public class EmailVerifiedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    User user = (User) userDAO_.find_(x, transaction.getPayerId());
+    User user = null;
+    Account account = (Account) transaction.findSourceAccount(x);
+    if ( account != null ) {
+      user = (User) userDAO_.find_(x, account.findOwner(x));
+    } else {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount());
+    }
 
     if ( user == null || ! user.getEmailVerified() ) {
       switch ( transaction.getType() ) {

@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import net.nanopay.account.Account;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
@@ -22,9 +23,9 @@ public class UpdateInvoiceTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    Invoice invoice = (Invoice) invoiceDAO_.find(transaction.getInvoiceId());
+    Invoice invoice = (Invoice) invoiceDAO_.find_(x, transaction.getInvoiceId());
 
-    if ( transaction.getInvoiceId() != null ) {
+    if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice not found");
       }
@@ -36,8 +37,8 @@ public class UpdateInvoiceTransactionDAO
 
 
     // find invoice
-    if ( transaction.getInvoiceId() != null ) {
-      if ( transaction.getPayerId() != transaction.getPayeeId() ) {
+    if ( transaction.getInvoiceId() != 0 ) {
+      if ( (long) ((Account) transaction.findSourceAccount(x)).getOwner() != (long) ((Account) transaction.findDestinationAccount(x)).getOwner() ) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());

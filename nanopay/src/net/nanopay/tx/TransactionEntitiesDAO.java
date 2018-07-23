@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionEntity;
 import foam.mlang.order.Comparator;
@@ -15,8 +16,9 @@ import foam.nanos.logger.Logger;
 
 public class TransactionEntitiesDAO extends ProxyDAO
 {
-  protected DAO userDAO_;
+  protected DAO accountDAO_;
   protected Logger logger_;
+  protected DAO userDAO_;
   private class DecoratedSink extends foam.dao.ProxySink
   {
     public DecoratedSink(X x, Sink delegate)
@@ -35,8 +37,9 @@ public class TransactionEntitiesDAO extends ProxyDAO
   public TransactionEntitiesDAO(X x, DAO delegate)
   {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    accountDAO_ = (DAO) x.get("localAccountDAO");
     logger_ = (Logger) x.get("logger");
+    userDAO_ = (DAO) x.get("localUserDAO");
   }
 
   @Override
@@ -62,11 +65,11 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     FObject clone = obj.fclone();
     Transaction tx = (Transaction) clone;
-    User payer = (User) userDAO_.find(tx.getPayerId());
-    User payee = (User) userDAO_.find(tx.getPayeeId());
+    User payer = (User) userDAO_.find(tx.findSourceAccount(x_).getOwner());
+    User payee = (User) userDAO_.find( tx.findDestinationAccount(x_).getOwner());
 
     if (payer == null) {
-      logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), tx.getPayerId()));
+      logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), payer.getId()));
       tx.setPayer(null);
     }
     else {
@@ -75,7 +78,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
     }
 
     if (payee == null) {
-      logger_.error(String.format("Transaction: %d Payee with Id: %d not found", tx.getId(), tx.getPayeeId()));
+      logger_.error(String.format("Transaction: %d Payee with Id: %d not found", tx.getId(), payee.getId()));
       tx.setPayee(null);
     }
     else {

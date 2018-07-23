@@ -12,12 +12,12 @@ foam.CLASS({
   imports: [
     'user',
     'stack',
-    'bankAccountDAO'
+    'accountDAO as bankAccountDAO'
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   css: `
@@ -138,7 +138,7 @@ foam.CLASS({
     {
       name: 'data',
       factory: function () {
-        return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+        return this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.OWNER, this.user.id), this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
       }
     }
   ],
@@ -182,6 +182,7 @@ foam.CLASS({
             .tag({
                 class: 'foam.u2.ListCreateController',
                 dao: this.data,
+                // REVIEW: AccountRefactor - what type of bank account to create? - Joel
                 factory: function() { return self.BankAccount.create(); },
                 detailView: {
                 },
@@ -211,14 +212,14 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [
-        'net.nanopay.model.BankAccount',
-        'net.nanopay.model.BankAccountStatus',
+        'net.nanopay.bank.BankAccount',
+        'net.nanopay.bank.BankAccountStatus',
         'foam.u2.dialog.Popup',
         'foam.u2.dialog.NotificationMessage'
       ],
 
       imports: [
-        'bankAccountDAO',
+        'accountDAO as bankAccountDAO',
         'stack',
         'user'
       ],
@@ -246,7 +247,7 @@ foam.CLASS({
         {
           name: 'data',
           factory: function() {
-            return this.bankAccountDAO.where(this.EQ(this.BankAccount.OWNER, this.user.id));
+            return this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.OWNER, this.user.id), this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
           }
         }
       ],
@@ -265,7 +266,7 @@ foam.CLASS({
               data: this.data,
               selection$: this.selection$,
               columns: [
-                'accountName', 'institutionNumber', 'transitNumber', 'accountNumber', 'status'
+                'name', 'institutionId', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         },
