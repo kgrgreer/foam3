@@ -136,8 +136,8 @@ public class SPSProcessor extends ContextAwareSupport {
 
   public void test() {
     try {
-      //GeneralRequestResponse generalRequestResponse = GeneralReqService(generateTestGeneralRequest());
-      //System.out.println("generalRequestResponse: " + generalRequestResponse);
+//      GeneralRequestResponse generalRequestResponse = GeneralReqService(generateTestGeneralRequest());
+//      System.out.println("generalRequestResponse: " + generalRequestResponse);
 
       //BatchDetailGeneralResponse batchDetailGeneralResponse = BatchDetailReqService(generateTestBatchDetailRequest());
       DetailResponse detailResponse = DetailInfoService(generateTestBatchDetailRequest());
@@ -156,7 +156,7 @@ public class SPSProcessor extends ContextAwareSupport {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180716115959");
+    generalRequestPacket.setLocalTransactionTime("20180722115959");
     //not used
     //generalRequestPacketTest.setTextMsg("");
     generalRequestPacket.setTID("ZYX80");

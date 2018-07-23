@@ -145,23 +145,24 @@ public ResponsePacket parseSPSResponse(String response) {
   char recordSeparator = (char) 30;
 
   Object[] temp =  parse(detailResponseInfo, fieldSeparator);
-  System.out.println("temp: " + temp);
-  
+  System.out.println("temp: " + Arrays.toString(temp));
+
   for (int i = 0; i < 3; i++) {
     detailInfoPropertyList.get(i).set(this, temp[i]);
   }
+
+  Object[] items = parse(temp[3].toString(), recordSeparator);
+  DetailResponseItemContent[] itemArray = new DetailResponseItemContent[items.length];
   
-  DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
-  DetailResponseItemContent itemContent = (DetailResponseItemContent) detailResponseItemContent.parseSPSResponse(temp[3].toString());
-  System.out.println("itemContent: " + itemContent);
-  
- 
-  DetailResponseItemContent[] itemArray = new DetailResponseItemContent[1];
-  
-  itemArray[0] = itemContent;
-    
+  for ( int i = 0; i < items.length; i++ ) {
+    DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
+    detailResponseItemContent = (DetailResponseItemContent) detailResponseItemContent.parseSPSResponse(items[i].toString());
+    System.out.println("itemContent: " + detailResponseItemContent);
+    itemArray[i] = detailResponseItemContent;
+  }
+
   this.setItemContent(itemArray);
-  
+
   return this;
 }
 

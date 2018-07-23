@@ -21,29 +21,36 @@ public ResponsePacket parseSPSResponse(String response) {
     return null;
   }
   
-  Object[] values;
-  
   response = response.substring(1, response.length() - 1 );
-  char delimiter = (char) 28;
-  
-  StringPStream ps = new StringPStream();
-  ps.setString(response);
-  Parser parser = new Repeat(new SPSStringParser(), new Literal("" + delimiter));
-  PStream ps1 = ps.apply(parser, null);
-  if ( ps1 == null ) throw new RuntimeException("format error");
-  
-  values = (Object[]) ps1.value();
-  
+  char fieldSeparator = (char) 28;
+  Object[] values = parse(response, fieldSeparator);
+  System.out.println("values: " + Arrays.toString(values));
+ 
   for ( int i = 0; i < list.size(); i++ ) {
-    list.get(i).set(this, list.get(i).fromString((String) values[i]));
+    list.get(i).set(this, values[i]);
   }
   
   return this;
 }
 
+private Object[] parse(String str, char delimiter) {
+  Object[] values;
+  StringPStream ps = new StringPStream();
+  ps.setString(str);
+  Parser parser = new Repeat(new SPSStringParser(delimiter), new Literal("" + delimiter));
+  PStream ps1 = ps.apply(parser, null);
+  if ( ps1 == null ) throw new RuntimeException("format error");
+
+  values = (Object[]) ps1.value();
+
+  return values;
+}
+
 private static class SPSStringParser implements Parser {
-  private static char delimiter = (char) 28;
-  public SPSStringParser() {}
+  private char delimiter;
+  public SPSStringParser(char delimiter) {
+    this.delimiter = delimiter;
+  }
 
   public PStream parse(PStream ps, ParserContext x) {
     if ( ps == null ) {
@@ -68,7 +75,7 @@ private static class SPSStringParser implements Parser {
 
     return ps.setValue(sb.toString());
   }
-}        
+}
 `);
       }
     }
