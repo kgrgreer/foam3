@@ -13,6 +13,10 @@ foam.CLASS({
       name: 'token'
     },
     {
+      class: 'Currency',
+      name: 'fee'
+    },
+    {
       class: 'Long',
       name: 'paymentCardId'
     },

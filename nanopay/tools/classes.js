@@ -142,9 +142,9 @@ var classes = [
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
-  'net.nanopay.security.HashingJDAOTest',
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
+  'net.nanopay.security.HashingWriterTest',
 
   //topnavigation
   'net.nanopay.ui.topNavigation.CurrencyChoiceView',

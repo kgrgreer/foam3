@@ -32,12 +32,12 @@ foam.CLASS({
     }
   ],
 
-  properties: [
+  constants: [
     {
-      class: 'String',
-      name: 'message',
-      documentation: 'Original input message',
-      value: '{\\"class\\":\\"foam.nanos.auth.User\\",\\"id\\":1000,\\"firstName\\":\\"Kirk\\",\\"lastName\\":\\"Eaton\\",\\"email\\":\\"kirk@nanopay.net\\"}'
+      type: 'String',
+      name: 'INPUT',
+      documentation: 'Original input',
+      value: '{"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"}'
     }
   ],
 
@@ -92,7 +92,7 @@ foam.CLASS({
       name: 'HashedJSONParser_JSONStringWithoutMessageDigestWithDigestNotRequired_Parse',
       javaCode: `
         HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setDigestRequired(false).build());
-        User result = (User) parser.parseString(getMessage(), User.class);
+        User result = (User) parser.parseString(INPUT, User.class);
         test(result != null, "User parsed successfully");
         test(1000 == result.getId(), "User id \\"1000\\" parsed successfully");
         test("kirk@nanopay.net".equals(result.getEmail()), "User email \\"kirk@nanopay.net\\" parsed successfully");
@@ -105,7 +105,8 @@ foam.CLASS({
       javaCode: `
         try {
           HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setDigestRequired(true).build());
-          parser.parseString(getMessage());
+          parser.parseString(INPUT);
+          test(false, "HashedJSONParser with digest required should not parse a string without a message digest");
         } catch ( Throwable t ) {
           test("Digest not found".equals(t.getMessage()), "Exception with message \\"Digest not found\\" thrown");
         }
@@ -118,9 +119,9 @@ foam.CLASS({
         { class: 'String', name: 'digest'     }
       ],
       javaCode: `
-        StringBuilder builder = sb.get().append(getMessage()).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
+        StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
         HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
-        test(parser.parseString(builder.toString()) != null, "User with " + algorithm + " message digest parsed successfully");
+        test(parser.parseString(builder.toString()) != null, algorithm + " message digest parsed successfully");
       `
     },
     {
@@ -131,11 +132,12 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(getMessage()).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
+          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
           HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
           parser.parseString(builder.toString());
+          test(false, "HashedJSONParser should not parse a string with an invalid message digest");
         } catch ( Throwable t ) {
-          test("Digest verification failed".equals(t.getMessage()), "Exception with message \\"Digest verification failed\\" thrown");
+          test("Digest verification failed".equals(t.getMessage()), "Exception thrown for invalid digest");
         }
       `
     },
@@ -147,9 +149,9 @@ foam.CLASS({
         { class: 'String', name: 'chainedDigest' }
       ],
       javaCode: `
-        StringBuilder builder = sb.get().append(getMessage()).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
+        StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
         HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build());
-        test(parser.parseString(builder.toString()) != null, "User with " + algorithm + " chained message digest parsed successfully");
+        test(parser.parseString(builder.toString()) != null, algorithm + " chained message digest parsed successfully");
       `
     },
     {
@@ -161,11 +163,12 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(getMessage()).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
+          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
           HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build());
           parser.parseString(builder.toString());
+          test(false, "HashedJSONParser should not parse a string with an invalid chained message digest");
         } catch ( Throwable t ) {
-          test("Digest verification failed".equals(t.getMessage()), "Exception with message \\"Digest verification failed\\" thrown");
+          test("Digest verification failed".equals(t.getMessage()), "Exception thrown for invalid chained digest");
         }
       `
     }
