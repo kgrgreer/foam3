@@ -7,6 +7,7 @@ foam.CLASS({
     'addCommas',
     'user',
     'invoiceDAO',
+    'currencyDAO',
     'stack'
   ],
 
@@ -24,12 +25,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'currency',
-      expression: function(data) {
-        return data.targetCurrency ?
-            data.targetCurrency.alphabeticCode + ' ' :
-            '$';
-      }
+      name: 'currency'
     }
   ],
 
@@ -112,7 +108,10 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.stack.sub(this.itemUpdate);
-
+      this.currencyDAO.find(this.data.destinationCurrency).then(function(curr) {
+        self.currency = curr.alphabeticCode;
+      });
+      
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
@@ -160,7 +159,7 @@ foam.CLASS({
             .end()
             .start('h4')
               .add(
-                this.currency + ' ' +
+                this.currency$, ' ',
                     this.addCommas((this.data.amount/100).toFixed(2))
               )
             .end()

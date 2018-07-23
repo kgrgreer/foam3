@@ -305,10 +305,12 @@ foam.CLASS({
     {
       name: 'formatCurrencyAmount',
       code: function(a, e, X) {
-        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
-        e.start().style({ 'padding-right': '20px' })
-          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
-        .end();
+        this.__subContext__.currencyDAO.find(X.destinationCurrency).then(function(curr) {
+          var currency = curr ? curr.alphabeticCode : '$';
+          e.start().style({ 'padding-right': '20px' })
+            .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+          .end();
+        });
       },
       javaReturns: 'String',
       javaCode: `

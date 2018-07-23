@@ -67,7 +67,7 @@ foam.CLASS({
     },
     {
       name: 'userList',
-      view: function(_,X) {
+      view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.userDAO.where(X.data.AND(
             X.data.NEQ(X.data.User.ID, X.user.id),
@@ -309,7 +309,7 @@ foam.CLASS({
           amount: this.data.amount,
           dueDate: offsetDate,
           purchaseOrder: this.data.purchaseOrder,
-          targetCurrency: this.currencyType,
+          destinationCurrency: this.currencyType,
           note: this.data.note,
           invoiceFile: this.data.invoiceFile,
           invoiceNumber: this.data.invoiceNumber
