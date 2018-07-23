@@ -4,16 +4,55 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.core.EmptyX',
+    'foam.dao.DAO',
+    'foam.dao.MDAO',
+    'foam.mlang.sink.Count',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+
+    'java.io.BufferedReader',
+    'java.io.File',
+    'java.util.UUID'
+  ],
+
+  constants: [
+    {
+      type: 'User',
+      name: 'INPUT',
+      documentation: 'Original input',
+      value: `
+        new User.Builder(EmptyX.instance())
+          .setId(1000)
+          .setFirstName("Kirk")
+          .setLastName("Eaton")
+          .setEmail("kirk@nanopay.net")
+          .build()
+      `
+    },
+    {
+      type: 'String',
+      name: 'EXPECTED',
+      documentation: 'Expected journal output',
+      value: 'p({"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"},{"algorithm":"SHA-256","digest":"1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11ba90f5d5"})'
+    }
   ],
 
   methods: [
     {
       name: 'runTest',
       javaCode: `
+        // construct tests
         HashingJournal_ConstructWithDefaultValues_Initializes();
         HashingJournal_ConstructWithValidAlgorithm_Initializes();
         HashingJournal_ConstructWithInvalidAlgorithm_RuntimeException();
+
+        // put tests
+        HashingJournal_Put_Succeeds();
+
+        // replay tests
+        HashingJournal_Replay_Succeeds();
+
       `
     },
     {
@@ -45,6 +84,74 @@ foam.CLASS({
           test(false, "Outputter factory should throw an exception given invalid algorithm");
         } catch ( Throwable t ) {
           test(true, "Outputter factory throws exception given invalid algorithm");
+        }
+      `
+    },
+    {
+      name: 'HashingJournal_Put_Succeeds',
+      javaCode: `
+        try {
+          DAO dao = new MDAO(User.getOwnClassInfo());
+          File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+          HashingJournal journal = new HashingJournal.Builder(getX())
+            .setFile(file)
+            .setDao(dao)
+            .build();
+
+          // put to journal
+          journal.put(INPUT, null);
+
+          // read the line just put
+          boolean succeeds = false;
+          try ( BufferedReader reader = journal.getReader() ) {
+            for ( String line ; ( line = reader.readLine() ) != null ; ) {
+              if ( EXPECTED.equals(line.trim()) ) {
+                succeeds = true;
+                break;
+              }
+            }
+          }
+
+          test(succeeds, "HashingJournal put method produces correct output");
+        } catch ( Throwable t ) {
+          test(false, "HashingJournal put method should not throw an exception");
+        }
+      `
+    },
+    {
+      name: 'HashingJournal_Replay_Succeeds',
+      javaCode: `
+        try {
+          DAO dao = new MDAO(User.getOwnClassInfo());
+          File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+          HashingJournal journal = new HashingJournal.Builder(getX())
+            .setFile(file)
+            .setDao(dao)
+            .build();
+
+          // put to journal
+          journal.put(INPUT, null);
+
+          // replay journal
+          journal.replay(dao);
+
+          // verify dao has one element
+          Count count = (Count) dao.select(new Count());
+          test(count.getValue() == 1L, "DAO following replay method should contain one element");
+
+          // replaying again should not add another element to DAO
+          journal.replay(dao);
+          count = (Count) dao.select(new Count());
+          test(count.getValue() == 1L, "Replaying journal again should not add another element to DAO");
+
+          // verify object stored in DAO matches input
+          User result = (User) dao.find(1000);
+          test(1000 == result.getId(), "Stored user id matches 1000");
+          test("Kirk".equals(result.getFirstName()), "Stored user first name matches \\"Kirk\\"");
+          test("Eaton".equals(result.getLastName()), "Stored user last name matches \\"Eaton\\"");
+          test("kirk@nanopay.net".equals(result.getEmail()), "Stored user email matches \\"kirk@nanopay.net\\"");
+        } catch ( Throwable t ) {
+          test(false, "HashingJournal replay method should not throw an exception");
         }
       `
     }
