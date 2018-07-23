@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'DigitalAccount',
   extends: 'net.nanopay.account.Account',
 
-  documentation: 'Digital Account. Default to monitary denomination.',
+  documentation: 'Digital Account. Default to monetary denomination.',
 
   properties: [
     {

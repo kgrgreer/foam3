@@ -137,20 +137,28 @@ foam.CLASS({
     'selection',
     {
       name: 'data',
-      factory: function () {
-        return this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.OWNER, this.user.id), this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
+      factory: function() {
+        return this.bankAccountDAO
+            .where(
+              this.AND(
+                this.EQ(this.BankAccount.OWNER, this.user.id),
+                this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
       }
     }
   ],
 
   messages: [
-    { name: 'TitleAll',         message: 'Total Bank Accounts' },
-    { name: 'TitleVerified',    message: 'Verified Account(s)' },
-    { name: 'TitleUnverified',  message: 'Unverified Account(s)' },
+    { name: 'TitleAll', message: 'Total Bank Accounts' },
+    { name: 'TitleVerified', message: 'Verified Account(s)' },
+    { name: 'TitleUnverified', message: 'Unverified Account(s)' },
     { name: 'TitleDisabled', message: 'Disabled Account(s)' },
-    { name: 'ActionAdd',        message: 'Add a new bank account' },
-    { name: 'MyBankAccounts',   message: 'My Bank Accounts' },
-    { name: 'placeholderText',  message: 'You don\'t have any bank accounts right now. Click the Add a bank account button to add a new bank account.' }
+    { name: 'ActionAdd', message: 'Add a new bank account' },
+    { name: 'MyBlankAccounts', message: 'My Bank Accounts' },
+    {
+      name: 'placeholderText',
+      message: 'You don\'t have any bank accounts right now. Click the Add a ' +
+          'bank account button to add a new bank account.'
+    }
   ],
 
   methods: [
@@ -163,17 +171,26 @@ foam.CLASS({
         .addClass(this.myClass())
           .start('div').addClass('row')
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleAll, content$: this.allBanksCount$ }).addClass('bankContentCard')
+              .tag({
+                class: 'net.nanopay.ui.ContentCard',
+                title: this.TitleAll,
+                content$: this.allBanksCount$
+              }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleVerified, content$: this.verifiedBanksCount$ }).addClass('bankContentCard')
+              .tag({
+                class: 'net.nanopay.ui.ContentCard',
+                title: this.TitleVerified,
+                content$: this.verifiedBanksCount$
+              }).addClass('bankContentCard')
             .end()
             .start('div').addClass('spacer')
-              .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleUnverified, content$: this.unverifiedBanksCount$ }).addClass('bankContentCard')
+              .tag({
+                class: 'net.nanopay.ui.ContentCard',
+                title: this.TitleUnverified,
+                content$: this.unverifiedBanksCount$
+              }).addClass('bankContentCard')
             .end()
-            // .start('div').addClass('spacer')
-            //   .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledBanksCount$ }).addClass('bankContentCard')
-            // .end()
             .start('div')
               .tag(this.ADD_BANK, { showLabel: true })
             .end()
@@ -182,16 +199,20 @@ foam.CLASS({
             .tag({
                 class: 'foam.u2.ListCreateController',
                 dao: this.data,
-                // REVIEW: AccountRefactor - what type of bank account to create? - Joel
-                factory: function() { return self.BankAccount.create(); },
-                detailView: {
+                factory: function() {
+                  return self.BankAccount.create();
                 },
+                detailView: {},
               summaryView: this.BankAccountTableView.create()
             })
           .end()
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
+          .tag({
+            class: 'net.nanopay.ui.Placeholder',
+            dao: this.data,
+            message: this.placeholderText,
+            image: 'images/ic-bankempty.svg'
+          });
     }
-
   ],
 
   actions: [
@@ -200,8 +221,11 @@ foam.CLASS({
       label: 'Add a bank account',
       icon: 'images/ic-plus.svg',
       code: function() {
-        //this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Add Bank Account', startAtValue: 0 }, this);
-        this.stack.push({class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true}, this);
+        this.stack.push({
+          class: 'net.nanopay.flinks.view.form.FlinksForm',
+          isCustomNavigation: true,
+          hideBottomBar: true
+        }, this);
       }
     }
   ],
@@ -237,7 +261,10 @@ foam.CLASS({
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
-            if ( newValue && newValue.status != this.BankAccountStatus.DISABLED ) {
+            if (
+                newValue &&
+                newValue.status !== this.BankAccountStatus.DISABLED
+            ) {
               this.selectedAccount = newValue;
               this.manageAccount();
               return oldValue;
@@ -247,7 +274,11 @@ foam.CLASS({
         {
           name: 'data',
           factory: function() {
-            return this.bankAccountDAO.where(this.AND(this.EQ(this.BankAccount.OWNER, this.user.id), this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
+            return this.bankAccountDAO
+                .where(
+                  this.AND(
+                    this.EQ(this.BankAccount.OWNER, this.user.id),
+                    this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
           }
         }
       ],
@@ -258,8 +289,6 @@ foam.CLASS({
 
       methods: [
         function initE() {
-          var self = this;
-
           this
             .start({
               class: 'foam.u2.view.ScrollTableView',
@@ -272,15 +301,26 @@ foam.CLASS({
         },
 
         function verifyAccount() {
-          this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', wizardTitle: 'Verification', startAtValue: 2, nextLabelValue: 'Verify', backLabelValue: 'Come back later' }, this);
+          this.stack.push({
+            class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+            wizardTitle: 'Verification',
+            startAtValue: 2,
+            nextLabelValue: 'Verify',
+            backLabelValue: 'Come back later'
+          }, this);
         },
 
         function manageAccount() {
-          this.add(this.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal' }).addClass('manageAccounts'));
+          this.add(this.Popup.create().tag({
+            class: 'net.nanopay.cico.ui.bankAccount.ManageAccountModal'
+          }).addClass('manageAccounts'));
         },
 
         function manageAccountNotification(_message, _type) {
-          this.add(this.NotificationMessage.create({ message: _message, type: _type }));
+          this.add(this.NotificationMessage.create({
+            message: _message,
+            type: _type
+          }));
         }
       ]
     }
@@ -296,17 +336,22 @@ foam.CLASS({
           self.allBanksCount = count.value;
         });
 
-        var verifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED));
+        var acctWithStatus = function(status) {
+          return self.data.where(self.EQ(self.BankAccount.STATUS, status));
+        };
+
+        var verifiedBanksDAO = acctWithStatus(this.BankAccountStatus.VERIFIED);
         verifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.verifiedBanksCount = count.value;
         });
 
-        var unverifiedBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.UNVERIFIED));
+        var unverifiedBanksDAO =
+            acctWithStatus(this.BankAccountStatus.UNVERIFIED);
         unverifiedBanksDAO.select(this.COUNT()).then(function(count) {
           self.unverifiedBanksCount = count.value;
         });
 
-        var disabledBanksDAO = this.data.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED));
+        var disabledBanksDAO = acctWithStatus(this.BankAccountStatus.DISABLED);
         disabledBanksDAO.select(this.COUNT()).then(function(count) {
           self.disabledBanksCount = count.value;
         });
