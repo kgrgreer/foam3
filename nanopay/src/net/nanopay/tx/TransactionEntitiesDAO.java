@@ -80,7 +80,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
     if (userDAO_.find(tx.findSourceAccount(getX()).getOwner()) == null  ) {
       logger_.error(String.format("userDAO_.find(tx.findSourceAccount(getX()).getOwner()) is null"));
     }
-    User payer = (User) userDAO_.find(tx.findSourceAccount(getX()).getOwner());
+    User payer = (User) userDAO_.find(tx.findSourceAccount(x_).getOwner());
     User payee = (User) userDAO_.find( tx.findDestinationAccount(x_).getOwner());
 
     if (payer == null) {
