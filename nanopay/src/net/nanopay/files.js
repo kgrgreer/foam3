@@ -271,6 +271,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HashingJDAOTest' },
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
+  { name: 'net/nanopay/security/HashingWriterTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
