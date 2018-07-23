@@ -239,6 +239,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotification' },
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
+  { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
 
   // settings
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
@@ -265,6 +267,13 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PublicKeyDAO' },
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
+
+  // security tests
+  { name: 'net/nanopay/security/HashedJSONParserTest' },
+  { name: 'net/nanopay/security/HashingJDAOTest' },
+  { name: 'net/nanopay/security/HashingJournalTest' },
+  { name: 'net/nanopay/security/HashingOutputterTest' },
+  { name: 'net/nanopay/security/HashingWriterTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -338,5 +347,9 @@ FOAM_FILES([
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },
-  { name: 'net/nanopay/flinks/ClientFlinksAuthService' }
+  { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
+
+  // tests
+  { name: 'net/test/ModeledTest' },
+  { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
 ]);

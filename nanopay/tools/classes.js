@@ -55,6 +55,7 @@ var classes = [
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
+  'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
@@ -127,7 +128,6 @@ var classes = [
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
-  'net.nanopay.security.HashedFObject',
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
@@ -140,9 +140,22 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAO',
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
+  'net.nanopay.security.MessageDigest',
 
-  // topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+  // security tests
+  'net.nanopay.security.HashedJSONParserTest',
+  'net.nanopay.security.HashingJDAOTest',
+  'net.nanopay.security.HashingJournalTest',
+  'net.nanopay.security.HashingOutputterTest',
+  'net.nanopay.security.HashingWriterTest',
+
+  //topnavigation
+  'net.nanopay.ui.topNavigation.CurrencyChoiceView',
+
+  // tests
+  'net.test.ModeledTest',
+  'net.nanopay.auth.PublicUserInfoDAOTest',
+  'net.nanopay.auth.TestWidget',
 ];
 
 var abstractClasses = [
