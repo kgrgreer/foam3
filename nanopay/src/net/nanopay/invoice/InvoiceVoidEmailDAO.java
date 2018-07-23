@@ -37,7 +37,7 @@ public class InvoiceVoidEmailDAO
       return getDelegate().put_(x, obj);
 
     // Makes sure an email isn't sent if the creator is the payer of the invoice
-    if ( payer.getId() == ((User)invoice.getCreatedBy()).getId() )
+    if ( payer.getId() == ((Long) invoice.getCreatedBy()) )
       return getDelegate().put_(x, obj);
 
     invoice = (Invoice) super.put_(x , obj);
