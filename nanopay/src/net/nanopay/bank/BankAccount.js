@@ -31,11 +31,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'isBankAccount',
-      value: true
-    },
-    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',

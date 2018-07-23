@@ -138,11 +138,14 @@ foam.CLASS({
     {
       name: 'data',
       factory: function() {
-        return this.bankAccountDAO
+        var dao = this.bankAccountDAO
             .where(
               this.AND(
                 this.EQ(this.BankAccount.OWNER, this.user.id),
-                this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
+                // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
+                this.EQ(this.BankAccount.TYPE, this.BankAccount.name)));
+        dao.of = this.BankAccount;
+        return dao;
       }
     }
   ],
@@ -274,11 +277,14 @@ foam.CLASS({
         {
           name: 'data',
           factory: function() {
-            return this.bankAccountDAO
+            var dao = this.bankAccountDAO
                 .where(
                   this.AND(
                     this.EQ(this.BankAccount.OWNER, this.user.id),
-                    this.EQ(this.BankAccount.IS_BANK_ACCOUNT, true)));
+                    // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
+                    this.EQ(this.BankAccount.TYPE, this.BankAccount.name)));
+            dao.of = this.BankAccount;
+            return dao;
           }
         }
       ],
@@ -295,7 +301,7 @@ foam.CLASS({
               data: this.data,
               selection$: this.selection$,
               columns: [
-                'name', 'institutionId', 'accountNumber', 'status'
+                'name', 'institution', 'accountNumber', 'status'
               ]
             }).addClass(this.myClass('table')).end();
         },
