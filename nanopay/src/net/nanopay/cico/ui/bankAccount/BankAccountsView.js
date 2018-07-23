@@ -206,7 +206,7 @@ foam.CLASS({
                   return self.BankAccount.create();
                 },
                 detailView: {},
-              summaryView: this.BankAccountTableView.create()
+                summaryView: this.BankAccountTableView
             })
           .end()
           .tag({
