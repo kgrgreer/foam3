@@ -102,7 +102,8 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.tx.tp.TxnProcessorData',
-  'net.nanopay.tx.tp.TxnProcessor'
+  'net.nanopay.tx.tp.TxnProcessor',
+  'net.nanopay.auth.PublicUserInfo'
 ];
 
 module.exports = {
