@@ -21,19 +21,29 @@ public ResponsePacket parseSPSResponse(String response) {
     return null;
   }
   
-  response = response.substring(1, response.length() - 1 );
+  //response = response.substring(1, response.length() - 1 );
+  
+  if ( response.charAt(0) == (char) 2 ) {
+    response = response.substring(1, response.length());
+  }
+  
+  if ( response.charAt(response.length() - 1) == (char) 3 ) {
+    response = response.substring(0, response.length() - 1);
+  }
+  
   char fieldSeparator = (char) 28;
   Object[] values = parse(response, fieldSeparator);
   System.out.println("values: " + Arrays.toString(values));
  
   for ( int i = 0; i < list.size(); i++ ) {
-    list.get(i).set(this, values[i]);
+    //list.get(i).set(this, values[i]);
+    list.get(i).set(this, list.get(i).fromString((String) values[i]));
   }
   
   return this;
 }
 
-private Object[] parse(String str, char delimiter) {
+protected Object[] parse(String str, char delimiter) {
   Object[] values;
   StringPStream ps = new StringPStream();
   ps.setString(str);
@@ -46,7 +56,7 @@ private Object[] parse(String str, char delimiter) {
   return values;
 }
 
-private static class SPSStringParser implements Parser {
+protected static class SPSStringParser implements Parser {
   private char delimiter;
   public SPSStringParser(char delimiter) {
     this.delimiter = delimiter;

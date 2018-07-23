@@ -131,85 +131,56 @@ public ResponsePacket parseSPSResponse(String response) {
 
   // separate two kinds of records  
   String[] lines = response.split("" + (char) 3 + (char) 2);
+  System.out.println(lines.length);
   
-  String detailResponseInfo = lines[0];
-  String batchDetailInfo = lines[1];
+  //String detailResponseInfo = lines[0];
+  //System.out.println(detailResponseInfo);
+  
+  List<DetailResponseItemContent> itemList = new ArrayList<>();
+  
+  for ( int i = 0; i < lines.length - 1; i++ ) {
+    String detailResponseInfo = lines[i];
+    System.out.println(detailResponseInfo);
+    
+    char fieldSeparator = (char) 28;
+    char unitSeparator = (char) 31;
+    char recordSeparator = (char) 30;
+
+    Object[] temp =  parse(detailResponseInfo, fieldSeparator);
+    System.out.println("temp: " + Arrays.toString(temp));
+
+    for (int j = 0; j < 3; j++) {
+      detailInfoPropertyList.get(j).set(this, temp[j]);
+    }
+
+    Object[] items = parse(temp[3].toString(), recordSeparator);
+    //DetailResponseItemContent[] itemArray = new DetailResponseItemContent[items.length];
+  
+    for ( int j = 0; j < items.length; j++ ) {
+      DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
+      detailResponseItemContent = (DetailResponseItemContent) detailResponseItemContent.parseSPSResponse(items[j].toString());
+      System.out.println("itemContent: " + detailResponseItemContent);
+      //itemArray[j] = detailResponseItemContent;
+      itemList.add(detailResponseItemContent);
+    }
+  }
+  
+  DetailResponseItemContent[] itemArray = new DetailResponseItemContent[itemList.size()];
+    for ( int i = 0; i < itemArray.length; i++ ) {
+      itemArray[i] = itemList.get(i);
+    }
+
+  this.setItemContent(itemArray);
+  
+  String batchDetailInfo = lines[lines.length - 1];
+  System.out.println(batchDetailInfo);
 
   // set BatchDetailGeneralResponse fields
   DetailResponse detailResponse = (DetailResponse) super.parseSPSResponse(batchDetailInfo);
   System.out.println("detailResponse: " + detailResponse.toString());
   
-  
-  char fieldSeparator = (char) 28;
-  char unitSeparator = (char) 31;
-  char recordSeparator = (char) 30;
-
-  Object[] temp =  parse(detailResponseInfo, fieldSeparator);
-  System.out.println("temp: " + Arrays.toString(temp));
-
-  for (int i = 0; i < 3; i++) {
-    detailInfoPropertyList.get(i).set(this, temp[i]);
-  }
-
-  Object[] items = parse(temp[3].toString(), recordSeparator);
-  DetailResponseItemContent[] itemArray = new DetailResponseItemContent[items.length];
-  
-  for ( int i = 0; i < items.length; i++ ) {
-    DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
-    detailResponseItemContent = (DetailResponseItemContent) detailResponseItemContent.parseSPSResponse(items[i].toString());
-    System.out.println("itemContent: " + detailResponseItemContent);
-    itemArray[i] = detailResponseItemContent;
-  }
-
-  this.setItemContent(itemArray);
-
   return this;
 }
-
-private Object[] parse(String str, char delimiter) {
-  Object[] values;
-  StringPStream ps = new StringPStream();
-  ps.setString(str);
-  Parser parser = new Repeat(new SPSStringParser(delimiter), new Literal("" + delimiter));
-  PStream ps1 = ps.apply(parser, null);
-  if ( ps1 == null ) throw new RuntimeException("format error");
-
-  values = (Object[]) ps1.value();
-
-  return values;
-}
-
-private static class SPSStringParser implements Parser {
-  private char delimiter;
-  public SPSStringParser(char delimiter) {
-    this.delimiter = delimiter;
-  }
-
-  public PStream parse(PStream ps, ParserContext x) {
-    if ( ps == null ) {
-      return null;
-    }
-
-    char head;
-    StringBuilder sb = new StringBuilder();
-
-    while ( ps.valid() ) {
-      head = ps.head();
-      if ( head == delimiter ) {
-        break;
-      }
-      sb.append(head);
-      ps = ps.tail();
-    }
-
-    if ( ! ps.valid() && SafetyUtil.isEmpty(sb.toString()) ) {
-      return null;
-    }
-
-    return ps.setValue(sb.toString());
-  }
-}
-
 
         `);
       }

@@ -67,51 +67,14 @@ public ResponsePacket parseSPSResponse(String response) {
     return null;
   }
   
-  Object[] values;
-  
-  char delimiter = (char) 31;
-  StringPStream ps = new StringPStream();
-  ps.setString(response);
-  Parser parser = new Repeat(new SPSStringParser(), new Literal("" + delimiter));
-  PStream ps1 = ps.apply(parser, null);
-  if ( ps1 == null ) throw new RuntimeException("format error");
-  
-  values = (Object[]) ps1.value();
+  char unitSeparator = (char) 31;
+  Object[] values = parse(response, unitSeparator);
   
   for ( int i = 0; i < list.size(); i++ ) {
-    list.get(i).set(this, list.get(i).fromString((String) values[i]));
+    list.get(i).set(this, values[i]);
   }
   
   return this;
-}
-
-private static class SPSStringParser implements Parser {
-  private static char delimiter = (char) 31;
-  public SPSStringParser() {}
-
-  public PStream parse(PStream ps, ParserContext x) {
-    if ( ps == null ) {
-      return null;
-    }
-
-    char head;
-    StringBuilder sb = new StringBuilder();
-
-    while ( ps.valid() ) {
-      head = ps.head();
-      if ( head == delimiter ) {
-        break;
-      }
-      sb.append(head);
-      ps = ps.tail();
-    }
-
-    if ( ! ps.valid() && SafetyUtil.isEmpty(sb.toString()) ) {
-      return null;
-    }
-
-    return ps.setValue(sb.toString());
-  }
 }
         `);
       }
