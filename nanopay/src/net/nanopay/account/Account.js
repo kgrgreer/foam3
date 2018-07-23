@@ -1,11 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Account',
-  //abstract: true,
 
   documentation: 'Base model of all Accounts',
 
   // relationships: owner (User)
+
   properties: [
     {
       class: 'Long',
@@ -32,7 +32,10 @@ foam.CLASS({
       value: true
     },
     {
-      documentation: 'Unit of measure of the balance - such as Currency. The value of the denomication is the currency code, for example.',
+      documentation: `
+          Unit of measure of the balance - such as Currency. The value of the
+          denomination is the currency code, for example.
+      `,
       class: 'String',
       name: 'denomination'
     },
@@ -42,7 +45,7 @@ foam.CLASS({
       label: 'Set As Default',
       value: false
     },
-    // TDODO: access/scope: public, private
+    // TODO: access/scope: public, private
     {
       class: 'String',
       name: 'type',
