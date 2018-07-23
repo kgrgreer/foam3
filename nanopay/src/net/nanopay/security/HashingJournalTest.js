@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
 
     'java.io.BufferedReader',
+    'java.io.BufferedWriter',
     'java.io.File',
     'java.util.UUID'
   ],
@@ -52,6 +53,7 @@ foam.CLASS({
 
         // replay tests
         HashingJournal_Replay_Succeeds();
+        HashingJournal_ReplayJournalWithInvalidDigest_Exception();
 
       `
     },
@@ -150,6 +152,35 @@ foam.CLASS({
           test("Kirk".equals(result.getFirstName()), "Stored user first name matches \\"Kirk\\"");
           test("Eaton".equals(result.getLastName()), "Stored user last name matches \\"Eaton\\"");
           test("kirk@nanopay.net".equals(result.getEmail()), "Stored user email matches \\"kirk@nanopay.net\\"");
+        } catch ( Throwable t ) {
+          test(false, "HashingJournal replay method should not throw an exception");
+        }
+      `
+    },
+    {
+      name: 'HashingJournal_ReplayJournalWithInvalidDigest_Exception',
+      javaCode: `
+        try {
+          DAO dao = new MDAO(User.getOwnClassInfo());
+          File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+          HashingJournal journal = new HashingJournal.Builder(getX())
+            .setAlgorithm("SHA-1")
+            .setFile(file)
+            .setDao(dao)
+            .build();
+
+          // write entry with bad digest to journal
+          try ( BufferedWriter writer = journal.getWriter() ) {
+            writer.write(EXPECTED);
+            writer.flush();
+          }
+
+          // replay journal
+          journal.replay(dao);
+
+          // dao should not contain invalid entry
+          Count count = (Count) dao.select(new Count());
+          test(count.getValue() == 0L, "Replaying a journal with an invalid entry should not add an element to the DAO");
         } catch ( Throwable t ) {
           test(false, "HashingJournal replay method should not throw an exception");
         }
