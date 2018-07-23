@@ -65,21 +65,6 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     FObject clone = obj.fclone();
     Transaction tx = (Transaction) clone;
-    if(  tx == null ) {
-      logger_.error(String.format("tx is null"));
-    }
-    if ( tx.findSourceAccount(x_) == null ) {
-      logger_.error(String.format("tx.findSourceAccount is null"));
-    }
-    if (userDAO_ == null ) {
-      logger_.error(String.format("userDAO_ is null"));
-    }
-    if ( tx.findSourceAccount(getX()).getOwner() == null ) {
-      logger_.error(String.format("tx.findSourceAccount(getX()).getOwner() is null"));
-    }
-    if (userDAO_.find(tx.findSourceAccount(getX()).getOwner()) == null  ) {
-      logger_.error(String.format("userDAO_.find(tx.findSourceAccount(getX()).getOwner()) is null"));
-    }
     User payer = (User) userDAO_.find(tx.findSourceAccount(x_).getOwner());
     User payee = (User) userDAO_.find( tx.findDestinationAccount(x_).getOwner());
 
