@@ -51,8 +51,6 @@ public class RealexTransactionDAO
     PaymentRequest paymentRequest = new PaymentRequest();
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
     DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
-    System.out.println("-----------------------Token-----------------------");
-    System.out.println(paymentAccountInfo.getToken());
     if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
