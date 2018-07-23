@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'net.nanopay.fx.model',
   name: 'ExchangeRate',
 
-  documentation: 'Exchange rate information pertaining to two currency',
+  documentation: 'Exchange rate information pertaining to two currencies',
 
   javaImports: [
       'java.util.Date'
@@ -23,7 +23,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
       name: 'fromCurrency',
-      documentation: 'Currency originating the payment/request.'
+      documentation: 'Originating currency of the payment/request.'
     },
     {
       class: 'Reference',
@@ -34,7 +34,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'rate',
-      documentation: 'Percentage rate/difference between both currency values.'
+      documentation: 'Percentage rate/difference between currency values.'
     },
     {
       class: 'DateTime',

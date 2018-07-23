@@ -11,7 +11,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purposeCode',
-      documentation: 'Code associated to purpose.',
+      documentation: 'A code indicating the purpose of a transaction.',
       required: true
     },
     {

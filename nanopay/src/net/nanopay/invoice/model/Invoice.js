@@ -150,7 +150,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of required to pay invoice.`,
+      documentation: `The amount required to pay invoice.`,
       aliases: [
         'a', 'targetAmount'
       ],

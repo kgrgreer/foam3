@@ -150,7 +150,7 @@ foam.CLASS({
       name: 'businessIdentificationNumber',
       transient: true,
       documentation: 'A number issued by an Issuing Authority such' +
-          ' as the CRA. Used as an identified as well as for tax purposes.',
+          ' as the CRA. Used as an identifier as well as for tax purposes.',
       getter: function() {
         return this.businessRegistrationNumber;
       },

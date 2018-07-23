@@ -60,7 +60,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      documentation: 'Address of user associated to PAD capture.',
+      documentation: 'Address of user associated with PAD capture.',
       factory: function() {
         return this.Address.create();
       },
