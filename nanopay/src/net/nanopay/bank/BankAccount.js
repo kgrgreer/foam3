@@ -5,7 +5,11 @@ foam.CLASS({
 
   documentation: 'Base class/model of all BankAccounts',
 
-  tableColumns: ['name', 'status','actionsMenu'],
+  tableColumns: [
+    'actionsMenu',
+    'name',
+    'status',
+  ],
 
   // relationships: branch (Branch)
 
@@ -14,11 +18,11 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       label: 'Account No.',
-      tableCellFormatter: function (str) {
+      tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
       },
-      validateObj: function (accountNumber) {
+      validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
 
         if ( ! accNumberRegex.test(accountNumber) ) {
@@ -27,16 +31,13 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'isBankAccount',
-      value: true
-    },
-    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
-      tableCellFormatter: function (a) {
-        var colour = ( a === net.nanopay.bank.BankAccountStatus.VERIFIED ) ? '#2cab70' : '#f33d3d';
+      tableCellFormatter: function(a) {
+        var colour = ( a === net.nanopay.bank.BankAccountStatus.VERIFIED )
+            ? '#2cab70'
+            : '#f33d3d';
         this.start()
           .add(a.label)
           .style({
@@ -88,8 +89,10 @@ foam.CLASS({
     {
       name: 'run',
       icon: 'images/ic-options-hover.svg',
-      code: function () {
-        foam.nanos.menu.SubMenuView.create({menu: foam.nanos.menu.Menu.create({id: 'accountSettings'})});
+      code: function() {
+        foam.nanos.menu.SubMenuView.create({
+          menu: foam.nanos.menu.Menu.create({ id: 'accountSettings' })
+        });
       }
     }
   ]

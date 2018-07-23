@@ -156,6 +156,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
+      targetDAOKey: 'localAccountDAO',
       label: 'Source account',
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payerId, obj, axiom) {
@@ -181,6 +182,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
+      targetDAOKey: 'localAccountDAO',
       label: 'Destination Account',
       visibility: foam.u2.Visibility.RO,
       tableCellFormatter: function(payeeId, obj, axiom) {
