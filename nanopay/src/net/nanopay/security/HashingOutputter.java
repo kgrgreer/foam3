@@ -68,7 +68,7 @@ public class HashingOutputter
       return;
     }
 
-    String algorithm = hashingWriter_.getAlgorithm();
+    String algorithm = hashingJournal_.getAlgorithm();
     String digest = Hex.toHexString(hashingWriter_.digest());
     hashingJournal_.setPreviousDigest(digest);
 

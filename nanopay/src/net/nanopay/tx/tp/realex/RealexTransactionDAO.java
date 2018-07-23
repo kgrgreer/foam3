@@ -9,6 +9,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
 import com.realexpayments.remote.sdk.domain.Card;
@@ -49,11 +50,12 @@ public class RealexTransactionDAO
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
+    DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
     if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
         .addMerchantId(paymentAccountInfo.getMerchantId())
-        .addOrderId(Long.toString(transaction.getId()))
+        .addOrderId(UUID.randomUUID().toString())
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE))
         .addToken(paymentAccountInfo.getToken());
       if ( MobileWallet.GOOGLEPAY == paymentAccountInfo.getMobileWallet() )
@@ -74,7 +76,7 @@ public class RealexTransactionDAO
       )).select(new ArraySink());
       List list = sink.getArray();
       if ( list.size() == 0 ) {
-        throw new RuntimeException("asdfdasfasdf");
+        throw new RuntimeException("Please add Payment Card again");
       }
       TxnProcessorUserReference userReference = (TxnProcessorUserReference) list.get(0);
       PaymentData myPaymentData = new PaymentData()
@@ -102,20 +104,31 @@ public class RealexTransactionDAO
     try {
       response = client.send(paymentRequest);
       // '00' == success
-      if ( ! "00".equals(response.getResult()) )
+      if ( ! "00".equals(response.getResult()) ) {
+        transaction.setStatus(TransactionStatus.DECLINED);
+        getDelegate().put_(x, transaction);
         throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
+      }
+      transaction.setStatus(TransactionStatus.COMPLETED);
+      paymentAccountInfo.setToken("");
+      Transaction txn = (Transaction) getDelegate().put_(x, transaction);
+      if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE && txn.getStatus() == TransactionStatus.COMPLETED ) {
+        //create new transaction for the fee
+        localTransactionDAO.put(new Transaction.Builder(getX())
+          .setPayerId(transaction.getPayerId())
+          .setPayeeId(3797) //TODO: create fee collector user
+          .setType(TransactionType.NONE)
+          .setStatus(TransactionStatus.COMPLETED)
+          .setAmount(paymentAccountInfo.getFee())
+          .build());
+      }
+      return txn;
     } catch ( RealexServerException e ) {
       throw new RuntimeException(e);
     } catch ( RealexException e ) {
       throw new RuntimeException(e);
     } catch ( Throwable e ) {
       throw new RuntimeException(e);
-    } finally {
-      if ( response != null && "00".equals(response.getResult()) )
-        transaction.setStatus(TransactionStatus.COMPLETED);
-      else
-        transaction.setStatus(TransactionStatus.DECLINED);
-      return getDelegate().put_(x, transaction);
     }
   }
 }
