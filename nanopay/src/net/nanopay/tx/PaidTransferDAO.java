@@ -13,6 +13,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 
 import net.nanopay.account.Account;
+import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 // Sends an email when an transfer has gone through
@@ -39,7 +40,7 @@ public class PaidTransferDAO
       return transaction;
 
     // Returns if transaction is a cico transaction
-    if ( transaction.getDestinationAccount() == transaction.getSourceAccount() )
+    if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.CASHOUT )
       return transaction;
 
     User user   = (User) userDAO_.find_(x,((Account) transaction.findDestinationAccount(x)).getOwner());
