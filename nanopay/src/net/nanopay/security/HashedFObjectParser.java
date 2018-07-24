@@ -50,7 +50,7 @@ public class HashedFObjectParser
         // calculate digest based on JSON message
         java.security.MessageDigest md;
         try {
-          md = java.security.MessageDigest.getInstance(messageDigest.getAlgorithm());
+          md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
 
           // update digest with previous digest
           if ( hashingJournal.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal.getPreviousDigest()) ) {
