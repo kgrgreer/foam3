@@ -349,4 +349,6 @@ FOAM_FILES([
   // tests
   { name: 'net/test/ModeledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
+  { name: 'net/test/TestsReporter' },
+  { name: 'net/test/TestReport' }
 ]);

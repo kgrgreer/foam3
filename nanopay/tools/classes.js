@@ -154,6 +154,8 @@ var classes = [
   'net.test.ModeledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
+  'net.test.TestsReporter',
+  'net.test.TestReport'
 ];
 
 var abstractClasses = [
