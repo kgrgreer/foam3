@@ -109,9 +109,9 @@ foam.CLASS({
       var self = this;
       this.stack.sub(this.itemUpdate);
       this.currencyDAO.find(this.data.destinationCurrency).then(function(curr) {
-        self.currency = curr.alphabeticCode;
+        self.currency = curr ? curr.alphabeticCode : '$';
       });
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
