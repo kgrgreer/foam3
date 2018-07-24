@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.test',
+  package: 'net.nanopay.test',
   name: 'TestsReporter',
   documentation: 'Reports the total number of tests written to a Slack channel.',
 
@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.nanos.test.Test',
     'foam.nanos.notification.Notification',
     'java.util.*',
-    'net.test.TestReport'
+    'net.nanopay.test.TestReport'
   ],
 
   methods: [

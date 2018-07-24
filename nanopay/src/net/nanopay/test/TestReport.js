@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.test',
+  package: 'net.nanopay.test',
   name: 'TestReport',
   documentation: 'Model to store meta-data on tests.',
 
