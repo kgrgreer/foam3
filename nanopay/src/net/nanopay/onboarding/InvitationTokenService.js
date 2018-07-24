@@ -93,7 +93,6 @@ return calendar.getTime();`
 
         user = (User) user.fclone();
         user.setPortalAdminCreated(false);
-        user.setWelcomeEmailSent(true);
         user.setInviteAttempts(user.getInviteAttempts() + 1);
 
         userDAO.put(user);

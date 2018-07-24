@@ -14,17 +14,19 @@ foam.CLASS({
       class: 'String',
       name: 'branchId',
       required: true,
-      documentation: 'Institution Branch identifier - such as the Indian Financial System Code',
+      documentation: 'Institution Branch identifier - such' +
+          ' as the Indian Financial System Code.',
     },
     {
       class: 'String',
-      name: 'clearingSystemIdentification'
+      name: 'clearingSystemIdentification',
+      documentation: 'Clearing system identifier.'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      documentation: 'Bank branch address'
+      documentation: 'Bank branch address.'
     }
   ]
 });

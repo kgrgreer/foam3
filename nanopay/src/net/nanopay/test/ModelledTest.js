@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.test',
-  name: 'ModeledTest',
+  package: 'net.nanopay.test',
+  name: 'ModelledTest',
   extends: 'foam.nanos.test.Test',
 
   methods: [

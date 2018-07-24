@@ -48,7 +48,6 @@ foam.CLASS({
   email.sendEmailFromTemplate(user, message, template, args);
   user = (User) user.fclone();
   user.setPortalAdminCreated(false);
-  user.setWelcomeEmailSent(true);
   userDAO.put(user);
   return true;
 } catch (Throwable t) {
