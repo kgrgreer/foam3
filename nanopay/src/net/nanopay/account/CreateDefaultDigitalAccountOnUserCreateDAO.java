@@ -31,9 +31,11 @@ public class CreateDefaultDigitalAccountOnUserCreateDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Logger logger   = (Logger) x.get("logger");
-    User user       = (User) super.put_(x, obj);
-
-    DigitalAccount.findDigitalAccount(x, user, null);
-    return user;
+    User user       = (User) obj;
+    if ( user.getId() == 0 ||
+         super.find_(x, user) == null ) {
+      DigitalAccount.findDefault(x, user, null);
+    }
+    return (User) super.put_(x, obj);
   }
 }

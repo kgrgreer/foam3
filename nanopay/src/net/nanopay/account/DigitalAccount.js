@@ -45,12 +45,12 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          static public DigitalAccount findDigitalAccount(X x, User user, String currency) {
+          static public DigitalAccount findDefault(X x, User user, String currency) {
             Logger logger   = (Logger) x.get("logger");
             DigitalAccount account = null;
 
             synchronized(user) {
-            logger.info(DigitalAccount.class.getSimpleName(), "findDigitalAccount", "user", user.getId(), "currency", currency);
+            logger.info(DigitalAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
 
             // Select currency of user's country
             String denomination = currency;
