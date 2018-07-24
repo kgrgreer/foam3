@@ -11,11 +11,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      documentation: 'Name of business type.'
     },
     {
       class: 'String',
-      name: 'description'
+      name: 'description',
+      documentation: 'Description of business type.'
     }
   ]
 });
