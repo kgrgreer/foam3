@@ -95,96 +95,84 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-protected static List<PropertyInfo> detailInfoPropertyList;
-{
-list = new ArrayList<>();
-detailInfoPropertyList = new ArrayList<>();
-detailInfoPropertyList.add(MSG_TYPE);
-detailInfoPropertyList.add(PACKET_NUM);
-detailInfoPropertyList.add(ITEM_NUM);
-detailInfoPropertyList.add(ITEM_CONTENT);
-list.add(BATCH_MSG_TYPE);
-list.add(BATCH_PACKET_TYPE);
-list.add(MESSAGE_MODIFIER_CODE);
-list.add(BATCH_STATUS_CODE);
-list.add(TEXT_MSG);
-list.add(HOST_SYNC_COUNTER);
-list.add(BATCH_ID);
-list.add(HOST_CHECK_APPROVAL_COUNT);
-list.add(HOST_CHECK_APPROVAL_AMOUNT);
-list.add(HOST_DECLINE_COUNT);
-list.add(HOST_DECLINE_AMOUNT);
-list.add(HOST_VOID_COUNT);
-list.add(HOST_VOID_AMOUNT);
-list.add(HOST_CREDIT_COUNT);
-list.add(HOST_CREDIT_AMOUNT);
-}
-
-@Override
-public ResponsePacket parseSPSResponse(String response) {
-  if ( response == null || response.length() == 0 ) {
-    return null;
+  protected static List<PropertyInfo> detailInfoPropertyList;
+  protected static List<PropertyInfo> batchInfo;
+  {
+  detailInfoPropertyList = new ArrayList<>();
+  detailInfoPropertyList.add(MSG_TYPE);
+  detailInfoPropertyList.add(PACKET_NUM);
+  detailInfoPropertyList.add(ITEM_NUM);
+  detailInfoPropertyList.add(ITEM_CONTENT);
+  batchInfo = new ArrayList<>();
+  batchInfo.add(BATCH_MSG_TYPE);
+  batchInfo.add(BATCH_PACKET_TYPE);
+  batchInfo.add(MESSAGE_MODIFIER_CODE);
+  batchInfo.add(BATCH_STATUS_CODE);
+  batchInfo.add(TEXT_MSG);
+  batchInfo.add(HOST_SYNC_COUNTER);
+  batchInfo.add(BATCH_ID);
+  batchInfo.add(HOST_CHECK_APPROVAL_COUNT);
+  batchInfo.add(HOST_CHECK_APPROVAL_AMOUNT);
+  batchInfo.add(HOST_DECLINE_COUNT);
+  batchInfo.add(HOST_DECLINE_AMOUNT);
+  batchInfo.add(HOST_VOID_COUNT);
+  batchInfo.add(HOST_VOID_AMOUNT);
+  batchInfo.add(HOST_CREDIT_COUNT);
+  batchInfo.add(HOST_CREDIT_AMOUNT);
   }
   
-  // remove STX and ETX
-  response = response.substring(1, response.length() - 1 );
-
-  // separate two kinds of records  
-  String[] lines = response.split("" + (char) 3 + (char) 2);
-  System.out.println(lines.length);
+  @Override
+  public ResponsePacket parseSPSResponse(String response) {
+    if ( response == null || response.length() == 0 ) {
+      return null;
+    }
+    
+    // remove STX and ETX
+    response = response.substring(1, response.length() - 1);
   
-  //String detailResponseInfo = lines[0];
-  //System.out.println(detailResponseInfo);
-  
-  List<DetailResponseItemContent> itemList = new ArrayList<>();
-  
-  for ( int i = 0; i < lines.length - 1; i++ ) {
-    String detailResponseInfo = lines[i];
-    System.out.println(detailResponseInfo);
+    // separate two kinds of records  
+    String[] lines = response.split("" + (char) 3 + (char) 2);
+    
+    List<DetailResponseItemContent> itemList = new ArrayList<>();
     
     char fieldSeparator = (char) 28;
-    char unitSeparator = (char) 31;
     char recordSeparator = (char) 30;
-
-    Object[] temp =  parse(detailResponseInfo, fieldSeparator);
-    System.out.println("temp: " + Arrays.toString(temp));
-
-    for (int j = 0; j < 3; j++) {
-      detailInfoPropertyList.get(j).set(this, temp[j]);
-    }
-
-    Object[] items = parse(temp[3].toString(), recordSeparator);
-    //DetailResponseItemContent[] itemArray = new DetailResponseItemContent[items.length];
+    
+    for ( int i = 0; i < lines.length - 1; i++ ) {
+      String detailResponseInfo = lines[i];
   
-    for ( int j = 0; j < items.length; j++ ) {
-      DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
-      detailResponseItemContent = (DetailResponseItemContent) detailResponseItemContent.parseSPSResponse(items[j].toString());
-      System.out.println("itemContent: " + detailResponseItemContent);
-      //itemArray[j] = detailResponseItemContent;
-      itemList.add(detailResponseItemContent);
-    }
-  }
+      Object[] temp =  parse(detailResponseInfo, fieldSeparator);
+      for ( int j = 0; j < 3; j++ ) {
+        detailInfoPropertyList.get(j).set(this, temp[j]);
+      }
   
-  DetailResponseItemContent[] itemArray = new DetailResponseItemContent[itemList.size()];
+      Object[] items = parse(temp[3].toString(), recordSeparator);
+    
+      for (Object item : items) {
+        DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
+        detailResponseItemContent = (DetailResponseItemContent) detailResponseItemContent.parseSPSResponse(item.toString());
+        itemList.add(detailResponseItemContent);
+      }
+    }
+    
+    DetailResponseItemContent[] itemArray = new DetailResponseItemContent[itemList.size()];
     for ( int i = 0; i < itemArray.length; i++ ) {
       itemArray[i] = itemList.get(i);
     }
-
-  this.setItemContent(itemArray);
   
-  String batchDetailInfo = lines[lines.length - 1];
-  System.out.println(batchDetailInfo);
-
-  // set BatchDetailGeneralResponse fields
-  DetailResponse detailResponse = (DetailResponse) super.parseSPSResponse(batchDetailInfo);
-  System.out.println("detailResponse: " + detailResponse.toString());
-  
-  return this;
-}
-
+    this.setItemContent(itemArray);
+    
+    // set BatchDetailGeneralResponse fields
+    String batchDetailInfo = lines[lines.length - 1];  
+    Object[] values =  parse(batchDetailInfo, fieldSeparator);
+    for ( int i = 0; i < values.length; i++ ) {
+      batchInfo.get(i).set(this, values[i]);
+    }
+    
+    return this;
+  }
         `);
       }
     }
   ]
-
 });

@@ -50,32 +50,33 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-{
-list = new ArrayList<>();
-list.add(ITEM_ID);
-list.add(ORIGINAL_REQUEST_STATUS);
-list.add(MANUAL_ENTRY_INDICATOR);
-list.add(LOCAL_TRANSACTION_TIME);
-list.add(FIELD5NOT_USED);
-list.add(AMOUNT);
-list.add(INVOICE);
-list.add(CLERK_ID);
-}
-
-public ResponsePacket parseSPSResponse(String response) {
-  if ( response == null || response.length() == 0 ) {
-    return null;
+  {
+  list = new ArrayList<>();
+  list.add(ITEM_ID);
+  list.add(ORIGINAL_REQUEST_STATUS);
+  list.add(MANUAL_ENTRY_INDICATOR);
+  list.add(LOCAL_TRANSACTION_TIME);
+  list.add(FIELD5NOT_USED);
+  list.add(AMOUNT);
+  list.add(INVOICE);
+  list.add(CLERK_ID);
   }
   
-  char unitSeparator = (char) 31;
-  Object[] values = parse(response, unitSeparator);
-  
-  for ( int i = 0; i < list.size(); i++ ) {
-    list.get(i).set(this, values[i]);
+  @Override
+  public ResponsePacket parseSPSResponse(String response) {
+    if ( response == null || response.length() == 0 ) {
+      return null;
+    }
+    
+    char unitSeparator = (char) 31;
+    Object[] values = parse(response, unitSeparator);
+    
+    for ( int i = 0; i < list.size(); i++ ) {
+      list.get(i).set(this, values[i]);
+    }
+    
+    return this;
   }
-  
-  return this;
-}
         `);
       }
     }

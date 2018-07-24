@@ -103,13 +103,9 @@ public class SPSProcessor extends ContextAwareSupport {
         break;
       case "2033":
         // DetailResponse
-        System.out.println("response: " + response);
-
         DetailResponse detailResponse = new DetailResponse();
         detailResponse.parseSPSResponse(response);
         responsePacket = detailResponse;
-
-        System.out.println("item: " + detailResponse.getItemContent());
 
         DetailResponseItemContent[] array = detailResponse.getItemContent();
         System.out.println("size: " + array.length);
