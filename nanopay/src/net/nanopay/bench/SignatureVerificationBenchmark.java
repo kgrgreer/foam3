@@ -34,8 +34,10 @@ public class SignatureVerificationBenchmark
     // generate signatures in setup to properly benchmark verification
     Iterator i = data.iterator();
     while ( i.hasNext() ) {
-      Transaction t = (Transaction) i.next();
-      transactions_.add(new SimpleEntry<>(t, t.sign(sigAlgo_, key)));
+      try {
+        Transaction t = (Transaction) i.next();
+        transactions_.add(new SimpleEntry<>(t, t.sign(sigAlgo_, key)));
+      } catch ( Throwable ignored ) { }
     }
   }
 
