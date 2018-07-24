@@ -114,9 +114,10 @@ foam.CLASS({
       expression: function() {
         var self = this;
 
-        this.currencyDAO.find(this.currentAccount.denomination).then(function(currency) {
-          self.chosenCurrency = currency;
-        });
+        this.currencyDAO.find(this.currentAccount.denomination)
+            .then(function(currency) {
+              self.chosenCurrency = currency;
+            });
       },
       postSet: function() {
         this.data = this.chosenCurrency;

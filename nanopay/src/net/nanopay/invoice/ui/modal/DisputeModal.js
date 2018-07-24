@@ -38,11 +38,7 @@ foam.CLASS({
       value: ''
     },
     {
-      name: 'currencyCode',
-      factory: function() {
-        return this.invoice.targetCurrency ?
-            this.invoice.targetCurrency.alphabeticCode : '$';
-      }
+      name: 'currency'
     }
   ],
 
@@ -64,6 +60,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+      this.invoice.destinationCurrency$find.then(function(currency) {
+        self.currency = currency ? currency.alphabeticCode : '$';
+      });
 
       this
         .tag(this.ModalHeader.create({ title: 'Void' }))
@@ -78,7 +78,7 @@ foam.CLASS({
               .start()
                 .start().addClass('key').add('Amount').end()
                 .start().addClass('value')
-                  .add(this.currencyCode)
+                  .add(this.currency$)
                   .add(' ')
                   .add((this.invoice.amount/100).toFixed(2))
                   .end()
