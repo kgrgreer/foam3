@@ -40,7 +40,7 @@ public class PaidTransferDAO
       return transaction;
 
     // Returns if transaction is a cico transaction
-    if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.CASHOUT )
+    if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.CASHOUT || transaction.getType() == TransactionType.VERIFICATION )
       return transaction;
 
     User user   = (User) userDAO_.find_(x,((Account) transaction.findDestinationAccount(x)).getOwner());
