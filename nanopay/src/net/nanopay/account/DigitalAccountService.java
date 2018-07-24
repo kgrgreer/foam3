@@ -18,6 +18,6 @@ public class DigitalAccountService
 
   public DigitalAccount getDefault(X x, String denomination) {
     User user = (User) x.get("user");
-    return user.findDigitalAccount(x, denomination);
+    return DigitalAccount.findDigitalAccount(x, user, denomination);
   }
 }
