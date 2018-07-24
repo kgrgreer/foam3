@@ -6,6 +6,14 @@ foam.CLASS({
 
   // relationships: owner (User)
 
+  javaImports: [
+    'foam.dao.DAO'
+  ],
+
+  imports: [
+    'balanceDAO'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -62,12 +70,34 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'balance',
-      code: function() {
-        return null;
+      name: 'findBalance',
+      code: function(x) {
+        return x.balanceDAO.find(this.id).then(function(balance) {
+          if ( balance != null ) {
+            console.debug('Balance found for account', this.id);
+            return balance.balance;
+          } else {
+            console.debug('Balance not for found for account', this.id);
+          }
+          return null;
+        }.bind(this));
       },
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaReturns: 'Object',
       javaCode: `
+        DAO balanceDAO = (DAO) x.get("localBalanceDAO");
+        Balance balance = (Balance) balanceDAO.find(this.getId());
+        if ( balance != null ) {
+          ((foam.nanos.logger.Logger) getX().get("logger")).debug("Balance found for account", this.getId());
+          return balance.getBalance();
+        } else {
+          ((foam.nanos.logger.Logger) getX().get("logger")).debug("Balance not found for account", this.getId());
+        }
         return null;
       `
     }

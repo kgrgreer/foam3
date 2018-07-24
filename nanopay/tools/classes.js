@@ -29,7 +29,7 @@ var classes = [
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
-  'net.nanopay.account.DigitalAccountInterface',
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CADBankAccount',
@@ -164,7 +164,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.account.DigitalAccountInterface',
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

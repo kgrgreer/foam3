@@ -8,6 +8,13 @@ import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.tp.TxnProcessor;
+
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -15,14 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import net.nanopay.account.Account;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.model.Branch;
-import net.nanopay.payment.Institution;
-import net.nanopay.tx.tp.TxnProcessor;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -187,8 +186,8 @@ public class CsvUtil {
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
-          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(((Branch)bankAccount.getBranch()).getBranchId()), 5));
-          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf(((Institution)bankAccount.getInstitution()).getInstitutionNumber()), 3));
+          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf((bankAccount.getBranch())), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((bankAccount.getInstitution())), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);

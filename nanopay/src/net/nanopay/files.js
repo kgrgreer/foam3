@@ -8,8 +8,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
-  { name: 'net/nanopay/account/User' },
-  { name: 'net/nanopay/account/DigitalAccountInterface' },
+  { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
@@ -206,6 +205,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/tp/alterna/SFTPService' },
   { name: 'net/nanopay/tx/tp/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/tx/tp/alterna/client/ClientAlternaSFTPService' },
+  { name: 'net/nanopay/tx/tp/alterna/AlternaTxnProcessorData' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
   { name: 'net/nanopay/cico/CICOPaymentType' },

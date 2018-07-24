@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ClientDigitalAccountService',
 
   implements: [
-    'net.nanopay.account.DigitalAccountInterface'
+    'net.nanopay.account.DigitalAccountServiceInterface'
   ],
 
   requires: [
@@ -19,7 +19,7 @@ foam.CLASS({
     },
     {
       class: 'Stub',
-      of: 'net.nanopay.account.DigitalAccountInterface',
+      of: 'net.nanopay.account.DigitalAccountServiceInterface',
       name: 'delegate',
       factory: function() {
         return this.SessionClientBox.create({

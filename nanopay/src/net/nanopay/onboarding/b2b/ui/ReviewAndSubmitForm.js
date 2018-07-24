@@ -153,7 +153,7 @@ foam.CLASS({
             .start(this.EDIT_PRINCIPAL_OWNER, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
-            .forEach(this.viewData.user.principalOwners, function (data, index) {
+            .forEach(this.viewData.user.principalOwners, function(data, index) {
               self
               .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
               .start().addClass('principalOwnerContainer')
@@ -168,7 +168,7 @@ foam.CLASS({
                 .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
                 .start('p').add(data.principleType).end()
                 .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
-                .start('p').add(data.birthday.toISOString().substring(0,10)).end()
+                .start('p').add(data.birthday.toISOString().substring(0, 10)).end()
                 .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                 .start('p').add(
                     (data.address.suite ? data.address.suite + '-' : '')
@@ -176,6 +176,7 @@ foam.CLASS({
                   + data.address.streetName + ', '
                   + data.address.city + ', '
                   + data.address.regionId + ', '
+                  + data.address.countryId + ', '
                   + data.address.postalCode
                 ).addClass('addressDiv').end()
               .end();
@@ -188,10 +189,10 @@ foam.CLASS({
             .start(this.EDIT_QUESTIONAIRE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
-          .forEach(this.viewData.user.questionnaire.questions, function (question) {
+          .forEach(this.viewData.user.questionnaire.questions, function(question) {
             self
               .start('p').add(question.question).addClass('wizardBoldLabel').end()
-              .start('p').add(question.response).end()
+              .start('p').add(question.response).end();
           }).end()
         .end();
     }

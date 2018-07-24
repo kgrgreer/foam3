@@ -25,6 +25,12 @@ foam.CLASS({
     'net.nanopay.ui.style.AppStyles'
   ],
 
+  imports: [
+    'digitalAccount',
+    'accountDAO',
+    'balanceDAO'
+  ],
+
   exports: [
     'appConfig',
     'as ctrl',
@@ -221,7 +227,7 @@ foam.CLASS({
       console.log('findAccount', 'currentAccount.id', this.currentAccount.id, 'user', this.user.id);
       if ( this.currentAccount == null || this.currentAccount.id == 0 ||
            this.currentAccount.owner != null && this.currentAccount.owner.id != this.user.id ) {
-        return this.user.findDigitalAccount(this.client, null).then(function(account) {
+        return this.client.digitalAccount.findDefault(this.client, null).then(function(account) {
           console.log('findAccount account:', account);
           this.currentAccount.copyFrom(account);
           return this.currentAccount;
@@ -236,8 +242,10 @@ foam.CLASS({
 
     function findBalance() {
       return this.findAccount().then(function(account) {
+        console.log('findBalance account: ', account);
         if ( account != null ) {
-          this.client.balanceDAO.find(account).then(function(balance) {
+          account.findBalance(this.client).then(function(balance) {
+          // this.client.balanceDAO.find(account).then(function(balance) {
             return this.balance.copyFrom(balance);
           }.bind(this));
         }
