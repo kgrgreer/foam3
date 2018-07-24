@@ -179,7 +179,7 @@ foam.CLASS({
 
     function setNewDefaultBank() {
       var self = this;
-      self.selectedAccount.setAsDefault = true;
+      self.selectedAccount.isDefault = true;
       self.selectedAccount.name += ' (Default)';
       self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
         self.manageAccountNotification('Bank account successfully set as default.', '');
@@ -231,7 +231,7 @@ foam.CLASS({
         return this.selectedAccount.status == this.BankAccountStatus.VERIFIED;
       },
       code: function(X) {
-        if ( ! X.selectedAccount.setAsDefault ) {
+        if ( ! X.selectedAccount.isDefault ) {
           this.switchDefaultBank();
         } else {
           X.manageAccountNotification('Bank account already set as default.', 'error');
