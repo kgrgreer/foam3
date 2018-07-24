@@ -336,6 +336,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
+  { name: 'net/nanopay/ui/GSDashboard', flags: ['web'] },
+
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

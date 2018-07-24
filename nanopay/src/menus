@@ -27,3 +27,4 @@ p({"class":"foam.nanos.menu.Menu","id":"foreign","label":"Foreign","handler":{"c
 p({"class":"foam.nanos.menu.Menu","id":"cicoSpids","label":"Transaction Processors","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"txnProcessorDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"api-doc","label":"API Documentation","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ApiBrowser"}},"order":2000,"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"partners","label":"Partners","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.partners.ui.PartnersView"}},"order":1000,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"gs","label":"GS","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.GSDashboard"}},"order":1000,"parent":""})
