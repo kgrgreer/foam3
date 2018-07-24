@@ -60,6 +60,30 @@ foam.CLASS({
     ^ .foam-nanos-auth-ProfilePictureView{
       width: 150px;
     }
+    ^ .termAndCondition {
+      width: 354px;
+      height: 16px;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      color: #093649;
+      margin: 20px;
+    }
+    ^ .termAndConditionBox {
+      background-color: white;
+      width: 520px;
+      height: 374px;
+      padding-top: 20px;
+      padding-left: 20px;
+    }
+    ^ .iframeContainer {
+      width: 520px;
+      height: 276px;
+      border: 0px;
+    }
+    ^ .checkBoxDiv {
+      text-align: right; 
+      margin: 20px;
+    }
   `,
 
   messages: [
@@ -68,22 +92,24 @@ foam.CLASS({
     { name: 'BoxTitle1', message: '1. Business Profile' },
     { name: 'BoxTitle2', message: '2. Principal Owner(s) Profile' },
     { name: 'BoxTitle3', message: '3. Questionaire' },
-    { name: 'EditLabel', message: 'Edit'},
+    { name: 'BoxTitle4', message: '4. Terms & Conditions' },
+    { name: 'EditLabel', message: 'Edit' },
     { name: 'BusiNameLabel', message: 'Registered Business Name' },
     { name: 'BusiPhoneLabel', message: 'Business Phone' },
     { name: 'BusiWebsiteLabel', message: 'Website (optional)' },
     { name: 'BusiTypeLabel', message: 'Business Type' },
     { name: 'BusiRegNumberLabel', message: 'Business Registration Number' },
-    { name: 'BusiRegAuthLabel', message: 'Registration Authority'},
+    { name: 'BusiRegAuthLabel', message: 'Registration Authority' },
     { name: 'BusiRegDateLabel', message: 'Registration Date' },
     { name: 'BusiAddressLabel', message: 'Business Address' },
     { name: 'BusiLogoLabel', message: 'Business Logo (optional)' }
   ],
 
   properties: [
-    'businessTypeName',
+    'businessCountry',
     'businessRegion',
-    'businessCountry'
+    'businessTypeName',
+    'fileHeight'
   ],
 
   methods: [
@@ -194,7 +220,58 @@ foam.CLASS({
               .start('p').add(question.question).addClass('wizardBoldLabel').end()
               .start('p').add(question.response).end();
           }).end()
+
+          // Terms and conditions
+          .start().addClass('wizardBoxTitleContainer')
+            .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
+          .end()
+          .start().addClass('termAndCondition')
+            .add('Please agree on the Terms & Conditions before submit.')
+          .end()
+          .start()
+            .addClass('termAndConditionBox')
+            .start('iframe').addClass('iframeContainer')
+              .attrs({
+                  name: 'iframe',
+                  src: 'http://localhost:8080/service/terms?version='
+              })
+              .on('load', this.getFileHeight)
+            .end()
+            .start().addClass('checkBoxDiv')
+              .start()
+                .tag({ class: 'foam.u2.md.CheckBox' },
+                    { mode: foam.u2.DisplayMode.DISABLED })
+                .add('I agree to the Terms & Conditions')
+              .end()
+              .start()
+                .add('*Sroll to the bottom to agree.')
+              .end()
+            .end()
+          .end()
         .end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'getFileHeight',
+      code: function() {
+        var iframe = document.getElementsByClassName('iframeContainer')[0];
+        this.fileHeight = iframe.contentDocument.body.scrollHeight;
+        iframe.contentDocument.onscroll = this.checkScrollPosition;
+      }
+    },
+    {
+      name: 'checkScrollPosition',
+      code: function() {
+        var iframe = document.getElementsByClassName('iframeContainer')[0];
+        var pos = iframe.contentDocument.documentElement.scrollTop;
+
+        if ( pos + iframe.contentWindow.innerHeight >= this.fileHeight ) {
+          document.getElementsByClassName('foam-u2-md-CheckBox')[0]
+              .removeAttribute('disabled');
+        }
+      }
     }
   ],
 
@@ -223,7 +300,5 @@ foam.CLASS({
         this.goTo(3);
       }
     }
-
   ]
-
 });
