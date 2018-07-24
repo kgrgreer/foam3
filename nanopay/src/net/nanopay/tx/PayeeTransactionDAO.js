@@ -38,30 +38,12 @@ foam.CLASS({
           of: 'foam.core.FObject'
         }
       ],
-      code: function put_(x, obj) {
-        return new Promise(function(resolve, reject) {
-          if ( obj.destinationAccount == null ) {
-            var txn = obj;
-            // if ( obj.frozen ) {
-              txn = obj.fclone();
-            // }
-            this.localUserDAO.find(txn.payeeId).then(function(user) {
-              user.findDigitalAccount(x, txn.sourceCurrency).then(function(account) {
-                txn.destinationAccount = account.id;
-                resolve(this.getDelegate.put_(x, txn));
-              }).bind(this);
-            }).bind(this);
-          } else {
-            resolve(this.getDelegate.put_(x, obj));
-          }
-        }.bind(this));
-      },
       javaReturns: 'foam.core.FObject',
       javaCode: `
         Transaction txn = (Transaction) obj;
         if ( txn.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find(txn.getPayeeId());
-          DigitalAccount digitalAccount = user.findDigitalAccount(x, txn.getSourceCurrency());
+          DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
           txn = (Transaction) obj.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
         }
