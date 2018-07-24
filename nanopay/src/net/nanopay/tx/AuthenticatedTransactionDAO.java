@@ -38,13 +38,14 @@ public class AuthenticatedTransactionDAO
     User user = (User) x.get("user");
     DAO userDAO = (DAO) x.get("localUserDAO");
     Transaction t = (Transaction) obj;
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
     if ( user == null ) {
       throw new RuntimeException("User is not logged in");
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) ) {
+    if ( ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) && oldTxn == null ) {
       throw new RuntimeException("User is not the payer");
     }
 
