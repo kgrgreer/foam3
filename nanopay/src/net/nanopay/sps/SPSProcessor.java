@@ -106,14 +106,6 @@ public class SPSProcessor extends ContextAwareSupport {
         DetailResponse detailResponse = new DetailResponse();
         detailResponse.parseSPSResponse(response);
         responsePacket = detailResponse;
-
-        DetailResponseItemContent[] array = detailResponse.getItemContent();
-        System.out.println("size: " + array.length);
-        for (int i = 0; i < array.length; i++) {
-          System.out.println(array[i].getItemID());
-          System.out.println(array[i].getOriginalRequestStatus());
-          System.out.println(array[i].getManualEntryIndicator());
-        }
         break;
       case "2090":
         // RequestMessageAndErrors
@@ -137,7 +129,8 @@ public class SPSProcessor extends ContextAwareSupport {
 
       //BatchDetailGeneralResponse batchDetailGeneralResponse = BatchDetailReqService(generateTestBatchDetailRequest());
       DetailResponse detailResponse = DetailInfoService(generateTestBatchDetailRequest());
-      System.out.println("batchDetailGeneralResponse: " + detailResponse);
+      System.out.println("detailResponse: " + detailResponse);
+      // System.out.println("batchDetailGeneralResponse: " + detailResponse);
     } catch (ClientErrorException e) {
       System.out.println(e.getError());
     } catch (HostErrorException e) {
@@ -211,6 +204,4 @@ public class SPSProcessor extends ContextAwareSupport {
 
     return batchDetailRequestPacket;
   }
-
-
 }
