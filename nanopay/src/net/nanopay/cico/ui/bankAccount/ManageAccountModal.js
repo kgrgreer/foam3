@@ -189,11 +189,11 @@ foam.CLASS({
 
     function switchDefaultBank() {
       var self = this;
-      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.IS_DEFAULT, true)).select().then( function(a) {
         if ( a.array.length == 0 ) {
           self.setNewDefaultBank();
         } else {
-          a.array[0].setAsDefault = false;
+          a.array[0].isDefault = false;
           a.array[0].name = a.array[0].name.replace(' (Default)', '');
           self.bankAccountDAO.put(a.array[0]).then( function(a) {
             self.setNewDefaultBank();
