@@ -170,10 +170,6 @@ foam.CLASS({
       var self = this;
       this.getDefaultBank();
 
-      this.invoice.destinationCurrency$find.then(function(currency) {
-        self.currency = currency;
-      });
-
       this
       .tag(this.ModalHeader.create({
         title: 'Schedule'
@@ -190,7 +186,7 @@ foam.CLASS({
                 .add('Amount')
               .end()
               .start().addClass('value')
-                .add(this.currency$, ' ', (this.invoice.amount/100).toFixed(2))
+                .add(this.invoice.destinationCurrency, ' ', (this.invoice.amount/100).toFixed(2))
               .end()
             .end()
           .end()

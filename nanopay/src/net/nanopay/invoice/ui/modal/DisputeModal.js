@@ -60,10 +60,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-      this.invoice.destinationCurrency$find.then(function(currency) {
-        self.currency = currency;
-      });
 
       this
         .tag(this.ModalHeader.create({ title: 'Void' }))
@@ -78,7 +74,7 @@ foam.CLASS({
               .start()
                 .start().addClass('key').add('Amount').end()
                 .start().addClass('value')
-                  .add(this.currency$)
+                  .add(this.invoice.destinationCurrency)
                   .add(' ')
                   .add((this.invoice.amount/100).toFixed(2))
                   .end()

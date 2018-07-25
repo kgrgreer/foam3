@@ -22,9 +22,6 @@ foam.CLASS({
       expression: function(data, user) {
         return user.id !== data.payeeId;
       }
-    },
-    {
-      name: 'currency'
     }
   ],
 
@@ -107,9 +104,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.stack.sub(this.itemUpdate);
-      this.data.destinationCurrency$find.then(function(currency) {
-        self.currency = currency;
-      });
 
       this
         .addClass(this.myClass())
@@ -158,7 +152,7 @@ foam.CLASS({
             .end()
             .start('h4')
               .add(
-                this.currency$, ' ',
+                this.data.destinationCurrency, ' ',
                     this.addCommas((this.data.amount/100).toFixed(2))
               )
             .end()
