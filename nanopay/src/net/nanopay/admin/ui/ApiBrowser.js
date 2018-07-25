@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.doc.GetRequestView',
     'foam.doc.PutRequestView',
     'foam.doc.ServiceListView',
+    'foam.doc.ServiceTypeDescription',
     'foam.doc.ExampleRequestView',
     'foam.doc.ClientServiceView',
     'foam.doc.ExpandContainer'
@@ -189,6 +190,7 @@ foam.CLASS({
               .add(this.Title)
             .end()
             .tag(this.ExampleRequestView.create())
+            .tag(this.ServiceTypeDescription.create())
             .select(this.AuthenticatedNSpecDAO, function(n) {
               var model = self.parseClientModel(n);
               if ( ! model ) return;
@@ -332,15 +334,70 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.doc',
-  name: 'ServiceMethodView',
+  name: 'ServiceTypeDescription',
   extends: 'foam.u2.View',
+
+  messages: [
+    {
+      name: 'Title',
+      message: 'Service Types'
+    },
+    {
+      name: 'TitleDescription',
+      message: 'Services play multiple roles within the' +
+          ' nanopay system. Available services can be categorized' +
+          ' into 2 types, all of which are detailed below.'
+    },
+    {
+      name: 'InterfaceTitle',
+      message: 'Interface Services'
+    },
+    {
+      name: 'InterfaceDescription',
+      message: 'Services labelled as Interface have methods' +
+          ' that take in arguments which process calls accordingly.' +
+          ' Example: The “exchangeRate” service has a method' +
+          ' “getFromSource” which requires a targetCurrency' +
+          ' (ex: ‘CAD’), sourceCurrency (ex: ‘INR), amount' +
+          ' (ex: 1). As a response, the service will return' +
+          ' an object containing fields correlating to the' +
+          ' arguments provided and providing exchange rates' +
+          ' retrieved from the DAOs and/or third party sources.'
+    },
+    {
+      name: 'DAOTitle',
+      message: 'DAO Services'
+    },
+    {
+      name: 'DAODescription',
+      message: 'Services without any specified label are' +
+          ' Data access objects (DAO) which store information on' +
+          ' the system, whether it be in memory or in journal' +
+          ' files. These DAOs are further extended with features' +
+          ' using decorators. The service call is unable to' +
+          ' dictate the functionality of the decorators unless' +
+          ' the appropriate values contained within the data' +
+          'object exist. Most DAOs require authentication and' +
+          ' appropriate permissions enabled on the user' +
+          ' to access and utilize.'
+    },
+    {
+      name: 'ServiceListTitle',
+      message: 'nanopay Service List'
+    },
+    {
+      name: 'ServiceListDescription',
+      message: 'The following list details the services' +
+          ' within the nanopay system, listing each' +
+          ' service name, providing a short' +
+          ' description of its purpose, & providing examples' +
+          ' detailing how to utilize them.'
+    }
+  ],
 
   methods: [
     function initE() {
       this.start()
-        .forEach(this.data.args, function(a) {
-          console.log('this is the methods args', a);
-        })
       .end();
     }
   ]
@@ -378,14 +435,15 @@ foam.CLASS({
           'to the examples shown on the service call.'
     },
     {
-      name: 'Pacs008ExampleGetLabel',
+      name: 'UserExampleGetLabel',
       message: 'Below is an example GET request ' +
-          'to the pacs008ISOPurposeDAO using curl:'
+          'to the publicUserDAO using curl. ' +
+          'This will return all public user information:'
     },
     {
-      name: 'Pacs008ExamplePostLabel',
+      name: 'UserExamplePostLabel',
       message: 'Below is an example POST request ' +
-          'to the pacs008ISOPurposeDAO using curl ' +
+          'to the userDAO using curl. This will create a basic nanopay user. ' +
           '(POST requests can create and update objects):'
     }
   ],
@@ -402,22 +460,22 @@ foam.CLASS({
         .add(this.MakingRequests).br().br()
       .end()
       .start().addClass('light-roboto-h2').addClass('sml')
-        .add(this.Pacs008ExampleGetLabel)
+        .add(this.UserExampleGetLabel)
       .end()
       .start().addClass('small-roboto')
         .add(this.GetRequestView.create({
-          data: 'pacs008ISOPurposeDAO'
+          data: 'publicUserDAO'
         }))
       .end()
       .start().addClass('light-roboto-h2').addClass('sml')
         .br()
-        .add(this.Pacs008ExamplePostLabel)
+        .add(this.UserExamplePostLabel)
       .end()
       .start().addClass('small-roboto')
         .add(this.PutRequestView.create({
           data: {
             n: {
-              name: 'pacs008ISOPurposeDAO'
+              name: 'userDAO'
             },
             props: '"type":"String"'
           }
