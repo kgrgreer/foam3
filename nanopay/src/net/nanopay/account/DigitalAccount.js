@@ -49,7 +49,7 @@ foam.CLASS({
             Logger logger   = (Logger) x.get("logger");
             DigitalAccount account = null;
 
-            synchronized(user) {
+            synchronized(String.valueOf(user.getId()).intern()) {
             logger.info(DigitalAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
 
             // Select currency of user's country
