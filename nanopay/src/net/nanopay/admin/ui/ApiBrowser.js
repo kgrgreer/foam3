@@ -5,15 +5,7 @@ foam.CLASS({
   documentation: 'Show UML & properties for passed in models',
 
   requires: [
-    'foam.doc.ClassList',
     'foam.doc.DocBorder',
-    'foam.doc.SimpleClassView',
-    'foam.doc.GetRequestView',
-    'foam.doc.PutRequestView',
-    'foam.doc.ServiceListView',
-    'foam.doc.ServiceTypeDescription',
-    'foam.doc.ExampleRequestView',
-    'foam.doc.ClientServiceView',
     'foam.doc.ExpandContainer'
   ],
 
@@ -85,6 +77,8 @@ foam.CLASS({
       display: flow-root;
       height: auto;
       width: 700px;
+      background: white;
+      padding: 20px;
       margin: 20px;
     }
     ^ .foam-doc-UMLDiagram{
@@ -107,6 +101,8 @@ foam.CLASS({
     ^ .light-roboto-h2{
       white-space: normal;
       width: 100%;
+      line-height: 1.3;
+      font-size: 16px;
     }
     ^ .black-box{
       background: #1e1c3a;
@@ -148,6 +144,8 @@ foam.CLASS({
       font-size: 25px;
       margin: 30px 0px;
       font-weight: 500;
+      border-bottom: 1px solid %PRIMARYCOLOR%;
+      width: fit-content;
     }
     ^ .foam-u2-view-TableView td {
       white-space: normal;
@@ -169,6 +167,11 @@ foam.CLASS({
       top: 65px;
       right: 0;
     }
+    ^ .line {
+      height: 10px;
+      background: %PRIMARYCOLOR%;
+      width: 100%;
+    }
   `,
 
   messages: [
@@ -186,11 +189,23 @@ foam.CLASS({
       this.start()
         .start().addClass(this.myClass())
           .start().addClass('api-browser-container')
-            .start('h2')
+            .start('h1')
               .add(this.Title)
             .end()
-            .tag(this.ExampleRequestView.create())
-            .tag(this.ServiceTypeDescription.create())
+            .start()
+              .addClass('line')
+              .style({ 'margin-bottom': '25px;' })
+            .end()
+            .tag({
+              class: 'foam.doc.ExampleRequestView'
+            })
+            .start()
+              .addClass('line')
+              .style({ 'margin-top': '35px;' })
+            .end()
+            .tag({
+              class: 'foam.doc.ServiceTypeDescription'
+            })
             .select(this.AuthenticatedNSpecDAO, function(n) {
               var model = self.parseClientModel(n);
               if ( ! model ) return;
@@ -203,21 +218,27 @@ foam.CLASS({
               .end()
               .tag('Description: ', n.description)
               .callIf(n.boxClass, function() {
-                this.tag(self.ClientServiceView.create({
-                  data: self.parseInterface(n)
-                }));
+                  this.tag({
+                    class: 'foam.doc.ClientServiceView',
+                    data: self.parseInterface(n)
+                  });
               })
               .callIf(! n.boxClass, function() {
-                this.tag(self.SimpleClassView.create({
+                this.tag({
+                  class: 'foam.doc.SimpleClassView',
                   data: model
-                }))
-                .tag(self.GetRequestView.create({ data: n.name }))
-                .tag(self.PutRequestView.create({
+                })
+                .tag({
+                  class: 'foam.doc.GetRequestView',
+                  data: n.name
+                })
+                .tag({
+                  class: 'foam.doc.PutRequestView',
                   data: {
                     n: n,
                     props: dataProps
                   }
-                }));
+                });
               });
             })
           .end()
@@ -235,7 +256,10 @@ foam.CLASS({
               .endContext()
                 .add(this.slot(function(selectedClass) {
                   if ( ! selectedClass ) return '';
-                  return this.SimpleClassView.create({ data: selectedClass });
+                  return {
+                    class: 'foam.doc.SimpleClassView',
+                    data: selectedClass
+                  };
                 }))
               .end()
             .end()
@@ -395,9 +419,54 @@ foam.CLASS({
     }
   ],
 
+  css: `
+    ^ {
+      margin-top: 25px;
+    }
+    ^ .subLabel {
+      font-size: 18px;
+      font-weight: bold;
+      color: #18a1a8;
+      margin-bottom: 20px;
+    }
+    ^ .line {
+      height: 10px;
+      background: %PRIMARYCOLOR%;
+      width: 100%;
+    }
+  `,
+
   methods: [
     function initE() {
-      this.start()
+      this.start().addClass(this.myClass())
+        .start('h1')
+          .add(this.Title)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.TitleDescription)
+        .end()
+        .start().addClass('subLabel')
+          .add(this.InterfaceTitle)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.InterfaceDescription)
+        .end()
+        .start().addClass('subLabel')
+          .add(this.DAOTitle)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.DAODescription)
+        .end()
+        .start()
+          .addClass('line')
+          .style({ 'margin-top': '20px;' })
+        .end()
+        .start('h1')
+          .add(this.ServiceListTitle)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.ServiceListDescription)
+        .end()
       .end();
     }
   ]
@@ -407,11 +476,6 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'ExampleRequestView',
   extends: 'foam.u2.View',
-
-  requires: [
-    'foam.doc.GetRequestView',
-    'foam.doc.PutRequestView'
-  ],
 
   messages: [
     {
@@ -463,23 +527,27 @@ foam.CLASS({
         .add(this.UserExampleGetLabel)
       .end()
       .start().addClass('small-roboto')
-        .add(this.GetRequestView.create({
+        .tag({
+          class: 'foam.doc.GetRequestView',
           data: 'publicUserDAO'
-        }))
+        })
       .end()
       .start().addClass('light-roboto-h2').addClass('sml')
         .br()
         .add(this.UserExamplePostLabel)
       .end()
       .start().addClass('small-roboto')
-        .add(this.PutRequestView.create({
+        .tag({
+          class: 'foam.doc.PutRequestView',
           data: {
             n: {
               name: 'userDAO'
             },
-            props: '"type":"String"'
+            props: '"email":"email@example.com",' +
+                ' "password":"somePassword123", ' +
+                '"firstName":"John", "lastName":"Doe"'
           }
-        }))
+        })
       .end();
     }
   ]
@@ -505,17 +573,12 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      self = this;
-
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').add('GET Request: ').end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X GET').br()
-            .add(this.url$.map(function(a) {
-              return self.E().start()
-                  .add('\'' + a + 'service/dig?dao=' + self.data + '\'');
-            }))
+            .add('\'', this.url$, 'service/dig?dao=', this.data, '\'').br()
             .add('-u \'username/password\'').br()
             .add('-H \'accept: application/json\'').br()
             .add('-H \'cache-control: no-cache\'').br()
@@ -547,21 +610,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2')
-        .style({ 'margin-top': '25px' })
+        .style({ 'margin-top': '15px' })
         .add('POST Request (Create & Update): ')
       .end()
       .start().addClass('black-box')
         .start().addClass('small-roboto')
           .add('curl -X POST').br()
-          .add(this.url$.map(function(a) {
-            return self.E().start()
-                .add('\'' + a + 'service/dig?dao=' + self.data.n.name + '\'');
-          }))
+          .add('\'', this.url$, 'service/dig?dao=', this.data.n.name, '\'').br()
           .add('-u \'username/password\'').br()
-          .add('-d \'{' + this.data.props + '}' ).br()
+          .add('-d \'{' + this.data.props + '}' + '\'' ).br()
           .add('-H \'accept: application/json\'').br()
           .add('-H \'cache-control: no-cache\'').br()
           .add('-H \'content-type: application/json\'')
