@@ -246,6 +246,7 @@
                 <include>build/**/*.java</include>
               </includes>
               <excludes>
+                <exclude>**/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
@@ -297,6 +298,7 @@
                 <include>build/**/*.java</include>
               </includes>
               <excludes>
+                <exclude>**/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/jetty/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
