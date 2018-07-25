@@ -147,7 +147,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value.fullName)
+            .add(value ? value.fullName : '')
           .end()
         .end();
       }
@@ -161,7 +161,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value.fullName)
+            .add(value ? value.fullName : '')
           .end()
         .end();
       }
