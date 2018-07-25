@@ -120,7 +120,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      console.log('Controller.initE');
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config){
@@ -224,11 +223,9 @@ foam.CLASS({
     },
 
     function findAccount() {
-      console.log('findAccount', 'currentAccount.id', this.currentAccount.id, 'user', this.user.id);
       if ( this.currentAccount == null || this.currentAccount.id == 0 ||
            this.currentAccount.owner != null && this.currentAccount.owner.id != this.user.id ) {
         return this.client.digitalAccount.findDefault(this.client, null).then(function(account) {
-          console.log('findAccount account:', account);
           this.currentAccount.copyFrom(account);
           return this.currentAccount;
         }.bind(this));
@@ -242,7 +239,6 @@ foam.CLASS({
 
     function findBalance() {
       return this.findAccount().then(function(account) {
-        console.log('findBalance account: ', account);
         if ( account != null ) {
           account.findBalance(this.client).then(function(balance) {
           // this.client.balanceDAO.find(account).then(function(balance) {
