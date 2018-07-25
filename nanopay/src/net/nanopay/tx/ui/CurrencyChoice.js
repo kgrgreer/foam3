@@ -130,8 +130,8 @@ foam.CLASS({
         .start('span', null, this.optionsBtn_$).end()
         .start(this.CURRENCY_CHOICE, {
           icon$: this.chosenCurrency$.dot('flagImage').map(function(v) {
-                    return v || ' ';
-                  }),
+            return v || ' ';
+          }),
           label$: this.chosenCurrency$.dot('alphabeticCode'),
           showLabel: true
         })
