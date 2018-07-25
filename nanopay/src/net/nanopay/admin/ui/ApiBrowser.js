@@ -78,7 +78,7 @@ foam.CLASS({
     ^ {
       display: flow-root;
       height: auto;
-      width: 700px;
+      width: 900px;
       background: white;
       padding: 20px;
       margin: 20px;
@@ -102,13 +102,14 @@ foam.CLASS({
     }
     ^ .light-roboto-h2{
       white-space: normal;
-      width: 100%;
+      width: 700px;
       line-height: 1.3;
       font-size: 16px;
     }
     ^ .black-box{
       background: #1e1c3a;
       padding: 20px;
+      width: 700px;
     }
     ^ .small-roboto{
       color: white;
@@ -172,7 +173,10 @@ foam.CLASS({
     ^ .line {
       height: 10px;
       background: %PRIMARYCOLOR%;
-      width: 100%;
+      width: 700px;
+    }
+    ^ .foam-u2-view-TableView-foam-doc-PropertyInfo{
+      width: 900px;
     }
   `,
 
@@ -317,6 +321,7 @@ foam.CLASS({
       background: #1e1c3a;
       color: white;
       margin: 20px 0;
+      width: 700px;
       padding: 20px;
     }
     ^ .methodName {
@@ -433,7 +438,7 @@ foam.CLASS({
     ^ .line {
       height: 10px;
       background: %PRIMARYCOLOR%;
-      width: 100%;
+      width: 700px;
     }
   `,
 
