@@ -143,6 +143,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
+      label: 'Receiver',
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -157,6 +158,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
+      label: 'Sender',
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
