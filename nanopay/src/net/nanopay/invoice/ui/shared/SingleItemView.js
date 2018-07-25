@@ -108,8 +108,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.stack.sub(this.itemUpdate);
-      this.currencyDAO.find(this.data.destinationCurrency).then(function(curr) {
-        self.currency = curr ? curr.alphabeticCode : '$';
+      this.data.destinationCurrency$find.then(function(currency) {
+        self.currency = currency ? currency.alphabeticCode : '$';
       });
 
       this
