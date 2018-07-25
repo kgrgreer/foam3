@@ -15,6 +15,10 @@ foam.CLASS({
     'accountDAO as bankAccountDAO'
   ],
 
+  exports: [
+    'verifyAccount'
+  ],
+
   requires: [
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
@@ -216,6 +220,16 @@ foam.CLASS({
           message: this.placeholderText,
           image: 'images/ic-bankempty.svg'
         });
+    },
+
+    function verifyAccount() {
+      this.stack.push({
+        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+        wizardTitle: 'Verification',
+        startAtValue: 2,
+        nextLabelValue: 'Verify',
+        backLabelValue: 'Come back later'
+      }, this);
     }
   ],
 
@@ -248,13 +262,13 @@ foam.CLASS({
 
       imports: [
         'accountDAO as bankAccountDAO',
+        'verifyAccount',
         'stack',
         'user'
       ],
 
       exports: [
         'selectedAccount',
-        'verifyAccount',
         'manageAccountNotification'
       ],
 
@@ -307,16 +321,6 @@ foam.CLASS({
             })
               .addClass(this.myClass('table'))
             .end();
-        },
-
-        function verifyAccount() {
-          this.stack.push({
-            class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
-            wizardTitle: 'Verification',
-            startAtValue: 2,
-            nextLabelValue: 'Verify',
-            backLabelValue: 'Come back later'
-          }, this);
         },
 
         function manageAccount() {
