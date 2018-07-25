@@ -171,7 +171,7 @@ foam.CLASS({
       this.getDefaultBank();
 
       this.invoice.destinationCurrency$find.then(function(currency) {
-        self.currency = currency ? currency.alphabeticCode : '$';
+        self.currency = currency;
       });
 
       this

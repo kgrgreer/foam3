@@ -62,7 +62,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.invoice.destinationCurrency$find.then(function(currency) {
-        self.currency = currency ? currency.alphabeticCode : '$';
+        self.currency = currency;
       });
 
       this

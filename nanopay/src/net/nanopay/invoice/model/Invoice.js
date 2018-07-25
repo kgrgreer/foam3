@@ -319,9 +319,8 @@ foam.CLASS({
       name: 'formatCurrencyAmount',
       code: function(a, e, X) {
         X.destinationCurrency$find.then(function(curr) {
-          var currency = curr ? curr.alphabeticCode : '$';
           e.start().style({ 'padding-right': '20px' })
-            .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+            .add(curr + ' ' + X.addCommas((a/100).toFixed(2)))
           .end();
         });
       },

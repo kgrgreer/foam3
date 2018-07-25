@@ -108,7 +108,7 @@ foam.CLASS({
       var self = this;
       this.stack.sub(this.itemUpdate);
       this.data.destinationCurrency$find.then(function(currency) {
-        self.currency = currency ? currency.alphabeticCode : '$';
+        self.currency = currency;
       });
 
       this
