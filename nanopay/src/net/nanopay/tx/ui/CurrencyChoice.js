@@ -132,8 +132,8 @@ foam.CLASS({
         .start('span', null, this.optionsBtn_$).end()
         .start(this.CURRENCY_CHOICE, {
           icon$: this.chosenCurrency$.dot('flagImage').map(function(v) {
-                    return v || ' ';
-                  }),
+            return v || ' ';
+          }),
           label$: this.chosenCurrency$.dot('alphabeticCode'),
           showLabel: true
         })
@@ -150,8 +150,6 @@ foam.CLASS({
       label: '',
       code: function() {
         var self = this;
-        var dao = this.currencyDAO
-            .where(this.EQ(this.Currency.ALPHABETIC_CODE, 'CAD'));
 
         self.optionPopup_ = this.PopupView.create({
           width: 165,
@@ -164,7 +162,7 @@ foam.CLASS({
         self.optionPopup_ = self.optionPopup_
           .start('div')
             .addClass('popUpDropDown')
-            .select(dao, function(currency) {
+            .select(this.currencyDAO, function(currency) {
               if ( typeof currency.flagImage === 'string' ) {
                 this
                   .start('div')

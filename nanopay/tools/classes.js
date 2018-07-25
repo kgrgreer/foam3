@@ -29,7 +29,7 @@ var classes = [
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
-  'net.nanopay.account.DigitalAccountInterface',
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CADBankAccount',
@@ -154,9 +154,11 @@ var classes = [
   'net.nanopay.security.HashingWriterTest',
 
   // tests
-  'net.test.ModeledTest',
+  'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
+  'net.nanopay.test.TestsReporter',
+  'net.nanopay.test.TestReport'
 ];
 
 var abstractClasses = [
@@ -164,7 +166,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
-  'net.nanopay.account.DigitalAccountInterface',
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

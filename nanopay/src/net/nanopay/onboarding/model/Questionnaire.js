@@ -18,7 +18,8 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.onboarding.model.Question',
-      name: 'questions'
+      name: 'questions',
+      documentation: 'Questions associated to questionaire.',
     }
   ]
 });

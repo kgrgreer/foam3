@@ -8,16 +8,16 @@ import foam.nanos.session.Session;
 
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.account.DigitalAccountInterface;
+import net.nanopay.account.DigitalAccountServiceInterface;
 
 import java.util.List;
 
 public class DigitalAccountService
   extends ContextAwareSupport
-  implements DigitalAccountInterface {
+  implements DigitalAccountServiceInterface {
 
-  public DigitalAccount getDefault(X x, String denomination) {
+  public DigitalAccount findDefault(X x, String denomination) {
     User user = (User) x.get("user");
-    return user.findDigitalAccount(x, denomination);
+    return DigitalAccount.findDefault(x, user, denomination);
   }
 }

@@ -72,19 +72,6 @@ foam.CLASS({
     }
   ],
 
-  methods: [
-    {
-      name: 'balance',
-      code: function() {
-        return 0;
-      },
-      javaReturns: 'Object',
-      javaCode: `
-        return 0L;
-      `
-    }
-  ],
-
   actions: [
     {
       name: 'run',

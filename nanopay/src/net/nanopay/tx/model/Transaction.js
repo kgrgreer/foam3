@@ -114,8 +114,8 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      //class: 'Reference',
-      //of: 'net.nanopay.invoice.model.Invoice',
+      // class: 'Reference',
+      // of: 'net.nanopay.invoice.model.Invoice',
       class: 'Long',
       name: 'invoiceId',
     },
@@ -143,14 +143,30 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
-      storageTransient: true
+      label: 'Receiver',
+      storageTransient: true,
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.fullName : '')
+          .end()
+        .end();
+      }
     },
     {
       // REVIEW: how is this used?
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
-      storageTransient: true
+      label: 'Sender',
+      storageTransient: true,
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.fullName : '')
+          .end()
+        .end();
+      }
     },
     {
       class: 'Reference',
@@ -158,15 +174,7 @@ foam.CLASS({
       name: 'sourceAccount',
       targetDAOKey: 'localAccountDAO',
       label: 'Source account',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payerId, obj, axiom) {
-        this.start()
-          .start('h4').style({ 'margin-bottom': 0 })
-            .add(obj.payer.firstName)
-          .end()
-          .start('p').style({ 'margin-top': 0 }).add(obj.payer.email).end()
-          .end();
-      }
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
@@ -184,17 +192,7 @@ foam.CLASS({
       name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
       label: 'Destination Account',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payeeId, obj, axiom) {
-        this.start()
-              .start('h4').style({ 'margin-bottom': 0 })
-                .add(obj.payee.firstName)
-              .end()
-              .start('p').style({ 'margin-top': 0 })
-                .add(obj.payee.email)
-              .end()
-            .end();
-      }
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Currency',
@@ -270,7 +268,10 @@ foam.CLASS({
       class: 'String',
       name: 'challenge',
       visibility: foam.u2.Visibility.RO,
-      documentation: 'Randomly generated challenge. Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction, used in the merchant app and is transfered to the mobile applications as a property of the QrCode. Can be moved to retail Transaction.'
+      documentation: `Randomly generated challenge.
+      Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction,
+      used in the merchant app and is transfered to the mobile applications as a property of the QrCode.
+      Can be moved to retail Transaction.`
     },
     {
       // REVIEW: is this created date? - Joel
@@ -300,7 +301,7 @@ foam.CLASS({
     // },
     // TODO: field for tax as well? May need a more complex model for that
     {
-      //class: 'FObjectProperty',
+      // class: 'FObjectProperty',
       class: 'Reference',
       of: 'net.nanopay.tx.TransactionPurpose',
       name: 'purpose',

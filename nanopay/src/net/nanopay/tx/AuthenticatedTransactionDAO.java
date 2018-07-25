@@ -15,6 +15,8 @@ import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
+import java.util.List;
+
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
@@ -38,13 +40,14 @@ public class AuthenticatedTransactionDAO
     User user = (User) x.get("user");
     DAO userDAO = (DAO) x.get("localUserDAO");
     Transaction t = (Transaction) obj;
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
     if ( user == null ) {
       throw new RuntimeException("User is not logged in");
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) ) {
+    if ( ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) && oldTxn == null ) {
       throw new RuntimeException("User is not the payer");
     }
 
@@ -78,12 +81,20 @@ public class AuthenticatedTransactionDAO
     }
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
+
+    User userClone = (User) user.fclone();
+    userClone.setX(x);
+    ArraySink arraySink = (ArraySink) userClone.getAccounts().select(new ArraySink());
+    List accountsArray =  arraySink.getArray();
+    Long[] ids = new Long[accountsArray.size()];
+    for (int i =0; i < accountsArray.size(); i++)
+      ids[i] = ((Account)accountsArray.get(i)).getId();
     DAO dao = global ?
       getDelegate() :
       getDelegate().where(
                           OR(
-                             IN(Transaction.SOURCE_ACCOUNT, ((ArraySink)user.getAccounts().select(new ArraySink())).getArray()),
-                             IN(Transaction.DESTINATION_ACCOUNT, ((ArraySink)user.getAccounts().select(new ArraySink())).getArray())
+                             IN(Transaction.SOURCE_ACCOUNT, ids),
+                             IN(Transaction.DESTINATION_ACCOUNT, ids)
                              )
                           );
     return dao.select_(x, sink, skip, limit, order, predicate);

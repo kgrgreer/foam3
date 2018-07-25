@@ -1,10 +1,10 @@
 foam.INTERFACE({
   package: 'net.nanopay.account',
-  name: 'DigitalAccountInterface',
+  name: 'DigitalAccountServiceInterface',
 
   methods: [
     {
-      name: 'getDefault',
+      name: 'findDefault',
       javaReturns: 'net.nanopay.account.DigitalAccount',
       args: [
         {
