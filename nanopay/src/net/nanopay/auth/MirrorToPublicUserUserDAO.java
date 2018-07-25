@@ -25,7 +25,7 @@ public class MirrorToPublicUserUserDAO
       DAO delegate
   ) {
     super(x, delegate);
-    publicUserDAO_ = (DAO) x.get("localPublicUserDAO"); 
+    publicUserDAO_ = (DAO) x.get("localPublicUserDAO");
 
     ArraySink sink = (ArraySink) getDelegate().select(new ArraySink() {
       @Override
@@ -48,7 +48,7 @@ public class MirrorToPublicUserUserDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    PublicUserInfo publicUser = (PublicUserInfo) publicUserDAO_.find(obj);
+    PublicUserInfo publicUser = (PublicUserInfo) publicUserDAO_.find_(x,((User)obj).getId());
 
     publicUserDAO_.remove(publicUser);
     return super.remove_(x, obj);
