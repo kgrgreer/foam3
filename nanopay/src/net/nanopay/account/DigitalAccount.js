@@ -58,7 +58,7 @@ foam.CLASS({
               denomination = "CAD";
               String country = "CA";
               Address address = user.getAddress();
-              if ( address != null ) {
+              if ( address != null && address.getCountryId() != null ) {
                 country = address.getCountryId().toString();
               }
               DAO currencyDAO = (DAO) x.get("currencyDAO");
