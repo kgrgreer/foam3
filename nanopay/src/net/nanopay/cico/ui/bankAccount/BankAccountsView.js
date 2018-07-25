@@ -15,6 +15,10 @@ foam.CLASS({
     'accountDAO as bankAccountDAO'
   ],
 
+  exports: [
+    'verifyAccount'
+  ],
+
   requires: [
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
@@ -172,49 +176,60 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .start('div').addClass('row')
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleAll,
-                content$: this.allBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleVerified,
-                content$: this.verifiedBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleUnverified,
-                content$: this.unverifiedBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div')
-              .tag(this.ADD_BANK, { showLabel: true })
-            .end()
+        .start()
+          .start()
+            .tag({
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleAll,
+              content$: this.allBanksCount$
+            })
+            .addClass('bankContentCard')
           .end()
           .start()
             .tag({
-                class: 'foam.u2.ListCreateController',
-                dao: this.data,
-                factory: function() {
-                  return self.BankAccount.create();
-                },
-                detailView: {},
-                summaryView: this.BankAccountTableView
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleVerified,
+              content$: this.verifiedBanksCount$
             })
+            .addClass('bankContentCard')
           .end()
-          .tag({
-            class: 'net.nanopay.ui.Placeholder',
-            dao: this.data,
-            message: this.placeholderText,
-            image: 'images/ic-bankempty.svg'
-          });
+          .start()
+            .tag({
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleUnverified,
+              content$: this.unverifiedBanksCount$
+            })
+            .addClass('bankContentCard')
+          .end()
+          .start()
+            .tag(this.ADD_BANK, { showLabel: true })
+          .end()
+        .end()
+        .tag({
+          class: 'foam.u2.ListCreateController',
+          dao: this.data,
+          factory: function() {
+            return self.BankAccount.create();
+          },
+          detailView: {},
+          summaryView: this.BankAccountTableView
+        })
+        .tag({
+          class: 'net.nanopay.ui.Placeholder',
+          dao: this.data,
+          message: this.placeholderText,
+          image: 'images/ic-bankempty.svg'
+        });
+    },
+
+    function verifyAccount() {
+      this.stack.push({
+        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+        wizardTitle: 'Verification',
+        startAtValue: 2,
+        nextLabelValue: 'Verify',
+        backLabelValue: 'Come back later'
+      }, this);
     }
   ],
 
@@ -247,13 +262,13 @@ foam.CLASS({
 
       imports: [
         'accountDAO as bankAccountDAO',
+        'verifyAccount',
         'stack',
         'user'
       ],
 
       exports: [
         'selectedAccount',
-        'verifyAccount',
         'manageAccountNotification'
       ],
 
@@ -303,17 +318,9 @@ foam.CLASS({
               columns: [
                 'name', 'institution', 'accountNumber', 'status'
               ]
-            }).addClass(this.myClass('table')).end();
-        },
-
-        function verifyAccount() {
-          this.stack.push({
-            class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
-            wizardTitle: 'Verification',
-            startAtValue: 2,
-            nextLabelValue: 'Verify',
-            backLabelValue: 'Come back later'
-          }, this);
+            })
+              .addClass(this.myClass('table'))
+            .end();
         },
 
         function manageAccount() {
