@@ -86,12 +86,15 @@ public class AuthenticatedTransactionDAO
     userClone.setX(x);
     ArraySink arraySink = (ArraySink) userClone.getAccounts().select(new ArraySink());
     List accountsArray =  arraySink.getArray();
+    Long[] ids = new Long[accountsArray.size()];
+    for (int i =0; i < accountsArray.size(); i++)
+      ids[i] = ((Account)accountsArray.get(i)).getId();
     DAO dao = global ?
       getDelegate() :
       getDelegate().where(
                           OR(
-                             IN(Transaction.SOURCE_ACCOUNT, accountsArray),
-                             IN(Transaction.DESTINATION_ACCOUNT, accountsArray)
+                             IN(Transaction.SOURCE_ACCOUNT, ids),
+                             IN(Transaction.DESTINATION_ACCOUNT, ids)
                              )
                           );
     return dao.select_(x, sink, skip, limit, order, predicate);
