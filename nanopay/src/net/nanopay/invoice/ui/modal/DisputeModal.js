@@ -36,9 +36,6 @@ foam.CLASS({
       name: 'note',
       view: 'foam.u2.tag.TextArea',
       value: ''
-    },
-    {
-      name: 'currency'
     }
   ],
 
