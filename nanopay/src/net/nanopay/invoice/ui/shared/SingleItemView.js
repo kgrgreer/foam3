@@ -7,7 +7,6 @@ foam.CLASS({
     'addCommas',
     'user',
     'invoiceDAO',
-    'currencyDAO',
     'stack'
   ],
 
