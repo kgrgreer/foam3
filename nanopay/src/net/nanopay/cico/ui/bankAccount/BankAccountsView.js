@@ -16,6 +16,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'selectedAccount',
     'verifyAccount'
   ],
 
@@ -139,6 +140,7 @@ foam.CLASS({
     'unverifiedBanksCount',
     'disabledBanksCount',
     'selection',
+    'selectedAccount',
     {
       name: 'data',
       factory: function() {
@@ -264,18 +266,15 @@ foam.CLASS({
         'accountDAO as bankAccountDAO',
         'verifyAccount',
         'stack',
+        'selectedAccount',
         'user'
       ],
 
       exports: [
-        'selectedAccount',
         'manageAccountNotification'
       ],
 
       properties: [
-        {
-          name: 'selectedAccount'
-        },
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
