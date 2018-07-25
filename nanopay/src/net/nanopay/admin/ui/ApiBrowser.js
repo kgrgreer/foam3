@@ -6,7 +6,9 @@ foam.CLASS({
 
   requires: [
     'foam.doc.DocBorder',
-    'foam.doc.ExpandContainer'
+    'foam.doc.ExpandContainer',
+    'foam.doc.SimpleClassView',
+    'foam.doc.ServiceListView'
   ],
 
   imports: [
@@ -256,10 +258,9 @@ foam.CLASS({
               .endContext()
                 .add(this.slot(function(selectedClass) {
                   if ( ! selectedClass ) return '';
-                  return {
-                    class: 'foam.doc.SimpleClassView',
+                  return this.SimpleClassView.create({
                     data: selectedClass
-                  };
+                  });
                 }))
               .end()
             .end()
