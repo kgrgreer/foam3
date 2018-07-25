@@ -172,49 +172,50 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .start('div').addClass('row')
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleAll,
-                content$: this.allBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleVerified,
-                content$: this.verifiedBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleUnverified,
-                content$: this.unverifiedBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div')
-              .tag(this.ADD_BANK, { showLabel: true })
-            .end()
+        .start()
+          .start()
+            .tag({
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleAll,
+              content$: this.allBanksCount$
+            })
+            .addClass('bankContentCard')
           .end()
           .start()
             .tag({
-                class: 'foam.u2.ListCreateController',
-                dao: this.data,
-                factory: function() {
-                  return self.BankAccount.create();
-                },
-                detailView: {},
-                summaryView: this.BankAccountTableView
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleVerified,
+              content$: this.verifiedBanksCount$
             })
+            .addClass('bankContentCard')
           .end()
-          .tag({
-            class: 'net.nanopay.ui.Placeholder',
-            dao: this.data,
-            message: this.placeholderText,
-            image: 'images/ic-bankempty.svg'
-          });
+          .start()
+            .tag({
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleUnverified,
+              content$: this.unverifiedBanksCount$
+            })
+            .addClass('bankContentCard')
+          .end()
+          .start()
+            .tag(this.ADD_BANK, { showLabel: true })
+          .end()
+        .end()
+        .tag({
+          class: 'foam.u2.ListCreateController',
+          dao: this.data,
+          factory: function() {
+            return self.BankAccount.create();
+          },
+          detailView: {},
+          summaryView: this.BankAccountTableView
+        })
+        .tag({
+          class: 'net.nanopay.ui.Placeholder',
+          dao: this.data,
+          message: this.placeholderText,
+          image: 'images/ic-bankempty.svg'
+        });
     }
   ],
 
@@ -303,7 +304,9 @@ foam.CLASS({
               columns: [
                 'name', 'institution', 'accountNumber', 'status'
               ]
-            }).addClass(this.myClass('table')).end();
+            })
+              .addClass(this.myClass('table'))
+            .end();
         },
 
         function verifyAccount() {
