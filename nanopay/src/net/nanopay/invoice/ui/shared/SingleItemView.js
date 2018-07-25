@@ -5,9 +5,9 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'user',
     'invoiceDAO',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [
