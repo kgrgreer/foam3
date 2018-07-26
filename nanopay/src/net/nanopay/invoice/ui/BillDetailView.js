@@ -12,14 +12,14 @@ foam.CLASS({
       'notificationDAO',
       'stack',
       'user',
-      'userDAO'
+      'publicUserDAO'
     ],
 
     requires: [
-      'foam.nanos.auth.User',
       'foam.u2.dialog.NotificationMessage',
       'net.nanopay.invoice.model.Invoice',
-      'net.nanopay.invoice.notification.NewInvoiceNotification'
+      'net.nanopay.invoice.notification.NewInvoiceNotification',
+      'net.nanopay.auth.PublicUserInfo'
     ],
 
     properties: [
@@ -57,10 +57,9 @@ foam.CLASS({
         name: 'userList',
         view: function(_, X) {
           return foam.u2.view.ChoiceView.create({
-            dao: X.userDAO.where(X.data.AND(
-              X.data.NEQ(X.data.User.ID, X.user.id),
-              // only retrieve the active users
-              X.data.EQ(X.data.User.STATUS, 'ACTIVE')
+            dao: X.publicUserDAO.where(X.data.AND(
+              X.data.NEQ(X.PublicUserInfo.ID, X.user.id),
+              X.data.EQ(X.PublicUserInfo.STATUS, 'ACTIVE')
             )),
             placeholder: 'Please Select Customer',
             objToChoice: function(user) {
@@ -71,7 +70,7 @@ foam.CLASS({
         },
         postSet: function(ov, nv) {
           var self = this;
-          this.userDAO.find(nv).then(function(u) {
+          this.publicUserDAO.find(nv).then(function(u) {
             self.selectedUser = u;
           });
         }
