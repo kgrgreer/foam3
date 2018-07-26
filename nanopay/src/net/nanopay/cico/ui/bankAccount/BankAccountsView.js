@@ -211,6 +211,7 @@ foam.CLASS({
           class: 'foam.u2.ListCreateController',
           dao: this.data,
           factory: function() {
+            // REVIEW: how to determine what type of bank account to create
             return self.BankAccount.create();
           },
           detailView: {},

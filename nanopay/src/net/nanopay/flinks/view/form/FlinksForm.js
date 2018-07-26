@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CADBankAccount',
     'net.nanopay.payment.Institution',
     'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
@@ -393,7 +394,7 @@ foam.CLASS({
             var inst = institution.array[0];
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                self.viewData.bankAccount.push(self.BankAccount.create({
+                self.viewData.bankAccount.push(self.CADBankAccount.create({
                   name: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionId: inst.id,

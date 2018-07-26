@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CADBankAccount',
     'net.nanopay.model.Institution',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -313,7 +314,7 @@ foam.CLASS({
             var inst = institution.array[0];
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                X.accountDAO.put(self.BankAccount.create({
+                X.accountDAO.put(self.CADBankAccount.create({
                   name: item.Title,
                   accountNumber: item.AccountNumber,
                   institutionId: inst.id,
