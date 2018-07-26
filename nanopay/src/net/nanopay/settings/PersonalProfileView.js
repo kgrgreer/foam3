@@ -124,7 +124,6 @@
       width: 380px;
       height: 40px;
     }
-
     ^ .update-BTN{
       width: 135px;
       height: 40px;
@@ -381,8 +380,7 @@
       var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
       var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
 
-      if (this.user.firstName != "")
-      {
+      if ( this.user.firstName != "" ) {
         this.firstName = this.user.firstName;
         this.lastName = this.user.lastName;
         this.jobTitle = this.user.jobTitle;
@@ -391,6 +389,7 @@
         this.phone = this.user.phone.number.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
       }
+      
       this
       .addClass(this.myClass())
       .start(personalProfile)
