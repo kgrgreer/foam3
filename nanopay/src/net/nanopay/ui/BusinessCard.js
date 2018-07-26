@@ -133,7 +133,6 @@ foam.CLASS({
         .end()
     },
 
-
     function formatAddress(address) {
       if ( ! address ) return;
 
