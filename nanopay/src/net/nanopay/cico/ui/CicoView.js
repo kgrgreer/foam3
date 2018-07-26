@@ -385,7 +385,8 @@ foam.CLASS({
             self.balance.copyFrom(b);
             amount = self.balance.balance;
           }
-          self.formattedBalance = '$' + (amount / 100).toFixed(2);
+          self.formattedBalance = '$' +
+              self.addCommas((amount / 100).toFixed(2));
         });
       }
     }
