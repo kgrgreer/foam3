@@ -2,7 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'ExpandContainer',
   extends: 'foam.u2.Element',
-  documentation: 'Provide an expandable div which take content to display inside.',
+  documentation: 'Provide an expandable div' +
+      ' which take content to display inside.',
 
   imports: [
     'stack'
@@ -10,7 +11,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: "expandBox",
+      name: 'expandBox',
       value: false
     },
     'title',
@@ -18,7 +19,7 @@ foam.CLASS({
     'linkView'
   ],
 
-  css:`
+  css: `
     ^ {
       width: 962px;
       min-height: 80px;
@@ -102,7 +103,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function init(){
+    function init() {
       var self = this;
       this
       .addClass(this.myClass())
@@ -110,26 +111,30 @@ foam.CLASS({
         .start().addClass('boxTitle')
           .add(this.title)
         .end()
-        .callIf(this.link, function(){
+        .callIf(this.link, function() {
           this.start().addClass('link-tag')
-            .add(self.link).on('click', function(){
-              self.stack.push({ class: self.linkView});
+            .add(self.link).on('click', function() {
+              self.stack.push({ class: self.linkView });
             })
-          .end()
+          .end();
         })
         .start()
-          .addClass('expand-BTN').enableClass('close-BTN', this.expandBox$, true)
-          .add(this.expandBox$.map(function(e) { 
-            return e ? "Expand" : "Close"; 
+          .addClass('expand-BTN')
+          .enableClass('close-BTN', this.expandBox$, true)
+          .add(this.expandBox$.map(function(e) {
+            return e ? 'Expand' : 'Close';
           }))
           .enableClass('', self.expandBox = (self.expandBox ? false : true))
-          .on('click', function(){ self.expandBox = ( self.expandBox ? false : true ) })
+          .on('click', function() {
+            self.expandBox = ( self.expandBox ? false : true );
+          })
         .end()
-       .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox$)
+        .start()
+          .addClass('expand-Container')
+          .enableClass('expandTrue', self.expandBox$)
           .start('div', null, this.content$).end()
-       .end()
+        .end()
       .end();
-
     }
   ]
 });

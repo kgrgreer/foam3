@@ -212,7 +212,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'date', 'payerId', 'payeeId', 'total', 'status'
+          'id', 'date', 'payer', 'payee', 'total', 'status'
         ]
       }
     }
@@ -227,23 +227,21 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-
       this
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
-              .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
     },
-    function dblclick(transaction){
+    function dblclick(transaction) {
       this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
     }
   ],
@@ -253,7 +251,7 @@ foam.CLASS({
       name: 'exportButton',
       label: 'Export',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO }));
       }
     }
   ]

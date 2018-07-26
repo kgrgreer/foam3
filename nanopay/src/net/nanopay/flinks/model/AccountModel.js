@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'java.util.Random'
   ],
 
@@ -50,13 +51,13 @@ foam.CLASS({
       javaReturns: 'net.nanopay.bank.BankAccount',
       javaCode:
         `DAO accountDAO = (DAO) getX().get("accountDAO");
-        BankAccount account = new BankAccount();
+        BankAccount account = new CABankAccount();
         account.setX(getX());
         account.setAccountNumber(getAccountNumber());
         account.setDenomination(getCurrency());
         account.setName(getTitle());
         try {
-          account = (BankAccount) accountDAO.put(account);
+          account = (CABankAccount) accountDAO.put(account);
         } catch ( Throwable t ) {
           System.out.println("bank account same name");
         }

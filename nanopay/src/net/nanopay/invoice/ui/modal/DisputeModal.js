@@ -36,13 +36,6 @@ foam.CLASS({
       name: 'note',
       view: 'foam.u2.tag.TextArea',
       value: ''
-    },
-    {
-      name: 'currencyCode',
-      factory: function() {
-        return this.invoice.targetCurrency ?
-            this.invoice.targetCurrency.alphabeticCode : '$';
-      }
     }
   ],
 
@@ -78,7 +71,7 @@ foam.CLASS({
               .start()
                 .start().addClass('key').add('Amount').end()
                 .start().addClass('value')
-                  .add(this.currencyCode)
+                  .add(this.invoice.destinationCurrency)
                   .add(' ')
                   .add((this.invoice.amount/100).toFixed(2))
                   .end()

@@ -88,7 +88,7 @@ function setup_csp_valve {
     cd nanopay/src/net/nanopay/security/csp
     mkdir build
 
-    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" || $IS_MAC -ne 1 ]]; then
+    if [[ $IS_AWS -ne 1 || $IS_MAC -ne 1 ]]; then
       # AWS servers don't have .m2 directory. Additionally, this should also run for Linux builds.
       curl -O https://search.maven.org/remotecontent?filepath=org/apache/tomcat/tomcat-catalina/9.0.8/tomcat-catalina-9.0.8.jar
       JAR_TOMCAT_CATALINA="./tomcat-catalina-9.0.8.jar"
@@ -151,7 +151,7 @@ function build_war {
     # invoke deploy_journals after build_war
     #
 
-    if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    if [[ $IS_AWS -ne 1 ]]; then
       # Preventing this from running on AWS
       setup_jce
     fi
@@ -226,7 +226,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
 
     if [ ! -f $JOURNALS ]; then
         echo "ERROR: missing $JOURNALS file."
@@ -401,6 +401,7 @@ function setenv {
         export JOURNAL_HOME=/mnt/journals
 
         CLEAN_BUILD=1
+        IS_AWS=1
     fi
 
     export CATALINA_PID="/tmp/catalina_pid"
@@ -514,6 +515,7 @@ function usage {
     echo "  -s : Stop Tomcat."
     echo "  -f : Run Tomcat in foreground."
     echo "  -h : Print usage information."
+    echo "  -t : Run tests."
 }
 
 ############################
@@ -529,6 +531,7 @@ RUN_NANOS=0
 RUN_MIGRATION=0
 STOP_TOMCAT=0
 TEST=0
+IS_AWS=0
 
 while getopts "bcdfhijmnrst" opt ; do
     case $opt in
