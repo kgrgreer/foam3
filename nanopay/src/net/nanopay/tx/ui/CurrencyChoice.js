@@ -9,7 +9,7 @@ foam.CLASS({
 
   imports: [
     'currencyDAO',
-    'currentCurrency',
+    'currentAccount',
     'stack',
     'userDAO'
   ],
@@ -113,9 +113,11 @@ foam.CLASS({
       name: 'chosenCurrency',
       expression: function() {
         var self = this;
-        this.currencyDAO.find(this.currentCurrency).then(function(currency) {
-          self.chosenCurrency = currency;
-        });
+
+        this.currencyDAO.find(this.currentAccount.denomination)
+            .then(function(currency) {
+              self.chosenCurrency = currency;
+            });
       },
       postSet: function() {
         this.data = this.chosenCurrency;
