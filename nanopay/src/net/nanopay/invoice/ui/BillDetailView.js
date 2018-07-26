@@ -57,10 +57,7 @@ foam.CLASS({
         name: 'userList',
         view: function(_, X) {
           return foam.u2.view.ChoiceView.create({
-            dao: X.publicUserDAO.where(X.data.AND(
-              X.data.NEQ(X.PublicUserInfo.ID, X.user.id),
-              X.data.EQ(X.PublicUserInfo.STATUS, 'ACTIVE')
-            )),
+            dao: X.publicUserDAO.where(X.data.NEQ(X.PublicUserInfo.ID, X.user.id)),
             placeholder: 'Please Select Customer',
             objToChoice: function(user) {
               var username = user.businessName || user.organization;
@@ -214,7 +211,7 @@ foam.CLASS({
                   .start().addClass('label').add('Frequency').end()
                     .start(this.FREQUENCY).end()
                 .end()
-                .start().addClass('inline').style({ 'margin-right' : '36px' })
+                .start().addClass('inline').style({ 'margin-right': '36px' })
                   .start()
                     .addClass('label')
                     .add('Ends After ( ) Occurences')
