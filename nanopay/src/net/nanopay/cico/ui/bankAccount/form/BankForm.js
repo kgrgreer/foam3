@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.CADBankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.PadCapture',
     'foam.nanos.auth.Address',
   ],
@@ -231,7 +231,7 @@ foam.CLASS({
           }
 
           // REVIEW: AccountRefactor - what type of bank account to create? - Joel, perhaps need a factory.
-          this.viewData.bankAccount.push( this.CADBankAccount.create({
+          this.viewData.bankAccount.push( this.CABankAccount.create({
             name: accountInfo.name,
             institution: accountInfo.bankNumber,
             branch: accountInfo.transitNumber,

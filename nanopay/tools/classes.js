@@ -32,7 +32,7 @@ var classes = [
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.bank.BankAccount',
-  'net.nanopay.bank.CADBankAccount',
+  'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
