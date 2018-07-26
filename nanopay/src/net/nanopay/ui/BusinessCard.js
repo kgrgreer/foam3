@@ -116,21 +116,29 @@ foam.CLASS({
               .add('Business')
             .end()
             .start().addClass('generic-status').addClass('Invoice-Status-Paid')
-             .add(this.business$.map(function(a){ 
+             .add(this.business$.map(function(a){
                if(!a.status) return;
-               return a.status.label; 
+               return a.status.label;
               }))
             .end()
           .end()
         .end()
     },
 
-    function formatAddress(address){
+
+    function formatAddress(address) {
+      if ( !address ) return;
+
       var formattedAddress;
-      if(!address) return;
-      if(address.streetNumber){
-        formattedAddress = address.suite + '-' + address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
+      if ( address.streetNumber ) {
+        formattedAddress = address.streetNumber + ' ' + address.streetName + ', ' + address.city + ', ' + address.regionId + ', ' + address.countryId + ', ' + address.postalCode;
+
+        // prefix suite number to address
+        if ( address.suite ) {
+          formattedAddress = address.suite + '-' + formattedAddress;
+        }
       }
+
       return formattedAddress;
     }
   ]
