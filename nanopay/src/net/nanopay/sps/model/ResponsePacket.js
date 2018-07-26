@@ -15,22 +15,30 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-  protected static List<PropertyInfo> list;
+  public static final char START_OF_TEXT = (char) 2;
+  public static final char END_OF_TEXT = (char) 3;
+  public static final char FIELD_SEPARATOR = (char) 28;
+  public static final char RECORD_SEPARATOR = (char) 30;
+  public static final char UNIT_SEPARATOR = (char) 31;
+  
+  protected List<PropertyInfo> list;
+  
   public ResponsePacket parseSPSResponse(String response) {
     if ( response == null || response.length() == 0 ) {
       return null;
     }
-        
-    if ( response.charAt(0) == (char) 2 ) {
+    
+    // remove STX if exist
+    if ( response.charAt(0) == START_OF_TEXT ) {
       response = response.substring(1, response.length());
     }
     
-    if ( response.charAt(response.length() - 1) == (char) 3 ) {
+    // remove ETX if exist
+    if ( response.charAt(response.length() - 1) == END_OF_TEXT ) {
       response = response.substring(0, response.length() - 1);
     }
     
-    char fieldSeparator = (char) 28;
-    Object[] values = parse(response, fieldSeparator);
+    Object[] values = parse(response, FIELD_SEPARATOR);
    
     for ( int i = 0; i < list.size(); i++ ) {
       list.get(i).set(this, values[i]);
@@ -46,7 +54,7 @@ foam.CLASS({
     Parser parser = new Repeat(new SPSStringParser(delimiter), new Literal("" + delimiter));
     PStream ps1 = ps.apply(parser, null);
     if ( ps1 == null ) throw new RuntimeException("format error");
-  
+    
     values = (Object[]) ps1.value();
   
     return values;
@@ -54,7 +62,7 @@ foam.CLASS({
   
   protected static class SPSStringParser implements Parser {
     private char delimiter;
-    public SPSStringParser(char delimiter) {
+    SPSStringParser(char delimiter) {
       this.delimiter = delimiter;
     }
   

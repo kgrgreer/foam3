@@ -107,31 +107,31 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-{
-list = new ArrayList<>();
-list.add(MSG_TYPE);
-list.add(PACKET_TYPE);
-list.add(MSG_MODIFIER_CODE);
-list.add(LOCAL_TRANSACTION_TIME);
-list.add(FIELD5NOT_USED);
-list.add(TID);
-list.add(USER_INFO);
-list.add(MICR);
-list.add(ROUTE_CODE);
-list.add(ACCOUNT);
-list.add(CHECK_NUM);
-list.add(AMOUNT);
-list.add(INVOICE);
-list.add(CLERK_ID);
-list.add(FIELD15NOT_USED);
-list.add(SOCIAL_SECURITY_NUM);
-list.add(ITEM_ID);
-list.add(OPTIONS_SELECTED);
-list.add(DRIVERS_LICENSE);
-list.add(DLSTATE_CODE);
-list.add(DATE_OF_BIRTH);
-list.add(PHONE_NUMBER);
-}
+  {
+    list = new ArrayList<>();
+    list.add(MSG_TYPE);
+    list.add(PACKET_TYPE);
+    list.add(MSG_MODIFIER_CODE);
+    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(FIELD5NOT_USED);
+    list.add(TID);
+    list.add(USER_INFO);
+    list.add(MICR);
+    list.add(ROUTE_CODE);
+    list.add(ACCOUNT);
+    list.add(CHECK_NUM);
+    list.add(AMOUNT);
+    list.add(INVOICE);
+    list.add(CLERK_ID);
+    list.add(FIELD15NOT_USED);
+    list.add(SOCIAL_SECURITY_NUM);
+    list.add(ITEM_ID);
+    list.add(OPTIONS_SELECTED);
+    list.add(DRIVERS_LICENSE);
+    list.add(DLSTATE_CODE);
+    list.add(DATE_OF_BIRTH);
+    list.add(PHONE_NUMBER);
+  }
         `);
       }
     }

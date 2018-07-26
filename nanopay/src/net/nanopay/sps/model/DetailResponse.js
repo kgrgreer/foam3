@@ -96,29 +96,29 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
   protected static List<PropertyInfo> detailInfoPropertyList;
-  protected static List<PropertyInfo> batchInfo;
+  protected static List<PropertyInfo> batchInfoPropertyList;
   {
-  detailInfoPropertyList = new ArrayList<>();
-  detailInfoPropertyList.add(MSG_TYPE);
-  detailInfoPropertyList.add(PACKET_NUM);
-  detailInfoPropertyList.add(ITEM_NUM);
-  detailInfoPropertyList.add(ITEM_CONTENT);
-  batchInfo = new ArrayList<>();
-  batchInfo.add(BATCH_MSG_TYPE);
-  batchInfo.add(BATCH_PACKET_TYPE);
-  batchInfo.add(MESSAGE_MODIFIER_CODE);
-  batchInfo.add(BATCH_STATUS_CODE);
-  batchInfo.add(TEXT_MSG);
-  batchInfo.add(HOST_SYNC_COUNTER);
-  batchInfo.add(BATCH_ID);
-  batchInfo.add(HOST_CHECK_APPROVAL_COUNT);
-  batchInfo.add(HOST_CHECK_APPROVAL_AMOUNT);
-  batchInfo.add(HOST_DECLINE_COUNT);
-  batchInfo.add(HOST_DECLINE_AMOUNT);
-  batchInfo.add(HOST_VOID_COUNT);
-  batchInfo.add(HOST_VOID_AMOUNT);
-  batchInfo.add(HOST_CREDIT_COUNT);
-  batchInfo.add(HOST_CREDIT_AMOUNT);
+    detailInfoPropertyList = new ArrayList<>();
+    detailInfoPropertyList.add(MSG_TYPE);
+    detailInfoPropertyList.add(PACKET_NUM);
+    detailInfoPropertyList.add(ITEM_NUM);
+    detailInfoPropertyList.add(ITEM_CONTENT);
+    batchInfoPropertyList = new ArrayList<>();
+    batchInfoPropertyList.add(BATCH_MSG_TYPE);
+    batchInfoPropertyList.add(BATCH_PACKET_TYPE);
+    batchInfoPropertyList.add(MESSAGE_MODIFIER_CODE);
+    batchInfoPropertyList.add(BATCH_STATUS_CODE);
+    batchInfoPropertyList.add(TEXT_MSG);
+    batchInfoPropertyList.add(HOST_SYNC_COUNTER);
+    batchInfoPropertyList.add(BATCH_ID);
+    batchInfoPropertyList.add(HOST_CHECK_APPROVAL_COUNT);
+    batchInfoPropertyList.add(HOST_CHECK_APPROVAL_AMOUNT);
+    batchInfoPropertyList.add(HOST_DECLINE_COUNT);
+    batchInfoPropertyList.add(HOST_DECLINE_AMOUNT);
+    batchInfoPropertyList.add(HOST_VOID_COUNT);
+    batchInfoPropertyList.add(HOST_VOID_AMOUNT);
+    batchInfoPropertyList.add(HOST_CREDIT_COUNT);
+    batchInfoPropertyList.add(HOST_CREDIT_AMOUNT);
   }
   
   @Override
@@ -131,22 +131,19 @@ foam.CLASS({
     response = response.substring(1, response.length() - 1);
   
     // separate two kinds of records  
-    String[] lines = response.split("" + (char) 3 + (char) 2);
+    String[] lines = response.split("" + END_OF_TEXT + START_OF_TEXT);
     
     List<DetailResponseItemContent> itemList = new ArrayList<>();
-    
-    char fieldSeparator = (char) 28;
-    char recordSeparator = (char) 30;
     
     for ( int i = 0; i < lines.length - 1; i++ ) {
       String detailResponseInfo = lines[i];
   
-      Object[] temp =  parse(detailResponseInfo, fieldSeparator);
+      Object[] temp =  parse(detailResponseInfo, FIELD_SEPARATOR);
       for ( int j = 0; j < 3; j++ ) {
         detailInfoPropertyList.get(j).set(this, temp[j]);
       }
   
-      Object[] items = parse(temp[3].toString(), recordSeparator);
+      Object[] items = parse(temp[3].toString(), RECORD_SEPARATOR);
     
       for (Object item : items) {
         DetailResponseItemContent detailResponseItemContent = new DetailResponseItemContent();
@@ -164,9 +161,9 @@ foam.CLASS({
     
     // set BatchDetailGeneralResponse fields
     String batchDetailInfo = lines[lines.length - 1];  
-    Object[] values =  parse(batchDetailInfo, fieldSeparator);
+    Object[] values =  parse(batchDetailInfo, FIELD_SEPARATOR);
     for ( int i = 0; i < values.length; i++ ) {
-      batchInfo.get(i).set(this, values[i]);
+      batchInfoPropertyList.get(i).set(this, values[i]);
     }
     
     return this;

@@ -28,12 +28,12 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-{
-list = new ArrayList<>();
-list.add(MSG_TYPE);
-list.add(PACKET_TYPE);
-list.add(TEXT_MESSAGE);
-}
+  {
+    list = new ArrayList<>();
+    list.add(MSG_TYPE);
+    list.add(PACKET_TYPE);
+    list.add(TEXT_MESSAGE);
+  }
         `);
       }
     }

@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SPSProcessor extends ContextAwareSupport {
@@ -124,17 +125,34 @@ public class SPSProcessor extends ContextAwareSupport {
 
   public void test() {
     try {
-//      GeneralRequestResponse generalRequestResponse = GeneralReqService(generateTestGeneralRequest());
-//      System.out.println("generalRequestResponse: " + generalRequestResponse);
-
-      //BatchDetailGeneralResponse batchDetailGeneralResponse = BatchDetailReqService(generateTestBatchDetailRequest());
-      DetailResponse detailResponse = DetailInfoService(generateTestBatchDetailRequest());
-      System.out.println("detailResponse: " + detailResponse);
-      // System.out.println("batchDetailGeneralResponse: " + detailResponse);
+      GeneralRequestResponse generalRequestResponse = GeneralReqService(generateTestGeneralRequest());
+      System.out.println("generalRequestResponse: " + generalRequestResponse);
     } catch (ClientErrorException e) {
-      System.out.println(e.getError());
+      System.out.println("Error: " + e.getError());
     } catch (HostErrorException e) {
-      System.out.println(e.getError());
+      System.out.println("Error: " + e.getError());
+    }
+
+    try {
+      BatchDetailGeneralResponse batchDetailGeneralResponse = BatchDetailReqService(generateTestBatchDetailRequest());
+      System.out.println("batchDetailGeneralResponse: " + batchDetailGeneralResponse);
+    } catch (ClientErrorException e) {
+      System.out.println("Error: " + e.getError());
+    } catch (HostErrorException e) {
+      System.out.println("Error: " + e.getError());
+    }
+
+    try {
+      DetailResponse detailResponse = DetailInfoService(generateTestDetailResponseRequest());
+      System.out.println("detailResponse: " + detailResponse);
+      DetailResponseItemContent[] items = detailResponse.getItemContent();
+      for (DetailResponseItemContent item : items) {
+        System.out.println(item);
+      }
+    } catch (ClientErrorException e) {
+      System.out.println("Error: " + e.getError());
+    } catch (HostErrorException e) {
+      System.out.println("Error: " + e.getError());
     }
   }
 
@@ -145,9 +163,7 @@ public class SPSProcessor extends ContextAwareSupport {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180722115959");
-    //not used
-    //generalRequestPacketTest.setTextMsg("");
+    generalRequestPacket.setLocalTransactionTime("20180724115959");
     generalRequestPacket.setTID("ZYX80");
 
     // user info
@@ -167,8 +183,6 @@ public class SPSProcessor extends ContextAwareSupport {
     generalRequestPacket.setAmount("550.00");
     generalRequestPacket.setInvoice("");
     generalRequestPacket.setClerkID("");
-    // not used
-    //generalRequestPacketTest.setMaxDetailItemsPerTransmission("");
     generalRequestPacket.setSocialSecurityNum("");
     generalRequestPacket.setItemID("");
     generalRequestPacket.setOptionsSelected("EV");
@@ -185,7 +199,30 @@ public class SPSProcessor extends ContextAwareSupport {
 
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
-    //batchDetailRequestPacket.setMessageModifierCode(60);
+    batchDetailRequestPacket.setMsgModifierCode(40);
+    batchDetailRequestPacket.setLocalTransactionTime("20180714115959");
+    batchDetailRequestPacket.setTID("ZYX80");
+
+    batchDetailRequestPacket.setOptionallyEnteredDate("");
+    batchDetailRequestPacket.setCheckApprovalCount("");
+    batchDetailRequestPacket.setCheckApprovalAmount("");
+    batchDetailRequestPacket.setDeclineCount("");
+    batchDetailRequestPacket.setDeclineAmount("");
+    batchDetailRequestPacket.setVoidCount("");
+    batchDetailRequestPacket.setVoidAmount("");
+    batchDetailRequestPacket.setMaxDetailItemsPerTransmission("5");
+    batchDetailRequestPacket.setSyncCounter("0");
+    batchDetailRequestPacket.setCreditCount("");
+    batchDetailRequestPacket.setCreditAmount("");
+
+    return batchDetailRequestPacket;
+  }
+
+  private BatchDetailRequestPacket generateTestDetailResponseRequest() {
+    BatchDetailRequestPacket batchDetailRequestPacket = new BatchDetailRequestPacket();
+
+    batchDetailRequestPacket.setMsgType(20);
+    batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(50);
     batchDetailRequestPacket.setLocalTransactionTime("20180714115959");
     batchDetailRequestPacket.setTID("ZYX80");

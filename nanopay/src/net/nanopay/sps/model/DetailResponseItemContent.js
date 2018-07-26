@@ -51,15 +51,15 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
   {
-  list = new ArrayList<>();
-  list.add(ITEM_ID);
-  list.add(ORIGINAL_REQUEST_STATUS);
-  list.add(MANUAL_ENTRY_INDICATOR);
-  list.add(LOCAL_TRANSACTION_TIME);
-  list.add(FIELD5NOT_USED);
-  list.add(AMOUNT);
-  list.add(INVOICE);
-  list.add(CLERK_ID);
+    list = new ArrayList<>();
+    list.add(ITEM_ID);
+    list.add(ORIGINAL_REQUEST_STATUS);
+    list.add(MANUAL_ENTRY_INDICATOR);
+    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(FIELD5NOT_USED);
+    list.add(AMOUNT);
+    list.add(INVOICE);
+    list.add(CLERK_ID);
   }
   
   @Override
@@ -68,8 +68,7 @@ foam.CLASS({
       return null;
     }
     
-    char unitSeparator = (char) 31;
-    Object[] values = parse(response, unitSeparator);
+    Object[] values = parse(response, UNIT_SEPARATOR);
     
     for ( int i = 0; i < list.size(); i++ ) {
       list.get(i).set(this, values[i]);

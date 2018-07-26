@@ -80,25 +80,25 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-{
-list = new ArrayList<>();
-list.add(MSG_TYPE);
-list.add(PACKET_TYPE);
-list.add(MSG_MODIFIER_CODE);
-list.add(APPROVAL_CODE);
-list.add(TEXT_MSG);
-list.add(SYNC_COUNTERS_INCREMENT);
-list.add(ITEM_ID);
-list.add(BATCH_ID);
-list.add(ROUTE_CODE);
-list.add(ACCOUNT);
-list.add(CHECK_NUM);
-list.add(AMOUNT);
-list.add(INVOICE);
-list.add(CLERK_ID);
-list.add(LOCAL_TRANSACTION_TIME);
-list.add(ORIGINAL_REQUEST_STATUS);
-}
+  {
+    list = new ArrayList<>();
+    list.add(MSG_TYPE);
+    list.add(PACKET_TYPE);
+    list.add(MSG_MODIFIER_CODE);
+    list.add(APPROVAL_CODE);
+    list.add(TEXT_MSG);
+    list.add(SYNC_COUNTERS_INCREMENT);
+    list.add(ITEM_ID);
+    list.add(BATCH_ID);
+    list.add(ROUTE_CODE);
+    list.add(ACCOUNT);
+    list.add(CHECK_NUM);
+    list.add(AMOUNT);
+    list.add(INVOICE);
+    list.add(CLERK_ID);
+    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(ORIGINAL_REQUEST_STATUS);
+  }
         `);
       }
     }
