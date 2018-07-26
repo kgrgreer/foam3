@@ -515,6 +515,7 @@ function usage {
     echo "  -s : Stop Tomcat."
     echo "  -f : Run Tomcat in foreground."
     echo "  -h : Print usage information."
+    echo "  -t : Run tests."
 }
 
 ############################
