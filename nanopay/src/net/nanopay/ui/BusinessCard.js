@@ -135,7 +135,7 @@ foam.CLASS({
 
 
     function formatAddress(address) {
-      if ( !address ) return;
+      if ( ! address ) return;
 
       var formattedAddress;
       if ( address.streetNumber ) {
