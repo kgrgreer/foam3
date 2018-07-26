@@ -10,16 +10,16 @@ foam.CLASS({
     imports: [
       'hideSaleSummary',
       'notificationDAO',
+      'publicUserDAO',
       'stack',
-      'user',
-      'publicUserDAO'
+      'user'
     ],
 
     requires: [
       'foam.u2.dialog.NotificationMessage',
+      'net.nanopay.auth.PublicUserInfo',
       'net.nanopay.invoice.model.Invoice',
-      'net.nanopay.invoice.notification.NewInvoiceNotification',
-      'net.nanopay.auth.PublicUserInfo'
+      'net.nanopay.invoice.notification.NewInvoiceNotification'
     ],
 
     properties: [
@@ -57,10 +57,11 @@ foam.CLASS({
         name: 'userList',
         view: function(_, X) {
           return foam.u2.view.ChoiceView.create({
-            dao: X.publicUserDAO.where(X.data.NEQ(X.PublicUserInfo.ID, X.user.id)),
+            dao: X.publicUserDAO.where(X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)),
             placeholder: 'Please Select Customer',
             objToChoice: function(user) {
-              var username = user.businessName || user.organization;
+              var username = user.businessName || user.organization ||
+                  user.label();
               return [user.id, username + ' - (' + user.email + ')'];
             }
           });
