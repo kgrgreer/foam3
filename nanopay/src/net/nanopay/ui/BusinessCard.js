@@ -89,7 +89,7 @@ foam.CLASS({
             .start().addClass('container-1')
               .start().addClass('companyName')
                 .add(this.business$.map(function(a) {
-                  return a.businessName
+                  return a.businessName;
                 }))
               .end()
               .start().addClass('companyAddress')
@@ -102,21 +102,21 @@ foam.CLASS({
           .start().addClass('container-2')
             .start().addClass('userName')
               .add(this.business$.map(function(a) {
-                return a.firstName + ' ' + a.lastName
+                return a.firstName + ' ' + a.lastName;
               }))
             .end()
             .start().addClass('job-title')
               .add(this.business$.map(function(a) {
-                return a.jobTitle
+                return a.jobTitle;
               }))
             .end()
             .start().addClass('companyAddress').style({ 'margin': '15px 0px;'})
               .add(this.business$.map(function(a) {
-                return a.email
+                return a.email;
               }))
               .br()
               .add(this.business$.map(function(a) {
-                if (!a.businessPhone) return;
+                if ( ! a.businessPhone ) return;
                 return a.businessPhone.number;
               }))
             .end()
@@ -125,7 +125,7 @@ foam.CLASS({
             .end()
             .start().addClass('generic-status').addClass('Invoice-Status-Paid')
              .add(this.business$.map(function(a) {
-               if(!a.status) return;
+               if ( ! a.status) return;
                return a.status.label;
               }))
             .end()
