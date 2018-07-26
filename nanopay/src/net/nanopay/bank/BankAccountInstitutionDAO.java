@@ -64,7 +64,7 @@ public class BankAccountInstitutionDAO
       if ( institutions.size() == 0 ) {
         String message = "Institution verification required on institution: "+institution.getId()+"\n Created from BankAccount: "+bankAccount.getId();
         Notification notification = new Notification.Builder(x)
-          .setTemplate("noc")
+          .setTemplate("NOC")
           .setBody(message)
           .build();
         ((DAO) x.get("notificationDAO")).put(notification);
@@ -72,7 +72,7 @@ public class BankAccountInstitutionDAO
      } else if ( institutions.size() > 1 ) {
         String message = "Multiple Institutions found for institutionNumber: "+bankAccount.getInstitution()+"\n Using "+institution.getId()+" on BankAccount: "+bankAccount.getId();
         Notification notification = new Notification.Builder(x)
-          .setTemplate("noc")
+          .setTemplate("NOC")
           .setBody(message)
           .build();
         ((DAO) x.get("notificationDAO")).put(notification);
