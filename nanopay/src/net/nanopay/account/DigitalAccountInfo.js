@@ -1,20 +1,24 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'DigitalAccountInfo',
- 
+  ids: ['accountId'],
+  imports: [ 'addCommas'],
 
   properties: [
     {
       class: 'Long',
-      name: 'id',
-    }, 
-    {
-      class: 'String',
       name: 'accountId',
     }, 
     {
-      class: 'String',
+      class: 'Long',
       name: 'balance',
+      tableCellFormatter: function(amount, X) {        
+        var formattedAmount = amount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
     },
     {
       class: 'String',

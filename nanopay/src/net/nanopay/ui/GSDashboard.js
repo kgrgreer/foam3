@@ -61,7 +61,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-        'accountId', 'owner'
+        'accountId', 'owner', 'currency' ,'balance'
         ]
       }
     }
