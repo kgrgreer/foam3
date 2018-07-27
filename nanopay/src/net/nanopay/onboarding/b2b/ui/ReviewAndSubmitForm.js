@@ -57,7 +57,7 @@ foam.CLASS({
       padding: 0;
       height: inherit;
     }
-    ^ .foam-nanos-auth-ProfilePictureView{
+    ^ .foam-nanos-auth-ProfilePictureView {
       width: 150px;
     }
     ^ .termAndCondition {
@@ -72,17 +72,44 @@ foam.CLASS({
       background-color: white;
       width: 520px;
       height: 374px;
-      padding-top: 20px;
-      padding-left: 20px;
+    }
+    ^ .container {
+      width: 520px;
+      height: 296px;
+      overflow-y: scroll;
+      overflow-x: hidden;
     }
     ^ .iframeContainer {
       width: 520px;
-      height: 276px;
-      border: 0px;
+      height: 8150px;
+      border-width: 0px;
+      overflow: hidden;
+      pointer-events: none;
     }
     ^ .checkBoxDiv {
       text-align: right; 
-      margin: 20px;
+      margin-right: 20px;
+      margin-top: 20px;
+      color: #a4b3b8;
+    }
+    ^ .checkBoxLabel.enabled {
+      color: #093649
+    }
+    ^ .foam-u2-md-CheckBox {
+      width: 14px;
+      height: 14px;
+      margin-bottom: 1px;
+      vertical-align: bottom;
+      border: solid 1px #a4b3b8;
+    }
+    ^ .foam-u2-md-CheckBox.enabled {
+      border: solid 1px #093649;
+    }
+    ^ .foam-u2-md-CheckBox:checked {
+      background-color: #093649;
+    }
+    ^ .hint {
+      margin-top: 7px;
     }
   `,
 
@@ -109,7 +136,17 @@ foam.CLASS({
     'businessCountry',
     'businessRegion',
     'businessTypeName',
-    'fileHeight'
+    'pdfFileHeight',
+    {
+      class: 'Boolean',
+      name: 'checkBox',
+      factory: function() {
+        return this.viewData.checkBox;
+      },
+      postSet: function(o, n) {
+        this.viewData.checkBox = n;
+      }
+    }
   ],
 
   methods: [
@@ -230,21 +267,25 @@ foam.CLASS({
           .end()
           .start()
             .addClass('termAndConditionBox')
-            .start('iframe').addClass('iframeContainer')
-              .attrs({
-                  name: 'iframe',
-                  src: 'http://localhost:8080/service/terms?version='
-              })
-              .on('load', this.getFileHeight)
+            .start().addClass('container')
+              .start('iframe').addClass('iframeContainer')
+                .attrs({
+                    'src': 'https://nanopay.net/wp-content/uploads/nanopay-Canadian-B2B-Terms-of-Service-July-18-2018.pdf'
+                })
+                .on('load', this.getFileHeight)
+              .end()
+              .on('scroll', this.checkScrollPosition)
             .end()
             .start().addClass('checkBoxDiv')
-              .start()
-                .tag({ class: 'foam.u2.md.CheckBox' },
-                    { mode: foam.u2.DisplayMode.DISABLED })
+              .start({ class: 'foam.u2.md.CheckBox' },
+                  { mode: foam.u2.DisplayMode.DISABLED,
+                  data$: this.checkBox$ })
+              .end()
+              .start('label').addClass('checkBoxLabel')
                 .add('I agree to the Terms & Conditions')
               .end()
-              .start()
-                .add('*Sroll to the bottom to agree.')
+              .start().addClass('hint')
+                .add('*Scroll to the bottom to agree.')
               .end()
             .end()
           .end()
@@ -256,20 +297,27 @@ foam.CLASS({
     {
       name: 'getFileHeight',
       code: function() {
-        var iframe = document.getElementsByClassName('iframeContainer')[0];
-        this.fileHeight = iframe.contentDocument.body.scrollHeight;
-        iframe.contentDocument.onscroll = this.checkScrollPosition;
+        var iframeContainer
+            = document.getElementsByClassName('iframeContainer')[0];
+        this.pdfFileHeight = iframeContainer.clientHeight;
       }
     },
     {
       name: 'checkScrollPosition',
       code: function() {
-        var iframe = document.getElementsByClassName('iframeContainer')[0];
-        var pos = iframe.contentDocument.documentElement.scrollTop;
+        var container = document.getElementsByClassName('container')[0];
+        var pos = container.scrollTop;
 
-        if ( pos + iframe.contentWindow.innerHeight >= this.fileHeight ) {
-          document.getElementsByClassName('foam-u2-md-CheckBox')[0]
-              .removeAttribute('disabled');
+        // If user scroll to the bottom of the terms & conditions
+        if ( pos + container.clientHeight >= this.pdfFileHeight ) {
+          var checkBox
+              = document.getElementsByClassName('foam-u2-md-CheckBox')[0];
+          checkBox.removeAttribute('disabled');
+          checkBox.classList.add('enabled');
+
+          var checkBoxDiv
+              = document.getElementsByClassName('checkBoxLabel')[0];
+          checkBoxDiv.classList.add('enabled');
         }
       }
     }
