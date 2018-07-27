@@ -13,15 +13,15 @@ foam.CLASS({
     'user',
     'stack',
     'accountDAO',
-    'balanceDAO'
+    'digitalAccountInfoDAO'
   ],
   exports: [
     'as data',
     'filter',
-    'filteredAccountDAO'
+    'filteredDigitalAccountInfoDAO'
   ],
   requires: [
-    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccountInfo',
     'net.nanopay.account.Account',
     'foam.nanos.auth.User'
 
@@ -48,19 +48,20 @@ foam.CLASS({
     {
       name: 'data',
       factory: function() {
-        
-        return this.accountDAO.where(this.EQ(this.Account.TYPE,"DigitalAccount"));
+        return this.digitalAccountInfoDAO;
       }
     },
     {
-      name: 'filteredAccountDAO',
+      name: 'filteredDigitalAccountInfoDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Account.ID, filter)):data;
+        
+        return filter ? data.where(this.EQ(this.DigitalAccountInfo.ACCOUNT_ID
+          , filter)):data;
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-        'id', 'owner'
+        'accountId', 'owner'
         ]
       }
     }
@@ -83,7 +84,7 @@ foam.CLASS({
               .start(this.FILTER).addClass('filter-search').end()
             .end()
           .end()
-          .add(this.FILTERED_ACCOUNT_DAO)
+          .add(this.FILTERED_DIGITAL_ACCOUNT_INFO_DAO)
         .end();
     }
   ],

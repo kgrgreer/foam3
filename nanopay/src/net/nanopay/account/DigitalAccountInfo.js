@@ -1,17 +1,21 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'DigitalAccountInfo',
-  ids: ['accountId'],
+ 
 
   properties: [
     {
-      class: 'String',
-      name: 'balance',
-    },
+      class: 'Long',
+      name: 'id',
+    }, 
     {
       class: 'String',
       name: 'accountId',
     }, 
+    {
+      class: 'String',
+      name: 'balance',
+    },
     {
       class: 'String',
       name: 'owner',
@@ -29,11 +33,11 @@ foam.CLASS({
       name: 'transactionsSent',
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'transactionsSumRecieved',
     }, 
     {
-      class: 'Long',
+      class: 'Double',
       name: 'transactionsSumSent',
     },
   ]
