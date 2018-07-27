@@ -648,5 +648,16 @@ foam.CLASS({
       overflow: scroll;
       padding: 20px 0px 0px 20px;
     }
+    .foam-doc-DocBorder-content {
+      height: 80vh !important;
+      overflow: scroll;
+    }
+    .foam-doc-DocBorder-content .foam-u2-DetailView {
+      width: 200px;
+      overflow: scroll;
+    }
+    .foam-doc-ClassList {
+      display: inline-block;
+    }
   `
 });

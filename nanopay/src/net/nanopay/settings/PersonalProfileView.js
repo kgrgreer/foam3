@@ -124,7 +124,6 @@
       width: 380px;
       height: 40px;
     }
-   
     ^ .update-BTN{
       width: 135px;
       height: 40px;
@@ -256,7 +255,7 @@
       letter-spacing: 0.2px;
       text-align: left;
       color: #a4b3b8;
-      margin-left: 20px;    
+      margin-left: 20px;
       margin-right: 770px;
       display: inline-block;
     }
@@ -264,7 +263,7 @@
       width: 60px;
       margin-left: 65px;
     }
-    ^ .net-nanopay-ui-ToggleSwitch-inner:before, 
+    ^ .net-nanopay-ui-ToggleSwitch-inner:before,
     ^ .net-nanopay-ui-ToggleSwitch-inner:after {
       height: 30px;
     }
@@ -334,7 +333,7 @@
       class: 'String',
       name: 'phone'
     },
-    { 
+    {
       //We'll have to account for user country code when internationalize.
       class: 'String',
       name: 'phoneCode',
@@ -380,9 +379,8 @@
       var resetPasswordProfile = this.ExpandContainer.create({ title: 'Reset Password', link: '', linkView: '' });
       var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
       var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
-      
-      if (this.user.firstName != "")
-      {
+
+      if ( this.user.firstName != "" ) {
         this.firstName = this.user.firstName;
         this.lastName = this.user.lastName;
         this.jobTitle = this.user.jobTitle;
@@ -391,6 +389,7 @@
         this.phone = this.user.phone.number.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
       }
+      
       this
       .addClass(this.myClass())
       .start(personalProfile)
@@ -437,19 +436,20 @@
           .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
         .end()
       .end()
-      this
-      .addClass(this.myClass())
-      .start()
-        .start().addClass('tfa-Container')
-          .start('div').addClass('twoFactorDiv')
-            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
-            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
-          .end()
-          .start('div').addClass('toggleDiv')
-            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
-          .end()
-        .end()
-      .end()
+// TODO: enable when we have working two factor authentication
+//      this
+//      .addClass(this.myClass())
+//      .start()
+//        .start().addClass('tfa-Container')
+//          .start('div').addClass('twoFactorDiv')
+//            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
+//            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
+//          .end()
+//          .start('div').addClass('toggleDiv')
+//            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
+//          .end()
+//        .end()
+//      .end()
       this
       .addClass(this.myClass())
       .start(emailPreferenceProfile)
@@ -535,7 +535,7 @@
     { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
     { name: 'JobTitleLengthError', message: 'Job title is too long' },
-    { name: 'EmailError', message: 'Invalid email address' },  
+    { name: 'EmailError', message: 'Invalid email address' },
     { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
