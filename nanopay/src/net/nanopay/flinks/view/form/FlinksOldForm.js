@@ -24,8 +24,9 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Country',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.Institution',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -310,13 +311,13 @@ foam.CLASS({
         //fetch account
         if ( this.subStack.pos == 3 ) {
           X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution){
-            var inNumber = institution.array[0].institutionNumber;
+            var inst = institution.array[0];
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                X.bankAccountDAO.put(self.BankAccount.create({
-                  accountName: item.Title,
+                X.accountDAO.put(self.CABankAccount.create({
+                  name: item.Title,
                   accountNumber: item.AccountNumber,
-                  institutionNumber: inNumber,
+                  institutionId: inst.id,
                   status: self.BankAccountStatus.VERIFIED
                 })).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));

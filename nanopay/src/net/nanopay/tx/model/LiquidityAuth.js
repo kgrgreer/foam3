@@ -7,7 +7,7 @@ foam.INTERFACE({
       name: 'liquifyUser',
       args: [
         {
-          name: 'UserId',
+          name: 'accountId',
           javaType: 'long'
         }
       ]

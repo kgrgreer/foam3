@@ -9,9 +9,9 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.model.BankAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.CountdownView'
+    'net.nanopay.ui.CountdownView',
+    'net.nanopay.account.DigitalAccount'
   ],
 
   implements: [
@@ -19,9 +19,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'currentBalance',
-    'bankAccountDAO',
-    'bankAccountVerification',
+    'accountDAO',
+    'balance',
     'email',
     'formatCurrency',
     'invoiceDAO',
@@ -335,7 +334,7 @@ foam.CLASS({
 
           // Check if user has enough digital cash to make the transfer and show
           // an error message if they don't.
-          var fundsInsufficient = this.currentBalance.balance < self.viewData.fromAmount;
+          var fundsInsufficient = this.balance.balance < self.viewData.fromAmount;
           if ( ! self.viewData.accountCheck && fundsInsufficient ) {
             this.add(this.NotificationMessage.create({
               message: 'Unable to process payment: insufficient digital cash.',
@@ -356,15 +355,25 @@ foam.CLASS({
           if ( this.invoiceMode ){
             invoiceId = this.invoice.id;
           }
+          var destinationAccount = this.accountDAO.find(this.AND(
+            this.EQ(this.DigitalAccount.DENOMINATION, this.invoice.targetCurrency),
+            this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id),
+            this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
+          ));
 
           transaction = self.Transaction.create({
-            payerId: self.user.id,
-            payeeId: self.viewData.payee.id,
+            payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
-            bankAccountId: bankAccountId,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });
+          if ( this.viewData.digitalCash === undefined ) {
+            transaction.payerId = this.user.id;
+          } else if ( ! this.viewData.digitalCash) {
+            transaction.sourceAccount = this.viewData.account;
+            transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
+
+          }
 
           // Make the transfer
           self.transactionDAO.put(transaction)

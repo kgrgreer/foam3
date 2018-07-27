@@ -8,13 +8,14 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.PadCapture',
     'foam.nanos.auth.Address',
   ],
 
   imports: [
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'padCaptureDAO',
     'bankAccountVerification',
     'selectedAccount',
@@ -110,7 +111,7 @@ foam.CLASS({
 
       // only perform these validations if on 1st screen
       if ( this.position === 0 ) {
-        if ( accountInfo.accountName.length > 70 ) {
+        if ( accountInfo.name.length > 70 ) {
           this.add(this.NotificationMessage.create({
             message: 'Account name cannot exceed 70 characters.',
             type: 'error'
@@ -208,8 +209,8 @@ foam.CLASS({
           var accountInfo = this.viewData;
 
           if (
-            typeof accountInfo.accountName !== 'string' ||
-            accountInfo.accountName.trim() === '' ||
+            typeof accountInfo.name !== 'string' ||
+            accountInfo.name.trim() === '' ||
             typeof accountInfo.transitNumber !== 'string' ||
             accountInfo.transitNumber.trim() === '' ||
             typeof accountInfo.accountNumber !== 'string' ||
@@ -229,10 +230,11 @@ foam.CLASS({
             return;
           }
 
-          this.viewData.bankAccount.push( this.BankAccount.create({
-            accountName: accountInfo.accountName,
-            institutionNumber: accountInfo.bankNumber,
-            transitNumber: accountInfo.transitNumber,
+          // REVIEW: AccountRefactor - what type of bank account to create? - Joel, perhaps need a factory.
+          this.viewData.bankAccount.push( this.CABankAccount.create({
+            name: accountInfo.name,
+            institution: accountInfo.bankNumber,
+            branch: accountInfo.transitNumber,
             accountNumber: accountInfo.accountNumber,
             owner: this.user.id
           }));

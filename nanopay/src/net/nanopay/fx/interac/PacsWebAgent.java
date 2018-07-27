@@ -62,7 +62,6 @@ public class PacsWebAgent
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
     PM pm = new PM(getClass(), msg == null ? "view" : msg);
-
     try {
       if ( SafetyUtil.isEmpty(data) ) {
         if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {

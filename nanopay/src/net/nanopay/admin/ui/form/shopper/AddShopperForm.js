@@ -17,7 +17,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'currentBalanceDAO',
+    'currentAccount',
+    'balanceDAO',
     'email',
     'formatCurrency',
     'validateEmail',
@@ -154,7 +155,7 @@ foam.CLASS({
 
         if ( this.position == 1 ) {
           // Send Money
-          this.currentBalanceDAO.find(this.user.id).then(function(response){
+          this.balanceDAO.find(this.currentAccount.id).then(function(response){
             var currentBalance = response;
             if ( shopperInfo.amount > currentBalance.balance ){
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));

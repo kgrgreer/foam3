@@ -8,17 +8,20 @@ import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.tp.TxnProcessor;
+
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.tp.TxnProcessor;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
+
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -120,9 +123,10 @@ public class CsvUtil {
    */
   public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
     final Date now            = new Date();
-    final DAO  userDAO        = (DAO) x.get("localUserDAO");
-    final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
+
+    final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
+    final DAO  userDAO        = (DAO) x.get("localUserDAO");
 
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
@@ -146,13 +150,15 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
           t = (Transaction) t.fclone();
 
+          BankAccount bankAccount = null;
+          user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
-            user = (User) userDAO.find(t.getPayerId());
+            bankAccount = (BankAccount) t.findSourceAccount(x);
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
-            user = (User) userDAO.find(t.getPayerId());
+            bankAccount = (BankAccount) t.findDestinationAccount(x);
           } else {
             // don't output if for whatever reason we get here and
             // the transaction is not a cash in or cash out
@@ -163,7 +169,6 @@ public class CsvUtil {
           if ( user == null ) return;
 
           // get bank account and check if null
-          BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
           if ( bankAccount == null ) return;
 
           // use transaction ID as the reference number
@@ -181,8 +186,8 @@ public class CsvUtil {
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
-          alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
-          alternaFormat.setBankNumber(padLeftWithZeros(bankAccount.getInstitutionNumber(), 3));
+          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf((bankAccount.getBranch())), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((bankAccount.getInstitution())), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
