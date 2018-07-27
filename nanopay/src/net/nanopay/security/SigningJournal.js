@@ -55,7 +55,7 @@ foam.CLASS({
           continue;
         }
 
-        User user = (User) signedFObj.getSignedBy();
+        User user = signedFObj.findSignedBy(getX());
         if ( user == null ) {
           throw new Exception("User is not logged in");
         }

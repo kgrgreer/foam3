@@ -35,7 +35,7 @@ public class BankAccountInvoiceDAO
 
 
     try {
-      if ( ((Long)((Account) txn.getDestinationAccount()).getOwner()).longValue() != ((Long)((BankAccount) txn.findSourceAccount(x)).getOwner()).longValue() ) {
+      if ( (txn.findDestinationAccount(x)).getOwner() != txn.findSourceAccount(x).getOwner()) {
         txn.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
       }
     }

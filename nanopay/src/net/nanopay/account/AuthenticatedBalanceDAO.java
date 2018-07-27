@@ -47,7 +47,7 @@ public class AuthenticatedBalanceDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    Account account = (Account) balance.getAccount();
+    Account account = balance.findAccount(x);
     if ( user.getId() != ((Long)account.getOwner()).longValue()) {
       // TODO/REVIEW: Reassign user's accounts?
       // We'll end up with multiple accounts for same currency owned by admin
@@ -68,7 +68,7 @@ public class AuthenticatedBalanceDAO
 
     // fetch balance from delegate and verify user either owns the balance or has global read access
     if ( balance != null ) {
-      Account account = (Account) balance.getAccount();
+      Account account = balance.findAccount(x);
       if ( user.getId() != ((Long)account.getOwner()).longValue() && ! auth.check(x, GLOBAL_BALANCE_READ) ) {
         return null;
       }
@@ -108,7 +108,7 @@ public class AuthenticatedBalanceDAO
     }
 
     if ( balance != null ) {
-      Account account = (Account) balance.getAccount();
+      Account account = balance.findAccount(x);
       if ( user.getId() != ((Long)account.getOwner()).longValue() && ! auth.check(x, GLOBAL_BALANCE_DELETE) ) {
         throw new RuntimeException("Unable to delete balance.");
       }
