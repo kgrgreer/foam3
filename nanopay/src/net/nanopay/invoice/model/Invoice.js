@@ -318,9 +318,8 @@ foam.CLASS({
     {
       name: 'formatCurrencyAmount',
       code: function(a, e, X) {
-        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
         e.start().style({ 'padding-right': '20px' })
-          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+          .add(X.destinationCurrency + ' ' + X.addCommas((a/100).toFixed(2)))
         .end();
       },
       javaReturns: 'String',

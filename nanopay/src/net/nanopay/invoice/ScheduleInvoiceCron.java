@@ -68,10 +68,10 @@ public class ScheduleInvoiceCron
         Transaction transaction = new Transaction();
 
         // sets accountId to be used for CICO transaction
-        if ( invoice.getDestinationAccount() != null ) {
-          transaction.setDestinationAccount(((Account)invoice.getAccount()).getId());
+        if ( invoice.findDestinationAccount(getX()) != null ) {
+          transaction.setDestinationAccount(invoice.getAccount());
         } else {
-          transaction.setPayeeId((Long) invoice.getPayeeId());
+          transaction.setPayeeId(invoice.getPayeeId());
         }
 
         long invAmount = invoice.getAmount();

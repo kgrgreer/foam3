@@ -40,7 +40,7 @@ public class AuthenticatedAccountDAO
     }
 
     // if current user doesn't have permissions to create or update, force account's owner to be current user id
-    if ( account.getOwner() == null || ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+    if ( account.findOwner(x) == null || ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
       account.setOwner(user.getId());
     }
 
@@ -58,7 +58,7 @@ public class AuthenticatedAccountDAO
 
     // fetch account from delegate and verify user either owns the account or has global read access
     Account account = (Account) getDelegate().find_(x, id);
-    if ( account != null && ((Long)account.getOwner()).longValue() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
+    if ( account != null && account.getOwner()!= user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
       return null;
     }
 
@@ -89,7 +89,7 @@ public class AuthenticatedAccountDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    if ( account != null && ((Long)account.getOwner()).longValue() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
+    if ( account != null && account.getOwner() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
       throw new RuntimeException("Unable to delete bank account");
     }
 

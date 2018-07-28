@@ -49,7 +49,7 @@ foam.CLASS({
             Logger logger   = (Logger) x.get("logger");
             DigitalAccount account = null;
 
-            synchronized(user) {
+            synchronized(String.valueOf(user.getId()).intern()) {
             logger.info(DigitalAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
 
             // Select currency of user's country
@@ -58,7 +58,7 @@ foam.CLASS({
               denomination = "CAD";
               String country = "CA";
               Address address = user.getAddress();
-              if ( address != null ) {
+              if ( address != null && address.getCountryId() != null ) {
                 country = address.getCountryId().toString();
               }
               DAO currencyDAO = (DAO) x.get("currencyDAO");

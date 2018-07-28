@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'CADBankAccount',
-  extens: 'net.nanopay.bank.BankAccount',
+  name: 'CABankAccount',
+  extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'Canadian Bank account information.',
 

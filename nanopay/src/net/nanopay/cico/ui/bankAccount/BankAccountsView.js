@@ -15,7 +15,14 @@ foam.CLASS({
     'accountDAO as bankAccountDAO'
   ],
 
+  exports: [
+    'selectedAccount',
+    'verifyAccount'
+  ],
+
   requires: [
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -135,6 +142,7 @@ foam.CLASS({
     'unverifiedBanksCount',
     'disabledBanksCount',
     'selection',
+    'selectedAccount',
     {
       name: 'data',
       factory: function() {
@@ -143,7 +151,9 @@ foam.CLASS({
               this.AND(
                 this.EQ(this.BankAccount.OWNER, this.user.id),
                 // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
-                this.EQ(this.BankAccount.TYPE, this.BankAccount.name)));
+                this.OR(
+                  this.EQ(this.Account.TYPE, this.BankAccount.name),
+                  this.EQ(this.Account.TYPE, this.CABankAccount.name))));
         dao.of = this.BankAccount;
         return dao;
       }
@@ -172,49 +182,61 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .start('div').addClass('row')
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleAll,
-                content$: this.allBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleVerified,
-                content$: this.verifiedBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div').addClass('spacer')
-              .tag({
-                class: 'net.nanopay.ui.ContentCard',
-                title: this.TitleUnverified,
-                content$: this.unverifiedBanksCount$
-              }).addClass('bankContentCard')
-            .end()
-            .start('div')
-              .tag(this.ADD_BANK, { showLabel: true })
-            .end()
+        .start()
+          .start()
+            .tag({
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleAll,
+              content$: this.allBanksCount$
+            })
+            .addClass('bankContentCard')
           .end()
           .start()
             .tag({
-                class: 'foam.u2.ListCreateController',
-                dao: this.data,
-                factory: function() {
-                  return self.BankAccount.create();
-                },
-                detailView: {},
-                summaryView: this.BankAccountTableView
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleVerified,
+              content$: this.verifiedBanksCount$
             })
+            .addClass('bankContentCard')
           .end()
-          .tag({
-            class: 'net.nanopay.ui.Placeholder',
-            dao: this.data,
-            message: this.placeholderText,
-            image: 'images/ic-bankempty.svg'
-          });
+          .start()
+            .tag({
+              class: 'net.nanopay.ui.ContentCard',
+              title: this.TitleUnverified,
+              content$: this.unverifiedBanksCount$
+            })
+            .addClass('bankContentCard')
+          .end()
+          .start()
+            .tag(this.ADD_BANK, { showLabel: true })
+          .end()
+        .end()
+        .tag({
+          class: 'foam.u2.ListCreateController',
+          dao: this.data,
+          factory: function() {
+            // REVIEW: how to determine what type of bank account to create
+            return self.BankAccount.create();
+          },
+          detailView: {},
+          summaryView: this.BankAccountTableView
+        })
+        .tag({
+          class: 'net.nanopay.ui.Placeholder',
+          dao: this.data,
+          message: this.placeholderText,
+          image: 'images/ic-bankempty.svg'
+        });
+    },
+
+    function verifyAccount() {
+      this.stack.push({
+        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+        wizardTitle: 'Verification',
+        startAtValue: 2,
+        nextLabelValue: 'Verify',
+        backLabelValue: 'Come back later'
+      }, this);
     }
   ],
 
@@ -247,20 +269,17 @@ foam.CLASS({
 
       imports: [
         'accountDAO as bankAccountDAO',
+        'verifyAccount',
         'stack',
+        'selectedAccount',
         'user'
       ],
 
       exports: [
-        'selectedAccount',
-        'verifyAccount',
         'manageAccountNotification'
       ],
 
       properties: [
-        {
-          name: 'selectedAccount'
-        },
         {
           name: 'selection',
           preSet: function(oldValue, newValue) {
@@ -282,7 +301,9 @@ foam.CLASS({
                   this.AND(
                     this.EQ(this.BankAccount.OWNER, this.user.id),
                     // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
-                    this.EQ(this.BankAccount.TYPE, this.BankAccount.name)));
+                    this.OR(
+                      this.EQ(this.Account.TYPE, this.BankAccount.name),
+                      this.EQ(this.Account.TYPE, this.CABankAccount.name))));
             dao.of = this.BankAccount;
             return dao;
           }
@@ -303,17 +324,9 @@ foam.CLASS({
               columns: [
                 'name', 'institution', 'accountNumber', 'status'
               ]
-            }).addClass(this.myClass('table')).end();
-        },
-
-        function verifyAccount() {
-          this.stack.push({
-            class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
-            wizardTitle: 'Verification',
-            startAtValue: 2,
-            nextLabelValue: 'Verify',
-            backLabelValue: 'Come back later'
-          }, this);
+            })
+              .addClass(this.myClass('table'))
+            .end();
         },
 
         function manageAccount() {
