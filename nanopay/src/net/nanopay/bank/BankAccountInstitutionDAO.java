@@ -42,18 +42,18 @@ public class BankAccountInstitutionDAO
 
     BankAccount bankAccount = (BankAccount) obj;
     Institution institution = bankAccount.findInstitution(x);
-    if ( institution == null ) {
+    if ( institution == null && bankAccount.getInstitutionNumber() != null ) {
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       List institutions = ((ArraySink) institutionDAO
                            .where(
-                                  EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitution())
+                                  EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitutionNumber())
                                   )
                            .select(new ArraySink())).getArray();
 
       if ( institutions.size() == 0 ) {
         institution = new Institution();
-        institution.setName(String.valueOf(bankAccount.getInstitution()));
-        institution.setInstitutionNumber(String.valueOf(bankAccount.getInstitution()));
+        institution.setName(bankAccount.getInstitutionNumber());
+        institution.setInstitutionNumber(bankAccount.getInstitutionNumber());
         institution = (Institution) institutionDAO.put(institution);
       } else {
         institution = (Institution) institutions.get(0);

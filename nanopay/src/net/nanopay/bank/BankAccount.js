@@ -60,6 +60,13 @@ foam.CLASS({
       label: 'Institution'
     },
     {
+      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
+      class: 'String',
+      name: 'institutionNumber',
+      transient: true,
+      hidden: true,
+    },
+    {
       class: 'Long',
       name: 'randomDepositAmount',
       networkTransient: true
