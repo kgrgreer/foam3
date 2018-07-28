@@ -252,14 +252,14 @@ foam.CLASS({
 
                           Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
                           if ( institution != null ) {
-                            senderBankAcct.setInstitution(institution);
+                            senderBankAcct.setInstitution(institution.getId());
                           } else {
                             logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
                           }
 
                           Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId()));
                           if ( branch != null ) {
-                            senderBankAcct.setBranch(branch);
+                            senderBankAcct.setBranch(branch.getId());
                           } else {
                             logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
                           }
@@ -344,14 +344,14 @@ foam.CLASS({
 
                           Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
                           if ( institution != null ) {
-                            receiverBankAcct.setInstitution(institution);
+                            receiverBankAcct.setInstitution(institution.getId());
                           } else {
                             logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
                           }
 
                           Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
                           if ( branch != null ) {
-                            receiverBankAcct.setBranch(branch);
+                            receiverBankAcct.setBranch(branch.getId());
                           } else {
                             logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
                           }
