@@ -18,7 +18,7 @@ public class CSPValve extends ValveBase {
     + "img-src 'self' data: blob: filesystem:;"
     + "media-src * data: blob: filesystem:;"
     + "object-src 'self' data: blob: filesystem:;"
-    + "frame-src 'self' data: chrome-extension-resource:;"
+    + "frame-src 'self' nanopay.net data: chrome-extension-resource:;"
     + "report-uri /service/CSPReportWebAgent;";
 
   @Override
