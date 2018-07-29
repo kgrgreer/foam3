@@ -5,11 +5,16 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/tp/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
-
-  { name: 'net/nanopay/account/CurrentBalance' },
+  { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/Balance' },
+  { name: 'net/nanopay/account/DigitalAccount' },
+  { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
+  { name: 'net/nanopay/account/ClientDigitalAccountService' },
+  { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
-  { name: 'net/nanopay/model/BankAccount' },
-  { name: 'net/nanopay/model/BankAccountStatus' },
+  { name: 'net/nanopay/bank/BankAccount' },
+  { name: 'net/nanopay/bank/CABankAccount' },
+  { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -114,6 +119,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
+  //{ name: 'net/nanopay/tx/UserDestinationTransactionDAO' },
+  //{ name: 'net/nanopay/tx/UserSourceTransactionDAO' },
 
   { name: 'net/nanopay/model/Broker' },
 
@@ -198,6 +205,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/tp/alterna/SFTPService' },
   { name: 'net/nanopay/tx/tp/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/tx/tp/alterna/client/ClientAlternaSFTPService' },
+  { name: 'net/nanopay/tx/tp/alterna/AlternaTxnProcessorData' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
   { name: 'net/nanopay/cico/CICOPaymentType' },

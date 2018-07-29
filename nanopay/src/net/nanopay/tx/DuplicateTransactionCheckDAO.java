@@ -52,8 +52,8 @@ public class DuplicateTransactionCheckDAO
     temp.setInvoiceId(oldtxn.getInvoiceId());
     //temp.setCicoStatus(oldtxn.getCicoStatus());
     temp.setDate(oldtxn.getDate());
-    temp.setPayerId(oldtxn.getPayerId());
-    temp.setPayeeId(oldtxn.getPayeeId());
+    temp.setSourceAccount(oldtxn.getSourceAccount());
+    temp.setDestinationAccount(oldtxn.getDestinationAccount());
     //temp.setDeviceId(oldtxn.getDeviceId());
     temp.setNotes(oldtxn.getNotes());
     temp.setChallenge(oldtxn.getChallenge());

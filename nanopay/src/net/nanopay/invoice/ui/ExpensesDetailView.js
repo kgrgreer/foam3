@@ -9,14 +9,16 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.account.Balance',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   imports: [
-    'currentBalanceDAO',
-    'bankAccountDAO',
+    'userDAO',
+    'balanceDAO',
+    'currentAccount',
+    'accountDAO as bankAccountDAO',
     'ctrl',
     'hideSaleSummary',
     'invoiceDAO',
@@ -216,10 +218,10 @@ foam.CLASS({
           return;
         }
 
-        this.currentBalanceDAO.where(
-          this.EQ(this.CurrentBalance.ID, this.user.id)
-        ).limit(1).select().then(function( accountBalance ) {
-          if ( accountBalance.array[0].balance < self.data.amount ) {
+        this.balanceDAO.find(
+          this.currentAccount.id
+        ).then(function( accountBalance ) {
+          if ( accountBalance.balance < self.data.amount ) {
             // Not enough digital cash balance
             self.bankAccountDAO.where(
               self.AND(
@@ -227,7 +229,7 @@ foam.CLASS({
                   self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
                 ),
                 self.EQ(
-                  self.BankAccount.OWNER, self.user.id
+                  self.BankAccount.OWNER, self.user
                 )
               )
             ).limit(1).select().then(function(account) {

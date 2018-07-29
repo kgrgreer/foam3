@@ -60,7 +60,7 @@ foam.CLASS({
   ],
 
   properties: [
-    'accountName',
+    'name',
     'accountNo',
     {
       class: 'Double',
@@ -82,7 +82,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('leftPart').style({'margin-left':'44px'})
-          .start('p').addClass('accountName').style({'margin-top':'12px'}).add(this.accountName$).end()
+          .start('p').addClass('name').style({'margin-top':'12px'}).add(this.name$).end()
           .start('p').addClass('accountNo').style({'margin-top':'4px'}).add('Account No. ').add(this.accountNo$).end()
         .end()
         .start('div').addClass('rightPart').style({'margin-left':'22px'})

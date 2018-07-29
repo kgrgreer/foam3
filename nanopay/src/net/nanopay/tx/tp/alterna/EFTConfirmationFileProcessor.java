@@ -12,7 +12,6 @@ import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.alterna.AlternaTxnProcessorData;
 
 import java.io.InputStream;
 import java.util.ArrayList;

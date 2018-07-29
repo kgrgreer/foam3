@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.User;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import net.nanopay.auth.PublicUserInfo;
@@ -47,7 +48,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notification.setEmailName("newInvoice");
     notification.setEmailIsEnabled(true);
 
-    notification.setUserId(payeeId == invoice.getCreatedBy() ? payerId : payeeId);
+    notification.setUserId(payeeId == ((Long)invoice.getCreatedBy()) ? payerId : payeeId);
     notification.setInvoiceId(invoice.getId());
     notification.setNotificationType("Invoice received");
     notificationDAO_.put(notification);
@@ -61,7 +62,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     PublicUserInfo payer = invoice.getPayer();
 
     // If invType is true, then payee sends payer the email and notification.
-    boolean invType = (long) invoice.getPayeeId() == invoice.getCreatedBy();
+    boolean invType = (long) invoice.getPayeeId() == (Long)invoice.getCreatedBy();
 
     notification.getEmailArgs().put("amount", formatter.format(invoice.getAmount()/100.00));
     notification.getEmailArgs().put("account", invoice.getId());

@@ -366,6 +366,60 @@ function beginswith {
     case $2 in "$1"*) true;; *) false;; esac;
 }
 
+function setup_catalina_env {
+  export CATALINA_PID="/tmp/catalina_pid"
+  touch "$CATALINA_PID"
+
+  # Handle old machines which have CATALINA_HOME defined
+  if [ -n "$CATALINA_HOME" ]; then
+      if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
+          LOG_HOME="$CATALINA_HOME/logs"
+      fi
+  fi
+
+  while [ -z "$CATALINA_HOME" ]; do
+      #printf "Searching for catalina... "
+      testcatalina /Library/Tomcat
+      if [ ! -z "$CATALINA_HOME" ]; then
+          # local development
+          LOG_HOME="$CATALINA_HOME/logs"
+          break
+      fi
+      testcatalina /opt/tomcat
+      if [ ! -z "$CATALINA_HOME" ]; then
+          # TODO: place on S3 mount
+          break;
+      fi
+      testcatalina "$HOME/tools/tomcat"
+      if [ ! -z "$CATALINA_HOME" ]; then
+          break
+      fi
+      printf "CATALINA_HOME not found.\n"
+      printf "Set CATALINA_HOME environment variable to the location of Tomcat."
+      exit 1
+  done
+
+  if [ -z "$CATALINA_BASE" ]; then
+      export CATALINA_BASE="$CATALINA_HOME"
+  fi
+  if [ -z "$CATALINA_PORT_HTTP" ]; then
+      export CATALINA_PORT_HTTP=8080
+  fi
+  if [ -z "$CATALINA_PORT_HTTPS" ]; then
+      export CATALINA_PORT_HTTPS=8443
+  fi
+  if [ -z "$CATALINA_DOC_BASE" ]; then
+      export CATALINA_DOC_BASE="$PROJECT_HOME"
+  fi
+
+  if [ -z "$CATALINA_OPTS" ]; then
+      export CATALINA_OPTS=""
+  fi
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
+}
+
 function setenv {
 
     if [ -z "$NANOPAY_HOME" ]; then
@@ -404,49 +458,10 @@ function setenv {
         IS_AWS=1
     fi
 
-    export CATALINA_PID="/tmp/catalina_pid"
-    touch "$CATALINA_PID"
+    if [[ $RUN_NANOS -eq 0 && $TEST -eq 0 ]]; then
+        setup_catalina_env
+    fi
 
-    # Handle old machines which have CATALINA_HOME defined
-    if [ -n "$CATALINA_HOME" ]; then
-        if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
-            LOG_HOME="$CATALINA_HOME/logs"
-        fi
-    fi
-    while [ -z "$CATALINA_HOME" ]; do
-        #printf "Searching for catalina... "
-        testcatalina /Library/Tomcat
-        if [ ! -z "$CATALINA_HOME" ]; then
-            # local development
-            LOG_HOME="$CATALINA_HOME/logs"
-            break
-        fi
-        testcatalina /opt/tomcat
-        if [ ! -z "$CATALINA_HOME" ]; then
-            # TODO: place on S3 mount
-            break;
-        fi
-        testcatalina "$HOME/tools/tomcat"
-        if [ ! -z "$CATALINA_HOME" ]; then
-            break
-        fi
-        printf "CATALINA_HOME not found.\n"
-        printf "Set CATALINA_HOME environment variable to the location of Tomcat."
-        exit 1
-    done
-
-    if [ -z "$CATALINA_BASE" ]; then
-        export CATALINA_BASE="$CATALINA_HOME"
-    fi
-    if [ -z "$CATALINA_PORT_HTTP" ]; then
-        export CATALINA_PORT_HTTP=8080
-    fi
-    if [ -z "$CATALINA_PORT_HTTPS" ]; then
-        export CATALINA_PORT_HTTPS=8443
-    fi
-    if [ -z "$CATALINA_DOC_BASE" ]; then
-        export CATALINA_DOC_BASE="$PROJECT_HOME"
-    fi
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was creating
         rm "$JOURNAL_HOME"
@@ -462,13 +477,6 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
-
-    if [ -z "$CATALINA_OPTS" ]; then
-        export CATALINA_OPTS=""
-    fi
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
 
     # keystore
     if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
