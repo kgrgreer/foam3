@@ -153,8 +153,10 @@ return ClientDAO_create([
 return ClientDAO_create([
   "of": net_nanopay_account_Account.classInfo(),
   "delegate": LogBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)accountDAO"
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)accountDAO"
+      ])
     ])
   ])
 ])
@@ -167,8 +169,10 @@ return ClientDAO_create([
 return ClientDAO_create([
   "of": net_nanopay_account_Balance.classInfo(),
   "delegate": LogBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)balanceDAO"
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)balanceDAO"
+      ])
     ])
   ])
 ])
