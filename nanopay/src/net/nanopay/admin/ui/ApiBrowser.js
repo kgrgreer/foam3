@@ -301,6 +301,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'ClientServiceView',
@@ -361,6 +362,7 @@ foam.CLASS({
     }
   ],
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
@@ -479,6 +481,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'ExampleRequestView',
@@ -501,9 +504,15 @@ foam.CLASS({
       message: 'Request and response bodies are JSON encoded. Requests ' +
           'must contain api credentials (email/password provided by nanopay) ' +
           'on the authorization tag. Data contained in the table views ' +
-          'below encompass model details which are associated to the service. ' +
-          'Properties or information required are added ' +
+          'below encompass model details which are associated to the ' +
+          'service. Properties or information required are added ' +
           'to the examples shown in the curl service call.'
+    },
+    {
+      name: 'MakingRequests2nd',
+      message: 'Queries follow the MQL Query Language, a generic ' +
+        'google-like query-language. A link to the MQL documentation ' +
+        'can be found below: '
     },
     {
       name: 'UserExampleGetLabel',
@@ -516,7 +525,14 @@ foam.CLASS({
       message: 'Below is an example POST request ' +
           'to the userDAO using curl. This will create a basic nanopay user. ' +
           '(POST requests can create and update objects):'
-    }
+    },
+    {
+      name: 'QueryExampleGetLabel',
+      message: 'Below is an example of a GET request with a query ' +
+          'to the publicUserDAO using curl. ' +
+          'This will return all public users with the first name ' +
+          '"John" and last name "Doe":'
+    },
   ],
 
   methods: [
@@ -529,8 +545,14 @@ foam.CLASS({
       .end()
       .start().addClass('light-roboto-h2')
         .add(this.MakingRequests).br().br()
-      .end()
+        .add(this.MakingRequests2nd).br()
+      .end().br()
+      .tag({
+        class: 'foam.nanos.dig.LinkView',
+        data: 'https://github.com/foam-framework/foam/wiki/MQL---Query-Language'
+      })
       .start().addClass('light-roboto-h2').addClass('sml')
+               .style({ 'margin-top': '45px' })
         .add(this.UserExampleGetLabel)
       .end()
       .start().addClass('small-roboto')
@@ -555,10 +577,25 @@ foam.CLASS({
                 '"firstName":"John", "lastName":"Doe"'
           }
         })
+      .end()
+      .start()
+        .addClass('light-roboto-h2')
+        .addClass('sml')
+        .style({ 'margin-top': '15px' })
+        .add(this.QueryExampleGetLabel)
+      .end()
+      .start().addClass('small-roboto')
+        .tag({
+          class: 'foam.doc.GetRequestView',
+          data: 'publicUserDAO&cmd=select&format=' +
+              'json&q=firstName=John%20AND%20lastName=Doe',
+          appendedLabel: '(Query)'
+        })
       .end();
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
@@ -575,13 +612,23 @@ foam.CLASS({
       expression: function(appConfig) {
         if ( appConfig ) return appConfig.url;
       }
+    },
+    {
+      name: 'appendedLabel'
+    }
+  ],
+
+  messages: [
+    {
+      name: 'Label',
+      message: 'Get Request: '
     }
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
-      .start().addClass('light-roboto-h2').add('GET Request: ').end()
+      .start().addClass('light-roboto-h2').add(this.appendedLabel, ' ', this.Label).end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X GET').br()
@@ -596,6 +643,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
@@ -615,12 +663,19 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'Label',
+      message: '(Create & Update) POST Request: '
+    }
+  ],
+
   methods: [
     function initE() {
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2')
         .style({ 'margin-top': '15px' })
-        .add('POST Request (Create & Update): ')
+        .add(this.Label)
       .end()
       .start().addClass('black-box')
         .start().addClass('small-roboto')
@@ -636,6 +691,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
