@@ -35,7 +35,7 @@ public class BankAccountInvoiceDAO
 
 
     try {
-      if ( (txn.findDestinationAccount(x)).getOwner() != txn.findSourceAccount(x).getOwner()) {
+      if ( txn.findSourceAccount(x) instanceof net.nanopay.bank.BankAccount) {
         txn.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
       }
     }
