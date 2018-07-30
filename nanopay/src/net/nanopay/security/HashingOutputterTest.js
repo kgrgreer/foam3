@@ -147,7 +147,7 @@ foam.CLASS({
         try {
           StringBuilder builder = sb.get().append(EXPECTED).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
           HashingOutputter outputter = new HashingOutputter(new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build(), STORAGE);
-          test(outputter.stringify(INPUT).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct output of: " + builder.toString());
+          test(outputter.stringify(INPUT.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct output of: " + builder.toString());
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }
@@ -163,7 +163,7 @@ foam.CLASS({
         try {
           StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
           HashingOutputter outputter = new HashingOutputter(new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build(), STORAGE);
-          test(outputter.stringifyDelta(INPUT, INPUT_DELTA).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta output of: " + builder.toString());
+          test(outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta output of: " + builder.toString());
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }
@@ -180,7 +180,7 @@ foam.CLASS({
         try {
           StringBuilder builder = sb.get().append(EXPECTED).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
           HashingOutputter outputter = new HashingOutputter(new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build(), STORAGE);
-          test(outputter.stringify(INPUT).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct chained output of: " + builder.toString());
+          test(outputter.stringify(INPUT.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct chained output of: " + builder.toString());
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }
@@ -197,7 +197,7 @@ foam.CLASS({
         try {
           StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
           HashingOutputter outputter = new HashingOutputter(new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build(), STORAGE);
-          test(outputter.stringifyDelta(INPUT, INPUT_DELTA).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta chained output of: " + builder.toString());
+          test(outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta chained output of: " + builder.toString());
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }
