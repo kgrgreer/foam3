@@ -459,8 +459,8 @@ function setenv {
         mkdir -p "$NANOPAY_HOME"
 
         # Production use S3 mount
-        if [[ -n "/mnt/journals" ]]; then
-            ln -s "$JOURNAL_HOME" "/mnt/journals"
+        if [[ -d "/mnt/journals" ]]; then
+            ln -s "/mnt/journals" "$JOURNAL_HOME"
         else
             mkdir "$JOURNAL_HOME"
         fi
