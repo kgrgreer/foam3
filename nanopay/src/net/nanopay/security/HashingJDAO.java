@@ -3,6 +3,7 @@ package net.nanopay.security;
 import foam.core.ClassInfo;
 import foam.core.X;
 import foam.dao.*;
+import foam.dao.java.JDAO;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
