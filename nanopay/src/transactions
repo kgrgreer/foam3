@@ -1,0 +1,2 @@
+
+p({"class":"net.nanopay.tx.model.Transaction","id":1,"created":"2018-07-30T18:23:33.178Z","createdBy":1350,"lastModified":"2018-07-30T18:23:33.181Z","lastModifiedBy":1350,"type":3,"txnProcessorId":"ALTERNA","status":0,"sourceAccount":1,"destinationAccount":2,"amount":27,"date":"2018-07-30T18:23:33.181Z","sourceCurrency":"CAD"})

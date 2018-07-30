@@ -31,18 +31,39 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'transactionsRecieved',
+      label: 'Recieved #'
     }, 
     {
       class: 'Long',
       name: 'transactionsSent',
+      label: 'Sent #'
+
     },
     {
       class: 'Double',
       name: 'transactionsSumRecieved',
+      label: 'Recieved Amount',
+      tableCellFormatter: function(amount, X) {        
+        var formattedAmount = amount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+
     }, 
     {
       class: 'Double',
       name: 'transactionsSumSent',
+      label: 'Sent Amount',
+      tableCellFormatter: function(amount, X) {        
+        var formattedAmount = amount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+
     },
   ]
 });

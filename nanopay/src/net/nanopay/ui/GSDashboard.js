@@ -49,6 +49,12 @@ foam.CLASS({
       name: 'data',
       factory: function() {
         return this.digitalAccountInfoDAO;
+      },
+      view: {
+        class: 'foam.u2.view.ScrollTableView',
+        columns: [
+        'accountId', 'owner', 'currency' ,'balance', 'transactionsRecieved','transactionsSumRecieved', 'transactionsSent', 'transactionsSumSent'
+        ]
       }
     },
     {
@@ -58,12 +64,7 @@ foam.CLASS({
         return filter ? data.where(this.EQ(this.DigitalAccountInfo.ACCOUNT_ID
           , filter)):data;
       },
-      view: {
-        class: 'foam.u2.view.ScrollTableView',
-        columns: [
-        'accountId', 'owner', 'currency' ,'balance'
-        ]
-      }
+      
     }
   ],
 
@@ -79,12 +80,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().addClass('container')
-            .start().addClass('button-div')
-              .start(this.FILTER).addClass('filter-search').end()
-            .end()
-          .end()
-          .add(this.FILTERED_DIGITAL_ACCOUNT_INFO_DAO)
+          .add(this.DATA)
         .end();
     }
   ],
