@@ -31,8 +31,7 @@ foam.CLASS({
     'id',
     {
       name: 'data',
-      expression: function (id) {
-
+      expression: function() {
         // Filter the invoice history DAO and only take the records that have
         // to do with the invoice we're looking at.
         var filteredInvoiceHistoryDAO = this.invoiceHistoryDAO
@@ -43,11 +42,11 @@ foam.CLASS({
 
         // Create the MDAO and load the relevant existing records into it
         var mdao = foam.dao.MDAO.create({ of: this.HistoryRecord });
-        filteredInvoiceHistoryDAO.select(o => { mdao.put(o); });
+        filteredInvoiceHistoryDAO.select((o) => { mdao.put(o); });
 
         // Load the invoice and check the status to see if it's overDue. If it
         // is, add it to the MDAO.
-        this.invoiceDAO.find(this.id).then(invoice => {
+        this.invoiceDAO.find(this.id).then((invoice) => {
           if ( invoice.dueDate && invoice.dueDate.getTime() < Date.now() ) {
             mdao.put(this.HistoryRecord.create({
               objectId: this.id,
@@ -70,7 +69,7 @@ foam.CLASS({
     },
     {
       name: 'invoiceReceivedHistoryItem',
-      factory: function(){
+      factory: function() {
         return this.InvoiceReceivedHistoryItemView.create();
       }
     }

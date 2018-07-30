@@ -55,7 +55,7 @@ foam.CLASS({
     async function outputRecord(parentView, record) {
       var self = this;
       var invoice = await this.invoiceDAO.find(record.objectId);
-      var user = await this.userDAO.find(invoice.createdBy);
+      var user = invoice.createdBy == invoice.payer.id ? invoice.payer : invoice.payee;
       this.name = user.label();
 
       return parentView
