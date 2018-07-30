@@ -66,10 +66,10 @@ var classes = [
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
-  'net.nanopay.account.CurrentBalance',
   'net.nanopay.model.Currency',
-  'net.nanopay.model.BankAccount',
-  'net.nanopay.model.BankAccountStatus',
+  'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.CABankAccount',
+  'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.PadCapture',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
@@ -103,7 +103,11 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.tx.tp.TxnProcessorData',
   'net.nanopay.tx.tp.TxnProcessor',
-  'net.nanopay.auth.PublicUserInfo'
+  'net.nanopay.auth.PublicUserInfo',
+  'net.nanopay.account.Account',
+  'net.nanopay.account.Balance',
+  'net.nanopay.account.DigitalAccount',
+  'net.nanopay.payment.Institution'
 ];
 
 module.exports = {
