@@ -462,7 +462,7 @@ function setenv {
         if [[ -d "/mnt/journals" ]]; then
             ln -s "$JOURNAL_HOME" "/mnt/journals"
         else
-            mkdir "$JOURNAL_HOME"
+            mkdir -p "$JOURNAL_HOME"
         fi
 
         CLEAN_BUILD=1
