@@ -425,10 +425,12 @@ function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
         export NANOPAY_HOME="/opt/nanopay"
     fi
+    #mkdir -p "$NANOPAY_HOME"
 
     if [ -z "$LOG_HOME" ]; then
         LOG_HOME="$NANOPAY_HOME/logs"
     fi
+    #mkdir -p "$NANOPAY_HOME/logs"
 
     export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
 
@@ -452,7 +454,15 @@ function setenv {
         npm install
 
         # Production use S3 mount
-        export JOURNAL_HOME=/mnt/journals
+        #export JOURNAL_HOME=/mnt/journals
+        export JOURNAL_HOME="$NANOPAY_HOME/journals"
+        if [[ -n "/mnt/journals" ]]; then
+            ln -s "$JOURNAL_HOME" "/mnt/journals"
+        else
+            mkdir "$JOURNAL_HOME"
+        fi
+
+        mkdir -p "$NANOPAY_HOME/logs"
 
         CLEAN_BUILD=1
         IS_AWS=1
@@ -466,6 +476,7 @@ function setenv {
         # remove journal file that find.sh was creating
         rm "$JOURNAL_HOME"
     fi
+    mkdir -p "$NANOPAY_HOME"
     mkdir -p "$JOURNAL_HOME"
     mkdir -p "$LOG_HOME"
 
