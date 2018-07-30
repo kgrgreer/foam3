@@ -39,6 +39,18 @@ function install {
     setenv
     set_doc_base
 
+    if [[ $IS_MAC -eq 1 ]]; then
+        # Fix /opt/nanopay directory ownership
+        if [[ -d "$NANOPAY_HOME" ]]; then
+            uname=$(ls -l "$NANOPAY_HOME" | awk '{print $3}' | tail -1);
+            if [ "$uname" == "root" ]; then
+                sudo chown -R $USER:admin "$NANOPAY_HOME"
+            fi
+        fi
+        mkdir -p "$NANOPAY_HOME/journals"
+        mkdir -p "$NANOPAY_HOME/logs"
+    fi
+
     # git hooks
     git config core.hooksPath .githooks
     git config submodule.recurse true
@@ -310,9 +322,11 @@ function shutdown_tomcat {
     fi
 
     backup
-    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 ]]; then
-        rmdir "$JOURNAL_HOME"
-        mkdir -p "$JOURNAL_HOME"
+    if [[ $IS_MAC -eq 1 ]]; then
+        if [[ $DELETE_RUNTIME_JOURNALS -eq 1 ]]; then
+            rmdir "$JOURNAL_HOME"
+            mkdir -p "$JOURNAL_HOME"
+        fi
     fi
 }
 
@@ -434,16 +448,7 @@ function setenv {
 
     export JOURNAL_OUT="$PROJECT_HOME"/target/journals
 
-    if [[ -z $JOURNAL_HOME ]]; then
-       export JOURNAL_HOME="$PROJECT_HOME/journals"
-
-       if [[ $TEST -eq 1 ]]; then
-         rmdir /tmp/nanopay
-         mkdir /tmp/nanopay
-         JOURNAL_HOME=/tmp/nanopay
-         echo "INFO :: Cleaned up temporary journal files."
-       fi
-    fi
+    export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
         PROJECT_HOME=/pkg/stack/stage/NANOPAY
@@ -451,23 +456,42 @@ function setenv {
         cwd=$(pwd)
         npm install
 
+        mkdir -p "$NANOPAY_HOME"
+
         # Production use S3 mount
-        export JOURNAL_HOME=/mnt/journals
+        if [[ -d "/mnt/journals" ]]; then
+            ln -s "$JOURNAL_HOME" "/mnt/journals"
+        else
+            mkdir -p "$JOURNAL_HOME"
+        fi
 
         CLEAN_BUILD=1
         IS_AWS=1
+
+        mkdir -p "$LOG_HOME"
+    elif [[ $IS_MAC -eq 1 ]]; then
+        # transition support until next build.sh -i
+        if [[ ! -d "$JOURNAL_HOME" ]]; then
+            JOURNAL_HOME="$PROJECT_HOME/journals"
+            mkdir -p $JOURNAL_HOME
+            mkdir -p $LOG_HOME
+        fi
+    else
+        # linux
+        mkdir -p $JOURNAL_HOME
+        mkdir -p $LOG_HOME
+    fi
+
+    if [[ $TEST -eq 1 ]]; then
+        rmdir /tmp/nanopay
+        mkdir /tmp/nanopay
+        JOURNAL_HOME=/tmp/nanopay
+        echo "INFO :: Cleaned up temporary journal files."
     fi
 
     if [[ $RUN_NANOS -eq 0 && $TEST -eq 0 ]]; then
         setup_catalina_env
     fi
-
-    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
-        # remove journal file that find.sh was creating
-        rm "$JOURNAL_HOME"
-    fi
-    mkdir -p "$JOURNAL_HOME"
-    mkdir -p "$LOG_HOME"
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
@@ -482,7 +506,8 @@ function setenv {
     if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
         cd "$PROJECT_HOME"
         printf "generating keystore\n"
-        sudo ./tools/keystore.sh
+        ./tools/keystore.sh
+        #sudo ./tools/keystore.sh
     fi
 
     local MACOS='darwin*'
