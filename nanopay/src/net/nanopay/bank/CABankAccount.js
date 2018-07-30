@@ -7,6 +7,7 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
       name: 'branch',
       label: 'Transit No.',
     },
