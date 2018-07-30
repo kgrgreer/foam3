@@ -39,6 +39,11 @@ foam.INTERFACE({
       swiftThrows: true,
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'foam.core.X'
+        },
+        {
           name: 'userId',
           javaType: 'long',
           swiftType: 'Int'
