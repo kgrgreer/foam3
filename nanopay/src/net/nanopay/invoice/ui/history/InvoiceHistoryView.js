@@ -31,11 +31,11 @@ foam.CLASS({
     'id',
     {
       name: 'data',
-      expression: function() {
+      expression: function(id) {
         // Filter the invoice history DAO and only take the records that have
         // to do with the invoice we're looking at.
         var filteredInvoiceHistoryDAO = this.invoiceHistoryDAO
-          .where(this.EQ(this.HistoryRecord.OBJECT_ID, this.id));
+          .where(this.EQ(this.HistoryRecord.OBJECT_ID, id));
 
         // We're going to append a 'fake' record to the DAO which contains the
         // change of status to OverDue if it makes sense to do so.
@@ -46,10 +46,10 @@ foam.CLASS({
 
         // Load the invoice and check the status to see if it's overDue. If it
         // is, add it to the MDAO.
-        this.invoiceDAO.find(this.id).then((invoice) => {
+        this.invoiceDAO.find(id).then((invoice) => {
           if ( invoice.dueDate && invoice.dueDate.getTime() < Date.now() ) {
             mdao.put(this.HistoryRecord.create({
-              objectId: this.id,
+              objectId: id,
               timestamp: invoice.dueDate,
               updates: [
                 this.PropertyUpdate.create({
