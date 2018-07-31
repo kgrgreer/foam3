@@ -12,7 +12,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionLimit;
 import net.nanopay.tx.model.TransactionLimitTimeFrame;
 import net.nanopay.tx.model.TransactionLimitType;

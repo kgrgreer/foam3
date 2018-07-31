@@ -38,7 +38,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.Balance',
@@ -93,7 +93,7 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.cico.model.TransactionType',
+      of: 'net.nanopay.tx.TransactionType',
       name: 'type',
       visibility: foam.u2.Visibility.RO
     },
@@ -109,14 +109,8 @@ foam.CLASS({
       name: 'txnProcessorData'
     },
     {
-      class: 'Long',
-      name: 'refundTransactionId',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      // class: 'Reference',
-      // of: 'net.nanopay.invoice.model.Invoice',
-      class: 'Long',
+      class: 'Reference',
+      of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
     },
     {
@@ -131,13 +125,6 @@ foam.CLASS({
       name: 'referenceNumber',
       visibility: foam.u2.Visibility.RO
     },
-    // TODO/REVIEW: this should just use referenceNumber
-    // {
-    //   class: 'Long',
-    //   name: 'impsReferenceNumber',
-    //   label: 'IMPS Reference Number',
-    //   visibility: foam.u2.Visibility.RO
-    // },
     {
       // REVIEW: how is this used?
       class: 'FObjectProperty',
@@ -169,6 +156,7 @@ foam.CLASS({
       }
     },
     {
+      // REVIEW: what uses this?
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
@@ -219,13 +207,9 @@ foam.CLASS({
       javaGetter: `return getAmount();`,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
-        var refund =
-          (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
-              X.type == net.nanopay.cico.model.TransactionType.REFUND );
-
         this
           .start()
-          .addClass(refund ? 'amount-Color-Red' : 'amount-Color-Green')
+          .addClass('amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
@@ -243,71 +227,15 @@ foam.CLASS({
       class: 'String',
       name: 'padType'
     },
-    {
+    { // REVIEW: what is this - Joel
       class: 'String',
       name: 'txnCode'
-    },
-    // {
-    //   class: 'Currency',
-    //   name: 'receivingAmount',
-    //   label: 'Receiving Amount',
-    //   visibility: foam.u2.Visibility.RO,
-    //   transient: true,
-    //   expression: function(amount, rate) {
-    //     var receivingAmount = amount * rate;
-    //     return receivingAmount;
-    //   },
-    //   tableCellFormatter: function(receivingAmount, X) {
-    //     this
-    //       .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-    //         .add(' INR ₹', X.addCommas(( receivingAmount/100 ).toFixed(2)))
-    //       .end();
-    //   }
-    // },
-    {
-      class: 'String',
-      name: 'challenge',
-      visibility: foam.u2.Visibility.RO,
-      documentation: `Randomly generated challenge.
-      Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction,
-      used in the merchant app and is transfered to the mobile applications as a property of the QrCode.
-      Can be moved to retail Transaction.`
     },
     {
       // REVIEW: is this created date? - Joel
       class: 'DateTime',
       name: 'date',
       label: 'Date & Time'
-    },
-    // {
-    //   class: 'Double',
-    //   name: 'rate',
-    //   visibility: foam.u2.Visibility.RO,
-    //   tableCellFormatter: function(rate) {
-    //     this.start().add(rate.toFixed(2)).end();
-    //   }
-    // },
-    // {
-    //   class: 'FObjectArray',
-    //   visibility: foam.u2.Visibility.RO,
-    //   name: 'feeTransactions',
-    //   of: 'net.nanopay.tx.model.Transaction'
-    // },
-    // {
-    //   class: 'FObjectArray',
-    //   name: 'informationalFees',
-    //   visibility: foam.u2.Visibility.RO,
-    //   of: 'net.nanopay.tx.model.Fee'
-    // },
-    // TODO: field for tax as well? May need a more complex model for that
-    {
-      // class: 'FObjectProperty',
-      class: 'Reference',
-      of: 'net.nanopay.tx.TransactionPurpose',
-      name: 'purpose',
-      label: 'Purpose',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Transaction purpose'
     },
     {
       class: 'String',
@@ -337,27 +265,6 @@ foam.CLASS({
       name: 'paymentAccountInfo',
       of: 'net.nanopay.cico.model.PaymentAccountInfo'
     },
-    {
-      documentation: `For retail purposes. Tip`,
-      class: 'Currency',
-      name: 'tip',
-      label: 'Tip',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(tip, X) {
-        var formattedAmount = tip/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      }
-    },
-    {
-      documentation: `For retail purposes. DeviceId refers to the device used to display the QR code for this transaction.`,
-      class: 'Reference',
-      of: 'net.nanopay.retail.model.Device',
-      name: 'deviceId',
-      visibility: foam.u2.Visibility.RO
-    }
   ],
 
   methods: [

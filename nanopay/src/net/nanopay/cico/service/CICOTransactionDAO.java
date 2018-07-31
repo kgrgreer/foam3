@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;

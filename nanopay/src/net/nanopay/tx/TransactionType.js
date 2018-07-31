@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.cico.model',
+  package: 'net.nanopay.tx',
   name: 'TransactionType',
 
   documentation: 'Types for CICO transactions',

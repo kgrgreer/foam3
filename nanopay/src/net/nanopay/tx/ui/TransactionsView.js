@@ -11,7 +11,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'foam.nanos.auth.User'
   ],
 

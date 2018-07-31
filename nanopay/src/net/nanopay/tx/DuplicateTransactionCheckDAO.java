@@ -42,7 +42,7 @@ public class DuplicateTransactionCheckDAO
   }
 
   /*
-  For the transaction update we only accept transaction status and invoice change. Other change was not be accepted
+  For the transaction update we only accept transaction status and invoice change. Other changes will not be accepted
    */
   public int compareTransactions(Transaction oldtxn, Transaction curtxn) {
     if ( oldtxn == null || curtxn == null ) return - 1;
@@ -56,7 +56,7 @@ public class DuplicateTransactionCheckDAO
     temp.setDestinationAccount(oldtxn.getDestinationAccount());
     //temp.setDeviceId(oldtxn.getDeviceId());
     temp.setNotes(oldtxn.getNotes());
-    temp.setChallenge(oldtxn.getChallenge());
+    //temp.setChallenge(oldtxn.getChallenge()); // REVIEW: commented out during TransactionSubClassRefactor
     //temp.setProviderId(oldtxn.getProviderId());
     //temp.setBrokerId(oldtxn.getBrokerId());
 

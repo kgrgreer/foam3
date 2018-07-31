@@ -9,7 +9,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
 import com.realexpayments.remote.sdk.domain.Card;

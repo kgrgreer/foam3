@@ -12,7 +12,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
