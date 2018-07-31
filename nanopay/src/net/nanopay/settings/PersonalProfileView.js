@@ -389,7 +389,7 @@
         this.phone = this.user.phone.number.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
       }
-      
+
       this
       .addClass(this.myClass())
       .start(personalProfile)
@@ -436,20 +436,19 @@
           .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
         .end()
       .end()
-// TODO: enable when we have working two factor authentication
-//      this
-//      .addClass(this.myClass())
-//      .start()
-//        .start().addClass('tfa-Container')
-//          .start('div').addClass('twoFactorDiv')
-//            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
-//            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
-//          .end()
-//          .start('div').addClass('toggleDiv')
-//            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
-//          .end()
-//        .end()
-//      .end()
+      this
+      .addClass(this.myClass())
+      .start()
+        .start().addClass('tfa-Container')
+          .start('div').addClass('twoFactorDiv')
+            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
+            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
+          .end()
+          .start('div').addClass('toggleDiv')
+            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
+          .end()
+        .end()
+      .end()
       this
       .addClass(this.myClass())
       .start(emailPreferenceProfile)
