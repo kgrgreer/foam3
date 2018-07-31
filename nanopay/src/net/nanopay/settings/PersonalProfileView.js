@@ -9,7 +9,8 @@
     'auth',
     'user',
     'stack',
-    'userDAO'
+    'userDAO',
+    'twofactor'
   ],
 
   exports: [ 'as data' ],
@@ -182,12 +183,6 @@
       height: 20px;
       margin-right: 644px;
     }
-    ^ .toggleDiv {
-      position: relative;
-      display: inline-block;
-      top: -5;
-    }
-
     ^ .disabled {
       color: lightgray;
     }
@@ -225,27 +220,9 @@
       height: 20px;
       margin-right: 621px;
     }
-    ^ .twoFactorDiv {
-      display: inline-block;
-      width: 855px;
-    }
-    ^ .toggleDiv {
-      position: relative;
-      display: inline-block;
-      top: -5;
-    }
-    ^ .tfa-Container{
-      width: 1000px;
-      height: 80px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      margin-left: 140px;
-      margin-top: 30px;
-    }
-    ^ .tfa-Text{
-      width: 211px;
-      height: 20px;
-      margin-left: 20px;
+    ^ .qrCode {
+      width: 250px;
+      height: 250px;
     }
     ^ .status-Text{
       width: 90px;
@@ -258,18 +235,6 @@
       margin-left: 20px;
       margin-right: 770px;
       display: inline-block;
-    }
-    ^ .net-nanopay-ui-ToggleSwitch-toggleswitch {
-      width: 60px;
-      margin-left: 65px;
-    }
-    ^ .net-nanopay-ui-ToggleSwitch-inner:before,
-    ^ .net-nanopay-ui-ToggleSwitch-inner:after {
-      height: 30px;
-    }
-    ^ .net-nanopay-ui-ToggleSwitch-switch {
-      width: 22px;
-      right: 26px;
     }
     ^ .emailPref-Text{
       width: 185px;
@@ -358,9 +323,25 @@
       class: 'Boolean',
       name: 'twoFactorEnabled',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'twoFactorQrCode'
+    },
+    {
+      class: 'String',
+      name: 'twoFactorToken',
     }
   ],
+
   messages: [
+    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
+    { name: 'invalidPhone', message: 'Phone number is invalid.' },
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' },
+    { name: 'EmailError', message: 'Invalid email address' },
     { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
@@ -369,14 +350,20 @@
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
     { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
-    { name: 'passwordSuccess', message: 'Password successfully updated' }
+    { name: 'passwordSuccess', message: 'Password successfully updated' },
+    { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
+    { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
+    { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
+    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' }
   ],
+
   methods: [
     function initE(){
       this.SUPER();
       var self = this;
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
       var resetPasswordProfile = this.ExpandContainer.create({ title: 'Reset Password', link: '', linkView: '' });
+      var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
       var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
       var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
 
@@ -419,36 +406,54 @@
             .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
           .end()
         .end()
-      .end()
+      .end();
+
       this
       .addClass(this.myClass())
-        .start(resetPasswordProfile)
-          .start('div')
-            .start('h2').add("Original Password").addClass('originalPass-Text').end()
-            .start('h2').add("New Password").addClass('newPass-Text').end()
-            .start('h2').add("Confirm Password").addClass('confirmPass-Text').end()
-          .end()
-          .start('div')
-            .start(this.ORIGINAL_PASSWORD).addClass('originalPass-Input').end()
-            .start(this.NEW_PASSWORD).addClass('newPass-Input').end()
-            .start(this.CONFIRM_PASSWORD).addClass('confirmPass-Input').end()
-          .end()
-          .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
+      .start(resetPasswordProfile)
+        .start('div')
+          .start('h2').add("Original Password").addClass('originalPass-Text').end()
+          .start('h2').add("New Password").addClass('newPass-Text').end()
+          .start('h2').add("Confirm Password").addClass('confirmPass-Text').end()
         .end()
-      .end()
+        .start('div')
+          .start(this.ORIGINAL_PASSWORD).addClass('originalPass-Input').end()
+          .start(this.NEW_PASSWORD).addClass('newPass-Input').end()
+          .start(this.CONFIRM_PASSWORD).addClass('confirmPass-Input').end()
+        .end()
+        .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
+      .end();
+
       this
       .addClass(this.myClass())
-      .start()
-        .start().addClass('tfa-Container')
-          .start('div').addClass('twoFactorDiv')
-            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
-            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
-          .end()
-          .start('div').addClass('toggleDiv')
-            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
-          .end()
+      .start(twoFactorProfile)
+        .start()
+          .add(this.slot(function (twoFactorEnabled) {
+            if ( ! twoFactorEnabled ) {
+              // two factor not enabled
+              var self = this;
+              this.twofactor.generateKey(null, true)
+              .then(function (qrCode) {
+                self.twoFactorQrCode = qrCode;
+              });
+
+              return this.E()
+                .start('div').addClass('qrCode')
+                  .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
+                .end()
+                .start('h2').add('Token').end().br()
+                .start(this.TWO_FACTOR_TOKEN).end().br()
+                .start(this.ENABLE_TWO_FACTOR).addClass('update-BTN').end();
+            } else {
+              // two factor enabled
+              return this.E()
+                .start('h2').add('Enabled').end().br()
+                .start(this.DISABLE_TWO_FACTOR).addClass('update-BTN').end();
+            }
+          }, this.user.twoFactorEnabled$))
         .end()
-      .end()
+      .end();
+
       this
       .addClass(this.myClass())
       .start(emailPreferenceProfile)
@@ -485,7 +490,8 @@
         .start('div')
           .start(this.UPDATE_EMAIL_PREFERENCE).addClass('update-BTN').end()
         .end()
-      .end()
+      .end();
+
       this
       .addClass(this.myClass())
       .start(notificationPreferenceProfile)
@@ -523,27 +529,8 @@
           .start(this.UPDATE_NOTIFICATION_PREFERENCE).addClass('update-BTN').end()
         .end()
       .end()
-    .end()
+    .end();
     }
-  ],
-
-  messages: [
-    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'invalidPhone', message: 'Phone number is invalid.' },
-    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
-    { name: 'JobTitleLengthError', message: 'Job title is too long' },
-    { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'noSpaces', message: 'Password cannot contain spaces' },
-    { name: 'noNumbers', message: 'Password must have one numeric character' },
-    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
-    { name: 'emptyOriginal', message: 'Please enter your original password'},
-    { name: 'emptyPassword', message: 'Please enter your new password' },
-    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
-    { name: 'passwordMismatch', message: 'Passwords do not match' },
-    { name: 'passwordSuccess', message: 'Password successfully updated' }
   ],
 
   actions: [
@@ -656,6 +643,43 @@
       code: function (X) {
         var self = this;
         console.log("UPDATE NOTIFICATION PREFERENCE")
+      }
+    },
+    {
+      name: 'enableTwoFactor',
+      label: 'Enable',
+      code: function (X) {
+        var self = this;
+
+        this.twofactor.verifyToken(null, this.twoFactorToken)
+        .then(function (result) {
+          if ( ! result ) {
+            self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
+            return;
+          }
+
+          self.user.twoFactorEnabled = result;
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableSuccess }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'disableTwoFactor',
+      label: 'Disable',
+      code: function (X) {
+        var self = this;
+
+        this.user.twoFactorEnabled = false;
+        this.userDAO.put(this.user).then(function (result) {
+          self.user.copyFrom(result);
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess, type: 'error' }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+        });
       }
     }
   ]
