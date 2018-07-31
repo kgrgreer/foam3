@@ -36,17 +36,9 @@ function install {
     fi
     cd ..
 
-    setenv
     set_doc_base
 
     if [[ $IS_MAC -eq 1 ]]; then
-        # Fix /opt/nanopay directory ownership
-        if [[ -d "$NANOPAY_HOME" ]]; then
-            uname=$(ls -l "$NANOPAY_HOME" | awk '{print $3}' | tail -1);
-            if [ "$uname" == "root" ]; then
-                sudo chown -R $USER:admin "$NANOPAY_HOME"
-            fi
-        fi
         mkdir -p "$NANOPAY_HOME/journals"
         mkdir -p "$NANOPAY_HOME/logs"
     fi
@@ -240,8 +232,8 @@ function deploy_journals {
     touch "$JOURNALS"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
 
-    if [ ! -f $JOURNALS ]; then
-        echo "ERROR: missing $JOURNALS file."
+    if [[ ! -f $JOURNALS ]]; then
+        echo "ERROR :: Missing $JOURNALS file."
         exit 1
     fi
 
@@ -440,6 +432,12 @@ function setenv {
         export NANOPAY_HOME="/opt/nanopay"
     fi
 
+    if [[ ! -w $NANOPAY_HOME ]]; then
+        echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
+        set +e
+        exit 1
+    fi
+
     if [ -z "$LOG_HOME" ]; then
         LOG_HOME="$NANOPAY_HOME/logs"
     fi
@@ -505,9 +503,8 @@ function setenv {
     # keystore
     if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
         cd "$PROJECT_HOME"
-        printf "generating keystore\n"
+        printf "INFO :: Generating keystore...\n"
         ./tools/keystore.sh
-        #sudo ./tools/keystore.sh
     fi
 
     local MACOS='darwin*'
@@ -584,12 +581,14 @@ while getopts "bcdfhijmnrst" opt ; do
     esac
 done
 
-if [ "$INSTALL" -eq 1 ]; then
+setenv
+
+if [[ $INSTALL -eq 1 ]]; then
     install
+    # Unset error on exit
+    set +e
     exit 0
 fi
-
-setenv
 
 if [[ $TEST -eq 1 ]]; then
   echo "INFO :: Running all tests..."
@@ -603,7 +602,7 @@ elif [ "$BUILD_ONLY" -eq 1 ]; then
     deploy_journals
 elif [ "$STOP_TOMCAT" -eq 1 ]; then
     shutdown_tomcat
-    printf "Tomcat stopped.\n"
+    printf "INFO :: Tomcat stopped...\n"
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
 else
