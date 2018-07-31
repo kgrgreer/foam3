@@ -27,7 +27,8 @@ public class DigitalAccountInfoPopluateDAO
     DAO                 userDAO        = (DAO) x.get("localUserDAO");
     DAO                 accountDAO     = (DAO) x.get("accountDAO");
     DAO                 transactionDAO = (DAO) x.get("localTransactionDAO");
-    ArraySink           accountDAOSink = (ArraySink)( accountDAO.where(EQ ( Account.TYPE, "DigitalAccount") ) ).select(new ArraySink());
+    ArraySink           accountDAOSink = (ArraySink)(accountDAO.where(
+      EQ(Account.TYPE, "DigitalAccount"))).select(new ArraySink());
     ArrayList<Account>  accountList    = (ArrayList) accountDAOSink.getArray();
     User                user;
     DAO                 accountsTranDAO;
@@ -36,23 +37,31 @@ public class DigitalAccountInfoPopluateDAO
     int                 listSent;
     int                 listRecieved;
 
-    if (sink == null ){
+    if ( sink == null ){
       sink = new ArraySink();
     }
-    for (Account account:accountList) {
+    for ( Account account: accountList ) {
       user            = (User) userDAO.find(account.getOwner());
-      accountsTranDAO = transactionDAO.where(OR(EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),EQ(Transaction.SOURCE_ACCOUNT, account.getId())));
-      sumSent         = (Sum) accountsTranDAO.where(EQ(Transaction.SOURCE_ACCOUNT, account.getId())).select(SUM(Transaction.AMOUNT));
-      sumRecieved     = (Sum) accountsTranDAO.where(EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).select(SUM(Transaction.AMOUNT));
-      listSent        = ((ArraySink)  accountsTranDAO.where(EQ(Transaction.SOURCE_ACCOUNT, account.getId())).select( new ArraySink() )).getArray().size();
-      listRecieved    = ((ArraySink)  accountsTranDAO.where(EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).select( new ArraySink() )).getArray().size();
+      accountsTranDAO = transactionDAO.where(
+        OR(
+          EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
+          EQ(Transaction.SOURCE_ACCOUNT, account.getId()
+          )));
+      sumSent         = (Sum) accountsTranDAO.where(
+        EQ(Transaction.SOURCE_ACCOUNT, account.getId())).select(SUM(Transaction.AMOUNT));
+      sumRecieved     = (Sum) accountsTranDAO.where(
+        EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).select(SUM(Transaction.AMOUNT));
+      listSent        = ((ArraySink)  accountsTranDAO.where(
+        EQ(Transaction.SOURCE_ACCOUNT, account.getId())).select( new ArraySink() )).getArray().size();
+      listRecieved    = ((ArraySink)  accountsTranDAO.where(
+        EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).select( new ArraySink() )).getArray().size();
       DigitalAccountInfo digitalInfo = new DigitalAccountInfo();
       digitalInfo.setAccountId(account.getId());
       digitalInfo.setOwner(user.getFirstName()+" "+user.getLastName());
       try {
         digitalInfo.setBalance((Long)account.findBalance(x));
       }
-      catch(Exception e)
+      catch( Exception e )
       {
         digitalInfo.setBalance(0);
       }
