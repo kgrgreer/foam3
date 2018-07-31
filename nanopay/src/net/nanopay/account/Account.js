@@ -90,13 +90,13 @@ foam.CLASS({
       ],
       javaReturns: 'Object',
       javaCode: `
-        DAO balanceDAO = (DAO) x.get("localBalanceDAO");
+        DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {
-          ((foam.nanos.logger.Logger) getX().get("logger")).debug("Balance found for account", this.getId());
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
           return balance.getBalance();
         } else {
-          ((foam.nanos.logger.Logger) getX().get("logger")).debug("Balance not found for account", this.getId());
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return null;
       `
