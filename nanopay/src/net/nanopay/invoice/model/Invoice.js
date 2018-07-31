@@ -7,7 +7,7 @@ foam.CLASS({
       ' one another and ensure the terms of their trading' +
       ' agreements are being met.',
 
-  requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
+  requires: ['net.nanopay.invoice.model.PaymentStatus'],
 
   implements: [
     'foam.nanos.auth.CreatedAware',
@@ -374,9 +374,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then(function(o) {
-        this.add(o.label());
-      }.bind(this));
+      this.add(obj.payee.label());
     }
   }
 });
@@ -408,9 +406,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then( function(o) {
-        this.add(o.label());
-      }.bind(this));
+      this.add(obj.payer.label());
     }
   }
 });

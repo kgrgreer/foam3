@@ -35,7 +35,7 @@ public class PreventRemoveUserDAO
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 
-    List accounts= ((ArraySink) user.getAccounts().select(new ArraySink())).getArray();
+    List accounts= ((ArraySink) user.accounts(x).select(new ArraySink())).getArray();
 
     total = ((Count) transactionDAO.where(
         IN(Transaction.SOURCE_ACCOUNT, accounts)).limit(1).select(count)).getValue();
