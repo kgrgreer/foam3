@@ -42,7 +42,7 @@ foam.CLASS({
 
         // Create the MDAO and load the relevant existing records into it
         var mdao = foam.dao.MDAO.create({ of: this.HistoryRecord });
-        filteredInvoiceHistoryDAO.select((o) => { mdao.put(o); });
+        filteredInvoiceHistoryDAO.select((o) => mdao.put(o));
 
         // Load the invoice and check the status to see if it's overDue. If it
         // is, add it to the MDAO.
