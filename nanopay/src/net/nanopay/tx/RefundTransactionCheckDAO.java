@@ -21,7 +21,7 @@ public class RefundTransactionCheckDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    if ( obj instanceof RefundTransaction ) {
+    if ( ! ( obj instanceof RefundTransaction ) ) {
       return getDelegate().put_(x, obj);
     }
 
