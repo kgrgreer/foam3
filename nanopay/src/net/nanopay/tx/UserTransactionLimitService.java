@@ -122,8 +122,8 @@ public class UserTransactionLimitService
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
     DAO list = transactionDAO_.where(AND(IN(( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ), user.accounts(x) ),
-        GTE(Transaction.DATE, firstDate ),
-        LTE(Transaction.DATE, lastDate )
+        GTE(Transaction.LAST_MODIFIED, firstDate ),
+        LTE(Transaction.LAST_MODIFIED, lastDate )
     ));
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }

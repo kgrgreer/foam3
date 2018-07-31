@@ -44,6 +44,7 @@ public class DuplicateTransactionCheckDAO
   /*
   For the transaction update we only accept transaction status and invoice change. Other changes will not be accepted
    */
+  // FIXME: each TransactionSubClass needs in implement compare for this to work
   public int compareTransactions(Transaction oldtxn, Transaction curtxn) {
     if ( oldtxn == null || curtxn == null ) return - 1;
 
@@ -51,21 +52,21 @@ public class DuplicateTransactionCheckDAO
     temp.setStatus(oldtxn.getStatus());
     temp.setInvoiceId(oldtxn.getInvoiceId());
     //temp.setCicoStatus(oldtxn.getCicoStatus());
-    temp.setDate(oldtxn.getDate());
+    temp.setLastModified(oldtxn.getLastModified());
     temp.setSourceAccount(oldtxn.getSourceAccount());
     temp.setDestinationAccount(oldtxn.getDestinationAccount());
     //temp.setDeviceId(oldtxn.getDeviceId());
-    temp.setNotes(oldtxn.getNotes());
+    //temp.setNotes(oldtxn.getNotes()); // REVIEW: commented out during TransactionSubClassRefactor
     //temp.setChallenge(oldtxn.getChallenge()); // REVIEW: commented out during TransactionSubClassRefactor
     //temp.setProviderId(oldtxn.getProviderId());
     //temp.setBrokerId(oldtxn.getBrokerId());
 
-    temp.setPadType(oldtxn.getPadType());
-    temp.setTxnCode(oldtxn.getTxnCode());
+    //temp.setPadType(oldtxn.getPadType()); // REVIEW: commented out during TransactionSubClassRefactor
+    //temp.setTxnCode(oldtxn.getTxnCode()); // REVIEW: commented out during TransactionSubClassRefactor
     temp.setProcessDate(oldtxn.getProcessDate());
     temp.setCompletionDate(oldtxn.getCompletionDate());
     //temp.setConfirmationLineNumber(oldtxn.getConfirmationLineNumber());
-    temp.setDescription(oldtxn.getDescription());
+    //temp.setDescription(oldtxn.getDescription()); // REVIEW: commented out during TransactionSubClassRefactor
     //temp.setReturnCode(oldtxn.getReturnCode());
     //temp.setReturnDate(oldtxn.getReturnDate());
     //temp.setReturnType(oldtxn.getReturnType());

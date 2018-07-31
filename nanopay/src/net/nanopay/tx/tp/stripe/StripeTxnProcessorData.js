@@ -20,5 +20,11 @@ foam.CLASS({
       documentation: 'Stripe charge id is a unique identifier for every' +
         ' Charge object.'
     },
+    {
+      class: 'String',
+      name: 'notes',
+      visibility: foam.u2.Visibility.RO,
+      documentation: 'Transaction notes'
+    }
   ]
 });

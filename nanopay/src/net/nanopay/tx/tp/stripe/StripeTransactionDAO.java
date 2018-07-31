@@ -42,12 +42,11 @@ public class StripeTransactionDAO extends ProxyDAO {
       chargeMap.put("amount", transaction.getAmount());
       chargeMap.put("currency", "cad");
 
-      String notes = transaction.getNotes();
-      chargeMap.put("description", SafetyUtil.isEmpty(notes) ? null : notes);
 
       StripeTxnProcessorData data = (StripeTxnProcessorData) transaction.getTxnProcessorData();
       if ( data != null ) {
         chargeMap.put("source", data.getStripeTokenId());
+        chargeMap.put("description", data.getNotes());
       }
 
       Charge charge = null;

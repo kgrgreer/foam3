@@ -223,33 +223,7 @@ foam.CLASS({
       name: 'completionDate'
     },
     {
-      // REVIEW: what is this - Joel
-      class: 'String',
-      name: 'padType'
-    },
-    { // REVIEW: what is this - Joel
-      class: 'String',
-      name: 'txnCode'
-    },
-    {
-      // REVIEW: is this created date? - Joel
-      class: 'DateTime',
-      name: 'date',
-      label: 'Date & Time'
-    },
-    {
-      class: 'String',
-      name: 'notes',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Transaction notes'
-    },
-    {
-      class: 'String',
-      name: 'description',
-      swiftName: 'description_',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
+      documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId'
     },

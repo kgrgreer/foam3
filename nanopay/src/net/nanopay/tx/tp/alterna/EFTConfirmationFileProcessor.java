@@ -105,18 +105,18 @@ public class EFTConfirmationFileProcessor implements ContextAgent
                 data = (AlternaTxnProcessorData) data.fclone();
               }
               data.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-              tran.setTxnProcessorData(data);
+
 
               if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
                 tran.setStatus(TransactionStatus.FAILED);
-                tran.setDescription(eftConfirmationFileRecord.getReason());
+                data.setDescription(eftConfirmationFileRecord.getReason());
                 sendEmail(x, "Transaction was rejected by EFT confirmation file",
-                  "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
+                  "Transaction id: " + tran.getId() + ", Reason: " + data.getDescription() + ", Confirmation line number: "
                     + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
               } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
                 tran.setStatus(TransactionStatus.SENT);
               }
-
+              tran.setTxnProcessorData(data);
               transactionDao.put(tran);
             }
           }

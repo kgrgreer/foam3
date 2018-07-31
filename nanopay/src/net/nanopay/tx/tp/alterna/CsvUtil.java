@@ -175,13 +175,17 @@ public class CsvUtil {
           refNo = String.valueOf(t.getId());
 
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
+          AlternaTxnProcessorData procData = (AlternaTxnProcessorData) t.getTxnProcessorData();
+          if ( procData == null ) {
+            procData = new AlternaTxnProcessorData();
+          }
           AlternaFormat alternaFormat = new AlternaFormat();
           // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if ( ! SafetyUtil.isEmpty(t.getPadType()) ) {
-            alternaFormat.setPadType(t.getPadType());
+          if ( ! SafetyUtil.isEmpty(procData.getPadType()) ) {
+            alternaFormat.setPadType(procData.getPadType());
           }
           else {
-            t.setPadType(alternaFormat.getPadType());
+            procData.setPadType(alternaFormat.getPadType());
           }
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
@@ -193,10 +197,10 @@ public class CsvUtil {
           alternaFormat.setTxnType(txnType);
 
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if ( ! SafetyUtil.isEmpty(t.getTxnCode()) ) {
-            alternaFormat.setTxnCode(t.getTxnCode());
+          if ( ! SafetyUtil.isEmpty(procData.getTxnCode()) ) {
+            alternaFormat.setTxnCode(procData.getTxnCode());
           } else {
-            t.setTxnCode(alternaFormat.getTxnCode());
+            procData.setTxnCode(alternaFormat.getTxnCode());
           }
 
           alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
@@ -209,7 +213,7 @@ public class CsvUtil {
           if (t.getCompletionDate() == null) {
             t.setCompletionDate(generateCompletionDate(x, now));
           }
-
+          t.setTxnProcessorData(procData);
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
