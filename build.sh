@@ -432,7 +432,7 @@ function setenv {
         export NANOPAY_HOME="/opt/nanopay"
     fi
 
-    if [[ ! -w $NANOPAY_HOME ]]; then
+    if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
         echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
         set +e
         exit 1
@@ -484,6 +484,7 @@ function setenv {
         rmdir /tmp/nanopay
         mkdir /tmp/nanopay
         JOURNAL_HOME=/tmp/nanopay
+        mkdir -p $JOURNAL_HOME
         echo "INFO :: Cleaned up temporary journal files."
     fi
 
