@@ -3,10 +3,21 @@ package net.nanopay.security;
 import foam.core.ClassInfo;
 import foam.core.X;
 import foam.dao.*;
+import foam.dao.java.JDAO;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
 
 public class HashingJDAO
   extends JDAO
 {
+  static {
+    BouncyCastleProvider provider = new BouncyCastleProvider();
+    if ( Security.getProvider(provider.getName()) == null ) {
+      Security.addProvider(provider);
+    }
+  }
+
   public HashingJDAO(X x, ClassInfo classInfo, String filename) {
     this(x, "SHA-256", false, false, new MapDAO(classInfo), filename);
   }
@@ -33,6 +44,10 @@ public class HashingJDAO
 
   public HashingJDAO(X x, boolean rollDigests, DAO delegate, String filename) {
     this(x, "SHA-256", false, rollDigests, delegate, filename);
+  }
+
+  public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename) {
+    this(x, algorithm, false, rollDigests, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename) {
