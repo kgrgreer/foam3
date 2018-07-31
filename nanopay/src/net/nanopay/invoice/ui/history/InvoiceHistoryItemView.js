@@ -44,7 +44,7 @@ foam.CLASS({
       });
       if ( isFirstHistoryEvent ) {
         var user = ctrl.user;
-        var currentUser = `${user.firstName}, ${user.lastName}(${user.id})`;
+        var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
         if ( currentUser === record.user ) {
           this.invoiceCreatedHistoryItem.outputRecord(parentView, record);
         } else {

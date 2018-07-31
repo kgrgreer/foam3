@@ -54,7 +54,9 @@ foam.CLASS({
   methods: [
     async function outputRecord(parentView, record) {
       var invoice = await this.invoiceDAO.find(record.objectId);
-      var user = await this.userDAO.find(invoice.createdBy);
+      var user = invoice.createdBy === invoice.payer.id ?
+        invoice.payer :
+        invoice.payee;
       this.name = user.label();
 
       return parentView
@@ -67,7 +69,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice received from ", this.name$)
+              .add('Invoice received from ', this.name$)
             .end()
           .end()
           .start('div')
@@ -76,7 +78,7 @@ foam.CLASS({
               .add(this.formatDate(record.timestamp))
             .end()
           .end()
-        .end()
+        .end();
     },
 
     function formatDate(timestamp) {
