@@ -22,13 +22,16 @@ public class DigitalAccountInfoPopluateDAO
     setDelegate(delegate);
   }
 
+  // Collects data from the account, transaction, user and balance DAO and formats and sets the data for the DigitalAccountInfo Model
   public foam.dao.Sink select_(foam.core.X x, foam.dao.Sink sink, long skip, long limit, foam.mlang.order.Comparator order, foam.mlang.predicate.Predicate predicate) {
 
     DAO                 userDAO        = (DAO) x.get("localUserDAO");
     DAO                 accountDAO     = (DAO) x.get("accountDAO");
     DAO                 transactionDAO = (DAO) x.get("localTransactionDAO");
-    ArraySink           accountDAOSink = (ArraySink)(accountDAO.where(
-      EQ(Account.TYPE, "DigitalAccount"))).select(new ArraySink());
+    // Grabs all Digital Accounts
+    ArraySink           accountDAOSink = (ArraySink) accountDAO.where(
+      EQ(Account.TYPE, "DigitalAccount"))
+      .select(new ArraySink());
     ArrayList<Account>  accountList    = (ArrayList) accountDAOSink.getArray();
     User                user;
     DAO                 accountsTranDAO;
@@ -37,31 +40,44 @@ public class DigitalAccountInfoPopluateDAO
     int                 listSent;
     int                 listRecieved;
 
+
     if ( sink == null ){
       sink = new ArraySink();
     }
-    for ( Account account: accountList ) {
+
+    // Walk through the list of digital accounts and create a new new Info Model for each
+    for ( Account account : accountList ) {
       user            = (User) userDAO.find(account.getOwner());
+
+      // Grab all transactions that have to do with the digital account
       accountsTranDAO = transactionDAO.where(
         OR(
           EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
           EQ(Transaction.SOURCE_ACCOUNT, account.getId()
           )));
+
+      // Get the Sum of all recieved and sent amounts and the number of transactions each account has been a part of
       sumSent         = (Sum) accountsTranDAO.where(
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId())).select(SUM(Transaction.AMOUNT));
+        EQ(Transaction.SOURCE_ACCOUNT, account.getId()))
+        .select(SUM(Transaction.AMOUNT));
       sumRecieved     = (Sum) accountsTranDAO.where(
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).select(SUM(Transaction.AMOUNT));
-      listSent        = ((ArraySink)  accountsTranDAO.where(
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId())).select( new ArraySink() )).getArray().size();
-      listRecieved    = ((ArraySink)  accountsTranDAO.where(
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).select( new ArraySink() )).getArray().size();
+        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()))
+        .select(SUM(Transaction.AMOUNT));
+      listSent        = ((ArraySink) accountsTranDAO.where(
+        EQ(Transaction.SOURCE_ACCOUNT, account.getId()))
+        .select(new ArraySink())).getArray().size();
+      listRecieved    = ((ArraySink) accountsTranDAO.where(
+        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()))
+        .select(new ArraySink())).getArray().size();
+
+      //Create the object and load the data into it
       DigitalAccountInfo digitalInfo = new DigitalAccountInfo();
       digitalInfo.setAccountId(account.getId());
       digitalInfo.setOwner(user.getFirstName()+" "+user.getLastName());
       try {
-        digitalInfo.setBalance((Long)account.findBalance(x));
+        digitalInfo.setBalance((Long) account.findBalance(x));
       }
-      catch( Exception e )
+      catch ( Exception e )
       {
         digitalInfo.setBalance(0);
       }
@@ -73,8 +89,6 @@ public class DigitalAccountInfoPopluateDAO
 
       sink.put(digitalInfo, null);
     }
-
     return sink;
-
   }
 }
