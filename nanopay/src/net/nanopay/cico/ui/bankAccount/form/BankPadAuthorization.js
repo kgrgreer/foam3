@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to input bank account details.',
-  
-  import:[
+
+  import: [
     'user',
     'form',
     'viewData',
@@ -81,7 +81,7 @@ foam.CLASS({
       margin: 14px 0px ;
 
     }
-    
+
     ^ .messageBody {
       font-size: 12px;
       font-weight: normal;
@@ -241,14 +241,14 @@ foam.CLASS({
     { name: 'LabelPostal',          message: 'Postal Code' },
     { name: 'LabelAccount',         message: 'Account Number' },
     { name: 'LabelInstitute',       message: 'Institution Number' },
-    { name: 'LabelTransit',         message: 'Transit Number' },    
+    { name: 'LabelTransit',         message: 'Transit Number' },
     { name: 'TC1',                  message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
     { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit '},
     { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting '},
     { name: 'link',                 message: 'www.payments.ca.'},
 
   ],
-  properties:[
+  properties: [
     {
       class: 'String',
       name: 'firstName',
@@ -316,10 +316,10 @@ foam.CLASS({
         var choices = X.countryDAO.where(expr.EQ(foam.nanos.auth.Country.CODE, 'CA'));
         return foam.u2.view.ChoiceView.create({
           dao: choices,
-          objToChoice: function(a){
+          objToChoice: function(a) {
             return [a.id, a.name];
           }
-        })
+        });
       },
       factory: function() {
         return this.viewData.user.address.countryId;
@@ -334,10 +334,10 @@ foam.CLASS({
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
           dao: X.regionDAO.where(expr.EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')),
-          objToChoice: function(a){
+          objToChoice: function(a) {
             return [a.id, a.name];
           }
-        })
+        });
       },
       factory: function() {
         return this.viewData.user.address.regionId;
@@ -424,23 +424,23 @@ foam.CLASS({
           .end()
 
           .start('p').add('Banking Info').addClass('headings').end()
-          .start('div').forEach( this.viewData.bankAccount, function(data, index){
+          .start('div').forEach( this.viewData.bankAccount, function(data, index) {
             this
-            .callIf( ! (self.viewData.bankAccount.length === 1), function(){
-              this.start().add('Account '+ (index+1) ).addClass('header').end()
-            }) 
+            .callIf( ! (self.viewData.bankAccount.length === 1), function() {
+              this.start().add('Account ' + (index + 1)).addClass('header').end();
+            })
             .start().addClass('inline')
               .start().add(self.LabelInstitute).addClass('infoLabel').end()
-              .start().add(data.institution.id).addClass('notEditable').addClass('full-width-input-label').end()
+              .start().add(data.institutionNumber).addClass('notEditable').addClass('full-width-input-label').end()
             .end()
             .start().addClass('inline')
               .start().add(self.LabelTransit).addClass('infoLabel').end()
-              .start().add(data.branch.id).addClass('notEditable').addClass('inputLarge-label').end()
+              .start().add(data.branch).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
             .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
               .start().add(data.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
-            .end()
+            .end();
           }).end()
 
           .start('div').addClass('row').addClass('rowTopMarginOverride')
@@ -450,19 +450,19 @@ foam.CLASS({
             .end()
             .start('p')
               .add('Recourse/Reimbursement').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
+              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
             .end()
             .start('p')
               .add('Cancellation').addClass('headings')
               .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
             .end()
-          .end() 
-        .end()
+          .end()
+        .end();
     }
   ],
   listeners: [
-    function goToPayment () {
-      window.open('https://www.payments.ca','_blank');
+    function goToPayment() {
+      window.open('https://www.payments.ca', '_blank');
     },
  ]
 });
