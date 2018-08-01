@@ -275,9 +275,8 @@ foam.CLASS({
             }));
             return;
           }
-          // By pass for safari & mozilla type='date' on input support
-          // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-          if ( isNaN(dueDate) && dueDate != null ) {
+
+          if ( ! ( dueDate instanceof Date ) ) {
             this.add(foam.u2.dialog.NotificationMessage.create({
               message: 'Please Enter Valid Due Date yyyy-mm-dd.',
               type: 'error'
