@@ -53,11 +53,11 @@ public class HashedFObjectParser
           md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
 
           // update digest with previous digest
-          if ( hashingJournal.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal.getPreviousDigest()) ) {
-            md.update(Hex.decode(hashingJournal.getPreviousDigest()));
+          if ( hashingJournal.getRollDigests() && hashingJournal.getPreviousDigest() != null ) {
+            md.update(hashingJournal.getPreviousDigest());
           }
 
-          hashingJournal.setPreviousDigest(messageDigest.getDigest());
+          hashingJournal.setPreviousDigest(Hex.decode(messageDigest.getDigest()));
           md.update(message.getBytes(StandardCharsets.UTF_8));
         } catch ( Throwable t ) {
           throw new RuntimeException("Digest verification failed");
