@@ -407,6 +407,7 @@
     { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
+    { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
     { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
@@ -745,6 +746,11 @@
       label: 'Enable',
       code: function (X) {
         var self = this;
+
+        if ( ! this.twoFactorToken ) {
+          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+          return;
+        }
 
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then(function (result) {
