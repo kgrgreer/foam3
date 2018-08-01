@@ -64,7 +64,7 @@ foam.CLASS({
         test("SHA-256".equals(journal.getAlgorithm()), "Algorithm is set to SHA-256 by default");
         test(! journal.getDigestRequired(), "Digest required is set to false by default");
         test(! journal.getRollDigests(), "Roll digests is set to false by default");
-        test(SafetyUtil.isEmpty(journal.getPreviousDigest()), "Previous digest is empty by default");
+        test(journal.getPreviousDigest() == null, "Previous digest is empty by default");
         test(journal.getOutputter() instanceof HashingOutputter, "Outputter is an instance of HashingOutputter");
         test(journal.getParser() instanceof HashedJSONParser, "Parser is an instance of HashedJSONParser");
       `
