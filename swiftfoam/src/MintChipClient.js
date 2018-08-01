@@ -164,6 +164,22 @@ return ClientDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'institutionDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": net_nanopay_payment_Institution.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)institutionDAO"
+      ])
+    ])
+  ])
+])
+      `
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'balanceDAO',
       swiftFactory: `
 return ClientDAO_create([
@@ -187,22 +203,6 @@ return ClientUserTransactionLimitService_create([
   "delegate": SessionClientBox_create([
     "delegate": HTTPBox_create([
       "url": "\\(self.httpBoxUrlRoot.rawValue)userTransactionLimit"
-    ])
-  ])
-])
-      `,
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'bankAccountDAO',
-      swiftFactory: `
-return ClientDAO_create([
-  "of": net_nanopay_bank_BankAccount.classInfo(),
-  "delegate": LogBox_create([
-    "delegate": SessionClientBox_create([
-      "delegate": HTTPBox_create([
-        "url": "\\(self.httpBoxUrlRoot.rawValue)bankAccountDAO"
-      ])
     ])
   ])
 ])
@@ -392,7 +392,6 @@ return ClientBankAccountVerifierService_create([
       returns: 'foam.nanos.auth.User',
       swiftCode: `
 clearProperty("currentUser")
-clearProperty("accountDAO")
 let u = try clientAuthService.loginByEmail(__context__, email, password)
 currentUser = u
 return u
@@ -412,6 +411,61 @@ clearProperty("currentUser")
 let dao = self.transactionDAO as! foam_swift_dao_CachingDAO
 _ = try? dao.src.select(DAOSink_create(["dao": dao.cache]))
       `,
+    },
+    {
+      name: 'getBankAccounts',
+      swiftThrows: true,
+      args: [
+        {
+          of: 'Boolean',
+          swiftType: 'Bool',
+          name: 'verifiedOnly',
+          swiftDefaultValue: 'false'
+        }
+      ],
+      swiftReturns: '[net_nanopay_bank_CABankAccount]',
+      swiftCode: `
+let user = try clientAuthService.getCurrentUser(__context__)!
+
+let x = __subContext__
+let pred = x.create(foam_mlang_predicate_And.self, args: [
+  "args": [
+    x.create(foam_mlang_predicate_Eq.self, args: [
+      "arg1": net_nanopay_account_Account.OWNER(),
+      "arg2": user.id
+    ]),
+    x.create(foam_mlang_predicate_Eq.self, args: [
+      "arg1": net_nanopay_account_Account.DENOMINATION(),
+      "arg2": "CAD"
+    ])
+  ]
+])
+if verifiedOnly {
+  pred?.args.append(x.create(foam_mlang_predicate_Eq.self, args: [
+    "arg1": net_nanopay_bank_CABankAccount.STATUS(),
+    "arg2": "Verified"
+    ])!)
+}
+
+var accounts = try (accountDAO!.\`where\`(pred).select() as! foam_dao_ArraySink).array as! [net_nanopay_account_Account]
+accounts = accounts.filter({
+  (account) -> Bool in
+  if account is net_nanopay_bank_CABankAccount {
+    return true
+  }
+  return false
+})
+var caBankAccounts: [net_nanopay_bank_CABankAccount] = []
+for account in accounts {
+  if account is net_nanopay_bank_CABankAccount {
+    let account = account as! net_nanopay_bank_CABankAccount
+    account.institutionNumber = try ((institutionDAO!.find(account.institution)) as! net_nanopay_payment_Institution).institutionNumber
+    caBankAccounts.append(account)
+  }
+}
+
+return caBankAccounts
+      `
     },
     {
       name: 'getCurrentBalance',

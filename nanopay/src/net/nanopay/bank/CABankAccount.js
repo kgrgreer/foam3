@@ -7,7 +7,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
       name: 'branch',
       label: 'Transit No.',
     },
