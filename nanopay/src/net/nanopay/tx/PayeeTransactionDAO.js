@@ -42,7 +42,7 @@ foam.CLASS({
       javaCode: `
         Transaction txn = (Transaction) obj;
         if ( txn.findDestinationAccount(x) == null ) {
-          User user = (User) ((DAO) x.get("localUserDAO")).find(txn.getPayeeId());
+          User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayeeId());
           DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
           txn = (Transaction) obj.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
