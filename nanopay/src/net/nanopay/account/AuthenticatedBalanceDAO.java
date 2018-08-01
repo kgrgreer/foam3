@@ -86,7 +86,7 @@ public class AuthenticatedBalanceDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    DAO accountsDAO = user.getAccounts();
+    DAO accountsDAO = user.accounts(x);
     Sink accountSink = new ArraySink();
     accountSink = accountsDAO.select(accountSink);
     List<Account> accounts = ((ArraySink) accountSink).getArray();
@@ -126,7 +126,7 @@ public class AuthenticatedBalanceDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    DAO accountsDAO = user.getAccounts();
+    DAO accountsDAO = user.accounts(x);
     Sink accountSink = new ArraySink();
     accountSink = accountsDAO.select(accountSink);
     List<Account> accounts = ((ArraySink) accountSink).getArray();
