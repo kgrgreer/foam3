@@ -27,8 +27,9 @@ foam.CLASS({
       documentation: 'Roll digests together'
     },
     {
-      class: 'String',
+      class: 'Object',
       name: 'previousDigest',
+      javaType: 'byte[]',
       documentation: 'Previous digest to use in rolling'
     },
     {
