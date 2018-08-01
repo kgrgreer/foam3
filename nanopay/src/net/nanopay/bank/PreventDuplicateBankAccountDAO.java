@@ -34,15 +34,13 @@ public class PreventDuplicateBankAccountDAO
     if ( getDelegate().find(account.getId()) == null ) {
       Count count = new Count();
 
-      if ( ! account.getName().isEmpty() ) {
-        // prevent registration of account with same account name
-        count = (Count) getDelegate().where(AND(
-            EQ(BankAccount.OWNER, account.getOwner()),
-            EQ(BankAccount.NAME, account.getName())
-        )).limit(1).select(count);
-        if ( count.getValue() > 0 ) {
-          throw new RuntimeException("Bank account with same name already registered");
-        }
+      // prevent registration of account with same account name
+      count = (Count) getDelegate().where(AND(
+          EQ(BankAccount.OWNER, account.getOwner()),
+          EQ(BankAccount.NAME, account.getName())
+      )).limit(1).select(count);
+      if ( count.getValue() > 0 ) {
+        throw new RuntimeException("Bank account with same name already registered");
       }
 
       // prevent registration of account with same account details
