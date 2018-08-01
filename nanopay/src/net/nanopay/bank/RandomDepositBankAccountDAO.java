@@ -34,6 +34,10 @@ public class RandomDepositBankAccountDAO
       return super.put_(x, obj);
     }
 
+    if ( getDelegate().find_(x, obj) != null ) {
+      return super.put_(x, obj);
+    }
+
     BankAccount account = (BankAccount) obj;
     boolean newAccount = ( getDelegate().find(account.getId()) == null );
 
