@@ -8,10 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'hideReceivableSummary',
+    'hideSummary',
     'notificationDAO',
     'publicUserDAO',
-    'recurringInvoiceDAO',
     'stack',
     'user'
   ],
@@ -30,6 +29,21 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'isBill',
+      documentation: `Denotes whether this view is for a payable invoice (bill)
+          or a receivable invoice (sale).`,
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'otherPartyName',
+      documentation: `The name of the other party involved with this invoice.`,
+      expression: function(isBill) {
+        return isBill ? 'Vendor' : 'Customer';
+      }
+    },
     {
       class: 'Boolean',
       name: 'checkBoxRecurring',
@@ -70,7 +84,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.publicUserDAO.where(X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)),
-          placeholder: 'Please Select Customer',
+          placeholder: `Please Select ${X.data.otherPartyName}`,
           objToChoice: function(user) {
             var username = user.businessName || user.organization ||
                 user.label();
@@ -165,7 +179,7 @@ foam.CLASS({
   methods: [
       function initE() {
         this.SUPER();
-        this.hideReceivableSummary = true;
+        this.hideSummary = true;
 
         this
           .addClass(this.myClass())
@@ -179,7 +193,7 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('information')
               .start().addClass('customer-div')
-                .start().addClass('label').add('Customer').end()
+                .start().addClass('label').add(this.otherPartyName$).end()
                 .startContext({ data: this })
                   .start(this.USER_LIST).end()
                 .endContext()
@@ -250,7 +264,7 @@ foam.CLASS({
       name: 'deleteDraft',
       label: 'Delete Draft',
       code: function(X) {
-        this.hideReceivableSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     },
@@ -259,7 +273,11 @@ foam.CLASS({
       label: 'Save As Draft',
       code: function(X) {
         X.dao.put(this);
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView' });
+        X.stack.push({
+          class: this.isBill ?
+              'net.nanopay.invoice.ui.SalesView' :
+              'net.nanopay.invoice.ui.ExpensesView'
+        });
       }
     },
     {
@@ -270,7 +288,7 @@ foam.CLASS({
 
         if ( ! this.userList ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
-            message: 'Please Select a Customer.',
+            message: `Please Select a ${otherPartyName}.`,
             type: 'error'
           }));
           return;
@@ -298,8 +316,8 @@ foam.CLASS({
         }
 
         var inv = this.Invoice.create({
-          payerId: this.userList,
-          payeeId: this.user.id,
+          payerId: this.isBill ? this.user.id : this.userList,
+          payeeId: this.isBill ? this.userList : this.user.id,
           createdBy: this.user.id,
           amount: this.data.amount,
           dueDate: offsetDate,
@@ -310,7 +328,8 @@ foam.CLASS({
           invoiceNumber: this.data.invoiceNumber
         });
 
-        this.user.sales.put(inv);
+        var dao = this.isBill ? this.user.expenses : this.user.sales;
+        dao.put(inv);
 
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
@@ -335,7 +354,7 @@ foam.CLASS({
         //   X.dao.put(this);
         // }
 
-        this.hideReceivableSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     }
