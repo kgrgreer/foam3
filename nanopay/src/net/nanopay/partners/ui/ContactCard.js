@@ -9,7 +9,6 @@ foam.CLASS({
     'foam.u2.PopupView',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.BillDetailView',
     'net.nanopay.invoice.ui.InvoiceDetailView',
     'net.nanopay.model.Invitation'
   ],
@@ -274,8 +273,9 @@ foam.CLASS({
 
     function onCreateBill() {
       var self = this;
-      var billDetailView = this.BillDetailView.create({
-        userList: this.data.id
+      var billDetailView = this.InvoiceDetailView.create({
+        userList: this.data.id,
+        isBill: true
       });
 
       var view = foam.u2.ListCreateController.CreateController.create(

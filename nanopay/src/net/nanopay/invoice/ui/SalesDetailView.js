@@ -13,7 +13,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'hideReceivableSummary',
+    'hideSummary',
     'invoiceDAO',
     'stack',
     'user'
@@ -21,7 +21,7 @@ foam.CLASS({
 
   exports: [
     'as data',
-    'hideReceivableSummary',
+    'hideSummary',
     'openExportModal'
   ],
 
@@ -128,7 +128,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideReceivableSummary = true;
+      this.hideSummary = true;
 
       this
         .addClass(this.myClass())
@@ -191,7 +191,7 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        this.hideReceivableSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     },

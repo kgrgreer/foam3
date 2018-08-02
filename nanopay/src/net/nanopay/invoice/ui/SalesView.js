@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'hideReceivableSummary',
+    'hideSummary',
     'salesDAO'
   ],
 
@@ -34,7 +34,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'hideReceivableSummary',
+      name: 'hideSummary',
       value: false
     },
     {
@@ -105,7 +105,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().enableClass('hide', this.hideReceivableSummary$)
+        .start().enableClass('hide', this.hideSummary$)
           .tag(this.InvoiceSummaryView, {
             sumLabel: 'Receivables',
             dao: this.user.sales
@@ -124,7 +124,7 @@ foam.CLASS({
             showActions: false
           })
         .end()
-        .start().enableClass('hide', this.hideReceivableSummary$)
+        .start().enableClass('hide', this.hideSummary$)
           .tag({
             class: 'net.nanopay.ui.Placeholder',
             dao: this.salesDAO,
@@ -171,7 +171,7 @@ foam.CLASS({
 
       imports: [
         'salesDAO',
-        'hideSaleSummary'
+        'hideSummary'
       ],
 
       exports: [
