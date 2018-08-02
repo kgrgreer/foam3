@@ -122,7 +122,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       transaction.setDestinationAccount(bankId);
       transaction.setSourceAccount(accountId);
     }
-    DAO txnDAO = (DAO) x.get("transactionDAO");
+    DAO txnDAO = (DAO) x.get("localTransactionDAO");
     txnDAO.put_(x, transaction);
   }
 }

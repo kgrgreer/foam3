@@ -13,6 +13,7 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Max;
 import foam.nanos.logger.Logger;
+import foam.util.SecurityUtil;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -62,7 +63,7 @@ public class EncryptingDAO
     if ( ! keyStore.containsAlias(alias_) ) {
       // generate AES key using BC as provider
       KeyGenerator keygen = KeyGenerator.getInstance("AES", "BC");
-      keygen.init(AES_KEY_SIZE, SecureRandom.getInstance("SHA1PRNG"));
+      keygen.init(AES_KEY_SIZE, SecurityUtil.GetSecureRandom());
       key_ = keygen.generateKey();
 
       // set secret key entry in keystore
@@ -80,7 +81,7 @@ public class EncryptingDAO
     try {
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
       final byte[] nonce = new byte[GCM_NONCE_LENGTH];
-      SecureRandom.getInstance("SHA1PRNG").nextBytes(nonce);
+      SecurityUtil.GetSecureRandom().nextBytes(nonce);
       GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
       cipher.init(Cipher.ENCRYPT_MODE, key_, spec);
 
