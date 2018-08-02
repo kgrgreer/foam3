@@ -94,7 +94,7 @@ foam.CLASS({
       },
       postSet: function(ov, nv) {
         var self = this;
-        this.userDAO.find(nv).then(function(u) {
+        this.publicUserDAO.find(nv).then(function(u) {
           self.selectedUser = u;
         });
       }
@@ -218,8 +218,8 @@ foam.CLASS({
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
-            .start().show(this.selectedUser$.map(function(a) {
-              return a.emailVerified;
+            .start().show(this.selectedUser$.map((a) => {
+              return a.status;
             }))
               .tag({
                 class: 'net.nanopay.ui.BusinessCard',
