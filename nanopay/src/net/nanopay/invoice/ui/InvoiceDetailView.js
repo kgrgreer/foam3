@@ -23,6 +23,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.notification.NewInvoiceNotification'
@@ -219,7 +220,8 @@ foam.CLASS({
               .end()
             .end()
             .start().show(this.selectedUser$.map((a) => {
-              return a.status;
+              this.selectedUser.status = this.AccountStatus.ACTIVE;
+              return this.PublicUserInfo.isInstance(a);
             }))
               .tag({
                 class: 'net.nanopay.ui.BusinessCard',

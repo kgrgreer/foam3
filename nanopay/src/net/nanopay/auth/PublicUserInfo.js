@@ -57,11 +57,6 @@ foam.CLASS({
       name: 'businessProfilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.admin.model.AccountStatus',
-      name: 'status'
     }
   ],
 
@@ -101,7 +96,6 @@ foam.CLASS({
             setBusinessProfilePicture(user.getBusinessProfilePicture());
             setBusinessAddress(user.getBusinessAddress());
             setBusinessPhone(user.getBusinessPhone());
-            setStatus(user.getStatus());
           }
         `);
       },
