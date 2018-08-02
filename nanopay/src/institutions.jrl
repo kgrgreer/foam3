@@ -1,6 +1,6 @@
-p({"class":"net.nanopay.payment.Institution", "id":1,   "name":"ATB"                  "abbreviation":"ATB"     "institutionNumber":"219"});
-p({"class":"net.nanopay.payment.Institution", "id":2,   "name":"Bank of Montreal"     "abbreviation":"BMO",    "institutionNumber":"001", "countryId":"CA"})
-p({"class":"net.nanopay.payment.Institution", "id":3,   "name":"Candian Imperial Bank of Canada",          "abbreviation":"CIBC",   "institutionNumber":"010", "countryId":"CA})
+p({"class":"net.nanopay.payment.Institution", "id":1,   "name":"ATB",                 "abbreviation":"ATB",    "institutionNumber":"219"});
+p({"class":"net.nanopay.payment.Institution", "id":2,   "name":"Bank of Montreal",    "abbreviation":"BMO",    "institutionNumber":"001", "countryId":"CA"})
+p({"class":"net.nanopay.payment.Institution", "id":3,   "name":"Candian Imperial Bank of Canada", "abbreviation":"CIBC","institutionNumber":"010", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":4,   "name":"CoastCapital",        "abbreviation":"",       "institutionNumber":""})
 p({"class":"net.nanopay.payment.Institution", "id":5,   "name":"Desjardins",          "abbreviation":"",       "institutionNumber":""})
 p({"class":"net.nanopay.payment.Institution", "id":6,   "name":"Meridian",            "abbreviation":"",       "institutionNumber":""})

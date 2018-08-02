@@ -1,32 +1,51 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
-  build:
+  shellcheck:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
+      - image: nlknguyen/alpine-shellcheck:v0.4.6
     steps:
       - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources
 
-      # Download and cache dependencies
+  build:
+    docker:
+      - image: circleci/buildpack-deps:bionic
+    working_directory: ~/NANOPAY
+    steps:
+      - checkout
+      - run: sudo apt-get update && sudo apt-get -y install maven npm nodejs openjdk-8-jdk-headless
+      - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      # cache node modules
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: yarn install
-
+            - node-v1-{{ checksum "package.json" }}
+            - node-v1-
+      - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: node-v1-{{ checksum "package.json" }}
+
+      # cache maven repositories
+      - restore_cache:
+          keys:
+            - maven-v1-{{ checksum "pom-standalone.xml" }}
+            - maven-v1-
+      - run: sudo ./build.sh -t
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-v1-{{ checksum "pom-standalone.xml" }}
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build

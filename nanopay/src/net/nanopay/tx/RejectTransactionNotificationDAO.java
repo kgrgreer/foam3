@@ -14,7 +14,8 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.model.BankAccount;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
@@ -45,7 +46,7 @@ public class RejectTransactionNotificationDAO
 
   protected DAO getBankAccountDAO() {
     if ( bankAccountDAO_ == null ) {
-      bankAccountDAO_ = (DAO) getX().get("localBankAccountDAO");
+      bankAccountDAO_ = (DAO) getX().get("localAccountDAO");
     }
 
     return bankAccountDAO_;
@@ -59,7 +60,7 @@ public class RejectTransactionNotificationDAO
     if ( transaction.getType().equals(TransactionType.CASHIN) && oldTxn != null ) {
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
-        User payer = (User) getUserDAO().find(transaction.getPayerId());
+        User payer = (User) getUserDAO().find_(x,((Account) transaction.findSourceAccount(x)).getOwner());
         sendCashInRejectEmail(x, payer.getEmail(), payer, transaction);
       }
     }
@@ -67,8 +68,8 @@ public class RejectTransactionNotificationDAO
       if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED)
           && transaction.getStatus().equals(TransactionStatus.DECLINED) ) {
         //pay others by bank account directly
-        User payer = (User) getUserDAO().find(transaction.getPayerId());
-        User payee = (User) getUserDAO().find(transaction.getPayeeId());
+        User payer = (User) getUserDAO().find_(x,((Account) transaction.findSourceAccount(x)).getOwner());
+        User payee = (User) getUserDAO().find_(x,((Account) transaction.findDestinationAccount(x)).getOwner());
         sendPaymentRejectEmail(x, payer.getEmail(), payer, transaction);
         sendPaymentRejectEmail(x, payee.getEmail(), payee, transaction);
       }
@@ -87,7 +88,7 @@ public class RejectTransactionNotificationDAO
     // Loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
-    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
+    args.put("account", ( (BankAccount) transaction.findSourceAccount(x) ).getAccountNumber());
     args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});
@@ -109,9 +110,9 @@ public class RejectTransactionNotificationDAO
     // Loads variables that will be represented in the email received
     args.put("amount", formatter.format(transaction.getAmount() / 100.00));
     args.put("name", user.getFirstName());
-    args.put("account", ( (BankAccount) getBankAccountDAO().find(transaction.getBankAccountId()) ).getAccountNumber());
-    args.put("payerName", ( (User) getUserDAO().find(transaction.getPayerId()) ).getFirstName());
-    args.put("payeeName", ( (User) getUserDAO().find(transaction.getPayeeId()) ).getFirstName());
+    args.put("account", ( (BankAccount) transaction.findSourceAccount(x) ).getAccountNumber());
+    args.put("payerName", ((User) getUserDAO().find_(x,((Account) transaction.findSourceAccount(x)).getOwner())).getFirstName());
+    args.put("payeeName", ((User) getUserDAO().find_(x,((Account) transaction.findDestinationAccount(x)).getOwner())).getFirstName());
     args.put("link",    config.getUrl());
 
     message.setTo(new String[]{emailAddress});

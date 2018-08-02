@@ -7,8 +7,13 @@ foam.CLASS({
       ' one another and ensure the terms of their trading' +
       ' agreements are being met.',
 
-  requires: [
-    'net.nanopay.invoice.model.PaymentStatus'
+  requires: ['net.nanopay.invoice.model.PaymentStatus'],
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
@@ -108,9 +113,26 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
+      class: 'DateTime',
+      name: 'created',
+      documentation: `The date the invoice was created.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: `The date the invoice was last modified.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The id of the user who last modified the invoice.`,
     },
     {
       class: 'FObjectProperty',
@@ -150,9 +172,11 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount required to pay invoice.`,
+      documentation: `The amount of money the invoice is for. The amount of money that will be deposited into the destination account.  If fees or exchange applies the source amount may have to be adjusted.`,
       aliases: [
-        'a', 'targetAmount'
+        'a',
+        'targetAmount',
+        'destinationAmount'
       ],
       precision: 2,
       required: true,
@@ -161,7 +185,8 @@ foam.CLASS({
         X.formatCurrencyAmount(a, e, X);
       }
     },
-    {
+    { // How is this used? - display only?
+      documentation: `Amount of funds to be withdrawn to pay for the invoice. This amount may be higher than the 'amount' (destination amount) if fees and/or exchange is involved.`,
       class: 'Currency',
       name: 'sourceAmount',
       documentation: 'The amount used to pay the' +
@@ -173,9 +198,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
-      name: 'sourceAccountId',
-      documentation: 'Account used to pay invoice.'
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      documentation: `Account funds with be deposited into.`
     },
     {
       class: 'Currency',
@@ -190,25 +216,28 @@ foam.CLASS({
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'FObjectProperty',
-      name: 'targetCurrency',
+      class: 'Reference',
+      name: 'destinationCurrency',
       of: 'net.nanopay.model.Currency',
-      documentation: 'Currency payee will receive.',
-      required: true
+      documentation: `Currency of the account the funds with be deposited into.`,
     },
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       name: 'sourceCurrency',
-      documentation: 'Currency payer will pay with.',
-      of: 'net.nanopay.model.Currency'
+      of: 'net.nanopay.model.Currency',
+      documentation: `Currency of the account the funds with be withdran from.`,
     },
     {
       name: 'iso20022',
     },
     {
-      class: 'Long',
-      name: 'accountId',
-      documentation: 'Target account where invoice payment will go into.'
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'account',
+      aliases: [
+        'sourceAccount'
+      ],
+      documentation: `Invoiced account. The account funds will be withdrawn from.`
     },
     {
       class: 'String',
@@ -289,9 +318,8 @@ foam.CLASS({
     {
       name: 'formatCurrencyAmount',
       code: function(a, e, X) {
-        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
         e.start().style({ 'padding-right': '20px' })
-          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+          .add(X.destinationCurrency + ' ' + X.addCommas((a/100).toFixed(2)))
         .end();
       },
       javaReturns: 'String',
@@ -346,9 +374,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then(function(o) {
-        this.add(o.label());
-      }.bind(this));
+      this.add(obj.payee.label());
     }
   }
 });
@@ -380,9 +406,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then( function(o) {
-        this.add(o.label());
-      }.bind(this));
+      this.add(obj.payer.label());
     }
   }
 });

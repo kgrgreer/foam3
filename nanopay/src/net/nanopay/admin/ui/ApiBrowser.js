@@ -5,15 +5,10 @@ foam.CLASS({
   documentation: 'Show UML & properties for passed in models',
 
   requires: [
-    'foam.doc.ClassList',
     'foam.doc.DocBorder',
+    'foam.doc.ExpandContainer',
     'foam.doc.SimpleClassView',
-    'foam.doc.GetRequestView',
-    'foam.doc.PutRequestView',
-    'foam.doc.ServiceListView',
-    'foam.doc.ExampleRequestView',
-    'foam.doc.ClientServiceView',
-    'foam.doc.ExpandContainer'
+    'foam.doc.ServiceListView'
   ],
 
   imports: [
@@ -83,7 +78,9 @@ foam.CLASS({
     ^ {
       display: flow-root;
       height: auto;
-      width: 700px;
+      width: 900px;
+      background: white;
+      padding: 20px;
       margin: 20px;
     }
     ^ .foam-doc-UMLDiagram{
@@ -105,11 +102,14 @@ foam.CLASS({
     }
     ^ .light-roboto-h2{
       white-space: normal;
-      width: 100%;
+      width: 700px;
+      line-height: 1.3;
+      font-size: 16px;
     }
     ^ .black-box{
       background: #1e1c3a;
       padding: 20px;
+      width: 700px;
     }
     ^ .small-roboto{
       color: white;
@@ -147,6 +147,8 @@ foam.CLASS({
       font-size: 25px;
       margin: 30px 0px;
       font-weight: 500;
+      border-bottom: 1px solid %PRIMARYCOLOR%;
+      width: fit-content;
     }
     ^ .foam-u2-view-TableView td {
       white-space: normal;
@@ -168,6 +170,14 @@ foam.CLASS({
       top: 65px;
       right: 0;
     }
+    ^ .line {
+      height: 10px;
+      background: %PRIMARYCOLOR%;
+      width: 700px;
+    }
+    ^ .foam-u2-view-TableView-foam-doc-PropertyInfo{
+      width: 900px;
+    }
   `,
 
   messages: [
@@ -185,10 +195,23 @@ foam.CLASS({
       this.start()
         .start().addClass(this.myClass())
           .start().addClass('api-browser-container')
-            .start('h2')
+            .start('h1')
               .add(this.Title)
             .end()
-            .tag(this.ExampleRequestView.create())
+            .start()
+              .addClass('line')
+              .style({ 'margin-bottom': '25px;' })
+            .end()
+            .tag({
+              class: 'foam.doc.ExampleRequestView'
+            })
+            .start()
+              .addClass('line')
+              .style({ 'margin-top': '35px;' })
+            .end()
+            .tag({
+              class: 'foam.doc.ServiceTypeDescription'
+            })
             .select(this.AuthenticatedNSpecDAO, function(n) {
               var model = self.parseClientModel(n);
               if ( ! model ) return;
@@ -201,21 +224,27 @@ foam.CLASS({
               .end()
               .tag('Description: ', n.description)
               .callIf(n.boxClass, function() {
-                this.tag(self.ClientServiceView.create({
-                  data: self.parseInterface(n)
-                }));
+                  this.tag({
+                    class: 'foam.doc.ClientServiceView',
+                    data: self.parseInterface(n)
+                  });
               })
               .callIf(! n.boxClass, function() {
-                this.tag(self.SimpleClassView.create({
+                this.tag({
+                  class: 'foam.doc.SimpleClassView',
                   data: model
-                }))
-                .tag(self.GetRequestView.create({ data: n.name }))
-                .tag(self.PutRequestView.create({
+                })
+                .tag({
+                  class: 'foam.doc.GetRequestView',
+                  data: n.name
+                })
+                .tag({
+                  class: 'foam.doc.PutRequestView',
                   data: {
                     n: n,
                     props: dataProps
                   }
-                }));
+                });
               });
             })
           .end()
@@ -233,7 +262,9 @@ foam.CLASS({
               .endContext()
                 .add(this.slot(function(selectedClass) {
                   if ( ! selectedClass ) return '';
-                  return this.SimpleClassView.create({ data: selectedClass });
+                  return this.SimpleClassView.create({
+                    data: selectedClass
+                  });
                 }))
               .end()
             .end()
@@ -270,6 +301,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'ClientServiceView',
@@ -290,6 +322,7 @@ foam.CLASS({
       background: #1e1c3a;
       color: white;
       margin: 20px 0;
+      width: 700px;
       padding: 20px;
     }
     ^ .methodName {
@@ -330,31 +363,129 @@ foam.CLASS({
   ],
 });
 
+
 foam.CLASS({
   package: 'foam.doc',
-  name: 'ServiceMethodView',
+  name: 'ServiceTypeDescription',
   extends: 'foam.u2.View',
+
+  messages: [
+    {
+      name: 'Title',
+      message: 'Service Types'
+    },
+    {
+      name: 'TitleDescription',
+      message: 'Services play multiple roles within the' +
+          ' nanopay system. Available services can be categorized' +
+          ' into 2 types, all of which are detailed below.'
+    },
+    {
+      name: 'InterfaceTitle',
+      message: 'Interface Services'
+    },
+    {
+      name: 'InterfaceDescription',
+      message: 'Services labelled as Interface have methods' +
+          ' that take in arguments which process calls accordingly.' +
+          ' Example: The “exchangeRate” service has a method' +
+          ' “getFromSource” which requires a targetCurrency' +
+          ' (ex: ‘CAD’), sourceCurrency (ex: ‘INR), amount' +
+          ' (ex: 1). As a response, the service will return' +
+          ' an object containing fields correlating to the' +
+          ' arguments provided and providing exchange rates' +
+          ' retrieved from the DAOs and/or third party sources.' +
+          ' (Currently Unsupported)'
+    },
+    {
+      name: 'DAOTitle',
+      message: 'DAO Services'
+    },
+    {
+      name: 'DAODescription',
+      message: 'Services without any specified label are' +
+          ' Data access objects (DAO) which store information on' +
+          ' the system, whether it be in memory or in journal' +
+          ' files. These DAOs are further extended with features' +
+          ' using decorators. The service call is unable to' +
+          ' dictate the functionality of the decorators unless' +
+          ' the appropriate values contained within the data' +
+          'object exist. Most DAOs require authentication and' +
+          ' appropriate permissions enabled on the user' +
+          ' to access and utilize.'
+    },
+    {
+      name: 'ServiceListTitle',
+      message: 'nanopay Service List'
+    },
+    {
+      name: 'ServiceListDescription',
+      message: 'The following list details the services' +
+          ' within the nanopay system, listing each' +
+          ' service name, providing a short' +
+          ' description of its purpose, & providing examples' +
+          ' detailing how to utilize them.'
+    }
+  ],
+
+  css: `
+    ^ {
+      margin-top: 25px;
+    }
+    ^ .subLabel {
+      font-size: 18px;
+      font-weight: bold;
+      color: #18a1a8;
+      margin-bottom: 20px;
+    }
+    ^ .line {
+      height: 10px;
+      background: %PRIMARYCOLOR%;
+      width: 700px;
+    }
+  `,
 
   methods: [
     function initE() {
-      this.start()
-        .forEach(this.data.args, function(a) {
-          console.log('this is the methods args', a);
-        })
+      this.start().addClass(this.myClass())
+        .start('h1')
+          .add(this.Title)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.TitleDescription)
+        .end()
+        .start().addClass('subLabel')
+          .add(this.InterfaceTitle)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.InterfaceDescription)
+        .end()
+        .start().addClass('subLabel')
+          .add(this.DAOTitle)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.DAODescription)
+        .end()
+        .start()
+          .addClass('line')
+          .style({ 'margin-top': '20px;' })
+        .end()
+        .start('h1')
+          .add(this.ServiceListTitle)
+        .end()
+        .start().addClass('light-roboto-h2')
+          .add(this.ServiceListDescription)
+        .end()
       .end();
     }
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'ExampleRequestView',
   extends: 'foam.u2.View',
-
-  requires: [
-    'foam.doc.GetRequestView',
-    'foam.doc.PutRequestView'
-  ],
 
   messages: [
     {
@@ -373,21 +504,35 @@ foam.CLASS({
       message: 'Request and response bodies are JSON encoded. Requests ' +
           'must contain api credentials (email/password provided by nanopay) ' +
           'on the authorization tag. Data contained in the table views ' +
-          'below model details display available properties on the model. ' +
-          'Those that are required are added ' +
-          'to the examples shown on the service call.'
+          'below encompass model details which are associated to the ' +
+          'service. Properties or information required are added ' +
+          'to the examples shown in the curl service call.'
     },
     {
-      name: 'Pacs008ExampleGetLabel',
+      name: 'MakingRequests2nd',
+      message: 'Queries follow the MQL Query Language, a generic ' +
+        'google-like query-language. A link to the MQL documentation ' +
+        'can be found below: '
+    },
+    {
+      name: 'UserExampleGetLabel',
       message: 'Below is an example GET request ' +
-          'to the pacs008ISOPurposeDAO using curl:'
+          'to the publicUserDAO using curl. ' +
+          'This will return all public user information:'
     },
     {
-      name: 'Pacs008ExamplePostLabel',
+      name: 'UserExamplePostLabel',
       message: 'Below is an example POST request ' +
-          'to the pacs008ISOPurposeDAO using curl ' +
+          'to the userDAO using curl. This will create a basic nanopay user. ' +
           '(POST requests can create and update objects):'
-    }
+    },
+    {
+      name: 'QueryExampleGetLabel',
+      message: 'Below is an example of a GET request with a query ' +
+          'to the publicUserDAO using curl. ' +
+          'This will return all public users with the first name ' +
+          '"John" and last name "Doe":'
+    },
   ],
 
   methods: [
@@ -400,32 +545,57 @@ foam.CLASS({
       .end()
       .start().addClass('light-roboto-h2')
         .add(this.MakingRequests).br().br()
-      .end()
+        .add(this.MakingRequests2nd).br()
+      .end().br()
+      .tag({
+        class: 'foam.nanos.dig.LinkView',
+        data: 'https://github.com/foam-framework/foam/wiki/MQL---Query-Language'
+      })
       .start().addClass('light-roboto-h2').addClass('sml')
-        .add(this.Pacs008ExampleGetLabel)
+               .style({ 'margin-top': '45px' })
+        .add(this.UserExampleGetLabel)
       .end()
       .start().addClass('small-roboto')
-        .add(this.GetRequestView.create({
-          data: 'pacs008ISOPurposeDAO'
-        }))
+        .tag({
+          class: 'foam.doc.GetRequestView',
+          data: 'publicUserDAO'
+        })
       .end()
       .start().addClass('light-roboto-h2').addClass('sml')
         .br()
-        .add(this.Pacs008ExamplePostLabel)
+        .add(this.UserExamplePostLabel)
       .end()
       .start().addClass('small-roboto')
-        .add(this.PutRequestView.create({
+        .tag({
+          class: 'foam.doc.PutRequestView',
           data: {
             n: {
-              name: 'pacs008ISOPurposeDAO'
+              name: 'userDAO'
             },
-            props: '"type":"String"'
+            props: '"email":"email@example.com",' +
+                ' "password":"somePassword123", ' +
+                '"firstName":"John", "lastName":"Doe"'
           }
-        }))
+        })
+      .end()
+      .start()
+        .addClass('light-roboto-h2')
+        .addClass('sml')
+        .style({ 'margin-top': '15px' })
+        .add(this.QueryExampleGetLabel)
+      .end()
+      .start().addClass('small-roboto')
+        .tag({
+          class: 'foam.doc.GetRequestView',
+          data: 'publicUserDAO&cmd=select&format=' +
+              'json&q=firstName=John%20AND%20lastName=Doe',
+          appendedLabel: '(Query)'
+        })
       .end();
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
@@ -442,22 +612,27 @@ foam.CLASS({
       expression: function(appConfig) {
         if ( appConfig ) return appConfig.url;
       }
+    },
+    {
+      name: 'appendedLabel'
+    }
+  ],
+
+  messages: [
+    {
+      name: 'Label',
+      message: 'Get Request: '
     }
   ],
 
   methods: [
     function initE() {
-      self = this;
-
       this.addClass(this.myClass())
-      .start().addClass('light-roboto-h2').add('GET Request: ').end()
+      .start().addClass('light-roboto-h2').add(this.appendedLabel, ' ', this.Label).end()
         .start().addClass('black-box')
           .start().addClass('small-roboto')
             .add('curl -X GET').br()
-            .add(this.url$.map(function(a) {
-              return self.E().start()
-                  .add('\'' + a + 'service/dig?dao=' + self.data + '\'');
-            }))
+            .add('\'', this.url$, 'service/dig?dao=', this.data, '\'').br()
             .add('-u \'username/password\'').br()
             .add('-H \'accept: application/json\'').br()
             .add('-H \'cache-control: no-cache\'').br()
@@ -468,6 +643,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',
@@ -487,23 +663,26 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'Label',
+      message: '(Create & Update) POST Request: '
+    }
+  ],
+
   methods: [
     function initE() {
-      var self = this;
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2')
-        .style({ 'margin-top': '25px' })
-        .add('POST Request (Create & Update): ')
+        .style({ 'margin-top': '15px' })
+        .add(this.Label)
       .end()
       .start().addClass('black-box')
         .start().addClass('small-roboto')
           .add('curl -X POST').br()
-          .add(this.url$.map(function(a) {
-            return self.E().start()
-                .add('\'' + a + 'service/dig?dao=' + self.data.n.name + '\'');
-          }))
+          .add('\'', this.url$, 'service/dig?dao=', this.data.n.name, '\'').br()
           .add('-u \'username/password\'').br()
-          .add('-d \'{' + this.data.props + '}' ).br()
+          .add('-d \'{' + this.data.props + '}' + '\'' ).br()
           .add('-H \'accept: application/json\'').br()
           .add('-H \'cache-control: no-cache\'').br()
           .add('-H \'content-type: application/json\'')
@@ -512,6 +691,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.doc',

@@ -22,6 +22,13 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      class: 'String',
+      name: 'fullName',
+      expression: function(firstName, lastName) {
+        return `${firstName} ${lastName}`.trim();
+      }
+    },
+    {
       class: 'EMail',
       name: 'email'
     },
@@ -33,30 +40,6 @@ foam.CLASS({
   ],
   axioms: [
     {
-      writeToSwiftClass: function(cls) {
-        cls.method(foam.swift.Method.create({
-          static: true,
-          name: 'fromUser',
-          returnType: net.nanopay.tx.model.TransactionEntity.model_.swiftName,
-          args: [
-            foam.swift.Argument.create({
-              type: foam.nanos.auth.User.model_.swiftName,
-              localName: 'u',
-            }),
-            foam.swift.Argument.create({
-              type: 'Context',
-              externalName: 'x',
-              localName: 'x',
-              defaultValue: 'Context.GLOBAL',
-            })
-          ],
-          body: `
-            let t = x.create(net_nanopay_tx_model_TransactionEntity.self)!
-            t.copyFrom(u)
-            return t
-          `
-        }))
-      },
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public TransactionEntity(User user) {

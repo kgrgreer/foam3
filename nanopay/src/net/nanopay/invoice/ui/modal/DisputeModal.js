@@ -71,7 +71,7 @@ foam.CLASS({
               .start()
                 .start().addClass('key').add('Amount').end()
                 .start().addClass('value')
-                  .add(this.invoice.targetCurrency.alphabeticCode)
+                  .add(this.invoice.destinationCurrency)
                   .add(' ')
                   .add((this.invoice.amount/100).toFixed(2))
                   .end()
