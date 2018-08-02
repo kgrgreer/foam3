@@ -9,7 +9,7 @@ foam.CLASS({
     'java.security.*',
     'java.nio.file.*',
     'java.nio.charset.Charset',
-    'net.nanopay.security.util.SecurityUtil',
+    'foam.util.SecurityUtil',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey'
   ],
