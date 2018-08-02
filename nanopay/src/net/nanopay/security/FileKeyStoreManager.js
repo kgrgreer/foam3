@@ -96,18 +96,7 @@ return buffer.array();`
       synchronized: true,
       javaCode:
 `try {
-  KeyStore keyStore = KeyStore.getInstance("JCEKS");
-
-  // check for keystore and passphrase file
-  File keyStoreFile = getKeyStoreFile();
-  char[] passphrase = getPassphrase();
-
-  // load keystore file using password
-  try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-    keyStore.load(fis, passphrase);
-  }
-
-  return keyStore.getEntry(alias, new KeyStore.PasswordProtection(passphrase));
+  return getKeyStore().getEntry(alias, new KeyStore.PasswordProtection(getPassphrase()));
 } catch (Throwable t) {
   throw new RuntimeException(t);
 }`
@@ -117,24 +106,13 @@ return buffer.array();`
       synchronized: true,
       javaCode:
 `try {
-  KeyStore keyStore = KeyStore.getInstance("JCEKS");
-
-  // check for keystore and passphrase file
-  File keyStoreFile = getKeyStoreFile();
-  char[] passphrase = getPassphrase();
-
-  // load keystore file using password
-  try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-    keyStore.load(fis, passphrase);
-  }
-
   // store key using keystore passphrase because keystore doesn't
   // allow you to store secret key entry without a passphrase
-  keyStore.setEntry(alias, entry, new KeyStore.PasswordProtection(passphrase));
+  getKeyStore().setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
 
   // save keystore
-  try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
-    keyStore.store(fos, passphrase);
+  try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
+    getKeyStore().store(fos, getPassphrase());
   }
 } catch (Throwable t) {
   throw new RuntimeException(t);
