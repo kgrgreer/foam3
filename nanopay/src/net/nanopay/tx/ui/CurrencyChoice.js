@@ -164,17 +164,15 @@ foam.CLASS({
             .addClass('popUpDropDown')
             .select(this.currencyDAO, function(currency) {
               if ( typeof currency.flagImage === 'string' ) {
-                this
-                  .start('div')
-                    .start('img')
-                      .attrs({ src: currency.flagImage })
-                      .addClass('flag')
-                    .end()
-                    .add(currency.alphabeticCode)
-                    .on('click', function() {
-                      self.chosenCurrency = currency;
-                    })
-                  .end();
+                return this.E()
+                  .start('img')
+                    .attrs({ src: currency.flagImage })
+                    .addClass('flag')
+                  .end()
+                  .add(currency.alphabeticCode)
+                  .on('click', function() {
+                    self.chosenCurrency = currency;
+                  });
               }
             })
           .end();

@@ -29,6 +29,7 @@ var classes = [
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.bank.BankAccount',
@@ -152,6 +153,7 @@ var classes = [
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
+  'net.nanopay.security.FileKeyStoreManagerTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
