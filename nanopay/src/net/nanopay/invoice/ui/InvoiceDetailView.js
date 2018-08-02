@@ -316,8 +316,8 @@ foam.CLASS({
         }
 
         var inv = this.Invoice.create({
-          payerId: this.userList,
-          payeeId: this.user.id,
+          payerId: this.isBill ? this.user.id : this.userList,
+          payeeId: this.isBill ? this.userList : this.user.id,
           createdBy: this.user.id,
           amount: this.data.amount,
           dueDate: offsetDate,
