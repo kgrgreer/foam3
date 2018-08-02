@@ -117,11 +117,12 @@ return buffer.array();`
 `try {
   // store key using keystore passphrase because keystore doesn't
   // allow you to store secret key entry without a passphrase
-  getKeyStore().setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
+  KeyStore keyStore = getKeyStore();
+  keyStore.setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
 
   // save keystore
   try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
-    getKeyStore().store(fos, getPassphrase());
+    keyStore.store(fos, getPassphrase());
   }
 } catch (Throwable t) {
   throw new RuntimeException(t);
