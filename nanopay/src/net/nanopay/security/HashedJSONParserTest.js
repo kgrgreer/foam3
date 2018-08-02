@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'Tests the various functionality of HashedJSONParser',
 
   javaImports: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'org.bouncycastle.util.encoders.Hex'
   ],
 
   axioms: [
@@ -150,7 +151,7 @@ foam.CLASS({
       ],
       javaCode: `
         StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-        HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build());
+        HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
         test(parser.parseString(builder.toString()) != null, algorithm + " chained message digest parsed successfully");
       `
     },
@@ -164,7 +165,7 @@ foam.CLASS({
       javaCode: `
         try {
           StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(previousDigest).build());
+          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
           parser.parseString(builder.toString());
           test(false, "HashedJSONParser should not parse a string with an invalid chained message digest");
         } catch ( Throwable t ) {
