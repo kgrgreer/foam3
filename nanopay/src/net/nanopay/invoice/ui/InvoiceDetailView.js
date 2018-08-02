@@ -302,7 +302,7 @@ foam.CLASS({
           return;
         }
 
-        if ( ! ( dueDate instanceof Date ) ) {
+        if ( ! (dueDate instanceof Date && ! isNaN(dueDate.getTime())) ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
             message: 'Please Enter Valid Due Date yyyy-mm-dd.',
             type: 'error'
