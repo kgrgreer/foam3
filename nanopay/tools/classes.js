@@ -30,6 +30,7 @@ var classes = [
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.bank.BankAccount',
