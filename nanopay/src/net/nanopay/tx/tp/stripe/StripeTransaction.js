@@ -1,9 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.tp.stripe',
-  name: 'StripeTxnProcessorData',
-  implements: [
-    'net.nanopay.tx.tp.TxnProcessorData'
-  ],
+  name: 'StripeTransaction',
+  extends: 'net.nanopay.tx.model.Transaction',
 
   properties: [
     {

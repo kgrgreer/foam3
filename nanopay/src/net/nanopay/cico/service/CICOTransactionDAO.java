@@ -39,9 +39,10 @@ public class CICOTransactionDAO
       return super.put_(x, obj);
     }
 
-    if ( transaction.getPaymentAccountInfo() != null ) {
-      return getDelegate().put_(x, obj);
-    }
+    // REVIEW: commented out for TransactionSubClassRefactor
+    // if ( transaction.getPaymentAccountInfo() != null ) {
+    //   return getDelegate().put_(x, obj);
+    // }
 
     try {
       if ( getDelegate().find_(x, transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);

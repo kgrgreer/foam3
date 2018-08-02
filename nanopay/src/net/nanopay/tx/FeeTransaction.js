@@ -1,9 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'MiscTransaction',
+  name: 'FeeTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
   properties: [
+    {
+      class: 'Long',
+      name: 'associatedTransactionId',
+      visibility: foam.u2.Visibility.RO
+    }
     // {
     //   class: 'Double',
     //   name: 'rate',

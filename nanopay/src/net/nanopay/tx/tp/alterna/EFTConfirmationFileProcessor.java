@@ -93,30 +93,23 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            Transaction tran = (Transaction) transactionDao.find(
+            AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
               EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 
             if ( tran != null ) {
-              tran = (Transaction) tran.fclone();
-              AlternaTxnProcessorData data = (AlternaTxnProcessorData) tran.getTxnProcessorData();
-              if ( data == null ) {
-                data = new AlternaTxnProcessorData();
-              } else {
-                data = (AlternaTxnProcessorData) data.fclone();
-              }
-              data.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+              tran = (AlternaTransaction) tran.fclone();
+              tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
 
 
               if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
                 tran.setStatus(TransactionStatus.FAILED);
-                data.setDescription(eftConfirmationFileRecord.getReason());
+                tran.setDescription(eftConfirmationFileRecord.getReason());
                 sendEmail(x, "Transaction was rejected by EFT confirmation file",
-                  "Transaction id: " + tran.getId() + ", Reason: " + data.getDescription() + ", Confirmation line number: "
+                  "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
                     + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
               } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
                 tran.setStatus(TransactionStatus.SENT);
               }
-              tran.setTxnProcessorData(data);
               transactionDao.put(tran);
             }
           }

@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'ProxyTransaction',
-  //implements: [ 'net.nanopay.tx.Logger' ],
 
   documentation: '',
 

@@ -5,8 +5,6 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
-import net.nanopay.tx.tp.TxnProcessor;
-import net.nanopay.tx.tp.stripe.StripeTxnProcessorData;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -34,40 +32,36 @@ public class StripeTransactionDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    Transaction transaction = (Transaction) obj.fclone();
-    if ( TxnProcessor.STRIPE.equals(transaction.getTxnProcessorId()) ) {
-      transaction.setStatus(TransactionStatus.PENDING);
+    if ( ! ( obj instanceof StripeTransaction ) ) {
+      return super.put_(x, obj);
+    }
+    StripeTransaction transaction = (StripeTransaction) obj.fclone();
+    transaction.setStatus(TransactionStatus.PENDING);
 
-      Map<String, Object> chargeMap = new HashMap<String, Object>();
-      chargeMap.put("amount", transaction.getAmount());
-      chargeMap.put("currency", "cad");
+    Map<String, Object> chargeMap = new HashMap<String, Object>();
+    chargeMap.put("amount", transaction.getAmount());
+    chargeMap.put("currency", "cad");
 
 
-      StripeTxnProcessorData data = (StripeTxnProcessorData) transaction.getTxnProcessorData();
-      if ( data != null ) {
-        chargeMap.put("source", data.getStripeTokenId());
-        chargeMap.put("description", data.getNotes());
-      }
+    chargeMap.put("source", transaction.getStripeTokenId());
+    chargeMap.put("description", transaction.getNotes());
 
-      Charge charge = null;
-      try {
-        charge = Charge.create(chargeMap, this.options_);
-        data.setStripeChargeId(charge.getId());
-      } catch (StripeException e){
-        if(SafetyUtil.isEmpty(e.getMessage()))
-          throw new RuntimeException("Stripe transaction failed.");
-        else
-          throw new RuntimeException(e.getMessage());
-      } finally {
-        if(charge == null)
-          transaction.setStatus(TransactionStatus.DECLINED);
-        else
-          transaction.setStatus(TransactionStatus.COMPLETED);
+    Charge charge = null;
+    try {
+      charge = Charge.create(chargeMap, this.options_);
+      transaction.setStripeChargeId(charge.getId());
+    } catch (StripeException e){
+      if(SafetyUtil.isEmpty(e.getMessage()))
+        throw new RuntimeException("Stripe transaction failed.");
+      else
+        throw new RuntimeException(e.getMessage());
+    } finally {
+      if(charge == null)
+        transaction.setStatus(TransactionStatus.DECLINED);
+      else
+        transaction.setStatus(TransactionStatus.COMPLETED);
 
-        return getDelegate().put_(x, transaction);
-      }
-    } else {
-      return getDelegate().put_(x, obj);
+      return getDelegate().put_(x, transaction);
     }
   }
 }

@@ -97,17 +97,17 @@ foam.CLASS({
       name: 'type',
       visibility: foam.u2.Visibility.RO
     },
-    {
-      class: 'String',
-      name: 'txnProcessorId',
-      label: 'Processor',
-      value: 'NONE'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.tp.TxnProcessorData',
-      name: 'txnProcessorData'
-    },
+    // {
+    //   class: 'String',
+    //   name: 'txnProcessorId',
+    //   label: 'Processor',
+    //   value: 'NONE'
+    // },
+    // {
+    //   class: 'FObjectProperty',
+    //   of: 'net.nanopay.tx.tp.TxnProcessorData',
+    //   name: 'txnProcessorData'
+    // },
     {
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
@@ -231,14 +231,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
-    },
-    {
-      // REVIEW: move to TxnProcessorData
-      documentation: `Payment Platform specific data.`,
-      class: 'FObjectProperty',
-      name: 'paymentAccountInfo',
-      of: 'net.nanopay.cico.model.PaymentAccountInfo'
-    },
+    }
   ],
 
   methods: [

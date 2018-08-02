@@ -13,7 +13,6 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.TxnProcessor;
 
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -129,26 +128,27 @@ public class CsvUtil {
     final DAO  userDAO        = (DAO) x.get("localUserDAO");
 
     Outputter out = new Outputter(o, mode, false);
-    transactionDAO.where(
-      AND(
-        EQ(Transaction.TXN_PROCESSOR_ID, TxnProcessor.ALTERNA), /* TODO: make configuration on CsvUtil */
-        EQ(Transaction.STATUS, TransactionStatus.PENDING),
-        OR(
-            EQ(Transaction.TYPE, TransactionType.CASHIN),
-            EQ(Transaction.TYPE, TransactionType.CASHOUT),
-            EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
-            EQ(Transaction.TYPE, TransactionType.VERIFICATION)
-        )
-      )
-    ).select(new AbstractSink() {
+    transactionDAO
+      .where(
+             AND(
+                 INSTANCE_OF(AlternaTransaction.class),
+                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                 OR(
+                    EQ(Transaction.TYPE, TransactionType.CASHIN),
+                    EQ(Transaction.TYPE, TransactionType.CASHOUT),
+                    EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
+                    EQ(Transaction.TYPE, TransactionType.VERIFICATION)
+                    )
+                 )
+             )
+      .select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
         try {
           User user;
           String txnType;
           String refNo;
-          Transaction t = (Transaction) obj;
-          t = (Transaction) t.fclone();
+          AlternaTransaction t = (AlternaTransaction) ((AlternaTransaction) obj).fclone();
 
           BankAccount bankAccount = null;
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
@@ -175,17 +175,13 @@ public class CsvUtil {
           refNo = String.valueOf(t.getId());
 
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
-          AlternaTxnProcessorData procData = (AlternaTxnProcessorData) t.getTxnProcessorData();
-          if ( procData == null ) {
-            procData = new AlternaTxnProcessorData();
-          }
           AlternaFormat alternaFormat = new AlternaFormat();
           // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if ( ! SafetyUtil.isEmpty(procData.getPadType()) ) {
-            alternaFormat.setPadType(procData.getPadType());
+          if ( ! SafetyUtil.isEmpty(t.getPadType()) ) {
+            alternaFormat.setPadType(t.getPadType());
           }
           else {
-            procData.setPadType(alternaFormat.getPadType());
+            t.setPadType(alternaFormat.getPadType());
           }
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
@@ -197,10 +193,10 @@ public class CsvUtil {
           alternaFormat.setTxnType(txnType);
 
           //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if ( ! SafetyUtil.isEmpty(procData.getTxnCode()) ) {
-            alternaFormat.setTxnCode(procData.getTxnCode());
+          if ( ! SafetyUtil.isEmpty(t.getTxnCode()) ) {
+            alternaFormat.setTxnCode(t.getTxnCode());
           } else {
-            procData.setTxnCode(alternaFormat.getTxnCode());
+            t.setTxnCode(alternaFormat.getTxnCode());
           }
 
           alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
@@ -213,7 +209,6 @@ public class CsvUtil {
           if (t.getCompletionDate() == null) {
             t.setCompletionDate(generateCompletionDate(x, now));
           }
-          t.setTxnProcessorData(procData);
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
