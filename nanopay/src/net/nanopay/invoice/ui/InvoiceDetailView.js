@@ -23,6 +23,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.notification.NewInvoiceNotification'
@@ -94,7 +95,7 @@ foam.CLASS({
       },
       postSet: function(ov, nv) {
         var self = this;
-        this.userDAO.find(nv).then(function(u) {
+        this.publicUserDAO.find(nv).then(function(u) {
           self.selectedUser = u;
         });
       }
@@ -218,8 +219,9 @@ foam.CLASS({
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
-            .start().show(this.selectedUser$.map(function(a) {
-              return a.emailVerified;
+            .start().show(this.selectedUser$.map((a) => {
+              this.selectedUser.status = this.AccountStatus.ACTIVE;
+              return this.PublicUserInfo.isInstance(a);
             }))
               .tag({
                 class: 'net.nanopay.ui.BusinessCard',

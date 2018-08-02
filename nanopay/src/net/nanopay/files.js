@@ -122,8 +122,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
-  //{ name: 'net/nanopay/tx/UserDestinationTransactionDAO' },
-  //{ name: 'net/nanopay/tx/UserSourceTransactionDAO' },
+  // { name: 'net/nanopay/tx/UserDestinationTransactionDAO' },
+  // { name: 'net/nanopay/tx/UserSourceTransactionDAO' },
 
   { name: 'net/nanopay/model/Broker' },
 
@@ -280,6 +280,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
   { name: 'net/nanopay/security/HashingWriterTest' },
+  { name: 'net/nanopay/security/FileKeyStoreManagerTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -330,6 +331,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/UserTopNavView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/UserView', flags: ['web'] },
   { name: 'net/nanopay/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },
   { name: 'net/nanopay/ui/Placeholder', flags: ['web'] },

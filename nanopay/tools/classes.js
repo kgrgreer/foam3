@@ -156,6 +156,7 @@ var classes = [
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
+  'net.nanopay.security.FileKeyStoreManagerTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
