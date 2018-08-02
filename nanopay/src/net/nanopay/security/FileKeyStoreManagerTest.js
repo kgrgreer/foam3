@@ -19,20 +19,20 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         // constructor tests
-        // FileKeyStoreManager_WithDefaultPaths_Initializes();
+        FileKeyStoreManager_WithDefaultPaths_Initializes();
 
         // path tests
-        // FileKeyStoreManager_RetrieveCorrectKeyStoreFileFromPath();
-        // FileKeyStoreManager_RetrieveCorrectPassphraseFileFromPath();
+        FileKeyStoreManager_RetrieveCorrectKeyStoreFileFromPath();
+        FileKeyStoreManager_RetrieveCorrectPassphraseFileFromPath();
 
         // passphrase tests
-        // FileKeyStoreManager_CheckRetrievalOfPassphrase();
+        FileKeyStoreManager_CheckRetrievalOfPassphrase();
 
         // keystore tests
         FileKeyStoreManager_CheckRetrievalOfKeyStore();
 
         // store and load tests
-        // FileKeyStoreManager_CheckLoadingAndStoringOfKeys();
+        FileKeyStoreManager_CheckLoadingAndStoringOfKeys();
       `
     },
     {
@@ -122,41 +122,39 @@ foam.CLASS({
         FileKeyStoreManager keyStoreManager = new FileKeyStoreManager();
 
         try {
-          System.out.println("Dhiren debug works?" + keyStoreManager.getKeyStore().size());
-          System.exit(0);
-          // KeyStore keyStore = KeyStore.getInstance("JCEKS");
-          //
-          // File keyStoreFile = keyStoreManager.getKeyStoreFile();
-          // char[] passphrase = keyStoreManager.getPassphrase();
-          //
-          // try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-          //   keyStore.load(fis, passphrase);
-          // }
-          //
-          // test(keyStore.size() == keyStoreManager.getKeyStore().size(), "Keystore file correctly read and has the same number of entries.");
+           KeyStore keyStore = KeyStore.getInstance("JCEKS");
+
+           File keyStoreFile = keyStoreManager.getKeyStoreFile();
+           char[] passphrase = keyStoreManager.getPassphrase();
+
+           try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
+             keyStore.load(fis, passphrase);
+           }
+
+           test(keyStore.size() == keyStoreManager.getKeyStore().size(), "Keystore file correctly read and has the same number of entries.");
         } catch ( Throwable t ) {
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
-        //
-        // keyStoreManager = new FileKeyStoreManager();
-        //
-        // //creating an invalid passphrase
-        // List<String> lines = Arrays.asList("invalid passphrase");
-        // Path file = Paths.get("/tmp/nanopay/passphrase");
-        // try {
-        //   Files.write(file, lines, Charset.forName("UTF-8"));
-        // } catch ( Throwable t ) {
-        //   test(false, "Error :: Cannot write to /tmp/nanopay.");
-        // }
-        //
-        // keyStoreManager.setPassphrasePath("/tmp/nanopay/passphrase");
-        //
-        // try{
-        //   keyStoreManager.getKeyStore();
-        //   test(false, "With an invalid path, getKeyStore should throw a RuntimeException.");
-        // } catch ( Throwable t ) {
-        //   test(t instanceof RuntimeException, "With an invalid path, getKeyStore() should throw a RuntimeException.");
-        // }
+
+         keyStoreManager = new FileKeyStoreManager();
+
+         //creating an invalid passphrase
+         List<String> lines = Arrays.asList("invalid passphrase");
+         Path file = Paths.get("/tmp/nanopay/passphrase");
+         try {
+           Files.write(file, lines, Charset.forName("UTF-8"));
+         } catch ( Throwable t ) {
+           test(false, "Error :: Cannot write to /tmp/nanopay.");
+         }
+
+         keyStoreManager.setPassphrasePath("/tmp/nanopay/passphrase");
+
+         try{
+           keyStoreManager.getKeyStore();
+           test(false, "With an invalid path, getKeyStore should throw a RuntimeException.");
+         } catch ( Throwable t ) {
+           test(t instanceof RuntimeException, "With an invalid path, getKeyStore() should throw a RuntimeException.");
+         }
       `
     },
     {

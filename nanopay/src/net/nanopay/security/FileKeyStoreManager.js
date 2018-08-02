@@ -81,9 +81,18 @@ return buffer.array();`
   File keyStoreFile = getKeyStoreFile();
   char[] passphrase = getPassphrase();
 
-  // load keystore file using password
-  try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-    keyStore.load(fis, passphrase);
+  if ( ! keyStoreFile.exists() || keyStoreFile.length() == 0 ) {
+    // create keystore file using password
+    try ( FileOutputStream fos = new FileOutputStream(keyStoreFile) ) {
+      // keystore must be "loaded" before it can be created
+      keyStore.load(null, passphrase);
+      keyStore.store(fos, passphrase);
+    }
+  } else {
+    // load keystore file using password
+    try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
+      keyStore.load(fis, passphrase);
+    }
   }
 
   return keyStore;
