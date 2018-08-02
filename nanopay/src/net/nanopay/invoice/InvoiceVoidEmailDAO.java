@@ -9,6 +9,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 
@@ -37,7 +38,7 @@ public class InvoiceVoidEmailDAO
       return getDelegate().put_(x, obj);
 
     // Makes sure an email isn't sent if the creator is the payer of the invoice
-    if ( invoice.getPayerId().equals((Long) invoice.getCreatedBy()) )
+    if (SafetyUtil.compare(invoice.getPayerId(),invoice.getCreatedBy()) == 0 )
       return getDelegate().put_(x, obj);
 
     invoice = (Invoice) super.put_(x , obj);

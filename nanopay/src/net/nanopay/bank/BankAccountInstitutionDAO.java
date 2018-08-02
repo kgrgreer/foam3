@@ -42,18 +42,18 @@ public class BankAccountInstitutionDAO
 
     BankAccount bankAccount = (BankAccount) obj;
     Institution institution = bankAccount.findInstitution(x);
-    if ( institution == null ) {
+    if ( institution == null && ! foam.util.SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       List institutions = ((ArraySink) institutionDAO
                            .where(
-                                  EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitution())
+                                  EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitutionNumber())
                                   )
                            .select(new ArraySink())).getArray();
 
       if ( institutions.size() == 0 ) {
         institution = new Institution();
-        institution.setName(String.valueOf(bankAccount.getInstitution()));
-        institution.setInstitutionNumber(String.valueOf(bankAccount.getInstitution()));
+        institution.setName(bankAccount.getInstitutionNumber());
+        institution.setInstitutionNumber(bankAccount.getInstitutionNumber());
         institution = (Institution) institutionDAO.put(institution);
       } else {
         institution = (Institution) institutions.get(0);
@@ -70,13 +70,14 @@ public class BankAccountInstitutionDAO
         ((DAO) x.get("notificationDAO")).put(notification);
         ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
      } else if ( institutions.size() > 1 ) {
-        String message = "Multiple Institutions found for institutionNumber: "+bankAccount.getInstitution()+"\n Using "+institution.getId()+" on BankAccount: "+bankAccount.getId();
+        String message = "Multiple Institutions found for institutionNumber: "+bankAccount.getInstitution()+". Using "+institution.getId()+" on BankAccount: "+bankAccount.getId();
         Notification notification = new Notification.Builder(x)
           .setTemplate("NOC")
           .setBody(message)
           .build();
         ((DAO) x.get("notificationDAO")).put(notification);
         ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+        ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "institutions", institutions);
       }
       return bankAccount;
     } else {

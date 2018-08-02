@@ -34,47 +34,47 @@ public class BankAccountValidator
 
   @Override
   public void validate(FObject obj) throws IllegalStateException {
-    if ( ! (obj instanceof BankAccount) ) {
-      throw new IllegalStateException("Invalid bank account");
-    }
-
-    BankAccount account = (BankAccount) obj;
-
-    // validate account name
-    String name = account.getName();
-    if ( SafetyUtil.isEmpty(name) ) {
-      throw new IllegalStateException("Please enter an account name.");
-    }
-
-    if ( name.length() > 70 ) {
-      throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
-    }
-
-    // validate account number
-    String accountNumber = account.getAccountNumber();
-    if ( SafetyUtil.isEmpty(accountNumber) ) {
-      throw new IllegalStateException("Please enter an account number.");
-    }
-
-    if ( ! ACCOUNT_NUMBER.matcher(accountNumber).matches() ) {
-      throw new IllegalStateException("Invalid account number.");
-    }
-
-    // validate transit number
-    if ( account.getBranch() == null || ((Branch)account.getBranch()).getId() == 0 ) {
-      throw new IllegalStateException("Please enter a branch number");
-    }
-
-    if ( ! TRANSIT_NUMBER.matcher(String.valueOf(((Branch)account.getBranch()).getBranchId())).matches() ) {
-      throw new IllegalStateException("Invalid branch.");
-    }
-
-  if ( account.getInstitution() == null || ((Institution)account.getInstitution()).getId() == 0 ) {
-      throw new IllegalStateException("Please enter an institution number");
-    }
-
-  if ( ! INSTITUTION_NUMBER.matcher(String.valueOf(((Institution)account.getInstitution()).getInstitutionNumber())).matches() ) {
-      throw new IllegalStateException("Invalid institution number.");
-    }
+//    if ( ! (obj instanceof BankAccount) ) {
+//      throw new IllegalStateException("Invalid bank account");
+//    }
+//
+//    BankAccount account = (BankAccount) obj;
+//
+//    // validate account name
+//    String name = account.getName();
+//    if ( SafetyUtil.isEmpty(name) ) {
+//      throw new IllegalStateException("Please enter an account name.");
+//    }
+//
+//    if ( name.length() > 70 ) {
+//      throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
+//    }
+//
+//    // validate account number
+//    String accountNumber = account.getAccountNumber();
+//    if ( SafetyUtil.isEmpty(accountNumber) ) {
+//      throw new IllegalStateException("Please enter an account number.");
+//    }
+//
+//    if ( ! ACCOUNT_NUMBER.matcher(accountNumber).matches() ) {
+//      throw new IllegalStateException("Invalid account number.");
+//    }
+//
+//    // validate transit number
+//    if ( account.findBranch() == null || account.getBranch() == 0 ) {
+//      throw new IllegalStateException("Please enter a branch number");
+//    }
+//
+//    if ( ! TRANSIT_NUMBER.matcher(String.valueOf(account.getBranch())).matches() ) {
+//      throw new IllegalStateException("Invalid branch.");
+//    }
+//
+//  if ( account.findBranch() == null || account.getInstitution() == 0 ) {
+//      throw new IllegalStateException("Please enter an institution number");
+//    }
+//
+//  if ( ! INSTITUTION_NUMBER.matcher(String.valueOf(account.getInstitution())).matches() ) {
+//      throw new IllegalStateException("Invalid institution number.");
+//    }
   }
 }

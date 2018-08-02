@@ -10,9 +10,9 @@ foam.CLASS({
   imports: [
     'hideReceivableSummary',
     'notificationDAO',
+    'publicUserDAO',
     'recurringInvoiceDAO',
     'stack',
-    'userDAO',
     'user'
   ],
 
@@ -24,7 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.User',
+    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.notification.NewInvoiceNotification'
   ],
@@ -69,14 +69,11 @@ foam.CLASS({
       name: 'userList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.userDAO.where(X.data.AND(
-            X.data.NEQ(X.data.User.ID, X.user.id),
-            // only retrieve the active users
-            X.data.EQ(X.data.User.STATUS, 'ACTIVE')
-          )),
+          dao: X.publicUserDAO.where(X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)),
           placeholder: 'Please Select Customer',
           objToChoice: function(user) {
-            var username = user.businessName || user.organization;
+            var username = user.businessName || user.organization ||
+                user.label();
             return [user.id, username + ' - (' + user.email + ')'];
           }
         });
@@ -287,9 +284,7 @@ foam.CLASS({
           return;
         }
 
-        // By pass for safari & mozilla type='date' on input support
-        // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        if ( isNaN(dueDate) && dueDate != null ) {
+        if ( ! ( dueDate instanceof Date ) ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
             message: 'Please Enter Valid Due Date yyyy-mm-dd.',
             type: 'error'

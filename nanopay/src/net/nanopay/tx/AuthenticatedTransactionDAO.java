@@ -47,7 +47,11 @@ public class AuthenticatedTransactionDAO
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! TransactionType.REQUEST.equals(t.getType()) && oldTxn == null ) {
+    if ( t.findSourceAccount(x) != null ) {
+      if (((Long) t.findSourceAccount(x).getOwner()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
+        throw new RuntimeException("User is not the payer");
+      }
+    } else if (((Long) t.getPayerId()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
       throw new RuntimeException("User is not the payer");
     }
 
@@ -64,7 +68,7 @@ public class AuthenticatedTransactionDAO
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
-    if ( t != null && ((Long)t.findDestinationAccount(x).getOwner()).longValue() != user.getId() && ((Long)t.findSourceAccount(x).getOwner()).longValue() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t != null && t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
 
@@ -82,9 +86,7 @@ public class AuthenticatedTransactionDAO
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
 
-    User userClone = (User) user.fclone();
-    userClone.setX(x);
-    ArraySink arraySink = (ArraySink) userClone.getAccounts().select(new ArraySink());
+    ArraySink arraySink = (ArraySink) user.accounts(x).select(new ArraySink());
     List accountsArray =  arraySink.getArray();
     Long[] ids = new Long[accountsArray.size()];
     for (int i =0; i < accountsArray.size(); i++)

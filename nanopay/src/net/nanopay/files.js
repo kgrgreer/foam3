@@ -8,6 +8,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
+  { name: 'net/nanopay/account/DigitalAccountInfo' },
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
@@ -222,8 +223,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceDashboardView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/PayableSummaryView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/ReceivableSummaryView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/InvoiceSummaryView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/MentionsView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SummaryCard', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/shared/ActionInterfaceButton', flags: ['web'] },
@@ -338,6 +338,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
+  { name: 'net/nanopay/ui/GSDashboard', flags: ['web'] },
+
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

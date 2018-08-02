@@ -36,8 +36,12 @@ function install {
     fi
     cd ..
 
-    setenv
     set_doc_base
+
+    if [[ $IS_MAC -eq 1 ]]; then
+        mkdir -p "$NANOPAY_HOME/journals"
+        mkdir -p "$NANOPAY_HOME/logs"
+    fi
 
     # git hooks
     git config core.hooksPath .githooks
@@ -228,8 +232,8 @@ function deploy_journals {
     touch "$JOURNALS"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
 
-    if [ ! -f $JOURNALS ]; then
-        echo "ERROR: missing $JOURNALS file."
+    if [[ ! -f $JOURNALS ]]; then
+        echo "ERROR :: Missing $JOURNALS file."
         exit 1
     fi
 
@@ -310,9 +314,11 @@ function shutdown_tomcat {
     fi
 
     backup
-    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 ]]; then
-        rmdir "$JOURNAL_HOME"
-        mkdir -p "$JOURNAL_HOME"
+    if [[ $IS_MAC -eq 1 ]]; then
+        if [[ $DELETE_RUNTIME_JOURNALS -eq 1 ]]; then
+            rmdir "$JOURNAL_HOME"
+            mkdir -p "$JOURNAL_HOME"
+        fi
     fi
 }
 
@@ -366,10 +372,70 @@ function beginswith {
     case $2 in "$1"*) true;; *) false;; esac;
 }
 
+function setup_catalina_env {
+  export CATALINA_PID="/tmp/catalina_pid"
+  touch "$CATALINA_PID"
+
+  # Handle old machines which have CATALINA_HOME defined
+  if [ -n "$CATALINA_HOME" ]; then
+      if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
+          LOG_HOME="$CATALINA_HOME/logs"
+      fi
+  fi
+
+  while [ -z "$CATALINA_HOME" ]; do
+      #printf "Searching for catalina... "
+      testcatalina /Library/Tomcat
+      if [ ! -z "$CATALINA_HOME" ]; then
+          # local development
+          LOG_HOME="$CATALINA_HOME/logs"
+          break
+      fi
+      testcatalina /opt/tomcat
+      if [ ! -z "$CATALINA_HOME" ]; then
+          # TODO: place on S3 mount
+          break;
+      fi
+      testcatalina "$HOME/tools/tomcat"
+      if [ ! -z "$CATALINA_HOME" ]; then
+          break
+      fi
+      printf "CATALINA_HOME not found.\n"
+      printf "Set CATALINA_HOME environment variable to the location of Tomcat."
+      exit 1
+  done
+
+  if [ -z "$CATALINA_BASE" ]; then
+      export CATALINA_BASE="$CATALINA_HOME"
+  fi
+  if [ -z "$CATALINA_PORT_HTTP" ]; then
+      export CATALINA_PORT_HTTP=8080
+  fi
+  if [ -z "$CATALINA_PORT_HTTPS" ]; then
+      export CATALINA_PORT_HTTPS=8443
+  fi
+  if [ -z "$CATALINA_DOC_BASE" ]; then
+      export CATALINA_DOC_BASE="$PROJECT_HOME"
+  fi
+
+  if [ -z "$CATALINA_OPTS" ]; then
+      export CATALINA_OPTS=""
+  fi
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
+}
+
 function setenv {
 
     if [ -z "$NANOPAY_HOME" ]; then
         export NANOPAY_HOME="/opt/nanopay"
+    fi
+
+    if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
+        echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
+        set +e
+        exit 1
     fi
 
     if [ -z "$LOG_HOME" ]; then
@@ -380,16 +446,7 @@ function setenv {
 
     export JOURNAL_OUT="$PROJECT_HOME"/target/journals
 
-    if [[ -z $JOURNAL_HOME ]]; then
-       export JOURNAL_HOME="$PROJECT_HOME/journals"
-
-       if [[ $TEST -eq 1 ]]; then
-         rmdir /tmp/nanopay
-         mkdir /tmp/nanopay
-         JOURNAL_HOME=/tmp/nanopay
-         echo "INFO :: Cleaned up temporary journal files."
-       fi
-    fi
+    export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
         PROJECT_HOME=/pkg/stack/stage/NANOPAY
@@ -397,62 +454,43 @@ function setenv {
         cwd=$(pwd)
         npm install
 
+        mkdir -p "$NANOPAY_HOME"
+
         # Production use S3 mount
-        export JOURNAL_HOME=/mnt/journals
+        if [[ -d "/mnt/journals" ]]; then
+            ln -s "$JOURNAL_HOME" "/mnt/journals"
+        else
+            mkdir -p "$JOURNAL_HOME"
+        fi
 
         CLEAN_BUILD=1
         IS_AWS=1
+
+        mkdir -p "$LOG_HOME"
+    elif [[ $IS_MAC -eq 1 ]]; then
+        # transition support until next build.sh -i
+        if [[ ! -d "$JOURNAL_HOME" ]]; then
+            JOURNAL_HOME="$PROJECT_HOME/journals"
+            mkdir -p $JOURNAL_HOME
+            mkdir -p $LOG_HOME
+        fi
+    else
+        # linux
+        mkdir -p $JOURNAL_HOME
+        mkdir -p $LOG_HOME
     fi
 
-    export CATALINA_PID="/tmp/catalina_pid"
-    touch "$CATALINA_PID"
+    if [[ $TEST -eq 1 ]]; then
+        rmdir /tmp/nanopay
+        mkdir /tmp/nanopay
+        JOURNAL_HOME=/tmp/nanopay
+        mkdir -p $JOURNAL_HOME
+        echo "INFO :: Cleaned up temporary journal files."
+    fi
 
-    # Handle old machines which have CATALINA_HOME defined
-    if [ -n "$CATALINA_HOME" ]; then
-        if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
-            LOG_HOME="$CATALINA_HOME/logs"
-        fi
+    if [[ $RUN_NANOS -eq 0 && $TEST -eq 0 ]]; then
+        setup_catalina_env
     fi
-    while [ -z "$CATALINA_HOME" ]; do
-        #printf "Searching for catalina... "
-        testcatalina /Library/Tomcat
-        if [ ! -z "$CATALINA_HOME" ]; then
-            # local development
-            LOG_HOME="$CATALINA_HOME/logs"
-            break
-        fi
-        testcatalina /opt/tomcat
-        if [ ! -z "$CATALINA_HOME" ]; then
-            # TODO: place on S3 mount
-            break;
-        fi
-        testcatalina "$HOME/tools/tomcat"
-        if [ ! -z "$CATALINA_HOME" ]; then
-            break
-        fi
-        printf "CATALINA_HOME not found.\n"
-        printf "Set CATALINA_HOME environment variable to the location of Tomcat."
-        exit 1
-    done
-
-    if [ -z "$CATALINA_BASE" ]; then
-        export CATALINA_BASE="$CATALINA_HOME"
-    fi
-    if [ -z "$CATALINA_PORT_HTTP" ]; then
-        export CATALINA_PORT_HTTP=8080
-    fi
-    if [ -z "$CATALINA_PORT_HTTPS" ]; then
-        export CATALINA_PORT_HTTPS=8443
-    fi
-    if [ -z "$CATALINA_DOC_BASE" ]; then
-        export CATALINA_DOC_BASE="$PROJECT_HOME"
-    fi
-    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
-        # remove journal file that find.sh was creating
-        rm "$JOURNAL_HOME"
-    fi
-    mkdir -p "$JOURNAL_HOME"
-    mkdir -p "$LOG_HOME"
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
@@ -463,18 +501,11 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
-    if [ -z "$CATALINA_OPTS" ]; then
-        export CATALINA_OPTS=""
-    fi
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
-
     # keystore
     if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
         cd "$PROJECT_HOME"
-        printf "generating keystore\n"
-        sudo ./tools/keystore.sh
+        printf "INFO :: Generating keystore...\n"
+        ./tools/keystore.sh
     fi
 
     local MACOS='darwin*'
@@ -551,12 +582,14 @@ while getopts "bcdfhijmnrst" opt ; do
     esac
 done
 
-if [ "$INSTALL" -eq 1 ]; then
+setenv
+
+if [[ $INSTALL -eq 1 ]]; then
     install
+    # Unset error on exit
+    set +e
     exit 0
 fi
-
-setenv
 
 if [[ $TEST -eq 1 ]]; then
   echo "INFO :: Running all tests..."
@@ -570,7 +603,7 @@ elif [ "$BUILD_ONLY" -eq 1 ]; then
     deploy_journals
 elif [ "$STOP_TOMCAT" -eq 1 ]; then
     shutdown_tomcat
-    printf "Tomcat stopped.\n"
+    printf "INFO :: Tomcat stopped...\n"
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
 else

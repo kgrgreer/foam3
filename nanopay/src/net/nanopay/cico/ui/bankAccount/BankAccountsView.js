@@ -21,6 +21,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -149,7 +151,9 @@ foam.CLASS({
               this.AND(
                 this.EQ(this.BankAccount.OWNER, this.user.id),
                 // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
-                this.EQ(this.BankAccount.TYPE, this.BankAccount.name)));
+                this.OR(
+                  this.EQ(this.Account.TYPE, this.BankAccount.name),
+                  this.EQ(this.Account.TYPE, this.CABankAccount.name))));
         dao.of = this.BankAccount;
         return dao;
       }
@@ -297,7 +301,9 @@ foam.CLASS({
                   this.AND(
                     this.EQ(this.BankAccount.OWNER, this.user.id),
                     // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
-                    this.EQ(this.BankAccount.TYPE, this.BankAccount.name)));
+                    this.OR(
+                      this.EQ(this.Account.TYPE, this.BankAccount.name),
+                      this.EQ(this.Account.TYPE, this.CABankAccount.name))));
             dao.of = this.BankAccount;
             return dao;
           }
