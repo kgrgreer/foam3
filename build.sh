@@ -131,7 +131,7 @@ function shutdown_tomcat {
     #
     # Don't call shutdown.sh if the pid doesn't exists, it will exit.
     #
-    PID="$(cat "$CATALINA_PID")"
+    PID=$(test -f "$CATALINA_PID" && cat "$CATALINA_PID")
     if [ ! -z "${PID}" ]; then
         if ps -p "${PID}" | grep -q 'java'; then
             "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
@@ -316,9 +316,7 @@ function setenv {
         echo "INFO :: Cleaned up temporary journal files."
     fi
 
-    if [[ $RUN_NANOS -eq 0 && $TEST -eq 0 ]]; then
-        setup_catalina_env
-    fi
+    setup_catalina_env
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
