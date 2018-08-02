@@ -8,8 +8,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'selection',
-    'dblclick'
+    'dblclick',
+    'selection'
   ],
 
   properties: [
@@ -31,9 +31,8 @@ foam.CLASS({
     function dblclick(user) {
       this.stack.push({
         class: 'net.nanopay.auth.ui.UserDetailView',
-        data: user
+        user: user
       });
     }
   ],
-
 });
