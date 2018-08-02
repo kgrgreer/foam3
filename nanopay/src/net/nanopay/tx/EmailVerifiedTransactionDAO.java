@@ -25,7 +25,7 @@ public class EmailVerifiedTransactionDAO
     User user = null;
     Account account = (Account) transaction.findSourceAccount(x);
     if ( account != null ) {
-      user = (User) userDAO_.find_(x, account.findOwner(x));
+      user = (User) ((DAO)x.get("localUserDAO")).find_(x, account.getOwner());
     } else {
       Logger logger = (Logger) x.get("logger");
       logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount());
