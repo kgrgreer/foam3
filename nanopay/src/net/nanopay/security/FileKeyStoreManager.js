@@ -51,29 +51,13 @@ if ( ! file.exists() ) {
   throw new RuntimeException("Passphrase file does not exit.");
 }
 return file;`
-    }
-  ],
-
-  methods: [
-    {
-      name: 'getPassphrase',
-      javaReturns: 'char[]',
-      javaThrows: [
-        'java.io.IOException'
-      ],
-      javaCode:
-`File passphraseFile = getPassphraseFile();
-CharBuffer buffer = CharBuffer.allocate(32);
-try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-    new FileInputStream(passphraseFile), StandardCharsets.UTF_8))) {
-  reader.read(buffer);
-}
-return buffer.array();`
     },
     {
-      name: 'getKeyStore',
-      synchronized: true,
-      javaCode:
+      class: 'Object',
+      name: 'keyStore',
+      documentation: 'Keystore file where all of the keys are stored.',
+      javaType: 'java.security.KeyStore',
+      javaFactory:
 `try {
   KeyStore keyStore = KeyStore.getInstance("JCEKS");
 
@@ -99,6 +83,24 @@ return buffer.array();`
 } catch (Throwable t) {
   throw new RuntimeException(t);
 }`
+    },
+  ],
+
+  methods: [
+    {
+      name: 'getPassphrase',
+      javaReturns: 'char[]',
+      javaThrows: [
+        'java.io.IOException'
+      ],
+      javaCode:
+`File passphraseFile = getPassphraseFile();
+CharBuffer buffer = CharBuffer.allocate(32);
+try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+    new FileInputStream(passphraseFile), StandardCharsets.UTF_8))) {
+  reader.read(buffer);
+}
+return buffer.array();`
     },
     {
       name: 'loadKey',

@@ -161,11 +161,10 @@ foam.CLASS({
       name: 'FileKeyStoreManager_CheckLoadingAndStoringOfKeys',
       javaCode: `
         FileKeyStoreManager keyStoreManager = new FileKeyStoreManager();
-        System.out.println("Dhiren debug: 29");
+
         int check = 0;
         try {
           check = keyStoreManager.getKeyStore().size();
-          System.out.println("Dhiren debug: 30");
         } catch ( Throwable t ) {
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
@@ -174,15 +173,13 @@ foam.CLASS({
         try {
           // generate secret key
           KeyGenerator keygen = KeyGenerator.getInstance("AES");
-          System.out.println("Dhiren debug: 31");
           keygen.init(256, SecurityUtil.GetSecureRandom());
-          System.out.println("Dhiren debug: 32");
+
           // store secret key
           key = keygen.generateKey();
-          System.out.println("Dhiren debug: 33");
           keyStoreManager.storeKey("secretKeyShhh", new KeyStore.SecretKeyEntry(key));
-          System.out.println("Dhiren debug: 34");
-          test(++check == keyStoreManager.getKeyStore().size(), "Keystore stores keys correctly.");
+
+          test((check+1) == keyStoreManager.getKeyStore().size(), "Keystore stores keys correctly.");
         } catch (RuntimeException re) {
           re.printStackTrace();
           test(false, "FileKeyStoreManager storeKey should not be throwing exception with the default secret key setup.");
