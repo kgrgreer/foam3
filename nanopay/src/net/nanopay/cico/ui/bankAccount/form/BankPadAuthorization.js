@@ -227,25 +227,25 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Step1',                message: 'Step ' },
-    { name: 'Step2',                message: ' :Pre-authorized debit confirmation' },
-    { name: 'LabelFirstName',       message: 'First Name' },
-    { name: 'LabelLastName',        message: 'Last Name' },
-    { name: 'LabelCountry',         message: 'Country' },
-    { name: 'LabelStreetNumber',    message: 'Street Number' },
-    { name: 'LabelStreetName',      message: 'Street Name' },
-    { name: 'LabelAddress2',         message: 'Address 2 (optional)' },
-    { name: 'Address2Hint',          message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'LabelCity',            message: 'City' },
-    { name: 'LabelRegion',          message: 'Region' },
-    { name: 'LabelPostal',          message: 'Postal Code' },
-    { name: 'LabelAccount',         message: 'Account Number' },
-    { name: 'LabelInstitute',       message: 'Institution Number' },
-    { name: 'LabelTransit',         message: 'Transit Number' },
-    { name: 'TC1',                  message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
-    { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit '},
-    { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting '},
-    { name: 'link',                 message: 'www.payments.ca.'},
+    { name: 'Step1', message: 'Step ' },
+    { name: 'Step2', message: ' :Pre-authorized debit confirmation' },
+    { name: 'LabelFirstName', message: 'First Name' },
+    { name: 'LabelLastName', message: 'Last Name' },
+    { name: 'LabelCountry', message: 'Country' },
+    { name: 'LabelStreetNumber', message: 'Street Number' },
+    { name: 'LabelStreetName', message: 'Street Name' },
+    { name: 'LabelAddress2', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
+    { name: 'LabelCity', message: 'City' },
+    { name: 'LabelRegion', message: 'Region' },
+    { name: 'LabelPostal', message: 'Postal Code' },
+    { name: 'LabelAccount', message: 'Account Number' },
+    { name: 'LabelInstitute', message: 'Institution Number' },
+    { name: 'LabelTransit', message: 'Transit Number' },
+    { name: 'TC1', message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
+    { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
+    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
+    { name: 'link', message: 'www.payments.ca.' },
 
   ],
   properties: [
@@ -313,9 +313,12 @@ foam.CLASS({
       name: 'country',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-        var choices = X.countryDAO.where(expr.EQ(foam.nanos.auth.Country.CODE, 'CA'));
+
         return foam.u2.view.ChoiceView.create({
-          dao: choices,
+          dao: X.countryDAO
+            .where(expr.
+              EQ(foam.nanos.auth.Country.CODE, 'CA')
+            ),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
@@ -332,8 +335,12 @@ foam.CLASS({
       name: 'region',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
+
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO.where(expr.EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')),
+          dao: X.regionDAO
+            .where(expr
+              .EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')
+            ),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
@@ -364,7 +371,6 @@ foam.CLASS({
       this.viewData.agree1 = this.TC1;
       this.viewData.agree2 = this.TC2;
       this.viewData.agree3 = this.TC3;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('row').addClass('rowTopMarginOverride')
@@ -424,22 +430,22 @@ foam.CLASS({
           .end()
 
           .start('p').add('Banking Info').addClass('headings').end()
-          .start('div').forEach( this.viewData.bankAccount, function(data, index) {
+          .start('div').forEach( this.viewData.bankAccounts, function(account, index) {
             this
-            .callIf( ! (self.viewData.bankAccount.length === 1), function() {
+            .callIf( self.viewData.bankAccounts.length > 1, function() {
               this.start().add('Account ' + (index + 1)).addClass('header').end();
             })
             .start().addClass('inline')
               .start().add(self.LabelInstitute).addClass('infoLabel').end()
-              .start().add(data.institutionNumber).addClass('notEditable').addClass('full-width-input-label').end()
+              .start().add(account.institutionNumber).addClass('notEditable').addClass('full-width-input-label').end()
             .end()
             .start().addClass('inline')
               .start().add(self.LabelTransit).addClass('infoLabel').end()
-              .start().add(data.branch).addClass('notEditable').addClass('inputLarge-label').end()
+              .start().add(account.branch).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
             .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
-              .start().add(data.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
+              .start().add(account.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
             .end();
           }).end()
 
@@ -454,7 +460,7 @@ foam.CLASS({
             .end()
             .start('p')
               .add('Cancellation').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
+              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
             .end()
           .end()
         .end();
