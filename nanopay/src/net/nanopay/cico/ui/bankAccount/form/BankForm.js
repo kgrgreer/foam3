@@ -195,7 +195,7 @@ foam.CLASS({
       var newAccount = this.CABankAccount.create({
         name: accountInfo.name,
         institutionNumber: accountInfo.institutionNumber, // setting this so institution is created if not preset already
-        branch: accountInfo.transitNumber, // branch = transit number
+        branchId: accountInfo.transitNumber, // branchId = transit number
         accountNumber: accountInfo.accountNumber,
         owner: this.user.id
       });
@@ -223,7 +223,7 @@ foam.CLASS({
         agree2: this.viewData.agree2,
         agree3: this.viewData.agree3,
         institutionNumber: account.institutionNumber,
-        transitNumber: account.branch, // branch = transit number
+        branchId: account.branchId, // branchId = transit number
         accountNumber: account.accountNumber
       });
       try {

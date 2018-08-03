@@ -118,7 +118,7 @@ foam.CLASS({
       class: 'String',
       name: 'transitNumber',
       postSet: function(oldValue, newValue) {
-        // REVIEW: AccountRefactor - this is branch id
+        // this is branchId, not the Id of branch obj.
         this.viewData.accountInfo.transitNumber = newValue;
       }
     },

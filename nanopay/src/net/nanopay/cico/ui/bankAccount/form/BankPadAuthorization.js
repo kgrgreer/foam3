@@ -441,7 +441,7 @@ foam.CLASS({
             .end()
             .start().addClass('inline')
               .start().add(self.LabelTransit).addClass('infoLabel').end()
-              .start().add(account.branch).addClass('notEditable').addClass('inputLarge-label').end()
+              .start().add(account.branchId).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
             .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
