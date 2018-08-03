@@ -86,7 +86,7 @@ public class AuthenticatedTransactionDAO
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
 
-    ArraySink arraySink = (ArraySink) user.accounts(x).select(new ArraySink());
+    ArraySink arraySink = (ArraySink) user.getAccounts(x).select(new ArraySink());
     List accountsArray =  arraySink.getArray();
     Long[] ids = new Long[accountsArray.size()];
     for (int i =0; i < accountsArray.size(); i++)

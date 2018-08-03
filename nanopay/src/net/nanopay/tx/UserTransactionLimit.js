@@ -41,7 +41,7 @@ foam.INTERFACE({
         {
           name: 'x',
           javaType: 'foam.core.X',
-          swiftType: 'foam.core.X'
+          swiftType: 'Context'
         },
         {
           name: 'userId',
