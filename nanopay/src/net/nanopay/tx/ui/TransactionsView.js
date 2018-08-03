@@ -194,7 +194,7 @@ foam.CLASS({
           this.OR(
             this.AND(
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.NEQ(this.Transaction.PAYER_ID, this.Transaction.PAYEE_ID)),
+              this.NEQ(this.Transaction.SOURCE_ACCOUNT, this.Transaction.DESTINATION_ACCOUNT)),
             this.AND(
               this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
               this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
@@ -207,12 +207,12 @@ foam.CLASS({
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.DATE)) : data;
+        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.CREATED)) : data;
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'date', 'payer', 'payee', 'total', 'status'
+          'id', 'created', 'payer', 'payee', 'total', 'status'
         ]
       }
     }

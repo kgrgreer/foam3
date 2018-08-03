@@ -5,13 +5,12 @@ foam.CLASS({
   tableColumns: [
     'id',
     'status',
-    'txnProcessorId',
-    'payerName',
-    'payeeName',
+    'payer',
+    'payee',
     'amount',
     'processDate',
     'completionDate',
-    'date'
+    'created'
   ],
 
   implements: [
@@ -126,7 +125,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : '')
+            .add(value ? value.fullName : 'na')
           .end()
         .end();
       }
@@ -142,7 +141,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : '')
+            .add(value ? value.fullName : 'na')
           .end()
         .end();
       }
