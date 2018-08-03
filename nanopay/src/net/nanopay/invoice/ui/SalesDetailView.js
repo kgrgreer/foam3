@@ -48,6 +48,18 @@ foam.CLASS({
       position: relative;
       z-index: 10;
     }
+    .net-nanopay-ui-ActionView-backAction:hover {
+      background: rgba(164, 179, 184, 0.3);
+    }
+    ^ .net-nanopay-ui-ActionView-recordPayment:hover {
+      background: #357eac;
+    }
+    ^ .net-nanopay-ui-ActionView-voidDropDown:focus {
+      background: #357eac;
+    }
+    ^ .net-nanopay-ui-ActionView-voidDropDown:hover {
+      background: #357eac;
+    }
     ^ .net-nanopay-ui-ActionView-recordPayment {
       background-color: #59A5D5;
       border: solid 1px #59A5D5;
