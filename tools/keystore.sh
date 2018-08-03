@@ -7,8 +7,8 @@ if [ -z "$HOME" ]; then
 fi
 HOME="$HOME"/keys
 
-if [ -d "$HOME" ]; then
-    printf "keystore already setup.\n"
+if [[ -d $HOME && -f $HOME/passphrase ]]; then
+    printf "INFO :: Keystore already setup...\n"
     exit 0;
 else
     mkdir -p $HOME

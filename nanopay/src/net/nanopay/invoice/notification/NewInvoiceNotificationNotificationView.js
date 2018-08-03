@@ -9,7 +9,6 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'hideReceivableSummary',
     'invoiceDAO',
     'stack'
   ],

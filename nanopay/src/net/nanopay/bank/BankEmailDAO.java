@@ -10,7 +10,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
 
 // Sends an email when a Bank account is created
 public class BankEmailDAO
@@ -26,6 +26,9 @@ public class BankEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.put_(x, obj);
+    }
 
     BankAccount account = (BankAccount) obj;
     User        user    = (User) userDAO_.find_(x, account.getOwner());

@@ -2,6 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
+  'net.nanopay.tx.PayerTransactionDAO',
+  'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
@@ -23,10 +25,16 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.account.CurrentBalance',
+  'net.nanopay.account.Balance',
   'net.nanopay.model.Branch',
-  'net.nanopay.model.BankAccount',
-  'net.nanopay.model.BankAccountStatus',
+  'net.nanopay.account.Account',
+  'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DigitalAccountInfo',
+  'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.CABankAccount',
+  'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
@@ -142,19 +150,18 @@ var classes = [
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
-  'net.nanopay.security.HashingJDAOTest',
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
-
-  // topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView',
+  'net.nanopay.security.FileKeyStoreManagerTest',
 
   // tests
-  'net.test.ModeledTest',
+  'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
-  'net.nanopay.invoice.AuthenticatedInvoiceDAOTest'
+  'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
+  'net.nanopay.test.TestsReporter',
+  'net.nanopay.test.TestReport'
 ];
 
 var abstractClasses = [
@@ -162,6 +169,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

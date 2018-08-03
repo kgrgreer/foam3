@@ -104,7 +104,7 @@ foam.CLASS({
       class: 'String',
       name: 'bankName',
       postSet: function(oldValue, newValue) {
-        this.viewData.accountName = newValue;
+        this.viewData.name = newValue;
       }
     },
     {
@@ -118,6 +118,7 @@ foam.CLASS({
       class: 'String',
       name: 'transitNumber',
       postSet: function(oldValue, newValue) {
+        // REVIEW: AccountRefactor - this is branch id
         this.viewData.transitNumber = newValue;
       }
     },

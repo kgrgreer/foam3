@@ -3,6 +3,7 @@ package net.nanopay.security;
 import foam.core.ClassInfo;
 import foam.core.X;
 import foam.dao.*;
+import foam.dao.java.JDAO;
 
 public class SigningJDAO
   extends JDAO

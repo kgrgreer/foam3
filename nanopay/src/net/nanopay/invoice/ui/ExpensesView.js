@@ -12,7 +12,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.PayableSummaryView'
+    'net.nanopay.invoice.ui.InvoiceSummaryView'
   ],
 
   imports: [
@@ -20,14 +20,19 @@ foam.CLASS({
   ],
 
   exports: [
-    'hideSaleSummary'
+    'hideSummary'
   ],
 
   properties: [
     'selection',
     {
+      name: 'summaryView',
+      documentation: `A named reference to the summary view so we can subscribe
+          to events emitted from it.`,
+    },
+    {
       class: 'Boolean',
-      name: 'hideSaleSummary',
+      name: 'hideSummary',
       value: false
     },
     {
@@ -37,18 +42,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'tableView',
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
       factory: function() {
-        return this.ExpensesTableView.create();
-      }
-    },
-    {
-      name: 'summaryView',
-      factory: function() {
-        var view = this.PayableSummaryView.create();
-        view.sub('statusChange', this.updateTableDAO);
-        view.sub('statusReset', this.resetTableDAO);
-        return view;
+        return this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     }
   ],
@@ -103,24 +100,28 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().enableClass('hide', this.hideSaleSummary$)
-          .add(this.summaryView)
+        .start().enableClass('hide', this.hideSummary$)
+          .tag(this.InvoiceSummaryView, {
+            sumLabel: 'Payables',
+            dao: this.user.expenses
+          }, this.summaryView$)
         .end()
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
+            dao: this.filteredDAO$proxy,
             createLabel: 'New Bill',
             createDetailView: {
-              class: 'net.nanopay.invoice.ui.BillDetailView'
+              class: 'net.nanopay.invoice.ui.InvoiceDetailView',
+              isBill: true
             },
             detailView: { class: 'net.nanopay.invoice.ui.ExpensesDetailView' },
-            summaryView: this.tableView,
+            summaryView: this.ExpensesTableView,
             showActions: false
           })
         .end()
         .start()
-          .enableClass('hide', this.hideSaleSummary$)
+          .enableClass('hide', this.hideSummary$)
           .tag({
             class: 'net.nanopay.ui.Placeholder',
             dao: this.expensesDAO,
@@ -128,6 +129,13 @@ foam.CLASS({
             image: 'images/ic-bankempty.svg'
           })
         .end();
+
+      // When a SummaryCard is clicked on, it will toggle between two states:
+      // active and inactive. When it changes state it will emit one of the two
+      // following events. We subscribe to them here and update the table view
+      // based on the card that was selected.
+      this.summaryView.statusChange.sub(this.updateTableDAO);
+      this.summaryView.statusReset.sub(this.resetTableDAO);
     },
   ],
 
@@ -135,7 +143,7 @@ foam.CLASS({
     {
       name: 'updateTableDAO',
       code: function(_, __, newStatus) {
-        this.tableView.data = this.expensesDAO
+        this.filteredDAO = this.expensesDAO
             .where(this.EQ(this.Invoice.STATUS, newStatus))
             .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
@@ -143,7 +151,7 @@ foam.CLASS({
     {
       name: 'resetTableDAO',
       code: function() {
-        this.tableView.data = this.expensesDAO
+        this.filteredDAO = this.expensesDAO
             .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     }
@@ -216,7 +224,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'id', 'invoiceNumber', 'purchaseOrder', 'payeeId', 'dueDate',
+                'invoiceNumber', 'purchaseOrder', 'payeeId', 'dueDate',
                 'amount', 'status'
               ],
             }).end();

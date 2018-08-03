@@ -61,7 +61,8 @@ public class DeviceAuthService
     }
 
     Device device = (Device) data.get(0);
-    if ( device == null || device.getOwner() == null ) {
+    device = (Device) device.fclone();
+    if ( device == null || device.findOwner(x) == null ) {
       throw new AuthenticationException("Device not found");
     }
 

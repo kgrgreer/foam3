@@ -181,6 +181,7 @@ foam.CLASS({
                         + data.address.streetName + ', '
                         + data.address.city + ', '
                         + data.address.regionId + ', '
+                        + data.address.countryId + ', '
                         + data.address.postalCode
                       ).addClass('addressDiv').end()
                     .end()

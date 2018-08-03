@@ -11,6 +11,7 @@ import foam.core.X;
 import foam.crypto.sign.SigningInputStream;
 import foam.crypto.sign.SigningOutputStream;
 import foam.util.SafetyUtil;
+import foam.util.SecurityUtil;
 import net.nanopay.fx.lianlianpay.model.*;
 import org.bouncycastle.util.encoders.Base64;
 
@@ -76,14 +77,6 @@ public class LianLianPayService
       return new SimpleDateFormat("yyyyMMdd");
     }
   };
-
-  private static SecureRandom random_;
-  private static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
-    if ( random_ == null ) {
-      random_ = SecureRandom.getInstance("SHA1PRNG");
-    }
-    return random_;
-  }
 
   private Properties config = new Properties();
   {
@@ -198,7 +191,7 @@ public class LianLianPayService
 
       // generate random AES256 key
       KeyGenerator keygen = KeyGenerator.getInstance("AES");
-      keygen.init(AES_KEY_SIZE, getSecureRandom());
+      keygen.init(AES_KEY_SIZE, SecurityUtil.GetSecureRandom());
       SecretKey key = keygen.generateKey();
 
       // generate cipher in encrypt mode using the public key
