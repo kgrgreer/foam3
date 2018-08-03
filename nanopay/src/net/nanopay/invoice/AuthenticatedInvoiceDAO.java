@@ -18,6 +18,7 @@ import static foam.mlang.MLang.OR;
 public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
   public final static String GLOBAL_INVOICE_READ = "invoice.read.x";
+  public final static String GLOBAL_INVOICE_DELETE = "invoice.delete.x";
   protected AuthService auth;
 
   public AuthenticatedInvoiceDAO(X x, DAO delegate) {
@@ -35,7 +36,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     }
     // Check if the user is the creator of the invoice or if the user has global access permission.
     if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-      throw new IllegalArgumentException("Permission denied");
+      throw new AccessControlException("Permission denied");
     }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
     return getDelegate().put_(x, invoice);
@@ -46,11 +47,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     User user = this.getUser(x);
     Invoice invoice = (Invoice) super.find_(x, id);
 
-    if (invoice != null) {
+    if ( invoice != null ) {
       // Check if user is related to the invoice, or user is admin,
       // or user has the authentication.
       if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-        throw new IllegalArgumentException("Permission denied");
+        throw new AccessControlException("Permission denied");
       }
     } else {
       throw new IllegalArgumentException("Cannot find null");
@@ -60,28 +61,14 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = this.getUser(x);
-    long id = user.getId();
-    boolean global = auth.check(x, GLOBAL_INVOICE_READ);
-
-    if( ! global && ! "business".equals(user.getGroup()) ) {
-      throw new IllegalArgumentException("Permission denied");
-    }
-
-    // If user has the global access permission, get all the invoices; otherwise,
-    // only return related invoices.
-    DAO dao = global ? getDelegate() : getDelegate().
-        where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
+    DAO dao = this.getFilteredDAO(x, GLOBAL_INVOICE_READ);
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    User user = (User) x.get("user");
-    if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
-    }
-    if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
+    this.getUser(x);
+    if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) ) {
       throw new AccessControlException("Permission denied");
     }
     return getDelegate().remove_(x, obj);
@@ -89,14 +76,8 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
-    if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
-    }
-    if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-      throw new AccessControlException("Permission denied");
-    }
-    getDelegate().removeAll_(x, skip, limit, order, predicate);
+    DAO dao = this.getFilteredDAO(x, GLOBAL_INVOICE_DELETE);
+    dao.removeAll_(x, skip, limit, order, predicate);
   }
 
   protected User getUser(X x) {
@@ -105,6 +86,22 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new AccessControlException("User is not logged in");
     }
     return user;
+  }
+
+  protected DAO getFilteredDAO(X x, String permission) {
+    User user = this.getUser(x);
+    long id = user.getId();
+    boolean global = auth.check(x, permission);
+
+    if ( ! global && ! "business".equals(user.getGroup()) ) {
+      throw new AccessControlException("Permission denied");
+    }
+
+    // If user has the global access permission, get all the invoices; otherwise,
+    // only return related invoices.
+    DAO dao = global ? getDelegate() : getDelegate().
+        where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
+    return dao;
   }
 
   // If the user is payee or payer of the invoice.

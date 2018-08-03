@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
+    'java.security.AccessControlException',
     'net.nanopay.invoice.AuthenticatedInvoiceDAO',
     'net.nanopay.invoice.model.Invoice'
   ],
@@ -71,7 +72,7 @@ foam.CLASS({
       // Test put_ method with admin user
       try {
         dao.put_(adminContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw, "Admin user should be able to create & edit an invoice.");
@@ -80,7 +81,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.find_(adminContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw, "Admin user should be able to find the invoice.");
@@ -89,7 +90,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.select_(adminContext, new ArraySink(), 0, 1000, null, null);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw, "Admin user should be able to select invoices.");
@@ -118,7 +119,7 @@ foam.CLASS({
       // Test put_ method with payee
       try {
         dao.put_(payeeContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw,
@@ -128,7 +129,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.find_(payeeContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw, "Payee (Business user) should be able to find the invoice.");
@@ -157,7 +158,7 @@ foam.CLASS({
       // Test put_ method with payer
       try {
         dao.put_(payerContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw,
@@ -167,7 +168,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.find_(payerContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
       }
       test(! threw, "Payer (Business user) should be able to find the invoice.");
@@ -206,7 +207,7 @@ foam.CLASS({
       // Test put_ method with business user
       try {
         dao.put_(businessUserContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -218,7 +219,7 @@ foam.CLASS({
       message = "";
       try {
         dao.find_(businessUserContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -250,7 +251,7 @@ foam.CLASS({
       // Test put_ method with shopper user
       try {
         dao.put_(shopperContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -262,7 +263,7 @@ foam.CLASS({
       message = "";
       try {
         dao.find_(shopperContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -274,7 +275,7 @@ foam.CLASS({
       message = "";
       try {
         dao.select_(shopperContext, new ArraySink(), 0, 1000, null, null);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -306,7 +307,7 @@ foam.CLASS({
       // Test put_ method with merchant user
       try {
         dao.put_(merchantContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -318,7 +319,7 @@ foam.CLASS({
       message = "";
       try {
         dao.find_(merchantContext, invoice);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
@@ -331,7 +332,7 @@ foam.CLASS({
       message = "";
       try {
         dao.select_(merchantContext, new ArraySink(), 0, 1000, null, null);
-      } catch(IllegalArgumentException exception) {
+      } catch(AccessControlException exception) {
         threw = true;
         message = exception.getMessage();
       }
