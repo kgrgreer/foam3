@@ -70,6 +70,7 @@ public class TransactionAdapterDAO
            sourceAccount instanceof DigitalAccount ) ) {
       AlternaTransaction t = new AlternaTransaction();
       t.copyFrom(txn);
+      //txn.copyTo(t);
       if ( sourceAccount instanceof CABankAccount ) {
         t.setType(TransactionType.CASHIN);
       } else {
@@ -90,6 +91,7 @@ public class TransactionAdapterDAO
 
       AlternaTransaction ci = new AlternaTransaction();
       ci.copyFrom(txn);
+      //txn.copyTo(ci);
       ci.setDestinationAccount(destinationDigital.getId());
       ci.setPayeeId(destinationUser.getId());
       ci.setType(TransactionType.CASHIN);
@@ -97,6 +99,7 @@ public class TransactionAdapterDAO
 
       AlternaTransaction co = new AlternaTransaction();
       co.copyFrom(txn);
+      //txn.copyTo(co);
       co.setSourceAccount(destinationDigital.getId());
       ci.setPayerId(destinationUser.getId());
       ci.setType(TransactionType.CASHOUT);

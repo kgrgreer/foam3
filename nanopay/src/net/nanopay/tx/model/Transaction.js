@@ -28,6 +28,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
@@ -97,17 +98,6 @@ foam.CLASS({
       name: 'type',
       visibility: foam.u2.Visibility.RO
     },
-    // {
-    //   class: 'String',
-    //   name: 'txnProcessorId',
-    //   label: 'Processor',
-    //   value: 'NONE'
-    // },
-    // {
-    //   class: 'FObjectProperty',
-    //   of: 'net.nanopay.tx.tp.TxnProcessorData',
-    //   name: 'txnProcessorData'
-    // },
     {
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
@@ -126,7 +116,8 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      // REVIEW: how is this used?
+      // REVIEW: how is this used? -only used on client for display
+      // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
@@ -141,7 +132,8 @@ foam.CLASS({
       }
     },
     {
-      // REVIEW: how is this used?
+      // REVIEW: how is this used? -only used on client for display
+      // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
@@ -235,6 +227,21 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'copyTo',
+      args: [
+        {
+          name: 'to',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaReturns: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+    List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    for ( PropertyInfo p : props ) p.set(to, p.get(this));
+    return to;
+`
+    },
     {
       name: 'isActive',
       javaReturns: 'boolean',
