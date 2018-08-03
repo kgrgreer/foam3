@@ -34,7 +34,7 @@ public class MakeConnectionDAO
     User user = (User) x.get("user");
     DAO userDAO = (DAO) x.get("localUserDAO");
     User sender = (User) userDAO.find_(x, invite.getCreatedBy());
-    user.partners(x).add(sender);
+    user.getPartners(x).add(sender);
 
     // Send notification if accepted
     if ( accepted ) {
