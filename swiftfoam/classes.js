@@ -27,6 +27,7 @@ var classes = [
   'foam.core.Identifiable',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
+  'foam.dao.RelationshipDAO',
   'foam.dao.ManyToManyRelationship',
   'foam.dao.ManyToManyRelationshipDAO',
   'foam.dao.ManyToManyRelationshipImpl',
@@ -67,6 +68,7 @@ var classes = [
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.model.Currency',
+  'net.nanopay.model.Branch',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
@@ -107,7 +109,8 @@ var classes = [
   'net.nanopay.account.Account',
   'net.nanopay.account.Balance',
   'net.nanopay.account.DigitalAccount',
-  'net.nanopay.payment.Institution'
+  'net.nanopay.payment.Institution',
+  'net.nanopay.payment.InstitutionPurposeCode'
 ];
 
 module.exports = {
