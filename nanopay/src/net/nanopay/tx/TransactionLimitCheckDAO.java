@@ -148,8 +148,8 @@ public class TransactionLimitCheckDAO
         EQ(user.getId(), ( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ) ),
         NEQ(Transaction.TYPE, TransactionType.CASHOUT ),
         NEQ(Transaction.TYPE, TransactionType.CASHIN ),
-        GTE(Transaction.LAST_MODIFIED, firstDate ),
-        LTE(Transaction.LAST_MODIFIED, lastDate )));
+        GTE(Transaction.CREATED, firstDate ),
+        LTE(Transaction.CREATED, lastDate )));
 
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }
