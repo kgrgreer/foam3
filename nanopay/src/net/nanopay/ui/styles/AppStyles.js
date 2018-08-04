@@ -93,7 +93,7 @@ foam.CLASS({
       height: 39px;
     }
     .net-nanopay-ui-ActionView-create:hover {
-      background: #357eac;
+      background: %SECONDARYHOVERCOLOR%;
     }
     .net-nanopay-ui-ActionView-back {
       position: absolute;
@@ -131,7 +131,6 @@ foam.CLASS({
       color: white;
       font-size: 14px;
       float: right;
-      border: 1px solid %SECONDARYCOLOR%;
     }
     .net-nanopay-ui-ActionView-saveAndPreview:hover {
       opacity: 0.9;
@@ -210,7 +209,7 @@ foam.CLASS({
       float: right;
     }
     .blue-button:hover {
-      background: #357eac;
+      background: %SECONDARYHOVERCOLOR%;
     }
     .grey-button{
       background-color: rgba(164, 179, 184, 0.1);
@@ -404,7 +403,7 @@ foam.CLASS({
       background-color: %SECONDARYCOLOR%;
     }
     .net-nanopay-ui-ActionView-saveAndPreview:hover {
-      background: #357eac;
+      background: %SECONDARYHOVERCOLOR%;
     }
     .net-nanopay-ui-ActionView-close{
       width: 30px;
