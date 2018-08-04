@@ -31,6 +31,25 @@ foam.CLASS({
       name: 'cursor',
       value: 0,
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      name: 'status',
+      javaFactory: `
+        if ( getTransactions().length > 0 ) {
+          return getTransactions()[getCursor()].getStatus();
+        }
+        return getStatus();
+`,
+      javaSetter: `
+        if ( val == net.nanopay.tx.TransactionStatus.COMPLETED ) {
+          synchronized(this) {
+            if ( getCursor() < getTransactions().length ) {
+              setCursor(getCursor() + 1);
+            }
+          }
+        }
+        setStatus(val);
+`
     }
   ],
 
