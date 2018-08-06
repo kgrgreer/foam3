@@ -502,7 +502,7 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
-    if [ -f "$PROJECT_HOME/tools/keystore.sh" ] && [ ! -d "$NANOPAY_HOME/keys" ]; then
+    if [[ -f $PROJECT_HOME/tools/keystore.sh && (! -d $NANOPAY_HOME/keys || ! -f $NANOPAY_HOME/keys/passphrase) ]]; then
         cd "$PROJECT_HOME"
         printf "INFO :: Generating keystore...\n"
         ./tools/keystore.sh
