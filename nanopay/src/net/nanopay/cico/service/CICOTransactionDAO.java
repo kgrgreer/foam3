@@ -12,6 +12,7 @@ import foam.mlang.MLang;
 import java.util.Date;
 import java.util.List;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
@@ -41,6 +42,11 @@ public class CICOTransactionDAO
 
     if ( transaction.getPaymentAccountInfo() != null ) {
       return getDelegate().put_(x, obj);
+    }
+
+    if ( transaction.getType() == TransactionType.CASHOUT && ((BankAccount) transaction.findDestinationAccount(x)).getStatus() == BankAccountStatus.UNVERIFIED
+      || transaction.getType() == TransactionType.CASHIN && ((BankAccount) transaction.findSourceAccount(x)).getStatus() == BankAccountStatus.UNVERIFIED ) {
+      throw new RuntimeException("Bank account must be verified");
     }
 
     try {

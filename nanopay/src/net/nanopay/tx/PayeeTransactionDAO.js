@@ -43,6 +43,9 @@ foam.CLASS({
         Transaction txn = (Transaction) obj;
         if ( txn.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayeeId());
+          if ( user == null ) {
+                          throw new RuntimeException("Payee not found");
+                        }
           DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
           txn = (Transaction) obj.fclone();
           txn.setDestinationAccount(digitalAccount.getId());

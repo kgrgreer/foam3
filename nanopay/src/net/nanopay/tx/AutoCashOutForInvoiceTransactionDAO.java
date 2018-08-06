@@ -16,7 +16,7 @@ import net.nanopay.tx.model.*;
 import static foam.mlang.MLang.*;
 
 /**
- * When paying an invoice, immediately auto-cashOut to the payee's bankAccount.
+ * When paying an invoice, immediately auto-cashOut to the payee's senderBankAccount_.
  * TODO: only do if payee has this setting enabled.
  **/
 public class AutoCashOutForInvoiceTransactionDAO

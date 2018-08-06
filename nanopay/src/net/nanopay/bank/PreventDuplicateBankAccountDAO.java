@@ -36,6 +36,7 @@ public class PreventDuplicateBankAccountDAO
 
       // prevent registration of account with same account name
       count = (Count) getDelegate().where(AND(
+        INSTANCE_OF(BankAccount.class),
           EQ(BankAccount.OWNER, account.getOwner()),
           EQ(BankAccount.NAME, account.getName())
       )).limit(1).select(count);
