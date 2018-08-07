@@ -362,14 +362,16 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -c : Clean first"
-    echo "  -b : Build jar and deployable journals."
+    echo "  -b : Build only"
+    echo "  -s : Start only."
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -i : Install npm and git hooks"
     echo "  -m : Run migration scripts"
-    echo "  -s : Stop Tomcat."
     echo "  -t : Run tests."
     echo "  -h : Print usage information."
     echo "  -t : Run tests."
+    echo ""
+    echo "No options implys -b and -s, (build and then start)."
 }
 
 ############################
@@ -380,7 +382,6 @@ DEBUG=0
 INSTALL=0
 RUN_MIGRATION=0
 START_ONLY=0
-STOP_TOMCAT=0
 TEST=0
 IS_AWS=0
 
@@ -392,7 +393,6 @@ while getopts "bscdimsth" opt ; do
         d) DEBUG=1 ;;
         i) INSTALL=1 ;;
         m) RUN_MIGRATION=1 ;;
-        s) STOP_TOMCAT=1 ;;
         t) TEST=1 ;;
         h) usage ; exit 0 ;;
         ?) usage ; exit 1 ;;
@@ -421,9 +421,6 @@ fi
 if [ "$BUILD_ONLY" -eq 1 ]; then
     build_jar
     deploy_journals
-elif [ "$STOP_TOMCAT" -eq 1 ]; then
-    shutdown_tomcat
-    printf "INFO :: Tomcat stopped...\n"
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
 elif [ "$START_ONLY" -eq 1 ]; then
