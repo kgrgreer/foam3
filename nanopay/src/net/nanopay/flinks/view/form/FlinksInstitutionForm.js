@@ -98,19 +98,19 @@ foam.CLASS({
       factory: function() {
         return [
           { index: 0, name: 'ATB', image: 'images/banks/atb.svg' },
-          { index: 1, name: 'BMO', image: 'images/banks/bmo.svg' },
-          { index: 2, name: 'CIBC', image: 'images/banks/cibc.svg' },
+          { index: 1, name: 'Bank of Montreal', image: 'images/banks/bmo.svg' },
+          { index: 2, name: 'Candian Imperial Bank of Canada', image: 'images/banks/cibc.svg' },
           { index: 3, name: 'CoastCapital', image: 'images/banks/coast.svg' },
           { index: 4, name: 'Desjardins', image: 'images/banks/desjardins.svg' },
           { index: 5, name: 'HSBC', image: 'images/banks/hsbc.svg' },
           { index: 6, name: 'Meridian', image: 'images/banks/meridian.png' },
           { index: 7, name: 'National', image: 'images/banks/national.svg' },
           { index: 8, name: 'Laurentienne', image: 'images/banks/laurentienne.svg' },
-          { index: 9, name: 'PC', image: 'images/banks/simplii@3x.png' },
-          { index: 10, name: 'RBC', image: 'images/banks/rbc.svg' },
-          { index: 11, name: 'Scotia', image: 'images/banks/scotia.svg' },
+          { index: 9, name: 'President\'s Choice', image: 'images/banks/simplii@3x.png' },
+          { index: 10, name: 'Royal Bank of Canada', image: 'images/banks/rbc.svg' },
+          { index: 11, name: 'ScotiaBank', image: 'images/banks/scotia.svg' },
           { index: 12, name: 'Tangerine', image: 'images/banks/tangerine.svg' },
-          { index: 13, name: 'TD', image: 'images/banks/td.svg' },
+          { index: 13, name: 'Toronto Dominion', image: 'images/banks/td.svg' },
           { index: 14, name: 'Vancity', image: 'images/banks/vancity.svg' },
           { index: 15, name: 'FlinksCapital', image: 'images/banks/flinks.svg' }
         ];
