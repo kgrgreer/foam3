@@ -31,6 +31,14 @@
             }
         ],
         "require-jsdoc": "off",
-        "foam-style/exploded-statements": "error"
+        "foam-style/exploded-statements": "error",
+        "no-multi-spaces": [
+            1, {
+                "exceptions": {
+                    "Property": true,
+                    "VariableDeclarator": true
+                }
+            }
+        ]
     }
 }
