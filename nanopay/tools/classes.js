@@ -98,6 +98,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.CompositeTransaction',
+  'net.nanopay.tx.CompositeTransactionDAO',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',

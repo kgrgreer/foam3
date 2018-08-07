@@ -122,8 +122,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
-  // { name: 'net/nanopay/tx/UserDestinationTransactionDAO' },
-  // { name: 'net/nanopay/tx/UserSourceTransactionDAO' },
+  { name: 'net/nanopay/tx/CompositeTransactionDAO' },
 
   { name: 'net/nanopay/model/Broker' },
 
@@ -138,7 +137,6 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
-  // { name: 'net/nanopay/retail/model/Transaction' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },

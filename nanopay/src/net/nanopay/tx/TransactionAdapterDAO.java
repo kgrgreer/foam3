@@ -102,7 +102,9 @@ public class TransactionAdapterDAO
       ci.setType(TransactionType.CASHOUT);
       composite.add(co);
 
-      return super.put_(x, composite);
+      composite = (CompositeTransaction) super.put_(x, composite);
+      composite.next();
+      return composite;
     }
 
     // Unsupported - Future DWolla, NAPCO, Indusynd

@@ -9,6 +9,11 @@ foam.CLASS({
       class: 'Proxy',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'delegate'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'parent'
     }
   ]
 });
