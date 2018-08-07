@@ -93,19 +93,13 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            Transaction tran = (Transaction) transactionDao.find(
+            AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
               EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 
             if ( tran != null ) {
-              tran = (Transaction) tran.fclone();
-              AlternaTxnProcessorData data = (AlternaTxnProcessorData) tran.getTxnProcessorData();
-              if ( data == null ) {
-                data = new AlternaTxnProcessorData();
-              } else {
-                data = (AlternaTxnProcessorData) data.fclone();
-              }
-              data.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-              tran.setTxnProcessorData(data);
+              tran = (AlternaTransaction) tran.fclone();
+              tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
+
 
               if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
                 tran.setStatus(TransactionStatus.FAILED);
@@ -116,7 +110,6 @@ public class EFTConfirmationFileProcessor implements ContextAgent
               } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
                 tran.setStatus(TransactionStatus.SENT);
               }
-
               transactionDao.put(tran);
             }
           }

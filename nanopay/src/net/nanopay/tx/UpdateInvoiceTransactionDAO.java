@@ -42,13 +42,13 @@ public class UpdateInvoiceTransactionDAO
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(transaction.getLastModified());
           invoice.setPaymentMethod(PaymentStatus.NANOPAY);
           invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.PENDING ) {
           invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(transaction.getLastModified());
           invoice.setPaymentMethod(PaymentStatus.PENDING);
           invoiceDAO_.put_(x, invoice);
         }

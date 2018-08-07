@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'ProxyTransaction',
-  //implements: [ 'net.nanopay.tx.Logger' ],
 
   documentation: '',
 
@@ -10,6 +9,11 @@ foam.CLASS({
       class: 'Proxy',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'delegate'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'parent'
     }
   ]
 });

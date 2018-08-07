@@ -12,7 +12,7 @@ foam.CLASS({
   requires: [
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'net.nanopay.account.Balance',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -398,7 +398,7 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [
-        'net.nanopay.cico.model.TransactionType',
+        'net.nanopay.tx.TransactionType',
         'net.nanopay.tx.model.Transaction'
       ],
 

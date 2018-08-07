@@ -111,8 +111,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
-  { name: 'net/nanopay/cico/model/TransactionType' },
+  { name: 'net/nanopay/tx/TransactionType' },
   { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/RefundTransaction' },
+  { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/ProxyTransaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
@@ -120,8 +122,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
-  // { name: 'net/nanopay/tx/UserDestinationTransactionDAO' },
-  // { name: 'net/nanopay/tx/UserSourceTransactionDAO' },
+  { name: 'net/nanopay/tx/CompositeTransactionDAO' },
 
   { name: 'net/nanopay/model/Broker' },
 
@@ -136,7 +137,6 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
-  // { name: 'net/nanopay/retail/model/Transaction' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
@@ -206,7 +206,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/tp/alterna/SFTPService' },
   { name: 'net/nanopay/tx/tp/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/tx/tp/alterna/client/ClientAlternaSFTPService' },
-  { name: 'net/nanopay/tx/tp/alterna/AlternaTxnProcessorData' },
+  { name: 'net/nanopay/tx/tp/alterna/AlternaTransaction' },
+  { name: 'net/nanopay/tx/tp/realex/RealexTransaction' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
   { name: 'net/nanopay/cico/CICOPaymentType' },

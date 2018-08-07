@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
