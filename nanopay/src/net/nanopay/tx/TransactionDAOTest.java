@@ -160,7 +160,7 @@ public class TransactionDAOTest
     cashIn();
     long initialBalanceSender = DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
-    Transaction transaction = (Transaction) txnDAO.put_(x_, txn);
+    Transaction transaction = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(transaction.getStatus() == TransactionStatus.COMPLETED, "transaction is completed");
     test(transaction.getType() == TransactionType.NONE, "transaction is NONE type");
     test(transaction.findSourceAccount(x_) instanceof DigitalAccount, "Source account is digital Account");
@@ -171,10 +171,11 @@ public class TransactionDAOTest
     Long senderBalance = (Long) transaction.findSourceAccount(x_).findBalance(x_);
     test(senderBalance == initialBalanceSender - transaction.getAmount(), "Sender balance is correct");
     test(receiverBalance == initialBalanceReceiver + transaction.getAmount(), "Receiver balance is correct");
+    transaction.setStatus((TransactionStatus.PAUSED));
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, transaction),
-      "Amount cannot be negative",
-      RuntimeException.class), "Exception: Txn amount cannot be negative");
+      "Unable to update Transaction, if transaction status is accepted or declined",
+      RuntimeException.class), "Exception: If txn is completed or declined it cannot be updated");
   }
 
   public void testCashIn() {
@@ -185,7 +186,7 @@ public class TransactionDAOTest
     senderBankAccount_ = (BankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
-    txn.setAmount(666l);
+    txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
       "Bank account must be verified",
@@ -212,7 +213,7 @@ public class TransactionDAOTest
     senderBankAccount_ = (BankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
     txn.setPayerId(sender_.getId());
     txn.setDestinationAccount(senderBankAccount_.getId());
-    txn.setAmount(666l);
+    txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
       "Bank account must be verified",
