@@ -271,16 +271,11 @@ foam.CLASS({
           "Shopper user should not be able to find the invoice.");
 
       // Test select_ method with shopper user
-      threw = false;
-      message = "";
-      try {
-        dao.select_(shopperContext, new ArraySink(), 0, 1000, null, null);
-      } catch(AccessControlException exception) {
-        threw = true;
-        message = exception.getMessage();
-      }
-      test(threw && message.equals("Permission denied"),
-          "Shopper user should not be able to select invoices.");
+      ArraySink result = (ArraySink)
+          dao.select_(shopperContext, new ArraySink(), 0, 1000, null, null);
+      test(result.getArray().size() == 0,
+          "Shopper user with no related invoice " +
+          "should get empty array for selection.");
     `
   },
   {
@@ -326,18 +321,12 @@ foam.CLASS({
       test(threw && message.equals("Permission denied"),
           "Merchant user should not be able to find the invoice.");
 
-
       // Test select_ method with merchant user
-      threw = false;
-      message = "";
-      try {
-        dao.select_(merchantContext, new ArraySink(), 0, 1000, null, null);
-      } catch(AccessControlException exception) {
-        threw = true;
-        message = exception.getMessage();
-      }
-      test(threw && message.equals("Permission denied"),
-          "Merchant user should not be able to select invoices.");
+      ArraySink result = (ArraySink)
+          dao.select_(merchantContext, new ArraySink(), 0, 1000, null, null);
+      test(result.getArray().size() == 0, 
+          "Merchant user with no related invoice " +
+          "should get empty array for selection.");
     `
   }]
 });

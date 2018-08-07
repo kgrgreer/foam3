@@ -53,8 +53,6 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
         throw new AccessControlException("Permission denied");
       }
-    } else {
-      throw new IllegalArgumentException("Cannot find null");
     }
     return invoice;
   }
@@ -76,8 +74,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    DAO dao = this.getFilteredDAO(x, GLOBAL_INVOICE_DELETE);
-    dao.removeAll_(x, skip, limit, order, predicate);
+    this.getUser(x);
+    if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) ) {
+      throw new AccessControlException("Permission denied");
+    }
+    getDelegate().removeAll_(x, skip, limit, order, predicate);
   }
 
   protected User getUser(X x) {
@@ -93,10 +94,6 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     long id = user.getId();
     boolean global = auth.check(x, permission);
 
-    if ( ! global && ! "business".equals(user.getGroup()) ) {
-      throw new AccessControlException("Permission denied");
-    }
-
     // If user has the global access permission, get all the invoices; otherwise,
     // only return related invoices.
     DAO dao = global ? getDelegate() : getDelegate().
@@ -107,12 +104,8 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   // If the user is payee or payer of the invoice.
   protected boolean isRelated(User user, Invoice invoice) {
     long id = user.getId();
-    if ( "business".equals(user.getGroup()) ) {
-      boolean isPayee = (long) invoice.getPayeeId() == id;
-      boolean isPayer = (long) invoice.getPayerId() == id;
-      return  isPayee || isPayer;
-    } else {
-      return false;
-    }
+    boolean isPayee = (long) invoice.getPayeeId() == id;
+    boolean isPayer = (long) invoice.getPayerId() == id;
+    return  isPayee || isPayer;
   }
 }
