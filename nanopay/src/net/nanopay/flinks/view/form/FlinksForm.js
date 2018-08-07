@@ -5,9 +5,12 @@ foam.CLASS({
 
   exports: [
     'as form',
-    'bankImgs',
     'isConnecting',
-    'loadingSpinner'
+    'loadingSpinner',
+    'notify',
+    'fail',
+    'success',
+    'pushViews'
   ],
 
   implements: [
@@ -17,7 +20,6 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'email',
-    'flinksAuth',
     'institutionDAO',
     'padCaptureDAO',
     'user',
@@ -45,35 +47,12 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'bankImgs',
-      factory: function() {
-        return [
-          { index: 0, institution: 'ATB', image: 'images/banks/atb.svg' },
-          { index: 1, institution: 'BMO', image: 'images/banks/bmo.svg' },
-          { index: 2, institution: 'CIBC', image: 'images/banks/cibc.svg' },
-          { index: 3, institution: 'CoastCapital', image: 'images/banks/coast.svg' },
-          { index: 4, institution: 'Desjardins', image: 'images/banks/desjardins.svg' },
-          { index: 5, institution: 'HSBC', image: 'images/banks/hsbc.svg' },
-          { index: 6, institution: 'Meridian', image: 'images/banks/meridian.png' },
-          { index: 7, institution: 'National', image: 'images/banks/national.svg' },
-          { index: 8, institution: 'Laurentienne', image: 'images/banks/laurentienne.svg' },
-          { index: 9, institution: 'PC', image: 'images/banks/simplii@3x.png' },
-          { index: 10, institution: 'RBC', image: 'images/banks/rbc.svg' },
-          { index: 11, institution: 'Scotia', image: 'images/banks/scotia.svg' },
-          { index: 12, institution: 'Tangerine', image: 'images/banks/tangerine.svg' },
-          { index: 13, institution: 'TD', image: 'images/banks/td.svg' },
-          { index: 14, institution: 'Vancity', image: 'images/banks/vancity.svg' },
-          { index: 15, institution: 'FlinksCapital', image: 'images/banks/flinks.svg' }
-        ];
-      }
-    },
-    {
-      Class: 'Boolean',
+      class: 'Boolean',
       name: 'isConnecting',
       value: false
     },
     {
-      Class: 'FObjectProperty',
+      class: 'FObjectProperty',
       name: 'customer',
     },
     {
@@ -188,19 +167,18 @@ foam.CLASS({
         'Pad Authorization',
         'Done'
       ],
-      this.isCustomNavigation = true;
       this.views = {
-        FlinksInstitutionForm:        { step: 1, label: 'Institution', view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true },
-        FlinksConnectForm:            { step: 2, label: 'Connect', view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' } },
-        FlinksXQuestionAnswerForm:    { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' } },
-        FlinksXSelectionAnswerForm:   { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' } },
-        FlinksMultipleChoiceForm:     { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' } },
-        FlinksImageForm:              { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' } },
-        FlinksAccountForm:            { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true },
-        FlinksFailForm:               { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true },
-        PADAuthorizationForm:         { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' } },
-        Complete:                     { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' } },
-
+        FlinksInstitutionForm: { step: 1, label: 'Institution', view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true },
+        FlinksConnectForm: { step: 2, label: 'Connect', view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' } },
+        FlinksSecurityChallenge: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksSecurityChallenge' } },
+        FlinksXQuestionAnswerForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXQuestionAnswerForm' } },
+        FlinksXSelectionAnswerForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksXSelectionAnswerForm' } },
+        FlinksMultipleChoiceForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' } },
+        FlinksImageForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' } },
+        FlinksAccountForm: { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true },
+        FlinksFailForm: { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true },
+        PADAuthorizationForm: { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' } },
+        Complete: { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' } },
       };
       this.SUPER();
     },
@@ -223,48 +201,41 @@ foam.CLASS({
       this.stack.push(view, this.parent);
     },
 
-    function MFADisparcher(msg) {
-      if ( msg.SecurityChallenges[0].Type === 'QuestionAndAnswer' ) {
-        if ( !! msg.SecurityChallenges[0].Iterables && msg.SecurityChallenges[0].Iterables.length != 0 ) {
-          this.pushViews('FlinksXSelectionAnswerForm');
-        } else {
-          this.pushViews('FlinksXQuestionAnswerForm');
-        }
-      } else if ( msg.SecurityChallenges[0].Type === 'MultipleChoice' || msg.SecurityChallenges[0].Type === 'MultipleChoiceMultipleAnswers' ) {
-        this.pushViews('FlinksMultipleChoiceForm');
-      } else if ( msg.SecurityChallenges[0].Type === 'ImageSelection' ) {
-        this.pushViews('FlinksImageForm');
-      } else {
-        this.fail();
-      }
-    },
-
     function validations() {
-      if ( this.viewData.user.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+      var user = this.viewData.user;
+
+      if ( user.firstName.length > 70 ) {
+        this.notify('First name cannot exceed 70 characters.', 'error');
         return false;
       }
-      if ( this.viewData.user.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+      if ( user.lastName.length > 70 ) {
+        this.notify('Last name cannot exceed 70 characters.', 'error');
         return false;
       }
-      if ( ! this.validateStreetNumber(this.viewData.user.address.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+      if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
         return false;
       }
-      if ( ! this.validateAddress(this.viewData.user.address.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+      if ( ! this.validateAddress(user.address.streetName) ) {
+        this.notify('Invalid street number.', 'error');
         return false;
       }
-      if ( ! this.validateCity(this.viewData.user.address.city) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+      if ( ! this.validateCity(user.address.city) ) {
+        this.notify('Invalid city name.', 'error');
         return false;
       }
-      if ( ! this.validatePostalCode(this.viewData.user.address.postalCode) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+      if ( ! this.validatePostalCode(user.address.postalCode) ) {
+        this.notify('Invalid postal code.', 'error');
         return false;
       }
       return true;
+    },
+
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
     }
   ],
 
@@ -274,13 +245,8 @@ foam.CLASS({
       code: function(X) {
         this.loadingSpinner.hide();
         this.isConnecting = false;
-        if ( this.currentViewId === 'InstitutionView' ) {
-          X.stack.back();
-        } else if ( this.currentViewId === 'FlinksAccountForm' ) {
-          X.stack.back();
-        } else if ( this.currentViewId === 'FlinksFailForm' ) {
-          X.stack.back();
-        } else if ( this.currentViewId === 'PADAuthorizationForm' ) {
+        var backViews = ['InstitutionView', 'FlinksAccountForm', 'FlinksFailForm', 'PADAuthorizationForm'];
+        if ( !! backViews.find((t) => this.currentViewId) ) {
           X.stack.back();
         } else {
           this.rollBackView();
@@ -291,101 +257,6 @@ foam.CLASS({
       name: 'goNext',
       code: function(X) {
         var self = this;
-        if ( this.currentViewId === 'FlinksInstitutionForm' ) {
-          this.pushViews('FlinksConnectForm');
-          return;
-        }
-        // connect to the Bank
-        if ( this.currentViewId === 'FlinksConnectForm' ) {
-          this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
-          this.loadingSpinner.show();
-          this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg) {
-            // Repeated as .finally is not supported in Safari/Edge/IE
-            self.isConnecting = false;
-            self.loadingSpinner.hide();
-
-            if ( self.currentViewId != 'FlinksConnectForm' ) return;
-
-            var status = msg.HttpStatusCode;
-            if ( status == 200 ) {
-              // get account infos, forward to account page
-              self.viewData.accounts = msg.Accounts;
-              self.success();
-            } else if ( status == 203 ) {
-              // go to security page
-              self.viewData.requestId = msg.RequestId;
-              self.viewData.SecurityChallenges = msg.SecurityChallenges;
-              self.MFADisparcher(msg);
-            } else {
-              if ( msg.FlinksCode && (msg.FlinksCode === 'INVALID_LOGIN' || msg.FlinksCode === 'INVALID_USERNAME' || msg.FlinksCode === 'INVALID_PASSWORD') ) {
-                if ( msg.Message && msg.Message !== '' ) {
-                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error' }));
-                } else {
-                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.FlinksCode, type: 'error' }));
-                }
-              } else {
-                if ( msg.Message && msg.Message !== '' ) {
-                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error' }));
-                } else {
-                  self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.FlinksCode, type: 'error' }));
-                }
-                self.fail();
-              }
-            }
-          }).catch( function(a) {
-            // Repeated as .finally is not supported in Safari/Edge/IE
-            self.isConnecting = false;
-            self.loadingSpinner.hide();
-
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-            self.fail();
-          });
-          return;
-        }
-        // security challenge
-        if ( this.currentViewId === 'FlinksXQuestionAnswerForm' || this.currentViewId === 'FlinksXSelectionAnswerForm' || this.currentViewId === 'FlinksMultipleChoiceForm' || this.currentViewId === 'FlinksImageForm' ) {
-          var map ={};
-          for ( var i = 0; i < this.viewData.questions.length; i ++ ) {
-            map[this.viewData.questions[i]] = this.viewData.answers[i];
-          }
-
-          this.loadingSpinner.show();
-          this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, this.viewData.SecurityChallenges[0].Type).then( function(msg) {
-            // Repeated as .finally is not supported in Safari/Edge/IE
-            self.isConnecting = false;
-            self.loadingSpinner.hide();
-
-            if ( self.currentViewId != 'FlinksXQuestionAnswerForm' && self.currentViewId != 'FlinksXSelectionAnswerForm' && self.currentViewId != 'FlinksMultipleChoiceForm' && self.currentViewId != 'FlinksImageForm' ) return;
-            var status = msg.HttpStatusCode;
-
-            if ( status == 200 ) {
-              // get account infos, forward to account page
-              self.viewData.accounts = msg.Accounts;
-              self.success();
-            } else if ( status == 203 ) {
-              // push a new security view
-              self.viewData.requestId = msg.RequestId;
-              self.viewData.SecurityChallenges = msg.SecurityChallenges;
-              self.MFADisparcher(msg);
-            } else if ( status == 401 ) {
-              // TODO: remove only for flinks
-              self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
-              self.viewData.requestId = msg.RequestId;
-              self.viewData.SecurityChallenges = msg.SecurityChallenges;
-              self.MFADisparcher(msg);
-            } else {
-              self.fail();
-            }
-          }).catch( function(a) {
-            // Repeated as .finally is not supported in Safari/Edge/IE
-            self.isConnecting = false;
-            self.loadingSpinner.hide();
-
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
-            self.fail();
-          });
-          return;
-        }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
           X.institutionDAO.where(this.EQ(this.Institution.NAME, this.viewData.institution)).select().then(function(institution) {

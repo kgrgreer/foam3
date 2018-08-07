@@ -4,11 +4,15 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'bankImgs',
     'form',
     'isConnecting',
     'stack',
-    'nSpecDAO'
+    'nSpecDAO',
+    'pushViews'
+  ],
+
+  exports: [
+    'bankInstitutions'
   ],
 
   axioms: [
@@ -90,76 +94,99 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
-      name: 'selectedOption',
-      value: -1,
+      name: 'bankInstitutions',
+      factory: function() {
+        return [
+          { index: 0, name: 'ATB', image: 'images/banks/atb.svg' },
+          { index: 1, name: 'BMO', image: 'images/banks/bmo.svg' },
+          { index: 2, name: 'CIBC', image: 'images/banks/cibc.svg' },
+          { index: 3, name: 'CoastCapital', image: 'images/banks/coast.svg' },
+          { index: 4, name: 'Desjardins', image: 'images/banks/desjardins.svg' },
+          { index: 5, name: 'HSBC', image: 'images/banks/hsbc.svg' },
+          { index: 6, name: 'Meridian', image: 'images/banks/meridian.png' },
+          { index: 7, name: 'National', image: 'images/banks/national.svg' },
+          { index: 8, name: 'Laurentienne', image: 'images/banks/laurentienne.svg' },
+          { index: 9, name: 'PC', image: 'images/banks/simplii@3x.png' },
+          { index: 10, name: 'RBC', image: 'images/banks/rbc.svg' },
+          { index: 11, name: 'Scotia', image: 'images/banks/scotia.svg' },
+          { index: 12, name: 'Tangerine', image: 'images/banks/tangerine.svg' },
+          { index: 13, name: 'TD', image: 'images/banks/td.svg' },
+          { index: 14, name: 'Vancity', image: 'images/banks/vancity.svg' },
+          { index: 15, name: 'FlinksCapital', image: 'images/banks/flinks.svg' }
+        ];
+      }
+    },
+    {
+      class: 'Object',
+      name: 'selectedInstitution',
+      value: null,
       postSet: function(oldValue, newValue) {
-        this.viewData.selectedOption = newValue;
+        this.viewData.selectedInstitution = newValue;
       }
     },
     'mode',
-    //It is an Element that refer to subContent
+    // It is an Element that refer to subContent
     'subContent'
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 1: Please choose your institution below.'},
-    { name: 'Error', message: 'Invalid Institution'},
-    { name: 'NameLabel', message: 'Institution *'}
+    { name: 'Step', message: 'Step 1: Please choose your institution below.' },
+    { name: 'Error', message: 'Invalid Institution' },
+    { name: 'NameLabel', message: 'Institution *' }
   ],
 
   methods: [
     function init() {
       this.SUPER();
       this.nextLabel = 'Next';
-      if ( ! this.viewData.selectedOption ) { return; }
-      this.selectedOption = this.viewData.selectedOption;
+      this.selectedInstitution = this.viewData.selectedInstitution ?
+        this.viewData.selectedInstitution : null;
     },
 
     function initE() {
       this.SUPER();
       var self = this;
-      this.subContent = this
+
+      this
         .addClass(this.myClass())
         .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
-        .start('div').addClass('subContent');
-        this.subContent.forEach(this.bankImgs, function(e) {
-            if ( e.index === self.bankImgs[15].index ) return;
+        .start('div').addClass('subContent')
+          .forEach(this.bankInstitutions, function(institution, index) {
             this.start('div').addClass('optionSpacer').addClass('institution')
-              .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
-              .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
-              .on('click', function() {
-                self.selectedOption = e.index;
-              })
-            .end()
-          })
+              .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
+              .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
+                .on('click', () => self.selectedInstitution = institution)
+              .end();
+            })
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
         .end()
         .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
-          .add("Can't find your institution? Click here.")
-          .on('click', self.otherBank)
+          .add('Can\'t find your institution? Click here.')
+          .on('click', this.otherBank)
         .end()
-        .start('div').style({'clear' : 'both'}).end();
+        .start('div').style({ 'clear': 'both' }).end();
 
-        //get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
-        //do not show Flinks demo in Production mode
-        this.nSpecDAO.find("appConfig").then(function(response){
-          self.mode = response.service.mode.label;
-          if ( self.mode && self.mode !== "Production") {
-            self.subContent.start('div').addClass('optionSpacer').addClass('institution')
-            .addClass(self.selectedOption$.map(function(o) { return o == self.bankImgs[15].index ? 'selected' : ''; }))
-            .start({class: 'foam.u2.tag.Image', data: self.bankImgs[15].image}).addClass('image').end()
-            .on('click', function() {
-              self.selectedOption = self.bankImgs[15].index;
-            })
-          .end()
-          }
-        });
+        // get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
+        // do not show Flinks demo in Production mode
+//         this.nSpecDAO.find('appConfig').then(function(response) {
+//           self.mode = response.service.mode.label;
+//           if ( self.mode && self.mode !== 'Production' ) {
+//             self.subContent.start('div').addClass('optionSpacer').addClass('institution')
+//             .addClass(self.selectedOption$.map(function(o) {
+// return o == self.bankImgs[15].index ? 'selected' : '';
+// }))
+//             .start({ class: 'foam.u2.tag.Image', data: self.bankImgs[15].image }).addClass('image').end()
+//             .on('click', function() {
+//               self.selectedOption = self.bankImgs[15].index;
+//             })
+//           .end();
+//           }
+        // });
     }
   ],
 
@@ -173,20 +200,18 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'Continue',
-      isEnabled: function(isConnecting, selectedOption) {
-        if ( isConnecting === true ) return false;
-        if ( selectedOption === -1 ) return false;
-        return true;
+      isEnabled: function(isConnecting, selectedInstitution) {
+        return ! isConnecting || selectedInstitution;
       },
       code: function(X) {
-        X.form.goNext();
+        this.pushViews('FlinksConnectForm');
       }
     },
     {
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        X.form.goBack();
+        X.form.stack.back();
       },
     }
   ]
