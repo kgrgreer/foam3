@@ -8,11 +8,14 @@ import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.tp.alterna.AlternaTransaction;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.INSTANCE_OF
 
 public class EftSuccessCronjob implements ContextAgent {
   @Override
@@ -21,7 +24,14 @@ public class EftSuccessCronjob implements ContextAgent {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     Calendar currentDate = Calendar.getInstance();
 
-    transactionDAO.where(EQ(Transaction.STATUS, TransactionStatus.SENT)).select( new AbstractSink() {
+    transactionDAO
+      .where(
+             AND(
+                 EQ(Transaction.STATUS, TransactionStatus.SENT),
+                 INSTANCE_OF(AlternaTransaction.class)
+                 )
+             )
+      .select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
         Transaction txn = (Transaction) ((Transaction) o).deepClone();
