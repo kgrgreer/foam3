@@ -16,8 +16,9 @@ foam.CLASS({
     'validatePassword',
     'validatePhone',
     'validatePostalCode',
-    'validateTitleNumOrAuth',
-    'validateStreetNumber'
+    'validateStreetNumber',
+    'validateTitleNumOrAuth'
+
   ],
 
   css: `
@@ -513,7 +514,7 @@ foam.CLASS({
       }
       if ( ! this.validatePostalCode(this.postalCode) ) {
         this.add(this.NotificationMessage.create({
-          message: 'Postal Code required.',
+          message: 'Postal code required.',
           type: 'error'
         }));
         return false;
@@ -542,7 +543,7 @@ foam.CLASS({
       }
       if ( ! this.department ) {
         this.add(this.NotificationMessage.create({
-          message: 'Organization required.',
+          message: 'Department required.',
           type: 'error'
         }));
         return false;
