@@ -41,6 +41,8 @@ foam.CLASS({
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
       display: inline-block;
       vertical-align: middle;
+      margin-left: 1px;
+      margin-bottom: 10px;
     }
     ^ .balanceBoxTitle {
       color: #093649;
@@ -62,38 +64,13 @@ foam.CLASS({
       margin-left: 44px;
       margin-right: 44px;
     }
-    ^ table {
-      border-collapse: collapse;
-      margin: auto;
-      width: 962px;
+    ^ .sideBar {
+      width: 6px;
+      height: 100%;
+      background-color: %SECONDARYCOLOR%;
+      position: absolute;
     }
-    ^ thead > tr > th {
-      font-family: 'Roboto';
-      font-size: 14px;
-      background: %TABLECOLOR%;
-      color: #093649;
-      line-height: 1.14;
-      letter-spacing: 0.3px;
-      border-spacing: 0;
-      text-align: left;
-      padding-left: 15px;
-      height: 40px;
-    }
-    ^ tbody > tr > th > td {
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      padding-left: 15px;
-      height: 60px;
-    }
-    ^ .foam-u2-view-TableView-row:hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
-    ^ .foam-u2-view-TableView-row {
-      height: 40px;
-    }
+    
   `,
 
   properties: [
@@ -135,9 +112,20 @@ foam.CLASS({
             return a == "$NaN" ? 0 : a;
           })).addClass('balance').end()
         .end()
+        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
         .start()
           .add(this.DATA)
         .end();
+    }
+  ],
+  actions: [
+    {
+      name: 'exportButton',
+      label: 'Export',
+      code: function(X) {
+        debugger;
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.data.data }));
+      }
     }
   ],
   listeners: [
