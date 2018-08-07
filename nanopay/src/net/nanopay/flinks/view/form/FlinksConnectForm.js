@@ -13,7 +13,6 @@ foam.CLASS({
     'form',
     'isConnecting',
     'loadingSpinner',
-    'nSpecDAO',
     'notify',
     'pushViews',
     'rollBackView',
@@ -214,12 +213,6 @@ foam.CLASS({
       this.isConnecting = true;
       this.loadingSpinner.show();
       try {
-        // var isProd = await this.isProduction();
-        // if ( ! isProd ) {
-        //   // if it's not production always select Flinks!
-        //   this.viewData.selectedInstitution = this.bankInstitutions
-        //     .find((t) => t.name === 'FlinksCapital');
-        // }
         var response = await this.flinksAuth.authorize(
           null,
           this.viewData.selectedInstitution.name,
@@ -253,13 +246,9 @@ foam.CLASS({
         default:
           this.fail();
       }
-    },
-    // async function isProduction() {
-    //   var response = await this.nSpecDAO.find('appConfig');
-    //   var mode = response.mode.label;
-    //   return mode === 'Production';
-    // }
+    }
   ],
+
   actions: [
     {
       name: 'nextButton',

@@ -139,7 +139,7 @@ foam.CLASS({
         'Connect',
         'Security',
         'Accounts',
-        'Pad Authorization',
+        'PAD Authorization',
         'Done'
       ],
       this.views = {
@@ -152,7 +152,7 @@ foam.CLASS({
         FlinksImageForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' } },
         FlinksAccountForm: { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true },
         FlinksFailForm: { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true },
-        PADAuthorizationForm: { step: 5, label: 'Pad Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' } },
+        PADAuthorizationForm: { step: 5, label: 'PAD Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' } },
         Complete: { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' } },
       };
       this.SUPER();

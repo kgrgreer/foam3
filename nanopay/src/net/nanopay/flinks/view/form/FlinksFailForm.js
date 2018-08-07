@@ -63,7 +63,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        this.rollBackView();
+        X.form.stack.back();
       }
     }
   ]
