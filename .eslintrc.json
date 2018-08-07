@@ -22,12 +22,23 @@
         "max-len": [ "error", { "ignoreTemplateLiterals": true, "ignoreComments": true, "ignoreStrings": true } ],
         "prefer-rest-params": "off",
         "space-unary-ops": [
-            1,{
+            1, {
                 "words": true,
-                "nonwords": true
+                "nonwords": false,
+                "overrides": {
+                    "!": true
+                }
             }
         ],
         "require-jsdoc": "off",
-        "foam-style/exploded-statements": "error"
+        "foam-style/exploded-statements": "error",
+        "no-multi-spaces": [
+            1, {
+                "exceptions": {
+                    "Property": true,
+                    "VariableDeclarator": true
+                }
+            }
+        ]
     }
 }
