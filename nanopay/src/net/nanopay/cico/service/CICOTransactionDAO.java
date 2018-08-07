@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -39,9 +39,10 @@ public class CICOTransactionDAO
       return super.put_(x, obj);
     }
 
-    if ( transaction.getPaymentAccountInfo() != null ) {
-      return getDelegate().put_(x, obj);
-    }
+    // REVIEW: commented out for TransactionSubClassRefactor
+    // if ( transaction.getPaymentAccountInfo() != null ) {
+    //   return getDelegate().put_(x, obj);
+    // }
 
     try {
       if ( getDelegate().find_(x, transaction) == null ) transaction.setStatus(TransactionStatus.PENDING);

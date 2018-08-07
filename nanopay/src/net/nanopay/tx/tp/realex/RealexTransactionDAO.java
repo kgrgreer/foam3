@@ -9,7 +9,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
 import com.realexpayments.remote.sdk.domain.Card;
@@ -42,11 +42,11 @@ public class RealexTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Transaction transaction = (Transaction) obj;
-    //If transaction is realex payment
-    String txnProcessorId = (String) transaction.getTxnProcessorId();
-    if ( ! TxnProcessor.REALEX.equals(txnProcessorId) )
-      return getDelegate().put_(x, obj);
+    if ( ! ( obj instanceof RealexTransaction ) ) {
+      return super.put_(x, obj);
+    }
+
+    RealexTransaction transaction = (RealexTransaction) obj;
     //figure out the type of transaction: mobile, savedbankCard, and one-off
     PaymentRequest paymentRequest = new PaymentRequest();
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
@@ -70,10 +70,14 @@ public class RealexTransactionDAO
       long cardId = paymentAccountInfo.getPaymentCardId();
       PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find(cardId);
       DAO txnProcessorUserReferenceDAO = (DAO) x.get("txnProcessorUserReferenceDAO");
-      ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO.where(AND(
-        EQ(TxnProcessorUserReference.PROCESSOR_ID, txnProcessorId),
-        EQ(TxnProcessorUserReference.USER_ID, user.getId())
-      )).select(new ArraySink());
+      ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO
+        .where(
+               AND(
+                   EQ(TxnProcessorUserReference.PROCESSOR_ID, TxnProcessor.REALEX /*txnProcessorId*/),
+                   EQ(TxnProcessorUserReference.USER_ID, user.getId())
+                   )
+               )
+        .select(new ArraySink());
       List list = sink.getArray();
       if ( list.size() == 0 ) {
         throw new RuntimeException("Please add Payment Card again");
@@ -113,6 +117,7 @@ public class RealexTransactionDAO
       paymentAccountInfo.setToken("");
       Transaction txn = (Transaction) getDelegate().put_(x, transaction);
       if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE && txn.getStatus() == TransactionStatus.COMPLETED ) {
+        // REVIEW: this should be a Transfer, not a Transaction.
         //create new transaction for the fee
         localTransactionDAO.put(new Transaction.Builder(getX())
           .setPayerId(transaction.getPayerId())

@@ -7,7 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
 

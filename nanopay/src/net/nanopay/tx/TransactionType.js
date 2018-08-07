@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.cico.model',
+  package: 'net.nanopay.tx',
   name: 'TransactionType',
 
   documentation: 'Types for CICO transactions',
@@ -22,7 +22,6 @@ foam.ENUM({
       label: 'Verification'
     },
     {
-      // REVIEW - how is this used? - Joel
       name: 'BANK_ACCOUNT_PAYMENT',
       label: 'BankAccountPayment'
     },

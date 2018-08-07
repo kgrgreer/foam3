@@ -8,7 +8,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.cico.model.TransactionType'
+    'net.nanopay.tx.TransactionType'
   ],
 
   imports: [
