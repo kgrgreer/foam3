@@ -44,25 +44,6 @@ function install {
     git config submodule.recurse true
 }
 
-function backup {
-  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
-    # Preventing this from running on non AWS
-    return
-  fi
-
-  BACKUP_HOME="/opt/backup"
-
-  # backup journals in event of file incompatiblity between versions
-  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-      printf "backup\n"
-      DATE=$(date +%Y%m%d_%H%M%S)
-      mkdir -p "$BACKUP_HOME/$DATE"
-      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
-
-      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-  fi
-}
-
 function setup_jce {
   local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
 
@@ -121,48 +102,6 @@ function migrate_journals {
     fi
 }
 
-function status_tomcat {
-    ps -a | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" > /dev/null
-    return $?
-}
-
-# remove this after everyone has switched to running jetty
-function shutdown_tomcat {
-    #
-    # Don't call shutdown.sh if the pid doesn't exists, it will exit.
-    #
-    PID=$(test -f "$CATALINA_PID" && cat "$CATALINA_PID")
-    if [ ! -z "${PID}" ]; then
-        if ps -p "${PID}" | grep -q 'java'; then
-            "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
-        fi
-    fi
-
-    if status_tomcat -eq 0 ; then
-        printf "killing tomcat..."
-        kill $(ps -ef | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" | awk '{print $2}')
-        wait_time=15
-        while status_tomcat -eq 0
-        do
-            if [ "$wait_time" -eq 0 ]; then
-                break;
-            fi
-            wait_time=$(($wait_time - 1))
-
-            printf "."
-            sleep 1;
-        done
-        if status_tomcat -eq 0 ; then
-            printf "failed to kill tomcat process.\n"
-            exit 1
-        else
-            printf "killed.\n"
-        fi
-    fi
-
-    backup
-}
-
 function build_jar {
     echo "Building nanos jar"
     cd "$PROJECT_HOME"
@@ -201,9 +140,8 @@ function beginswith {
     case $2 in "$1"*) true;; *) false;; esac;
 }
 
-function setup_catalina_env {
+function cleanup_tomcat {
   export CATALINA_PID="/tmp/catalina_pid"
-  touch "$CATALINA_PID"
 
   # Handle old machines which have CATALINA_HOME defined
   if [ -n "$CATALINA_HOME" ]; then
@@ -213,7 +151,6 @@ function setup_catalina_env {
   fi
 
   while [ -z "$CATALINA_HOME" ]; do
-      #printf "Searching for catalina... "
       testcatalina /Library/Tomcat
       if [ ! -z "$CATALINA_HOME" ]; then
           # local development
@@ -222,7 +159,6 @@ function setup_catalina_env {
       fi
       testcatalina /opt/tomcat
       if [ ! -z "$CATALINA_HOME" ]; then
-          # TODO: place on S3 mount
           break;
       fi
       testcatalina "$HOME/tools/tomcat"
@@ -230,29 +166,10 @@ function setup_catalina_env {
           break
       fi
       printf "CATALINA_HOME not found.\n"
-      printf "Set CATALINA_HOME environment variable to the location of Tomcat."
-      exit 1
+      return
   done
 
-  if [ -z "$CATALINA_BASE" ]; then
-      export CATALINA_BASE="$CATALINA_HOME"
-  fi
-  if [ -z "$CATALINA_PORT_HTTP" ]; then
-      export CATALINA_PORT_HTTP=8080
-  fi
-  if [ -z "$CATALINA_PORT_HTTPS" ]; then
-      export CATALINA_PORT_HTTPS=8443
-  fi
-  if [ -z "$CATALINA_DOC_BASE" ]; then
-      export CATALINA_DOC_BASE="$PROJECT_HOME"
-  fi
-
-  if [ -z "$CATALINA_OPTS" ]; then
-      export CATALINA_OPTS=""
-  fi
-  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
-  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
-  CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
+  "$CATALINA_HOME/bin/shutdown.sh" -force || true &>/dev/null
 }
 
 function setenv {
@@ -315,8 +232,6 @@ function setenv {
         mkdir -p $JOURNAL_HOME
         echo "INFO :: Cleaned up temporary journal files."
     fi
-
-    setup_catalina_env
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
@@ -426,7 +341,7 @@ elif [ "$START_ONLY" -eq 1 ]; then
     start_nanos
 else
     # cleanup old tomcat instances
-    shutdown_tomcat
+    cleanup_tomcat
     
     build_jar
     deploy_journals
