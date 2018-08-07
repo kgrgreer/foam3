@@ -280,7 +280,7 @@ foam.CLASS({
     { name: 'HomeAddressLabel', message: 'Home Address' },
     { name: 'StNoLabel', message: 'St No. *' },
     { name: 'StNameLabel', message: 'St Name *' },
-    { name: 'AddressLineLabel', message: 'Address line' },
+    { name: 'AddressLineLabel', message: 'Address Line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
@@ -438,20 +438,6 @@ foam.CLASS({
         }));
         return false;
       }
-      // if ( this.middleName ) {
-      //   if ( this.middleNameField.length > 70 ) {
-      //     this.add(this.NotificationMessage.create({
-      //         message: 'Middle initials cannot exceed 70 characters.',
-      //         type: 'error' }));
-      //     return false;
-      //   }
-      //   if ( /\d/.test(this.middleName) ) {
-      //     this.add(this.NotificationMessage.create({
-      //         message: 'Middle initials cannot contain numbers',
-      //         type: 'error' }));
-      //     return false;
-      //   }
-      // }
       if ( this.lastName.length > 70 ) {
         this.add(this.NotificationMessage.create({ message:
           'Last name cannot exceed 70 characters.',
