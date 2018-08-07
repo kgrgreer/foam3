@@ -15,7 +15,7 @@ import java.util.Date;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.INSTANCE_OF
+import static foam.mlang.MLang.INSTANCE_OF;
 
 public class EftSuccessCronjob implements ContextAgent {
   @Override

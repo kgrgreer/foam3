@@ -45,15 +45,10 @@ foam.CLASS({
     {
       name: 'status',
       javaFactory: `
-// Logger logger = (Logger) getX().get("logger");
-// System.out.println("logger: "+logger);
-// logger.info("localTransactionDAO: ", getX().get("localTransactionDAO"));
-//         Transaction txn = (Transaction) findCurrent(getX());
-//         if ( txn != null ) {
-//           return txn.getStatus();
-//         } else {
-//           return TransactionStatus.COMPLETED;
-//         }
+        Transaction txn = (Transaction) findCurrent(getX());
+        if ( txn != null ) {
+          return txn.getStatus();
+        }
         return TransactionStatus.COMPLETED;
      `
     }
@@ -67,6 +62,10 @@ foam.CLASS({
       },
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
           name: 'transaction',
           javaType: 'Transaction'
         }
@@ -79,6 +78,8 @@ foam.CLASS({
           replacement[queued.length] = transaction;
           setQueued(replacement);
         }
+        // Logger logger = (Logger) getX().get("logger");
+        // logger.debug(this.getClass().getSimpleName(), "add", this);
       `
     },
     {
@@ -89,6 +90,10 @@ foam.CLASS({
         });
       },
       args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
         {
           name: 'transaction',
           javaType: 'net.nanopay.tx.model.Transaction'
@@ -113,11 +118,21 @@ foam.CLASS({
             setQueued(replacement);
           }
         }
+        // Logger logger = (Logger) getX().get("logger");
+        // logger.debug(this.getClass().getSimpleName(), "remove", this);
       `
     },
     {
       name: 'next',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaCode: `
+        // Logger logger = (Logger) getX().get("logger");
+        // logger.debug(this.getClass().getSimpleName(), "next", this);
         if ( getCurrent() != 0 ) {
           Long[] completed = java.util.Arrays.copyOf(getCompleted(), getCompleted().length + 1);
           completed[completed.length -1] = getCurrent();
@@ -126,20 +141,66 @@ foam.CLASS({
         }
         if ( getQueued().length > 0 ) {
           Transaction txn = getQueued()[0];
-          remove(txn);
+          remove(x, txn);
           txn.setParent(getId());
           DAO dao = (DAO) getX().get("localTransactionDAO");
           txn = (Transaction) dao.put(txn);
-          txn = (Transaction) dao.find_(getX(), txn.getId());
+          txn = (Transaction) dao.find_(x, txn.getId());
           if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
             // Digital -> Digital Transactions complete immediately, for example.
-            next();
+            next(x);
           } else {
             setCurrent(txn.getId());
           }
         }
 `
+    },
+    {
+      name: 'createTranfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaReturns: 'Transfer[]',
+      javaCode: `
+        return new Transfer[] {};
+      `
+    },
+    {
+      name: 'transactions',
+      javaReturns: 'Transaction[]',
+      javaCode: `
+        ArrayList<Transaction> list = java.util.Arrays.stream(getQueued()).collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+        Transaction cur = findCurrent(getX());
+        if ( cur != null ) {
+          list.add(cur);
+        }
+        DAO dao = (DAO) getX().get("localTransactionDAO");
+        Long[] completed = getCompleted();
+        for ( int i = 0; i < completed.length; i++ ) {
+          Transaction txn = (Transaction) dao.find_(getX(), completed[i]);
+          list.add(txn);
+        }
+        return list.toArray(new Transaction[list.size()]);
+      `
+    },
+    {
+      name: 'toString',
+      javaString: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("[");
+        Transaction[] txns = transactions();
+        for ( int i = 0; i < txns.length; i++ ) {
+          sb.append(txns[i]);
+          sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
+      `
     }
   ]
 });
-

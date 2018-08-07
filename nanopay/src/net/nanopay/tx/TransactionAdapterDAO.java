@@ -68,7 +68,7 @@ public class TransactionAdapterDAO
            destinationAccount instanceof DigitalAccount ) ||
          ( destinationAccount instanceof CABankAccount &&
            sourceAccount instanceof DigitalAccount ) ) {
-      AlternaTransaction t = new AlternaTransaction();
+      AlternaTransaction t = new AlternaTransaction.Builder(x).build();
       t.copyFrom(txn);
       if ( sourceAccount instanceof CABankAccount ) {
         t.setType(TransactionType.CASHIN);
@@ -81,29 +81,29 @@ public class TransactionAdapterDAO
     // Canadian Bank to Bank
     if ( sourceAccount instanceof CABankAccount &&
          destinationAccount instanceof CABankAccount ) {
-      CompositeTransaction composite = new CompositeTransaction();
+      CompositeTransaction composite = new CompositeTransaction.Builder(x).build();
       composite.copyFrom(txn);
 
       User sourceUser = sourceAccount.findOwner(x);
       User destinationUser = destinationAccount.findOwner(x);
       DigitalAccount destinationDigital = DigitalAccount.findDefault(x, destinationUser, "CAD");
 
-      AlternaTransaction ci = new AlternaTransaction();
+      AlternaTransaction ci = new AlternaTransaction.Builder(x).build();
       ci.copyFrom(txn);
       ci.setDestinationAccount(destinationDigital.getId());
       ci.setPayeeId(destinationUser.getId());
       ci.setType(TransactionType.CASHIN);
-      composite.add(ci);
+      composite.add(x, ci);
 
-      AlternaTransaction co = new AlternaTransaction();
+      AlternaTransaction co = new AlternaTransaction.Builder(x).build();
       co.copyFrom(txn);
       co.setSourceAccount(destinationDigital.getId());
-      ci.setPayerId(destinationUser.getId());
-      ci.setType(TransactionType.CASHOUT);
-      composite.add(co);
-
+      co.setPayerId(destinationUser.getId());
+      co.setType(TransactionType.CASHOUT);
+      composite.add(x,co);
+ 
       composite = (CompositeTransaction) super.put_(x, composite);
-      composite.next();
+      composite.next(x);
       return composite;
     }
 

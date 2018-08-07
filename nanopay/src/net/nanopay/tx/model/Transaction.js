@@ -223,8 +223,10 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-         return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT) ||
-        getType().equals(TransactionType.NONE);
+         return
+           getStatus().equals(TransactionStatus.COMPLETED) ||
+           getType().equals(TransactionType.CASHOUT) ||
+           getType().equals(TransactionType.NONE);
       `
     },
     {
@@ -234,7 +236,6 @@ foam.CLASS({
       ],
       javaReturns: 'Transfer[]',
       javaCode: `
-        // Don't perform balance transfer if status in blacklist
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
@@ -250,6 +251,25 @@ foam.CLASS({
              new Transfer((Long) getSourceAccount(), -getTotal()),
              new Transfer((Long) getDestinationAccount(),  getTotal())
         };
+      `
+    },
+    {
+      name: 'toString',
+      javaReturns: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("(");
+        sb.append("id: ");
+        sb.append(getId());
+        sb.append(", ");
+        sb.append("type: ");
+        sb.append(getType());
+        sb.append(", ");
+        sb.append("status: ");
+        sb.append(getStatus());
+        sb.append(")");
+        return sb.toString();
       `
     }
   ]

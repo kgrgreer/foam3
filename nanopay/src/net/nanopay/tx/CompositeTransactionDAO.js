@@ -29,7 +29,7 @@ foam.CLASS({
              txn.getStatus() == TransactionStatus.COMPLETED ) {
            Transaction parent = txn.findParent(x);
            if ( parent != null && parent instanceof CompositeTransaction ) {
-             ((CompositeTransaction)parent).next();
+             ((CompositeTransaction)parent).next(x);
            } else {
              return getDelegate().put_(x, txn);
            }
