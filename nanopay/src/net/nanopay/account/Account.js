@@ -10,10 +10,6 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
-  imports: [
-    'balanceDAO'
-  ],
-
   properties: [
     {
       class: 'Long',
@@ -73,14 +69,8 @@ foam.CLASS({
       name: 'findBalance',
       code: function(x) {
         return x.balanceDAO.find(this.id).then(function(balance) {
-          if ( balance != null ) {
-            console.debug('Balance found for account', this.id);
-            return balance.balance;
-          } else {
-            console.debug('Balance not for found for account', this.id);
-          }
-          return null;
-        }.bind(this));
+          return balance != null ? balance.balance : 0;
+        });
       },
       args: [
         {
@@ -98,7 +88,7 @@ foam.CLASS({
         } else {
           ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
-        return null;
+        return 0;
       `
     }
   ]

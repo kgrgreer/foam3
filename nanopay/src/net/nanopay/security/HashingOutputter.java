@@ -35,7 +35,6 @@ public class HashingOutputter
 
   @Override
   public synchronized String stringify(FObject obj) {
-    rollDigests();
     super.stringify(obj);
     outputDigest();
     return stringWriter_.toString();
@@ -43,19 +42,9 @@ public class HashingOutputter
 
   @Override
   public synchronized String stringifyDelta(FObject oldFObject, FObject newFObject) {
-    rollDigests();
     super.stringifyDelta(oldFObject, newFObject);
     outputDigest();
     return stringWriter_.toString();
-  }
-
-  /**
-   * Updates the hash function with the previously stored digest
-   */
-  private synchronized void rollDigests() {
-    if ( hashingJournal_.getRollDigests() && ! SafetyUtil.isEmpty(hashingJournal_.getPreviousDigest()) ) {
-      hashingWriter_.update(Hex.decode(hashingJournal_.getPreviousDigest()));
-    }
   }
 
   /**
@@ -68,10 +57,19 @@ public class HashingOutputter
       return;
     }
 
+    // calculate digest
     String algorithm = hashingJournal_.getAlgorithm();
-    String digest = Hex.toHexString(hashingWriter_.digest());
-    hashingJournal_.setPreviousDigest(digest);
+    byte[] digest = hashingWriter_.digest();
 
+    // hash digests
+    if ( hashingJournal_.getRollDigests() && hashingJournal_.getPreviousDigest() != null ) {
+      hashingWriter_.update(hashingJournal_.getPreviousDigest());
+      hashingWriter_.update(digest);
+      digest = hashingWriter_.digest();
+    }
+
+    // set previous digest and output journal
+    hashingJournal_.setPreviousDigest(digest);
     stringWriter_.append(",{")
       .append(beforeKey_())
       .append("algorithm")
@@ -83,7 +81,7 @@ public class HashingOutputter
       .append("digest")
       .append(afterKey_())
       .append(":\"")
-      .append(digest)
+      .append(Hex.toHexString(digest))
       .append("\"}");
   }
 }
