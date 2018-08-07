@@ -3,23 +3,22 @@ foam.CLASS({
   name: 'FlinksConnectForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   requires: [
-    'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
+    'foam.u2.PopupView'
   ],
   imports: [
+    'bankInstitutions',
+    'fail',
+    'flinksAuth',
     'form',
     'isConnecting',
-    'group',
-    'logo',
-    'window',
     'loadingSpinner',
-    'flinksAuth',
-    'notify',
-    'fail',
-    'success',
-    'pushViews',
     'nSpecDAO',
-    'bankInstitutions'
+    'notify',
+    'pushViews',
+    'rollBackView',
+    'success',
+    'window'
   ],
 
   axioms: [
@@ -279,7 +278,7 @@ foam.CLASS({
       isEnabled: (isConnecting) => ! isConnecting,
       code: function(X) {
         // close the form
-        X.form.stack.back();
+        this.rollBackView();
       }
     },
     {

@@ -212,7 +212,7 @@ foam.CLASS({
       // return;
     },
     async function goToBankVerificationForm() {
-      var account = this.viewData.bankAccounts[0]; // doing this cause this view add only one account at a time.
+      var account = this.viewData.bankAccounts[0]; // doing this cause this view adds only one account at a time.
       var user = this.viewData.user;
       var padCapture = this.PadCapture.create({
         firstName: user.firstName,

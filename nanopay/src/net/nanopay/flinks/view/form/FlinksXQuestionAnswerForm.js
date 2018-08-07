@@ -6,9 +6,11 @@ foam.CLASS({
   imports: [
     'form',
     'isConnecting',
-    'viewData',
-    'loadingSpinner'
+    'loadingSpinner',
+    'rollBackView',
+    'viewData'
   ],
+
   requires: [
     'foam.u2.view.StringArrayView',
     'foam.u2.tag.Input',
@@ -223,7 +225,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        X.form.stack.back();
+        this.rollBackView();
       }
     }
   ]

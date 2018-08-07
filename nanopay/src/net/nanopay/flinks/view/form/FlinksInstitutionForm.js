@@ -6,9 +6,9 @@ foam.CLASS({
   imports: [
     'form',
     'isConnecting',
-    'stack',
     'nSpecDAO',
-    'pushViews'
+    'pushViews',
+    'stack'
   ],
 
   exports: [
@@ -150,49 +150,53 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitleFlinks')
-          .add(this.Step)
+        .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .forEach(this.bankInstitutions, function(institution, index) {
-            this.start('div').addClass('optionSpacer').addClass('institution')
-              .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
-              .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
-                .on('click', () => self.selectedInstitution = institution)
-              .end();
-            })
+        .forEach(this.bankInstitutions, function(institution, index) {
+          this.start('div').addClass('optionSpacer').addClass('institution')
+            .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
+            .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
+            .on('click', () => self.selectedInstitution = institution)
+            .end();
+        })
         .end()
         .start('div').style({ 'margin-top': '15px', 'height': '40px' })
-          .tag(this.NEXT_BUTTON)
-          .tag(this.CLOSE_BUTTON)
+        .tag(this.NEXT_BUTTON)
+        .tag(this.CLOSE_BUTTON)
         .end()
         .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
-          .add('Can\'t find your institution? Click here.')
-          .on('click', this.otherBank)
+        .add('Can\'t find your institution? Click here.')
+        .on('click', this.otherBank)
         .end()
         .start('div').style({ 'clear': 'both' }).end();
 
-        // get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
-        // do not show Flinks demo in Production mode
-//         this.nSpecDAO.find('appConfig').then(function(response) {
-//           self.mode = response.service.mode.label;
-//           if ( self.mode && self.mode !== 'Production' ) {
-//             self.subContent.start('div').addClass('optionSpacer').addClass('institution')
-//             .addClass(self.selectedOption$.map(function(o) {
-// return o == self.bankImgs[15].index ? 'selected' : '';
-// }))
-//             .start({ class: 'foam.u2.tag.Image', data: self.bankImgs[15].image }).addClass('image').end()
-//             .on('click', function() {
-//               self.selectedOption = self.bankImgs[15].index;
-//             })
-//           .end();
-//           }
-        // });
+      // get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
+      // do not show Flinks demo in Production mode
+      //         this.nSpecDAO.find('appConfig').then(function(response) {
+      //           self.mode = response.service.mode.label;
+      //           if ( self.mode && self.mode !== 'Production' ) {
+      //             self.subContent.start('div').addClass('optionSpacer').addClass('institution')
+      //             .addClass(self.selectedOption$.map(function(o) {
+      // return o == self.bankImgs[15].index ? 'selected' : '';
+      // }))
+      //             .start({ class: 'foam.u2.tag.Image', data: self.bankImgs[15].image }).addClass('image').end()
+      //             .on('click', function() {
+      //               self.selectedOption = self.bankImgs[15].index;
+      //             })
+      //           .end();
+      //           }
+      // });
     }
   ],
 
   listeners: [
     function otherBank() {
-    this.form.otherBank();
+      this.form.stack.push({
+        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+        wizardTitle: 'Add Bank Account',
+        startAtValue: 0
+      }, this.parentNode);
     }
   ],
 
@@ -201,7 +205,7 @@ foam.CLASS({
       name: 'nextButton',
       label: 'Continue',
       isEnabled: function(isConnecting, selectedInstitution) {
-        return ! isConnecting || selectedInstitution;
+        return ! isConnecting && selectedInstitution;
       },
       code: function(X) {
         this.pushViews('FlinksConnectForm');
