@@ -88,7 +88,7 @@ foam.CLASS({
         } else {
           ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
-        return 0;
+        return 0L;
       `
     }
   ]
