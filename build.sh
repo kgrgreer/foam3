@@ -367,7 +367,6 @@ function usage {
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -i : Install npm and git hooks"
     echo "  -m : Run migration scripts"
-    echo "  -t : Run tests."
     echo "  -h : Print usage information."
     echo "  -t : Run tests."
     echo ""
