@@ -269,14 +269,14 @@ foam.CLASS({
     {
       name: 'goBack',
       code: function(X) {
-        X.stack.push({
+        ctrl.stack.push({
           class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
         });
       }
     },
     {
       name: 'goNext',
-      code: function() {
+      code: function(X) {
         if ( ! this.validate() ) {
           return;
         }
@@ -292,7 +292,7 @@ foam.CLASS({
             this.goToBankDoneForm();
             break;
           default:
-            this.stack.push({
+            ctrl.stack.push({
               class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
             });
         }
