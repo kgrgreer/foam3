@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.security.util.SecurityUtil',
+    'foam.util.SecurityUtil',
     'org.bouncycastle.util.encoders.Base64',
     'javax.crypto.Cipher',
     'javax.crypto.KeyGenerator',

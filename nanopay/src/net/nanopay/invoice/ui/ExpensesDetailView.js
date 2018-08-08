@@ -20,7 +20,7 @@ foam.CLASS({
     'currentAccount',
     'accountDAO as bankAccountDAO',
     'ctrl',
-    'hideSaleSummary',
+    'hideSummary',
     'invoiceDAO',
     'stack',
     'user'
@@ -133,7 +133,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideSaleSummary = true;
+      this.hideSummary = true;
 
       this
         .addClass(this.myClass())
@@ -194,7 +194,7 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        this.hideSaleSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     },
@@ -218,10 +218,8 @@ foam.CLASS({
           return;
         }
 
-        this.balanceDAO.find(
-          this.currentAccount.id
-        ).then(function( accountBalance ) {
-          if ( accountBalance.balance < self.data.amount ) {
+        this.currentAccount.findBalance(this).then(function(balance) {
+          if ( balance < self.data.amount ) {
             // Not enough digital cash balance
             self.bankAccountDAO.where(
               self.AND(
