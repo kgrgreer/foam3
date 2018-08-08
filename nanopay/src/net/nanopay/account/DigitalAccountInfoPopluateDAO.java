@@ -5,14 +5,15 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.SUM;
-import static foam.mlang.MLang.OR;
 
-import foam.mlang.sink.Sum;
+import foam.dao.Sink;
+import foam.mlang.sink.*;
 import foam.nanos.auth.User;
 import net.nanopay.tx.model.Transaction;
 import java.util.ArrayList;
+
+import static foam.mlang.MLang.*;
+
 
 public class DigitalAccountInfoPopluateDAO
   extends ProxyDAO {
@@ -31,49 +32,53 @@ public class DigitalAccountInfoPopluateDAO
     // Grabs all Digital Accounts
     ArraySink           accountDAOSink = (ArraySink) accountDAO.where(
       EQ(Account.TYPE, "DigitalAccount"))
-      .select(new ArraySink());
+      .select_(x, new ArraySink(), skip, limit, order, predicate);
     ArrayList<Account>  accountList    = (ArrayList) accountDAOSink.getArray();
     User                user;
-    DAO                 accountsTranDAO;
-    Sum                 sumSent;
-    Sum                 sumRecieved;
-    int                 listSent;
-    int                 listRecieved;
-
 
     if ( sink == null ){
       sink = new ArraySink();
     }
 
+    GroupBy sentSum = (GroupBy) transactionDAO.select(GROUP_BY(Transaction.SOURCE_ACCOUNT,SUM(Transaction.AMOUNT)));
+    GroupBy recievedSum =  (GroupBy) transactionDAO.select(GROUP_BY(Transaction.DESTINATION_ACCOUNT,SUM(Transaction.AMOUNT)));
+    GroupBy sentCount = (GroupBy) transactionDAO.select(GROUP_BY(Transaction.SOURCE_ACCOUNT,COUNT()));
+    GroupBy recievedCount =  (GroupBy) transactionDAO.select(GROUP_BY(Transaction.DESTINATION_ACCOUNT,COUNT()));
+
     // Walk through the list of digital accounts and create a new new Info Model for each
     for ( Account account : accountList ) {
       user            = (User) userDAO.find(account.getOwner());
-
-      // Grab all transactions that have to do with the digital account
-      accountsTranDAO = transactionDAO.where(
-        OR(
-          EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
-          EQ(Transaction.SOURCE_ACCOUNT, account.getId()
-          )));
-
-      // Get the Sum of all recieved and sent amounts and the number of transactions each account has been a part of
-      sumSent         = (Sum) accountsTranDAO.where(
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId()))
-        .select(SUM(Transaction.AMOUNT));
-      sumRecieved     = (Sum) accountsTranDAO.where(
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()))
-        .select(SUM(Transaction.AMOUNT));
-      listSent        = ((ArraySink) accountsTranDAO.where(
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId()))
-        .select(new ArraySink())).getArray().size();
-      listRecieved    = ((ArraySink) accountsTranDAO.where(
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()))
-        .select(new ArraySink())).getArray().size();
-
       //Create the object and load the data into it
       DigitalAccountInfo digitalInfo = new DigitalAccountInfo();
       digitalInfo.setAccountId(account.getId());
-      digitalInfo.setOwner(user.getFirstName()+" "+user.getLastName());
+      digitalInfo.setOwner(user.label());
+
+      try{
+        digitalInfo.setTransactionsRecieved(((Count)recievedCount.getGroups().get(account.getId())).getValue());
+      } catch(Exception e) {
+        System.out.println("TRANSACTION COUNT RECIEVED ERROR:" + e);
+        digitalInfo.setTransactionsRecieved(0);
+      }
+      try{
+        digitalInfo.setTransactionsSent(((Count)sentCount.getGroups().get(account.getId())).getValue());
+      } catch(Exception e) {
+        System.out.println("TRANSACTION COUNT SENT ERROR:" + e);
+        digitalInfo.setTransactionsSent(0);
+      }
+
+      try{
+        digitalInfo.setTransactionsSumRecieved(((Sum)recievedSum.getGroups().get(account.getId())).getValue());
+      } catch(Exception e) {
+        System.out.println("TRANSACTION SUM RECIEVED ERROR:" + e);
+        digitalInfo.setTransactionsSumRecieved(0);
+      }
+      try{
+        digitalInfo.setTransactionsSumSent(((Sum)sentSum.getGroups().get(account.getId())).getValue());
+      } catch(Exception e) {
+        System.out.println("TRANSACTION SUM SENT ERROR:" + e);
+        digitalInfo.setTransactionsSumSent(0);
+      }
+
       try {
         digitalInfo.setBalance((Long) account.findBalance(x));
       }
@@ -81,12 +86,8 @@ public class DigitalAccountInfoPopluateDAO
       {
         digitalInfo.setBalance(0);
       }
-      digitalInfo.setTransactionsRecieved(Long.valueOf(listRecieved));
-      digitalInfo.setTransactionsSent(Long.valueOf(listSent));
-      digitalInfo.setTransactionsSumRecieved(sumRecieved.getValue());
-      digitalInfo.setTransactionsSumSent(sumSent.getValue());
-      digitalInfo.setCurrency(account.getDenomination());
 
+      digitalInfo.setCurrency(account.getDenomination());
       sink.put(digitalInfo, null);
     }
     return sink;
