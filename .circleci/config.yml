@@ -35,13 +35,13 @@ jobs:
       # cache maven repositories
       - restore_cache:
           keys:
-            - maven-v1-{{ checksum "pom-standalone.xml" }}
+            - maven-v1-{{ checksum "pom.xml" }}
             - maven-v1-
       - run: sudo ./build.sh -t
       - save_cache:
           paths:
             - ~/.m2
-          key: maven-v1-{{ checksum "pom-standalone.xml" }}
+          key: maven-v1-{{ checksum "pom.xml" }}
 
 workflows:
   version: 2
