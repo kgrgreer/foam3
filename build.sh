@@ -345,15 +345,17 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -c : Clean first"
-    echo "  -b : Build only"
-    echo "  -s : Start only."
-    echo "  -d : Run with JDPA debugging enabled."
-    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
-    echo "  -i : Install npm and git hooks"
-    echo "  -m : Run migration scripts"
-    echo "  -h : Print usage information."
+    echo "  -b : Build but don't start nanos."
+    echo "  -n : Start nanos with whatever was last built."
+    echo "  -s : Stop a running daemonized nanos."
+    echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -t : Run tests."
+    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
+    echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -m : Run migration scripts"
+    echo "  -i : Install npm and git hooks"
+    echo "  -h : Print usage information."
+    echo "  -d : Run with JDPA debugging enabled."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
 }
@@ -373,18 +375,18 @@ STOP_ONLY=0
 RESTART=0
 STATUS=0
 
-while getopts "bncdimtzsgh" opt ; do
+while getopts "bnsgtzcmidh" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         n) START_ONLY=1 ;;
-        c) CLEAN_BUILD=1 ;;
-        d) DEBUG=1 ;;
-        i) INSTALL=1 ;;
-        m) RUN_MIGRATION=1 ;;
-        t) TEST=1 ;;
-        z) DAEMONIZE=1 ;;
         s) STOP_ONLY=1 ;;
         g) STATUS=1 ;;
+        t) TEST=1 ;;
+        z) DAEMONIZE=1 ;;
+        c) CLEAN_BUILD=1 ;;
+        m) RUN_MIGRATION=1 ;;
+        i) INSTALL=1 ;;
+        d) DEBUG=1 ;;
         h) usage ; exit 0 ;;
         ?) usage ; exit 1 ;;
     esac
