@@ -139,8 +139,7 @@ foam.CLASS({
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'data',
-      value: this.exportData
+      name: 'data'
     },
     'exportData'
   ],
@@ -152,9 +151,10 @@ foam.CLASS({
     { name: 'FileSizeError', message: 'File size exceeds 10MB' }
   ],
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
+      this.data = this.exportData;
 
       this
       .on('dragover', this.onDragOver)
@@ -201,11 +201,11 @@ foam.CLASS({
       .end()
 
     } ,
-    function onInvoiceFileRemoved (fileNumber) {
-      // this.document.querySelector('.attachment-input').value = null;
+    function onInvoiceFileRemoved(fileNumber) {
       var data = Array.from(this.data);
       data.splice(fileNumber - 1, 1);
       this.data = data;
+      this.document.querySelector('.document-input').value = null;
     }
   ],
   actions:[
