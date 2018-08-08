@@ -32,7 +32,7 @@ foam.CLASS({
     'foam.dao.ArrayDAO'
   ],
 
-  css:`
+  css: `
     ^ .sectionTitle {
       line-height: 16px;
       font-size: 14px;
@@ -504,7 +504,7 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
-    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.'}
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' }
   ],
 
   properties: [
@@ -512,7 +512,7 @@ foam.CLASS({
       name: 'principalOwnersDAO',
       factory: function() {
         if ( this.viewData.user.principalOwners ) {
-          if ( this.viewData.user.principalOwners.length > 0) this.addLabel = 'Add Another Principal Owner';
+          if ( this.viewData.user.principalOwners.length > 0 ) this.addLabel = 'Add Another Principal Owner';
           return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
@@ -627,7 +627,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           }
-        })
+        });
       },
       factory: function() {
         return this.viewData.country || 'CA';
@@ -651,8 +651,8 @@ foam.CLASS({
     {
       name: 'provinceField',
       view: function(_, X) {
-        var choices = X.data.slot(function (countryField) {
-          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ""));
+        var choices = X.data.slot(function(countryField) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ''));
         });
         return foam.u2.view.ChoiceView.create({
           objToChoice: function(region) {
@@ -708,12 +708,14 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.principleTypeField = 'Shareholder';
-      var modeSlot = this.isDisplayMode$.map(function(mode) { return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW; });
+      var modeSlot = this.isDisplayMode$.map(function(mode) {
+        return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      });
       var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
         return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-      })
+      });
       this.scrollToTop();
-      
+
       this.addClass(this.myClass())
         .start('div')
           // TODO: TABLE SHOULD GO HERE
@@ -749,7 +751,9 @@ foam.CLASS({
                 foam.core.Property.create({
                   name: 'edit',
                   label: '',
-                  factory: function() { return {}; },
+                  factory: function() {
+                    return {};
+                  },
                   tableCellFormatter: function(value, obj, axiom) {
                     this.start('div').addClass('editButton')
                       .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg'}).end()
@@ -766,7 +770,7 @@ foam.CLASS({
             }, {}, this.tableViewElement$).end()
           .end()
 
-          .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({'margin-top':'0'}).end()
+          .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
           .start('div').addClass('checkBoxContainer')
             .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
@@ -963,7 +967,7 @@ foam.CLASS({
 
     function editPrincipalOwner(user, editable) {
       var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
-      formHeaderElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.isSameAsAdmin = false;
 
       this.firstNameField = user.firstName;
@@ -1023,7 +1027,7 @@ foam.CLASS({
            this.streetNameField ||
            this.suiteField ||
            this.cityField ||
-           this.postalCodeField) {
+           this.postalCodeField ) {
         return true;
       }
       return false;
@@ -1031,7 +1035,7 @@ foam.CLASS({
 
     function deletePrincipalOwner(obj) {
       var self = this;
-      this.principalOwnersDAO.remove(obj).then(function(deleted){
+      this.principalOwnersDAO.remove(obj).then(function(deleted) {
         self.prevDeletedPrincipalOwner = deleted;
       });
     },
@@ -1059,7 +1063,7 @@ foam.CLASS({
 
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-      if( isNaN(this.birthdayField) && this.birthdayField != null ){
+      if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
         this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
         return;
       }
@@ -1177,7 +1181,7 @@ foam.CLASS({
       this.principalOwnersDAO.select().then(function(principalOwners) {
         self.viewData.user.principalOwners = principalOwners.array;
         self.principalOwnersCount = principalOwners.array.length;
-        if ( self.principalOwnersCount > 0) self.addLabel = 'Add Another Principal Owner';
+        if ( self.principalOwnersCount > 0 ) self.addLabel = 'Add Another Principal Owner';
         else self.addLabel = 'Add';
       });
     }
