@@ -10,7 +10,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -74,7 +74,7 @@ public class EFTReturnFileProcessor implements ContextAgent
         for ( int j = 0; j < list.size(); j++ ) {
           EFTReturnRecord item = (EFTReturnRecord) list.get(j);
 
-          Transaction tran = (Transaction)transactionDao.find(AND(
+          AlternaTransaction tran = (AlternaTransaction)transactionDao.find(AND(
             EQ(Transaction.ID, item.getExternalReference()),
             EQ(Transaction.AMOUNT, (long)(item.getAmount() * 100)),
             OR(
@@ -85,32 +85,24 @@ public class EFTReturnFileProcessor implements ContextAgent
 
           // if corresponding transaction is found
           if ( tran != null ) {
-            tran = (Transaction) tran.fclone();
-
-            AlternaTxnProcessorData data = (AlternaTxnProcessorData) tran.getTxnProcessorData();
-            if ( data == null ) {
-              data = new AlternaTxnProcessorData();
-            } else {
-              data = (AlternaTxnProcessorData) data.fclone();
-            }
-            data.setReturnCode(item.getReturnCode());
-            data.setReturnDate(item.getReturnDate());
+            tran = (AlternaTransaction) tran.fclone();
+            tran.setReturnCode(item.getReturnCode());
+            tran.setReturnDate(item.getReturnDate());
 
             if ( "900".equals(item.getReturnCode()) ) {
-              data.setReturnType("Reject");
+              tran.setReturnType("Reject");
             } else {
-              data.setReturnType("Return");
+              tran.setReturnType("Return");
             }
-            tran.setTxnProcessorData(data);
 
             if ( tran.getStatus() == TransactionStatus.SENT ) {
               tran.setStatus(TransactionStatus.DECLINED);
               sendEmail(x, "Transaction was rejected or returned by EFT return file",
-                "Transaction id: " + tran.getId() + ", Return code: " + data.getReturnCode() + ", Return date: " + data.getReturnDate());
-            } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(data.getReturnType()) ) {
+                "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
+            } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(tran.getReturnType()) ) {
               tran.setStatus(TransactionStatus.DECLINED);
               sendEmail(x, "Transaction was returned outside of the 2 business day return period",
-                "Transaction id: " + tran.getId() + ", Return code: " + data.getReturnCode() + ", Return date: " + data.getReturnDate());
+                "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
             }
 
             transactionDao.put(tran);

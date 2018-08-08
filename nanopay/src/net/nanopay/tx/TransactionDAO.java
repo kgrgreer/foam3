@@ -11,7 +11,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.account.Balance;
 
@@ -59,6 +59,10 @@ public class TransactionDAO
   public FObject put_(X x, FObject obj) {
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
+
+    if ( transaction.getAmount() < 0) {
+      throw new RuntimeException("Amount cannot be negative");
+    }
 
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&

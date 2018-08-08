@@ -63,7 +63,7 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()
-            .start('h3').add(this.data.date.toISOString()
+            .start('h3').add(this.data.created.toISOString()
               .substring(0, 10))
             .end()
             .start('h3')
