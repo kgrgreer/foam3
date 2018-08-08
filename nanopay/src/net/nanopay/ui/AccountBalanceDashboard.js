@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
-  name: 'GSDashboard',
+  name: 'AccountBalanceDashboard',
   extends: 'foam.u2.Element',
 
   documentation: 'View displaying list of Bank Accounts added.',
