@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.fs.File',
     'foam.u2.dialog.NotificationMessage'
   ],
+
   imports: [
     'user',
     'blobService'
@@ -21,11 +22,12 @@ foam.CLASS({
     'as data',
     'onInvoiceFileRemoved'
   ],
+
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
 
-  css:`
+  css: `
     ^ .container{
       height: 600px;
       background-color: #093649;
@@ -144,12 +146,13 @@ foam.CLASS({
     'exportData'
   ],
 
-  messages:[
+  messages: [
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
     { name: 'FileSizeError', message: 'File size exceeds 10MB' }
   ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -165,9 +168,9 @@ foam.CLASS({
       .addClass(this.myClass())
       .start()
        .start('div').addClass('box-for-drag-drop')
-          .add(this.slot(function (data) {
+          .add(this.slot(function(data) {
             var e = this.E();
-            for ( var i = 0 ; i < data.length ; i++ ) {
+            for ( var i = 0; i < data.length; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
                 data: data[i],
@@ -176,7 +179,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start('div').addClass('dragText').show(this.data$.map(function (data) {
+          .start('div').addClass('dragText').show(this.data$.map(function(data) {
             return data.length === 0;
           }))
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' }).addClass('inputImage').end()
@@ -198,9 +201,9 @@ foam.CLASS({
           .add(this.CANCEL_BUTTON)
           .add(this.SUBMIT_BUTTON)
         .end()
-      .end()
+      .end();
+    },
 
-    } ,
     function onInvoiceFileRemoved(fileNumber) {
       var data = Array.from(this.data);
       data.splice(fileNumber - 1, 1);
@@ -208,7 +211,8 @@ foam.CLASS({
       this.document.querySelector('.document-input').value = null;
     }
   ],
-  actions:[
+
+  actions: [
     {
       name: 'cancelButton',
       label: 'Cancel',
@@ -225,6 +229,7 @@ foam.CLASS({
       }
     },
   ],
+
   listeners: [
     function onAddAttachmentClicked(e) {
       if ( typeof e.target != 'undefined' ) {
@@ -249,7 +254,7 @@ foam.CLASS({
       var files = [];
       var inputFile;
       if ( e.dataTransfer.items ) {
-        inputFile = e.dataTransfer.items
+        inputFile = e.dataTransfer.items;
         if ( inputFile ) {
           for ( var i = 0; i < inputFile.length; i++ ) {
             // If dropped items aren't files, reject them
@@ -263,20 +268,20 @@ foam.CLASS({
             }
           }
         }
-      } else if( e.dataTransfer.files ) {
-        inputFile = e.dataTransfer.files
-        for (var i = 0; i < inputFile.length; i++) {
+      } else if ( e.dataTransfer.files ) {
+        inputFile = e.dataTransfer.files;
+        for ( var i = 0; i < inputFile.length; i++ ) {
           var file = inputFile[i];
           if ( this.isImageType(file) ) files.push(file);
-          else{
+          else {
             this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
           }
         }
       }
-      this.addFiles(files)
+      this.addFiles(files);
     },
     function isImageType(file) {
-      if( file.type === "image/jpg" ||
+      if ( file.type === "image/jpg" ||
           file.type === "image/jpeg" ||
           file.type === "image/png" ||
           file.type === "application/msword" ||
@@ -287,30 +292,30 @@ foam.CLASS({
           file.type === "application/vnd.oasis.opendocument.text" ||
           file.type === "application/vnd.ms-excel" ||
           file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-          file.type === "application/pdf") return true;
+          file.type === "application/pdf" ) return true;
       return false;
     },
-    function onChange (e) {
+    function onChange(e) {
       var files = e.target.files;
-      this.addFiles(files)
+      this.addFiles(files);
     },
-    function addFiles(files){
+    function addFiles(files) {
       var errors = false;
-      for ( var i = 0 ; i < files.length ; i++ ) {
+      for ( var i = 0; i < files.length; i++ ) {
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
           this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
           continue;
         }
-        var isIncluded = false
-        for ( var j = 0 ; j < this.data.length ; j++ ) {
+        var isIncluded = false;
+        for ( var j = 0; j < this.data.length; j++ ) {
           if ( this.data[j].filename.localeCompare(files[i].name) === 0 ) {
             isIncluded = true;
-            break
+            break;
           }
         }
-        if ( isIncluded ) continue ;
+        if ( isIncluded ) continue;
         this.data.push(this.File.create({
           owner: this.user.id,
           filename: files[i].name,
@@ -319,7 +324,7 @@ foam.CLASS({
           data: this.BlobBlob.create({
             blob: files[i]
           })
-        }))
+        }));
       }
       this.data = Array.from(this.data);
     }
