@@ -37,7 +37,7 @@ jobs:
           keys:
             - maven-v1-{{ checksum "pom.xml" }}
             - maven-v1-
-      - run: sudo ./build.sh -t
+      - run: ./build.sh -t
       - save_cache:
           paths:
             - ~/.m2
