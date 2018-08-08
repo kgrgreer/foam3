@@ -283,7 +283,6 @@
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/tomcat/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
-                <exclude>nanopay/src/net/nanopay/security/csp/CSPValve.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3BlobStore.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>
               </excludes>
