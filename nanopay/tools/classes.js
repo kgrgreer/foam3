@@ -151,6 +151,7 @@ var classes = [
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
+  'net.nanopay.security.RandomNonceDAO',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
