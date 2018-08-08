@@ -131,10 +131,6 @@ foam.CLASS({
       name: 'answerCheck',
     },
     {
-      Class: 'Array',
-      name: 'questionCheck',
-    },
-    {
       Class: 'Int',
       name: 'tick',
       value: - 10000000
@@ -155,8 +151,6 @@ foam.CLASS({
       this.viewData.answers =
         new Array(this.viewData.securityChallenges.length);
       this.answerCheck =
-        new Array(this.viewData.securityChallenges.length).fill(false);
-      this.questionCheck =
         new Array(this.viewData.securityChallenges.length).fill(false);
     },
 

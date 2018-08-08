@@ -21,6 +21,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+      // passing the lambda to preserve context
       this.viewData.submitChallenge = () => this.submitChallenge();
     },
 
