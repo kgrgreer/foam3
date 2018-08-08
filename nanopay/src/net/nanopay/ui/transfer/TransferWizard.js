@@ -8,10 +8,10 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.CountdownView',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.ui.CountdownView'
   ],
 
   implements: [
@@ -36,7 +36,11 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    foam.u2.CSS.create({
+      code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(
+        foam.u2.CSS
+      )[0].code
+    }),
     foam.u2.CSS.create({
       code: function CSS() {/*
       ^ {
@@ -206,7 +210,7 @@ foam.CLASS({
           height: 40px;
           font-size: 12px;
       }
-    */}})
+    */} })
   ],
 
   messages: [
@@ -227,8 +231,9 @@ foam.CLASS({
 
   methods: [
     function init() {
-      if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
-      else { this.title = 'Send Transfer' }
+      this.title = this.type === 'foreign' ?
+        'Send e-Transfer' :
+        'Send Transfer';
 
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
@@ -252,9 +257,7 @@ foam.CLASS({
       this.SUPER();
     },
 
-    function initE(){
-      var self = this;
-
+    function initE() {
       this.addClass(this.myClass())
         .start('div').addClass('row')
           .start('div').addClass('positionColumn')
@@ -265,16 +268,19 @@ foam.CLASS({
             .start('div').addClass('topRow')
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
-              .start().callIf(this.type == 'foreign', function(){
-                this.tag({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).addClass('interacImage')
+              .start().callIf(this.type === 'foreign', function() {
+                this.tag({
+                  class: 'foam.u2.tag.Image',
+                  data: 'images/interac.png'
+                }).addClass('interacImage');
               })
               .end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
             .start('div').addClass('row')
               .start('div').addClass('navigationContainer')
-                .start(this.GO_BACK, {label$: this.backLabel$}).end()
-                .start(this.GO_NEXT, {label$: this.nextLabel$}).end()
+                .start(this.GO_BACK, { label$: this.backLabel$ }).end()
+                .start(this.GO_NEXT, { label$: this.nextLabel$ }).end()
               .end()
             .end()
           .end()
@@ -294,12 +300,12 @@ foam.CLASS({
       //   return true;
       // },
       code: function(X) {
-        if ( this.position == 0 ) {
+        if ( this.position === 0 ) {
           X.stack.back();
           return;
         }
 
-        if ( this.position == 1 ) { // Going back on Amount Screen
+        if ( this.position === 1 ) { // Going back on Amount Screen
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -308,7 +314,7 @@ foam.CLASS({
           this.viewData.rateLocked = false;
         }
 
-        if ( this.position == 2 ) {
+        if ( this.position === 2 ) {
           X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
@@ -326,40 +332,28 @@ foam.CLASS({
         var self        = this;
         var transaction = null;
         var invoiceId   = 0;
-        var bankAccountId;
 
-        if ( self.viewData.accountCheck ) bankAccountId = self.viewData.account.id;
-
-        if ( this.position == 0 ) { // Account & Payee
-
+        if ( this.position === 0 ) { // Account & Payee
           // Check if user has enough digital cash to make the transfer and show
           // an error message if they don't.
-          var fundsInsufficient = this.balance.balance < self.viewData.fromAmount;
+          var fundsInsufficient =
+            this.balance.balance < self.viewData.fromAmount;
           if ( ! self.viewData.accountCheck && fundsInsufficient ) {
             this.add(this.NotificationMessage.create({
               message: 'Unable to process payment: insufficient digital cash.',
               type: 'error'
             }));
           }
+        }
 
-        } 
-        if ( this.position == 1 ) { // Review
+        if ( this.position === 1 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
-          var rate;
 
-          if ( this.type == 'foreign' ){
-            rate = this.viewData.rate.toString();
-          }
-          if ( this.invoiceMode ){
+          if ( this.invoiceMode ) {
             invoiceId = this.invoice.id;
           }
-          var destinationAccount = this.accountDAO.find(this.AND(
-            this.EQ(this.DigitalAccount.DENOMINATION, this.invoice.targetCurrency),
-            this.EQ(this.DigitalAccount.OWNER,this.viewData.payee.id),
-            this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
-          ));
 
           transaction = self.Transaction.create({
             payeeId: this.viewData.payee.id,
@@ -367,40 +361,40 @@ foam.CLASS({
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });
+
           if ( this.viewData.digitalCash === undefined ) {
             transaction.payerId = this.user.id;
-          } else if ( ! this.viewData.digitalCash) {
+          } else if ( ! this.viewData.digitalCash ) {
             transaction.sourceAccount = this.viewData.account;
             transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
-
           }
 
           // Make the transfer
           self.transactionDAO.put(transaction)
-            .then(function (result) {
+            .then(function(result) {
               if ( result ) {
                 self.viewData.transaction = result;
               }
             })
-            .then(function (response) {
+            .then(function(response) {
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make New Transfer';
             })
-            .catch(function (err) {
+            .catch(function(err) {
               self.add(self.NotificationMessage.create({
                 type: 'error',
                 message: 'Unable to process payment: ' + err.message
               }));
             });
-        } else if ( this.position == 2 ) { // Successful
+        } else if ( this.position === 2 ) { // Successful
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';
           this.viewData.fromAmount = 1.5;
           this.viewData.toAmount = 0;
           this.viewData.rateLocked = false;
-          while ( this.position != 0 ) {
+          while ( this.position !== 0 ) {
             this.subStack.back();
           }
           this.backLabel = 'Back';
@@ -411,4 +405,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});
