@@ -607,7 +607,10 @@ foam.CLASS({
     {
       name: 'principleTypeField',
       value: 'Shareholder',
-      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Shareholder', 'Owner', 'Officer', 'To Be Filled Out' ] }
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: ['Shareholder', 'Owner', 'Officer']
+      }
     },
     {
       class: 'Date',
