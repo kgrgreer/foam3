@@ -289,7 +289,8 @@
       margin-top: 22px;
       display: inline-block;
     }
-    ^ .tfa-enable-container {
+    ^ .tfa-enable-container,
+      .tfa-disable-container {
       text-align: center;
     }
     ^ .property-twoFactorToken.foam-u2-TextField {
@@ -544,7 +545,14 @@
                 .end()
             } else {
               return this.E()
-                .start(this.DISABLE_TWO_FACTOR).end()
+                .start('div').addClass('tfa-enable-container')
+                  .start('h2')
+                    .add('Enter the validation code to disable Two-Factor Authentication.')
+                  .end()
+                  .br()
+                  .start(this.TWO_FACTOR_TOKEN).end()
+                  .start(this.DISABLE_TWO_FACTOR).end()
+                .end()
             }
           }, this.user.twoFactorEnabled$))
         .end()
@@ -759,7 +767,8 @@
             return;
           }
 
-          self.user.twoFactorEnabled = result;
+          self.twoFactorToken = null;
+          self.user.twoFactorEnabled = true;
           self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableSuccess }));
         })
         .catch(function (err) {
@@ -773,9 +782,20 @@
       code: function (X) {
         var self = this;
 
-        this.user.twoFactorEnabled = false;
-        this.userDAO.put(this.user).then(function (result) {
-          self.user.copyFrom(result);
+        if ( ! this.twoFactorToken ) {
+          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+          return;
+        }
+
+        this.twofactor.disable(null, this.twoFactorToken)
+        .then(function (result) {
+          if ( ! result ) {
+            self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+            return;
+          }
+
+          self.twoFactorToken = null;
+          self.user.twoFactorEnabled = false;
           self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
         })
         .catch(function (err) {
