@@ -44,6 +44,25 @@ function install {
     git config submodule.recurse true
 }
 
+function backup {
+  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    # Preventing this from running on non AWS
+    return
+  fi
+
+  BACKUP_HOME="/opt/backup"
+
+  # backup journals in event of file incompatiblity between versions
+  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
+      printf "backup\n"
+      DATE=$(date +%Y%m%d_%H%M%S)
+      mkdir -p "$BACKUP_HOME/$DATE"
+      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+
+      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
+  fi
+}
+
 function setup_jce {
   local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
 
@@ -119,13 +138,61 @@ function build_jar {
     mvn package
 }
 
+function stop_nanos {
+    echo "Stopping nanos."
+    if [ ! -f "$NANOS_PIDFILE" ]; then
+        echo "PID file $NANOS_PIDFILE not found, nothing to stop?"
+        return
+    fi
+
+    TRIES=0
+    SIGNAL=TERM
+    PID=$(cat "$NANOS_PIDFILE")
+    set +e
+    while kill -0 $PID &>/dev/null; do
+        kill -$SIGNAL $PID
+        sleep 1
+        TRIES=$(($TRIES + 1))
+        if [ $TRIES -gt 5 ]; then
+            SIGNAL=KILL
+        elif [ $TRIES -gt 10 ]; then
+            echo "Failed to kill nanos."
+            exit 1
+        fi
+    done
+    set -e
+
+    rmfile "$NANOS_PIDFILE"
+    
+    backup
+}
+
+function status_nanos {
+    if [ ! -f "$NANOS_PIDFILE" ]; then
+        echo "Not running."
+        exit 1
+    elif kill -0 $(cat "$NANOS_PIDFILE") &>/dev/null ; then
+        echo "Running."
+        exit 0
+    else
+        echo "ERROR Stale PID file"
+        exit -1
+    fi
+}
+
 function start_nanos {
     echo "Starting nanos"
     
     cd "$PROJECT_HOME"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     deploy_journals
-    exec java $JAVA_OPTS -jar target/root-0.0.1.jar
+
+    if [ $DAEMONIZE -eq 0 ]; then
+        exec java $JAVA_OPTS -jar target/root-0.0.1.jar
+    else
+        nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
+        echo $! > "$NANOS_PIDFILE"
+    fi
 }
 
 function testcatalina {
@@ -192,6 +259,8 @@ function setenv {
     export JOURNAL_OUT="$PROJECT_HOME"/target/journals
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
+
+    export NANOS_PIDFILE="/tmp/nanos.pid"
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
         PROJECT_HOME=/pkg/stack/stage/NANOPAY
@@ -280,6 +349,7 @@ function usage {
     echo "  -b : Build only"
     echo "  -s : Start only."
     echo "  -d : Run with JDPA debugging enabled."
+    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo "  -i : Install npm and git hooks"
     echo "  -m : Run migration scripts"
     echo "  -h : Print usage information."
@@ -298,16 +368,23 @@ RUN_MIGRATION=0
 START_ONLY=0
 TEST=0
 IS_AWS=0
+DAEMONIZE=0
+STOP_ONLY=0
+RESTART=0
+STATUS=0
 
-while getopts "bscdimsth" opt ; do
+while getopts "bncdimtzsgh" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        s) START_ONLY=1 ;;
+        n) START_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
         i) INSTALL=1 ;;
         m) RUN_MIGRATION=1 ;;
         t) TEST=1 ;;
+        z) DAEMONIZE=1 ;;
+        s) STOP_ONLY=1 ;;
+        g) STATUS=1 ;;
         h) usage ; exit 0 ;;
         ?) usage ; exit 1 ;;
     esac
@@ -338,10 +415,17 @@ if [ "$BUILD_ONLY" -eq 1 ]; then
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
 elif [ "$START_ONLY" -eq 1 ]; then
+    stop_nanos
     start_nanos
+elif [ "$STOP_ONLY" -eq 1 ]; then
+    stop_nanos
+elif [ "$STATUS" -eq 1 ]; then
+    status_nanos
 else
     # cleanup old tomcat instances
     cleanup_tomcat
+    
+    stop_nanos
     
     build_jar
     deploy_journals
