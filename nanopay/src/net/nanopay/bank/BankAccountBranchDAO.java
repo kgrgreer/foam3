@@ -49,7 +49,7 @@ public class BankAccountBranchDAO
     // institution should be created/attached to bank account before reaching here.
     if ( institution == null ) {
       bankAccount = (BankAccount) super.put_(x, obj);
-      String message = "Insititution not set for BankAccount with Id: " + bankAccount.getId() + "not set.";
+      String message = "Insititution not set for BankAccount with Id: " + bankAccount.getId();
       // flaging the account that doesn't have an institution!
       ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), message);
       return bankAccount;
