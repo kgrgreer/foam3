@@ -70,12 +70,14 @@ public class TransactionAdapterDAO
            sourceAccount instanceof DigitalAccount ) ) {
       AlternaTransaction t = new AlternaTransaction.Builder(x).build();
       t.copyFrom(txn);
-      if ( sourceAccount instanceof CABankAccount && sourceAccount.getOwner() == destinationAccount.getOwner()) {
-        t.setType(TransactionType.CASHIN);
-      } else if ( sourceAccount instanceof CABankAccount && sourceAccount.getOwner() != destinationAccount.getOwner() ) {
-        t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
-      } else {
-        t.setType(TransactionType.CASHOUT);
+      if ( txn.getType() == null ) {
+        if ( sourceAccount instanceof CABankAccount && sourceAccount.getOwner() == destinationAccount.getOwner()) {
+          t.setType(TransactionType.CASHIN);
+        } else if ( sourceAccount instanceof CABankAccount && sourceAccount.getOwner() != destinationAccount.getOwner() ) {
+          t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
+        } else {
+          t.setType(TransactionType.CASHOUT);
+        }
       }
       return super.put_(x, t);
     }

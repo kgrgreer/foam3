@@ -316,7 +316,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'id', 'date', 'payer', 'payee', 'tip', 'total'
+                'id', 'created', 'payer', 'payee', 'tip', 'total'
               ]
             }).addClass(this.myClass('table')).end();
         }

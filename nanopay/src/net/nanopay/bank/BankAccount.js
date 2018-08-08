@@ -1,3 +1,4 @@
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
@@ -57,7 +58,14 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.payment.Institution',
       name: 'institution',
-      label: 'Institution'
+      label: 'Institution',
+      tableCellFormatter: function(inst, X) {
+        if ( inst ) {
+          X.__context__.institutionDAO.find(inst).then((response) => {
+            this.add(response.institutionNumber);
+          });
+        }
+      }
     },
     {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
@@ -65,6 +73,12 @@ foam.CLASS({
       name: 'institutionNumber',
       storageTransient: true,
       hidden: true,
+    },
+    {
+      class: 'String',
+      name: 'branchId',
+      label: 'Branch Id.',
+      storageTransient: true
     },
     {
       class: 'Long',
