@@ -5,8 +5,6 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-
-import foam.dao.Sink;
 import foam.mlang.sink.*;
 import foam.nanos.auth.User;
 import net.nanopay.tx.model.Transaction;
@@ -29,6 +27,7 @@ public class DigitalAccountInfoPopluateDAO
     DAO                 userDAO        = (DAO) x.get("localUserDAO");
     DAO                 accountDAO     = (DAO) x.get("accountDAO");
     DAO                 transactionDAO = (DAO) x.get("localTransactionDAO");
+
     // Grabs all Digital Accounts
     ArraySink           accountDAOSink = (ArraySink) accountDAO.where(
       EQ(Account.TYPE, "DigitalAccount"))
@@ -48,6 +47,7 @@ public class DigitalAccountInfoPopluateDAO
     // Walk through the list of digital accounts and create a new new Info Model for each
     for ( Account account : accountList ) {
       user            = (User) userDAO.find(account.getOwner());
+
       //Create the object and load the data into it
       DigitalAccountInfo digitalInfo = new DigitalAccountInfo();
       digitalInfo.setAccountId(account.getId());
