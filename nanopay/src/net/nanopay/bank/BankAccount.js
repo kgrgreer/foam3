@@ -63,7 +63,7 @@ foam.CLASS({
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
-      transient: true,
+      storageTransient: true,
       hidden: true,
     },
     {
