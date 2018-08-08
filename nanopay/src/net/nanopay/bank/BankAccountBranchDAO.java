@@ -71,7 +71,7 @@ public class BankAccountBranchDAO
   }
 
   private void addBranch(X x, Institution institution, BankAccount bankAccount) {
-    ArraySink branchSink = (ArraySink) institution.branches(x)
+    ArraySink branchSink = (ArraySink) institution.getBranches(x)
         .where(EQ(
               Branch.BRANCH_ID, bankAccount.getBranchId()
         )).limit(1).select(new ArraySink());
