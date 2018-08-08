@@ -239,12 +239,19 @@ foam.CLASS({
         }
         this.email_ = this.user.email;
 
-        if ( this.user.phone ) {
-          this.phone_ = this.user.phone.number;
+        var phonePropertyName = this.invoiceMode ?
+          'businessPhone' :
+          'phone';
+        var addressPropertyName = this.invoiceMode ?
+          'businessAddress' :
+          'address';
+
+        if ( this.user[phonePropertyName] ) {
+          this.phone_ = this.user[phonePropertyName].number;
         }
 
-        if ( this.user.address ) {
-          var address = this.user.address;
+        if ( this.user[addressPropertyName] ) {
+          var address = this.user[addressPropertyName];
 
           if ( address.structured ) {
             if ( address.suite ) this.suite_ = 'Suite/Unit ' + address.suite;

@@ -20,7 +20,7 @@ foam.CLASS({
     'findBalance',
     'formatCurrency',
     'accountDAO as bankAccountDAO',
-    'userDAO',
+    'publicUserDAO',
     'balance',
     'user',
     'type'
@@ -186,7 +186,7 @@ foam.CLASS({
       name: 'payees',
       postSet: function(oldValue, newValue) {
         var self = this;
-        this.userDAO
+        this.publicUserDAO
           .where(this.EQ(this.User.ID, newValue))
           .select()
           .then(function(a) {
@@ -197,12 +197,11 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.data.userDAO,
+          dao: X.data.publicUserDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
-            if ( X.data.invoiceMode ) {
-              // If organization exists, change name to organization name.
-              if ( payee.organization ) username = payee.organization;
+            if ( X.data.invoiceMode && payee.businessName ) {
+              username = payee.businessName;
             }
             return [payee.id, username + ' - (' + payee.email + ')'];
           }
