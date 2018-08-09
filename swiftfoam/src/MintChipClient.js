@@ -443,7 +443,7 @@ let pred = x.create(foam_mlang_predicate_And.self, args: [
 if verifiedOnly {
   pred?.args.append(x.create(foam_mlang_predicate_Eq.self, args: [
     "arg1": net_nanopay_bank_CABankAccount.STATUS(),
-    "arg2": "Verified"
+    "arg2": net_nanopay_bank_BankAccountStatus.VERIFIED
     ])!)
 }
 
