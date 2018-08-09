@@ -34,6 +34,13 @@ if ( packageName === 'net.nanopay.iso20022' ) {
   classes.push('net.nanopay.iso20022.Document');
 }
 
+function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
+  if (! ( fs.existsSync(outfile) && (fs.readFileSync(outfile).toString() == buildJavaSource))) {
+    fs.writeFileSync(outfile, buildJavaSource, 'utf8');
+    if ( opt_result !== undefined) opt_result.push(outfile);
+  }
+}
+
 /**
  * Converts the FOAM model to string
  * @param  {Object} m FOAM model
@@ -244,7 +251,7 @@ for ( var i = 0; i < files.length; i++ ) {
 
   for ( var j = 0 ; j < models.length ; j++ ) {
     let model = models[j];
-    fs.writeFileSync(outdir + model.name + '.js', model.class, 'utf8');
+    writeFileIfUpdated(outdir + model.name + '.js', model.class);
   }
 }
 
@@ -287,5 +294,5 @@ if ( fs.existsSync(outdir + 'refinements.js') ) {
   files.push({ name: packagePath + '/refinements' });
 }
 
-fs.writeFileSync(outdir + 'files.js', 'FOAM_FILES(' + stringify(files) + ')', 'utf8');
-fs.writeFileSync(classesOutDir + 'classes.js', classesOutput, 'utf8');
+writeFileIfUpdated(outdir + 'files.js', 'FOAM_FILES(' + stringify(files) + ')');
+writeFileIfUpdated(classesOutDir + 'classes.js', classesOutput);
