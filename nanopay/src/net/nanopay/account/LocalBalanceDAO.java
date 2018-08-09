@@ -63,7 +63,6 @@ public class LocalBalanceDAO
       if (d instanceof TransactionDAO ) {
         TransactionDAO dao = (TransactionDAO) d;
         dao.setBalanceDAO(dao_);
-        //d.setX(x.put("localBalanceDAO", dao_));
         logger.info(this.getClass().getSimpleName(), "BalanceDAO set in", dao.getClass().getSimpleName());
         break;
       }
