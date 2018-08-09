@@ -30,7 +30,7 @@ foam.CLASS({
       javaFactory:
 `File file = new File(getKeyStorePath()).getAbsoluteFile();
 if ( ! file.exists() ) {
-  throw new RuntimeException("KeyStore file does not exit.");
+  throw new RuntimeException("KeyStore file does not exist.");
 }
 return file;`
     },
@@ -48,7 +48,7 @@ return file;`
       javaFactory:
 `File file = new File(getPassphrasePath()).getAbsoluteFile();
 if ( ! file.exists() ) {
-  throw new RuntimeException("Passphrase file does not exit.");
+  throw new RuntimeException("Passphrase file does not exist.");
 }
 return file;`
     },
