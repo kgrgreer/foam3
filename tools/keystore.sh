@@ -1,7 +1,19 @@
 #!/bin/bash
 # Expected to be run as root or with sudo
 
+TEST=0
 HOME="$NANOPAY_HOME"
+
+while getopts "t" opt ; do
+    case $opt in
+      t) TEST=1 ;;
+    esac
+done
+
+if [[ $TEST -eq 1 ]]; then
+  HOME="/tmp/nanopay"
+fi
+
 if [ -z "$HOME" ]; then
     HOME="/opt/nanopay"
 fi
