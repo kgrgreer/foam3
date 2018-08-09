@@ -44,8 +44,7 @@ public class TransactionAdapterDAO
     }
 
     Transaction txn = (Transaction) obj;
-    //if ( ! SafetyUtil.isEmpty(txn.getId()) ) {
-    if ( txn.getId() > 0 ) {
+    if ( ! SafetyUtil.isEmpty(txn.getId()) ) {
       return super.put_(x, obj);
     }
 
