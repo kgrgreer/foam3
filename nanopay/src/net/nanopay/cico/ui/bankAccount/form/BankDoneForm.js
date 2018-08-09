@@ -7,19 +7,23 @@ foam.CLASS({
 
   messages: [
     { name: 'Step', message: 'Step 4: Done!' },
-    { name: 'Done', message: 'You have successfully added and verified this bank account! You are now ready to use the cash in / cash out service to manage your balances!' }
+    { name: 'SuccessMessage', message: 'You have successfully added and verified this bank account! You are now ready to use the cash in / cash out service to manage your balances!' },
+    { name: 'Back', message: 'Back' },
+    { name: 'Done', message: 'Done' }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      this.backLabel = this.Back;
+      this.nextLabel = this.Done;
       this
         .addClass(this.myClass())
 
         .start('div').addClass('row').addClass('rowTopMarginOverride')
           .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').add(this.Done).end();
+        .start('p').addClass('pDefault').add(this.SuccessMessage).end();
     }
   ]
 });
