@@ -20,11 +20,6 @@
 
   <repositories>
     <repository>
-      <id>nanopay.local</id>
-      <name>nanopay</name>
-      <url>file:${project.basedir}/repo</url>
-    </repository>
-    <repository>
       <id>xero-java-mvn-repo</id>
       <url>https://raw.github.com/XeroAPI/Xero-Java/mvn-repo/</url>
       <snapshots>
