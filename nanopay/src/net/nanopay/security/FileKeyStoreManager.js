@@ -63,18 +63,9 @@ foam.CLASS({
           File keyStoreFile = getKeyStoreFile();
           char[] passphrase = getPassphrase();
 
-          if ( ! keyStoreFile.exists() || keyStoreFile.length() == 0 ) {
-            // create keystore file using password
-            try ( FileOutputStream fos = new FileOutputStream(keyStoreFile) ) {
-              // keystore must be "loaded" before it can be created
-              keyStore.load(null, passphrase);
-              keyStore.store(fos, passphrase);
-            }
-          } else {
-            // load keystore file using password
-            try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-              keyStore.load(fis, passphrase);
-            }
+          // load keystore file using password
+          try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
+            keyStore.load(fis, passphrase);
           }
 
           return keyStore;
@@ -96,27 +87,9 @@ foam.CLASS({
         char[] cbuffer = new char[32];
         File passphraseFile = getPassphraseFile();
 
-        // check passphrase file exists and create it if it doesn't
-        if ( ! passphraseFile.exists() || passphraseFile.length() == 0 ) {
-          byte[] bbuffer = new byte[24];
-          SecurityUtil.GetSecureRandom().nextBytes(bbuffer);
-
-          // encode to Base64 and store in char buffer
-          bbuffer = Base64.encode(bbuffer);
-          for ( int i = 0 ; i < bbuffer.length ; i++ ) {
-            cbuffer[i] = (char) bbuffer[i];
-          }
-
-          // write out passphrase to file
-          try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-            new FileOutputStream(passphraseFile), StandardCharsets.UTF_8))) {
-            writer.write(cbuffer);
-          }
-        } else {
-          try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-            new FileInputStream(passphraseFile), StandardCharsets.UTF_8))) {
-            reader.read(cbuffer, 0, 32);
-          }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+          new FileInputStream(passphraseFile), StandardCharsets.UTF_8))) {
+          reader.read(cbuffer, 0, 32);
         }
 
         return cbuffer;
