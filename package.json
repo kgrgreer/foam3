@@ -15,7 +15,6 @@
   "dependencies": {
     "json-stringify-pretty-compact": "^1.0.4",
     "mkdirp": "^0.5.1",
-    "npm": "^6.1.0",
     "underscore": "^1.8.3",
     "xmldom": "^0.1.27"
   },
