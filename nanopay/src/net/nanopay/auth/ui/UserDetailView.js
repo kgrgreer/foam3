@@ -284,6 +284,7 @@ foam.CLASS({
     { name: 'AddressLineLabel', message: 'Address Line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
+    { name: 'CountryLabel', message: 'Country *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'NewPasswordLabel', message: 'New Password' },
@@ -291,8 +292,7 @@ foam.CLASS({
     { name: 'GroupLabel', message: 'Group *' },
     { name: 'OrganizationLabel', message: 'Organization *' },
     { name: 'DepartmentLabel', message: 'Department *' },
-    { name: 'JobTitleLabel', message: 'Job Title *' },
-    { name: 'CountryLabel', message: 'Country *' }
+    { name: 'JobTitleLabel', message: 'Job Title *' }
   ],
 
   methods: [
@@ -479,7 +479,7 @@ foam.CLASS({
         }));
         return false;
       }
-      if ( ! this.validatePhone(this.countryCode + ' ' + this.phoneNumber) ) {
+      if ( ! this.validatePhone(this.phoneNumber) ) {
         this.add(this.NotificationMessage.create({
             message: 'Invalid phone number.',
             type: 'error' }));
@@ -576,6 +576,7 @@ foam.CLASS({
           this.user.lastName = X.data.lastName;
           this.user.email = X.data.email;
           this.user.phoneNumber = X.data.phoneNumber;
+          this.user.phone.number = X.data.phoneNumber;
           this.user.birthday = X.data.birthday;
           this.user.address.streetNumber = X.data.streetNumber;
           this.user.address.streetName = X.data.streetName;
