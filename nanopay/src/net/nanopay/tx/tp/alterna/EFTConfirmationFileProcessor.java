@@ -117,7 +117,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       String dstFileDirectory = "/Archive_EFTConfirmationFile/";
 
       // move processed files
-      for (String fileName : fileNames) {
+      for ( String fileName : fileNames ) {
         channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
       }
 
@@ -139,17 +139,17 @@ public class EFTConfirmationFileProcessor implements ContextAgent
     AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
       EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 
-    if (tran != null) {
+    if ( tran != null ) {
       tran = (AlternaTransaction) tran.fclone();
       tran.setConfirmationLineNumber(fileName + "_" + eftConfirmationFileRecord.getLineNumber());
 
-      if ("Failed".equals(eftConfirmationFileRecord.getStatus())) {
+      if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
         tran.setStatus(TransactionStatus.FAILED);
         tran.setDescription(eftConfirmationFileRecord.getReason());
         sendEmail(x, "Transaction was rejected by EFT confirmation file",
           "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
             + fileName + "_" + eftConfirmationFileRecord.getLineNumber());
-      } else if ("OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING)) {
+      } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
         tran.setStatus(TransactionStatus.SENT);
       }
       transactionDao.put(tran);
