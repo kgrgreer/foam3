@@ -166,7 +166,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Connect';
-      this.conditionAgree = true;
+      this.conditionAgree = false;
     },
 
     function initE() {
