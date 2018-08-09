@@ -130,10 +130,10 @@ function build_jar {
             rm -rf build
             mkdir build
         fi
-        
+
         mvn clean
     fi
-    
+
     ./gen.sh
     mvn package
 }
@@ -163,7 +163,7 @@ function stop_nanos {
     set -e
 
     rmfile "$NANOS_PIDFILE"
-    
+
     backup
 }
 
@@ -182,7 +182,7 @@ function status_nanos {
 
 function start_nanos {
     echo "Starting nanos"
-    
+
     cd "$PROJECT_HOME"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     deploy_journals
@@ -312,10 +312,14 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
-    if [[ -f $PROJECT_HOME/tools/keystore.sh && (! -d $NANOPAY_HOME/keys || ! -f $NANOPAY_HOME/keys/passphrase) ]]; then
+    if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
         cd "$PROJECT_HOME"
         printf "INFO :: Generating keystore...\n"
-        ./tools/keystore.sh
+        if [[ $TEST -eq 1 ]]; then
+          ./tools/keystore.sh -t
+        else
+          ./tools/keystore.sh
+        fi
     fi
 
     local MACOS='darwin*'
@@ -426,9 +430,9 @@ elif [ "$STATUS" -eq 1 ]; then
 else
     # cleanup old tomcat instances
     cleanup_tomcat
-    
+
     stop_nanos
-    
+
     build_jar
     deploy_journals
     start_nanos
