@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import static foam.mlang.MLang.*;
 
 
-public class DigitalAccountInfoPopluateDAO
+public class DigitalAccountInfoPopulateDAO
   extends ProxyDAO {
 
-  public DigitalAccountInfoPopluateDAO(X x, DAO delegate) {
+  public DigitalAccountInfoPopulateDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
