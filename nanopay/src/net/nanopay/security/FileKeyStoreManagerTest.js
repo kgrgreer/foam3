@@ -40,11 +40,11 @@ foam.CLASS({
       javaCode: `
         try {
           FileKeyStoreManager keyStoreManager = new FileKeyStoreManager.Builder(getX())
-            .setKeyStorePath("/tmp/nanopay/keys/keystore.jks")
+            .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
             .setPassphrasePath("/tmp/nanopay/keys/passphrase")
             .build();
 
-          test("/tmp/nanopay/keys/keystore.jks".equals(keyStoreManager.getKeyStorePath()), "Key store path is being set correctly.");
+          test("/tmp/nanopay/keys/keystore.p12".equals(keyStoreManager.getKeyStorePath()), "Key store path is being set correctly.");
           test("/tmp/nanopay/keys/passphrase".equals(keyStoreManager.getPassphrasePath()), "Keyphrase path is being set correctly.");
         } catch ( Throwable t ) {
           test(false, "FileKeyStoreManager with default constructor should not throw an exception");
@@ -56,11 +56,11 @@ foam.CLASS({
       javaCode: `
         try {
           FileKeyStoreManager keyStoreManager = new FileKeyStoreManager.Builder(getX())
-            .setKeyStorePath("/tmp/nanopay/keys/keystore.jks")
+            .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
             .setPassphrasePath("/tmp/nanopay/keys/passphrase")
             .build();
 
-          File file = new File("/tmp/nanopay/keys/keystore.jks").getAbsoluteFile();
+          File file = new File("/tmp/nanopay/keys/keystore.p12").getAbsoluteFile();
           test(keyStoreManager.getKeyStoreFile().lastModified() == file.lastModified(), "KeyStorePath retrieves the correct key store file.");
 
           keyStoreManager = new FileKeyStoreManager.Builder(getX())
@@ -79,7 +79,7 @@ foam.CLASS({
       javaCode: `
         try {
           FileKeyStoreManager keyStoreManager = new FileKeyStoreManager.Builder(getX())
-            .setKeyStorePath("/tmp/nanopay/keys/keystore.jks")
+            .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
             .setPassphrasePath("/tmp/nanopay/keys/passphrase")
             .build();
 
@@ -101,7 +101,7 @@ foam.CLASS({
       name: 'FileKeyStoreManager_CheckRetrievalOfPassphrase',
       javaCode: `
         FileKeyStoreManager keyStoreManager = new FileKeyStoreManager.Builder(getX())
-          .setKeyStorePath("/tmp/nanopay/keys/keystore.jks")
+          .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
           .setPassphrasePath("/tmp/nanopay/keys/passphrase")
           .build();
 
@@ -138,12 +138,12 @@ foam.CLASS({
       name: 'FileKeyStoreManager_CheckRetrievalOfKeyStore',
       javaCode: `
         FileKeyStoreManager keyStoreManager = new FileKeyStoreManager.Builder(getX())
-          .setKeyStorePath("/tmp/nanopay/keys/keystore.jks")
+          .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
           .setPassphrasePath("/tmp/nanopay/keys/passphrase")
           .build();
 
         try {
-           KeyStore keyStore = KeyStore.getInstance("JCEKS");
+           KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
            File keyStoreFile = keyStoreManager.getKeyStoreFile();
            char[] passphrase = keyStoreManager.getPassphrase();
@@ -182,7 +182,7 @@ foam.CLASS({
       name: 'FileKeyStoreManager_CheckLoadingAndStoringOfKeys',
       javaCode: `
         FileKeyStoreManager keyStoreManager = new FileKeyStoreManager.Builder(getX())
-          .setKeyStorePath("/tmp/nanopay/keys/keystore.jks")
+          .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
           .setPassphrasePath("/tmp/nanopay/keys/passphrase")
           .build();
 
