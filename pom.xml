@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jetty.version>9.4.10.v20180503</jetty.version>
   </properties>
+
   <prerequisites>
     <maven>3.1.0</maven>
   </prerequisites>
@@ -197,27 +198,7 @@
   <build>
     <sourceDirectory>.</sourceDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.0-M1</version>
-      </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>foam.nanos.boot.Boot</mainClass>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>3.1.0</version>
@@ -282,20 +263,6 @@
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>
               </excludes>
             </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>versions-maven-plugin</artifactId>
-            <version>2.1</version>
-            <executions>
-              <execution>
-                <phase>compile</phase>
-                <goals>
-                  <goal>display-dependency-updates</goal>
-                  <goal>display-plugin-updates</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
