@@ -128,6 +128,9 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
+  // tx tests
+  'net.nanopay.tx.model.TransactionParseTest',
+
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',

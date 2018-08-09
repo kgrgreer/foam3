@@ -124,6 +124,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompositeTransactionDAO' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
 
+  // tx tests
+  { name: 'net/nanopay/tx/model/TransactionParseTest' },
+
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
