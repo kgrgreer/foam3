@@ -300,9 +300,6 @@ function setenv {
         JOURNAL_HOME=/tmp/nanopay
         mkdir -p $JOURNAL_HOME
         echo "INFO :: Cleaned up temporary journal files."
-
-        printf "INFO :: Generating temp keystore...\n"
-        ./tools/keystore.sh -t
     fi
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
@@ -315,10 +312,14 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
-    if [[ -f $PROJECT_HOME/tools/keystore.sh && (! -d $NANOPAY_HOME/keys || ! -f $NANOPAY_HOME/keys/passphrase) ]]; then
+    if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
         cd "$PROJECT_HOME"
         printf "INFO :: Generating keystore...\n"
-        ./tools/keystore.sh
+        if [[ $TEST -eq 1 ]]; then
+          ./tools/keystore.sh -t
+        else
+          ./tools/keystore.sh
+        fi
     fi
 
     local MACOS='darwin*'

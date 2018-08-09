@@ -20,7 +20,7 @@ foam.CLASS({
       class: 'String',
       name: 'keyStorePath',
       documentation: 'Path to keystore',
-      value: '/opt/nanopay/keys/keystore.jks'
+      value: '/opt/nanopay/keys/keystore.p12'
     },
     {
       class: 'Object',
@@ -59,7 +59,7 @@ return file;`
       javaType: 'java.security.KeyStore',
       javaFactory:
 `try {
-  KeyStore keyStore = KeyStore.getInstance("JCEKS");
+  KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
   // check for keystore and passphrase file
   File keyStoreFile = getKeyStoreFile();
