@@ -67,10 +67,9 @@ foam.CLASS({
               .setKeyStorePath("Invalid path")
               .build();
 
-          keyStoreManager.getKeyStoreFile();
-          test(false, "With an invalid path, getKeyStoreFile() should throw a RuntimeException.");
+          test(! keyStoreManager.getKeyStoreFile().exists(), "With an invalid path, getKeyStoreFile() should return a file that does not exist.");
         } catch ( Throwable t ) {
-          test(t instanceof RuntimeException, "With an invalid path, getKeyStoreFile() should throw a RuntimeException.");
+          test(false, "With an invalid path, getKeyStoreFile() should not throw a RuntimeException.");
         }
       `
     },
@@ -90,10 +89,9 @@ foam.CLASS({
               .setPassphrasePath("Invalid path")
               .build();
 
-          keyStoreManager.getPassphraseFile();
-          test(false, "With an invalid path, getPassphraseFile() should throw a RuntimeException.");
+          test(! keyStoreManager.getPassphraseFile().exists(), "With an invalid path, getPassphraseFile() should return a file that does not exists.");
         } catch ( Throwable t ) {
-          test(t instanceof RuntimeException, "With an invalid path, getPassphraseFile() should throw a RuntimeException.");
+          test(false, "With an invalid path, getPassphraseFile() should not throw a RuntimeException.");
         }
       `
     },
