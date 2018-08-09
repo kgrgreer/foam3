@@ -64,32 +64,35 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       label: 'Transaction ID',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.Visibility.RO,
+      javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
+      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
+
     },
     {
       class: 'DateTime',
       name: 'created',
-      documentation: `The date the invoice was created.`,
+      documentation: `The date the transaction was created.`,
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      documentation: `The id of the user who created the invoice.`,
+      documentation: `The id of the user who created the transaction.`,
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: `The date the invoice was last modified.`,
+      documentation: `The date the transaction was last modified.`,
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      documentation: `The id of the user who last modified the invoice.`,
+      documentation: `The id of the user who last modified the transaction.`,
     },
     {
       class: 'foam.core.Enum',

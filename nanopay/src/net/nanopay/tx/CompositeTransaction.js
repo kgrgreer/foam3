@@ -4,13 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'foam.core.FObject',
-    'foam.dao.DAO',
-    'foam.nanos.logger.Logger',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.Arrays'
   ],
 
   properties: [
@@ -35,11 +34,10 @@ foam.CLASS({
     },
     {
       // Array of References
-      class: 'Array',
+      class: 'StringArray',
       name: 'completed',
-      javaType: 'Long[]',
       javaFactory: `
-        return new Long[getQueued().length];
+        return new String[getQueued().length];
       `
     },
     {
@@ -133,11 +131,11 @@ foam.CLASS({
       javaCode: `
         // Logger logger = (Logger) getX().get("logger");
         // logger.debug(this.getClass().getSimpleName(), "next", this);
-        if ( getCurrent() != 0 ) {
-          Long[] completed = java.util.Arrays.copyOf(getCompleted(), getCompleted().length + 1);
+        if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
+          String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
           completed[completed.length -1] = getCurrent();
           setCompleted(completed);
-          setCurrent(0);
+          setCurrent(null);
         }
         if ( getQueued().length > 0 ) {
           Transaction txn = getQueued()[0];
@@ -178,7 +176,7 @@ foam.CLASS({
           list.add(cur);
         }
         DAO dao = (DAO) getX().get("localTransactionDAO");
-        Long[] completed = getCompleted();
+        String[] completed = getCompleted();
         for ( int i = 0; i < completed.length; i++ ) {
           Transaction txn = (Transaction) dao.find_(getX(), completed[i]);
           list.add(txn);

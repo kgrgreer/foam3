@@ -124,6 +124,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompositeTransactionDAO' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
 
+  // tx tests
+  { name: 'net/nanopay/tx/model/TransactionParseTest' },
+
   { name: 'net/nanopay/model/Broker' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
@@ -272,6 +275,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PublicKeyDAO' },
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
+  { name: 'net/nanopay/security/RandomNonceDAO' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
