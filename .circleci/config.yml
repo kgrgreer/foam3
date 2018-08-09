@@ -13,11 +13,10 @@ jobs:
 
   build:
     docker:
-      - image: circleci/buildpack-deps:bionic
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/foam:latest
     working_directory: ~/NANOPAY
     steps:
       - checkout
-      - run: sudo apt-get update && sudo apt-get -y install maven npm nodejs openjdk-8-jdk-headless
       - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run: git submodule sync
       - run: git submodule update --init
@@ -36,13 +35,13 @@ jobs:
       # cache maven repositories
       - restore_cache:
           keys:
-            - maven-v1-{{ checksum "pom-standalone.xml" }}
+            - maven-v1-{{ checksum "pom.xml" }}
             - maven-v1-
-      - run: sudo ./build.sh -t
+      - run: ./build.sh -t
       - save_cache:
           paths:
             - ~/.m2
-          key: maven-v1-{{ checksum "pom-standalone.xml" }}
+          key: maven-v1-{{ checksum "pom.xml" }}
 
 workflows:
   version: 2
