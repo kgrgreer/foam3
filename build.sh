@@ -130,10 +130,10 @@ function build_jar {
             rm -rf build
             mkdir build
         fi
-        
+
         mvn clean
     fi
-    
+
     ./gen.sh
     mvn package
 }
@@ -163,7 +163,7 @@ function stop_nanos {
     set -e
 
     rmfile "$NANOS_PIDFILE"
-    
+
     backup
 }
 
@@ -182,7 +182,7 @@ function status_nanos {
 
 function start_nanos {
     echo "Starting nanos"
-    
+
     cd "$PROJECT_HOME"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     deploy_journals
@@ -300,6 +300,9 @@ function setenv {
         JOURNAL_HOME=/tmp/nanopay
         mkdir -p $JOURNAL_HOME
         echo "INFO :: Cleaned up temporary journal files."
+
+        printf "INFO :: Generating temp keystore...\n"
+        ./tools/keystore.sh -t
     fi
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
@@ -426,9 +429,9 @@ elif [ "$STATUS" -eq 1 ]; then
 else
     # cleanup old tomcat instances
     cleanup_tomcat
-    
+
     stop_nanos
-    
+
     build_jar
     deploy_journals
     start_nanos
