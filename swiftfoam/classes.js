@@ -61,6 +61,7 @@ var classes = [
   'foam.swift.parse.json.output.Outputter',
   'foam.swift.ui.DAOTableViewSource',
   'foam.swift.ui.DetailView',
+  'foam.swift.type.Util',
   'foam.u2.Visibility',
   'foam.nanos.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
