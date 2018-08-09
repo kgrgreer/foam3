@@ -70,11 +70,11 @@ public class Transfer
       balance_ = balance;
     }
     if ( getAmount() < 0 ) {
-//      if ( -getAmount() > balance_.getBalance() ) {
-//        System.out.println("Transfer.validate user: "+getAccountId()+", amount: "+getAmount()+", balance: "+balance_.getBalance());
-//
-//        throw new RuntimeException("Insufficient balance in account " + getAccountId());
-//      }
+      if ( -getAmount() > balance_.getBalance() ) {
+        System.out.println("Transfer.validate user: "+getAccountId()+", amount: "+getAmount()+", balance: "+balance_.getBalance());
+
+        throw new RuntimeException("Insufficient balance in account " + getAccountId());
+      }
     }
   }
 
