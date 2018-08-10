@@ -1,19 +1,7 @@
 #!/bin/sh
 
 # This file
-# - cleans build
 # - generates the java code for all models
-
-# Remove the build folder if it exist and create a new one
-clean() {
-  if [ -d "build/" ]; then
-    rm -rf build
-    mkdir build
-  fi
-}
-
-# Clean top level build folder
-clean
 
 node tools/xsd/index.js net.nanopay.iso20022 \
   pacs.002.001.09.xsd \

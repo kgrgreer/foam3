@@ -308,7 +308,7 @@ foam.CLASS({
     { name: 'EmailLabel', message: 'Email Address' },
     { name: 'ConfirmEmailLabel', message: 'Confirm Email Address' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number' }
+    { name: 'PhoneNumberLabel', message: 'Business Phone Number' }
   ],
 
   methods: [

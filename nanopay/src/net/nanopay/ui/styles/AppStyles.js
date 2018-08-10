@@ -105,9 +105,6 @@ foam.CLASS({
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       color: black;
     }
-    .foam-u2-view-ReciprocalSearch-filter {
-      margin-bottom: 8px;
-    }
     .foam-u2-search-TextSearchView input {
       width: 288px;
       padding: 3px;
