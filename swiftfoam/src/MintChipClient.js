@@ -200,9 +200,11 @@ return ClientDAO_create([
       name: 'userTransactionLimitService',
       swiftFactory: `
 return ClientUserTransactionLimitService_create([
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)userTransactionLimit"
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)userTransactionLimit"
+      ])
     ])
   ])
 ])

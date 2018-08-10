@@ -93,9 +93,7 @@ foam.CLASS({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
-  sourceDAOKey: 'localTransactionDAO',
   targetModel: 'net.nanopay.tx.model.Transaction',
-  targetDAOKey: 'localTransactionDAO',
   forwardName: 'children',
   inverseName: 'parent'
 });

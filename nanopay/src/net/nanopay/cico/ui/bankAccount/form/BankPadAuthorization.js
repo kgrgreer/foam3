@@ -246,6 +246,8 @@ foam.CLASS({
     { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
     { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
     { name: 'link', message: 'www.payments.ca.' },
+    { name: 'Accept', message: 'I Agree' },
+    { name: 'Back', message: 'Back' }
 
   ],
   properties: [
@@ -368,6 +370,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.nextLabel = this.Accept;
+      this.backLabel = this.Back;
       this.viewData.agree1 = this.TC1;
       this.viewData.agree2 = this.TC2;
       this.viewData.agree3 = this.TC3;
