@@ -297,7 +297,7 @@ function setenv {
 
         # Production use S3 mount
         if [[ -d "/mnt/journals" ]]; then
-            ln -s "$JOURNAL_HOME" "/mnt/journals"
+            ln -sn "$JOURNAL_HOME" "/mnt/journals"
         else
             mkdir -p "$JOURNAL_HOME"
         fi
