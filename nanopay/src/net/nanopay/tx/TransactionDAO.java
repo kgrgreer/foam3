@@ -77,6 +77,18 @@ public class TransactionDAO
     return balanceDAO_;
   }
 
+  private DAO getWritableBalanceDAO(X x) {
+    ProxyDAO d = (ProxyDAO) getBalanceDAO();
+    while( d != null ) {
+      if ( d instanceof LocalBalanceDAO ) {
+        return ((LocalBalanceDAO)d).getWritableBalanceDAO(x);
+      }
+      d = (ProxyDAO) d.getDelegate();
+    }
+    ((Logger)getX().get("logger")).error("DEVELOPER ERROR", "LocalBalanceDAO not found in localBalanceDAO stack.");
+    return d;
+  }
+
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction  = (Transaction) obj;
@@ -179,14 +191,13 @@ public class TransactionDAO
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
       // NOTE: provide access to writable BalanceDAO
-      ts[i].execute(x.put("localBalanceDAO", getBalanceDAO()));
+      ts[i].execute(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
     }
 
     if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }
-
 
   public void cashinReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.

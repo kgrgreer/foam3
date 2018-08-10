@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package net.nanopay.account;
+package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -29,44 +29,26 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 
 import net.nanopay.account.Balance;
-import net.nanopay.tx.TransactionDAO;
-
 
 /**
- * DAO on setX traverses the localTransactionDAO stack,
- * and explicitly set the TransactionDAO's balanceDAO to
- * the writable BalanceDAO.  The TransactionDAO passes this DAO onto
- * Transfer, as both TransactionDAO and Transfer require write access
- * to the BalanceDAO.
- * Otherwise this DAO provides Read Only access to the BalanceDAO.
+ * Expose ReadOnly access to BalanceDAO, except
+ * for packaged scoped calls from TransactionDAO and
+ * TransferDAO for the writable BalanceDAO;
  */
 public class LocalBalanceDAO
   extends ReadOnlyDAO {
 
   private DAO dao_;
 
-  public LocalBalanceDAO() {
-    // NOTE: do not set context during construction,
-    // the localTransactionDAO lookup must occur after
-    // NSPec has loaded all services.
+  public LocalBalanceDAO(X x) {
+    setX(x);
     setOf(Balance.getOwnClassInfo());
     dao_ = new foam.dao.MDAO(getOf());
   }
 
-  public void setX(foam.core.X x) {
-    super.setX(x);
-    Logger logger = (Logger) x.get("logger");
-
-    ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
-    while ( d instanceof ProxyDAO ) {
-      d = (ProxyDAO) d.getDelegate();
-      if (d instanceof TransactionDAO ) {
-        TransactionDAO dao = (TransactionDAO) d;
-        dao.setBalanceDAO(dao_);
-        logger.info(this.getClass().getSimpleName(), "BalanceDAO set in", dao.getClass().getSimpleName());
-        break;
-      }
-    }
+  // NOTE: packaged scoped
+  DAO getWritableBalanceDAO(X x) {
+    return dao_;
   }
 
   @Override
