@@ -204,6 +204,10 @@ function start_nanos {
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     deploy_journals
 
+    if [ $DEBUG -eq 1 ]; then
+        JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
+    fi
+
     if [ $DAEMONIZE -eq 0 ]; then
         exec java $JAVA_OPTS -jar target/root-0.0.1.jar
     else
@@ -384,6 +388,9 @@ function usage {
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
+DEBUG_PORT=8000
+DEBUG_SUSPEND=n
+JAVA_OPTS=
 INSTALL=0
 RUN_MIGRATION=0
 START_ONLY=0
