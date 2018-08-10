@@ -2,7 +2,6 @@ package net.nanopay.security;
 
 import foam.lib.json.FObjectParser;
 import foam.lib.parse.*;
-import foam.util.SafetyUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
@@ -48,28 +47,27 @@ public class HashedFObjectParser
           (net.nanopay.security.MessageDigest) ps2.value();
 
         // calculate digest based on JSON message
-        java.security.MessageDigest md;
         try {
-          md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
+          java.security.MessageDigest md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
+          md.update(message.getBytes(StandardCharsets.UTF_8));
 
-          // update digest with previous digest
+          // calculate digest
+          byte[] digest = md.digest();
           if ( hashingJournal.getRollDigests() && hashingJournal.getPreviousDigest() != null ) {
             md.update(hashingJournal.getPreviousDigest());
+            md.update(digest);
+            digest = md.digest();
+          }
+
+          if ( ! Hex.toHexString(digest).equals(messageDigest.getDigest()) ) {
+            throw new RuntimeException("Digest verification failed");
           }
 
           hashingJournal.setPreviousDigest(Hex.decode(messageDigest.getDigest()));
-          md.update(message.getBytes(StandardCharsets.UTF_8));
+          return ps.setValue(ps1.value());
         } catch ( Throwable t ) {
           throw new RuntimeException("Digest verification failed");
         }
-
-        // check if calculated digest matches stored digest
-        String digest = Hex.toHexString(md.digest());
-        if ( ! digest.equals(messageDigest.getDigest()) ) {
-          throw new RuntimeException("Digest verification failed");
-        }
-
-        return ps.setValue(ps1.value());
       }
     });
   }
