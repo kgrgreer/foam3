@@ -3,6 +3,14 @@ foam.CLASS({
   name: 'SampleRequestView',
   extends: 'foam.u2.View',
 
+  requires: [
+    'foam.nanos.dig.LinkView'
+  ],
+
+  imports: [
+    'stack'
+  ],
+
   css: `
     ^ {
       width: 992px;
@@ -40,6 +48,14 @@ foam.CLASS({
       background: %PRIMARYCOLOR%;
       width: 85%;
     }
+    ^ .net-nanopay-ui-ActionView-apiLink {
+      width: 160px;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1;
+      color: blue;
+      opacity: 0.6;
+    }
   `,
 
   messages: [
@@ -51,12 +67,11 @@ foam.CLASS({
       name: 'Intro',
       message: 'The following are curl examples of the most common endpoints within the nanopay system. ' +
           'These examples will cover creating and retrieving Users, Accounts & Transactions. ' +
-          'Authentication and permission access is based off username and password provided in the request. ' +
-          'Please refer to the API Documentation for additional information on utilizing the nanopay API.'
+          'Authentication and permission access is based off username and password provided in the request. '
     },
     {
       name: 'UserCreateTitle',
-      message: 'User Create'
+      message: 'Create User'
     },
     {
       name: 'UserCreateInfo',
@@ -98,7 +113,7 @@ foam.CLASS({
     {
       name: 'SendTransactionAccountInfo',
       message: 'The following request will process a payment based on the provided account.' +
-          'The source account provides the payment and destination account receives the payment.'
+          'The source account provides the payment and destination account will receive the payment.'
     },
     {
       name: 'TransactionGetTitle',
@@ -115,7 +130,7 @@ foam.CLASS({
     },
     {
       name: 'TransactionAccountGetInfo',
-      message: 'The following request will provide all the transactions related to the provided account ID'
+      message: 'The following request will provide all the transactions related to the provided account ID.'
     },
     {
       name: 'TransactionUserGetTitle',
@@ -123,7 +138,7 @@ foam.CLASS({
     },
     {
       name: 'TransactionUserGetInfo',
-      message: 'The following request will provide all the transactions related to the provided user ID'
+      message: 'The following request will provide all the transactions related to the provided user ID.'
     }
   ],
 
@@ -143,6 +158,11 @@ foam.CLASS({
           .start('p').addClass('light-roboto-h2')
             .add(this.Intro)
           .end()
+          .startContext({ data: this })
+            .start('p').addClass('light-roboto-h2')
+              .add('Please refer to the ', this.API_LINK, ' for additional information on utilizing the nanopay API.')
+            .end()
+          .endContext()
           .start()
             .addClass('line')
             .style({ 'margin-bottom': '25px;' })
@@ -252,6 +272,17 @@ foam.CLASS({
           data: 'transactionDAO&q=payeeId=1000%20AND%20payerId=1000'
         })
       .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'apiLink',
+      label: 'API Documentation',
+      code: function() {
+        location.hash = 'api-doc';
+        this.stack.push({ class: 'foam.doc.ApiBrowser' });
+      }
     }
   ]
 });

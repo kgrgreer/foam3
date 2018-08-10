@@ -29,4 +29,4 @@ p({"class":"foam.nanos.menu.Menu","id":"api-doc","label":"API Documentation","ha
 p({"class":"foam.nanos.menu.Menu","id":"partners","label":"Partners","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.partners.ui.PartnersView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"gs","label":"GS","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.GSDashboard"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"overview","label":"Overview","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.OverviewView"}},"order":900,"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"sample-request","label":"Sample Requests","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.SampleRequestView"}},"order":900,"parent":"integration"})
+p({"class":"foam.nanos.menu.Menu","id":"sample-request","label":"Sample Requests","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.SampleRequestView"}},"order":700,"parent":"integration"})
