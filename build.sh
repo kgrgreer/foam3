@@ -195,6 +195,7 @@ function start_nanos {
     fi
 
     if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
+      echo "INFO :: Runtime journals deleted."
       rmdir "$JOURNAL_HOME"
       mkdir -p "$JOURNAL_HOME"
     fi
@@ -385,7 +386,7 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 
-while getopts "bnsgtzcmidh" opt ; do
+while getopts "bnsgtzcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
