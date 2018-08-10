@@ -1,0 +1,38 @@
+foam.CLASS({
+  package: 'net.nanopay.auth.ui',
+  name: 'UserTableView',
+  extends: 'foam.u2.View',
+
+  imports: [
+    'stack'
+  ],
+
+  exports: [
+    'dblclick',
+    'selection'
+  ],
+
+  properties: [
+    'selection'
+  ],
+
+  methods: [
+    function initE() {
+      this.SUPER();
+
+      this
+        .start({
+          class: 'foam.u2.view.ScrollTableView',
+          detailView: this.userView,
+          selection$: this.selection$,
+          data$: this.data$
+        }).end();
+    },
+    function dblclick(user) {
+      this.stack.push({
+        class: 'net.nanopay.auth.ui.UserDetailView',
+        user: user
+      });
+    }
+  ],
+});
