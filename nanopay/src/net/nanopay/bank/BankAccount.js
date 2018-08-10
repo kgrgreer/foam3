@@ -62,7 +62,7 @@ foam.CLASS({
       tableCellFormatter: function(inst, X) {
         if ( inst ) {
           X.__context__.institutionDAO.find(inst).then((response) => {
-            this.add(response.institutionNumber);
+            this.add(response != null ? response.institutionNumber : '');
           });
         }
       }
