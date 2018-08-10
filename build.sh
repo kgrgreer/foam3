@@ -20,6 +20,12 @@ function rmfile {
     fi
 }
 
+function quit{
+  # Unset error on exit
+  set +e
+  exit $1
+}
+
 function install {
     MACOS='darwin*'
 
@@ -104,7 +110,7 @@ function deploy_journals {
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
-        exit 1
+        quit 1
     fi
 
     while read file; do
@@ -122,7 +128,7 @@ function migrate_journals {
 }
 
 function build_jar {
-    echo "Building nanos jar"
+    echo "INFO :: Building nanos JAR..."
     cd "$PROJECT_HOME"
 
     if [ "$CLEAN_BUILD" -eq 1 ]; then
@@ -139,7 +145,8 @@ function build_jar {
 }
 
 function stop_nanos {
-    echo "Stopping nanos."
+    echo "INFO :: Stopping nanos..."
+
     if [ ! -f "$NANOS_PIDFILE" ]; then
         echo "PID file $NANOS_PIDFILE not found, nothing to stop?"
         return
@@ -156,8 +163,8 @@ function stop_nanos {
         if [ $TRIES -gt 5 ]; then
             SIGNAL=KILL
         elif [ $TRIES -gt 10 ]; then
-            echo "Failed to kill nanos."
-            exit 1
+            echo "ERROR :: Failed to kill nanos!"
+            quit 1
         fi
     done
     set -e
@@ -175,19 +182,19 @@ function stop_nanos {
 
 function status_nanos {
     if [ ! -f "$NANOS_PIDFILE" ]; then
-        echo "Not running."
-        exit 1
+        echo "INFO :: Nanos not running."
+        quit 1
     elif kill -0 $(cat "$NANOS_PIDFILE") &>/dev/null ; then
-        echo "Running."
-        exit 0
+        echo "INFO :: Nanos running."
+        quit 0
     else
-        echo "ERROR Stale PID file"
-        exit -1
+        echo "ERROR :: Stale PID file."
+        quit -1
     fi
 }
 
 function start_nanos {
-    echo "Starting nanos"
+    echo "INFO :: Starting nanos..."
 
     cd "$PROJECT_HOME"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
@@ -217,10 +224,8 @@ function cleanup_tomcat {
   export CATALINA_PID="/tmp/catalina_pid"
 
   # Handle old machines which have CATALINA_HOME defined
-  if [ -n "$CATALINA_HOME" ]; then
-      if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
-          LOG_HOME="$CATALINA_HOME/logs"
-      fi
+  if [[ -n $CATALINA_HOME && $CATALINA_HOME == "/Library/Tomcat" ]]; then
+      LOG_HOME="$CATALINA_HOME/logs"
   fi
 
   while [ -z "$CATALINA_HOME" ]; do
@@ -252,8 +257,7 @@ function setenv {
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
         echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
-        set +e
-        exit 1
+        quit 1
     fi
 
     if [ -z "$LOG_HOME" ]; then
@@ -393,7 +397,7 @@ while getopts "brsgtzcmidhj" opt ; do
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
         g) STATUS=1 ;;
-        h) usage ; exit 0 ;;
+        h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         m) RUN_MIGRATION=1 ;;
@@ -401,7 +405,7 @@ while getopts "brsgtzcmidhj" opt ; do
         s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
         z) DAEMONIZE=1 ;;
-        ?) usage ; exit 1 ;;
+        ?) usage ; quit 1 ;;
     esac
 done
 
@@ -409,9 +413,7 @@ setenv
 
 if [[ $INSTALL -eq 1 ]]; then
     install
-    # Unset error on exit
-    set +e
-    exit 0
+    quit 0
 fi
 
 if [[ $TEST -eq 1 ]]; then
@@ -421,7 +423,7 @@ fi
 
 if [[ $DIST -eq 1 ]]; then
     dist
-    exit 0
+    quit 0
 fi
 
 if [ "$BUILD_ONLY" -eq 1 ]; then
@@ -447,7 +449,4 @@ else
     start_nanos
 fi
 
-# Unset error on exit
-set +e
-
-exit 0
+quit 0
