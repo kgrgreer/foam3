@@ -268,6 +268,17 @@ function setenv {
         LOG_HOME="$NANOPAY_HOME/logs"
     fi
 
+    local MACOS='darwin*'
+    local LINUXOS='linux-gnu'
+    IS_MAC=0
+    IS_LINUX=0
+
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      IS_MAC=1
+    elif [[ $OSTYPE =~ $LINUXOS ]]; then
+      IS_LINUX=1
+    fi
+
     export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
 
     export JOURNAL_OUT="$PROJECT_HOME"/target/journals
@@ -334,17 +345,6 @@ function setenv {
         else
           ./tools/keystore.sh
         fi
-    fi
-
-    local MACOS='darwin*'
-    local LINUXOS='linux-gnu'
-    IS_MAC=0
-    IS_LINUX=0
-
-    if [[ $OSTYPE =~ $MACOS ]]; then
-      IS_MAC=1
-    elif [[ $OSTYPE =~ $LINUXOS ]]; then
-      IS_LINUX=1
     fi
 
     if [[ -z $JAVA_HOME ]]; then
