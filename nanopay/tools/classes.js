@@ -4,7 +4,7 @@ require('../src/net/nanopay/files.js');
 var classes = [
   'net.nanopay.tx.PayerTransactionDAO',
   'net.nanopay.tx.PayeeTransactionDAO',
-  'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.sms.PhoneVerificationTokenService',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',

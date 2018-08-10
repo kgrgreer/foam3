@@ -62,7 +62,7 @@ var classes = [
   'foam.swift.ui.DetailView',
   'foam.u2.Visibility',
   'foam.nanos.auth.email.EmailTokenService',
-  'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.sms.PhoneVerificationTokenService',
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
