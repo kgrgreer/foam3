@@ -1,3 +1,4 @@
+
 #!/bin/bash
 #
 # Deploy nanopay application
@@ -18,6 +19,12 @@ function rmfile {
     if test -f "$1" ; then
         rm -f "$1"
     fi
+}
+
+function quit {
+  # Unset error on exit
+  set +e
+  exit $1
 }
 
 function install {
@@ -104,7 +111,7 @@ function deploy_journals {
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
-        exit 1
+        quit 1
     fi
 
     while read file; do
@@ -122,7 +129,7 @@ function migrate_journals {
 }
 
 function build_jar {
-    echo "Building nanos jar"
+    echo "INFO :: Building nanos JAR..."
     cd "$PROJECT_HOME"
 
     if [ "$CLEAN_BUILD" -eq 1 ]; then
@@ -138,10 +145,20 @@ function build_jar {
     mvn package
 }
 
+function delete_runtime_journals {
+  if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
+    echo "INFO :: Runtime journals deleted."
+    rmdir "$JOURNAL_HOME"
+    mkdir -p "$JOURNAL_HOME"
+  fi
+}
+
 function stop_nanos {
-    echo "Stopping nanos."
-    if [ ! -f "$NANOS_PIDFILE" ]; then
-        echo "PID file $NANOS_PIDFILE not found, nothing to stop?"
+    echo "INFO :: Stopping nanos..."
+
+    if [[ ! -f $NANOS_PIDFILE ]]; then
+        echo "INFO :: PID file $NANOS_PIDFILE not found, nothing to stop?"
+        delete_runtime_journals
         return
     fi
 
@@ -156,8 +173,8 @@ function stop_nanos {
         if [ $TRIES -gt 5 ]; then
             SIGNAL=KILL
         elif [ $TRIES -gt 10 ]; then
-            echo "Failed to kill nanos."
-            exit 1
+            echo "ERROR :: Failed to kill nanos!"
+            quit 1
         fi
     done
     set -e
@@ -165,38 +182,38 @@ function stop_nanos {
     rmfile "$NANOS_PIDFILE"
 
     backup
+    delete_runtime_journals
 }
 
 function status_nanos {
     if [ ! -f "$NANOS_PIDFILE" ]; then
-        echo "Not running."
-        exit 1
+        echo "INFO :: Nanos not running."
+        quit 1
     elif kill -0 $(cat "$NANOS_PIDFILE") &>/dev/null ; then
-        echo "Running."
-        exit 0
+        echo "INFO :: Nanos running."
+        quit 0
     else
-        echo "ERROR Stale PID file"
-        exit -1
+        echo "ERROR :: Stale PID file."
+        quit -1
     fi
 }
 
 function start_nanos {
-    echo "Starting nanos"
+    echo "INFO :: Starting nanos..."
 
     cd "$PROJECT_HOME"
     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     deploy_journals
+
+    if [ $DEBUG -eq 1 ]; then
+        JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
+    fi
 
     if [ $DAEMONIZE -eq 0 ]; then
         exec java $JAVA_OPTS -jar target/root-0.0.1.jar
     else
         nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
-    fi
-
-    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
-      rmdir "$JOURNAL_HOME"
-      mkdir -p "$JOURNAL_HOME"
     fi
 }
 
@@ -216,10 +233,8 @@ function cleanup_tomcat {
   export CATALINA_PID="/tmp/catalina_pid"
 
   # Handle old machines which have CATALINA_HOME defined
-  if [ -n "$CATALINA_HOME" ]; then
-      if [[ "$CATALINA_HOME" == "/Library/Tomcat" ]]; then
-          LOG_HOME="$CATALINA_HOME/logs"
-      fi
+  if [[ -n $CATALINA_HOME && $CATALINA_HOME == "/Library/Tomcat" ]]; then
+      LOG_HOME="$CATALINA_HOME/logs"
   fi
 
   while [ -z "$CATALINA_HOME" ]; do
@@ -251,12 +266,22 @@ function setenv {
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
         echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
-        set +e
-        exit 1
+        quit 1
     fi
 
     if [ -z "$LOG_HOME" ]; then
         LOG_HOME="$NANOPAY_HOME/logs"
+    fi
+
+    local MACOS='darwin*'
+    local LINUXOS='linux-gnu'
+    IS_MAC=0
+    IS_LINUX=0
+
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      IS_MAC=1
+    elif [[ $OSTYPE =~ $LINUXOS ]]; then
+      IS_LINUX=1
     fi
 
     export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -277,7 +302,7 @@ function setenv {
 
         # Production use S3 mount
         if [[ -d "/mnt/journals" ]]; then
-            ln -s "$JOURNAL_HOME" "/mnt/journals"
+            ln -sn "$JOURNAL_HOME" "/mnt/journals"
         else
             mkdir -p "$JOURNAL_HOME"
         fi
@@ -327,17 +352,6 @@ function setenv {
         fi
     fi
 
-    local MACOS='darwin*'
-    local LINUXOS='linux-gnu'
-    IS_MAC=0
-    IS_LINUX=0
-
-    if [[ $OSTYPE =~ $MACOS ]]; then
-      IS_MAC=1
-    elif [[ $OSTYPE =~ $LINUXOS ]]; then
-      IS_LINUX=1
-    fi
-
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
         JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
@@ -355,7 +369,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
-    echo "  -n : Start nanos with whatever was last built."
+    echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -t : Run tests."
@@ -365,6 +379,7 @@ function usage {
     echo "  -i : Install npm and git hooks"
     echo "  -h : Print usage information."
     echo "  -d : Run with JDPA debugging enabled."
+    echo "  -j : Delete runtime journals and build and run app as usual."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
 }
@@ -374,6 +389,9 @@ function usage {
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
+DEBUG_PORT=8000
+DEBUG_SUSPEND=n
+JAVA_OPTS=
 INSTALL=0
 RUN_MIGRATION=0
 START_ONLY=0
@@ -385,21 +403,21 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 
-while getopts "bnsgtzcmidh" opt ; do
+while getopts "brsgtzcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        j) DELETE_RUNTIME_JOURNALS=1 ;;
-        n) START_ONLY=1 ;;
-        s) STOP_ONLY=1 ;;
+        c) CLEAN_BUILD=1 ;;
+        d) DEBUG=1 ;;
         g) STATUS=1 ;;
+        h) usage ; quit 0 ;;
+        i) INSTALL=1 ;;
+        j) DELETE_RUNTIME_JOURNALS=1 ;;
+        m) RUN_MIGRATION=1 ;;
+        r) START_ONLY=1 ;;
+        s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
         z) DAEMONIZE=1 ;;
-        c) CLEAN_BUILD=1 ;;
-        m) RUN_MIGRATION=1 ;;
-        i) INSTALL=1 ;;
-        d) DEBUG=1 ;;
-        h) usage ; exit 0 ;;
-        ?) usage ; exit 1 ;;
+        ?) usage ; quit 1 ;;
     esac
 done
 
@@ -407,9 +425,7 @@ setenv
 
 if [[ $INSTALL -eq 1 ]]; then
     install
-    # Unset error on exit
-    set +e
-    exit 0
+    quit 0
 fi
 
 if [[ $TEST -eq 1 ]]; then
@@ -419,7 +435,7 @@ fi
 
 if [[ $DIST -eq 1 ]]; then
     dist
-    exit 0
+    quit 0
 fi
 
 if [ "$BUILD_ONLY" -eq 1 ]; then
@@ -445,7 +461,4 @@ else
     start_nanos
 fi
 
-# Unset error on exit
-set +e
-
-exit 0
+quit 0
