@@ -19,10 +19,10 @@ import static foam.mlang.MLang.EQ;
 public class ValidatedPaymentCardDAO
     extends ProxyDAO
 {
-  public final static String GLOBAL_PAYMENT_CARD_CREATE = "paymentCard.create.x";
-  public final static String GLOBAL_PAYMENT_CARD_READ = "paymentCard.read.x";
-  public final static String GLOBAL_PAYMENT_CARD_UPDATE = "paymentCard.update.x";
-  public final static String GLOBAL_PAYMENT_CARD_DELETE = "paymentCard.delete.x";
+  public final static String GLOBAL_PAYMENT_CARD_CREATE = "paymentCard.create.*";
+  public final static String GLOBAL_PAYMENT_CARD_READ = "paymentCard.read.*";
+  public final static String GLOBAL_PAYMENT_CARD_UPDATE = "paymentCard.update.*";
+  public final static String GLOBAL_PAYMENT_CARD_DELETE = "paymentCard.delete.*";
 
   public ValidatedPaymentCardDAO(X x, DAO delegate) {
     setX(x);
@@ -39,6 +39,9 @@ public class ValidatedPaymentCardDAO
       throw new AccessControlException("User is not logged in");
     }
 
+    System.out.println("=========USER ID: " + user.getId() + "=========");
+    System.out.println("=========CREATE PERM: " + auth.check(x, GLOBAL_PAYMENT_CARD_CREATE) + "=========");
+    System.out.println("=========UPDATE PERM: " + auth.check(x, GLOBAL_PAYMENT_CARD_UPDATE) + "=========");
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_CREATE) || ! auth.check(x, GLOBAL_PAYMENT_CARD_UPDATE) ) {
       throw new AccessControlException("User does not have sufficient permissions");
     }
@@ -150,6 +153,8 @@ public class ValidatedPaymentCardDAO
       throw new AccessControlException("User is not logged in");
     }
 
+    System.out.println("=========USER ID: " + user.getId() + "=========");
+    System.out.println("=========READ PERM: " + auth.check(x, GLOBAL_PAYMENT_CARD_READ) + "=========");
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_READ) ) {
       throw new AccessControlException("User does not have sufficient permissions");
     }

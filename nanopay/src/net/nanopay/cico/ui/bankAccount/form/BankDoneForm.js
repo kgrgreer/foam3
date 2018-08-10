@@ -1,16 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount.form',
   name: 'BankDoneForm',
-  extends: 'foam.u2.Controller',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'End of the add bank flow. Show success message here.',
-
-  imports: [
-    'viewData',
-    'errors',
-    'goBack',
-    'goNext'
-  ],
 
   messages: [
     { name: 'Step', message: 'Step 4: Done!' },
@@ -26,8 +19,7 @@ foam.CLASS({
         .start('div').addClass('row').addClass('rowTopMarginOverride')
           .start('p').addClass('pDefault').addClass('stepTopMargin').add(this.Step).end()
         .end()
-        .start('p').addClass('pDefault').add(this.Done).end()
-
+        .start('p').addClass('pDefault').add(this.Done).end();
     }
   ]
 });

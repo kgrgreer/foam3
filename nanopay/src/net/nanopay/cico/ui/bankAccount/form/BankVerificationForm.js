@@ -106,7 +106,7 @@ foam.CLASS({
       },
       validateObj: function(amount, tenthCent, cent) {
         amount = parseInt(Math.round(amount * 100));
-        this.verifyAmount = amount;
+        this.viewData.verificationAmount = amount;
       }
     },
     {

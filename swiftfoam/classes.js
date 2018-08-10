@@ -27,6 +27,7 @@ var classes = [
   'foam.core.Identifiable',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
+  'foam.dao.RelationshipDAO',
   'foam.dao.ManyToManyRelationship',
   'foam.dao.ManyToManyRelationshipDAO',
   'foam.dao.ManyToManyRelationshipImpl',
@@ -60,6 +61,7 @@ var classes = [
   'foam.swift.parse.json.output.Outputter',
   'foam.swift.ui.DAOTableViewSource',
   'foam.swift.ui.DetailView',
+  'foam.swift.type.Util',
   'foam.u2.Visibility',
   'foam.nanos.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.PhoneVerificationTokenService',
@@ -67,6 +69,10 @@ var classes = [
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.model.Currency',
+  'net.nanopay.model.Branch',
+  'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.CABankAccount',
+  'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.PadCapture',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
@@ -84,9 +90,11 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
+  'net.nanopay.tx.tp.realex.RealexTransaction',
+  'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.MobileWallet',
-  'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
   'net.nanopay.invoice.model.Invoice',
@@ -100,7 +108,12 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.tx.tp.TxnProcessorData',
   'net.nanopay.tx.tp.TxnProcessor',
-  'net.nanopay.auth.PublicUserInfo'
+  'net.nanopay.auth.PublicUserInfo',
+  'net.nanopay.account.Account',
+  'net.nanopay.account.Balance',
+  'net.nanopay.account.DigitalAccount',
+  'net.nanopay.payment.Institution',
+  'net.nanopay.payment.InstitutionPurposeCode'
 ];
 
 module.exports = {

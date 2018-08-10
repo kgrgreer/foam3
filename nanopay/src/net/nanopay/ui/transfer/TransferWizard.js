@@ -8,8 +8,7 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView'
   ],
