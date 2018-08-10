@@ -20,7 +20,7 @@ function rmfile {
     fi
 }
 
-function quit{
+function quit {
   # Unset error on exit
   set +e
   exit $1
@@ -144,11 +144,20 @@ function build_jar {
     mvn package
 }
 
+function delete_runtime_journals {
+  if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
+    echo "INFO :: Runtime journals deleted."
+    rmdir "$JOURNAL_HOME"
+    mkdir -p "$JOURNAL_HOME"
+  fi
+}
+
 function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
-    if [ ! -f "$NANOS_PIDFILE" ]; then
-        echo "PID file $NANOS_PIDFILE not found, nothing to stop?"
+    if [[ ! -f $NANOS_PIDFILE ]]; then
+        echo "INFO :: PID file $NANOS_PIDFILE not found, nothing to stop?"
+        delete_runtime_journals
         return
     fi
 
@@ -172,12 +181,7 @@ function stop_nanos {
     rmfile "$NANOS_PIDFILE"
 
     backup
-
-    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
-      echo "INFO :: Runtime journals deleted."
-      rmdir "$JOURNAL_HOME"
-      mkdir -p "$JOURNAL_HOME"
-    fi
+    delete_runtime_journals
 }
 
 function status_nanos {
