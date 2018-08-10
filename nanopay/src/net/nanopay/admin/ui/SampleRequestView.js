@@ -12,7 +12,13 @@ foam.CLASS({
       this.SUPER();
 
       this.start()
+        .start()
+          .add('Sample Requests')
+        .end()
 
+        .start()
+          .add('The following are curl examples of the most common endpoint within the nanopay system.')
+        .end()
       .end();
     }
   ]
