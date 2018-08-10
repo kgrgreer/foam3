@@ -47,27 +47,30 @@ public class HashedFObjectParser
           (net.nanopay.security.MessageDigest) ps2.value();
 
         // calculate digest based on JSON message
+        byte[] digest;
+        java.security.MessageDigest md;
         try {
-          java.security.MessageDigest md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
+          md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
           md.update(message.getBytes(StandardCharsets.UTF_8));
 
           // calculate digest
-          byte[] digest = md.digest();
-          if ( hashingJournal.getRollDigests() && hashingJournal.getPreviousDigest() != null ) {
+          digest = md.digest();
+          if (hashingJournal.getRollDigests() && hashingJournal.getPreviousDigest() != null) {
             md.update(hashingJournal.getPreviousDigest());
             md.update(digest);
             digest = md.digest();
           }
 
-          if ( ! Hex.toHexString(digest).equals(messageDigest.getDigest()) ) {
-            throw new RuntimeException("Digest verification failed");
-          }
-
           hashingJournal.setPreviousDigest(Hex.decode(messageDigest.getDigest()));
-          return ps.setValue(ps1.value());
         } catch ( Throwable t ) {
           throw new RuntimeException("Digest verification failed");
         }
+
+        if ( ! Hex.toHexString(digest).equals(messageDigest.getDigest()) ) {
+          throw new RuntimeException("Digest verification failed");
+        }
+
+        return ps.setValue(ps1.value());
       }
     });
   }
