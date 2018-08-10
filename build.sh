@@ -165,6 +165,12 @@ function stop_nanos {
     rmfile "$NANOS_PIDFILE"
 
     backup
+
+    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
+      echo "INFO :: Runtime journals deleted."
+      rmdir "$JOURNAL_HOME"
+      mkdir -p "$JOURNAL_HOME"
+    fi
 }
 
 function status_nanos {
@@ -192,12 +198,6 @@ function start_nanos {
     else
         nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
-    fi
-
-    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
-      echo "INFO :: Runtime journals deleted."
-      rmdir "$JOURNAL_HOME"
-      mkdir -p "$JOURNAL_HOME"
     fi
 }
 
@@ -356,7 +356,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
-    echo "  -n : Start nanos with whatever was last built."
+    echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -t : Run tests."
@@ -366,6 +366,7 @@ function usage {
     echo "  -i : Install npm and git hooks"
     echo "  -h : Print usage information."
     echo "  -d : Run with JDPA debugging enabled."
+    echo "  -j : Delete runtime journals and build and run app as usual."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
 }
@@ -386,20 +387,20 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 
-while getopts "bnsgtzcmidhj" opt ; do
+while getopts "brsgtzcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        j) DELETE_RUNTIME_JOURNALS=1 ;;
-        n) START_ONLY=1 ;;
-        s) STOP_ONLY=1 ;;
+        c) CLEAN_BUILD=1 ;;
+        d) DEBUG=1 ;;
         g) STATUS=1 ;;
+        h) usage ; exit 0 ;;
+        i) INSTALL=1 ;;
+        j) DELETE_RUNTIME_JOURNALS=1 ;;
+        m) RUN_MIGRATION=1 ;;
+        r) START_ONLY=1 ;;
+        s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
         z) DAEMONIZE=1 ;;
-        c) CLEAN_BUILD=1 ;;
-        m) RUN_MIGRATION=1 ;;
-        i) INSTALL=1 ;;
-        d) DEBUG=1 ;;
-        h) usage ; exit 0 ;;
         ?) usage ; exit 1 ;;
     esac
 done
