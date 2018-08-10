@@ -193,6 +193,11 @@ function start_nanos {
         nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
     fi
+
+    if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
+      rmdir "$JOURNAL_HOME"
+      mkdir -p "$JOURNAL_HOME"
+    fi
 }
 
 function testcatalina {
@@ -300,9 +305,6 @@ function setenv {
         JOURNAL_HOME=/tmp/nanopay
         mkdir -p $JOURNAL_HOME
         echo "INFO :: Cleaned up temporary journal files."
-
-        printf "INFO :: Generating temp keystore...\n"
-        ./tools/keystore.sh -t
     fi
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
@@ -315,10 +317,14 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
-    if [[ -f $PROJECT_HOME/tools/keystore.sh && (! -d $NANOPAY_HOME/keys || ! -f $NANOPAY_HOME/keys/passphrase) ]]; then
+    if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
         cd "$PROJECT_HOME"
         printf "INFO :: Generating keystore...\n"
-        ./tools/keystore.sh
+        if [[ $TEST -eq 1 ]]; then
+          ./tools/keystore.sh -t
+        else
+          ./tools/keystore.sh
+        fi
     fi
 
     local MACOS='darwin*'
@@ -377,10 +383,12 @@ DAEMONIZE=0
 STOP_ONLY=0
 RESTART=0
 STATUS=0
+DELETE_RUNTIME_JOURNALS=0
 
 while getopts "bnsgtzcmidh" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
+        j) DELETE_RUNTIME_JOURNALS=1 ;;
         n) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         g) STATUS=1 ;;

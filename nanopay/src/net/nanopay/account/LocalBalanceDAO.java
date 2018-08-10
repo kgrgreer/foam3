@@ -71,8 +71,6 @@ public class LocalBalanceDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    Logger logger = (Logger) x.get("logger");
-    logger.debug(this.getClass().getSimpleName(), "dao", dao_, "find_(x, ", id, ")");
     return this.dao_.find_(x, id);
   }
 
