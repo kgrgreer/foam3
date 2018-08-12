@@ -54,21 +54,31 @@ foam.CLASS({
       position: relative;
       z-index: 10;
     }
+    .net-nanopay-ui-ActionView-backAction:hover {
+      background: rgba(164, 179, 184, 0.3);
+    }
     ^ .net-nanopay-ui-ActionView-payNow {
       background-color: #59A5D5;
-      border: solid 1px #59A5D5;
       color: white;
       float: right;
       margin-right: 1px;
       position: sticky;
       z-index: 10;
     }
+    ^ .net-nanopay-ui-ActionView-payNow:hover {
+      background: %SECONDARYHOVERCOLOR%;
+    }
+    ^ .net-nanopay-ui-ActionView-payNowDropDown:focus {
+      background: %SECONDARYHOVERCOLOR%;
+    }
     ^ .net-nanopay-ui-ActionView-payNowDropDown {
       width: 30px;
       height: 40px;
       background-color: #59A5D5;
-      border: solid 1px #59A5D5;
       float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-payNowDropDown:hover{
+      background: %SECONDARYHOVERCOLOR%;
     }
     ^ .net-nanopay-ui-ActionView-payNowDropDown::after {
       content: ' ';
