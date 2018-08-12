@@ -149,7 +149,7 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Txn amount cannot be negative");
 
 
-    txn.setAmount((DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_))+ 1);
+    txn.setAmount((DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 1 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_))+ 1);
     txn.setPayeeId(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),

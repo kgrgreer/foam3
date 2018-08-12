@@ -50,40 +50,18 @@ public class Transfer
     return i1 == i2 ? 0 : i1 > i2 ? 1 : -1;
   }
 
-  /** Validate that the user exists and has sufficient balance **/
-  public void validate(X x)
-    throws RuntimeException
-  {
-    DAO  userDAO = (DAO) x.get("localUserDAO");
-    Account account    = (Account) ((DAO)x.get("localAccountDAO")).find(getAccountId());
-
-    if ( account == null ) throw new RuntimeException("Uknown user " + getAccountId());
-
-    account_ = account;
-
-    DAO     balanceDAO = (DAO) x.get("localBalanceDAO");
-    Balance balance    = (Balance) balanceDAO.find(getAccountId());
-    if ( balance == null ) {
-      balance_ = new Balance();
-      balance_.setAccount(getAccountId());
-    } else {
-      balance_ = balance;
-    }
-    if ( getAmount() < 0 ) {
-      if ( -getAmount() > balance_.getBalance() ) {
-        System.out.println("Transfer.validate user: "+getAccountId()+", amount: "+getAmount()+", balance: "+balance_.getBalance());
-
-        throw new RuntimeException("Insufficient balance in account " + getAccountId());
-      }
-    }
-  }
 
   /** Execute the balance transfer, updating the user's balance. **/
   public void execute(X x) {
     DAO     balanceDAO = (DAO) x.get("localBalanceDAO");
-    Balance balance  = getBalance();
-
-    balance.setBalance(balance.getBalance() + getAmount());
+    Balance balance  = (Balance) balanceDAO.find(getAccountId());
+    if ( balance == null ) {
+      balance = new Balance();
+      balance.setAccount(getAccountId());
+      balance.setBalance(getAmount());
+    } else {
+      balance.setBalance(balance.getBalance() + getAmount());
+    }
 
     balanceDAO.put(balance);
   }

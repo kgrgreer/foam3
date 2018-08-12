@@ -94,10 +94,6 @@ public class TransactionDAO
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
-    if ( transaction.getAmount() < 0) {
-      throw new RuntimeException("Amount cannot be negative");
-    }
-
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
         transaction.getType() != TransactionType.CASHOUT ) {
@@ -127,7 +123,7 @@ public class TransactionDAO
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
           Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
-          refound.validate(x);
+          //refound.validate(x);
           refound.execute(x);
         }
         return super.put_(x, obj);
@@ -141,29 +137,7 @@ public class TransactionDAO
     Transfer[] ts = t.createTransfers(x);
 
     // TODO: disallow or merge duplicate accounts
-    if ( ts.length != 1 ) {
-      validateTransfers(ts);
-    }
     return lockAndExecute(x, t, ts, 0);
-  }
-
-  void validateTransfers(Transfer[] ts)
-      throws RuntimeException
-  {
-    if ( ts.length == 0 ) return;
-
-    long c = 0, d = 0;
-    for ( int i = 0 ; i < ts.length ; i++ ) {
-      Transfer t = ts[i];
-      if ( t.getAmount() > 0 ) {
-        c += t.getAmount();
-      } else {
-        d += t.getAmount();
-      }
-    }
-
-    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
-    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
   /** Sorts array of transfers. **/
@@ -185,9 +159,6 @@ public class TransactionDAO
 
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
-    for ( int i = 0 ; i < ts.length ; i++ ) {
-      ts[i].validate(x);
-    }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
       // NOTE: provide access to writable BalanceDAO
