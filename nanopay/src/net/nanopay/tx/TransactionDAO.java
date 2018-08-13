@@ -37,14 +37,14 @@ import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 public class TransactionDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
   protected final Set<TransactionStatus> STATUS_BLACKLIST =
-      Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
-        add(TransactionStatus.REFUNDED);
-        add(TransactionStatus.PENDING);
-      }});
+    Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+      add(TransactionStatus.REFUNDED);
+      add(TransactionStatus.PENDING);
+    }});
 
   protected DAO userDAO_;
   protected DAO balanceDAO_;
@@ -94,9 +94,13 @@ public class TransactionDAO
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
+    if ( transaction.getAmount() < 0) {
+      throw new RuntimeException("Amount cannot be negative");
+    }
+
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
-        transaction.getType() != TransactionType.CASHOUT ) {
+      transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
@@ -123,7 +127,7 @@ public class TransactionDAO
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
           Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
-          //refound.validate(x);
+          refound.validate(x);
           refound.execute(x);
         }
         return super.put_(x, obj);
@@ -137,7 +141,29 @@ public class TransactionDAO
     Transfer[] ts = t.createTransfers(x);
 
     // TODO: disallow or merge duplicate accounts
+    if ( ts.length != 1 ) {
+      validateTransfers(ts);
+    }
     return lockAndExecute(x, t, ts, 0);
+  }
+
+  void validateTransfers(Transfer[] ts)
+    throws RuntimeException
+  {
+    if ( ts.length == 0 ) return;
+
+    long c = 0, d = 0;
+    for ( int i = 0 ; i < ts.length ; i++ ) {
+      Transfer t = ts[i];
+      if ( t.getAmount() > 0 ) {
+        c += t.getAmount();
+      } else {
+        d += t.getAmount();
+      }
+    }
+
+    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
+    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
   }
 
   /** Sorts array of transfers. **/
@@ -159,6 +185,9 @@ public class TransactionDAO
 
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
+    for ( int i = 0 ; i < ts.length ; i++ ) {
+      ts[i].validate(x);
+    }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
       // NOTE: provide access to writable BalanceDAO
@@ -173,7 +202,7 @@ public class TransactionDAO
   public void cashinReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.
     Balance payerBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
-        payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
+    payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payerBalance);
   }
@@ -181,7 +210,7 @@ public class TransactionDAO
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR PayeeAccountId is not yet setup/populated.
     Balance payeeBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
-        payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
+    payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payeeBalance);
   }

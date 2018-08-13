@@ -2,8 +2,10 @@ package net.nanopay.tx;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
+import net.nanopay.account.Balance;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -203,7 +205,10 @@ public class TransactionDAOTest
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction has status completed" );
     test( senderInitialBalance + txn.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
 
-
+ /*   Balance balance = (Balance)(((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).find(1L).fclone();
+    balance.setBalance(666666666);
+    (((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).put(balance);
+*/
   }
 
   public void testCashOut() {Transaction txn = new Transaction();
