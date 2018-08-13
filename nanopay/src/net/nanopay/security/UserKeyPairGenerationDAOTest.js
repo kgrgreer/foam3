@@ -27,6 +27,7 @@ foam.CLASS({
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
     'java.io.File',
+    'java.security.interfaces.RSAKey',
     'java.util.UUID',
     'java.security.KeyPair',
     'java.security.KeyPairGenerator',
@@ -71,12 +72,12 @@ foam.CLASS({
       
       // call tests
       UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
-      //UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, publicKey);
+      UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
       // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
       UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, privateKey, publicKey);
 
       // put tests
-      // UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, generatedKeyPair, privateKey, publicKey);
+      UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, UserKeyPairGenerationDAO, keyPairDAO );
       `
     },
     {
@@ -108,15 +109,17 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         },
         {
+          name: 'UserKeyPairGenerationDAO', javaType: 'foam.dao.DAO'
+        },
+        {
           name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
-  // STUCK
-  // why can't I do - 
-  // publicKey.getPublicKey().getModulus.bitLength;
-  // test( (i.getProperty("algorithm")).equals(privateKey.algorithm_) , "Private key uses algorithm set in UKPGDao" );
-`
+  RSAKey rsaKey = (RSAKey) publicKey.getPublicKey();
+  FObject UserKeyPairGenerationObject = (FObject) UserKeyPairGenerationDAO;
+  test( (  rsaKey.getModulus().bitLength() == (Integer) (UserKeyPairGenerationObject.getProperty("keySize")) ) , "Public key uses keySize set in DAO" );
+  `
     },
     {
       name: 'UserKeyPairGenerationDAO_PublicKeyBase64Encrypted',
@@ -134,6 +137,28 @@ foam.CLASS({
       javaCode: `
   test( Base64.isBase64(publicKey.encodedPublicKey_.getBytes()), "Public key is base64 encoded" );
   test( Base64.isBase64(privateKey.encryptedPrivateKey_.getBytes()), "Encrypted private key is base64 encoded" );
+  `
+    },
+
+    {
+      name: 'UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        },
+        {
+          name: 'UserKeyPairGenerationDAO', javaType: 'foam.dao.DAO'
+        },
+        {
+          name: 'keyPairDAO', javaType: 'foam.dao.DAO'
+        }
+      ],
+      javaCode: `
+  KeyPairEntry firstGeneratedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
+  UserKeyPairGenerationDAO.put_(x, INPUT);
+  UserKeyPairGenerationDAO.put_(x, INPUT);
+  KeyPairEntry multiplePutKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
+  test( multiplePutKeyPair.equals(firstGeneratedKeyPair), "Multiple puts to DAO generate no more than one keypair" );
   `
     },
   ]
