@@ -69,11 +69,11 @@ foam.CLASS({
       PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
     
       
-      // construct tests
+      // call tests
       UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
       //UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, generatedKeyPair, privateKey, publicKey);
       // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
-      UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, publicKey);
+      UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, privateKey, publicKey);
 
       // put tests
       // UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, generatedKeyPair, privateKey, publicKey);
@@ -131,13 +131,16 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         },
         {
+          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
+        },
+        {
           name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
   test( Base64.isBase64(publicKey.encodedPublicKey_.getBytes()), "Public key is base64 encoded" );
-
-`
+  test( Base64.isBase64(privateKey.encryptedPrivateKey_.getBytes()), "Encrypted private key is base64 encoded" );
+  `
     },
   ]
 });
