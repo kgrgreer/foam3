@@ -14,14 +14,16 @@ foam.CLASS({
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
-      documentation: 'Proprietor details for business.'
+      documentation: 'Proprietor details for business.',
+      flags: ['js']
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
-      documentation: 'General economic grouping for business.'
+      documentation: 'General economic grouping for business.',
+      flags: ['js']
     },
     {
       class: 'Boolean',

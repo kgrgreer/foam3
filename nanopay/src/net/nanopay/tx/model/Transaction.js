@@ -104,6 +104,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
+      flags: ['js']
     },
     {
       class: 'foam.core.Enum',

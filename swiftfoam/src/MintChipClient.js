@@ -24,7 +24,6 @@ foam.CLASS({
   exports: [
     'userDAO',
     'currentUser',
-    'invoiceDAO',
     'padCaptureDAO',
     'refreshTransactionDAO',
     'transactionDAO',
@@ -309,20 +308,6 @@ return ClientDAO_create([
   ])
 ])
       `
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'invoiceDAO',
-      swiftFactory: `
-return ClientDAO_create([
-  "of": net_nanopay_invoice_model_Invoice.classInfo(),
-  "delegate": SessionClientBox_create([
-    "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)invoiceDAO"
-    ])
-  ])
-])
-      `,
     },
     {
       class: 'FObjectProperty',
