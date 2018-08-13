@@ -117,6 +117,12 @@ foam.CLASS({
     ^ .foam-u2-view-TableView-row {
       height: 40px;
     }
+    ^ .net-nanopay-ui-ActionView-addUser:hover {
+      background: #357eac;
+    }
+    ^ .net-nanopay-ui-ActionView-addUser:focus {
+      background: #357eac;
+    }
   `,
 
   properties: [

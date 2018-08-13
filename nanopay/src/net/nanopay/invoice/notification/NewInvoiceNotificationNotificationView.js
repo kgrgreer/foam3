@@ -29,13 +29,17 @@ foam.CLASS({
       var self = this;
       this.invoiceDAO.find(this.data.invoiceId).then(function(result) {
         self.invoice = result;
-        var senderName = self.invoice.payeeId !== self.invoice.createdBy
-            ? self.invoice.payer.label()
-            : self.invoice.payee.label();
-        var invoiceType = self.getInvoiceNotificationType(self.invoice);
-        var amount = self.addCommas((self.invoice.amount / 100).toFixed(2));
-        self.message = `${senderName} just sent you a ${invoiceType.label} invoice
-            of $${amount}.`;
+        if ( self.invoice == null ) {
+          self.message = 'The invoice for this notification can no longer be found.';
+        } else {
+          var senderName = self.invoice.payeeId !== self.invoice.createdBy
+              ? self.invoice.payer.label()
+              : self.invoice.payee.label();
+          var invoiceType = self.getInvoiceNotificationType(self.invoice);
+          var amount = self.addCommas((self.invoice.amount / 100).toFixed(2));
+          self.message = `${senderName} just sent you a ${invoiceType.label} invoice
+              of $${amount}.`;
+        }
       });
       this
         .addClass(this.myClass())
@@ -55,6 +59,9 @@ foam.CLASS({
   actions: [{
     name: 'link',
     label: 'View Invoice',
+    isEnabled: function(invoice) {
+      return invoice != null;
+    },
     code: function() {
       if ( this.getInvoiceNotificationType(this.invoice)
           === this.InvoiceNotificationType.RECEIVABLE ) {

@@ -157,8 +157,6 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-partnersModal{
       float: right;
-      background-color: #59a5d5;
-      color: white;
     }
   `,
 
@@ -256,7 +254,7 @@ foam.CLASS({
             .end()
             .start(this.FILTER).addClass('filter-search').end()
             .startContext({ data: this })
-              .start(this.PARTNERS_MODAL).end()
+              .start(this.PARTNERS_MODAL).addClass('blue-button').end()
             .endContext()
           .end()
           .start()
