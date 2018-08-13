@@ -135,8 +135,6 @@ ByteArrayOutputStream baos = new ByteArrayOutputStream();
 CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
 
 try {
-  IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), System.out);
-
   if ( IOUtils.toString(new ByteArrayInputStream(baos.toByteArray()),"UTF-8").contains(expectedCSV) ) {
     test(true, "CSV file is generated correctly");
   } else {
@@ -185,8 +183,6 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
   AlternaTransaction tran = (AlternaTransaction)transactionDao.find(EQ(Transaction.ID, eftConfirmationFileRecord.getReferenceId()));
   
   if ( tran != null ) {
-    System.out.println("status: " + tran.getStatus());
-
     if ( TransactionStatus.SENT.equals(tran.getStatus()) ) {
       test(true, "Confirmation File Processing succeeded: Transaction " + tran.getId() + " state successfully changed from Pending to Sent");
     } else {
@@ -224,8 +220,6 @@ for ( FObject record : returnFile ) {
   AlternaTransaction tran = (AlternaTransaction) transactionDao.find(EQ(Transaction.ID, eftReturnRecord.getExternalReference()));
 
   if ( tran != null ) {
-    System.out.println("status: " + tran.getStatus());
-
     if ( TransactionStatus.DECLINED.equals(tran.getStatus()) && "Return".equals(tran.getReturnType()) ) {
       test(true, "Return File Processing succeeded: Transaction " + tran.getId() + " state successfully changed from Sent to Declined");
     } else {
