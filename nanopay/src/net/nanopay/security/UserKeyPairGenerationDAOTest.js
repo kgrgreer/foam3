@@ -54,14 +54,29 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        // construct tests
-        UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x);
-        UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x);
-        // UserKeyPairGenerationDAO_PrivateKeyEncrypted();
-        UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x);
 
-        // put tests
-        // UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair();
+      // Create the DAOs
+      // All DAOs can be taken from context if UserKeyPairGenerationDAO is created there
+      DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
+      DAO keyPairDAO = (DAO) new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"keyPairs\").build()).build();;
+      DAO privateKeyDAO = (DAO) new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"privateKeys\").build()).build();
+      DAO publicKeyDAO = (DAO)  new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"publicKeys\").build()).build();
+    
+      // Put to DAO and find keys generated
+      UserKeyPairGenerationDAO.put_(x, INPUT);
+      KeyPairEntry generatedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
+      PrivateKeyEntry privateKey = (PrivateKeyEntry) privateKeyDAO.find_(x, generatedKeyPair.privateKeyId_);
+      PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
+    
+      
+      // construct tests
+      UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
+      //UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, generatedKeyPair, privateKey, publicKey);
+      // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
+      UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, publicKey);
+
+      // put tests
+      // UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, generatedKeyPair, privateKey, publicKey);
       `
     },
     {
@@ -69,27 +84,21 @@ foam.CLASS({
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
+        },
+        {
+          name: 'generatedKeyPair', javaType: 'net.nanopay.security.KeyPairEntry'
+        },
+        {
+          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
+        },
+        {
+          name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
-  // Create the DAOs
-  // All DAOs can be taken from context if UserKeyPairGenerationDAO is created there
-  DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
-  DAO keyPairDAO = (DAO) new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"keyPairs\").build()).build();;
-  DAO privateKeyDAO = (DAO) new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"privateKeys\").build()).build();
-  DAO publicKeyDAO = (DAO)  new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"publicKeys\").build()).build();
-
-  // Put to DAO and find keys generated
-  UserKeyPairGenerationDAO.put_(x, INPUT);
-  KeyPairEntry keypairDaoFind = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
-  PrivateKeyEntry kprivate = (PrivateKeyEntry) privateKeyDAO.find_(x, keypairDaoFind.privateKeyId_);
-  PublicKeyEntry kpublic = (PublicKeyEntry) publicKeyDAO.find_(x, keypairDaoFind.publicKeyId_);
-
-  // Run tests
-  test( (keypairDaoFind.getAlgorithm().equals(kprivate.algorithm_)) , "Private key uses algorithm set in UKPGDao" );
-  test( (keypairDaoFind.getAlgorithm().equals(kpublic.algorithm_)) , "Public key uses algorithm set in UKPGDao" );
-
   // TODO:  Will changing the properties work? Test it...
+  test( (generatedKeyPair.getAlgorithm().equals(privateKey.algorithm_)) , "Private key uses algorithm set in DAO" );
+  test( (generatedKeyPair.getAlgorithm().equals(publicKey.algorithm_)) , "Public key uses algorithm set in DAO" );
 `
     },
     {
@@ -97,30 +106,22 @@ foam.CLASS({
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
+        },
+        {
+          name: 'generatedKeyPair', javaType: 'net.nanopay.security.KeyPairEntry'
+        },
+        {
+          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
+        },
+        {
+          name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
-  // Create the DAOs
-  // Can be taken from context if UserKeyPairGenerationDAO is created there
-  DAO keyPairDAO = (DAO) new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"keyPairs\").build()).build();;
-  DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
-  DAO privateKeyDAO = (DAO) new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"privateKeys\").build()).build();
-  DAO publicKeyDAO = (DAO)  new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"publicKeys\").build()).build();
-
-  // Put to DAO and find keys generated
-  UserKeyPairGenerationDAO.put_(x, INPUT);
-  KeyPairEntry keypairDaoFind = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
-  PrivateKeyEntry kprivate = (PrivateKeyEntry) privateKeyDAO.find_(x, keypairDaoFind.privateKeyId_);
-  PublicKeyEntry kpublic = (PublicKeyEntry) publicKeyDAO.find_(x, keypairDaoFind.publicKeyId_);
-
   // STUCK
   // why can't I do - 
-  // kpublic.getPublicKey().getModulus.bitLength;
-
-  // Run tests
-  // test( (i.getProperty("algorithm")).equals(kprivate.algorithm_) , "Private key uses algorithm set in UKPGDao" );
-
-  // TODO:  Will changing the properties work? Test it...
+  // publicKey.getPublicKey().getModulus.bitLength;
+  // test( (i.getProperty("algorithm")).equals(privateKey.algorithm_) , "Private key uses algorithm set in UKPGDao" );
 `
     },
     {
@@ -128,24 +129,13 @@ foam.CLASS({
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
+        },
+        {
+          name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
-  // Create the DAOs
-  // Can be taken from context if UserKeyPairGenerationDAO is created there
-  DAO keyPairDAO = (DAO) new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"keyPairs\").build()).build();;
-  DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
-  DAO privateKeyDAO = (DAO) new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"privateKeys\").build()).build();
-  DAO publicKeyDAO = (DAO)  new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"publicKeys\").build()).build();
-
-  // Put to DAO and find keys generated
-  UserKeyPairGenerationDAO.put_(x, INPUT);
-  KeyPairEntry keypairDaoFind = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
-  PrivateKeyEntry kprivate = (PrivateKeyEntry) privateKeyDAO.find_(x, keypairDaoFind.privateKeyId_);
-  PublicKeyEntry kpublic = (PublicKeyEntry) publicKeyDAO.find_(x, keypairDaoFind.publicKeyId_);
-
-  // Run tests
-  test( Base64.isBase64(kpublic.encodedPublicKey_.getBytes()), "Public key is base64 encoded" );
+  test( Base64.isBase64(publicKey.encodedPublicKey_.getBytes()), "Public key is base64 encoded" );
 
 `
     },
