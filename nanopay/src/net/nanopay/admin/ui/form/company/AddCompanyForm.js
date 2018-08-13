@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
