@@ -46,12 +46,12 @@ foam.CLASS({
   PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
 
   
-  // // run tests
-  // UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
-  // UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
-  // // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
-  // UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, privateKey, publicKey);
-  // UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, UserKeyPairGenerationDAO, keyPairDAO );
+  // run tests
+  UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
+  UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
+  // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
+  UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, privateKey, publicKey);
+  UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, UserKeyPairGenerationDAO, keyPairDAO );
   UserKeyPairGenerationDAO_FailOnIncompatibleAlgorithmKeySizeCombination(x, UserKeyPairGenerationDAO, keyPairDAO);
   
   `
@@ -150,17 +150,22 @@ foam.CLASS({
         }
       ],
       javaCode: `
+  User newUser = new User.Builder(x).setId(100).setFirstName("Roald").setLastName("Dahl").setEmail("roal@dahl.lit").build(); 
   
-  net.nanopay.security.UserKeyPairGenerationDAO UserKeyPairGenerationDAOx = (net.nanopay.security.UserKeyPairGenerationDAO) UserKeyPairGenerationDAO;
-  UserKeyPairGenerationDAOx.setAlgorithm("RSA");
-  UserKeyPairGenerationDAOx.setKeySize(1);
-  System.err.print(UserKeyPairGenerationDAOx.getAlgorithm());
-  System.err.print(UserKeyPairGenerationDAOx.getKeySize());
-  DAO xid = (DAO) UserKeyPairGenerationDAOx;
-  System.err.print(xid);
-  xid.put_(x, INPUT);
-  KeyPairEntry generatedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
-  System.err.print(generatedKeyPair);
+  // set incomaptible algorithm and keySize on the UserKeyPairGenerationDAO
+  net.nanopay.security.UserKeyPairGenerationDAO castedUserKeyPairGenerationDAO = (net.nanopay.security.UserKeyPairGenerationDAO) UserKeyPairGenerationDAO;
+  castedUserKeyPairGenerationDAO.setAlgorithm("DSA");
+  castedUserKeyPairGenerationDAO.setKeySize(222);
+  DAO reCastedDAO = (DAO) castedUserKeyPairGenerationDAO;
+  
+  boolean threw = false;
+  try {
+    reCastedDAO.put_(x, newUser);
+  } catch (Exception e) {
+    threw = true;
+  }
+  test( threw, "Putting incompatible KeySize and Algorithm throws an exception" );  
+  
       `
     }
   ]
