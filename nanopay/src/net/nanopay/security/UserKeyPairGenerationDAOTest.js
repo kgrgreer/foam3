@@ -49,7 +49,6 @@ foam.CLASS({
   // run tests
   UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
   UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
-  // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
   UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, privateKey, publicKey);
   UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, UserKeyPairGenerationDAO, keyPairDAO );
   UserKeyPairGenerationDAO_FailOnIncompatibleAlgorithmKeySizeCombination(x, UserKeyPairGenerationDAO, keyPairDAO);
