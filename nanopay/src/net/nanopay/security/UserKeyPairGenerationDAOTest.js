@@ -2,35 +2,14 @@ foam.CLASS({
   package: 'net.nanopay.security',
   name: 'UserKeyPairGenerationDAOTest',
   extends: 'foam.nanos.test.Test',
-  imports: [
-    'keyStoreManager',
-    'keyPairDAO',
-    'privateKeyDAO',
-    'publicKeyDAO'
-  ],
 
   javaImports: [
-    // 'nanopay.security.UserKeyPairGenerationDAO',
     'foam.core.EmptyX',
-    'net.nanopay.security.KeyPairEntry',
-    'net.nanopay.security.PrivateKeyEntry',
-    'net.nanopay.security.PublicKeyEntry',
-    'foam.core.X',
     'foam.dao.DAO',
     'foam.core.FObject',
-    'foam.dao.MDAO',
-    'foam.dao.Sink',
-    'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.EQ',
-    'java.io.BufferedReader',
-    'java.io.BufferedWriter',
-    'java.io.File',
     'java.security.interfaces.RSAKey',
-    'java.util.UUID',
-    'java.security.KeyPair',
-    'java.security.KeyPairGenerator',
     'org.apache.commons.codec.binary.Base64'
 
   ],
@@ -70,7 +49,7 @@ foam.CLASS({
       PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
     
       
-      // call tests
+      // parameter tests
       UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
       UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
       // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
@@ -97,7 +76,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-  // TODO:  Will changing the properties work? Test it...
   test( (generatedKeyPair.getAlgorithm().equals(privateKey.algorithm_)) , "Private key uses algorithm set in DAO" );
   test( (generatedKeyPair.getAlgorithm().equals(publicKey.algorithm_)) , "Public key uses algorithm set in DAO" );
 `
