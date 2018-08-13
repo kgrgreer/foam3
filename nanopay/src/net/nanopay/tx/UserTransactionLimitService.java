@@ -121,7 +121,7 @@ public class UserTransactionLimitService
     Date firstDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN);
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
-    DAO list = transactionDAO_.where(AND(IN(( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ), user.accounts(x) ),
+    DAO list = transactionDAO_.where(AND(IN(( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ), user.getAccounts(x) ),
         GTE(Transaction.DATE, firstDate ),
         LTE(Transaction.DATE, lastDate )
     ));

@@ -117,7 +117,7 @@ foam.CLASS({
       height: 155px;
       margin-top: 20px;
     }
-    ^ .small-input-box{
+    ^ .small-input-box {
       margin: 20px 0;
     }
     ^ .label{
@@ -140,38 +140,38 @@ foam.CLASS({
     ^ .information {
       height: 110px;
     }
-    ^ .net-nanopay-ui-BusinessCard{
+    ^ .net-nanopay-ui-BusinessCard {
       margin-bottom: 30px;
     }
     ^ .foam-u2-tag-Select{
       width: 450px;
     }
-    ^ .container-1{
+    ^ .container-1 {
       margin-left: 60px;
       display: inline-block;
     }
-    ^ .container-2{
+    ^ .container-2 {
       margin-left: 40px;
       display: inline-block;
     }
-    ^ .property-amount{
+    ^ .property-amount {
       width: 215px;
       padding-left: 115px;
     }
-    ^ .customer-div{
+    ^ .customer-div {
       vertical-align: top;
       margin-top: 10px;
       width: 420px;
       display: inline-block;
     }
-    ^ .net-nanopay-tx-ui-CurrencyChoice{
+    ^ .net-nanopay-tx-ui-CurrencyChoice {
       position: absolute;
       top: 272px;
       width: 85px;
       margin-left: 7px;
       border-right: 1px solid lightgrey;
     }
-    ^ .foam-u2-PopupView{
+    ^ .foam-u2-PopupView {
       left: -20px !important;
       top: 45px !important;
     }
@@ -284,7 +284,7 @@ foam.CLASS({
     },
     {
       name: 'saveAndPreview',
-      label: 'Save & Preview',
+      label: 'Send',
       code: function(X) {
         var dueDate = this.data.dueDate;
 
@@ -304,7 +304,7 @@ foam.CLASS({
           return;
         }
 
-        if ( ! ( dueDate instanceof Date ) ) {
+        if ( ! (dueDate instanceof Date && ! isNaN(dueDate.getTime())) ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
             message: 'Please Enter Valid Due Date yyyy-mm-dd.',
             type: 'error'
