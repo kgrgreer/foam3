@@ -128,6 +128,9 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
+  // tx tests
+  'net.nanopay.tx.model.TransactionParseTest',
+
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
@@ -151,6 +154,7 @@ var classes = [
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
+  'net.nanopay.security.RandomNonceDAO',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
@@ -163,6 +167,7 @@ var classes = [
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
+  'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.tp.alterna.test.EFTTest'

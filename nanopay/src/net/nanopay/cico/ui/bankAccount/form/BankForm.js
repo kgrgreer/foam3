@@ -99,7 +99,6 @@ foam.CLASS({
           }
         }
       ];
-      this.nextLabel = this.Next;
       this.SUPER();
       this.viewData.user = this.user;
       this.viewData.bankAccounts = [];
@@ -201,15 +200,13 @@ foam.CLASS({
       });
 
       if ( newAccount.errors_ ) {
-        this.notify(accountInfo.errors_[0][1], 'error');
+        this.notify(newAccount.errors_[0][1], 'error');
         return;
       }
       this.viewData.bankAccounts.push(newAccount);
 
-      this.nextLabel = this.Accept;
       this.subStack.push(
         this.views.find((t) => t.id === this.PAD_AUTH_VIEW_ID).view);
-      // return;
     },
     async function goToBankVerificationForm() {
       var account = this.viewData.bankAccounts[0]; // doing this cause this view adds only one account at a time.
@@ -234,8 +231,6 @@ foam.CLASS({
         return;
       }
       this.viewData.bankAccounts[0] = account; // updated account
-      this.backLabel = this.Later;
-      this.nextLabel = this.Verify;
       this.subStack.push(
         this.views.find((t) => t.id === this.VERIFICATION_VIEW_ID).view);
     },
@@ -256,8 +251,6 @@ foam.CLASS({
       }
       if ( isVerified ) {
         this.notify('Account successfully verified!', '');
-        this.backLabel = this.Back;
-        this.nextLabel = this.Done;
         this.subStack.push(
           this.views.find((t) => t.id === this.DONE_ADDING_BANK_ID).view
         );
@@ -269,9 +262,15 @@ foam.CLASS({
     {
       name: 'goBack',
       code: function(X) {
-        ctrl.stack.push({
-          class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
-        });
+        var currentViewId = this.views[this.position].id;
+        // only view that rolls back to the previous view
+        if ( currentViewId === this.PAD_AUTH_VIEW_ID ) {
+          this.subStack.back();
+        } else {
+          ctrl.stack.push({
+            class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
+          });
+        }
       }
     },
     {

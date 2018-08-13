@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
+import java.util.Date;
+
 public class DuplicateTransactionCheckDAO
   extends ProxyDAO
 {
@@ -18,15 +20,15 @@ public class DuplicateTransactionCheckDAO
     for ( int i = 0 ; i < locks_.length ; i++ ) locks_[i] = new Object();
   }
 
-  public Object getLockForId(long id) {
+  public Object getLockForDate(Date date) {
     // Id's should be positive, but just to be safe, take the ABS
-    return locks_[(int)(Math.abs(id) % locks_.length)];
+    return locks_[(int)(Math.abs(date != null ? date.getTime() : 0) % locks_.length)];
   }
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
     Transaction curTxn = (Transaction) obj;
-    synchronized ( getLockForId(curTxn.getId()) ) {
+    synchronized ( getLockForDate(curTxn.getCreated()) ) {
       Transaction oldTxn = (Transaction) getDelegate().find(obj);
       if ( oldTxn != null ) {
         if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {

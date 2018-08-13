@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount.form',
   name: 'BankVerificationForm',
-  extends: 'foam.u2.Controller',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: `
       Page to input verification amount that was deposited into the user's bank
@@ -93,7 +93,9 @@ foam.CLASS({
     {
       name: 'Instructions2',
       message: 'Please input the amount below to verify your account.'
-    }
+    },
+    { name: 'Later', message: 'Come back later' },
+    { name: 'Verify', message: 'Verify' }
   ],
 
   properties: [
@@ -147,6 +149,8 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
+      this.backLabel = this.Later;
+      this.nextLabel = this.Verify;
       this
         .addClass(this.myClass())
         .start('p')

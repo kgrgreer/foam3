@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import net.nanopay.account.Account;
 import net.nanopay.tx.TransactionType;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.model.LiquidityService;
 import net.nanopay.tx.model.Transaction;
 
@@ -28,10 +29,13 @@ public class LiquidityDAO extends ProxyDAO {
       throw exception;
     }
 
+    LiquidityService ls = (LiquidityService) x.get("liquidityService");
     if ( txn.getType() == TransactionType.NONE ) {
-      LiquidityService ls = (LiquidityService) x.get("liquidityService");
-      ls.liquifyUser(((Account)txn.findSourceAccount(x)).getId());
-      ls.liquifyUser(((Account)txn.findDestinationAccount(x)).getId());
+      ls.liquifyUser(txn.findSourceAccount(x).getId());
+      ls.liquifyUser(txn.findDestinationAccount(x).getId());
+    } else if ( txn.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
+      ls.liquifyUser(DigitalAccount.findDefault(x, txn.findSourceAccount(x).findOwner(x), txn.getSourceCurrency()).getId());
+      ls.liquifyUser(txn.findDestinationAccount(x).getId());
     }
     return ret;
   }

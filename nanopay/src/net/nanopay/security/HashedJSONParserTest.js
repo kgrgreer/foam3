@@ -69,19 +69,19 @@ foam.CLASS({
         // strings with valid chained message digests
         HashedJSONParser_JSONStringWithValidChainedMessageDigest_Parse("MD5",
             "40c6f1a0484b0a37adb5e4382aa2b711",
-            "1ef9bf751f9c0cdce937c390c941b368");
+            "c2c60ee244b5bbcfb5e9e7c78900ebf1");
         HashedJSONParser_JSONStringWithValidChainedMessageDigest_Parse("SHA-1",
             "153789a503f9cb3f7c62f573e4ac6a22d4c9241f",
-            "b170abdb87a12a3bf2479a8d064a131da39ffce2");
+            "e9a4f67cb9eb39ef73d33afe4260234dec32f2d6");
         HashedJSONParser_JSONStringWithValidChainedMessageDigest_Parse("SHA-256",
             "1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11ba90f5d5",
-            "6c5c6317f72fa53f364e7b3286579a561d020dff0fb8d47aa6ccb4cf75d25020");
+            "969cae16ce6b859df7ebf1d3672825d637908b534f6c6be1b4878dc7725dead4");
         HashedJSONParser_JSONStringWithValidChainedMessageDigest_Parse("SHA-384",
             "be26403b1c55166a8770134a1a7b4b6ed358faebf7e3dc96c7f75a2221b687ca6da6d789d57498112ec0091eb1246f8d",
-            "ea90d891dd9a4aa159fac2a43dd32b5123ad035991bb986431b3e485f8bdbb29fa9c0965e6c6bb00be9721b5d58c3fe4");
+            "77e5c04a8458162d7819a6a2292425caeff642f28eacce188078e0095b3557b933ae7481224088890d143c81e5fd4ed6");
         HashedJSONParser_JSONStringWithValidChainedMessageDigest_Parse("SHA-512",
             "63db4efa26eacbd290dd58102acef2b361f324069e500d51d5aefe041b21c8dcd7d1cf2ecd064af8eff518ad31c5f3c5fb4737f6b04341a0b179657aaf827977",
-            "712e96d25ddde037abd4b979b3234f3be70ba6e84ae6783e1080a1e616e623c81b28840054349942f715497fc409356175371d605d68c542742bc4f03cf4244b");
+            "0b258db95d4e6ab292c015a781489b2ff2c1e9a653f878bd9745b698ef292a37cf9d3538d875ef92601d3715c60c78cb9de7992525207c98e3fd6efd9fc7005a");
 
         // strings with invalid chained message digests
         HashedJSONParser_JSONStringWithInvalidChainedMessageDigest_Parse("SHA-256",
@@ -120,9 +120,13 @@ foam.CLASS({
         { class: 'String', name: 'digest'     }
       ],
       javaCode: `
-        StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
-        HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
-        test(parser.parseString(builder.toString()) != null, algorithm + " message digest parsed successfully");
+        try {
+          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
+          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
+          test(parser.parseString(builder.toString()) != null, algorithm + " message digest parsed successfully");
+        } catch ( Throwable t ) {
+          test(false, "HashedJSONParser with valid message digest should not throw an exception");
+        }
       `
     },
     {
@@ -150,9 +154,13 @@ foam.CLASS({
         { class: 'String', name: 'chainedDigest' }
       ],
       javaCode: `
-        StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-        HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
-        test(parser.parseString(builder.toString()) != null, algorithm + " chained message digest parsed successfully");
+        try {
+          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
+          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
+          test(parser.parseString(builder.toString()) != null, algorithm + " chained message digest parsed successfully");
+        } catch ( Throwable t ) {
+          test(false, "HashedJSONParser with valid chained message digest should not throw an exception");
+        }
       `
     },
     {
