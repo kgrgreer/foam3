@@ -18,7 +18,6 @@ foam.CLASS({
     'validatePostalCode',
     'validateStreetNumber',
     'validateTitleNumOrAuth'
-
   ],
 
   css: `
@@ -100,7 +99,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
-      required: true,
       factory: function() {
         if ( this.user.firstName ) return this.user.firstName;
       }
@@ -108,7 +106,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'lastName',
-      required: true,
       factory: function() {
         if ( this.user.lastName ) return this.user.lastName;
       },
@@ -116,7 +113,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'email',
-      required: true,
       factory: function() {
         if ( this.user.email ) return this.user.email;
       }
@@ -124,7 +120,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'phoneNumber',
-      required: true,
       factory: function() {
         if ( this.user.phoneNumber ) return this.user.phoneNumber;
       }
@@ -132,7 +127,6 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'birthday',
-      required: true,
       factory: function() {
         if ( this.user.birthday ) return this.user.birthday;
       }
@@ -149,7 +143,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetName',
-      required: true,
       factory: function() {
         if ( this.user.address.streetName ) return this.user.address.streetName;
       }
@@ -164,7 +157,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'city',
-      required: true,
       factory: function() {
         if ( this.user.address.city ) return this.user.address.city;
       }
@@ -181,12 +173,15 @@ foam.CLASS({
           ),
           objToChoice: function(a) {
             return [a.id, a.name];
-          }
+          },
+          placeholder: 'Select Province'
         });
       },
-      required: true,
       factory: function() {
         if ( this.user.address.regionId ) return this.user.address.regionId;
+      },
+      postSet: function(oldValue, newValue) {
+        this.user.address.regionId = newValue;
       }
     },
     {
@@ -196,7 +191,8 @@ foam.CLASS({
           dao: X.countryDAO,
           objToChoice: function(a) {
             return [a.id, a.name];
-          }
+          },
+          placeholder: 'Select Country'
         });
       },
       factory: function() {
@@ -212,7 +208,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'postalCode',
-      required: true,
       factory: function() {
         if ( this.user.address.postalCode ) return this.user.address.postalCode;
       }
@@ -220,17 +215,13 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'password',
-      required: true,
-
     },
     {
       class: 'Password',
       name: 'confirmPassword',
-      required: true,
     },
     {
       name: 'group',
-      required: true,
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.groupDAO,
@@ -242,12 +233,10 @@ foam.CLASS({
       factory: function() {
         if ( this.user.group ) return this.user.group;
       }
-
     },
     {
       class: 'String',
       name: 'organization',
-      required: true,
       factory: function() {
         if ( this.user.organization ) return this.user.organization;
       }
@@ -255,7 +244,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'department',
-      required: true,
       factory: function() {
         if ( this.user.department ) return this.user.department;
       }
@@ -263,7 +251,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'jobTitle',
-      required: true,
       factory: function() {
         if ( this.user.jobTitle ) return this.user.jobTitle;
       }
@@ -273,26 +260,26 @@ foam.CLASS({
   messages: [
     { name: 'UpdateUserInfoLabel', message: 'Update User Info' },
     { name: 'PersonalInformationLabel', message: 'Personal Information' },
-    { name: 'FirstNameLabel', message: 'First Name *' },
-    { name: 'LastNameLabel', message: 'Last Name *' },
+    { name: 'FirstNameLabel', message: 'First Name' },
+    { name: 'LastNameLabel', message: 'Last Name' },
     { name: 'EmailLabel', message: 'Email *' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number *' },
-    { name: 'BirthdayLabel', message: 'Birthday *' },
+    { name: 'PhoneNumberLabel', message: 'Phone Number' },
+    { name: 'BirthdayLabel', message: 'Birthday' },
     { name: 'HomeAddressLabel', message: 'Home Address' },
-    { name: 'StNoLabel', message: 'St No. *' },
-    { name: 'StNameLabel', message: 'St Name *' },
+    { name: 'StNoLabel', message: 'St No.' },
+    { name: 'StNameLabel', message: 'St Name' },
     { name: 'AddressLineLabel', message: 'Address Line' },
-    { name: 'CityLabel', message: 'City *' },
-    { name: 'ProvinceLabel', message: 'Province *' },
-    { name: 'CountryLabel', message: 'Country *' },
-    { name: 'PostalCodeLabel', message: 'Postal Code *' },
+    { name: 'CityLabel', message: 'City' },
+    { name: 'ProvinceLabel', message: 'Province' },
+    { name: 'CountryLabel', message: 'Country' },
+    { name: 'PostalCodeLabel', message: 'Postal Code' },
     { name: 'PasswordLabel', message: 'Password' },
     { name: 'NewPasswordLabel', message: 'New Password' },
     { name: 'ConfirmPasswordLabel', message: 'Confirm Password' },
     { name: 'GroupLabel', message: 'Group *' },
-    { name: 'OrganizationLabel', message: 'Organization *' },
-    { name: 'DepartmentLabel', message: 'Department *' },
-    { name: 'JobTitleLabel', message: 'Job Title *' }
+    { name: 'OrganizationLabel', message: 'Organization' },
+    { name: 'DepartmentLabel', message: 'Department' },
+    { name: 'JobTitleLabel', message: 'Job Title' }
   ],
 
   methods: [
@@ -426,143 +413,91 @@ foam.CLASS({
 
     function validations() {
       if ( this.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({
-          message: 'First name cannot exceed 70 characters.',
-          type: 'error'
-      }));
+        this.showErrorMessage('First name cannot exceed 70 characters.');
         return false;
       }
       if ( /\d/.test(this.firstName) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'First name cannot contain numbers',
-          type: 'error'
-        }));
+        this.showErrorMessage('First name cannot contain numbers');
         return false;
       }
       if ( this.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message:
-          'Last name cannot exceed 70 characters.',
-          type: 'error'
-        }));
+        this.showErrorMessage('Last name cannot exceed 70 characters.');
         return false;
       }
       if ( /\d/.test(this.lastName) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Last name cannot contain numbers.',
-          type: 'error'
-        }));
+        this.showErrorMessage('Last name cannot contain numbers.');
         return false;
       }
-
-      if ( ! this.validateEmail(this.email) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Invalid email address.',
-          type: 'error'
-        }));
+      if ( ! this.email ) {
+        this.showErrorMessage('Email required.');
         return false;
-      }
-      if ( this.password !== '' && this.confirmPassword !== '' ) {
-        if ( ! this.validatePassword(this.password) ) {
-          this.add(this.NotificationMessage.create({
-            message: 'Password must contain one lowercase letter, '
-            + 'one uppercase letter, one digit, '
-            + 'and be between 7 and 32 characters in length.',
-            type: 'error'
-          }));
+      } else {
+        if ( ! this.validateEmail(this.email) ) {
+          this.showErrorMessage('Invalid email address.');
           return false;
         }
       }
-      if ( this.password != this.confirmPassword ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Password does not match.',
-          type: 'error'
-        }));
-        return false;
+      if ( this.password && this.confirmPassword ) {
+        if ( ! this.validatePassword(this.password) ) {
+          this.showErrorMessage('Password must contain one lowercase letter, '
+              + 'one uppercase letter, one digit, '
+              + 'and be between 7 and 32 characters in length.');
+          return false;
+        }
+        if ( this.password !== this.confirmPassword ) {
+          this.showErrorMessage('Password does not match.');
+          return false;
+        }
       }
-      if ( ! this.validatePhone(this.phoneNumber) ) {
-        this.add(this.NotificationMessage.create({
-            message: 'Invalid phone number.',
-            type: 'error' }));
-        return false;
+      if ( this.phoneNumber ) {
+        if ( ! this.validatePhone(this.phoneNumber) ) {
+          this.showErrorMessage('Invalid phone number.');
+          return false;
+        }
       }
-      if ( ! this.validateAddress(this.streetName) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Invalid street name.',
-          type: 'error'
-        }));
-        return false;
+      if ( this.streetName ) {
+        if ( ! this.validateAddress(this.streetName) ) {
+          this.showErrorMessage('Invalid street name.');
+          return false;
+        }
       }
-      if ( ! this.validateStreetNumber(this.streetNumber) ) {
-        this.add(this.NotificationMessage.create({
-            message: 'Street number required.',
-            type: 'error' }));
-        return false;
+      if ( this.streetNumber ) {
+        if ( ! this.validateStreetNumber(this.streetNumber) ) {
+          this.showErrorMessage('Invalid street number.');
+          return false;
+        }
       }
-      if ( ! this.province ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Province required.',
-          type: 'error'
-        }));
-        return false;
+      if ( this.city ) {
+        if ( ! this.validateCity(this.city) ) {
+          this.showErrorMessage('Invalid city name.');
+          return false;
+        }
       }
-      if ( ! this.validateCity(this.city) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'City required.',
-          type: 'error'
-        }));
-        return false;
-      }
-      if ( ! this.validatePostalCode(this.postalCode) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Postal code required.',
-          type: 'error'
-        }));
-        return false;
-      }
-      if ( ! this.country ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Country required.',
-          type: 'error'
-        }));
-        return false;
+      if ( this.postalCode ) {
+        if ( ! this.validatePostalCode(this.postalCode) ) {
+          this.showErrorMessage('Invalid postal code.');
+          return false;
+        }
       }
       if ( ! this.group ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Group required.',
-          type: 'error'
-        }));
+        this.showErrorMessage('Group required.');
         return false;
+      }
+      if ( this.jobTitle ) {
+        if ( ! this.validateTitleNumOrAuth(this.jobTitle) ) {
+          this.showErrorMessage('Invalid job title.');
+          return false;
+        }
       }
 
-      if ( ! this.organization ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Organization required.',
-          type: 'error'
-        }));
-        return false;
-      }
-      if ( ! this.department ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Department required.',
-          type: 'error'
-        }));
-        return false;
-      }
-      if ( ! this.jobTitle ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Job title required.',
-          type: 'error'
-        }));
-        return false;
-      }
-      if ( ! this.validateTitleNumOrAuth(this.jobTitle) ) {
-        this.add(this.NotificationMessage.create({
-          message: 'Invalid job title.',
-          type: 'error'
-        }));
-        return false;
-      }
       return true;
+    },
+
+    function showErrorMessage(msg) {
+      this.add(this.NotificationMessage.create({
+        message: msg,
+        type: 'error'
+      }));
     }
   ],
 
@@ -575,23 +510,45 @@ foam.CLASS({
           this.user.firstName = X.data.firstName;
           this.user.lastName = X.data.lastName;
           this.user.email = X.data.email;
-          this.user.phoneNumber = X.data.phoneNumber;
-          this.user.phone.number = X.data.phoneNumber;
-          this.user.birthday = X.data.birthday;
-          this.user.address.streetNumber = X.data.streetNumber;
-          this.user.address.streetName = X.data.streetName;
-          this.user.address.city = X.data.city;
-          this.user.address.regionId = X.data.regionId;
-          this.user.address.postalCode = X.data.postalCode;
           this.user.group = X.data.group;
-          this.user.organization = X.data.organization;
-          this.user.department = X.data.department;
-          this.user.jobTitle = X.data.jobTitle;
 
-          if ( X.data.AddressLine !== '' ) {
+          if ( X.data.phoneNumber ) {
+            this.user.phone.number = X.data.phoneNumber;
+          }
+          if ( X.data.birthday ) {
+            this.user.birthday = X.data.birthday;
+          }
+          if ( X.data.jobTitle ) {
+            this.user.jobTitle = X.data.jobTitle;
+          }
+          if ( X.data.streetNumber ) {
+            this.user.address.streetNumber = X.data.streetNumber;
+          }
+          if ( X.data.streetName ) {
+            this.user.address.streetName = X.data.streetName;
+          }
+          if ( X.data.AddressLine ) {
             this.user.address.address2 = X.data.addressLine;
           }
-          if ( X.data.password !== '' && X.data.confirmPassword !== '' ) {
+          if ( X.data.city ) {
+            this.user.address.city = X.data.city;
+          }
+          if ( X.data.regionId ) {
+            this.user.address.regionId = X.data.regionId;
+          }
+          if ( X.data.postalCode ) {
+            this.user.address.postalCode = X.data.postalCode;
+          }
+          if ( X.data.organization ) {
+            this.user.organization = X.data.organization;
+          }
+          if ( X.data.department ) {
+            this.user.department = X.data.department;
+          }
+          if ( X.data.jobTitle ) {
+            this.user.jobTitle = X.data.jobTitle;
+          }
+          if ( X.data.password && X.data.confirmPassword ) {
             this.user.desiredPassword = X.data.password;
           }
 
