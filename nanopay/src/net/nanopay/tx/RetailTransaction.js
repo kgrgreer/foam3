@@ -46,8 +46,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.retail.model.Device',
       name: 'deviceId',
-      visibility: foam.u2.Visibility.RO,
-      flags: ['js']
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',

@@ -33,6 +33,7 @@ var classes = [
   'foam.dao.ManyToManyRelationshipImpl',
   'foam.dao.ReadOnlyDAO',
   'foam.json2.Outputter',
+  'foam.json2.PrettyOutputterOutput',
   'foam.log.LogLevel',
   'foam.mlang.Expr',
   'foam.mlang.Constant',
@@ -51,7 +52,6 @@ var classes = [
   'foam.nanos.auth.LastModifiedByAware',
   'foam.nanos.auth.Phone',
   'foam.nanos.auth.Region',
-  'foam.nanos.auth.Permission',
   'foam.nanos.auth.ServiceProvider',
   'foam.nanos.auth.User',
   'foam.nanos.auth.UserUserJunction',
@@ -115,7 +115,10 @@ var classes = [
   'net.nanopay.account.Balance',
   'net.nanopay.account.DigitalAccount',
   'net.nanopay.payment.Institution',
-  'net.nanopay.payment.InstitutionPurposeCode'
+  'net.nanopay.payment.InstitutionPurposeCode',
+  'net.nanopay.retail.model.DeviceType',
+  'net.nanopay.retail.model.DeviceStatus',
+  'net.nanopay.retail.model.Device'
 ];
 
 module.exports = {
