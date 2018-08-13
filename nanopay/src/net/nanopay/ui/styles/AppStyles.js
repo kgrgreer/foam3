@@ -92,6 +92,9 @@ foam.CLASS({
       width: 135px;
       height: 39px;
     }
+    .net-nanopay-ui-ActionView-create:hover {
+      background: %SECONDARYHOVERCOLOR%;
+    }
     .net-nanopay-ui-ActionView-back {
       position: absolute;
       top: 110px;
@@ -101,9 +104,6 @@ foam.CLASS({
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       color: black;
-    }
-    .foam-u2-view-ReciprocalSearch-filter {
-      margin-bottom: 8px;
     }
     .foam-u2-search-TextSearchView input {
       width: 288px;
@@ -128,7 +128,6 @@ foam.CLASS({
       color: white;
       font-size: 14px;
       float: right;
-      border: 1px solid %SECONDARYCOLOR%;
     }
     .net-nanopay-ui-ActionView-saveAndPreview:hover {
       opacity: 0.9;
@@ -206,8 +205,8 @@ foam.CLASS({
       margin: 20px 20px;
       float: right;
     }
-    .blue-button:hover{
-      opacity: 0.9;
+    .blue-button:hover {
+      background: %SECONDARYHOVERCOLOR%;
     }
     .grey-button{
       background-color: rgba(164, 179, 184, 0.1);
@@ -348,9 +347,39 @@ foam.CLASS({
     .foam-u2-view-TableView-noselect:hover {
       opacity: 0.9;
     }
+    .foam-u2-tag-Select:focus {
+      outline: none;
+      border: 1px solid #59a5d5;
+    }
+    .foam-u2-TextField:focus {
+      outline: none;
+      border: 1px solid #59a5d5;
+    }
+    .foam-u2-tag-TextArea:focus {
+      outline: none;
+      border: 1px solid #59a5d5;
+    }
+    .foam-u2-CurrencyView:focus {
+      outline: none;
+      border: 1px solid #59a5d5;
+    }
+    .foam-u2-DateView:focus {
+      outline: none;
+      border: 1px solid #59a5d5;
+    }
+    .net-nanopay-ui-ActionView-backAction:hover {
+      background: rgba(164, 179, 184, 0.3);
+    }
+    .net-nanopay-ui-ActionView-deleteDraft:hover {
+      background: rgba(164, 179, 184, 0.3);
+    }
     .foam-u2-dialog-Popup.popup-with-topnav {
       margin-top: 65px;
       z-index: 10000;
+    }
+    .filter-search:focus {
+      outline: none;
+      border: 1px solid #59a5d5 !important;   
     }
     .net-nanopay-ui-ActionView-signUp{
       position: relative;
@@ -369,6 +398,9 @@ foam.CLASS({
     .net-nanopay-ui-ActionView-signUp:hover{
       background: none;
       background-color: %SECONDARYCOLOR%;
+    }
+    .net-nanopay-ui-ActionView-saveAndPreview:hover {
+      background: %SECONDARYHOVERCOLOR%;
     }
     .net-nanopay-ui-ActionView-close{
       width: 30px;
@@ -658,6 +690,9 @@ foam.CLASS({
     }
     .foam-doc-ClassList {
       display: inline-block;
+    }
+    .foam-u2-view-TableView th:hover {
+      cursor: pointer;
     }
   `
 });
