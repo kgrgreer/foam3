@@ -266,7 +266,8 @@ FOAM_FILES([
   // security
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
-  { name: 'net/nanopay/security/PKCS12KeyStoreManager' },
+  { name: 'net/nanopay/security/AbstractFileKeyStoreManager' },
+  { name: 'net/nanopay/security/FileKeyStoreManager' },
   { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },

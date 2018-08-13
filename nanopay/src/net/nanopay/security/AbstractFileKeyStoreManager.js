@@ -1,20 +1,18 @@
 foam.CLASS({
   package: 'net.nanopay.security',
-  name: 'PKCS12KeyStoreManager',
+  name: 'AbstractFileKeyStoreManager',
+  abstract: true,
 
-  documentation: 'Fetches a KeyStore from a file',
+  documentation: 'Abstract KeyStoreManager that uses a file to store keys.',
 
   implements: [
     'net.nanopay.security.KeyStoreManager'
   ],
 
   javaImports: [
-    'foam.util.SecurityUtil',
-    'org.bouncycastle.util.encoders.Base64',
+    'foam.util.SafetyUtil',
 
     'java.io.*',
-    'java.nio.ByteBuffer',
-    'java.nio.CharBuffer',
     'java.nio.charset.StandardCharsets',
     'java.security.KeyStore'
   ],
@@ -22,28 +20,38 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'type',
+      documentation: 'KeyStore type.'
+    },
+    {
+      class: 'String',
+      name: 'provider',
+      documentation: 'KeyStore crypto provider.'
+    },
+    {
+      class: 'String',
       name: 'keyStorePath',
-      documentation: 'Path to keystore',
-      value: '/opt/nanopay/keys/keystore.p12'
+      documentation: 'Path to keystore file.'
+    },
+    {
+      class: 'String',
+      name: 'passphrasePath',
+      documentation: 'Path to passphrase file.'
     },
     {
       class: 'Object',
       name: 'keyStoreFile',
-      documentation: 'KeyStore file',
+      transient: true,
+      documentation: 'KeyStore file.',
       javaType: 'java.io.File',
       javaFactory: `
         return new File(getKeyStorePath()).getAbsoluteFile();
       `
     },
     {
-      class: 'String',
-      name: 'passphrasePath',
-      documentation: 'Path to passphrase.',
-      value: '/opt/nanopay/keys/passphrase'
-    },
-    {
       class: 'Object',
       name: 'passphraseFile',
+      transient: true,
       documentation: 'Passphrase file',
       javaType: 'java.io.File',
       javaFactory: `
@@ -53,11 +61,14 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'keyStore',
+      transient: true,
       documentation: 'Keystore file where all of the keys are stored.',
       javaType: 'java.security.KeyStore',
       javaFactory: `
         try {
-          KeyStore keyStore = KeyStore.getInstance("PKCS12");
+          KeyStore keyStore = ! SafetyUtil.isEmpty(getProvider()) ?
+            KeyStore.getInstance(getType(), getProvider()) :
+            KeyStore.getInstance(getType());
 
           // check for keystore and passphrase file
           File keyStoreFile = getKeyStoreFile();
@@ -74,27 +85,31 @@ foam.CLASS({
         }
       `
     },
-  ],
-
-  methods: [
     {
-      name: 'getPassphrase',
-      javaReturns: 'char[]',
-      javaThrows: [
-        'java.io.IOException'
-      ],
-      javaCode: `
+      class: 'Object',
+      name: 'passphrase',
+      transient: true,
+      documentation: 'Passphrase used to load KeyStore',
+      javaType: 'char[]',
+      javaFactory: `
+        try {
         char[] cbuffer = new char[32];
         File passphraseFile = getPassphraseFile();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-          new FileInputStream(passphraseFile), StandardCharsets.UTF_8))) {
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(
+          new FileInputStream(passphraseFile), StandardCharsets.UTF_8)) ) {
           reader.read(cbuffer, 0, 32);
         }
 
         return cbuffer;
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
       `
-    },
+    }
+  ],
+
+  methods: [
     {
       name: 'loadKey',
       synchronized: true,
@@ -113,12 +128,11 @@ foam.CLASS({
         try {
           // store key using keystore passphrase because keystore doesn't
           // allow you to store secret key entry without a passphrase
-          KeyStore keyStore = getKeyStore();
-          keyStore.setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
+          getKeyStore().setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
 
           // save keystore
           try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
-            keyStore.store(fos, getPassphrase());
+            getKeyStore().store(fos, getPassphrase());
           }
         } catch (Throwable t) {
           throw new RuntimeException(t);
