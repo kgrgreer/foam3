@@ -1,13 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.security',
   name: 'AbstractFileKeyStoreManager',
+  extends: 'net.nanopay.security.AbstractKeyStoreManager',
   abstract: true,
 
   documentation: 'Abstract KeyStoreManager that uses a file to store keys.',
-
-  implements: [
-    'net.nanopay.security.KeyStoreManager'
-  ],
 
   javaImports: [
     'foam.util.SafetyUtil',
@@ -110,17 +107,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'loadKey',
-      synchronized: true,
-      javaCode: `
-        try {
-          return getKeyStore().getEntry(alias, new KeyStore.PasswordProtection(getPassphrase()));
-        } catch (Throwable t) {
-          throw new RuntimeException(t);
-        }
-      `
-    },
     {
       name: 'storeKey',
       synchronized: true,

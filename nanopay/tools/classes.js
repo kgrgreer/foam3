@@ -133,10 +133,12 @@ var classes = [
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
+  'net.nanopay.security.AbstractKeyStoreManager',
   'net.nanopay.security.AbstractFileKeyStoreManager',
   'net.nanopay.security.BKSKeyStoreManager',
   'net.nanopay.security.JCEKSKeyStoreManager',
   'net.nanopay.security.JKSKeyStoreManager',
+  'net.nanopay.security.PKCS11KeyStoreManager',
   'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
