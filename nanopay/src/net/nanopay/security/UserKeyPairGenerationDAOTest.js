@@ -71,7 +71,7 @@ foam.CLASS({
       
       // call tests
       UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
-      //UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, generatedKeyPair, privateKey, publicKey);
+      //UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, publicKey);
       // UserKeyPairGenerationDAO_PrivateKeyEncrypted(x, generatedKeyPair, privateKey, publicKey);
       UserKeyPairGenerationDAO_PublicKeyBase64Encrypted(x, privateKey, publicKey);
 
@@ -106,12 +106,6 @@ foam.CLASS({
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
-        },
-        {
-          name: 'generatedKeyPair', javaType: 'net.nanopay.security.KeyPairEntry'
-        },
-        {
-          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
         },
         {
           name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
