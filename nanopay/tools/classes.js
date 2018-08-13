@@ -133,7 +133,7 @@ var classes = [
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
-  'net.nanopay.security.FileKeyStoreManager',
+  'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
@@ -153,7 +153,7 @@ var classes = [
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
-  'net.nanopay.security.FileKeyStoreManagerTest',
+  'net.nanopay.security.PKCS12KeyStoreManagerTest',
 
   // tests
   'net.nanopay.test.ModelledTest',

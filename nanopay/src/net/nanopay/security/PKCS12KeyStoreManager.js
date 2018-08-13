@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.security',
-  name: 'FileKeyStoreManager',
+  name: 'PKCS12KeyStoreManager',
 
   documentation: 'Fetches a KeyStore from a file',
 
