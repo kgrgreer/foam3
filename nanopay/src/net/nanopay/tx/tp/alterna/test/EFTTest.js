@@ -38,7 +38,7 @@ BankAccount testBankAccount = createTestAccount(x);
 AlternaTransaction testAlternaTransaction = createTestTransaction(x, testBankAccount);
 User user = (User) userDAO.find_(x, testAlternaTransaction.findSourceAccount(x).getOwner());
 
-Long referenceNum = testAlternaTransaction.getId();
+String referenceNum = testAlternaTransaction.getId();
 String firstName = user.getFirstName();
 String lastName = user.getLastName();
 Date now            = new Date();
