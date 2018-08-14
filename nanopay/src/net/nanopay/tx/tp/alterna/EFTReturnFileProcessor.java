@@ -10,7 +10,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -67,54 +67,14 @@ public class EFTReturnFileProcessor implements ContextAgent
         }
       }
 
-      for ( int i = 0; i < fileNames.size(); i++ ) {
-        InputStream is = channelSftp.get("/Returns/" + fileNames.get(i));
-        List<FObject> list = eftReturnFileParser.parse(is);
+      for ( String fileName : fileNames ) {
+        InputStream is = channelSftp.get("/Returns/" + fileName);
+        List<FObject> returnFile = eftReturnFileParser.parse(is);
 
-        for ( int j = 0; j < list.size(); j++ ) {
-          EFTReturnRecord item = (EFTReturnRecord) list.get(j);
+        for ( FObject record : returnFile ) {
+          EFTReturnRecord eftReturnRecord = (EFTReturnRecord) record;
 
-          Transaction tran = (Transaction)transactionDao.find(AND(
-            EQ(Transaction.ID, item.getExternalReference()),
-            EQ(Transaction.AMOUNT, (long)(item.getAmount() * 100)),
-            OR(
-              EQ(Transaction.TYPE, TransactionType.CASHIN),
-              EQ(Transaction.TYPE,TransactionType.CASHOUT))
-            )
-          );
-
-          // if corresponding transaction is found
-          if ( tran != null ) {
-            tran = (Transaction) tran.fclone();
-
-            AlternaTxnProcessorData data = (AlternaTxnProcessorData) tran.getTxnProcessorData();
-            if ( data == null ) {
-              data = new AlternaTxnProcessorData();
-            } else {
-              data = (AlternaTxnProcessorData) data.fclone();
-            }
-            data.setReturnCode(item.getReturnCode());
-            data.setReturnDate(item.getReturnDate());
-
-            if ( "900".equals(item.getReturnCode()) ) {
-              data.setReturnType("Reject");
-            } else {
-              data.setReturnType("Return");
-            }
-            tran.setTxnProcessorData(data);
-
-            if ( tran.getStatus() == TransactionStatus.SENT ) {
-              tran.setStatus(TransactionStatus.DECLINED);
-              sendEmail(x, "Transaction was rejected or returned by EFT return file",
-                "Transaction id: " + tran.getId() + ", Return code: " + data.getReturnCode() + ", Return date: " + data.getReturnDate());
-            } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(data.getReturnType()) ) {
-              tran.setStatus(TransactionStatus.DECLINED);
-              sendEmail(x, "Transaction was returned outside of the 2 business day return period",
-                "Transaction id: " + tran.getId() + ", Return code: " + data.getReturnCode() + ", Return date: " + data.getReturnDate());
-            }
-
-            transactionDao.put(tran);
-          }
+          processTransaction(x, transactionDao, eftReturnRecord);
         }
       }
 
@@ -135,8 +95,8 @@ public class EFTReturnFileProcessor implements ContextAgent
       String dstFileDirectory = "/Archive_EFTReturnFile/";
 
       // move processed files
-      for ( int i = 0; i < fileNames.size(); i++ ) {
-        channelSftp.rename(srcFileDirectory + fileNames.get(i), dstFileDirectory + fileNames.get(i));
+      for ( String fileName : fileNames ) {
+        channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
       }
 
       logger.debug("EFT Return file processing finished");
@@ -149,7 +109,42 @@ public class EFTReturnFileProcessor implements ContextAgent
     }
   }
 
-  public void sendEmail(X x, String subject, String content) {
+  public static void processTransaction(X x, DAO transactionDao, EFTReturnRecord eftReturnRecord) {
+    AlternaTransaction tran = (AlternaTransaction) transactionDao.find(AND(
+      EQ(Transaction.ID, eftReturnRecord.getExternalReference()),
+      EQ(Transaction.AMOUNT, (long) (eftReturnRecord.getAmount() * 100)),
+      OR(
+        EQ(Transaction.TYPE, TransactionType.CASHIN),
+        EQ(Transaction.TYPE, TransactionType.CASHOUT))
+      )
+    );
+
+    if ( tran != null ) {
+      tran = (AlternaTransaction) tran.fclone();
+      tran.setReturnCode(eftReturnRecord.getReturnCode());
+      tran.setReturnDate(eftReturnRecord.getReturnDate());
+
+      if ( "900".equals(eftReturnRecord.getReturnCode()) ) {
+        tran.setReturnType("Reject");
+      } else {
+        tran.setReturnType("Return");
+      }
+
+      if ( tran.getStatus() == TransactionStatus.SENT ) {
+        tran.setStatus(TransactionStatus.DECLINED);
+        sendEmail(x, "Transaction was rejected or returned by EFT return file",
+          "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
+      } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(tran.getReturnType()) ) {
+        tran.setStatus(TransactionStatus.DECLINED);
+        sendEmail(x, "Transaction was returned outside of the 2 business day return period",
+          "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
+      }
+
+      transactionDao.put(tran);
+    }
+  }
+
+  public static void sendEmail(X x, String subject, String content) {
     EmailService emailService = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 

@@ -92,6 +92,14 @@ foam.CLASS({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'children',
+  inverseName: 'parent'
+});
+
+
+foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.tp.TxnProcessor',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',

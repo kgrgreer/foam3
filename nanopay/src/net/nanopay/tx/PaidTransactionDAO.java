@@ -13,7 +13,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 
 import net.nanopay.account.Account;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
