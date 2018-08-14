@@ -186,7 +186,7 @@ class swiftfoamTests: XCTestCase {
 
       let service = client.userTransactionLimitService!
       let _ = try service.getLimit(user.id, .DAY, .SEND)
-      let _ = try service.getRemainingLimit(user.id, .DAY, .SEND)
+      let _ = try service.getRemainingLimit(client.__context__, user.id, .DAY, .SEND)
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }

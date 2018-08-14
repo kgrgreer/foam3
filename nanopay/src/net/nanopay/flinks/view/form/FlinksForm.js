@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'email',
     'flinksAuth',
     'institutionDAO',
@@ -35,8 +35,9 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.payment.Institution',
     'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
@@ -84,7 +85,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
@@ -389,17 +390,17 @@ foam.CLASS({
         }
 
         if ( this.currentViewId === 'FlinksAccountForm' ) {
-          X.institutionDAO.where(this.EQ(this.Institution.NAME, this.viewData.institution)).select().then(function(institution){
-            var inNumber = institution.array[0].institutionNumber;
+          X.institutionDAO.where(this.EQ(this.Institution.NAME, this.viewData.institution)).select().then(function(institution) {
+            var inst = institution.array[0];
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                self.viewData.bankAccount.push(self.BankAccount.create({
-                  accountName: item.Title,
+                self.viewData.bankAccount.push(self.CABankAccount.create({
+                  name: item.Title,
                   accountNumber: item.AccountNumber,
-                  institutionNumber: inNumber,
-                  transitNumber: item.TransitNumber,
+                  institutionId: inst.id,
+                  branch: item.TransitNumber,
                   status: self.BankAccountStatus.VERIFIED
-                }))
+                }));
               }
             });
             self.pushViews('PADAuthorizationForm');
@@ -420,7 +421,7 @@ foam.CLASS({
               agree1:self.viewData.agree1,
               agree2:self.viewData.agree2,
               agree3:self.viewData.agree3,
-              institutionNumber: bank.institutionNumber,
+              institutionId: bank.institutionId,
               transitNumber: bank.transitNumber,
               accountNumber: bank.accountNumber
             })).catch(function(error) {

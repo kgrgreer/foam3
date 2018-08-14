@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import net.nanopay.account.Account;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
@@ -22,7 +23,7 @@ public class UpdateInvoiceTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    Invoice invoice = (Invoice) invoiceDAO_.find(transaction.getInvoiceId());
+    Invoice invoice = (Invoice) invoiceDAO_.find_(x, transaction.getInvoiceId());
 
     if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
@@ -37,25 +38,25 @@ public class UpdateInvoiceTransactionDAO
 
     // find invoice
     if ( transaction.getInvoiceId() != 0 ) {
-      if ( transaction.getPayerId() != transaction.getPayeeId() ) {
+      if ( (long) ((Account) transaction.findSourceAccount(x)).getOwner() != (long) ((Account) transaction.findDestinationAccount(x)).getOwner() ) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
-          invoice.setPaymentMethod(PaymentStatus.CHEQUE);
-          invoiceDAO_.put(invoice);
+          invoice.setPaymentMethod(PaymentStatus.NANOPAY);
+          invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.PENDING ) {
           invoice.setPaymentId(transaction.getId());
           invoice.setPaymentDate(transaction.getDate());
           invoice.setPaymentMethod(PaymentStatus.PENDING);
-          invoiceDAO_.put(invoice);
+          invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.DECLINED ) {
           invoice.setPaymentId(0);
           invoice.setPaymentDate(null);
           invoice.setPaymentMethod(PaymentStatus.NONE);
-          invoiceDAO_.put(invoice);
+          invoiceDAO_.put_(x, invoice);
         }
       }
     }

@@ -63,7 +63,7 @@ public class EFTUploadCSVFileParser extends EFTFileParser
 
     String line;
     Object[] values;
-    while ( (line = reader.readLine()) != null ) {
+    while ( (line = reader.readLine()) != null && line.length() > 0 ) {
       StringPStream ps = new StringPStream();
 
       ps.setString(line);

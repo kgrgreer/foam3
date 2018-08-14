@@ -23,7 +23,7 @@ foam.CLASS({
       class: 'Object',
       name: 'privateKey',
       javaType: 'java.security.PrivateKey',
-      documentation: 'Hidden & transient private key to enable passing key to DAO delegates',
+      documentation: 'Hidden and transient private key to enable passing key to DAO delegates',
       hidden: true,
       transient: true
     },

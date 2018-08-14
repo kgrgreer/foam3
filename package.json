@@ -21,18 +21,6 @@
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
-    "eslint-plugin-foam-style": "file:./tools/style",
-    "istanbul": "^0.4.2",
-    "jasmine": "^2.4.1",
-    "jsdoc": "^3.4.0"
-  },
-  "scripts": {
-    "test": "JASMINE_CONFIG_PATH=jasmine_node.json jasmine",
-    "testDebug": "JASMINE_CONFIG_PATH=jasmine_node.json node --inspect --debug-brk node_modules/jasmine/bin/jasmine.js",
-    "testThirdParty": "test/third_party/install.sh && test/third_party/run_tests.sh",
-    "coverage": "JASMINE_CONFIG_PATH=jasmine_coverage.json istanbul cover -- jasmine \n istanbul instrument ./src/ -o ./tmp_cov___/ \n rm -rf ./tmp_cov___",
-    "benchmarks": "JASMINE_CONFIG_PATH=jasmine_benchmarks.json jasmine",
-    "benchmarksDebug": "JASMINE_CONFIG_PATH=jasmine_benchmarks.json node-debug -c node_modules/jasmine/bin/jasmine.js",
-    "doc": "rm -rf foam2/doc/gen && ./node_modules/jsdoc/jsdoc.js --debug -c jsdoc.conf -r -t ./foam2/doc/template -d ./foam2/doc/gen ./nanopay/src/"
+    "eslint-plugin-foam-style": "file:./tools/style"
   }
 }

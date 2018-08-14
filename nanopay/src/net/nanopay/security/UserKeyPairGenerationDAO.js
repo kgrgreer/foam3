@@ -13,7 +13,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.security.util.SecurityUtil',
+    'foam.util.SecurityUtil',
     'java.security.KeyPair',
     'java.security.KeyPairGenerator',
     'static foam.mlang.MLang.EQ'

@@ -88,8 +88,15 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UploadSuccess', message: 'Documents uploaded successfully!\nYou may view them in your submitted registration section.' },
-    { name: 'UploadFailure', message: 'Failed to upload documents.\nPlease try again later.'}
+    {
+      name: 'UploadSuccess',
+      message: 'Documents uploaded successfully!\nYou may view them in your ' +
+          'submitted registration section.'
+    },
+    {
+      name: 'UploadFailure',
+      message: 'Failed to upload documents.\nPlease try again later.'
+    }
   ],
 
   methods: [
@@ -102,7 +109,7 @@ foam.CLASS({
         .start().addClass('maxSize')
           .add('Maximum size 10MB')
         .end()
-        .add(this.slot(function (documents) {
+        .add(this.slot(function(documents) {
           if ( documents.length <= 0 ) return;
 
           var e = this.E()
@@ -111,17 +118,17 @@ foam.CLASS({
             .add('Uploaded Attachments')
             .end();
 
-          for ( var i = 0 ; i < documents.length ; i++ ) {
+          for ( var i = 0; i < documents.length; i++ ) {
             e.tag({
               class: 'net.nanopay.invoice.ui.InvoiceFileView',
               data: documents[i],
               fileNumber: i + 1,
-              removeHidden:true
+              removeHidden: true
             });
           }
           return e;
         }, this.user.additionalDocuments$))
-        .add(this.slot(function (documents) {
+        .add(this.slot(function(documents) {
           if ( documents.length <= 0 ) return;
 
           var e = this.E()
@@ -130,7 +137,7 @@ foam.CLASS({
             .add('Attachments')
             .end();
 
-          for ( var i = 0 ; i < documents.length ; i++ ) {
+          for ( var i = 0; i < documents.length; i++ ) {
             e.tag({
               class: 'net.nanopay.invoice.ui.InvoiceFileView',
               data: documents[i],
@@ -138,12 +145,12 @@ foam.CLASS({
             });
           }
 
-          e.br().start(self.SAVE_BUTTON).end()
+          e.br().start(self.SAVE_BUTTON).end();
           return e;
-        }, this.additionalDocuments$))
+        }, this.additionalDocuments$));
     },
 
-    function onInvoiceFileRemoved (fileNumber) {
+    function onInvoiceFileRemoved(fileNumber) {
       this.additionalDocuments.splice(fileNumber - 1, 1);
       this.additionalDocuments = Array.from(this.additionalDocuments);
     }
@@ -153,28 +160,35 @@ foam.CLASS({
     {
       name: 'saveButton',
       label: 'Upload File(s)',
-      code: function (X) {
+      code: function(X) {
         var self = this;
-        X.user.additionalDocuments = (X.user.additionalDocuments.length == 0)? this.additionalDocuments:  X.user.additionalDocuments.concat(this.additionalDocuments)
-        this.additionalDocuments = []
+        X.user.additionalDocuments = (X.user.additionalDocuments.length == 0) ?
+            this.additionalDocuments :
+            X.user.additionalDocuments.concat(this.additionalDocuments);
+        this.additionalDocuments = [];
 
-        X.userDAO.put(X.user).then(function (result) {
+        X.userDAO.put(X.user).then(function(result) {
           if ( ! result ) throw new Error(self.UploadFailure);
           X.user.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: self.UploadSuccess }));
-        }).catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: self.UploadFailure, type: 'error' }));
+          self.add(self.NotificationMessage.create({
+            message: self.UploadSuccess
+          }));
+        }).catch(function(err) {
+          self.add(self.NotificationMessage.create({
+            message: self.UploadFailure,
+            type: 'error'
+          }));
         });
       }
     },
     {
       name: 'uploadButton',
       label: 'Choose File',
-      code: function (X) {
+      code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
           class: 'net.nanopay.ui.modal.UploadModal',
           exportData$: this.additionalDocuments$
-        }))
+        }));
       }
     }
   ]

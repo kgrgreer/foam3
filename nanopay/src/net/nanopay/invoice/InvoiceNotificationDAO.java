@@ -8,10 +8,9 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import net.nanopay.auth.PublicUserInfo;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
-import foam.nanos.notification.email.EmailService;
 
 public class InvoiceNotificationDAO extends ProxyDAO {
 
@@ -19,73 +18,63 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   protected DAO notificationDAO_;
   protected AppConfig config;
 
-  enum InvoiceType {
-    RECEIVABLE, PAYABLE;
-  }
-
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     userDAO_ = (DAO) x.get("localUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
-    config     = (AppConfig) x.get("appConfig");
-
-
+    config = (AppConfig) x.get("appConfig");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    sendInvoiceNotification(x, notificationDAO_, invoice);
-    // Put to the DAO
+    Invoice existingInvoice = (Invoice) super.find(invoice.getId());
+
+    if ( existingInvoice == null ) {
+      sendInvoiceNotification(invoice);
+    }
+
     return super.put_(x, invoice);
   }
 
-  public NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
-    NumberFormat     formatter  = NumberFormat.getCurrencyInstance();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+  private void sendInvoiceNotification(Invoice invoice) {
+    long payeeId = (long) invoice.getPayeeId();
+    long payerId = (long) invoice.getPayerId();
 
-    User    payee   = (User) userDAO_.find_(x, invoice.getPayeeId());
-    User    payer   = (User) userDAO_.find_(x, invoice.getPayerId());
-
-    //sets approriate arguments
-    Boolean invType = (Boolean) (invoice.getPayeeId() == (Long) invoice.getCreatedBy());
-
-    notification.getEmailArgs().put("amount",    formatter.format(invoice.getAmount()/100.00));
-    notification.getEmailArgs().put("account",   invoice.getId());
-    notification.getEmailArgs().put("name",      invType ? payer.getFirstName() : payee.getFirstName());
-    notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
-    notification.getEmailArgs().put("fromName",  invType ? payee.label() : payer.label());
-
-    if ( invoice.getDueDate() != null ) {
-      notification.getEmailArgs().put("date",      dateFormat.format(invoice.getDueDate()));
-    }
-    
-    notification.getEmailArgs().put("link",      config.getUrl());
-    return notification;
-  }
-
-  private void sendInvoiceNotification(X x, DAO notificationDAO, Invoice invoice) {
-    Long sendToUserId;
-    Long fromUserId;
-    String invoiceType;
-
-    Long payeeId = (Long) invoice.getPayeeId();
-    Long payerId = (Long) invoice.getPayerId();
-
-    String invType = payeeId == invoice.getCreatedBy() ? InvoiceType.PAYABLE.name() : InvoiceType.RECEIVABLE.name();
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
-    //Set email values on notification
-    notification = setEmailArgs(x, invoice, notification);
+    // Set email values on notification.
+    notification = setEmailArgs(invoice, notification);
     notification.setEmailName("newInvoice");
     notification.setEmailIsEnabled(true);
 
-    notification.setUserId(payeeId == invoice.getCreatedBy() ? payerId : payeeId);
-    notification.setFromUserId(payeeId != invoice.getCreatedBy() ? payerId : payeeId);
-    notification.setNotificationType("Invoice received");
-    notification.setInvoiceType(invType);
+    notification.setUserId(payeeId == ((Long)invoice.getCreatedBy()) ? payerId : payeeId);
     notification.setInvoiceId(invoice.getId());
-    notification.setAmount(invoice.getAmount());
-    notificationDAO.put(notification);
+    notification.setNotificationType("Invoice received");
+    notificationDAO_.put(notification);
+  }
+
+  private NewInvoiceNotification setEmailArgs(Invoice invoice, NewInvoiceNotification notification) {
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+
+    PublicUserInfo payee = invoice.getPayee();
+    PublicUserInfo payer = invoice.getPayer();
+
+    // If invType is true, then payee sends payer the email and notification.
+    boolean invType = (long) invoice.getPayeeId() == (Long)invoice.getCreatedBy();
+
+    notification.getEmailArgs().put("amount", formatter.format(invoice.getAmount()/100.00));
+    notification.getEmailArgs().put("account", invoice.getId());
+    notification.getEmailArgs().put("name", invType ? payer.getFirstName() : payee.getFirstName());
+    notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
+    notification.getEmailArgs().put("fromName", invType ? payee.label() : payer.label());
+
+    if ( invoice.getDueDate() != null ) {
+      notification.getEmailArgs().put("date", dateFormat.format(invoice.getDueDate()));
+    }
+
+    notification.getEmailArgs().put("link", config.getUrl());
+    return notification;
   }
 }

@@ -2,6 +2,8 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
+  'net.nanopay.tx.PayerTransactionDAO',
+  'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.AuthyTokenService',
   'net.nanopay.cico.model.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
@@ -23,10 +25,16 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.model.Account',
+  'net.nanopay.account.Balance',
   'net.nanopay.model.Branch',
-  'net.nanopay.model.BankAccount',
-  'net.nanopay.model.BankAccountStatus',
+  'net.nanopay.account.Account',
+  'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DigitalAccountInfo',
+  'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.CABankAccount',
+  'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
@@ -37,11 +45,6 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
-  'net.nanopay.liquidity.model.Threshold',
-  'net.nanopay.liquidity.model.ThresholdResolve',
-  'net.nanopay.liquidity.model.BalanceAlert',
-  'net.nanopay.liquidity.model.Liquidity',
-  'net.nanopay.model.MultiBalance',
 
   //sps
   'net.nanopay.sps.model.GeneralRequestPacket',
@@ -73,17 +76,7 @@ var classes = [
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
-  'net.nanopay.fresh.FreshConfig',
-  'net.nanopay.fresh.model.FreshToken',
-  'net.nanopay.fresh.model.FreshBusiness',
-  'net.nanopay.fresh.model.FreshBusinessMembership',
-  'net.nanopay.fresh.model.FreshCurrent',
-  'net.nanopay.fresh.model.FreshResponse',
-  'net.nanopay.fresh.model.FreshInvoiceResponse',
-  'net.nanopay.fresh.model.FreshInvoiceResult',
-  'net.nanopay.fresh.model.FreshInvoicePages',
-  'net.nanopay.fresh.model.FreshInvoice',
-  'net.nanopay.fresh.model.FreshInvoiceAmount',
+  'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.xero.TokenStorage',
 
   // fx
@@ -123,7 +116,6 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
-  'net.nanopay.s2h.model.S2HInvoice',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
@@ -155,7 +147,6 @@ var classes = [
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.FileKeyStoreManager',
-  'net.nanopay.security.HashedFObject',
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
@@ -169,9 +160,22 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAO',
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
+  'net.nanopay.security.MessageDigest',
 
-  //topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+  // security tests
+  'net.nanopay.security.HashedJSONParserTest',
+  'net.nanopay.security.HashingJournalTest',
+  'net.nanopay.security.HashingOutputterTest',
+  'net.nanopay.security.HashingWriterTest',
+  'net.nanopay.security.FileKeyStoreManagerTest',
+
+  // tests
+  'net.nanopay.test.ModelledTest',
+  'net.nanopay.auth.PublicUserInfoDAOTest',
+  'net.nanopay.auth.TestWidget',
+  'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
+  'net.nanopay.test.TestsReporter',
+  'net.nanopay.test.TestReport'
 ];
 
 var abstractClasses = [
@@ -179,6 +183,7 @@ var abstractClasses = [
 ];
 
 var skeletons = [
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

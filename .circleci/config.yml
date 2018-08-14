@@ -1,0 +1,52 @@
+version: 2
+jobs:
+  shellcheck:
+    docker:
+      - image: nlknguyen/alpine-shellcheck:v0.4.6
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources
+
+  build:
+    docker:
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/foam:latest
+    working_directory: ~/NANOPAY
+    steps:
+      - checkout
+      - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      # cache node modules
+      - restore_cache:
+          key: node-v1-{{ checksum "package-lock.json" }}
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-v1-{{ checksum "package-lock.json" }}
+
+      # cache maven repositories
+      - restore_cache:
+          key: maven-v1-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-v1-{{ checksum "pom.xml" }}
+
+      - run: ./build.sh -t
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build

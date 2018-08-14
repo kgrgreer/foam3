@@ -11,11 +11,14 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
-    'accountDAO',
+    'currentAccount',
+    'balanceDAO',
     'email',
     'formatCurrency',
     'validateEmail',
@@ -33,7 +36,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
@@ -152,9 +155,9 @@ foam.CLASS({
 
         if ( this.position == 1 ) {
           // Send Money
-          this.accountDAO.find(this.user.id).then(function(response){
-            var account = response;
-            if ( shopperInfo.amount > account.balance ){
+          this.balanceDAO.find(this.currentAccount.id).then(function(response){
+            var currentBalance = response;
+            if ( shopperInfo.amount > currentBalance.balance ){
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
               return;
             }
@@ -195,7 +198,9 @@ foam.CLASS({
             address: shopperAddress,
             desiredPassword: shopperInfo.password,
             portalAdminCreated: true,
-            profilePicture: shopperInfo.profilePicture
+            profilePicture: shopperInfo.profilePicture,
+            status: this.AccountStatus.ACTIVE,
+            compliance: this.ComplianceStatus.PASSED
           });
 
           if ( newShopper.errors_ ) {

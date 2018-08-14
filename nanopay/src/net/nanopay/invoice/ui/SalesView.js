@@ -12,9 +12,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.InvoiceDetailView',
-    'net.nanopay.invoice.ui.ReceivablesSummaryView',
-    'net.nanopay.invoice.ui.SalesDetailView'
+    'net.nanopay.invoice.ui.InvoiceSummaryView',
   ],
 
   imports: [
@@ -23,15 +21,20 @@ foam.CLASS({
   ],
 
   exports: [
-    'hideReceivableSummary',
+    'hideSummary',
     'salesDAO'
   ],
 
   properties: [
     'selection',
     {
+      name: 'summaryView',
+      documentation: `A named reference to the summary view so we can subscribe
+          to events emitted from it.`,
+    },
+    {
       class: 'Boolean',
-      name: 'hideReceivableSummary',
+      name: 'hideSummary',
       value: false
     },
     {
@@ -47,24 +50,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'summaryView',
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
       factory: function() {
-        var view = this.ReceivablesSummaryView.create();
-        view.sub('statusChange', this.updateTableDAO);
-        view.sub('statusReset', this.resetTableDAO);
-        return view;
-      }
-    },
-    {
-      name: 'invoiceDetailView',
-      factory: function() {
-        return this.InvoiceDetailView.create();
-      }
-    },
-    {
-      name: 'salesDetailView',
-      factory: function() {
-        return this.SalesDetailView.create();
+        return this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     }
   ],
@@ -104,6 +93,10 @@ foam.CLASS({
     ^ .button-div{
       height: 40px;
     }
+    ^ .foam-u2-ListCreateController{
+      top: 30px;
+      position: relative;
+    }
   `,
 
   methods: [
@@ -112,39 +105,26 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().enableClass('hide', this.hideReceivableSummary$)
-          .add(this.summaryView)
-          .start().addClass('container')
-            .start().addClass('button-div')
-              // .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-filter.png', text: 'Filters'}})
-              // .start().addClass('inline')
-              //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/approve.png', text: 'Pay'}})
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/dispute.png', text: 'Dispute'}}).addClass('import-button').end()
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/reject.png', text: 'Reject'}}).addClass('import-button').end()
-              // .end()
-              // .start().addClass('inline')
-              //   .tag({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-sync-s.png', text: 'Sync'}})
-              //   .start({class: 'net.nanopay.ui.ActionButton', data: {image: 'images/ic-import.png', text: 'Import'}}).addClass('import-button').end()
-              // .end()
-            .end()
-          .end()
+        .start().enableClass('hide', this.hideSummary$)
+          .tag(this.InvoiceSummaryView, {
+            sumLabel: 'Receivables',
+            dao: this.user.sales
+          }, this.summaryView$)
         .end()
         .start()
           .tag({
             class: 'foam.u2.ListCreateController',
-            dao: this.salesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
+            dao: this.filteredDAO$proxy,
             createLabel: 'New Invoice',
             createDetailView: {
               class: 'net.nanopay.invoice.ui.InvoiceDetailView'
             },
-            detailView: {
-              class: 'net.nanopay.invoice.ui.SalesDetailView'
-            },
-            summaryView: this.tableView,
+            detailView: { class: 'net.nanopay.invoice.ui.SalesDetailView' },
+            summaryView: this.SalesTableView,
             showActions: false
           })
         .end()
-        .start().enableClass('hide', this.hideReceivableSummary$)
+        .start().enableClass('hide', this.hideSummary$)
           .tag({
             class: 'net.nanopay.ui.Placeholder',
             dao: this.salesDAO,
@@ -152,6 +132,13 @@ foam.CLASS({
             image: 'images/ic-receivable.png'
           })
         .end();
+
+      // When a SummaryCard is clicked on, it will toggle between two states:
+      // active and inactive. When it changes state it will emit one of the two
+      // following events. We subscribe to them here and update the table view
+      // based on the card that was selected.
+      this.summaryView.statusChange.sub(this.updateTableDAO);
+      this.summaryView.statusReset.sub(this.resetTableDAO);
     }
   ],
 
@@ -159,7 +146,7 @@ foam.CLASS({
     {
       name: 'updateTableDAO',
       code: function(_, __, newStatus) {
-        this.tableView.data = this.salesDAO
+        this.filteredDAO = this.salesDAO
             .where(this.EQ(this.Invoice.STATUS, newStatus))
             .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
@@ -167,7 +154,7 @@ foam.CLASS({
     {
       name: 'resetTableDAO',
       code: function() {
-        this.tableView.data = this.salesDAO
+        this.filteredDAO = this.salesDAO
             .orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     }
@@ -184,9 +171,9 @@ foam.CLASS({
 
       imports: [
         'salesDAO',
-        'hideSaleSummary'
+        'hideSummary'
       ],
-      
+
       exports: [
         'selection'
       ],
@@ -218,7 +205,7 @@ foam.CLASS({
                 }
               },
               columns: [
-                'id', 'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate',
+                'invoiceNumber', 'purchaseOrder', 'payerId', 'dueDate',
                 'amount', 'status'
               ]
             }).addClass(this.myClass('table')).end();

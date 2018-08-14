@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Institution'
   ],
 
@@ -129,7 +129,7 @@ foam.CLASS({
           .start('div').addClass('accountView')
             .forEach(this.viewData.accounts, function(e, index){
               if ( (! e.TransitNumber && e.TransitNumber === '') || e.Currency !== 'CAD') return;
-              this.start({class: 'net.nanopay.flinks.view.element.AccountCard', accountName : e.Title, accountNo : e.AccountNumber, balance : e.Balance.Current})
+              this.start({class: 'net.nanopay.flinks.view.element.AccountCard', name : e.Title, accountNo : e.AccountNumber, balance : e.Balance.Current})
                 .style({'margin-left':'20px'})
                 .addClass('spacer')
                 .addClass('account')

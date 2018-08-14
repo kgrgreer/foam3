@@ -12,7 +12,6 @@ import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.alterna.AlternaTxnProcessorData;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       channelSftp = (ChannelSftp) channel;
 
       Vector fileList = channelSftp.ls("/Returns/");
-      Pattern pattern = Pattern.compile("UploadLog_[0-9]{8}_mintchipcashout.csv.txt");
+      Pattern pattern = Pattern.compile("UploadLog_[0-9]{8}_B2B.csv.txt");
       for ( Object entry : fileList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         Matcher matcher = pattern.matcher(e.getFilename());
@@ -74,8 +73,8 @@ public class EFTConfirmationFileProcessor implements ContextAgent
         InputStream confirmationFileStream = channelSftp.get("/Returns/" + fileNames.get(i));
         List<FObject> confirmationFileList = eftConfirmationFileParser.parse(confirmationFileStream);
 
-        // UploadLog_yyyyMMdd_mintchipcashout.csv.txt -> yyyyMMdd_mintchipcashout.csv
-        String uploadCSVFileName = fileNames.get(i).substring(10, 38);
+        // UploadLog_yyyyMMdd_B2B.csv.txt -> yyyyMMdd_B2B.csv
+        String uploadCSVFileName = fileNames.get(i).substring(10, 26);
         Vector uploadCSVList = channelSftp.ls("/Archive/");
         boolean uploadCSVExist = false;
         for ( Object entry : uploadCSVList ) {

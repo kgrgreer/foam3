@@ -63,11 +63,10 @@ var classes = [
   'foam.u2.Visibility',
   'foam.nanos.auth.email.EmailTokenService',
   'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
-  'net.nanopay.model.Account',
-  'net.nanopay.model.BankAccount',
-  'net.nanopay.model.BankAccountStatus',
+  'net.nanopay.model.Currency',
   'net.nanopay.model.PadCapture',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
@@ -100,7 +99,8 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.tx.tp.TxnProcessorData',
-  'net.nanopay.tx.tp.TxnProcessor'
+  'net.nanopay.tx.tp.TxnProcessor',
+  'net.nanopay.auth.PublicUserInfo'
 ];
 
 module.exports = {

@@ -5,15 +5,20 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.dao.ArraySink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
+import java.util.List;
+
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
 
 public class AuthenticatedTransactionDAO
@@ -35,13 +40,18 @@ public class AuthenticatedTransactionDAO
     User user = (User) x.get("user");
     DAO userDAO = (DAO) x.get("localUserDAO");
     Transaction t = (Transaction) obj;
+    Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
     if ( user == null ) {
       throw new RuntimeException("User is not logged in");
     }
 
     // check if you are the payer or if you're doing a money request
-    if ( ! SafetyUtil.equals(t.getPayerId(), user.getId()) && ! TransactionType.REQUEST.equals(t.getType()) ) {
+    if ( t.findSourceAccount(x) != null ) {
+      if (((Long) t.findSourceAccount(x).getOwner()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
+        throw new RuntimeException("User is not the payer");
+      }
+    } else if (((Long) t.getPayerId()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
       throw new RuntimeException("User is not the payer");
     }
 
@@ -58,7 +68,7 @@ public class AuthenticatedTransactionDAO
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
-    if ( t != null && t.getPayerId() != user.getId() && t.getPayeeId() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t != null && t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
 
@@ -75,8 +85,20 @@ public class AuthenticatedTransactionDAO
     }
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);
-    DAO dao = global ? getDelegate() : getDelegate().where(
-      OR(EQ(Transaction.PAYER_ID, user.getId()), EQ(Transaction.PAYEE_ID, user.getId())));
+
+    ArraySink arraySink = (ArraySink) user.getAccounts(x).select(new ArraySink());
+    List accountsArray =  arraySink.getArray();
+    Long[] ids = new Long[accountsArray.size()];
+    for (int i =0; i < accountsArray.size(); i++)
+      ids[i] = ((Account)accountsArray.get(i)).getId();
+    DAO dao = global ?
+      getDelegate() :
+      getDelegate().where(
+                          OR(
+                             IN(Transaction.SOURCE_ACCOUNT, ids),
+                             IN(Transaction.DESTINATION_ACCOUNT, ids)
+                             )
+                          );
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

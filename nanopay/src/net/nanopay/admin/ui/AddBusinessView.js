@@ -308,7 +308,7 @@ foam.CLASS({
     { name: 'EmailLabel', message: 'Email Address' },
     { name: 'ConfirmEmailLabel', message: 'Confirm Email Address' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number' }
+    { name: 'PhoneNumberLabel', message: 'Business Phone Number' }
   ],
 
   methods: [
@@ -540,8 +540,7 @@ foam.CLASS({
         email: this.emailAddress,
         type: 'Business',
         spid: this.user.spid,
-        group: this.user.group === 's2hAdmin' ?
-          's2hCustomer' : 'business',
+        group: 'business',
         status: this.AccountStatus.PENDING,
         compliance: this.ComplianceStatus.REQUESTED,
         phone: businessPhone,

@@ -125,9 +125,10 @@ foam.CLASS({
     'java.util.Date',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.payment.Institution',
+    'net.nanopay.model.Branch',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'java.util.Random',
@@ -177,8 +178,10 @@ foam.CLASS({
               pacs00200109.getFIToFIPmtStsRpt().setOrgnlGrpInfAndSts(new OriginalGroupHeader13[length_]);
               pacs00200109.getFIToFIPmtStsRpt().setGrpHdr(grpHdr53);
 
-              DAO userDAO = (DAO) getX().get("userDAO");
-              DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
+              DAO userDAO        = (DAO) getX().get("userDAO");
+              DAO bankAccountDAO = (DAO) getX().get("accountDAO");
+              DAO branchDAO      = (DAO) getX().get("branchDAO");
+              DAO institutionDAO = (DAO) getX().get("institutionDAO");
               String addrLine = "";
               long senderId =  0 ;
               long receiverId = 0;
@@ -244,13 +247,25 @@ foam.CLASS({
                           senderBankAcct.setId(senderId);
                           senderBankAcct.setX(getX());
                           senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
-                          senderBankAcct.setCurrencyCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getCcy());
-                          senderBankAcct.setAccountName("Default");
-                          senderBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
-                          senderBankAcct.setTransitNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId());
+                          senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getCcy());
+                          senderBankAcct.setName("Default");
+
+                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
+                          if ( institution != null ) {
+                            senderBankAcct.setInstitution(institution.getId());
+                          } else {
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                          }
+
+                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId()));
+                          if ( branch != null ) {
+                            senderBankAcct.setBranch(branch.getId());
+                          } else {
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                          }
                           senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
                           senderBankAcct.setVerificationAttempts(1);
-                          senderBankAcct.setSetAsDefault(true);
+                          senderBankAcct.setIsDefault(true);
                           senderBankAcct.setOwner(senderId);
 
                           bankAccountDAO.put(senderBankAcct);
@@ -322,13 +337,28 @@ foam.CLASS({
                         receiverBankAcct.setId(receiverId);
                         receiverBankAcct.setX(getX());
                         receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAcct().getId().getOthr().getId());
-                        receiverBankAcct.setCurrencyCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getIntrBkSttlmAmt().getCcy());
-                        receiverBankAcct.setAccountName("Default");
-                        receiverBankAcct.setInstitutionNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
-                        receiverBankAcct.setTransitNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getBrnchId().getId());
+                        receiverBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getIntrBkSttlmAmt().getCcy());
+                        receiverBankAcct.setName("Default");
+//                        receiverBankAcct.setInstitution((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
+//                        receiverBankAcct.setBranch((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getBrnchId().getId());
+
+                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
+                          if ( institution != null ) {
+                            receiverBankAcct.setInstitution(institution.getId());
+                          } else {
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                          }
+
+                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
+                          if ( branch != null ) {
+                            receiverBankAcct.setBranch(branch.getId());
+                          } else {
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                          }
+
                         receiverBankAcct.setStatus(BankAccountStatus.VERIFIED);
                         receiverBankAcct.setVerificationAttempts(1);
-                        receiverBankAcct.setSetAsDefault(true);
+                        receiverBankAcct.setIsDefault(true);
                         receiverBankAcct.setOwner(receiverId);
 
                         bankAccountDAO.put(receiverBankAcct);
@@ -354,7 +384,6 @@ foam.CLASS({
                       .setPayeeId(receiverId)
                       .setAmount(longTxAmt)
                       .setType(TransactionType.NONE)
-                      .setBankAccountId(receiverId)
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId())
                       .build();
                       DAO txnDAO = (DAO) getX().get("transactionDAO");

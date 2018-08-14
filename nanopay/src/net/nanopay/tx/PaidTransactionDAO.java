@@ -12,6 +12,7 @@ import foam.nanos.notification.email.EmailService;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+import net.nanopay.account.Account;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -38,7 +39,7 @@ public class PaidTransactionDAO
       return transaction;
 
     // Returns if transaction is a cico transaction
-    if ( transaction.getPayeeId() == transaction.getPayerId() )
+    if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.CASHOUT )
       return transaction;
 
     if ( transaction.getType() != TransactionType.NONE && transaction.getStatus() != TransactionStatus.COMPLETED )
@@ -46,8 +47,8 @@ public class PaidTransactionDAO
 
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     AppConfig    config    = (AppConfig) x.get("appConfig");
-    User         user      = (User) userDAO_.find_(x, transaction.getPayeeId());
-    User         sender    = (User) userDAO_.find_(x, transaction.getPayerId());
+    User         user      = (User) userDAO_.find_(x, ((Account)transaction.findDestinationAccount(x)).getOwner());
+    User         sender    = (User) userDAO_.find_(x, ((Account)transaction.findSourceAccount(x)).getOwner());
     EmailService email     = (EmailService) x.get("email");
     EmailMessage message   = new EmailMessage();
 

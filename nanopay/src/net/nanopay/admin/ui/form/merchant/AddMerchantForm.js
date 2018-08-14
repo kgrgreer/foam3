@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
+    'balanceDAO',
     'email',
     'formatCurrency',
     'validatePhone',
@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
@@ -183,9 +183,9 @@ foam.CLASS({
 
         if ( this.position == 2 ) {
           // Send Money
-          this.accountDAO.find(this.user.id).then(function(response){
-            var account = response;
-            if ( merchantInfo.amount > account.balance ){
+          this.balanceDAO.find(this.user.id).then(function(response){
+            var currentBalance = response;
+            if ( merchantInfo.amount > currentBalance.balance ){
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
               return;
             }

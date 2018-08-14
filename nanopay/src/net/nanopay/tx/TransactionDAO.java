@@ -8,10 +8,15 @@ import foam.dao.ProxyDAO;
 import java.util.*;
 
 import foam.nanos.auth.User;
-import net.nanopay.model.Account;
+import net.nanopay.account.Account;
+import net.nanopay.account.Balance;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.account.Balance;
+
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
 
 public class TransactionDAO
     extends ProxyDAO
@@ -24,9 +29,7 @@ public class TransactionDAO
       }});
 
   protected DAO userDAO_;
-  protected DAO accountDAO_;
-  protected DAO invoiceDAO_;
-  protected DAO bankAccountDAO_;
+  protected DAO balanceDAO_;
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -45,11 +48,11 @@ public class TransactionDAO
   }
 
   protected DAO getBalanceDAO() {
-    if ( accountDAO_ == null ) {
-      accountDAO_ = (DAO) getX().get("localBalanceDAO");
+    if (balanceDAO_ == null ) {
+      balanceDAO_ = (DAO) getX().get("localBalanceDAO");
     }
 
-    return accountDAO_;
+    return balanceDAO_;
   }
 
   @Override
@@ -85,7 +88,7 @@ public class TransactionDAO
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer(transaction.getPayerId(), transaction.getTotal());
+          Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
           refound.validate(x);
           refound.execute(x);
         }
@@ -159,21 +162,19 @@ public class TransactionDAO
 
 
   public void cashinReject(X x, Transaction transaction) {
-    Account payerAccount = (Account) getBalanceDAO().find(transaction.getPayerId());
-    payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
-        transaction.getTotal() : 0);
-    getBalanceDAO().put_(x, payerAccount.fclone());
-    User user = (User) getUserDAO().find(transaction.getPayerId());
+    // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.
+    Balance payerBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
+        payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
+      transaction.getTotal() : 0);
+    getBalanceDAO().put(payerBalance);
   }
 
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
-    Account payerAccount = (Account) getBalanceDAO().find(transaction.getPayeeId());
-    payerAccount.setBalance(payerAccount.getBalance() > transaction.getTotal() ? payerAccount.getBalance() -
-        transaction.getTotal() : 0);
-    getBalanceDAO().put_(x, payerAccount.fclone());
-    // if it's a transaction for different user, we need notify both
-    User payer = (User) getUserDAO().find(transaction.getPayerId());
-    User payee = (User) getUserDAO().find(transaction.getPayeeId());
+    // TODO/REVIEW: ACCOUNT_REFACTOR PayeeAccountId is not yet setup/populated.
+    Balance payeeBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
+        payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
+      transaction.getTotal() : 0);
+    getBalanceDAO().put(payeeBalance);
   }
 
 

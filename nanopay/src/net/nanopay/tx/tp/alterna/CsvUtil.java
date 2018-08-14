@@ -8,17 +8,20 @@ import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.tp.TxnProcessor;
+
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import net.nanopay.cico.model.TransactionType;
-import net.nanopay.model.BankAccount;
-import net.nanopay.tx.tp.TxnProcessor;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
+
 import static foam.mlang.MLang.*;
 
 public class CsvUtil {
@@ -44,13 +47,16 @@ public class CsvUtil {
   /**
    * Generates the process date based on a given date
    * @param date date used to determine the processing date
-   * @return either the current date plus 1 day if current time is before 11 am
-   *         or the current date plus 2 days if the current date is after 11 am
+   * @return either the current date plus 1 day if current time is before cutOffTime (default 11 am）
+   *         or the current date plus 2 days if the current date is after cutOffTime
    */
-  public static Date generateProcessDate(Date date) {
+  public static Date generateProcessDate(X x, Date date) {
+    AlternaSFTPService alternaSFTPService = (AlternaSFTPService) x.get("alternaSftp");
+    int cutOffTime = alternaSFTPService.getCutOffTime();
+
     Calendar curDate = Calendar.getInstance();
     curDate.setTime(date);
-    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 1 : 2;
+    int k = curDate.get(Calendar.HOUR_OF_DAY) < cutOffTime ? 1 : 2;
     int i = 0;
     while ( i < k ) {
       curDate.add(Calendar.DAY_OF_YEAR, 1);
@@ -66,13 +72,17 @@ public class CsvUtil {
   /**
    * Generates the completion date based on a given date
    * @param date date used to determine the processing date
-   * @return either the current date plus 3 day if current time is before 11 am
-   *         or the current date plus 4 days if the current date is after 11 am
+   * @return either the current date plus (1 + holdTimeInBusinessDays) days if current time is before cutOffTime (default 11 am）
+   *         or the current date plus (2 + holdTimeInBusinessDays) days if the current date is after cutOffTime
    */
-  public static Date generateCompletionDate(Date date) {
+  public static Date generateCompletionDate(X x, Date date) {
+    AlternaSFTPService alternaSFTPService = (AlternaSFTPService) x.get("alternaSftp");
+    int cutOffTime = alternaSFTPService.getCutOffTime();
+    int holdTimeInBusinessDays = alternaSFTPService.getHoldTimeInBusinessDays();
+
     Calendar curDate = Calendar.getInstance();
     curDate.setTime(date);
-    int k = curDate.get(Calendar.HOUR_OF_DAY) < 11 ? 3 : 4;
+    int k = curDate.get(Calendar.HOUR_OF_DAY) < cutOffTime ? (1 + holdTimeInBusinessDays) : (2 + holdTimeInBusinessDays);
     int i = 0;
     while ( i < k ) {
       curDate.add(Calendar.DAY_OF_YEAR, 1);
@@ -91,7 +101,7 @@ public class CsvUtil {
    * @return the filename
    */
   public static String generateFilename(Date date) {
-    return filenameSdf.get().format(date) + "_mintchipcashout.csv";
+    return filenameSdf.get().format(date) + "_B2B.csv";
   }
 
   /**
@@ -113,9 +123,10 @@ public class CsvUtil {
    */
   public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
     final Date now            = new Date();
-    final DAO  userDAO        = (DAO) x.get("localUserDAO");
-    final DAO  bankAccountDAO = (DAO) x.get("localBankAccountDAO");
+
+    final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
+    final DAO  userDAO        = (DAO) x.get("localUserDAO");
 
     Outputter out = new Outputter(o, mode, false);
     transactionDAO.where(
@@ -139,13 +150,15 @@ public class CsvUtil {
           Transaction t = (Transaction) obj;
           t = (Transaction) t.fclone();
 
+          BankAccount bankAccount = null;
+          user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // get transaction type and user
           if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
             txnType = "DB";
-            user = (User) userDAO.find(t.getPayerId());
+            bankAccount = (BankAccount) t.findSourceAccount(x);
           } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
             txnType = "CR";
-            user = (User) userDAO.find(t.getPayerId());
+            bankAccount = (BankAccount) t.findDestinationAccount(x);
           } else {
             // don't output if for whatever reason we get here and
             // the transaction is not a cash in or cash out
@@ -156,7 +169,6 @@ public class CsvUtil {
           if ( user == null ) return;
 
           // get bank account and check if null
-          BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getBankAccountId());
           if ( bankAccount == null ) return;
 
           // use transaction ID as the reference number
@@ -174,8 +186,8 @@ public class CsvUtil {
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
-          alternaFormat.setTransitNumber(padLeftWithZeros(bankAccount.getTransitNumber(), 5));
-          alternaFormat.setBankNumber(padLeftWithZeros(bankAccount.getInstitutionNumber(), 3));
+          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf((bankAccount.getBranch())), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((bankAccount.getInstitution())), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
@@ -187,11 +199,16 @@ public class CsvUtil {
             t.setTxnCode(alternaFormat.getTxnCode());
           }
 
-          alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(now)));
+          alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
           alternaFormat.setReference(refNo);
 
-          t.setProcessDate(generateProcessDate(now));
-          t.setCompletionDate(generateCompletionDate(now));
+          if ( t.getProcessDate() == null ) {
+            t.setProcessDate(generateProcessDate(x, now));
+          }
+
+          if (t.getCompletionDate() == null) {
+            t.setCompletionDate(generateCompletionDate(x, now));
+          }
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);

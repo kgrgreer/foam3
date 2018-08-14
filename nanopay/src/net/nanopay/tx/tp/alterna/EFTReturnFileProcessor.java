@@ -13,7 +13,6 @@ import net.nanopay.cico.model.EFTReturnRecord;
 import net.nanopay.cico.model.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.alterna.AlternaTxnProcessorData;
 
 import java.io.InputStream;
 import java.util.ArrayList;

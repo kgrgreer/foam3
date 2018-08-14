@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'Transaction',
 
   tableColumns: [
+    'id',
     'status',
     'txnProcessorId',
     'payerName',
@@ -11,6 +12,13 @@ foam.CLASS({
     'processDate',
     'completionDate',
     'date'
+  ],
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
@@ -33,9 +41,9 @@ foam.CLASS({
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.tx.tp.TxnProcessor',
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -62,14 +70,35 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      class: 'DateTime',
+      name: 'created',
+      documentation: `The date the invoice was created.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: `The id of the user who created the invoice.`,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: `The date the invoice was last modified.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The id of the user who last modified the invoice.`,
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.cico.model.TransactionType',
       name: 'type',
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.tx.tp.TxnProcessor',
+      class: 'String',
       name: 'txnProcessorId',
       label: 'Processor',
       value: 'NONE'
@@ -85,8 +114,10 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      // class: 'Reference',
+      // of: 'net.nanopay.invoice.model.Invoice',
       class: 'Long',
-      name: 'invoiceId'
+      name: 'invoiceId',
     },
     {
       class: 'foam.core.Enum',
@@ -108,46 +139,60 @@ foam.CLASS({
     //   visibility: foam.u2.Visibility.RO
     // },
     {
+      // REVIEW: how is this used?
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
-      storageTransient: true
+      label: 'Receiver',
+      storageTransient: true,
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.fullName : '')
+          .end()
+        .end();
+      }
     },
     {
+      // REVIEW: how is this used?
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
-      storageTransient: true
+      label: 'Sender',
+      storageTransient: true,
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.fullName : '')
+          .end()
+        .end();
+      }
     },
     {
-      class: 'Long',
-      name: 'payerId',
-      label: 'Payer',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payerId, obj, axiom) {
-        this.start()
-          .start('h4').style({ 'margin-bottom': 0 })
-            .add(obj.payer.firstName)
-          .end()
-          .start('p').style({ 'margin-top': 0 }).add(obj.payer.email).end()
-          .end();
-      }
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'sourceAccount',
+      targetDAOKey: 'localAccountDAO',
+      label: 'Source account',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
       name: 'payeeId',
-      label: 'Payee',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payeeId, obj, axiom) {
-        this.start()
-              .start('h4').style({ 'margin-bottom': 0 })
-                .add(obj.payee.firstName)
-              .end()
-              .start('p').style({ 'margin-top': 0 })
-                .add(obj.payee.email)
-              .end()
-            .end();
-      }
+      storageTransient: true,
+    },
+    {
+      class: 'Long',
+      name: 'payerId',
+      storageTransient: true,
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      targetDAOKey: 'localAccountDAO',
+      label: 'Destination Account',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Currency',
@@ -184,13 +229,6 @@ foam.CLASS({
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
-    },
-    {
-      // REVIEW: how can there only be one bank account id? - used in email, but only for receiver I'm assuming.
-      class: 'Reference',
-      of: 'net.nanopay.model.BankAccount',
-      name: 'bankAccountId',
-      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'DateTime',
@@ -230,7 +268,10 @@ foam.CLASS({
       class: 'String',
       name: 'challenge',
       visibility: foam.u2.Visibility.RO,
-      documentation: 'Randomly generated challenge. Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction, used in the merchant app and is transfered to the mobile applications as a property of the QrCode. Can be moved to retail Transaction.'
+      documentation: `Randomly generated challenge.
+      Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction,
+      used in the merchant app and is transfered to the mobile applications as a property of the QrCode.
+      Can be moved to retail Transaction.`
     },
     {
       // REVIEW: is this created date? - Joel
@@ -260,10 +301,10 @@ foam.CLASS({
     // },
     // TODO: field for tax as well? May need a more complex model for that
     {
-      //class: 'FObjectProperty',
+      // class: 'FObjectProperty',
       class: 'Reference',
       of: 'net.nanopay.tx.TransactionPurpose',
-      name: 'purposeId',
+      name: 'purpose',
       label: 'Purpose',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction purpose'
@@ -285,16 +326,12 @@ foam.CLASS({
       name: 'messageId'
     },
     {
-      class: 'DateTime',
-      name: 'lastModified',
-      label: 'Latest Modify Date & Time'
-    },
-    {
       class: 'String',
-      name: 'CurrencyCode',
-      label: 'CurrencyCode'
+      name: 'sourceCurrency',
+      value: 'CAD'
     },
     {
+      // REVIEW: move to TxnProcessorData
       documentation: `Payment Platform specific data.`,
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',
@@ -343,17 +380,17 @@ foam.CLASS({
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
-            new Transfer(getPayerId(), -getTotal())
+             new Transfer((Long) getSourceAccount(), -getTotal())
           };
         }
         if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
-            new Transfer(getPayeeId(), getTotal())
+            new Transfer((Long) getDestinationAccount(), getTotal())
           };
         }
         return new Transfer[] {
-            new Transfer(getPayerId(), -getTotal()),
-            new Transfer(getPayeeId(),  getTotal())
+             new Transfer((Long) getSourceAccount(), -getTotal()),
+             new Transfer((Long) getDestinationAccount(),  getTotal())
         };
       `
     }
