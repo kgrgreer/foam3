@@ -18,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SPSProcessor extends ContextAwareSupport {
@@ -163,7 +162,7 @@ public class SPSProcessor extends ContextAwareSupport {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180724115959");
+    generalRequestPacket.setLocalTransactionTime("20180813115959");
     generalRequestPacket.setTID("ZYX80");
 
     // user info
@@ -200,7 +199,7 @@ public class SPSProcessor extends ContextAwareSupport {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(40);
-    batchDetailRequestPacket.setLocalTransactionTime("20180714115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180813115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setOptionallyEnteredDate("");
@@ -224,7 +223,7 @@ public class SPSProcessor extends ContextAwareSupport {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(50);
-    batchDetailRequestPacket.setLocalTransactionTime("20180714115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180813115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setOptionallyEnteredDate("");
