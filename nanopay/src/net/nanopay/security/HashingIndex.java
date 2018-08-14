@@ -26,7 +26,6 @@ public class HashingIndex
     setDelegate(delegate);
     algorithm_ = algorithm;
     md_ = new ThreadLocal<MessageDigest>() {
-
       @Override
       protected MessageDigest initialValue() {
         try {
