@@ -293,6 +293,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HashingOutputterTest' },
   { name: 'net/nanopay/security/HashingWriterTest' },
   { name: 'net/nanopay/security/FileKeyStoreManagerTest' },
+  { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
