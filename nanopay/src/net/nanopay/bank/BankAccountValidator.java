@@ -77,7 +77,7 @@ public class BankAccountValidator
     if ( SafetyUtil.isEmpty(accountNumber) ) {
       throw new IllegalStateException("Please enter an account number.");
     }
-    if ( ! this.ACCOUNT_NUMBER.matcher(accountNumber).matches() ) {
+    if ( ! ACCOUNT_NUMBER.matcher(accountNumber).matches() ) {
       throw new IllegalStateException("Please enter a valid account number.");
     }
   }
@@ -93,7 +93,7 @@ public class BankAccountValidator
     if ( SafetyUtil.isEmpty(institutionNumber) ) {
       throw new IllegalStateException("Please enter an institution number.");
     }
-    if ( ! this.INSTITUTION_NUMBER.matcher(institutionNumber).matches() ) {
+    if ( ! INSTITUTION_NUMBER.matcher(institutionNumber).matches() ) {
       throw new IllegalStateException("Please enter a valid institution number.");
     }
   }
@@ -109,7 +109,7 @@ public class BankAccountValidator
     if (SafetyUtil.isEmpty(branchId)) {
       throw new IllegalStateException("Please enter a branch Id/ Transit Number.");
     }
-    if (!this.BRANCH_ID.matcher(branchId).matches()) {
+    if ( ! BRANCH_ID.matcher(branchId).matches() ) {
       throw new IllegalStateException("Please enter a valid branch Id/ Transit Number.");
     }
   }
