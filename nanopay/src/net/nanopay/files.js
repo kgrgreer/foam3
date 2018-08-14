@@ -381,5 +381,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/test/TestsReporter' },
-  { name: 'net/nanopay/test/TestReport' }
+  { name: 'net/nanopay/test/TestReport' },
+  { name: 'net/nanopay/tx/tp/alterna/test/EFTTest'}
 ]);

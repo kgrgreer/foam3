@@ -169,7 +169,8 @@ var classes = [
   'net.nanopay.auth.TestWidget',
   'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
-  'net.nanopay.test.TestReport'
+  'net.nanopay.test.TestReport',
+  'net.nanopay.tx.tp.alterna.test.EFTTest'
 ];
 
 var abstractClasses = [
