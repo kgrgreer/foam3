@@ -5,9 +5,18 @@ foam.CLASS({
 
   properties: [
     {
+      documentation: `For retail purposes. Tip`,
       class: 'Currency',
       name: 'tip',
-      visibility: foam.u2.Visibility.RO
+      label: 'Tip',
+      visibility: foam.u2.Visibility.RO,
+      tableCellFormatter: function(tip, X) {
+        var formattedAmount = tip/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
     },
     {
       class: 'Currency',
@@ -23,7 +32,7 @@ foam.CLASS({
         var formattedAmount = total / 100;
         var refund =
           (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
-              X.type == net.nanopay.cico.model.TransactionType.REFUND );
+              X.type == net.nanopay.tx.TransactionType.REFUND );
 
         this
           .start()
@@ -32,5 +41,21 @@ foam.CLASS({
           .end();
       }
     },
-  ]
+    {
+      documentation: `For retail purposes. DeviceId refers to the device used to display the QR code for this transaction.`,
+      class: 'Reference',
+      of: 'net.nanopay.retail.model.Device',
+      name: 'deviceId',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'challenge',
+      visibility: foam.u2.Visibility.RO,
+      documentation: `Randomly generated challenge.
+      Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction,
+      used in the merchant app and is transfered to the mobile applications as a property of the QrCode.
+      Can be moved to retail Transaction.`
+    }
+ ]
 });

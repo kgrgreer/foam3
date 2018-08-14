@@ -7,7 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
 
@@ -54,8 +54,8 @@ public class RandomDepositBankAccountDAO
 
       // create new transaction and store
       Transaction transaction = new Transaction.Builder(x)
-        .setDestinationAccount(account.getId())
-        .setPayerId(user.getId())
+        .setPayeeId(user.getId())
+        .setSourceAccount(account.getId())
         .setAmount(randomDepositAmount)
         .setType(TransactionType.VERIFICATION)
         .setStatus(TransactionStatus.PENDING)

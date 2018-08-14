@@ -3,6 +3,25 @@ foam.CLASS({
   name: 'FlinksBankPadAuthorization',
   extends: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
 
+  imports: [
+    'accountDAO as bankAccountDAO',
+    'fail',
+    'form',
+    'isConnecting',
+    'notify',
+    'padCaptureDAO',
+    'pushViews',
+    'validateAddress',
+    'validateCity',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'viewData'
+  ],
+
+  requires: [
+    'net.nanopay.model.PadCapture'
+  ],
+
   css: `
     ^ .net-nanopay-ui-ActionView-nextButton {
       margin-left: 264px;
@@ -42,13 +61,69 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this.
       addClass(this.myClass())
-      .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+      .start('div').style({ 'margin-top': '15px', 'height': '40px' })
         .tag(this.CLOSE_BUTTON)
         .tag(this.NEXT_BUTTON)
-      .end()
+      .end();
+    },
+    function validateInputs() {
+      var user = this.viewData.user;
+
+      if ( user.firstName.length > 70 ) {
+        this.notify('First name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( user.lastName.length > 70 ) {
+        this.notify('Last name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(user.address.streetName) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateCity(user.address.city) ) {
+        this.notify('Invalid city name.', 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(user.address.postalCode) ) {
+        this.notify('Invalid postal code.', 'error');
+        return false;
+      }
+      return true;
+    },
+    async function capturePADAndPutBankAccounts() {
+      var user = this.viewData.user;
+      this.isConnecting = true;
+      for ( var account of this.viewData.bankAccounts ) {
+        try {
+          await this.padCaptureDAO.put(this.PadCapture.create({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userId: user.id,
+            address: user.address,
+            agree1: this.viewData.agree1,
+            agree2: this.viewData.agree2,
+            agree3: this.viewData.agree3,
+            institutionNumber: account.institutionNumber,
+            branchId: account.branchId, // branchId = transit number
+            accountNumber: account.accountNumber
+          }));
+          await this.bankAccountDAO.put(account);
+        } catch (error) {
+          this.notify(error.message, 'error');
+          this.fail();
+          return;
+        } finally {
+          this.isConnecting = false;
+        }
+        this.pushViews('Complete');
+      }
     }
   ],
 
@@ -56,16 +131,20 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'I Agree',
+      isEnabled: function(isConnecting) {
+        return ! isConnecting;
+      },
       code: function(X) {
-        X.form.goNext();
+        if ( this.validateInputs() ) {
+          this.capturePADAndPutBankAccounts();
+        }
       }
     },
     {
       name: 'closeButton',
       label: 'Back',
       code: function(X) {
-        //console.log('close the form');
-        X.form.goBack();
+        X.form.stack.back();
       }
     }
   ]
