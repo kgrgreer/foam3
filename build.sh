@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #
 # Deploy nanopay application
