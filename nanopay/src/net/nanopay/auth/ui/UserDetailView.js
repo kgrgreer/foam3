@@ -165,16 +165,18 @@ foam.CLASS({
       name: 'province',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
+        var choices = X.data.slot(function(country) {
+          return X.regionDAO.where(
+              expr.EQ(foam.nanos.auth.Region.COUNTRY_ID, country || '')
+          );
+        });
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO.where(
-            expr.EQ(
-              foam.nanos.auth.Region.COUNTRY_ID, 'CA'
-            )
-          ),
-          objToChoice: function(a) {
-            return [a.id, a.name];
+          objToChoice: function(region) {
+            return [region.id, region.name];
           },
-          placeholder: 'Select Province'
+          dao$: choices,
+          placeholder: 'Select Province',
+          defaultValue: 'Select Province'
         });
       },
       factory: function() {
@@ -192,14 +194,14 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           },
-          placeholder: 'Select Country'
+          placeholder: 'Select Country',
+          defaultValue: 'Select Country'
         });
       },
       factory: function() {
         if ( this.user.address.countryId ) {
           return this.user.address.countryId;
         }
-        return 'CA';
       },
       postSet: function(oldValue, newValue) {
         this.user.address.countryId = newValue;
