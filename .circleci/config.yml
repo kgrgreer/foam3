@@ -1,48 +1,42 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
 version: 2
 jobs:
-  shellcheck:
-    docker:
-      - image: nlknguyen/alpine-shellcheck:v0.4.6
-    steps:
-      - checkout
-      - run:
-          name: Check Scripts
-          command: |
-            find . -type f -name '*.sh' | wc -l
-            find . -type f -name '*.sh' | xargs shellcheck --external-sources
-
   build:
     docker:
-      - image: circleci/buildpack-deps:bionic
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/foam:latest
     working_directory: ~/NANOPAY
     steps:
       - checkout
-      - run: sudo apt-get update && sudo apt-get -y install maven npm nodejs openjdk-8-jdk-headless
       - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run: git submodule sync
       - run: git submodule update --init
 
-      # cache node modules
+      # Download and cache dependencies
       - restore_cache:
-          keys:
-            - node-v1-{{ checksum "package.json" }}
-            - node-v1-
+          key: node-v1-{{ checksum "package-lock.json" }}
+
       - run: npm install
+
       - save_cache:
           paths:
             - node_modules
-          key: node-v1-{{ checksum "package.json" }}
+          key: node-v1-{{ checksum "package-lock.json" }}
 
       # cache maven repositories
       - restore_cache:
-          keys:
-            - maven-v1-{{ checksum "pom-standalone.xml" }}
-            - maven-v1-
-      - run: sudo ./build.sh -t
+          key: maven-v1-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
       - save_cache:
           paths:
             - ~/.m2
-          key: maven-v1-{{ checksum "pom-standalone.xml" }}
+          key: maven-v1-{{ checksum "pom.xml" }}
+
+      - run: ./build.sh -t
 
 workflows:
   version: 2
