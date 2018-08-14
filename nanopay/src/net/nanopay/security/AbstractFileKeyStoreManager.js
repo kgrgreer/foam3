@@ -38,8 +38,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'keyStoreFile',
-      transient: true,
       documentation: 'KeyStore file.',
+      transient: true,
       javaType: 'java.io.File',
       javaFactory: `
         return new File(getKeyStorePath()).getAbsoluteFile();
@@ -48,8 +48,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'passphraseFile',
-      transient: true,
       documentation: 'Passphrase file',
+      transient: true,
       javaType: 'java.io.File',
       javaFactory: `
         return new File(getPassphrasePath()).getAbsoluteFile();
@@ -58,8 +58,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'keyStore',
-      transient: true,
       documentation: 'Keystore file where all of the keys are stored.',
+      transient: true,
       javaType: 'java.security.KeyStore',
       javaFactory: `
         try {
@@ -85,20 +85,23 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'passphrase',
-      transient: true,
       documentation: 'Passphrase used to load KeyStore',
+      transient: true,
       javaType: 'char[]',
       javaFactory: `
         try {
-        char[] cbuffer = new char[32];
-        File passphraseFile = getPassphraseFile();
+          StringBuilder builder = new StringBuilder();
+          File passphraseFile = getPassphraseFile();
 
-        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(
-          new FileInputStream(passphraseFile), StandardCharsets.UTF_8)) ) {
-          reader.read(cbuffer, 0, 32);
-        }
+          try ( BufferedReader reader = new BufferedReader(new InputStreamReader(
+            new FileInputStream(passphraseFile), StandardCharsets.UTF_8)) ) {
+            String line;
+            while ( (line = reader.readLine()) != null ) {
+              builder.append(line);
+            }
+          }
 
-        return cbuffer;
+          return builder.toString().toCharArray();
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }

@@ -28,6 +28,44 @@ foam.CLASS({
       `
     },
     {
+      class: 'String',
+      name: 'passphrasePath',
+      documentation: 'Path to passphrase file.'
+    },
+    {
+      class: 'Object',
+      name: 'passphraseFile',
+      transient: true,
+      javaType: 'java.io.File',
+      javaFactory: `
+        return new File(getPassphrasePath()).getAbsoluteFile();
+      `
+    },
+    {
+      class: 'Object',
+      name: 'passphrase',
+      transient: true,
+      javaType: 'char[]',
+      javaFactory: `
+        try {
+          StringBuilder builder = new StringBuilder();
+          File passphraseFile = getPassphraseFile();
+
+          try ( BufferedReader reader = new BufferedReader(new InputStreamReader(
+            new FileInputStream(passphraseFile), StandardCharsets.UTF_8)) ) {
+            String line;
+            while ( (line = reader.readLine()) != null ) {
+              builder.append(line);
+            }
+          }
+
+          return builder.toString().toCharArray();
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
       class: 'Object',
       name: 'keyStore',
       transient: true,
@@ -40,15 +78,6 @@ foam.CLASS({
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }
-      `
-    },
-    {
-      class: 'Object',
-      name: 'passphrase',
-      transient: true,
-      javaType: 'char[]',
-      javaFactory: `
-        return new char[] {0};
       `
     }
   ],
