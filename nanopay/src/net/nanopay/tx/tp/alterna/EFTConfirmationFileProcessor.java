@@ -93,7 +93,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
             EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFile.get(j);
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            processTransaction(transactionDao, eftConfirmationFileRecord, eftUploadFileRecord, fileName, x);
+            processTransaction(x, transactionDao, eftConfirmationFileRecord, eftUploadFileRecord, fileName);
           }
         } else {
           logger.error("Can't find the corresponding upload CSV file in Archive folder", uploadCSVFileName);
@@ -131,11 +131,8 @@ public class EFTConfirmationFileProcessor implements ContextAgent
     }
   }
 
-  public static void processTransaction(DAO transactionDao,
-                                        EFTConfirmationFileRecord eftConfirmationFileRecord,
-                                        AlternaFormat eftUploadFileRecord,
-                                        String fileName,
-                                        X x) {
+  public static void processTransaction(X x, DAO transactionDao, EFTConfirmationFileRecord eftConfirmationFileRecord,
+                                        AlternaFormat eftUploadFileRecord, String fileName) {
     AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
       EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 

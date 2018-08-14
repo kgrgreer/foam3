@@ -74,7 +74,7 @@ public class EFTReturnFileProcessor implements ContextAgent
         for ( FObject record : returnFile ) {
           EFTReturnRecord eftReturnRecord = (EFTReturnRecord) record;
 
-          processTransaction(transactionDao, eftReturnRecord, x);
+          processTransaction(x, transactionDao, eftReturnRecord);
         }
       }
 
@@ -109,7 +109,7 @@ public class EFTReturnFileProcessor implements ContextAgent
     }
   }
 
-  public static void processTransaction(DAO transactionDao, EFTReturnRecord eftReturnRecord, X x) {
+  public static void processTransaction(X x, DAO transactionDao, EFTReturnRecord eftReturnRecord) {
     AlternaTransaction tran = (AlternaTransaction) transactionDao.find(AND(
       EQ(Transaction.ID, eftReturnRecord.getExternalReference()),
       EQ(Transaction.AMOUNT, (long) (eftReturnRecord.getAmount() * 100)),

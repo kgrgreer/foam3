@@ -177,8 +177,8 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
   EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFile.get(i);
   AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(i);
   
-  EFTConfirmationFileProcessor.processTransaction(transactionDao, eftConfirmationFileRecord,
-  eftUploadFileRecord,"UploadLog_test_B2B.csv.txt", x);
+  EFTConfirmationFileProcessor.processTransaction(x, transactionDao, eftConfirmationFileRecord,
+  eftUploadFileRecord,"UploadLog_test_B2B.csv.txt");
 
   AlternaTransaction tran = (AlternaTransaction)transactionDao.find(EQ(Transaction.ID, eftConfirmationFileRecord.getReferenceId()));
   
@@ -215,7 +215,7 @@ List<FObject> returnFile = eftReturnFileParser.parse(returnFileStream);
 for ( FObject record : returnFile ) {
   EFTReturnRecord eftReturnRecord = (EFTReturnRecord) record;
 
-  EFTReturnFileProcessor.processTransaction(transactionDao, eftReturnRecord, x);
+  EFTReturnFileProcessor.processTransaction(x, transactionDao, eftReturnRecord);
 
   AlternaTransaction tran = (AlternaTransaction) transactionDao.find(EQ(Transaction.ID, eftReturnRecord.getExternalReference()));
 
