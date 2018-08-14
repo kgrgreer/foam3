@@ -127,8 +127,8 @@ public class TransactionDAO
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
           Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
-          refound.validate(x);
-          refound.execute(x);
+          refound.validate(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
+          refound.execute(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
         }
         return super.put_(x, obj);
       }
@@ -186,7 +186,7 @@ public class TransactionDAO
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     for ( int i = 0 ; i < ts.length ; i++ ) {
-      ts[i].validate(x);
+      ts[i].validate(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
