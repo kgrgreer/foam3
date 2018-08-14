@@ -39,29 +39,39 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-  // Create the DAOs
-  DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
-  DAO keyPairDAO = (DAO) new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"keyPairs\").build()).build();;
-  DAO privateKeyDAO = (DAO) new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"privateKeys\").build()).build();
-  DAO publicKeyDAO = (DAO)  new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournaled(true).setJournalName(\"publicKeys\").build()).build();
-  net.nanopay.security.FileKeyStoreManager keyStoreManager = new net.nanopay.security.FileKeyStoreManager(); 
+        x = x.put("keyStoreManager", new FileKeyStoreManager.Builder(getX())
+          .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
+          .setPassphrasePath("/tmp/nanopay/keys/passphrase")
+          .build());
 
-  // Put to DAO and find keys generated
-  UserKeyPairGenerationDAO.put_(x, INPUT);
-  KeyPairEntry generatedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
-  PrivateKeyEntry privateKey = (PrivateKeyEntry) privateKeyDAO.find_(x, generatedKeyPair.privateKeyId_);
-  PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
+        // fetch services and DAOs
+        KeyStoreManager keyStoreManager = (FileKeyStoreManager) x.get("keyStoreManager");
+        DAO keyPairDAO = (DAO) x.get("keyPairDAO");
+        DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
 
-  
-  // run tests
-  UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
-  UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
-  UserKeyPairGenerationDAO_KeysBase64Encoded(x, privateKey, publicKey);
-  UserKeyPairGenerationDAO_PrivateKeyIsEncrypted(x, privateKey, keyStoreManager);
-  UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, UserKeyPairGenerationDAO, keyPairDAO );
-  UserKeyPairGenerationDAO_FailOnIncompatibleAlgorithmKeySizeCombination(x, UserKeyPairGenerationDAO, keyPairDAO);
-  
-  `
+        // replace private key dao context with new one
+        DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
+        ((foam.core.ContextAware) privateKeyDAO).setX(x);
+        x = x.put("privateKeyDAO", privateKeyDAO);
+
+        // Create the DAOs
+        DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
+
+        // Put to DAO and find keys generated
+        UserKeyPairGenerationDAO.put_(x, INPUT);
+        KeyPairEntry generatedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
+        PrivateKeyEntry privateKey = (PrivateKeyEntry) privateKeyDAO.find_(x, generatedKeyPair.privateKeyId_);
+        PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
+
+
+        // run tests
+        UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
+        UserKeyPairGenerationDAO_KeysUseProvidedKeySize(x, UserKeyPairGenerationDAO, publicKey);
+        UserKeyPairGenerationDAO_KeysBase64Encoded(x, privateKey, publicKey);
+        UserKeyPairGenerationDAO_PrivateKeyIsEncrypted(x, privateKey, keyStoreManager);
+        UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair(x, UserKeyPairGenerationDAO, keyPairDAO );
+        UserKeyPairGenerationDAO_FailOnIncompatibleAlgorithmKeySizeCombination(x, UserKeyPairGenerationDAO, keyPairDAO);
+      `
     },
     {
       name: 'UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm',
@@ -135,9 +145,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-    KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStoreManager.loadKey("net.nanopay.security.PrivateKeyDAO");
-    SecretKey secretKey = entry.getSecretKey();
-    try{
+    try {
+      KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStoreManager.loadKey("net.nanopay.security.PrivateKeyDAO");
+      SecretKey secretKey = entry.getSecretKey();
       Cipher cipher = Cipher.getInstance(secretKey.getAlgorithm());
       cipher.init(Cipher.UNWRAP_MODE, secretKey);
       byte[] encryptedBytes = org.bouncycastle.util.encoders.Base64.decode(privateKey.getEncryptedPrivateKey());
