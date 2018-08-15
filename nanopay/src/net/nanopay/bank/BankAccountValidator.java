@@ -1,10 +1,8 @@
 package net.nanopay.bank;
 
-import net.nanopay.model.Branch;
-import net.nanopay.payment.Institution;
 import foam.core.FObject;
 import foam.core.Validator;
-import foam.util.SafetyUtil;
+import foam.core.X;
 
 import java.util.regex.Pattern;
 
@@ -33,7 +31,7 @@ public class BankAccountValidator
   private BankAccountValidator() {}
 
   @Override
-  public void validate(FObject obj) throws IllegalStateException {
+  public void validate(X x, FObject obj) throws IllegalStateException {
 //    if ( ! (obj instanceof BankAccount) ) {
 //      throw new IllegalStateException("Invalid bank account");
 //    }
