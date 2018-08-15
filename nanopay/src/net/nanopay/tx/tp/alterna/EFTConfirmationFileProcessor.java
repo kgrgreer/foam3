@@ -69,12 +69,12 @@ public class EFTConfirmationFileProcessor implements ContextAgent
         }
       }
 
-      for ( int i = 0; i < fileNames.size(); i++ ) {
-        InputStream confirmationFileStream = channelSftp.get("/Returns/" + fileNames.get(i));
-        List<FObject> confirmationFileList = eftConfirmationFileParser.parse(confirmationFileStream);
+      for ( String fileName : fileNames ) {
+        InputStream confirmationFileStream = channelSftp.get("/Returns/" + fileName);
+        List<FObject> confirmationFile = eftConfirmationFileParser.parse(confirmationFileStream);
 
         // UploadLog_yyyyMMdd_B2B.csv.txt -> yyyyMMdd_B2B.csv
-        String uploadCSVFileName = fileNames.get(i).substring(10, 26);
+        String uploadCSVFileName = fileName.substring(10, 26);
         Vector uploadCSVList = channelSftp.ls("/Archive/");
         boolean uploadCSVExist = false;
         for ( Object entry : uploadCSVList ) {
@@ -89,29 +89,11 @@ public class EFTConfirmationFileProcessor implements ContextAgent
 
           List<FObject> uploadFileList = eftUploadCSVFileParser.parse(uploadFileStream);
 
-          for ( int j = 0; j < confirmationFileList.size(); j++ ) {
-            EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFileList.get(j);
+          for ( int j = 0; j < confirmationFile.size(); j++ ) {
+            EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFile.get(j);
             AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(j);
 
-            AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
-              EQ(Transaction.ID, eftUploadFileRecord.getReference()));
-
-            if ( tran != null ) {
-              tran = (AlternaTransaction) tran.fclone();
-              tran.setConfirmationLineNumber(fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-
-
-              if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
-                tran.setStatus(TransactionStatus.FAILED);
-                tran.setDescription(eftConfirmationFileRecord.getReason());
-                sendEmail(x, "Transaction was rejected by EFT confirmation file",
-                  "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
-                    + fileNames.get(i) + "_" + eftConfirmationFileRecord.getLineNumber());
-              } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
-                tran.setStatus(TransactionStatus.SENT);
-              }
-              transactionDao.put(tran);
-            }
+            processTransaction(x, transactionDao, eftConfirmationFileRecord, eftUploadFileRecord, fileName);
           }
         } else {
           logger.error("Can't find the corresponding upload CSV file in Archive folder", uploadCSVFileName);
@@ -135,8 +117,8 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       String dstFileDirectory = "/Archive_EFTConfirmationFile/";
 
       // move processed files
-      for ( int i = 0; i < fileNames.size(); i++ ) {
-        channelSftp.rename(srcFileDirectory + fileNames.get(i), dstFileDirectory + fileNames.get(i));
+      for ( String fileName : fileNames ) {
+        channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
       }
 
       logger.debug("EFT Confirmation file processing finished");
@@ -149,7 +131,29 @@ public class EFTConfirmationFileProcessor implements ContextAgent
     }
   }
 
-  public void sendEmail(X x, String subject, String content) {
+  public static void processTransaction(X x, DAO transactionDao, EFTConfirmationFileRecord eftConfirmationFileRecord,
+                                        AlternaFormat eftUploadFileRecord, String fileName) {
+    AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
+      EQ(Transaction.ID, eftUploadFileRecord.getReference()));
+
+    if ( tran != null ) {
+      tran = (AlternaTransaction) tran.fclone();
+      tran.setConfirmationLineNumber(fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+
+      if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
+        tran.setStatus(TransactionStatus.FAILED);
+        tran.setDescription(eftConfirmationFileRecord.getReason());
+        sendEmail(x, "Transaction was rejected by EFT confirmation file",
+          "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
+            + fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+      } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
+        tran.setStatus(TransactionStatus.SENT);
+      }
+      transactionDao.put(tran);
+    }
+  }
+
+  public static void sendEmail(X x, String subject, String content) {
     EmailService emailService = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 

@@ -43,9 +43,12 @@ foam.CLASS({
     {
       name: 'status',
       javaFactory: `
-        Transaction txn = (Transaction) findCurrent(getX());
-        if ( txn != null ) {
-          return txn.getStatus();
+        Transaction[] transactions = transactions();
+        for ( int i = 0; i < transactions.length; i++ ) {
+          Transaction txn = transactions[i];
+          if ( txn.getStatus() != TransactionStatus.COMPLETED ) {
+            return txn.getStatus();
+          }
         }
         return TransactionStatus.COMPLETED;
      `
@@ -116,8 +119,6 @@ foam.CLASS({
             setQueued(replacement);
           }
         }
-        // Logger logger = (Logger) getX().get("logger");
-        // logger.debug(this.getClass().getSimpleName(), "remove", this);
       `
     },
     {
@@ -129,8 +130,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // Logger logger = (Logger) getX().get("logger");
-        // logger.debug(this.getClass().getSimpleName(), "next", this);
         if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
           String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
           completed[completed.length -1] = getCurrent();
@@ -170,6 +169,13 @@ foam.CLASS({
       name: 'transactions',
       javaReturns: 'Transaction[]',
       javaCode: `
+        if ( getX().get("localTransactionDAO") == null ) {
+          // NOTE: localTransactionDAO may not yet be available when
+          // this DAO stack is being created during initial Transaction
+          // loading.
+          return new Transaction[0];
+        }
+
         ArrayList<Transaction> list = java.util.Arrays.stream(getQueued()).collect(java.util.stream.Collectors.toCollection(ArrayList::new));
         Transaction cur = findCurrent(getX());
         if ( cur != null ) {
