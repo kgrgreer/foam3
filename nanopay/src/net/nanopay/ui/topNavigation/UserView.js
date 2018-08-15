@@ -18,6 +18,9 @@
 
 foam.CLASS({
   refines: 'foam.nanos.u2.navigation.UserView',
+  requires: [
+    'net.nanopay.ui.topNavigation.CurrencyChoiceView'
+  ],
   methods: [
     function otherViews() {
       this.start().addClass('currency-container')
