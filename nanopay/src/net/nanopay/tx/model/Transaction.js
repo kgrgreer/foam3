@@ -5,13 +5,12 @@ foam.CLASS({
   tableColumns: [
     'id',
     'status',
-    'txnProcessorId',
-    'payerName',
-    'payeeName',
+    'payer',
+    'payee',
     'amount',
     'processDate',
     'completionDate',
-    'date'
+    'created'
   ],
 
   implements: [
@@ -28,6 +27,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
@@ -38,7 +38,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.Balance',
@@ -64,59 +64,45 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       label: 'Transaction ID',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.Visibility.RO,
+      javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
+      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
+
     },
     {
       class: 'DateTime',
       name: 'created',
-      documentation: `The date the invoice was created.`,
+      documentation: `The date the transaction was created.`,
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      documentation: `The id of the user who created the invoice.`,
+      documentation: `The id of the user who created the transaction.`,
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: `The date the invoice was last modified.`,
+      documentation: `The date the transaction was last modified.`,
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      documentation: `The id of the user who last modified the invoice.`,
+      documentation: `The id of the user who last modified the transaction.`,
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.cico.model.TransactionType',
+      of: 'net.nanopay.tx.TransactionType',
       name: 'type',
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'String',
-      name: 'txnProcessorId',
-      label: 'Processor',
-      value: 'NONE'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.tp.TxnProcessorData',
-      name: 'txnProcessorData'
-    },
-    {
-      class: 'Long',
-      name: 'refundTransactionId',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      // class: 'Reference',
-      // of: 'net.nanopay.invoice.model.Invoice',
-      class: 'Long',
+      class: 'Reference',
+      of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
     },
     {
@@ -131,15 +117,8 @@ foam.CLASS({
       name: 'referenceNumber',
       visibility: foam.u2.Visibility.RO
     },
-    // TODO/REVIEW: this should just use referenceNumber
-    // {
-    //   class: 'Long',
-    //   name: 'impsReferenceNumber',
-    //   label: 'IMPS Reference Number',
-    //   visibility: foam.u2.Visibility.RO
-    // },
     {
-      // REVIEW: how is this used?
+      // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
@@ -148,13 +127,13 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : '')
+            .add(value ? value.fullName : 'na')
           .end()
         .end();
       }
     },
     {
-      // REVIEW: how is this used?
+      // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
@@ -163,7 +142,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : '')
+            .add(value ? value.fullName : 'na')
           .end()
         .end();
       }
@@ -173,8 +152,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
       targetDAOKey: 'localAccountDAO',
-      label: 'Source account',
-      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Long',
@@ -191,8 +168,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
-      label: 'Destination Account',
-      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Currency',
@@ -219,13 +194,9 @@ foam.CLASS({
       javaGetter: `return getAmount();`,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
-        var refund =
-          (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
-              X.type == net.nanopay.cico.model.TransactionType.REFUND );
-
         this
           .start()
-          .addClass(refund ? 'amount-Color-Red' : 'amount-Color-Green')
+          .addClass('amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
@@ -239,89 +210,7 @@ foam.CLASS({
       name: 'completionDate'
     },
     {
-      // REVIEW: what is this - Joel
-      class: 'String',
-      name: 'padType'
-    },
-    {
-      class: 'String',
-      name: 'txnCode'
-    },
-    // {
-    //   class: 'Currency',
-    //   name: 'receivingAmount',
-    //   label: 'Receiving Amount',
-    //   visibility: foam.u2.Visibility.RO,
-    //   transient: true,
-    //   expression: function(amount, rate) {
-    //     var receivingAmount = amount * rate;
-    //     return receivingAmount;
-    //   },
-    //   tableCellFormatter: function(receivingAmount, X) {
-    //     this
-    //       .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-    //         .add(' INR ₹', X.addCommas(( receivingAmount/100 ).toFixed(2)))
-    //       .end();
-    //   }
-    // },
-    {
-      class: 'String',
-      name: 'challenge',
-      visibility: foam.u2.Visibility.RO,
-      documentation: `Randomly generated challenge.
-      Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction,
-      used in the merchant app and is transfered to the mobile applications as a property of the QrCode.
-      Can be moved to retail Transaction.`
-    },
-    {
-      // REVIEW: is this created date? - Joel
-      class: 'DateTime',
-      name: 'date',
-      label: 'Date & Time'
-    },
-    // {
-    //   class: 'Double',
-    //   name: 'rate',
-    //   visibility: foam.u2.Visibility.RO,
-    //   tableCellFormatter: function(rate) {
-    //     this.start().add(rate.toFixed(2)).end();
-    //   }
-    // },
-    // {
-    //   class: 'FObjectArray',
-    //   visibility: foam.u2.Visibility.RO,
-    //   name: 'feeTransactions',
-    //   of: 'net.nanopay.tx.model.Transaction'
-    // },
-    // {
-    //   class: 'FObjectArray',
-    //   name: 'informationalFees',
-    //   visibility: foam.u2.Visibility.RO,
-    //   of: 'net.nanopay.tx.model.Fee'
-    // },
-    // TODO: field for tax as well? May need a more complex model for that
-    {
-      // class: 'FObjectProperty',
-      class: 'Reference',
-      of: 'net.nanopay.tx.TransactionPurpose',
-      name: 'purpose',
-      label: 'Purpose',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Transaction purpose'
-    },
-    {
-      class: 'String',
-      name: 'notes',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Transaction notes'
-    },
-    {
-      class: 'String',
-      name: 'description',
-      swiftName: 'description_',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
+      documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId'
     },
@@ -329,34 +218,6 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
-    },
-    {
-      // REVIEW: move to TxnProcessorData
-      documentation: `Payment Platform specific data.`,
-      class: 'FObjectProperty',
-      name: 'paymentAccountInfo',
-      of: 'net.nanopay.cico.model.PaymentAccountInfo'
-    },
-    {
-      documentation: `For retail purposes. Tip`,
-      class: 'Currency',
-      name: 'tip',
-      label: 'Tip',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(tip, X) {
-        var formattedAmount = tip/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      }
-    },
-    {
-      documentation: `For retail purposes. DeviceId refers to the device used to display the QR code for this transaction.`,
-      class: 'Reference',
-      of: 'net.nanopay.retail.model.Device',
-      name: 'deviceId',
-      visibility: foam.u2.Visibility.RO
     }
   ],
 
@@ -365,8 +226,10 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-         return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT) ||
-        getType().equals(TransactionType.NONE);
+         return
+           getStatus().equals(TransactionStatus.COMPLETED) ||
+           getType().equals(TransactionType.CASHOUT) ||
+           getType().equals(TransactionType.NONE);
       `
     },
     {
@@ -376,7 +239,6 @@ foam.CLASS({
       ],
       javaReturns: 'Transfer[]',
       javaCode: `
-        // Don't perform balance transfer if status in blacklist
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
@@ -392,6 +254,25 @@ foam.CLASS({
              new Transfer((Long) getSourceAccount(), -getTotal()),
              new Transfer((Long) getDestinationAccount(),  getTotal())
         };
+      `
+    },
+    {
+      name: 'toString',
+      javaReturns: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("(");
+        sb.append("id: ");
+        sb.append(getId());
+        sb.append(", ");
+        sb.append("type: ");
+        sb.append(getType());
+        sb.append(", ");
+        sb.append("status: ");
+        sb.append(getStatus());
+        sb.append(")");
+        return sb.toString();
       `
     }
   ]

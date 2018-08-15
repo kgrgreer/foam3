@@ -5,7 +5,10 @@ foam.CLASS({
 
   documentation: 'View displaying list of transactions by devices.',
 
-  requires: [ 'net.nanopay.tx.model.Transaction' ],
+  requires: [
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.RetailTransaction',
+  ],
 
   imports: [ 'transactionDAO', 'stack' ],
 
@@ -229,14 +232,14 @@ foam.CLASS({
             .tag({
                 class: 'foam.u2.ListCreateController',
                 dao: this.transactionDAO,
-                factory: function() { return self.Transaction.create(); },
+                factory: function() { return self.RetailTransaction.create(); },
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.Transaction.DATE,
-                    this.Transaction.PAYER_ID,
-                    this.Transaction.PAYEE_ID,
-                    this.Transaction.TIP,
+                    this.Transaction.CREATED,
+                    this.Transaction.PAYER,
+                    this.Transaction.PAYEE,
+                    this.RetailTransaction.TIP,
                     this.Transaction.TOTAL
                   ]
                 },
@@ -294,7 +297,10 @@ foam.CLASS({
       name: 'TransactionsTableView',
       extends: 'foam.u2.View',
 
-      requires: [ 'net.nanopay.tx.model.Transaction' ],
+      requires: [
+        'net.nanopay.tx.model.Transaction',
+        'net.nanopay.tx.RetailTransaction',
+      ],
 
       imports: [ 'transactionDAO' ],
       properties: [
@@ -310,7 +316,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'id', 'date', 'payerId', 'payeeId', 'tip', 'total'
+                'id', 'created', 'payer', 'payee', 'tip', 'total'
               ]
             }).addClass(this.myClass('table')).end();
         }
