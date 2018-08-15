@@ -115,11 +115,10 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
         try {
-          // store key using keystore passphrase because keystore doesn't
-          // allow you to store secret key entry without a passphrase
-          getKeyStore().setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
+          // store key
+          super.storeKey(alias, entry);
 
-          // save keystore
+          // save keystore file
           try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
             getKeyStore().store(fos, getPassphrase());
           }

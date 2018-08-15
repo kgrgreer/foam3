@@ -85,14 +85,5 @@ foam.CLASS({
         }
       `
     }
-  ],
-
-  methods: [
-    {
-      name: 'storeKey',
-      javaCode: `
-        throw new UnsupportedOperationException("Unsupported operation: storeKey");
-      `
-    }
   ]
 });

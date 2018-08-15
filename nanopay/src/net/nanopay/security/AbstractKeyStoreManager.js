@@ -23,6 +23,14 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
       `
+    },
+    {
+      name: 'storeKey',
+      javaCode: `
+        // store key using keystore passphrase because keystore doesn't
+        // allow you to store secret key entry without a passphrase
+        getKeyStore().setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
+      `
     }
   ]
 });
