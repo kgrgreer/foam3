@@ -52,14 +52,22 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
-  inverseName: 'broker'
+  inverseName: 'broker',
+  sourceProperty: { flags: ['js'] },
+  targetProperty: { flags: ['js'] },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
-  inverseName: 'broker'
+  inverseName: 'broker',
+  sourceProperty: { flags: ['js'] },
+  targetProperty: { flags: ['js'] },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 foam.RELATIONSHIP({

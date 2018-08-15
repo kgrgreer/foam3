@@ -4,6 +4,13 @@ foam.CLASS({
   name: 'BankAccount',
   extends: 'net.nanopay.account.Account',
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.mlang.sink.Count',
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.*'
+  ],
+
   documentation: 'Base class/model of all BankAccounts',
 
   tableColumns: [
@@ -13,7 +20,13 @@ foam.CLASS({
   ],
 
   // relationships: branch (Branch)
-
+  constants: [
+    {
+      name: 'ACCOUNT_NAME_MAX_LENGTH',
+      type: 'int',
+      value: 70
+    }
+  ],
   properties: [
     {
       class: 'String',
@@ -92,7 +105,41 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     }
   ],
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        String name = this.getName();
+        if ( SafetyUtil.isEmpty(name) ) {
+          throw new IllegalStateException("Please enter an account name.");
+        }
+        // length
+        if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
+        }
+        // already exists
+        DAO accountDao = (DAO) x.get("localAccountDAO");
 
+        Count count = new Count();
+        count = (Count) accountDao.where(AND(
+          INSTANCE_OF(BankAccount.class),
+            EQ(BankAccount.OWNER, this.getOwner()),
+            EQ(BankAccount.NAME, this.getName())
+        )).limit(1).select(count);
+
+        if ( count.getValue() > 0 ) {
+          throw new IllegalStateException("Bank account with same name already registered.");
+        }
+      `
+    }
+  ],
   actions: [
     {
       name: 'run',

@@ -19,10 +19,10 @@ import static foam.mlang.MLang.EQ;
 public class ValidatedPaymentCardDAO
     extends ProxyDAO
 {
-  public final static String GLOBAL_PAYMENT_CARD_CREATE = "paymentCard.create.x";
-  public final static String GLOBAL_PAYMENT_CARD_READ = "paymentCard.read.x";
-  public final static String GLOBAL_PAYMENT_CARD_UPDATE = "paymentCard.update.x";
-  public final static String GLOBAL_PAYMENT_CARD_DELETE = "paymentCard.delete.x";
+  public final static String GLOBAL_PAYMENT_CARD_CREATE = "paymentCard.create.*";
+  public final static String GLOBAL_PAYMENT_CARD_READ = "paymentCard.read.*";
+  public final static String GLOBAL_PAYMENT_CARD_UPDATE = "paymentCard.update.*";
+  public final static String GLOBAL_PAYMENT_CARD_DELETE = "paymentCard.delete.*";
 
   public ValidatedPaymentCardDAO(X x, DAO delegate) {
     setX(x);
