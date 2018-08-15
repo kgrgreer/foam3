@@ -39,9 +39,6 @@ public class ValidatedPaymentCardDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    System.out.println("=========USER ID: " + user.getId() + "=========");
-    System.out.println("=========CREATE PERM: " + auth.check(x, GLOBAL_PAYMENT_CARD_CREATE) + "=========");
-    System.out.println("=========UPDATE PERM: " + auth.check(x, GLOBAL_PAYMENT_CARD_UPDATE) + "=========");
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_CREATE) || ! auth.check(x, GLOBAL_PAYMENT_CARD_UPDATE) ) {
       throw new AccessControlException("User does not have sufficient permissions");
     }
@@ -153,8 +150,6 @@ public class ValidatedPaymentCardDAO
       throw new AccessControlException("User is not logged in");
     }
 
-    System.out.println("=========USER ID: " + user.getId() + "=========");
-    System.out.println("=========READ PERM: " + auth.check(x, GLOBAL_PAYMENT_CARD_READ) + "=========");
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_READ) ) {
       throw new AccessControlException("User does not have sufficient permissions");
     }
