@@ -163,7 +163,7 @@ public class TransactionDAO
         throw new RuntimeException("Uknown account " + t.getAccountId());
       }
 
-     if ( t.getAmount() > 0 ) {
+      if ( t.getAmount() > 0 ) {
         c += t.getAmount();
       } else {
         d += t.getAmount();
