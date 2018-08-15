@@ -926,7 +926,7 @@ foam.CLASS({
                   if ( ! self.editingPrincipalOwner ) self.addButtonElement.focus();
                 })
               .end()
-              .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addLabel$ }, this.addButtonElement$)
+              .start(this.ADD_PRINCIPAL_OWNER, this.addButtonElement$)
                 .enableClass('updateButton', this.editingPrincipalOwner$)
               .end()
             .end()
@@ -991,7 +991,7 @@ foam.CLASS({
 
       this.addLabel = 'Update';
 
-      this.isDisplayMode = !editable;
+      this.isDisplayMode = ! editable;
     },
 
     function extractPhoneNumber(phone) {
@@ -1108,6 +1108,7 @@ foam.CLASS({
     },
     {
       name: 'addPrincipalOwner',
+      label: 'Add Another Principal Owner',
       isEnabled: function(isDisplayMode) {
         return ! isDisplayMode;
       },
@@ -1146,12 +1147,12 @@ foam.CLASS({
 
         if ( ! this.editingPrincipalOwner ) {
           var owners = (await this.principalOwnersDAO.select()).array;
-          var nameTaken = owners.some(owner => {
+          var nameTaken = owners.some((owner) => {
             var ownerFirst = owner.firstName.toLowerCase();
             var ownerLast = owner.lastName.toLowerCase();
             var formFirst = this.firstNameField.toLowerCase();
             var formLast = this.lastNameField.toLowerCase();
-            return ownerFirst === formFirst && ownerLast === formLast; 
+            return ownerFirst === formFirst && ownerLast === formLast;
           });
           if ( nameTaken ) {
             this.add(this.NotificationMessage.create({
