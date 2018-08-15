@@ -740,7 +740,7 @@ foam.CLASS({
                   label: '',
                   tableCellFormatter: function(value, obj, axiom) {
                     this.start('div').addClass('deleteButton')
-                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-delete.svg'}).end()
+                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-delete.svg' }).end()
                       .start('p').addClass('buttonLabel').add('Delete').end()
                       .on('click', function(evt) {
                         evt.stopPropagation();
