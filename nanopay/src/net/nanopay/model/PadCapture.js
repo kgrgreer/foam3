@@ -81,7 +81,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'transitNumber',
+      name: 'branchId',
       label: 'Transit No.',
       documentation: 'Transit/Branch associated with PAD capture.',
       validateObj: function(transitNumber) {
