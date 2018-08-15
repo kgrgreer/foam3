@@ -21,6 +21,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
+import foam.dao.NullDAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
 import foam.dao.Sink;
@@ -31,32 +32,44 @@ import foam.nanos.logger.Logger;
 import net.nanopay.account.Balance;
 
 /**
- * Expose ReadOnly access to BalanceDAO, except
- * for packaged scoped calls from TransactionDAO and
- * TransferDAO for the writable BalanceDAO;
+ * TransactionDAO provides ReadOnly access to the BalanceDAO.
  */
 public class LocalBalanceDAO
   extends ReadOnlyDAO {
 
-  private DAO dao_;
+  protected DAO dao_;
 
   public LocalBalanceDAO(X x) {
     setX(x);
     setOf(Balance.getOwnClassInfo());
-    dao_ = new foam.dao.MDAO(getOf());
   }
 
-  // NOTE: packaged scoped
-  DAO getWritableBalanceDAO(X x) {
+  public DAO getDAO(X x) {
+    if ( dao_ == null ) {
+      Logger logger = (Logger) x.get("logger");
+      ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
+      while( d != null ) {
+        logger.debug("LocalBalanceDAO.getDAO d", d.getClass().getSimpleName());
+        if ( d instanceof TransactionDAO ) {
+          dao_ = ((TransactionDAO)d).getBalanceDAO();
+          return dao_;
+        }
+        d = (ProxyDAO) d.getDelegate();
+      }
+      // REVIEW: this occurs during statup, when user logs in, main controller
+      // requests balance, but the TransactionDAO not be ready yet, which
+      ((Logger)getX().get("logger")).warning("TransactionDAO not found in localTransactionDAO stack.");
+      return new NullDAO();
+    }
     return dao_;
   }
 
   @Override
   public FObject find_(X x, Object id) {
-    return this.dao_.find_(x, id);
+    return this.getDAO(x).find_(x, id);
   }
 
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return this.dao_.select_(x, sink, skip, limit, order, predicate);
+    return this.getDAO(x).select_(x, sink, skip, limit, order, predicate);
   }
 }
