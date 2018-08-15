@@ -5,19 +5,20 @@ var classes = [
   'net.nanopay.tx.PayerTransactionDAO',
   'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
   'net.nanopay.tx.tp.TxnProcessor',
   'net.nanopay.tx.tp.TxnProcessorData',
   'net.nanopay.tx.tp.TxnProcessorUserReference',
-  'net.nanopay.tx.tp.alterna.AlternaTxnProcessorData',
   'net.nanopay.tx.tp.alterna.AlternaFormat',
   'net.nanopay.tx.tp.alterna.SFTPService',
   'net.nanopay.tx.tp.alterna.AlternaSFTPService',
   'net.nanopay.tx.tp.alterna.client.ClientAlternaSFTPService',
-  'net.nanopay.tx.tp.stripe.StripeTxnProcessorData',
+  'net.nanopay.tx.tp.alterna.AlternaTransaction',
+  'net.nanopay.tx.tp.stripe.StripeTransaction',
+  'net.nanopay.tx.tp.realex.RealexTransaction',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -96,7 +97,10 @@ var classes = [
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
-  'net.nanopay.tx.ProxyTransaction',
+  'net.nanopay.tx.CompositeTransaction',
+  'net.nanopay.tx.CompositeTransactionDAO',
+  'net.nanopay.tx.RefundTransaction',
+  'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -123,6 +127,9 @@ var classes = [
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
+
+  // tx tests
+  'net.nanopay.tx.model.TransactionParseTest',
 
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
@@ -153,6 +160,7 @@ var classes = [
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
+  'net.nanopay.security.RandomNonceDAO',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
@@ -160,6 +168,7 @@ var classes = [
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
   'net.nanopay.security.PKCS12KeyStoreManagerTest',
+  'net.nanopay.security.UserKeyPairGenerationDAOTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
@@ -167,7 +176,8 @@ var classes = [
   'net.nanopay.auth.TestWidget',
   'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
-  'net.nanopay.test.TestReport'
+  'net.nanopay.test.TestReport',
+  'net.nanopay.tx.tp.alterna.test.EFTTest'
 ];
 
 var abstractClasses = [

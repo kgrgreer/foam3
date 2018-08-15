@@ -1,9 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.tp.stripe',
-  name: 'StripeTxnProcessorData',
-  implements: [
-    'net.nanopay.tx.tp.TxnProcessorData'
-  ],
+  name: 'StripeTransaction',
+  extends: 'net.nanopay.tx.model.Transaction',
 
   properties: [
     {
@@ -20,5 +18,11 @@ foam.CLASS({
       documentation: 'Stripe charge id is a unique identifier for every' +
         ' Charge object.'
     },
+    {
+      class: 'String',
+      name: 'notes',
+      visibility: foam.u2.Visibility.RO,
+      documentation: 'Transaction notes'
+    }
   ]
 });

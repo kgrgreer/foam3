@@ -3,3 +3,4 @@ p({"class":"net.nanopay.security.HashingJournalTest","id":"Hashing journal test"
 p({"class":"net.nanopay.security.HashingOutputterTest","id":"Hashing outputter test"})
 p({"class":"net.nanopay.security.HashingWriterTest","id":"Hashing writer test"})
 p({"class":"net.nanopay.security.PKCS12KeyStoreManagerTest","id":"pkcs12 key store manager test"})
+p({"class":"net.nanopay.security.UserKeyPairGenerationDAOTest","id":"User KeyPair generation test"})
