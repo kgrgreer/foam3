@@ -79,6 +79,10 @@ foam.CLASS({
     .foam-u2-view-TableView tbody > tr:nth-child(odd) {
       background: #f6f9f9;
     }
+    .foam-u2-view-TableView tbody > tr:nth-child(odd):hover {
+      cursor: pointer;
+      background: %TABLEHOVERCOLOR%;
+    }
     .net-nanopay-ui-ActionView{
       border: none;
       outline: none;
