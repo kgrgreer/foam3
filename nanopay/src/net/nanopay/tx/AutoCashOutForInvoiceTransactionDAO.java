@@ -8,7 +8,7 @@ import java.util.*;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.*;
@@ -16,7 +16,7 @@ import net.nanopay.tx.model.*;
 import static foam.mlang.MLang.*;
 
 /**
- * When paying an invoice, immediately auto-cashOut to the payee's bankAccount.
+ * When paying an invoice, immediately auto-cashOut to the payee's senderBankAccount_.
  * TODO: only do if payee has this setting enabled.
  **/
 public class AutoCashOutForInvoiceTransactionDAO

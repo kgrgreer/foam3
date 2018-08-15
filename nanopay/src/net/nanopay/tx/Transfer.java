@@ -76,15 +76,18 @@ public class Transfer
         throw new RuntimeException("Insufficient balance in account " + getAccountId());
       }
     }
+    balanceDAO.put(balance_);
   }
 
   /** Execute the balance transfer, updating the user's balance. **/
   public void execute(X x) {
     DAO     balanceDAO = (DAO) x.get("localBalanceDAO");
-    Balance balance  = getBalance();
+    Balance balance  = (Balance)((DAO)x.get("localBalanceDAO")).find(getAccountId());
 
     balance.setBalance(balance.getBalance() + getAmount());
 
     balanceDAO.put(balance);
+
+    System.out.println("dd");
   }
 }

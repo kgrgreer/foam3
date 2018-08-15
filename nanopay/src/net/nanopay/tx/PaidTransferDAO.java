@@ -13,7 +13,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 
 import net.nanopay.account.Account;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 // Sends an email when an transfer has gone through

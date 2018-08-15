@@ -1,9 +1,27 @@
+/**
+ * @license
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.logger.Logger;
 
 import java.util.*;
 
@@ -11,7 +29,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.account.Balance;
 
@@ -19,14 +37,14 @@ import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 public class TransactionDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   // blacklist of status where balance transfer is not performed
   protected final Set<TransactionStatus> STATUS_BLACKLIST =
-      Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
-        add(TransactionStatus.REFUNDED);
-        add(TransactionStatus.PENDING);
-      }});
+    Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+      add(TransactionStatus.REFUNDED);
+      add(TransactionStatus.PENDING);
+    }});
 
   protected DAO userDAO_;
   protected DAO balanceDAO_;
@@ -47,6 +65,10 @@ public class TransactionDAO
     return userDAO_;
   }
 
+  public void setBalanceDAO(DAO dao) {
+    balanceDAO_ = dao;
+  }
+
   protected DAO getBalanceDAO() {
     if (balanceDAO_ == null ) {
       balanceDAO_ = (DAO) getX().get("localBalanceDAO");
@@ -55,14 +77,30 @@ public class TransactionDAO
     return balanceDAO_;
   }
 
+  private DAO getWritableBalanceDAO(X x) {
+    ProxyDAO d = (ProxyDAO) getBalanceDAO();
+    while( d != null ) {
+      if ( d instanceof LocalBalanceDAO ) {
+        return ((LocalBalanceDAO)d).getWritableBalanceDAO(x);
+      }
+      d = (ProxyDAO) d.getDelegate();
+    }
+    ((Logger)getX().get("logger")).error("DEVELOPER ERROR", "LocalBalanceDAO not found in localBalanceDAO stack.");
+    return d;
+  }
+
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
+    if ( transaction.getAmount() < 0) {
+      throw new RuntimeException("Amount cannot be negative");
+    }
+
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
-        transaction.getType() != TransactionType.CASHOUT ) {
+      transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
@@ -89,8 +127,8 @@ public class TransactionDAO
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
           Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
-          refound.validate(x);
-          refound.execute(x);
+          refound.validate(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
+          refound.execute(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
         }
         return super.put_(x, obj);
       }
@@ -110,7 +148,7 @@ public class TransactionDAO
   }
 
   void validateTransfers(Transfer[] ts)
-      throws RuntimeException
+    throws RuntimeException
   {
     if ( ts.length == 0 ) return;
 
@@ -148,11 +186,12 @@ public class TransactionDAO
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     for ( int i = 0 ; i < ts.length ; i++ ) {
-      ts[i].validate(x);
+      ts[i].validate(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
-      ts[i].execute(x);
+      // NOTE: provide access to writable BalanceDAO
+      ts[i].execute(x.put("localBalanceDAO", getWritableBalanceDAO(x)));
     }
 
     if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
@@ -160,11 +199,10 @@ public class TransactionDAO
     return getDelegate().put_(x, txn);
   }
 
-
   public void cashinReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR test that BankAccountId is setup/populated.
     Balance payerBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
-        payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
+    payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payerBalance);
   }
@@ -172,7 +210,7 @@ public class TransactionDAO
   public void paymentFromBankAccountReject(X x, Transaction transaction) {
     // TODO/REVIEW: ACCOUNT_REFACTOR PayeeAccountId is not yet setup/populated.
     Balance payeeBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
-        payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
+    payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
       transaction.getTotal() : 0);
     getBalanceDAO().put(payeeBalance);
   }
