@@ -46,18 +46,17 @@ public class LocalBalanceDAO
 
   public DAO getDAO(X x) {
     if ( dao_ == null ) {
-      Logger logger = (Logger) x.get("logger");
       ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
       while( d != null ) {
-        logger.debug("LocalBalanceDAO.getDAO d", d.getClass().getSimpleName());
         if ( d instanceof TransactionDAO ) {
           dao_ = ((TransactionDAO)d).getBalanceDAO();
           return dao_;
         }
         d = (ProxyDAO) d.getDelegate();
       }
-      // REVIEW: this occurs during statup, when user logs in, main controller
-      // requests balance, but the TransactionDAO not be ready yet, which
+      // REVIEW: this was occuring during startup, when user logs in, main controller
+      // requests balance, but the TransactionDAO was not be ready loaded. Appears to
+      // be resolved by setting nspect.lazy=false for localTransactionDAO
       ((Logger)getX().get("logger")).warning("TransactionDAO not found in localTransactionDAO stack.");
       return new NullDAO();
     }

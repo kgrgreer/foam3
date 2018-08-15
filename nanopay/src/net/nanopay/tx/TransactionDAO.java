@@ -39,7 +39,7 @@ import static foam.mlang.MLang.EQ;
 
 /**
  * TransactionDAO maintains the memory-only writable BalanceDAO,
- * and passes it to Transfer during execute.
+ * and performs all put operations.
  * ReadOnly access is provided via getBalanceDAO. see LocalBalanceDAO
  */
 public class TransactionDAO
