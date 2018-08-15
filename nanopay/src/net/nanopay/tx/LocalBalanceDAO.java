@@ -44,31 +44,29 @@ public class LocalBalanceDAO
     setOf(Balance.getOwnClassInfo());
   }
 
-  public DAO getDAO(X x) {
-    if ( dao_ == null ) {
-      ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
-      while( d != null ) {
-        if ( d instanceof TransactionDAO ) {
-          dao_ = ((TransactionDAO)d).getBalanceDAO();
-          return dao_;
-        }
-        d = (ProxyDAO) d.getDelegate();
+  public void setX(X x) {
+    super.setX(x);
+    ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
+    while( d != null ) {
+      if ( d instanceof TransactionDAO ) {
+        dao_ = ((TransactionDAO)d).getBalanceDAO();
+        break;
       }
-      // REVIEW: this was occuring during startup, when user logs in, main controller
-      // requests balance, but the TransactionDAO was not be ready loaded. Appears to
-      // be resolved by setting nspect.lazy=false for localTransactionDAO
-      ((Logger)getX().get("logger")).warning("TransactionDAO not found in localTransactionDAO stack.");
-      return new NullDAO();
+      d = (ProxyDAO) d.getDelegate();
     }
-    return dao_;
+    if ( dao_ == null ) {
+      RuntimeException e = new RuntimeException("TransactionDAO not found in localTransactionDAO stack.");
+      ((Logger)getX().get("logger")).error(e);
+      throw e;
+    }
   }
 
   @Override
   public FObject find_(X x, Object id) {
-    return this.getDAO(x).find_(x, id);
+    return this.dao_.find_(x, id);
   }
 
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return this.getDAO(x).select_(x, sink, skip, limit, order, predicate);
+    return this.dao_.select_(x, sink, skip, limit, order, predicate);
   }
 }
