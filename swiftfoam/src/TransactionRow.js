@@ -90,7 +90,7 @@ if let tipAmount = transaction$tip as? Int {
 
 var sign: String = ""
 
-if let type = transaction$type as? net_nanopay_cico_model_TransactionType {
+if let type = transaction$type as? net_nanopay_tx_TransactionType {
   if type == .NONE {
     if ( payerId == userId ) {
       sign = "+ "
@@ -137,7 +137,7 @@ guard let payerId = transaction$payerId as? Int else {
   return UIColor.red
 }
 
-guard let type = transaction$type as? net_nanopay_cico_model_TransactionType else {
+guard let type = transaction$type as? net_nanopay_tx_TransactionType else {
   return UIColor.red
 }
 
