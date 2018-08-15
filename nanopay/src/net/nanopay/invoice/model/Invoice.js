@@ -357,7 +357,8 @@ foam.RELATIONSHIP({
   documentation: '(REQUIRED) The receiver of the amount stated in the invoice.',
   required: true,
   sourceProperty: {
-    hidden: true
+    hidden: true,
+    flags: ['js']
   },
   targetProperty: {
     label: 'Vendor',
@@ -376,8 +377,11 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee.label());
-    }
-  }
+    },
+    flags: ['js']
+  },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 
@@ -389,7 +393,8 @@ foam.RELATIONSHIP({
   documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
   required: true,
   sourceProperty: {
-    hidden: true
+    hidden: true,
+    flags: ['js']
   },
   targetProperty: {
     label: 'Customer',
@@ -408,6 +413,9 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer.label());
-    }
-  }
+    },
+    flags: ['js']
+  },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
