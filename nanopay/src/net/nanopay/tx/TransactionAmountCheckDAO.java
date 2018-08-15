@@ -7,7 +7,7 @@ import foam.dao.ProxyDAO;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionAmountCheckDAO
-    extends ProxyDAO
+  extends ProxyDAO
 {
   protected long amount_;
 

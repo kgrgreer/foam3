@@ -6,7 +6,7 @@ foam.CLASS({
   imports: [
     'form',
     'isConnecting',
-    'complete'
+    'rollBackView'
   ],
 
   css: `
@@ -35,7 +35,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Step', message: 'Error: Please try again later'}
+    { name: 'Step', message: 'Error: Please try again later' }
   ],
 
   methods: [
@@ -51,10 +51,10 @@ foam.CLASS({
         .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.CLOSE_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end();
+        .start('div').style({ 'clear': 'both' }).end();
     }
   ],
 
@@ -63,7 +63,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        X.form.goBack();
+        X.form.stack.back();
       }
     }
   ]

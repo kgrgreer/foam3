@@ -10,10 +10,9 @@ import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.TxnProcessor;
 
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -35,7 +34,7 @@ public class CsvUtil {
     }
   };
 
-  protected final static ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
+  public final static ThreadLocal<SimpleDateFormat> csvSdf = new ThreadLocal<SimpleDateFormat>() {
     @Override
     protected SimpleDateFormat initialValue() {
       return new SimpleDateFormat("MM/dd/yyyy");
@@ -129,26 +128,27 @@ public class CsvUtil {
     final DAO  userDAO        = (DAO) x.get("localUserDAO");
 
     Outputter out = new Outputter(o, mode, false);
-    transactionDAO.where(
-      AND(
-        EQ(Transaction.TXN_PROCESSOR_ID, TxnProcessor.ALTERNA), /* TODO: make configuration on CsvUtil */
-        EQ(Transaction.STATUS, TransactionStatus.PENDING),
-        OR(
-            EQ(Transaction.TYPE, TransactionType.CASHIN),
-            EQ(Transaction.TYPE, TransactionType.CASHOUT),
-            EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
-            EQ(Transaction.TYPE, TransactionType.VERIFICATION)
-        )
-      )
-    ).select(new AbstractSink() {
+    transactionDAO
+      .where(
+             AND(
+                 INSTANCE_OF(AlternaTransaction.class),
+                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                 OR(
+                    EQ(Transaction.TYPE, TransactionType.CASHIN),
+                    EQ(Transaction.TYPE, TransactionType.CASHOUT),
+                    EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
+                    EQ(Transaction.TYPE, TransactionType.VERIFICATION)
+                    )
+                 )
+             )
+      .select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
         try {
           User user;
           String txnType;
           String refNo;
-          Transaction t = (Transaction) obj;
-          t = (Transaction) t.fclone();
+          AlternaTransaction t = (AlternaTransaction) ((AlternaTransaction) obj).fclone();
 
           BankAccount bankAccount = null;
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
@@ -209,7 +209,6 @@ public class CsvUtil {
           if (t.getCompletionDate() == null) {
             t.setCompletionDate(generateCompletionDate(x, now));
           }
-
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 

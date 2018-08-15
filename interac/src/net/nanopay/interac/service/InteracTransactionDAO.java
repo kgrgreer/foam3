@@ -42,9 +42,10 @@ public class InteracTransactionDAO
     //   throw new RuntimeException("Invalid rate");
     // }
 
-    if ( transaction.getPurpose() == null ) {
-      throw new RuntimeException("Invalid purpose");
-    }
+    // REVIEW: Commented out for TransactionSubClassRefactor
+    // if ( transaction.getPurpose() == null ) {
+    //   throw new RuntimeException("Invalid purpose");
+    // }
 
     try {
       Transaction completedTransaction = (Transaction) transactionDAO.put(transaction);
