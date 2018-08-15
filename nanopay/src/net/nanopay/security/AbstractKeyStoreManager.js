@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'AbstractKeyStoreManager',
   abstract: true,
 
-  documentation: 'AbstractKeyStoreManager which only implements loadKey.',
+  documentation: 'AbstractKeyStoreManager which implements a basic version of load and store key.',
 
   implements: [
     'net.nanopay.security.KeyStoreManager',
