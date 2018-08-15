@@ -512,7 +512,6 @@ foam.CLASS({
       name: 'principalOwnersDAO',
       factory: function() {
         if ( this.viewData.user.principalOwners ) {
-          if ( this.viewData.user.principalOwners.length > 0 ) this.addLabel = 'Add Another Principal Owner';
           return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
@@ -671,11 +670,6 @@ foam.CLASS({
       class: 'String',
       name: 'postalCodeField',
       value: ''
-    },
-    {
-      class: 'String',
-      name: 'addLabel',
-      value: 'Add Another Principle Owner'
     },
     'addButtonElement',
     {
@@ -955,9 +949,6 @@ foam.CLASS({
       this.cityField = '';
       this.postalCodeField = '';
 
-      if ( this.principalOwnersCount > 0 ) this.addLabel = 'Add Another Principal Owner';
-      else this.addLabel = 'Add';
-
       this.isDisplayMode = false;
 
       if ( scrollToTop ) {
@@ -989,8 +980,6 @@ foam.CLASS({
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
 
-      this.addLabel = 'Update';
-
       this.isDisplayMode = ! editable;
     },
 
@@ -1002,7 +991,7 @@ foam.CLASS({
       this.clearFields();
       if ( flag ) {
         var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
-        formHeaderElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         this.firstNameField = this.viewData.user.firstName;
         this.middleNameField = this.viewData.user.middleName;
         this.lastNameField = this.viewData.user.lastName;
@@ -1182,8 +1171,6 @@ foam.CLASS({
       this.principalOwnersDAO.select().then(function(principalOwners) {
         self.viewData.user.principalOwners = principalOwners.array;
         self.principalOwnersCount = principalOwners.array.length;
-        if ( self.principalOwnersCount > 0 ) self.addLabel = 'Add Another Principal Owner';
-        else self.addLabel = 'Add';
       });
     }
   ]
