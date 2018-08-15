@@ -21,6 +21,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
+import foam.dao.NullDAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
 import foam.dao.Sink;
@@ -31,24 +32,33 @@ import foam.nanos.logger.Logger;
 import net.nanopay.account.Balance;
 
 /**
- * Expose ReadOnly access to BalanceDAO, except
- * for packaged scoped calls from TransactionDAO and
- * TransferDAO for the writable BalanceDAO;
+ * TransactionDAO provides ReadOnly access to the BalanceDAO.
  */
 public class LocalBalanceDAO
   extends ReadOnlyDAO {
 
-  private DAO dao_;
+  protected DAO dao_;
 
   public LocalBalanceDAO(X x) {
     setX(x);
     setOf(Balance.getOwnClassInfo());
-    dao_ = new foam.dao.MDAO(getOf());
   }
 
-  // NOTE: packaged scoped
-  DAO getWritableBalanceDAO(X x) {
-    return dao_;
+  public void setX(X x) {
+    super.setX(x);
+    ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
+    while( d != null ) {
+      if ( d instanceof TransactionDAO ) {
+        dao_ = ((TransactionDAO)d).getBalanceDAO();
+        break;
+      }
+      d = (ProxyDAO) d.getDelegate();
+    }
+    if ( dao_ == null ) {
+      RuntimeException e = new RuntimeException("TransactionDAO not found in localTransactionDAO stack.");
+      ((Logger)getX().get("logger")).error(e);
+      throw e;
+    }
   }
 
   @Override
