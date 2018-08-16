@@ -303,6 +303,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
   { name: 'net/nanopay/security/HashingWriterTest' },
+  { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
   { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
 
