@@ -12,7 +12,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionLimit;
 import net.nanopay.tx.model.TransactionLimitTimeFrame;
 import net.nanopay.tx.model.TransactionLimitType;
@@ -148,8 +148,8 @@ public class TransactionLimitCheckDAO
         EQ(user.getId(), ( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ) ),
         NEQ(Transaction.TYPE, TransactionType.CASHOUT ),
         NEQ(Transaction.TYPE, TransactionType.CASHIN ),
-        GTE(Transaction.DATE, firstDate ),
-        LTE(Transaction.DATE, lastDate )));
+        GTE(Transaction.CREATED, firstDate ),
+        LTE(Transaction.CREATED, lastDate )));
 
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }

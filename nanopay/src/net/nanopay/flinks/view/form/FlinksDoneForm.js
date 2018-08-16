@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksDoneForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
-  css:`
+  css: `
   ^ .net-nanopay-ui-ActionView-closeButton {
     margin-left: 264px;
     box-sizing: border-box;
@@ -19,9 +19,9 @@ foam.CLASS({
   }
   `,
   messages: [
-    { name: 'Step', message: 'Step 6: You\'re all set! Connection is successful.'}
+    { name: 'Step', message: 'Step 6: You\'re all set! Connection is successful.' }
   ],
-  
+
   methods: [
     function init() {
       this.SUPER();
@@ -29,28 +29,28 @@ foam.CLASS({
     },
     function initE() {
       this.SUPER();
-      var self = this;
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('subTitleFlinks')
           .add(this.Step)
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.CLOSE_BUTTON)
-        .end()
+        .end();
     }
   ],
   actions: [
-    
+
     {
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        //console.log('close the form');
-        X.form.goNext();
+        X.form.stack.push({
+          class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
+        });
       }
     },
   ]
 
-})
+});

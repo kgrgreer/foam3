@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.account.Account;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
@@ -38,22 +37,22 @@ public class UpdateInvoiceTransactionDAO
 
     // find invoice
     if ( transaction.getInvoiceId() != 0 ) {
-      if ( (long) ((Account) transaction.findSourceAccount(x)).getOwner() != (long) ((Account) transaction.findDestinationAccount(x)).getOwner() ) {
+      if ( transaction.findSourceAccount(x).getOwner() != transaction.findDestinationAccount(x).getOwner()) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(transaction.getLastModified());
           invoice.setPaymentMethod(PaymentStatus.NANOPAY);
           invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.PENDING ) {
           invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(transaction.getLastModified());
           invoice.setPaymentMethod(PaymentStatus.PENDING);
           invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.DECLINED ) {
-          invoice.setPaymentId(0);
+          invoice.setPaymentId(null);
           invoice.setPaymentDate(null);
           invoice.setPaymentMethod(PaymentStatus.NONE);
           invoiceDAO_.put_(x, invoice);

@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'java.util.Date'
   ],
 
@@ -149,7 +150,7 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'paymentId',
       documentation: `Transaction Id used to pay invoice.`,
     },
@@ -269,7 +270,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
         if ( getPaymentDate() != null ){
-          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 ) return "Scheduled";
+          if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return "Scheduled";
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
@@ -356,7 +357,8 @@ foam.RELATIONSHIP({
   documentation: '(REQUIRED) The receiver of the amount stated in the invoice.',
   required: true,
   sourceProperty: {
-    hidden: true
+    hidden: true,
+    flags: ['js']
   },
   targetProperty: {
     label: 'Vendor',
@@ -375,8 +377,11 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee.label());
-    }
-  }
+    },
+    flags: ['js']
+  },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 
@@ -388,7 +393,8 @@ foam.RELATIONSHIP({
   documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
   required: true,
   sourceProperty: {
-    hidden: true
+    hidden: true,
+    flags: ['js']
   },
   targetProperty: {
     label: 'Customer',
@@ -407,6 +413,9 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer.label());
-    }
-  }
+    },
+    flags: ['js']
+  },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });

@@ -32,19 +32,9 @@ public class PreventDuplicateBankAccountDAO
     // if new account, check to see if existing account exists
     // with same account information
     if ( getDelegate().find(account.getId()) == null ) {
-      Count count = new Count();
-
-      // prevent registration of account with same account name
-      count = (Count) getDelegate().where(AND(
-          EQ(BankAccount.OWNER, account.getOwner()),
-          EQ(BankAccount.NAME, account.getName())
-      )).limit(1).select(count);
-      if ( count.getValue() > 0 ) {
-        throw new RuntimeException("Bank account with same name already registered");
-      }
 
       // prevent registration of account with same account details
-      count = new Count();
+      Count count = new Count();
       // REVIEW: AccountRefactor - switched TRANSIT_NUMBER to BRANCH and
       // INSTITUTION_ID to INSTITUION
       count = (Count) getDelegate()

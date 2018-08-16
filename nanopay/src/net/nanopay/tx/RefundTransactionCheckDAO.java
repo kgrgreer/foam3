@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Count;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -21,14 +21,18 @@ public class RefundTransactionCheckDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    Transaction transaction = (Transaction) obj;
+    if ( ! ( obj instanceof RefundTransaction ) ) {
+      return getDelegate().put_(x, obj);
+    }
+
+    RefundTransaction transaction = (RefundTransaction) obj;
 
     // transaction is a refund
     if ( TransactionType.REFUND.equals(transaction.getType()) ) {
       // check if another transaction with same refund id exists
       Count count = new Count();
       count = (Count) getDelegate().where(EQ(
-          Transaction.REFUND_TRANSACTION_ID, transaction.getRefundTransactionId()
+          RefundTransaction.REFUND_TRANSACTION_ID, transaction.getRefundTransactionId()
       )).select(count);
 
       if ( count.getValue() > 0 ) {
