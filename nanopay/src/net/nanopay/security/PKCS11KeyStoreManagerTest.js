@@ -39,9 +39,9 @@ foam.CLASS({
 
         try {
           // delete existing test token, ignoring errors
-          Process process = new ProcessBuilder("softhsm2-util",
-              "--delete-token", "--token", "PKCS11KeyStoreManagerTest")
-            .start();
+          new ProcessBuilder("softhsm2-util",
+            "--delete-token", "--token", "PKCS11KeyStoreManagerTest")
+            .inheritIO().start().waitFor();
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }
@@ -64,17 +64,19 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
 
-        PKCS11KeyStoreManager_ValidPKCS11ConfigFile();
+        // tests
+        PKCS11KeyStoreManager_InvalidConfigFile();
+        PKCS11KeyStoreManager_InvalidPassphrase();
+        PKCS11KeyStoreManager_ValidConfigFileAndPassphrase();
+        PKCS11KeyStoreManager_InvalidConfigFileAndPassphrase();
       `
     },
-
     {
-      name: 'PKCS11KeyStoreManager_ValidPKCS11ConfigFile',
+      name: 'PKCS11KeyStoreManager_ValidConfigFileAndPassphrase',
       javaCode: `
         try {
-          String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
+          String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslot=0";
           SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
-
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
             .setProvider(provider).setPassphrase("test".toCharArray())
             .build();
@@ -83,6 +85,45 @@ foam.CLASS({
         } catch ( Throwable t ) {
           t.printStackTrace();
           test(false, "Generating a PKCS11KeyStoreManager with valid configuration should not throw an exception");
+        }
+      `
+    },
+    {
+      name: 'PKCS11KeyStoreManager_InvalidConfigFileAndPassphrase',
+      javaCode: `
+
+      `
+    },
+    {
+      name: 'PKCS11KeyStoreManager_InvalidConfigFile',
+      javaCode: `
+        try {
+          String config = "name=SoftHSM2\\nlibrary=iqnfiernf2oi4rnf2ijnrf\\nslot=0";
+          SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
+          PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
+            .setProvider(provider).setPassphrase("test".toCharArray())
+            .build();
+
+          manager.getKeyStore();
+          test(false, "Generating a PKCS11KeyStoreManager with invalid configuration should throw an exception.");
+        } catch ( Throwable t ) {
+          test(true, "Generating a PKCS11KeyStoreManager with invalid configuration should not throw an exception");
+        }
+      `
+    },
+    {
+      name: 'PKCS11KeyStoreManager_InvalidPassphrase',
+      javaCode: `
+        try {
+          String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslot=0";
+          SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
+          PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
+            .setProvider(provider).setPassphrase("incorrect".toCharArray())
+            .build();
+
+          test(manager.getKeyStore() == null, "Generating a PKCS11KeyStoreManager with invalid passphrase should thrown an exception");
+        } catch ( Throwable t ) {
+          test(true, "Generating a PKCS11KeyStoreManager with invalid passphrase throws an exception");
         }
       `
     }
