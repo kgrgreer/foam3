@@ -37,7 +37,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.tx.tp.alterna.AlternaTransaction',
+    'net.nanopay.tx.alterna.AlternaTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',

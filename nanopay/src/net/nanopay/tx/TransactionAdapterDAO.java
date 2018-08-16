@@ -20,7 +20,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.CompositeTransaction;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.tp.alterna.AlternaTransaction;
+import net.nanopay.tx.alterna.AlternaTransaction;
 
 /**
  * Transform a base Transaction to into more specific type based on Accounts.

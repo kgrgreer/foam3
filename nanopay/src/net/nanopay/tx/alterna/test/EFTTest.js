@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.tp.alterna.test',
+  package: 'net.nanopay.tx.alterna.test',
   name: 'EFTTest',
   extends: 'foam.nanos.test.Test',
 
@@ -16,7 +16,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionType',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.tp.alterna.*',
+    'net.nanopay.tx.alterna.*',
     'org.apache.commons.io.IOUtils',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',

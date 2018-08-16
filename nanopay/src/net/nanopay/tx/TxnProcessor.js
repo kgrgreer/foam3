@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.tp',
+  package: 'net.nanopay.tx',
   name: 'TxnProcessor',
   documentation: 'Transaction Processor information.',
 

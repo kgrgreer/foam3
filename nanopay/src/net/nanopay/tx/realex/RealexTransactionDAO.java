@@ -1,4 +1,4 @@
-package net.nanopay.tx.tp.realex;
+package net.nanopay.tx.realex;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -28,8 +28,8 @@ import net.nanopay.cico.model.MobileWallet;
 import static foam.mlang.MLang.*;
 import foam.dao.ArraySink;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
-import net.nanopay.tx.tp.TxnProcessor;
-import net.nanopay.tx.tp.TxnProcessorUserReference;
+import net.nanopay.tx.TxnProcessor;
+import net.nanopay.tx.TxnProcessorUserReference;
 import java.util.UUID;
 
 public class RealexTransactionDAO

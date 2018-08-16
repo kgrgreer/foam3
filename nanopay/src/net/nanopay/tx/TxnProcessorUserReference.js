@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.tp',
+  package: 'net.nanopay.tx',
   name: 'TxnProcessorUserReference',
   documentation: `The model use to store user reference that record in a specified payment platform.
                   We do not store payment card info in our system, so we need to store payment card info in the payment platform that user will use.
@@ -13,7 +13,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.tx.tp.TxnProcessor',
+      of: 'net.nanopay.tx.TxnProcessor',
       name: 'processorId',
       label: 'Processor'
     },

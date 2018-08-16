@@ -1,4 +1,4 @@
-package net.nanopay.tx.tp.alterna;
+package net.nanopay.tx.alterna;
 
 import foam.core.ClassInfo;
 import foam.core.FObject;

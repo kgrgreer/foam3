@@ -1,4 +1,4 @@
 foam.INTERFACE({
-  package: 'net.nanopay.tx.tp',
+  package: 'net.nanopay.tx',
   name: 'TxnProcessorData',
 });

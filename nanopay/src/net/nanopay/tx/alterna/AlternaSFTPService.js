@@ -1,9 +1,9 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.tp.alterna',
+  package: 'net.nanopay.tx.alterna',
   name: 'AlternaSFTPService',
 
   implements: [
-    'net.nanopay.tx.tp.alterna.SFTPService'
+    'net.nanopay.tx.alterna.SFTPService'
   ],
 
   properties: [

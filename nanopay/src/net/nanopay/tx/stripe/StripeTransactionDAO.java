@@ -1,4 +1,4 @@
-package net.nanopay.tx.tp.stripe;
+package net.nanopay.tx.stripe;
 
 import foam.core.FObject;
 import foam.core.X;
