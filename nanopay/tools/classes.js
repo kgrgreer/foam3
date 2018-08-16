@@ -17,6 +17,8 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaSFTPService',
   'net.nanopay.tx.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.tx.alterna.AlternaTransaction',
+  'net.nanopay.tx.alterna.AlternaCITransaction',
+  'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.cico.service.BankAccountVerifier',

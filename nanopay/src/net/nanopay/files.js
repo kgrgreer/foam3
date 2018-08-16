@@ -223,6 +223,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/AlternaSFTPService' },
   { name: 'net/nanopay/tx/alterna/client/ClientAlternaSFTPService' },
   { name: 'net/nanopay/tx/alterna/AlternaTransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaCOTransaction' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
@@ -383,5 +385,5 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
-  { name: 'net/nanopay/tx/alterna/test/EFTTest'}
+  { name: 'net/nanopay/tx/alterna/test/EFTTest' }
 ]);
