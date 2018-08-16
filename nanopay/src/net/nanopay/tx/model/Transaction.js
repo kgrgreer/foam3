@@ -37,6 +37,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
+    'net.nanopay.tx.tp.alterna.AlternaTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
@@ -234,27 +235,28 @@ foam.CLASS({
       `
     },
     {
-      name: 'createTransfers',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' },
-      ],
-      javaReturns: 'Transfer[]',
+      name: 'mapTransfers',
+      javaReturns: 'HashMap<String, Transfer[]>',
       javaCode: `
-        if ( ! isActive() ) return new Transfer[] {};
-        if ( getType() == TransactionType.CASHOUT ) {
-          return new Transfer[]{
-             new Transfer((Long) getSourceAccount(), -getTotal())
-          };
+      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
+        if ( ! isActive() ) return hm;
+        if ( this instanceof AlternaTransaction ) {
+          if ( getType() == TransactionType.CASHOUT ) {
+            hm.put(getSourceCurrency(), new Transfer[]{
+              new Transfer((Long) getSourceAccount(), -getTotal())
+            });
+            return hm;
+          }
+          hm.put(getSourceCurrency(), new Transfer[]{
+                      new Transfer((Long) getDestinationAccount(), getTotal())
+                    });
+                    return hm;
         }
-        if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-          return new Transfer[]{
-            new Transfer((Long) getDestinationAccount(), getTotal())
-          };
-        }
-        return new Transfer[] {
-             new Transfer((Long) getSourceAccount(), -getTotal()),
+        hm.put(getSourceCurrency(), new Transfer[]{
+          new Transfer((Long) getSourceAccount(), -getTotal()),
              new Transfer((Long) getDestinationAccount(),  getTotal())
-        };
+        });
+        return hm;
       `
     },
     {
