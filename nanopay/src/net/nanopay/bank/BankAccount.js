@@ -8,7 +8,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
+    'java.util.List',
+    'foam.dao.ArraySink',
+    'foam.nanos.auth.User'
   ],
 
   documentation: 'Base class/model of all BankAccounts',
@@ -124,18 +127,17 @@ foam.CLASS({
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
+
         // already exists
-        DAO accountDao = (DAO) x.get("localAccountDAO");
-
-        Count count = new Count();
-        count = (Count) accountDao.where(AND(
-          INSTANCE_OF(BankAccount.class),
-            EQ(BankAccount.OWNER, this.getOwner()),
-            EQ(BankAccount.NAME, this.getName())
-        )).limit(1).select(count);
-
-        if ( count.getValue() > 0 ) {
-          throw new IllegalStateException("Bank account with same name already registered.");
+        User user = (User) x.get("user");
+        ArraySink accountSink = (ArraySink) user.getAccounts(x)
+          .where(INSTANCE_OF(BankAccount.class))
+          .select(new ArraySink());
+        List<BankAccount> userAccounts = accountSink.getArray();
+        for ( BankAccount account : userAccounts ) {
+          if ( account.getName().toLowerCase().equals(this.getName().toLowerCase()) ) {
+            throw new IllegalStateException("Bank account with same name already registered.");
+          }
         }
       `
     }
