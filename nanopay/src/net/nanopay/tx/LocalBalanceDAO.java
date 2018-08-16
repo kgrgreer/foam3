@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package net.nanopay.account;
+package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
+import foam.dao.NullDAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
 import foam.dao.Sink;
@@ -29,43 +30,34 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 
 import net.nanopay.account.Balance;
-import net.nanopay.tx.TransactionDAO;
-
 
 /**
- * DAO on setX traverses the localTransactionDAO stack,
- * and explicitly set the TransactionDAO's balanceDAO to
- * the writable BalanceDAO.  The TransactionDAO passes this DAO onto
- * Transfer, as both TransactionDAO and Transfer require write access
- * to the BalanceDAO.
- * Otherwise this DAO provides Read Only access to the BalanceDAO.
+ * TransactionDAO provides ReadOnly access to the BalanceDAO.
  */
 public class LocalBalanceDAO
   extends ReadOnlyDAO {
 
-  private DAO dao_;
+  protected DAO dao_;
 
-  public LocalBalanceDAO() {
-    // NOTE: do not set context during construction,
-    // the localTransactionDAO lookup must occur after
-    // NSPec has loaded all services.
+  public LocalBalanceDAO(X x) {
+    setX(x);
     setOf(Balance.getOwnClassInfo());
-    dao_ = new foam.dao.MDAO(getOf());
   }
 
-  public void setX(foam.core.X x) {
+  public void setX(X x) {
     super.setX(x);
-    Logger logger = (Logger) x.get("logger");
-
     ProxyDAO d = (ProxyDAO) x.get("localTransactionDAO");
-    while ( d instanceof ProxyDAO ) {
-      d = (ProxyDAO) d.getDelegate();
-      if (d instanceof TransactionDAO ) {
-        TransactionDAO dao = (TransactionDAO) d;
-        dao.setBalanceDAO(dao_);
-        logger.info(this.getClass().getSimpleName(), "BalanceDAO set in", dao.getClass().getSimpleName());
+    while( d != null ) {
+      if ( d instanceof TransactionDAO ) {
+        dao_ = ((TransactionDAO)d).getBalanceDAO();
         break;
       }
+      d = (ProxyDAO) d.getDelegate();
+    }
+    if ( dao_ == null ) {
+      RuntimeException e = new RuntimeException("TransactionDAO not found in localTransactionDAO stack.");
+      ((Logger)getX().get("logger")).error(e);
+      throw e;
     }
   }
 

@@ -70,6 +70,7 @@ foam.CLASS({
 });
 
 
+
 foam.CLASS({
   package: 'net.nanopay.fx.model',
   name: 'ExchangeRateFields',
@@ -150,3 +151,4 @@ foam.CLASS({
 }
   ]
 });
+

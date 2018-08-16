@@ -155,7 +155,6 @@ foam.CLASS({
       name: 'exportButton',
       label: 'Export',
       code: function(X) {
-        debugger;
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.data.data }));
       }
     }

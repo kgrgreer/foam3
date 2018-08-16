@@ -88,7 +88,7 @@ public class LiquidityService
       if ( cashInAmount > 0 ) {
         if ( checkCashInStatus(liquiditySettings) ) {
           if ( ifCheckRangePerTransaction(liquiditySettings) ) {
-            long payerBankAccountID = getBankAccountID(liquiditySettings, accountId);
+            long payerBankAccountID = getBankAccountID(liquiditySettings, account);
             if ( checkBankAccountAvailable(payerBankAccountID) ) {
               return addCICOTransaction(accountId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, getX());
             } else {
@@ -102,7 +102,7 @@ public class LiquidityService
     } else if ( balance > maxBalance ) {
       if ( checkCashOutStatus(liquiditySettings) ) {
         if ( ifCheckRangePerTransaction(liquiditySettings) ) {
-          long payerBankAccountID = getBankAccountID(liquiditySettings, accountId);
+          long payerBankAccountID = getBankAccountID(liquiditySettings, account);
           if ( checkBankAccountAvailable(payerBankAccountID) ) {
             return addCICOTransaction(accountId, balance - maxBalance, payerBankAccountID, TransactionType.CASHOUT,
                 getX());
@@ -165,7 +165,7 @@ public class LiquidityService
     return cashInAmount <= 0 ? 0 : cashInAmount;
   }
 
-  public long getBankAccountID(LiquiditySettings liquiditySettings, long accountId) {
+  public long getBankAccountID(LiquiditySettings liquiditySettings, Account account) {
     Account bankAccount;
 
     if ( liquiditySettings == null ) return - 1;
@@ -175,7 +175,7 @@ public class LiquidityService
     if ( liquiditySettings.getBankAccountId() == 0 ) {
       bankAccount = (Account) getAccountDAO().find(
           AND(
-              EQ(BankAccount.OWNER, accountId),
+              EQ(BankAccount.OWNER, account.getOwner()),
               EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
           ));
     } else {
@@ -200,7 +200,7 @@ public class LiquidityService
 
   public LiquiditySettings getLiquiditySettings(Account account) {
     // if user don't have liquidity settings we return the default settings of user's group
-    return getLiquiditySettingsDAO().find(account.getId()) == null ? null : (LiquiditySettings) getLiquiditySettingsDAO()
+    return getLiquiditySettingsDAO().find(account.getId()) == null ? account.findOwner(x_).findGroup(x_).getLiquiditySettings() : (LiquiditySettings) getLiquiditySettingsDAO()
         .find(account.getId());
   }
 

@@ -4,7 +4,7 @@ require('../src/net/nanopay/files.js');
 var classes = [
   'net.nanopay.tx.PayerTransactionDAO',
   'net.nanopay.tx.PayeeTransactionDAO',
-  'net.nanopay.auth.sms.AuthyTokenService',
+  'net.nanopay.auth.sms.PhoneVerificationTokenService',
   'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
@@ -178,6 +178,8 @@ var classes = [
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
   'net.nanopay.security.FileKeyStoreManagerTest',
+  'net.nanopay.security.UserKeyPairGenerationDAOTest',
+  
 
   // tests
   'net.nanopay.test.ModelledTest',
@@ -185,7 +187,8 @@ var classes = [
   'net.nanopay.auth.TestWidget',
   'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
-  'net.nanopay.test.TestReport'
+  'net.nanopay.test.TestReport',
+  'net.nanopay.tx.tp.alterna.test.EFTTest'
 ];
 
 var abstractClasses = [
