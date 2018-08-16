@@ -239,24 +239,24 @@ foam.CLASS({
       javaReturns: 'HashMap<String, Transfer[]>',
       javaCode: `
       HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-        if ( ! isActive() ) return hm;
-        if ( this instanceof AlternaTransaction ) {
-          if ( getType() == TransactionType.CASHOUT ) {
-            hm.put(getSourceCurrency(), new Transfer[]{
-              new Transfer((Long) getSourceAccount(), -getTotal())
-            });
-            return hm;
-          }
+      if ( ! isActive() ) return hm;
+      if ( this instanceof AlternaTransaction ) {
+        if ( getType() == TransactionType.CASHOUT ) {
           hm.put(getSourceCurrency(), new Transfer[]{
-                      new Transfer((Long) getDestinationAccount(), getTotal())
-                    });
-                    return hm;
+            new Transfer((Long) getSourceAccount(), -getTotal())
+          });
+          return hm;
         }
         hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer((Long) getSourceAccount(), -getTotal()),
-             new Transfer((Long) getDestinationAccount(),  getTotal())
+          new Transfer((Long) getDestinationAccount(), getTotal())
         });
         return hm;
+      }
+      hm.put(getSourceCurrency(), new Transfer[]{
+        new Transfer((Long) getSourceAccount(), -getTotal()),
+        new Transfer((Long) getDestinationAccount(),  getTotal())
+      });
+      return hm;
       `
     },
     {
