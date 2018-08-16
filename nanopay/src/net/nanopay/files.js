@@ -76,6 +76,21 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
 
+  { name: 'net/nanopay/fx/client/ClientFXService' },
+  { name: 'net/nanopay/fx/FXServiceInterface' },
+  { name: 'net/nanopay/fx/model/FXAccepted' },
+  { name: 'net/nanopay/fx/model/FXDeal' },
+  { name: 'net/nanopay/fx/model/FXHoldingAccount' },
+  { name: 'net/nanopay/fx/model/FXPayee' },
+  { name: 'net/nanopay/fx/model/FXDirection' },
+  { name: 'net/nanopay/fx/model/GetFXQuote' },
+  { name: 'net/nanopay/fx/model/AcceptFXRate' },
+  { name: 'net/nanopay/fx/model/ConfirmFXDeal' },
+  { name: 'net/nanopay/fx/model/SubmitFXDeal' },
+  { name: 'net/nanopay/fx/model/GetIncomingFundStatus' },
+  { name: 'net/nanopay/fx/model/FXQuote' },
+  { name: 'net/nanopay/fx/model/FXHoldingAccountBalance' },
+
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
 

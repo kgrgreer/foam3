@@ -128,6 +128,22 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
+  'net.nanopay.fx.FXServiceInterface',
+  'net.nanopay.fx.client.ClientFXService',
+  'net.nanopay.fx.model.FXAccepted',
+  'net.nanopay.fx.model.FXDeal',
+  'net.nanopay.fx.model.FXHoldingAccount',
+  'net.nanopay.fx.model.FXHoldingAccountBalance',
+  'net.nanopay.fx.model.FXPayee',
+  'net.nanopay.fx.model.FXDirection',
+
+  'net.nanopay.fx.model.GetFXQuote',
+  'net.nanopay.fx.model.AcceptFXRate',
+  'net.nanopay.fx.model.ConfirmFXDeal',
+  'net.nanopay.fx.model.SubmitFXDeal',
+  'net.nanopay.fx.model.GetIncomingFundStatus',
+  'net.nanopay.fx.model.FXQuote',
+
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 

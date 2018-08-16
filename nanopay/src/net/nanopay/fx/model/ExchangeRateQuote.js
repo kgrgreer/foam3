@@ -20,6 +20,10 @@ foam.CLASS({
       name: 'code'
     },
     {
+      class: 'String',
+      name: 'quoteId'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.model.ExchangeRateFields',
       name: 'exchangeRate',
@@ -42,7 +46,13 @@ foam.CLASS({
       factory: function() {
         return this.DeliveryTimeFields.create();
       }
+
     },
+    {
+			class: "foam.core.Enum",
+			name: "status",
+			of: "net.nanopay.fx.ExchangeRateStatus"
+		},
     // {
     //   class: 'Double',
     //   name: 'feesAmount'
@@ -133,6 +143,10 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'processDate'
-    }
+    },
+    {
+  class: 'DateTime',
+  name: 'expiryTime'
+}
   ]
 });
