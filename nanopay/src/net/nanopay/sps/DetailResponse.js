@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.sps.model',
+  package: 'net.nanopay.sps',
   name: 'DetailResponse',
-  extends: 'net.nanopay.sps.model.ResponsePacket',
+  extends: 'net.nanopay.sps.ResponsePacket',
 
   properties: [
     {
@@ -18,7 +18,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.sps.model.DetailResponseItemContent',
+      of: 'net.nanopay.sps.DetailResponseItemContent',
       name: 'itemContent'
     },
     {

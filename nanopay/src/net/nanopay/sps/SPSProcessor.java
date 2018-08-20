@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.nanos.logger.Logger;
 import net.nanopay.sps.exceptions.ClientErrorException;
 import net.nanopay.sps.exceptions.HostErrorException;
-import net.nanopay.sps.model.*;
+import net.nanopay.sps.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

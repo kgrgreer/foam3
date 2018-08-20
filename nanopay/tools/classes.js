@@ -48,17 +48,17 @@ var classes = [
   'net.nanopay.model.InvitationStatus',
 
   //sps
-  'net.nanopay.sps.model.GeneralRequestPacket',
-  'net.nanopay.sps.model.GeneralRequestResponse',
-  'net.nanopay.sps.model.BatchDetailRequestPacket',
-  'net.nanopay.sps.model.BatchDetailGeneralResponse',
-  'net.nanopay.sps.model.DetailResponse',
-  'net.nanopay.sps.model.RequestMessageAndErrors',
-  'net.nanopay.sps.model.HostError',
-  'net.nanopay.sps.model.UserInfo',
-  'net.nanopay.sps.model.DetailResponseItemContent',
-  'net.nanopay.sps.model.RequestPacket',
-  'net.nanopay.sps.model.ResponsePacket',
+  'net.nanopay.sps.GeneralRequestPacket',
+  'net.nanopay.sps.GeneralRequestResponse',
+  'net.nanopay.sps.BatchDetailRequestPacket',
+  'net.nanopay.sps.BatchDetailGeneralResponse',
+  'net.nanopay.sps.DetailResponse',
+  'net.nanopay.sps.RequestMessageAndErrors',
+  'net.nanopay.sps.HostError',
+  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.DetailResponseItemContent',
+  'net.nanopay.sps.RequestPacket',
+  'net.nanopay.sps.ResponsePacket',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

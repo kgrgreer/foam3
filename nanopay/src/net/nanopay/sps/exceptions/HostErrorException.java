@@ -1,6 +1,6 @@
 package net.nanopay.sps.exceptions;
 
-import net.nanopay.sps.model.HostError;
+import net.nanopay.sps.HostError;
 
 public class HostErrorException extends Exception {
   private HostError hostError_;

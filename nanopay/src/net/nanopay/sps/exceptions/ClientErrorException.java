@@ -1,6 +1,6 @@
 package net.nanopay.sps.exceptions;
 
-import net.nanopay.sps.model.RequestMessageAndErrors;
+import net.nanopay.sps.RequestMessageAndErrors;
 
 public class ClientErrorException extends Exception {
   private RequestMessageAndErrors clientError_;

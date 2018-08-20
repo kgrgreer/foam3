@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.sps.model',
+  package: 'net.nanopay.sps',
   name: 'RequestPacket',
   abstract: true,
 
