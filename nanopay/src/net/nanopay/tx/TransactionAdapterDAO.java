@@ -41,9 +41,9 @@ public class TransactionAdapterDAO
 
     // Only concerned with Transactions which are not already a
     // specialized child class.
-    /*if ( ! obj.getClass().equals(Transaction.class) ) {
+    if ( ! obj.getClass().equals(Transaction.class) ) {
       return super.put_(x, obj);
-    }*/
+    }
 
     Transaction txn = (Transaction) obj;
     if ( ! SafetyUtil.isEmpty(txn.getId()) ) {
