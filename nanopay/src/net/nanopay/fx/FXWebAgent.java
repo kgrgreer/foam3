@@ -21,10 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.nanopay.account.FXService;
 
-public class ApiWebAgent
+public class FXWebAgent
         implements WebAgent {
 
-    public ApiWebAgent() {
+    public FXWebAgent() {
     }
 
     public void execute(X x) {
