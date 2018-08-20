@@ -33,7 +33,6 @@ import net.nanopay.account.Balance;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
-import org.apache.commons.lang3.ArrayUtils;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -107,11 +106,7 @@ public class TransactionDAO
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED
         && transaction.getStatus() == TransactionStatus.DECLINED ) {
         //pay others by bank account directly
-        if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-          return executeTransaction(x, transaction);
-        } else {
-          return executeTransaction(x, transaction);
-        }
+        return executeTransaction(x, transaction);
       }
     }
     if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
@@ -147,7 +142,11 @@ public class TransactionDAO
     // TODO: disallow or merge duplicate accounts
     for ( Transfer[] ts : hm.values() ){
         validateTransfers(ts);
-        transfers = ArrayUtils.addAll(transfers, ts);
+        int k = transfers.length;
+        transfers = Arrays.copyOf(transfers, transfers.length + ts.length);
+        for (int i = k; i < transfers.length; i++) {
+          transfers[i] = ts[i - k];
+        }
     }
     return lockAndExecute(x, t, transfers, 0);
   }
