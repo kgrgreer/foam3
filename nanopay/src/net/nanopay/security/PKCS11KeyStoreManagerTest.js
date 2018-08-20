@@ -4,10 +4,15 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.util.SecurityUtil',
     'sun.security.pkcs11.SunPKCS11',
+
+    'javax.crypto.KeyGenerator',
+    'javax.crypto.SecretKey',
     'java.io.*',
     'java.nio.charset.StandardCharsets',
     'java.security.KeyStore',
+    'java.util.Arrays'
   ],
 
   properties: [
@@ -64,11 +69,14 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
 
-        // tests
+        // initialization tests
         PKCS11KeyStoreManager_ValidConfiguration();
         PKCS11KeyStoreManager_InvalidLibrary();
         // PKCS11KeyStoreManager_InvalidPassphrase();
         PKCS11KeyStoreManager_InvalidSlotListIndex();
+
+        // key storage tests
+        PKCS11KeyStoreManager_StoringSecretKey();
       `
     },
     {
@@ -140,6 +148,37 @@ foam.CLASS({
           test(false, "Generating a PKCS11KeyStoreManager with invalid slotListIndex should thrown an exception");
         } catch ( Throwable t ) {
           test(true, "Generating a PKCS11KeyStoreManager with invalid slotListIndex throws an exception");
+        }
+      `
+    },
+    {
+      name: 'PKCS11KeyStoreManager_StoringSecretKey',
+      javaCode: `
+        try {
+          String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
+          SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
+          PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
+            .setProvider(provider).setPassphrase("test".toCharArray())
+            .build();
+
+          KeyStore keyStore = manager.getKeyStore();
+          int keyStoreSize = keyStore.size();
+
+          // generate secret key
+          KeyGenerator keygen = KeyGenerator.getInstance("AES", keyStore.getProvider());
+          keygen.init(256, SecurityUtil.GetSecureRandom());
+
+          // store secret key
+          SecretKey key = keygen.generateKey();
+          manager.storeKey("PKCS11KeyStoreManagerTest", new KeyStore.SecretKeyEntry(key));
+          test(keyStore.size() == keyStoreSize + 1, "Storing a secret key using PKCS11KeyStoreManager stores key successfully");
+
+          // load secret key
+          KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) manager.loadKey("PKCS11KeyStoreManagerTest");
+          SecretKey stored = entry.getSecretKey();
+          test(Arrays.equals(key.getEncoded(), stored.getEncoded()), "Loaded SecretKey is equal to stored SecretKey");
+        } catch ( Throwable t ) {
+          test(false, "Storing a secret key using PKCS11KeyStoreManager should not throw an exception");
         }
       `
     }
