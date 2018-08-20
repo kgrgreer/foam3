@@ -139,6 +139,11 @@
       <version>42.0.0</version>
     </dependency>
     <dependency>
+      <groupId>org.java-websocket</groupId>
+      <artifactId>Java-WebSocket</artifactId>
+      <version>1.3.4</version>
+    </dependency>
+    <dependency>
       <groupId>com.twilio.sdk</groupId>
       <artifactId>twilio</artifactId>
       <version>7.23.0</version>
