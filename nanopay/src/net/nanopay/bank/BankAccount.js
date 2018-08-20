@@ -3,7 +3,6 @@ foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
   extends: 'net.nanopay.account.Account',
-
   javaImports: [
     'foam.dao.DAO',
     'foam.mlang.sink.Count',

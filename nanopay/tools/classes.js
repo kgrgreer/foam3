@@ -9,16 +9,21 @@ var classes = [
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
-  'net.nanopay.tx.tp.TxnProcessor',
-  'net.nanopay.tx.tp.TxnProcessorData',
-  'net.nanopay.tx.tp.TxnProcessorUserReference',
-  'net.nanopay.tx.tp.alterna.AlternaFormat',
-  'net.nanopay.tx.tp.alterna.SFTPService',
-  'net.nanopay.tx.tp.alterna.AlternaSFTPService',
-  'net.nanopay.tx.tp.alterna.client.ClientAlternaSFTPService',
-  'net.nanopay.tx.tp.alterna.AlternaTransaction',
-  'net.nanopay.tx.tp.stripe.StripeTransaction',
-  'net.nanopay.tx.tp.realex.RealexTransaction',
+  'net.nanopay.tx.TxnProcessor',
+  'net.nanopay.tx.TxnProcessorData',
+  'net.nanopay.tx.TxnProcessorUserReference',
+  'net.nanopay.tx.alterna.AlternaFormat',
+  'net.nanopay.tx.alterna.SFTPService',
+  'net.nanopay.tx.alterna.AlternaSFTPService',
+  'net.nanopay.tx.alterna.client.ClientAlternaSFTPService',
+  'net.nanopay.tx.alterna.AlternaTransaction',
+  'net.nanopay.tx.cico.CITransaction',
+  'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.alterna.AlternaTransaction',
+  'net.nanopay.tx.alterna.AlternaCITransaction',
+  'net.nanopay.tx.alterna.AlternaCOTransaction',
+  'net.nanopay.tx.stripe.StripeTransaction',
+  'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -178,7 +183,7 @@ var classes = [
   'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
-  'net.nanopay.tx.tp.alterna.test.EFTTest'
+  'net.nanopay.tx.alterna.test.EFTTest'
 ];
 
 var abstractClasses = [
@@ -188,7 +193,7 @@ var abstractClasses = [
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
-  'net.nanopay.tx.tp.alterna.SFTPService',
+  'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth'

@@ -8,7 +8,7 @@ import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.tp.alterna.AlternaTransaction;
+import net.nanopay.tx.alterna.AlternaTransaction;
 
 import java.util.Calendar;
 import java.util.Date;

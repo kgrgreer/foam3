@@ -106,11 +106,7 @@ public class TransactionDAO
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED
         && transaction.getStatus() == TransactionStatus.DECLINED ) {
         //pay others by bank account directly
-        if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-          paymentFromBankAccountReject(x, transaction);
-        } else {
-          cashinReject(x, transaction);
-        }
+        return executeTransaction(x, transaction);
       }
     }
     if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
@@ -141,37 +137,41 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t) {
-    Transfer[] ts = t.createTransfers(x);
-
+    HashMap<String, Transfer[]> hm = t.mapTransfers();
+    Transfer[] transfers = new Transfer[]{};
     // TODO: disallow or merge duplicate accounts
-    if ( ts.length != 1 ) {
-      validateTransfers(ts);
+    for ( Transfer[] ts : hm.values() ){
+        validateTransfers(ts);
+        int k = transfers.length;
+        transfers = Arrays.copyOf(transfers, transfers.length + ts.length);
+        for (int i = k; i < transfers.length; i++) {
+          transfers[i] = ts[i - k];
+        }
     }
-    return lockAndExecute(x, t, ts, 0);
+    return lockAndExecute(x, t, transfers, 0);
   }
 
   void validateTransfers(Transfer[] ts)
     throws RuntimeException
   {
-    if ( ts.length == 0 ) return;
 
-    long c = 0, d = 0;
+    // for CICO temporarily length == 1, should be 2 when we add trust account
+    if ( ts.length == 0 || ts.length == 1) return;
+
+    long total = 0;
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
+
+      if ( t.getAmount() == 0  ) throw new RuntimeException("Zero transfer disallowed.");
 
       if ( getAccountDAO().find(t.getAccountId()) == null ) {
         throw new RuntimeException("Uknown account " + t.getAccountId());
       }
 
-      if ( t.getAmount() > 0 ) {
-        c += t.getAmount();
-      } else {
-        d += t.getAmount();
-      }
+      total += t.getAmount();
     }
 
-    if ( c != -d ) throw new RuntimeException("Debits and credits don't match.");
-    if ( c == 0  ) throw new RuntimeException("Zero transfer disallowed.");
+    if ( total != 0 ) throw new RuntimeException("Debits and credits don't match.");
   }
 
   /** Sorts array of transfers. **/

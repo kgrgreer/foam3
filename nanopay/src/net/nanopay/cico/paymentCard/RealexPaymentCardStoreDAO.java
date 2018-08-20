@@ -17,7 +17,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.tx.tp.TxnProcessorUserReference;
+import net.nanopay.tx.TxnProcessorUserReference;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
 import java.util.List;
@@ -36,7 +36,7 @@ public class RealexPaymentCardStoreDAO
   @Override
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
-    if ( ! net.nanopay.tx.tp.TxnProcessor.REALEX.equals(card.getTxnProcessor()) ) {
+    if ( ! net.nanopay.tx.TxnProcessor.REALEX.equals(card.getTxnProcessor()) ) {
       return getDelegate().put_(x, obj);
     }
     User user = (User)x.get("user");
@@ -72,7 +72,7 @@ public class RealexPaymentCardStoreDAO
         }
         processorReference.setReference(reference);
         processorReference.setUserId(user.getId());
-        processorReference.setProcessorId(net.nanopay.tx.tp.TxnProcessor.REALEX);
+        processorReference.setProcessorId(net.nanopay.tx.TxnProcessor.REALEX);
         txnProcessorUserReferenceDAO.put(processorReference);
       } catch ( Throwable e ) {
         throw new RuntimeException(e);
