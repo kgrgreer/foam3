@@ -103,11 +103,11 @@ foam.CLASS({
 
   methods: [
     function initE(){
-      this 
+      this
         .addClass(this.myClass())
         .start().addClass('status')
           .start('p').addClass('account-status').add('Account ID ' + this.user.id).end()
-          .start().addClass('generic-status Invoice-Status-Paid').add('Active').end()
+          .start().addClass('generic-status').addClass('Invoice-Status-Paid').add('Active').end()
         .end()
         .start().addClass('line').end()
         .start().addClass('Container')
@@ -165,7 +165,6 @@ foam.CLASS({
 
         this.user.createdPwd = true;
         this.user.onboarded = true;
-        this.user.passwordExpiry = null;
         this.userDAO.put(this.user).then(function (result) {
           self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a){
             self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));

@@ -22,12 +22,12 @@ foam.INTERFACE({
         {
           name: 'timeFrame',
           javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-          swiftType: 'TransactionLimitTimeFrame'
+          of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
         },
         {
           name: 'type',
           javaType: 'net.nanopay.tx.model.TransactionLimitType',
-          swiftType: 'TransactionLimitType'
+          of: 'net.nanopay.tx.model.TransactionLimitType',
         }
       ]
     },
@@ -39,6 +39,11 @@ foam.INTERFACE({
       swiftThrows: true,
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'Context'
+        },
+        {
           name: 'userId',
           javaType: 'long',
           swiftType: 'Int'
@@ -46,12 +51,12 @@ foam.INTERFACE({
         {
           name: 'timeFrame',
           javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-          swiftType: 'TransactionLimitTimeFrame'
+          of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
         },
         {
           name: 'type',
           javaType: 'net.nanopay.tx.model.TransactionLimitType',
-          swiftType: 'TransactionLimitType'
+          of: 'net.nanopay.tx.model.TransactionLimitType',
         }
       ]
     }

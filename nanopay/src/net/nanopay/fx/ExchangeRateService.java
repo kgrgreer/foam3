@@ -4,41 +4,62 @@ import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.interac.model.AcceptExchangeRateFields;
 import net.nanopay.fx.interac.model.AcceptRateApiModel;
 import net.nanopay.fx.model.*;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.apache.commons.io.IOUtils;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
+
+import static foam.mlang.MLang.GT;
 
 public class ExchangeRateService
   extends    ContextAwareSupport
   implements ExchangeRateInterface, NanoService
 {
+  protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
+
+    @Override
+    protected StringBuilder initialValue() {
+      return new StringBuilder();
+    }
+
+    @Override
+    public StringBuilder get() {
+      StringBuilder b = super.get();
+      b.setLength(0);
+      return b;
+    }
+  };
+
+
   protected DAO    exchangeRateDAO_;
-  protected Double feeAmount = new Double(1);
+  protected Double feeAmount = 1d;
 
   @Override
-  public ExchangeRateQuote getRateFromSource(String sourceCurrency, String targetCurrency, double sourceAmount, String valueDate)
-      throws RuntimeException
-  {
+  public ExchangeRateQuote getRateFromSource(String sourceCurrency, String targetCurrency, double sourceAmount, String valueDate) {
     PM pm = new PM(this.getClass(), "getRateFromSource");
 
-    if ( sourceCurrency == null || SafetyUtil.isEmpty(sourceCurrency) ) {
+    if ( SafetyUtil.isEmpty(sourceCurrency) ) {
       throw new RuntimeException("Invalid sourceCurrency");
     }
 
-    if ( targetCurrency == null || SafetyUtil.isEmpty(targetCurrency) ) {
+    if ( SafetyUtil.isEmpty(targetCurrency) ) {
       throw new RuntimeException("Invalid targetCurrency");
     }
 
@@ -65,7 +86,7 @@ public class ExchangeRateService
         quote.setFee(reqFee);
         quote.setDeliveryTime(reqDlvrTime);
 
-        if ( valueDate == null || SafetyUtil.isEmpty(valueDate) ) {
+        if ( SafetyUtil.isEmpty(valueDate) ) {
           reqExRate.setValueDate((Date) new Date());
         } else {
             //reqExRate.setValueDate(valueDate);
@@ -82,7 +103,7 @@ public class ExchangeRateService
         reqExRate.setSourceCurrency(sourceCurrency);
         reqExRate.setTargetCurrency(targetCurrency);
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
-        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
+        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus().getLabel());
         reqExRate.setRate(((ExchangeRate) obj).getRate());
         reqExRate.setTargetAmount((sourceAmount - feeAmount) * reqExRate.getRate());
         reqExRate.setSourceAmount(sourceAmount);
@@ -93,7 +114,7 @@ public class ExchangeRateService
       }
     });
 
-    if ( quote.getCode() == null || SafetyUtil.isEmpty(quote.getCode()) ) {
+    if ( SafetyUtil.isEmpty(quote.getCode()) ) {
       quote.setCode("400");
     }
 
@@ -112,16 +133,14 @@ public class ExchangeRateService
   }
 
   @Override
-  public ExchangeRateQuote getRateFromTarget(String sourceCurrency, String targetCurrency, double targetAmount, String valueDate)
-      throws RuntimeException
-  {
+  public ExchangeRateQuote getRateFromTarget(String sourceCurrency, String targetCurrency, double targetAmount, String valueDate) {
     PM pm = new PM(this.getClass(), "getRateFromSource");
 
-    if ( sourceCurrency == null || SafetyUtil.isEmpty(sourceCurrency) ) {
+    if ( SafetyUtil.isEmpty(sourceCurrency) ) {
       throw new RuntimeException("Invalid sourceCurrency");
     }
 
-    if ( targetCurrency == null || SafetyUtil.isEmpty(targetCurrency) ) {
+    if ( SafetyUtil.isEmpty(targetCurrency) ) {
       throw new RuntimeException("Invalid targetCurrency");
     }
 
@@ -150,7 +169,7 @@ public class ExchangeRateService
         reqExRate.setSourceCurrency(sourceCurrency);
         reqExRate.setTargetCurrency(targetCurrency);
 
-        if ( valueDate == null || SafetyUtil.isEmpty(valueDate) ) {
+        if ( SafetyUtil.isEmpty(valueDate) ) {
           reqExRate.setValueDate((Date) new Date());
         } else {
           try {
@@ -164,7 +183,7 @@ public class ExchangeRateService
         }
 
         reqExRate.setDealReferenceNumber(((ExchangeRate) obj).getDealReferenceNumber());
-        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus());
+        reqExRate.setFxStatus(((ExchangeRate) obj).getFxStatus().getLabel());
         quote.setCode(((ExchangeRate) obj).getCode());
 
         reqExRate.setSourceAmount((targetAmount / reqExRate.getRate()) + feeAmount);
@@ -177,7 +196,7 @@ public class ExchangeRateService
       }
     });
 
-    if ( quote.getCode() == null || SafetyUtil.isEmpty(quote.getCode()) ) {
+    if ( SafetyUtil.isEmpty(quote.getCode()) ) {
       quote.setCode("400");
     }
 
@@ -195,41 +214,57 @@ public class ExchangeRateService
     return quote;
   }
 
-  public void fetchRates()
-  {
+  public void fetchRates() {
     PM pmFetch = new PM(this.getClass(), "fetchRates");
 
-    try {
-      URLConnection connection = new URL("http://api.fixer.io/latest?base=CAD").openConnection();
-      connection.setRequestProperty("Accept-Charset", "UTF-8");
-      InputStream response = connection.getInputStream();
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Count count = (Count) exchangeRateDAO_.where(GT(ExchangeRate.EXPIRATION_DATE, calendar.getTime())).select(new Count());
 
-      JSONParser jsonParser = new JSONParser();
+    if ( count.getValue() == 0 ) {
+      HttpURLConnection conn = null;
+      BufferedReader reader = null;
 
-      JSONObject parsedResponse = (JSONObject) jsonParser.parse(
-          new InputStreamReader(response, "UTF-8")
-      );
+      try {
+        URL url = new URL("https://exchangeratesapi.io/api/latest?base=CAD");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(5 * 1000);
+        conn.setReadTimeout(5 * 1000);
+        conn.setDoInput(true);
+        conn.setRequestProperty("Accept-Charset", "UTF-8");
 
-      JSONObject rates = (JSONObject) parsedResponse.get("rates");
+        StringBuilder builder = sb.get();
+        reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+        for ( String line ; (line = reader.readLine()) != null ; ) {
+          builder.append(line);
+        }
 
-      for ( Object key : rates.keySet() ) {
-        String       currencyCode = (String) key;
-        Double       rateValue    = (Double) rates.get(currencyCode);
-        ExchangeRate rate         = new ExchangeRate();
+        JSONParser parser = getX().create(JSONParser.class);
+        FixerIOExchangeRate response = (FixerIOExchangeRate) parser
+          .parseString(builder.toString(), FixerIOExchangeRate.class);
 
-        rate.setFromCurrency((String) parsedResponse.get("base"));
-        rate.setToCurrency((String) currencyCode);
-        rate.setRate((Double) rateValue);
-        rate.setExpirationDate((Date) new Date());
+        // add one day to expiration date since api fetches rates every day
+        calendar.add(Calendar.DATE, 1);
 
-        exchangeRateDAO_.put(rate);
+        Map rates = response.getRates();
+        for ( Object key : rates.keySet() ) {
+          exchangeRateDAO_.put(new ExchangeRate.Builder(getX())
+            .setFromCurrency(response.getBase())
+            .setToCurrency((String) key)
+            .setRate((Double) rates.get(key))
+            .setExpirationDate(calendar.getTime())
+            .build());
+        }
+      } catch ( Throwable t ) {
+        t.printStackTrace();
+        IOUtils.closeQuietly(reader);
+        if ( conn != null ) {
+          conn.disconnect();
+        }
       }
-
-      pmFetch.log(getX());
-    } catch (Throwable e) {
-      e.printStackTrace();
-      // throw new RuntimeException(e);
     }
+
+    pmFetch.log(getX());
   }
 
   @Override
@@ -239,10 +274,8 @@ public class ExchangeRateService
   }
 
   @Override
-  public AcceptRateApiModel acceptRate(String endToEndId, String dealRefNum)
-      throws RuntimeException
-  {
-    if ( dealRefNum == null || SafetyUtil.isEmpty(dealRefNum) ) {
+  public AcceptRateApiModel acceptRate(String endToEndId, String dealRefNum) {
+    if ( SafetyUtil.isEmpty(dealRefNum) ) {
       throw new RuntimeException("Invalid dealRefNum");
     }
 

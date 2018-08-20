@@ -306,10 +306,10 @@ foam.CLASS({
       background-color: white;
     }
 
-    ^ .shopperImage{
+    ^ .shopperImage {
       margin-left: 20px;
     }
-    ^ .bottomActions{
+    ^ .bottomActions {
       position: fixed;
       bottom: 0;
       width: 100%;
@@ -317,18 +317,29 @@ foam.CLASS({
       background: white;
       z-index: 1;
     }
-    ^ .foam-nanos-auth-ProfilePictureView{
+    ^ .foam-nanos-auth-ProfilePictureView {
       background: #edf0f5;
     }
-    ^ .net-nanopay-ui-ActionView-Save{
+    ^ .net-nanopay-ui-ActionView-Save {
       float: right;
       background: #59a5d5;
       color: white;
       margin-right: 100px;
       margin-left: 40px;  
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Cancel{
+    .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
+    }
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
     }
   `,
 
@@ -338,7 +349,7 @@ foam.CLASS({
     { name: 'BusinessNameLabel', message: 'Registered Business Name' },
     { name: 'BusinessPhoneLabel', message: 'Business Phone' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number' },
+    { name: 'PhoneNumberLabel', message: 'Business Phone Number' },
     { name: 'WebsiteLabel', message: 'Website (optional)' },
     { name: 'BusinessTypeLabel', message: 'Business Type' },
     { name: 'BusinessRegistrationNumberLabel', message: 'Business Registration Number' },
@@ -348,7 +359,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
@@ -492,9 +504,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       factory: function() {
-        if ( this.user.businessAddress.address2 ) return this.user.businessAddress.address2;
+        if ( this.user.businessAddress.suite ) return this.user.businessAddress.suite;
       }
     },
     {
@@ -535,35 +547,7 @@ foam.CLASS({
       }
     }
   ],
-
-  messages: [
-    { name: 'BusinessInformationSubtitle', message: 'Business Information' },
-    { name: 'BusinessAddressSubtitle', message: 'Business Information' },
-    { name: 'BusinessNameLabel', message: 'Registered Business Name' },
-    { name: 'BusinessPhoneLabel', message: 'Business Phone' },
-    { name: 'CountryCodeLabel', message: 'Country Code' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number' },
-    { name: 'WebsiteLabel', message: 'Website (optional)' },
-    { name: 'BusinessTypeLabel', message: 'Business Type' },
-    { name: 'BusinessRegistrationNumberLabel', message: 'Business Registration Number' },
-    { name: 'RegistrationAuthorityLabel', message: 'Registration Authority' },
-    { name: 'RegistrationDateLabel', message: 'Registration Date' },
-    { name: 'BusinessAddressLabel', message: 'Business Address' },
-    { name: 'CountryLabel', message: 'Country' },
-    { name: 'StreetNumberLabel', message: 'Street Number' },
-    { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
-    { name: 'ProvinceLabel', message: 'Province' },
-    { name: 'CityLabel', message: 'City' },
-    { name: 'PostalCodeLabel', message: 'Postal Code' },
-    { name: 'BusinessProfilePictureSubtitle', message: 'Business Logo (optional)' },
-    { name: 'BusinessTypeDescriptionSole', message: 'A sole proprietorship is an unincorporated business owned by an individual.' },
-    { name: 'BusinessTypeDescriptionPart', message: 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.' },
-    { name: 'BusinessTypeDescriptionCorp', message: 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.' },
-    { name: 'BusinessTypeDescriptionNonP', message: 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.' },
-  ],
-
-
+  
   methods: [
     function initE() {
       this.SUPER();
@@ -666,8 +650,9 @@ foam.CLASS({
               .start(this.STREET_NAME_FIELD).addClass('streetNameField').end()
             .end()
           .end()
-          .start('p').add(this.AddressLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
-          .start(this.ADDRESS_FIELD).addClass('fullWidthField').end()
+          .start('p').add(this.Address2Label).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
+          .start(this.SUITE_FIELD).addClass('fullWidthField').end()
+          .start('p').add(this.Address2Hint).addClass('address2Hint').end()
           .start('p').add(this.ProvinceLabel).addClass('fieldVerticalSpacer').addClass('fieldLabel').end()
           .start('div').addClass('dropdownContainer')
             .start(this.PROVINCE_FIELD).end()
@@ -682,7 +667,7 @@ foam.CLASS({
           .start('div')
             .start({
               class: 'foam.nanos.auth.ProfilePictureView',
-              data$: self.businessProfilePicture$,
+              ProfilePictureImage$: self.businessProfilePicture$,
               placeholderImage: 'images/business-placeholder.png'
             }).end()
         .end()
@@ -760,7 +745,7 @@ foam.CLASS({
         this.user.businessAddress.countryId = this.countryField;
         this.user.businessAddress.streetNumber = this.streetNumberField;
         this.user.businessAddress.streetName = this.streetNameField;
-        this.user.businessAddress.address2 = this.addressField;
+        this.user.businessAddress.suite = this.suiteField;
         this.user.businessAddress.regionId = this.provinceField;
         this.user.businessAddress.city = this.cityField;
         this.user.businessAddress.postalCode = this.postalCodeField;

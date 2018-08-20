@@ -14,7 +14,10 @@ foam.CLASS({
     'user'
   ],
 
-  requires: [ 'net.nanopay.invoice.model.Invoice' ],
+  requires: [
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.ui.InvoiceSummaryView'
+  ],
 
   properties: [
     {
@@ -93,9 +96,6 @@ foam.CLASS({
     .overall-label{
       margin-left: 100px;
     }
-    ^ .net-nanopay-invoice-ui-PayableSummaryView .net-nanopay-invoice-ui-SummaryCard{
-      width: 20%;
-    }
     ^ .blue-card-title{
       background: %SECONDARYCOLOR%;
     }
@@ -116,17 +116,24 @@ foam.CLASS({
           //   .start().addClass('resize-button').add('Team').end()
           // .end()
           // .tag({class: 'net.nanopay.invoice.ui.MentionsView'})
-          .tag({class: 'net.nanopay.invoice.ui.PayableSummaryView'})
-          .tag({class: 'net.nanopay.invoice.ui.ReceivablesSummaryView'})
+
+          .tag(this.InvoiceSummaryView, {
+            sumLabel: 'Payable',
+            dao: this.expensesDAO
+          })
+          .tag(this.InvoiceSummaryView, {
+            sumLabel: 'Receivable',
+            dao: this.salesDAO
+          })
           .start().addClass(this.myClass('cashflow-summary'))
             .start('h4').addClass('overall-label').add('Overall Cashflow Summary').end()
-            .start().addClass('overall-receivables inline').add()
+            .start().addClass('overall-receivables').addClass('inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/green-arrow.png'})
               .start('h4').add('+', this.formattedReceivableAmount$.map(function(a){
                 return a == "$NaN" ? '...' : a;
               })).end()
             .end()
-            .start().addClass('overall-payables inline').add()
+            .start().addClass('overall-payables').addClass('inline').add()
               .tag({class:'foam.u2.tag.Image', data: 'images/red-arrow.png'})
               .start('h4').add('-', this.formattedPayableAmount$.map(function(a){
                 return a == "$NaN" ? '...' : a;

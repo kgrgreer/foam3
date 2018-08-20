@@ -141,7 +141,7 @@ foam.CLASS({
           .start().addClass('row')
             .start().addClass('cell').add(this.show00 ? '00' : '').on('click', this.show00 ? this.onButtonPressed : null).end()
             .start().addClass('cell').add('0').on('click', this.onButtonPressed).end()
-            .start().addClass('cell material-icons md-dark')
+            .start().addClass('cell').addClass('material-icons').addClass('md-dark')
               .attrs({ 'aria-hidden': true })
               .add('backspace')
               .on('click', this.onButtonPressed)

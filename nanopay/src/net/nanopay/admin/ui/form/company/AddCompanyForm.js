@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
@@ -212,10 +212,10 @@ foam.CLASS({
             issuingAuthority: companyInfo.issuingAuthority,
             department: companyInfo.jobTitle,
             type: 'Business',
-            group: (this.user.group==='s2hAdmin'?'s2hCustomer':'business'),
+            group: 'business',
             phone: businessPhone,
             address: businessAddress,
-            password: companyInfo.password,
+            desiredPassword: companyInfo.password,
             profilePicture: companyInfo.profilePicture,
             businessIdentificationNumber: companyInfo.registrationNumber,
             website: companyInfo.website,

@@ -20,115 +20,83 @@ function rmfile {
     fi
 }
 
-function install {
-    # Only support MacOS install/setup
-    if [ "$OSTYPE" != darwin17 ]; then
-        return
-    fi
+function quit {
+  # Unset error on exit
+  set +e
+  exit $1
+}
 
-    cd "$NANOPAY_HOME"
+function install {
+    MACOS='darwin*'
+
+    cd "$PROJECT_HOME"
 
     git submodule init
     git submodule update
 
     npm install
 
-    cd tools
-    ./tomcatInstall.sh
-
     setenv
-    set_doc_base
-}
 
-function set_doc_base {
-    # setup docbase
-    # <Host>
-    #    <Context docBase="$catalina_doc_base" path="/dev" />
-    # </Host>
-    if [ -f "$CATALINA_HOME/conf/server.xml" ]; then
-        if ! grep -q "docBase" "$CATALINA_HOME/conf/server.xml"; then
-            printf "adding docBase\n"
-            # TODO: figure how ot insert \n before <\Host> on macos
-            sed -i -e "s,</Host>,<Context docBase=\"\${catalina_doc_base}\" path=\"/dev\" /></Host>,g" "$CATALINA_HOME/conf/server.xml"
-        else
-            sed -i -e "s,docBase=.*path=,docBase=\"\${catalina_doc_base}\" path=,g" "$CATALINA_HOME/conf/server.xml"
-        fi
+    setup_jce
+
+    if [[ $IS_MAC -eq 1 ]]; then
+        mkdir -p "$NANOPAY_HOME/journals"
+        mkdir -p "$NANOPAY_HOME/logs"
     fi
+
+    # git hooks
+    git config core.hooksPath .githooks
+    git config submodule.recurse true
 }
 
 function backup {
-    BACKUP_HOME="/opt/backup"
+  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
+    # Preventing this from running on non AWS
+    return
+  fi
 
-    # backup journals in event of file incompatiblity between versions
-    if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-        printf "backup\n"
-        DATE=$(date +%Y%m%d_%H%M%S)
-        mkdir -p "$BACKUP_HOME/$DATE"
-        COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+  BACKUP_HOME="/opt/backup"
 
-        cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-    fi
+  # backup journals in event of file incompatiblity between versions
+  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
+      printf "backup\n"
+      DATE=$(date +%Y%m%d_%H%M%S)
+      mkdir -p "$BACKUP_HOME/$DATE"
+      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
+
+      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
+  fi
 }
 
-function build_war {
-    #
-    # NOTE: this removes the target directory where journal preparation occurs.
-    # invoke deploY_journals after build_war
-    #
-    if [ "$CLEAN_BUILD" -eq 1 ]; then
-      mvn clean
+function setup_jce {
+  local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
 
-      cd "$NANOPAY_HOME"
+  # For Java 8; including on linux
+  if [[ $JAVA_LIB_SECURITY = *"_"* || $JAVA_LIB_SECURITY = *"java-8-oracle"* ]]; then
+    JAVA_LIB_SECURITY="$JAVA_HOME/jre/lib/security"
+  fi
 
-      # Copy over static web files to ROOT
-      mkdir -p "$WAR_HOME"
+  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
+    mkdir tmp_jce
+    cd tmp_jce
+    curl -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
+    unzip jce_policy-8.zip
+    sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+    cd ..
+    rm -rf tmp_jce
 
-      cp -r foam2 "$WAR_HOME"
-      rm -r "$WAR_HOME/foam2/src/com"
-      cp -r interac/src/net "$WAR_HOME/foam2/src/"
-      cp -r nanopay "$WAR_HOME"
-      cp -r merchant "$WAR_HOME"
-      cp -r favicon "$WAR_HOME"
-
-      # Move images to ROOT/images
-      mkdir -p "$WAR_HOME/images"
-      cp -r "nanopay/src/net/nanopay/images" "$WAR_HOME"
-      cp -r "merchant/src/net/nanopay/merchant/images" "$WAR_HOME"
-    fi
-
-    # build and create war
-    ./gen.sh
-    if [ "$CLEAN_BUILD" -ne 1 ]; then
-      mvn install -Dbuild=dev -o
+    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
+      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
     else
-      mvn install
+      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
     fi
-}
-
-function undeploy_war {
-    if [ -d "$CATALINA_BASE/webapps/ROOT" ]; then
-        rm -r "$CATALINA_BASE/webapps/ROOT"
-    fi
-}
-
-function deploy_war {
-    #
-    # NOTE: war must be named ROOT.war
-    # otherwise some other Tomcat configuration is required that I've
-    # yet to figure out.
-    #
-    cp "$WAR_HOME"/../ROOT.war "$CATALINA_BASE/webapps/ROOT.war.tmp"
-    mv "$CATALINA_BASE/webapps/ROOT.war.tmp" "$CATALINA_BASE/webapps/ROOT.war"
-
-    # required when tomcat is not running when war copied into place
-    #mkdir -p "$CATALINA_BASE/webapps/NANOPAY"
-    #cd "$CATALINA_BASE/webapps/NANOPAY"
-    #jar -xf ../NANOPAY.war
+  fi
 }
 
 function deploy_journals {
     # prepare journals
-    cd "$NANOPAY_HOME"
+    cd "$PROJECT_HOME"
 
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was previously creating
@@ -138,11 +106,11 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
 
-    if [ ! -f $JOURNALS ]; then
-        echo "ERROR: missing $JOURNALS file."
-        exit 1
+    if [[ ! -f $JOURNALS ]]; then
+        echo "ERROR :: Missing $JOURNALS file."
+        quit 1
     fi
 
     while read file; do
@@ -151,25 +119,6 @@ function deploy_journals {
             cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
         fi
     done < $JOURNALS
-
-    # one-time copy of runtime journals from /opt/tomcat/bin to /mnt/journals
-    if [ "$CATALINA_HOME" == "/opt/tomcat" ]; then
-        COUNT="$(ls -l $JOURNAL_HOME | grep -v '.0' | wc -l | sed 's/ //g')"
-        if [ "$COUNT" -eq 0 ]; then
-            printf "migrating journals\n"
-
-            JOURNALS="$JOURNAL_OUT/journals"
-            if [ -f $JOURNALS ]; then
-                # move non journal.zero files
-                while read file; do
-                    # one last check, just in case
-                    if [ ! -f "$JOURNAL_HOME/$file" ] && [ -f "$CATALINA_HOME/bin/$file" ]; then
-                        cp "$CATALINA_HOME/bin/$file" "$JOURNAL_HOME/$file" 2>/dev/null
-                    fi
-                done < $JOURNALS
-            fi
-        fi
-    fi
 }
 
 function migrate_journals {
@@ -178,89 +127,102 @@ function migrate_journals {
     fi
 }
 
-function status_tomcat {
-    ps -a | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" > /dev/null
-    return $?
+function build_jar {
+    echo "INFO :: Building nanos JAR..."
+    cd "$PROJECT_HOME"
+
+    if [ "$CLEAN_BUILD" -eq 1 ]; then
+        if [ -d "build/" ]; then
+            rm -rf build
+            mkdir build
+        fi
+
+        mvn clean
+    fi
+
+    ./gen.sh
+    mvn package
 }
 
-function shutdown_tomcat {
-    #
-    # Don't call shutdown.sh if the pid doesn't exists, it will exit.
-    #
-    PID="$(cat "$CATALINA_PID")"
-    if [ ! -z "${PID}" ]; then
-        if ps -p "${PID}" | grep -q 'java'; then
-            "$CATALINA_HOME/bin/shutdown.sh" "-force" > /dev/null 2>&1
+function delete_runtime_journals {
+  if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
+    echo "INFO :: Runtime journals deleted."
+    rmdir "$JOURNAL_HOME"
+    mkdir -p "$JOURNAL_HOME"
+  fi
+}
+
+function stop_nanos {
+    echo "INFO :: Stopping nanos..."
+
+    RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
+    if [[ -f $NANOS_PIDFILE ]]; then
+        PID=$(cat "$NANOS_PIDFILE")
+        if [[ "$PID" != "$RUNNING_PID" ]]; then
+            PID=$RUNNING_PID
         fi
+    else
+        PID=$RUNNING_PID
     fi
 
-    if status_tomcat -eq 0 ; then
-        printf "killing tomcat..."
-        kill $(ps -ef | grep -v grep | grep "java.*-Dcatalina.home=$CATALINA_HOME" | awk '{print $2}')
-        wait_time=15
-        while status_tomcat -eq 0
-        do
-            if [ "$wait_time" -eq 0 ]; then
-                break;
-            fi
-            wait_time=$(($wait_time - 1))
-
-            printf "."
-            sleep 1;
-        done
-        if status_tomcat -eq 0 ; then
-            printf "failed to kill tomcat process.\n"
-            exit 1
-        else
-            printf "killed.\n"
-        fi
+    if [[ -z "$PID" ]]; then
+        echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
+        delete_runtime_journals
+        return
     fi
+
+    TRIES=0
+    SIGNAL=TERM
+    set +e
+    while kill -0 $PID &>/dev/null; do
+        kill -$SIGNAL $PID
+        sleep 1
+        TRIES=$(($TRIES + 1))
+        if [ $TRIES -gt 5 ]; then
+            SIGNAL=KILL
+        elif [ $TRIES -gt 10 ]; then
+            echo "ERROR :: Failed to kill nanos!"
+            quit 1
+        fi
+    done
+    set -e
+
+    rmfile "$NANOS_PIDFILE"
 
     backup
-
-    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
-        rmdir "$JOURNAL_HOME"
-        mkdir -p "$JOURNAL_HOME"
-    fi
+    delete_runtime_journals
 }
 
-function start_tomcat {
-    if status_tomcat -eq 0; then
-        echo "instance of tomcat already running.\n"
-        exit 1
+function status_nanos {
+    if [ ! -f "$NANOS_PIDFILE" ]; then
+        echo "INFO :: Nanos not running."
+        quit 1
+    elif kill -0 $(cat "$NANOS_PIDFILE") &>/dev/null ; then
+        echo "INFO :: Nanos running."
+        quit 0
     else
-        ARGS=
-        if [ $DEBUG -eq 1 ]; then
-            ARGS="jpda"
-        fi
-
-        if [ $FOREGROUND -eq 1 ]; then
-            ARGS="$ARGS run"
-        else
-            ARGS="$ARGS start"
-        fi
-
-        mkdir -p "$CATALINA_BASE/logs"
-        "$CATALINA_HOME/bin/catalina.sh" $ARGS
+        echo "ERROR :: Stale PID file."
+        quit -1
     fi
 }
 
 function start_nanos {
-    printf "starting nanos\n"
+    echo "INFO :: Starting nanos..."
 
-    command -v realpath >/dev/null 2>&1 || {
-        echo >&2 "'realpath' required but it's not installed.  Aborting.";
-        exit 1;
-    }
-
-    cd "$NANOPAY_HOME"
-    mvn clean
-    ./find.sh "$NANOPAY_HOME" "$JOURNAL_OUT"
-    ./gen.sh
-    mvn install
-    mvn dependency:build-classpath -Dmdep.outputFile=cp.txt;
+    cd "$PROJECT_HOME"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
     deploy_journals
-    java $JAVA_OPTS -cp `cat cp.txt`:`realpath target/*.jar | paste -sd ":" -` foam.nanos.boot.Boot
+
+    if [ $DEBUG -eq 1 ]; then
+        JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
+    fi
+
+    if [ $DAEMONIZE -eq 0 ]; then
+        exec java $JAVA_OPTS -jar target/root-0.0.1.jar
+    else
+        nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
+        echo $! > "$NANOS_PIDFILE"
+    fi
 }
 
 function testcatalina {
@@ -275,100 +237,160 @@ function beginswith {
     case $2 in "$1"*) true;; *) false;; esac;
 }
 
+function cleanup_tomcat {
+  export CATALINA_PID="/tmp/catalina_pid"
+
+  # Handle old machines which have CATALINA_HOME defined
+  if [[ -n $CATALINA_HOME && $CATALINA_HOME == "/Library/Tomcat" ]]; then
+      LOG_HOME="$CATALINA_HOME/logs"
+  fi
+
+  while [ -z "$CATALINA_HOME" ]; do
+      testcatalina /Library/Tomcat
+      if [ ! -z "$CATALINA_HOME" ]; then
+          # local development
+          LOG_HOME="$CATALINA_HOME/logs"
+          break
+      fi
+      testcatalina /opt/tomcat
+      if [ ! -z "$CATALINA_HOME" ]; then
+          break;
+      fi
+      testcatalina "$HOME/tools/tomcat"
+      if [ ! -z "$CATALINA_HOME" ]; then
+          break
+      fi
+      printf "CATALINA_HOME not found.\n"
+      return
+  done
+
+  "$CATALINA_HOME/bin/shutdown.sh" -force || true &>/dev/null
+}
+
 function setenv {
-
-    export NANOPAY_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
-
-    export JOURNAL_OUT="$NANOPAY_HOME"/target/journals
-
-    if [ -z "$JOURNAL_HOME" ]; then
-       export JOURNAL_HOME="$NANOPAY_HOME/journals"
+    if [ -z "$NANOPAY_HOME" ]; then
+        export NANOPAY_HOME="/opt/nanopay"
     fi
 
+    if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
+        echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
+        quit 1
+    fi
+
+    if [ -z "$LOG_HOME" ]; then
+        LOG_HOME="$NANOPAY_HOME/logs"
+    fi
+
+    local MACOS='darwin*'
+    local LINUXOS='linux-gnu'
+    IS_MAC=0
+    IS_LINUX=0
+
+    if [[ $OSTYPE =~ $MACOS ]]; then
+      IS_MAC=1
+    elif [[ $OSTYPE =~ $LINUXOS ]]; then
+      IS_LINUX=1
+    fi
+
+    export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
+
+    export JOURNAL_OUT="$PROJECT_HOME"/target/journals
+
+    export JOURNAL_HOME="$NANOPAY_HOME/journals"
+
+    export NANOS_PIDFILE="/tmp/nanos.pid"
+
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
-        NANOPAY_HOME=/pkg/stack/stage/NANOPAY
-        cd "$NANOPAY_HOME"
+        PROJECT_HOME=/pkg/stack/stage/NANOPAY
+        cd "$PROJECT_HOME"
         cwd=$(pwd)
         npm install
 
+        mkdir -p "$NANOPAY_HOME"
+
         # Production use S3 mount
-        export JOURNAL_HOME=/mnt/journals
+        #if [[ -d "/mnt/journals" ]]; then
+        # FIXME: test and don't create if it exists
+        #   ln -sn "$JOURNAL_HOME" "/mnt/journals"
+        #else
+            mkdir -p "$JOURNAL_HOME"
+        #fi
 
         CLEAN_BUILD=1
-    fi
+        IS_AWS=1
 
-    export CATALINA_PID="/tmp/catalina_pid"
-    touch "$CATALINA_PID"
-
-    while [ -z "$CATALINA_HOME" ]; do
-        #printf "Searching for catalina... "
-        testcatalina /Library/Tomcat
-        if [ ! -z "$CATALINA_HOME" ]; then
-            break
+        mkdir -p "$LOG_HOME"
+    elif [[ $IS_MAC -eq 1 ]]; then
+        # transition support until next build.sh -i
+        if [[ ! -d "$JOURNAL_HOME" ]]; then
+            JOURNAL_HOME="$PROJECT_HOME/journals"
+            mkdir -p $JOURNAL_HOME
+            mkdir -p $LOG_HOME
         fi
-        testcatalina /opt/tomcat
-        if [ ! -z "$CATALINA_HOME" ]; then
-            # TODO: place on S3 mount
-            break;
-        fi
-        testcatalina "$HOME/tools/tomcat"
-        if [ ! -z "$CATALINA_HOME" ]; then
-            break
-        fi
-        printf "CATALINA_HOME not found.\n"
-        printf "Set CATALINA_HOME environment variable to the location of Tomcat."
-        exit 1
-    done
+    else
+        # linux
+        mkdir -p $JOURNAL_HOME
+        mkdir -p $LOG_HOME
+    fi
 
-    if [ -z "$CATALINA_BASE" ]; then
-        export CATALINA_BASE="$CATALINA_HOME"
+    if [[ $TEST -eq 1 ]]; then
+        rmdir /tmp/nanopay
+        mkdir /tmp/nanopay
+        JOURNAL_HOME=/tmp/nanopay
+        mkdir -p $JOURNAL_HOME
+        echo "INFO :: Cleaned up temporary journal files."
     fi
-    if [ -z "$CATALINA_PORT_HTTP" ]; then
-        export CATALINA_PORT_HTTP=8080
-    fi
-    if [ -z "$CATALINA_PORT_HTTPS" ]; then
-        export CATALINA_PORT_HTTPS=8443
-    fi
-    if [ -z "$CATALINA_DOC_BASE" ]; then
-        export CATALINA_DOC_BASE="$NANOPAY_HOME"
-    fi
-    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
-        # remove journal file that find.sh was creating
-        rm "$JOURNAL_HOME"
-    fi
-    mkdir -p $JOURNAL_HOME
 
-    WAR_HOME="$NANOPAY_HOME"/target/root-0.0.1
+    WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
     if [ -z "$JAVA_OPTS" ]; then
         export JAVA_OPTS=""
     fi
+    JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$CATALINA_BASE/logs"
+    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
-    if [ -z "$CATALINA_OPTS" ]; then
-        export CATALINA_OPTS=""
+    # keystore
+    if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
+        cd "$PROJECT_HOME"
+        printf "INFO :: Generating keystore...\n"
+        if [[ $TEST -eq 1 ]]; then
+          ./tools/keystore.sh -t
+        else
+          ./tools/keystore.sh
+        fi
     fi
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_http=${CATALINA_PORT_HTTP}"
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_port_https=${CATALINA_PORT_HTTPS}"
-    CATALINA_OPTS="${CATALINA_OPTS} -Dcatalina_doc_base=${CATALINA_DOC_BASE}"
+
+    if [[ -z $JAVA_HOME ]]; then
+      if [[ $IS_MAC -eq 1 ]]; then
+        JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
+      elif [[ $IS_LINUX -eq 1 ]]; then
+        JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+      fi
+    fi
+
+    # Check if connected to the interwebs
+    ping -q -W1 -c1 google.com &>/dev/null && INTERNET=1 || INTERNET=0
 }
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -b : Generate source, compile, and deploy war and journals."
-    echo "  -c : Generate source and compile. Run maven under the default-build profile."
-    echo "  -d : Run with JDPA debugging enabled."
-    echo "  -j : Delete runtime journals"
-    echo "  -i : Install npm and tomcat libraries"
+    echo "  -b : Build but don't start nanos."
+    echo "  -r : Start nanos with whatever was last built."
+    echo "  -s : Stop a running daemonized nanos."
+    echo "  -g : Output running/notrunning status of daemonized nanos."
+    echo "  -t : Run tests."
+    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
+    echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
     echo "  -m : Run migration scripts"
-    echo "  -n : Run nanos."
-    echo "  -r : Just restart the existing running Tomcat."
-    echo "  -s : Stop Tomcat."
-    echo "  -f : Run Tomcat in foreground."
+    echo "  -i : Install npm and git hooks"
     echo "  -h : Print usage information."
+    echo "  -d : Run with JDPA debugging enabled."
+    echo "  -j : Delete runtime journals and build and run app as usual."
+    echo ""
+    echo "No options implys -b and -s, (build and then start)."
 }
 
 ############################
@@ -376,68 +398,76 @@ function usage {
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
-FOREGROUND=0
-DELETE_RUNTIME_JOURNALS=0
+DEBUG_PORT=8000
+DEBUG_SUSPEND=n
+JAVA_OPTS=
 INSTALL=0
-RESTART_ONLY=0
-RUN_NANOS=0
 RUN_MIGRATION=0
-STOP_TOMCAT=0
+START_ONLY=0
+TEST=0
+IS_AWS=0
+DAEMONIZE=0
+STOP_ONLY=0
+RESTART=0
+STATUS=0
+DELETE_RUNTIME_JOURNALS=0
 
-while getopts "bcdfhijmnrs" opt ; do
+while getopts "brsgtzcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
-        f) FOREGROUND=1 ;;
-        j) DELETE_RUNTIME_JOURNALS=1 ;;
+        g) STATUS=1 ;;
+        h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
+        j) DELETE_RUNTIME_JOURNALS=1 ;;
         m) RUN_MIGRATION=1 ;;
-        n) RUN_NANOS=1 ;;
-        r) RESTART_ONLY=1 ;;
-        s) STOP_TOMCAT=1 ;;
-        h) usage ; exit 0 ;;
-        ?) usage ; exit 1 ;;
+        r) START_ONLY=1 ;;
+        s) STOP_ONLY=1 ;;
+        t) TEST=1 ;;
+        z) DAEMONIZE=1 ;;
+        ?) usage ; quit 1 ;;
     esac
 done
 
-if [ "$INSTALL" -eq 1 ]; then
+setenv
+
+if [[ $INSTALL -eq 1 ]]; then
     install
-    exit 0
+    quit 0
 fi
 
-setenv
-if [ "$RUN_NANOS" -eq 1 ]; then
-    start_nanos
-elif [ "$BUILD_ONLY" -eq 1 ]; then
-    build_war
+if [[ $TEST -eq 1 ]]; then
+  echo "INFO :: Running all tests..."
+  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+fi
+
+if [[ $DIST -eq 1 ]]; then
+    dist
+    quit 0
+fi
+
+if [ "$BUILD_ONLY" -eq 1 ]; then
+    build_jar
     deploy_journals
-elif [ "$STOP_TOMCAT" -eq 1 ]; then
-    shutdown_tomcat
-    printf "Tomcat stopped.\n"
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
+elif [ "$START_ONLY" -eq 1 ]; then
+    stop_nanos
+    start_nanos
+elif [ "$STOP_ONLY" -eq 1 ]; then
+    stop_nanos
+elif [ "$STATUS" -eq 1 ]; then
+    status_nanos
 else
-    shutdown_tomcat
-    if [ "$RESTART_ONLY" -eq 0 ]; then
-        build_war
-        undeploy_war
-        deploy_journals
-        migrate_journals
-        if [ "$FOREGROUND" -eq 1 ]; then
-            deploy_war
-            start_tomcat
-        else
-            #
-            # NOTE: Tomcat needs to be running to property unpack and deploy war
-            # on the linux production instances. Either work on macos localhost.
-            #
-            start_tomcat
-            deploy_war
-        fi
-    else
-        start_tomcat
-    fi
+    # cleanup old tomcat instances
+    cleanup_tomcat
+
+    stop_nanos
+
+    build_jar
+    deploy_journals
+    start_nanos
 fi
 
-exit 0
+quit 0

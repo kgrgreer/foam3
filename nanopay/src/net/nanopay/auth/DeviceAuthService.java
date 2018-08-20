@@ -61,7 +61,8 @@ public class DeviceAuthService
     }
 
     Device device = (Device) data.get(0);
-    if ( device == null || device.getOwner() == null ) {
+    device = (Device) device.fclone();
+    if ( device == null || device.findOwner(x) == null ) {
       throw new AuthenticationException("Device not found");
     }
 
@@ -77,6 +78,6 @@ public class DeviceAuthService
     session.setUserId(user.getId());
     session.setContext(session.getContext().put("user", user));
     sessionDAO_.put(session);
-    return (User) Password.sanitize(user);
+    return user;
   }
 }

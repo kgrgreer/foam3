@@ -1,76 +1,59 @@
 package net.nanopay.tx;
 
-import foam.core.*;
-import foam.dao.*;
-import foam.nanos.auth.User;
-import net.nanopay.model.Account;
+import foam.core.X;
+import foam.nanos.logger.Logger;
+import net.nanopay.account.Balance;
+
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
 
 /** Represents a transfer of assets from one account to another. **/
 public class Transfer
   implements Comparable
 {
-  protected long    userId_;
+  protected long    accountId_;
   protected long    amount_;
-  protected User    user_    = null;
-  protected Account account_ = null;
+  protected String  currency_;
 
-  public Transfer(long userId, long amount) {
-    userId_ = userId;
+  public Transfer(long accountId, long amount) {
+    accountId_ = accountId;
     amount_ = amount;
   }
 
   public Object getLock() {
-    return String.valueOf(getUserId()).intern();
+    return String.valueOf(getAccountId()).intern();
   }
 
-  public long getUserId() {
-    return userId_;
+  public long getAccountId() {
+    return accountId_;
   }
 
   public long getAmount() {
     return amount_;
   }
 
-  public Account getAccount() {
-    return account_;
-  }
-
   public int compareTo(Object other) {
     Transfer t2 = (Transfer) other;
-    long     i1 = getUserId();
-    long     i2 = t2.getUserId();
+    long     i1 = getAccountId();
+    long     i2 = t2.getAccountId();
 
     return i1 == i2 ? 0 : i1 > i2 ? 1 : -1;
   }
 
   /** Validate that the user exists and has sufficient balance **/
-  public void validate(X x)
+  public void validate(X x, Balance balance)
     throws RuntimeException
   {
-    DAO  userDAO = (DAO) x.get("localUserDAO");
-    User user    = (User) userDAO.find(getUserId());
-
-    if ( user == null ) throw new RuntimeException("Uknown user " + getUserId());
-
-    user_ = user;
-
-    DAO     accountDAO = (DAO) x.get("localAccountDAO");
-    Account account    = (Account) accountDAO.find(getUserId());
-
-    account_ = account == null ? new Account() : account;
-
     if ( getAmount() < 0 ) {
-      if ( -getAmount() > account_.getBalance() ) throw new RuntimeException("Insufficient balance in account " + getUserId());
+      if ( -getAmount() > balance.getBalance() ) {
+        ((Logger) x.get("logger")).debug("Transfer.validate account:", getAccountId(), "amount:", getAmount(), "balance:", balance.getBalance());
+        throw new RuntimeException("Insufficient balance in account " + getAccountId());
+      }
     }
   }
 
   /** Execute the balance transfer, updating the user's balance. **/
-  public void execute(X x) {
-    DAO     accountDAO = (DAO) x.get("localAccountDAO");
-    Account account    = getAccount();
-
-    account.setBalance(account.getBalance() + getAmount());
-
-    accountDAO.put(account);
+  public void execute(X x, Balance balance) {
+    balance.setBalance(balance.getBalance() + getAmount());
   }
 }

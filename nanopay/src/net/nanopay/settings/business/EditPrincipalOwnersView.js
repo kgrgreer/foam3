@@ -36,7 +36,7 @@ foam.CLASS({
     'foam.dao.ArrayDAO'
   ],
 
-  css:`
+  css: `
     ^ {
       margin: auto;
     }
@@ -437,17 +437,16 @@ foam.CLASS({
       width: 540px;
       padding-bottom: 75px;
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Save{
+    .bottomActions > .net-nanopay-ui-ActionView-Save {
       float: right;
       background: #59a5d5;
       color: white;
       margin-right: 100px;
       margin-left: 40px;  
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Cancel{
+    .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
     }
-
     ^ .deleteButton, ^ .editButton {
       width: 64px;
       height: 24px;
@@ -462,6 +461,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
     }
+
     ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
       width: 29px;
       font-size: 10px;
@@ -475,6 +475,18 @@ foam.CLASS({
     ^ .deleteButton:focus, ^ .editButton:focus {
       cursor: pointer;
       background-color: rgba(164, 179, 184, 0.3) !important;
+    }
+
+    ^ .address2Hint {
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin-top: 5px;
+      margin-bottom: 0px;
     }
   `,
 
@@ -494,7 +506,8 @@ foam.CLASS({
     { name: 'CountryLabel', message: 'Country' },
     { name: 'StreetNumberLabel', message: 'Street Number' },
     { name: 'StreetNameLabel', message: 'Street Name' },
-    { name: 'AddressLabel', message: 'Address' },
+    { name: 'Address2Label', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' }
@@ -505,7 +518,7 @@ foam.CLASS({
       name: 'principalOwnersDAO',
       factory: function() {
         if ( this.user.principalOwners ) {
-          if ( this.user.principalOwners.length > 0) this.addLabel = 'Add Another Principal Owner';
+          if ( this.user.principalOwners.length > 0 ) this.addLabel = 'Add Another Principal Owner';
           return foam.dao.ArrayDAO.create({ array: this.user.principalOwners, of: 'foam.nanos.auth.User' });
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
@@ -600,7 +613,10 @@ foam.CLASS({
     {
       name: 'principleTypeField',
       value: 'Shareholder',
-      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Shareholder', 'Owner', 'Officer', 'To Be Filled Out' ] }
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: ['Shareholder', 'Owner', 'Officer']
+      }
     },
     {
       class: 'Date',
@@ -617,7 +633,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           }
-        })
+        });
       },
       factory: function() {
         return this.country || 'CA';
@@ -635,14 +651,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'addressField',
+      name: 'suiteField',
       value: ''
     },
     {
       name: 'provinceField',
       view: function(_, X) {
-        var choices = X.data.slot(function (countryField) {
-          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ""));
+        var choices = X.data.slot(function(countryField) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ''));
         });
         return foam.u2.view.ChoiceView.create({
           objToChoice: function(region) {
@@ -696,18 +712,20 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.principleTypeField = 'Shareholder';
-      var modeSlot = this.isDisplayMode$.map(function(mode) { return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW; });
+      var modeSlot = this.isDisplayMode$.map(function(mode) {
+        return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      });
       var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
         return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-      })
+      });
       this.addClass(this.myClass())
         .start().addClass('widthWrapper')
         .start('h1').add('Edit Principal Owner(s) Profile').end()
         .start('div')
           .start('div')
             .addClass('fullWidthField')
-            .enableClass('hideTable', this.user.principalOwners$.map(function(a){ 
-              if (a[0]) return true;
+            .enableClass('hideTable', this.user.principalOwners$.map(function(a) {
+              if ( a[0] ) return true;
               return false;
             }), true)
             .start({
@@ -722,7 +740,7 @@ foam.CLASS({
                   label: '',
                   tableCellFormatter: function(value, obj, axiom) {
                     this.start('div').addClass('deleteButton')
-                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-delete.svg'}).end()
+                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-delete.svg' }).end()
                       .start('p').addClass('buttonLabel').add('Delete').end()
                       .on('click', function(evt) {
                         evt.stopPropagation();
@@ -739,10 +757,12 @@ foam.CLASS({
                 foam.core.Property.create({
                   name: 'edit',
                   label: '',
-                  factory: function() { return {}; },
+                  factory: function() {
+                    return {};
+                  },
                   tableCellFormatter: function(value, obj, axiom) {
                     this.start('div').addClass('editButton')
-                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg'}).end()
+                      .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
                       .start('p').addClass('buttonLabel').add('Edit').end()
                       .on('click', function(evt) {
                         evt.stopPropagation();
@@ -892,8 +912,9 @@ foam.CLASS({
                 .start(this.STREET_NAME_FIELD, { mode$: modeSlot }).addClass('fullWidthField').addClass('streetNameField').end()
               .end()
             .end()
-            .start('p').add(this.AddressLabel).addClass('infoLabel').end()
-            .start(this.ADDRESS_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.Address2Label).addClass('infoLabel').end()
+            .start(this.SUITE_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
+            .start('p').add(this.Address2Hint).addClass('address2Hint').end()
             .start('p').add(this.ProvinceLabel).addClass('infoLabel').end()
             .start('div').addClass('dropdownContainer')
               .start(this.PROVINCE_FIELD, { mode$: modeSlot }).end()
@@ -918,13 +939,13 @@ foam.CLASS({
           .end()
         .end()
         .end()
-        .startContext({ data: this})
+        .startContext({ data: this })
           .start().addClass('bottomActions')
             .start(this.CANCEL).end()
             .start(this.SAVE).end()
           .end()
         .end()
-      .end()
+      .end();
     },
 
     function clearFields() {
@@ -942,7 +963,7 @@ foam.CLASS({
       this.countryField = 'CA';
       this.streetNumberField = '';
       this.streetNameField = '';
-      this.addressField = '';
+      this.suiteField = '';
       this.provinceField = 'AB';
       this.cityField = '';
       this.postalCodeField = '';
@@ -974,7 +995,7 @@ foam.CLASS({
       this.countryField = user.address.countryId;
       this.streetNumberField = user.address.streetNumber;
       this.streetNameField = user.address.streetName;
-      this.addressField = user.address.address2;
+      this.suiteField = user.address.suite;
       this.provinceField = user.address.regionId;
       this.cityField = user.address.city;
       this.postalCodeField = user.address.postalCode;
@@ -1013,9 +1034,9 @@ foam.CLASS({
            this.birthdayField ||
            this.streetNumberField ||
            this.streetNameField ||
-           this.addressField ||
+           this.suiteField ||
            this.cityField ||
-           this.postalCodeField) {
+           this.postalCodeField ) {
         return true;
       }
       return false;
@@ -1023,7 +1044,7 @@ foam.CLASS({
 
     function deletePrincipalOwner(obj) {
       var self = this;
-      this.principalOwnersDAO.remove(obj).then(function(deleted){
+      this.principalOwnersDAO.remove(obj).then(function(deleted) {
         self.prevDeletedPrincipalOwner = deleted;
       });
     },
@@ -1062,7 +1083,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
         return false;
       }
-      if ( this.addressField.length > 0 && ! this.validateAddress(this.addressField) ) {
+      if ( this.suiteField.length > 0 && ! this.validateAddress(this.suiteField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
         return false;
       }
@@ -1077,7 +1098,7 @@ foam.CLASS({
 
       return true;
     },
-    function addOwner(){
+    function addOwner() {
       var self = this;
 
       var principleOwner;
@@ -1101,25 +1122,25 @@ foam.CLASS({
       principleOwner.address = this.Address.create({
         streetNumber: this.streetNumberField,
         streetName: this.streetNameField,
-        address2: this.addressField,
+        suite: this.suiteField,
         city: this.cityField,
         postalCode: this.postalCodeField,
         countryId: this.countryField,
         regionId: this.provinceField
       }),
       principleOwner.jobTitle = this.jobTitleField,
-      principleOwner.principleType = this.principleTypeField
+      principleOwner.principleType = this.principleTypeField,
 
       // TODO?: Maybe add a loading indicator?
       this.principalOwnersDAO.put(principleOwner).then(function(npo) {
-        if(!npo){
+        if ( ! npo ) {
           ctrl.add(self.NotificationMessage.create({ message: 'Could not update user.', type: 'error' }));
         }
         self.editingPrincipalOwner = null;
         self.tableViewElement.selection = null;
         self.clearFields();
         self.isSameAsAdmin = false;
-        ctrl.add(self.NotificationMessage.create({ message: 'Business profile updated.'}));
+        ctrl.add(self.NotificationMessage.create({ message: 'Business profile updated.' }));
         self.stack.push({ class: 'net.nanopay.settings.business.BusinessProfileView' });
       });
     }
@@ -1138,13 +1159,13 @@ foam.CLASS({
     },
     {
       name: 'Cancel',
-      code: function(){
+      code: function() {
         this.stack.back();
       }
     },
     {
       name: 'Save',
-      code: function(){
+      code: function() {
         var self = this;
         if ( ! this.validatePrincipalOwner() ) return;
         this.addOwner();
@@ -1158,7 +1179,7 @@ foam.CLASS({
       this.principalOwnersDAO.select().then(function(principalOwners) {
         self.user.principalOwners = principalOwners.array;
         self.principalOwnersCount = principalOwners.array.length;
-        if ( self.principalOwnersCount > 0) self.addLabel = 'Add Another Principal Owner';
+        if ( self.principalOwnersCount > 0 ) self.addLabel = 'Add Another Principal Owner';
         else self.addLabel = 'Add';
       });
     }

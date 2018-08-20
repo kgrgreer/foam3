@@ -10,7 +10,8 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
@@ -26,6 +27,10 @@ public class AccountVerifiedEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.put_(x, obj);
+    }
+
     BankAccount account    = (BankAccount) obj;
     User        owner      = (User) userDAO_.find_(x, account.getOwner());
     AppConfig   config     = (AppConfig) x.get("appConfig");
@@ -36,7 +41,7 @@ public class AccountVerifiedEmailDAO
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if the status of the account isn't verified
-    if ( ! "Verified".equals(account.getStatus()) )
+    if ( ! BankAccountStatus.VERIFIED.equals(account.getStatus()) )
       return getDelegate().put_(x, obj);
 
     // Doesn't send email if account has been previously verified

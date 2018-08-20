@@ -137,32 +137,19 @@ foam.CLASS({
                 })
             .end()
           .end()
-          .start().addClass('integrationImgDiv')
-            .start({class:'foam.u2.tag.Image', data:'images/setting/integration/fresh.png'}).addClass('integrationImg')
-            .attrs({
-                srcset: 'images/setting/integration/fresh@2x.png 2x, images/setting/integration/fresh@3x.png 3x'
-                })
-            .end()
-            .on('click', this.addFresh)
-          .end()
-          .start().addClass('integrationImgDiv last-integrationImgDiv')
+          .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
           .start({class:'foam.u2.tag.Image', data:'images/setting/integration/intacct.png'}).addClass('integrationImg')
             .attrs({
                 srcset: 'images/setting/integration/intacct@2x.png 2x, images/setting/integration/intacct@3x.png 3x'
                 })
             .end()
         .end()
-        .start().addClass('labelContent centerDiv').add("Can’t find your software? Tell us about it.").end()
-        .start().addClass('centerDiv inputLine')
+        .start().addClass('labelContent').addClass('centerDiv').add("Can’t find your software? Tell us about it.").end()
+        .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
           .start().add("submit").addClass('submit-BTN').end()
         .end()
       .end()
 		}
-  ],
-  listeners: [  
-    function addFresh() {
-      window.location = "https://my.freshbooks.com/service/auth/oauth/authorize?client_id=36cfa4683f7996a1e042552a768e23840a36c66eb266a7251fbacdc17be8ef81&response_type=code&redirect_uri=https://localhost:8080/service/fresh";
-    },
   ]
 });

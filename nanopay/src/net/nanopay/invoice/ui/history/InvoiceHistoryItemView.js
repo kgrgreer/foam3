@@ -10,39 +10,48 @@ foam.CLASS({
   requires: [
     'net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView',
     'net.nanopay.invoice.ui.history.InvoiceReceivedHistoryItemView',
+    'net.nanopay.invoice.ui.history.InvoiceCreatedHistoryItemView',
   ],
 
   documentation: 'View displaying history for each history object.',
-  
+
   properties: [
     {
       name: 'invoiceStatusHistoryItemView',
-      factory: function(){
+      factory: function() {
         return this.InvoiceStatusHistoryItemView.create();
       }
     },
     {
       name: 'invoiceReceivedHistoryItem',
-      factory: function(){
+      factory: function() {
         return this.InvoiceReceivedHistoryItemView.create();
+      }
+    },
+    {
+      name: 'invoiceCreatedHistoryItem',
+      factory: function() {
+        return this.InvoiceCreatedHistoryItemView.create();
       }
     }
   ],
 
   methods: [
     function outputRecord(parentView, record) {
-      var updates = record.updates;
-      if(updates.length == 0){
-        this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
-      }
-
-      for ( var i = 0 ; i < updates.length ; i++ ) {
-        var update = updates[i];
-        switch ( update.name ) {
-          case 'status':
-            this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
-            break;
+      const isFirstHistoryEvent = record.updates.length === 0;
+      const updatesContainRelevantChange = record.updates.some((update) => {
+        return update.name === 'status' || update.name === 'paymentDate';
+      });
+      if ( isFirstHistoryEvent ) {
+        var user = ctrl.user;
+        var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
+        if ( currentUser === record.user ) {
+          this.invoiceCreatedHistoryItem.outputRecord(parentView, record);
+        } else {
+          this.invoiceReceivedHistoryItem.outputRecord(parentView, record);
         }
+      } else if ( updatesContainRelevantChange ) {
+        this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
       }
     }
   ]

@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: 'Pop up that extends WizardView for adding a device',
-  //need different webpage to handle WFA
+  // need different webpage to handle WFA
   exports: [
     'isConnecting',
     'bankImgs',
@@ -24,8 +24,9 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Country',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.Institution',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -35,22 +36,22 @@ foam.CLASS({
       name: 'bankImgs',
       factory: function() {
         return [
-          {index: 0, institution: 'ATB', image: 'images/banks/atb.svg'},
-          {index: 1,institution: 'BMO', image: 'images/banks/bmo.svg'},
-          {index: 2,institution: 'CIBC', image: 'images/banks/cibc.svg'},
-          {index: 3,institution: 'CoastCapital', image: 'images/banks/coast.svg'},
-          {index: 4,institution: 'Desjardins', image: 'images/banks/desjardins.svg'},
-          {index: 5,institution: 'HSBC', image: 'images/banks/hsbc.svg'},
-          {index: 6,institution: 'Meridian', image: 'images/banks/meridian.png'},
-          {index: 7,institution: 'National', image: 'images/banks/national.svg'},
-          {index: 8,institution: 'Laurentienne', image: 'images/banks/laurentienne.svg'},
-          {index: 9,institution: 'PC', image: 'images/banks/simplii@3x.png'},
-          {index: 10,institution: 'RBC', image: 'images/banks/rbc.svg'},
-          {index: 11,institution: 'Scotia', image: 'images/banks/scotia.svg'},
-          {index: 12,institution: 'Tangerine', image: 'images/banks/tangerine.svg'},
-          {index: 13,institution: 'TD', image: 'images/banks/td.svg'},
-          {index: 14,institution: 'Vancity', image: 'images/banks/vancity.svg'},
-          {index: 15,institution: 'FlinksCapital', image: 'images/banks/flinks.svg'}
+          { index: 0, institution: 'ATB', image: 'images/banks/atb.svg' },
+          { index: 1, institution: 'BMO', image: 'images/banks/bmo.svg' },
+          { index: 2, institution: 'CIBC', image: 'images/banks/cibc.svg' },
+          { index: 3, institution: 'CoastCapital', image: 'images/banks/coast.svg' },
+          { index: 4, institution: 'Desjardins', image: 'images/banks/desjardins.svg' },
+          { index: 5, institution: 'HSBC', image: 'images/banks/hsbc.svg' },
+          { index: 6, institution: 'Meridian', image: 'images/banks/meridian.png' },
+          { index: 7, institution: 'National', image: 'images/banks/national.svg' },
+          { index: 8, institution: 'Laurentienne', image: 'images/banks/laurentienne.svg' },
+          { index: 9, institution: 'PC', image: 'images/banks/simplii@3x.png' },
+          { index: 10, institution: 'RBC', image: 'images/banks/rbc.svg' },
+          { index: 11, institution: 'Scotia', image: 'images/banks/scotia.svg' },
+          { index: 12, institution: 'Tangerine', image: 'images/banks/tangerine.svg' },
+          { index: 13, institution: 'TD', image: 'images/banks/td.svg' },
+          { index: 14, institution: 'Vancity', image: 'images/banks/vancity.svg' },
+          { index: 15, institution: 'FlinksCapital', image: 'images/banks/flinks.svg' }
         ];
       }
     },
@@ -77,7 +78,7 @@ foam.CLASS({
     }
   ],
 
-  css:`
+  css: `
     ^ .subTitle {
       width: 490px;
       height: 16px;
@@ -195,7 +196,7 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        if ( this.position <= 0 || this.position == 2 || this.position == 3) {
+        if ( this.position <= 0 || this.position == 2 || this.position == 3 ) {
           X.stack.back();
           return;
         }
@@ -214,17 +215,17 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this;
-        //sign in
+        // sign in
         if ( this.position == 1 ) {
           if ( this.viewData.check != true ) {
             this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
             return;
           }
-          //disable button, prevent double click
+          // disable button, prevent double click
           this.loadingSpinner.show();
           this.isEnabledButtons(false);
           this.viewData.institution = this.bankImgs[this.viewData.selectedOption].institution;
-          this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg){
+          this.flinksAuth.authorize(null, this.viewData.institution, this.viewData.username, this.viewData.password).then(function(msg) {
 
             // repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
@@ -236,19 +237,19 @@ foam.CLASS({
             var status = msg.HttpStatusCode;
 
             if ( status == 200 ) {
-              //get account infos, forward to account page
+              // get account infos, forward to account page
               self.viewData.accounts = msg.accounts;
 
               self.subStack.push(self.views[3].view);
             } else if ( status == 203 ) {
-              //If http response is 203, forward to MFA page.
-              //QuestionAndAnswer, with Iterables
-              //QuestionAndAnswer, without Iterables
+              // If http response is 203, forward to MFA page.
+              // QuestionAndAnswer, with Iterables
+              // QuestionAndAnswer, without Iterables
               self.viewData.requestId = msg.RequestId;
               self.viewData.SecurityChallenges = msg.SecurityChallenges;
-              //TODO: redirect to different MFA handle page
+              // TODO: redirect to different MFA handle page
               if ( !! self.viewData.SecurityChallenges[0].Type ) {
-                //To different view
+                // To different view
               }
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
@@ -264,13 +265,13 @@ foam.CLASS({
           });
           return;
         }
-        //security challenge
+        // security challenge
         if ( this.position == 2 ) {
-          //disable button, prevent double click, show loading indicator
+          // disable button, prevent double click, show loading indicator
           self.loadingSpinner.show();
           self.isEnabledButtons(false);
           var map ={};
-          for ( var i = 0 ; i < this.viewData.questions.length ; i++ ) {
+          for ( var i = 0; i < this.viewData.questions.length ; i++ ) {
             map[this.viewData.questions[i]] = this.viewData.answers[i];
           }
           this.flinksAuth.challengeQuestion(null, this.viewData.institution, this.viewData.username, this.viewData.requestId, map, '').then( function(msg) {
@@ -284,14 +285,14 @@ foam.CLASS({
             var status = msg.HttpStatusCode;
 
             if ( status == 200 ) {
-              //go to account view
+              // go to account view
               self.viewData.accounts = msg.Accounts;
               self.subStack.push(self.views[3].view);
-            } else if (status == 203) {
-              //TODO: continue on the MFA, refresh//or push a new view
+            } else if ( status == 203 ) {
+              // TODO: continue on the MFA, refresh//or push a new view
 
             } else if ( status == 401 ) {
-              //MFA response error and forwar to another security challenge
+              // MFA response error and forwar to another security challenge
               self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
               self.viewData.securityChallenges = msg.securityChallenges;
             } else {
@@ -307,22 +308,24 @@ foam.CLASS({
           });
           return;
         }
-        //fetch account
+        // fetch account
         if ( this.subStack.pos == 3 ) {
-          X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution){
-            var inNumber = institution.array[0].institutionNumber;
+          X.institutionDAO.where(this.EQ(this.Institution.INSTITUTION, this.viewData.institution)).select().then(function(institution) {
+            var inst = institution.array[0];
             self.viewData.accounts.forEach(function(item) {
               if ( item.isSelected == true ) {
-                X.bankAccountDAO.put(self.BankAccount.create({
-                  accountName: item.Title,
+                X.accountDAO.put(self.CABankAccount.create({
+                  name: item.Title,
                   accountNumber: item.AccountNumber,
-                  institutionNumber: inNumber,
+                  institution: inst,
+                  institutionNumber: inst.institutionNumber,
+                  branch: item.TransitNumber,
                   status: self.BankAccountStatus.VERIFIED
                 })).catch(function(a) {
                   self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
                 });
               }
-            })
+            });
           });
           self.isConnecting = false;
           return;
@@ -331,4 +334,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

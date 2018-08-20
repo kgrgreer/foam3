@@ -14,11 +14,12 @@ foam.CLASS({
   documentation: 'View for displaying create date and received company on invoice history',
 
   imports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'userDAO',
   ],
 
   properties: [
-    'businessName'
+    'name'
   ],
 
   css: `
@@ -51,11 +52,12 @@ foam.CLASS({
   `,
 
   methods: [
-    function outputRecord(parentView, record) {
-      var self = this;
-      this.invoiceDAO.find(record.objectId).then(function(inv){
-        self.businessName = inv.payeeName;
-      });
+    async function outputRecord(parentView, record) {
+      var invoice = await this.invoiceDAO.find(record.objectId);
+      var user = invoice.createdBy === invoice.payer.id ?
+        invoice.payer :
+        invoice.payee;
+      this.name = user.label();
 
       return parentView
         .addClass(this.myClass())
@@ -67,7 +69,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice received from ", this.businessName$)
+              .add('Invoice received from ', this.name$)
             .end()
           .end()
           .start('div')
@@ -76,7 +78,7 @@ foam.CLASS({
               .add(this.formatDate(record.timestamp))
             .end()
           .end()
-        .end()
+        .end();
     },
 
     function formatDate(timestamp) {

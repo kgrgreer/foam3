@@ -8,6 +8,8 @@ foam.CLASS({
   package: 'net.nanopay.fx.model',
   name: 'ExchangeRate',
 
+  documentation: 'Exchange rate information pertaining to two currencies',
+
   javaImports: [
       'java.util.Date'
     ],
@@ -18,57 +20,77 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'String',
-      name: 'fromCurrency'
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'fromCurrency',
+      documentation: 'Originating currency of the payment/request.'
     },
     {
-      class: 'String',
-      name: 'toCurrency'
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'toCurrency',
+      documentation: 'Target currency of the payment/request.'
     },
     {
       class: 'Double',
-      name: 'rate'
+      name: 'rate',
+      documentation: 'Percentage rate/difference between currency values.'
     },
     {
       class: 'DateTime',
-      name: 'expirationDate'
+      name: 'created',
+      documentation: 'Date exchange rate was fetched and accepted.'
     },
-
+    {
+      class: 'DateTime',
+      name: 'expirationDate',
+      documentation: 'Date exchange rate expires.'
+    },
     /*Interac*/
+    /* REVIEW: can this be replaced by created Date */
     {
       class: 'DateTime',
-      name: 'valueDate'
+      name: 'valueDate',
+      documentation: 'Date exchange rate becomes effective.'
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.ExchangeRateStatus',
       name: 'fxStatus',
-      value: 'Quoted'
+      documentation: 'Status of exchange rate.',
+      value: 'QUOTED' /*'Quoted'*/
     },
     {
       class: 'String',
       name: 'dealReferenceNumber',
+      documentation: 'Reference number associated to exchange rate acceptance.',
       javaFactory: 'return java.util.UUID.randomUUID().toString().replace("-", "");'
     },
     {
       class: 'Long',
-      name: 'totalFees'
+      name: 'totalFees',
+      documentation: 'Fees associated to exchange rate.'
     },
     {
       class: 'String',
-      name: 'totalFeesCurrency'
+      name: 'totalFeesCurrency',
+      documentation: 'Currency type of fees'
     },
     {
       class: 'DateTime',
-      name: 'processDate'
+      name: 'processDate',
+      documentation: 'Date exchange rate was processed.'
     },
     {
       class: 'Long',
       name: 'amount',
+      documentation: 'Total for the exchange.',
       value: 0
     },
     {
       class: 'String',
       name: 'code',
+      documentation: 'Status code associated to exchange rate approval/acceptance.',
       value: '200'
     }
   ]

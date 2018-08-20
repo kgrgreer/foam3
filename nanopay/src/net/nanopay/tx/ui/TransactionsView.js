@@ -11,7 +11,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'foam.nanos.auth.User'
   ],
 
@@ -194,7 +194,7 @@ foam.CLASS({
           this.OR(
             this.AND(
               this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.NEQ(this.Transaction.PAYER_ID, this.Transaction.PAYEE_ID)),
+              this.NEQ(this.Transaction.SOURCE_ACCOUNT, this.Transaction.DESTINATION_ACCOUNT)),
             this.AND(
               this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
               this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
@@ -207,12 +207,12 @@ foam.CLASS({
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.DATE)) : data;
+        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.CREATED)) : data;
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'date', 'payerId', 'payeeId', 'total', 'status'
+          'id', 'created', 'payer', 'payee', 'total', 'status'
         ]
       }
     }
@@ -227,23 +227,21 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-
       this
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
-              .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
             .end()
           .end()
           .add(this.FILTERED_TRANSACTION_DAO)
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
     },
-    function dblclick(transaction){
+    function dblclick(transaction) {
       this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
     }
   ],
@@ -253,7 +251,7 @@ foam.CLASS({
       name: 'exportButton',
       label: 'Export',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO }));
       }
     }
   ]

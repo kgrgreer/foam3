@@ -1,8 +1,24 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
-  
-  tableColumns: [ 'status', 'payerName', 'payeeName', 'amount', 'processDate', 'completionDate', 'date'],
+
+  tableColumns: [
+    'id',
+    'status',
+    'payer',
+    'payee',
+    'amount',
+    'processDate',
+    'completionDate',
+    'created'
+  ],
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
 
   imports: [
     'addCommas',
@@ -11,6 +27,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
@@ -21,11 +38,12 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount',
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -46,19 +64,47 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       label: 'Transaction ID',
+      visibility: foam.u2.Visibility.RO,
+      javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
+      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
+
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: `The date the transaction was created.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: `The id of the user who created the transaction.`,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: `The date the transaction was last modified.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The id of the user who last modified the transaction.`,
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.TransactionType',
+      name: 'type',
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Long',
-      name: 'refundTransactionId',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'Long',
-      name: 'invoiceId'
+      class: 'Reference',
+      of: 'net.nanopay.invoice.model.Invoice',
+      name: 'invoiceId',
+      flags: ['js']
     },
     {
       class: 'foam.core.Enum',
@@ -69,75 +115,60 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber'
-    },
-    {
-      class: 'Long',
-      name: 'impsReferenceNumber',
-      label: 'IMPS Reference Number',
+      name: 'referenceNumber',
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'String',
-      name: 'payerName',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'Long',
-      name: 'payerId',
-      label: 'Payer',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payerId, X) {
-        var self = this;
-        X.userDAO.find(payerId).then(function(payer) {
-          self.start()
-            .start('h4').style({ 'margin-bottom': 0 }).add(payer.firstName).end()
-            .start('p').style({ 'margin-top': 0 }).add(payer.email).end()
-          .end();
-        })
-      },
-      postSet: function(oldValue, newValue){
-        var self = this;
-        var dao = this.__context__.userDAO;
-        dao.find(newValue).then(function(a) {
-          if ( a ) {
-            self.payerName = a.label();
-          } else {
-            self.payerName = 'Unknown Id: ' + newValue;
-          }
-        });
+      // FIXME: move to a ViewTransaction used on the client
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payee',
+      label: 'Receiver',
+      storageTransient: true,
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.fullName : 'na')
+          .end()
+        .end();
       }
     },
     {
-      class: 'String',
-      name: 'payeeName',
-      visibility: foam.u2.Visibility.RO
+      // FIXME: move to a ViewTransaction used on the client
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payer',
+      label: 'Sender',
+      storageTransient: true,
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.fullName : 'na')
+          .end()
+        .end();
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'sourceAccount',
+      targetDAOKey: 'localAccountDAO',
     },
     {
       class: 'Long',
       name: 'payeeId',
-      label: 'Payee',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(payeeId, X) {
-        var self = this;
-        X.userDAO.find(payeeId).then(function(payee) {
-          self.start()
-            .start('h4').style({ 'margin-bottom': 0 }).add(payee.firstName).end()
-            .start('p').style({ 'margin-top': 0 }).add(payee.email).end()
-          .end();
-        })
-      },
-      postSet: function(oldValue, newValue){
-        var self = this;
-        var dao = this.__context__.userDAO;
-        dao.find(newValue).then(function(a) {
-          if ( a ) {
-            self.payeeName = a.label();
-          } else {
-            self.payeeName = 'Unknown Id: ' + newValue;
-          }
-        });
-      }
+      storageTransient: true,
+    },
+    {
+      class: 'Long',
+      name: 'payerId',
+      storageTransient: true,
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      targetDAOKey: 'localAccountDAO',
     },
     {
       class: 'Currency',
@@ -153,6 +184,25 @@ foam.CLASS({
       }
     },
     {
+      class: 'Currency',
+      name: 'total',
+      visibility: foam.u2.Visibility.RO,
+      label: 'Total Amount',
+      transient: true,
+      expression: function(amount) {
+        return amount;
+      },
+      javaGetter: `return getAmount();`,
+      tableCellFormatter: function(total, X) {
+        var formattedAmount = total / 100;
+        this
+          .start()
+          .addClass('amount-Color-Green')
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+    {
       class: 'DateTime',
       name: 'processDate'
     },
@@ -161,120 +211,14 @@ foam.CLASS({
       name: 'completionDate'
     },
     {
-      class: 'String',
-      name: 'padType'
-    },
-    {
-      class: 'String',
-      name: 'txnCode'
-    },
-    {
-      class: 'Currency',
-      name: 'receivingAmount',
-      label: 'Receiving Amount',
-      visibility: foam.u2.Visibility.RO,
-      transient: true,
-      expression: function(amount, rate) {
-        var receivingAmount = amount * rate;
-        return receivingAmount;
-      },
-      tableCellFormatter: function(receivingAmount, X) {
-        this
-          .start({ class: 'foam.u2.tag.Image', data: 'images/india.svg' })
-            .add(' INR ₹', X.addCommas(( receivingAmount/100 ).toFixed(2)))
-          .end();
-      }
-    },
-    {
-      class: 'String',
-      name: 'challenge',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Randomly generated challenge'
-    },
-    {
-      class: 'DateTime',
-      name: 'date',
-      label: 'Date & Time'
-    },
-    {
-      class: 'Currency',
-      name: 'tip',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'Double',
-      name: 'rate',
-      visibility: foam.u2.Visibility.RO,
-      tableCellFormatter: function(rate){
-        this.start().add(rate.toFixed(2)).end()
-      }
-    },
-    {
-      class: 'FObjectArray',
-      visibility: foam.u2.Visibility.RO,
-      name: 'feeTransactions',
-      of: 'net.nanopay.tx.model.Transaction'
-    },
-    {
-      class: 'FObjectArray',
-      name: 'informationalFees',
-      visibility: foam.u2.Visibility.RO,
-      of: 'net.nanopay.tx.model.Fee'
-    },
-    // TODO: field for tax as well? May need a more complex model for that
-    {
-      class: 'Currency',
-      name: 'total',
-      visibility: foam.u2.Visibility.RO,
-      label: 'Amount',
-      transient: true,
-      expression: function (amount, tip) {
-        return amount + tip;
-      },
-      javaGetter: `return getAmount() + getTip();`,
-      tableCellFormatter: function(total, X) {
-        var formattedAmount = total / 100;
-        this
-          .start().addClass( X.status == 'Refund' || X.status == 'Refunded' ? 'amount-Color-Red' : 'amount-Color-Green' )
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionPurpose',
-      name: 'purpose',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Transaction purpose'
-    },
-    {
-      class: 'String',
-      name: 'notes',
-      visibility: foam.u2.Visibility.RO,
-      documentation: 'Transaction notes'
-    },
-    {
-      class: 'String',
-      name: 'stripeTokenId',
-      documentation: 'For most Stripe users, the source of every charge is a' +
-        ' credit or debit card. Stripe Token ID is the hash of the card' +
-        ' object describing that card. Token IDs cannot be stored or used' +
-        ' more than once.'
-    },
-    {
-      class: 'String',
-      name: 'stripeChargeId',
-      documentation: 'Stripe charge id is a unique identifier for every' +
-        ' Charge object.'
-    },
-    {
+      documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId'
     },
     {
-      class: 'DateTime',
-      name: 'lastModified',
-      label: 'Latest Modify Date & Time'
+      class: 'String',
+      name: 'sourceCurrency',
+      value: 'CAD'
     }
   ],
 
@@ -283,8 +227,10 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-         return getStatus().equals(TransactionStatus.COMPLETED) || getType().equals(TransactionType.CASHOUT) ||
-        getType().equals(TransactionType.NONE);
+         return
+           getStatus().equals(TransactionStatus.COMPLETED) ||
+           getType().equals(TransactionType.CASHOUT) ||
+           getType().equals(TransactionType.NONE);
       `
     },
     {
@@ -294,22 +240,40 @@ foam.CLASS({
       ],
       javaReturns: 'Transfer[]',
       javaCode: `
-        // Don't perform balance transfer if status in blacklist
         if ( ! isActive() ) return new Transfer[] {};
         if ( getType() == TransactionType.CASHOUT ) {
           return new Transfer[]{
-            new Transfer(getPayerId(), -getTotal())
+             new Transfer((Long) getSourceAccount(), -getTotal())
           };
         }
         if ( getType() == TransactionType.CASHIN || getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
           return new Transfer[]{
-            new Transfer(getPayeeId(), getTotal())
+            new Transfer((Long) getDestinationAccount(), getTotal())
           };
         }
         return new Transfer[] {
-            new Transfer(getPayerId(), -getTotal()),
-            new Transfer(getPayeeId(),  getTotal())
+             new Transfer((Long) getSourceAccount(), -getTotal()),
+             new Transfer((Long) getDestinationAccount(),  getTotal())
         };
+      `
+    },
+    {
+      name: 'toString',
+      javaReturns: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("(");
+        sb.append("id: ");
+        sb.append(getId());
+        sb.append(", ");
+        sb.append("type: ");
+        sb.append(getType());
+        sb.append(", ");
+        sb.append("status: ");
+        sb.append(getStatus());
+        sb.append(")");
+        return sb.toString();
       `
     }
   ]

@@ -1,21 +1,21 @@
-
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount.form',
   name: 'BankForm',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
-  documentation: 'Pop up that extends WizardView for adding a bank account',
+  documentation: 'Pop up that extends WizardView for adding a single bank account',
 
   requires: [
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.PadCapture',
     'foam.nanos.auth.Address',
   ],
 
   imports: [
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'padCaptureDAO',
     'bankAccountVerification',
     'selectedAccount',
@@ -28,7 +28,7 @@ foam.CLASS({
     'validateInstitutionNumber',
     'validatePostalCode',
     'validateStreetNumber',
-    'validateTransitNumber',
+    'validateTransitNumber'
   ],
 
   exports: [
@@ -36,100 +36,225 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    foam.u2.CSS.create({
+      code: net.nanopay.ui.wizard.WizardView
+        .getAxiomsByClass(foam.u2.CSS)[0].code
+    })
   ],
+  constants: {
+    ADD_BANK_INFO_VIEW_ID: 'form-addBank-info',
+    PAD_AUTH_VIEW_ID: 'form-addBank-pad',
+    VERIFICATION_VIEW_ID: 'form-addBank-verification',
+    DONE_ADDING_BANK_ID: 'form-addBank-done'
+  },
 
   properties: [
-    {
-      name: 'newBankAccount'
-    },
-    {
-      name: 'verifyAmount'
-    },
-    {
-      name: 'userAddress'
-    }
+    { name: 'newBankAccount' },
+    { name: 'verifyAmount' },
+    { name: 'userAddress' }
   ],
+
   messages: [
-    { name: 'Accept', message: "I Agree" },
+    { name: 'Accept', message: 'I Agree' },
     { name: 'Next', message: 'Next' },
     { name: 'Later', message: 'Come back later' },
     { name: 'Verify', message: 'Verify' },
-    { name: 'Back', message: "Back" },
+    { name: 'Back', message: 'Back' },
     { name: 'Done', message: 'Done' }
   ],
+
   methods: [
     function init() {
       this.views = [
-        { parent: 'addBank', id: 'form-addBank-info',         label: 'Account info',       view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankInfoForm' } },
-        { parent: 'addBank', id: 'form-addBank-pad',          label: 'Pad Authorization',  view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization' } },
-        { parent: 'addBank', id: 'form-addBank-verification', label: 'Verification',       view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm' } },
-        { parent: 'addBank', id: 'form-addBank-done',         label: 'Done',               view: { class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm' } }
+        {
+          parent: 'addBank',
+          id: this.ADD_BANK_INFO_VIEW_ID,
+          label: 'Account info',
+          view: {
+            class: 'net.nanopay.cico.ui.bankAccount.form.BankInfoForm'
+          }
+        },
+        {
+          parent: 'addBank',
+          id: this.PAD_AUTH_VIEW_ID,
+          label: 'Pad Authorization',
+          view: {
+            class: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization'
+          }
+        },
+        {
+          parent: 'addBank',
+          id: this.VERIFICATION_VIEW_ID,
+          label: 'Verification',
+          view: {
+            class: 'net.nanopay.cico.ui.bankAccount.form.BankVerificationForm'
+          }
+        },
+        {
+          parent: 'addBank',
+          id: this.DONE_ADDING_BANK_ID,
+          label: 'Done',
+          view: {
+            class: 'net.nanopay.cico.ui.bankAccount.form.BankDoneForm'
+          }
+        }
       ];
-      this.nextLabel = this.Next;
       this.SUPER();
-      this.viewData.user = this.user
-      this.viewData.bankAccount = []
+      this.viewData.user = this.user;
+      this.viewData.bankAccounts = [];
+      this.viewData.accountInfo = {};
     },
-    function validations() {
-      var accountInfo = this.viewData;
+    function validate() {
+      // only perform these validations if on 1st screen
+      if ( this.position === 0 ) {
+        return this.validateAccountInfo();
+      }
+      // Only perform these validations if on 2nd screen
+      if ( this.position === 1 ) {
+        return this.validatePADAuthInfo();
+      }
+      return true;
+    },
+    function validateAccountInfo() {
+      var accountInfo = this.viewData.accountInfo;
 
+      var validateRequiredFields = !! (accountInfo.name && accountInfo.name.trim() !== ''
+        && accountInfo.transitNumber && accountInfo.transitNumber.trim() !== ''
+        && accountInfo.accountNumber && accountInfo.accountNumber.trim() !== ''
+        && accountInfo.institutionNumber && accountInfo.institutionNumber.trim() !== '');
+
+      if ( ! validateRequiredFields ) {
+        this.notify('Please fill out all necessary fields before proceeding.', 'error');
+        return false;
+      }
+
+      if ( accountInfo.name.length > 70 ) {
+        this.notify('Account name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( ! this.validateTransitNumber(accountInfo.transitNumber) ) {
+        this.notify('Invalid transit number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAccountNumber(accountInfo.accountNumber) ) {
+        this.notify('Invalid account number.', 'error');
+        return false;
+      }
+      if ( ! this.validateInstitutionNumber(accountInfo.institutionNumber) ) {
+        this.notify('Invalid institution number.', 'error');
+        return false;
+      }
+      return true;
+    },
+    function validatePADAuthInfo() {
+      var user = this.viewData.user;
       // PAD (Pre-Authorized Debit) requires all users to have an address and at
       // times, some business users wouldn't have one. This checks if the user
       // has a normal `.address` and if they don't, uses their business address
       // instead.
-      this.userAddress = this.Address.isInstance(this.viewData.user.address)
-        ? this.viewData.user.address
-        : this.viewData.user.businessAddress;
+      this.userAddress = this.Address.isInstance(user.address)
+        ? user.address
+        : user.businessAddress;
 
-      // only perform these validations if on 1st screen
-      if ( this.position === 0 ) {
-        if ( accountInfo.accountName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: 'Account name cannot exceed 70 characters.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateTransitNumber(accountInfo.transitNumber) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid transit number.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateAccountNumber(accountInfo.accountNumber) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid account number.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateInstitutionNumber(accountInfo.bankNumber) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid institution number.', type: 'error' }));
-          return false;
-        }
+      if ( user.firstName.length > 70 ) {
+        this.notify('First name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( user.lastName.length > 70 ) {
+        this.notify('Last name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(this.userAddress.streetName) ) {
+        this.notify('Invalid street name.', 'error');
+        return false;
+      }
+      if ( ! this.validateCity(this.userAddress.city) ) {
+        this.notify('Invalid city name.', 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
+        this.notify('Invalid postal name.', 'error');
+        return false;
       }
 
-      // only perform these validations if on 2nd screen
-      if ( this.position === 1 ) {
-        if ( this.viewData.user.firstName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
-          return false;
-        }
-        if ( this.viewData.user.lastName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateAddress(this.userAddress.streetName) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateCity(this.userAddress.city) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
-          return false;
-        }
-      }
       return true;
+    },
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
+    },
+    function goToBankPadAuthorization(accountInfo) {
+      // REVIEW: AccountRefactor - what type of bank account to create? - Joel, perhaps need a factory.
+      var newAccount = this.CABankAccount.create({
+        name: accountInfo.name,
+        institutionNumber: accountInfo.institutionNumber, // setting this so institution is created if not preset already
+        branchId: accountInfo.transitNumber, // branchId = transit number
+        accountNumber: accountInfo.accountNumber,
+        owner: this.user.id
+      });
+
+      if ( newAccount.errors_ ) {
+        this.notify(newAccount.errors_[0][1], 'error');
+        return;
+      }
+      this.viewData.bankAccounts.push(newAccount);
+
+      this.subStack.push(
+        this.views.find((t) => t.id === this.PAD_AUTH_VIEW_ID).view);
+    },
+    async function goToBankVerificationForm() {
+      var account = this.viewData.bankAccounts[0]; // doing this cause this view adds only one account at a time.
+      var user = this.viewData.user;
+      var padCapture = this.PadCapture.create({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userId: user.id,
+        address: this.userAddress,
+        agree1: this.viewData.agree1,
+        agree2: this.viewData.agree2,
+        agree3: this.viewData.agree3,
+        institutionNumber: account.institutionNumber,
+        branchId: account.branchId, // branchId = transit number
+        accountNumber: account.accountNumber
+      });
+      try {
+        await this.padCaptureDAO.put(padCapture);
+        account = await this.bankAccountDAO.put(account);
+      } catch (error) {
+        this.notify(error.message, 'error');
+        return;
+      }
+      this.viewData.bankAccounts[0] = account; // updated account
+      this.subStack.push(
+        this.views.find((t) => t.id === this.VERIFICATION_VIEW_ID).view);
+    },
+    async function goToBankDoneForm() {
+      var account;
+      if ( this.BankAccount.isInstance(this.viewData.bankAccounts[0]) ) {
+        account = this.viewData.bankAccounts[0];
+      }
+      if ( this.BankAccount.isInstance(this.selectedAccount) ) {
+        account = this.selectedAccount;
+      }
+      try {
+        var isVerified = await this.bankAccountVerification
+          .verify(account.id, this.viewData.verificationAmount);
+      } catch (error) {
+        this.notify(error.message ? error.message : 'An error occurred while processing your request.', 'error');
+        return;
+      }
+      if ( isVerified ) {
+        this.notify('Account successfully verified!', '');
+        this.subStack.push(
+          this.views.find((t) => t.id === this.DONE_ADDING_BANK_ID).view
+        );
+      }
     }
   ],
 
@@ -137,102 +262,38 @@ foam.CLASS({
     {
       name: 'goBack',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+        var currentViewId = this.views[this.position].id;
+        // only view that rolls back to the previous view
+        if ( currentViewId === this.PAD_AUTH_VIEW_ID ) {
+          this.subStack.back();
+        } else {
+          ctrl.stack.push({
+            class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
+          });
+        }
       }
     },
     {
       name: 'goNext',
-      code: function() {
-        var self = this;
-        if ( this.position == 0 ) { 
-          // On Submission screen.
-          var accountInfo = this.viewData;
-
-          if ( ( accountInfo.accountName == null || accountInfo.accountName.trim() == '' ) ||
-          ( accountInfo.transitNumber == null || accountInfo.transitNumber.trim() == '' ) ||
-          ( accountInfo.accountNumber == null || accountInfo.accountNumber.trim() == '' ) ||
-           accountInfo.bankNumber == null || accountInfo.bankNumber.trim() == '' ) {
-            this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
-            return;
-          }
-
-          if ( ! this.validations() ) {
-            return;
-          }
-
-          this.viewData.bankAccount.push( this.BankAccount.create({
-            accountName: accountInfo.accountName,
-            institutionNumber: accountInfo.bankNumber,
-            transitNumber: accountInfo.transitNumber,
-            accountNumber: accountInfo.accountNumber,
-            owner: this.user.id
-          }));
-
-          if ( this.viewData.bankAccount.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: this.viewData.bankAccount.errors_[0][1], type: 'error' }));
-            return;
-          }
-          this.nextLabel = this.Accept;         
-          self.subStack.push(self.views[self.subStack.pos + 1].view);
+      code: function(X) {
+        if ( ! this.validate() ) {
           return;
         }
-        if ( this.position == 1 ) {
-          // On Pad Verfication
-          
-          var accountInfo = this.viewData.bankAccount[0];
-
-          if ( ! this.validations() ) {
-            return;
-          }
-
-          if ( accountInfo.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: accountInfo.errors_[0][1], type: 'error' }));
-            return;
-          }
-          this.padCaptureDAO.put(self.PadCapture.create({
-            firstName: this.viewData.user.firstName,
-            lastName: this.viewData.user.lastName,
-            userId: this.viewData.user.id,
-            address: this.userAddress,
-            agree1:this.viewData.agree1,
-            agree2:this.viewData.agree2,
-            agree3:this.viewData.agree3,
-            institutionNumber: this.viewData.bankAccount[0].institutionNumber,
-            transitNumber: this.viewData.bankAccount[0].transitNumber,
-            accountNumber: this.viewData.bankAccount[0].accountNumber         
-          })).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          });
-          this.bankAccountDAO.put(accountInfo).then(function(response) {
-            self.viewData.bankAccount = response;
-            self.subStack.push(self.views[self.subStack.pos + 1].view);
-            self.backLabel = this.Later;
-            self.nextLabel = this.Verify;
-            return;
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          });
-        }
-        if ( this.position == 2 ) {
-          // On Verification screen
-          if ( this.selectedAccount != undefined || this.selectedAccount != null ) {
-            this.newBankAccount = this.selectedAccount;
-          }
-
-          this.bankAccountVerification.verify(this.newBankAccount.id, this.verifyAmount).then(function(response) {
-            if ( response ) {
-              self.add(self.NotificationMessage.create({ message: 'Account successfully verified!', type: '' }));
-              self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.backLabel = this.Back;
-              self.nextLabel = this.Done;
-            }
-          }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          });
-        }
-
-        if ( this.subStack.pos == this.views.length - 1 ) { // If last page
-          return this.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView' });
+        var currentViewId = this.views[this.position].id;
+        switch ( currentViewId ) {
+          case this.ADD_BANK_INFO_VIEW_ID:
+            this.goToBankPadAuthorization(this.viewData.accountInfo);
+            break;
+          case this.PAD_AUTH_VIEW_ID:
+            this.goToBankVerificationForm();
+            break;
+          case this.VERIFICATION_VIEW_ID:
+            this.goToBankDoneForm();
+            break;
+          default:
+            ctrl.stack.push({
+              class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
+            });
         }
       }
     }

@@ -67,5 +67,13 @@ sha256/
 /journals
 
 # Logs
-*.lck
 *nano.log*
+
+# Locks
+*.lck
+
+# githooks
+.githooks/pre-commit.local
+
+# yarn
+yarn-error.log
