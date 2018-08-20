@@ -6,12 +6,17 @@ foam.INTERFACE({
     {
       name: 'getKeyStore',
       javaReturns: 'java.security.KeyStore',
-      documentation: 'Fetches a keystore'
+      documentation: 'Returns the KeyStore.'
+    },
+    {
+      name: 'getPassphrase',
+      javaReturns: 'char[]',
+      documentation: 'Returns the KeyStore\'s passphrase.'
     },
     {
       name: 'loadKey',
       javaReturns: 'java.security.KeyStore.Entry',
-      documentation: 'Loads a key from the keystore',
+      documentation: 'Loads a key from the KeyStore.',
       args: [
         {
           name: 'alias',
