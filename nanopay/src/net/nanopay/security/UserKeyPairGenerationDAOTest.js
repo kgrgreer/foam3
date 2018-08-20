@@ -3,20 +3,20 @@ foam.CLASS({
   name: 'UserKeyPairGenerationDAOTest',
   extends: 'foam.nanos.test.Test',
 
-
   javaImports: [
     'foam.core.EmptyX',
-    'foam.dao.DAO',
     'foam.core.FObject',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'static foam.mlang.MLang.EQ',
-    'java.security.interfaces.RSAKey',
     'org.apache.commons.codec.binary.Base64',
+
+    'javax.crypto.Cipher',
     'javax.crypto.SecretKey',
-    'net.nanopay.security.FileKeyStoreManager',
     'java.security.KeyStore',
     'java.security.PrivateKey',
-    'javax.crypto.Cipher',
+    'java.security.interfaces.RSAKey',
+
+    'static foam.mlang.MLang.EQ',
   ],
 
   constants: [
@@ -39,13 +39,13 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        x = x.put("keyStoreManager", new FileKeyStoreManager.Builder(getX())
+        x = x.put("keyStoreManager", new PKCS12KeyStoreManager.Builder(getX())
           .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
           .setPassphrasePath("/tmp/nanopay/keys/passphrase")
           .build());
 
         // fetch services and DAOs
-        KeyStoreManager keyStoreManager = (FileKeyStoreManager) x.get("keyStoreManager");
+        KeyStoreManager keyStoreManager = (KeyStoreManager) x.get("keyStoreManager");
         DAO keyPairDAO = (DAO) x.get("keyPairDAO");
         DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
 

@@ -281,7 +281,13 @@ FOAM_FILES([
   // security
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
-  { name: 'net/nanopay/security/FileKeyStoreManager' },
+  { name: 'net/nanopay/security/AbstractKeyStoreManager' },
+  { name: 'net/nanopay/security/AbstractFileKeyStoreManager' },
+  { name: 'net/nanopay/security/BKSKeyStoreManager' },
+  { name: 'net/nanopay/security/JCEKSKeyStoreManager' },
+  { name: 'net/nanopay/security/JKSKeyStoreManager' },
+  { name: 'net/nanopay/security/PKCS11KeyStoreManager' },
+  { name: 'net/nanopay/security/PKCS12KeyStoreManager' },
   { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },
@@ -297,7 +303,8 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
   { name: 'net/nanopay/security/HashingWriterTest' },
-  { name: 'net/nanopay/security/FileKeyStoreManagerTest' },
+  { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
+  { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
 
   // style
