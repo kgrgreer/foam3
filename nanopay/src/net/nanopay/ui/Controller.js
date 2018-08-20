@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.u2.stack.Stack',
@@ -103,7 +104,8 @@ foam.CLASS({
       factory: function() { return this.Balance.create(); }
     },
     {
-      name: 'appConfig'
+      name: 'appConfig',
+      factory: function() { return this.AppConfig.create(); }
     },
     {
       class: 'foam.core.FObjectProperty',
@@ -123,7 +125,7 @@ foam.CLASS({
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config){
-          self.appConfig = config.service;
+          self.appConfig.copyFrom(config.service);
         });
 
         self.AppStyles.create();
@@ -140,7 +142,7 @@ foam.CLASS({
           .start('div').addClass('stack-wrapper')
             .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
           .end()
-          .tag({class: 'net.nanopay.ui.FooterView'});
+          .tag({class: 'foam.nanos.u2.navigation.FooterView'});
       });
     },
 
