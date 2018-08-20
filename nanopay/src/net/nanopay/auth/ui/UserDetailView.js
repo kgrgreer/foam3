@@ -95,8 +95,8 @@ foam.CLASS({
   `,
 
   properties: [
-    'userId',
     'user',
+    'key',
     {
       class: 'String',
       name: 'firstName',
@@ -290,7 +290,7 @@ foam.CLASS({
       this.SUPER();
 
       if ( ! this.user ) {
-        this.userDAO.find(this.userId).then((u) => {
+        this.userDAO.find(this.key).then((u) => {
           this.user = u;
           this
             .addClass(this.myClass())
