@@ -108,9 +108,9 @@ public class TransactionDAO
         && transaction.getStatus() == TransactionStatus.DECLINED ) {
         //pay others by bank account directly
         if ( transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-          paymentFromBankAccountReject(x, transaction);
+          return executeTransaction(x, transaction);
         } else {
-          cashinReject(x, transaction);
+          return executeTransaction(x, transaction);
         }
       }
     }

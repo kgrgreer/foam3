@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.OutputterMode',
     'foam.nanos.auth.User',
-    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.cico.model.EFTConfirmationFileRecord',
     'net.nanopay.cico.model.EFTReturnRecord',
@@ -33,8 +33,8 @@ foam.CLASS({
       javaReturns: 'void',
       javaCode: `
 DAO userDAO        = (DAO) x.get("localUserDAO");
-    
-BankAccount testBankAccount = createTestAccount(x);
+
+CABankAccount testBankAccount = createTestAccount(x);
 AlternaTransaction testAlternaTransaction = createTestTransaction(x, testBankAccount);
 User user = (User) userDAO.find_(x, testAlternaTransaction.findSourceAccount(x).getOwner());
 
@@ -57,7 +57,7 @@ returnFileProcessingTest(x, testReturnFile);
     },
     {
       name: 'createTestAccount',
-      javaReturns: 'BankAccount',
+      javaReturns: 'CABankAccount',
       args: [
         {
           name: 'x',
@@ -66,12 +66,12 @@ returnFileProcessingTest(x, testReturnFile);
       ],
       javaCode: `
 DAO bankAccountDao = (DAO)x.get("accountDAO");
-BankAccount testBankAccount;
-    
-BankAccount account = (BankAccount) bankAccountDao.find(EQ(BankAccount.NAME, "EFT Test Account"));
+CABankAccount testBankAccount;
+
+CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "EFT Test Account"));
 
 if ( account == null ) {
-  testBankAccount = new BankAccount.Builder(x)
+  testBankAccount = new CABankAccount.Builder(x)
     .setAccountNumber("12345678")
     .setBranch(9)
     .setInstitution(4)
@@ -98,7 +98,7 @@ return testBankAccount;
         },
         {
           name: 'testBankAccount',
-          javaType: 'BankAccount'
+          javaType: 'CABankAccount'
         }
       ],
       javaCode: `
@@ -130,7 +130,7 @@ return testAlternaTransaction;
           javaType: 'String'
         }
       ],
-      javaCode: `    
+      javaCode: `
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
 
@@ -164,7 +164,7 @@ try {
       ],
       javaCode: `
 DAO transactionDao = (DAO)x.get("localTransactionDAO");
-        
+
 InputStream confirmationFileStream = new ByteArrayInputStream(testConfirmationFile.getBytes());
 EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
 List<FObject> confirmationFile = eftConfirmationFileParser.parse(confirmationFileStream);
@@ -176,12 +176,12 @@ List<FObject> uploadFileList = eftUploadCSVFileParser.parse(uploadFileStream);
 for ( int i = 0; i < confirmationFile.size(); i++ ) {
   EFTConfirmationFileRecord eftConfirmationFileRecord = (EFTConfirmationFileRecord) confirmationFile.get(i);
   AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(i);
-  
+
   EFTConfirmationFileProcessor.processTransaction(x, transactionDao, eftConfirmationFileRecord,
   eftUploadFileRecord,"UploadLog_test_B2B.csv.txt");
 
   AlternaTransaction tran = (AlternaTransaction)transactionDao.find(EQ(Transaction.ID, eftConfirmationFileRecord.getReferenceId()));
-  
+
   if ( tran != null ) {
     if ( TransactionStatus.SENT.equals(tran.getStatus()) ) {
       test(true, "Confirmation File Processing succeeded: Transaction " + tran.getId() + " state successfully changed from Pending to Sent");
@@ -207,7 +207,7 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
       ],
       javaCode: `
 DAO transactionDao = (DAO)x.get("localTransactionDAO");
-    
+
 InputStream returnFileStream = new ByteArrayInputStream(testReturnFile.getBytes());
 EFTReturnFileParser eftReturnFileParser = new EFTReturnFileParser();
 List<FObject> returnFile = eftReturnFileParser.parse(returnFileStream);

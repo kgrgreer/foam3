@@ -5,7 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'java.util.HashMap',
-    'net.nanopay.tx.TransactionType',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -57,10 +57,15 @@ foam.CLASS({
       javaReturns: 'HashMap<String, Transfer[]>',
       javaCode: `
       HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-      if ( ! isActive() ) return hm;
-      hm.put(getSourceCurrency(), new Transfer[]{
-        new Transfer(getSourceAccount(), -getTotal())
-      });
+      if ( getStatus() == TransactionStatus.PENDING ) {
+        hm.put(getSourceCurrency(), new Transfer[]{
+          new Transfer(getSourceAccount(), -getTotal())
+        });
+      } else if ( getStatus() == TransactionStatus.DECLINED ) {
+        hm.put(getSourceCurrency(), new Transfer[]{
+          new Transfer(getSourceAccount(), getTotal())
+        });
+      }
       return hm;
       `
     }

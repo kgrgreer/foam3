@@ -184,9 +184,7 @@ public class TransactionDAOTest
   public void testCashIn() {
     Transaction txn = new Transaction();
     txn.setType(TransactionType.CASHIN);
-    setBankAccount();
-    senderBankAccount_.setStatus(BankAccountStatus.UNVERIFIED);
-    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
+    setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
@@ -194,17 +192,20 @@ public class TransactionDAOTest
       () -> txnDAO.put_(x_, txn),
       "Bank account must be verified",
       RuntimeException.class), "Exception: Bank account must be verified");
-    senderBankAccount_.setStatus(BankAccountStatus.VERIFIED);
-    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_);
+    setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(tx.getType() == TransactionType.CASHIN, "Transaction type is CASHIN" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashIn transaction has status pending" );
     test( senderInitialBalance ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "While cash in is pending balance remains the same" );
     tx.setStatus(TransactionStatus.COMPLETED);
-    txnDAO.put_(x_, tx);
+    tx = (Transaction) txnDAO.put_(x_, tx).fclone();
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction has status completed" );
-    test( senderInitialBalance + txn.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
+    test( senderInitialBalance + tx.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
+    tx.setStatus(TransactionStatus.DECLINED);
+    tx = (Transaction) txnDAO.put_(x_, tx).fclone();
+    test(tx.getStatus() == TransactionStatus.DECLINED, "CashIn transaction has status declined" );
+    test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
 
  /*   Balance balance = (Balance)(((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).find(1L).fclone();
     balance.setBalance(666666666);
@@ -214,9 +215,7 @@ public class TransactionDAOTest
 
   public void testCashOut() {Transaction txn = new Transaction();
     txn.setType(TransactionType.CASHOUT);
-    setBankAccount();
-    senderBankAccount_.setStatus(BankAccountStatus.UNVERIFIED);
-    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
+    setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayerId(sender_.getId());
     txn.setDestinationAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
@@ -224,8 +223,7 @@ public class TransactionDAOTest
       () -> txnDAO.put_(x_, txn),
       "Bank account must be verified",
       RuntimeException.class), "Exception: Bank account must be verified");
-    senderBankAccount_.setStatus(BankAccountStatus.VERIFIED);
-    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_);
+    setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(tx.getType() == TransactionType.CASHOUT, "Transaction type is CASHOUT" );
@@ -239,7 +237,7 @@ public class TransactionDAOTest
 
   }
 
-  public void setBankAccount() {
+  public void setBankAccount(BankAccountStatus status) {
     senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, sender_.getId()), INSTANCE_OF(CABankAccount.class)));
     if ( senderBankAccount_ == null ) {
       senderBankAccount_ = new CABankAccount();
@@ -248,12 +246,12 @@ public class TransactionDAOTest
     } else {
       senderBankAccount_ = (CABankAccount)senderBankAccount_.fclone();
     }
-    senderBankAccount_.setStatus(BankAccountStatus.VERIFIED);
+    senderBankAccount_.setStatus(status);
     senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
   }
 
   public void cashIn() {
-    setBankAccount();
+    setBankAccount(BankAccountStatus.VERIFIED);
     Transaction txn = new Transaction();
     txn.setAmount(100000L);
     txn.setSourceAccount(senderBankAccount_.getId());
