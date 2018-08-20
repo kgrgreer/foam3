@@ -79,9 +79,9 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredAgentFields',
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.ExchangeRateStatus',
-  'net.nanopay.fx.model.ExchangeRate',
-  'net.nanopay.fx.model.ExchangeRateQuote',
-  'net.nanopay.fx.model.FixerIOExchangeRate',
+  'net.nanopay.fx.ExchangeRate',
+  'net.nanopay.fx.ExchangeRateQuote',
+  'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -130,19 +130,19 @@ var classes = [
 
   'net.nanopay.fx.FXServiceInterface',
   'net.nanopay.fx.client.ClientFXService',
-  'net.nanopay.fx.model.FXAccepted',
-  'net.nanopay.fx.model.FXDeal',
-  'net.nanopay.fx.model.FXHoldingAccount',
-  'net.nanopay.fx.model.FXHoldingAccountBalance',
-  'net.nanopay.fx.model.FXPayee',
-  'net.nanopay.fx.model.FXDirection',
+  'net.nanopay.fx.FXAccepted',
+  'net.nanopay.fx.FXDeal',
+  'net.nanopay.fx.FXHoldingAccount',
+  'net.nanopay.fx.FXHoldingAccountBalance',
+  'net.nanopay.fx.FXPayee',
+  'net.nanopay.fx.FXDirection',
 
-  'net.nanopay.fx.model.GetFXQuote',
-  'net.nanopay.fx.model.AcceptFXRate',
-  'net.nanopay.fx.model.ConfirmFXDeal',
-  'net.nanopay.fx.model.SubmitFXDeal',
-  'net.nanopay.fx.model.GetIncomingFundStatus',
-  'net.nanopay.fx.model.FXQuote',
+  'net.nanopay.fx.GetFXQuote',
+  'net.nanopay.fx.AcceptFXRate',
+  'net.nanopay.fx.ConfirmFXDeal',
+  'net.nanopay.fx.SubmitFXDeal',
+  'net.nanopay.fx.GetIncomingFundStatus',
+  'net.nanopay.fx.FXQuote',
 
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
@@ -179,7 +179,7 @@ var classes = [
   'net.nanopay.security.HashingWriterTest',
   'net.nanopay.security.FileKeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
-  
+
 
   // tests
   'net.nanopay.test.ModelledTest',

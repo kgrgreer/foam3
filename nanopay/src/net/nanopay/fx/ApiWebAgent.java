@@ -20,18 +20,6 @@ import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.nanopay.account.FXService;
-import net.nanopay.fx.model.ExchangeRateQuote;
-import net.nanopay.fx.ascendantfx.AscendantFX;
-import net.nanopay.fx.ascendantfx.AscendantFXService;
-import net.nanopay.fx.ascendantfx.AscendantFXServiceAdapter;
-import net.nanopay.fx.model.AcceptFXRate;
-import net.nanopay.fx.model.ConfirmFXDeal;
-import net.nanopay.fx.model.FXAccepted;
-import net.nanopay.fx.model.FXDeal;
-import net.nanopay.fx.model.FXPayee;
-import net.nanopay.fx.model.GetFXQuote;
-import net.nanopay.fx.model.GetIncomingFundStatus;
-import net.nanopay.fx.model.SubmitFXDeal;
 
 public class ApiWebAgent
         implements WebAgent {
@@ -40,26 +28,26 @@ public class ApiWebAgent
     }
 
     public void execute(X x) {
-        Logger logger = (Logger) x.get("logger");
-        HttpServletRequest req = x.get(HttpServletRequest.class);
-        HttpServletResponse resp = x.get(HttpServletResponse.class);
-        HttpParameters p = x.get(HttpParameters.class);
-        final PrintWriter out = x.get(PrintWriter.class);
-        String contentType = req.getHeader("Content-Type");
-        Command command = (Command) p.get("cmd");
-        Format format = (Format) p.get("format");
-        String msg = p.getParameter("msg");
-        String data = p.getParameter("data");
-        String id = p.getParameter("id");
-        String serviceKey = req.getParameter("serviceKey");
+        Logger logger                       =   (Logger) x.get("logger");
+        HttpServletRequest req              =   x.get(HttpServletRequest.class);
+        HttpServletResponse resp            =   x.get(HttpServletResponse.class);
+        HttpParameters p                    =   x.get(HttpParameters.class);
+        final PrintWriter out               =   x.get(PrintWriter.class);
+        String contentType                  =   req.getHeader("Content-Type");
+        Command command                     =   (Command) p.get("cmd");
+        Format format                       =   (Format) p.get("format");
+        String msg                          =   p.getParameter("msg");
+        String data                         =   p.getParameter("data");
+        String id                           =   p.getParameter("id");
+        String serviceKey                   =   req.getParameter("serviceKey");
 
         logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
         PM pm = new PM(getClass(), serviceKey);
 
         try {
 
-            if (SafetyUtil.isEmpty(data)) {
-                if (SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType)) {
+            if ( SafetyUtil.isEmpty(data) ) {
+                if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
                     resp.setContentType("text/html");
                     out.print("<form method=post><span>ExchangeRate Service </span>");
                     out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
@@ -76,11 +64,8 @@ public class ApiWebAgent
             }
 
             FXService fxService = (FXService) x.get("ascendantFXService");
-//            AscendantFX ascendantFX = new AscendantFXService(x, "", "", ""); //TODO: make configurable
-//            FXServiceAdapter implementor = new AscendantFXServiceAdapter(ascendantFX);//TODO: make dynamic
-//            FXService fxService = new FXService(implementor);
 
-            if (Format.JSON == format) {
+            if ( Format.JSON == format ) {
                 JSONParser jsonParser = new JSONParser();
                 jsonParser.setX(x);
 
@@ -88,17 +73,17 @@ public class ApiWebAgent
                 outputterJson.setOutputDefaultValues(true);
                 outputterJson.setOutputClassNames(false);
 
-                ExchangeRateQuote exQuote = null;
-                if ("getFXRate".equals(serviceKey)) {
+                ExchangeRateQuote exQuote;
+                if ( "getFXRate".equals(serviceKey) ) {
                     GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);
-                    if (getFXQuote == null) {
+                    if ( getFXQuote == null ) {
                         String message = getParsingError(x, data);
                         logger.error(message + ", input: " + data);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     }
 
-                    if (getFXQuote.getTargetAmount() > 0) {
+                    if ( getFXQuote.getTargetAmount() > 0 ) {
                         exQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate());
                         outputterJson.output(exQuote);
                     } else {
@@ -109,16 +94,16 @@ public class ApiWebAgent
                     }
                 }
 
-                if ("acceptFXRate".equals(serviceKey)) {
+                if ( "acceptFXRate".equals(serviceKey) ) {
                     AcceptFXRate acceptFXRate = (AcceptFXRate) jsonParser.parseString(data, AcceptFXRate.class);
-                    if (acceptFXRate == null) {
+                    if ( acceptFXRate == null ) {
                         String message = getParsingError(x, data);
                         logger.error(message + ", input: " + data);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     }
 
-                    if (SafetyUtil.isEmpty(acceptFXRate.getQuoteId())) {
+                    if ( SafetyUtil.isEmpty(acceptFXRate.getId()) ) {
                         String message = "Quote ID is missing in request.";
                         logger.error(message);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -129,7 +114,7 @@ public class ApiWebAgent
                     }
                 }
 
-               if ("submitFXDeal".equals(serviceKey)) {
+               if ( "submitFXDeal".equals(serviceKey) ) {
                     SubmitFXDeal submitFXDeal = (SubmitFXDeal) jsonParser.parseString(data, SubmitFXDeal.class);
                     if (submitFXDeal == null) {
                         String message = getParsingError(x, data);
@@ -138,7 +123,7 @@ public class ApiWebAgent
                         return;
                     }
 
-                    if (SafetyUtil.isEmpty(submitFXDeal.getQuoteId())) {
+                    if ( SafetyUtil.isEmpty(submitFXDeal.getQuoteId()) ) {
                         String message = "Quote ID is missing in request.";
                         logger.error(message);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -149,7 +134,7 @@ public class ApiWebAgent
                     }
                 }
 
-               if ("confirmFXDeal".equals(serviceKey)) {
+               if ( "confirmFXDeal".equals(serviceKey) ) {
                     ConfirmFXDeal confirmFXDeal = (ConfirmFXDeal) jsonParser.parseString(data, ConfirmFXDeal.class);
                     if (confirmFXDeal == null) {
                         String message = getParsingError(x, data);
@@ -158,7 +143,7 @@ public class ApiWebAgent
                         return;
                     }
 
-                    if (SafetyUtil.isEmpty(confirmFXDeal.getFxDealId()) ) {
+                    if ( SafetyUtil.isEmpty(confirmFXDeal.getId()) ) {
                         String message = "FX Deal ID is missing in request.";
                         logger.error(message);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -169,7 +154,7 @@ public class ApiWebAgent
                     }
                 }
 
-               if ("checkIncomingFundsStatus".equals(serviceKey)) {
+               if ( "checkIncomingFundsStatus".equals(serviceKey) ) {
                     GetIncomingFundStatus getIncomingFundStatus = (GetIncomingFundStatus) jsonParser.parseString(data, GetIncomingFundStatus.class);
                     if (getIncomingFundStatus == null) {
                         String message = getParsingError(x, data);
@@ -178,7 +163,7 @@ public class ApiWebAgent
                         return;
                     }
 
-                    if (SafetyUtil.isEmpty(getIncomingFundStatus.getDealId()) ) {
+                    if ( SafetyUtil.isEmpty(getIncomingFundStatus.getDealId()) ) {
                         String message = "FX Deal ID is missing in request.";
                         logger.error(message);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -189,7 +174,7 @@ public class ApiWebAgent
                     }
                 }
 
-               if ("addFXPayee".equals(serviceKey)) {
+               if ( "addFXPayee".equals(serviceKey) ) {
                     FXPayee fxPayee = (FXPayee) jsonParser.parseString(data, FXPayee.class);
                     if (fxPayee == null) {
                         String message = getParsingError(x, data);
@@ -198,7 +183,7 @@ public class ApiWebAgent
                         return;
                     }
 
-                    if (SafetyUtil.isEmpty(fxPayee.getPayeeName()) ) {
+                    if ( SafetyUtil.isEmpty(fxPayee.getPayeeName()) ) {
                         String message = "Payee Name is missing in request.";
                         logger.error(message);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);

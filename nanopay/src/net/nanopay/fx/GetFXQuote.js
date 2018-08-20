@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.fx.model',
+  package: 'net.nanopay.fx',
   name: 'GetFXQuote',
 
   documentation: 'API to get FX Quote',
@@ -28,8 +28,8 @@ foam.CLASS({
       value: 0
     },
     {
-        class: "String",
-        name: "fxDirection"
+        class: 'String',
+        name: 'fxDirection'
     }
   ]
 });

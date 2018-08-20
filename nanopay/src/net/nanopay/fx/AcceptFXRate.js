@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.fx.model',
+  package: 'net.nanopay.fx',
   name: 'AcceptFXRate',
 
   documentation: 'API to ACCEPT FX Quote',
@@ -11,7 +11,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'quoteId'
+      name: 'id',
+      documentation: 'Refers to Quote ID'
     },
     {
       class: 'String',

@@ -4,7 +4,7 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getFXRate',
-            javaReturns: 'net.nanopay.fx.model.ExchangeRateQuote',
+            javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
             returns: 'Promise',
             javaThrows: ['java.lang.RuntimeException'],
             args: [
@@ -17,29 +17,29 @@ foam.INTERFACE({
                     javaType: 'String'
                 },
                 {
-                    name: 'targetAmount',
+                    name: 'sourceAmount',
                     javaType: 'double'
                 },
                 {
-                    class: "String",
-                    name: "fxDirection",
-                    of: "net.nanopay.fx.model.FXDirection"
+                    class: 'String',
+                    name: 'fxDirection',
+                    of: 'net.nanopay.fx.FXDirection'
                 },
                 {
                     name: 'valueDate',
-                    javaType: 'String'//TODO: investigate why java.util.dat can't be used here
+                    javaType: 'String'// TODO: investigate why java.util.dat can't be used here
                 }
             ]
         },
         {
             name: 'acceptFXRate',
-            javaReturns: 'net.nanopay.fx.model.FXAccepted',
+            javaReturns: 'net.nanopay.fx.FXAccepted',
             returns: 'Promise',
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.AcceptFXRate'
+                    javaType: 'net.nanopay.fx.AcceptFXRate'
                 }
             ]
         },
@@ -47,11 +47,11 @@ foam.INTERFACE({
             name: 'submitFXDeal',
             documentation: 'To submit FX Deal',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXDeal',
+            javaReturns: 'net.nanopay.fx.FXDeal',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.SubmitFXDeal'
+                    javaType: 'net.nanopay.fx.SubmitFXDeal'
                 }
             ]
         },
@@ -59,7 +59,7 @@ foam.INTERFACE({
             name: 'getFXAccountBalance',
             documentation: 'Get FX holding account balance',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXHoldingAccountBalance',
+            javaReturns: 'net.nanopay.fx.FXHoldingAccountBalance',
             args: [
                 {
                     name: 'fxAccountId',
@@ -71,11 +71,11 @@ foam.INTERFACE({
             name: 'confirmFXDeal',
             documentation: 'To confirm booking has been effected',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXDeal',
+            javaReturns: 'net.nanopay.fx.FXDeal',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.ConfirmFXDeal'
+                    javaType: 'net.nanopay.fx.ConfirmFXDeal'
                 }
             ]
         },
@@ -83,11 +83,11 @@ foam.INTERFACE({
             name: 'checkIncomingFundsStatus',
             documentation: 'Check if the coming funds has been credited to holding account',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXDeal',
+            javaReturns: 'net.nanopay.fx.FXDeal',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.GetIncomingFundStatus'
+                    javaType: 'net.nanopay.fx.GetIncomingFundStatus'
                 }
             ]
         },
@@ -107,11 +107,11 @@ foam.INTERFACE({
             name: 'addFXPayee',
             documentation: 'To add a new FX payee',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXPayee',
+            javaReturns: 'net.nanopay.fx.FXPayee',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.FXPayee'
+                    javaType: 'net.nanopay.fx.FXPayee'
                 }
             ]
         },
@@ -119,11 +119,11 @@ foam.INTERFACE({
             name: 'updateFXPayee',
             documentation: 'To update a given FX payee\'s information',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXPayee',
+            javaReturns: 'net.nanopay.fx.FXPayee',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.FXPayee'
+                    javaType: 'net.nanopay.fx.FXPayee'
                 }
             ]
         },
@@ -131,11 +131,11 @@ foam.INTERFACE({
             name: 'deleteFXPayee',
             documentation: 'To delete a given payee',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXPayee',
+            javaReturns: 'net.nanopay.fx.FXPayee',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.FXPayee'
+                    javaType: 'net.nanopay.fx.FXPayee'
                 }
             ]
         },
@@ -143,11 +143,11 @@ foam.INTERFACE({
             name: 'getPayeeInfo',
             documentation: 'Get information for a given payee',
             returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.model.FXPayee',
+            javaReturns: 'net.nanopay.fx.FXPayee',
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.model.FXPayee'
+                    javaType: 'net.nanopay.fx.FXPayee'
                 }
             ]
         }

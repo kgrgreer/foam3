@@ -25,31 +25,32 @@ import net.nanopay.fx.ascendantfx.model.PostDealConfirmationRequest;
 import net.nanopay.fx.ascendantfx.model.PostDealConfirmationResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
-import net.nanopay.fx.model.AcceptFXRate;
-import net.nanopay.fx.model.ConfirmFXDeal;
-import net.nanopay.fx.model.ExchangeRateQuote;
-import net.nanopay.fx.model.FXAccepted;
-import net.nanopay.fx.model.FXDeal;
-import net.nanopay.fx.model.FXHoldingAccount;
-import net.nanopay.fx.model.FXHoldingAccountBalance;
-import net.nanopay.fx.model.FXDirection;
-import net.nanopay.fx.model.FXPayee;
-import net.nanopay.fx.model.FeesFields;
-import net.nanopay.fx.model.GetIncomingFundStatus;
-import net.nanopay.fx.model.SubmitFXDeal;
+import net.nanopay.fx.AcceptFXRate;
+import net.nanopay.fx.ConfirmFXDeal;
+import net.nanopay.fx.ExchangeRateQuote;
+import net.nanopay.fx.FXAccepted;
+import net.nanopay.fx.FXDeal;
+import net.nanopay.fx.FXHoldingAccount;
+import net.nanopay.fx.FXHoldingAccountBalance;
+import net.nanopay.fx.FXDirection;
+import net.nanopay.fx.FXPayee;
+import net.nanopay.fx.FeesFields;
+import net.nanopay.fx.GetIncomingFundStatus;
+import net.nanopay.fx.SubmitFXDeal;
 
 public class AscendantFXServiceAdapter implements FXServiceAdapter {
 
-    public static final String AFX_ORG_ID = "";
-    public static final String AFX_METHOD_ID = "";
-    public static final Long AFX_SUCCESS_CODE = 200l;
+    public static final String AFX_ORG_ID       =   "";
+    public static final String AFX_METHOD_ID    =   "";
+    public static final Long AFX_SUCCESS_CODE   =   200l;
     private final AscendantFX ascendantFX;
 
     public AscendantFXServiceAdapter(final AscendantFX ascendantFX) {
         this.ascendantFX = ascendantFX;
     }
 
-    public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency, double targetAmount, String fxDirection, String valueDate) throws RuntimeException {
+    public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency
+            , double sourceAmount, String fxDirection, String valueDate) throws RuntimeException {
         ExchangeRateQuote quote = new ExchangeRateQuote();
 
         //Convert to AscendantFx Request
@@ -60,7 +61,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         Deal deal = new Deal();
         Direction direction = Direction.valueOf(fxDirection);
         deal.setDirection(direction);
-        deal.setFxAmount(targetAmount);
+        deal.setFxAmount(sourceAmount);
         deal.setFxCurrencyID(sourceCurrency);
         deal.setSettlementCurrencyID(targetCurrency);
 
@@ -70,15 +71,13 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         getQuoteRequest.setPayment(deals.toArray(dealArr));
 
         GetQuoteResult getQuoteResult = this.ascendantFX.getQuote(getQuoteRequest);
-        if (null == getQuoteResult) {
-            return quote;
-        }
+        if ( null == getQuoteResult )return quote;
 
         //Convert to nanopay interface
-        quote.setQuoteId(String.valueOf(getQuoteResult.getQuote().getID()));
+        quote.setId(String.valueOf(getQuoteResult.getQuote().getID()));
 
         Deal[] dealResult = getQuoteResult.getPayment();
-        if (dealResult.length > 0) {
+        if ( dealResult.length > 0 ) {
             Deal aDeal = dealResult[0];
             aDeal.getFee();
 
@@ -97,12 +96,11 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         AcceptQuoteRequest request = new AcceptQuoteRequest();
         request.setMethodID(AFX_METHOD_ID);
         request.setOrgID(AFX_ORG_ID);
-        request.setQuoteID(Long.parseLong(quote.getQuoteId()));
+        request.setQuoteID(Long.parseLong(quote.getId()));
 
         AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
-        if (null != acceptQuoteResult) {
-            result.setQuoteId(String.valueOf(acceptQuoteResult.getQuoteID()));
-        }
+        if ( null != acceptQuoteResult ) result.setId(String.valueOf(acceptQuoteResult.getQuoteID()));
+        
 
         return result;
     }
@@ -117,8 +115,8 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         ascendantRequest.setTotalNumberOfPayment(request.getTotalNumberOfPayment());
 
         DealDetail[] dealArr = new DealDetail[1];
-        FXDeal fxDeal = request.getFxDeal();
-        if (null != fxDeal) {
+        FXDeal fxDeal = (FXDeal) request.getFxDeal();
+        if ( null != fxDeal ) {
             DealDetail dealDetail = new DealDetail();
             dealDetail.setDirection(Direction.valueOf(fxDeal.getFXDirection().getName()));
             dealDetail.setFee(fxDeal.getFee());
@@ -132,16 +130,16 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
             dealDetail.setSettlementAmount(fxDeal.getSettlementAmount());
             dealDetail.setSettlementCurrencyID(fxDeal.getSettlementCurrencyID());
             dealDetail.setTotalSettlementAmount(fxDeal.getTotalSettlementAmount());
-            dealDetail.setPayee(converFromFXPayee(fxDeal.getPayee()));
+            dealDetail.setPayee(converFXPayeeToPayee(fxDeal.getPayee()));
 
             dealArr[0] = dealDetail;
             ascendantRequest.setPaymentDetail(dealArr);
         }
 
         SubmitDealResult submittedDeal = this.ascendantFX.submitDeal(ascendantRequest);
-        if (null != submittedDeal) {
+        if ( null != submittedDeal ) {
             DealDetail[] submittedDealDetails = submittedDeal.getPaymentDetail();
-            if (submittedDealDetails.length > 0) {
+            if ( submittedDealDetails.length > 0 ) {
                 result = new FXDeal();
                 DealDetail detail = submittedDealDetails[0];
                 result.setFXDirection(FXDirection.valueOf(detail.getDirection().getName()));
@@ -156,7 +154,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
                 result.setSettlementAmount(detail.getSettlementAmount());
                 result.setSettlementCurrencyID(detail.getSettlementCurrencyID());
                 result.setTotalSettlementAmount(detail.getTotalSettlementAmount());
-                result.setPayee(converToFXPayee(detail.getPayee()));
+                result.setPayee(converPayeeToFXPayee(detail.getPayee()));
             }
         }
 
@@ -171,7 +169,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         request.setOrgID(AFX_ORG_ID);
 
         GetAccountBalanceResult accountBalance = this.ascendantFX.getAccountBalance(request);
-        if (null != accountBalance) {
+        if ( null != accountBalance ) {
             holdingAccountBalance = new FXHoldingAccountBalance();
             List<FXHoldingAccount> accounts = new ArrayList<FXHoldingAccount>();
             for (AccountDetails accountDetail : accountBalance.getAccount()) {
@@ -191,15 +189,15 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
     public FXDeal confirmFXDeal(ConfirmFXDeal request) {
         FXDeal result = null;
         PostDealConfirmationRequest ascendantRequest = new PostDealConfirmationRequest();
-        ascendantRequest.setAFXDealID(request.getFxDealId());
+        ascendantRequest.setAFXDealID(request.getId());
         ascendantRequest.setAFXPaymentID(request.getFxPaymentId());
         ascendantRequest.setMethodID(AFX_ORG_ID);
         ascendantRequest.setOrgID(AFX_ORG_ID);
 
         PostDealConfirmationResult ascendantResult = this.ascendantFX.postDealConfirmation(ascendantRequest);
-        if (ascendantResult != null) {
+        if ( ascendantResult != null ) {
             result = new FXDeal();
-            result.setFxDealId(ascendantResult.getAFXDealID());
+            result.setId(ascendantResult.getAFXDealID());
             result.setFXDealStatus(ascendantResult.getDealPostConfirm().getOrdinal());
         }
 
@@ -214,9 +212,9 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         ascendantRequest.setOrgID(AFX_ORG_ID);
 
         IncomingFundStatusCheckResult ascendantResult = this.ascendantFX.checkIncomingFundsStatus(ascendantRequest);
-        if (null != ascendantResult) {
+        if ( null != ascendantResult ) {
             result = new FXDeal();
-            result.setFxDealId(ascendantResult.getDealID());
+            result.setId(ascendantResult.getDealID());
             result.setFXDealStatus(ascendantResult.getStatus());
         }
 
@@ -235,7 +233,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
         PayeeOperationResult ascendantResult = this.ascendantFX.addPayee(ascendantRequest);
-        if (null != ascendantResult) {
+        if ( null != ascendantResult ) {
             newPayee = new FXPayee();
             newPayee.copyFrom(request);
             newPayee.setPayeeName(ascendantResult.getPayeeName());
@@ -258,7 +256,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
         PayeeOperationResult ascendantResult = this.ascendantFX.updatePayee(ascendantRequest);
-        if (null != ascendantResult) {
+        if ( null != ascendantResult ) {
             newPayee = new FXPayee();
             newPayee.copyFrom(request);
             newPayee.setPayeeName(ascendantResult.getPayeeName());
@@ -281,7 +279,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
         PayeeOperationResult ascendantResult = this.ascendantFX.deletePayee(ascendantRequest);
-        if (null != ascendantResult) {
+        if ( null != ascendantResult ) {
             newPayee = new FXPayee();
             newPayee.copyFrom(request);
             newPayee.setPayeeName(ascendantResult.getPayeeName());
@@ -304,9 +302,9 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
         GetPayeeInfoResult ascendantResult = this.ascendantFX.getPayeeInfo(ascendantRequest);
-        if (null != ascendantResult) {
+        if ( null != ascendantResult ) {
             PayeeDetail[] payeeDetails = ascendantResult.getPayeeDetail();
-            if (payeeDetails.length > 0) {
+            if ( payeeDetails.length > 0 ) {
                 PayeeDetail payeeDetail = payeeDetails[0];
                 newPayee = convertPayeeDetailToFXPayee(payeeDetail);
             }
@@ -316,9 +314,9 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         return newPayee;
     }
 
-    private Payee converFromFXPayee(FXPayee fxPayee) {
+    private Payee converFXPayeeToPayee(FXPayee fxPayee) {
         Payee payee = new Payee();
-        if (null != fxPayee) {
+        if ( null != fxPayee ) {
             payee.setOriginatorAccountNumber(fxPayee.getOriginatorAccountNumber());
             payee.setOriginatorAddress1(fxPayee.getOriginatorAddress1());
             payee.setOriginatorAddress2(fxPayee.getOriginatorAddress2());
@@ -363,9 +361,9 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
         return payee;
     }
 
-    private FXPayee converToFXPayee(Payee payee) {
+    private FXPayee converPayeeToFXPayee(Payee payee) {
         FXPayee fxPayee = new FXPayee();
-        if (null != payee) {
+        if ( null != payee ) {
             fxPayee.setOriginatorAccountNumber(payee.getOriginatorAccountNumber());
             fxPayee.setOriginatorAddress1(payee.getOriginatorAddress1());
             fxPayee.setOriginatorAddress2(payee.getOriginatorAddress2());
@@ -412,7 +410,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
 
     private PayeeDetail payeeDetiailFromFXPayee(FXPayee fxPayee) {
         PayeeDetail payee = new PayeeDetail();
-        if (null != fxPayee) {
+        if ( null != fxPayee ) {
             payee.setOriginatorAccountNumber(fxPayee.getOriginatorAccountNumber());
             payee.setOriginatorAddress1(fxPayee.getOriginatorAddress1());
             payee.setOriginatorAddress2(fxPayee.getOriginatorAddress2());
@@ -459,7 +457,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
 
     private FXPayee convertPayeeDetailToFXPayee(PayeeDetail payee) {
         FXPayee fxPayee = new FXPayee();
-        if (null != payee) {
+        if ( null != payee ) {
             fxPayee.setOriginatorAccountNumber(payee.getOriginatorAccountNumber());
             fxPayee.setOriginatorAddress1(payee.getOriginatorAddress1());
             fxPayee.setOriginatorAddress2(payee.getOriginatorAddress2());

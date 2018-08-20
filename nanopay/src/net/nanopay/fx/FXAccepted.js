@@ -1,10 +1,10 @@
 
 foam.CLASS({
-  package: 'net.nanopay.fx.model',
+  package: 'net.nanopay.fx',
   name: 'FXAccepted',
 
   requires: [
-     'net.nanopay.fx.model.ExchangeRateFields'
+     'net.nanopay.fx.ExchangeRateFields'
   ],
 
   properties: [
@@ -14,11 +14,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'quoteId'
+      name: 'id',
+      documentation: 'Refers to the Quote ID'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.fx.model.ExchangeRateFields',
+      of: 'net.nanopay.fx.ExchangeRateFields',
       name: 'exchangeRate',
       factory: function() {
         return this.ExchangeRateFields.create();

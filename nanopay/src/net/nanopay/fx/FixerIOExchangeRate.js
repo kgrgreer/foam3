@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.fx.model',
+  package: 'net.nanopay.fx',
   name: 'FixerIOExchangeRate',
 
   documentation: 'Modelled version of fixer.io exchange rate response',
