@@ -19,6 +19,8 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.CompositeTransaction;
+import net.nanopay.tx.alterna.AlternaCITransaction;
+import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.alterna.AlternaTransaction;
 
@@ -39,9 +41,9 @@ public class TransactionAdapterDAO
 
     // Only concerned with Transactions which are not already a
     // specialized child class.
-    if ( ! obj.getClass().equals(Transaction.class) ) {
+    /*if ( ! obj.getClass().equals(Transaction.class) ) {
       return super.put_(x, obj);
-    }
+    }*/
 
     Transaction txn = (Transaction) obj;
     if ( ! SafetyUtil.isEmpty(txn.getId()) ) {
@@ -63,7 +65,7 @@ public class TransactionAdapterDAO
     // Future: provide account -> account -> transaction type mapping
 
     // Cananadian CICO
-    if ( ( sourceAccount instanceof CABankAccount &&
+   /* if ( ( sourceAccount instanceof CABankAccount &&
            destinationAccount instanceof DigitalAccount ) ||
          ( destinationAccount instanceof CABankAccount &&
            sourceAccount instanceof DigitalAccount ) ) {
@@ -79,9 +81,28 @@ public class TransactionAdapterDAO
         }
       }
       return super.put_(x, t);
+    }*/
+
+    if ( sourceAccount instanceof CABankAccount &&
+      destinationAccount instanceof DigitalAccount ) {
+      AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
+      t.copyFrom(txn);
+      if ( sourceAccount.getOwner() != destinationAccount.getOwner() ) {
+        t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
+      } else {
+        t.setType(TransactionType.CASHIN);
+      }
+      return super.put_(x, t);
+    } else if ( destinationAccount instanceof CABankAccount &&
+      sourceAccount instanceof DigitalAccount ) {
+      AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
+      t.copyFrom(txn);
+      t.setType(TransactionType.CASHOUT);
+      return super.put_(x, t);
     }
 
-    // Canadian Bank to Bank
+
+      // Canadian Bank to Bank
     if ( sourceAccount instanceof CABankAccount &&
          destinationAccount instanceof CABankAccount ) {
       CompositeTransaction composite = new CompositeTransaction.Builder(x).build();
@@ -111,9 +132,9 @@ public class TransactionAdapterDAO
     }
 
     // Unsupported - Future DWolla, NAPCO, Indusynd
-    if ( sourceAccount instanceof BankAccount &&
+    if ( sourceAccount instanceof BankAccount ||
          destinationAccount instanceof BankAccount ) {
-      throw new RuntimeException("Transaction not supported. non-CABankAccount -> non-CABankAccount");
+      throw new RuntimeException("Transaction not supported. non-CABankAccount -> non-CABankAccount ||  non-CABankAccount -> DigitalCash || DigitalCash -> non-CABankAccount");
     }
 
     // default Digital -> Digital

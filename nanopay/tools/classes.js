@@ -17,6 +17,9 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaSFTPService',
   'net.nanopay.tx.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.tx.alterna.AlternaTransaction',
+  'net.nanopay.tx.cico.CITransaction',
+  'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.alterna.AlternaTransaction',
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
@@ -165,7 +168,7 @@ var classes = [
   'net.nanopay.security.HashingWriterTest',
   'net.nanopay.security.FileKeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
-  
+
 
   // tests
   'net.nanopay.test.ModelledTest',
