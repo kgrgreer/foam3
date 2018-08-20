@@ -32,7 +32,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
-  { name: 'net/nanopay/auth/sms/AuthyTokenService', flags: ['web'] },
+  { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignUpView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
