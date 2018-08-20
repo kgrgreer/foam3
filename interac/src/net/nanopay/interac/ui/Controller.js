@@ -39,7 +39,7 @@ foam.CLASS({
           content: "";
           display: block;
         }
-        .stack-wrapper:after, .foam.nanos.u2.navigation.FooterView {
+        .stack-wrapper:after, .foam-nanos-u2-navigation-FooterView {
           height: 10px;
         }
         .foam-u2-ActionView-payNow {
