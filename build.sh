@@ -237,36 +237,6 @@ function beginswith {
     case $2 in "$1"*) true;; *) false;; esac;
 }
 
-function cleanup_tomcat {
-  export CATALINA_PID="/tmp/catalina_pid"
-
-  # Handle old machines which have CATALINA_HOME defined
-  if [[ -n $CATALINA_HOME && $CATALINA_HOME == "/Library/Tomcat" ]]; then
-      LOG_HOME="$CATALINA_HOME/logs"
-  fi
-
-  while [ -z "$CATALINA_HOME" ]; do
-      testcatalina /Library/Tomcat
-      if [ ! -z "$CATALINA_HOME" ]; then
-          # local development
-          LOG_HOME="$CATALINA_HOME/logs"
-          break
-      fi
-      testcatalina /opt/tomcat
-      if [ ! -z "$CATALINA_HOME" ]; then
-          break;
-      fi
-      testcatalina "$HOME/tools/tomcat"
-      if [ ! -z "$CATALINA_HOME" ]; then
-          break
-      fi
-      printf "CATALINA_HOME not found.\n"
-      return
-  done
-
-  "$CATALINA_HOME/bin/shutdown.sh" -force || true &>/dev/null
-}
-
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
         export NANOPAY_HOME="/opt/nanopay"
@@ -460,13 +430,9 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    # cleanup old tomcat instances
-    cleanup_tomcat
-
-    stop_nanos
-
     build_jar
     deploy_journals
+    stop_nanos
     start_nanos
 fi
 
