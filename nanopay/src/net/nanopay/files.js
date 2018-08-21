@@ -97,6 +97,7 @@ FOAM_FILES([
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXPlanTransactionDAO' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
@@ -152,6 +153,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/CompositeTransactionDAO' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
+  { name: 'net/nanopay/tx/PlanTransaction' },
+  { name: 'net/nanopay/tx/PlanTransactionDAO' },
+  { name: 'net/nanopay/tx/QuoteTransaction' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -245,6 +249,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaCOTransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaPlanTransactionDAO' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
