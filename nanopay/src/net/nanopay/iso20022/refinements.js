@@ -2,6 +2,8 @@ foam.CLASS({
   refines: 'net.nanopay.iso20022.ISODate',
 
   properties: [
+    ['javaJSONParser', 'new net.nanopay.iso20022.ISODateParser()'],
+    ['javaCSVParser',  'new net.nanopay.iso20022.ISODateParser()'],
     {
       name: 'toJSON',
       value: function toJSON(value, _) {
@@ -36,6 +38,8 @@ foam.CLASS({
   refines: 'net.nanopay.iso20022.ISODateTime',
 
   properties: [
+    ['javaJSONParser', 'new net.nanopay.iso20022.ISODateTimeParser()'],
+    ['javaCSVParser',  'new net.nanopay.iso20022.ISODateTimeParser()'],
     {
       name: 'toJSON',
       value: function toJSON(value, _) {
@@ -79,6 +83,8 @@ foam.CLASS({
   refines: 'net.nanopay.iso20022.ISOTime',
 
   properties: [
+    ['javaJSONParser', 'new net.nanopay.iso20022.ISOTimeParser()'],
+    ['javaCSVParser',  'new net.nanopay.iso20022.ISOTimeParser()'],
     {
       name: 'toJSON',
       value: function toJSON(value, _) {
