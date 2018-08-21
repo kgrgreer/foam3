@@ -22,6 +22,7 @@ foam.CLASS({
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
+    'net.nanopay.tx.QuotesTransaction',
     'net.nanopay.tx.TransactionType'
   ],
 
@@ -41,7 +42,7 @@ foam.CLASS({
       javaReturns: 'foam.core.FObject',
       javaCode: `
     if ( ! ( obj instanceof QuoteTransaction ) ||
-         ( obj instance QuotesTransaction ) ) {
+         ( obj instanceof QuotesTransaction ) ) {
       return super.put_(x, obj);
     }
 

@@ -156,6 +156,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/PlanTransaction' },
   { name: 'net/nanopay/tx/PlanTransactionDAO' },
   { name: 'net/nanopay/tx/QuoteTransaction' },
+  { name: 'net/nanopay/tx/QuotesTransaction' },
   { name: 'net/nanopay/tx/QuoteTransactionDAO' },
 
   // tx tests

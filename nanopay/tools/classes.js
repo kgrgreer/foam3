@@ -122,6 +122,7 @@ var classes = [
   'net.nanopay.tx.PlanTransaction',
   'net.nanopay.tx.PlanTransactionDAO',
   'net.nanopay.tx.QuoteTransaction',
+  'net.nanopay.tx.QuotesTransaction',
   'net.nanopay.tx.QuoteTransactionDAO',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
