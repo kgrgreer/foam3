@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.fx.model',
+  package: 'net.nanopay.fx',
   name: 'ExchangeRate',
 
   documentation: 'Exchange rate information pertaining to two currencies',
@@ -46,7 +46,7 @@ foam.CLASS({
       name: 'expirationDate',
       documentation: 'Date exchange rate expires.'
     },
-    /*Interac*/
+    /* Interac*/
     /* REVIEW: can this be replaced by created Date */
     {
       class: 'DateTime',
@@ -58,7 +58,7 @@ foam.CLASS({
       of: 'net.nanopay.fx.ExchangeRateStatus',
       name: 'fxStatus',
       documentation: 'Status of exchange rate.',
-      value: 'QUOTED' /*'Quoted'*/
+      value: 'QUOTED' /* 'Quoted'*/
     },
     {
       class: 'String',

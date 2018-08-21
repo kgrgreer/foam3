@@ -52,6 +52,19 @@ var classes = [
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
 
+  //sps
+  'net.nanopay.sps.GeneralRequestPacket',
+  'net.nanopay.sps.GeneralRequestResponse',
+  'net.nanopay.sps.BatchDetailRequestPacket',
+  'net.nanopay.sps.BatchDetailGeneralResponse',
+  'net.nanopay.sps.DetailResponse',
+  'net.nanopay.sps.RequestMessageAndErrors',
+  'net.nanopay.sps.HostError',
+  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.DetailResponseItemContent',
+  'net.nanopay.sps.RequestPacket',
+  'net.nanopay.sps.ResponsePacket',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -84,9 +97,9 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredAgentFields',
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.ExchangeRateStatus',
-  'net.nanopay.fx.model.ExchangeRate',
-  'net.nanopay.fx.model.ExchangeRateQuote',
-  'net.nanopay.fx.model.FixerIOExchangeRate',
+  'net.nanopay.fx.ExchangeRate',
+  'net.nanopay.fx.ExchangeRateQuote',
+  'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -133,6 +146,22 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
+  'net.nanopay.fx.FXServiceInterface',
+  'net.nanopay.fx.client.ClientFXService',
+  'net.nanopay.fx.FXAccepted',
+  'net.nanopay.fx.FXDeal',
+  'net.nanopay.fx.FXHoldingAccount',
+  'net.nanopay.fx.FXHoldingAccountBalance',
+  'net.nanopay.fx.FXPayee',
+  'net.nanopay.fx.FXDirection',
+
+  'net.nanopay.fx.GetFXQuote',
+  'net.nanopay.fx.AcceptFXRate',
+  'net.nanopay.fx.ConfirmFXDeal',
+  'net.nanopay.fx.SubmitFXDeal',
+  'net.nanopay.fx.GetIncomingFundStatus',
+  'net.nanopay.fx.FXQuote',
+
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
@@ -155,6 +184,7 @@ var classes = [
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
+
   'net.nanopay.security.KeyPairEntry',
   'net.nanopay.security.PrivateKeyEntry',
   'net.nanopay.security.PublicKeyEntry',

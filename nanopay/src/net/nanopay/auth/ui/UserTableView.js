@@ -39,5 +39,5 @@ foam.CLASS({
         user: user
       });
     }
-  ],
+  ]
 });
