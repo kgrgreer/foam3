@@ -155,15 +155,24 @@ function delete_runtime_journals {
 function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
-    if [[ ! -f $NANOS_PIDFILE ]]; then
-        echo "INFO :: PID file $NANOS_PIDFILE not found, nothing to stop?"
+    RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
+    if [[ -f $NANOS_PIDFILE ]]; then
+        PID=$(cat "$NANOS_PIDFILE")
+        if [[ "$PID" != "$RUNNING_PID" ]]; then
+            PID=$RUNNING_PID
+        fi
+    else
+        PID=$RUNNING_PID
+    fi
+
+    if [[ -z "$PID" ]]; then
+        echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
         delete_runtime_journals
         return
     fi
 
     TRIES=0
     SIGNAL=TERM
-    PID=$(cat "$NANOS_PIDFILE")
     set +e
     while kill -0 $PID &>/dev/null; do
         kill -$SIGNAL $PID
@@ -228,36 +237,6 @@ function beginswith {
     case $2 in "$1"*) true;; *) false;; esac;
 }
 
-function cleanup_tomcat {
-  export CATALINA_PID="/tmp/catalina_pid"
-
-  # Handle old machines which have CATALINA_HOME defined
-  if [[ -n $CATALINA_HOME && $CATALINA_HOME == "/Library/Tomcat" ]]; then
-      LOG_HOME="$CATALINA_HOME/logs"
-  fi
-
-  while [ -z "$CATALINA_HOME" ]; do
-      testcatalina /Library/Tomcat
-      if [ ! -z "$CATALINA_HOME" ]; then
-          # local development
-          LOG_HOME="$CATALINA_HOME/logs"
-          break
-      fi
-      testcatalina /opt/tomcat
-      if [ ! -z "$CATALINA_HOME" ]; then
-          break;
-      fi
-      testcatalina "$HOME/tools/tomcat"
-      if [ ! -z "$CATALINA_HOME" ]; then
-          break
-      fi
-      printf "CATALINA_HOME not found.\n"
-      return
-  done
-
-  "$CATALINA_HOME/bin/shutdown.sh" -force || true &>/dev/null
-}
-
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
         export NANOPAY_HOME="/opt/nanopay"
@@ -300,11 +279,12 @@ function setenv {
         mkdir -p "$NANOPAY_HOME"
 
         # Production use S3 mount
-        if [[ -d "/mnt/journals" ]]; then
-            ln -sn "$JOURNAL_HOME" "/mnt/journals"
-        else
+        #if [[ -d "/mnt/journals" ]]; then
+        # FIXME: test and don't create if it exists
+        #   ln -sn "$JOURNAL_HOME" "/mnt/journals"
+        #else
             mkdir -p "$JOURNAL_HOME"
-        fi
+        #fi
 
         CLEAN_BUILD=1
         IS_AWS=1
@@ -450,13 +430,9 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    # cleanup old tomcat instances
-    cleanup_tomcat
-
-    stop_nanos
-
     build_jar
     deploy_journals
+    stop_nanos
     start_nanos
 fi
 

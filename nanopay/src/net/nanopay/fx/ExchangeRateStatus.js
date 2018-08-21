@@ -7,6 +7,10 @@ foam.ENUM({
       label: 'Quoted'
     },
     {
+      name: 'ACCEPTED',
+      label: 'Accepted'
+    },
+    {
       name: 'BOOKED',
       label: 'Booked'
     }
