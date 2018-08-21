@@ -2,27 +2,21 @@ package net.nanopay.account;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import java.security.AccessControlException;
 
-import foam.util.SafetyUtil;
-import net.nanopay.account.Account;
-import net.nanopay.account.Balance;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.IN;
-
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static foam.mlang.MLang.IN;
 
 public class AuthenticatedBalanceDAO
   extends ProxyDAO
@@ -44,7 +38,7 @@ public class AuthenticatedBalanceDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     Account account = balance.findAccount(x);
@@ -61,7 +55,7 @@ public class AuthenticatedBalanceDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     Balance balance = (Balance) getDelegate().find_(x, id);
@@ -83,7 +77,7 @@ public class AuthenticatedBalanceDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     DAO accountsDAO = user.getAccounts(x);
@@ -104,13 +98,13 @@ public class AuthenticatedBalanceDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( balance != null ) {
       Account account = balance.findAccount(x);
       if ( user.getId() != account.getOwner() && ! auth.check(x, GLOBAL_BALANCE_DELETE) ) {
-        throw new RuntimeException("Unable to delete balance.");
+        throw new AuthorizationException("Unable to delete balance due to insufficient permissions.");
       }
     }
 
@@ -123,7 +117,7 @@ public class AuthenticatedBalanceDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     DAO accountsDAO = user.getAccounts(x);

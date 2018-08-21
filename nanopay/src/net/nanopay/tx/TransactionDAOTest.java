@@ -2,15 +2,12 @@ package net.nanopay.tx;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ProxyDAO;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
-import net.nanopay.account.Balance;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -81,8 +78,8 @@ public class TransactionDAOTest
 
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "You must verify your email to send money",
-      RuntimeException.class
+      "You must verify your email to send money.",
+      AuthorizationException.class
       ),
       "Exception: email must be verified");
 
