@@ -6,7 +6,7 @@ foam.INTERFACE({
   {
     name: 'authorize',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
-    javaThrows: [ 'javax.naming.AuthenticationException'],
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException'],
     args: [
       {
         name: 'x',
@@ -29,7 +29,7 @@ foam.INTERFACE({
   {
     name: 'challengeQuestion',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
-    javaThrows: [ 'javax.naming.AuthenticationException' ],
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
@@ -60,7 +60,7 @@ foam.INTERFACE({
   {
     name: 'getAccountSummary',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
-    javaThrows: [ 'javax.naming.AuthenticationException' ],
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
