@@ -110,6 +110,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
+  //sps
+  { name: 'net/nanopay/sps/SPSConfig' },
+
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/tx/model/CashOutFrequency' },
